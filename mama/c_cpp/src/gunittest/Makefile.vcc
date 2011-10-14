@@ -1,0 +1,225 @@
+# $Id: Makefile.vcc,v 1.2.4.2.14.1 2011/08/10 14:53:30 nicholasmarriott Exp $
+#
+# OpenMAMA: The open middleware agnostic messaging API
+# Copyright (C) 2011 NYSE Inc.
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301 USA
+#
+
+O=.obj
+LIBEXT=.lib
+DLLEXT=.dll
+RM=del /s /q
+CP=copy
+MOVE=move
+MKDIR=mkdir
+RMDIR=rmdir /s /q
+
+AR=lib
+LN=link 
+MANIFEST_TOOL=mt
+OUT=/Fe
+DASH_C=-c
+CXX=cl
+
+
+DYN_ARGS=/MD /Ox
+STAT_ARGS=/MT /Ox
+DYN_DBG_ARGS=/MDd
+STAT_DBG_ARGS=/MTd
+
+DYN_SUFFIX=md
+STAT_SUFFIX=mt
+DYN_DBG_SUFFIX=mdd
+STAT_DBG_SUFFIX=mtd
+
+
+!IF "$(VC_VERSION)"=="7"
+CXXFLAGS=$(CXXFLAGS) -DVC7
+!ELSEIF "$(VC_VERSION)"=="8"
+CXXFLAGS=$(CXXFLAGS) /MP -DVC8
+!ELSEIF "$(VC_VERSION)"=="9"
+CXXFLAGS=$(CXXFLAGS) /MP -DVC9
+!ENDIF
+!ELSEIF "$(VC_VERSION)"=="10"
+CXXFLAGS=$(CXXFLAGS) /MP -DVC10
+!ENDIF
+
+BUILD_DIR=$(BLD_DIR)\$(BUILD_TYPE)
+
+
+
+!if "$(BUILD_TYPE)"=="dynamic"
+GTESTLIB=$(GTEST_DIR)\gtest-md\VC$(VC_VERSION)\Release\gtest.lib
+SUFFIX=md
+ARGS=$(DYN_ARGS)
+!else
+GTESTLIB=$(GTEST_DIR)\gtest-md\VC$(VC_VERSION)\Debug\gtestd.lib
+SUFFIX=mdd
+ARGS=$(DYN_DBG_ARGS)
+!endif
+
+
+MAMACLIBS= $(BUILD_DIR)\mama_$(MAMA_VERSION)\libmamac$(SUFFIX).lib \
+          $(WOMBAT_COMMON_HOME)\libwombatcommon$(SUFFIX).lib
+
+MAMACPPLIBS=$(MAMA_HOME)\libmamacpp$(SUFFIX).lib $(WOMBAT_MSG_HOME)\libwombatmsg$(SUFFIX).lib $(WMW_HOME)\libwombatmw$(SUFFIX).lib
+
+
+
+MAMA_DIR=$(CVS_DIR)\products\mama\c_cpp
+COMMON_DIR=$(CVS_DIR)\products\common\c_cpp\src\c
+ENTITLE_DIR=$(CVS_DIR)\products\ents\client\c_cpp\src\c
+FAST_DIR=$(CVS_DIR)\products\fast\c_cpp\src\c
+MAMA_DIR=$(CVS_DIR)\products\mama\c_cpp
+MAMAC_DIR=$(MAMA_DIR)\src\c
+MAMACPP_DIR=$(MAMA_DIR)\src\cpp
+MAMAENT_DIR=$(MAMA_DIR)\src\enterprise
+MAMAENTC_DIR=$(MAMA_DIR)\src\enterprise\c
+MAMAENTCPP_DIR=$(MAMA_DIR)\src\enterprise\cpp
+MAMAPROC_DIR=$(MAMA_DIR)\src\pro\c
+MAMAPROCPP_DIR=$(MAMA_DIR)\src\pro\cpp
+WAMC_DIR=$(CVS_DIR)\products\wam\c_cpp\src\c
+WAMCPP_DIR=$(CVS_DIR)\products\wam\c_cpp\src\cpp
+MAMAC_TIBRV_DIR=$(MAMAC_DIR)\bridge\tibrv
+MAMAC_WMW_DIR=$(MAMAC_DIR)\bridge\wmw
+MAMAC_LBM_DIR=$(MAMAC_DIR)\bridge\lbt
+MAMAUNITC_DIR=$(MAMA_DIR)\src\gunittest\c
+MAMAUNITCPP_DIR=$(MAMA_DIR)\src\gunittest\cpp
+FIELDCACHEC_DIR=$(MAMAC_DIR)\FieldCache
+MAMAUNITC_BUILD_DIR=$(BUILD_DIR)\unittests\c
+MAMAUNITCPP_BUILD_DIR=$(BUILD_DIR)\unittests\cpp
+
+
+CTESTS=$(MAMAUNITC_BUILD_DIR)\msgtests_c$(O) \
+        $(MAMAUNITC_BUILD_DIR)\openclose_c$(O)
+     
+CPPTESTS=$(MAMAUNITCPP_BUILD_DIR)\msgtests_cpp$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\MamaUtilities$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTest$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestApply$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestApplyWithDelta$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestClearAndDelete$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestCreate$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestDataTypes$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestField$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestGetMessage$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestSearch$(O) \
+		$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestToString$(O)
+   
+INCFILES= /I$(COMMON_DIR) \
+          /I$(COMMON_DIR)\wombat \
+          /I$(MAMAC_DIR) \
+          /I$(MAMACPP_DIR) \
+          /I$(MAMAENTCPP_DIR) \
+          /I$(MAMAENTC_DIR) \
+          /I$(WAMC_DIR) \
+          /I$(WAMCPP_DIR) \
+		  /I$(DISTDIR)\include \
+          /I$(MAMAPROCPP_DIR) \
+          /I$(MAMAPROC_DIR) \
+          /I$(CVS_DIR)\products\wombatmsg\c_cpp\src\c \
+          /I$(CVS_DIR)\products\wombatmsg\c_cpp\src\cpp \
+          /I$(GTEST_DIR)\include \
+          /I$(MAMA_DIR)\src\c \
+          /I$(FIELDCACHEC_DIR)
+
+CXXFLAGS=$(CXXFLAGS) /DWIN32 -EHsc $(INCFILES) $(ARGS)
+
+
+SETUPDIR=$(BUILD_DIR)\dummy.txt
+
+$(SETUPDIR):
+    IF NOT EXIST $(MAMAUNITC_BUILD_DIR) $(MKDIR) $(MAMAUNITC_BUILD_DIR)
+    IF NOT EXIST $(MAMAUNITCPP_BUILD_DIR) $(MKDIR) $(MAMAUNITCPP_BUILD_DIR)
+    IF NOT EXIST $(DISTDIR)\unittests\$(BUILD_TYPE) $(MKDIR) $(DISTDIR)\unittests\$(BUILD_TYPE)
+    cd $(BUILD_DIR)\$(VERSION)
+
+
+CTEST= $(MAMAUNITC_DIR)\MainUnitTestC.exe
+
+CPPTEST= $(MAMAUNITCPP_DIR)\MainUnitTestCpp.exe 
+    
+
+$(CTEST):
+   $(CXX) $(CXXFLAGS) %s /link $(CTESTS) $(MAMACLIBS) $(GTESTLIB)
+!IF ("$(VC_VERSION)">="8")
+        $(MANIFEST_TOOL) -manifest %|fF.exe.manifest -outputresource:%|fF.exe;#1
+!ENDIF       
+
+
+$(CPPTEST):
+   $(CXX) $(CXXFLAGS) %s /link $(CPPTESTS) $(MAMACLIBS) $(MAMACPPLIBS) $(GTESTLIB)
+!IF ("$(VC_VERSION)">="8")
+        $(MANIFEST_TOOL) -manifest %|fF.exe.manifest -outputresource:%|fF.exe;#1
+!ENDIF
+
+
+
+
+all:  $(SETUPDIR) $(CTESTS) $(CTEST) $(CPPTESTS) $(CPPTEST)
+
+
+!if "$(BUILD_TYPE)"=="dynamic" || "$(BUILD_TYPE)"=="dynamic-debug"
+dist: all
+    $(CP) *.exe $(DISTDIR)\bin\$(BUILD_TYPE)
+!else
+dist:
+!endif
+   
+
+$(MAMAUNITC_BUILD_DIR)\msgtests_c$(O): $(MAMAUNITC_DIR)\msgtests_c.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITC_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITC_BUILD_DIR)\openclose_c$(O): $(MAMAUNITC_DIR)\openclose_c.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITC_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+
+$(MAMAUNITCPP_BUILD_DIR)\msgtests_cpp$(O): $(MAMAUNITCPP_DIR)\msgtests_cpp.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+
+$(MAMAUNITCPP_BUILD_DIR)\MamaUtilities$(O): $(MAMAUNITCPP_DIR)\MamaUtilities.c
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTest$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTest.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestApply$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTestApply.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestApplyWithDelta$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTestApplyWithDelta.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestClearAndDelete$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTestClearAndDelete.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestCreate$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTestCreate.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestDataTypes$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTestDataTypes.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestField$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTestField.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestGetMessage$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTestGetMessage.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestSearch$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTestSearch.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    
+$(MAMAUNITCPP_BUILD_DIR)\CFieldCacheTestToString$(O): $(MAMAUNITCPP_DIR)\CFieldCacheTestToString.cpp
+    $(CXX) $(CXXFLAGS) /Fo$(MAMAUNITCPP_BUILD_DIR)\%|fF$(O) $(DASH_C) %s
+    

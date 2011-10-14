@@ -1,0 +1,264 @@
+OpenMAMA Client Library
+============================
+
+http://
+
+Overview
+--------
+
+OpenMAMA provides a lightweight wrapper to give a common API interface
+across different middleware and messaging solutions across a variety of
+platforms and languages.
+
+Please see the project page above for more information as well as the
+mailing list for questions, discussions, and development.
+
+Supported Platforms
+-------------------
+
+Currently C on Linux is the only supported platform.  Supported
+distributions are
+
+    * Redhat 4
+    * Redhat 5
+    * SLERT
+    * SuSe 10
+
+
+Requirements for End Users
+--------------------------
+
+OpenMama is designed to have fairly minimal requirements to build,
+but there are some.
+
+Linux
+-----
+
+These are the base requirements to build and use OpenMama from a source
+package (as described below):
+
+  * GNU-compatible Make or gmake
+  * POSIX-standard shell
+  * C99 compiler
+
+To use OpenMama you will need a middleware/payload.  An example
+middleware bridge and payload is included for Avis which can be
+obtianed from the following website.
+
+http://avis.sourceforge.net.
+
+OpenMAMA reference documentation has dependancy on
+
+    * doxygen
+    
+Unittests are dependant on Google Testing Framework which is 
+available from
+
+http://code.google.com/p/googletest/
+
+OpenMAMA's own regression tests also relie on
+
+    *Python version 2.3 or newer
+    
+
+Getting the Source
+------------------
+
+There are two primary ways of getting OpenMAMA's source code:
+
+    * Download a stable source release in archive format
+    * check out the source from our GIT repositary.
+    
+The GIT checkout requires a few extra steps and some extra software
+packages on your system, but lets you track the latest development and
+make patches much more easily.
+
+### Source Package ###
+
+OpenMAMA is released in versioned source packages which can be
+downloaded from:
+
+  http://
+
+Once the package is downloaded, expand it.  This will result in a
+ new directory with the name 
+ 
+ openmama-X.Y.Z 
+ 
+which contains all of the source code.
+
+### GIT Checkout ###
+
+To check out the main branch of OpenMAMA, run the following 
+GIT command:
+
+
+Distribution Layout
+-------------------
+
+configure                     configure script.
+Makefile                      GNU Makefile
+README                        this file
+COPYING                       Licence
+
+common/c_cpp/
+    configure.ac              autoconf script
+    Makefile.am               autoconf makefile
+    src/Makefile.am           autoconf makefile
+    src/c                     c files for common library
+    src/c/wombat              header files for common library
+    
+mama/c_cpp/
+    configure.ac              autoconf script
+    Makefile.am               autoconf makefile
+    doxyconfig-c.in           doxygen config
+    doc                       referance guide style
+    doc/images                referance guide images
+    
+mama/c_cpp/src/c              c files for mama library
+    bridge/avis               c files for avis middleware bridge implementation
+    conflation                c files for mama conflation component
+    mama                      header files for mama
+    payload/avismsg           c files for avis payload bridge implementation
+    payload/playback          c files for mama playback component
+    
+
+mama/c_cpp/src/examples     
+    mama.properties           exmaple mama.properties file
+    c                         c files for mama example applications
+    c/Makefile.sample         Makefile to build examples only
+    
+ mama/c_cpp/src/regression     
+    c                         regression tests for c API
+    c/tools                   test apps for c API
+    c/*                       tests and expected results for c API   
+    
+ mama/c_cpp/src/testtools     
+    c                         test tools for c API
+    c/capturereplay           capture adn replay apps using c API
+    c/load                    load testing apps for c API
+    c/performance             performance testing apps for c API
+
+                              
+Building OpenMAMA
+--------------------
+
+### Avis Install ###
+
+Curretnly OpenMAMA assumes Avis is the middleware to be built with as 
+this is currently the only opensource middleware supported.  Therefore
+the Avis client libraries must be available.  
+
+The default install of Avis missing a header file and this needs to be 
+moved manually in the include directory.  The OpenMAMA configure script 
+checks for this header and will exit with an error if not found.
+
+  mv ${AVIS_SOURCE}/lib/avis_client_config.h ${AVIS_HOME}/include/avis
+
+
+
+### Google Test Install ###
+
+OpenMAMA uses the static google test library and expects the files to be
+in the following format. 
+
+${GTEST_HOME}/include - include files
+${GTEST_HOME}/lib - library files
+
+
+
+### GNU Automake Instructions ###
+
+The following uses teh defualt settings to build the OpenMAMA library
+and exmaple applications.  This assumes that Avis middleware is avialble 
+in /usr/local and will install OpenMAMA to /opt/OpenMAMA
+
+  ./configure
+  make
+  sudo make install
+  
+  
+ ### Configure arguments ###
+
+The following arguments can be passed to configure if you wish to use
+non-default paths or build extra components of OpenMAMA
+
+specify an alternative install location
+--prefix=${INSTALL_DIR}
+
+specify non defualt Avis install
+--avis-path=${AVIS_HOME}
+
+build unittests, specify google test location
+--gtest-path=${GTEST_HOME}
+
+build testtools
+--with-testtools
+
+
+ ### Building reference guide ###
+ 
+ If you wish to build the latest refernce guide use the following command 
+ after configure
+ 
+     make docs
+     
+ This will build the docs in the mama/c_cpp/src/doc folder.
+ 
+ 
+ ### Running Unit tests ###
+ 
+ After the build is complete an extra binary can be found in the bin
+ folder of the install.
+ 
+ MainUnitTestC
+ 
+ This runs the full set of unit tests using the google test framework.
+ 
+ The following commar line arguments are available as well as the 
+ normal google test options
+ 
+ -m ${MIDDLEWARE}
+ 
+ 
+ 
+  ### Running regression tests ###
+  
+  The regression tests do full end to end testing using a specific set of test
+  applications and a predetermined input output scenario.
+  
+  In-order to run the regression scripts an elvin router must be available.  If 
+  it is not running on the defaulkt port on localhost then the mama.properties 
+  file provided in examples should be used with the ${WOMBAT_PATH} variable to
+  give the location of the router.
+  
+  To build the regression tests move into teh regression/tols folder. Modify
+  the makefile with your install path if is non-default. The execute the following commnad
+  
+  make
+  
+  After the tests apps are sucessfully built move into the directory of the 
+  test you wish to run and execute the python file
+  
+  eg
+  cd ../basicpubsub
+  ./regression.sh
+  
+  
+  NOTE:  python 2.3 or higher required for regression tests
+  
+  
+ Contributing
+-------------
+
+
+
+ License
+--------
+
+The OpenMAMA library is distributed under the terms of the GNU
+Lesser General Public license version 2.  Please see COPYING
+for full licence text. 
+
+
+
