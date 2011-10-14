@@ -1,0 +1,183 @@
+.field {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 8px;
+	color: #666666;
+}
+TEXTAREA {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #222222;
+}
+.login { 	 font-family: Arial, Helvetica, sans-serif; font-size: 10px; 
+ } 
+.news {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #333333;
+}
+p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #222222;
+	line-height: 13px;
+	border: medium none;
+	
+	margin: 0px;
+}
+.emphasis{
+    font-weight: bold;
+}
+table{
+    border-style: none;
+    text-align: left;
+    border-spacing:0; 
+    padding: 0;
+}
+thead{
+    border-collapse: collapse;
+    border-style: none;
+    background: #EDEDED;
+}
+th {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #222222;
+    text-align: left
+}
+td {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 11px;
+    line-height: 13px;
+    border-style: none;
+}
+
+body 
+{ 
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #222222;
+	line-height: 13px;
+}
+a:link
+{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #012991;
+	line-height: 13px;
+}
+a:visited
+{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #012991;
+	line-height: 13px;
+}
+a:hover
+{
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #333333;
+	line-height: 13px;
+}
+
+.table {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+}
+
+.tabletwo {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border: 1px solid #666666;
+	background-color: #F1F1F1;
+}
+
+.tablethree {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	border: 1px solid #666666;
+
+}
+
+.news {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	color: #333333;
+}
+
+.textlinkRed {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #000000;
+	text-decoration: none;
+	line-height: 11px;
+}
+.textHead:visited {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color:#012991;
+    text-decoration: none;
+}
+
+.textHead{
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    color: #012991;
+    text-decoration: none;
+}
+
+.subtitle {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+}
+.title {
+
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+}
+.subtitle {
+
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+	font-weight: bold;
+	color: #000000;
+}
+.textlinkMenu {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	color: #333333;
+	text-decoration: none;
+	line-height: 11px;
+}
+.MenuHead {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	font-weight: bold;
+	color: #FFFFFF;
+}
+.MenuHeadTwo {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10px;
+	font-weight: bold;
+	color: #012991;
+}
+.el {
+	vertical-align: bottom;
+}
+.memberdecls {
+	margin-top:	10px;
+	margin-bottom: 5px;
+}
+.memItemLeft {
+	textAlign: left;
+	width: 250px;
+}
+h2 {
+	vertical-align: bottom;
+}
