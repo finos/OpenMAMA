@@ -45,7 +45,12 @@ AC_CANONICAL_BUILD()
 
 # Checks for programs.
 AC_PROG_CXX
+
 AC_PROG_LEX
+if test "x$LEX" != xflex; then
+    AC_ERROR([flex not found: common libraries require flex.])
+fi
+
 AC_PROG_CC
 
 # Check whether to use built-in library archiver if C++ compiler is Sun/Forte

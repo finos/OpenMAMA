@@ -44,6 +44,7 @@ done
 # configure common
 cd common/c_cpp
 ./configure $EXTRA
+[ $? -ne 0 ] && exit $?
 cd -
 
 #configure mama
