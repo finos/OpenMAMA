@@ -39,7 +39,12 @@ package (as described below):
 
   * GNU-compatible Make or gmake
   * POSIX-standard shell
-  * C99 compiler
+  * gcc/g++
+  * flex
+  * autoconf
+  * automake
+  * libtool
+  * uuid-dev
 
 To use OpenMama you will need a middleware/payload.  An example
 middleware bridge and payload is included for Avis which can be
