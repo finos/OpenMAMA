@@ -47,6 +47,10 @@ AC_PROG_CXX
 AC_PROG_LEX
 AC_PROG_CC
 
+# make sure that we configure bridges or specifically build without them
+mwbridge=false
+payloadbridge=false
+
 # Check whether to use built-in library archiver if C++ compiler is Sun/Forte
 if CXXbase=`echo ${CXX} | ${ac_cv_prog_AWK} '{ print $1; }'` ; \
    test "x${build_vendor}" = "xsun" -a "x`basename ${CXXbase}`" = "xCC"
@@ -199,6 +203,9 @@ AC_ARG_WITH(
           LDFLAGS="$LDFLAGS -L$AVIS_HOME/lib"
           with_avis=true
           mama_platform=avis
+          mama_payload=avis
+          mwbridge=true
+          payloadbridge=true
          ],
          [
             AC_MSG_ERROR([Valid Avis installation not found!  You may need to copy avis_client_config.h from platforms/gnu_auotmake to $AVIS_HOME/include/avis)])
@@ -270,6 +277,51 @@ AC_ARG_WITH(
       with_testtools=true
     ])
 AM_CONDITIONAL(WITH_TESTTOOLS, test x$with_testtools = xtrue)
+
+##################################################
+# NO BRIDGES: --no-middleware-bridge --no-payload-bridge
+#
+# If we get here and the build is not configured for a bridge we need to ensure
+# that we really want to build without them.
+#
+##################################################
+
+# --without-middleware-bridge
+AC_ARG_WITH([middleware-bridge],
+	[AS_HELP_STRING([--without-middleware-bridge],
+	 [Build OpenMAMA with no middleware bridge.])],
+	[],
+	[with_middleware_bridge=yes])
+
+# --without-payload-bridge
+AC_ARG_WITH([payload-bridge],
+	[AS_HELP_STRING([--without-payload-bridge],
+	 [Build OpenMAMA with no payload bridge.])],
+	[],
+	[with_payload_bridge=yes])
+
+
+# Trying to build without a message bridge but --without-middleware-bridge
+# not specified
+if test x${mwbridge} = xfalse -a x$with_middleware_bridge = xyes; then
+	AC_MSG_ERROR([No middleware bridge specified! If this is intentional specify --without-middleware-bridge])
+fi
+
+# Trying bo build without a middleware bridge but bridge specified
+if test x${mwbridge} = xtrue -a x$with_middleware_bridge = xno; then
+	AC_MSG_ERROR([--without-middleware-bridge specified with ${mama_platform}])
+fi
+
+# Trying to build without a payload bridge but --without-payload-bridge
+# not specified
+if test x${payloadbridge} = xfalse -a x$with_payload_bridge = xyes; then
+     AC_MSG_ERROR([No payload bridge specified! If this is intentional specify --without-payload-bridge])
+fi
+
+# Trying bo build without a payload bridge but bridge specified
+if test x${mwbridge} = xtrue -a x$with_payload_bridge = xno; then
+	AC_MSG_ERROR([--without-payload-bridge specified with ${mama_payload}])
+fi
 
 ##################################################
 #
