@@ -38,6 +38,7 @@ nobase_include_HEADERS = \
     property.h \
     wlock.h \
     timers.h \
+    port.h \
     wombat/MRSWLock.h \
     wombat/environment.h \
     wombat/machine.h \

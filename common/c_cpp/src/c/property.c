@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+#include "port.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -31,8 +33,6 @@
 #include "wombat/wtable.h"
 
 #define KEY_BLOCK_SIZE 64
-
-#define PATH_DELIM ':'
 
 int gPropertyDebug = 0;
 

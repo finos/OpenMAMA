@@ -43,6 +43,12 @@ AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER([config.h])
 AC_CANONICAL_BUILD()
 
+# Set up symbolic links for os-specific files
+AC_MSG_NOTICE([Configuring symbolic links for $build_os in $srcdir])
+case $build_os in
+       linux*-*)   AC_CONFIG_LINKS([src/c/port.h:src/c/linux/port.h]) ;;
+esac
+
 # Checks for programs.
 AC_PROG_CXX
 

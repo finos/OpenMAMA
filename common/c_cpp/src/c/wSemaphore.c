@@ -19,15 +19,11 @@
  * 02110-1301 USA
  */
 
-#include "wombat/wincompat.h"
+#include "port.h"
+
 #include "wombat/wSemaphore.h"
 
 #ifndef WIN32
-#include <pthread.h>
-#include <semaphore.h>
-#include <time.h>
-#include <sys/time.h>
-
 
 int wsem_timedwait (wsem_t* sem, unsigned int timeoutval) 
 {

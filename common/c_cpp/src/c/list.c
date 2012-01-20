@@ -19,11 +19,7 @@
  * 02110-1301 USA
  */
 
-#ifndef WIN32
-#include <pthread.h>
-#else
-#include "wombat/wincompat.h" 
-#endif 
+#include "port.h"
 
 #include <stdlib.h>
 #include <stdio.h>

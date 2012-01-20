@@ -22,11 +22,6 @@
 #ifndef _WOMBAT_WLOCK_H
 #define _WOMBAT_WLOCK_H
 
-
-#include "wombat/wincompat.h"
-
-
-
 typedef void * wLock;
 
 COMMONExpDLL wLock    wlock_create( void );

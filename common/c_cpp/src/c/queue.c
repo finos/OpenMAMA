@@ -19,16 +19,9 @@
  * 02110-1301 USA
  */
 
-#ifndef WIN32
-#include <pthread.h>
-#else
-#include "wombat/wincompat.h"
-#define pthread_mutex_t       wthread_mutex_t
-#define pthread_mutex_init    wthread_mutex_init
-#define pthread_mutex_destroy wthread_mutex_destroy
-#define pthread_mutex_lock    wthread_mutex_lock
-#define pthread_mutex_unlock  wthread_mutex_unlock
-#endif
+
+#include "port.h"
+
 #include "wombat/wSemaphore.h"
 
 #include <errno.h>
@@ -120,14 +113,10 @@ wombatQueue_create (wombatQueue queue, uint32_t maxSize, uint32_t initialSize,
         return WOMBAT_QUEUE_SEM_ERR;
     }
 
-#ifndef WIN32 
     if (pthread_mutex_init( &impl->mLock, NULL) != 0)
     {
         return WOMBAT_QUEUE_MTX_ERR;
     }
-#else
-    wthread_mutex_init( &impl->mLock, NULL);
-#endif
 
     initialSize = initialSize == 0 ? WOMBAT_QUEUE_CHUNK_SIZE : initialSize;
     wombatQueueImpl_allocChunk (impl, initialSize);
@@ -173,15 +162,10 @@ wombatQueue_destroy (wombatQueue queue)
         result = WOMBAT_QUEUE_SEM_ERR;
     }
     
-#ifndef WIN32 
     if (pthread_mutex_destroy( &impl->mLock) != 0)
     {
         result = WOMBAT_QUEUE_MTX_ERR;
     }
-#else
-    wthread_mutex_destroy( &impl->mLock);
-#endif
-
 
     free (impl);
     return WOMBAT_QUEUE_OK;

@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include "port.h"
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
@@ -26,10 +27,6 @@
 
 #include "platform.h"
 #include "wombat/wincompat.h"
-
-
-#define LIB_EXTENSION ".so"
-
 
 /**
  * Functions relating to DLLs/shared objects

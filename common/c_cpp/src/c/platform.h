@@ -25,16 +25,6 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif /* __cplusplus */
-#include "wombat/wincompat.h"
-#include <dlfcn.h>
-#include <sys/types.h>
-#include <netinet/in.h>
-
-#ifdef WIN32
-typedef HINSTANCE   LIB_HANDLE;
-#else
-typedef void*       LIB_HANDLE;
-#endif
 
 /* The platform specific prefix and postfix will automatically be added to the libname
      e.g on Linux "mamaImpl" will load "libmamaimpl.so" */
@@ -50,17 +40,6 @@ void* loadLibFunc (LIB_HANDLE handle, const char* funcName);
 COMMONExpDLL 
 char* getLibError (void);
 
-/* Network conversion function */
-#if defined(WIN32) || __BYTE_ORDER == __LITTLE_ENDIAN
-#define htonll(x) \
-    ((uint64_t)htonl((uint32_t)((x)>>32)) | (uint64_t)htonl((uint32_t)(x))<<32)
-#define ntohll(x) \
-    ((uint64_t)ntohl((uint32_t)((x)>>32)) | (uint64_t)ntohl((uint32_t)(x))<<32)
-#else
-#define htonll(x) ((uint64_t)(x))
-#define ntohll(x) ((uint64_t)(x))
-#endif
- 
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */

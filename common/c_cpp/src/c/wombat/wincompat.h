@@ -22,6 +22,7 @@
 #ifndef _WOMBAT_WINCOMPAT_H
 #define _WOMBAT_WINCOMPAT_H
 
+#include "port.h"
 #include "wConfig.h"
 
 #define PATHSEP  "/"

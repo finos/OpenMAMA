@@ -19,14 +19,10 @@
  * 02110-1301 USA
  */
 
-#include <sys/param.h>
-#include <sys/resource.h>
+#include "port.h"
 #include <sys/stat.h>
-#include <sys/time.h>
-#include <sys/times.h>
 
 #include <ctype.h>
-#include <dirent.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <limits.h>
@@ -34,10 +30,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <sys/vfs.h>
 #include <time.h>
-#include <unistd.h>
-#include <unistd.h>
 
 #include "wombat/machine.h"
 #include "wombat/wtable.h"
