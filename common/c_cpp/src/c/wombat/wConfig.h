@@ -22,76 +22,8 @@
 #ifndef _WOMBAT_WCONFIG_H
 #define _WOMBAT_WCONFIG_H
 
-/* This section defines export semantics for functions exported or
- * imported from Windows libraries. All exported functions must
- * be decorated with the appropriate modifier.
- */
-
-#if defined( WIN32  ) && defined( COMMON_DLL )
-    /* We are building common dll */
-#   define COMMONExpDLL __declspec( dllexport )
-#elif defined( WIN32  ) && defined( MAMA_DLL ) && defined( MAMA )
-    /* We are building mama as a dll */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMAExpDLL __declspec( dllexport )
-#   define MAMAExpBridgeDLL __declspec( dllexport )
-#elif defined( WIN32  ) && defined( MAMA_DLL ) && defined( BRIDGE )
-    /* We are building mama bridge as a dll */
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMAExpBridgeDLL __declspec( dllimport )
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL
-#   define MAMDAExpDLL
-#   define MAMDAOPTExpDLL
-#elif defined( WIN32  ) && defined( MAMA_DLL ) && defined( MAMACPP )
-    /* We are building mamacpp as a dll */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL __declspec( dllexport )
-#   define MAMAExpBridgeDLL
-#elif defined( WIN32  ) && defined( MAMDA_DLL ) && defined( MAMDA )
-    /* We are building mamda as a dll */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL __declspec( dllimport )
-#   define MAMDAExpDLL __declspec( dllexport )
-#   define MAMAExpBridgeDLL
-#elif defined( WIN32  ) && defined( MAMDA_DLL ) && defined( MAMDAOPT )
-    /* We are building extra mamda as a dll */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL __declspec( dllimport )
-#   define MAMDAExpDLL __declspec( dllimport )
-#   define MAMDAOPTExpDLL __declspec( dllexport )
-#   define MAMAExpBridgeDLL
-#elif defined( WIN32  ) && !defined ( MAMA_STATIC ) && !defined ( WMW_STATIC ) && !defined (WIRECACHE_STATIC)
-    /* We are building mama apps (non static) */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define WMWExpDLL __declspec( dllexport )
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL __declspec( dllimport )
-#   define MAMDAExpDLL __declspec( dllimport )
-#   define MAMDAOPTExpDLL __declspec( dllimport )
-#   define MAMAExpBridgeDLL
-#else
-    /* We are building on linux or statically */
-#   define COMMONExpDLL
-#   define WMWExpDLL
-#   define MAMAExpDLL
-#   define MAMACPPExpDLL
-#   define MAMDAExpDLL
-#   define MAMDAOPTExpDLL
-#   define MAMAExpBridgeDLL
-#endif /* WIN32 */
-
-/* 
- * Windows callback functions require the standard call type.
- */
-#ifdef WIN32
-#define MAMACALLTYPE __stdcall
-#else
-#define MAMACALLTYPE
-#endif
+/* Moved to _os_/port/h */
+#include "port.h"
 
 #endif /* _WOMBAT_WCONFIG_H */
 
