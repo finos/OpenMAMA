@@ -48,6 +48,7 @@ AC_MSG_NOTICE([Configuring symbolic links for $build_os in $srcdir])
 case $build_os in
        linux*-*)   AC_CONFIG_LINKS([src/c/port.h:src/c/linux/port.h
 				    src/c/machine_port.c:src/c/linux/machine.c
+				    src/c/platform.c:src/c/linux/platform.c
 				    src/c/environment.c:src/c/linux/environment.c]) ;;
 esac
 
