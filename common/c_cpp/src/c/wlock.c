@@ -39,10 +39,10 @@ wlock_create( void )
 {
     wLockImpl* rval = calloc(1, sizeof( wLockImpl ) );
 
-    pthread_mutexattr_t attr;
-    pthread_mutexattr_init (&attr);
-    pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE_NP);
-    pthread_mutex_init (&rval->mMutex, &attr);
+    wthread_mutexattr_t attr;
+    wthread_mutexattr_init (&attr);
+    wthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE_NP);
+    wthread_mutex_init (&rval->mMutex, &attr);
 
     return( rval );
 }
