@@ -19,15 +19,12 @@
  * 02110-1301 USA
  */
 
-
 #include "port.h"
-
-#include "wombat/wSemaphore.h"
-
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include "wombat/queue.h"
+#include "wombat/wSemaphore.h"
 
 #define WQ_REMOVE(impl, ele)                  \
     (ele)->mPrev->mNext = (ele)->mNext;       \
@@ -52,7 +49,7 @@ typedef struct wombatQueueItem_
 typedef struct 
 {
     wsem_t                mSem;
-    pthread_mutex_t      mLock; /* for multiple readers */
+    wthread_mutex_t      mLock; /* for multiple readers */
     
     uint8_t              mUnblocking;
 
@@ -113,10 +110,7 @@ wombatQueue_create (wombatQueue queue, uint32_t maxSize, uint32_t initialSize,
         return WOMBAT_QUEUE_SEM_ERR;
     }
 
-    if (pthread_mutex_init( &impl->mLock, NULL) != 0)
-    {
-        return WOMBAT_QUEUE_MTX_ERR;
-    }
+    wthread_mutex_init( &impl->mLock, NULL); 
 
     initialSize = initialSize == 0 ? WOMBAT_QUEUE_CHUNK_SIZE : initialSize;
     wombatQueueImpl_allocChunk (impl, initialSize);
@@ -134,7 +128,7 @@ wombatQueue_destroy (wombatQueue queue)
     wombatQueueStatus result   = WOMBAT_QUEUE_OK;
     wombatQueueItem *curItem; 
 
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
     /* Free the datas */
     curItem = impl->mChunks;
     while (curItem)
@@ -144,9 +138,9 @@ wombatQueue_destroy (wombatQueue queue)
         curItem = tmp;
     }
 
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
     
-    /* Thee wsem_destroy and pthread_mutex_destroy methods simply makes
+    /* Thee wsem_destroy and wthread_mutex_destroy methods simply makes
      * sure that no threads are waiting since the synchronization objects can
      * not be destroyed if threads are waiting. We could devise a mechanism
      * to ensure that dispatchers are not waiting or dispatching. We can
@@ -162,11 +156,7 @@ wombatQueue_destroy (wombatQueue queue)
         result = WOMBAT_QUEUE_SEM_ERR;
     }
     
-    if (pthread_mutex_destroy( &impl->mLock) != 0)
-    {
-        result = WOMBAT_QUEUE_MTX_ERR;
-    }
-
+    wthread_mutex_destroy( &impl->mLock);
     free (impl);
     return WOMBAT_QUEUE_OK;
 }
@@ -201,7 +191,7 @@ wombatQueue_enqueue (wombatQueue queue,
     wombatQueueImpl* impl = (wombatQueueImpl*)queue;
     wombatQueueItem* item = NULL;
 
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
 
     /* If there are no items in the free list, allocate some. It will set the
      * next free node to NULL if the queue is too big or there is no memory.
@@ -227,7 +217,7 @@ wombatQueue_enqueue (wombatQueue queue,
 
     /* Notify next available thread that an item is ready */
     wsem_post (&impl->mSem);
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
 
     return WOMBAT_QUEUE_OK;
 }
@@ -254,7 +244,7 @@ wombatQueue_dispatchInt (wombatQueue queue, void** data, void** closure,
 
     if (isTimed)
     {
-        if (wsem_timedwait (&impl->mSem, timout) !=0)
+        if (wsem_timedwait (&impl->mSem, (unsigned int)timout) !=0)
             return WOMBAT_QUEUE_TIMEOUT;
     }
     else
@@ -271,7 +261,7 @@ wombatQueue_dispatchInt (wombatQueue queue, void** data, void** closure,
         }
     }
 
-    pthread_mutex_lock (&impl->mLock); /* May be multiple readers */
+    wthread_mutex_lock (&impl->mLock); /* May be multiple readers */
  
     /* remove the item */
     head                   = impl->mHead.mNext;
@@ -288,7 +278,7 @@ wombatQueue_dispatchInt (wombatQueue queue, void** data, void** closure,
     closure_ = head->mClosure;
     data_    = head->mData;
     
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
 
     if (cb)
     {
@@ -326,7 +316,7 @@ wombatQueue_poll (wombatQueue queue, void** data, void** closure)
         return WOMBAT_QUEUE_WOULD_BLOCK;
     }
 
-    pthread_mutex_lock (&impl->mLock); 
+    wthread_mutex_lock (&impl->mLock); 
    
     head             = impl->mHead.mNext;
     WQ_REMOVE (impl, head);
@@ -342,7 +332,7 @@ wombatQueue_poll (wombatQueue queue, void** data, void** closure)
     closure_ = head->mClosure;
     data_    = head->mData;
 
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
 
     if (cb)
     {
@@ -375,7 +365,7 @@ wombatQueueImpl_allocChunk ( wombatQueueImpl* impl, unsigned int items)
 
     /* Create the links */
     {
-        int i;
+        unsigned int i;
         for (i = 0; i < items - 1; i++) /* -1 so last is NULL */
         {
             result[i].mNext   = &result[i+1];
@@ -408,14 +398,14 @@ wombatQueue_flush (wombatQueue queue, wombatQueueFlushCb cb, void* closure)
             return WOMBAT_QUEUE_OK;
         }
 
-        pthread_mutex_lock (&impl->mLock); 
+        wthread_mutex_lock (&impl->mLock); 
 
         head             = impl->mHead.mNext;
         WQ_REMOVE (impl, head);
 
         cb (queue, head->mData, head->mClosure, closure);
 
-        pthread_mutex_unlock (&impl->mLock);
+        wthread_mutex_unlock (&impl->mLock);
 
         return WOMBAT_QUEUE_OK;
     }
@@ -425,7 +415,7 @@ wombatQueueStatus
 wombatQueue_next (wombatQueue queue, void** data, void** closure)
 {
     wombatQueueImpl* impl     = (wombatQueueImpl*)queue;
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
     impl->mIterator = impl->mIterator->mNext;
     
     if (impl->mIterator == &impl->mTail) /* at end */
@@ -439,7 +429,7 @@ wombatQueue_next (wombatQueue queue, void** data, void** closure)
          * expected.
          */
         impl->mIterator = impl->mIterator->mPrev; 
-        pthread_mutex_unlock (&impl->mLock);
+        wthread_mutex_unlock (&impl->mLock);
         return WOMBAT_QUEUE_END;
     }
 
@@ -448,7 +438,7 @@ wombatQueue_next (wombatQueue queue, void** data, void** closure)
     if (closure)
         *closure = impl->mIterator->mClosure;
 
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
     return WOMBAT_QUEUE_OK;
 }
 
@@ -456,7 +446,7 @@ wombatQueueStatus
 wombatQueue_prev (wombatQueue queue, void** data, void** closure)
 {
     wombatQueueImpl* impl     = (wombatQueueImpl*)queue;
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
     impl->mIterator = impl->mIterator->mPrev;
     
     if (impl->mIterator == &impl->mHead) /* at beginning */
@@ -470,7 +460,7 @@ wombatQueue_prev (wombatQueue queue, void** data, void** closure)
          * expected.
          */
         impl->mIterator = impl->mIterator->mNext; 
-        pthread_mutex_unlock (&impl->mLock);
+        wthread_mutex_unlock (&impl->mLock);
         return WOMBAT_QUEUE_END;
     }
 
@@ -479,7 +469,7 @@ wombatQueue_prev (wombatQueue queue, void** data, void** closure)
     if (closure)
         *closure = impl->mIterator->mClosure;
 
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
     return WOMBAT_QUEUE_OK;
 }
 
@@ -487,7 +477,7 @@ wombatQueueStatus
 wombatQueue_cur (wombatQueue queue, void** data, void** closure)
 {
     wombatQueueImpl* impl     = (wombatQueueImpl*)queue;
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
     
     if (impl->mIterator == &impl->mHead || impl->mIterator == &impl->mTail) 
     {
@@ -496,7 +486,7 @@ wombatQueue_cur (wombatQueue queue, void** data, void** closure)
         if (closure)
             *closure = NULL;
 
-        pthread_mutex_unlock (&impl->mLock);
+        wthread_mutex_unlock (&impl->mLock);
         return WOMBAT_QUEUE_END;
     }
 
@@ -505,7 +495,7 @@ wombatQueue_cur (wombatQueue queue, void** data, void** closure)
     if (closure)
         *closure = impl->mIterator->mClosure;
 
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
     return WOMBAT_QUEUE_OK;
 }
 
@@ -514,11 +504,11 @@ wombatQueue_remove (wombatQueue queue, void** data, void** closure)
 {
     wombatQueueImpl* impl     = (wombatQueueImpl*)queue;
     wombatQueueItem* tmp;
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
     
     if (impl->mIterator == &impl->mHead || impl->mIterator == &impl->mTail) 
     {
-        pthread_mutex_unlock (&impl->mLock);
+        wthread_mutex_unlock (&impl->mLock);
         return WOMBAT_QUEUE_END;
     }
 
@@ -537,7 +527,7 @@ wombatQueue_remove (wombatQueue queue, void** data, void** closure)
     tmp->mNext = impl->mFirstFree.mNext;
     impl->mFirstFree.mNext = tmp;
 
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
     return WOMBAT_QUEUE_OK;
 }
 
@@ -550,11 +540,11 @@ wombatQueue_insertAfter (wombatQueue   queue,
     wombatQueueImpl* impl = (wombatQueueImpl*)queue;
     wombatQueueItem* item = NULL;
 
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
 
     /* If we are empty and positioned on the tail move to the head. */
     if (impl->mIterator == &impl->mTail)
-        impl->mIterator == &impl->mHead;
+        impl->mIterator = &impl->mHead;
 
     /* If there are no items in the free list, allocate some. It will set the
      * Next free node to NULL if the queue is too big or there is no memeory.
@@ -580,7 +570,7 @@ wombatQueue_insertAfter (wombatQueue   queue,
 
     /* Notify next available thread that an item is ready */
     wsem_post (&impl->mSem);
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
 
     return WOMBAT_QUEUE_OK;
 }
@@ -594,11 +584,11 @@ wombatQueue_insertBefore (wombatQueue   queue,
     wombatQueueImpl* impl = (wombatQueueImpl*)queue;
     wombatQueueItem* item = NULL;
 
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
 
     /* If we are empty and positioned on the head move to the tail. */
     if (impl->mIterator == &impl->mHead)
-        impl->mIterator == &impl->mTail;
+        impl->mIterator = &impl->mTail;
 
     /* If there are no items in the free list, allocate some. It will set the
      * Next free node to NULL if the queue is too big or there is no memeory.
@@ -624,7 +614,7 @@ wombatQueue_insertBefore (wombatQueue   queue,
 
     /* Notify next available thread that an item is ready */
     wsem_post (&impl->mSem);
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
 
     return WOMBAT_QUEUE_OK;
 }
@@ -636,18 +626,18 @@ wombatQueue_replace (wombatQueue   queue,
                      void*         closure)
 {
     wombatQueueImpl* impl     = (wombatQueueImpl*)queue;
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
     
     if (impl->mIterator == &impl->mHead || impl->mIterator == &impl->mTail) 
     {
-        pthread_mutex_unlock (&impl->mLock);
+        wthread_mutex_unlock (&impl->mLock);
         return WOMBAT_QUEUE_END;
     }
 
     impl->mIterator->mData    = data;
     impl->mIterator->mClosure = closure;
 
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
     return WOMBAT_QUEUE_OK;
 }
 
@@ -656,9 +646,9 @@ wombatQueue_begin (wombatQueue queue)
 {
     wombatQueueImpl* impl     = (wombatQueueImpl*)queue;
 
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
     impl->mIterator = &impl->mHead;
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
 
     return WOMBAT_QUEUE_OK;
 }
@@ -668,9 +658,9 @@ wombatQueue_end (wombatQueue queue)
 {
     wombatQueueImpl* impl     = (wombatQueueImpl*)queue;
 
-    pthread_mutex_lock (&impl->mLock);
+    wthread_mutex_lock (&impl->mLock);
     impl->mIterator = &impl->mTail;
-    pthread_mutex_unlock (&impl->mLock);
+    wthread_mutex_unlock (&impl->mLock);
 
     return WOMBAT_QUEUE_OK;
 }
