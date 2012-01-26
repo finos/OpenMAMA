@@ -22,30 +22,7 @@
 #ifndef _WOMBAT_WCOMMON_H
 #define _WOMBAT_WCOMMON_H
 
-/* Inline function declarations are different on each platform, this define
- * provides the correct keyword.
- */
-#ifndef WCOMMONINLINE
-
-/* Windows */
-#ifdef WIN32
-
-#define WCOMMONINLINE __inline
-#define WCOMMONFORCEINLINE __forceinline
-
-/* Solaris */
-#elif __SUNPRO_C
-
-#define WCOMMONINLINE inline static
-#define WCOMMONFORCEINLINE inline static
-
-/* All other OS, assuming that GCC is supported. */
-#else
-#define WCOMMONINLINE inline static
-#define WCOMMONFORCEINLINE inline static
-
-#endif
-
-#endif
+/* Moved to _os_/port.h */
+#include "port.h"
 
 #endif /* _WOMBAT_WCOMMON_H */
