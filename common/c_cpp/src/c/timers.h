@@ -31,7 +31,7 @@ typedef void (*timerFireCb)(timerElement timer, void* mClosure);
 
 int createTimerHeap (timerHeap* heap);
 int startDispatchTimerHeap (timerHeap heap);
-pthread_t timerHeapGetTid (timerHeap heap);
+wthread_t timerHeapGetTid (timerHeap heap);
 int destroyHeap (timerHeap heap);
 
 int createTimer (timerElement* timer, timerHeap heap, timerFireCb cb, struct timeval* timeout, void* closure);
