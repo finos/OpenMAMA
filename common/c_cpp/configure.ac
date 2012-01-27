@@ -50,6 +50,7 @@ case $build_os in
 				    src/c/machine_port.c:src/c/linux/machine.c
 				    src/c/platform.c:src/c/linux/platform.c
 				    src/c/wSemaphore.c:src/c/linux/wSemaphore.c
+				    src/c/network.c:src/c/linux/network.c
 				    src/c/environment.c:src/c/linux/environment.c]) ;;
 esac
 

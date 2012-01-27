@@ -66,6 +66,7 @@ libwombatcommon_la_SOURCES = \
     list.c \
     lookup2.c \
     machine.c \
+    network.c \
     machine_port.c \
     platform.c \
     properties.l \
