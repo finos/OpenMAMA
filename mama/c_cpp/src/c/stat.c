@@ -19,9 +19,9 @@
  * 02110-1301 USA
  */
 
+#include "port.h"
 #include <string.h>
 #include <stddef.h>
-#include <pthread.h>
 #include "wombat/wincompat.h"
 #include "mama/types.h"
 #include "mama/mama.h"

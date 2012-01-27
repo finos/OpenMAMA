@@ -688,8 +688,7 @@ mamaDateTime_getEpochTime(const mamaDateTime     dateTime,
                                             precision, NULL);
 }
 
-MAMAExpDLL
-extern mama_status
+mama_status
 mamaDateTime_getEpochTimeWithTz(const mamaDateTime     dateTime,
                                 mama_u32_t*            seconds,
                                 mama_u32_t*            microseconds,

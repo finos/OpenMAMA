@@ -19,14 +19,12 @@
  * 02110-1301 USA
  */
 
+#include "port.h"
 #include "wombat/environment.h"
 #include <mama/timezone.h>
 #include <list.h>
 #include <string.h>
 #include <stdio.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <sys/time.h>
 #include <wombat/wincompat.h>
 #include <time.h>
 #include <assert.h>

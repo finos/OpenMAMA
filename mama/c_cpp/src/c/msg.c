@@ -20,6 +20,7 @@
  * 02110-1301 USA
  */
 
+#include "port.h"
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -39,7 +40,6 @@
 #include "list.h"
 
 #include "wombat/wincompat.h"
-#include "inttypes.h"
 
 
 #define MAX_SUBJECT 256

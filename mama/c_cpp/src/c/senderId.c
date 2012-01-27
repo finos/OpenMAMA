@@ -19,12 +19,7 @@
  * 02110-1301 USA
  */
 
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <netdb.h>
-#include <arpa/inet.h>
-#include <unistd.h>
-
+#include "port.h"
 #include "wombat/wincompat.h"
 #include "mama/senderId.h"
 

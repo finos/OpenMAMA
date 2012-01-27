@@ -27,17 +27,7 @@
 #include <mama/ft.h>
 #include <mama/io.h>
 
-
-#include <netinet/in.h>
-#include <unistd.h>
-#include <net/if.h>
-#include <sys/socket.h>
-#include <sys/ioctl.h>
-#include <netdb.h>
-#include <arpa/inet.h>
 #include <sys/types.h>
-#include <net/if.h>
-#include <sys/ioctl.h>
 
 
 #define FT_SYMBOL_PREFIX          "MAMA_FT"
