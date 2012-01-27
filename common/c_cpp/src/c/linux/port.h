@@ -58,6 +58,13 @@ extern "C"
 #define MAMAExpBridgeDLL
 #define MAMACALLTYPE
 
+/* PTHREAD static locks are easy */
+typedef pthread_mutex_t wthread_static_mutex_t;
+#define WSTATIC_MUTEX_INITIALIZER PTHREAD_MUTEX_INITIALIZER
+#define wthread_static_mutex_lock(x) pthread_mutex_lock((x))
+#define wthread_static_mutex_unlock(x) pthread_mutex_unlock((x))
+
+
 #define WCOMMONINLINE inline static
 #define WCOMMONFORCEINLINE inline static
 
