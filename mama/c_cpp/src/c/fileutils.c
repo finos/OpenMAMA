@@ -27,7 +27,6 @@
 #include "ctype.h"
 #include "fileutils.h"
 
-#define PATHSEP  "/"
 mama_status openWombatFile(
   const char*        fileName,
   const char*        mode,
