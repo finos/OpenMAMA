@@ -100,6 +100,13 @@ typedef long long int           w_i64_t;
 
 #define PATHSEP  "/"
 
+/* Thread local storage */
+typedef pthread_key_t wthread_key_t;
+#define wthread_key_create(x, val) pthread_key_create((x), (val))
+#define wthread_key_delete(x) pthread_key_delete((x))
+#define wthread_setspecific(x, val) pthread_setspecific((x),(void*)((val)))
+#define wthread_getspecific(x) pthread_getspecific((x))
+
 /* Use Posix semaphores for Linux */
 #define wsem_t          sem_t          
 #define wsem_init       sem_init       
