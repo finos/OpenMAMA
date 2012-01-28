@@ -163,6 +163,10 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 
 #define wGetCurrentThreadId     pthread_self 
 
+/* net work utility functions */
+const char* getIpAddress (void);
+const char* getHostName (void);
+
 #if defined (__cplusplus)
 } /* extern "c" */
 #endif
