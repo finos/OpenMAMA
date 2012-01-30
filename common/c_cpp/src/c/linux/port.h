@@ -163,6 +163,9 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 
 #define wGetCurrentThreadId     pthread_self 
 
+/* time gm not available on Windows */
+#define wtimegm timegm
+
 /* net work utility functions */
 const char* getIpAddress (void);
 const char* getHostName (void);
