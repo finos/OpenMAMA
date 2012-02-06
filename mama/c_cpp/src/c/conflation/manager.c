@@ -343,11 +343,8 @@ mamaConflationManager_publish (mamaConflationManager mgr,
 
 }
 
-#ifndef WIN32
-static void
-#else
-static void __stdcall
-#endif
+
+static void MAMACALLTYPE
 flushCallback (wombatQueue queue, void* data, void* itemClosure, void* closure)
 {
     mamaConflationManager mgr = (mamaConflationManager)closure;
