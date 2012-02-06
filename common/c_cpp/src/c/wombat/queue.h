@@ -39,7 +39,7 @@ extern "C"
 
 
 /* Callback for dispatching events from a queue. */
-typedef void (*wombatQueueCb)(void* data, void* closure);
+typedef void (MAMACALLTYPE *wombatQueueCb)(void* data, void* closure);
 
 typedef void* wombatQueue;
 
@@ -62,7 +62,7 @@ typedef enum
  *
  * Size and other parameters may be set prior to calling wombatQueue_create().
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_allocate (wombatQueue *result);
 
 /**
@@ -73,14 +73,14 @@ wombatQueue_allocate (wombatQueue *result);
  * unbounded up to WOMBAT_QUEUE_MAX_SIZE.
  *
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_create (wombatQueue queue, uint32_t maxSize, uint32_t initialSize,
                     uint32_t growBySize);
 
 /**
  * Destroy the Queue. 
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_destroy (wombatQueue queue);
 
 /** 
@@ -91,26 +91,26 @@ wombatQueue_destroy (wombatQueue queue);
  * If it is not the actual max size will be rounded up to a multiple of the
  * chunk size.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_setMaxSize (wombatQueue queue, unsigned int value);
 
 /**
  * Get the maximum size of the queue. WOMBAT_QUEUE_MAX_SIZE is the maximum
  * queue size permitted and the default value.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_getMaxSize (wombatQueue queue, unsigned int *value);
 
 /**
  * Get the number of items currently in the queue.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_getSize (wombatQueue queue, int* size);
 
 /**
  * Enqueue an event. 
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_enqueue (wombatQueue queue, 
                      wombatQueueCb cb, 
                      void* data, 
@@ -125,7 +125,7 @@ wombatQueue_enqueue (wombatQueue queue,
  * This call blocks until an item is enqueued if the queue is empty.
  *
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_dispatch (wombatQueue queue, void** data, void** closure);
 
 /**
@@ -137,7 +137,7 @@ wombatQueue_dispatch (wombatQueue queue, void** data, void** closure);
  * returning WOMBAT_QUEUE_TIMEOUT
  *
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_timedDispatch (wombatQueue queue, void** data, void** closure, 
         uint64_t timeout);
 
@@ -145,7 +145,7 @@ wombatQueue_timedDispatch (wombatQueue queue, void** data, void** closure,
  * Poll. This function deques and item if the queue is not empty otherwise it
  * returns immediately with WOMBAT__WOULD_BLOCK.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_poll (wombatQueue queue, void** data, void** closure);
 
 
@@ -153,7 +153,7 @@ wombatQueue_poll (wombatQueue queue, void** data, void** closure);
  * Cause a waiting thread to unblock without dequing an item. This is useful
  * when cleaning up.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_unblock (wombatQueue queue);
 
 /**
@@ -164,12 +164,12 @@ wombatQueue_unblock (wombatQueue queue);
  * enqueued. The "closure" is the closure passed to wombatQueue_flush().
  *
  */
-typedef void (*wombatQueueFlushCb)(wombatQueue queue, 
-                                   void* data, 
-                                   void* itemClosure,
-                                   void* closure);
+typedef void (MAMACALLTYPE *wombatQueueFlushCb)(wombatQueue queue, 
+                                                void* data, 
+                                                void* itemClosure,
+                                                void* closure);
 
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_flush (wombatQueue queue, wombatQueueFlushCb cb, void* closure);
 
 /**
@@ -179,7 +179,7 @@ wombatQueue_flush (wombatQueue queue, wombatQueueFlushCb cb, void* closure);
  * iterator is at the end of the queue. In this case the iterator does not
  * move.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_next (wombatQueue queue, void** data, void** closure);
 
 /**
@@ -188,7 +188,7 @@ wombatQueue_next (wombatQueue queue, void** data, void** closure);
  * It returns WOMBAT_QUEUE_END and sets the data and closure to NULL if the
  * iterator is at the beginning of the queue.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_prev (wombatQueue queue, void** data, void** closure);
 
 /**
@@ -196,14 +196,14 @@ wombatQueue_prev (wombatQueue queue, void** data, void** closure);
  * the queue is empty or the iterator is not initialized (next() not called), 
  * it returns WOMBAT_QUEUE_END, and does sets the data and closure to NULL.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_cur (wombatQueue queue, void** data, void** closure);
 
 /**
  * Remove the current item. If the queue is empty this method returns
  * WOMBAT_QUEUE_END.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_remove (wombatQueue queue, void** data, void** closure);
 
 /**
@@ -211,7 +211,7 @@ wombatQueue_remove (wombatQueue queue, void** data, void** closure);
  * queue is empty the iterator is positioned so that next() returns the newly
  * inserted item.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_insertAfter (wombatQueue   queue, 
                          wombatQueueCb cb,
                          void*         data, 
@@ -222,7 +222,7 @@ wombatQueue_insertAfter (wombatQueue   queue,
  * queue is empty the iterator is positioned so that prev() returns the newly
  * inserted item.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_insertBefore (wombatQueue   queue, 
                           wombatQueueCb cb,
                           void*         data, 
@@ -233,7 +233,7 @@ wombatQueue_insertBefore (wombatQueue   queue,
  * positioned because the queue is empty or next() has not been called, 
  * it will return WOMBAT_QUEUE_END. 
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_replace (wombatQueue   queue, 
                      wombatQueueCb cb, 
                      void*         data, 
@@ -242,13 +242,13 @@ wombatQueue_replace (wombatQueue   queue,
 /**
  * Position the iterator so next() will return the first element.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_begin (wombatQueue queue);
 
 /**
  * Position the iterator so prev() will return the last element.
  */
-wombatQueueStatus
+COMMONExpDLL wombatQueueStatus
 wombatQueue_end (wombatQueue queue);
 
 
