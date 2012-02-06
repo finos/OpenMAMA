@@ -222,7 +222,7 @@ mamaStatsGenerator_setLogStats (mamaStatsGenerator statsGenerator, int logStats)
     return MAMA_STATUS_OK;
 }
 
-static void
+static void MAMACALLTYPE
 mamaStatsGenerator_onReportTimer (mamaTimer timer, void* closure)
 {
     mamaStatsGenerator statsgenerator = (mamaStatsGenerator)closure;

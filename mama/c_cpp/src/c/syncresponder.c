@@ -37,7 +37,7 @@
  */
 static void syncCommand_dtor (void *handle);
 
-static void
+static void MAMACALLTYPE
 timerCB (mamaTimer timer, void *closure);
 
 typedef struct
@@ -175,7 +175,7 @@ void syncCommand_dtor(void *handle)
         impl->mTimer = NULL;
     }
 
-    free (impl->mTopics);
+    free ((void*)impl->mTopics);
     free (impl->mTypes);
 
     free (impl);

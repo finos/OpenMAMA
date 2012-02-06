@@ -80,12 +80,12 @@ static long       getNextId(void) { return ++sInstanceId; }
 static int sThreadStarted = 0;
 
 /* Mutex used in the check() method. */
-static wthread_mutex_t sCheck_mutex  = PTHREAD_MUTEX_INITIALIZER;
+static wthread_static_mutex_t sCheck_mutex  = WSTATIC_MUTEX_INITIALIZER;
 
 
 
 /* Mutex used when accessing the vector. */
-static wthread_mutex_t sVector_mutex = PTHREAD_MUTEX_INITIALIZER;
+static wthread_static_mutex_t sVector_mutex = WSTATIC_MUTEX_INITIALIZER;
 
 
 /*
@@ -121,13 +121,13 @@ mamaTimeZone_create (mamaTimeZone*  timeZone)
     mamaTimeZoneImpl* impl;
     wList  tzList;
 
-    wthread_mutex_lock (&sVector_mutex);
+    wthread_static_mutex_lock (&sVector_mutex);
 
     tzList = getTimeZones();
     impl = list_allocate_element (tzList);
     if (!impl)
     {
-        wthread_mutex_unlock (&sVector_mutex);
+        wthread_static_mutex_unlock (&sVector_mutex);
         return MAMA_STATUS_NOMEM;
     }
     else
@@ -137,7 +137,7 @@ mamaTimeZone_create (mamaTimeZone*  timeZone)
         if (!sThreadStarted)
             startThread();
 
-        wthread_mutex_unlock (&sVector_mutex);
+        wthread_static_mutex_unlock (&sVector_mutex);
 
         *timeZone = (mamaTimeZone)impl;
         return MAMA_STATUS_OK;
@@ -187,11 +187,11 @@ mamaTimeZone_destroy (mamaTimeZone  timeZone)
         /* Remove from the list and free the memory. */
         mamaTimeZoneImpl* impl = (mamaTimeZoneImpl*)timeZone;
         wList tzList;
-        wthread_mutex_lock (&sVector_mutex);
+        wthread_static_mutex_lock (&sVector_mutex);
         tzList = getTimeZones();
         list_remove_element (tzList, impl);
         list_free_element (tzList, impl);
-        wthread_mutex_unlock (&sVector_mutex);
+        wthread_static_mutex_unlock (&sVector_mutex);
         return MAMA_STATUS_OK;
     }
 }
@@ -305,7 +305,7 @@ mamaTimeZone_check (mamaTimeZone  timeZone)
         /* get the mutex for the accessing thread stops other threads
          * from calling this method at the same time as the TZ update
          * thread. */
-        wthread_mutex_lock (&sCheck_mutex);
+        wthread_static_mutex_lock (&sCheck_mutex);
 
         /* Save the current value of TZ: */
         tzSaved = environment_getVariable("TZ");
@@ -353,7 +353,7 @@ mamaTimeZone_check (mamaTimeZone  timeZone)
         impl->mOffset = difftime (gmClock, tzClock);
 
         /* release the mutex on this method */
-        wthread_mutex_unlock (&sCheck_mutex);
+        wthread_static_mutex_unlock (&sCheck_mutex);
 
         return MAMA_STATUS_OK;
     }
@@ -407,7 +407,7 @@ static void* updateTimeZones (void* ptr)
 
     initialDelay.tv_sec = 10;
     initialDelay.tv_nsec = 0;
-    nanosleep (&initialDelay, NULL);
+    wnanosleep (&initialDelay, NULL);
 
 
     /* It makes sense for this thread to continue running for the life
@@ -424,20 +424,20 @@ static void* updateTimeZones (void* ptr)
         {
             delay.tv_sec = 60;
             delay.tv_nsec = 100;
-            nanosleep(&delay,NULL);
+            wnanosleep(&delay,NULL);
 
             continue;
         }
-        nanosleep(&delay,NULL);
+        wnanosleep(&delay,NULL);
 
         /* Lock access to the list of timezones while we recheck. */
-        wthread_mutex_lock (&sVector_mutex);
+        wthread_static_mutex_lock (&sVector_mutex);
 
         timeZones = getTimeZones();
 
         list_for_each (timeZones, checkTzIter, NULL);
 
-        wthread_mutex_unlock (&sVector_mutex);
+        wthread_static_mutex_unlock (&sVector_mutex);
     }
 
     /* The return value is not applicable. */

@@ -123,7 +123,7 @@ void mamaStatsLoggerImpl_clearEventArray (
                 mamaStatsLoggerImpl* impl);
 
 
-static void
+static void MAMACALLTYPE
 mamaStatsLoggerImpl_onReportTimer (
                 mamaTimer timer,
                 void* closure);
@@ -982,7 +982,7 @@ mama_status mamaStatsLoggerImpl_addEvent (
     return MAMA_STATUS_OK;
 }
 
-static void
+static void MAMACALLTYPE
 mamaStatsLoggerImpl_onReportTimer (mamaTimer timer, void* closure)
 {
     mamaStatsLoggerImpl*  impl = (mamaStatsLoggerImpl*) closure;
