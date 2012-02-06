@@ -19,9 +19,7 @@
  * 02110-1301 USA
  */
 #include <string.h>
-#ifdef WIN32
-#include <wombat/wincompat.h>
-#endif
+#include "port.h"
 
 #include "mama/conflation/connection.h"
 #include "conflation/connection_int.h"

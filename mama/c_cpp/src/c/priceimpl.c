@@ -22,17 +22,6 @@
 #include <mama/mama.h>
 #include "priceimpl.h"
 
-/* The format specifier for large integers is different on window and gcc. The standard
- * specifier isn't supported on windows from compiler versions previous to VC7.
- */
-#ifdef WIN32
-#define MAMA_PRICE_IMPL_LARGE_INT32_FORMAT_SPECIFIER "%I32d"
-#define MAMA_PRICE_IMPL_LARGE_INT64_FORMAT_SPECIFIER "%I64d"
-#else
-#define MAMA_PRICE_IMPL_LARGE_INT32_FORMAT_SPECIFIER "%ld"
-#define MAMA_PRICE_IMPL_LARGE_INT64_FORMAT_SPECIFIER "%lld"
-#endif
-
 static void mamaPriceImpl_getAsStringDecimal  (double    value,
                                          mama_size_t    decimals,
                                          char*     buf,
@@ -114,7 +103,7 @@ void mamaPriceImpl_getAsStringInteger (double     value,
                                  mama_size_t     bufMaxLen)
 {
     int64_t  integer    = (int64_t)value;
-    snprintf (buf, bufMaxLen, MAMA_PRICE_IMPL_LARGE_INT64_FORMAT_SPECIFIER, integer);
+    snprintf (buf, bufMaxLen, "%lld", integer);
 }
 
 
@@ -128,18 +117,18 @@ void mamaPriceImpl_getAsStringFraction (double    value,
     int64_t  numer    = (int64_t)((double)denom * fraction);
     if (numer == 0)
     {
-        snprintf (buf, bufMaxLen, MAMA_PRICE_IMPL_LARGE_INT64_FORMAT_SPECIFIER, integer);
+        snprintf (buf, bufMaxLen, "%lld", integer);
     }
     else if (integer == 0)
     {
 		char formatSpecifier[20] = "";
-		sprintf(formatSpecifier, "%s/%s", MAMA_PRICE_IMPL_LARGE_INT64_FORMAT_SPECIFIER, MAMA_PRICE_IMPL_LARGE_INT32_FORMAT_SPECIFIER);
+		sprintf(formatSpecifier, "%s/%s", "%lld", "%ld");
         snprintf (buf, bufMaxLen, formatSpecifier, numer, denom);
     }
     else
     {
 		char formatSpecifier[20] = "";
-		sprintf(formatSpecifier, "%s %s/%s", MAMA_PRICE_IMPL_LARGE_INT64_FORMAT_SPECIFIER, MAMA_PRICE_IMPL_LARGE_INT64_FORMAT_SPECIFIER, MAMA_PRICE_IMPL_LARGE_INT32_FORMAT_SPECIFIER);
+		sprintf(formatSpecifier, "%s %s/%s", "%lld", "%lld", "%ld");
         if (integer < 0)
 		{
             numer = -numer;

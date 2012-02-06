@@ -20,9 +20,7 @@
  */
 
 #include <string.h>
-#ifdef WIN32
-#include <wombat/wincompat.h>
-#endif
+#include "port.h"
 
 #include "mama/mama.h"
 #include "mama/conflation/manager.h"
@@ -342,7 +340,6 @@ mamaConflationManager_publish (mamaConflationManager mgr,
     return MAMA_STATUS_OK;
 
 }
-
 
 static void MAMACALLTYPE
 flushCallback (wombatQueue queue, void* data, void* itemClosure, void* closure)

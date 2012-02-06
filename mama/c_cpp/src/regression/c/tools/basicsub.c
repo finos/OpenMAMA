@@ -74,49 +74,30 @@ static void initializeMama              (void);
 static void createSubscriber            (void);
 static void createWildCardSubscriber    (void);
 static void displayMsg                  (mamaMsg msg);
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+
+static void MAMACALLTYPE
 displayCb (const mamaMsg          msg,
            const mamaMsgField     field,
            void *                 closure);
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 createCb (mamaSubscription       subscription,
           void *                 closure);
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 errorCb (mamaSubscription       subscription,
          mama_status            status,
          void*                  platformError,
          const char*            subject,
          void*                  closure);
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 msgCb (mamaSubscription       subscription, 
        mamaMsg                msg, 
        void *                 closure,
        void *                 itemClosure);
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 wildCardMsgCb (mamaSubscription       subscription, 
                mamaMsg                msg, 
                const char*            topic,
@@ -252,11 +233,7 @@ static void createSubscriber (void)
     }
 }
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 createCb (mamaSubscription subscription, void *closure)
 {
     if (gQuietLevel < 2)
@@ -265,11 +242,7 @@ createCb (mamaSubscription subscription, void *closure)
     }
 }
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 errorCb (mamaSubscription   subscription,
          mama_status        status,
          void*              platformError,
@@ -281,11 +254,7 @@ errorCb (mamaSubscription   subscription,
     exit (status);
 }
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 msgCb (mamaSubscription  subscription, 
        mamaMsg           msg, 
        void*             closure,
@@ -298,11 +267,7 @@ msgCb (mamaSubscription  subscription,
     displayMsg (msg);
 }
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 wildCardMsgCb (mamaSubscription       subscription, 
                mamaMsg                msg, 
                const char*            topic,
@@ -335,11 +300,7 @@ wildCardMsgCb (mamaSubscription       subscription,
     displayMsg (msg);
 }
 
-#ifdef WIN32
-void __stdcall
-#else
-void
-#endif
+void MAMACALLTYPE
 displayCb  (const mamaMsg       msg,
             const mamaMsgField  field,
             void*               closure)

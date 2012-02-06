@@ -22,10 +22,7 @@
 #include <avis/elvin.h>
 #include <avis/avis_client_config.h>
 
-#ifdef WIN32
-#include <wombat/wincompat.h>
-#endif /* WIN32 */
-
+#include "port.h"
 
 #include <property.h>
 #include <mama/mama.h>

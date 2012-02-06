@@ -24,8 +24,8 @@
 #define CONFLATION_MANAGER_H__
 
 #include <string.h>
-#include "port.h"
 
+#include "port.h"
 #include "mama/mama.h"
 
 #if defined(__cplusplus)

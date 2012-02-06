@@ -26,10 +26,8 @@
 #include <mama/status.h>
 #include <mama/types.h>
 #include <mama/timezone.h>
+#include "port.h"
 
-#ifndef WIN32
-#include <sys/time.h>
-#endif
 #include <time.h>
 
 

@@ -27,9 +27,7 @@
 #include <mama/fielddesc.h>
 #include <stdlib.h>
 
-#ifndef WIN32
-#include <inttypes.h>
-#endif
+#include "port.h"
 
 #if defined(__cplusplus)
 extern "C" {

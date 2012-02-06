@@ -26,14 +26,8 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-#ifndef WIN32
-#include <unistd.h>
-#include <sys/mman.h>
-#else
-#include <io.h>
-#include <windows.h>
-#include <winbase.h>
-#endif
+
+#include "port.h"
 
 #include <stdlib.h>
 #include <fcntl.h>

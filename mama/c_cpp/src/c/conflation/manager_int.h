@@ -26,10 +26,8 @@
 
 #ifndef MAMA_MANAGER_INT_H__
 #define MAMA_MANAGER_INT_H__
+#include "port.h"
 
-#ifndef WIN32
-#include <netinet/in.h>
-#endif
 #include "mama/conflation/manager.h"
 
 #if defined(__cplusplus)
