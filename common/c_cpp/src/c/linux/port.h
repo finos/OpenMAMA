@@ -36,6 +36,7 @@ extern "C"
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#include <sys/mman.h>
 #include <sys/vfs.h>
 #include <sys/param.h>
 #include <sys/resource.h>
