@@ -401,8 +401,8 @@ checkTzIter (wList list, void* element, void* closure)
 static void* updateTimeZones (void* ptr)
 {
 
-    struct timespec delay;
-    struct timespec initialDelay;
+    struct wtimespec delay;
+    struct wtimespec initialDelay;
     wList           timeZones;
 
     initialDelay.tv_sec = 10;

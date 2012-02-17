@@ -19,10 +19,9 @@
  * 02110-1301 USA
  */
 
-
+#include "port.h"
 #include "mama/mama.h"
 #include "string.h"
-#include <unistd.h>
 
 static mamaTransport    gTransport    = NULL;
 static mamaInbox        gInbox        = NULL;
@@ -59,14 +58,14 @@ static void createInbox         (void);
 static void createPublisher     (void);
 static void sendRequest         (void);
 
-static void
+static void MAMACALLTYPE
 msgCB (mamaMsg msg, void* closure);
 
-static void
+static void MAMACALLTYPE
 errorCB (mama_status status, void* closure);
 
 
-static void
+static void MAMACALLTYPE
 timerCallback (mamaTimer timer, void *closure)
 {
 	sendRequest ();
@@ -156,7 +155,7 @@ void initializeMama (void)
 }
 
 /* Used to destroy messages sent on the throttle */
-static void
+static void MAMACALLTYPE
 sendCompleteCb (mamaPublisher publisher,
                 mamaMsg       msg,
                 mama_status   status,
@@ -230,13 +229,13 @@ static void createInbox (void)
     }
 }
 
-static void
+static void MAMACALLTYPE
 msgCB (mamaMsg msg, void *closure)
 {
     printf ("Received reply: %s\n", mamaMsg_toString (msg));
 }
 
-static void
+static void MAMACALLTYPE
 errorCB (mama_status status, void *closure)
 {
     printf ("Error creating inbox: %s\n",

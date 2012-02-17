@@ -30,11 +30,8 @@
  *      [-q]               Quiet mode. Suppress output.
  *---------------------------------------------------------------------------*/
 
+#include "port.h"
 #include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <unistd.h>
 #include <errno.h>
 #include <string.h>
 
@@ -55,7 +52,7 @@ static void initializeMama      (void);
 static void waitForConection    (void);
 static void createIOHandlers    (void);
 
-static void
+static void MAMACALLTYPE
 ioCallback          (mamaIo io, mamaIoType ioType, void *closure);
 
 int main (int argc, const char **argv)
@@ -152,7 +149,7 @@ static void  waitForConection (void)
           strlen ("Type \"quit\" to stop server.\n"), 0 );
 }
 
-static void
+static void MAMACALLTYPE
 ioCallback (mamaIo io, mamaIoType ioType, void *closure)
 {
     char buffer[1024];

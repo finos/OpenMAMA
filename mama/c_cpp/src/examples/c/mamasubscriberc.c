@@ -62,29 +62,29 @@ static void createSubscriber            (void);
 static void createWildCardSubscriber    (void);
 static void displayMsg                  (mamaMsg msg);
 
-static void
+static void MAMACALLTYPE
 displayCb (const mamaMsg          msg,
            const mamaMsgField     field,
            void *                 closure);
 
-static void
+static void MAMACALLTYPE
 createCb (mamaSubscription       subscription,
           void *                 closure);
 
-static void
+static void MAMACALLTYPE
 errorCb (mamaSubscription       subscription,
          mama_status            status,
          void*                  platformError,
          const char*            subject,
          void*                  closure);
 
-static void
+static void MAMACALLTYPE
 msgCb (mamaSubscription       subscription, 
        mamaMsg                msg, 
        void *                 closure,
        void *                 itemClosure);
 
-static void
+static void MAMACALLTYPE
 wildCardMsgCb (mamaSubscription       subscription, 
                mamaMsg                msg, 
                const char*            topic,
@@ -220,7 +220,7 @@ static void createSubscriber (void)
     }
 }
 
-static void
+static void MAMACALLTYPE
 createCb (mamaSubscription subscription, void *closure)
 {
     if (gQuietLevel < 2)
@@ -229,7 +229,7 @@ createCb (mamaSubscription subscription, void *closure)
     }
 }
 
-static void
+static void MAMACALLTYPE
 errorCb (mamaSubscription   subscription,
          mama_status        status,
          void*              platformError,
@@ -241,7 +241,7 @@ errorCb (mamaSubscription   subscription,
     exit (status);
 }
 
-static void
+static void MAMACALLTYPE
 msgCb (mamaSubscription  subscription, 
        mamaMsg           msg, 
        void*             closure,
@@ -254,7 +254,7 @@ msgCb (mamaSubscription  subscription,
     displayMsg (msg);
 }
 
-static void
+static void MAMACALLTYPE
 wildCardMsgCb (mamaSubscription       subscription, 
                mamaMsg                msg, 
                const char*            topic,
@@ -287,7 +287,7 @@ wildCardMsgCb (mamaSubscription       subscription,
     displayMsg (msg);
 }
 
-void
+void MAMACALLTYPE
 displayCb  (const mamaMsg       msg,
             const mamaMsgField  field,
             void*               closure)

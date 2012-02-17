@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-#include <unistd.h>
+#include "port.h"
 
 #include "mama/mama.h"
 #include "string.h"
@@ -62,18 +62,19 @@ NULL
 static void parseCommandLine    (int argc, const char **argv);
 static void initializeMama      (void);
 static void createIntervalTimer (void);
-static void timerCallback       (mamaTimer timer, void *closure);
 static void createInboundSubscription (void);
-static void inboundCreateCb     (mamaSubscription subscription, void *closure);
 
-static void
+static void MAMACALLTYPE timerCallback       (mamaTimer timer, void *closure);
+static void MAMACALLTYPE inboundCreateCb     (mamaSubscription subscription, void *closure);
+
+static void MAMACALLTYPE
 inboundErrorCb      (mamaSubscription subscription,
                      mama_status status,
                      void* platformError,
                      const char *subject,
                      void *closure);
 
-static void
+static void MAMACALLTYPE
 inboundMsgCb        (mamaSubscription subscription,
                      mamaMsg msg,
                      void *closure,
@@ -274,7 +275,7 @@ static void createInboundSubscription (void)
     }
 }
 
-static void
+static void MAMACALLTYPE
 inboundCreateCb (mamaSubscription subscription, void *closure)
 {
     if (gQuietLevel < 2)
@@ -283,7 +284,7 @@ inboundCreateCb (mamaSubscription subscription, void *closure)
     }
 }
 
-static void
+static void MAMACALLTYPE
 inboundErrorCb (mamaSubscription subscription,
                 mama_status      status,
                 void*            platformError,
@@ -295,7 +296,7 @@ inboundErrorCb (mamaSubscription subscription,
     exit (status);
 }
 
-static void
+static void MAMACALLTYPE
 inboundMsgCb (mamaSubscription subscription,
               mamaMsg          msg,
               void*            closure,
@@ -335,7 +336,7 @@ static void createIntervalTimer (void)
 }
 
 
-static void
+static void MAMACALLTYPE
 timerCallback (mamaTimer timer, void *closure)
 {
     publishMessage (NULL);

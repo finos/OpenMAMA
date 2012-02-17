@@ -82,13 +82,13 @@ static void parseCommandLine    (int argc, const char* argv[]);
 static void initializeMama      (void);
 static void buildDataDictionary (void);
 
-static void
+static void MAMACALLTYPE
 subscriptionOnMsg   (mamaSubscription    subscription,
                      mamaMsg             msg,
                      void*               closure,
                      void*               itemClosure);
 
-static void
+static void MAMACALLTYPE
 subscriptionOnQuality (mamaSubscription subsc,
                        mamaQuality      quality,
                        const char*      symbol,
@@ -96,23 +96,23 @@ subscriptionOnQuality (mamaSubscription subsc,
                        const void*      platformInfo,
                        void*            closure);
 
-static void
+static void MAMACALLTYPE
 subscriptionOnError (mamaSubscription    subscription,
                      mama_status         status,
                      void*               platformError,
                      const char*         subject,
                      void*               closure);
-static void
+static void MAMACALLTYPE
 subscriptionOnCreate (mamaSubscription    subscription,
                       void*               closure);
 
-static void
+static void MAMACALLTYPE
 symbolListSubscriptionOnMsg   (mamaSubscription    subscription,
                                mamaMsg             msg,
                                void*               closure,
                                void*               itemClosure);
 
-static void
+static void MAMACALLTYPE
 symbolListSubscriptionOnQuality (mamaSubscription subsc,
                        mamaQuality      quality,
                        const char*      symbol,
@@ -120,26 +120,26 @@ symbolListSubscriptionOnQuality (mamaSubscription subsc,
                        const void*      platformInfo,
                        void*            closure);
 
-static void
+static void MAMACALLTYPE
 symbolListSubscriptionOnError (mamaSubscription    subscription,
                      mama_status         status,
                      void*               platformError,
                      const char*         subject,
                      void*               closure);
 
-static void
+static void MAMACALLTYPE
 symbolListSubscriptionOnCreate (mamaSubscription    subscription,
                       void*               closure);
 
-static void
+static void MAMACALLTYPE
 timeoutCb                  (mamaDictionary      dict,
                             void *              closure);
-static void
+static void MAMACALLTYPE
 errorCb                    (mamaDictionary      dict,
                             const char *        errMsg,
                             void *              closure);
 
-static void
+static void MAMACALLTYPE
 completeCb                 (mamaDictionary      dict,
                             void *              closure);
 
@@ -202,21 +202,21 @@ int main (int argc, const char **argv)
     return 0;
 }
 
-void
+void MAMACALLTYPE
 timeoutCb (mamaDictionary dict, void *closure)
 {
     printf ("Timed out waiting for dictionary\n" );
     mama_stop(gMamaBridge);
 }
 
-void
+void MAMACALLTYPE
 errorCb (mamaDictionary dict, const char *errMsg, void *closure)
 {
     fprintf (stderr, "Error getting dictionary: %s\n", errMsg );
     mama_stop(gMamaBridge);
 }
 
-void
+void MAMACALLTYPE
 completeCb (mamaDictionary dict, void *closure)
 {
     gDictionaryComplete = 1;
@@ -537,7 +537,7 @@ static void subscribeToSymbols (void)
 }
 
 
-void
+void MAMACALLTYPE
 symbolListSubscriptionOnMsg  (mamaSubscription subscription,
                               mamaMsg msg,
                               void *closure,
@@ -570,7 +570,7 @@ symbolListSubscriptionOnMsg  (mamaSubscription subscription,
     }
 }
 
-void
+void MAMACALLTYPE
 symbolListSubscriptionOnCreate (mamaSubscription subscription, void* closure)
 {
     const char* source = NULL;
@@ -582,7 +582,7 @@ symbolListSubscriptionOnCreate (mamaSubscription subscription, void* closure)
             source);
 }
 
-static void
+static void MAMACALLTYPE
 symbolListSubscriptionOnError (mamaSubscription subscription,
                                mama_status      status,
                                void*            platformError,
@@ -594,7 +594,7 @@ symbolListSubscriptionOnError (mamaSubscription subscription,
              mamaStatus_stringForStatus (status));
 }
 
-static void
+static void MAMACALLTYPE
 symbolListSubscriptionOnQuality (mamaSubscription subsc,
                        mamaQuality      quality,
                        const char*      symbol,
@@ -607,7 +607,7 @@ symbolListSubscriptionOnQuality (mamaSubscription subsc,
             platformInfo ? (char*)platformInfo: "");
 }
 
-void
+void MAMACALLTYPE
 subscriptionOnMsg  (mamaSubscription subscription,
                               mamaMsg msg,
                               void *closure,
@@ -625,7 +625,7 @@ subscriptionOnMsg  (mamaSubscription subscription,
 
 }
 
-void
+void MAMACALLTYPE
 subscriptionOnCreate (mamaSubscription subscription, void* closure)
 {
     const char* source = NULL;
@@ -639,7 +639,7 @@ subscriptionOnCreate (mamaSubscription subscription, void* closure)
             source, symbol);
 }
 
-static void
+static void MAMACALLTYPE
 subscriptionOnError (mamaSubscription subscription,
                      mama_status      status,
                      void*            platformError,
@@ -652,7 +652,7 @@ subscriptionOnError (mamaSubscription subscription,
              mamaStatus_stringForStatus (status));
 }
 
-static void
+static void MAMACALLTYPE
 subscriptionOnQuality (mamaSubscription subsc,
                        mamaQuality      quality,
                        const char*      symbol,

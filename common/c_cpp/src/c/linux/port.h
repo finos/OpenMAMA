@@ -166,7 +166,15 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 
 /* timegm() and nanosleep not available on Windows */
 #define wtimegm timegm
-#define wnanosleep nanosleep
+
+struct wtimespec
+{
+    time_t tv_sec;
+    long   tv_nsec;
+};
+
+#define wnanosleep (ts, remain) nanosleep(((struct timespec)(ts)),(remain))
+
 
 /* net work utility functions */
 const char* getIpAddress (void);

@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include "port.h"
 #include "mama/mama.h"
 #include "mama/log.h"
 #include "mama/msgtype.h"
@@ -27,7 +28,6 @@
 #include "mama/dqpublisher.h"
 #include "mama/dqpublishermanager.h"
 #include "string.h"
-#include "unistd.h"
 
 static const char *  gUsageString[] =
 {
@@ -95,59 +95,59 @@ static MamaLogLevel            gSubscLogLevel;
 static mamaTimer               gSyncTimer;
 static void parseCommandLine (int argc, const char** argv);
 
-static void
+static void MAMACALLTYPE
 subscriptionOnMsg   (mamaSubscription    subscription,
                      mamaMsg             msg,
                      void*               closure,
                      void*               itemClosure);
-static void
+static void MAMACALLTYPE
 subscriptionOnError (mamaSubscription    subscription,
                      mama_status         status,
                      void*               platformError,
                      const char*         subject,
                      void*               closure);
-static void
+static void MAMACALLTYPE
 subscriptionOnCreate (mamaSubscription    subscription,
                       void*               closure);
 
-static void
+static void MAMACALLTYPE
 syncCallback       (mamaTimer           timer,
                     void *              closure);
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnCreateCb (mamaDQPublisherManager manager);
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnNewRequestCb(mamaDQPublisherManager manager,
                                   const char*        symbol,
                                   short  subType,
                                   short    msgType,
                                   mamaMsg     msg);
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnRequestCb(mamaDQPublisherManager manager,
                                mamaPublishTopic* info,
                                short  subType,
                                short    msgType,
                                mamaMsg     msg);
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnRefreshCb(mamaDQPublisherManager manager,
                                mamaPublishTopic* info,
                                short  subType,
                                short    msgType,
                                mamaMsg     msg);
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnErrorCb(mamaDQPublisherManager manager,
                              mama_status  status,
                              const char*        errortxt,
                              mamaMsg     msg);
 
-static void
+static void MAMACALLTYPE
 sendRecap     (mamaQueue queue, void* closure);
 
-static void
+static void MAMACALLTYPE
 startCB ( mama_status status );
 
 static void createPublisher (void);
@@ -188,7 +188,7 @@ static void createPublisher ()
     }
 }
 
-void startCB ( mama_status status )
+void MAMACALLTYPE startCB ( mama_status status )
 {}
 
 static void start ()
@@ -271,7 +271,7 @@ static void initializeMama ()
 
 }
 
-static void
+static void MAMACALLTYPE
 syncCallback (mamaTimer timer, void* closure)
 {
     mamaTimer_destroy (timer);
@@ -299,13 +299,13 @@ int main (int argc, const char **argv)
     return 0;
 }
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnCreateCb (mamaDQPublisherManager manager)
 {
     printf ("Created publisher subscription.\n");
 }
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnErrorCb (mamaDQPublisherManager manager,
                               mama_status            status,
                               const char*            errortxt,
@@ -326,7 +326,7 @@ subscriptionHandlerOnErrorCb (mamaDQPublisherManager manager,
     }
 }
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
                                    const char*            symbol,
                                    short                  subType,
@@ -378,7 +378,7 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
 
 }
 
-static void
+static void MAMACALLTYPE
 sendRecap     (mamaQueue queue, void* closure)
 {
     recapInfo* info = (recapInfo*) closure;
@@ -399,7 +399,7 @@ sendRecap     (mamaQueue queue, void* closure)
     free (info);
 }
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
                                 mamaPublishTopic*      publishTopicInfo,
                                 short                  subType,
@@ -446,7 +446,7 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
     }
 }
 
-static void
+static void MAMACALLTYPE
 subscriptionHandlerOnRefreshCb (mamaDQPublisherManager  publisherManager,
                                      mamaPublishTopic*         publishTopicInfo,
                                      short                    subType,
@@ -607,13 +607,13 @@ usage (int exitStatus)
 }
 
 
-void
+void MAMACALLTYPE
 subscriptionOnCreate (mamaSubscription subscription, void* closure)
 {
 
 }
 
-static void
+static void MAMACALLTYPE
 subscriptionOnError (mamaSubscription subscription,
                      mama_status      status,
                      void*            platformError,
@@ -626,7 +626,7 @@ subscriptionOnError (mamaSubscription subscription,
              mamaStatus_stringForStatus (status));
 }
 
-void
+void MAMACALLTYPE
 subscriptionOnMsg  (mamaSubscription subscription,
                     mamaMsg msg,
                     void *closure,
