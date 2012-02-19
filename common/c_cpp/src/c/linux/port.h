@@ -164,6 +164,12 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 
 #define wGetCurrentThreadId     pthread_self 
 
+/* macros for shared libraries */
+#define wdlopen dlopen
+#define wdlsym dlsym
+#define wdlclose dlclose
+#define wdlerror dlerror
+
 /* timegm() and nanosleep not available on Windows */
 #define wtimegm timegm
 
