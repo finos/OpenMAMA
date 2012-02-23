@@ -26,7 +26,7 @@
 
 #ifndef MAMA_MANAGER_INT_H__
 #define MAMA_MANAGER_INT_H__
-#include "port.h"
+#include "wombat/port.h"
 
 #include "mama/conflation/manager.h"
 

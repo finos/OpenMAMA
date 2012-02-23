@@ -22,7 +22,7 @@
 #ifndef MAMA_CONNECTION_INT_H__
 #define MAMA_CONNECTION_INT_H__
 
-#include "port.h"
+#include "wombat/port.h"
 
 #include "mama/conflation/connection.h"
 

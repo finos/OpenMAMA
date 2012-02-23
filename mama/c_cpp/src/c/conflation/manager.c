@@ -20,7 +20,7 @@
  */
 
 #include <string.h>
-#include "port.h"
+#include "wombat/port.h"
 
 #include "mama/mama.h"
 #include "mama/conflation/manager.h"

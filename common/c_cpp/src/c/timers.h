@@ -22,7 +22,7 @@
 #ifndef TIMERS_INTERNAL_
 #define TIMERS_INTERNAL_
 
-#include "port.h"
+#include "wombat/port.h"
 
 typedef void* timerElement;
 typedef void* timerHeap;

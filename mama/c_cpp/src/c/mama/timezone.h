@@ -25,7 +25,7 @@
 #include <mama/config.h>
 #include <mama/status.h>
 #include <mama/types.h>
-#include "port.h"
+#include "wombat/port.h"
 
 #include <time.h>
 

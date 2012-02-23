@@ -22,7 +22,7 @@
 /** This file should be processed by FLEX or LEX **/
 
 %{  
-#include "port.h"
+#include "wombat/port.h"
 #include "propertyinternal.h" 
 #include <stdio.h>
 #include <stdlib.h>

@@ -22,7 +22,7 @@
 #ifndef MAMA_SERVER_CONNECTION_INT_H__
 #define MAMA_SERVER_CONNECTION_INT_H__
 
-#include "port.h"
+#include "wombat/port.h"
 
 #if defined(__cplusplus)
 extern "C" {

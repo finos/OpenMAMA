@@ -23,7 +23,7 @@
 #define __STDC_FORMAT_MACROS
 #endif
 
-#include "port.h"
+#include "wombat/port.h"
 
 #include <stdio.h>
 #include <string.h>

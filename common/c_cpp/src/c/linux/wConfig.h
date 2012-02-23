@@ -1,4 +1,4 @@
-/* $Id: wSemaphore.h,v 1.3.16.3 2011/08/10 14:53:24 nicholasmarriott Exp $
+/* $Id: wConfig.h,v 1.1.2.1 2012/02/22 01:20:51 mikeschonberg Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Inc.
@@ -19,9 +19,22 @@
  * 02110-1301 USA
  */
 
-#ifndef WSEMAPHORE_H__
-#define WSEMAPHORE_H__
+#ifndef _WOMBAT_WCONFIG_H
+#define _WOMBAT_WCONFIG_H
 
-#include "wombat/port.h"
+/* Call Types */
+#define COMMONExpDLL
+#define WMWExpDLL
+#define MAMAExpDLL
+#define MAMACPPExpDLL
+#define MAMDAExpDLL
+#define MAMDAOPTExpDLL
+#define MAMAExpBridgeDLL
+#define MAMACALLTYPE
 
-#endif /* WSEMAPHORE_H__ */
+#define WCOMMONINLINE inline static
+#define WCOMMONFORCEINLINE inline static
+
+#endif /* _WOMBAT_WCONFIG_H */
+
+

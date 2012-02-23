@@ -25,7 +25,7 @@
 
 #include <string.h>
 
-#include "port.h"
+#include "wombat/port.h"
 #include "mama/mama.h"
 
 #if defined(__cplusplus)

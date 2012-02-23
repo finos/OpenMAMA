@@ -46,13 +46,14 @@ AC_CANONICAL_BUILD()
 # Set up symbolic links for os-specific files
 AC_MSG_NOTICE([Configuring symbolic links for $build_os in $srcdir])
 case $build_os in
-       linux*-*)   AC_CONFIG_LINKS([src/c/port.h:src/c/linux/port.h
-				    src/c/wombat/wInterlocked.h:src/c/linux/wInterlocked.h
-				    src/c/machine_port.c:src/c/linux/machine.c
-				    src/c/platform.c:src/c/linux/platform.c
-				    src/c/wSemaphore.c:src/c/linux/wSemaphore.c
-				    src/c/network.c:src/c/linux/network.c
-				    src/c/environment.c:src/c/linux/environment.c]) ;;
+       linux*-*)   AC_CONFIG_LINKS([$srcdir/src/c/wombat/port.h:src/c/linux/port.h
+				    $srcdir/src/c/wombat/wConfig.h:src/c/linux/wConfig.h
+				    $srcdir/src/c/wombat/wInterlocked.h:src/c/linux/wInterlocked.h
+				    $srcdir/src/c/machine_port.c:src/c/linux/machine.c
+				    $srcdir/src/c/platform.c:src/c/linux/platform.c
+				    $srcdir/src/c/wSemaphore.c:src/c/linux/wSemaphore.c
+				    $srcdir/src/c/network.c:src/c/linux/network.c
+				    $srcdir/src/c/environment.c:src/c/linux/environment.c]) ;;
 esac
 
 # Checks for programs.

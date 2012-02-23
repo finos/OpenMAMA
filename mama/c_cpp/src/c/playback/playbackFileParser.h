@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-#include "port.h"
+#include "wombat/port.h"
 
 #include <stdlib.h>
 #include <fcntl.h>

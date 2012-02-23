@@ -30,7 +30,7 @@
  *      [-q]               Quiet mode. Suppress output.
  *---------------------------------------------------------------------------*/
 
-#include "port.h"
+#include "wombat/port.h"
 #include <sys/types.h>
 #include <errno.h>
 #include <string.h>

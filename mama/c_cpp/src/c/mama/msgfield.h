@@ -27,7 +27,7 @@
 #include <mama/fielddesc.h>
 #include <stdlib.h>
 
-#include "port.h"
+#include "wombat/port.h"
 
 #if defined(__cplusplus)
 extern "C" {

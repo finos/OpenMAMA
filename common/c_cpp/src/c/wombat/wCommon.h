@@ -23,7 +23,7 @@
 #define _WOMBAT_WCOMMON_H
 
 /* Moved to _os_/port.h */
-#include "port.h"
+#include "wombat/port.h"
 
 struct in_addr resolve_ip(const char * arg);
 
