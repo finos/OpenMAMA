@@ -204,7 +204,7 @@ void checkHeartbeat (mamaFtMemberImpl*  impl,
                      int          hbPrimary,
                      char*        hbGroupName);
 
-struct in_addr     resolve_ip        (const char * arg);
+struct in_addr     wresolve_ip        (const char * arg);
 
 /* FT callbacks: */
 static void MAMACALLTYPE
@@ -882,7 +882,7 @@ multicastFt_setup (
     /* if interface name is set */
     if (ftInterface!=NULL && ftInterface[0]!='\0')
     {
-        cFtIfAddr = resolve_ip (ftInterface);
+        cFtIfAddr = wresolve_ip (ftInterface);
 
         if (cFtIfAddr.s_addr == INADDR_NONE)
         {

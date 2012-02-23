@@ -25,6 +25,6 @@
 /* Moved to _os_/port.h */
 #include "wombat/port.h"
 
-struct in_addr resolve_ip(const char * arg);
+struct in_addr wresolve_ip(const char * arg);
 
 #endif /* _WOMBAT_WCOMMON_H */
