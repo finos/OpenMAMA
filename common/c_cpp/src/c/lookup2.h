@@ -13,6 +13,6 @@ typedef  unsigned       char ub1;
 #define hashsize(n) ((ub4)1<<(n))
 #define hashmask(n) (hashsize(n)-1)
 
-ub4 hash (ub1 *k, ub4 length, ub4 initval);
+ub4 whash (ub1 *k, ub4 length, ub4 initval);
 
 #endif  /* _LOOKUP2_H_ */

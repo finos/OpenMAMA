@@ -96,7 +96,7 @@ acceptable.  Do NOT use for cryptographic purposes.
 --------------------------------------------------------------------
 */
 
-ub4 hash( k, length, initval)
+ub4 whash( k, length, initval)
 register ub1 *k;        /* the key */
 register ub4  length;   /* the length of the key */
 register ub4  initval;    /* the previous hash, or an arbitrary value */
@@ -151,7 +151,7 @@ register ub4  initval;    /* the previous hash, or an arbitrary value */
  -- that the length be the number of ub4's in the key
 --------------------------------------------------------------------
 */
-ub4 hash2( k, length, initval)
+ub4 whash2( k, length, initval)
 register ub4 *k;        /* the key */
 register ub4  length;   /* the length of the key */
 register ub4  initval;    /* the previous hash, or an arbitrary value */
@@ -196,7 +196,7 @@ register ub4  initval;    /* the previous hash, or an arbitrary value */
 --------------------------------------------------------------------
 */
 
-ub4 hash3( k, length, initval)
+ub4 whash3( k, length, initval)
 register ub1 *k;        /* the key */
 register ub4  length;   /* the length of the key */
 register ub4  initval;    /* the previous hash, or an arbitrary value */
@@ -268,7 +268,7 @@ void driver1()
 
   for (i=0; i<256; ++i) 
   {
-    h = hash(buf,i,h);
+    h = whash(buf,i,h);
   }
 }
 
@@ -306,10 +306,10 @@ void driver2()
         /* have a and b be two keys differing in only one bit */
         a[i] ^= (k<<j);
         a[i] ^= (k>>(8-j));
-         c[0] = hash(a, hlen, m);
+         c[0] = whash(a, hlen, m);
         b[i] ^= ((k+1)<<j);
         b[i] ^= ((k+1)>>(8-j));
-         d[0] = hash(b, hlen, m);
+         d[0] = whash(b, hlen, m);
         /* check every bit is 1, 0, set, and not set at least once */
         for (l=0; l<HASHSTATE; ++l)
         {
@@ -357,10 +357,10 @@ void driver3()
   ub4 h,i,j,ref,x,y;
 
   printf("Endianness.  These should all be the same:\n");
-  printf("%.8lx\n", hash(q, sizeof(q)-1, (ub4)0));
-  printf("%.8lx\n", hash(qq+1, sizeof(q)-1, (ub4)0));
-  printf("%.8lx\n", hash(qqq+2, sizeof(q)-1, (ub4)0));
-  printf("%.8lx\n", hash(qqqq+3, sizeof(q)-1, (ub4)0));
+  printf("%.8lx\n", whash(q, sizeof(q)-1, (ub4)0));
+  printf("%.8lx\n", whash(qq+1, sizeof(q)-1, (ub4)0));
+  printf("%.8lx\n", whash(qqq+2, sizeof(q)-1, (ub4)0));
+  printf("%.8lx\n", whash(qqqq+3, sizeof(q)-1, (ub4)0));
   printf("\n");
   for (h=0, b=buf+1; h<8; ++h, ++b)
   {
@@ -370,11 +370,11 @@ void driver3()
       for (j=0; j<i; ++j) *(b+j)=0;
 
       /* these should all be equal */
-      ref = hash(b, len, (ub4)1);
+      ref = whash(b, len, (ub4)1);
       *(b+i)=(ub1)~0;
       *(b-1)=(ub1)~0;
-      x = hash(b, len, (ub4)1);
-      y = hash(b, len, (ub4)1);
+      x = whash(b, len, (ub4)1);
+      y = whash(b, len, (ub4)1);
       if ((ref != x) || (ref != y)) 
       {
     printf("alignment error: %.8lx %.8lx %.8lx %ld %ld\n",ref,x,y,h,i);
@@ -395,7 +395,7 @@ void driver3()
   printf("These should all be different\n");
   for (i=0, h=0; i<8; ++i)
   {
-    h = hash(buf, (ub4)0, h);
+    h = whash(buf, (ub4)0, h);
     printf("%2ld  0-byte strings, hash is  %.8lx\n", i, h);
   }
 }
