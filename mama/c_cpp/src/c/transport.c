@@ -161,6 +161,7 @@ typedef struct transportImpl_
     int                     mGroupSizeHint;
 
     uint8_t                 mDisableDisconnectCb;
+    uint8_t					mDisableRefresh;
     preInitialScheme         mPreInitialScheme;
 } transportImpl;
 
@@ -369,14 +370,18 @@ static void setPreInitialStrategy (mamaTransport transport)
  *
  * Return non-zero to disable refresh messages.
  */
-static int mamaTransportInternal_disableRefreshes (const char* transportName)
+void mamaTransport_disableRefresh(mamaTransport transport, uint8_t disable)
+{
+    self->mDisableRefresh=disable;
+}
+
+static int mamaTransportInternal_disableRefreshes(const char* transportName)
 {
   const char* propValue;
   char propString[MAX_PROP_STRING];
   int retVal;
 
-  retVal=snprintf (propString, MAX_PROP_STRING,
-    "mama.transport.%s.%s",
+  retVal=snprintf(propString, MAX_PROP_STRING, "mama.transport.%s.%s", 
     transportName ? transportName : "", PROP_NAME_DISABLE_REFRESH);
 
   if ((retVal<0) || (retVal>=MAX_PROP_STRING))
@@ -759,8 +764,7 @@ mamaTransport_create (mamaTransport transport,
                 name);
     }
 
-
-    if (!mamaTransportInternal_disableRefreshes (name))
+    if ((!self->mDisableRefresh) && (!mamaTransportInternal_disableRefreshes(name)))
     {
         return refreshTransport_create (&self->mRefreshTransport,
                                     (mamaTransport)self,
