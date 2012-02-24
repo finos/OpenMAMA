@@ -69,6 +69,29 @@ adec32 (uint32_t* ptr)
 typedef uint32_t wInterlockedInt;
 
 /**
+ * This function will initialise a wInterlockedInt.
+ *
+ * @param[in] value Pointer to the item to be initialized.
+ * @return 0 on success.
+ */
+
+WCOMMONINLINE int wInterlocked_initialize(wInterlockedInt *value)
+{
+    return 0;
+}
+
+/**
+ * This function will destroy a wInterlockedInt.
+ *
+ * @param[in] value Pointer to the item to be destroyed.
+ * @return 0 on success.
+ */
+WCOMMONINLINE int wInterlocked_destroy(wInterlockedInt *value)
+{
+    return 0;
+}
+
+/**
  * This function will atomically decrement a 32-bit integer value.
  *
  * @param[in] value Pointer to the value to be decremented.

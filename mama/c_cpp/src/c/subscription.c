@@ -1831,6 +1831,9 @@ void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl)
     /* Destroy the mutex. */
     wlock_destroy(impl->mCreateDestroyLock);
 
+    /* Destroy the state. */
+       wInterlocked_destroy(&impl->mState);
+
     /* Free the subscription impl. */
     free(impl);
 }
