@@ -58,6 +58,8 @@
 #define FT_FIELD_IPADDRESS          "MamaIPAddress"
 #define FT_FIELD_IPADDRESS_FID      206
 
+#define FT_MAX_PROPERTY_NAME_LENGTH 1024
+
 mama_status
 multicastFt_setup (
     mamaFtMember                   member,
@@ -104,6 +106,10 @@ bridgeFt_deactivate (
 static void bridgeFt_sendHeartbeat (mamaFtMember member);
 static int multicastFt_receiveHeartbeat(void* member);
 static int bridgeFt_receiveHeartbeat(void* member);
+
+static const char* 
+multicastFt_getProperty(char *buffer, const char *propertyName, const char
+        *transportName);
 
 static int foundheartbeat=0;
 
@@ -878,6 +884,32 @@ struct in_addr resolve_ip (const char * arg)
 /****************************************************************************
 *       Multicast FT specific
 ******************************************************************************/
+
+const char *multicastFt_getProperty(char *buffer, const char *propertyName, const char *transportName)
+{
+    /* Returns. */
+    const char *ret = NULL;
+
+    /* Format the full property name. */
+    int numberWritten = snprintf(buffer, (FT_MAX_PROPERTY_NAME_LENGTH - 1), propertyName, transportName);
+
+    /* If too many characters are written the log an error. */
+    if((FT_MAX_PROPERTY_NAME_LENGTH - 1) < numberWritten)
+    {
+        mama_log(MAMA_LOG_LEVEL_ERROR, "%s Property name too long. Length [%d],"
+                " Max Length [%d].", transportName, strlen(transportName),
+                (FT_MAX_PROPERTY_NAME_LENGTH - 1));
+    }
+
+    else
+    {
+        /* Otherwise get the property. */
+        ret = mama_getProperty(buffer);
+    }
+
+    return ret;
+}
+
 mama_status
 multicastFt_setup (
     mamaFtMember                   member,
@@ -904,46 +936,70 @@ multicastFt_setup (
     const char* ftNetwork   = NULL;
     const char* ftTtl       = NULL;
     const char* iorecvstr   = NULL;
+    const char* transportName   = NULL;
+    mama_status status          = MAMA_STATUS_OK;    
     struct in_addr iface;
     struct in_addr cFtIfAddr;
 
+    /* This buffer is used for formatting property names. */
+    char propertyName[FT_MAX_PROPERTY_NAME_LENGTH] = "";
+
     mamaFtMemberImpl* impl = (mamaFtMemberImpl*) member;
 
-    if (!impl || !groupName)
+    if (!impl || !groupName || !transport)
         return MAMA_STATUS_INVALID_ARG;
 
-    ftInterface = mama_getProperty ("mama.multicast.transport.ft.interface");
+    /* Get the transport name. */
+    status = mamaTransport_getName(transport, &transportName);
+    if((MAMA_STATUS_OK != status) || (NULL == transportName) || ('\0' ==
+                transportName[0]))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, "MAMA multicast FT: the transport name "
+                "is invalid");
+        return MAMA_STATUS_INVALID_ARG;
+    }
+
+    ftInterface = multicastFt_getProperty(propertyName,
+            "mama.multicast.transport.%s.interface", transportName);
     if (ftInterface == NULL)
     {
-    ftInterface = mama_getProperty ("mama.native.transport.ft.interface");
-    if (ftInterface == NULL)
+        ftInterface = multicastFt_getProperty(propertyName,
+                "mama.native.transport.%s.interface", transportName);        
+        if (ftInterface == NULL)
             ftInterface = "";
     }
-    ftNetwork = mama_getProperty ("mama.multicast.transport.ft.network");
+    ftNetwork = multicastFt_getProperty (propertyName,
+            "mama.multicast.transport.%s.network", transportName);
     if (ftNetwork == NULL)
     {
-        ftNetwork = mama_getProperty ("mama.native.transport.ft.network");
-            if (ftNetwork == NULL)
-                ftNetwork = FT_NETWORK;
+        ftNetwork = multicastFt_getProperty (propertyName,
+                "mama.native.transport.%s.network", transportName);
+        if (ftNetwork == NULL)
+            ftNetwork = FT_NETWORK;
     }
 
-    ftService = mama_getProperty ("mama.multicast.transport.ft.service");
+    ftService = multicastFt_getProperty (propertyName,
+            "mama.multicast.transport.%s.service", transportName);
     if (ftService == NULL)
     {
-        ftService = mama_getProperty ("mama.native.transport.ft.service");
+        ftService = multicastFt_getProperty (propertyName,
+                "mama.native.transport.%s.service", transportName);
         if (ftService != NULL)
-                service = atol (ftService);
+            service = atol (ftService);
     }
 
-    ftTtl = mama_getProperty ("mama.multicast.transport.ft.ttl");
+    ftTtl = multicastFt_getProperty (propertyName,
+            "mama.multicast.transport.%s.ttl", transportName);
     if (ftTtl == NULL)
     {
-        ftTtl = mama_getProperty ("mama.native.transport.ft.ttl");
+        ftTtl = multicastFt_getProperty (propertyName,
+                "mama.native.transport.%s.ttl", transportName);
         if (ftTtl != NULL)
-                ttl = atol (ftTtl);
+            ttl = atol (ftTtl);
     }
 
-    iorecvstr = mama_getProperty ("mama.multicast.transport.ft.iowindow");
+    iorecvstr = multicastFt_getProperty (propertyName,
+            "mama.multicast.transport.%s.iowindow", transportName);
     if (iorecvstr != NULL)
     {
         iorecv=atoi (iorecvstr);
