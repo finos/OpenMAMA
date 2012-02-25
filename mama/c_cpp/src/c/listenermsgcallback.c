@@ -64,6 +64,17 @@ listenerMsgCallbackImpl_invokeErrorCallback(listenerMsgCallback callback,
         subscription, const char *userSymbol);
 
 /**
+ * This function will write a log message if an unknown message status is detected.
+ *
+ * @param[in] ctx The subscription context.
+ * @param[in] status The message status.
+ * @param[in] subscription The subscription. 
+ */
+static void 
+listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, int status,
+        mamaSubscription subscription);
+
+/**
  * Main callback for MamaListener. This is the base strategy for
  * handling messages.
  */
@@ -303,21 +314,15 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                  * MISC status. */
                 break;
             }
-            /* else drop through to default... */
+
+            /* Otherwise log the fact we have received an unknown message. */
+            listenerMsgCallbackImpl_logUnknownStatus(ctx, status, subscription);
+            break;
         }
         default:
         {
-            if ((gMamaLogLevel >= MAMA_LOG_LEVEL_FINE) ||
-                (mamaSubscription_checkDebugLevel (subscription,
-                                                   MAMA_LOG_LEVEL_FINE)))
-            {
-                const char* userSymbol = NULL;
-                mamaSubscription_getSymbol (subscription, &userSymbol);
-                mama_log (MAMA_LOG_LEVEL_FINE,
-                               "%s%s%s%s Unexpected status: %s",
-                               userSymbolFormatted, ctxSymbolFormatted,
-                               mamaMsgStatus_stringForStatus( status ) );
-            }
+            /* Log the fact we have received an unknown message. */
+            listenerMsgCallbackImpl_logUnknownStatus(ctx, status, subscription);
         }
         }
     }
@@ -571,4 +576,21 @@ void listenerMsgCallbackImpl_invokeErrorCallback(listenerMsgCallback callback, S
                   NULL,
                   userSymbol,
                   closure);
+}
+
+void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, int status,
+        mamaSubscription subscription)
+{
+    /* Write the log at fine level. */
+    if ((gMamaLogLevel >= MAMA_LOG_LEVEL_FINE) ||
+            (mamaSubscription_checkDebugLevel (subscription,
+                                               MAMA_LOG_LEVEL_FINE)))
+    {
+        const char* userSymbol = NULL;
+        mamaSubscription_getSymbol (subscription, &userSymbol);
+        mama_log (MAMA_LOG_LEVEL_FINE,
+                        "%s%s%s%s Unexpected status: %s",
+                        userSymbolFormatted, ctxSymbolFormatted,
+                        mamaMsgStatus_stringForStatus( status ) );
+    }
 }
