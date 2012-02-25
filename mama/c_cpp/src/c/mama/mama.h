@@ -220,6 +220,40 @@ extern "C"
     extern mama_status
     mama_openWithProperties (const char*    path,
                              const char*    filename);
+    /**
+     * Initialize MAMA.
+     *
+     * Allows users of the API to override the default behavior of mama_open()
+     * where a file mama.properties is required to be located in the directory
+     * specified by \$WOMBAT_PATH.
+     *
+     * The properties file must have the same structure as a standard
+     * mama.properties file.
+     *
+     * If null is passed as the path the API will look for the properties file on
+     * the \$WOMBAT_PATH.
+     *
+     * If null is passed as the filename the API will look for the default
+     * filename of mama.properties.
+     *
+     * The count value on return will be the number of times that mama_openXxx()
+     * has ben invoked successfully. Applicatiins can use this to perform
+     * one-time initialization when the value is 1 and the return is
+     * MAMA_STATUS_OK
+     *
+     * @param path Fully qualified path to the directory containing the properties
+     * file
+     * @param filename The name of the file containing MAMA properties.
+     * @param count The number of times mama_OpenXXX() has been called
+     * successfully.
+     *
+     * @return mama_status Whether the call was successful or not.
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_openWithPropertiesCount (const char* path,
+                                  const char* filename,
+                                  unsigned int* count);
 
     /**
      * Set a specific property for the API.
@@ -291,6 +325,17 @@ extern "C"
     MAMAExpDLL
     extern mama_status
     mama_close (void);
+    
+    /**
+     * Close MAMA and free all associated resource.
+     *
+     * @param count Filled with the number of times mama has been opened
+     * successfully. Applications can perform global one-time cleanup when this
+     * value is 0 and the return value is MAMA_STATUS_OK.
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_closeCount (unsigned int* count);
 
     /**
     * Return the version information for the library.
