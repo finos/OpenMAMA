@@ -158,12 +158,6 @@ MAMAExpDLL
 extern void
 mamaTransportImpl_unsetAllPossiblyStale (mamaTransport tport);
 
-MAMAExpDLL
-extern void
-mamaTransportImpl_getAdvisoryCauseAndPlatformInfo (mamaTransport tport,
-                                                   short*        cause,
-                                                   const void**  platformInfo);
-
 /*
    Get the bridge impl associated with the specified transport.
    This will be how other objects gain access to the bridge.
@@ -250,5 +244,38 @@ preInitialScheme mamaTransportImpl_getPreInitialScheme (mamaTransport transport)
 #if defined(__cplusplus)
 }
 #endif
+
+
+/**
+ * This function will return the cause and platform info for the last message
+ * processed on the transport.
+ *
+ * @param[in] transport	The transport.
+ * @param[out] cause To return the cause.
+ * @param[out] platformInfo To return the bridge specific info, under no
+ *             circumstances should the returned object be deleted.
+ *
+ */
+MAMAExpDLL 
+extern void
+mamaTransportImpl_getAdvisoryCauseAndPlatformInfo(
+        mamaTransport tport,
+        short *cause,
+        const void **platformInfo);
+
+/**
+ * This function will set the cause and platform info for the transport.
+ *
+ * @param[in] transport	The transport.
+ * @param[in] cause The cause.
+ * @param[in] platformInfo Bridge specific info.
+ *
+ */
+MAMAExpDLL 
+extern void 
+mamaTransportImpl_setAdvisoryCauseAndPlatformInfo(
+        mamaTransport transport, 
+        short cause, 
+        const void *platformInfo);
 
 #endif /* TransportImplH__ */
