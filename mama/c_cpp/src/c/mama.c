@@ -654,6 +654,8 @@ mama_openWithProperties (const char* path,
     const char*     statsLogging            = "false";
 	const char*		catchCallbackExceptions = NULL;
 
+    pthread_mutex_lock (&gImpl.myLock);
+
     if (pthread_key_create(&last_err_key, NULL) != 0)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "WARNING!!! - CANNOT ALLOCATE KEY FOR ERRORS");
@@ -689,7 +691,14 @@ mama_openWithProperties (const char* path,
             "********************************************************");
 #endif
 
-   if (gImpl.myRefCount++)  return result;
+    if (0 != gImpl.myRefCount)
+    {
+        if (MAMA_STATUS_OK == result)
+            gImpl.myRefCount++;
+        pthread_mutex_unlock (&gImpl.myLock);
+        return result;
+    }
+    /* Code after this point is one-time initialization */
 
 #ifdef WITH_INACTIVE_CHECK
     mama_log (MAMA_LOG_LEVEL_WARN,
@@ -748,9 +757,9 @@ mama_openWithProperties (const char* path,
             mama_log (MAMA_LOG_LEVEL_ERROR,
                       "mama_openWithProperties(): "
                       "Could not create stats generator.");
+            pthread_mutex_unlock (&gImpl.myLock);
             return result;
         }
-
 
         globalLogging           = properties_Get (gProperties, "mama.statslogging.global.logging");
         globalPublishing        = properties_Get (gProperties, "mama.statslogging.global.publishing");
@@ -842,7 +851,6 @@ mama_openWithProperties (const char* path,
             }
         }
 
-
         if (mamaInternal_statsPublishingEnabled())
         {
             mamaInternal_loadStatsPublisher();
@@ -866,16 +874,16 @@ mama_openWithProperties (const char* path,
         mama_log (MAMA_LOG_LEVEL_SEVERE,
                   "mama_openWithProperties(): "
                   "At least one bridge must be specified");
+        pthread_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
     if (!gDefaultPayload)
     {
-
-
         mama_log (MAMA_LOG_LEVEL_SEVERE,
                   "mama_openWithProperties(): "
                   "At least one payload must be specified");
+        pthread_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -893,6 +901,7 @@ mama_openWithProperties (const char* path,
                   "mama_openWithProperties(): "
                   "Error connecting to Entitlements Server");
         mama_close();
+        pthread_mutex_unlock (&gImpl.myLock);
         return result;
     }
 #endif /* WITH_ENTITLEMENTS */
@@ -929,6 +938,7 @@ mama_openWithProperties (const char* path,
             if (MAMA_STATUS_OK != (result = mamaBridgeImpl_getInternalEventQueue (bridge,
                                                                &statsGenQueue)))
             {
+                pthread_mutex_unlock (&gImpl.myLock);
                 return result;
             }
         }
@@ -938,6 +948,7 @@ mama_openWithProperties (const char* path,
             mama_log (MAMA_LOG_LEVEL_ERROR,
                       "mama_openWithProperties(): "
                       "Could not set queue for stats generator.");
+            pthread_mutex_unlock (&gImpl.myLock);
             return result;
         }
 
@@ -946,10 +957,13 @@ mama_openWithProperties (const char* path,
             mama_log (MAMA_LOG_LEVEL_ERROR,
                       "mama_openWithProperties(): "
                       "Failed to enable stats logging");
+            pthread_mutex_unlock (&gImpl.myLock);
             return result;
         }
     }
 
+    gImpl.myRefCount++;
+    pthread_mutex_unlock (&gImpl.myLock);
     return result;
 }
 
@@ -1071,7 +1085,14 @@ mama_close ()
     mamaMiddleware middleware = 0;
     int payload = 0;
 
-    if( !--gImpl.myRefCount )
+    pthread_mutex_lock (&gImpl.myLock);
+    if (gImpl.myRefCount == 0)
+    {
+        pthread_mutex_unlock (&gImpl.myLock);
+        return MAMA_STATUS_OK;
+    }
+
+    if (!--gImpl.myRefCount)
     {
 #ifdef WITH_ENTITLEMENTS
         if( gEntitlementClient != 0 )
@@ -1119,7 +1140,6 @@ mama_close ()
             mamaStat_destroy (gUnknownMsgStat);
             gUnknownMsgStat = NULL;
         }
-
 
         if (gMessageStat)
         {
@@ -1224,10 +1244,7 @@ mama_close ()
         mama_freeAppContext(&appContext);
 
     }
-    if (gImpl.myRefCount < 0)
-    {
-        gImpl.myRefCount = 0;
-    }
+    pthread_mutex_unlock (&gImpl.myLock);
     return result;
 }
 
