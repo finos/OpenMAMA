@@ -45,8 +45,23 @@ extern int gGenerateTransportStats;
 extern int gGenerateGlobalStats;
 extern int gGenerateQueueStats;
 
-/* Function prototypes. */
-void listenerMsgCallback_invokeErrorCallback(listenerMsgCallback callback, SubjectContext *ctx, mama_status mamaStatus, mamaSubscription subscription, const char *userSymbol);
+/* *************************************************** */
+/* Private Function Prototypes. */
+/* *************************************************** */
+
+/**
+ * This function will invoke the subscription's onError callback passing in a particular error code. 
+ *
+ * @param[in] callback The impl.
+ * @param[in] ctx The subscription context.
+ * @param[in] mamaStatus The status that will be passed to the error callback.
+ * @param[in] subscription The subscription.
+ * @param[in] userSymbol The symbol.
+ */
+static void 
+listenerMsgCallbackImpl_invokeErrorCallback(listenerMsgCallback callback,
+        SubjectContext *ctx, mama_status mamaStatus, mamaSubscription
+        subscription, const char *userSymbol);
 
 /**
  * Main callback for MamaListener. This is the base strategy for
@@ -197,30 +212,6 @@ static void processPointToPointMessage (msgCallback*    callback,
      * may have been destroyed in the callback! */
 }
 
-/*	Description	:	This function will invoke the subscription's onError callback passing in a particular error code.
- */
-void listenerMsgCallback_invokeErrorCallback(listenerMsgCallback callback, SubjectContext *ctx, mama_status mamaStatus, mamaSubscription subscription, const char *userSymbol)
-{
-    /* Local variables. */
-	void *closure = NULL;
-
-	/* Get the callback object from the subscription. */
-    mamaMsgCallbacks *cbs = mamaSubscription_getUserCallbacks (subscription);
-
-	/* Wait for a response. */
-    mamaSubscription_stopWaitForResponse(subscription, ctx);
-
-	/* Get the closure from the subscription. */
-	mamaSubscription_getClosure (subscription, &closure);
-
-    mama_setLastError (MAMA_ERROR_DEFAULT);
-    cbs->onError (subscription,
-                  mamaStatus,
-                  NULL,
-                  userSymbol,
-                  closure);
-}
-
 static int isInitialMessageOrRecap (msgCallback *callback, int msgType)
 {
     return msgType == MAMA_MSG_TYPE_INITIAL        ||
@@ -287,17 +278,17 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     {
         switch (status)
         {
-		case MAMA_MSG_STATUS_NOT_PERMISSIONED:
-			listenerMsgCallback_invokeErrorCallback(callback, ctx, MAMA_STATUS_NOT_PERMISSIONED, subscription, userSymbol);
-			return;
+        case MAMA_MSG_STATUS_NOT_PERMISSIONED:
+            listenerMsgCallbackImpl_invokeErrorCallback(callback, ctx, MAMA_STATUS_NOT_PERMISSIONED, subscription, userSymbol);
+            return;
 
         case MAMA_MSG_STATUS_BAD_SYMBOL:
-			listenerMsgCallback_invokeErrorCallback(callback, ctx, MAMA_STATUS_BAD_SYMBOL, subscription, userSymbol);
-			return;
+            listenerMsgCallbackImpl_invokeErrorCallback(callback, ctx, MAMA_STATUS_BAD_SYMBOL, subscription, userSymbol);
+            return;
 
         case MAMA_MSG_STATUS_NOT_FOUND:
-			listenerMsgCallback_invokeErrorCallback(callback, ctx, MAMA_STATUS_NOT_FOUND, subscription, userSymbol);
-			return;
+            listenerMsgCallbackImpl_invokeErrorCallback(callback, ctx, MAMA_STATUS_NOT_FOUND, subscription, userSymbol);
+            return;
 
         case MAMA_MSG_STATUS_NO_SUBSCRIBERS:
         {
@@ -552,4 +543,32 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
 #else 
     return 1;
 #endif /* WITH_ENTITLEMENTS */
+}
+
+/* *************************************************** */
+/* Private Functions. */
+/* *************************************************** */
+
+/* Description: This function will invoke the subscription's onError callback passing in a particular error code.
+ */
+void listenerMsgCallbackImpl_invokeErrorCallback(listenerMsgCallback callback, SubjectContext *ctx, mama_status mamaStatus, mamaSubscription subscription, const char *userSymbol)
+{
+    /* Local variables. */
+    void *closure = NULL;
+
+    /* Get the callback object from the subscription. */
+    mamaMsgCallbacks *cbs = mamaSubscription_getUserCallbacks (subscription);
+
+    /* Wait for a response. */
+    mamaSubscription_stopWaitForResponse(subscription, ctx);
+
+    /* Get the closure from the subscription. */
+    mamaSubscription_getClosure (subscription, &closure);
+
+    mama_setLastError (MAMA_ERROR_DEFAULT);
+    cbs->onError (subscription,
+                  mamaStatus,
+                  NULL,
+                  userSymbol,
+                  closure);
 }
