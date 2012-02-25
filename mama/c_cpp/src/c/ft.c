@@ -946,18 +946,23 @@ multicastFt_setup (
 
     mamaFtMemberImpl* impl = (mamaFtMemberImpl*) member;
 
-    if (!impl || !groupName || !transport)
+    if (!impl || !groupName)
         return MAMA_STATUS_INVALID_ARG;
 
     /* Get the transport name. */
-    status = mamaTransport_getName(transport, &transportName);
-    if((MAMA_STATUS_OK != status) || (NULL == transportName) || ('\0' ==
-                transportName[0]))
+    if(transport)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "MAMA multicast FT: the transport name "
-                "is invalid");
-        return MAMA_STATUS_INVALID_ARG;
+        status = mamaTransport_getName(transport, &transportName);
+        if((MAMA_STATUS_OK != status) || (NULL == transportName) || ('\0' ==
+                    transportName[0]))
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR, "MAMA multicast FT: the transport name "
+                    "is invalid");
+            return MAMA_STATUS_INVALID_ARG;
+        }
     }
+    else
+        transportName = "ft";
 
     ftInterface = multicastFt_getProperty(propertyName,
             "mama.multicast.transport.%s.interface", transportName);
