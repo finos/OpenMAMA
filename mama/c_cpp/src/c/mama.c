@@ -1295,6 +1295,8 @@ mama_status
 mama_start (mamaBridge bridgeImpl)
 {
     mamaBridgeImpl* impl =  (mamaBridgeImpl*)bridgeImpl;
+    mama_status rval = MAMA_STATUS_OK;
+    unsigned int prevRefCnt = 0;
 
     if (!impl)
     {
@@ -1310,8 +1312,25 @@ mama_start (mamaBridge bridgeImpl)
         return MAMA_STATUS_INVALID_QUEUE;
     }
 
-    /*Delegate to the bridge specific implementation*/
-    return impl->bridgeStart (impl->mDefaultEventQueue);
+    pthread_mutex_lock(&gImpl.myLock);
+    prevRefCnt = impl->mRefCount++;
+    pthread_mutex_unlock(&gImpl.myLock);
+
+    if (prevRefCnt > 0)
+        return MAMA_STATUS_OK;
+
+    /* Delegate to the bridge specific implementation */
+    /* Can't hold lock because bridgeStart blocks */
+    rval =  impl->bridgeStart (impl->mDefaultEventQueue);
+
+    if (rval != MAMA_STATUS_OK)
+    {
+        pthread_mutex_lock(&gImpl.myLock);
+        impl->mRefCount--;
+        pthread_mutex_unlock(&gImpl.myLock);
+    }
+
+    return rval;
 }
 
 struct startBackgroundClosure
@@ -1385,6 +1404,7 @@ mama_status
 mama_stop (mamaBridge bridgeImpl)
 {
     mamaBridgeImpl* impl =  (mamaBridgeImpl*)bridgeImpl;
+    mama_status rval = MAMA_STATUS_OK;
 
     if (!impl)
     {
@@ -1402,7 +1422,19 @@ mama_stop (mamaBridge bridgeImpl)
     }
 
     /*Delegate to the bridge specific implementation*/
-    return impl->bridgeStop (impl->mDefaultEventQueue);
+    pthread_mutex_lock(&gImpl.myLock);
+    if (impl->mRefCount > 0)
+    {
+        impl->mRefCount--;
+        if(impl->mRefCount == 0)
+        {
+            rval = impl->bridgeStop (impl->mDefaultEventQueue);
+            if (MAMA_STATUS_OK != rval)
+                impl->mRefCount++;
+        }
+    }
+    pthread_mutex_unlock(&gImpl.myLock);
+    return rval;
 }
 
 /**
@@ -1749,7 +1781,6 @@ enableEntitlements (const char **servers)
 
 #endif
 
-
 void
 mamaInternal_registerBridge (mamaBridge     bridge,
                              const char*    middlewareName)
@@ -1767,6 +1798,7 @@ mamaInternal_registerBridge (mamaBridge     bridge,
     }
 
     gImpl.myBridges[middleware] = bridge;
+    ((mamaBridgeImpl*)(bridge))->mRefCount = 0;
 }
 
 mama_status
@@ -1779,6 +1811,7 @@ mama_setDefaultPayload (char id)
 
     return MAMA_STATUS_OK;
 }
+
 mama_status
 mama_loadPayloadBridge (mamaPayloadBridge* impl,
                         const char*        payloadName)
