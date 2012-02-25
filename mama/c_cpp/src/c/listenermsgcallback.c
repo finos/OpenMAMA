@@ -306,6 +306,25 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
             handleNoSubscribers (impl, msg, ctx);
             return;
         }
+
+           /* The possibly stale messages are sent by the MAMACACHE with a miscellanious type and should be translated
+            * into a quality event.
+            */
+        case MAMA_MSG_STATUS_POSSIBLY_STALE:
+        {
+            /* Verify that the type is misc. */
+            if(msgType == MAMA_MSG_TYPE_MISC)
+            {
+                /* Change the state to maybe stale and invoke the onquality callback. */
+                mamaSubscription_setPossiblyStale(subscription);
+                break;
+            }
+
+            /* Otherwise log the fact we have received an unknown message. */
+            listenerMsgCallbackImpl_logUnknownStatus(ctx, status, subscription);
+            break;
+        }
+
         case MAMA_MSG_STATUS_MISC:
         {
             if (msgType == MAMA_MSG_TYPE_REFRESH)
