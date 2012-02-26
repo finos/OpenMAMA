@@ -47,6 +47,7 @@ AC_CANONICAL_BUILD()
 AC_MSG_NOTICE([Configuring symbolic links for $build_os in $srcdir])
 case $build_os in
        linux*-*)   AC_CONFIG_LINKS([src/c/port.h:src/c/linux/port.h
+				    src/c/wombat/wInterlocked.h:src/c/linux/wInterlocked.h
 				    src/c/machine_port.c:src/c/linux/machine.c
 				    src/c/platform.c:src/c/linux/platform.c
 				    src/c/wSemaphore.c:src/c/linux/wSemaphore.c
