@@ -1,1 +1,1 @@
-../../.././src/c/linux/wConfig.h
+../../../src/c/linux/wConfig.h

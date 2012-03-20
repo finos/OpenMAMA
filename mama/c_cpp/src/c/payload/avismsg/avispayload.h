@@ -54,6 +54,9 @@ avismsgPayload_clear             (msgPayload          msg);
 extern mama_status
 avismsgPayload_destroy           (msgPayload          msg);
 extern mama_status
+avismsgPayload_setParent         (msgPayload          msg,
+                               const mamaMsg       parent);
+extern mama_status
 avismsgPayload_getByteSize       (const msgPayload    msg,
                                 mama_size_t*        size);
 

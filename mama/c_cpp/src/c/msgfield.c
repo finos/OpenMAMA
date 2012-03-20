@@ -755,7 +755,7 @@ mamaMsgField_getVectorMsg (
                                               impl->myPayloadBridge);
                 /*
                  * We do not detach the middleware message so we do
-                 * not own it. NOTE Inverse sense to the create call below
+                 * not own it. 
                  */
                 mamaMsgImpl_setPayload       (impl->myLastVectorPayloadMsg[i],
                                               payloadVector[i],
@@ -766,12 +766,12 @@ mamaMsgField_getVectorMsg (
             {
                 /*
                  * We create from payload so payload owns
-                 * We set noDelete to true to not delete the payload
+                 * We set owner to false to not delete the payload
                  */
                 mamaMsgImpl_createForPayload (&(impl->myLastVectorPayloadMsg[i]),
                                   payloadVector[i],
                                   impl->myPayloadBridge,
-                                  1);
+                                  0);
             }
 
             /*Store the maxumim vector we have encountered*/

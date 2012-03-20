@@ -55,6 +55,8 @@ do                                                                          \
                         = identifier ## Payload_clear;                      \
     msgPayloadImpl->msgPayloadDestroy                                       \
                         = identifier ## Payload_destroy;                    \
+    msgPayloadImpl->msgPayloadSetParent                                     \
+                        = identifier ## Payload_setParent;                  \
     msgPayloadImpl->msgPayloadGetByteSize                                   \
                         = identifier ## Payload_getByteSize;                \
     msgPayloadImpl->msgPayloadGetNumFields                                  \
@@ -437,6 +439,9 @@ typedef mama_status
 typedef mama_status
 (*msgPayload_destroy)          (msgPayload          msg);
 typedef mama_status
+(*msgPayload_setParent)        (msgPayload          msg,
+                                const mamaMsg       parent);
+typedef mama_status
 (*msgPayload_getByteSize)      (msgPayload          msg,
                                 mama_size_t*        size);
 typedef mama_status
@@ -456,14 +461,14 @@ typedef mama_status
                                 void*               closure);
 
 typedef mama_status
-(*msgPayload_serialize)    (const msgPayload    msg,
+(*msgPayload_serialize)        (const msgPayload    msg,
                                 const void**        buffer,
                                 mama_size_t*        bufferLength);
 
 typedef mama_status
-(*msgPayload_unSerialize)    (const msgPayload    msg,
+(*msgPayload_unSerialize)      (const msgPayload    msg,
                                 const void**        buffer,
-                                mama_size_t        bufferLength);
+                                mama_size_t         bufferLength);
 
 typedef mama_status
 (*msgPayload_getByteBuffer)    (const msgPayload    msg,
@@ -1303,6 +1308,7 @@ typedef struct mamaPayloadBridgeImpl_
     msgPayload_copy                     msgPayloadCopy;
     msgPayload_clear                    msgPayloadClear;
     msgPayload_destroy                  msgPayloadDestroy;
+    msgPayload_setParent                msgPayloadSetParent;
     msgPayload_getByteSize              msgPayloadGetByteSize;
     msgPayload_getNumFields             msgPayloadGetNumFields;
     msgPayload_getSendSubject           msgPayloadGetSendSubject;
