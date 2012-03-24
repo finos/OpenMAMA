@@ -198,6 +198,7 @@ mamaQueue_create (mamaQueue* queue,
     impl->mQueueMonitorClosure  =   NULL;
 
     /* Create the counter lock. */
+    wInterlocked_initialize(&impl->mNumberOpenObjects);
     wInterlocked_set(0, &impl->mNumberOpenObjects);
 
 
@@ -436,7 +437,7 @@ mamaQueue_decrementObjectCount(mamaQueueLockHandle *handle,
     int newCount = wInterlocked_decrement(&impl->mNumberOpenObjects);
 
     /* Write a log if something has gone wrong. */
-    if(impl->mNumberOpenObjects < 0)
+    if(newCount < 0)
     {
         mama_log(MAMA_LOG_LEVEL_ERROR, "Queue 0x%p has been dereferenced too many times.", queue);
     }
@@ -718,6 +719,9 @@ mamaQueue_destroy (mamaQueue queue)
         impl->mBridgeImpl          = NULL;
         impl->mMamaQueueBridgeImpl = NULL;
         impl->mMsg                 = NULL;
+
+        /* Destroy the counter lock */
+        wInterlocked_destroy(&impl->mNumberOpenObjects);
 
         free (impl);
 
