@@ -291,6 +291,17 @@ mamaTransport_getOutboundThrottle (mamaTransport transport,
                                    double *result);
 
 /**
+ * Disable Refreshing.
+ *
+ * @param transport the transport instance
+ * @param disable t/f.
+ */
+MAMAExpDLL
+extern void
+mamaTransport_disableRefresh (mamaTransport transport,
+								uint8_t disable);
+
+/**
  * Set the throttle rate.
  *
  * @param transport the transport.
