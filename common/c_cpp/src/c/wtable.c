@@ -236,7 +236,7 @@ int wtable_insert (wtable_t table, const char* key, void* data)
         }
 
         len = strlen(key);
-        h = hash((unsigned char *)key, len, HASH_INITVAL);
+        h = whash((unsigned char *)key, len, HASH_INITVAL);
         h = (h & hashmask(wtable->size));
         if (wtable_debug)
         {
@@ -310,7 +310,7 @@ void* wtable_lookup (wtable_t table, const char* key)
         }
 
         len = strlen(key);
-        h = hash((unsigned char *)key, len, HASH_INITVAL);
+        h = whash((unsigned char *)key, len, HASH_INITVAL);
         h = (h & hashmask(wtable->size));
         if (wtable_debug)
         {
@@ -380,7 +380,7 @@ void* wtable_remove (wtable_t table, const char* key)
         }
 
         len = strlen(key);
-        h = hash((unsigned char *)key, len, HASH_INITVAL);
+        h = whash((unsigned char *)key, len, HASH_INITVAL);
         h = (h & hashmask(wtable->size));
         if (wtable_debug)
         {
