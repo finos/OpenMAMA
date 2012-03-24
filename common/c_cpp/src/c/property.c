@@ -326,7 +326,7 @@ properties_Get( wproperty_t handle, const char* name )
    propertiesImpl_ *this = (propertiesImpl_ *)handle;
    const char*      rval = NULL;
 
-   if( name == NULL || strlen( name ) == 0 )
+   if( name == NULL || NULL == this || strlen( name ) == 0 )
    {
        return NULL;
    }
@@ -554,9 +554,19 @@ propertiesImpl_AddKey( propertiesImpl_ *this, const char* name )
         }
         else
         {
-            this->mKeys = (const char* *)realloc(
-                (void* )this->mKeys,
-                allocSize * sizeof( const char* ) );
+            void* reallocBlock = 
+                realloc((void* )this->mKeys, (allocSize * sizeof(const char*)));
+            
+            if(NULL != reallocBlock)
+            {
+                this->mKeys = (const char**)reallocBlock;
+            }
+            else
+            {
+                free((void* )this->mKeys);
+                this->mKeys = NULL;
+                return 0;
+            }
         }
     }
 
@@ -571,28 +581,36 @@ propertiesImpl_AddProperty( propertiesImpl properties,
                             const char* value )
 {
     propertiesImpl_ *this = (propertiesImpl_*)properties;
+    void* data = NULL;
+    int ret = 0;
 
-    if( gPropertyDebug )
-    {
-        fprintf (stderr,
-                 "\nAddProperty KEY: %s, VALUE: %s\n",
-                 name,
-                 value);
-    }
+    if( NULL == this )
+        return 0;
 
-    if ( NULL == wtable_lookup( this->mTable, (char* )name ))
+    if ( NULL == (data = wtable_lookup(this->mTable, (char*)name)))
     {
         if( !propertiesImpl_AddKey( this, name ))
             return 0;
     }
 
-    if (-1==wtable_insert( this->mTable, (char* )name, (caddr_t)value ))
+    if(-1 == (ret = wtable_insert( this->mTable, (char* )name, (caddr_t)value)))
     {
         return 0;
     }
 
+    if(0 == ret) /* If 0 is returned then data has been replaced. */
+    {
+        /* If existing data in the table has now been replaced then the old data must be freed. */
+        if(NULL != data)
+        {
+            free(data);
+        }
+    
+		if(gPropertyDebug)
+        {
+			fprintf(stderr, "\nAddProperty KEY: %s, VALUE: %s\n", name, value);
+		}
+    }
 
     return 1;
 }
-
-
