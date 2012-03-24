@@ -99,7 +99,9 @@ typedef enum
     /* Queue has open objects. */
     MAMA_STATUS_QUEUE_OPEN_OBJECTS          = 5002,
     /* The function isn't supported for this type of subscription. */
-    MAMA_STATUS_SUBSCRIPTION_INVALID_TYPE   = 5003
+    MAMA_STATUS_SUBSCRIPTION_INVALID_TYPE   = 5003,
+    /* The underlying transport saw a gap. */
+    MAMA_STATUS_SUBSCRIPTION_GAP            = 5004
 
 #ifdef WITH_ENTITLEMENTS
     /* Out of memory */
