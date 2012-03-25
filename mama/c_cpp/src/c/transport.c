@@ -1960,32 +1960,6 @@ mamaTransportImpl_unsetAllPossiblyStale (mamaTransport transport)
     }
 }
 
-/**
- * Return the cause and platform info for the last message processed on the
- * transport.
- *
- * @param transport       The transport.
- * @param cause           To return the cause.
- * @param platformInfo    To return the bridge specific info, under no circumstances
- *                                        should the returned object be deleted.
- */
-void
-mamaTransportImpl_getAdvisoryCauseAndPlatformInfo (mamaTransport transport,
-                                                   short*        cause,
-                                                   const void**  platformInfo)
-{
-    if (!self)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                "mamaTransportImpl_getAdvisoryCauseAndPlatformInfo (): "
-                "NULL transport.");
-        return;
-    }
-
-    *cause  = self->mCause;
-    *platformInfo = self->mPlatformInfo;
-}
-
 void
 mamaTransportImpl_getTransportIndex (mamaTransport transport,
                                      int*          transportIndex)
@@ -2363,3 +2337,44 @@ mama_status mamaTransport_removePublisher (mamaTransport transport, void *handle
     return MAMA_STATUS_OK;
 }
 
+/* *************************************************** */
+/* Internal Functions. */
+/* *************************************************** */
+
+void mamaTransportImpl_getAdvisoryCauseAndPlatformInfo(mamaTransport transport,
+        short *cause, const void **platformInfo)
+{
+    /* Get the impl. */
+    transportImpl *impl = (transportImpl *)transport;
+    if(NULL != impl)
+    {
+        /* Return the cause. */
+        *cause        = impl->mCause;
+        *platformInfo = impl->mPlatformInfo;
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "mamaTransportImpl_getAdvisoryCauseAndPlatformInfo(): NULL "
+                "transport.");
+    }
+}
+
+void mamaTransportImpl_setAdvisoryCauseAndPlatformInfo (mamaTransport transport,
+        short cause, const void *platformInfo)
+{
+    /* Get the impl. */
+    transportImpl *impl = (transportImpl *)transport;
+    if(NULL != impl)
+    {
+        /* Set the cause. */
+        impl->mCause        = cause;
+        impl->mPlatformInfo = (void*)platformInfo;
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "mamaTransportImpl_setAdvisoryCauseAndPlatformInfo(): NULL "
+                "transport.");
+    }
+}
