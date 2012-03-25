@@ -151,6 +151,7 @@ int main (int argc, const char **argv)
     mama_status         status;
     mamaMsgCallbacks    symbolListCallbacks;
     mamaSubscription    symbolListSubscription;
+    memset(&symbolListCallbacks, 0, sizeof(symbolListCallbacks));
 
     gSymbolList = (const char**) calloc (MAX_SUBSCRIPTIONS, sizeof (char*));
     gSubscriptionList = (mamaSubscription*)calloc (MAX_SUBSCRIPTIONS,
@@ -463,6 +464,7 @@ static void subscribeToSymbols (void)
     mama_status      status  = MAMA_STATUS_OK;
     size_t           i;
     mamaMsgCallbacks callbacks;
+    memset(&callbacks, 0, sizeof(callbacks));
 
     callbacks.onCreate       = subscriptionOnCreate;
     callbacks.onError        = subscriptionOnError;
