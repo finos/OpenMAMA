@@ -643,8 +643,9 @@ mamaInternal_getDefaultPayload (void)
 }
 
 mama_status
-mama_openWithProperties (const char* path,
-                         const char* filename)
+mama_openWithPropertiesCount (const char* path,
+                              const char* filename,
+                              unsigned int* count)
 {
     mama_status     result			        = MAMA_STATUS_OK;
     mama_size_t     numBridges              = 0;
@@ -695,6 +696,10 @@ mama_openWithProperties (const char* path,
     {
         if (MAMA_STATUS_OK == result)
             gImpl.myRefCount++;
+        
+        if (count)
+            *count = gImpl.myRefCount;
+
         pthread_mutex_unlock (&gImpl.myLock);
         return result;
     }
@@ -757,6 +762,9 @@ mama_openWithProperties (const char* path,
             mama_log (MAMA_LOG_LEVEL_ERROR,
                       "mama_openWithProperties(): "
                       "Could not create stats generator.");
+            if (count)
+                *count = gImpl.myRefCount;
+            
             pthread_mutex_unlock (&gImpl.myLock);
             return result;
         }
@@ -874,6 +882,9 @@ mama_openWithProperties (const char* path,
         mama_log (MAMA_LOG_LEVEL_SEVERE,
                   "mama_openWithProperties(): "
                   "At least one bridge must be specified");
+        if (count)
+            *count = gImpl.myRefCount;
+        
         pthread_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
@@ -883,6 +894,9 @@ mama_openWithProperties (const char* path,
         mama_log (MAMA_LOG_LEVEL_SEVERE,
                   "mama_openWithProperties(): "
                   "At least one payload must be specified");
+        if (count)
+            *count = gImpl.myRefCount;
+        
         pthread_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
@@ -901,6 +915,10 @@ mama_openWithProperties (const char* path,
                   "mama_openWithProperties(): "
                   "Error connecting to Entitlements Server");
         mama_close();
+        
+        if (count)
+            *count = gImpl.myRefCount;
+
         pthread_mutex_unlock (&gImpl.myLock);
         return result;
     }
@@ -938,6 +956,8 @@ mama_openWithProperties (const char* path,
             if (MAMA_STATUS_OK != (result = mamaBridgeImpl_getInternalEventQueue (bridge,
                                                                &statsGenQueue)))
             {
+                if (count)
+                    *count = gImpl.myRefCount;
                 pthread_mutex_unlock (&gImpl.myLock);
                 return result;
             }
@@ -948,6 +968,8 @@ mama_openWithProperties (const char* path,
             mama_log (MAMA_LOG_LEVEL_ERROR,
                       "mama_openWithProperties(): "
                       "Could not set queue for stats generator.");
+            if (count)
+                *count = gImpl.myRefCount;
             pthread_mutex_unlock (&gImpl.myLock);
             return result;
         }
@@ -957,12 +979,16 @@ mama_openWithProperties (const char* path,
             mama_log (MAMA_LOG_LEVEL_ERROR,
                       "mama_openWithProperties(): "
                       "Failed to enable stats logging");
+            if (count)
+                *count = gImpl.myRefCount;
             pthread_mutex_unlock (&gImpl.myLock);
             return result;
         }
     }
 
     gImpl.myRefCount++;
+    if (count)
+        *count = gImpl.myRefCount;
     pthread_mutex_unlock (&gImpl.myLock);
     return result;
 }
@@ -972,7 +998,14 @@ mama_open ()
 {
     /*Passing NULL as path and filename will result in the
      default behaviour - mama.properties on $WOMBAT_PATH*/
-    return mama_openWithProperties (NULL, NULL);
+    return mama_openWithPropertiesCount (NULL, NULL, NULL);
+}
+
+mama_status
+mama_openWithProperties (const char* path,
+                         const char* filename)
+{
+    return mama_openWithPropertiesCount (path, filename, NULL);
 }
 
 mama_status
@@ -1079,7 +1112,7 @@ mama_getVersion (mamaBridge bridgeImpl)
 }
 
 mama_status
-mama_close ()
+mama_closeCount (unsigned int* count)
 {
     mama_status    result     = MAMA_STATUS_OK;
     mamaMiddleware middleware = 0;
@@ -1088,6 +1121,8 @@ mama_close ()
     pthread_mutex_lock (&gImpl.myLock);
     if (gImpl.myRefCount == 0)
     {
+        if (count)
+            *count = gImpl.myRefCount;
         pthread_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_OK;
     }
@@ -1113,11 +1148,8 @@ mama_close ()
         /* Look for a bridge for each of the payloads and close them */
         for (payload = 0; payload != MAMA_PAYLOAD_MAX; ++payload)
         {
-        	mamaPayloadBridgeImpl* impl = (mamaPayloadBridgeImpl*) gImpl.myPayloads [(uint8_t)payload];
-            if (impl)
-            {
-
-            }
+        	/* mamaPayloadBridgeImpl* impl = (mamaPayloadBridgeImpl*)
+             * gImpl.myPayloads [(uint8_t)payload];*/
             gImpl.myPayloads[(uint8_t)payload] = NULL;
         }
 
@@ -1244,8 +1276,16 @@ mama_close ()
         mama_freeAppContext(&appContext);
 
     }
+    if (count)
+        *count = gImpl.myRefCount;
     pthread_mutex_unlock (&gImpl.myLock);
     return result;
+}
+
+mama_status
+mama_close (void)
+{
+    return mama_closeCount (NULL);
 }
 
 /**
