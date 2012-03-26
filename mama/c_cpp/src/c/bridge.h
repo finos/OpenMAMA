@@ -681,6 +681,9 @@ typedef mama_status
  */
 typedef struct mamaBridgeImpl
 {
+    /* Used by mama_start() and mama_stop(). */
+    unsigned int mRefCount;
+
     /*The default event queue is now middleware specific. (Originally global)*/
     mamaQueue mDefaultEventQueue;
 
