@@ -25,9 +25,9 @@
 # VERSION INFO
 #
 #################################################
-m4_define([product_version_major],     [4])
+m4_define([product_version_major],     [6])
 m4_define([product_version_minor],     [0])
-m4_define([product_version_release],   [4a])
+m4_define([product_version_release],   [0rc15])
 m4_define([product_full_version],[product_version_major.product_version_minor.product_version_release])
 
 
@@ -47,6 +47,8 @@ AC_CANONICAL_BUILD()
 AC_MSG_NOTICE([Configuring symbolic links for $build_os in $srcdir])
 case $build_os in
        linux*-*)   AC_CONFIG_LINKS([$srcdir/src/c/wombat/port.h:src/c/linux/port.h
+				    $srcdir/src/c/wombat/wMath.h:src/c/linux/wMath.h
+				    $srcdir/src/c/wombat/wUuid.h:src/c/linux/wUuid.h
 				    $srcdir/src/c/wombat/wConfig.h:src/c/linux/wConfig.h
 				    $srcdir/src/c/wombat/wInterlocked.h:src/c/linux/wInterlocked.h
 				    $srcdir/src/c/machine_port.c:src/c/linux/machine.c

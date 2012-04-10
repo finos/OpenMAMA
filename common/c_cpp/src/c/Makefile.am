@@ -49,13 +49,15 @@ nobase_include_HEADERS = \
     wombat/wInterlocked.h \
     wombat/wSemaphore.h \
     wombat/wincompat.h \
-    wombat/wtable.h
+    wombat/wMessageStats.h \
+    wombat/wtable.h \
+    wombat/wUuid.h
 
 if USE_GCC_FLAGS
 CPPFLAGS += -pedantic -Wno-long-long -D_GNU_SOURCE -fPIC 
 endif
 
-LIBS     += -ldl
+LIBS     += -ldl -luuid
 
 libwombatcommon_la_SOURCES = \
     MRSWLock.c \
@@ -75,4 +77,5 @@ libwombatcommon_la_SOURCES = \
     strutils.c \
     wSemaphore.c \
     wlock.c \
+    wMessageStats.c \
     wtable.c
