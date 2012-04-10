@@ -84,11 +84,7 @@ int createTimerHeap (timerHeap* heap)
 
     wthread_mutex_init (&heapImpl->mEndingLock, NULL);
   
-    if (wthread_cond_init (&heapImpl->mEndingCond, NULL) != 0)
-    {
-        free (heapImpl);
-        return -1;
-    }
+    wthread_cond_init  (&heapImpl->mEndingCond, NULL);
 
     RB_INIT (&heapImpl->mTimeTree);
 
@@ -152,7 +148,7 @@ void* dispatchEntry (void *closure)
                 int numRead = 0;
                 do
                 {
-                    numRead = read(heap->mSockPair[0], &buff, sizeof (buff));
+                    numRead = wread(heap->mSockPair[0], &buff, sizeof (buff));
                     if (numRead < 0)
                     {
                         if (errno == EINTR)
@@ -221,7 +217,7 @@ int destroyHeap (timerHeap heap)
         timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
 
 writeagain:
-        if (write (heapImpl->mSockPair[1], "d", 1) < 0)
+        if (wwrite (heapImpl->mSockPair[1], "d", 1) < 0)
         {
             if ((errno == EINTR) || (errno == EAGAIN))
                 goto writeagain;
@@ -277,7 +273,7 @@ int createTimer (timerElement* timer, timerHeap heap, timerFireCb cb, struct tim
         if (kickPipe)
         {
 writeagain:
-            if (write (heapImpl->mSockPair[1], "w", 1) < 0)
+            if (wwrite (heapImpl->mSockPair[1], "w", 1) < 0)
             {
                 if ((errno == EINTR) || (errno == EAGAIN))
                     goto writeagain;

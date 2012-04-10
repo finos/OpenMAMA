@@ -86,6 +86,11 @@ typedef __int64 w_i64_t;
 #define PATH_DELIM ';'
 
 #define PATHSEP  "\\"
+COMMONExpDLL int 
+wsocketstartup (void);
+
+COMMONExpDLL void
+wsocketcleanup (void);
 
 /* Socket Pair and set non blocking */
 COMMONExpDLL int
@@ -143,8 +148,8 @@ int wsem_getvalue (wsem_t*, int* items);
 #define strdup _strdup
 #define strncasecmp _strnicmp
 #define strcasecmp  _stricmp
-#define read _read
-#define write _write
+#define wread(x,y,z) recv((x),(y),(z),0)
+#define wwrite(x,y,z) send((x),(y),(z),0)
 #define close _close
 #define sleep(x) Sleep( (x)*1000)
 

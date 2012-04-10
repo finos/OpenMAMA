@@ -28,15 +28,9 @@
 #ifndef  PORT_LINUX_H__
 #define  PORT_LINUX_H__
 
-#if defined (__cplusplus)
-extern "C"
-{
-#endif
-
 #include <pthread.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
-#include <sys/mman.h>
 #include <sys/vfs.h>
 #include <sys/param.h>
 #include <sys/resource.h>
@@ -44,9 +38,9 @@ extern "C"
 #include <sys/times.h>
 #include <sys/socket.h>
 #include <sys/utsname.h>
+#include <sys/mman.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
-#include <net/if.h>
 #include <netdb.h>
 #include <semaphore.h>
 #include <dirent.h>
@@ -57,6 +51,10 @@ extern "C"
 
 #include "wConfig.h"
 
+#if defined (__cplusplus)
+extern "C"
+{
+#endif
 /* PTHREAD static locks are easy */
 typedef pthread_mutex_t wthread_static_mutex_t;
 #define WSTATIC_MUTEX_INITIALIZER PTHREAD_MUTEX_INITIALIZER
@@ -108,12 +106,17 @@ typedef pthread_key_t wthread_key_t;
 int wsem_timedwait (wsem_t* sem, unsigned int ts);
 
 /* Windows does not support AF_UNIX sockets, socketpairs, etc */
+#define wsocketstartup()
+#define wsocketcleanup()
+
 #define wsocketpair(dom, type, prot, pair) (socketpair((dom),(type),(prot),(pair)))
 #define wsetnonblock(s) (fcntl((s), F_SETFL, fcntl((s), F_GETFL) | O_NONBLOCK))
+#define wread	read    
+#define wwrite	write   
 
 #define CPU_AFFINITY_SET 				cpu_set_t
 
-/* User pthreads for linux */
+/* Use pthreads for linux */
 #define INVALID_THREAD (-1)
 
 #define wthread_mutex_t         pthread_mutex_t    

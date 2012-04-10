@@ -22,6 +22,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <net/if.h>
 #include "wombat/wCommon.h"
 
 
