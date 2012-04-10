@@ -22,7 +22,7 @@
 #ifndef _WOMBAT_ENVIRONMENT_H
 #define _WOMBAT_ENVIRONMENT_H
 
-#include "wConfig.h"
+#include "wombat/wConfig.h"
 
 /**
  * This function will delete an environment varible.
