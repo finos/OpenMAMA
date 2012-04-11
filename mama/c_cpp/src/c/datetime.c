@@ -662,11 +662,11 @@ mamaDateTime_addMicroseconds(mamaDateTime dateTime,
         {
             if(addMicroseconds >= -1000000)
             {
-            	mamaDateTime_addWholeSeconds (dateTime, -1);
+                mamaDateTime_addWholeSeconds (dateTime, -1);
             }
             else
             {
-            	mamaDateTime_addWholeSeconds (dateTime, addMicroseconds/1000000 - 1);
+                mamaDateTime_addWholeSeconds (dateTime, addMicroseconds/1000000 - 1);
             }
             addMicroseconds %= 1000000;
             if(addMicroseconds < 0) addMicroseconds += 1000000;
@@ -796,72 +796,72 @@ mamaDateTime_getEpochTimeSeconds(const mamaDateTime dateTime,
 
 mama_status mamaDateTime_addTodayToDateTime(mamaDateTime destination)
 {
-	mama_status ret = MAMA_STATUS_SYSTEM_ERROR;
+    mama_status ret = MAMA_STATUS_SYSTEM_ERROR;
 
-	/* Create a new date time. */
-	mama_time_t time;
-	mamaDateTimeImpl_clear(time);
-	{
-		/* Get the current time of day. */
-		struct timeval now;
-		memset(&now, 0, sizeof(now));
-		if(gettimeofday(&now, NULL) == 0)
-		{
-			/* Initialise the time structure with the date. */
-			mamaDateTimeImpl_setSeconds      (time, now.tv_sec);
-			mamaDateTimeImpl_setMicroSeconds (time, now.tv_usec);
-			mamaDateTimeImpl_setPrecision    (time, 6);
-			mamaDateTimeImpl_setHasDate      (time);
-			mamaDateTimeImpl_setHasTime      (time);
-			{
-				/* Get existing number of seconds and remove any full-day seconds
-				 * from the destination.
-				 */
-				mama_u32_t tmpSeconds =  mamaDateTimeImpl_getSeconds(*destination) % SECONDS_IN_A_DAY;
+    /* Create a new date time. */
+    mama_time_t time;
+    mamaDateTimeImpl_clear(time);
+    {
+        /* Get the current time of day. */
+        struct timeval now;
+        memset(&now, 0, sizeof(now));
+        if(gettimeofday(&now, NULL) == 0)
+        {
+            /* Initialise the time structure with the date. */
+            mamaDateTimeImpl_setSeconds      (time, now.tv_sec);
+            mamaDateTimeImpl_setMicroSeconds (time, now.tv_usec);
+            mamaDateTimeImpl_setPrecision    (time, 6);
+            mamaDateTimeImpl_setHasDate      (time);
+            mamaDateTimeImpl_setHasTime      (time);
+            {
+                /* Get existing number of seconds and remove any full-day seconds
+                 * from the destination.
+                 */
+                mama_u32_t tmpSeconds =  mamaDateTimeImpl_getSeconds(*destination) % SECONDS_IN_A_DAY;
 
-				/* Append the date from today. */
-				tmpSeconds += (mamaDateTimeImpl_getSeconds(time) / SECONDS_IN_A_DAY) * SECONDS_IN_A_DAY;
+                /* Append the date from today. */
+                tmpSeconds += (mamaDateTimeImpl_getSeconds(time) / SECONDS_IN_A_DAY) * SECONDS_IN_A_DAY;
 
-				/* Set the result in the destination. */
-				mamaDateTimeImpl_setSeconds(*destination, tmpSeconds);
-				mamaDateTimeImpl_setHasDate(*destination);
+                /* Set the result in the destination. */
+                mamaDateTimeImpl_setSeconds(*destination, tmpSeconds);
+                mamaDateTimeImpl_setHasDate(*destination);
 
-				/* Function succeeded. */
-				ret = MAMA_STATUS_OK;
-			}
-		}
-	}
+                /* Function succeeded. */
+                ret = MAMA_STATUS_OK;
+            }
+        }
+    }
 
-	return ret;
+    return ret;
 }
 
 mama_status
 mamaDateTime_getEpochTimeSecondsWithCheck(const mamaDateTime dateTime,
                                           mama_f64_t*        seconds)
 {
-	mama_status ret = MAMA_STATUS_NULL_ARG;
-	if((dateTime != NULL) && (seconds != NULL))
-	{
-		/* Check to see if the date time has got a date value set. */
-		uint8_t hasDate = mamaDateTimeImpl_getHasDate(*dateTime);
+    mama_status ret = MAMA_STATUS_NULL_ARG;
+    if((dateTime != NULL) && (seconds != NULL))
+    {
+        /* Check to see if the date time has got a date value set. */
+        uint8_t hasDate = mamaDateTimeImpl_getHasDate(*dateTime);
 
-		/* No date value present, add today's date to the time value. */
-		if(hasDate == 0)
-		{
-			ret = mamaDateTime_addTodayToDateTime(dateTime);
-			if(ret == MAMA_STATUS_OK)
-			{
-				/* Get the seconds as normal. */
-				ret = mamaDateTime_getEpochTimeSecondsWithTz(dateTime, seconds, NULL);
-			}
-		}
+        /* No date value present, add today's date to the time value. */
+        if(hasDate == 0)
+        {
+            ret = mamaDateTime_addTodayToDateTime(dateTime);
+            if(ret == MAMA_STATUS_OK)
+            {
+                /* Get the seconds as normal. */
+                ret = mamaDateTime_getEpochTimeSecondsWithTz(dateTime, seconds, NULL);
+            }
+        }
 
-		/* Date value present, get the seconds as normal. */
-		else
-		{
-			ret = mamaDateTime_getEpochTimeSecondsWithTz(dateTime, seconds, NULL);
-		}
-	}
+        /* Date value present, get the seconds as normal. */
+        else
+        {
+            ret = mamaDateTime_getEpochTimeSecondsWithTz(dateTime, seconds, NULL);
+        }
+    }
 
     return ret;
 }
@@ -973,6 +973,7 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
     struct tm tmValue;
     size_t    bytesUsed;
     size_t    precision;
+    uint8_t   hasTime = 0;
 
     if (!dateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
@@ -980,16 +981,20 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
     seconds = (time_t) mamaDateTimeImpl_getSeconds(*dateTime);
     utcTm (&tmValue, seconds);
     buf[0] = '\0';
+    hasTime = mamaDateTimeImpl_getHasTime (*dateTime);
     if (mamaDateTimeImpl_getHasDate(*dateTime))
     {
-        bytesUsed = strftime (buf, bufMaxLen, "%Y-%m-%d ", &tmValue);
+        if (hasTime)
+            bytesUsed = strftime (buf, bufMaxLen, "%Y-%m-%d ", &tmValue);
+        else
+            bytesUsed = strftime (buf, bufMaxLen, "%Y-%m-%d", &tmValue);
         if (bytesUsed > 0)
         {
             buf       += bytesUsed;
             bufMaxLen -= bytesUsed;
         }
     }
-    if (mamaDateTimeImpl_getHasTime(*dateTime))
+    if (hasTime)
     {
         bytesUsed = strftime (buf, bufMaxLen, "%H:%M:%S", &tmValue);
         if (bytesUsed > 0)
@@ -1645,9 +1650,25 @@ unsigned long  makeTime (
 {
     struct tm timeInfo;
 
-    timeInfo.tm_year  = year - 1900;
-    timeInfo.tm_mon   = mon  - 1;
-    timeInfo.tm_mday  = day;
+    /* tm_year stores the years since 1900
+     * must not be less than 70 */
+    if (year > 1970)
+        timeInfo.tm_year  = year - 1900;
+    else
+        timeInfo.tm_year  = 70;
+
+    /* tm_mon stores the months since Jan (0 to 11) */
+    if (mon > 0)
+        timeInfo.tm_mon   = mon  - 1;
+    else
+        timeInfo.tm_mon   = 0;
+
+    /* day of the month (1 to 31) */
+    if (day > 0)
+        timeInfo.tm_mday  = day;
+    else
+        timeInfo.tm_mday = 1;
+
     timeInfo.tm_hour  = hour;
     timeInfo.tm_min   = min;
     timeInfo.tm_sec   = sec;
