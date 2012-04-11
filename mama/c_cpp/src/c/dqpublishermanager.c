@@ -114,7 +114,9 @@ dqPublisherImplCreateCb (mamaSubscription subsc, void* closure)
 {
     mamaDQPublisherManagerImpl* impl = (mamaDQPublisherManagerImpl*) (closure);
 
-    impl->mUserCallbacks.onCreate ((mamaDQPublisherManager)impl);
+    if(NULL != impl)
+        if(NULL != impl->mUserCallbacks.onCreate)
+            impl->mUserCallbacks.onCreate ((mamaDQPublisherManager)impl);
 }
 
 
@@ -263,22 +265,20 @@ mama_status mamaDQPublisherManager_create (
     impl->mNameSpace =  strdup(sourcename);
     strcat(topic, ".");
     strcat(topic, sourcename);
+    impl->mPublisherMap =  wtable_create  (topic, NUM_BUCKETS);
 
     mamaSubscription_allocate (&impl->mSubscription);    
+    mamaPublisher_create (&impl->mPublisher,
+                   transport,
+                   MAMA_CM_TOPIC,
+                   NULL,
+                   NULL);
     mamaSubscription_createBasic (impl->mSubscription,
                                    transport,
                                    queue,
                                    &basicSubscCbs,
                                    topic,
                                    impl);
-
-    mamaPublisher_create (&impl->mPublisher,
-                   transport,
-                   MAMA_CM_TOPIC,
-                   NULL,
-                   NULL);
-
-    impl->mPublisherMap =  wtable_create  (topic, NUM_BUCKETS);
 
     return MAMA_STATUS_OK;
 }
@@ -298,15 +298,10 @@ mama_status mamaDQPublisherManager_addPublisher (
 {
     mamaPublishTopic* newTopic = NULL;
     mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
-
-    if (wtable_lookup (impl->mPublisherMap , ( char* )symbol))
-        return (MAMA_STATUS_INVALID_ARG);
-
-
     newTopic =  (mamaPublishTopic*) wtable_lookup  (impl->mPublisherMap, (char*)symbol);
 
 
-    if (newTopic)
+    if (!newTopic)
     {
         newTopic =  (mamaPublishTopic*) calloc (1, sizeof (mamaPublishTopic));
 
@@ -408,10 +403,11 @@ mama_status mamaDQPublisherManager_destroyPublisher (
     mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
     mamaPublishTopic* newTopic = NULL;
 
-    if ((newTopic =  wtable_lookup (impl->mPublisherMap , ( char* )symbol)))
+    if (!(newTopic =  wtable_lookup (impl->mPublisherMap , ( char* )symbol)))
         return (MAMA_STATUS_INVALID_ARG);
 
     mamaDQPublisher_destroy(newTopic->pub);
+    wtable_remove (impl->mPublisherMap, symbol);
 
     free  ((void*)newTopic->symbol);
     free  ((void*)newTopic);
