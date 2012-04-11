@@ -116,6 +116,8 @@ do                                                                             \
                     implIdentifier ## BridgeMamaTransport_destroy;             \
     bridgeImpl->bridgeMamaTransportCreate   =                                  \
                     implIdentifier ## BridgeMamaTransport_create;              \
+    bridgeImpl->bridgeMamaTransportForceClientDisconnect   =                   \
+                    implIdentifier ## BridgeMamaTransport_forceClientDisconnect;\
     bridgeImpl->bridgeMamaTransportFindConnection   =                          \
                     implIdentifier ## BridgeMamaTransport_findConnection;      \
     bridgeImpl->bridgeMamaTransportGetAllConnections    =                      \
@@ -269,7 +271,7 @@ typedef mama_status (*bridge_stop)(mamaQueue defaultEventQueue);
 /*Called by mama_getVersion()*/
 typedef const char* (*bridge_getVersion)(void);
 typedef const char* (*bridge_getName)(void);
-typedef mama_status (*bridge_getDefaultPayloadId)(char**name, char* id);
+typedef mama_status (*bridge_getDefaultPayloadId)(char***name, char** id);
 
 /*===================================================================
  =               mamaQueue bridge function pointers                 =
@@ -330,6 +332,11 @@ typedef mama_status (*bridgeMamaTransport_destroy)(transportBridge transport);
 typedef mama_status (*bridgeMamaTransport_create)(transportBridge *result,
                                                   const char*      name,
                                                   mamaTransport    parent);
+typedef mama_status (*bridgeMamaTransport_forceClientDisconnect)
+                               (transportBridge* transports,
+                                int              numTransports,
+                                const char*      ipAddress,
+                                uint16_t         port);
 /* Find a connection with specified IP Address and Port. If the port is 0, the
  * call returns the first connection with the specified IP Address. If a
  * connection is not found the method returns MAMA_STATUS_NOT_FOUND and
@@ -735,6 +742,8 @@ typedef struct mamaBridgeImpl
     bridgeMamaTransport_isValid             bridgeMamaTransportIsValid;
     bridgeMamaTransport_destroy             bridgeMamaTransportDestroy;
     bridgeMamaTransport_create              bridgeMamaTransportCreate;
+    bridgeMamaTransport_forceClientDisconnect
+                                bridgeMamaTransportForceClientDisconnect;
     bridgeMamaTransport_findConnection      bridgeMamaTransportFindConnection;
     bridgeMamaTransport_getAllConnections
                                 bridgeMamaTransportGetAllConnections;

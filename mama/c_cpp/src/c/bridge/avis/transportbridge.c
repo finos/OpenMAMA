@@ -29,6 +29,7 @@
 #include <mama/types.h>
 #include <transportimpl.h>
 #include <timers.h>
+#include <errno.h>
 #include "transportbridge.h"
 #include "avisbridgefunctions.h"
 #include "avisdefs.h"
@@ -59,14 +60,12 @@ void log_avis_error(MamaLogLevel logLevel, Elvin* avis)
 
 void closeListener(Elvin* avis, CloseReason reason, const char* message, void* closure)
 {
+    const char* errMsg;
     if (avisBridge(closure) == NULL) {
         mama_log (MAMA_LOG_LEVEL_FINE, "Avis closeListener: could not get Avis bridge");
         return;
     }
 
-    // TODO -- serialize access across multiple threads
-
-    const char* errMsg;
     switch( reason )
     {
         case REASON_CLIENT_SHUTDOWN:            errMsg = "Avis client shutdown"; break;
@@ -82,16 +81,19 @@ void closeListener(Elvin* avis, CloseReason reason, const char* message, void* c
 static const char*
 getURL( const char *name )
 {
+    int len = 0;
+    char* buff = NULL;
+    const char* property = NULL;
     if (name == NULL)
         return NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINE, "initializing Avis transport: %s", name);
-    int len = strlen(name) + strlen( TPORT_PREFIX ) + strlen(TPORT_PARAM) + 4;
-    char* buff = (char *)alloca( len );
+    len = strlen(name) + strlen( TPORT_PREFIX ) + strlen(TPORT_PARAM) + 4;
+    buff = (char *)alloca( len );
     memset(buff, '\0', len);
     snprintf( buff, len, "%s.%s.%s", TPORT_PREFIX, name, TPORT_PARAM );
 
-    const char* property = properties_Get( mamaInternal_getProperties(), buff );
+    property = properties_Get( mamaInternal_getProperties(), buff );
     if ( property == NULL )
       return DEFAULT_URL;
 
@@ -123,13 +125,13 @@ void* avisDispatchThread(void* closure)
 
 mama_status avisTransportBridge_start(avisTransportBridge* transportBridge)
 {
-   CHECK_TRANSPORT(transportBridge); 
-   
    // stop Avis event loop
-   pthread_t tid;
+   wthread_t tid;
    int rc;
-   if (0 != (rc = pthread_create(&tid, NULL, avisDispatchThread, transportBridge))) {
-      mama_log (MAMA_LOG_LEVEL_ERROR, "pthread_create returned %d", rc);
+   CHECK_TRANSPORT(transportBridge); 
+
+   if (0 != (rc = wthread_create(&tid, NULL, avisDispatchThread, transportBridge))) {
+      mama_log (MAMA_LOG_LEVEL_ERROR, "wthread_create returned %d", rc);
       return MAMA_STATUS_SYSTEM_ERROR;
    }
 
@@ -193,22 +195,24 @@ avisBridgeMamaTransport_create (transportBridge* result,
                                  const char*      name,
                                  mamaTransport    mamaTport )
 {
-    avisTransportBridge* transport =
-        (avisTransportBridge*)calloc( 1, sizeof( avisTransportBridge ) );
+    mama_status          status;
+    avisBridgeImpl*      avisBridge = NULL;
+    avisTransportBridge* transport  = NULL;
+    mamaBridgeImpl*      bridgeImpl = NULL;
+    const char*          url        = NULL; 
+    
+    transport = (avisTransportBridge*)calloc( 1, sizeof( avisTransportBridge ) );
     if (transport == NULL)
         return MAMA_STATUS_NOMEM;
 
     transport->mTransport = (mamaTransport) mamaTport;
 
-    // TODO -- serialize access across multiple threads
-    mamaBridgeImpl* bridgeImpl = mamaTransportImpl_getBridgeImpl(mamaTport);
+    bridgeImpl = mamaTransportImpl_getBridgeImpl(mamaTport);
     if (!bridgeImpl) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaTransport_create(): Could not get bridge");
         free(transport);
         return MAMA_STATUS_PLATFORM;
     }
-    mama_status status;
-    avisBridgeImpl* avisBridge;
     if (MAMA_STATUS_OK != (status = mamaBridgeImpl_getClosure((mamaBridge) bridgeImpl, (void**) &avisBridge))) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaTransport_create(): Could not get Avis bridge object");
         free(transport);
@@ -229,7 +233,7 @@ avisBridgeMamaTransport_create (transportBridge* result,
     }
 
     // open the server connection
-    const char* url = getURL(name);
+    url = getURL(name);
     if (url == NULL) {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "No %s property defined for transport : %s", TPORT_PARAM, name);
         return MAMA_STATUS_INVALID_ARG;
@@ -253,15 +257,17 @@ avisBridgeMamaTransport_create (transportBridge* result,
 mama_status
 avisBridgeMamaTransport_destroy (transportBridge transport)
 {
-    // TODO -- serialize access across multiple threads
-    mamaBridgeImpl* bridgeImpl = mamaTransportImpl_getBridgeImpl(avisTransport(transport)->mTransport);
+    mama_status status;
+    avisBridgeImpl* avisBridge = NULL;
+    mamaBridgeImpl* bridgeImpl = NULL;
+    
+    
+    bridgeImpl = mamaTransportImpl_getBridgeImpl(avisTransport(transport)->mTransport);
     if (!bridgeImpl) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaTransport_create(): Could not get bridge");
         free(transport);
         return MAMA_STATUS_PLATFORM;
     }
-    mama_status status;
-    avisBridgeImpl* avisBridge;
     if (MAMA_STATUS_OK != (status = mamaBridgeImpl_getClosure((mamaBridge) bridgeImpl, (void**) &avisBridge))) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaTransport_create(): Could not get Avis bridge object");
         free(transport);
@@ -283,6 +289,15 @@ avisBridgeMamaTransport_isValid (transportBridge transport)
     if (avisTransport(transport) == 0) return 0;
     if (avisTransport(transport)->mAvis == 0) return 0;
     return 1;
+}
+
+mama_status
+avisBridgeMamaTransport_forceClientDisconnect (transportBridge* transports,
+                                              int              numTransports,
+                                              const char*      ipAddress,
+                                              uint16_t         port)
+{
+    return MAMA_STATUS_NOT_IMPLEMENTED;
 }
 
 mama_status
