@@ -115,6 +115,18 @@ typedef enum
 
 } mamaSubscriptionState;
 
+typedef enum
+{
+    DQ_SCHEME_DELIVER_ALL,
+    DQ_SCHEME_INGORE_DUPS
+} dqStartegyScheme;
+
+
+typedef enum
+{
+    DQ_FT_DO_NOT_WAIT_FOR_RECAP,
+    DQ_FT_WAIT_FOR_RECAP
+}dqftStrategyScheme;
 /* *************************************************** */
 /* Type Defines. */
 /* *************************************************** */

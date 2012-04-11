@@ -162,6 +162,9 @@ typedef struct transportImpl_
 
     uint8_t                 mDisableDisconnectCb;
     uint8_t					mDisableRefresh;
+    dqStartegyScheme        mDQStratScheme;
+    dqftStrategyScheme      mFTStratScheme;
+
     preInitialScheme         mPreInitialScheme;
 } transportImpl;
 
@@ -177,6 +180,8 @@ init (transportImpl* transport, int createResponder)
     self->mCause         = 0;
     self->mPlatformInfo  = NULL;
     self->mPreInitialScheme = PRE_INITIAL_SCHEME_ON_GAP;
+    self->mDQStratScheme    = DQ_SCHEME_DELIVER_ALL;
+    self->mFTStratScheme    = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
 
 
     mama_log (MAMA_LOG_LEVEL_FINEST,
@@ -365,6 +370,72 @@ static void setPreInitialStrategy (mamaTransport transport)
                   "%s: Using default preinitial strategy: ON_GAP", self->mName);
     }
 }
+static void setDQStrategy (mamaTransport transport)
+{
+    const char* propValue     = NULL;
+    char propNameBuf[256];
+
+    if (!self) return;
+
+    snprintf (propNameBuf, 256, "mama.transport.%s.dqstrategy", self->mName);
+
+    propValue = properties_Get(mamaInternal_getProperties(),
+                               propNameBuf);
+
+    if (NULL!=propValue)
+    {
+        mama_log (MAMA_LOG_LEVEL_NORMAL, "Setting %s=%s",
+                  propNameBuf, propValue);
+
+        if (0==strcmp (propValue, "ignoredups"))
+        {
+            self->mDQStratScheme = DQ_SCHEME_INGORE_DUPS;
+        }
+        else
+        {
+            self->mDQStratScheme = DQ_SCHEME_DELIVER_ALL;
+        }
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_NORMAL,
+                  "%s: Using default dq strategy: DQ_SCHEME_DELIVER_ALL", self->mName);
+    }
+}
+
+static void setFtStrategy (mamaTransport transport)
+{
+    const char* propValue     = NULL;
+    char propNameBuf[256];
+
+    if (!self) return;
+
+    snprintf (propNameBuf, 256, "mama.transport.%s.ftstrategy", self->mName);
+
+    propValue = properties_Get(mamaInternal_getProperties(),
+                               propNameBuf);
+
+    if (NULL!=propValue)
+    {
+        mama_log (MAMA_LOG_LEVEL_NORMAL, "Setting %s=%s",
+                  propNameBuf, propValue);
+
+        if (0==strcmp (propValue, "waitforrecap"))
+        {
+            self->mFTStratScheme = DQ_FT_WAIT_FOR_RECAP;
+        }
+        else
+        {
+            self->mFTStratScheme = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
+        }
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_NORMAL,
+                  "%s: Using default ft strategy: DQ_FT_DO_NOT_WAIT_FOR_RECAP", self->mName);
+    }
+}
+
 /**
  * Check property to disable refresh messages. Undocumented.
  *
@@ -756,6 +827,8 @@ mamaTransport_create (mamaTransport transport,
 
 
     setPreInitialStrategy ((mamaTransport)self);
+    setDQStrategy (self);
+    setFtStrategy (self);
 
     if (mamaTransportImpl_disableDisconnectCb (name))
     {
@@ -1584,6 +1657,25 @@ mamaTransportImpl_getPreInitialScheme (mamaTransport transport)
     return PRE_INITIAL_SCHEME_ON_GAP;
 }
 
+dqStartegyScheme
+mamaTransportImpl_getDqStrategyScheme (mamaTransport transport)
+{
+    if (self)
+    {
+        return self->mDQStratScheme;
+    }
+    return DQ_SCHEME_DELIVER_ALL;
+}
+
+dqftStrategyScheme
+mamaTransportImpl_getFtStrategyScheme (mamaTransport transport)
+{
+    if (self)
+    {
+        return self->mFTStratScheme;
+    }
+    return DQ_FT_DO_NOT_WAIT_FOR_RECAP;
+}
 /* Process an advisory message and invokes callbacks
  *                    on all listeners.
  * @param transport The transport.
