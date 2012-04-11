@@ -381,6 +381,10 @@ mama_status mamaDQPublisherManager_createPublisher (
                 return status;
             }
 
+            mamaDQPublisher_setCache(*newPublisher, cache);
+            mamaDQPublisher_setSenderId(*newPublisher,  impl->mSenderId);
+            mamaDQPublisher_setStatus(*newPublisher,  impl->mStatus);
+            mamaDQPublisher_setSeqNum(*newPublisher, impl->mSeqNum);
             if (wtable_insert  (impl->mPublisherMap, (char*)symbol, newTopic) != 1)
             {
                 mamaDQPublisher_destroy(*newPublisher);

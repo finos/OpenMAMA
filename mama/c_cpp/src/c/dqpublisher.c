@@ -33,6 +33,8 @@ typedef struct mamaDQPublisherImpl_
     mamaMsgStatus   mStatus;
     uint64_t        mSenderId;
     mama_seqnum_t   mSeqNum;
+    void*           mClosure;
+    void*           mCache;
 } mamaDQPublisherImpl;
 
 
@@ -300,3 +302,38 @@ void mamaDQPublisher_setSeqNum (mamaDQPublisher pub, mama_seqnum_t num)
 }
 
 
+void mamaDQPublisher_setClosure (mamaDQPublisher pub, void*  closure)
+{
+    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+    if (impl)
+        impl->mClosure = closure;
+}
+
+
+void* mamaDQPublisher_getClosure (mamaDQPublisher pub)
+{
+    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+
+    if (impl)
+        return impl->mClosure;
+    else
+        return NULL;
+}
+
+void mamaDQPublisher_setCache (mamaDQPublisher pub, void*  cache)
+{
+    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+    if (impl)
+        impl->mCache = cache;
+}
+
+
+void* mamaDQPublisher_getCache (mamaDQPublisher pub)
+{
+    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+
+    if (impl)
+        return impl->mCache;
+    else
+        return NULL;
+}
