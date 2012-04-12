@@ -127,8 +127,6 @@ mamaStat                gWombatMsgsStat;
 mamaStat                gFastMsgsStat;
 mamaStat                gRvMsgsStat;
 
-#define MAMA_PAYLOAD_MAX	CHAR_MAX
-
 static mamaPayloadBridge    gDefaultPayload = NULL;
 
 static wthread_key_t last_err_key;
@@ -146,9 +144,6 @@ typedef struct mamaAppContext_
 /**
  * This structure contains data needed to control starting and stopping of
  * mama.
- *
- * TODO: Access to this structure will ultimately be protected by a reference
- * count and a lock.
  */
 typedef struct mamaImpl_
 {
@@ -698,16 +693,6 @@ mama_openWithPropertiesCount (const char* path,
         return result;
     }
     /* Code after this point is one-time initialization */
-
-#ifdef WITH_INACTIVE_CHECK
-    mama_log (MAMA_LOG_LEVEL_WARN,
-            "********************************************************");
-    mama_log (MAMA_LOG_LEVEL_WARN, "WARNING!!! - In inactive subscription check mode."
-                                      " Do not release!!!");
-    mama_log (MAMA_LOG_LEVEL_WARN,
-            "********************************************************");
-#endif
-
 
 #ifdef DEV_RELEASE
     mama_log (MAMA_LOG_LEVEL_WARN,
