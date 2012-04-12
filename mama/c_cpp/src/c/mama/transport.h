@@ -76,7 +76,9 @@ typedef enum
     MAMA_TRANSPORT_PUBLISHER_DISCONNECT,
     MAMA_TRANSPORT_QUALITY,
     MAMA_TRANSPORT_NAMING_SERVICE_CONNECT,
-    MAMA_TRANSPORT_NAMING_SERVICE_DISCONNECT
+    MAMA_TRANSPORT_NAMING_SERVICE_DISCONNECT,
+    MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK,
+    MAMA_TRANSPORT_WRITE_QUEUE_LOW_WATER_MARK
 } mamaTransportEvent;
 
 /**
@@ -186,6 +188,18 @@ extern mama_status
 mamaTransport_setTransportCallback (mamaTransport   transport,
                                     mamaTransportCB callback,
                                     void*           closure);
+/**
+ * Set the transport write queue high and low water mark values. The
+ * MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK and
+ * MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK events will be delivered though
+ * the transport callback when the respective number of items are outstanding on
+ * a clients write queue. 
+ */
+MAMAExpDLL
+extern mama_status
+mamaTransport_setWriteQueueWatermarks (mamaTransport transport,
+                                       uint32_t      highWater,
+                                       uint32_t      lowWater);
 
 /**
  * Set the transport topic callback. It receives advisories when a client

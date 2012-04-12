@@ -139,6 +139,12 @@ mamaTransportImpl_getTransportTopicCallback (mamaTransport transport,
 
 MAMAExpDLL
 extern void
+mamaTransportImpl_getWriteQueueWatermarks (mamaTransport transport,
+                                           uint32_t* high,
+                                           uint32_t* low);
+
+MAMAExpDLL
+extern void
 mamaTransportImpl_resetRefreshForListener (mamaTransport tport, void *handle);
 
 MAMAExpDLL

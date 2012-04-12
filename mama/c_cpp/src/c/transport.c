@@ -89,6 +89,8 @@ typedef struct transportImpl_
     mamaSymbolMapFunc        mMapFunc;
     void*                    mMapFuncClosure;
 
+    uint32_t                 mWriteQueueHighWatermark;
+    uint32_t                 mWriteQueueLowWatermark;
     /* These members are only needed for the market data transport */
     wList                    mListeners;
 
@@ -160,12 +162,12 @@ typedef struct transportImpl_
 
     int                     mGroupSizeHint;
 
-    uint8_t                 mDisableDisconnectCb;
-    uint8_t					mDisableRefresh;
+    uint8_t                 mDisableRefresh;
     dqStartegyScheme        mDQStratScheme;
     dqftStrategyScheme      mFTStratScheme;
 
     uint8_t                 mInternal;
+    uint8_t                 mDisableDisconnectCb;
     preInitialScheme         mPreInitialScheme;
 } transportImpl;
 
@@ -445,15 +447,15 @@ static void setFtStrategy (mamaTransport transport)
     }
 }
 
+void mamaTransport_disableRefresh(mamaTransport transport, uint8_t disable)
+{
+    self->mDisableRefresh=disable;
+}
 /**
  * Check property to disable refresh messages. Undocumented.
  *
  * Return non-zero to disable refresh messages.
  */
-void mamaTransport_disableRefresh(mamaTransport transport, uint8_t disable)
-{
-    self->mDisableRefresh=disable;
-}
 
 static int mamaTransportInternal_disableRefreshes(const char* transportName)
 {
@@ -1130,6 +1132,7 @@ mamaTransport_destroy (mamaTransport transport)
         if (self->mRefreshTransport)
         {
             refreshTransport_destroy (self->mRefreshTransport);
+            self->mRefreshTransport = NULL;
         }
 
         if (self->mThrottle)
@@ -1610,6 +1613,8 @@ mamaTransportEvent_toString (mamaTransportEvent event)
         case MAMA_TRANSPORT_QUALITY:                return "QUALITY";
         case MAMA_TRANSPORT_NAMING_SERVICE_CONNECT: return "NAMING_SERVICE_CONNECT";
         case MAMA_TRANSPORT_NAMING_SERVICE_DISCONNECT: return "NAMING_SERVICE_DISCONNECT";
+        case MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK: return "MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK";
+        case MAMA_TRANSPORT_WRITE_QUEUE_LOW_WATER_MARK: return "MAMA_TRANSPORT_WRITE_QUEUE_LOW_WATER_MARK";
         default: return "UNKNOWN";
     }
 }
@@ -1625,6 +1630,29 @@ mamaTransport_setTransportCallback (mamaTransport transport,
     return MAMA_STATUS_OK;
 }
 
+mama_status
+mamaTransport_setWriteQueueWatermarks (mamaTransport transport,
+                                       uint32_t high,
+                                       uint32_t low)
+{
+    if (!self)
+        return MAMA_STATUS_NULL_ARG;
+    if (high < low || low == 0)
+        return MAMA_STATUS_INVALID_ARG;
+
+    self->mWriteQueueHighWatermark = high;
+    self->mWriteQueueLowWatermark = low;
+    return MAMA_STATUS_OK;
+}
+
+void
+mamaTransportImpl_getWriteQueueWatermarks (mamaTransport transport,
+                                           uint32_t* high,
+                                           uint32_t* low)
+{
+    *high = self->mWriteQueueHighWatermark;
+    *low = self->mWriteQueueLowWatermark;
+}
 
 mama_status
 mamaTransport_setTransportTopicCallback (mamaTransport transport,
