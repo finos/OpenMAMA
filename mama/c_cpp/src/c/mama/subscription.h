@@ -106,12 +106,7 @@ typedef enum
     /* The subscription has been de-allocated, this state is only supported so that the log entry will whenever the subscription
      * has finally been freed.
      */
-    MAMA_SUBSCRIPTION_DEALLOCATED   = 10,
-
-    /* The subscription is being re-activated, this state can only occur if the mamaSubscription_activate has been called while
-     * the subscription is being deactivated, (i.e. its state is MAMA_SUBSCRIPTION_DEACTIVATING.
-     */
-    MAMA_SUBSCRIPTION_REACTIVATING  = 11
+    MAMA_SUBSCRIPTION_DEALLOCATED   = 10
 
 } mamaSubscriptionState;
 
