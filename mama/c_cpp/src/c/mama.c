@@ -172,8 +172,11 @@ static mamaImpl gImpl = {{0}, {0}, {0}, {0}, 0, WSTATIC_MUTEX_INITIALIZER};
 static mama_status
 mama_loadBridgeWithPathInternal (mamaBridge* impl,
                                  const char* middlewareName,
-                                 const char* path,
-                                 uint8_t lock);
+                                 const char* path);
+
+mama_status
+mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
+                                 const char*        payloadName);
 
 /*  Description :   This function will free any memory associated with a
  *                  mamaApplicationContext object but will not free the
@@ -323,8 +326,7 @@ static mama_status mamaInternal_loadStatsPublisher ()
     if (MAMA_STATUS_OK !=
        (status = mama_loadBridgeWithPathInternal (&bridge,
                                                   statsLogMiddlewareName,
-                                                  NULL,
-                                                  0)))
+                                                  NULL)))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mamaInternal_loadStatsLogger(): ",
@@ -644,6 +646,8 @@ mama_openWithPropertiesCount (const char* path,
     const char*     appString               = NULL;
     const char*     statsLogging            = "false";
 	const char*		catchCallbackExceptions = NULL;
+    char**				payloadName;
+    char*				payloadId;
 
     wthread_static_mutex_lock (&gImpl.myLock);
 
@@ -720,6 +724,27 @@ mama_openWithPropertiesCount (const char* path,
 
     /* Do not call mamaInternal_loadStatsPublisher here.
        It only needs to be called if we are publishing */
+    /* Look for a bridge for each of the middlewares and open them */
+    for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
+    {
+    	mamaBridgeImpl* impl = (mamaBridgeImpl*) gImpl.myBridges [middleware];
+		if (impl)
+		{
+			if (impl->bridgeGetDefaultPayloadId(&payloadName, &payloadId) == MAMA_STATUS_OK)
+			{
+				uint8_t i=0;
+				while (payloadId[i] != NULL)
+				{
+					if (!gImpl.myPayloads [(uint8_t)payloadId[i]])
+					{
+						mamaPayloadBridge payloadImpl;
+						mama_loadPayloadBridgeInternal (&payloadImpl,payloadName[i]);
+					}
+					i++;
+				}
+			}
+		}
+    }
 
 	catchCallbackExceptions = properties_Get (gProperties, "mama.catchcallbackexceptions.enable");
 	if (catchCallbackExceptions != NULL && strtobool(catchCallbackExceptions))
@@ -1776,16 +1801,21 @@ mama_setDefaultPayload (char id)
 }
 
 mama_status
+mama_loadPayloadBridge (mamaPayloadBridge* impl,
+                         const char*        payloadName)
+{
+    return mama_loadPayloadBridgeInternal (impl, payloadName);
+}
+mama_status
 mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
-                                 const char*        payloadName,
-                                 uint8_t lock)
+                                 const char*        payloadName)
 {
     char                    bridgeImplName  [256];
     char                    initFuncName    [256];
     LIB_HANDLE              bridgeLib       = NULL;
     msgPayload_createImpl   initFunc        = NULL;
     mama_status             status          = MAMA_STATUS_OK;
-    char                    payloadChar;
+    char                    payloadChar ='/0';
 
     if (!impl || !payloadName)
         return MAMA_STATUS_NULL_ARG;
@@ -1793,8 +1823,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     snprintf (bridgeImplName, 256, "mama%simpl",
               payloadName);
 
-    if (lock)
-        wthread_static_mutex_lock (&gImpl.myLock);
+    wthread_static_mutex_lock (&gImpl.myLock);
 
     bridgeLib = openSharedLib (bridgeImplName, NULL);
 
@@ -1806,8 +1835,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                 "Could not open payload bridge library [%s] [%s]",
                  bridgeImplName ? bridgeImplName : "",
                  getLibError());
-       if (lock)
-           wthread_static_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -1825,27 +1853,25 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                    bridgeImplName ? bridgeImplName : "");
         closeSharedLib (bridgeLib);
        
-        if (lock)
-            wthread_static_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
        
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
     if (MAMA_STATUS_OK != (status = initFunc (impl, &payloadChar)))
     {
-       if (lock)
-           wthread_static_mutex_unlock (&gImpl.myLock);
+       wthread_static_mutex_unlock (&gImpl.myLock);
 
         return status;
     }
 
-    if (!impl)
+    if (!*impl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mama_loadPayloadBridge(): Error in [%s] ", initFuncName);
+                  "mama_loadPayloadBridge():Failed to load %s payload bridge from library [%s] ",
+                  payloadName, bridgeImplName);
        
-        if (lock)
-           wthread_static_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
    
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
@@ -1857,8 +1883,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
              "Payload bridge %s already loaded",
              payloadName);
        
-        if (lock)
-           wthread_static_mutex_unlock (&gImpl.myLock);
+         wthread_static_mutex_unlock (&gImpl.myLock);
 
         return MAMA_STATUS_OK;
     }
@@ -1876,17 +1901,9 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
              "Sucessfully loaded %s payload bridge from library [%s]",
              payloadName, bridgeImplName);
      
-    if (lock)
-        wthread_static_mutex_unlock (&gImpl.myLock);
+    wthread_static_mutex_unlock (&gImpl.myLock);
 
     return MAMA_STATUS_OK;
-}
-
-mama_status
-mama_loadPayloadBridge (mamaPayloadBridge* impl,
-                        const char*        payloadName)
-{
-    return mama_loadPayloadBridgeInternal (impl, payloadName, 1);
 }
 
 int
@@ -1906,15 +1923,12 @@ mama_loadBridge (mamaBridge* impl,
 mama_status
 mama_loadBridgeWithPathInternal (mamaBridge* impl,
                                  const char* middlewareName,
-                                 const char* path,
-                                 uint8_t lock)
+                                 const char* path)
 {
     char                bridgeImplName  [256];
     char                initFuncName    [256];
     LIB_HANDLE          bridgeLib       = NULL;
     bridge_createImpl   initFunc        = NULL;
-    char*				payloadName		= NULL;
-    char				payloadId		= '\0';
     mama_status 		result			= MAMA_STATUS_OK;
     mamaMiddleware      middleware      = 0;
 
@@ -1930,15 +1944,13 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                   middlewareName);
     }
    
-    if (lock)
-        wthread_static_mutex_lock (&gImpl.myLock);
+    wthread_static_mutex_lock (&gImpl.myLock);
 
     /* Check if a bridge has already been initialized for the middleware */
     if (gImpl.myBridges [middleware])
     {
         *impl = gImpl.myBridges [middleware];
-        if (lock)
-            wthread_static_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_OK;
     }
 
@@ -1966,8 +1978,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                 bridgeImplName ? bridgeImplName : "",
                 getLibError());
         }
-        if (lock)
-            wthread_static_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -1984,8 +1995,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                    initFuncName ? initFuncName : "",
                    bridgeImplName ? bridgeImplName : "");
         closeSharedLib (bridgeLib);
-        if (lock)
-            wthread_static_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -1995,8 +2005,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadBridge(): Error in [%s] ", initFuncName);
-        if (lock)
-            wthread_static_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -2010,25 +2019,14 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
 
     if (MAMA_STATUS_OK != result) 
     {
-        if (lock)
-            wthread_static_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return result;
-    }
-
-    if (((mamaBridgeImpl*)(*impl))->bridgeGetDefaultPayloadId(&payloadName, &payloadId) == MAMA_STATUS_OK)
-    {
-		if (!gImpl.myPayloads [(uint8_t)payloadId])
-		{
-			mamaPayloadBridge payloadImpl;
-			mama_loadPayloadBridgeInternal (&payloadImpl,payloadName,0);
-		}
     }
 
     gImpl.myBridges [middleware] = *impl;
     gImpl.myBridgeLibraries [middleware] = bridgeLib;
 
-    if (lock)
-        wthread_static_mutex_unlock (&gImpl.myLock);
+    wthread_static_mutex_unlock (&gImpl.myLock);
     return MAMA_STATUS_OK;
 }
 
@@ -2037,7 +2035,7 @@ mama_loadBridgeWithPath (mamaBridge* impl,
                          const char* middlewareName,
                          const char* path)
 {
-    return mama_loadBridgeWithPathInternal(impl, middlewareName, path, 1);
+    return mama_loadBridgeWithPathInternal(impl, middlewareName, path);
 }
 
 /*
