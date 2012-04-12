@@ -103,12 +103,6 @@ MAMAExpDLL
 extern mama_status
 mamaQueueImpl_lowWatermarkExceeded (mamaQueue queue, size_t size);
 
-#ifdef WITH_FASTMSG
-MAMAExpDLL
-extern mama_status
-mamaQueueImpl_getFastBridge (mamaQueue queue, payloadBridge* bridge);
-#endif
-
 MAMAExpDLL
 extern mamaStatsCollector* 
 mamaQueueImpl_getStatsCollector (mamaQueue queue);

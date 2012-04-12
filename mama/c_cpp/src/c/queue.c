@@ -99,6 +99,7 @@ typedef struct mamaQueueImpl_
 
     /* This flag indicates whether object locking and unlocking will be tracked by the queue. */
     int                         mTrackObjectLocks;
+    void*                       mClosure;
 } mamaQueueImpl;
 
 /*Main structure for the mamaDispatcher*/
@@ -116,11 +117,35 @@ typedef struct mamaDisptacherImpl_
 
 
 mama_status
+mamaQueue_setClosure ( mamaQueue queue, void* closure)
+{
+    mamaQueueImpl* impl = (mamaQueueImpl*)queue;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+
+    impl->mClosure = closure;
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaQueue_getClosure ( mamaQueue queue, void** closure)
+{
+    mamaQueueImpl* impl = (mamaQueueImpl*)queue;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!closure) return MAMA_STATUS_INVALID_ARG;
+
+    *closure = impl->mClosure;
+
+    return MAMA_STATUS_OK;
+}
+
+
+mama_status
 mamaQueue_createReuseableMsg (mamaQueueImpl*  impl)
 {
 	 mama_status     status      =   MAMA_STATUS_OK;
 	/*Create the reuseable cached mamaMsg for this queue*/
-	if (MAMA_STATUS_OK != (status = mamaMsgImpl_createForPayload (&(impl->mMsg), NULL,NULL,1)))
+	if (MAMA_STATUS_OK != (status = mamaMsgImpl_createForPayload (&(impl->mMsg), NULL,NULL,0)))
 	{
 		mama_log (MAMA_LOG_LEVEL_ERROR, "mamaQueue_create(): "
 				  "Could not create message for queue.");
