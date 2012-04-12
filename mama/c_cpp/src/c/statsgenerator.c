@@ -74,6 +74,8 @@ mamaStatsGenerator_destroy (mamaStatsGenerator statsGenerator)
 {
     mamaStatsGeneratorImpl* impl = (mamaStatsGeneratorImpl*)statsGenerator;
 
+    if(impl)
+    {
     impl->mStatsLogger = NULL;
 
     if (impl->mStatMsg != NULL)
@@ -89,6 +91,7 @@ mamaStatsGenerator_destroy (mamaStatsGenerator statsGenerator)
 
     free (impl);
 
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -236,4 +239,25 @@ mamaStatsGenerator_allocateStatsCollector (mamaStatsGenerator statsGenerator)
     mamaStatsGeneratorImpl* impl = (mamaStatsGeneratorImpl*)statsGenerator;
 
     return list_allocate_element (impl->mStatsCollectors);
+}
+
+mama_status mamaStatsGenerator_stopReportTimer(mamaStatsGenerator statsGenerator)
+{
+    /* Returns. */
+    mama_status ret = MAMA_STATUS_NULL_ARG;
+
+    /* Get the impl. */
+    mamaStatsGeneratorImpl *impl = (mamaStatsGeneratorImpl*)statsGenerator;
+    if(NULL != impl)
+    {
+        /* Destroy the timer. */
+        ret = MAMA_STATUS_OK;
+        if(NULL != impl->mReportTimer)
+        {
+            ret = mamaTimer_destroy(impl->mReportTimer);
+            impl->mReportTimer = NULL;
+        }
+    }
+
+    return ret;
 }
