@@ -158,6 +158,11 @@ MAMAExpDLL
 extern void
 mamaTransportImpl_unsetAllPossiblyStale (mamaTransport tport);
 
+MAMAExpDLL
+extern void
+mamaTransportImpl_getAdvisoryCauseAndPlatformInfo (mamaTransport tport,
+                                                   short*        cause,
+                                                   const void**  platformInfo);
 /*
    Get the bridge impl associated with the specified transport.
    This will be how other objects gain access to the bridge.
@@ -241,27 +246,19 @@ mama_status mamaTransport_addPublisher(mamaTransport transport, mamaPublisher pu
 mama_status mamaTransport_removePublisher(mamaTransport transport, void *handle);
 preInitialScheme mamaTransportImpl_getPreInitialScheme (mamaTransport transport);
 
-#if defined(__cplusplus)
-}
-#endif
-
-
 /**
- * This function will return the cause and platform info for the last message
- * processed on the transport.
+ * This function will allocate an internal transport for use with the internal event queue, this sort
+ * of transport is limited and does not support certain features, including
+ *  The CM Responder.
  *
- * @param[in] transport	The transport.
- * @param[out] cause To return the cause.
- * @param[out] platformInfo To return the bridge specific info, under no
- *             circumstances should the returned object be deleted.
+ * @param[out] transport To return the transport.
  *
+ * @returns mama_status value can be one of:
+ *              MAMA_STATUS_NOMEM
+ *              MAMA_STATUS_NULL_ARG
+ *              MAMA_STATUS_OK
  */
-MAMAExpDLL 
-extern void
-mamaTransportImpl_getAdvisoryCauseAndPlatformInfo(
-        mamaTransport tport,
-        short *cause,
-        const void **platformInfo);
+mama_status mamaTransportImpl_allocateInternalTransport(mamaTransport *transport);
 
 /**
  * This function will set the cause and platform info for the transport.

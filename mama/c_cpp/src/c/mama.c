@@ -389,7 +389,7 @@ mamaInternal_createStatsPublisher ()
         statsLogTportName = "statslogger";
     }
 
-    result = mamaTransport_allocate (&statsLogTport);
+    result = mamaTransportImpl_allocateInternalTransport (&statsLogTport);
     if( result != MAMA_STATUS_OK )
         return result;
 
