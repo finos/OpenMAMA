@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-#include <uuid/uuid.h>
+#include <wombat/wUuid.h>
 
 #include <mama/mama.h>
 #include <bridge.h>
@@ -107,27 +107,27 @@ avisBridgeMamaInbox_createByIndex (inboxBridge*           bridge,
                                     void*                  closure,
                                     mamaInbox              parent)
 {
+   wUuid t_uuid;
+   char t_str[37];
+   mamaMsgCallbacks cb;
+   avisInboxImpl* impl = NULL;
+   mama_status status = MAMA_STATUS_OK;
    if (!bridge || !transport || !queue || !msgCB) return MAMA_STATUS_NULL_ARG;
-   avisInboxImpl* impl = (avisInboxImpl*)calloc(1, sizeof(avisInboxImpl));
+   impl = (avisInboxImpl*)calloc(1, sizeof(avisInboxImpl));
    if (!impl)
       return MAMA_STATUS_NOMEM;
 
-   mama_status status = MAMA_STATUS_OK;
    if (MAMA_STATUS_OK != (status = mamaSubscription_allocate(&impl->mSubscription))) {
       mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaInbox_createByIndex(): Failed to allocate subscription ");
       free(impl);
       return status;
    }
 
-   uuid_t t_uuid;
    // NOTE: uuid_generate is very expensive, so we use cheaper uuid_generate_time
-   //uuid_generate(uuid);
-   uuid_generate_time(t_uuid);
-   char t_str[uuidStringLen+1];
-   uuid_unparse(t_uuid, t_str);
+   wUuid_generate_time(t_uuid);
+   wUuid_unparse(t_uuid, t_str);
    snprintf(impl->mInbox, sizeof(impl->mInbox) -1, "_INBOX.%s", t_str);
 
-   mamaMsgCallbacks cb;
    cb.onCreate  = &avisInbox_onCreate;
    cb.onError   = &avisInbox_onError;
    cb.onMsg     = &avisInbox_onMsg;
