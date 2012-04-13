@@ -198,6 +198,10 @@ static void sendRequest (void)
         exit (status);
     }
 
+    mama_log (MAMA_LOG_LEVEL_ERROR,
+                          "mamaPublisher_sendFromInboxWithThrottle(): "
+                          " %s",
+                          mamaMsg_toString(msg));
     /*The message can be destroyed once the sendCompleteCb has been invoked.*/
     status = mamaPublisher_sendFromInboxWithThrottle (gPublisher, gInbox, msg,
             sendCompleteCb, NULL);
