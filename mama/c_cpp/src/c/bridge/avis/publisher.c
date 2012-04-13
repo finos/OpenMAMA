@@ -67,12 +67,14 @@ avisBridgeMamaPublisher_createByIndex (publisherBridge* result,
                                         void*            nativeQueueHandle,
                                         mamaPublisher    parent)
 {
-    if (!result || !tport) return MAMA_STATUS_NULL_ARG;
     Elvin* avis = getAvis(tport);
+    avisPublisherBridge* publisher = NULL;
+
+    if (!result || !tport) return MAMA_STATUS_NULL_ARG;
     CHECK_AVIS(avis);
 
     *result = NULL;
-    avisPublisherBridge* publisher = (avisPublisherBridge*) calloc (1, sizeof(avisPublisherBridge));
+    publisher = (avisPublisherBridge*) calloc (1, sizeof(avisPublisherBridge));
     if (publisher == NULL)
         return MAMA_STATUS_NOMEM;
     publisher->mTransport = tport;
@@ -145,10 +147,11 @@ avisBridgeMamaPublisherImpl_buildSendSubject (avisPublisherBridge* impl)
 mama_status
 avisBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
 {
-    CHECK_PUBLISHER(publisher);
     mama_size_t        dataLen;
     mama_status        status;
-    Attributes* attributes;
+    Attributes* attributes = NULL;
+    
+    CHECK_PUBLISHER(publisher);
 
     status = mamaMsgImpl_getPayloadBuffer (msg, (const void**)&attributes, &dataLen);
     if (attributes == NULL)
@@ -173,18 +176,20 @@ avisBridgeMamaPublisher_sendReplyToInbox (publisherBridge  publisher,
                                            mamaMsg          request,
                                            mamaMsg          reply)
 {
-    CHECK_PUBLISHER(publisher);
     Attributes* requestMsg = NULL;
     Attributes* replyMsg = NULL;
+    const char*  replyAddr  = NULL;
     mama_size_t        dataLen;
+    mama_status  status;
+    
+    CHECK_PUBLISHER(publisher);
 
     mamaMsg_getNativeHandle(request, (void**) &requestMsg);
     mamaMsgImpl_getPayloadBuffer (reply, (const void**)&replyMsg, &dataLen);
 
     if (!requestMsg || !replyMsg) return MAMA_STATUS_NULL_ARG;
 
-    const char* replyAddr = NULL;
-    mama_status status = mamaMsg_getString(request, INBOX_FIELD_NAME, 0, &replyAddr);
+    status = mamaMsg_getString(request, INBOX_FIELD_NAME, 0, &replyAddr);
     if ((status != MAMA_STATUS_OK) || (replyAddr == NULL) || (strlen(replyAddr) == 0)) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaPublisher_sendReplyToInbox(): "
                   "No reply address in message.");
@@ -223,6 +228,8 @@ avisBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge publisher,
                                                mamaInbox       inbox,
                                                mamaMsg         msg)
 {
+    const char* replyAddr = NULL;
+    mama_status status;
   //  CHECK_PUBLISHER(publisher);
     if (avisPublisher(publisher) == 0)
     	return MAMA_STATUS_NULL_ARG;
@@ -231,13 +238,11 @@ avisBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge publisher,
     if (!elvin_is_open(avisPublisher(publisher)->mAvis))
     	return MAMA_STATUS_INVALID_ARG;
 
-
-
     // get reply address from inbox
-    const char* replyAddr = avisInboxImpl_getReplySubject(mamaInboxImpl_getInboxBridge(inbox));
+    replyAddr = avisInboxImpl_getReplySubject(mamaInboxImpl_getInboxBridge(inbox));
 
     // set reply address in msg
-    mama_status status = mamaMsg_updateString(msg, INBOX_FIELD_NAME, 0, replyAddr);
+    status = mamaMsg_updateString(msg, INBOX_FIELD_NAME, 0, replyAddr);
     if (status != MAMA_STATUS_OK)
         return status;
 
@@ -258,9 +263,10 @@ avisBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge publisher,
                                                void *          inbox,
                                                mamaMsg         reply)
 {
+    mama_status status;
     CHECK_PUBLISHER(publisher);
 
-    mama_status status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, (const char*) inbox);
+    status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, (const char*) inbox);
     if (status != MAMA_STATUS_OK)
         return status;
 

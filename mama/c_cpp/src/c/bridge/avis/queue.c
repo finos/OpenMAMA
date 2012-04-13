@@ -51,11 +51,12 @@ mama_status
 avisBridgeMamaQueue_create (queueBridge* queue,
                             mamaQueue    parent)
 {
+    avisQueueBridge* avisQueue = NULL;
     if (queue == NULL)
         return MAMA_STATUS_NULL_ARG;
     *queue = NULL;
 
-    avisQueueBridge* avisQueue = (avisQueueBridge*)calloc (1, sizeof (avisQueueBridge));
+    avisQueue = (avisQueueBridge*)calloc (1, sizeof (avisQueueBridge));
     if (avisQueue == NULL)
         return MAMA_STATUS_NOMEM;
 
@@ -74,11 +75,12 @@ avisBridgeMamaQueue_create_usingNative (queueBridge* queue,
                                         mamaQueue    parent,
                                         void*        nativeQueue)
 {
+    avisQueueBridge* avisQueue = NULL;
     if (queue == NULL)
         return MAMA_STATUS_NULL_ARG;
     *queue = NULL;
 
-    avisQueueBridge* avisQueue = (avisQueueBridge*)calloc (1, sizeof (avisQueueBridge));
+    avisQueue = (avisQueueBridge*)calloc (1, sizeof (avisQueueBridge));
     if (avisQueue == NULL)
         return MAMA_STATUS_NOMEM;
 
@@ -104,9 +106,9 @@ avisBridgeMamaQueue_destroy (queueBridge queue)
 mama_status
 avisBridgeMamaQueue_dispatch (queueBridge queue)
 {
-    CHECK_QUEUE(queue);
     wombatQueueStatus status;
 
+    CHECK_QUEUE(queue);
     do
     {
         /* 500 is .5 seconds */
@@ -132,8 +134,8 @@ avisBridgeMamaQueue_dispatch (queueBridge queue)
 mama_status
 avisBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout)
 {
-    CHECK_QUEUE(queue);
     wombatQueueStatus status;
+    CHECK_QUEUE(queue);
 
     status = wombatQueue_timedDispatch (avisQueue(queue)->mQueue,
                      NULL, NULL, timeout);
@@ -154,8 +156,8 @@ avisBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout)
 mama_status
 avisBridgeMamaQueue_dispatchEvent (queueBridge queue)
 {
-    CHECK_QUEUE(queue);
     wombatQueueStatus status;
+    CHECK_QUEUE(queue);
 
     status = wombatQueue_dispatch (avisQueue(queue)->mQueue,
                      NULL, NULL);
@@ -186,10 +188,10 @@ avisBridgeMamaQueue_enqueueEvent (queueBridge        queue,
                                   void*              closure)
 {
     wombatQueueStatus status;
+    avisQueueClosure* cl = NULL;
     CHECK_QUEUE(queue);
 
-    avisQueueClosure* cl =
-        (avisQueueClosure*)calloc(1, sizeof(avisQueueClosure));
+    cl = (avisQueueClosure*)calloc(1, sizeof(avisQueueClosure));
     if (NULL == cl) return MAMA_STATUS_NOMEM;
 
     cl->mImpl = avisQueue(queue);
@@ -208,8 +210,8 @@ avisBridgeMamaQueue_enqueueEvent (queueBridge        queue,
 mama_status
 avisBridgeMamaQueue_stopDispatch (queueBridge queue)
 {
-    CHECK_QUEUE(queue);
     wombatQueueStatus status;
+    CHECK_QUEUE(queue);
 
     if (queue == NULL)
         return MAMA_STATUS_NULL_ARG;

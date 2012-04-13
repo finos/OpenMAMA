@@ -153,7 +153,6 @@ avis_queue_callback (void* data, void* closure)
 
     attributes_free ((Attributes*)data);
     free ((Attributes*)data);
-
 }
 
 static void
@@ -199,10 +198,11 @@ avisBridgeMamaSubscription_create (subscriptionBridge* subscriber,
                                     mamaSubscription    subscription,
                                     void*               closure)
 {
+    avisSubscription* impl = NULL;
     if (!subscriber || !subscription || !transport )
         return MAMA_STATUS_NULL_ARG;
 
-    avisSubscription* impl = (avisSubscription*)calloc (1, sizeof(avisSubscription));
+    impl = (avisSubscription*)calloc (1, sizeof(avisSubscription));
     if (impl == NULL)
        return MAMA_STATUS_NOMEM;
 
@@ -269,9 +269,9 @@ avisBridgeMamaSubscription_createWildCard (
 mama_status
 avisBridgeMamaSubscription_destroy (subscriptionBridge subscriber)
 {
-    CHECK_SUBSCRIBER(subscriber);
     mama_status status = MAMA_STATUS_OK;
     wombatQueue   queue = NULL;
+    CHECK_SUBSCRIBER(subscriber);
 
     elvin_subscription_remove_listener(avisSub(subscriber)->mAvisSubscription, avis_callback);
 
