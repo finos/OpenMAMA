@@ -86,9 +86,9 @@ mamaMsgField_getDescriptor(
     const mamaMsgField    msgField,
     mamaFieldDescriptor*  result)
 {
+	mama_status status = MAMA_STATUS_OK;
     CHECK_FIELD(msgField);
 
-    mama_status status = MAMA_STATUS_OK;
     /* The FD may have already been obtained for this field from
      * getName, getFid etc.*/
     if (avisField->mFieldDesc)
