@@ -22,15 +22,14 @@
 #ifndef MamaTypesH__
 #define MamaTypesH__
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
 
 #include "wombat/port.h"
 #include <stdlib.h>
 #include <string.h>
 
-#define MAMA_QUANTITY_EPSILON   ((mama_f64_t)0.00000000001)
+#if defined(__cplusplus)
+extern "C" {
+#endif
 
 typedef int8_t          mama_i8_t;
 typedef uint8_t         mama_u8_t;
@@ -47,6 +46,8 @@ typedef double          mama_quantity_t;
 typedef uint16_t        mama_fid_t;
 typedef size_t          mama_size_t;
 typedef uint32_t        mama_seqnum_t;
+
+#define MAMA_QUANTITY_EPSILON   ((mama_f64_t)0.00000000001)
 
 /**
  * Macro to determine if a quantity is zero
