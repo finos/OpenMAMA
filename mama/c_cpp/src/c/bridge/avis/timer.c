@@ -42,7 +42,7 @@ typedef struct avisTimerImpl_
     /* TODO: add queue */
 } avisTimerImpl;
 
-static void
+static void MAMACALLTYPE
 destroy_callback(void* timer, void* closure)
 {
 	avisTimerImpl* impl = (avisTimerImpl*)timer;
@@ -51,7 +51,7 @@ destroy_callback(void* timer, void* closure)
     free (impl);
 }
 
-static void
+static void MAMACALLTYPE
 timerQueueCb (void* data, void* closure)
 {
     avisTimerImpl* impl = (avisTimerImpl*)data;
