@@ -58,6 +58,9 @@ extern "C"
 #define MAMAExpBridgeDLL
 #define MAMACALLTYPE
 
+#define WCOMMONINLINE inline static
+#define WCOMMONFORCEINLINE inline static
+
 /* Type for handle to dynamically loaded library */
 typedef void*       LIB_HANDLE;
 
