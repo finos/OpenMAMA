@@ -109,12 +109,7 @@ int gPublishGlobalStats     = 0;
 int gPublishLbmStats        = 0;
 int gCatchCallbackExceptions = 0;
 
-static char gIPAddress[16];
-static const char*  gUserName = NULL;
-static const char*  gHostName = NULL;
-
 static void lookupIPAddress (void);
-
 
 wproperty_t             gProperties      = 0;
 static mamaStatsLogger  gStatsPublisher  = NULL;
@@ -136,7 +131,7 @@ mamaStat                gRvMsgsStat;
 
 static mamaPayloadBridge    gDefaultPayload = NULL;
 
-static pthread_key_t last_err_key;
+static wthread_key_t last_err_key;
 
 /**
  * struct mamaApplicationGroup
@@ -157,18 +152,18 @@ typedef struct mamaAppContext_
  */
 typedef struct mamaImpl_
 {
-    mamaBridge           myBridges[MAMA_MIDDLEWARE_MAX];
-    mamaPayloadBridge    myPayloads[MAMA_PAYLOAD_MAX];
-    LIB_HANDLE           myBridgeLibraries[MAMA_MIDDLEWARE_MAX];
-    LIB_HANDLE           myPayloadLibraries[MAMA_PAYLOAD_MAX];
-    unsigned int         myRefCount;
-    pthread_mutex_t      myLock;
+    mamaBridge             myBridges[MAMA_MIDDLEWARE_MAX];
+    mamaPayloadBridge      myPayloads[MAMA_PAYLOAD_MAX];
+    LIB_HANDLE             myBridgeLibraries[MAMA_MIDDLEWARE_MAX];
+    LIB_HANDLE             myPayloadLibraries[MAMA_PAYLOAD_MAX];
+    unsigned int           myRefCount;
+    wthread_static_mutex_t myLock;
 } mamaImpl;
 
 static mamaApplicationContext  appContext;
 static char mama_ver_string[256];
 
-static mamaImpl gImpl = {{0}, {0}, {0}, {0}, 0, PTHREAD_MUTEX_INITIALIZER};
+static mamaImpl gImpl = {{0}, {0}, {0}, {0}, 0, WSTATIC_MUTEX_INITIALIZER};
 
 /* ************************************************************************* */
 /* Private Function Prototypes. */
@@ -378,11 +373,10 @@ mamaInternal_createStatsPublisher ()
         return result;
 
     mama_getUserName (&userName);
-    lookupIPAddress();
     mamaStatsLogger_setReportSize       (gStatsPublisher, 100);
     mamaStatsLogger_setUserName         (gStatsPublisher, userName);
-    mamaStatsLogger_setIpAddress        (gStatsPublisher, gIPAddress);
-    mamaStatsLogger_setHostName         (gStatsPublisher, gHostName);
+    mamaStatsLogger_setIpAddress        (gStatsPublisher, getIpAddress());
+    mamaStatsLogger_setHostName         (gStatsPublisher, getHostName());
     mamaStatsLogger_setApplicationName  (gStatsPublisher,
                                          appContext.myApplicationName);
     mamaStatsLogger_setApplicationClass (gStatsPublisher,
@@ -651,9 +645,9 @@ mama_openWithPropertiesCount (const char* path,
     const char*     statsLogging            = "false";
 	const char*		catchCallbackExceptions = NULL;
 
-    pthread_mutex_lock (&gImpl.myLock);
+    wthread_static_mutex_lock (&gImpl.myLock);
 
-    if (pthread_key_create(&last_err_key, NULL) != 0)
+    if (wthread_key_create(&last_err_key, NULL) != 0)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "WARNING!!! - CANNOT ALLOCATE KEY FOR ERRORS");
     }
@@ -696,7 +690,7 @@ mama_openWithPropertiesCount (const char* path,
         if (count)
             *count = gImpl.myRefCount;
 
-        pthread_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return result;
     }
     /* Code after this point is one-time initialization */
@@ -721,7 +715,6 @@ mama_openWithPropertiesCount (const char* path,
 
     mamaInternal_loadProperties (path, filename);
 
-    lookupIPAddress();
     initReservedFields();
     mama_loginit();
 
@@ -761,7 +754,7 @@ mama_openWithPropertiesCount (const char* path,
             if (count)
                 *count = gImpl.myRefCount;
             
-            pthread_mutex_unlock (&gImpl.myLock);
+            wthread_static_mutex_unlock (&gImpl.myLock);
             return result;
         }
 
@@ -881,7 +874,7 @@ mama_openWithPropertiesCount (const char* path,
         if (count)
             *count = gImpl.myRefCount;
         
-        pthread_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -893,7 +886,7 @@ mama_openWithPropertiesCount (const char* path,
         if (count)
             *count = gImpl.myRefCount;
         
-        pthread_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -910,7 +903,7 @@ mama_openWithPropertiesCount (const char* path,
         mama_log (MAMA_LOG_LEVEL_SEVERE,
                   "mama_openWithProperties(): "
                   "Error connecting to Entitlements Server");
-        pthread_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         mama_close();
         
         if (count)
@@ -954,7 +947,7 @@ mama_openWithPropertiesCount (const char* path,
             {
                 if (count)
                     *count = gImpl.myRefCount;
-                pthread_mutex_unlock (&gImpl.myLock);
+                wthread_static_mutex_unlock (&gImpl.myLock);
                 return result;
             }
         }
@@ -966,7 +959,7 @@ mama_openWithPropertiesCount (const char* path,
                       "Could not set queue for stats generator.");
             if (count)
                 *count = gImpl.myRefCount;
-            pthread_mutex_unlock (&gImpl.myLock);
+            wthread_static_mutex_unlock (&gImpl.myLock);
             return result;
         }
 
@@ -977,7 +970,7 @@ mama_openWithPropertiesCount (const char* path,
                       "Failed to enable stats logging");
             if (count)
                 *count = gImpl.myRefCount;
-            pthread_mutex_unlock (&gImpl.myLock);
+            wthread_static_mutex_unlock (&gImpl.myLock);
             return result;
         }
     }
@@ -985,7 +978,7 @@ mama_openWithPropertiesCount (const char* path,
     gImpl.myRefCount++;
     if (count)
         *count = gImpl.myRefCount;
-    pthread_mutex_unlock (&gImpl.myLock);
+    wthread_static_mutex_unlock (&gImpl.myLock);
     return result;
 }
 
@@ -1114,12 +1107,12 @@ mama_closeCount (unsigned int* count)
     mamaMiddleware middleware = 0;
     int payload = 0;
 
-    pthread_mutex_lock (&gImpl.myLock);
+    wthread_static_mutex_lock (&gImpl.myLock);
     if (gImpl.myRefCount == 0)
     {
         if (count)
             *count = gImpl.myRefCount;
-        pthread_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_OK;
     }
 
@@ -1133,7 +1126,7 @@ mama_closeCount (unsigned int* count)
         }
 #endif /* WITH_ENTITLEMENTS */
 
-        pthread_key_delete(last_err_key);
+        wthread_key_delete(last_err_key);
 
         for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
         {
@@ -1234,9 +1227,6 @@ mama_closeCount (unsigned int* count)
 
         cleanupReservedFields();
 
-        if (gHostName)
-            free ((void*)gHostName);
-
         /* Look for a bridge for each of the middlewares and close them */
         for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
         {
@@ -1281,7 +1271,7 @@ mama_closeCount (unsigned int* count)
     }
     if (count)
         *count = gImpl.myRefCount;
-    pthread_mutex_unlock (&gImpl.myLock);
+    wthread_static_mutex_unlock (&gImpl.myLock);
     return result;
 }
 
@@ -1315,9 +1305,9 @@ mama_start (mamaBridge bridgeImpl)
         return MAMA_STATUS_INVALID_QUEUE;
     }
 
-    pthread_mutex_lock(&gImpl.myLock);
+    wthread_static_mutex_lock(&gImpl.myLock);
     prevRefCnt = impl->mRefCount++;
-    pthread_mutex_unlock(&gImpl.myLock);
+    wthread_static_mutex_unlock(&gImpl.myLock);
 
     if (prevRefCnt > 0)
         return MAMA_STATUS_OK;
@@ -1328,9 +1318,9 @@ mama_start (mamaBridge bridgeImpl)
 
     if (rval != MAMA_STATUS_OK)
     {
-        pthread_mutex_lock(&gImpl.myLock);
+        wthread_static_mutex_lock(&gImpl.myLock);
         impl->mRefCount--;
-        pthread_mutex_unlock(&gImpl.myLock);
+        wthread_static_mutex_unlock(&gImpl.myLock);
     }
 
     return rval;
@@ -1425,7 +1415,7 @@ mama_stop (mamaBridge bridgeImpl)
     }
 
     /*Delegate to the bridge specific implementation*/
-    pthread_mutex_lock(&gImpl.myLock);
+    wthread_static_mutex_lock(&gImpl.myLock);
     if (impl->mRefCount > 0)
     {
         impl->mRefCount--;
@@ -1436,7 +1426,7 @@ mama_stop (mamaBridge bridgeImpl)
                 impl->mRefCount++;
         }
     }
-    pthread_mutex_unlock(&gImpl.myLock);
+    wthread_static_mutex_unlock(&gImpl.myLock);
     return rval;
 }
 
@@ -1499,12 +1489,7 @@ mama_getUserName (const char** userName)
     if (userName == NULL)
         return MAMA_STATUS_NULL_ARG;
 
-    if (!gUserName)
-    {
-        gUserName = strdup (getpwuid(getuid())->pw_name);
-    }
-
-    *userName = gUserName;
+    *userName = getlogin();
     return MAMA_STATUS_OK;
 }
 
@@ -1512,7 +1497,7 @@ mama_status
 mama_getHostName (const char** hostName)
 {
     if (hostName == NULL) return MAMA_STATUS_NULL_ARG;
-    *hostName = gHostName;
+    *hostName = getHostName();
     return MAMA_STATUS_OK;
 }
 
@@ -1520,35 +1505,8 @@ mama_status
 mama_getIpAddress (const char** ipAddress)
 {
     if (ipAddress == NULL) return MAMA_STATUS_NULL_ARG;
-    *ipAddress = gIPAddress;
+    *ipAddress = getIpAddress();
     return MAMA_STATUS_OK;
-}
-
-static void
-lookupIPAddress (void)
-{
-    struct hostent *host = NULL;
-    char           *addrStr = "not determined";
-
-    struct         utsname uts;
-    memset( gIPAddress, 0, 16 );
-    uname (&uts);
-    gHostName = strdup (uts.nodename);
-
-    host = gethostbyname( gHostName );
-
-    if( gHostName == NULL ||
-        host == NULL      ||
-        host->h_addr_list[0] == NULL )
-    {
-       strncpy( (char *)gIPAddress, "not determined", sizeof( gIPAddress ) );
-    }
-    else
-    {
-        addrStr = inet_ntoa( *((struct in_addr *)( host->h_addr_list[0] )));
-    }
-
-    strncpy ((char*)gIPAddress, addrStr, sizeof (gIPAddress));
 }
 
 #ifdef WITH_ENTITLEMENTS
@@ -1800,10 +1758,10 @@ mamaInternal_registerBridge (mamaBridge     bridge,
         return;
     }
     
-    pthread_mutex_lock (&gImpl.myLock);
+    wthread_static_mutex_lock (&gImpl.myLock);
     gImpl.myBridges[middleware] = bridge;
     ((mamaBridgeImpl*)(bridge))->mRefCount = 0;
-    pthread_mutex_unlock (&gImpl.myLock);
+    wthread_static_mutex_unlock (&gImpl.myLock);
 }
 
 mama_status
@@ -1836,7 +1794,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
               payloadName);
 
     if (lock)
-        pthread_mutex_lock (&gImpl.myLock);
+        wthread_static_mutex_lock (&gImpl.myLock);
 
     bridgeLib = openSharedLib (bridgeImplName, NULL);
 
@@ -1849,7 +1807,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                  bridgeImplName ? bridgeImplName : "",
                  getLibError());
        if (lock)
-           pthread_mutex_unlock (&gImpl.myLock);
+           wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -1868,7 +1826,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
         closeSharedLib (bridgeLib);
        
         if (lock)
-            pthread_mutex_unlock (&gImpl.myLock);
+            wthread_static_mutex_unlock (&gImpl.myLock);
        
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
@@ -1876,7 +1834,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     if (MAMA_STATUS_OK != (status = initFunc (impl, &payloadChar)))
     {
        if (lock)
-           pthread_mutex_unlock (&gImpl.myLock);
+           wthread_static_mutex_unlock (&gImpl.myLock);
 
         return status;
     }
@@ -1887,7 +1845,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                   "mama_loadPayloadBridge(): Error in [%s] ", initFuncName);
        
         if (lock)
-           pthread_mutex_unlock (&gImpl.myLock);
+           wthread_static_mutex_unlock (&gImpl.myLock);
    
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
@@ -1900,7 +1858,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
              payloadName);
        
         if (lock)
-           pthread_mutex_unlock (&gImpl.myLock);
+           wthread_static_mutex_unlock (&gImpl.myLock);
 
         return MAMA_STATUS_OK;
     }
@@ -1919,7 +1877,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
              payloadName, bridgeImplName);
      
     if (lock)
-        pthread_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
 
     return MAMA_STATUS_OK;
 }
@@ -1973,14 +1931,14 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     }
    
     if (lock)
-        pthread_mutex_lock (&gImpl.myLock);
+        wthread_static_mutex_lock (&gImpl.myLock);
 
     /* Check if a bridge has already been initialized for the middleware */
     if (gImpl.myBridges [middleware])
     {
         *impl = gImpl.myBridges [middleware];
         if (lock)
-            pthread_mutex_unlock (&gImpl.myLock);
+            wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_OK;
     }
 
@@ -2009,7 +1967,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                 getLibError());
         }
         if (lock)
-            pthread_mutex_unlock (&gImpl.myLock);
+            wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -2027,7 +1985,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                    bridgeImplName ? bridgeImplName : "");
         closeSharedLib (bridgeLib);
         if (lock)
-            pthread_mutex_unlock (&gImpl.myLock);
+            wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -2038,7 +1996,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadBridge(): Error in [%s] ", initFuncName);
         if (lock)
-            pthread_mutex_unlock (&gImpl.myLock);
+            wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
@@ -2053,7 +2011,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     if (MAMA_STATUS_OK != result) 
     {
         if (lock)
-            pthread_mutex_unlock (&gImpl.myLock);
+            wthread_static_mutex_unlock (&gImpl.myLock);
         return result;
     }
 
@@ -2070,7 +2028,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     gImpl.myBridgeLibraries [middleware] = bridgeLib;
 
     if (lock)
-        pthread_mutex_unlock (&gImpl.myLock);
+        wthread_static_mutex_unlock (&gImpl.myLock);
     return MAMA_STATUS_OK;
 }
 
@@ -2121,19 +2079,19 @@ mama_wrapperGetVersion(mamaBridge bridge)
 void
 mama_setLastError (mamaError error)
 {
-     pthread_setspecific(last_err_key, (void*)error);
+     wthread_setspecific(last_err_key, (void*)error);
 }
 
 mamaError
 mama_getLastErrorCode (void)
 {
-    return (mamaError)pthread_getspecific(last_err_key);
+    return (mamaError)wthread_getspecific(last_err_key);
 }
 
 const char*
 mama_getLastErrorText (void)
 {
-    return mamaError_convertToString((mamaError)pthread_getspecific(last_err_key));
+    return mamaError_convertToString((mamaError)wthread_getspecific(last_err_key));
 }
 
 
