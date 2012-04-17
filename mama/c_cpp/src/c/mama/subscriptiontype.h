@@ -22,6 +22,7 @@
 #ifndef MAMA_SUBSC_TYPE_H__
 #define MAMA_SUBSC_TYPE_H__
 
+#include "port.h"
 /*
  * This file provides subscription type information.
  */
@@ -43,7 +44,7 @@ typedef enum mamaSubscriptionType
     MAMA_SUBSC_TYPE_SYMBOL_LIST_BOOK         = 8
 } mamaSubscriptionType;
 
-extern const char* MamaSubscTypeStr (mamaSubscriptionType subtype);
+MAMAExpDLL extern const char* MamaSubscTypeStr (mamaSubscriptionType subtype);
 
 #if defined(__cplusplus)
 }
