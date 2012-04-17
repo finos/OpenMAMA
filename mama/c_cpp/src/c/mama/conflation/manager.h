@@ -24,9 +24,7 @@
 #define CONFLATION_MANAGER_H__
 
 #include <string.h>
-#ifdef WIN32
-#include <wombat/wincompat.h>
-#endif
+#include "port.h"
 
 #include "mama/mama.h"
 
@@ -34,15 +32,9 @@
 extern "C" {
 #endif
 
-#ifndef WIN32
-typedef void (*mamaConflationEnqueueCallback)(mamaMsg     msg, 
-                                              const char* topic,
-                                              void*       closure);
-#else
-typedef void (__stdcall *mamaConflationEnqueueCallback)(mamaMsg     msg, 
-                                                        const char* topic,
-                                                        void*       closure);
-#endif
+typedef void (MAMACALLTYPE *mamaConflationEnqueueCallback)(mamaMsg     msg, 
+                                                           const char* topic,
+                                                           void*       closure);
 
 mama_status
 mamaConflationManager_allocate (mamaConflationManager* mgr);
