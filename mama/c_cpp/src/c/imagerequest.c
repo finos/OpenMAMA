@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-#include <pthread.h>
+#include "port.h"
 #include <mama/mama.h>
 #include <mamainternal.h>
 #include <imagerequest.h>

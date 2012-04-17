@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include "port.h"
 #include <mama/mama.h>
 #include <mama/queue.h>
 #include "bridge.h"
@@ -31,7 +32,6 @@
 #include "statinternal.h"
 #include "wlock.h"
 #include "wombat/wInterlocked.h"
-#include <pthread.h>
 #include <wombat/strutils.h>
 
 extern int gGenerateQueueStats;

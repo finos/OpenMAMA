@@ -23,21 +23,8 @@
 #include <stdio.h>
 #include <limits.h>
 
-#include "wombat/wincompat.h"
+#include "port.h"
 #include "wombat/environment.h"
-
-
-#include <netdb.h>
-#include <sys/utsname.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
-#include <arpa/inet.h>
-#include <pwd.h>
-#include <sys/types.h>
-#include <unistd.h>
-#include <dlfcn.h>
-#include <pthread.h>
-
 #include "wombat/strutils.h"
 
 #include <mama/mama.h>

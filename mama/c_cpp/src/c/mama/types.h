@@ -26,7 +26,7 @@
 extern "C" {
 #endif
 
-#include <inttypes.h>
+#include "port.h"
 #include <stdlib.h>
 #include <string.h>
 
