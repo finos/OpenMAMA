@@ -152,10 +152,7 @@ mamaPlaybackFileParser_openFile (mamaPlaybackFileParser fileParser,
                                  char* fileName)
 {
     mama_status status = MAMA_STATUS_OK;
-#ifdef WIN32
-	OFSTRUCT   of;
-	HANDLE  hMMFile;
-#endif
+    
     mamaPlaybackFileParserImpl* impl =
         (mamaPlaybackFileParserImpl*)fileParser;
     if (impl == NULL)  return MAMA_STATUS_NULL_ARG;
@@ -166,22 +163,6 @@ mamaPlaybackFileParser_openFile (mamaPlaybackFileParser fileParser,
                   "openFile: checking for file: %s", fileName);
         mamaPlaybackFileParser_setSize (impl,fileName);
 
-#ifdef WIN32
-
-
-
-		if ((impl->myFileDescriptor = (OpenFile (fileName, &of, PAGE_READONLY))) >= 0)
-		{
-			hMMFile	 = CreateFileMapping ((void*)impl->myFileDescriptor, NULL, 0x02, 0, 0, NULL);
-
-			impl->myFiledata = (char *)MapViewOfFile (hMMFile,
-                                  FILE_MAP_READ,
-                                  0,
-                                  0,
-                                  0);
-
-
-#else
         if ((impl->myFileDescriptor = (open (fileName,
                                              /*O_RDWR*/O_RDONLY | O_NONBLOCK,
                                              0))) >= 0)
@@ -191,14 +172,8 @@ mamaPlaybackFileParser_openFile (mamaPlaybackFileParser fileParser,
                                      MAP_SHARED,
                                      impl->myFileDescriptor,
                                      0);
-
-#endif
             if (!impl->myFiledata)
             {
-#ifdef WIN32
-                int err;
-				err=GetLastError();
-#endif
                 mama_log(MAMA_LOG_LEVEL_NORMAL,
                          "memory mapping failed?\n");
                 exit(1);
@@ -225,11 +200,7 @@ mamaPlaybackFileParser_closeFile (mamaPlaybackFileParser fileParser)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-#ifdef WIN32
-	CloseHandle((void*)impl->myFileDescriptor);
-#else
     munmap(impl->myFiledata, impl->myFileSize);
-#endif
     return MAMA_STATUS_OK;
 }
 
