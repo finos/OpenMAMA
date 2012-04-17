@@ -21,10 +21,7 @@
 
 #include <avis/elvin.h>
 
-#ifdef WIN32
-#include <wombat/wincompat.h>
-#endif /* WIN32 */
-
+#include "port.h"
 
 #include <mama/mama.h>
 #include <timers.h>

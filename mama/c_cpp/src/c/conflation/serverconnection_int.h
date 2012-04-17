@@ -22,9 +22,7 @@
 #ifndef MAMA_SERVER_CONNECTION_INT_H__
 #define MAMA_SERVER_CONNECTION_INT_H__
 
-#ifndef WIN32
-#include <netinet/in.h>
-#endif
+#include "port.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -32,11 +30,7 @@ extern "C" {
 
 typedef struct mamaServerConnection_
 {
-#ifndef WIN32
     char        mIpAddress[INET_ADDRSTRLEN];
-#else
-    char        mIpAddress[16];
-#endif
     uint16_t    mPort;
     int         mConnectionStatus;
 } mamaServerConnectionImpl;

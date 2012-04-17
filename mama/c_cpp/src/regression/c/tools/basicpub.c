@@ -78,37 +78,23 @@ NULL
 static void parseCommandLine    (int argc, const char **argv);
 static void initializeMama      (void);
 static void createIntervalTimer (void);
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+
+static void MAMACALLTYPE
 timerCallback       (mamaTimer timer, void *closure);
+
 static void createInboundSubscription (void);
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 inboundCreateCb     (mamaSubscription subscription, void *closure);
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 inboundErrorCb      (mamaSubscription subscription,
                      mama_status status,
                      void* platformError,
                      const char *subject,
                      void *closure);
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 inboundMsgCb        (mamaSubscription subscription,
                      mamaMsg msg,
                      void *closure,
@@ -362,11 +348,7 @@ static void createInboundSubscription (void)
     }
 }
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 inboundCreateCb (mamaSubscription subscription, void *closure)
 {
     if (gQuietLevel < 2)
@@ -375,11 +357,7 @@ inboundCreateCb (mamaSubscription subscription, void *closure)
     }
 }
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 inboundErrorCb (mamaSubscription subscription,
                 mama_status      status,
                 void*            platformError,
@@ -391,11 +369,7 @@ inboundErrorCb (mamaSubscription subscription,
     exit (status);
 }
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 inboundMsgCb (mamaSubscription subscription,
               mamaMsg          msg,
               void*            closure,
@@ -437,11 +411,7 @@ static void createIntervalTimer (void)
 }
 
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 timerCallback (mamaTimer timer, void *closure)
 {
     publishMessage (NULL);

@@ -441,9 +441,7 @@ extern "C"
      @param appName  "site server" or application name of application that userId is using to connect (possibly NULL)
      */
     typedef void (
-    #ifdef WIN32
-    __stdcall
-    #endif
+    MAMACALLTYPE
     *onSessionDisconnectCB) (const sessionDisconnectReason reason,
                                            const char* userId,
                                            const char* host,
@@ -453,9 +451,7 @@ extern "C"
      Callback invoked after dynamic entitlements update has occurred
      */
     typedef void (
-    #ifdef WIN32
-    __stdcall
-    #endif
+    MAMACALLTYPE
     *onEntitlementUpdateCB) (void);
 
     /**
@@ -465,9 +461,7 @@ extern "C"
             otherwise 0.
     */
     typedef void (
-    #ifdef WIN32
-    __stdcall
-    #endif
+    MAMACALLTYPE
     *onEntitlementCheckingSwitchCB) (const int isEntitlementCheckingDisabled);
     /**
      Convenience structure for registering entitlement callbacks to MAMA

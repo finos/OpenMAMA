@@ -22,9 +22,8 @@
 #ifndef MAMA_CONNECTION_INT_H__
 #define MAMA_CONNECTION_INT_H__
 
-#ifndef WIN32
-#include <netinet/in.h>
-#endif
+#include "port.h"
+
 #include "mama/conflation/connection.h"
 
 #if defined(__cplusplus)
@@ -34,12 +33,7 @@ extern "C" {
 #define MAX_STR_LEN 67
 #define MAX_USER_STR_LEN 256
 
-/* This definition contains the length of the IP address string. */
-#ifndef WIN32
 #define MAMACONNECTION_MAX_IP_ADDRESS_LEN INET_ADDRSTRLEN    
-#else
-#define MAMACONNECTION_MAX_IP_ADDRESS_LEN 16    
-#endif
 
 typedef struct mamaConnection_
 {

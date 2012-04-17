@@ -57,17 +57,11 @@ static void initializeMama      (void);
 static void createInbox         (void);
 static void createPublisher     (void);
 static void sendRequest         (void);
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+
+static void MAMACALLTYPE
 msgCB (mamaMsg msg, void* closure);
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+
+static void MAMACALLTYPE
 errorCB (mama_status status, void* closure);
 
 
@@ -165,10 +159,7 @@ void initializeMama (void)
 }
 
 /* Used to destroy messages sent on the throttle */
-static void
-#ifdef WIN32
-__stdcall
-#endif
+static void MAMACALLTYPE
 sendCompleteCb (mamaPublisher publisher,
                 mamaMsg       msg,
                 mama_status   status,
@@ -251,11 +242,7 @@ static void createInbox (void)
     }
 }
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 msgCB (mamaMsg msg, void *closure)
 {
     printf ("Received reply: %s\n", mamaMsg_toString (msg));
@@ -263,11 +250,7 @@ msgCB (mamaMsg msg, void *closure)
     exit(0);
 }
 
-#ifdef WIN32
-static void __stdcall
-#else
-static void
-#endif
+static void MAMACALLTYPE
 errorCB (mama_status status, void *closure)
 {
     printf ("Error creating inbox: %s\n",

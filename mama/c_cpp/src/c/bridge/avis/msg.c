@@ -19,14 +19,11 @@
  * 02110-1301 USA
  */
 
+#include "port.h"
 #include <stdlib.h>
 #include <string.h>
 
 #include <avis/elvin.h>
-
-#ifdef WIN32
-#include <wombat/wincompat.h>
-#endif /* WIN32 */
 
 #include <mama/mama.h>
 #include <msgimpl.h>

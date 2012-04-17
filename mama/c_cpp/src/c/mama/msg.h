@@ -26,11 +26,8 @@
 #include <mama/status.h>
 #include <mama/fielddesc.h>
 #include <mama/msgtype.h>
+#include "port.h"
 #include <stdlib.h>
-
-#ifndef WIN32
-#include <inttypes.h>
-#endif
 
 #define ENTITLE_FIELD_NAME  "wEntitleCode"
 #define ENTITLE_FIELD_ID    496
@@ -2115,16 +2112,9 @@ mamaMsg_getFieldAsString (
  * @param closure The closure specified in mamaMsg_iterateFields().
  *
  */
-#ifndef WIN32
-typedef void(*mamaMsgIteratorCb)(const mamaMsg       msg,
+typedef void(MAMACALLTYPE *mamaMsgIteratorCb)(const mamaMsg       msg,
                                  const mamaMsgField  field,
                                  void*               closure);
-#else
-typedef void(__stdcall *mamaMsgIteratorCb)(
-                const mamaMsg       msg,
-                const mamaMsgField  field,
-                void*               closure);
-#endif
 
 /**
  * Invoke the specified callback for each field in the message.
