@@ -81,6 +81,8 @@ typedef long long int           w_i64_t;
 /* For delimiting multiple paths in env variables properties */
 #define PATH_DELIM ':'
 
+#define PATHSEP  "/"
+
 /* Use Posix semaphores for Linux */
 #define wsem_t          sem_t          
 #define wsem_init       sem_init       
@@ -91,6 +93,8 @@ typedef long long int           w_i64_t;
 #define wsem_getvalue   sem_getvalue   
 
 int wsem_timedwait (wsem_t* sem, unsigned int ts);
+
+#define CPU_AFFINITY_SET 				cpu_set_t
 
 /* User pthreads for linux */
 #define wthread_mutex_t         pthread_mutex_t    
