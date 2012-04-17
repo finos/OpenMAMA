@@ -19,7 +19,8 @@
  * 02110-1301 USA
  */
 
-#include <pthread.h>
+#include "port.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>

@@ -23,17 +23,14 @@
 #define __STDC_FORMAT_MACROS
 #endif
 
+#include "port.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <assert.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <ctype.h>
-#ifndef WIN32
-#include <inttypes.h>
-#else
-#include <wombat/wincompat.h> 
-#endif
 #include <wombat/strutils.h>
 
 static const char* gIntegerStrings[] = {

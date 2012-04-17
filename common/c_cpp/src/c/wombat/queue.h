@@ -25,20 +25,7 @@
 /*
  * Fully thread safe queue implementation.
  */
-
-#ifndef WIN32
-#include <semaphore.h>
-#include <inttypes.h>
-#else
-#include "wombat/wincompat.h"
-#endif
-
-#ifndef WIN32
-/* For Forte */
-#ifndef SEM_VALUE_MAX 
-#define SEM_VALUE_MAX 2147483647 /* from headers */
-#endif
-
+#ifdef SEM_VALUE_MAX
 #define WOMBAT_QUEUE_MAX_SIZE SEM_VALUE_MAX /* 2_147_483_647 on Linux */
 #else
 #define WOMBAT_QUEUE_MAX_SIZE 2147483647 /* max possible size */

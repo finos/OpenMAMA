@@ -30,13 +30,6 @@ extern "C" {
 
 
 typedef unsigned long int       w_u32_t;
-#ifndef WIN32
-typedef unsigned long long int  w_u64_t;
-typedef long long int           w_i64_t;
-#else
-typedef unsigned __int64 w_u64_t;
-typedef __int64 w_i64_t;
-#endif
 typedef long int                w_i32_t;
 typedef float                   w_f32_t;
 typedef double                  w_f64_t;

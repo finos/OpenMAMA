@@ -22,8 +22,7 @@
 #ifndef TIMERS_INTERNAL_
 #define TIMERS_INTERNAL_
 
-#include <sys/time.h>
-#include <pthread.h>
+#include "port.h"
 
 typedef void* timerElement;
 typedef void* timerHeap;

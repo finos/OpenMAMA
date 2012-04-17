@@ -24,10 +24,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
  
-#ifdef WIN32
-#define __attribute__(a)
-#endif 
-
 #ifndef	_SYS_TREE_H_
 #define	_SYS_TREE_H_
 
