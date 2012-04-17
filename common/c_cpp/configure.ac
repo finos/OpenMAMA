@@ -46,7 +46,8 @@ AC_CANONICAL_BUILD()
 # Set up symbolic links for os-specific files
 AC_MSG_NOTICE([Configuring symbolic links for $build_os in $srcdir])
 case $build_os in
-       linux*-*)   AC_CONFIG_LINKS([src/c/port.h:src/c/linux/port.h]) ;;
+       linux*-*)   AC_CONFIG_LINKS([src/c/port.h:src/c/linux/port.h
+				    src/c/environment.c:src/c/linux/environment.c]) ;;
 esac
 
 # Checks for programs.
