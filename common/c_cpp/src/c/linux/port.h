@@ -40,6 +40,7 @@ extern "C"
 #include <sys/resource.h>
 #include <sys/time.h>
 #include <sys/times.h>
+#include <sys/socket.h>
 #include <netinet/in.h>
 #include <semaphore.h>
 #include <dirent.h>
@@ -94,9 +95,15 @@ typedef long long int           w_i64_t;
 
 int wsem_timedwait (wsem_t* sem, unsigned int ts);
 
+/* Windows does not support AF_UNIX sockets, socketpairs, etc */
+#define wsocketpair(dom, type, prot, pair) (socketpair((dom),(type),(prot),(pair)))
+#define wsetnonblock(s) (fcntl((s), F_SETFL, O_NONBLOCK))
+
 #define CPU_AFFINITY_SET 				cpu_set_t
 
 /* User pthreads for linux */
+#define INVALID_THREAD (-1)
+
 #define wthread_mutex_t         pthread_mutex_t    
 #define wthread_mutex_init      pthread_mutex_init
 #define wthread_mutex_unlock    pthread_mutex_unlock
