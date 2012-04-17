@@ -39,7 +39,7 @@ extern "C" {
 #include <lookup2.h>
 #include <wombat/wtable.h>
 #include "playbackFileParser.h"
-#include "port.h"
+#include "wombat/port.h"
 
 #define BUFFER_SIZE 128
 typedef struct mamaFilePlayback_

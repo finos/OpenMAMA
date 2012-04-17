@@ -21,7 +21,7 @@
 
 #include <avis/elvin.h>
 
-#include "port.h"
+#include "wombat/port.h"
 
 #include <mama/mama.h>
 #include <timers.h>

@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <limits.h>
 
-#include "port.h"
+#include "wombat/port.h"
 #include "wombat/environment.h"
 #include "wombat/strutils.h"
 

@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-#include "port.h"
+#include "wombat/port.h"
 #include <mama/mama.h>
 #include <mama/queue.h>
 #include "bridge.h"

@@ -22,7 +22,7 @@
 #ifndef MAMA_SUBSC_TYPE_H__
 #define MAMA_SUBSC_TYPE_H__
 
-#include "port.h"
+#include "wombat/port.h"
 /*
  * This file provides subscription type information.
  */

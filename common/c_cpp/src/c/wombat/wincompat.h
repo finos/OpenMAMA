@@ -23,6 +23,6 @@
 #define _WOMBAT_WINCOMPAT_H
 
 /* Moved to _os_/port.h */
-#include "port.h"
+#include "wombat/port.h"
 
 #endif /* _WOMBAT_WINCOMPAT_H */

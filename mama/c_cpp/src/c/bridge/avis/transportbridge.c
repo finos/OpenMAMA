@@ -22,7 +22,7 @@
 #include <avis/elvin.h>
 #include <avis/avis_client_config.h>
 
-#include "port.h"
+#include "wombat/port.h"
 
 #include <property.h>
 #include <mama/mama.h>

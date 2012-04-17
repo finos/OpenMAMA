@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 #include <string.h>
-#include "port.h"
+#include "wombat/port.h"
 
 #include "mama/conflation/connection.h"
 #include "conflation/connection_int.h"

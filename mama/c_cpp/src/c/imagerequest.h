@@ -22,7 +22,7 @@
 #ifndef MamaImageRequestH__
 #define MamaImageRequestH__
 
-#include "port.h"
+#include "wombat/port.h"
 
 #include "wombat/wincompat.h"
 #include "throttle.h"

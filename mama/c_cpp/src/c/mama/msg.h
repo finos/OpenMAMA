@@ -26,7 +26,7 @@
 #include <mama/status.h>
 #include <mama/fielddesc.h>
 #include <mama/msgtype.h>
-#include "port.h"
+#include "wombat/port.h"
 #include <stdlib.h>
 
 #define ENTITLE_FIELD_NAME  "wEntitleCode"

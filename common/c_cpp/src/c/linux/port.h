@@ -179,7 +179,7 @@ struct wtimespec
     long   tv_nsec;
 };
 
-#define wnanosleep (ts, remain) nanosleep(((struct timespec)(ts)),(remain))
+#define wnanosleep(ts, remain) nanosleep(((struct timespec*)(ts)),(remain))
 
 
 /* net work utility functions */
