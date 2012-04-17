@@ -58,13 +58,12 @@
  *
  */
 
+#include "port.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <signal.h>
-#include <pthread.h>
-
-#include <unistd.h>
 
 #include <mama/mama.h>
 #include <mama/marketdata.h>
@@ -239,12 +238,12 @@ static void mamashutdown            (void);
 static void setQueueMonitors    (mamaQueue queue, int queueIndex);
 static FILE* gLogFile = NULL;
 
-static void
+static void MAMACALLTYPE
 subscriptionOnMsg   (mamaSubscription    subscription,
                      mamaMsg             msg,
                      void*               closure,
                      void*               itemClosure);
-static void
+static void MAMACALLTYPE
 subscriptionOnQuality (mamaSubscription subsc,
                        mamaQuality      quality,
                        const char*      symbol,
@@ -252,13 +251,13 @@ subscriptionOnQuality (mamaSubscription subsc,
                        const void*      platformInfo,
                        void*            closure);
 
-static void
+static void MAMACALLTYPE
 subscriptionOnError (mamaSubscription    subscription,
                      mama_status         status,
                      void*               platformError,
                      const char*         subject,
                      void*               closure);
-static void
+static void MAMACALLTYPE
 subscriptionOnCreate (mamaSubscription    subscription,
                       void*               closure);
 
@@ -273,38 +272,38 @@ static void displayAllFields    (mamaMsg             msg,
                                  mamaSubscription    subscription,
                                  int                 indentLevel);
 
-static void
+static void MAMACALLTYPE
 rateReporterCallback       (mamaTimer           timer,
                             void *              closure);
 
-static void
+static void MAMACALLTYPE
 timeoutCb                  (mamaDictionary      dict,
                             void *              closure);
-static void
+static void MAMACALLTYPE
 errorCb                    (mamaDictionary      dict,
                             const char *        errMsg,
                             void *              closure);
-static void
+static void MAMACALLTYPE
 completeCb                 (mamaDictionary      dict,
                             void *              closure);
-static void
+static void MAMACALLTYPE
 displayCb                  (const mamaMsg       msg,
                             const mamaMsgField  field,
                             void *              closure);
 
 /*Callback for event queue high watermark monitoring.*/
-static void
+static void MAMACALLTYPE
 highWaterMarkCallback (mamaQueue     queue,
                        size_t        size,
                        void*         closure);
 
 /*Callback for event queue low watermark monitoring.*/
-static void
+static void MAMACALLTYPE
 lowWaterMarkCallback  (mamaQueue     queue,
                        size_t        size,
                        void*         closure);
 
-static void
+static void MAMACALLTYPE
 shutdownTimerCallback(mamaTimer timer, void *closure)
 {
 	/* Stop dispatching messages. */
@@ -586,21 +585,21 @@ static void dumpDataDictionary (void)
     }
 }
 
-void
+void MAMACALLTYPE
 timeoutCb (mamaDictionary dict, void *closure)
 {
     printf ("Timed out waiting for dictionary\n" );
     mama_stop(gMamaBridge);
 }
 
-void
+void MAMACALLTYPE
 errorCb (mamaDictionary dict, const char *errMsg, void *closure)
 {
     fprintf (stderr, "Error getting dictionary: %s\n", errMsg );
     mama_stop(gMamaBridge);
 }
 
-void
+void MAMACALLTYPE
 completeCb (mamaDictionary dict, void *closure)
 {
     gDictionaryComplete = 1;
@@ -750,7 +749,7 @@ static void mamashutdown (void)
     mama_close ();
 }
 
-static void
+static void MAMACALLTYPE
 transportCb (mamaTransport      tport,
              mamaTransportEvent ev,
              short              cause,
@@ -763,7 +762,8 @@ transportCb (mamaTransport      tport,
 /*Steps required for initializing the API*/
 void initializeMama (void)
 {
-    mama_status               status  =   MAMA_STATUS_OK;
+    mama_status       status  =   MAMA_STATUS_OK;
+    mamaPayloadBridge payBridge = NULL;
 
     /*
         mama_setApplicationName should be called before mama_open().
@@ -1234,7 +1234,7 @@ static void parseCommandLine (int argc, const char** argv)
     where most of the processing within a MAMA based application will occur.
     This callback is invoked for each message received by the API.
 */
-void
+void MAMACALLTYPE
 subscriptionOnMsg  (mamaSubscription subscription,
                     mamaMsg msg,
                     void *closure,
@@ -1303,7 +1303,7 @@ subscriptionOnMsg  (mamaSubscription subscription,
     The onQuality callback is invoked when the quality of a subscription
     changes state. E.g. From OK to STALE and vise versa.
 */
-void
+void MAMACALLTYPE
 subscriptionOnQuality (mamaSubscription subsc,
                        mamaQuality      quality,
                        const char*      symbol,
@@ -1676,7 +1676,7 @@ void displayField (mamaMsgField field, const mamaMsg msg, int indentLevel)
     }/*End switch*/
 }
 
-void
+void MAMACALLTYPE
 displayCb (const mamaMsg       msg,
                 const mamaMsgField  field,
                 void*               closure)
@@ -1752,7 +1752,7 @@ void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
     is invoked whenther the subscription request is sent from the throttle
     queue.
 */
-void
+void MAMACALLTYPE
 subscriptionOnCreate (mamaSubscription subscription, void* closure)
 {
     const char* source = NULL;
@@ -1773,7 +1773,7 @@ subscriptionOnCreate (mamaSubscription subscription, void* closure)
     }
 }
 
-static void
+static void MAMACALLTYPE
 subscriptionOnError (mamaSubscription subscription,
                      mama_status      status,
                      void*            platformError,
@@ -1786,7 +1786,7 @@ subscriptionOnError (mamaSubscription subscription,
              mamaStatus_stringForStatus (status));
 }
 
-static void
+static void MAMACALLTYPE
 rateReporterCallback (mamaTimer  timer, void*   closure)
 {
     int           msgInterval = gNumMsg - gNumMsgLast;
@@ -1811,7 +1811,7 @@ void usage (int exitStatus)
     exit (exitStatus);
 }
 
-static void
+static void MAMACALLTYPE
 highWaterMarkCallback (mamaQueue     queue,
                        size_t        size,
                        void*         closure)
@@ -1837,7 +1837,7 @@ highWaterMarkCallback (mamaQueue     queue,
             queueName == NULL ? "" : queueName, (unsigned int)size);
 }
 
-static void
+static void MAMACALLTYPE
 lowWaterMarkCallback  (mamaQueue     queue,
                        size_t        size,
                        void*         closure)

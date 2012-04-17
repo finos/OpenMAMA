@@ -366,7 +366,7 @@ extern "C"
      * when mama_startBackground() exits normally in which case status will be
      * MAMA_STATUS_OK.
      */
-    typedef void (*mamaStartCB) (mama_status status);
+    typedef void (MAMACALLTYPE *mamaStartCB) (mama_status status);
 
     /**
      * Start Mama in the background. This method invokes mama_start() in a
