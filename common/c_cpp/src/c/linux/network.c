@@ -19,6 +19,9 @@
  * 02110-1301 USA
  */
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
 #include "wombat/wCommon.h"
 
 
@@ -146,4 +149,47 @@ struct in_addr resolve_ip (const char * arg)
         resolved.s_addr = (unsigned long)-1;
     } 
     return (resolved);
+}
+
+static const char gIPAddress[16];
+static const char* gHostName = NULL;
+
+static void lookupIPAddress (void)
+{
+    struct hostent *host = NULL;
+    char           *addrStr = "not determined";
+
+    struct         utsname uts;
+    memset( gIPAddress, 0, 16 );
+    uname (&uts);
+    gHostName = strdup (uts.nodename);
+
+    host = gethostbyname( gHostName );
+
+    if( gHostName == NULL ||
+        host == NULL      ||
+        host->h_addr_list[0] == NULL )
+    {
+       strncpy( (char *)gIPAddress, "not determined", sizeof( gIPAddress ) );
+    }
+    else
+    {
+        addrStr = inet_ntoa( *((struct in_addr *)( host->h_addr_list[0] )));
+    }
+
+    strncpy ((char*)gIPAddress, addrStr, sizeof (gIPAddress));
+}
+
+const char* getIpAddress(void)
+{
+    if (NULL == gHostName)
+        lookupIPAddress();
+    return gIPAddress;
+}
+
+const char* getHostName(void)
+{
+    if (NULL == gHostName)
+        lookupIPAddress();
+    return gHostName;
 }
