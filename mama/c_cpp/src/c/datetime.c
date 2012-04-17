@@ -1653,7 +1653,7 @@ unsigned long  makeTime (
     timeInfo.tm_sec   = sec;
     timeInfo.tm_isdst = 0;
 
-    return timegm (&timeInfo);
+    return wtimegm (&timeInfo);
 }
 
 void utcTm (
