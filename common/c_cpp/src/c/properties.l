@@ -22,19 +22,15 @@
 /** This file should be processed by FLEX or LEX **/
 
 %{  
+#include "port.h"
 #include "propertyinternal.h" 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "wombat/wincompat.h"
 
-#ifndef WIN32
-#include <pthread.h>
-#endif
-
 extern int gPropertyDebug;
-
-wthread_mutex_t lexerLock = PTHREAD_MUTEX_INITIALIZER;
+wthread_static_mutex_t lexerLock = WSTATIC_MUTEX_INITIALIZER;
 
 %}
 
@@ -200,12 +196,12 @@ propertiesImpl_ImportPropertiesFromFile( propertiesImpl this,
         return 0;
     }
 
-    wthread_mutex_lock (&lexerLock);
+    wthread_static_mutex_lock (&lexerLock);
     yyrestart(f);
     properties = this;
     yylex();
     properties = NULL;
-    wthread_mutex_unlock (&lexerLock);
+    wthread_static_mutex_unlock (&lexerLock);
 
     free( fullPath );
     fclose( f );
@@ -220,7 +216,7 @@ propertiesImpl_AddString( propertiesImpl this,
 
     if( gPropertyDebug ) fprintf( stderr, "Scanning property string %s\n", string );
 
-    wthread_mutex_lock (&lexerLock);
+    wthread_static_mutex_lock (&lexerLock);
 
     properties = this;
     /* yy_scan_string changes the global lex stack buffer there lock until this
@@ -229,7 +225,7 @@ propertiesImpl_AddString( propertiesImpl this,
     yylex();
     yy_delete_buffer(buf);
     properties = NULL;
-    wthread_mutex_unlock (&lexerLock);
+    wthread_static_mutex_unlock (&lexerLock);
 
     return 1;
 }
