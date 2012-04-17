@@ -163,10 +163,10 @@ typedef struct mamaFtMemberImpl_
 /*****************************************
 *     General callback functions
 ******************************************/
-static void
+static void MAMACALLTYPE
 ftHeartbeatTimerCb (mamaTimer timer, void* closure);
 
-static void
+static void MAMACALLTYPE
 ftTimeoutTimerCb   (mamaTimer timer, void* closure);
 
 
@@ -178,7 +178,7 @@ static char*       genInstanceId     (const char*        groupName);
 static char*       genSymbol         (const char*        groupName);
 
 /* A callback function that does nothing. */
-static void
+static void MAMACALLTYPE
 mamaFtCallbackNoOp (
     mamaFtMember  ftMember,
     const char*   groupName,
@@ -188,7 +188,7 @@ mamaFtCallbackNoOp (
 }
 
 /* FT callbacks: */
-static void
+static void MAMACALLTYPE
 ioCallback         (mamaIo io, mamaIoType ioType,  void* closure);
 
 static mamaIo       gReadHandler  =  NULL;
@@ -196,27 +196,27 @@ static mamaIo       gReadHandler  =  NULL;
 /* General implementation functions. */
 int                receiveHeartbeat  (mamaFtMemberImpl*  impl);
 
- void checkHeartbeat    (mamaFtMemberImpl*  impl,
-                                int         hbWeight,
-                                int         hbIncarnation,
-                                int         hbPid,
-                                int         hbIpAddr,
-                                int         hbPrimary,
-                                char        *hbGroupName);
+void checkHeartbeat (mamaFtMemberImpl*  impl,
+                     unsigned int hbWeight,
+                     unsigned int hbIncarnation,
+                     int          hbPid,
+                     int          hbIpAddr,
+                     int          hbPrimary,
+                     char*        hbGroupName);
 
 struct in_addr     resolve_ip        (const char * arg);
 
 /* FT callbacks: */
-static void
+static void MAMACALLTYPE
 ftSubCreateCb      (mamaSubscription   subscription, void* closure);
 
-static void
+static void MAMACALLTYPE
 ftSubErrorCb       (mamaSubscription   subscription,
                     mama_status        status,
                     void*              platformError,
                     const char*        subject,
                     void*              closure);
-static void
+static void MAMACALLTYPE
 ftSubMsgCb         (mamaSubscription   subscription,
                     mamaMsg            msg,
                     void*              closure,
@@ -608,7 +608,7 @@ static void checkState (mamaFtMemberImpl*  impl,
     }
 }
 
-static void
+static void MAMACALLTYPE
 ftHeartbeatTimerCb (mamaTimer          timer,
                          void*              closure)
 {
@@ -617,7 +617,7 @@ ftHeartbeatTimerCb (mamaTimer          timer,
     impl->ftSendHeartbeat (impl);
 }
 
-static void
+static void MAMACALLTYPE
 ftTimeoutTimerCb (mamaTimer          timer,
                        void*              closure)
 {
@@ -665,7 +665,8 @@ mama_status resetTimeoutTimer (mamaFtMemberImpl* impl)
     return mamaTimer_reset (impl->myTimeoutTimer);
 }
 
-int betterCredentials(mamaFtMemberImpl*  impl, int weight, int incarnation, in_addr_t ipAddr, int pid)
+int betterCredentials(mamaFtMemberImpl*  impl, unsigned int weight, 
+					  unsigned int incarnation, in_addr_t ipAddr, int pid)
 {
     if (weight > impl->myWeight)
     {
@@ -697,14 +698,14 @@ int betterCredentials(mamaFtMemberImpl*  impl, int weight, int incarnation, in_a
 }
 
 
- void checkHeartbeat    (mamaFtMemberImpl*  impl,
-                                int         hbWeight,
-                                int         hbIncarnation,
-                                int         hbPid,
-                                int         hbIpAddr,
-                                int         hbPrimary,
-                                char        *hbGroupName)
- {
+void checkHeartbeat (mamaFtMemberImpl*  impl,
+                     unsigned int hbWeight,
+                     unsigned int hbIncarnation,
+                     int          hbPid,
+                     int          hbIpAddr,
+                     int          hbPrimary,
+                     char*        hbGroupName)
+{
 
     if (strcmp (hbGroupName, impl->myGroupName)  != 0)
     {
@@ -743,132 +744,6 @@ int betterCredentials(mamaFtMemberImpl*  impl, int weight, int incarnation, in_a
                   " priority (ignored)");
         return ;
     }
-}
-
-struct in_addr resolve_ip (const char * arg)
-{
-
-    struct in_addr resolved;
-    struct in_addr addr;
-    unsigned long  netip    = 0;
-    const char * ifname     = arg;
-    int sock                = -1;
-    int i=0;
-    unsigned      numreqs=0;
-    struct ifconf ifc;
-    struct ifreq *ifr;
-    resolved = inet_makeaddr(0,0);
-    addr = inet_makeaddr(0,0);
-
-
-    if (!arg || (strlen(arg)==0))
-    {
-        resolved.s_addr = INADDR_ANY;
-        return resolved;
-    }
-    /* 1. try interpreting as network or host IP address */
-    {
-        netip   = inet_network (arg);
-        if (netip != (unsigned long)(-1))
-        {
-            addr = inet_makeaddr(netip, 0);
-        }
-    }
-    /* 2. try interpreting as network name */
-    if (! addr.s_addr)
-    {
-        struct netent * net = getnetbyname (arg);
-        if ((net != NULL) && (net->n_addrtype == AF_INET))
-        {
-            addr = inet_makeaddr (net->n_net, 0);
-        }
-    }
-    /* 3. try interpreting as host name */
-    if (! addr.s_addr)
-    {
-        struct hostent * host = gethostbyname (arg);
-        if ((host != NULL) && (host->h_addrtype == AF_INET))
-        {
-            addr = *(struct in_addr *)(host->h_addr_list[0]);
-        }
-    }
-
-    /* 4. try interpreting as a NIC interface name */
-    numreqs = 30;
-    sock = socket(AF_INET, SOCK_DGRAM, 0);
-
-    ifc.ifc_buf = NULL;
-    for (;;)
-    {
-        ifc.ifc_len = sizeof(struct ifreq) * numreqs;
-        ifc.ifc_buf = (char *)malloc(ifc.ifc_len);
-        if (ioctl(sock, SIOCGIFCONF, &ifc) < 0)
-        {
-            perror ("SIOCGIFCONF");
-            resolved.s_addr = INADDR_NONE;
-            return resolved;
-        }
-        if (ifc.ifc_len == (sizeof(struct ifreq) * numreqs))
-        {
-            numreqs *= 2;
-            continue;
-        }
-        break;
-    }
-
-    ifr = ifc.ifc_req;
-    for (i = 0; i < ifc.ifc_len; i += sizeof(struct ifreq))
-    {
-        struct sockaddr_in    hostaddr;
-        struct sockaddr_in    netmask;
-        struct in_addr network  = inet_makeaddr(0,0);
-
-        hostaddr.sin_addr = inet_makeaddr(0,0);
-        netmask.sin_addr  = inet_makeaddr(0,0);
-
-        if (ioctl(sock, SIOCGIFADDR, ifr) < 0)
-        {
-            perror ("SIOCGIFADDR");
-            resolved.s_addr = INADDR_NONE;
-            return resolved;
-        }
-        memcpy (&hostaddr, &(ifr->ifr_addr), sizeof(struct sockaddr_in));
-
-        if (ioctl(sock, SIOCGIFNETMASK, ifr) < 0)
-        {
-            perror ("SIOCGIFNETMASK");
-            resolved.s_addr = INADDR_NONE;
-            return resolved;
-        }
-        memcpy (&netmask, &(ifr->ifr_addr), sizeof (struct sockaddr_in));
-        network.s_addr = hostaddr.sin_addr.s_addr & netmask.sin_addr.s_addr;
-        if (addr.s_addr)
-        {
-            if (addr.s_addr == hostaddr.sin_addr.s_addr)
-            {
-                resolved = hostaddr.sin_addr;
-                break;
-            }
-            else if (addr.s_addr == network.s_addr)
-            {
-                resolved = hostaddr.sin_addr;
-                break;
-            }
-        }
-
-        if (strcmp(ifr->ifr_name, ifname) == 0)
-        {
-            resolved = hostaddr.sin_addr;
-            break;
-        }
-        ifr++;
-    }
-
-    if (!resolved.s_addr)
-    {
-        resolved.s_addr = INADDR_NONE;
-    }
-    return (resolved);
 }
 
 /****************************************************************************
@@ -990,7 +865,7 @@ multicastFt_setup (
         ftTtl = multicastFt_getProperty (propertyName,
                 "mama.native.transport.%s.ttl", transportName);
         if (ftTtl != NULL)
-            ttl = atol (ftTtl);
+            ttl = (unsigned char)atol (ftTtl);
     }
 
     iorecvstr = multicastFt_getProperty (propertyName,
@@ -1055,7 +930,7 @@ multicastFt_setup (
                       "MAMA multicast FT: multicast socket failed %s",strerror(errno));
             return MAMA_STATUS_SYSTEM_ERROR;
         }
-        iRet = fcntl (sock, F_SETFL, fcntl(sock, F_GETFL) | O_NONBLOCK);
+        iRet = wsetnonblock(sock);
         if (iRet != 0)
         {
              mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -1224,7 +1099,7 @@ static void multicastFt_sendHeartbeat (void*  member)
     }
 }
 
-static void
+static void MAMACALLTYPE
 ioCallback (mamaIo io, mamaIoType ioType, void *closure)
 {
     int i = 0;
@@ -1390,7 +1265,7 @@ bridgeFt_deactivate (
     return MAMA_STATUS_OK;
 }
 
-static void
+static void MAMACALLTYPE
 ftSubCreateCb (mamaSubscription   subscription,
                     void*              closure)
 {
@@ -1398,7 +1273,7 @@ ftSubCreateCb (mamaSubscription   subscription,
               "MAMA FT: heartbeat subscription created successfully");
 }
 
-static void
+static void MAMACALLTYPE
 ftSubErrorCb  (mamaSubscription   subscription,
                     mama_status        status,
                     void*              platformError,
@@ -1448,7 +1323,7 @@ void bridgeFt_sendHeartbeat (mamaFtMember    member)
     mamaPublisher_send (impl->myPublisher, impl->myHeartbeatMsg);
 }
 
-static void
+static void MAMACALLTYPE
 ftSubMsgCb    (mamaSubscription   subscription,
                mamaMsg            msg,
                void*              closure,

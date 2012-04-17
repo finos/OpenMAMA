@@ -49,9 +49,7 @@ typedef void* mamaFtMember;
  * Callback function type for MAMA fault tolerance events.
  */
 typedef void (
-#ifdef WIN32
-__stdcall
-#endif
+MAMACALLTYPE
 *mamaFtMemberOnFtStateChangeCb) (mamaFtMember  ftMember,
                                                const char*   groupName,
                                                mamaFtState   state,
