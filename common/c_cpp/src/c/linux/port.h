@@ -55,25 +55,13 @@ extern "C"
 #include <inttypes.h>
 #include <pwd.h>
 
-/* Call Types */
-#define COMMONExpDLL
-#define WMWExpDLL
-#define MAMAExpDLL
-#define MAMACPPExpDLL
-#define MAMDAExpDLL
-#define MAMDAOPTExpDLL
-#define MAMAExpBridgeDLL
-#define MAMACALLTYPE
+#include "wConfig.h"
 
 /* PTHREAD static locks are easy */
 typedef pthread_mutex_t wthread_static_mutex_t;
 #define WSTATIC_MUTEX_INITIALIZER PTHREAD_MUTEX_INITIALIZER
 #define wthread_static_mutex_lock(x) pthread_mutex_lock((x))
 #define wthread_static_mutex_unlock(x) pthread_mutex_unlock((x))
-
-
-#define WCOMMONINLINE inline static
-#define WCOMMONFORCEINLINE inline static
 
 /* Type for handle to dynamically loaded library */
 typedef void*       LIB_HANDLE;

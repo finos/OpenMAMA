@@ -37,6 +37,7 @@
 #include <tlhelp32.h>
 #include <time.h>
 
+#include "wConfig.h"
 #include "lock.h"
 #include "mmap.h"
 
@@ -46,9 +47,6 @@ extern "C" {
 
 /* So Windows compiler ignores gcc __attribute__(x) */
 #define __attribute__(a)
-
-#define WCOMMONINLINE __inline
-#define WCOMMONFORCEINLINE __forceinline
 
 /* Type for handle to dynamically loaded library */
 typedef HINSTANCE   LIB_HANDLE;
@@ -89,76 +87,6 @@ typedef __int64 w_i64_t;
 
 #define PATHSEP  "\\"
 
-/* Calling conventions */
-#define MAMACALLTYPE __stdcall
-
-#if defined( COMMON_DLL )
-    /* We are building common dll */
-#   define COMMONExpDLL __declspec( dllexport )
-#elif defined( MAMA_DLL ) && defined( MAMA )
-    /* We are building mama as a dll */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMAExpDLL __declspec( dllexport )
-#   define MAMAExpBridgeDLL __declspec( dllexport )
-#elif defined( MAMA_DLL ) && defined( BRIDGE )
-    /* We are building mama bridge as a dll */
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMAExpBridgeDLL __declspec( dllimport )
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL
-#   define MAMDAExpDLL
-#   define MAMDAOPTExpDLL
-#   define WMWExpDLL __declspec( dllimport )
-#elif defined( MAMA_DLL ) && defined( MAMACPP )
-    /* We are building mamacpp as a dll */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL __declspec( dllexport )
-#   define MAMAExpBridgeDLL
-#elif defined( MAMDA_DLL ) && defined( MAMDA )
-    /* We are building mamda as a dll */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL __declspec( dllimport )
-#   define MAMDAExpDLL __declspec( dllexport )
-#   define MAMAExpBridgeDLL
-#elif defined( MAMDA_DLL ) && defined( MAMDAOPT )
-    /* We are building extra mamda as a dll */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL __declspec( dllimport )
-#   define MAMDAExpDLL __declspec( dllimport )
-#   define MAMDAOPTExpDLL __declspec( dllexport )
-#   define MAMAExpBridgeDLL
-#elif !defined ( MAMA_STATIC ) && !defined ( WMW_STATIC ) && !defined (WIRECACHE_STATIC)
-    /* We are building mama apps (non static) */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define WMWExpDLL __declspec( dllexport )
-#   define MAMAExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL __declspec( dllimport )
-#   define MAMDAExpDLL __declspec( dllimport )
-#   define MAMDAOPTExpDLL __declspec( dllimport )
-#   define MAMAExpBridgeDLL
-#elif defined( WIN32  ) && defined( WMW_DLL )
-    /* We are building wmw as a dll */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define WMWExpDLL __declspec( dllexport )
-#elif defined( WIN32  ) && defined( WMW_APP )
-    /* We are building wmw test apps */
-#   define COMMONExpDLL __declspec( dllimport )
-#   define WMWExpDLL __declspec( dllimport )
-#else
-    /* We are building on linux or statically */
-#   define COMMONExpDLL
-#   define WMWExpDLL
-#   define WCACHEExpDLL
-#   define MAMAExpDLL
-#   define MAMACPPExpDLL
-#   define MAMDAExpDLL
-#   define MAMDAOPTExpDLL
-#   define MAMAExpBridgeDLL
-#endif
-
 /* Socket Pair and set non blocking */
 COMMONExpDLL int
 wsocketpair (int domain, int type, int protocol, int* pair);
@@ -172,7 +100,7 @@ wsetnonblock (int s);
 COMMONExpDLL const char* getIpAddress (void);
 COMMONExpDLL const char* getHostName (void);
 COMMONExpDLL const char* getlogin (void);
-COMMONExpDLL struct in_addr resolve_ip (const char * arg);
+COMMONExpDLL struct in_addr wresolve_ip (const char * arg);
 
 /* Thread local storage */
 typedef DWORD wthread_key_t;
