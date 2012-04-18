@@ -110,7 +110,7 @@ static void ClearCounters(void)
 
 #define STATS_FIELD_WIDTH -5 /* negative = left alignment */
 
-static void statsCallback(mamaTimer timer, void *closure)
+static void MAMACALLTYPE statsCallback(mamaTimer timer, void *closure)
 {
   time_t  t;
   struct tm tmResult;
@@ -166,7 +166,7 @@ static void checkStatus(char *err, mama_status status)
   }
 }
 
-static void subscriptionOnCreate(mamaSubscription subscription, void* closure)
+static void MAMACALLTYPE subscriptionOnCreate(mamaSubscription subscription, void* closure)
 {
   const char* symbol = NULL;
 
@@ -178,7 +178,7 @@ static void subscriptionOnCreate(mamaSubscription subscription, void* closure)
   }
 }
 
-static void subscriptionOnError(mamaSubscription subscription,
+static void MAMACALLTYPE subscriptionOnError(mamaSubscription subscription,
                       mama_status      status,
                       void*            platformError,
                       const char*      subject,
@@ -193,7 +193,7 @@ static void subscriptionOnError(mamaSubscription subscription,
   mamaSubscription_activate(subscription);
 }
 
-static void subscriptionOnMsg(mamaSubscription subscription,
+static void MAMACALLTYPE subscriptionOnMsg(mamaSubscription subscription,
                                         mamaMsg msg,
                                         void *closure,
                                         void *itemClosure)
@@ -286,13 +286,13 @@ static void createSubscription(int index)
   checkStatus("mamaSubscription_create()",status);
 }
 
-static void lifetimeCallback(mamaTimer timer, void *closure)
+static void MAMACALLTYPE lifetimeCallback(mamaTimer timer, void *closure)
 {
   mama_stop(gBridge);
   printf("Lifetime expired\n");
 }
 
-static void recreateCallback(mamaTimer timer, void *closure)
+static void MAMACALLTYPE recreateCallback(mamaTimer timer, void *closure)
 {
     /* try to destroy existing subscription */
     destroySubscription((int)closure);
@@ -300,7 +300,7 @@ static void recreateCallback(mamaTimer timer, void *closure)
 	mamaTimer_destroy(timer);
 }
 
-static void churnCallback(mamaTimer timer, void *closure)
+static void MAMACALLTYPE churnCallback(mamaTimer timer, void *closure)
 {
   int churnCount = 0;
   int churnIndex = 0;
@@ -324,7 +324,7 @@ static void churnCallback(mamaTimer timer, void *closure)
   gChurned+=churnCount;
 }
 
-static void transportCb(mamaTransport tport,mamaTransportEvent ev,
+static void MAMACALLTYPE transportCb(mamaTransport tport,mamaTransportEvent ev,
                                   short cause,const void *opaque,void *closure)
 {
   mamaQuality quality = MAMA_QUALITY_UNKNOWN;

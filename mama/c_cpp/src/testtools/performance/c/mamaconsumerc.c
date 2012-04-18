@@ -24,9 +24,6 @@
 #include "string.h"
 #include <stdlib.h>
 
-#include "pthread.h"
-#include <unistd.h>
-
 /* MAMA function checking macro */
 #define MAMA_CHECK(status)                                                     \
 {                                                                              \
@@ -107,13 +104,13 @@ static void mc_createSubscriber
   mamaQueue          queue
 );
 
-static void mc_createCb
+static void MAMACALLTYPE mc_createCb
 (
   mamaSubscription       subscription,
   void               *   closure
 );
 
-static void mc_errorCb
+static void MAMACALLTYPE mc_errorCb
 (
   mamaSubscription       subscription,
   mama_status            status,
@@ -122,7 +119,7 @@ static void mc_errorCb
   void*                  closure
 );
 
-static void mc_msgCb
+static void MAMACALLTYPE mc_msgCb
 (
   mamaSubscription       subscription,
   mamaMsg                msg,
@@ -130,7 +127,7 @@ static void mc_msgCb
   void *                 itemClosure
 );
 
-static void mc_msgCb2
+static void MAMACALLTYPE mc_msgCb2
 (
   mamaSubscription       subscription,
   mamaMsg                msg,
@@ -296,7 +293,7 @@ static void mc_createSubscriber
 /**********************************************************
  *                      mc_createCb                        *
  **********************************************************/
-static void mc_createCb
+static void MAMACALLTYPE mc_createCb
 (
   mamaSubscription   subscription,
   void             * closure
@@ -308,7 +305,7 @@ static void mc_createCb
 /**********************************************************
  *                      mc_errorCb                        *
  **********************************************************/
-static void mc_errorCb
+static void MAMACALLTYPE mc_errorCb
 (
   mamaSubscription   subscription,
   mama_status        status,
@@ -327,7 +324,7 @@ static void mc_errorCb
 /**********************************************************
  *                       mc_msgCb                         *
  **********************************************************/
-static void mc_msgCb
+static void MAMACALLTYPE mc_msgCb
 (
   mamaSubscription  subscription,
   mamaMsg           msg,
@@ -400,7 +397,7 @@ static void mc_msgCb
 /**********************************************************
  *                       mc_msgCb2                         *
  **********************************************************/
-static void mc_msgCb2
+static void MAMACALLTYPE mc_msgCb2
 (
   mamaSubscription  subscription,
   mamaMsg           msg,
