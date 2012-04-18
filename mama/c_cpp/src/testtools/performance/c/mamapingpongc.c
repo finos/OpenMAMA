@@ -243,7 +243,7 @@ static void signalCatcher
     int                     sig
 );
 
-static void shutdown(pingPongCtx* ppCtx, pingPongEventCtx* eventCtx);
+static void pingpongShutdown (pingPongCtx* ppCtx, pingPongEventCtx* eventCtx);
 
 static void
 initMessages(message* pMsgs,
@@ -375,7 +375,7 @@ int main (int argc, const char** argv)
     /* start the mama bridge, blocks here */
     mama_start (gPingPongCtx.mBridge);
 
-    shutdown(&gPingPongCtx, &eventCtx);
+    pingpongShutdown (&gPingPongCtx, &eventCtx);
     mama_close ();
 
     if(!eventCtx.mServer)
@@ -491,7 +491,7 @@ static void publishMessage
     seqNum++;
 }
 
-static void shutdown(pingPongCtx* ppCtx, pingPongEventCtx* eventCtx)
+static void pingpongShutdown (pingPongCtx* ppCtx, pingPongEventCtx* eventCtx)
 {
     pthread_mutexattr_t    attr;
 
