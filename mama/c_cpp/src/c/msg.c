@@ -85,8 +85,6 @@ typedef struct mamaMsgImpl_
     mamaMsgField            mCurrentField;
     mamaDateTime            mCurrentDateTime;
 
-
-    msgFieldPayload         mFieldPayload;
     /*Hold onto the bridge impl for later use*/
     mamaBridgeImpl*         mBridgeImpl;
     /*The bridge specific message*/
@@ -124,13 +122,6 @@ mamaMsg_destroy (mamaMsg msg)
 
     if (impl->mPayloadBridge && impl->mMessageOwner)
     {
-        if (impl->mFieldPayload)
-        {
-            impl->mPayloadBridge->msgFieldPayloadDestroy (
-                                        impl->mFieldPayload);
-            impl->mFieldPayload = NULL;
-        }
-
         if (MAMA_STATUS_OK != impl->mPayloadBridge->msgPayloadDestroy (impl->mPayload))
         {
             mama_log (MAMA_LOG_LEVEL_ERROR, "mamaMsg_destroy(): "
@@ -197,12 +188,6 @@ mamaMsg_clear (mamaMsg msg)
 
     if (impl->mPayloadBridge)
     {
-        if (impl->mFieldPayload)
-        {
-            impl->mPayloadBridge->msgFieldPayloadDestroy (
-                                                impl->mFieldPayload);
-        }
-
         if (MAMA_STATUS_OK != impl->mPayloadBridge->msgPayloadClear (impl->mPayload))
         {
             mama_log (MAMA_LOG_LEVEL_ERROR, "mamaMsg_clear(): "
@@ -579,7 +564,6 @@ mamaMsgImpl_createNestedForPayload (mamaMsg*        result,
 
     mamaMsgField_create (&impl->mCurrentField);
     impl->mCurrentField->myPayloadBridge = parent->mPayloadBridge;
-    impl->mFieldPayload     = NULL;
     impl->mPayloadBridge    = parent->mPayloadBridge;
     impl->mPayload          = payload;
     impl->mParent           = parent;
@@ -645,7 +629,6 @@ mamaMsgImpl_createForPayload (mamaMsg*                  msg,
 
     impl->mPayload                =  payload;
     impl->mPayloadBridge          =  payloadBridge;
-    impl->mFieldPayload           =  NULL;
     /*These will be set later if necessary*/
     impl->mBridgeImpl             =  NULL;
     impl->mBridgeMessage          =  NULL;
@@ -1740,22 +1723,15 @@ mamaMsg_getField(
 
     mamaField = (mamaMsgFieldImpl*)impl->mCurrentField;
 
-    if (!impl->mFieldPayload)
-    {
-        impl->mPayloadBridge->msgFieldPayloadCreate (
-                                        &impl->mFieldPayload);
-    }
-
     if (MAMA_STATUS_OK!=(status = impl->mPayloadBridge->msgPayloadGetField (
                                     impl->mPayload,
                                     name,
                                     fid,
-                                    &impl->mFieldPayload)))
+                                    &impl->mCurrentField->myPayload)))
     {
         return status;
     }
     impl->mCurrentField->myPayloadBridge = impl->mPayloadBridge;
-    impl->mCurrentField->myPayload = impl->mFieldPayload;
     impl->mCurrentField->myMsg           = impl;
 
     mamaField = (mamaMsgFieldImpl*)impl->mCurrentField;
