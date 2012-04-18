@@ -174,6 +174,42 @@ const char *index( const char *str, char c );
 */
 #define PRId64 "I64d"
 #define PRIu64 "I64u"
+#ifndef INT8_MIN
+#define INT8_MIN SCHAR_MIN
+#endif
+#ifndef INT8_MAX
+#define INT8_MAX SCHAR_MAX
+#endif
+#ifndef INT16_MIN
+#define INT16_MIN SHRT_MIN
+#endif
+#ifndef INT16_MAX
+#define INT16_MAX SHRT_MAX
+#endif
+#ifndef INT32_MIN
+#define INT32_MIN INT_MIN
+#endif
+#ifndef INT32_MAX
+#define INT32_MAX INT_MAX
+#endif
+#ifndef INT64_MIN
+#define INT64_MIN LLONG_MIN
+#endif
+#ifndef INT64_MAX
+#define INT64_MAX LLONG_MAX
+#endif
+#ifndef UINT8_MAX
+#define UINT8_MAX UCHAR_MAX
+#endif
+#ifndef UINT16_MAX
+#define UINT16_MAX USHRT_MAX
+#endif
+#ifndef UINT32_MAX
+#define UINT32_MAX UINT_MAX
+#endif
+#ifndef UINT64_MAX
+#define UINT64_MAX ULLONG_MAX
+#endif
 
 #define wthread_detach( h )           /* noop */
 #define wthread_self                 GetCurrentThread

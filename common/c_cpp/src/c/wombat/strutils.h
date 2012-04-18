@@ -33,6 +33,8 @@ typedef unsigned long int       w_u32_t;
 typedef long int                w_i32_t;
 typedef float                   w_f32_t;
 typedef double                  w_f64_t;
+typedef unsigned long long int  w_u64_t;
+typedef long long int           w_i64_t;
 
 COMMONExpDLL
 int wmFastCopyAndShiftStr (
