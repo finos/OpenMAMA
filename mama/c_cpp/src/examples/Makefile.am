@@ -22,4 +22,4 @@
 srcdir = @srcdir@
 VPATH  = @srcdir@
 
-SUBDIRS =  c
+SUBDIRS =  c cpp

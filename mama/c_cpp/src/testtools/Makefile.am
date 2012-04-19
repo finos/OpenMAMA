@@ -22,4 +22,4 @@
 srcdir = @srcdir@
 VPATH  = @srcdir@
 
-SUBDIRS =  capturereplay load performance
+SUBDIRS =  load performance capturereplay

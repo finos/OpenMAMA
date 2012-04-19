@@ -27,7 +27,7 @@
 #################################################
 m4_define([product_version_major],     [6])
 m4_define([product_version_minor],     [0])
-m4_define([product_version_release],   [0rc15])
+m4_define([product_version_release],   [0rc19])
 m4_define([product_full_version],[product_version_major.product_version_minor.product_version_release])
 
 
@@ -91,6 +91,7 @@ AC_PREFIX_DEFAULT([/opt/openmama])
 # Flush all cached values to the cache file
 AC_CACHE_SAVE
 
+##################################################
 
 ##################################################
 #
@@ -115,6 +116,15 @@ AC_CHECK_FUNCS([socket])
 
 ##################################################
 #
+# OPTIONS
+#
+###################################################
+##################################################
+
+##################################################
+
+##################################################
+#
 # VERSION FILE GENERATION
 #
 ##################################################
@@ -130,4 +140,8 @@ echo "#endif" >> src/c/version.h
 # FINAL OUTPUT
 #
 ##################################################
-AC_OUTPUT([Makefile src/Makefile src/c/Makefile])
+AC_OUTPUT([Makefile \
+			src/Makefile \
+			src/c/Makefile \
+			src/cpp/Makefile \
+			])

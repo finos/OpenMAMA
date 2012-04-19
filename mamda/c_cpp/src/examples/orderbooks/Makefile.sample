@@ -1,0 +1,69 @@
+#==============================================================================
+# To build MAMDA examples set the following:
+#   API_HOME: Path to API installation
+#=============================================================================
+# Example:
+#    make -f Makefile.sample API_HOME=/home/wombat/apis
+#=============================================================================
+# SOLARIS/Forte: The makefile will need modified to use the Solaris compiler.
+#                See example below.
+#=============================================================================
+API_HOME=/home/wombat/apis
+
+
+
+## Solaris/Forte compiler:
+#CXX      = CC
+#CC       = cc
+#BSTATIC  = -Bstatic
+#BDYNAMIC = -Bdynamic
+
+# GNU compiler:
+CXX      = g++
+CC       = gcc
+BSTATIC  = -Xlinker -Bstatic
+BDYNAMIC = -Xlinker -Bdynamic
+
+## Solaris system libraries:
+#SYS_LIBS = -lsocket -lgen -lnsl -ldl
+
+# Standard defines:
+CPPFLAGS     = \
+    -I$(API_HOME)/include \
+    -I$($(API_PLATFORM)_HOME)/include
+LDFLAGS = \
+    -rdynamic \
+    -L$(API_HOME)/lib \
+    -L$($(API_PLATFORM)_HOME)/lib
+
+MAMDA_LIBS   = $(BSTATIC) -lmamda $(BDYNAMIC)
+
+MAMA_LIBS    = $(BSTATIC) -lmamacpp -lmama -lwombatmsg -lwcache -lwombatcommon \
+               $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -lpthread -ldl
+COMMON_LIBS  = $(MAMDA_LIBS) $(MAMA_LIBS) $(SYS_LIBS)
+
+ifeq ($(WITH_NCURSES),1) 
+SAMPLE_PROGRAMS = atomicbookbuilder atomicbookticker bookticker bookpublisher bookviewer
+else
+SAMPLE_PROGRAMS = atomicbookbuilder atomicbookticker bookticker bookpublisher
+endif
+
+# Targets:
+all: $(SAMPLE_PROGRAMS)
+
+atomicbookbuilder: atomicbookbuilder.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ -lmamdabook $(COMMON_LIBS)
+
+atomicbookticker: atomicbookticker.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ -lmamdabook $(COMMON_LIBS)
+
+bookticker: bookticker.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ -lmamdabook $(COMMON_LIBS)
+
+bookpublisher: bookpublisher.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ -lmamdabook $(COMMON_LIBS)
+
+bookviewer: bookviewer.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ -lmamdabook -lncurses $(COMMON_LIBS)
+
+

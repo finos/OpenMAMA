@@ -24,9 +24,9 @@
 # VERSION INFO
 #
 ##################################################
-m4_define([product_version_major],     [5])
+m4_define([product_version_major],     [6])
 m4_define([product_version_minor],     [0])
-m4_define([product_version_release],   [3rc11])
+m4_define([product_version_release],   [0rc19])
 m4_define([product_full_version],[product_version_major.product_version_minor.product_version_release])
 
 
@@ -37,6 +37,7 @@ m4_define([product_full_version],[product_version_major.product_version_minor.pr
 ##################################################
 AC_INIT(mama, [product_full_version], apis@wombatfs.com)
 AC_CONFIG_SRCDIR([src/c/mama.c])
+AC_CONFIG_SRCDIR([src/cpp/mamacpp.cpp])
 AC_CONFIG_AUX_DIR([etc])
 AM_INIT_AUTOMAKE([foreign])
 AM_CONFIG_HEADER([config.h])
@@ -76,18 +77,6 @@ AC_PREFIX_DEFAULT([/opt/openmama])
 # Always put the source's include directory in the -I search path
 CPPFLAGS="$CPPFLAGS -I${srcdir}/src/c"
 
-
-#Is this a DEVRelease
-DEV_BUILD=1
-if (test "`groups | grep nysevalidbuilders`" = "" || (test "${REL_BUILD}" && test "${REL_BUILD}" != 0 )); then
-DEV_BUILD=0
-fi
-
-if (test "${DEV_BUILD}" = "0") ; then
-PACKAGE_VERSION="DEVRELEASE${MAMA_VERSION_MAJOR}.${MAMA_VERSION_MINOR}.${MAMA_VERSION_RELEASE}"
-fi
-
-AM_CONDITIONAL(DEV_RELEASE, [test "$DEV_BUILD" = "0" ])
 
 # Flush all cached values to the cache file
 AC_CACHE_SAVE
@@ -140,6 +129,9 @@ AC_CACHE_SAVE
 #
 # OPTIONS
 #
+##################################################
+##################################################
+
 ##################################################
 ##################################################
 
@@ -214,6 +206,7 @@ AC_ARG_WITH(
 AM_CONDITIONAL(WITH_AVIS, test x$with_avis = "xtrue")
 
 
+##################################################
 ##################################################
 
 ##################################################
@@ -332,6 +325,17 @@ MAMA_VERSION_MAJOR=product_version_major
 MAMA_VERSION_MINOR=product_version_minor
 MAMA_VERSION_RELEASE=product_version_release
 
+#Is this a DEVRelease
+DEV_BUILD=1
+if (test "`groups | grep nysevalidbuilders`" = "" || (test "${REL_BUILD}" && test "${REL_BUILD}" != 0 )); then
+DEV_BUILD=0
+fi
+
+if (test "${DEV_BUILD}" = "0") ; then
+PACKAGE_VERSION="DEVRELEASE${MAMA_VERSION_MAJOR}.${MAMA_VERSION_MINOR}.${MAMA_VERSION_RELEASE}"
+fi
+
+AM_CONDITIONAL(DEV_RELEASE, [test "$DEV_BUILD" = "0" ])
 mkdir -p src/c/mama
 echo "/* This file was automatically generated */" >  src/c/mama/version.h
 echo "#ifndef MamaVersionH"                        >> src/c/mama/version.h
@@ -348,6 +352,8 @@ echo "#endif"                                      >> src/c/mama/version.h
 # Ensure documents have correct version number
 cat ${srcdir}/doxyconfig-c.in > ${srcdir}/doxyconfig-c
 echo "PROJECT_NUMBER = ${PACKAGE_VERSION}" >> ${srcdir}/doxyconfig-c
+cat ${srcdir}/doxyconfig-cpp.in > ${srcdir}/doxyconfig-cpp
+echo "PROJECT_NUMBER = ${PACKAGE_VERSION}" >> ${srcdir}/doxyconfig-cpp
 
 ##################################################
 #
@@ -361,14 +367,20 @@ AC_OUTPUT([Makefile \
     src/c/bridge/avis/Makefile \
     src/c/payload/Makefile \
     src/c/payload/avismsg/Makefile \
+    src/cpp/Makefile \
     src/examples/Makefile \
     src/examples/c/Makefile \
+    src/examples/cpp/Makefile \
     src/testtools/Makefile \
     src/testtools/capturereplay/Makefile \
     src/testtools/capturereplay/c/Makefile \
     src/testtools/performance/Makefile \
     src/testtools/performance/c/Makefile \
+    src/testtools/performance/cpp/Makefile \
     src/testtools/load/Makefile \
     src/testtools/load/c/Makefile \
+    src/testtools/load/cpp/Makefile \
     src/gunittest/Makefile \
-    src/gunittest/c/Makefile])
+    src/gunittest/c/Makefile \
+    src/gunittest/cpp/Makefile \
+    ])

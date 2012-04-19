@@ -1,0 +1,223 @@
+<project name="mama-jni" default="dist" basedir=".">
+    <property name="product" value="mamajni"></property>
+    <property name="base" value="mamajni"></property>
+    <property name="version" value="6.0.0rc19"></property> 
+    <property name="base.release" value="${base}_${version}"></property>
+    <property name="release" value="${product}_${version}"></property>
+    <property name="build" location="${user.dir}/classes"></property>
+    <property name="dist" location="${user.dir}/${product}"></property>
+    <property name="header.dir" location="${basedir}/src/c/mamajni"></property>
+    <property environment="env"></property>
+    <property name="common.path" location="${env.COMMON_HOME}"></property>
+
+    <target name="init">
+        <tstamp></tstamp>
+        <!-- So we can build in a different location from the src -->
+        <dirname property="antfile.dir" file="${ant.file}"></dirname>
+        <property name="top" location="${antfile.dir}"></property>
+        <mkdir dir="${build}"></mkdir>
+        <mkdir dir="${header.dir}"></mkdir>
+    </target>
+
+    <!-- Default target for the script -->
+    <target name="dist" depends="dist.base, dist.junittests, dist.testtools, javadoc"></target>
+
+    <!-- The definition of the source files to compile -->
+    <target name="source.defs" description="Define some groups of source files">
+        <patternset id="src.base">
+            <include name="com/wombat/mama/*.java"></include> 
+            <include name="com/wombat/mama/examples/*.java"></include>
+            <include name="com/wombat/mama/testtools/load/MamaChurnTest.java" if="withTestBed"></include>
+            <include name="com/wombat/mama/testtools/performance/MamaProducerJava.java" if="withTestBed"></include>
+            <include name="com/wombat/mama/testtools/performance/MamaConsumerJava.java" if="withTestBed"></include>
+        </patternset>
+        <!-- TestTools sources -->
+        <patternset id="src.testtools">
+            <include name="com/wombat/mama/testtools/load/MamaChurnTest.java" if="withTestBed"></include>
+            <include name="com/wombat/mama/testtools/performance/MamaProducerJava.java" if="withTestBed"></include>
+            <include name="com/wombat/mama/testtools/performance/MamaConsumerJava.java" if="withTestBed"></include>
+        </patternset>
+        <!-- JUnitTests sources -->
+        <patternset id="src.junittests" description="JUnit test source files">
+            <include name="junittests/*.java"></include>
+        </patternset> 
+    </target>
+
+    <!-- Compiles the main java classes as well as any other dependancies -->
+    <target name="compile.base" depends="init, source.defs" description="Compile the base MAMA jni src">
+        <javac source="1.5" srcdir="src" destdir="${build}" debug="true" deprecation="on">
+            <!-- All the JNI Java files required -->
+            <patternset refid="src.base"></patternset>
+
+            <!-- Will include any Common java files required for the build (searched by javac) -->
+            <sourcepath location="${basedir}/../../common/jni/src">
+                <fileset dir=".">
+                    <include name="**/*.java"></include>
+                </fileset>
+            </sourcepath>
+        </javac>
+    </target>
+
+    <target name="dist.base" depends="compile.base, headers" description="build a jar and put it in the dist directory">
+        <mkdir dir="${dist}/lib"></mkdir>
+        <mkdir dir="${dist}/examples/mama/java"></mkdir>
+        <mkdir dir="${dist}/bin"></mkdir>
+
+        <jar jarfile="${dist}/lib/${base.release}.jar">
+            <fileset dir="${build}">
+            </fileset>
+            <manifest>
+                <attribute name="Implementation-Version" value="${version} ${TODAY}"></attribute>
+            </manifest>
+        </jar>
+
+        <copy file="${dist}/lib/${base.release}.jar" tofile="${dist}/lib/${base}.jar"></copy>
+
+        <copy flatten="true" todir="${dist}/examples">
+            <fileset dir="${basedir}/../jni/src">
+                <include name="com/**/MamaListen.java"></include>
+                <include name="com/**/MamaTest.java"></include>
+                <include name="com/**/MamaTestJava.java"></include>
+                <include name="com/**/MamaPublisherJava.java"></include>
+                <include name="com/**/MamaSubscriberJava.java"></include>
+                <include name="com/**/MamaInboxJava.java"></include>
+                <include name="com/**/MamaSymbolListSubscriberJava.java"></include>
+                <include name="com/**/MamaFtMemberJava.java"></include>
+                <include name="com/**/MamaProxy.java"></include>
+            </fileset>
+        </copy>
+    </target>
+
+
+    <target name="headers" description="Generates C headers for the specified java files" depends="compile.base">
+         <echo message="Generating C header files. Putting in: ${header.dir}"></echo>
+         <exec executable="javah">
+            <arg line="-classpath ${build}"></arg>
+            <arg line="-d ${header.dir}"></arg>
+            <arg line="com.wombat.mama.Mama"></arg>
+            <arg line="com.wombat.mama.MamaBridge"></arg>
+            <arg line="com.wombat.mama.MamaMsg"></arg>
+            <arg line="com.wombat.mama.MamaMsgIterator"></arg>
+            <arg line="com.wombat.mama.MamaMsgField"></arg>
+            <arg line="com.wombat.mama.MamaDictionary"></arg>
+            <arg line="com.wombat.mama.MamaSubscription"></arg>
+            <arg line="com.wombat.mama.MamaBasicSubscription"></arg>
+            <arg line="com.wombat.mama.MamaTimer"></arg>
+            <arg line="com.wombat.mama.MamaTransport"></arg>
+            <arg line="com.wombat.mama.MamaQueue"></arg>
+            <arg line="com.wombat.mama.MamaDispatcher"></arg>
+            <arg line="com.wombat.mama.MamaPublisher"></arg>
+            <arg line="com.wombat.mama.MamaDQPublisher"></arg>
+            <arg line="com.wombat.mama.MamaDQPublisherManager"></arg>
+            <arg line="com.wombat.mama.MamaInbox"></arg>
+            <arg line="com.wombat.mama.MamaPrice"></arg>
+            <arg line="com.wombat.mama.MamaDateTime"></arg>     
+            <arg line="com.wombat.mama.MamaSource"></arg>
+            <arg line="com.wombat.mama.MamaLogHandler"></arg>
+            <arg line="com.wombat.mama.MamaFtMember"></arg>
+            <arg line="com.wombat.mama.MamaConnection"></arg>
+            <arg line="com.wombat.mama.MamaPayloadBridge"></arg>
+        </exec>
+    </target>
+
+
+
+
+
+    <!-- Test Tools -->
+    <target name="testtooldirs" description="Build testtools" if="withTestBed">
+        <mkdir dir="${build}/testtools"></mkdir>
+    </target> 
+    <target name="compile.testtools" depends="dist.base, testtooldirs" if="withTestBed">
+        <!-- JUnit jar must already be on the classpath -->
+        <javac source="1.5" srcdir="src" destdir="${build}/testtools" debug="true" deprecation="on">
+            <patternset refid="src.testtools"></patternset>
+            <classpath>
+                <fileset dir="${dist}/lib/">
+                    <include name="${base}.jar"></include>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+    <target name="dist.testtools" depends="compile.testtools" description="build a jar and put it in the dist directory" if="withTestBed">
+        <jar jarfile="${dist}/lib/${base.release}_testtools.jar">
+            <fileset dir="${build}/testtools">
+            </fileset>
+            <manifest>
+                <attribute name="Implementation-Version" value="${version} ${TODAY}"></attribute>
+            </manifest>
+        </jar>
+        <copy file="${dist}/lib/${base.release}_testtools.jar" tofile="${dist}/lib/${base}_testtools.jar"></copy>
+    </target>
+
+
+    <!-- JUnit Tests -->
+    <target name="junitdirs" description="Build junitdirs" if="withUnitTests">
+       <mkdir dir="${build}/junittests"></mkdir>
+    </target>   
+    <target name="compile.junittests" depends="dist.base, junitdirs" if="withUnitTests">
+        <!-- JUnit jar must already be on the classpath -->
+        <javac source="1.5" srcdir="src" destdir="${build}/junittests" debug="true" deprecation="on">
+            <patternset refid="src.junittests"></patternset>
+            <classpath>
+                <fileset dir="${dist}/lib/">
+                    <include name="${base}.jar"></include>
+                </fileset>
+            </classpath>
+        </javac>
+    </target>
+    <target name="dist.junittests" depends="compile.junittests" description="build a jar and put it in the dist directory" if="withUnitTests">
+        <jar jarfile="${dist}/lib/${base.release}_junittests.jar">
+            <fileset dir="${build}/junittests">
+            </fileset>
+            <manifest>
+                <attribute name="Implementation-Version" value="${version} ${TODAY}"></attribute>
+            </manifest>
+        </jar>
+        <copy file="${dist}/lib/${base.release}_junittests.jar" tofile="${dist}/lib/${base}_junittests.jar"></copy>
+    </target>
+
+
+
+    <target name="clean" description="remove all generated files">
+        <delete dir="${build}"></delete>
+        <delete dir="${build}/junittests"></delete>
+        <delete dir="${dist}"></delete>
+        <delete dir="${noent_dist}"></delete>
+        <delete dir="${header.dir}"></delete>
+        <delete dir="${build}/testtools/mama/jni/"></delete>
+    </target>
+
+
+    <target name="javadoc" if="withDocs">
+        <mkdir dir="${dist}/doc"></mkdir>
+		<mkdir dir="${dist}/doc/resources"></mkdir>
+
+        <copy todir="${basedir}">
+            <fileset dir="${basedir}/doc/">
+                <include name="overview-jni.html"></include>				
+            </fileset>
+        </copy>                                    
+
+		<copy todir="${dist}/doc/resources">
+            <fileset dir="${basedir}/doc/">
+                <include name="nyse_technologies.png"></include>				
+            </fileset>
+
+        </copy>                                    
+
+        <javadoc access="public" source="1.5" destdir="${dist}/doc" failonerror="no" Overview="overview-jni.html" doctitle="MAMA (Middleware Agnostic Messaging API) JNI specification, v${version}" Bottom="Copyright 2011 NYSE Technologies" Windowtitle="MAMA JNI ${version}">
+			<Header>&lt;img src='{@docRoot}resources/nyse_technologies.png' alt='NYSE Technologies' /&gt;&lt;br/&gt;&lt;b&gt;MAMA JNI&lt;/b&gt;&lt;br&gt;&lt;font size='-1'&gt;version ${version}&lt;/font&gt;</Header>
+			<fileset dir="./src">
+                <include name="**/*.java"></include>                
+            </fileset>					  
+            <fileset dir="../jni/src">
+                <include name="**/*.java"></include>
+            </fileset>
+
+            <classpath location="${build}"></classpath>
+        </javadoc>
+
+        <delete file="${basedir}/overview-jni.html"></delete>
+    </target>
+</project>
