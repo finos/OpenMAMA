@@ -215,6 +215,9 @@ mama_status mamaDQPublisherManager_allocate(mamaDQPublisherManager* result )
         calloc (1, sizeof (mamaDQPublisherManagerImpl));
 
     if (!impl) return MAMA_STATUS_NOMEM;
+    impl->mSenderId = mamaSenderId_getSelf ();
+    impl->mStatus = MAMA_MSG_STATUS_OK;
+    impl->mSeqNum = 1;
 
     *result = impl;
 
@@ -225,7 +228,10 @@ void* mamaDQPublisherManager_getClosure (mamaDQPublisherManager manager)
 {
     mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
 
-    return impl->mClosure;
+    if(NULL != impl)
+        return impl->mClosure;
+    else
+        return NULL;
 }
 
 
@@ -353,7 +359,7 @@ mama_status mamaDQPublisherManager_createPublisher (
     mama_status status = MAMA_STATUS_OK;
     char topic[80];
 
-    newTopic =  (mamaPublishTopic*) wtable_lookup  (impl->mPublisherMap, (char*)symbol);
+    newTopic =  (mamaPublishTopic*)wtable_lookup (impl->mPublisherMap, (char*)symbol);
 
     if (!newTopic)
     {
