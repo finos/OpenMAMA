@@ -74,6 +74,8 @@ errorCB( mamaSubscription subscription, mama_status status,
 static void MAMACALLTYPE
 msgCB( mamaSubscription subscription, mamaMsg msg, void* closure, 
        void* itemClosure);
+static void MAMACALLTYPE
+destroyCB( mamaSubscription subscription, void* closure);
 
 /**
  * Destroy the pending command
@@ -123,14 +125,11 @@ mama_status mamaCmResponder_destroy(mamaCmResponder responder)
 				{
 					/* Destroy the subscription, note that the first failure return code will be preserved.
 					 */
-					mama_status sd = mamaSubscription_destroy(*nextSubscription);
+					mama_status sd = mamaSubscription_destroyEx(*nextSubscription);
 					if(ret == MAMA_STATUS_OK)
 					{
 						ret = sd;
 					}
-
-					/* The memory will not be released until the subscription is deallocated. */
-					mamaSubscription_deallocate(*nextSubscription);
 				}
 			}
 
@@ -160,6 +159,7 @@ mama_status mamaCmResponder_destroy(mamaCmResponder responder)
 
 			/* Free the array of publishers. */
 			free(impl->publishers);
+            impl->publishers = NULL;
 		}
 
 		/* Destroy all pending commands. */
@@ -187,6 +187,7 @@ mama_status populateCmResponder(mamaCmResponderImpl *impl)
 {
 	/* Returns */
     mama_status ret = MAMA_STATUS_NO_BRIDGE_IMPL;
+    mamaQueue internalQueue = NULL;
 
 	/* Get the default event queue from the bridgeImpl. */
 	mamaBridgeImpl *bridgeImpl = mamaTransportImpl_getBridgeImpl(impl->mTransport);
@@ -200,9 +201,10 @@ mama_status populateCmResponder(mamaCmResponderImpl *impl)
 		callbacks.onCreate  = createCB;
 		callbacks.onError   = errorCB;
 		callbacks.onMsg     = msgCB;    
+        callbacks.onDestroy = destroyCB;
 
-		/* Reset the return code for the enumeration */
-		ret = MAMA_STATUS_OK;
+        ret = mamaBridgeImpl_getInternalEventQueue((mamaBridge)bridgeImpl, &internalQueue);
+		if (ret == MAMA_STATUS_OK)
 		{
 			/* Enumerate all the sub transport bridges in the transport. */
 			int nextTransportIndex				= 0;
@@ -234,7 +236,7 @@ mama_status populateCmResponder(mamaCmResponderImpl *impl)
 						ret = mamaSubscription_createBasic(
 							*nextSubscription, 
 							impl->mTransport, 
-							bridgeImpl->mDefaultEventQueue, 
+							internalQueue, 
 							&callbacks, 
 							MAMA_CM_TOPIC, 
 							impl);
@@ -359,14 +361,6 @@ msgCB (mamaSubscription subscription, mamaMsg msg, void* closure,
 
 	/* Get the transport index in use by the supplied subscription. */
 	int transportIndex = 0;
-	mamaSubscription_getTransportIndex(subscription, &transportIndex);
- 
-    /**
-     * TODO: We need to add the element to the list. This is a bug, but I
-     * don't want to fix it without testing.
-     */
-
-    /* list_push_back (impl->mPendingCommands, command); */
 
     /*
      * The command ID field tells us what command to execute.
@@ -384,7 +378,9 @@ msgCB (mamaSubscription subscription, mamaMsg msg, void* closure,
 		{
 			mama_log (MAMA_LOG_LEVEL_FINE, "mamaCmResponder::msgCb(): "
 					  "CM  SYNC Received" );
+            mamaSubscription_getTransportIndex(subscription, &transportIndex);
 			mamaSyncCommand_create (command, msg, impl->mTransport, transportIndex, impl->publishers[transportIndex], endCB, impl);
+            list_push_back(impl->mPendingCommands, command);
 			mamaSyncCommand_run (command);
 		}
         break;
@@ -393,4 +389,11 @@ msgCB (mamaSubscription subscription, mamaMsg msg, void* closure,
         mama_log (MAMA_LOG_LEVEL_FINE, "mamaCmResponder::msgCB(): "
                   "Bad CM command: %d", command);
     }
+}
+
+static void MAMACALLTYPE
+destroyCB (mamaSubscription subscription, void* closure)
+{
+    /* Deallocate the subscription. */
+    mamaSubscription_deallocate(subscription);
 }
