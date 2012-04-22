@@ -30,6 +30,7 @@
 #define MAMDAExpDLL
 #define MAMDAOPTExpDLL
 #define MAMAExpBridgeDLL
+#define WCACHEExpDLL
 #define MAMACALLTYPE
 
 #define WCOMMONINLINE inline static
