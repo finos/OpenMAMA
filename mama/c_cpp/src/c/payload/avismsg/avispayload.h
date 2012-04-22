@@ -30,9 +30,11 @@ extern "C" {
 #endif
 
 
+MAMAExpDLL
 extern mama_status
 avismsgPayload_destroyImpl       (mamaPayloadBridge mamaPayloadBridge);
 
+MAMAExpDLL
 extern mama_status
 avismsgPayload_createImpl        (mamaPayloadBridge* result, char* identifier);
 
