@@ -141,7 +141,8 @@ handleFTTakeover (dqStrategy        strategy,
                   int               msgType,
                   mamaDqContext*    ctx,
                   mama_seqnum_t     seqNum,
-                  mama_u64_t        senderId)
+                  mama_u64_t        senderId,
+                  int               recoverOnRecap)
 {
     const char*         symbol  = NULL;
     mamaSubscription_getSymbol (self->mSubscription, &symbol);
@@ -151,11 +152,19 @@ handleFTTakeover (dqStrategy        strategy,
             "Previous SeqNum: %u. New SeqNum: %u. [%s]",
             ctx->mSenderId, senderId, ctx->mSeqNum, seqNum, symbol);
 
+    if (recoverOnRecap)
+    {
+        ctx->mSeqNum = senderId;
+        ctx->mDQState = DQ_STATE_WAITING_FOR_RECAP_AFTER_FT;
+    }
+    else
+    {
     resetDqState (strategy, ctx);
     
     /*In all cases we reset the data quality context*/
     dqStrategyImpl_resetDqContext (ctx, seqNum, senderId);
     
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -183,6 +192,7 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
     
     mamaMsg_getSeqNum (msg, &seqNum);
 
+    ctx->mDoNotForward = 0;
     if (mamaMsg_getU64 (msg, MamaFieldSenderId.mName, MamaFieldSenderId.mFid, 
                         &senderId) != MAMA_STATUS_OK)
     {
@@ -207,7 +217,14 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
             mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()), 
                                               MamaStatFtTakeovers.mFid);
         }
-        return handleFTTakeover (strategy, msg, msgType, ctx, seqNum, senderId);
+        if (DQ_FT_WAIT_FOR_RECAP==mamaTransportImpl_getFtStrategyScheme(tport))
+        {
+            handleFTTakeover (strategy, msg, msgType, ctx, seqNum, senderId, 1);
+        }
+        else
+        {
+            return handleFTTakeover (strategy, msg, msgType, ctx, seqNum, senderId, 0);
+        }
     }
 
     if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINER)
@@ -243,7 +260,8 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
         if (((ctxDqState == DQ_STATE_NOT_ESTABLISHED) ||
              (seqNum == 0) ||
              (seqNum == (ctxSeqNum + conflateCnt))) &&
-             (ctxDqState != DQ_STATE_WAITING_FOR_RECAP))
+             ((ctxDqState != DQ_STATE_WAITING_FOR_RECAP) ||
+             (ctxDqState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
         {
             /* No gap */
             if (self->mTryToFillGap)
@@ -268,7 +286,19 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
             return MAMA_STATUS_OK;
         }
 
-        if (seqNum == ctxSeqNum)
+        /* For late joins or middlewares that support a publish cache, it is possible that you will get old updates
+           in this case take no action */
+        if (DQ_SCHEME_INGORE_DUPS==mamaTransportImpl_getDqStrategyScheme(tport))
+        {
+            if ((seqNum <= ctxSeqNum) && ((ctxDqState != DQ_STATE_WAITING_FOR_RECAP) ||
+                                          (ctxDqState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
+            {
+                ctx->mDoNotForward = 1;
+                return MAMA_STATUS_OK;
+            }
+        }
+
+        if ((seqNum == ctxSeqNum) && (ctxDqState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT))
         {
             /* Duplicate data - set DQQuality to DUPLICATE, invoke quality callback */
             ctx->mDQState = DQ_STATE_DUPLICATE; 
@@ -290,6 +320,13 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
             return MAMA_STATUS_OK;
         }
       
+        if (ctxDqState == DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)
+        {
+            ctx->mDoNotForward = 1;
+            return MAMA_STATUS_OK;
+        }
+        else
+        {
         /* If we get here, we missed a sequence number. */
          if ((PRE_INITIAL_SCHEME_ON_GAP==mamaTransportImpl_getPreInitialScheme(tport))
                 &&(self->mTryToFillGap))
@@ -323,6 +360,7 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
         }
 
         handleStaleData (self, msg, ctx);
+        }
         break;
     case MAMA_MSG_TYPE_INITIAL      :
     case MAMA_MSG_TYPE_BOOK_INITIAL :

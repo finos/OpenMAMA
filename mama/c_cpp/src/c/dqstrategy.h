@@ -50,7 +50,9 @@ typedef enum dqState_
      * In the case of a stale initial, we do not want
      * a recap because it may also be stale data.
      */
-    DQ_STATE_STALE_NO_RECAP    = 5
+    DQ_STATE_STALE_NO_RECAP    = 5,
+
+    DQ_STATE_WAITING_FOR_RECAP_AFTER_FT    = 6
 } dqState;
     
 typedef struct 
@@ -64,6 +66,7 @@ typedef struct
     imageRequest  mRecapRequest;
     mama_u64_t    mSenderId;
 
+    uint8_t       mDoNotForward;
 } mamaDqContext;
 
 typedef struct dqStrategy_* dqStrategy;

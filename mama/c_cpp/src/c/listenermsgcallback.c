@@ -449,7 +449,16 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     case MAMA_MSG_TYPE_QUOTE:
     case MAMA_MSG_TYPE_TRADE:
         mamaSubscription_checkSeqNum(subscription, msg, msgType, ctx);
-        mamaSubscription_forwardMsg(subscription, msg);
+        if (!ctx->mDqContext.mDoNotForward)
+        {
+            mamaSubscription_forwardMsg(subscription, msg);
+        }
+        else
+        {
+            mamaSubscription_getSymbol (subscription, &userSymbol);
+            mama_log (MAMA_LOG_LEVEL_FINER, "Subscription for %s not forwarded"
+                    " as message seqnum is before seqnum expecting", userSymbol);
+        }
         break;
     case MAMA_MSG_TYPE_REFRESH:
         mamaSubscription_respondToRefreshMessage(subscription);
@@ -468,7 +477,16 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         break;
     default:
         mamaSubscription_checkSeqNum(subscription, msg, msgType, ctx);
-        mamaSubscription_forwardMsg(subscription, msg);
+        if (!ctx->mDqContext.mDoNotForward)
+        {
+            mamaSubscription_forwardMsg(subscription, msg);
+        }
+        else
+        {
+            mamaSubscription_getSymbol (subscription, &userSymbol);
+            mama_log (MAMA_LOG_LEVEL_FINER, "Subscription for %s not forwarded"
+                    " as message seqnum is before seqnum expecting", userSymbol);
+        }
     }
 }
 
