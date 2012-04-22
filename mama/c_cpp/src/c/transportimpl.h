@@ -280,5 +280,20 @@ mamaTransportImpl_setAdvisoryCauseAndPlatformInfo(
         mamaTransport transport, 
         short cause, 
         const void *platformInfo);
+/**
+ * Disconnect a client with the specified IP Address and port. This information
+ * may be retrieved from a mamaConnection object or out of band.
+ *
+ * For middleware that does not provide this functionality (non WMW middleware),
+ * the method returns MAMA_STATUS_NOT_IMPL.
+ */
+MAMAExpDLL
+extern mama_status
+mamaTransportImpl_forceClientDisconnect (mamaTransport   transport,
+                                         const char*     ipAddress,
+                                         uint16_t        port);
+#if defined(__cplusplus)
+}
+#endif
 
 #endif /* TransportImplH__ */

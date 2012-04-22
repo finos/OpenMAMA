@@ -1964,6 +1964,20 @@ mamaTransport_findConnection (mamaTransport   transport,
 }
 
 mama_status
+mamaTransportImpl_forceClientDisconnect (mamaTransport transport,
+                                         const char*   ipAddress,
+                                         uint16_t      port)
+{
+    if (!self || ipAddress == NULL) return MAMA_STATUS_NULL_ARG;
+
+    return self->mBridgeImpl->bridgeMamaTransportForceClientDisconnect (
+                                              self->mTransports,
+                                              self->mNumTransports,
+                                              ipAddress,
+                                              port);
+}
+
+mama_status
 mamaTransport_getAllConnections (mamaTransport    transport,
                                  mamaConnection** result,
                                  uint32_t*        len)
