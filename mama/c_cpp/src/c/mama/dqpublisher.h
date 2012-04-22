@@ -81,6 +81,11 @@ mamaDQPublisher_sendReply (mamaDQPublisher pub, mamaMsg request,
 
 
 MAMAExpDLL
+extern mama_status
+mamaDQPublisher_sendReplyWithHandle (mamaDQPublisher pub,
+                                     mamaMsgReply  replyAddress,
+                                     mamaMsg reply);
+MAMAExpDLL
 extern void
 mamaDQPublisher_destroy (mamaDQPublisher pub);
 
