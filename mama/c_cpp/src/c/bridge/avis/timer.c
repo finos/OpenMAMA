@@ -72,7 +72,7 @@ timerCb (timerElement  timer,
 
     /* Mama timers are repeating */
     timeout.tv_sec = (time_t)impl->mInterval;
-    timeout.tv_usec = (suseconds_t)((impl->mInterval- timeout.tv_sec) * 1000000.0);
+    timeout.tv_usec = ((impl->mInterval- timeout.tv_sec) * 1000000.0);
     if (0 != createTimer (&impl->mTimerElement,
                           gTimerHeap,
                           timerCb,
@@ -122,7 +122,7 @@ avisBridgeMamaTimer_create (timerBridge*  result,
     *result = (timerBridge)impl;
 
     timeout.tv_sec = (time_t)interval;
-    timeout.tv_usec = (suseconds_t)((interval-timeout.tv_sec) * 1000000.0);
+    timeout.tv_usec = ((interval-timeout.tv_sec) * 1000000.0);
     if (0 != createTimer (&impl->mTimerElement,
                           gTimerHeap,
                           timerCb,
@@ -180,7 +180,7 @@ avisBridgeMamaTimer_reset (timerBridge timer)
     impl = (avisTimerImpl*)timer;
 
     timeout.tv_sec = (time_t)impl->mInterval;
-    timeout.tv_usec = (suseconds_t)((impl->mInterval-timeout.tv_sec) * 1000000.0);
+    timeout.tv_usec = ((impl->mInterval-timeout.tv_sec) * 1000000.0);
 
     if (timer == NULL)
         return MAMA_STATUS_NULL_ARG;

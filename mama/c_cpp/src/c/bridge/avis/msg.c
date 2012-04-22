@@ -53,10 +53,11 @@ typedef struct avisMsgImpl
 mama_status
 avisBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
 {
+    avisMsgImpl* impl;
     if (avisMsg(msg) == NULL) return MAMA_STATUS_NULL_ARG;
     *msg = NULL;
 
-    avisMsgImpl* impl = (avisMsgImpl*) calloc(1, sizeof(avisMsgImpl));
+    impl = (avisMsgImpl*) calloc(1, sizeof(avisMsgImpl));
     if (!impl) return MAMA_STATUS_NOMEM;
 
     mamaMsg_getNativeMsg(parent, (void**)&impl->mAvisMsg);
@@ -109,8 +110,8 @@ avisBridgeMamaMsg_getPlatformError (msgBridge msg, void** error)
 mama_status
 avisBridgeMamaMsgImpl_setReplyHandle (msgBridge msg, void* result)
 {
-    CHECK_MSG(msg);
     mama_status status = MAMA_STATUS_OK;
+    CHECK_MSG(msg);
     if (MAMA_STATUS_OK != (status = mamaMsg_updateString(avisMsg(msg)->mParent, INBOX_FIELD_NAME, 0, (const char*) result))) {
         return status;
     }
@@ -137,10 +138,9 @@ avisBridgeMamaMsg_setSendSubject (msgBridge   msg,
                                    const char* symbol,
                                    const char* subject)
 {
+    mama_status status = MAMA_STATUS_OK;
     CHECK_MSG(msg);
 
-    // TODO -- symbol?
-    mama_status status = MAMA_STATUS_OK;
     if (MAMA_STATUS_OK != (status = mamaMsg_updateString(avisMsg(msg)->mParent, SUBJECT_FIELD_NAME, 0, subject))) {
         return status;
     }
@@ -164,10 +164,9 @@ avisBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result)
 mama_status
 avisBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
 {
-    CHECK_MSG(msg);
-
     const char* replyAddr;
     mama_status status = MAMA_STATUS_OK;
+    CHECK_MSG(msg);
     if (MAMA_STATUS_OK != (status = mamaMsg_getString(avisMsg(msg)->mParent, INBOX_FIELD_NAME, 0, &replyAddr))) {
         return status;
     }
