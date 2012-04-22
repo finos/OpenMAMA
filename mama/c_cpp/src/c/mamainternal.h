@@ -30,6 +30,7 @@ extern "C"
 {
 #endif
 
+#define MAMA_PAYLOAD_MAX	CHAR_MAX
 /**
 * Check whether Callbacks are run in 'debug' catch exceptions mode
 */
