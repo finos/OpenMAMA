@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2.4.1.16.5 2011/09/13 16:01:26 ianbell Exp $
+# $Id$
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Inc.
@@ -39,10 +39,16 @@ LDFLAGS  += -L${srcdir}/../../c \
             -L${srcdir}/../../../../../common/c_cpp/src/c
 
 LIBS = -lmama -lwombatcommon -lgtest
+LDADD = -lgtest_main -ldl
 
 bin_PROGRAMS = MainUnitTestC
 
 nodist_MainUnitTestC_SOURCES = MainUnitTestC.cpp \
 							msgtests.cpp \
-							iteration.cpp
+							iteration.cpp \
+                            openclosetest.cpp \
+                            datetimetest.cpp \
+                            subscriptiontest.cpp \
+                            pricetest.cpp \
+                            timertest.cpp
 
