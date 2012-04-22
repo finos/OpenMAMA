@@ -1,6 +1,15 @@
 #ifndef _WOMBAT_TARGETSXS_H
 #define _WOMBAT_TARGETSXS_H
 
+#if (_MSC_VER >= 1600 && _MSC_VER < 1700)
+#define VC10 1
+#elif (_MSC_VER >= 1600 && _MSC_VER < 1500)
+#define VC9 1
+#elif (_MSC_VER >= 1400 && _MSC_VER < 1500)
+#define VC8 1
+#elif (_MSC_VER >= 1400 && _MSC_VER < 1400)
+#define VC7 1
+#endif
 #ifndef VC7
 
 #ifdef VC8
