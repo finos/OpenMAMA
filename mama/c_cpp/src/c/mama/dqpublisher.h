@@ -85,6 +85,7 @@ extern mama_status
 mamaDQPublisher_sendReplyWithHandle (mamaDQPublisher pub,
                                      mamaMsgReply  replyAddress,
                                      mamaMsg reply);
+
 MAMAExpDLL
 extern void
 mamaDQPublisher_destroy (mamaDQPublisher pub);
@@ -103,7 +104,21 @@ MAMAExpDLL
 extern void
 mamaDQPublisher_setSeqNum (mamaDQPublisher pub, mama_seqnum_t num);
 
+MAMAExpDLL
+extern void
+mamaDQPublisher_setClosure (mamaDQPublisher pub, void*  closure);
 
+MAMAExpDLL
+extern void*
+mamaDQPublisher_getClosure (mamaDQPublisher pub);
+
+MAMAExpDLL
+extern void
+mamaDQPublisher_setCache (mamaDQPublisher pub, void*  cache);
+
+MAMAExpDLL
+extern void*
+mamaDQPublisher_getCache (mamaDQPublisher pub);
 
 #if defined( __cplusplus )
 }
