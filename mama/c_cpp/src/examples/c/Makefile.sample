@@ -13,7 +13,7 @@
 # SOLARIS/Forte: The makefile will need modified to use the Solaris compiler.
 #                See example below.
 #=============================================================================
-API_HOME=../../
+API_HOME=../../../
 
 ## Solaris/Forte compiler:
 #CXX      = CC

@@ -62,7 +62,7 @@ dist_mamamultisubscriberc_SOURCES 	    = mamamultisubscriberc.c
 dist_mamaftmemberc_SOURCES 	    		= mamaftmemberc.c
 
 # Additional installation directory for sample source code
-exampledir = ${prefix}/examples/mama
+exampledir = ${prefix}/examples/mama/c
 
 # Rule to install the example programs:
 example_DATA = \
