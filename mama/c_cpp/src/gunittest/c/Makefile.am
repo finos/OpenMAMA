@@ -29,13 +29,16 @@ CFLAGS   += -pedantic -Wno-long-long -O2 -pthread -fPIC
 CPPFLAGS += -pedantic -Wno-long-long -O2 -pthread -fPIC
 endif
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../.. -I$(srcdir)/../../../examples
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../.. -I$(srcdir)/../../../examples -I$(srcdir)/../../../../../common/c_cpp/src/c
 
 CFLAGS   += -I@builddir@/../../c
 CPPFLAGS += -I@builddir@/../../c
 
-LIBS = -lmama -lwombatcommon -lgtest
 
+LDFLAGS  += -L${srcdir}/../../c \
+            -L${srcdir}/../../../../../common/c_cpp/src/c
+
+LIBS = -lmama -lwombatcommon -lgtest
 
 bin_PROGRAMS = MainUnitTestC
 
