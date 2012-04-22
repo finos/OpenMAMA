@@ -72,7 +72,7 @@ const char* makeAvisSubject(const char* subject)
 }
 
 
-static void
+static void MAMACALLTYPE
 destroy_callback(void* subscriber, void* closure)
 {
     // cant do anything without a subscriber
@@ -92,7 +92,7 @@ destroy_callback(void* subscriber, void* closure)
  * @param data The Avis Attributes* clone (must be freed)
  * @param closure The subscriber
  */
-static void
+static void MAMACALLTYPE
 avis_queue_callback (void* data, void* closure)
 {
     mama_status status;

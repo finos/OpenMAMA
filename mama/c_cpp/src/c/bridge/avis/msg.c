@@ -84,8 +84,7 @@ mama_status
 avisBridgeMamaMsg_destroyMiddlewareMsg (msgBridge msg)
 {
     CHECK_MSG(msg);
-    attributes_free(avisMsg(msg)->mAvisMsg);
-    free(avisMsg(msg)->mAvisMsg);
+    attributes_destroy(avisMsg(msg)->mAvisMsg);
     avisMsg(msg)->mAvisMsg = NULL;
 
     return MAMA_STATUS_OK;

@@ -50,7 +50,7 @@ typedef struct avisInboxImpl
          } while(0)
 
 
-static void
+static void MAMACALLTYPE
 avisInbox_onMsg(
     mamaSubscription    subscription,
     mamaMsg             msg,
@@ -63,14 +63,14 @@ avisInbox_onMsg(
       (avisInbox(closure)->mMsgCB)(msg, avisInbox(closure)->mClosure);
 }
 
-static void
+static void MAMACALLTYPE
 avisInbox_onCreate(
     mamaSubscription    subscription,
     void*               closure)
 {
 }
 
-static void
+static void MAMACALLTYPE
 avisInbox_onDestroy(
     mamaSubscription    subscription,
     void*               closure)
@@ -81,7 +81,7 @@ avisInbox_onDestroy(
       (avisInbox(closure)->mOnInboxDestroyed)(avisInbox(closure)->mParent, avisInbox(closure)->mClosure);
 }
 
-static void
+static void MAMACALLTYPE
 avisInbox_onError(
     mamaSubscription    subscription,
     mama_status         status,

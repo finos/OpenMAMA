@@ -174,7 +174,7 @@ avisBridgeMamaQueue_dispatchEvent (queueBridge queue)
     return MAMA_STATUS_OK;
 }
 
-static void queueCb (void *ignored, void* closure)
+static void MAMACALLTYPE queueCb (void *ignored, void* closure)
 {
     avisQueueClosure* cl = (avisQueueClosure*)closure;
     if (NULL ==cl) return;
