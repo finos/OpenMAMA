@@ -26,6 +26,7 @@
 #include <stdlib.h>
 #include <mama/ft.h>
 #include <mama/io.h>
+#include <wombat/wCommon.h>
 
 #include <sys/types.h>
 
@@ -97,9 +98,7 @@ static void bridgeFt_sendHeartbeat (mamaFtMember member);
 static int multicastFt_receiveHeartbeat(void* member);
 static int bridgeFt_receiveHeartbeat(void* member);
 
-static const char* 
-multicastFt_getProperty(char *buffer, const char *propertyName, const char
-        *transportName);
+const char *multicastFt_getProperty(char *buffer, const char *propertyName, const char *transportName);
 
 static int foundheartbeat=0;
 
@@ -196,15 +195,13 @@ static mamaIo       gReadHandler  =  NULL;
 /* General implementation functions. */
 int                receiveHeartbeat  (mamaFtMemberImpl*  impl);
 
-void checkHeartbeat (mamaFtMemberImpl*  impl,
+void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
                      unsigned int hbWeight,
                      unsigned int hbIncarnation,
                      int          hbPid,
                      int          hbIpAddr,
                      int          hbPrimary,
                      char*        hbGroupName);
-
-struct in_addr     wresolve_ip        (const char * arg);
 
 /* FT callbacks: */
 static void MAMACALLTYPE
@@ -665,7 +662,7 @@ mama_status resetTimeoutTimer (mamaFtMemberImpl* impl)
     return mamaTimer_reset (impl->myTimeoutTimer);
 }
 
-int betterCredentials(mamaFtMemberImpl*  impl, unsigned int weight, 
+int mamaBetterCredentials (mamaFtMemberImpl*  impl, unsigned int weight, 
 					  unsigned int incarnation, in_addr_t ipAddr, int pid)
 {
     if (weight > impl->myWeight)
@@ -698,7 +695,7 @@ int betterCredentials(mamaFtMemberImpl*  impl, unsigned int weight,
 }
 
 
-void checkHeartbeat (mamaFtMemberImpl*  impl,
+void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
                      unsigned int hbWeight,
                      unsigned int hbIncarnation,
                      int          hbPid,
@@ -722,7 +719,7 @@ void checkHeartbeat (mamaFtMemberImpl*  impl,
     }
 
 
-    if (betterCredentials(impl, hbWeight,hbIncarnation,hbIpAddr,hbPid) == 0)
+    if (mamaBetterCredentials(impl, hbWeight,hbIncarnation,hbIpAddr,hbPid) == 0)
     {
         mama_log (MAMA_LOG_LEVEL_FINER,
                                   "MAMA NATIVE FT: received heartbeat");
@@ -818,11 +815,9 @@ multicastFt_setup (
     if(transport)
     {
         status = mamaTransport_getName(transport, &transportName);
-        if((MAMA_STATUS_OK != status) || (NULL == transportName) || ('\0' ==
-                    transportName[0]))
+        if((MAMA_STATUS_OK != status) || (NULL == transportName) || ('\0' == transportName[0]))
         {
-            mama_log (MAMA_LOG_LEVEL_ERROR, "MAMA multicast FT: the transport name "
-                    "is invalid");
+            mama_log (MAMA_LOG_LEVEL_ERROR, "MAMA multicast FT: the transport name is invalid");
             return MAMA_STATUS_INVALID_ARG;
         }
     }
@@ -1148,7 +1143,7 @@ int multicastFt_receiveHeartbeat(void* member)
 
     hbIpAddr = ntohl (hbIpAddr);
 
-    checkHeartbeat (impl, hbWeight, hbIncarnation, hbPid, hbIpAddr,
+    mamaCheckHeartbeat (impl, hbWeight, hbIncarnation, hbPid, hbIpAddr,
                         hbPrimary, hbGroupName);
 
     return 0;
@@ -1372,7 +1367,7 @@ ftSubMsgCb    (mamaSubscription   subscription,
         return;
     }
 
-    checkHeartbeat (impl,
+    mamaCheckHeartbeat (impl,
                     hbWeight,
                     hbIncarnation,
                     hbPid,
