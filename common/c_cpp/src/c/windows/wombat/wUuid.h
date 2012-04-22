@@ -23,7 +23,7 @@
 
 #include "wombat/port.h"
 
-typedef int wUuid;
+typedef char* wUuid;
 
 COMMONExpDLL
 void wUuid_generate_time (wUuid myUuid);
