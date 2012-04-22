@@ -36,11 +36,8 @@
 #elif defined( MAMA_DLL ) && defined( BRIDGE )
     /* We are building mama bridge as a dll */
 #   define MAMAExpDLL __declspec( dllimport )
-#   define MAMAExpBridgeDLL __declspec( dllimport )
 #   define COMMONExpDLL __declspec( dllimport )
-#   define MAMACPPExpDLL
-#   define MAMDAExpDLL
-#   define MAMDAOPTExpDLL
+#   define MAMAExpBridgeDLL __declspec( dllexport )
 #   define WMWExpDLL __declspec( dllimport )
 #elif defined( MAMA_DLL ) && defined( MAMACPP )
     /* We are building mamacpp as a dll */
