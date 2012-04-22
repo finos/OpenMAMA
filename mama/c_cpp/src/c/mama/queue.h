@@ -464,6 +464,13 @@ MAMAExpDLL
 extern mama_status
 mamaDispatcher_destroy (mamaDispatcher dispatcher);
 
+MAMAExpDLL
+extern mama_status
+mamaQueue_getClosure (mamaQueue queue, void** closure);
+
+MAMAExpDLL
+extern mama_status
+mamaQueue_setClosure (mamaQueue queue, void* closure);
 #if defined(__cplusplus)
 }
 #endif
