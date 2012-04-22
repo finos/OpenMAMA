@@ -33,6 +33,9 @@
  * although the object may be gone the thread will have valid memory to access.
  */
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
 /* ************************************************************** */
 /* Includes. */
 /* ************************************************************** */
@@ -121,5 +124,8 @@ extern
 void *
 destroyHandle_removeReference(
 	pDestroyHandle handle);
+#if defined(__cplusplus)
+}
+#endif
 
 #endif
