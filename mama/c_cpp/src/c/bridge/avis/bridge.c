@@ -35,10 +35,12 @@ timerHeap gTimerHeap;
 /*Responsible for creating the bridge impl structure*/
 void avisBridge_createImpl (mamaBridge* result)
 {
+    avisBridgeImpl* avisBridge = NULL;
+    mamaBridgeImpl* impl = NULL;
     if (!result) return;
     *result = NULL;
 
-    mamaBridgeImpl* impl = (mamaBridgeImpl*)calloc (1, sizeof (mamaBridgeImpl));
+    impl = (mamaBridgeImpl*)calloc (1, sizeof (mamaBridgeImpl));
     if (!impl)
     {
         mama_log (MAMA_LOG_LEVEL_SEVERE, "avisBridge_createImpl(): "
@@ -46,7 +48,7 @@ void avisBridge_createImpl (mamaBridge* result)
         return;
     }
 
-    avisBridgeImpl* avisBridge = (avisBridgeImpl*) calloc(1, sizeof(avisBridgeImpl));
+    avisBridge = (avisBridgeImpl*) calloc(1, sizeof(avisBridgeImpl));
 
     /*Populate the bridge impl structure with the function pointers*/
     INITIALIZE_BRIDGE (impl, avis);
@@ -59,7 +61,7 @@ void avisBridge_createImpl (mamaBridge* result)
 const char*
 avisBridge_getVersion (void)
 {
-        return (const char*) VERSION;
+        return (const char*) "Unable to get version number";
 }
 
 const char*
@@ -68,14 +70,14 @@ avisBridge_getName (void)
     return "avis";
 }
 
-#define DEFAULT_PAYLOAD_NAME    "avismsg"
-#define DEFAULT_PAYLOAD_ID      MAMA_PAYLOAD_AVIS
+static const char* PAYLOAD_NAMES[] = {"avismsg",NULL};
+static const char PAYLOAD_IDS[] = {MAMA_PAYLOAD_AVIS,NULL};
 
 mama_status
-avisBridge_getDefaultPayloadId (char**name, char* id)
+avisBridge_getDefaultPayloadId (char***name, char** id)
 {
-    *name=DEFAULT_PAYLOAD_NAME;
-    *id=DEFAULT_PAYLOAD_ID;
+	*name = PAYLOAD_NAMES;
+	*id = PAYLOAD_IDS;
 
      return MAMA_STATUS_OK;
 }
@@ -87,6 +89,7 @@ avisBridge_open (mamaBridge bridgeImpl)
     mama_status status = MAMA_STATUS_OK;
     mamaBridgeImpl* impl =  (mamaBridgeImpl*)bridgeImpl;
 
+    wsocketstartup();
     mama_log (MAMA_LOG_LEVEL_FINEST, "avisBridge_open(): Entering.");
 
     if (MAMA_STATUS_OK !=
@@ -123,10 +126,11 @@ avisBridge_open (mamaBridge bridgeImpl)
 mama_status
 avisBridge_close (mamaBridge bridgeImpl)
 {
+   mama_status     status = MAMA_STATUS_OK;
+   mamaBridgeImpl* impl   = NULL;
    mama_log (MAMA_LOG_LEVEL_FINEST, "avisBridge_close(): Entering.");
 
-   mama_status status   = MAMA_STATUS_OK;
-   mamaBridgeImpl* impl =  (mamaBridgeImpl*)bridgeImpl;
+   impl =  (mamaBridgeImpl*)bridgeImpl;
 
 
    if (0 != destroyHeap (gTimerHeap))
@@ -139,6 +143,7 @@ avisBridge_close (mamaBridge bridgeImpl)
    mamaQueue_destroyWait(impl->mDefaultEventQueue);
 
    free (impl);
+    wsocketcleanup();
    return status;
 }
 
@@ -146,12 +151,12 @@ avisBridge_close (mamaBridge bridgeImpl)
 mama_status
 avisBridge_start(mamaQueue defaultEventQueue)
 {
+    mama_status status = MAMA_STATUS_OK;
+    avisBridgeImpl* avisBridge = NULL;
+
     mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_start(): Start dispatching on default event queue.");
 
-    mama_status status = MAMA_STATUS_OK;
-
     // start Avis event loop(s)
-    avisBridgeImpl* avisBridge;
     if (MAMA_STATUS_OK != (status = mamaBridgeImpl_getClosure((mamaBridge) mamaQueueImpl_getBridgeImpl(defaultEventQueue), (void**) &avisBridge))) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_start(): Could not get Elvin object");
         return status;
@@ -168,11 +173,10 @@ avisBridge_start(mamaQueue defaultEventQueue)
 mama_status
 avisBridge_stop(mamaQueue defaultEventQueue)
 {
-    mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_stop(): Stopping bridge.");
-
     mama_status status = MAMA_STATUS_OK;
+    avisBridgeImpl* avisBridge = NULL;
 
-    avisBridgeImpl* avisBridge;
+    mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_stop(): Stopping bridge.");
     if (MAMA_STATUS_OK != (status = mamaBridgeImpl_getClosure((mamaBridge) mamaQueueImpl_getBridgeImpl(defaultEventQueue), (void**) &avisBridge))) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_stop(): Could not get Elvin object");
         return status;

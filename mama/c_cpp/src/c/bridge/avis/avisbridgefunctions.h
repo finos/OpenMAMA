@@ -43,7 +43,7 @@ extern const char*
 avisBridge_getVersion (void);
 
 mama_status
-avisBridge_getDefaultPayloadId (char**name, char* id);
+avisBridge_getDefaultPayloadId (char***name, char** id);
 
 extern mama_status
 avisBridge_open (mamaBridge bridgeImpl);
@@ -124,6 +124,11 @@ extern mama_status
 avisBridgeMamaTransport_create (transportBridge* result,
                                  const char*      name,
                                  mamaTransport    parent);
+extern mama_status
+avisBridgeMamaTransport_forceClientDisconnect (transportBridge* transports,
+                                              int              numTransports,
+                                              const char*      ipAddress,
+                                              uint16_t         port);
 extern mama_status
 avisBridgeMamaTransport_findConnection (transportBridge* transports,
                                        int              numTransports,
