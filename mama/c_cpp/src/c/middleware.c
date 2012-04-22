@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include "wombat/port.h"
 #include <mama/middleware.h>
 #include <string.h>
 
