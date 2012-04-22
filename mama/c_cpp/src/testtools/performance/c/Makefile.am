@@ -36,7 +36,7 @@ CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes
 CPPFLAGS += -pedantic -Wall -Wimplicit -Wno-long-long -D_GNU_SOURCE
 endif
 
-LDADD     = -lmama -lpthread -lm -lwombatcommon
+LDADD     = -lmama -lpthread -lm -lwombatcommon -ldl -lrt
 
 
 bin_PROGRAMS = mamaproducerc \
