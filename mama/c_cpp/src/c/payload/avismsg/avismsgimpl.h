@@ -33,6 +33,7 @@ typedef struct avisPayload
 {
     Attributes*                 mAvisMsg;
     struct avisFieldPayload*    mAvisField;
+    mamaMsg                     mParent;
 
     void * 						mBuffer;
     uint16_t					mBufferLen;

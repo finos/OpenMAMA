@@ -205,6 +205,18 @@ avismsgPayload_destroy           (msgPayload          msg)
 }
 
 mama_status
+avisPayload_setParent (msgPayload          msg,                           
+                       const mamaMsg       parent)
+{
+    avisPayloadImpl* impl = (avisPayloadImpl*) msg;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+
+    impl->mParent = parent;
+    
+    return MAMA_STATUS_OK;
+}
+
+mama_status
 avismsgPayload_getByteSize       (const msgPayload    msg,
                                 mama_size_t*        size)
 {
