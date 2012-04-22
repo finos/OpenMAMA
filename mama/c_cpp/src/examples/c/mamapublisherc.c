@@ -305,7 +305,7 @@ inboundMsgCb (mamaSubscription subscription,
 
     if (gQuietLevel < 2)
     {
-        printf ("Recieved inbound msg. Sending response\n");
+        printf ("Recieved inbound msg. (%s) Sending response\n", mamaMsg_toString (msg));
     }
 
     if (!mamaMsg_isFromInbox (msg))

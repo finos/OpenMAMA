@@ -51,14 +51,14 @@ static void parseCommandLine            (int argc, const char **argv);
 static void initializeMama              (void);
 static void createFtMember              (void);
 
-static void onFtStateChangeCb           (mamaFtMember  ftMember,
+static void MAMACALLTYPE onFtStateChangeCb           (mamaFtMember  ftMember,
                                          const char*   groupName,
                                          mamaFtState   state,
                                          void*         closure);
 
 static void usage (int  exitStatus);
 
-static void onFtStateChangeCb (mamaFtMember  ftMember,
+static void MAMACALLTYPE onFtStateChangeCb (mamaFtMember  ftMember,
                    const char*   groupName,
                    mamaFtState   state,
                    void*         closure)

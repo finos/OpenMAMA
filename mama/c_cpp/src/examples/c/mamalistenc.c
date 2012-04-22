@@ -763,7 +763,6 @@ transportCb (mamaTransport      tport,
 void initializeMama (void)
 {
     mama_status       status  =   MAMA_STATUS_OK;
-    mamaPayloadBridge payBridge = NULL;
 
     /*
         mama_setApplicationName should be called before mama_open().

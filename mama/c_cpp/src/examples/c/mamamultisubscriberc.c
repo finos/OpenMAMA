@@ -21,7 +21,6 @@
 
 #include "mama/mama.h"
 #include "string.h"
-#include <unistd.h>
 #define MAX_BRIDGES 10
 
 static const char *     gTopic              = "MAMA_TOPIC";
@@ -52,21 +51,24 @@ NULL
 static void parseCommandLine    (int argc, const char **argv);
 static void initialize          (void);
 static void createSubscriber    (mamaBridge bridge, mamaTransport transport);
-static void startCB             ( mama_status status );
+static void MAMACALLTYPE startCB             ( mama_status status );
 static void start               (void);
 static void displayMsg          (mamaMsg msg);
 static void usage               (int  exitStatus);
 
 static void
+MAMACALLTYPE
 displayCb (const mamaMsg          msg,
            const mamaMsgField     field,
            void *                 closure);
 
 static void
+MAMACALLTYPE
 createCb (mamaSubscription       subscription,
           void *                 closure);
 
 static void
+MAMACALLTYPE
 errorCb (mamaSubscription       subscription,
          mama_status            status,
          void*                  platformError,
@@ -74,6 +76,7 @@ errorCb (mamaSubscription       subscription,
          void*                  closure);
 
 static void
+MAMACALLTYPE
 msgCb (mamaSubscription       subscription,
        mamaMsg                msg,
        void *                 closure,
@@ -189,7 +192,8 @@ static void createSubscriber (mamaBridge bridge, mamaTransport transport)
     }
 }
 
-void startCB ( mama_status status )
+void MAMACALLTYPE
+startCB ( mama_status status )
 {}
 
 void start ()
@@ -206,6 +210,7 @@ void start ()
 }
 
 static void
+MAMACALLTYPE
 createCb (mamaSubscription subscription, void *closure)
 {
     if (gQuietLevel < 2)
@@ -215,6 +220,7 @@ createCb (mamaSubscription subscription, void *closure)
 }
 
 static void
+MAMACALLTYPE
 errorCb (mamaSubscription   subscription,
          mama_status        status,
          void*              platformError,
@@ -227,6 +233,7 @@ errorCb (mamaSubscription   subscription,
 }
 
 static void
+MAMACALLTYPE
 msgCb (mamaSubscription  subscription,
        mamaMsg           msg,
        void*             closure,
@@ -240,6 +247,7 @@ msgCb (mamaSubscription  subscription,
 }
 
 void
+MAMACALLTYPE
 displayCb  (const mamaMsg       msg,
             const mamaMsgField  field,
             void*               closure)
