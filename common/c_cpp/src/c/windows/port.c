@@ -18,7 +18,7 @@
  * 02110-1301 USA
  */
 
-#include "port.h"
+#include "wombat/port.h"
 
 int gettimeofday( struct timeval *result, void *dummy )
 {
@@ -133,10 +133,10 @@ DWORD wthread_cond_wait( HANDLE *event, LPCRITICAL_SECTION *cs )
 {
     DWORD rval;
 
-    LeaveCriticalSection( *cs );
+    LeaveCriticalSection( cs );
     rval = WaitForSingleObject( *event, INFINITE );
     ResetEvent( *event );
-    EnterCriticalSection( *cs );
+    EnterCriticalSection( cs );
 
     return rval;
 }
@@ -177,6 +177,24 @@ const char *getlogin()
 }
 
 int
+wsocketstartup ()
+{
+    WSADATA wsaData;
+    int err =WSAStartup(MAKEWORD(2,2), &wsaData);
+    if (err)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+void
+wsocketcleanup ()
+{
+    WSACleanup( );
+}
+
+int
 wsocketpair (int domain, int type, int protocol, int* pair)
 {
     struct sockaddr_in addr;
@@ -184,7 +202,7 @@ wsocketpair (int domain, int type, int protocol, int* pair)
     int l; 
 
     l = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
-    if (INVALID_SOCKET == pair[0]) 
+    if (INVALID_SOCKET == l) 
         return -1;
 
     ZeroMemory (&addr, sizeof(addr));
@@ -232,8 +250,6 @@ wsocketpair (int domain, int type, int protocol, int* pair)
         _close (pair[0]);
         return -1;
     }
-
-    _close (l);
 
     return 0;
 }

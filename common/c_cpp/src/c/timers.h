@@ -29,12 +29,12 @@ typedef void* timerHeap;
 
 typedef void (*timerFireCb)(timerElement timer, void* mClosure);
 
-int createTimerHeap (timerHeap* heap);
-int startDispatchTimerHeap (timerHeap heap);
-wthread_t timerHeapGetTid (timerHeap heap);
-int destroyHeap (timerHeap heap);
+COMMONExpDLL int createTimerHeap (timerHeap* heap);
+COMMONExpDLL int startDispatchTimerHeap (timerHeap heap);
+COMMONExpDLL wthread_t timerHeapGetTid (timerHeap heap);
+COMMONExpDLL int destroyHeap (timerHeap heap);
 
-int createTimer (timerElement* timer, timerHeap heap, timerFireCb cb, struct timeval* timeout, void* closure);
-int destroyTimer (timerHeap heap, timerElement timer);
+COMMONExpDLL int createTimer (timerElement* timer, timerHeap heap, timerFireCb cb, struct timeval* timeout, void* closure);
+COMMONExpDLL int destroyTimer (timerHeap heap, timerElement timer);
 
 #endif

@@ -18,7 +18,7 @@
  * 02110-1301 USA
  */
 
-#include "port.h"
+#include "wombat/port.h"
 
 struct in_addr wresolve_ip (const char * arg)
 {
