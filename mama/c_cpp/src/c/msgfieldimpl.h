@@ -38,7 +38,7 @@ typedef struct mamaMsgFieldImpl_
     size_t               myLastVectorPayloadMsgLen;
     mamaMsg              mySubMsg;
     msgFieldPayload      myPayload;
-    msgPayload           myMsgPayload;
+    mamaMsg              myMsg;
     mamaPayloadBridge    myPayloadBridge;
 } mamaMsgFieldImpl;
 

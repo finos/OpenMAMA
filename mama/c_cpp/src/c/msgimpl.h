@@ -82,6 +82,9 @@ mamaMsgImpl_getPayloadBuffer(const mamaMsg  msg,
         const void**   buffer,
         mama_size_t*   bufferLength);
 
+/*Get the underlying payload parent mamaMsg. */
+MAMAExpDLL extern mama_status
+mamaMsgImpl_getPayload (const mamaMsg msg, msgPayload* payload);
 
 MAMAExpDLL
 extern mama_status
