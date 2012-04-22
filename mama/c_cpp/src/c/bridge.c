@@ -121,6 +121,8 @@ mamaBridgeImpl_stopInternalEventQueue (mamaBridge bridgeImpl)
     if (impl->mInternalEventQueue)
     {
            
+    	/* Get the queue timeout value. */
+    	int defaultQueueTimeout = mamaBridgeImpl_getDefaultQueueTimeout();
         if (MAMA_STATUS_OK != mamaDispatcher_destroy (impl->mInternalDispatcher))
         {
             mama_log (MAMA_LOG_LEVEL_WARN, "mamaBridgeImpl_stopInternalEventQueue(): "
@@ -128,7 +130,8 @@ mamaBridgeImpl_stopInternalEventQueue (mamaBridge bridgeImpl)
             return MAMA_STATUS_NO_BRIDGE_IMPL;
         }
         
-        if (MAMA_STATUS_OK != mamaQueue_destroy (impl->mInternalEventQueue ))
+        /* Destroy the queue waiting for the appropriate time value. */
+        if (MAMA_STATUS_OK != mamaQueue_destroyTimedWait (impl->mInternalEventQueue, defaultQueueTimeout))
         {
             mama_log (MAMA_LOG_LEVEL_WARN, "mamaBridgeImpl_stopInternalEventQueue(): "
                           "Could not destroy internal queue");
