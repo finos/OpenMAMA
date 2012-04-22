@@ -285,11 +285,59 @@ mama_status mamaDQPublisherManager_create (
 
 void mamaDQPublisherManager_destroy (mamaDQPublisherManager manager)
 {
+    /* Get the impl. */
     mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
+    if(NULL != impl)
+    {
+        /* Destroy the publisher. */
+        if(NULL != impl->mPublisher)
+        {
+            mamaPublisher_destroy(impl->mPublisher);
+        }
 
+        /* Destroy the subscription. */
+        if(NULL != impl->mSubscription)
+        {
+            mamaSubscription_destroy(impl->mSubscription);
+            mamaSubscription_deallocate(impl->mSubscription);
+        }
+
+        /* Destroy the inbox. */
+        if(NULL != impl->mInbox)
+        {
+            mamaInbox_destroy(impl->mInbox);
+        }
+
+        /* Destroy the re-usable messages. */
+        if(NULL != impl->mRefreshResponseMsg)
+        {
+            mamaMsg_destroy(impl->mRefreshResponseMsg);
+        }
+        if(NULL != impl->mNoSubscribersMsg)
+        {
+            mamaMsg_destroy(impl->mNoSubscribersMsg);
+        }
+        if(NULL != impl->mSyncRequestMsg)
+        {
+            mamaMsg_destroy(impl->mSyncRequestMsg);
+        }
+
+        /* Free the namespace. */
+        if(NULL != impl->mNameSpace)
+        {
+            free(impl->mNameSpace);
+        }
+
+        /* Destroy the publisher table. */
+        if(NULL != impl->mPublisherMap)
+        {
     wtable_destroy ( impl->mPublisherMap );
 }
 
+        /* Free the impl itself. */
+        free(impl);
+    }
+}
 mama_status mamaDQPublisherManager_addPublisher (
         mamaDQPublisherManager manager, 
         const char *symbol, 
