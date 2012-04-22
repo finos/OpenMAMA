@@ -18,7 +18,7 @@
  * 02110-1301 USA
  */
 
-#include "port.h"
+#include "wombat/port.h"
 
 #include "wombat/wSemaphore.h"
 

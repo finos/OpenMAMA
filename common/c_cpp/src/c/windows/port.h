@@ -37,9 +37,10 @@
 #include <tlhelp32.h>
 #include <time.h>
 
-#include "wConfig.h"
-#include "lock.h"
-#include "mmap.h"
+#include "wombat/targetsxs.h"
+#include "wombat/wConfig.h"
+#include "windows/lock.h"
+#include "windows/mmap.h"
 
 #if defined(__cplusplus)
 extern "C" {
