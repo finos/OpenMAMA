@@ -1153,6 +1153,26 @@ mama_closeCount (unsigned int* count)
 
         wthread_key_delete(last_err_key);
 
+        if (gStatsGenerator)
+        {
+            mamaStatsGenerator_stopReportTimer(gStatsGenerator);
+        }
+
+        if (gGlobalStatsCollector)
+        {
+            if (gStatsGenerator)
+            {
+                mamaStatsGenerator_removeStatsCollector (gStatsGenerator, gGlobalStatsCollector);
+            }
+            mamaStatsCollector_destroy (*gGlobalStatsCollector);
+            gGlobalStatsCollector = NULL;
+        }
+
+        if (gStatsPublisher)
+        {
+            mamaStatsLogger_destroy (gStatsPublisher);
+            gStatsPublisher = NULL;
+        }
         for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
         {
             mamaBridge bridge = gImpl.myBridges[middleware];

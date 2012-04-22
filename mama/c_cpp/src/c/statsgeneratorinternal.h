@@ -33,6 +33,18 @@ MAMAExpDLL
 extern mama_status
 mamaStatsGenerator_create (mamaStatsGenerator* statsGenerator, mama_f64_t reportInterval);
 
+/**
+ * This function should be called to stop the stats report timer before the internal event
+ * queue has been destroyed.
+ *
+ * @param[in] statsGenerator The stats generator.
+ * @returns mama_status can be one of
+ *              MAMA_STATUS_NULL_ARG
+ *              MAMA_STATUS_OK
+ */
+MAMAExpDLL
+extern mama_status
+mamaStatsGenerator_stopReportTimer(mamaStatsGenerator statsGenerator);
 MAMAExpDLL
 extern mama_status
 mamaStatsGenerator_destroy (mamaStatsGenerator statsGenerator);
@@ -47,7 +59,7 @@ mamaStatsGenerator_setLogStats (mamaStatsGenerator statsGenerator, int logStats)
 
 MAMAExpDLL
 extern mama_status
-mamaStatsGenerator_setStatsLogger (mamaStatsGenerator statsGenerator, mamaStatsLogger* usageLogger);
+mamaStatsGenerator_setStatsLogger (mamaStatsGenerator statsGenerator, mamaStatsLogger* statsLogger);
 
 MAMAExpDLL
 extern void
