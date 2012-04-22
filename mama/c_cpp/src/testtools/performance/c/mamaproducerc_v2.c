@@ -309,7 +309,7 @@ static void displayCallback
     void*           closure
 );
 
-static void shutdown
+static void producerShutdown
 (
     uint32_t        msgVar
 );
@@ -943,7 +943,7 @@ int main (int argc, const char **argv)
     }
     pthread_mutex_unlock (&pendingShutdownLock);
 
-    shutdown(msgVar);
+    producerShutdown (msgVar);
 
     MAMA_CHECK (mamaDateTime_destroy (gLastDisplayTime));
     MAMA_CHECK (mamaDateTime_destroy (gNowTime));
@@ -953,7 +953,7 @@ int main (int argc, const char **argv)
     return 0;
 }
 
-static void shutdown
+static void producerShutdown
 (
     uint32_t        msgVar
 )

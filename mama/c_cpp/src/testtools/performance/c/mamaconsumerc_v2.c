@@ -457,7 +457,7 @@ static void signalCatcher
     int                     sig
 );
 
-static void shutdown(void);
+static void consumerShutdown (void);
 
 static void printHeader
 (
@@ -1126,7 +1126,7 @@ int main (int argc, const char** argv)
         displayStatsGroupBuckets(&gStatsGroup);
     }
 
-    shutdown();
+    consumerShutdown();
 
     for(i=0; i<NUM_STATS_GROUPS; ++i)
         destroyStatsGroup(&(gStatsGroups[i]));
@@ -1195,7 +1195,7 @@ static void printHeader
 }
 
 
-static void shutdown(void)
+static void consumerShutdown (void)
 {
     int i;
     unsigned nsecSleep = gThrottle != -1 ? 1000000000 / gThrottle : 0;
