@@ -67,10 +67,6 @@ typedef void*       LIB_HANDLE;
 /* suffix for shared libraries */
 #define LIB_EXTENSION ".so"
 
-/* 8 byte int typedefs */
-typedef unsigned long long int  w_u64_t;
-typedef long long int           w_i64_t;
-
 /* Network conversion function */
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 #define htonll(x) \
