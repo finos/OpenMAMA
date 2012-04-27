@@ -22,7 +22,7 @@
 srcdir = @srcdir@
 VPATH  = @srcdir@
 
-SUBDIRS = c
+SUBDIRS = c cpp
 
 CPPFLAGS += -DWITH_UNIT_TESTS
 CFLAGS += -DWITH_UNIT_TESTS

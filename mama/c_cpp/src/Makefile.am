@@ -22,7 +22,7 @@
 srcdir = @srcdir@
 VPATH  = @srcdir@
 
-SUBDIRS =  c
+SUBDIRS =  c cpp
 
 if WITH_TESTTOOLS
 SUBDIRS += testtools

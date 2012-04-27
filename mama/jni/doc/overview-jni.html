@@ -1,0 +1,34 @@
+<body>
+<p>
+MAMA (Middleware Agnostic Messaging API) is a subscription based
+middleware API with publish/subscribe semantics which provides a lightweight
+abstraction on top of a variety of underlying messaging middlewares.
+The purpose of the API is to provide developers with a common view and
+interface onto the underlying messaging API in such a manner
+that migrating from one messaging API to another requires no code changes.
+</p>
+<p>
+The API provides an asynchronous event driven programming model. As such,
+users of the API provide callbacks at various points and data is propagated
+back to the registered application via these callbacks in response to 
+dispatching of events.
+</p>
+<p>
+The API provides the building blocks for implementing a market data
+infrastructure on top of any supported messaging middleware. Market
+Data semantics are added through the use of the MAMDA API
+(MAMDA Developers guide also available).
+</p>
+<p>
+On the Wombat MAMA MarketData Infrastructure the API also provides extra value
+added features, e.g.
+</P>
+<ul>
+<li>Subscription Management (throttling, timeouts, retries)</li>
+<li>Entitlement Enforcement
+<li>Initial Values/Recaps
+<li>Data Quality
+<li>Refresh messages
+<li>Group Subscriptions
+</ul>
+</body>

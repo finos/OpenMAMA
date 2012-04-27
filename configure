@@ -1,5 +1,5 @@
 #!/bin/bash
-# $Id: configure,v 1.1.2.3 2011/09/22 17:00:20 emmapollock Exp $
+# $Id$
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Inc.
@@ -21,6 +21,9 @@
 #
 
 AVIS_HOME=/usr/local
+WITH_AVIS=
+WITH_UNITTESTS=
+INSTALL_DIR=/opt/openmama
 EXTRA=
 
 # Parse the inputs
@@ -29,25 +32,43 @@ do
     case $i in
         --avis-path=*)
             AVIS_HOME=${i#*=}
-            EXTRA="${EXTRA} --with-avis=${AVIS_HOME}"
+            WITH_AVIS="--with-avis=${AVIS_HOME}"
             ;;
         --gtest-path=*)
-            EXTRA="${$EXTRA} --with-unittests=${i#*=}"
+            WITH_UNITTESTS="-with-unittests=${i#*=}"
+            ;;
+        --prefix=*)
+            INSTALL_DIR=${i#*=}
+            EXTRA="${EXTRA} ${i}"
             ;;
         *)
-            # unknown options are passed straigh through
+            # unknown options are passed straight through
             EXTRA="${EXTRA} ${i}"
         ;;
     esac
 done
 
+# Store the install directory for use by Makefile:
+cat <<EOF >prefix.txt
+${INSTALL_DIR}
+EOF
+
 # configure common
 cd common/c_cpp
 ./configure $EXTRA
-[ $? -ne 0 ] && exit $?
 cd -
 
 #configure mama
 cd mama/c_cpp
+./configure $WITH_AVIS $WITH_UNITTESTS $EXTRA
+cd -
+
+#configure mamajni
+cd mama/jni
+./configure $EXTRA
+cd -
+
+#configure mamda
+cd mamda/c_cpp
 ./configure $EXTRA
 cd -

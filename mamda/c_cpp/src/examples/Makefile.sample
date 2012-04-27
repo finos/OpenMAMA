@@ -1,0 +1,76 @@
+#==============================================================================
+# To build MAMDA examples set the following:
+#   API_HOME: Path to API installation
+#=============================================================================
+# Example:
+#    make -f Makefile.sample API_HOME=/home/wombat/apis
+#=============================================================================
+# SOLARIS/Forte: The makefile will need modified to use the Solaris compiler.
+#                See example below.
+#=============================================================================
+API_HOME=/home/wombat/apis
+
+## Solaris/Forte compiler:
+#CXX      = CC
+#CC       = cc
+#BSTATIC  = -Bstatic
+#BDYNAMIC = -Bdynamic
+
+# GNU compiler:
+CXX      = g++
+CC       = gcc
+BSTATIC  = -Xlinker -Bstatic
+BDYNAMIC = -Xlinker -Bdynamic
+
+## Solaris system libraries:
+#SYS_LIBS = -lsocket -lgen -lnsl -ldl
+
+# Standard defines:
+CPPFLAGS     = \
+    -I$(API_HOME)/include \
+    -I$($(API_PLATFORM)_HOME)/include
+LDFLAGS      = -rdynamic \
+    -L$(API_HOME)/lib \
+    -L$($(API_PLATFORM)_HOME)/lib
+
+MAMDA_LIBS   = $(BSTATIC) -lmamda $(BDYNAMIC)
+MAMA_LIBS    = $(BSTATIC) -lmamacpp -lmama -lwombatmsg -lwcache \
+               $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -ldl -lpthread -lwombatcommon
+               
+    
+COMMON_LIBS  = $(MAMDA_LIBS) $(MAMA_LIBS) $(SYS_LIBS)
+
+# Targets:
+all: comboticker quoteticker tradeticker mamdalisten optionchainer \
+	multipartticker multisecurityticker optionview secstatuslisten fundamentallisten
+
+comboticker: comboticker.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
+
+quoteticker: quoteticker.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
+
+tradeticker: tradeticker.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
+
+mamdalisten: mamdalisten.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
+
+optionchainer: optionchainer.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ -lmamdaoptions $(COMMON_LIBS)
+
+multipartticker: multipartticker.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
+
+multisecurityticker: multisecurityticker.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
+
+optionview: optionview.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ -lmamdaoptions $(COMMON_LIBS)
+
+secstatuslisten: secstatuslisten.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
+    
+fundamentallisten: fundamentallisten.o parsecmd.o dictrequester.o
+	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
+

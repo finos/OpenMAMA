@@ -233,8 +233,6 @@ int main (int argc, const char **argv)
 
     mama_start (gPubBridge);
 
-    shutdown ();
-
     return 0;
 }
 

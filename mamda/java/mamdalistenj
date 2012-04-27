@@ -1,0 +1,106 @@
+#!/bin/sh
+
+mama_provider=tibrv
+demo_type=MamdaListen
+no_ent=
+
+
+WOMBAT_HOME=${WOMBAT_HOME:-/home/wombat}
+WOMBAT_PATH=${WOMBAT_PATH:-${WOMBAT_HOME}/config}
+MAMA_HOME=${MAMA_HOME:-${WOMBAT_HOME}}
+MAMDA_HOME=${MAMDA_HOME:-${WOMBAT_HOME}}
+WOMBAT_MSG_HOME=${WOMBAT_MSG_HOME:-${WOMBAT_HOME}}
+export WOMBAT_PATH
+
+
+while [ $# -gt 0 ]
+do
+    case "$1" in
+    '-trades')
+        demo_type=MamdaTradeTicker
+        shift
+        ;;
+    '-quotes')
+        demo_type=MamdaQuoteTicker
+        shift
+        ;;
+    '-books')
+        demo_type=MamdaBookTicker
+        add_jars="$MAMDA_HOME/lib/mamda_book.jar"
+        shift
+        ;;
+     '-bookcheck')
+        demo_type=MamdaBookSelfTest
+        add_jars="$MAMDA_HOME/lib/mamda_book.jar"
+        shift
+        ;;    
+    '-atomicbooks')
+        demo_type=MamdaAtomicBookTicker
+        add_jars="$MAMDA_HOME/lib/mamda_book.jar"
+        shift
+        ;;
+    '-multipart')
+        demo_type=MamdaMultiPartTicker
+        shift
+        ;;
+    '-multisecurity')
+        demo_type=MamdaMultiSecurityTicker
+        shift
+        ;;
+    '-options')
+        demo_type=MamdaOptionChainExample
+        add_jars="$MAMDA_HOME/lib/mamda_options.jar"
+        shift
+        ;;
+    '-optionviewer')
+        demo_type=MamdaOptionChainViewExample
+        add_jars="$MAMDA_HOME/lib/mamda_options.jar"
+        shift
+        ;;
+    '-p')
+        mama_provider=$2
+        shift 2
+        ;;
+    '-noent')
+        noent="_noent"
+        shift
+        ;;
+    *)
+        args="$args $1"
+        shift
+        ;;
+    esac
+done
+
+
+case $mama_provider in
+
+'elvin')
+    # Elvin-specific files
+    ELVIN_HOME=${ELVIN_HOME:-/home/elvin}
+    CLASSPATH=$MAMA_HOME/lib/mama_elvin.jar:$ELVIN_HOME/lib/je4.jar:$ELVIN_HOME/lib/java-dm.jar
+    mama_provider_class="com.wombat.mama.bridge.elvin.ElvinProvider"
+    ;;
+
+'tibrv')
+    # TIBRV-specific files
+    TIBRV_HOME=${TIBRV_HOME:-/home/tibco/tibrv}
+    PATH=$PATH:$TIBRV_HOME/bin
+    LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$TIBRV_HOME/lib
+    CLASSPATH=$MAMA_HOME/lib/mama_tibrv.jar:$TIBRV_HOME/lib/tibrvj.jar
+    mama_provider_class="com.wombat.mama.bridge.tibrv.RvProvider"
+    ;;
+
+esac
+
+CLASSPATH=${add_jars}:${MAMDA_HOME}/lib/mamda.jar:${MAMA_HOME}/lib/mama${noent}.jar:${MAMA_HOME}/lib/mama_${mama_provider}.jar:${WOMBAT_MSG_HOME}/lib/wombatmsg.jar:${CLASSPATH}
+
+echo java -cp $CLASSPATH \
+    -Dwombat.dir=$WOMBAT_PATH \
+    -Dmama.provider.class=$mama_provider_class \
+    com.wombat.mamda.examples.$demo_type $args
+
+java -server -cp $CLASSPATH \
+    -Dwombat.dir=$WOMBAT_PATH \
+    -Dmama.provider.class=$mama_provider_class \
+    com.wombat.mamda.examples.$demo_type $args
