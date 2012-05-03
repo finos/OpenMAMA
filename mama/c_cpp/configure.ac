@@ -106,7 +106,7 @@ AC_CHECK_LIB(socket,socket)
 AC_CHECK_LIB(nsl,gethostbyname)
 
 # SOLARIS 8 does not have sem_timedwait
-AC_SEARCH_LIBS(sem_timedwait, rt,
+AC_SEARCH_LIBS(sem_timedwait, rt pthread,
     [
         echo "Found sem_timedwait()."
     ],
