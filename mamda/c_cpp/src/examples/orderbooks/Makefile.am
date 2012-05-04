@@ -35,6 +35,7 @@ CPPFLAGS += -I$(srcdir)/../../cpp \
 
 LDFLAGS  += -L${srcdir}/../../cpp \
             -L$(srcdir)/../../cpp/orderbooks \
+            -L$(srcdir)/../../../../../mama/c_cpp/src/c \
             -L$(srcdir)/../../../../../mama/c_cpp/src/cpp
 
 if USE_GCC_FLAGS

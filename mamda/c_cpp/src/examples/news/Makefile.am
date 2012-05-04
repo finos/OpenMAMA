@@ -33,6 +33,7 @@ CPPFLAGS  +=-I$(srcdir)/../../cpp \
 
 LDFLAGS  += -L${srcdir}/../../cpp \
             -L$(srcdir)/../../cpp/news \
+            -L$(srcdir)/../../../../../mama/c_cpp/src/c \
             -L$(srcdir)/../../../../../mama/c_cpp/src/cpp
 
 LIBS += -lmamdanews -lmamda -lmamacpp -lmama -lpthread -lnsl -ldl -lm
