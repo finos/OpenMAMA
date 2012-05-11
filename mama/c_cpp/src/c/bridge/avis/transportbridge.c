@@ -40,10 +40,10 @@
 
 #define avisTransport(transport) ((avisTransportBridge*) transport)
 #define CHECK_TRANSPORT(transport) \
-        do {  \
-           if (avisTransport(transport) == 0) return MAMA_STATUS_NULL_ARG; \
-           if (avisTransport(transport)->mAvis == 0) return MAMA_STATUS_INVALID_ARG; \
-         } while(0)
+   do {  \
+      if (avisTransport(transport) == 0) return MAMA_STATUS_NULL_ARG; \
+      if (avisTransport(transport)->mAvis == 0) return MAMA_STATUS_INVALID_ARG;\
+    } while(0)
 
 
 
@@ -55,26 +55,45 @@ void* avisDispatchThread(void* closure);
 
 void log_avis_error(MamaLogLevel logLevel, Elvin* avis)
 {
-    mama_log (logLevel, "avis error code=%d, error msg=%s", avis->error.code, avis->error.message);
+    mama_log (logLevel, "avis error code=%d, error msg=%s", avis->error.code,
+        avis->error.message);
 }
 
-void closeListener(Elvin* avis, CloseReason reason, const char* message, void* closure)
+void closeListener(Elvin* avis, 
+                   CloseReason reason, 
+                   const char* message, 
+                   void* closure)
 {
     const char* errMsg;
-    if (avisBridge(closure) == NULL) {
-        mama_log (MAMA_LOG_LEVEL_FINE, "Avis closeListener: could not get Avis bridge");
+    if (avisBridge(closure) == NULL) 
+    {
+        mama_log (MAMA_LOG_LEVEL_FINE, 
+            "Avis closeListener: could not get Avis bridge");
         return;
     }
 
     switch( reason )
     {
-        case REASON_CLIENT_SHUTDOWN:            errMsg = "Avis client shutdown"; break;
-        case REASON_ROUTER_SHUTDOWN:            errMsg = "Avis router shutdown"; break;
-        case REASON_PROTOCOL_VIOLATION:         errMsg = "Avis protocol violation"; break;
-        case REASON_ROUTER_STOPPED_RESPONDING:  errMsg = "Avis router stopped responding"; break;
-        default:                                errMsg = "Unknown Avis error";
+        case REASON_CLIENT_SHUTDOWN:            
+            errMsg = "Avis client shutdown";
+            break;
+        case REASON_ROUTER_SHUTDOWN:            
+            errMsg = "Avis router shutdown";
+            break;
+        case REASON_PROTOCOL_VIOLATION:         
+            errMsg = "Avis protocol violation"; 
+            break;
+        case REASON_ROUTER_STOPPED_RESPONDING:  
+            errMsg = "Avis router stopped responding"; 
+            break;
+        default:                                
+            errMsg = "Unknown Avis error";
     }
-    mamaTransportImpl_disconnect(avisBridge(closure)->mTransportBridge->mTransport, MAMA_TRANSPORT_DISCONNECT, NULL, NULL);
+    mamaTransportImpl_disconnect(
+        avisBridge(closure)->mTransportBridge->mTransport, 
+        MAMA_TRANSPORT_DISCONNECT, 
+        NULL, 
+        NULL);
     mama_log (MAMA_LOG_LEVEL_FINE, "%s : %s", errMsg, message);
 }
 
@@ -98,7 +117,7 @@ getURL( const char *name )
       return DEFAULT_URL;
 
     mama_log (MAMA_LOG_LEVEL_FINER,
-               "Avis transport (%s) main connection: %s", name, property);
+              "Avis transport (%s) main connection: %s", name, property);
     return property;
 }
 
@@ -106,7 +125,10 @@ getURL( const char *name )
 Elvin* getAvis(mamaTransport transport)
 {
     avisTransportBridge* pTransportBridge;
-    mama_status status = mamaTransport_getBridgeTransport (transport, (void*) &pTransportBridge);
+    mama_status status;
+
+    status = mamaTransport_getBridgeTransport (transport, 
+        (void*) &pTransportBridge);
     if ((status != MAMA_STATUS_OK) || (pTransportBridge == NULL))
        return NULL;
 
@@ -125,12 +147,14 @@ void* avisDispatchThread(void* closure)
 
 mama_status avisTransportBridge_start(avisTransportBridge* transportBridge)
 {
-   // stop Avis event loop
+   /* stop Avis event loop */
    wthread_t tid;
    int rc;
    CHECK_TRANSPORT(transportBridge); 
 
-   if (0 != (rc = wthread_create(&tid, NULL, avisDispatchThread, transportBridge))) {
+   rc = wthread_create(&tid, NULL, avisDispatchThread, transportBridge);
+   if (0 != rc)
+   {
       mama_log (MAMA_LOG_LEVEL_ERROR, "wthread_create returned %d", rc);
       return MAMA_STATUS_SYSTEM_ERROR;
    }
@@ -144,13 +168,16 @@ mama_status avisTransportBridge_stop(avisTransportBridge* transportBridge)
 {
    CHECK_TRANSPORT(transportBridge); 
    
-   // stop Avis event loop
+   /* stop Avis event loop */
    elvin_remove_close_listener(transportBridge->mAvis, closeListener);
-   if (!elvin_invoke_close(transportBridge->mAvis)) {
-      // there appears to be a race condition in Avis libs where router socket can sometimes be closed before
-      // we receive the disconnect reply -- log it, and continue
+   if (!elvin_invoke_close(transportBridge->mAvis)) 
+   {
+      /* there appears to be a race condition in Avis libs where router socket
+       * can sometimes be closed before we receive the disconnect reply -- log
+       * it, and continue */
       log_avis_error(MAMA_LOG_LEVEL_FINE, transportBridge->mAvis);
    }
+
    while (-1 == wsem_wait(&transportBridge->mAvisDispatchSem)) 
    {
       if (errno != EINTR) return MAMA_STATUS_SYSTEM_ERROR;
@@ -192,8 +219,8 @@ avisBridgeMamaTransport_getLoadBalanceScheme (
 
 mama_status
 avisBridgeMamaTransport_create (transportBridge* result,
-                                 const char*      name,
-                                 mamaTransport    mamaTport )
+                                const char*      name,
+                                mamaTransport    mamaTport )
 {
     mama_status          status;
     avisBridgeImpl*      avisBridge = NULL;
@@ -201,45 +228,60 @@ avisBridgeMamaTransport_create (transportBridge* result,
     mamaBridgeImpl*      bridgeImpl = NULL;
     const char*          url        = NULL; 
     
-    transport = (avisTransportBridge*)calloc( 1, sizeof( avisTransportBridge ) );
+    transport = (avisTransportBridge*)calloc( 1, sizeof( avisTransportBridge ));
     if (transport == NULL)
         return MAMA_STATUS_NOMEM;
 
     transport->mTransport = (mamaTransport) mamaTport;
 
     bridgeImpl = mamaTransportImpl_getBridgeImpl(mamaTport);
-    if (!bridgeImpl) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaTransport_create(): Could not get bridge");
+    if (!bridgeImpl) 
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+            "avisBridgeMamaTransport_create(): Could not get bridge");
         free(transport);
         return MAMA_STATUS_PLATFORM;
     }
-    if (MAMA_STATUS_OK != (status = mamaBridgeImpl_getClosure((mamaBridge) bridgeImpl, (void**) &avisBridge))) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaTransport_create(): Could not get Avis bridge object");
+    
+    status = mamaBridgeImpl_getClosure((mamaBridge) bridgeImpl, 
+                                       (void**) &avisBridge);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+          "avisBridgeMamaTransport_create(): Could not get Avis bridge object");
         free(transport);
         return status;
     }
-    if (avisBridge->mTransportBridge != NULL) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaTransport_create(): Avis already connected");
+    if (avisBridge->mTransportBridge != NULL) 
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+            "avisBridgeMamaTransport_create(): Avis already connected");
         free(transport);
         return MAMA_STATUS_PLATFORM;
     }
 
-    // create the Elvin object
+    /* create the Elvin object */
     transport->mAvis = (Elvin*)calloc (1, sizeof (Elvin));
-    if (transport->mAvis == NULL) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_createImpl(): Could not create Elvin object");
+    if (transport->mAvis == NULL) 
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+            "avisBridge_createImpl(): Could not create Elvin object");
         free(transport);
         return MAMA_STATUS_PLATFORM;
     }
 
-    // open the server connection
+    /* open the server connection */
     url = getURL(name);
-    if (url == NULL) {
-        mama_log (MAMA_LOG_LEVEL_NORMAL, "No %s property defined for transport : %s", TPORT_PARAM, name);
+    if (url == NULL) 
+    {
+        mama_log (MAMA_LOG_LEVEL_NORMAL, 
+            "No %s property defined for transport : %s", TPORT_PARAM, name);
         return MAMA_STATUS_INVALID_ARG;
     }
-    if (!elvin_open(transport->mAvis, url)) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "open failed for %s: %s", TPORT_PARAM, name);
+    if (!elvin_open(transport->mAvis, url)) 
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+            "open failed for %s: %s", TPORT_PARAM, name);
         log_avis_error(MAMA_LOG_LEVEL_ERROR, transport->mAvis);
         avisBridgeMamaTransport_destroy((transportBridge)transport);
         return MAMA_STATUS_PLATFORM;
@@ -262,14 +304,22 @@ avisBridgeMamaTransport_destroy (transportBridge transport)
     mamaBridgeImpl* bridgeImpl = NULL;
     
     
-    bridgeImpl = mamaTransportImpl_getBridgeImpl(avisTransport(transport)->mTransport);
-    if (!bridgeImpl) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaTransport_create(): Could not get bridge");
+    bridgeImpl = mamaTransportImpl_getBridgeImpl(
+        avisTransport(transport)->mTransport);
+    if (!bridgeImpl) 
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+            "avisBridgeMamaTransport_destroy(): Could not get bridge");
         free(transport);
         return MAMA_STATUS_PLATFORM;
     }
-    if (MAMA_STATUS_OK != (status = mamaBridgeImpl_getClosure((mamaBridge) bridgeImpl, (void**) &avisBridge))) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaTransport_create(): Could not get Avis bridge object");
+    
+    status = mamaBridgeImpl_getClosure((mamaBridge) bridgeImpl, 
+                                       (void**) &avisBridge);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+          "avisBridgeMamaTransport_destroy(): Could not get Avis bridge object");
         free(transport);
         return status;
     }
