@@ -56,7 +56,7 @@ To use OpenMAMA you will need a middleware/payload. An example middleware bridge
 and payload is included for Avis. Avis can be obtained from the following
 website:
 
-http://avis.sourceforge.net.
+    http://avis.sourceforge.net.
 
 OpenMAMA API reference documentation depends on:
 
@@ -267,11 +267,22 @@ Currently OpenMAMA assumes Avis is the middleware to be built with, as this is
 currently the only opensource middleware supported.  Therefore, the Avis client
 libraries must be available.  
 
+The Avis router (avisd) is avalaible from:
+    http://sourceforge.net/projects/avis/viles/Avis%20router/
+
+To build the avis client:
+    download the source from: 
+         http://downloads.sourceforge.net/avis/avis-client-1.2.4.tar.gz
+    tar -xzf avis-client-1.2.4.tar.gz
+    cd avis-client-1.2.4
+    ./configure --prefix=${AVIS_HOME}
+    make install
+
 The default install of Avis is missing a header file. This needs to be moved
 manually in the include directory.  The OpenMAMA configure script checks for
 this header and will exit with an error if not found.
 
-  mv ${AVIS_SOURCE}/lib/avis_client_config.h ${AVIS_HOME}/include/avis
+  mv ${AVIS_SOURCE}/platforms/gnu_automake/avis_client_config.h ${AVIS_HOME}/include/avis
 
 
 
@@ -291,7 +302,15 @@ The following uses the default settings to build the OpenMAMA library and
 example applications.  This assumes that Avis middleware is available in
 /usr/local, and will install OpenMAMA to /opt/OpenMAMA
 
-  ./configure
+If you are building source code cloned from the OpenMAMA git repository run the
+following command before following the remaining instructions:
+
+  ./generateBuildFiles.sh
+
+For source downloaded as an archive from http://www.openmama.org, it is not
+necessary to run generateBuildFiles.sh. 
+
+  ./configure --with-avis=/usr/local
   make
   sudo make install
   
