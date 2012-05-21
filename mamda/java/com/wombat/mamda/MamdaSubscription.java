@@ -470,10 +470,15 @@ public class MamdaSubscription
             short msgType   = MamaMsgType.typeForMsg     (msg);
             int   msgStatus = MamaMsgStatus.statusForMsg (msg);
             mLatestMsg      = msg;
+            short mywombatStatus  = 17;
+            int myplatformError  = 0;
+            Exception  myException     = new Exception();
 
             switch (msgType)
             {
                 case MamaMsgType.TYPE_DELETE:
+                    onError (subscription, mywombatStatus, myplatformError, "Message Type Delete", myException);
+                    return;
                 case MamaMsgType.TYPE_EXPIRE:
                     subscription.destroy();
                     mLatestMsg = null;

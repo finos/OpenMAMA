@@ -94,6 +94,8 @@ typedef enum
     MAMA_STATUS_INVALID_QUEUE               = 27,
      /* Not modifiable  */
     MAMA_STATUS_NOT_MODIFIABLE              = 28,
+     /* Message Type DELETE  */
+    MAMA_STATUS_DELETE                      = 29,
 	/* Not permissioned for the subject */
     MAMA_STATUS_NOT_PERMISSIONED			= 4001,
     /* Subscription is in an invalid state. */

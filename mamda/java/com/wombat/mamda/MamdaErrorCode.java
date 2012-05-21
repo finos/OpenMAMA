@@ -72,6 +72,9 @@ public class MamdaErrorCode
     /** Bandwidth exceeded */
     public static final short MAMDA_ERROR_BANDWIDTH_EXCEEDED = 14;
 
+    /** Message of type DELETE */
+    public static final short MAMDA_ERROR_DELETE = 17;
+
     public static final short MAMDA_ERROR_EXCEPTION = 999;
 
 
@@ -100,6 +103,7 @@ public class MamdaErrorCode
         case MAMDA_ERROR_TOPIC_CHANGE:       return "TOPIC_CHANGE";
         case MAMDA_ERROR_BANDWIDTH_EXCEEDED: return "BANDWIDTH_EXCEEDED";
         case MAMDA_ERROR_EXCEPTION:          return "EXCEPTION PROCESSING MESSAGE";
+        case MAMDA_ERROR_DELETE:          return "MESSAGE TYPE DELETE";
         default: return "UNKNOWN";
         }
     }
@@ -124,6 +128,7 @@ public class MamdaErrorCode
         case MamaMsgStatus.STATUS_TOPIC_CHANGE:         return MAMDA_ERROR_TOPIC_CHANGE;
         case MamaMsgStatus.STATUS_BANDWIDTH_EXCEEDED:   return MAMDA_ERROR_BANDWIDTH_EXCEEDED;
         case MamaMsgStatus.STATUS_EXCEPTION:            return MAMDA_ERROR_EXCEPTION;
+        case MamaMsgStatus.STATUS_DELETE:               return MAMDA_ERROR_DELETE;
         }
 
         return -1;
