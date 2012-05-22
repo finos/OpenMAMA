@@ -3776,9 +3776,6 @@ public class MamdaTradeListener implements MamdaMsgListener,
         if (MamdaTradeFields.ON_EXCHANGE_TRADE_PRICE != null)
             mUpdaters[i++] = new  OnExTradePrice();
 
-        if (MamdaTradeFields.IS_IRREGULAR != null)
-            mUpdaters[i++] = new  TradeIsIrregular();
-
         if (MamdaTradeFields.TRADE_UNITS != null)
             mUpdaters[i++] = new  TradeUnits();
 
@@ -3874,6 +3871,10 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
         if (MamdaTradeFields.UPDATE_AS_TRADE != null)
             mUpdaters[i++] = new  TradeUpdateAsTrade();
+
+        if (MamdaTradeFields.IS_IRREGULAR != null)
+            mUpdaters[i++] = new  TradeIsIrregular();
+
     }
 }
 
