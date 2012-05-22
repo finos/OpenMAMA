@@ -142,6 +142,7 @@ typedef struct mamaFtMemberImpl_
     mamaPublisher                  myPublisher;
     mamaTimer                      myHeartbeatTimer;
     mamaTimer                      myTimeoutTimer;
+    mama_u32_t                     myHeartbeatTick;
     mamaMsg                        myHeartbeatMsg;
     const char*                    myInstanceId;
     const char*                    mySymbol;
@@ -298,6 +299,7 @@ mamaFtMember_activate (
     mama_getIpAddress(&ipaddress);
     impl->myIP=inet_addr(ipaddress);
     impl->myNextIncarnation = 1;
+    impl->myHeartbeatTick = 0;
 
     /* Set up the heartbeat timeout timer. */
     status = startTimeoutTimer (impl);
@@ -405,6 +407,18 @@ mamaFtMember_getTimeoutInterval (
         return MAMA_STATUS_INVALID_ARG;
     *result = impl->myTimeoutInterval;
    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaFtMember_getHeartbeatTick (
+    const mamaFtMember  member,
+    mama_u32_t*         result)
+{
+    mamaFtMemberImpl* impl = (mamaFtMemberImpl*) member;
+    if (!impl || !result)
+        return MAMA_STATUS_INVALID_ARG;
+    *result = impl->myHeartbeatTick;
+    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -611,6 +625,7 @@ ftHeartbeatTimerCb (mamaTimer          timer,
 {
     mamaFtMemberImpl* impl = (mamaFtMemberImpl*)closure;
     mama_log (MAMA_LOG_LEVEL_FINE, "MAMA multicast FT: heartbeat timer has fired");
+    impl->myHeartbeatTick++;
     impl->ftSendHeartbeat (impl);
 }
 
@@ -833,6 +848,7 @@ multicastFt_setup (
         if (ftInterface == NULL)
             ftInterface = "";
     }
+    
     ftNetwork = multicastFt_getProperty (propertyName,
             "mama.multicast.transport.%s.network", transportName);
     if (ftNetwork == NULL)

@@ -156,6 +156,15 @@ mamaFtMember_getTimeoutInterval (
     mama_f64_t*         result);
 
 /**
+ * Get the current heartbeat tick of the MAMA FT member.
+ */
+MAMAExpDLL
+extern mama_status
+mamaFtMember_getHeartbeatTick (
+    const mamaFtMember  member,
+    mama_u32_t*         result);
+
+/**
  * Get the closure argument (provided in the mamaFtMember_create()
  * function) of the MAMA FT member.
  */
