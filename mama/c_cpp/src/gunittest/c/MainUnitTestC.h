@@ -25,4 +25,5 @@
 
 const char* getMiddleware (void);
 
+const char* getPayload (void);
 #endif /* MAINUNITTESTC_H_ */
