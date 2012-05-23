@@ -921,22 +921,24 @@ void MamaProxy::usage (int exitStatus)
 }
 
 MamaProxy::MamaProxy():
-    mPubBridge          (NULL),
-    mSubBridge          (NULL),
-    mPubMiddleware      ("wmw"),
-    mSubMiddleware      ("wmw"),
-    mPubDefaultQueue    (NULL),
-    mSubDefaultQueue    (NULL),
-    mPubTport           (NULL),
-    mSubTport           (NULL),
-    mQuietness          (0),
-    mFilename           (NULL),
-    mPubSource          ("MAMA_PROXY"),
-    mSubSource          (NULL),
-    sendSync            (false),
-    mPubTransport       (NULL),
-    mSubTransport       (NULL),
     mPubManager         (NULL),
-    mMamaLogLevel       (MAMA_LOG_LEVEL_WARN)
+    mPubTransport       (NULL),
+    mPubTport           (NULL),
+    mPubBridge          (NULL),
+    mPubMiddleware      ("wmw"),
+    mPubDefaultQueue    (NULL),
+    mPubSource          ("MAMA_PROXY"),
+    mSubTransport       (NULL),
+    mSubTport           (NULL),
+    mSubBridge          (NULL),
+    mSubMiddleware      ("wmw"),
+    mSubDefaultQueue    (NULL),
+    mSubSource          (NULL),
+    mFilename           (NULL),
+    sendSync            (false),
+    mQuietness          (0),
+    mMamaLogLevel       (MAMA_LOG_LEVEL_WARN),
+    managerCallback     (NULL),
+    syncTimer           (NULL)
 {}
 
