@@ -1000,8 +1000,8 @@ mama_logDefault2 (MamaLogLevel level,
         	fprintf (f, "(%x) : ", (unsigned int)wGetCurrentThreadId());
 		}
 
-		fprintf (f, message);        
-        fprintf (f, "\n");
+		fprintf (f, "%s", message);
+        fprintf (f, "%s", "\n");
         fflush (f);
     }
 
@@ -1221,4 +1221,17 @@ int mama_logDecrementVerbosity(MamaLogLevel* level)
     /* In case level does not match one of the enumerated types */
     *level = MAMA_LOG_LEVEL_FINEST;
     return 1;
+}
+
+mama_status mama_logForceRollLogFiles()
+{
+    mama_status ret = MAMA_STATUS_INVALID_ARG;
+    MRSW_RESULT	al = mamaLog_acquireLock(0);
+    if(MRSW_S_OK == al)
+	{
+        ret = mamaLog_rollLogFiles();
+		/* Release the read lock. */
+		MRSWLock_release(g_lock, 1);
+	}
+    return ret;
 }

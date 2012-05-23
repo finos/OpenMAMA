@@ -282,6 +282,15 @@ MAMAExpDLL
 extern int
 mama_logDecrementVerbosity(MamaLogLevel* level);
 
+/**
+ * Force rolling the log file.
+ * 
+ * @return The status of the operation.
+ */
+MAMAExpDLL
+extern mama_status
+mama_logForceRollLogFiles();
+
 /**  Destroy memory held by the logging */
 void
 mama_logDestroy(void);
