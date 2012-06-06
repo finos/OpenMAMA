@@ -1,0 +1,45 @@
+================================================================================
+                                OpenMAMA 2.1.1.2
+
+This release contains very minor fixes focusing on the build environment. The
+2.1.1.1 release, which introduced OpenMAMDA in addition to C++ and Java support,
+complicated the build environment significantly. These changes address some of
+the build issues encountered. Subsequent minor releases will attempt to further
+simplify the build process.
+
+Changes:
+
+Add patch for -lmama for news and orderbook examples
+
+  The news and orderbook examples were not building because the linker could
+  not find libmama. This patch adjusts the link flags to include the path to
+  the mama c libraries.
+
+  Signed-off-by: Mike Schonberg <mschonberg@nyx.com>
+
+Add libpthread to library list for sem_timedwait
+
+  configure.ac needs to search for sem_timedwait in both librt and libpthread. 
+  On OS's like certain Solaris versions that do not support sem_timedwait(), 
+  OpenMAMA provides an implentation.
+
+  Signed-off-by: Mike Schonberg <mschonberg@nyx.com>
+
+Updated Build Instructions
+
+  Added better download and build instructions for the Avis client and router.
+
+  For the OpenMAMA build it is necessary to specify --with-avis to build the
+  Avis bridge, and it is also necessary to invoke generateBuildFiles.sh prior
+  to building source from a cloned git repository.
+
+  Signed-off-by: Mike Schonberg <mschonberg@nyx.com>
+
+[mama] Adding .gitignore
+
+  This patch introduces a .gitignore file to force git to skip known build
+  artifacts when displaying status information.
+
+  Signed-off-by: Mark Spielman <mark.spielman@solacesystems.com>
+
+================================================================================
