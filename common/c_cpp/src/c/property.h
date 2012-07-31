@@ -1,7 +1,7 @@
 /* $Id: property.h,v 1.10.2.1.14.3 2011/08/10 14:53:24 nicholasmarriott Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

@@ -1,7 +1,7 @@
 /* $Id: msgfield.c,v 1.18.4.1.14.4 2011/08/18 10:54:08 ianbell Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

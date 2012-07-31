@@ -1,7 +1,7 @@
 /* $Id: reservedfields.c,v 1.23.12.2.4.5 2011/08/29 11:52:44 ianbell Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

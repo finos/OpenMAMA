@@ -1,7 +1,7 @@
 /* $Id: wUuid.c,v 1.1.2.3 2012/04/05 09:33:15 evinkeating Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

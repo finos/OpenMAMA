@@ -1,7 +1,7 @@
 /* $Id: avispayload.h,v 1.1.2.4 2011/09/15 17:33:26 ianbell Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

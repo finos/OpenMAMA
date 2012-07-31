@@ -1,7 +1,7 @@
 /* $Id: timezone.c,v 1.10.4.1.16.5 2011/10/02 19:02:17 ianbell Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

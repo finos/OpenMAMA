@@ -1,7 +1,7 @@
 /* $Id: msgtype.c,v 1.14.4.1.16.4 2011/08/10 14:53:25 nicholasmarriott Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
