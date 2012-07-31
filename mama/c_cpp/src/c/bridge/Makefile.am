@@ -1,7 +1,7 @@
 # $Id: Makefile.am,v 1.9.34.4 2011/09/26 10:19:26 emmapollock Exp $
 #
 # OpenMAMA: The open middleware agnostic messaging API
-# Copyright (C) 2011 NYSE Inc.
+# Copyright (C) 2011 NYSE Technologies, Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public

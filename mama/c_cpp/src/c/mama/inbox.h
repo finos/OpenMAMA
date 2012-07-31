@@ -1,7 +1,7 @@
 /* $Id: inbox.h,v 1.8.14.1.2.1.4.4 2011/09/01 16:34:38 emmapollock Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

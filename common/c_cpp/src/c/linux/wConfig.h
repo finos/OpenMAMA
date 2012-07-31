@@ -1,7 +1,7 @@
 /* $Id: wConfig.h,v 1.1.2.1 2012/02/22 01:20:51 mikeschonberg Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

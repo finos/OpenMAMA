@@ -1,7 +1,7 @@
 /* $Id: queue.c,v 1.35.4.5.2.1.4.11 2011/09/27 12:38:50 ianbell Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public

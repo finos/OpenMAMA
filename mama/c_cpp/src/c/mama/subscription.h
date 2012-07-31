@@ -1,7 +1,7 @@
 /* $Id: subscription.h,v 1.47.4.3.2.4.4.5 2011/10/02 19:02:18 ianbell Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
+ * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
