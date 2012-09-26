@@ -47,6 +47,7 @@ typedef enum mamaPayloadType_
     MAMA_PAYLOAD_FAST       = 'F',
     MAMA_PAYLOAD_V5         = '5',
     MAMA_PAYLOAD_AVIS       = 'A',
+    MAMA_PAYLOAD_TICK42BLP  = 'B',
     MAMA_PAYLOAD_UNKNOWN    = 'U'
 } mamaPayloadType;
 

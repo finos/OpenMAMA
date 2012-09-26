@@ -371,6 +371,9 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "V5";
         case MAMA_PAYLOAD_AVIS:
             return "AVIS";
+        case MAMA_PAYLOAD_TICK42BLP:
+            return "TICK42BLP";
+
         default:
             return "unknown";
     }
