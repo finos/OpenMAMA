@@ -44,6 +44,8 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "tick42blp") == 0)
         return MAMA_MIDDLEWARE_TICK42BLP;
 
+    if (strcasecmp (str, "solace") == 0)
+        return MAMA_MIDDLEWARE_SOLACE;
 
 
     return MAMA_MIDDLEWARE_UNKNOWN;
@@ -65,7 +67,8 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "AVIS";
         case MAMA_MIDDLEWARE_TICK42BLP:
             return "tick42blp";
-
+        case MAMA_MIDDLEWARE_SOLACE:
+            return "SOLACE";
         default:
             return "unknown";
     }

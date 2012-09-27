@@ -38,7 +38,8 @@ typedef enum mamaMiddleware_
     MAMA_MIDDLEWARE_TIBRV   = 2,
     MAMA_MIDDLEWARE_AVIS    = 3,
     MAMA_MIDDLEWARE_TICK42BLP = 4,
-    MAMA_MIDDLEWARE_MAX     = 5,
+    MAMA_MIDDLEWARE_SOLACE  = 5,
+    MAMA_MIDDLEWARE_MAX     = 6,
     MAMA_MIDDLEWARE_UNKNOWN = 99
 } mamaMiddleware;
 
