@@ -50,6 +50,9 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "rai") == 0)
         return MAMA_MIDDLEWARE_RAI;
 
+    if (strcasecmp (str, "qpid") == 0)
+        return MAMA_MIDDLEWARE_QPID;
+
 
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
@@ -74,6 +77,8 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "SOLACE";
         case MAMA_MIDDLEWARE_RAI:
             return "rai";
+        case MAMA_MIDDLEWARE_QPID:
+            return "QPID";
         default:
             return "unknown";
     }
