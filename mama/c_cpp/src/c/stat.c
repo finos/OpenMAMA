@@ -1,4 +1,4 @@
-/* $Id: stat.c,v 1.8.22.5 2011/09/21 13:47:45 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

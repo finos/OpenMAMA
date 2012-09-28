@@ -1,5 +1,5 @@
 
-/* $Id: msg.c,v 1.86.4.5.2.1.4.23 2011/10/02 19:02:17 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

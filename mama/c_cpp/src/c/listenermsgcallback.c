@@ -1,4 +1,4 @@
-/* $Id: listenermsgcallback.c,v 1.62.4.1.14.6 2011/09/01 09:41:02 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

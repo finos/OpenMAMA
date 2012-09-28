@@ -1,4 +1,4 @@
-/* $Id: bridge.c,v 1.8.12.1.4.4 2011/09/07 11:01:05 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

@@ -1,4 +1,4 @@
-/* $Id: clientmanageresponder.c,v 1.13.4.1.6.1.2.5 2011/10/10 16:03:18 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

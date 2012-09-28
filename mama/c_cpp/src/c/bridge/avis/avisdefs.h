@@ -1,4 +1,4 @@
-/* $Id: avisdefs.h,v 1.1.2.7 2011/09/16 19:42:31 billtorpey Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

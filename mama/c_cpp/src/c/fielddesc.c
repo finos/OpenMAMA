@@ -1,4 +1,4 @@
-/* $Id: fielddesc.c,v 1.17.14.1.16.3 2011/08/10 14:53:25 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

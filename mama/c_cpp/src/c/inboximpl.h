@@ -1,4 +1,4 @@
-/* $Id: inboximpl.h,v 1.3.14.1.8.2 2011/08/10 14:53:25 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

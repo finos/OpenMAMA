@@ -1,4 +1,4 @@
-/* $Id: mamachurnc.c,v 1.1.2.3 2011/09/28 15:21:06 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

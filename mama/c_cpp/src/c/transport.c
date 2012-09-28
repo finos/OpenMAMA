@@ -1,4 +1,4 @@
-/* $Id: transport.c,v 1.79.4.6.2.2.2.8 2011/10/02 19:02:17 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

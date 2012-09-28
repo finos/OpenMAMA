@@ -1,4 +1,4 @@
-/* $Id: statsgenerator.c,v 1.8.20.5 2011/08/18 10:54:08 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

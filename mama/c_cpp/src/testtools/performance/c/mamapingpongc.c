@@ -1,4 +1,4 @@
-/* $Id: mamapingpongc.c,v 1.1.2.3 2011/09/29 17:56:53 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

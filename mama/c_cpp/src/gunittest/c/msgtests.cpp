@@ -1,4 +1,4 @@
-/* $Id: msgtests.cpp,v 1.1.2.4 2011/09/16 16:20:11 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

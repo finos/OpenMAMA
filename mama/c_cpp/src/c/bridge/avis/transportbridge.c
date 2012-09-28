@@ -1,4 +1,4 @@
-/* $Id: transportbridge.c,v 1.1.2.6 2011/09/27 11:39:48 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

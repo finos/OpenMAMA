@@ -1,4 +1,4 @@
-/* $Id: mamaio.c,v 1.1.2.2 2011/09/27 16:54:39 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

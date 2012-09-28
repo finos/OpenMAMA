@@ -1,4 +1,4 @@
-/* $Id: mamainternal.h,v 1.16.22.6 2011/08/18 10:54:08 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

@@ -1,4 +1,4 @@
-/* $Id: subscriptiontest.cpp,v 1.1.2.1.8.2 2012/04/19 13:46:49 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

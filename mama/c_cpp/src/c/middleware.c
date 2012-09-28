@@ -1,4 +1,4 @@
-/* $Id: middleware.c,v 1.2.32.4 2011/08/22 16:28:26 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

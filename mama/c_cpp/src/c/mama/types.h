@@ -1,4 +1,4 @@
-/* $Id: types.h,v 1.46.22.7 2011/08/22 16:28:27 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

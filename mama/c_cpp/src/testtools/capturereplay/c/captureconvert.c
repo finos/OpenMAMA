@@ -1,4 +1,4 @@
-/* $Id: captureconvert.c,v 1.1.2.2 2011/10/02 19:04:28 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

@@ -1,4 +1,4 @@
-/* $Id: manager_int.h,v 1.1.2.3 2011/09/01 16:34:38 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

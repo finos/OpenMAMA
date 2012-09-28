@@ -1,4 +1,4 @@
-/* $Id: transportimpl.h,v 1.22.4.2.2.1.4.5 2011/09/01 16:34:38 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

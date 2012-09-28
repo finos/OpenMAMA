@@ -1,4 +1,4 @@
-/* $Id: subscription.c,v 1.152.4.15.2.8.2.10 2011/10/10 16:03:18 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

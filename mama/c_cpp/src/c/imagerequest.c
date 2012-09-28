@@ -1,4 +1,4 @@
-/* $Id: imagerequest.c,v 1.67.4.1.2.4.4.4 2011/08/10 14:53:25 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

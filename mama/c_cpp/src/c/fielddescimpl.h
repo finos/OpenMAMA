@@ -1,4 +1,4 @@
-/* $Id: fielddescimpl.h,v 1.2.2.2.16.4 2011/09/01 16:34:37 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

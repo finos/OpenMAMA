@@ -1,4 +1,4 @@
-/* $Id: publisherimpl.h,v 1.1.22.1.4.3 2011/08/10 14:53:25 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

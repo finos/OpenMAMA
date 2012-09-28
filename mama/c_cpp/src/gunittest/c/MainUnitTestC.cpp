@@ -1,4 +1,4 @@
-/* $Id: MainUnitTestC.cpp,v 1.2.22.2.16.1 2012/04/17 10:52:12 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

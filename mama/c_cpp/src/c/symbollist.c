@@ -1,4 +1,4 @@
-/* $Id: symbollist.c,v 1.15.24.4 2011/09/01 09:41:03 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
