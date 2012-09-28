@@ -286,12 +286,14 @@ mamaInternal_loadProperties (const char *path,
 
     /* We've got file properties, so we need to merge 'em into
      * anything we've already gotten */
-    properties_Merge( gProperties, fileProperties );
+    properties_Merge( fileProperties, gProperties );
 
     /* Free the file properties, note that FreeEx2 is called to ensure that the data
      * isn't freed as the pointers have been copied over to gProperties.
      */
-    properties_FreeEx2(fileProperties);
+    properties_FreeEx2(gProperties);
+    
+   gProperties =  fileProperties;
 }
 
 static int mamaInternal_statsPublishingEnabled ()
@@ -1067,12 +1069,14 @@ mama_setPropertiesFromFile (const char *path,
 
     /* We've got file properties, so we need to merge 'em into
      * anything we've already gotten */
-    properties_Merge( gProperties, fileProperties );
+    properties_Merge( fileProperties, gProperties );
 
     /* Free the file properties, note that FreeEx2 is called to ensure that the data
      * isn't freed as the pointers have been copied over to gProperties.
      */
-    properties_FreeEx2(fileProperties);
+    properties_FreeEx2(gProperties);
+    
+    gProperties = fileProperties;
 
     return MAMA_STATUS_OK;
 }
