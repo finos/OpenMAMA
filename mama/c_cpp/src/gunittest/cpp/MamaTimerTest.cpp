@@ -130,7 +130,7 @@ void MamaTimerTestCPP::OnForRecursiveTick::onTimer(MamaTimer* timer)
 void MamaTimerTestCPP::OnForRecursiveTick::onDestroy(MamaTimer* timer, void * closure)
 {
     // Cast the closure to a test fixture
-    printf("in recursive onDestroy\n");
+    //printf("in recursive onDestroy\n");
     MamaTimerTestCPP *fixture = (MamaTimerTestCPP *)closure;
 
     // Increment the number of times this function has been called
@@ -150,14 +150,14 @@ void MamaTimerTestCPP::OnForRecursiveTick::onDestroy(MamaTimer* timer, void * cl
 
 void MamaTimerTestCPP::OnForTwoTimerTick::onTimer(MamaTimer* timer)
 {
-    printf("on timer tick\n");
+    //printf("on timer tick\n");
 
 }
 
 void MamaTimerTestCPP::OnForTwoTimerTick::onDestroy(MamaTimer* timer, void * closure)
 {
     // Cast the closure to a test fixture
-    printf("in TwoTick onDestroy\n");
+    //printf("in TwoTick onDestroy\n");
 }
 
 /* ************************************************************************* */
@@ -173,12 +173,12 @@ TEST_F(MamaTimerTestCPP, ForTimer)
     MamaTimerTestCPP::OnForTimerTick timerCb;
     for(int counter=0; counter<m_numberForTimers; counter++)
     {
-        printf("Creating new timer\n");
+        //printf("Creating new timer\n");
         m_timerInterval = (counter + 1)/100;
         mtarray[counter].create(m_defaultQueue, &timerCb, m_timerInterval, m_this);
     }
     Mama::start(m_bridge);
-    printf("Timers started\n");
+    //printf("Timers started\n");
  
 }    
 

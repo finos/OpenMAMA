@@ -23,7 +23,7 @@ VPATH  = @srcdir@
 blddir=@builddir@
 
 if USE_GCC_FLAGS
-CFLAGS   += -pedantic -Wno-long-long -O2 -pthread -fPIC
+CFLAGS   += -std=gnu99 -pedantic -Wno-long-long -O2 -pthread -fPIC
 CPPFLAGS += -pedantic -Wno-long-long -O2 -pthread -fPIC
 endif
 
@@ -38,9 +38,9 @@ LDADD = -lgtest_main -ldl
 
 
 #if WITH_UNITTESTS
-bin_PROGRAMS = MainUnitTestCPP
+bin_PROGRAMS = UnitTestMamaCPP
 
-nodist_MainUnitTestCPP_SOURCES =  MainUnitTestCpp.cpp \
+nodist_UnitTestMamaCPP_SOURCES =  MainUnitTestCpp.cpp \
     MamaDateTimeTest.cpp \
     MamaOpenCloseTest.cpp \
     MamaPriceTest.cpp \

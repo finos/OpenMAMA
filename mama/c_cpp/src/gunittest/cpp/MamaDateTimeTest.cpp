@@ -99,7 +99,7 @@ TEST_F(MamaDateTimeTest, CompareDates)
 	// Get the string representation of the data
 	char stringDate[100] = "";
 	//ASSERT_EQ(mamaDateTime_getAsFormattedString(today, stringDate, 100, "%Y-%m-%d"), MAMA_STATUS_OK);
-    today->getAsFormattedString(stringDate, 100, "%Y-%m-\%\d");
+    today->getAsFormattedString(stringDate, 100, "%Y-%m-%d");
 
 	// Destroy the date
 	//ASSERT_EQ(mamaDateTime_destroy(today), MAMA_STATUS_OK);

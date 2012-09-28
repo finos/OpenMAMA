@@ -792,7 +792,7 @@ TEST_F(MamaSubscriptionTest, BasicSubscription)
             // Create the subscription
             //basicSubscription->createBasic(m_transport, queue, testCallback, "CTA_3.IBM");
             basicSubscription->createBasic(&m_transport, queue, testCallback, "JGRAY");
-            printf("subscription created for JGRAY-  start dispatching thread on default queue\n");
+            //printf("subscription created for JGRAY-  start dispatching thread on default queue\n");
             // Process messages until the first message is received
             
             Mama::start(m_bridge);
