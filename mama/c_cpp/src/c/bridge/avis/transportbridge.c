@@ -40,10 +40,10 @@
 
 #define avisTransport(transport) ((avisTransportBridge*) transport)
 #define CHECK_TRANSPORT(transport) \
-   do {  \
-      if (avisTransport(transport) == 0) return MAMA_STATUS_NULL_ARG; \
-      if (avisTransport(transport)->mAvis == 0) return MAMA_STATUS_INVALID_ARG;\
-    } while(0)
+        do {  \
+           if (avisTransport(transport) == 0) return MAMA_STATUS_NULL_ARG; \
+           if (avisTransport(transport)->mAvis == 0) return MAMA_STATUS_INVALID_ARG; \
+         } while(0)
 
 
 
@@ -103,6 +103,7 @@ getURL( const char *name )
     int len = 0;
     char* buff = NULL;
     const char* property = NULL;
+    
     if (name == NULL)
         return NULL;
 
@@ -150,6 +151,7 @@ mama_status avisTransportBridge_start(avisTransportBridge* transportBridge)
    /* stop Avis event loop */
    wthread_t tid;
    int rc;
+   
    CHECK_TRANSPORT(transportBridge); 
 
    rc = wthread_create(&tid, NULL, avisDispatchThread, transportBridge);
@@ -228,7 +230,7 @@ avisBridgeMamaTransport_create (transportBridge* result,
     mamaBridgeImpl*      bridgeImpl = NULL;
     const char*          url        = NULL; 
     
-    transport = (avisTransportBridge*)calloc( 1, sizeof( avisTransportBridge ));
+    transport = (avisTransportBridge*)calloc( 1, sizeof( avisTransportBridge ) );
     if (transport == NULL)
         return MAMA_STATUS_NOMEM;
 
@@ -252,6 +254,7 @@ avisBridgeMamaTransport_create (transportBridge* result,
         free(transport);
         return status;
     }
+
     if (avisBridge->mTransportBridge != NULL) 
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, 
@@ -331,7 +334,6 @@ avisBridgeMamaTransport_destroy (transportBridge transport)
     avisBridge->mTransportBridge = NULL;
     return MAMA_STATUS_OK;
 }
-
 
 int
 avisBridgeMamaTransport_isValid (transportBridge transport)

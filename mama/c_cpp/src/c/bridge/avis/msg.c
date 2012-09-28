@@ -134,8 +134,8 @@ avisBridgeMamaMsg_isFromInbox (msgBridge msg)
 
 mama_status
 avisBridgeMamaMsg_setSendSubject (msgBridge   msg,
-                                   const char* symbol,
-                                   const char* subject)
+                                  const char* symbol,
+                                  const char* subject)
 {
     mama_status status = MAMA_STATUS_OK;
     CHECK_MSG(msg);
@@ -165,6 +165,7 @@ avisBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
 {
     const char* replyAddr;
     mama_status status = MAMA_STATUS_OK;
+
     CHECK_MSG(msg);
     if (MAMA_STATUS_OK != (status = mamaMsg_getString(avisMsg(msg)->mParent, INBOX_FIELD_NAME, 0, &replyAddr))) {
         return status;

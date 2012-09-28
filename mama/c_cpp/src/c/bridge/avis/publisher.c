@@ -71,6 +71,7 @@ avisBridgeMamaPublisher_createByIndex (publisherBridge* result,
     avisPublisherBridge* publisher = NULL;
 
     if (!result || !tport) return MAMA_STATUS_NULL_ARG;
+
     CHECK_AVIS(avis);
 
     *result = NULL;
@@ -176,10 +177,10 @@ avisBridgeMamaPublisher_sendReplyToInbox (publisherBridge  publisher,
                                            mamaMsg          request,
                                            mamaMsg          reply)
 {
-    Attributes* requestMsg = NULL;
-    Attributes* replyMsg = NULL;
+    Attributes*  requestMsg = NULL;
+    Attributes*  replyMsg   = NULL;
     const char*  replyAddr  = NULL;
-    mama_size_t        dataLen;
+    mama_size_t  dataLen;
     mama_status  status;
     
     CHECK_PUBLISHER(publisher);
@@ -230,7 +231,8 @@ avisBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge publisher,
 {
     const char* replyAddr = NULL;
     mama_status status;
-  //  CHECK_PUBLISHER(publisher);
+
+    //  CHECK_PUBLISHER(publisher);
     if (avisPublisher(publisher) == 0)
     	return MAMA_STATUS_NULL_ARG;
     if (avisPublisher(publisher)->mAvis == 0)
@@ -264,6 +266,7 @@ avisBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge publisher,
                                                mamaMsg         reply)
 {
     mama_status status;
+
     CHECK_PUBLISHER(publisher);
 
     status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, (const char*) inbox);
