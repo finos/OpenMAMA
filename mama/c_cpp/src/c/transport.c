@@ -1549,7 +1549,8 @@ mamaTransport_addSubscription (mamaTransport    transport,
 
     if (self->mRefreshTransport)
         handle = refreshTransport_allocateSubscInfo (self->mRefreshTransport);
-
+    else
+        handle = (SubscriptionInfo*)list_allocate_element (self->mListeners);
     if (handle == NULL) return MAMA_STATUS_NOMEM;
 
     handle->mSubscription = subscription;
@@ -1558,6 +1559,8 @@ mamaTransport_addSubscription (mamaTransport    transport,
 
     if (self->mRefreshTransport)
         refreshTransport_addSubscription (self->mRefreshTransport, handle);
+    else
+        list_push_back (self->mListeners, handle);    
 
     return MAMA_STATUS_OK;
 }
@@ -1572,7 +1575,11 @@ mamaTransport_removeListener (mamaTransport transport,  void* handle)
     {
         refreshTransport_removeListener (self->mRefreshTransport, handle, 1);
     }
-
+    else
+    {
+        list_remove_element (self->mListeners, handle);
+        list_free_element (self->mListeners, handle);
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -1688,6 +1695,10 @@ setPossiblyStaleForListeners (transportImpl* transport)
     {
         refreshTransport_iterateListeners (self->mRefreshTransport,
                                       setStaleListenerIterator, NULL);
+    }
+    else
+    {
+        list_for_each (self->mListeners, setStaleListenerIterator, NULL);
     }
 }
 
@@ -1831,6 +1842,8 @@ mamaTransportImpl_getTopicsAndTypesForSource (mamaTransport transport,
      */
     if (self->mRefreshTransport)
         size = refreshTransport_numListeners (self->mRefreshTransport);
+    else
+        size = list_size (self->mListeners); 
 
     closure.topics =
         (const char**) calloc (sizeof (char*), size);
@@ -1847,7 +1860,10 @@ mamaTransportImpl_getTopicsAndTypesForSource (mamaTransport transport,
         refreshTransport_iterateListeners (self->mRefreshTransport,
                                       topicsForSourceIterator, &closure);
     }
-
+    else
+    {
+        list_for_each (self->mListeners, topicsForSourceIterator, &closure);
+    }
     *topics = closure.topics;
     *types  = closure.types;
     *len = closure.curIdx;
@@ -2488,6 +2504,10 @@ void mamaTransportImpl_clearTransportWithListeners (transportImpl *impl)
     {
         refreshTransport_iterateListeners (impl->mRefreshTransport,
                 mamaTransportImpl_clearTransportCallback, NULL);
+    }
+    else
+    {
+        list_for_each (impl->mListeners, mamaTransportImpl_clearTransportCallback, NULL);
     }
 }
 
