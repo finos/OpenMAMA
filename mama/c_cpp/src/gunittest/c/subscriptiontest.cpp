@@ -156,13 +156,12 @@ TEST_F(MamaSubscriptionTest, BasicSubscription)
         mamaSource_setId(testSource, "TestSource");
         mamaSource_setTransport(testSource, m_transport);
         mamaSource_setSymbolNamespace(testSource, "WOMBAT");
-        printf("Note: as there is no real source, this test should hang\n");
+        //printf("Note: as there is no real source, this test should hang\n");
 
         // Create the subscription
         ASSERT_EQ(  MAMA_STATUS_OK, 
             mamaSubscription_create(subscription, m_defaultQueue, &simpleCallback, testSource, "TEST_SYMBOL", m_this));
         
-        mama_start(m_bridge);
 
         // Destroy the subscription
         ASSERT_EQ(MAMA_STATUS_OK, mamaSubscription_destroy(subscription));

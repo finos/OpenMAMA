@@ -21,6 +21,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <gtest/gtest.h>
+#include <mama/mama.h>
+#include <mama/status.h>
 #include <string>
 
 #ifndef WOMBAT_CONFIG_NO_NAMESPACES
