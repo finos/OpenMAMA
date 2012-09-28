@@ -83,6 +83,7 @@ mamaBridgeImpl_getInternalEventQueue (mamaBridge bridgeImpl, mamaQueue* internal
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
+	wlock_lock (impl->mLock);
     if (!impl->mInternalEventQueue)
     {
         if (MAMA_STATUS_OK != mamaQueue_create (&impl->mInternalEventQueue,
@@ -101,6 +102,7 @@ mamaBridgeImpl_getInternalEventQueue (mamaBridge bridgeImpl, mamaQueue* internal
             return MAMA_STATUS_NO_BRIDGE_IMPL;
         }
     }
+    wlock_unlock (impl->mLock);
     
     *internalQueue = impl->mInternalEventQueue;
     return MAMA_STATUS_OK;

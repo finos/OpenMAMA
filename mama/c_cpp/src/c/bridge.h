@@ -28,6 +28,7 @@
 #include "mama/subscmsgtype.h"
 #include "mamainternal.h"
 #include "conflation/manager_int.h"
+#include "wlock.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -71,6 +72,7 @@ do                                                                             \
 {                                                                              \
     bridgeImpl->mClosure            =   NULL;                                  \
     bridgeImpl->mNativeMsgBridge    =   NULL;                                  \
+    bridgeImpl->mLock               =   wlock_create();                        \
     /*mama.c function pointers*/                                               \
     bridgeImpl->bridgeOpen          =   implIdentifier ## Bridge_open;         \
     bridgeImpl->bridgeClose         =   implIdentifier ## Bridge_close;        \
@@ -701,6 +703,7 @@ typedef struct mamaBridgeImpl
 
     /*Associate arbitrary data with a bridge impl. Needed for the C++ wrapper*/
     void*     mClosure;
+    wLock     mLock;
 
     /* The set of methods used to access/populate a message in native format */
     mamaPayloadBridge mNativeMsgBridge;
