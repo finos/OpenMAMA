@@ -30,6 +30,7 @@
 #elif (_MSC_VER >= 1400 && _MSC_VER < 1400)
 #define VC7
 #endif
+
 #ifndef VC7
 
 #ifdef VC8

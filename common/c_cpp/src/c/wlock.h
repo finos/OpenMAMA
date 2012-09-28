@@ -27,12 +27,14 @@
 #if defined (__cplusplus)
 extern "C" {
 #endif
+
 typedef void * wLock;
 
 COMMONExpDLL wLock    wlock_create( void );
 COMMONExpDLL void     wlock_destroy( wLock lock );
 COMMONExpDLL void     wlock_lock( wLock lock );
 COMMONExpDLL void     wlock_unlock( wLock lock );
+
 #if defined (__cplusplus)
 }
 #endif

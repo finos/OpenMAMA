@@ -1,4 +1,4 @@
-/* $Id$
+/* $Id$ */
 
 /*
  * This file contains a hash alogorith by Bob Jenkins. It is used unchanged,

@@ -32,7 +32,6 @@ int gettimeofday( struct timeval *result, void *dummy )
     return 0;
 }
 
-
 typedef struct
 {
     HANDLE mThread;

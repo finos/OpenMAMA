@@ -25,11 +25,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 
 lib_LTLIBRARIES = libwombatcommon.la
 
-CFLAGS   += -std=gnu99 -Wall \
-        -Wno-long-long -Wno-unused-parameter -Wdeclaration-after-statement
-CXXFLAGS += -Wall \
-        -Wno-long-long -Wno-unused-parameter -Wno-write-strings
-
 nobase_include_HEADERS = \
     destroyHandle.h \
     list.h \
@@ -54,7 +49,8 @@ nobase_include_HEADERS = \
     wombat/wUuid.h
 
 if USE_GCC_FLAGS
-CPPFLAGS += -pedantic -Wno-long-long -D_GNU_SOURCE -fPIC 
+CFLAGS   += -std=gnu99 -fPIC -pedantic-errors -Wmissing-prototypes -Wstrict-prototypes
+CPPFLAGS += -fPIC -pedantic-errors -Wno-long-long -D_GNU_SOURCE
 endif
 
 LIBS     += -ldl -luuid

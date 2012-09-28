@@ -1,4 +1,4 @@
-/* $Id$
+/* $Id$ */
 
 /*
  * This file contains header info for the hash alogorith by Bob Jenkins.

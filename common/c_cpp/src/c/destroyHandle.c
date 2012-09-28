@@ -38,7 +38,7 @@
  *
  * @param[in] handle The destroy handle.
  */
-void destroyHandle_freeHandle(pDestroyHandle handle)
+static void destroyHandle_freeHandle(pDestroyHandle handle)
 {
 	if(NULL != handle)
 	{

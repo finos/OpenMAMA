@@ -81,9 +81,7 @@ int createTimerHeap (timerHeap* heap)
     /* Need to make the lock recursive as it should be possible to remove timers
        in the call back */
     wthread_mutex_init (&heapImpl->mLock, &attr);
-
     wthread_mutex_init (&heapImpl->mEndingLock, NULL);
-  
     wthread_cond_init  (&heapImpl->mEndingCond, NULL);
 
     RB_INIT (&heapImpl->mTimeTree);
@@ -101,7 +99,7 @@ int createTimerHeap (timerHeap* heap)
     return 0;
 }
 
-void* dispatchEntry (void *closure)
+static void* dispatchEntry (void *closure)
 {
     timerHeapImpl* heap = (timerHeapImpl*)closure;
     fd_set wakeUpDes;
