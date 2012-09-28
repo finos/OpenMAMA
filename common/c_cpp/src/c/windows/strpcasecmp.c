@@ -10,7 +10,7 @@
 // or the GNU Library General Public License (LGPL) version 2 or later 
 // <http://www.gnu.org/copyleft/lgpl.html>
 //
-// $Id: strpcasecmp.c,v 1.1.2.1 2012/03/15 11:02:57 evinkeating Exp $
+// $Id$
 //
 
 //#ifdef HAVE_CONFIG_H

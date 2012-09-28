@@ -1,4 +1,4 @@
-/* $Id: destroyHandle.c,v 1.1.2.3.4.2 2011/08/10 14:53:23 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

@@ -1,4 +1,4 @@
-/* $Id: queue.h,v 1.1.28.4 2011/08/31 16:33:53 mikeschonberg Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

@@ -1,4 +1,4 @@
-/* $Id: lookup2.h,v 1.1.34.2 2011/08/10 13:06:53 nicholasmarriott Exp $ */
+/* $Id$
 
 /*
  * This file contains header info for the hash alogorith by Bob Jenkins.

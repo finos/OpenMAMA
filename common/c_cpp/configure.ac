@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.15.2.2.6.2 2011/09/21 18:39:23 emmapollock Exp $
+# $Id$
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Technologies, Inc.

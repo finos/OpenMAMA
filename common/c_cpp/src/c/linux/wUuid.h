@@ -1,4 +1,4 @@
-/* $Id: wUuid.h,v 1.1.2.4.2.1 2012/04/17 10:52:12 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
