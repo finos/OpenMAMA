@@ -154,7 +154,7 @@ handleFTTakeover (dqStrategy        strategy,
 
     if (recoverOnRecap)
     {
-        ctx->mSeqNum = senderId;
+        ctx->mSeqNum = seqNum;
         ctx->mDQState = DQ_STATE_WAITING_FOR_RECAP_AFTER_FT;
     }
     else
@@ -219,6 +219,7 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
         }
         if (DQ_FT_WAIT_FOR_RECAP==mamaTransportImpl_getFtStrategyScheme(tport))
         {
+            ctx->mDoNotForward = 1;
             handleFTTakeover (strategy, msg, msgType, ctx, seqNum, senderId, 1);
         }
         else
@@ -227,12 +228,12 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
         }
     }
 
-    if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINER)
+    if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST)
     {
         const char*  symbol = NULL;
         mamaSubscription_getSymbol (subscription, &symbol);
         symbol = symbol == NULL ? "" : symbol;
-        mama_log (MAMA_LOG_LEVEL_FINER, 
+        mama_log (MAMA_LOG_LEVEL_FINEST,
                   "dqStrategy_checkSeqNum(): %s : seq# %ld",
                   symbol, 
                   seqNum);
@@ -276,14 +277,16 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
             /* If the sequence numbers for a message are correct then the
                subscription is OK. */
                 
-        msgStatus = mamaMsgStatus_statusForMsg (msg);
-        /* Check the status of the message.  If it is stale,
-           do not request a recap and do not set status OK. */
-        if (msgStatus == MAMA_MSG_STATUS_OK) 
-            resetDqState (strategy, ctx);
+            msgStatus = mamaMsgStatus_statusForMsg (msg);
+            /* Check the status of the message.  If it is stale,
+               do not request a recap and do not set status OK. */
+            if (msgStatus == MAMA_MSG_STATUS_OK) 
+		    {
+                resetDqState (strategy, ctx);
 
-            ctx->mSeqNum = seqNum; 
-            return MAMA_STATUS_OK;
+                ctx->mSeqNum = seqNum; 
+                return MAMA_STATUS_OK;
+            }
         }
 
         /* For late joins or middlewares that support a publish cache, it is possible that you will get old updates
@@ -384,6 +387,7 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
         mamaSubscription_unsetAllPossiblyStale (subscription);
         resetDqState (strategy, ctx);
         dqStrategyImpl_resetDqContext (ctx, seqNum, senderId);
+        ctx->mDoNotForward = 0;
         return MAMA_STATUS_OK;
     case MAMA_MSG_TYPE_DDICT_SNAPSHOT : /*No DQ checking for Datadictionary*/
         return MAMA_STATUS_OK;
