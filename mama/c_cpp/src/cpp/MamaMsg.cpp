@@ -2474,6 +2474,11 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         return (mMsgField);
     }
 
+    MamaMsgField* MamaMsgIterator::operator->()
+    {
+        return &mMsgField;
+    }
+
     MamaMsgIterator& MamaMsgIterator::operator++()
     {
         mMsgField.set (mamaMsgIterator_next((mamaMsgIterator)myImpl));

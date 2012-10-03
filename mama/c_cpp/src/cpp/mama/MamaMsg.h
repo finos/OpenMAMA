@@ -65,6 +65,7 @@ namespace Wombat
         bool operator!=(const MamaMsgIterator&) const;
 
         MamaMsgField&    operator*();
+        MamaMsgField*    operator->();
         MamaMsgIterator& operator++();
 
     protected:
