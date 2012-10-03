@@ -169,6 +169,7 @@ typedef struct transportImpl_
     uint8_t                 mInternal;
     uint8_t                 mDisableDisconnectCb;
     preInitialScheme         mPreInitialScheme;
+    void*                   mClosure;
 } transportImpl;
 
 static mama_status
@@ -186,6 +187,7 @@ init (transportImpl* transport, int createResponder)
     self->mDQStratScheme    = DQ_SCHEME_DELIVER_ALL;
     self->mFTStratScheme    = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
 
+    self->mClosure          = NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINEST,
              "%screating CmResponder for transport [%s]",
@@ -2466,6 +2468,26 @@ void mamaTransportImpl_invokeTransportCallback (mamaTransport transport,
     }
 }
 
+mama_status
+mamaTransport_setClosure (mamaTransport transport, void* closure)
+{
+    if (!self) return MAMA_STATUS_NULL_ARG;
+
+    self->mClosure = closure;
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaTransport_getClosure (mamaTransport transport, void** closure)
+{
+    if ((!self) || (!closure)) 
+        return MAMA_STATUS_NULL_ARG;
+
+    *closure = self->mClosure;
+
+    return MAMA_STATUS_OK;
+}
 /* *************************************************** */
 /* Private Functions. */
 /* *************************************************** */

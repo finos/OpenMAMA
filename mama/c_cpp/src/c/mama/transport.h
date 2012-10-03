@@ -600,6 +600,28 @@ MAMAExpDLL
 extern mamaStatsCollector*
 mamaTransport_getStatsCollector (mamaTransport transport);
 
+/**
+ * Return the closure.
+ * 
+ * @param transport The transport.
+ * @param closure holds the result.
+ */
+MAMAExpDLL
+extern mama_status
+mamaTransport_getClosure (mamaTransport transport,
+                          void**        closure);
+
+/**
+ * Set a closure.
+ * 
+ * @param transport The transport.
+ * @param closure holds the closure to be added.
+ */
+MAMAExpDLL
+extern mama_status 
+mamaTransport_setClosure (mamaTransport transport,
+                          void*         closure);
+
 #if defined(__cplusplus)
 }
 #endif
