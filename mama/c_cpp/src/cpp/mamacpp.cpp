@@ -60,7 +60,7 @@ namespace Wombat
     void Mama::open()
     {
         // Open MAMA
-        mama_status status = mamaTry (mama_open ());
+        mamaTry (mama_open ());
 
         MamaReservedFields::initReservedFields();
     }
@@ -69,7 +69,7 @@ namespace Wombat
                      const char* filename)
     {
         // Open MAMA
-        mama_status status = mamaTry (mama_openWithProperties (path, filename));
+        mamaTry (mama_openWithProperties (path, filename));
 
         MamaReservedFields::initReservedFields();
     }

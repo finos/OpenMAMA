@@ -103,8 +103,8 @@ LDFLAGS +=  -I@srcdir@/../c \
 			-L@builddir@/../c
 
 if USE_GCC_FLAGS
-CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes
-CPPFLAGS += -pedantic -Wall -Wimplicit -Wno-long-long -D_GNU_SOURCE
+CFLAGS   += -std=gnu99 -pedantic-errors -Wmissing-prototypes -Wstrict-prototypes
+CPPFLAGS += -pedantic-errors -Wall -Wno-long-long -D_GNU_SOURCE
 endif
 
 libmamacpp_la_SOURCES = \
