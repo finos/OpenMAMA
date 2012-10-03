@@ -96,14 +96,17 @@ static const char*        gEntitled = "entitled";
 static const char*        gEntitled = "not entitled";
 #endif /*WITH_ENTITLEMENTS */
 
+/* Sats Configuration*/
+int gLogQueueStats          = 1;
+int gLogTransportStats      = 1;
+int gLogGlobalStats         = 1;
+int gLogLbmStats            = 1;
+
 int gGenerateQueueStats     = 0;
 int gGenerateTransportStats = 0;
 int gGenerateGlobalStats    = 0;
 int gGenerateLbmStats       = 0;
-int gLogQueueStats          = 0;
-int gLogTransportStats      = 0;
-int gLogGlobalStats         = 0;
-int gLogLbmStats            = 0;
+
 int gPublishQueueStats      = 0;
 int gPublishTransportStats  = 0;
 int gPublishGlobalStats     = 0;
@@ -113,6 +116,8 @@ static mamaStatsLogger  gStatsPublisher  = NULL;
 
 mamaStatsGenerator      gStatsGenerator         = NULL;
 mamaStatsCollector      gGlobalStatsCollector   = NULL;
+
+/* Global Stats */
 mamaStat                gInitialStat;
 mamaStat                gRecapStat;
 mamaStat                gUnknownMsgStat;
@@ -123,6 +128,9 @@ mamaStat                gTimeoutStat;
 mamaStat                gWombatMsgsStat;
 mamaStat                gFastMsgsStat;
 mamaStat                gRvMsgsStat;
+
+mama_status mama_statsInit (void);
+mama_status mama_setupStatsGenerator (void);
 
 int gCatchCallbackExceptions = 0;
 
@@ -297,7 +305,7 @@ mamaInternal_loadProperties (const char *path,
    gProperties =  fileProperties;
 }
 
-static int mamaInternal_statsPublishingEnabled ()
+static int mamaInternal_statsPublishingEnabled (void)
 {
     return (gPublishGlobalStats
          || gPublishTransportStats
@@ -305,38 +313,7 @@ static int mamaInternal_statsPublishingEnabled ()
          || gPublishLbmStats);
 }
 
-static mama_status mamaInternal_loadStatsPublisher ()
-{
-    mamaBridge      bridge                  = NULL;
-    mama_status     status                  = MAMA_STATUS_OK;
-    const char*     statsLogMiddlewareName  = NULL;
-
-    statsLogMiddlewareName = properties_Get (gProperties,
-                                             "mama.statslogging.middleware");
-
-    if (!statsLogMiddlewareName)
-    {
-        statsLogMiddlewareName = "wmw";
-    }
-
-    /* Will load the bridge if its not already loaded */
-    /* Lock is alread acquired at this point */
-    if (MAMA_STATUS_OK !=
-       (status = mama_loadBridgeWithPathInternal (&bridge,
-                                                  statsLogMiddlewareName,
-                                                  NULL)))
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mamaInternal_loadStatsLogger(): ",
-                  "No bridge loaded for middleware [%s]",
-                   statsLogMiddlewareName);
-        return status;
-    }
-
-    return MAMA_STATUS_OK;
-}
-
-mama_status
+static mama_status
 mamaInternal_createStatsPublisher (void)
 {
     mama_status     result                  = MAMA_STATUS_OK;
@@ -638,12 +615,10 @@ mama_openWithPropertiesCount (const char* path,
     mama_status     result			        = MAMA_STATUS_OK;
     mama_size_t     numBridges              = 0;
     mamaMiddleware  middleware              = 0;
-    mamaQueue       statsGenQueue           = NULL;
     const char*     appString               = NULL;
-    const char*     statsLogging            = "false";
-	const char*		catchCallbackExceptions = NULL;
-    char**				payloadName;
-    char*				payloadId;
+    const char*		catchCallbackExceptions = NULL;
+    char**			payloadName;
+    char*			payloadId;
 
     wthread_static_mutex_lock (&gImpl.myLock);
 
@@ -736,132 +711,7 @@ mama_openWithPropertiesCount (const char* path,
 		gCatchCallbackExceptions = 1;
 	}
 
-    statsLogging = properties_Get (gProperties, "mama.statslogging.enable");
-
-    if ( (statsLogging != NULL) && strtobool (statsLogging))
-    {
-        const char*     globalLogging           = NULL;
-        const char*     globalPublishing        = NULL;
-        const char*     transportLogging        = NULL;
-        const char*     transportPublishing     = NULL;
-        const char*     queueLogging            = NULL;
-        const char*     queuePublishing         = NULL;
-        const char*     lbmLogging              = NULL;
-        const char*     lbmPublishing           = NULL;
-        const char*     statsIntervalStr        = NULL;
-
-        statsIntervalStr = properties_Get (gProperties,
-                                        "mama.statslogging.interval");
-
-        if (MAMA_STATUS_OK != (result = mamaStatsGenerator_create(
-                                &gStatsGenerator,
-                                statsIntervalStr ? atof (statsIntervalStr) : DEFAULT_STATS_INTERVAL)))
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_openWithProperties(): "
-                      "Could not create stats generator.");
-            if (count)
-                *count = gImpl.myRefCount;
-            
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return result;
-        }
-
-        globalLogging           = properties_Get (gProperties, "mama.statslogging.global.logging");
-        globalPublishing        = properties_Get (gProperties, "mama.statslogging.global.publishing");
-        transportLogging        = properties_Get (gProperties, "mama.statslogging.transport.logging");
-        transportPublishing     = properties_Get (gProperties, "mama.statslogging.transport.publishing");
-        queueLogging            = properties_Get (gProperties, "mama.statslogging.queue.logging");
-        queuePublishing         = properties_Get (gProperties, "mama.statslogging.queue.publishing");
-        lbmLogging              = properties_Get (gProperties, "mama.statslogging.lbm.logging");
-        lbmPublishing           = properties_Get (gProperties, "mama.statslogging.lbm.publishing");
-
-        /* If logging has been explicitly set false, and publishing is also set false, then don't
-           generate stats (and neither log nor publish).
-
-           If logging has not been specified (or has been set true), then generate and log stats.
-           Publish stats if it has been set true. */
-        if ( globalLogging != NULL && !(strtobool(globalLogging)) )
-        {
-            if ( globalPublishing != NULL && strtobool(globalPublishing) )
-            {
-                gGenerateGlobalStats = 1;
-                gPublishGlobalStats  = 1;
-            }
-        }
-        else
-        {
-            gGenerateGlobalStats = 1;
-            gLogGlobalStats      = 1;
-
-            if ( globalPublishing != NULL && strtobool(globalPublishing) )
-            {
-                gPublishGlobalStats = 1;
-            }
-        }
-
-        if ( queueLogging != NULL && !(strtobool(queueLogging)) )
-        {
-            if ( queuePublishing != NULL && strtobool(queuePublishing) )
-            {
-                gGenerateQueueStats = 1;
-                gPublishQueueStats  = 1;
-            }
-        }
-        else
-        {
-            gGenerateQueueStats = 1;
-            gLogQueueStats      = 1;
-
-            if ( queuePublishing != NULL && strtobool(queuePublishing) )
-            {
-                gPublishQueueStats = 1;
-            }
-        }
-
-        if ( transportLogging != NULL && !(strtobool(transportLogging)) )
-        {
-            if ( transportPublishing != NULL && strtobool(transportPublishing) )
-            {
-                gGenerateTransportStats = 1;
-                gPublishTransportStats  = 1;
-            }
-        }
-        else
-        {
-            gGenerateTransportStats = 1;
-            gLogTransportStats      = 1;
-
-            if ( transportPublishing != NULL && strtobool(transportPublishing) )
-            {
-                gPublishTransportStats = 1;
-            }
-        }
-
-        if ( lbmLogging != NULL && !(strtobool(lbmLogging)) )
-        {
-            if ( lbmPublishing != NULL && strtobool(lbmPublishing) )
-            {
-                gGenerateLbmStats = 1;
-                gPublishLbmStats  = 1;
-            }
-        }
-        else
-        {
-            gGenerateLbmStats = 1;
-            gLogLbmStats      = 1;
-
-            if ( lbmPublishing != NULL && strtobool(lbmPublishing) )
-            {
-                gPublishLbmStats = 1;
-            }
-        }
-
-        if (mamaInternal_statsPublishingEnabled())
-        {
-            mamaInternal_loadStatsPublisher();
-        }
-    }
+    mama_log (MAMA_LOG_LEVEL_FINE, "%s (gEntitled)",mama_version, gEntitled);
 
     /* Look for a bridge for each of the middlewares and open them */
     for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
@@ -870,7 +720,6 @@ mama_openWithPropertiesCount (const char* path,
         if (impl)
         {
             mama_log (MAMA_LOG_LEVEL_FINE, impl->bridgeGetVersion ());
-            mamaQueue_enableStats(impl->mDefaultEventQueue);
             ++numBridges;
         }
     }
@@ -922,8 +771,109 @@ mama_openWithPropertiesCount (const char* path,
     }
 #endif /* WITH_ENTITLEMENTS */
 
-    if (strtobool(statsLogging))
+    mama_statsInit();
+
+
+    gImpl.myRefCount++;
+    if (count)
+        *count = gImpl.myRefCount;
+    wthread_static_mutex_unlock (&gImpl.myLock);
+    return result;
+}
+
+
+mama_status
+mama_statsInit (void)
     {
+    mamaMiddleware middleware = 0;
+    char* statsLogging = (char*) properties_Get (gProperties, "mama.statslogging.enable");
+
+    if ( (statsLogging != NULL) && strtobool (statsLogging))
+    {
+        const char*     propVal           = NULL;
+
+        /* If logging has been explicitly set false, and publishing is also set false, then don't
+           generate stats (and neither log nor publish). */
+
+        propVal           = properties_Get (gProperties, "mama.statslogging.global.logging");
+         if ( propVal != NULL)
+            gLogGlobalStats = strtobool(propVal);
+
+          propVal           = properties_Get (gProperties, "mama.statslogging.global.publishing");
+         if ( propVal != NULL)
+            gPublishGlobalStats = strtobool(propVal);
+
+         propVal           = properties_Get (gProperties, "mama.statslogging.transport.logging");
+         if ( propVal != NULL)
+            gLogTransportStats = strtobool(propVal);
+
+        propVal           = properties_Get (gProperties, "mama.statslogging.transport.publishing");
+         if ( propVal != NULL)
+            gPublishTransportStats = strtobool(propVal);
+
+          propVal           = properties_Get (gProperties, "mama.statslogging.queue.logging");
+         if ( propVal != NULL)
+            gLogQueueStats = strtobool(propVal);
+
+          propVal           = properties_Get (gProperties, "mama.statslogging.queue.publishing");
+         if ( propVal != NULL)
+            gPublishQueueStats = strtobool(propVal);
+
+        propVal           = properties_Get (gProperties, "mama.statslogging.lbm.logging");
+         if ( propVal != NULL)
+            gLogLbmStats = strtobool(propVal);
+
+          propVal           = properties_Get (gProperties, "mama.statslogging.lbm.publishing");
+         if ( propVal != NULL)
+            gPublishLbmStats = strtobool(propVal);
+
+        if (gLogGlobalStats || gPublishGlobalStats) gGenerateGlobalStats=1;
+        if (gLogTransportStats || gPublishTransportStats) gGenerateTransportStats=1;
+        if (gLogQueueStats || gPublishQueueStats) gGenerateQueueStats=1;
+        if (gLogLbmStats || gPublishLbmStats) gGenerateLbmStats=1;
+          
+        mama_setupStatsGenerator();
+
+        mamaInternal_enableStatsLogging();
+
+        /* Look for a bridge for each of the middlewares and open them */
+        for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
+        {
+            mamaBridgeImpl* impl = (mamaBridgeImpl*) gImpl.myBridges [middleware];
+            if (impl)
+            {
+                mamaQueue_enableStats(impl->mDefaultEventQueue);
+            }
+        }
+    }
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mama_setupStatsGenerator (void)
+{
+	mama_status result = MAMA_STATUS_OK;
+
+	unsigned int* 	count				= NULL;
+	const char* 	statsIntervalStr 	= NULL;
+	mamaQueue       statsGenQueue       = NULL;
+
+	statsIntervalStr = properties_Get (gProperties, "mama.statslogging.interval");
+
+	if (MAMA_STATUS_OK != (result = mamaStatsGenerator_create(
+	                                &gStatsGenerator,
+	                                statsIntervalStr ? atof (statsIntervalStr) : DEFAULT_STATS_INTERVAL)))
+	{
+		mama_log (MAMA_LOG_LEVEL_ERROR,
+				  "mama_openWithProperties(): "
+				  "Could not create stats generator.");
+		if (count)
+			*count = gImpl.myRefCount;
+
+		wthread_static_mutex_unlock (&gImpl.myLock);
+		return result;
+	}
         /* No publishing, therefore no middleware needs to be specified
            in mama.properties.  Instead, check through loaded bridges */
         if (!mamaInternal_statsPublishingEnabled())
@@ -972,22 +922,8 @@ mama_openWithPropertiesCount (const char* path,
             return result;
         }
 
-        if (MAMA_STATUS_OK != (result=mamaInternal_enableStatsLogging()))
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_openWithProperties(): "
-                      "Failed to enable stats logging");
-            if (count)
-                *count = gImpl.myRefCount;
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return result;
-        }
-    }
+	mamaStatsGenerator_setLogStats (gStatsGenerator, 1);
 
-    gImpl.myRefCount++;
-    if (count)
-        *count = gImpl.myRefCount;
-    wthread_static_mutex_unlock (&gImpl.myLock);
     return result;
 }
 
