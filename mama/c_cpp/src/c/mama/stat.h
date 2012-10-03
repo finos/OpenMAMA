@@ -56,6 +56,10 @@ typedef enum mamaStatType
     MAMA_STAT_TYPE_WOMBAT_MSGS                   =  125,
     MAMA_STAT_TYPE_RV_MSGS                       =  126,
     MAMA_STAT_TYPE_FAST_MSGS                     =  127,
+    MAMA_STAT_TYPE_UNKNOWN_MSGS                  =  128,
+    MAMA_STAT_TYPE_PUBLISHER_SEND                =  129,
+    MAMA_STAT_TYPE_PUBLISHER_INBOX_SEND          =  130,
+    MAMA_STAT_TYPE_PUBLISHER_REPLY_SEND          =  131,
     MAMA_STAT_TYPE_UNKNOWN                       =  999
 }mamaStatType;
 

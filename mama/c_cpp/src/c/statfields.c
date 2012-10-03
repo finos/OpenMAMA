@@ -78,3 +78,9 @@ const MamaReservedField  MamaStatFastMsgs
     = {"FAST Msgs", 127};
 const MamaReservedField  MamaStatUnknownMsgs
     = {"Unknown Msgs", 128};
+const MamaReservedField  MamaStatPublisherSend
+    = {"Publisher Send Msgs", 129};
+const MamaReservedField  MamaStatPublisherInboxSend
+    = {"Publisher Inbox Send Msgs", 130};
+const MamaReservedField  MamaStatPublisherReplySend
+    = {"Publisher Reply Send Msgs", 131};

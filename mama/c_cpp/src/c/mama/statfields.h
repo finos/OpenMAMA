@@ -84,6 +84,12 @@ MAMAExpDLL
 extern const MamaReservedField  MamaStatFastMsgs;                       /* FID 127 */
 MAMAExpDLL
 extern const MamaReservedField  MamaStatUnknownMsgs;                    /* FID 128 */
+MAMAExpDLL
+extern const MamaReservedField  MamaStatPublisherSend;                  /* FID 129 */
+MAMAExpDLL
+extern const MamaReservedField  MamaStatPublisherInboxSend;             /* FID 130 */
+MAMAExpDLL
+extern const MamaReservedField  MamaStatPublisherReplySend;             /* FID 131 */
 
 #if defined(__cplusplus)
 }

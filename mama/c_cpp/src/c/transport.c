@@ -160,6 +160,10 @@ typedef struct transportImpl_
     mamaStat                mLbmMsgsReceivedNoTopic;
     /*! Number of LBM requests received by LBT-RM transport */
     mamaStat                mLbmRequestsReceived;
+    /* Publisher Stats */
+    mamaStat                mPublisherSend;
+    mamaStat                mPublisherInboxSend;
+    mamaStat                mPublisherReplySend;
 
     int                     mGroupSizeHint;
 
@@ -1000,6 +1004,26 @@ mamaTransport_initStats (mamaTransport transport)
                                   MamaStatRvMsgs.mName,
                                   MamaStatRvMsgs.mFid);
         if (status != MAMA_STATUS_OK) return status;
+        status = mamaStat_create (&self->mPublisherSend,
+                                  self->mStatsCollector,
+                                  MAMA_STAT_NOT_LOCKABLE,
+                                  MamaStatPublisherSend.mName,
+                                  MamaStatPublisherSend.mFid);
+        if (status != MAMA_STATUS_OK) return status;
+
+        status = mamaStat_create (&self->mPublisherInboxSend,
+                                  self->mStatsCollector,
+                                  MAMA_STAT_NOT_LOCKABLE,
+                                  MamaStatPublisherInboxSend.mName,
+                                  MamaStatPublisherInboxSend.mFid);
+        if (status != MAMA_STATUS_OK) return status;
+
+        status = mamaStat_create (&self->mPublisherReplySend,
+                                  self->mStatsCollector,
+                                  MAMA_STAT_NOT_LOCKABLE,
+                                  MamaStatPublisherReplySend.mName,
+                                  MamaStatPublisherReplySend.mFid);
+        if (status != MAMA_STATUS_OK) return status;
     }
 
     if (gGenerateLbmStats)
@@ -1243,6 +1267,24 @@ mamaTransport_destroy (mamaTransport transport)
     {
         mamaStat_destroy (self->mRvMsgsStat);
         self->mRvMsgsStat = NULL;
+    }
+
+    if (self->mPublisherSend)
+    {
+        mamaStat_destroy (self->mPublisherSend);
+        self->mPublisherSend = NULL;
+    }
+
+    if (self->mPublisherInboxSend)
+    {
+        mamaStat_destroy (self->mPublisherInboxSend);
+        self->mPublisherInboxSend = NULL;
+    }
+
+    if (self->mPublisherReplySend)
+    {
+        mamaStat_destroy (self->mPublisherReplySend);
+        self->mPublisherReplySend = NULL;
     }
 
     if (self->mNakPacketsSent)

@@ -467,6 +467,18 @@ mamaStatType_fromString (const char* statTypeString)
     {
         return MAMA_STAT_TYPE_FAST_MSGS;
     }
+    if ((strcmp (statTypeString, "Publisher Send Msgs")) == 0)
+    {
+        return MAMA_STAT_TYPE_PUBLISHER_SEND;
+    }
+    if ((strcmp (statTypeString, "Publisher Inbox Send Msgs")) == 0)
+    {
+        return MAMA_STAT_TYPE_PUBLISHER_INBOX_SEND;
+    }
+    if ((strcmp (statTypeString, "Publisher Reply Send Msgs")) == 0)
+    {
+        return MAMA_STAT_TYPE_PUBLISHER_REPLY_SEND;
+    }
 
     return MAMA_STAT_TYPE_UNKNOWN;
 }
@@ -522,6 +534,12 @@ mamaStatType_toString (mamaStatType statType)
         case MAMA_STAT_TYPE_RV_MSGS                      : return "RV Messages";
                                                            break;
         case MAMA_STAT_TYPE_FAST_MSGS                    : return "FAST Messages";
+                                                           break;
+        case MAMA_STAT_TYPE_PUBLISHER_SEND               : return "Publisher Send Msgs";
+                                                           break;
+        case MAMA_STAT_TYPE_PUBLISHER_INBOX_SEND         : return "Publisher Inbox Send Msgs";
+                                                           break;
+        case MAMA_STAT_TYPE_PUBLISHER_REPLY_SEND         : return "Publisher Reply Send Msgs";
                                                            break;
         default                                          : return "Unknown";
                                                            break;

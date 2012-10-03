@@ -131,6 +131,9 @@ mamaStat                gTimeoutStat;
 mamaStat                gWombatMsgsStat;
 mamaStat                gFastMsgsStat;
 mamaStat                gRvMsgsStat;
+mamaStat                gPublisherSend;
+mamaStat                gPublisherInboxSend;
+mamaStat                gPublisherReplySend;
 
 mama_status mama_statsInit (void);
 mama_status mama_setupStatsGenerator (void);
@@ -528,6 +531,26 @@ mamaInternal_enableStatsLogging (void)
                                   MamaStatRvMsgs.mFid);
         if (result != MAMA_STATUS_OK) return result;
 
+        result = mamaStat_create (&gPublisherSend,
+                                  gGlobalStatsCollector,
+                                  MAMA_STAT_LOCKABLE,
+                                  MamaStatPublisherSend.mName,
+                                  MamaStatPublisherSend.mFid);
+        if (result != MAMA_STATUS_OK) return result;
+
+        result = mamaStat_create (&gPublisherInboxSend,
+                                  gGlobalStatsCollector,
+                                  MAMA_STAT_LOCKABLE,
+                                  MamaStatPublisherInboxSend.mName,
+                                  MamaStatPublisherInboxSend.mFid);
+        if (result != MAMA_STATUS_OK) return result;
+
+        result = mamaStat_create (&gPublisherReplySend,
+                                  gGlobalStatsCollector,
+                                  MAMA_STAT_LOCKABLE,
+                                  MamaStatPublisherReplySend.mName,
+                                  MamaStatPublisherReplySend.mFid);
+        if (result != MAMA_STATUS_OK) return result;
         mamaStatsGenerator_addStatsCollector (gStatsGenerator, gGlobalStatsCollector);
     }
 
@@ -1160,6 +1183,23 @@ mama_closeCount (unsigned int* count)
             gRvMsgsStat = NULL;
         }
 
+        if (gPublisherSend)
+        {
+            mamaStat_destroy (gPublisherSend);
+            gPublisherSend = NULL;
+        }
+
+        if (gPublisherInboxSend)
+        {
+            mamaStat_destroy (gPublisherInboxSend);
+            gPublisherInboxSend = NULL;
+        }
+
+        if (gPublisherReplySend)
+        {
+            mamaStat_destroy (gPublisherReplySend);
+            gPublisherReplySend = NULL;
+        }
         if (gGlobalStatsCollector)
         {
             if (gStatsGenerator)
