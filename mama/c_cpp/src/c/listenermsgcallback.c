@@ -50,7 +50,7 @@ void listenerMsgCallback_invokeErrorCallback(listenerMsgCallback callback,
         SubjectContext *ctx, mama_status mamaStatus, mamaSubscription
         subscription, const char *userSymbol);
 
-void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, int status,
+void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, mamaMsgStatus status,
         mamaSubscription subscription);
 
 /**
@@ -246,7 +246,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                                 SubjectContext *ctx)
 {
     int               msgType           = mamaMsgType_typeForMsg (msg);
-    int               status            = mamaMsgImpl_getStatusFromMsg (msg);
+    mamaMsgStatus     status            = mamaMsgImpl_getStatusFromMsg (msg);
     msgCallback*      impl              = (msgCallback*)callback;
     mamaSubscription  subscription      = impl->mSubscription;
     int               expectingInitial  = 0;
@@ -369,7 +369,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                     (*(mamaInternal_getGlobalStatsCollector()),
                      MamaStatUnknownMsgs.mFid);
             }
-            return; //throw away msg
+            return; /* throw away msg */
             break;
         }
         default:
@@ -621,7 +621,7 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
 #endif /* WITH_ENTITLEMENTS */
 }
 
-void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, int status,
+void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, mamaMsgStatus status,
         mamaSubscription subscription)
 {
     /* Write the log at fine level. */
