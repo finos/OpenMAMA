@@ -115,7 +115,7 @@ mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector stats
     mama_fid_t  fid;
     const char* name = NULL;
     const char* type = NULL;
-    mama_u32_t  intervalValue = 0;
+    mama_i32_t  intervalValue = 0;
     mama_u32_t  maxValue      = 0;
     mama_u32_t  totalValue    = 0;
     int i;
@@ -150,7 +150,7 @@ mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector stats
                 name  = mamaStat_getName (impl->mMamaStats[i]);
 
                 mamaStat_getStats (impl->mMamaStats[i], &intervalValue, &maxValue, &totalValue);
-                mamaMsg_addU32 (msg, name, fid, intervalValue);
+                mamaMsg_addI32 (msg, name, fid, intervalValue);
             }
 
             if (impl->mLogStats && mamaStat_getLog (impl->mMamaStats[i]))
@@ -159,7 +159,7 @@ mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector stats
                 {
                     /* Stats are logged at WARN so that users don't have to enable NORMAL (or higher)
                        logging, even though they aren't actually warnings...*/
-                       mama_log (MAMA_LOG_LEVEL_WARN, "%24.24s | %9.9s | %10.10s | %15.15s | %10u | %10u | %10u |",
+                       mama_log (MAMA_LOG_LEVEL_WARN, "%24.24s | %9.9s | %10.10s | %15.15s | %10i | %10u | %10u |",
                                                       logHeader ? impl->mName : "",
                                                       logHeader ? type : "",
                                                       logHeader ? impl->mMiddleware : "",

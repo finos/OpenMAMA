@@ -197,7 +197,7 @@ mamaStat_getTotalValue (mamaStat stat);
  */
 MAMAExpDLL
 extern void
-mamaStat_getStats (mamaStat stat, mama_u32_t* intervalValue, mama_u32_t* maxValue, mama_u32_t* totalValue);
+mamaStat_getStats (mamaStat stat, mama_i32_t* intervalValue, mama_u32_t* maxValue, mama_u32_t* totalValue);
 
 /**
  * Get the name of the stat

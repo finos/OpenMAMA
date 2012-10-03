@@ -34,7 +34,7 @@ typedef struct mamaStatImpl__
     const char*         mName;
     mama_fid_t          mFid;
     mamaStatsCollector  mStatsCollector;
-    mama_u32_t          mIntervalValue;
+    mama_i32_t          mIntervalValue;
     mama_u32_t          mMaxValue;
     mama_u32_t          mTotalValue;
     int                 mLockable;
@@ -125,6 +125,7 @@ mamaStat_decrement (mamaStat stat)
     }
 
     impl->mIntervalValue--;
+    impl->mTotalValue--;
 
     if (impl->mLockable)
     {
@@ -298,7 +299,7 @@ mamaStat_getTotalValue (mamaStat stat)
 }
 
 void
-mamaStat_getStats (mamaStat stat, mama_u32_t* intervalValue, mama_u32_t* maxValue, mama_u32_t* totalValue)
+mamaStat_getStats (mamaStat stat, mama_i32_t* intervalValue, mama_u32_t* maxValue, mama_u32_t* totalValue)
 {
     mamaStatImpl* impl = (mamaStatImpl*)stat;
 
