@@ -1470,12 +1470,6 @@ void mamaSubscriptionImpl_cleanup(mamaSubscriptionImpl *impl)
         impl->mUserSymbol = NULL;
     }
 
-    /* The subscription symbol. */
-    if(NULL != impl->mSubscSymbol)
-    {
-        free(impl->mSubscSymbol);
-        impl->mSubscSymbol = NULL;
-    }
 }
 
 
@@ -1834,6 +1828,12 @@ void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl)
     /* Destroy the state. */
        wInterlocked_destroy(&impl->mState);
 
+    /* The subscription symbol. */
+    if(NULL != impl->mSubscSymbol)
+    {
+        free(impl->mSubscSymbol);
+        impl->mSubscSymbol = NULL;
+    }
     /* Free the subscription impl. */
     free(impl);
 }
