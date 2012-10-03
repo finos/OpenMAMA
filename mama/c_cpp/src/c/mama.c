@@ -1144,41 +1144,12 @@ mama_closeCount (unsigned int* count)
             mamaStatsGenerator_stopReportTimer(gStatsGenerator);
         }
 
-        if (gGlobalStatsCollector)
-        {
-            if (gStatsGenerator)
-            {
-                mamaStatsGenerator_removeStatsCollector (gStatsGenerator, gGlobalStatsCollector);
-            }
-            mamaStatsCollector_destroy (gGlobalStatsCollector);
-            gGlobalStatsCollector = NULL;
-        }
-
-        if (gStatsPublisher)
-        {
-            mamaStatsLogger_destroy (gStatsPublisher);
-            gStatsPublisher = NULL;
-        }
         for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
         {
             mamaBridge bridge = gImpl.myBridges[middleware];
             if (bridge)
             	mamaBridgeImpl_stopInternalEventQueue (bridge);
         }
-        /* Look for a bridge for each of the payloads and close them */
-        for (payload = 0; payload != MAMA_PAYLOAD_MAX; ++payload)
-        {
-        	/* mamaPayloadBridgeImpl* impl = (mamaPayloadBridgeImpl*)
-             * gImpl.myPayloads [(uint8_t)payload];*/
-            gImpl.myPayloads[(uint8_t)payload] = NULL;
-            if(gImpl.myPayloadLibraries[(uint8_t)payload])
-            {
-                closeSharedLib (gImpl.myPayloadLibraries[(uint8_t)payload]);
-                gImpl.myPayloadLibraries[(uint8_t)payload] = NULL;
-            }
-        }
-
-        gDefaultPayload = NULL;
 
         if (gInitialStat)
         {
@@ -1256,7 +1227,30 @@ mama_closeCount (unsigned int* count)
             gStatsPublisher = NULL;
         }
 
+                /* Destroy the stats generator after the bridge is closed so we will
+           have removed the default queue stats collector */
+        if (gStatsGenerator)
+        {
+            mamaStatsGenerator_destroy (gStatsGenerator);
+            gStatsGenerator = NULL;
+        }
+
         cleanupReservedFields();
+
+         /* Look for a bridge for each of the payloads and close them */
+        for (payload = 0; payload != MAMA_PAYLOAD_MAX; ++payload)
+        {
+        	/* mamaPayloadBridgeImpl* impl = (mamaPayloadBridgeImpl*)
+             * gImpl.myPayloads [(uint8_t)payload];*/
+            gImpl.myPayloads[(uint8_t)payload] = NULL;
+            if(gImpl.myPayloadLibraries[(uint8_t)payload])
+            {
+                closeSharedLib (gImpl.myPayloadLibraries[(uint8_t)payload]);
+                gImpl.myPayloadLibraries[(uint8_t)payload] = NULL;
+            }
+        }
+        
+       gDefaultPayload = NULL;
 
         /* Look for a bridge for each of the middlewares and close them */
         for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
@@ -1283,14 +1277,6 @@ mama_closeCount (unsigned int* count)
         {
             properties_Free (gProperties);
             gProperties = 0;
-        }
-
-        /* Destroy the stats generator after the bridge is closed so we will
-           have removed the default queue stats collector */
-        if (gStatsGenerator)
-        {
-            mamaStatsGenerator_destroy (gStatsGenerator);
-            gStatsGenerator = NULL;
         }
 
         /* Destroy logging */
