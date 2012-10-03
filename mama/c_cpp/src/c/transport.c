@@ -1683,11 +1683,22 @@ mamaTransportImpl_getTransportTopicCallback (mamaTransport transport,
 }
 
 static void
+staleEventCallback (mamaQueue queue, void* closure)
+{
+    mamaSubscription sub = (mamaSubscription) closure;
+    mamaSubscription_setPossiblyStale (sub);
+}
+
+static void
 setStaleListenerIterator (wList list, void* element, void* closure)
 {
     SubscriptionInfo* subsc = (SubscriptionInfo*)element;
     if (mamaSubscription_isTportDisconnected (subsc->mSubscription))
-            mamaSubscription_setPossiblyStale (subsc->mSubscription);
+    {
+            mamaQueue queue = NULL;
+            mamaSubscription_getQueue (subsc->mSubscription, &queue);
+            mamaQueue_enqueueEvent (queue, (mamaQueueEventCB)staleEventCallback, subsc->mSubscription);
+    }
 }
 
 static void
