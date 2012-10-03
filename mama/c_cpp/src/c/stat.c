@@ -154,6 +154,71 @@ mamaStat_reset (mamaStat stat)
     return MAMA_STATUS_OK;
 }
 
+mama_status
+mamaStat_add (mamaStat stat, int value)
+{
+    mamaStatImpl* impl = (mamaStatImpl*)stat;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+
+    if (impl->mLockable)
+        wthread_mutex_lock (&impl->mUpdateMutex);
+
+    impl->mIntervalValue += value;
+    if (impl->mIntervalValue > impl->mMaxValue)
+    {
+        impl->mMaxValue = impl->mIntervalValue;
+    }
+    impl->mTotalValue += value;
+
+    if (impl->mLockable)
+        wthread_mutex_unlock (&impl->mUpdateMutex);
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaStat_subtract (mamaStat stat, int value)
+{
+    mamaStatImpl* impl = (mamaStatImpl*)stat;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+
+    if (impl->mLockable)
+    {
+        wthread_mutex_lock (&impl->mUpdateMutex);
+    }
+
+    impl->mIntervalValue -= value;
+    impl->mTotalValue -= value;
+
+    if (impl->mLockable)
+    {
+        wthread_mutex_unlock (&impl->mUpdateMutex);
+    }
+
+    return MAMA_STATUS_OK;
+}
+
+
+mama_status
+mamaStat_setIntervalValue (mamaStat stat, int value)
+{
+      mamaStatImpl* impl = (mamaStatImpl*)stat;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+
+    if (impl->mLockable)
+    {
+        wthread_mutex_lock (&impl->mUpdateMutex);
+    }
+
+    impl->mIntervalValue = value;
+
+    if (impl->mLockable)
+    {
+        wthread_mutex_unlock (&impl->mUpdateMutex);
+    }
+
+    return MAMA_STATUS_OK;
+}
 mama_fid_t
 mamaStat_getFid (mamaStat stat)
 {

@@ -42,6 +42,7 @@ mamaStatsCollector_create (mamaStatsCollector* statsCollector, mamaStatsCollecto
     impl->mPollClosure  = NULL;
     /* Default behaviour is to log, but not publish, stats */
     impl->mPublishStats = 0;
+    impl->mOffset = 0;
     impl->mLogStats     = 1;
 
     memset (impl->mMamaStats, 0, MAMA_STAT_MAX_STATS*sizeof(mamaStat));
@@ -74,7 +75,8 @@ mamaStatsCollector_addStat (mamaStatsCollector statsCollector, mamaStat stat)
     mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
 
-    index = mamaStat_getFid (stat) - MAMA_STAT_ARRAY_OFFSET;
+    if (impl->mOffset==0) impl->mOffset=mamaStat_getFid (stat);
+    index = mamaStat_getFid (stat) - impl->mOffset;
     impl->mMamaStats[index] = stat;
 
     return MAMA_STATUS_OK;
@@ -87,7 +89,7 @@ mamaStatsCollector_incrementStat (mamaStatsCollector statsCollector, mama_fid_t 
     mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
 
-    index = identifier - MAMA_STAT_ARRAY_OFFSET;
+    index = identifier - impl->mOffset;
     mamaStat_increment (impl->mMamaStats[index]);
 
     return MAMA_STATUS_OK;
@@ -100,7 +102,7 @@ mamaStatsCollector_setStatIntervalValueFromTotal (mamaStatsCollector statsCollec
     mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
 
-    index = identifer - MAMA_STAT_ARRAY_OFFSET;
+    index = identifer - impl->mOffset;
     mamaStat_setIntervalValueFromTotal (impl->mMamaStats[index], value);
 
     return MAMA_STATUS_OK;
@@ -251,6 +253,7 @@ mamaStatsCollectorType_stringForType (mamaStatsCollectorType type)
     {
         case MAMA_STATS_COLLECTOR_TYPE_QUEUE     : return "Queue";
         case MAMA_STATS_COLLECTOR_TYPE_TRANSPORT : return "Transport";
+        case MAMA_STATS_COLLECTOR_TYPE_USER      : return "User";
         case MAMA_STATS_COLLECTOR_TYPE_GLOBAL    : return "Global";
         default : return "Unknown";
     }

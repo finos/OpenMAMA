@@ -574,6 +574,19 @@ extern "C"
     extern mama_status
     mama_setBridgeInfoCallback (mamaBridge         bridgeImpl,
                                 bridgeInfoCallback callback);
+    /**
+     * Add a user stats collector 
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_addStatsCollector (mamaStatsCollector  statsCollector);
+
+    /**
+     * Remove a user stats collector 
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_removeStatsCollector (mamaStatsCollector  statsCollector);
 
 #if defined(__cplusplus)
 }

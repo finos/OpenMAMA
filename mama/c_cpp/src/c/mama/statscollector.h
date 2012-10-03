@@ -32,7 +32,8 @@ typedef enum mamaStatsCollectorType
 {
     MAMA_STATS_COLLECTOR_TYPE_QUEUE     = 0,
     MAMA_STATS_COLLECTOR_TYPE_TRANSPORT = 1,
-    MAMA_STATS_COLLECTOR_TYPE_GLOBAL    = 2
+    MAMA_STATS_COLLECTOR_TYPE_USER      = 2,
+    MAMA_STATS_COLLECTOR_TYPE_GLOBAL    = 3
 } mamaStatsCollectorType;
 
 /**

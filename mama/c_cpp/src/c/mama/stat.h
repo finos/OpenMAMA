@@ -103,6 +103,35 @@ mamaStat_decrement (mamaStat stat);
 MAMAExpDLL
 extern mama_status
 mamaStat_reset (mamaStat stat);
+/**
+ * Adds the stats object counter with the value
+ *
+ * @param stat  The stats object to added 
+ * @param value The value to be added to be stat
+ */
+MAMAExpDLL
+extern mama_status
+mamaStat_add (mamaStat stat, int value);
+
+/**
+ * Subtract the stats object counter with the value
+ *
+ * @param stat  The stats object to subtracted 
+ * @param value the value to be subtracted from stat
+ */
+MAMAExpDLL
+extern mama_status
+mamaStat_subtract (mamaStat stat, int value);
+
+/**
+ * set the Interval value
+ *
+ * @param stat  The stats object to be changed
+ * @param value the value to be used
+ */
+MAMAExpDLL
+extern mama_status
+mamaStat_setIntervalValue (mamaStat stat, int value);
 
 /**
  * Get the FID used when publishing the

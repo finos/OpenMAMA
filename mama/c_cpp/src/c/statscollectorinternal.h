@@ -31,8 +31,7 @@ extern "C" {
 typedef void (
 *collectorPollStatCb) (mamaStatsCollector statsCollector, void* closure);
 
-#define MAMA_STAT_ARRAY_OFFSET 		105
-#define MAMA_STAT_MAX_STATS    		30
+#define MAMA_STAT_MAX_STATS    		35
 
 typedef struct mamaStatsCollectorImpl__
 {
@@ -44,6 +43,7 @@ typedef struct mamaStatsCollectorImpl__
     void*       			mPollClosure;
     int         			mPublishStats;
     int         			mLogStats;
+     int         			mOffset;
     void*          			mHandle;
 } mamaStatsCollectorImpl;
 

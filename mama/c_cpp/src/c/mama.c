@@ -101,16 +101,19 @@ int gLogQueueStats          = 1;
 int gLogTransportStats      = 1;
 int gLogGlobalStats         = 1;
 int gLogLbmStats            = 1;
+int gLogUserStats           = 1;
 
 int gGenerateQueueStats     = 0;
 int gGenerateTransportStats = 0;
 int gGenerateGlobalStats    = 0;
 int gGenerateLbmStats       = 0;
+int gGenerateUserStats       = 0;
 
 int gPublishQueueStats      = 0;
 int gPublishTransportStats  = 0;
 int gPublishGlobalStats     = 0;
 int gPublishLbmStats        = 0;
+int gPublishUserStats       = 0;
 
 static mamaStatsLogger  gStatsPublisher  = NULL;
 
@@ -310,7 +313,8 @@ static int mamaInternal_statsPublishingEnabled (void)
     return (gPublishGlobalStats
          || gPublishTransportStats
          || gPublishQueueStats
-         || gPublishLbmStats);
+         || gPublishLbmStats
+         || gPublishUserStats);
 }
 
 static mama_status
@@ -527,7 +531,7 @@ mamaInternal_enableStatsLogging (void)
         mamaStatsGenerator_addStatsCollector (gStatsGenerator, gGlobalStatsCollector);
     }
 
-    if (gLogQueueStats || gLogTransportStats || gLogGlobalStats || gLogLbmStats)
+    if (gLogQueueStats || gLogTransportStats || gLogGlobalStats || gLogLbmStats || gLogUserStats)
     {
         mamaStatsGenerator_setLogStats (gStatsGenerator, 1);
     }
@@ -796,41 +800,50 @@ mama_statsInit (void)
            generate stats (and neither log nor publish). */
 
         propVal           = properties_Get (gProperties, "mama.statslogging.global.logging");
-         if ( propVal != NULL)
+        if ( propVal != NULL)
             gLogGlobalStats = strtobool(propVal);
 
-          propVal           = properties_Get (gProperties, "mama.statslogging.global.publishing");
-         if ( propVal != NULL)
+        propVal           = properties_Get (gProperties, "mama.statslogging.global.publishing");
+        if ( propVal != NULL)
             gPublishGlobalStats = strtobool(propVal);
 
-         propVal           = properties_Get (gProperties, "mama.statslogging.transport.logging");
-         if ( propVal != NULL)
+        propVal           = properties_Get (gProperties, "mama.statslogging.transport.logging");
+        if ( propVal != NULL)
             gLogTransportStats = strtobool(propVal);
 
         propVal           = properties_Get (gProperties, "mama.statslogging.transport.publishing");
-         if ( propVal != NULL)
+        if ( propVal != NULL)
             gPublishTransportStats = strtobool(propVal);
 
-          propVal           = properties_Get (gProperties, "mama.statslogging.queue.logging");
-         if ( propVal != NULL)
+        propVal           = properties_Get (gProperties, "mama.statslogging.queue.logging");
+        if ( propVal != NULL)
             gLogQueueStats = strtobool(propVal);
 
-          propVal           = properties_Get (gProperties, "mama.statslogging.queue.publishing");
-         if ( propVal != NULL)
+        propVal           = properties_Get (gProperties, "mama.statslogging.queue.publishing");
+        if ( propVal != NULL)
             gPublishQueueStats = strtobool(propVal);
 
         propVal           = properties_Get (gProperties, "mama.statslogging.lbm.logging");
-         if ( propVal != NULL)
+        if ( propVal != NULL)
             gLogLbmStats = strtobool(propVal);
 
-          propVal           = properties_Get (gProperties, "mama.statslogging.lbm.publishing");
-         if ( propVal != NULL)
+        propVal           = properties_Get (gProperties, "mama.statslogging.lbm.publishing");
+        if ( propVal != NULL)
             gPublishLbmStats = strtobool(propVal);
 
+        propVal           = properties_Get (gProperties, "mama.statslogging.user.logging");
+        if ( propVal != NULL)
+            gLogUserStats = strtobool(propVal);
+
+        propVal           = properties_Get (gProperties, "mama.statslogging.user.publishing");
+        if ( propVal != NULL)
+            gPublishUserStats = strtobool(propVal);
+        
         if (gLogGlobalStats || gPublishGlobalStats) gGenerateGlobalStats=1;
         if (gLogTransportStats || gPublishTransportStats) gGenerateTransportStats=1;
         if (gLogQueueStats || gPublishQueueStats) gGenerateQueueStats=1;
         if (gLogLbmStats || gPublishLbmStats) gGenerateLbmStats=1;
+        if (gLogUserStats || gPublishUserStats) gGenerateUserStats=1;
           
         mama_setupStatsGenerator();
 
@@ -2070,4 +2083,50 @@ mama_setBridgeInfoCallback (mamaBridge bridgeImpl, bridgeInfoCallback callback)
     }
 
     return MAMA_STATUS_OK;
+}
+
+mama_status
+mama_addStatsCollector (mamaStatsCollector statsCollector)
+{
+    mama_status status = MAMA_STATUS_NOT_FOUND;
+
+    if (!gStatsGenerator)
+        mama_statsInit();
+
+    if (MAMA_STATUS_OK != (
+            status = mamaStatsGenerator_addStatsCollector (
+                        gStatsGenerator,
+                        statsCollector)))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mama_addStatsCollector (): "
+                    "Could not add User stats collector.");
+        return status;
+    }
+
+    return status;
+}
+
+mama_status
+mama_removeStatsCollector (mamaStatsCollector statsCollector)
+{
+    mama_status status = MAMA_STATUS_NOT_FOUND;
+
+    if (gStatsGenerator)
+    {
+        if (MAMA_STATUS_OK != (
+                status = mamaStatsGenerator_removeStatsCollector (
+                            mamaInternal_getStatsGenerator(),
+                            statsCollector)))
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR, "mama_removeStatsCollector (): "
+                     "Could not remove User stats collector.");
+            return status;
+        }
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mamaInternal_getStatsGenerator (): "
+                  "Could not find stats generator.");
+    }
+    return status;
 }
