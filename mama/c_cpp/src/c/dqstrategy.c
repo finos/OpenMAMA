@@ -183,7 +183,7 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
     mama_u16_t       conflateCnt    = 1;
     wombat_subscriptionGapCB onGap  = NULL;
     mamaTransport    transport; 
-    mamaStatsCollector* transportStatsCollector = NULL;
+    mamaStatsCollector transportStatsCollector = NULL;
     wombat_subscriptionQualityCB onQuality = NULL;
     mamaMsgStatus    msgStatus      = MAMA_MSG_STATUS_UNKNOWN;
     mamaTransport    tport        = NULL;
@@ -209,12 +209,12 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
             mamaSubscription_getTransport (subscription, &transport);
             transportStatsCollector = mamaTransport_getStatsCollector (transport);
 
-            mamaStatsCollector_incrementStat (*transportStatsCollector, 
+            mamaStatsCollector_incrementStat (transportStatsCollector, 
                                               MamaStatFtTakeovers.mFid);
         }
         if (mamaInternal_getGlobalStatsCollector() != NULL)
         {
-            mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()), 
+            mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(), 
                                               MamaStatFtTakeovers.mFid);
         }
         if (DQ_FT_WAIT_FOR_RECAP==mamaTransportImpl_getFtStrategyScheme(tport))

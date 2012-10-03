@@ -123,7 +123,7 @@ typedef struct transportImpl_
     char*                    mDescription;
 
     int                     mDeactivateSubscriptionOnError;
-    mamaStatsCollector*     mStatsCollector;
+    mamaStatsCollector      mStatsCollector;
     mamaStat                mRecapStat;
     mamaStat                mUnknownMsgStat;
     mamaStat                mMessageStat;
@@ -891,11 +891,8 @@ mamaTransport_initStats (mamaTransport transport)
 
     middleware = self->mBridgeImpl->bridgeGetName ();
 
-    self->mStatsCollector = (mamaStatsCollector*) mamaStatsGenerator_allocateStatsCollector
-                                                            (mamaInternal_getStatsGenerator ());
-
     if (MAMA_STATUS_OK != (status=mamaStatsCollector_create (
-                               self->mStatsCollector,
+                               &(self->mStatsCollector),
                                 MAMA_STATS_COLLECTOR_TYPE_TRANSPORT,
                                 self->mName, middleware)))
     {
@@ -909,7 +906,7 @@ mamaTransport_initStats (mamaTransport transport)
     if (!gLogTransportStats)
     {
         if (MAMA_STATUS_OK != (status=mamaStatsCollector_setLog (
-                                    *self->mStatsCollector, 0)))
+                                    self->mStatsCollector, 0)))
         {
             return status;
         }
@@ -923,7 +920,7 @@ mamaTransport_initStats (mamaTransport transport)
     if (gPublishTransportStats)
     {
         if (MAMA_STATUS_OK != (status=mamaStatsCollector_setPublish (
-                                    *self->mStatsCollector, 1)))
+                                    self->mStatsCollector, 1)))
         {
             return status;
         }
@@ -1323,7 +1320,7 @@ mamaTransport_destroy (mamaTransport transport)
     if (self->mStatsCollector)
     {
         mamaStatsGenerator_removeStatsCollector  (mamaInternal_getStatsGenerator (), self->mStatsCollector);
-        mamaStatsCollector_destroy (*self->mStatsCollector);
+        mamaStatsCollector_destroy (self->mStatsCollector);
         self->mStatsCollector = NULL;
     }
 
@@ -1350,7 +1347,7 @@ mamaTransport_setName (mamaTransport transport,
 
     if (self->mStatsCollector)
     {
-        mamaStatsCollector_setName (*self->mStatsCollector, self->mName);
+        mamaStatsCollector_setName (self->mStatsCollector, self->mName);
     }
 
     return MAMA_STATUS_OK;
@@ -2283,7 +2280,7 @@ mamaTransport_getNativeTransportNamingCtx (mamaTransport transport,
 }
 
 
-mamaStatsCollector*
+mamaStatsCollector
 mamaTransport_getStatsCollector (mamaTransport transport)
 {
     if (!self) return 0;

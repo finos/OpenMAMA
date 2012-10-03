@@ -33,7 +33,7 @@ typedef struct mamaStatImpl__
 {
     const char*         mName;
     mama_fid_t          mFid;
-    mamaStatsCollector* mStatsCollector;
+    mamaStatsCollector  mStatsCollector;
     mama_u32_t          mIntervalValue;
     mama_u32_t          mMaxValue;
     mama_u32_t          mTotalValue;
@@ -46,7 +46,7 @@ typedef struct mamaStatImpl__
 } mamaStatImpl;
 
 mama_status
-mamaStat_create (mamaStat* stat, mamaStatsCollector* statsCollector, int lockable, const char* name, mama_fid_t fid)
+mamaStat_create (mamaStat* stat, mamaStatsCollector statsCollector, int lockable, const char* name, mama_fid_t fid)
 {
     mamaStatImpl* impl = (mamaStatImpl*) malloc (sizeof(mamaStatImpl));
     if (impl == NULL) return MAMA_STATUS_NOMEM;
@@ -66,7 +66,7 @@ mamaStat_create (mamaStat* stat, mamaStatsCollector* statsCollector, int lockabl
         wthread_mutex_init (&impl->mUpdateMutex, NULL);
 
     *stat = (mamaStat)impl;
-    mamaStatsCollector_addStat (*impl->mStatsCollector, *stat);
+    mamaStatsCollector_addStat (impl->mStatsCollector, *stat);
     return MAMA_STATUS_OK;
 }
 

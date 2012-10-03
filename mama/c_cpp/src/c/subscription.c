@@ -2029,19 +2029,19 @@ void mamaSubscriptionImpl_initialize(mamaSubscriptionImpl *impl)
     /* Increment the appropriate stats. */
     if(gGenerateQueueStats)
     {
-        mamaStatsCollector *queueStatsCollector = mamaQueueImpl_getStatsCollector(impl->mQueue);
-        mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatNumSubscriptions.mFid);
+        mamaStatsCollector queueStatsCollector = mamaQueueImpl_getStatsCollector(impl->mQueue);
+        mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatNumSubscriptions.mFid);
     }
 
     if(gGenerateTransportStats)
     {
-        mamaStatsCollector *transportStatsCollector = mamaTransport_getStatsCollector(impl->mTransport);
-        mamaStatsCollector_incrementStat(*transportStatsCollector, MamaStatNumSubscriptions.mFid);
+        mamaStatsCollector transportStatsCollector = mamaTransport_getStatsCollector(impl->mTransport);
+        mamaStatsCollector_incrementStat(transportStatsCollector, MamaStatNumSubscriptions.mFid);
     }
 
     if(mamaInternal_getGlobalStatsCollector() != NULL)
     {
-        mamaStatsCollector_incrementStat(*(mamaInternal_getGlobalStatsCollector()), MamaStatNumSubscriptions.mFid);
+        mamaStatsCollector_incrementStat(mamaInternal_getGlobalStatsCollector(), MamaStatNumSubscriptions.mFid);
     }
 }
 

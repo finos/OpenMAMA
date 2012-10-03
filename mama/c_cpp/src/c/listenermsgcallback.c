@@ -253,8 +253,8 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     int               expectingInitial  = 0;
     mamaQueue           queue;
     mamaTransport       transport;
-    mamaStatsCollector* queueStatsCollector = NULL;
-    mamaStatsCollector* tportStatsCollector = NULL;
+    mamaStatsCollector queueStatsCollector = NULL;
+    mamaStatsCollector tportStatsCollector = NULL;
     const char* userSymbol = NULL;
 	dqState state = DQ_STATE_NOT_ESTABLISHED;
     mamaSubscription_getTransport (subscription, &transport);
@@ -282,13 +282,13 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     }
 
     if (queueStatsCollector)
-        mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatNumMessages.mFid);
+        mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatNumMessages.mFid);
 
     if (tportStatsCollector)
-        mamaStatsCollector_incrementStat (*tportStatsCollector, MamaStatNumMessages.mFid);
+        mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatNumMessages.mFid);
 
     if (mamaInternal_getGlobalStatsCollector() != NULL)
-        mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()),
+        mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
                                           MamaStatNumMessages.mFid);
 
     /* Get the user symbol from the subscription. */
@@ -357,18 +357,18 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
 
             if (queueStatsCollector)
             {
-                mamaStatsCollector_incrementStat (*queueStatsCollector,
+                mamaStatsCollector_incrementStat (queueStatsCollector,
                         MamaStatUnknownMsgs.mFid);
             }
             if (tportStatsCollector)
             {
-                mamaStatsCollector_incrementStat (*tportStatsCollector,
+                mamaStatsCollector_incrementStat (tportStatsCollector,
                         MamaStatUnknownMsgs.mFid);
             }
             if (mamaInternal_getGlobalStatsCollector())
             {
                 mamaStatsCollector_incrementStat
-                    (*(mamaInternal_getGlobalStatsCollector()),
+                (mamaInternal_getGlobalStatsCollector(),
                      MamaStatUnknownMsgs.mFid);
             }
             return; /* throw away msg */
@@ -387,15 +387,15 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         case MAMA_MSG_TYPE_INITIAL :
              if (queueStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatInitials.mFid);
+                mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatInitials.mFid);
              }
              if (tportStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*tportStatsCollector, MamaStatInitials.mFid);
+                mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatInitials.mFid);
              }
              if (mamaInternal_getGlobalStatsCollector() != NULL)
              {
-                mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()),
+                mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
                                                   MamaStatInitials.mFid);
              }
              break;
@@ -403,30 +403,30 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         case MAMA_MSG_TYPE_BOOK_RECAP :
              if (queueStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatRecaps.mFid);
+                mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatRecaps.mFid);
              }
              if (tportStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*tportStatsCollector, MamaStatRecaps.mFid);
+                mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatRecaps.mFid);
              }
              if (mamaInternal_getGlobalStatsCollector())
              {
-                mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()),
+                mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
                                                   MamaStatRecaps.mFid);
              }
              break;
         case MAMA_MSG_TYPE_UNKNOWN :
              if (queueStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatUnknownMsgs.mFid);
+                mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatUnknownMsgs.mFid);
              }
              if (tportStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*tportStatsCollector, MamaStatUnknownMsgs.mFid);
+                mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatUnknownMsgs.mFid);
              }
              if (mamaInternal_getGlobalStatsCollector())
              {
-                mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()),
+                mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
                                                   MamaStatUnknownMsgs.mFid);
              }
              break;

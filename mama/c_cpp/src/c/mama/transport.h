@@ -597,7 +597,7 @@ mamaTransport_getNativeTransportNamingCtx (mamaTransport transport,
                                            void** nativeTportNamingCtx);
 
 MAMAExpDLL
-extern mamaStatsCollector*
+extern mamaStatsCollector
 mamaTransport_getStatsCollector (mamaTransport transport);
 
 /**

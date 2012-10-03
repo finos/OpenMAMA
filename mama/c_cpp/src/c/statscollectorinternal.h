@@ -22,12 +22,30 @@
 #ifndef MamaStatsCollectorInternalH__
 #define MamaStatsCollectorInternalH__
 
+#include "mama/statscollector.h"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 typedef void (
 *collectorPollStatCb) (mamaStatsCollector statsCollector, void* closure);
+
+#define MAMA_STAT_ARRAY_OFFSET 		105
+#define MAMA_STAT_MAX_STATS    		30
+
+typedef struct mamaStatsCollectorImpl__
+{
+    mamaStatsCollectorType 	mType;
+    char* 			        mName;
+    mamaStat    			mMamaStats[MAMA_STAT_MAX_STATS];
+    char* 			        mMiddleware;
+    collectorPollStatCb 	mPollCb;
+    void*       			mPollClosure;
+    int         			mPublishStats;
+    int         			mLogStats;
+    void*          			mHandle;
+} mamaStatsCollectorImpl;
 
 MAMAExpDLL
 extern mama_status
@@ -44,7 +62,7 @@ mamaStatsCollector_setPollCallback (mamaStatsCollector statsCollector, collector
  */
 MAMAExpDLL
 extern void
-mamaStatsCollector_populateMsg (mamaStatsCollector* statsCollector, mamaMsg msg, int* wasLogged);
+mamaStatsCollector_populateMsg (mamaStatsCollector statsCollector, mamaMsg msg, int* wasLogged);
 
 MAMAExpDLL
 extern mama_status

@@ -51,7 +51,7 @@ mamaStatsGenerator_destroy (mamaStatsGenerator statsGenerator);
 
 MAMAExpDLL
 extern mama_status
-mamaStatsGenerator_removeStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector* statsCollector);
+mamaStatsGenerator_removeStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector statsCollector);
 
 MAMAExpDLL
 extern mama_status
@@ -75,7 +75,7 @@ mamaStatsGenerator_allocateStatsCollector (mamaStatsGenerator statsGenerator);
 
 MAMAExpDLL
 extern mama_status
-mamaStatsGenerator_addStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector* statsCollector);
+mamaStatsGenerator_addStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector statsCollector);
 
 #if defined (__cplusplus)
 }

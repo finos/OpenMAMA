@@ -112,7 +112,7 @@ int gPublishLbmStats        = 0;
 static mamaStatsLogger  gStatsPublisher  = NULL;
 
 mamaStatsGenerator      gStatsGenerator         = NULL;
-mamaStatsCollector*     gGlobalStatsCollector   = NULL;
+mamaStatsCollector      gGlobalStatsCollector   = NULL;
 mamaStat                gInitialStat;
 mamaStat                gRecapStat;
 mamaStat                gUnknownMsgStat;
@@ -448,10 +448,8 @@ mamaInternal_enableStatsLogging (void)
         const char* appName;
         mama_getApplicationName (&appName);
 
-        gGlobalStatsCollector = (mamaStatsCollector*)mamaStatsGenerator_allocateStatsCollector (gStatsGenerator);
-
         if (MAMA_STATUS_OK != (result =
-            mamaStatsCollector_create (gGlobalStatsCollector,
+            mamaStatsCollector_create (&gGlobalStatsCollector,
                                        MAMA_STATS_COLLECTOR_TYPE_GLOBAL,
                                        appName,
                                        "-----")))
@@ -462,7 +460,7 @@ mamaInternal_enableStatsLogging (void)
         if (!gLogGlobalStats)
         {
             if (MAMA_STATUS_OK != (result =
-                mamaStatsCollector_setLog (*gGlobalStatsCollector, 0)))
+                mamaStatsCollector_setLog (gGlobalStatsCollector, 0)))
             {
                 return MAMA_STATUS_OK;
             }
@@ -471,7 +469,7 @@ mamaInternal_enableStatsLogging (void)
         if (gPublishGlobalStats)
         {
             if (MAMA_STATUS_OK != (result =
-                mamaStatsCollector_setPublish (*gGlobalStatsCollector, 1)))
+                mamaStatsCollector_setPublish (gGlobalStatsCollector, 1)))
             {
                 return MAMA_STATUS_OK;
             }
@@ -552,7 +550,7 @@ mamaInternal_enableStatsLogging (void)
         mamaStatsGenerator_addStatsCollector (gStatsGenerator, gGlobalStatsCollector);
     }
 
-    if (gLogQueueStats || gLogTransportStats || gLogGlobalStats)
+    if (gLogQueueStats || gLogTransportStats || gLogGlobalStats || gLogLbmStats)
     {
         mamaStatsGenerator_setLogStats (gStatsGenerator, 1);
     }
@@ -579,7 +577,7 @@ mamaInternal_getStatsGenerator()
     return gStatsGenerator;
 }
 
-mamaStatsCollector*
+mamaStatsCollector
 mamaInternal_getGlobalStatsCollector()
 {
     return gGlobalStatsCollector;
@@ -1152,7 +1150,7 @@ mama_closeCount (unsigned int* count)
             {
                 mamaStatsGenerator_removeStatsCollector (gStatsGenerator, gGlobalStatsCollector);
             }
-            mamaStatsCollector_destroy (*gGlobalStatsCollector);
+            mamaStatsCollector_destroy (gGlobalStatsCollector);
             gGlobalStatsCollector = NULL;
         }
 
@@ -1248,7 +1246,7 @@ mama_closeCount (unsigned int* count)
             {
                 mamaStatsGenerator_removeStatsCollector (gStatsGenerator, gGlobalStatsCollector);
             }
-            mamaStatsCollector_destroy (*gGlobalStatsCollector);
+            mamaStatsCollector_destroy (gGlobalStatsCollector);
             gGlobalStatsCollector = NULL;
         }
 

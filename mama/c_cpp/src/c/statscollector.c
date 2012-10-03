@@ -29,21 +29,6 @@
 #include "mama/statscollector.h"
 #include "mama/statfields.h"
 
-#define MAMA_STAT_ARRAY_OFFSET 		105
-#define MAMA_STAT_MAX_STATS    		30
-
-typedef struct mamaStatsCollectorImpl__
-{
-    mamaStatsCollectorType 	mType;
-    const char* 			mName;
-    mamaStat    			mMamaStats[MAMA_STAT_MAX_STATS];
-    const char* 			mMiddleware;
-    collectorPollStatCb 	mPollCb;
-    void*       			mPollClosure;
-    int         			mPublishStats;
-    int         			mLogStats;
-} mamaStatsCollectorImpl;
-
 mama_status
 mamaStatsCollector_create (mamaStatsCollector* statsCollector, mamaStatsCollectorType type, const char* name, const char* middleware)
 {
@@ -71,9 +56,9 @@ mamaStatsCollector_destroy (mamaStatsCollector statsCollector)
     mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
-    free ((char*)impl->mName);
+    free (impl->mName);
     impl->mName         = NULL;
-    free ((char*)impl->mMiddleware);
+    free (impl->mMiddleware);
     impl->mMiddleware   = NULL;
     impl->mPollCb       = NULL;
     impl->mPollClosure  = NULL;
@@ -122,9 +107,9 @@ mamaStatsCollector_setStatIntervalValueFromTotal (mamaStatsCollector statsCollec
 }
 
 void
-mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector* statsCollector, mamaMsg msg, int* wasLogged)
+mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector statsCollector, mamaMsg msg, int* wasLogged)
 {
-    mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)*statsCollector;
+    mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     mama_fid_t  fid;
     const char* name = NULL;
     const char* type = NULL;
@@ -150,7 +135,7 @@ mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector* stat
 
     if (impl->mPollCb != NULL)
     {
-        impl->mPollCb (*statsCollector, impl->mPollClosure);
+        impl->mPollCb (statsCollector, impl->mPollClosure);
     }
 
     for (i=0;i<MAMA_STAT_MAX_STATS;i++)

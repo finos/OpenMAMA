@@ -123,28 +123,37 @@ mamaStatsGenerator_setQueue (mamaStatsGenerator statsGenerator, mamaQueue queue)
 }
 
 mama_status
-mamaStatsGenerator_addStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector* statsCollector)
+mamaStatsGenerator_addStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector statsCollector)
 {
     mamaStatsGeneratorImpl* impl = (mamaStatsGeneratorImpl*)statsGenerator;
+    mamaStatsCollector* element = NULL;
+    mamaStatsCollectorImpl* collectorImpl = (mamaStatsCollectorImpl*)statsCollector;
 
     if (impl==NULL) return MAMA_STATUS_NULL_ARG;
     if (statsCollector == NULL) return MAMA_STATUS_NULL_ARG;
 
-    list_push_back (impl->mStatsCollectors, statsCollector);
+    element = list_allocate_element (impl->mStatsCollectors);
+
+    *element = statsCollector;
+
+    list_push_back (impl->mStatsCollectors, element);
+
+     collectorImpl->mHandle = element;
 
     return MAMA_STATUS_OK;
 }
 
 mama_status
-mamaStatsGenerator_removeStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector* statsCollector)
+mamaStatsGenerator_removeStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector statsCollector)
 {
     mamaStatsGeneratorImpl* impl = (mamaStatsGeneratorImpl*)statsGenerator;
+     mamaStatsCollectorImpl* collectorImpl = (mamaStatsCollectorImpl*)statsCollector;
 
     if (impl==NULL) return MAMA_STATUS_NULL_ARG;
     if (statsCollector==NULL) return MAMA_STATUS_NULL_ARG;
 
-    list_remove_element (impl->mStatsCollectors, (void*)statsCollector);
-    list_free_element (impl->mStatsCollectors, (void*)statsCollector);
+    list_remove_element (impl->mStatsCollectors, collectorImpl->mHandle);
+    list_free_element (impl->mStatsCollectors, collectorImpl->mHandle);
 
     return MAMA_STATUS_OK;
 }
@@ -172,7 +181,7 @@ mamaStatsGenerator_generateStats (mamaStatsGenerator statsGenerator)
    {
         wasLogged = 0;
 
-        mamaStatsCollector_populateMsg (current, impl->mStatMsg, &wasLogged);
+        mamaStatsCollector_populateMsg (*current, impl->mStatMsg, &wasLogged);
 
         if (impl->mStatsLogger && mamaStatsCollector_getPublish(*current))
         {
@@ -231,14 +240,6 @@ mamaStatsGenerator_onReportTimer (mamaTimer timer, void* closure)
     mamaStatsGenerator statsgenerator = (mamaStatsGenerator)closure;
 
     mamaStatsGenerator_generateStats (statsgenerator);
-}
-
-void*
-mamaStatsGenerator_allocateStatsCollector (mamaStatsGenerator statsGenerator)
-{
-    mamaStatsGeneratorImpl* impl = (mamaStatsGeneratorImpl*)statsGenerator;
-
-    return list_allocate_element (impl->mStatsCollectors);
 }
 
 mama_status mamaStatsGenerator_stopReportTimer(mamaStatsGenerator statsGenerator)

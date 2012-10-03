@@ -544,8 +544,8 @@ static void MAMACALLTYPE imageRequestImpl_processTimeout (imageReqImpl *impl)
         int                 isRecap      = impl->mIsRecapRequest;
         mamaQueue           queue;
         mamaTransport       transport;
-        mamaStatsCollector* queueStatsCollector = NULL;
-        mamaStatsCollector* transportStatsCollector = NULL;
+        mamaStatsCollector queueStatsCollector = NULL;
+        mamaStatsCollector transportStatsCollector = NULL;
 
         /* We do not want to process any more messages if initial does not
          * arrive. For recaps we continue to process messages.
@@ -565,7 +565,7 @@ static void MAMACALLTYPE imageRequestImpl_processTimeout (imageReqImpl *impl)
             mamaSubscription_getQueue (subscription, &queue);
             queueStatsCollector = mamaQueueImpl_getStatsCollector (queue);
 
-            mamaStatsCollector_incrementStat (*queueStatsCollector,
+            mamaStatsCollector_incrementStat (queueStatsCollector,
                     MamaStatTimeouts.mFid);
         }
         if (gGenerateTransportStats)
@@ -573,13 +573,13 @@ static void MAMACALLTYPE imageRequestImpl_processTimeout (imageReqImpl *impl)
             mamaSubscription_getTransport (subscription, &transport);
             transportStatsCollector = mamaTransport_getStatsCollector (transport);
 
-            mamaStatsCollector_incrementStat (*transportStatsCollector,
+            mamaStatsCollector_incrementStat (transportStatsCollector,
                     MamaStatTimeouts.mFid);
         }
         if (mamaInternal_getGlobalStatsCollector () != NULL)
         {
             mamaStatsCollector_incrementStat
-                (*(mamaInternal_getGlobalStatsCollector ()),
+                (mamaInternal_getGlobalStatsCollector (),
                  MamaStatTimeouts.mFid);
         }
 

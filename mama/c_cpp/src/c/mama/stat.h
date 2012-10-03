@@ -66,7 +66,7 @@ typedef enum mamaStatType
  */
 MAMAExpDLL
 extern mama_status
-mamaStat_create (mamaStat* stat, mamaStatsCollector* collector, int lockable, const char* name, mama_fid_t type);
+mamaStat_create (mamaStat* stat, mamaStatsCollector collector, int lockable, const char* name, mama_fid_t type);
 
 /**
  * Destroy a mamaStats object

@@ -63,7 +63,7 @@ extern mamaStatsGenerator
 mamaInternal_getStatsGenerator (void);
 
 MAMAExpDLL
-extern mamaStatsCollector*
+extern mamaStatsCollector
 mamaInternal_getGlobalStatsCollector (void);
 
 MAMAExpDLL

@@ -104,7 +104,7 @@ extern mama_status
 mamaQueueImpl_lowWatermarkExceeded (mamaQueue queue, size_t size);
 
 MAMAExpDLL
-extern mamaStatsCollector* 
+extern mamaStatsCollector 
 mamaQueueImpl_getStatsCollector (mamaQueue queue);
 
 #if defined(__cplusplus)
