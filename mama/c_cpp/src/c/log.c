@@ -562,6 +562,7 @@ mama_forceLogDefault (MamaLogLevel level,
 		mamaLog_getTime(ts, MAMALOG_TIME_BUFFER_LENGTH);
 
 		fprintf (f, "%s", ts);
+        fprintf (f, "(%x) : ", (unsigned int)wGetCurrentThreadId());
 		vfprintf (f, format, ap);
 		fprintf (f, "\n");
 		fflush (f);
@@ -1037,6 +1038,29 @@ mama_logVa(MamaLogLevel level,
 }
 
 void
+mama_forceLogVa(const char   *format, 
+           va_list      args)
+{
+	/* Get the log function and the log level under the reader lock. */
+	MamaLogLevel currentLevel	= 0;
+	mamaLogCb	 logFunction	= NULL;
+
+	/* Acquire the read lock. */
+	mamaLog_acquireLock(1);
+
+	/* Get the variables. */
+	currentLevel	= gMamaLogLevel;
+	logFunction = gMamaForceLogFunc;
+	
+	/* Release the read lock as quickly as possible. */
+	MRSWLock_release(g_lock, 1);
+
+	/* Call the log function. */
+    logFunction(currentLevel, format, args);
+}
+
+
+void
 mama_forceLog (MamaLogLevel level, const char *format, ...)
 {
 	/* Get the log function under the reader lock. */
@@ -1148,7 +1172,8 @@ mama_tryStringToLogLevel(const char*   s,
     {
         *level=MAMA_LOG_LEVEL_ERROR;
     }
-    else if (0==strcasecmp(s,"Warn"))
+    else if (0==strcasecmp(s,"Warn")
+             || 0==strcasecmp(s, "Warning"))
     {
         *level=MAMA_LOG_LEVEL_WARN;
     }
@@ -1160,11 +1185,13 @@ mama_tryStringToLogLevel(const char*   s,
     {
         *level=MAMA_LOG_LEVEL_FINE;
     }
-    else if (0==strcasecmp(s,"Finer"))
+    else if (0==strcasecmp(s,"Finer")
+             || 0==strcasecmp(s, "Verbose"))
     {
         *level=MAMA_LOG_LEVEL_FINER;
     }
-    else if (0==strcasecmp(s,"Finest"))
+    else if (0==strcasecmp(s,"Finest")
+             || 0==strcasecmp(s, "Debug"))
     {
         *level=MAMA_LOG_LEVEL_FINEST;
     }
@@ -1223,7 +1250,7 @@ int mama_logDecrementVerbosity(MamaLogLevel* level)
     return 1;
 }
 
-mama_status mama_logForceRollLogFiles()
+mama_status mama_logForceRollLogFiles(void)
 {
     mama_status ret = MAMA_STATUS_INVALID_ARG;
     MRSW_RESULT	al = mamaLog_acquireLock(0);
@@ -1231,7 +1258,7 @@ mama_status mama_logForceRollLogFiles()
 	{
         ret = mamaLog_rollLogFiles();
 		/* Release the read lock. */
-		MRSWLock_release(g_lock, 1);
+		MRSWLock_release(g_lock, 0);
 	}
     return ret;
 }
