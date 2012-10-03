@@ -162,24 +162,18 @@ namespace Wombat
         mamaTry (mama_start (bridgeImpl));
     }
 
-    static MamaStartCallback* gMamaStartCallback = NULL;
-
     extern "C"
     {
-        void MAMACALLTYPE startCb (mama_status status)
+        void MAMACALLTYPE stopCb (mama_status status, mamaBridge, void* closure)
         {
-            if (gMamaStartCallback != NULL)
-            {
-                gMamaStartCallback->onStartComplete (MamaStatus (status));
-            }
+            static_cast<MamaStartCallback*>(closure)->onStartComplete(MamaStatus(status));
         }
     }
 
     void Mama::startBackground (mamaBridge bridgeImpl,
                                 MamaStartCallback* cb)
     {
-        gMamaStartCallback = cb;
-        mamaTry (mama_startBackground (bridgeImpl, startCb));
+        mamaTry (mama_startBackgroundEx (bridgeImpl, mamaStopCBEx(stopCb), static_cast<void*>(cb)));
     }
 
     void Mama::stop (mamaBridge bridgeImpl)

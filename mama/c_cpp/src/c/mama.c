@@ -44,6 +44,7 @@
 #include <statsgeneratorinternal.h>
 #include <statsgeneratorinternal.h>
 #include <mama/statscollector.h>
+#include "transportimpl.h"
 
 #define PROPERTY_FILE "mama.properties"
 #define WOMBAT_PATH_ENV "WOMBAT_PATH"
@@ -1360,13 +1361,14 @@ mama_start (mamaBridge bridgeImpl)
 
 struct startBackgroundClosure
 {
-    mamaStartCB mStartCallback;
-    mamaBridge  mBridgeImpl;
+    mamaStopCB   mStopCallback;
+    mamaStopCBEx mStopCallbackEx;
+    mamaBridge   mBridgeImpl;
+    void*        mClosure;
 };
 
 static void* mamaStartThread (void* closure)
 {
-    /* size_t cast prevents compiler warning */
     struct startBackgroundClosure* cb =
                 (struct startBackgroundClosure*)closure;
     mama_status rval = MAMA_STATUS_OK;
@@ -1375,7 +1377,11 @@ static void* mamaStartThread (void* closure)
 
     rval = mama_start (cb->mBridgeImpl);
 
-    cb->mStartCallback (rval);
+    if (cb->mStopCallback)
+        cb->mStopCallback (rval);
+
+    if (cb->mStopCallbackEx)
+        cb->mStopCallbackEx (rval, cb->mBridgeImpl, cb->mClosure);
 
     /* Free the closure object */
     free(cb);
@@ -1383,24 +1389,33 @@ static void* mamaStartThread (void* closure)
     return NULL;
 }
 
-mama_status
-mama_startBackground (mamaBridge   bridgeImpl,
-                      mamaStartCB callback)
+static mama_status
+mama_startBackgroundHelper (mamaBridge   bridgeImpl,
+                            mamaStopCB   callback,
+                            mamaStopCBEx exCallback,
+                            void*        closure)
 {
     struct startBackgroundClosure*  closureData;
     wthread_t       t = 0;
 
     if (!bridgeImpl)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "mama_startBackground(): NULL bridge "
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mama_startBackgroundHelper(): NULL bridge "
                   " impl.");
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
-    if (!callback)
+    if (!callback && !exCallback)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "mama_startBackground(): No "
-                  "callback specified.");
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mama_startBackgroundHelper(): No "
+                  "stop callback or extended stop callback specified.");
+        return MAMA_STATUS_INVALID_ARG;
+    }
+
+    if (callback && exCallback)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mama_startBackgroundHelper(): Both "
+                "stop callback and extended stop callback specified.");
         return MAMA_STATUS_INVALID_ARG;
     }
 
@@ -1409,8 +1424,10 @@ mama_startBackground (mamaBridge   bridgeImpl,
     if (!closureData)
         return MAMA_STATUS_NOMEM;
 
-    closureData->mStartCallback = callback;
+    closureData->mStopCallback   = callback;
+    closureData->mStopCallbackEx = exCallback;
     closureData->mBridgeImpl    = bridgeImpl;
+    closureData->mClosure        = closure;
 
     if (0 != wthread_create(&t, NULL, mamaStartThread, (void*) closureData))
     {
@@ -1422,6 +1439,19 @@ mama_startBackground (mamaBridge   bridgeImpl,
     return MAMA_STATUS_OK;
 }
 
+mama_status
+mama_startBackground (mamaBridge bridgeImpl, mamaStartCB callback)
+{
+    /* Passing these NULLs tells mama_startBackgroundHelper to use old functionality */
+    return mama_startBackgroundHelper (bridgeImpl, (mamaStopCB)callback, NULL, NULL);
+}
+
+mama_status
+mama_startBackgroundEx (mamaBridge bridgeImpl, mamaStopCBEx exCallback, void* closure)
+{
+    /* Passing this NULL tells mama_StartBackgroundHelper to use new functionality */
+    return mama_startBackgroundHelper (bridgeImpl, NULL, exCallback, closure);
+}
 /**
  * Stop processing messages
  */

@@ -252,6 +252,11 @@ mama_status mamaTransport_addPublisher(mamaTransport transport, mamaPublisher pu
 mama_status mamaTransport_removePublisher(mamaTransport transport, void *handle);
 preInitialScheme mamaTransportImpl_getPreInitialScheme (mamaTransport transport);
 
+dqStartegyScheme
+mamaTransportImpl_getDqStrategyScheme (mamaTransport transport);
+
+dqftStrategyScheme
+mamaTransportImpl_getFtStrategyScheme (mamaTransport transport);
 /**
  * This function will allocate an internal transport for use with the internal event queue, this sort
  * of transport is limited and does not support certain features, including
