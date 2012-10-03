@@ -297,6 +297,10 @@ extern mama_status
 mamaTransportImpl_forceClientDisconnect (mamaTransport   transport,
                                          const char*     ipAddress,
                                          uint16_t        port);
+
+extern mama_bool_t
+mamaTransportImpl_preRecapCacheEnabled (mamaTransport transport);
+
 #if defined(__cplusplus)
 }
 #endif

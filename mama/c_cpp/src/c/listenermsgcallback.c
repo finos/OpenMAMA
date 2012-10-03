@@ -189,7 +189,8 @@ static void processPointToPointMessage (msgCallback*    callback,
     if (PRE_INITIAL_SCHEME_ON_INITIAL==
             mamaTransportImpl_getPreInitialScheme (tport))
     {
-        if (msgType==MAMA_MSG_TYPE_INITIAL || msgType == MAMA_MSG_TYPE_BOOK_INITIAL)
+        if (msgType==MAMA_MSG_TYPE_INITIAL || msgType == MAMA_MSG_TYPE_BOOK_INITIAL ||
+           (mamaTransportImpl_preRecapCacheEnabled (tport) &&  (msgType == MAMA_MSG_TYPE_RECAP || msgType == MAMA_MSG_TYPE_BOOK_RECAP )))
         {
             dqContext_applyPreInitialCache (&ctx->mDqContext, self->mSubscription);
 
@@ -255,6 +256,8 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     mamaStatsCollector* queueStatsCollector = NULL;
     mamaStatsCollector* tportStatsCollector = NULL;
     const char* userSymbol = NULL;
+	dqState state = DQ_STATE_NOT_ESTABLISHED;
+    mamaSubscription_getTransport (subscription, &transport);
 
     if (!ctx)
     {
@@ -275,7 +278,6 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
 
     if (gGenerateTransportStats)
     {
-        mamaSubscription_getTransport (subscription, &transport);
         tportStatsCollector = mamaTransport_getStatsCollector (transport);
     }
 
@@ -446,15 +448,17 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
      */
 
     mamaSubscription_getExpectingInitial (subscription, &expectingInitial);
+    dqStrategy_getDqState (ctx->mDqContext, &state);
 
     /*While we are waiting for initial values we also check whether we have an
      * initial for an individual context.
       If we are no longer waiting for initials we assume that it is ok to pass
      on the update - (probably a new symbol for a group)*/
-    if (expectingInitial && !ctx->mInitialArrived
+    if ((expectingInitial && !ctx->mInitialArrived) || 
+        (state == DQ_STATE_WAITING_FOR_RECAP && mamaTransportImpl_preRecapCacheEnabled (transport)
         && msgType != MAMA_MSG_TYPE_DELETE
         && msgType != MAMA_MSG_TYPE_EXPIRE
-        && msgType != MAMA_MSG_TYPE_UNKNOWN)
+        && msgType != MAMA_MSG_TYPE_UNKNOWN))
     {
         /*Add this message to the cache. If the message after the initial
          * results in a gap we will attempt to fill the gap from this cache
@@ -471,7 +475,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
             mama_log (MAMA_LOG_LEVEL_FINE,
                            "%s%s %s%s"
                            " Subscription ignoring message received prior"
-                           " to initial update. Type: %d %s %p",
+                           " to initial or recap. Type: %d %d %p",
                            userSymbolFormatted, ctxSymbolFormatted,
                            msgType, mamaMsg_toString(msg), ctx);
         }

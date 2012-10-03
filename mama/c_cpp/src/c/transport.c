@@ -42,6 +42,7 @@
 #include "mama/statfields.h"
 #include "statsgeneratorinternal.h"
 #include "mama/statscollector.h"
+#include "wombat/strutils.h"
 
 extern int gGenerateTransportStats;
 extern int gGenerateLbmStats;
@@ -169,6 +170,7 @@ typedef struct transportImpl_
     uint8_t                 mInternal;
     uint8_t                 mDisableDisconnectCb;
     preInitialScheme         mPreInitialScheme;
+    mama_bool_t             mPreRecapCacheEnabled;
     void*                   mClosure;
 } transportImpl;
 
@@ -449,6 +451,19 @@ static void setFtStrategy (mamaTransport transport)
     }
 }
 
+static void enablePreRecapCache (mamaTransport transport)
+{
+    char propNameBuf[256];
+
+    if (!self) return;
+
+    snprintf (propNameBuf, 256, "mama.transport.%s.prerecapcache.enable", self->mName);
+
+    self->mPreRecapCacheEnabled = strtobool (mama_getProperty (propNameBuf));
+
+    mama_log (MAMA_LOG_LEVEL_NORMAL,
+              "%s: Pre-Recap cache %s", self->mName, self->mPreRecapCacheEnabled ? "enabled" : "disabled");
+}    
 void mamaTransport_disableRefresh(mamaTransport transport, uint8_t disable)
 {
     self->mDisableRefresh=disable;
@@ -844,6 +859,7 @@ mamaTransport_create (mamaTransport transport,
     setPreInitialStrategy ((mamaTransport)self);
     setDQStrategy (self);
     setFtStrategy (self);
+    enablePreRecapCache ((mamaTransport)self);
 
     if (mamaTransportImpl_disableDisconnectCb (name))
     {
@@ -1744,6 +1760,17 @@ mamaTransportImpl_getFtStrategyScheme (mamaTransport transport)
     }
     return DQ_FT_DO_NOT_WAIT_FOR_RECAP;
 }
+
+mama_bool_t
+mamaTransportImpl_preRecapCacheEnabled (mamaTransport transport)
+{
+    if (self)
+    {
+        return self->mPreRecapCacheEnabled;
+    }
+    return 0;
+}
+
 /* Process an advisory message and invokes callbacks
  *                    on all listeners.
  * @param transport The transport.

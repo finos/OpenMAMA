@@ -384,6 +384,10 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
     case MAMA_MSG_TYPE_RECAP        :
     case MAMA_MSG_TYPE_BOOK_RECAP   :
 
+        if (mamaTransportImpl_preRecapCacheEnabled (tport))
+        {
+            self->mTryToFillGap = 1;
+        }
         mamaSubscription_unsetAllPossiblyStale (subscription);
         resetDqState (strategy, ctx);
         dqStrategyImpl_resetDqContext (ctx, seqNum, senderId);
