@@ -531,7 +531,7 @@ isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subs
 }
 
 
-char* mamaSubscriptionImpl_copyString (const char*  str)
+static char* mamaSubscriptionImpl_copyString (const char*  str)
 {
     /* Windows does not like strdup */
     size_t len = strlen (str) + 1;
@@ -540,7 +540,7 @@ char* mamaSubscriptionImpl_copyString (const char*  str)
     return result;
 }
 
-void checkFree (char**  str)
+static void checkFree (char**  str)
 {
     if (*str)
     {
@@ -549,7 +549,7 @@ void checkFree (char**  str)
     }
 }
 
-mama_status
+static mama_status
 setSubscInfo (
     mamaSubscription  subscription,
     mamaTransport     transport,

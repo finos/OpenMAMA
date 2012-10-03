@@ -91,7 +91,7 @@ typedef enum
 typedef enum
 {
     MAMA_TRANSPORT_TOPIC_SUBSCRIBED,
-    MAMA_TRANSPORT_TOPIC_UNSUBSRCIBED
+    MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED
 } mamaTransportTopicEvent;
 
 

@@ -734,14 +734,16 @@ mamaTransport_create (mamaTransport transport,
                 self->mLoadBalanceHandle = openSharedLib (sharedObjectName, NULL);
                 if (self->mLoadBalanceHandle)
                 {
+					void*	vp = NULL;
                     mama_log (MAMA_LOG_LEVEL_FINER,
                               "Using Library defined load balancing");
-                    self->mLoadBalanceCb =  (mamaTransportLbCB)
-                        loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
+                    vp = loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
                                 "loadBalance");
-                    self->mLoadBalanceInitialCb = (mamaTransportLbInitialCB)
-                        loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
+                    self->mLoadBalanceCb = *(mamaTransportLbCB*)&vp;
+
+                    vp = loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
                                 "loadBalanceInitial");
+                    self->mLoadBalanceInitialCb = *(mamaTransportLbInitialCB*)&vp;
                 }
                 else
                 {
@@ -857,8 +859,8 @@ mamaTransport_create (mamaTransport transport,
 
 
     setPreInitialStrategy ((mamaTransport)self);
-    setDQStrategy (self);
-    setFtStrategy (self);
+    setDQStrategy ((mamaTransport)self);
+    setFtStrategy ((mamaTransport)self);
     enablePreRecapCache ((mamaTransport)self);
 
     if (mamaTransportImpl_disableDisconnectCb (name))
@@ -2200,7 +2202,7 @@ void mamaTransportImpl_setAdvisoryCauseAndPlatformInfo (mamaTransport transport,
     {
         /* Set the cause. */
         impl->mCause        = cause;
-        impl->mPlatformInfo = platformInfo;
+        impl->mPlatformInfo = (void*) platformInfo;
     }
 
     /* Otherwise write an error log. */

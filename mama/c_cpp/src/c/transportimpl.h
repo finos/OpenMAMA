@@ -269,6 +269,7 @@ mamaTransportImpl_getFtStrategyScheme (mamaTransport transport);
  *              MAMA_STATUS_NULL_ARG
  *              MAMA_STATUS_OK
  */
+MAMAExpDLL
 mama_status mamaTransportImpl_allocateInternalTransport(mamaTransport *transport);
 
 /**

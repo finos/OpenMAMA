@@ -46,8 +46,6 @@
 
 #define SYNC_SUBJECTS_PER_MESSAGE  100
 
-static time_t last = 0;
-
 typedef struct refreshTransportImpl_
 {
     mamaTransport      mMamaTransport;
@@ -147,7 +145,7 @@ refreshTransportImpl_staleRecapTimerCallback (mamaTimer timer, void *closure)
     mamaTimer_destroy (timer);
 }
 
-extern void
+static void
 refreshTransport_startRefreshTimer (struct refreshTransportImpl_ *impl)
 {
     mama_status status = MAMA_STATUS_OK;
@@ -177,7 +175,7 @@ refreshTransport_startRefreshTimer (struct refreshTransportImpl_ *impl)
     return;
 }
 
-extern void
+void
 refreshTransport_startStaleRecapTimer (struct refreshTransportImpl_ *impl)
 {
     mama_status status = MAMA_STATUS_OK;
@@ -250,33 +248,6 @@ refreshTransport_addSubscription (refreshTransport transport,
     list_push_back (impl->mNewListeners, info);
 
     return;
-}
-
-extern mama_status
-refreshTransport_stopRefreshTimer (refreshTransportImpl *impl)
-{
-    if (impl->mRefreshTimer != NULL)
-    {
-        mamaTimer_destroy (impl->mRefreshTimer);
-        impl->mRefreshTimer = NULL;
-    }
-
-    return MAMA_STATUS_OK;
-}
-
-
-
-void checkOrder (wList list, void *element, void *closure)
-{
-    SubscriptionInfo *info = (SubscriptionInfo*)element;
-
-    if (info->mNextRefreshTime < last)
-    {
-        fprintf (stderr, "Bad list order!!!!\n");
-        exit (0);
-    }
-
-    last = info->mNextRefreshTime;
 }
 
 static void

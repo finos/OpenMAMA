@@ -140,7 +140,7 @@ mamaQueue_getClosure ( mamaQueue queue, void** closure)
 }
 
 
-mama_status
+static mama_status
 mamaQueue_createReuseableMsg (mamaQueueImpl*  impl)
 {
 	 mama_status     status      =   MAMA_STATUS_OK;

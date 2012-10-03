@@ -183,7 +183,7 @@ mama_status mamaCmResponder_destroy(mamaCmResponder responder)
  *	Returns		:	MAMA_STATUS_NO_BRIDGE_IMPL
  *					MAMA_STATUS_OK
  */
-mama_status populateCmResponder(mamaCmResponderImpl *impl)
+static mama_status populateCmResponder(mamaCmResponderImpl *impl)
 {
 	/* Returns */
     mama_status ret = MAMA_STATUS_NO_BRIDGE_IMPL;

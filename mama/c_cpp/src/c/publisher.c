@@ -157,7 +157,7 @@ mamaPublisher_create (mamaPublisher*    result,
                                         root);
 }
 
-mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
+static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
 {
     /* Returns. */
     mama_status        status   = MAMA_STATUS_OK;

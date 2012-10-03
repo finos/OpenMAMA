@@ -1194,17 +1194,6 @@ mamaMsgField_getTypeName(
 }
 
 mama_status
-mamaMsgFieldImpl_setPayloadBridge (mamaMsgField             msgField,
-                                   mamaPayloadBridgeImpl*   payloadBridge)
-{
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)msgField;
-    if (!impl) return MAMA_STATUS_NULL_ARG;
-    impl->myPayloadBridge  =   payloadBridge;
-
-    return MAMA_STATUS_OK;
-}
-
-mama_status
 mamaMsgFieldImpl_setPayload (mamaMsgField           msgField,
                              msgFieldPayload        payload)
 {
