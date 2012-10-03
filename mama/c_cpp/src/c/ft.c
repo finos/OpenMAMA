@@ -322,7 +322,11 @@ mamaFtMember_deactivate (
         return ret;
 
     /* cancel timer. */
+    if (impl->myHeartbeatTimer)
+    {
     mamaTimer_destroy (impl->myHeartbeatTimer);
+        impl->myHeartbeatTimer=NULL;
+    }
     stopTimeoutTimer (impl);
     impl->myIsActive = 0;
     impl->myIncarnation = 0;
@@ -624,7 +628,7 @@ ftHeartbeatTimerCb (mamaTimer          timer,
                          void*              closure)
 {
     mamaFtMemberImpl* impl = (mamaFtMemberImpl*)closure;
-    mama_log (MAMA_LOG_LEVEL_FINE, "MAMA multicast FT: heartbeat timer has fired");
+    mama_log (MAMA_LOG_LEVEL_FINEST, "MAMA multicast FT: heartbeat timer has fired");
     impl->myHeartbeatTick++;
     impl->ftSendHeartbeat (impl);
 }
@@ -666,8 +670,11 @@ mama_status stopTimeoutTimer (mamaFtMemberImpl* impl)
 {
     mama_status status;
     mama_log (MAMA_LOG_LEVEL_FINE, "MAMA FT: stopping timeout timer");
-    status = mamaTimer_destroy (impl->myTimeoutTimer);
-    impl->myTimeoutTimer = NULL;
+    if (impl->myTimeoutTimer)
+    {
+        status = mamaTimer_destroy (impl->myTimeoutTimer);
+        impl->myTimeoutTimer = NULL;
+    }
     return status;
 }
 
@@ -677,6 +684,7 @@ mama_status resetTimeoutTimer (mamaFtMemberImpl* impl)
     return mamaTimer_reset (impl->myTimeoutTimer);
 }
 
+static
 int mamaBetterCredentials (mamaFtMemberImpl*  impl, unsigned int weight, 
 					  unsigned int incarnation, in_addr_t ipAddr, int pid)
 {
@@ -729,14 +737,14 @@ void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
     if ((hbPid == impl->myPid) && (hbIpAddr == impl->myIP))
     {
         /* We sent this one ourselves. */
-         mama_log (MAMA_LOG_LEVEL_FINER, "MAMA multicast FT: received own heartbeat");
+         mama_log (MAMA_LOG_LEVEL_FINEST, "MAMA multicast FT: received own heartbeat");
         return;
     }
 
 
     if (mamaBetterCredentials(impl, hbWeight,hbIncarnation,hbIpAddr,hbPid) == 0)
     {
-        mama_log (MAMA_LOG_LEVEL_FINER,
+        mama_log (MAMA_LOG_LEVEL_FINEST,
                                   "MAMA NATIVE FT: received heartbeat");
 
         if (hbIncarnation >= impl->myNextIncarnation)
@@ -751,7 +759,7 @@ void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
     }
     else
     {
-        mama_log (MAMA_LOG_LEVEL_FINER,
+        mama_log (MAMA_LOG_LEVEL_FINEST,
                 "MAMA NATIVE FT: received heartbeat from an instance with lower"
                   " priority (ignored)");
         return ;
@@ -1086,7 +1094,10 @@ mama_status multicastFt_deactivate (mamaFtMember member)
     {
         /* unsubscribe from io */
         if (gReadHandler != NULL)
+        {
             mamaIo_destroy (gReadHandler);
+            gReadHandler = NULL;
+        }
     }
 
     return MAMA_STATUS_OK;
