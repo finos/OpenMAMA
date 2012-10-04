@@ -307,6 +307,16 @@ namespace Wombat
         mamaTry (mama_setApplicationClassName (className));
     }
 
+    void Mama::addStatsCollector (MamaStatsCollector* statsCollector)
+    {
+        mamaTry (mama_addStatsCollector (statsCollector->getStatsCollector()));
+    }
+
+    void Mama::removeStatsCollector (MamaStatsCollector* statsCollector)
+    {
+        mamaTry (mama_removeStatsCollector (statsCollector->getStatsCollector()));
+    }
+
     template <typename T>
     void Mama::deleteObject (T* object)
     {

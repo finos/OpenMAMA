@@ -69,6 +69,7 @@
 #include <mama/MamaSourceManager.h>
 #include <mama/MamaSourceGroup.h>
 #include <mama/MamaSourceGroupManager.h>
+#include <mama/MamaStatsCollector.h>
 
 
 namespace Wombat
@@ -484,13 +485,25 @@ public:
     template <typename T>
     static void deleteObject (T* object);
 
-
     /**
     * Set a MamaBridgeMessageCallback to be invoked whenever information messages
     * are logged at the bridge level.  Information messages vary depenging on the
     * underlying middleware.  Currently only supported for LBM.
     */
     static void setBridgeCallback (mamaBridge bridge, MamaBridgeCallback* callback);
+
+    /**
+     * It adds the newly created statsCollector to the statsGenerator list 
+     * @param statsCollector 
+     */
+    static void addStatsCollector (MamaStatsCollector* statsCollector);
+
+    /**
+     * It removes the statsCollector from the statsGenerator list
+     * @param statsCollector 
+     */
+    static void removeStatsCollector (MamaStatsCollector* statsCollector);
+
 
 private: 
     /**
