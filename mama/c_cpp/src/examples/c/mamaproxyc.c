@@ -182,10 +182,7 @@ static void createPublisher ()
                                    "_MD",
                                    NULL);
 
-	// Turn off updateing of the messages as incoming messages 
-	// from FH already have seqnum and senderid
-	mamaDQPublisherManager_setSeqNum(gDQPubManager, 0);
-	mamaDQPublisherManager_setSenderId(gDQPubManager, 0);
+    mamaDQPublisherManager_enableSendTime(gDQPubManager, 1);
     if (gSendSync)
     {
         mamaTimer_create (&gSyncTimer, gPubDefaultQueue, syncCallback, 15, gDQPubManager);
