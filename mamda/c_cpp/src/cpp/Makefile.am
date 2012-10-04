@@ -119,7 +119,7 @@ CPPFLAGS += -I$(srcdir)/.. \
             -I$(srcdir)/../../../../common/c_cpp/src/c 
 
 if USE_GCC_FLAGS
-CPPFLAGS += -pedantic -Wall -Wno-long-long -Wno-non-virtual-dtor -D_GNU_SOURCE
+CPPFLAGS += -pedantic-errors -Wall -Wno-long-long -Wno-non-virtual-dtor -D_GNU_SOURCE
 endif
 
 libmamda_la_SOURCES = \

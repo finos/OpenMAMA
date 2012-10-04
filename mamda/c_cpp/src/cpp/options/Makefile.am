@@ -51,8 +51,8 @@ CPPFLAGS += -I$(srcdir)/.. \
             -I$(srcdir)/../../../../../common/c_cpp/src/c 
 
 if USE_GCC_FLAGS
-CFLAGS += -pedantic -Wno-long-long -Wall
-CPPFLAGS += -pedantic -Wno-long-long -Wall
+CFLAGS += -pedantic-errors -Wno-long-long -Wall
+CPPFLAGS += -pedantic-errors -Wno-long-long -Wall
 endif
 
 

@@ -35,7 +35,7 @@ LDFLAGS      = -rdynamic \
 
 MAMDA_LIBS   = $(BSTATIC) -lmamda $(BDYNAMIC)
 MAMA_LIBS    = $(BSTATIC) -lmamacpp -lmama -lwombatmsg -lwcache \
-               $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -ldl -lpthread -lwombatcommon
+               $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -ldl -lpthread -lwombatcommon -ldl
                
     
 COMMON_LIBS  = $(MAMDA_LIBS) $(MAMA_LIBS) $(SYS_LIBS)
