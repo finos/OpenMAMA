@@ -69,6 +69,9 @@ typedef void (MAMACALLTYPE *mamaDQPublisherErrorCB)(
         const char*        errortxt,
         mamaMsg     msg);
 
+typedef void (MAMACALLTYPE *mamaDQPublisherMsgCB)(
+        mamaDQPublisherManager manager,
+        mamaMsg     msg);
 
 typedef struct mamaDQPublisherManagerCallbacks_
 {
@@ -77,6 +80,7 @@ typedef struct mamaDQPublisherManagerCallbacks_
     mamaDQPublisherRequestCB        onRequest;
     mamaDQPublisherRefreshCB        onRefresh;
     mamaDQPublisherErrorCB          onError;
+    mamaDQPublisherMsgCB            onMsg;
 } mamaDQPublisherManagerCallbacks;
 
 

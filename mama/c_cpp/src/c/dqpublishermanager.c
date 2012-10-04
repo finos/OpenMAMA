@@ -109,7 +109,7 @@ inboxErrorCb (mama_status status, void *closure)
             "Send sync failure", NULL);
 }
 
-void MAMACALLTYPE
+static void MAMACALLTYPE
 dqPublisherImplCreateCb (mamaSubscription subsc, void* closure)
 {
     mamaDQPublisherManagerImpl* impl = (mamaDQPublisherManagerImpl*) (closure);
@@ -120,7 +120,7 @@ dqPublisherImplCreateCb (mamaSubscription subsc, void* closure)
 }
 
 
-void MAMACALLTYPE
+static void MAMACALLTYPE
 dqPublisherImplErrorCb (mamaSubscription subsc,
                         mama_status      status,
                         void*            platformError,
@@ -135,7 +135,7 @@ dqPublisherImplErrorCb (mamaSubscription subsc,
     impl->mUserCallbacks.onError ((mamaDQPublisherManager)impl, status, subject, NULL);
 }
 
-void MAMACALLTYPE
+static void MAMACALLTYPE
 dqPublisherImplMsgCb (mamaSubscription subsc,
                       mamaMsg          msg,
                       void*            closure,
@@ -205,6 +205,11 @@ dqPublisherImplMsgCb (mamaSubscription subsc,
                                                 msg);
         }
 
+    }
+    else
+    {
+		if (impl->mUserCallbacks.onMsg)
+        	impl->mUserCallbacks.onMsg ((mamaDQPublisherManager)impl, msg);
     }
 }
 
