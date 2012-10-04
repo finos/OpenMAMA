@@ -251,7 +251,8 @@ mama_status mamaDQPublisherManager_create (
         const char* root,
         void * closure)
 {
-    char topic[80];
+    char* topic;
+    int length = 0;
     mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
     static mamaMsgCallbacks basicSubscCbs =
     {
@@ -265,6 +266,8 @@ mama_status mamaDQPublisherManager_create (
     impl->mTransport = transport;
     impl->mQueue = queue;
     impl->mClosure = closure;
+    length = strlen(root) + 1 + (strlen(sourcename) + 1);
+    topic = calloc(length, sizeof(char));
 
     strcpy(topic, root);
     impl->mNameSpace =  strdup(sourcename);
@@ -284,6 +287,7 @@ mama_status mamaDQPublisherManager_create (
                                    &basicSubscCbs,
                                    topic,
                                    impl);
+    free(topic);
 
     return MAMA_STATUS_OK;
 }
@@ -405,7 +409,8 @@ mama_status mamaDQPublisherManager_createPublisher (
     mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
     mamaPublishTopic* newTopic = NULL;
     mama_status status = MAMA_STATUS_OK;
-    char topic[80];
+    char* topic;
+    int length = 0;
 
     newTopic =  (mamaPublishTopic*)wtable_lookup (impl->mPublisherMap, (char*)symbol);
 
@@ -419,6 +424,13 @@ mama_status mamaDQPublisherManager_createPublisher (
             newTopic->cache = cache;
             newTopic->symbol = strdup(symbol);
 
+            mamaDQPublisher_setCache(*newPublisher, cache);
+            mamaDQPublisher_setSenderId(*newPublisher,  impl->mSenderId);
+            mamaDQPublisher_setStatus(*newPublisher,  impl->mStatus);
+            mamaDQPublisher_setSeqNum(*newPublisher, impl->mSeqNum);
+
+            length = strlen(impl->mNameSpace) + 1 + (strlen(symbol) + 1);
+            topic = calloc(length, sizeof(char));
             strcpy (topic, impl->mNameSpace);
             strcat (topic, ".");
             strcat (topic, symbol);
@@ -426,13 +438,11 @@ mama_status mamaDQPublisherManager_createPublisher (
             if ((status = mamaDQPublisher_create(*newPublisher, 
                             impl->mTransport, topic)) != MAMA_STATUS_OK)
             {
+                free (topic);
                 return status;
             }
+            free (topic);
 
-            mamaDQPublisher_setCache(*newPublisher, cache);
-            mamaDQPublisher_setSenderId(*newPublisher,  impl->mSenderId);
-            mamaDQPublisher_setStatus(*newPublisher,  impl->mStatus);
-            mamaDQPublisher_setSeqNum(*newPublisher, impl->mSeqNum);
             if (wtable_insert  (impl->mPublisherMap, (char*)symbol, newTopic) != 1)
             {
                 mamaDQPublisher_destroy(*newPublisher);

@@ -44,7 +44,11 @@ mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
 
     impl = (mamaDQPublisherImpl*)calloc (1, sizeof (mamaDQPublisherImpl));
     if (!impl) return MAMA_STATUS_NOMEM;
-    
+        
+    impl->mSenderId = mamaSenderId_getSelf ();
+    impl->mStatus = MAMA_MSG_STATUS_OK;
+    impl->mSeqNum = 1;
+
     *result = impl;
 
     return MAMA_STATUS_OK;
@@ -62,13 +66,6 @@ mama_status mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport
                            topic, 
                            NULL,
                            NULL);
-
-    if (status == MAMA_STATUS_OK)
-    {
-        impl->mSenderId = mamaSenderId_getSelf ();
-        impl->mStatus = MAMA_MSG_STATUS_OK;
-        impl->mSeqNum = 1;
-    }
     
     return status;
 }
@@ -158,14 +155,7 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
                                        mamaMsg reply)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-
-    if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus))
-    {
-        mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus);
-    }
-    
+   
     if (impl->mSenderId != 0)
     {
             mamaMsgField senderIdField = NULL;
@@ -206,6 +196,13 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
     {
         mamaMsg_updateU32(reply, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
                 impl->mSeqNum);
+
+        if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
+                MamaFieldMsgStatus.mFid, impl->mStatus))
+        {
+            mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
+                MamaFieldMsgStatus.mFid, impl->mStatus);
+        }
     }
 
     return (mamaPublisher_sendReplyToInbox (impl->mPublisher, request, reply));
@@ -216,13 +213,6 @@ mama_status mamaDQPublisher_sendReplyWithHandle (mamaDQPublisher pub,
                                                 mamaMsg reply)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-
-    if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus))
-    {
-        mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus);
-    }
 
     if (impl->mSenderId != 0)
     {
@@ -264,6 +254,13 @@ mama_status mamaDQPublisher_sendReplyWithHandle (mamaDQPublisher pub,
     {
         mamaMsg_updateU32(reply, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
                 impl->mSeqNum);
+
+        if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
+                    MamaFieldMsgStatus.mFid, impl->mStatus))
+        {
+            mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
+                    MamaFieldMsgStatus.mFid, impl->mStatus);
+        }
     }
 
     return (mamaPublisher_sendReplyToInboxHandle (impl->mPublisher,
@@ -279,6 +276,8 @@ void mamaDQPublisher_destroy (mamaDQPublisher pub)
         mamaPublisher_destroy (impl->mPublisher);
         impl->mPublisher = NULL;
     }
+
+    free(impl);
 }
 
 
