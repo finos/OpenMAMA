@@ -29,7 +29,7 @@
 using namespace Wombat;
 using namespace std;
 
-static  char* gUsageString[]=
+static const char* gUsageString[]=
 {
     "MamaFtMember - Simple fault tolerance example.",
     "Demonstrates use of the MAMA FT API.",

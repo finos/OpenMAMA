@@ -60,7 +60,7 @@ LDFLAGS      = -rdynamic \
 
 
 MAMA_LIBS    = $(BDYNAMIC) -lmama \
-               $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -lpthread -lm
+               $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -lpthread -lm -ldl -lpthread
 MAMACPP_LIBS = $(BSTATIC) -lmamacpp $(BDYNAMIC) $(MAMA_LIBS) 
 
 # Targets:
