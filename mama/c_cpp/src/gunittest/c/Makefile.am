@@ -41,7 +41,7 @@ LDFLAGS  += -L${srcdir}/../../c \
 LIBS = -lmama -lwombatcommon -lgtest
 LDADD = -lgtest_main -ldl
 
-bin_PROGRAMS = MainUnitTestC
+bin_PROGRAMS = UnitTestMamaC
 
 nodist_UnitTestMamaC_SOURCES = MainUnitTestC.cpp \
 							msgtests.cpp \
