@@ -201,7 +201,7 @@
 
 		<copy todir="${dist}/doc/resources">
             <fileset dir="${basedir}/doc/">
-                <include name="nyse_technologies.png"></include>				
+                <include name="openmama.png"></include>				
             </fileset>
 
         </copy>                                    
