@@ -23,6 +23,7 @@
 #define MAMA_QUEUE_CPP_H__
 
 #include <mama/mamacpp.h>
+#include <mama/queue.h>
 
 namespace Wombat 
 {
@@ -41,6 +42,7 @@ namespace Wombat
 
     public:
         MamaQueue          (void);
+        MamaQueue          (mamaQueue cQueue);
         virtual ~MamaQueue (void);
 
         /**

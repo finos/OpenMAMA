@@ -29,6 +29,7 @@
 #include <string>
 #include "MamaSubscriptionImpl.h"
 #include <mama/queue.h>
+#include <mama/MamaQueue.h>
 #include <mama/MamaReservedFields.h>
 
 namespace Wombat
@@ -283,8 +284,7 @@ namespace Wombat
             mamaQueue_getClosure (defaultQueueC, (void**)(&defaultQueue));
             if (defaultQueue == NULL)
             {
-                defaultQueue = new MamaQueue();
-                defaultQueue->setCValue(defaultQueueC);
+                defaultQueue = new MamaQueue(defaultQueueC);
                 mamaQueue_setClosure(defaultQueueC, (void*) defaultQueue);
             }
             return defaultQueue;
