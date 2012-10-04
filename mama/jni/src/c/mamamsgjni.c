@@ -27,6 +27,7 @@
 * includes
 *******************************************************************************/
 #include <assert.h>
+#include <limits.h>
 
 #include "mamajniutils.h"
 #include "mamajni/com_wombat_mama_MamaMsg.h"
@@ -4799,10 +4800,15 @@ mama_status populateCMessageArray(mamaMsg *cArray, JNIEnv *env, jobjectArray jav
     return ret;
 }
 
-JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_nativeGetAsBuffer(JNIEnv *env, jobject this, jstring name, jint fid, jbyteArray byteArray, jint arraySize)
+JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_nativeGetAsBuffer
+    (JNIEnv *env, jobject this, jstring name, jint fid, jbyteArray byteArray, 
+     jint arraySize, jboolean throwOnError)
 {
     /* Returns. */
-    jint ret = 0;
+    /* Setting the default return value to INT_MAX which is 2147483647. By
+     *  doing this we can check if the field was found or not
+     */
+    jint ret = INT_MAX;
 
     /* Obtain the pointer to the managed object. */
     jlong msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
@@ -4853,6 +4859,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_nativeGetAsBuffer(JNIEnv *en
         }
 
         /* If something went wrong with the native function then throw an exception. */
+	    if (throwOnError)
 	    mamaTry(env, status, "MamaMsg_nativeGetAsBuffer()");
     }
 
