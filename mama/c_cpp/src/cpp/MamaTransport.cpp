@@ -35,6 +35,7 @@ namespace Wombat
         void  setSymbolMap       (const MamaSymbolMap*  map);
         const MamaSymbolMap*     getSymbolMap () const;
 
+        MamaTransportTopicEventCallback*    myTopicEventCallback;
         MamaTransportCallback*   mCallback;
         const MamaSymbolMap*     mMap;
         bool                     mDeleteCTransport;
@@ -54,6 +55,29 @@ namespace Wombat
         }
     }
 
+    extern "C"
+    {
+        void MAMACALLTYPE transportTopicEventCb (mamaTransport tport,
+                                            mamaTransportTopicEvent event,
+                                            const char* topic,
+                                            const void* platformInfo,
+                                            void* closure)
+    {
+        MamaTransport* transport = static_cast<MamaTransport*> (closure);
+
+        switch (event)
+        {
+            case MAMA_TRANSPORT_TOPIC_SUBSCRIBED:
+            transport->mPimpl->myTopicEventCallback->onTopicSubscribe (transport, topic, platformInfo);
+            return;
+            case MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED:
+            transport->mPimpl->myTopicEventCallback->onTopicUnsubscribe (transport, topic, platformInfo);
+            return;
+            default:
+            return;
+        }
+    }
+    }
     extern "C"
     {
         void MAMACALLTYPE transportCb (mamaTransport       tport,
@@ -99,6 +123,47 @@ namespace Wombat
         }
     }
 
+    class TransportTopicTestCallback : public MamaTransportTopicEventCallback
+    {
+    public:
+        TransportTopicTestCallback ( MamaTransportTopicEventCallback* ucallback) 
+        {
+            usercallback = ucallback;
+        }
+        
+        virtual ~TransportTopicTestCallback() {}
+
+        void onTopicSubscribe (MamaTransport* tport,
+                               const char* topic,
+                               const void* platformInfo)
+        {
+            try
+            {
+                usercallback->onTopicSubscribe(tport, topic, platformInfo);
+            }
+            catch (...)
+            {
+                fprintf(stderr, "MamaTransportTopicEventCallback onTopicSubscribe, EXCEPTION CAUGHT\n");
+            }    
+        }
+        
+        void onTopicUnsubscribe (MamaTransport* tport,
+                                 const char* topic,
+                                 const void* platformInfo)
+        {
+            try
+            {
+                usercallback->onTopicUnsubscribe(tport, topic, platformInfo);
+            }
+            catch (...)
+            {
+                fprintf(stderr, "MAMATransportTopicEventCallback onTopicUnsubscribe, EXCEPTION CAUGHT\n");
+            }
+        }
+    private:
+      MamaTransportTopicEventCallback* usercallback;  
+
+    };
     class TransportTestCallback : public MamaTransportCallback
     {
     public:
@@ -337,6 +402,19 @@ namespace Wombat
         return quality;
     }
 
+    void MamaTransport::setTransportTopicCallback (MamaTransportTopicEventCallback* callback)
+    {
+        if (mamaInternal_getCatchCallbackExceptions())
+        {
+            mPimpl->myTopicEventCallback = new TransportTopicTestCallback (callback);
+        }
+        else 
+        {
+            mPimpl->myTopicEventCallback = callback;
+        }
+        mamaTry (mamaTransport_setTransportTopicCallback (
+                    mTransport, transportTopicEventCb, this));
+    }
     void MamaTransport::setTransportCallback (MamaTransportCallback* callback)
     {
 	    if (mamaInternal_getCatchCallbackExceptions ())
@@ -364,7 +442,8 @@ namespace Wombat
     }
 
     MamaTransport::MamaTransportImpl::MamaTransportImpl ()
-        : mCallback         (NULL)
+        : myTopicEventCallback  (NULL)
+        , mCallback             (NULL)
         , mMap              (NULL)
         , mDeleteCTransport (true)
     {
