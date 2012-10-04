@@ -520,6 +520,8 @@ namespace Wombat
         mCallback = callback;
         mClosure  = closure;
 
+        // Save the queue so that calls to MamaBasicSubscription->getQueue () work
+        mQueue = queue;
         // Create a new impl
         MamaSubscriptionImpl *impl = new MamaSubscriptionImpl (callback, closure, this);
 
@@ -571,6 +573,9 @@ namespace Wombat
         // Save the callback in the member variable
         mCallback = callback;
         mClosure  = closure;
+
+        // Save the queue so that calls to MamaBasicSubscription->getQueue () work
+        mQueue = queue;
 
         // Create the source derivative
         if (NULL == mSourceDeriv)
