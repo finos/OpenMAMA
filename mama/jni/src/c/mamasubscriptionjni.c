@@ -1790,3 +1790,58 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_deallocate(JNIEnv *
         }
     }
 }
+
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setTheAppDataType (JNIEnv * env, jobject this, jint value)
+{
+    mama_status     status              =   MAMA_STATUS_OK;
+    jlong           subscriptionPointer =   0;
+    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+
+    subscriptionPointer =
+        (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
+
+    assert(0!=subscriptionPointer);
+
+    if (MAMA_STATUS_OK!=(status=mamaSubscription_setAppDataType(
+                             CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
+                             (uint8_t)value)))
+    {
+        utils_buildErrorStringForStatus (
+            errorString,
+            UTILS_MAX_ERROR_STRING_LENGTH,
+            "Could not set AppDatatype for mamaSubscription.",
+            status);
+        utils_throwWombatException (env,errorString);
+    }
+
+    return;
+}
+
+JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getTheAppDataType (JNIEnv* env, jobject this)
+{
+    mama_status     status              =   MAMA_STATUS_OK;
+    jlong           subscriptionPointer =   0;
+    jint            appdatatype         =   0;
+    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+
+    subscriptionPointer = (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
+
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
+    "MamaSubscription.getAppDataType(): Null parameter, subcription may have been destroyed.", NULL);
+
+    assert(0!=subscriptionPointer);
+
+    if (MAMA_STATUS_OK!=(status=mamaSubscription_getAppDataType(
+                    CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
+                    &appdatatype)))
+    {
+        utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Could not get AppDatatype for mamaSubscription.",
+                status);
+        utils_throwWombatException(env,errorString);
+    }
+
+    return appdatatype;
+}

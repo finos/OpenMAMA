@@ -303,14 +303,17 @@ public class MamaSubscription
     
     public void setAppDataType (MamaMdDataType type)
     {
-        final String METHOD_NAME = "setAppDataType(): ";
-        throw new MamaException(METHOD_NAME+"Not yet supported");
+          // Set the MD Data Type as an integer
+          setTheAppDataType (type.getValue());
     }
 
     public MamaMdDataType getAppDataType ()
     {
-        final String METHOD_NAME = "getAppDataType(): ";
-        throw new MamaException(METHOD_NAME+"Not yet supported");
+        // Get the native value
+        int my_AppDataType = getTheAppDataType();
+
+        // Convert to a MamaMdDataType object
+        return MamaMdDataType.enumObjectForValue(my_AppDataType);
     }
 
     public void setDebugLevel (Level level)
@@ -350,6 +353,8 @@ public class MamaSubscription
     /* Public Native Functions, all entries here must be fully
      * documented. */
     /* ************************************************** */
+    private native void setTheAppDataType(int value);
+    private native int getTheAppDataType();
 
     /**
      * Activate a subscription that has been set up by calling MamaSubscription.setup.
