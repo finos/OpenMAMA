@@ -90,6 +90,8 @@ nobase_include_HEADERS  = \
     mama/MamaLogFile.h \
     mama/conflation/MamaConnection.h \
     mama/mamacpp.h \
+	mama/MamaStat.h \
+	mama/MamaStatsCollector.h \
     mama/MamaReservedFields.h   
 
 
@@ -143,5 +145,7 @@ libmamacpp_la_SOURCES = \
     MamaTimer.cpp \
     MamaTransport.cpp \
     MamaTransportMap.cpp \
+	MamaStat.cpp \
+	MamaStatsCollector.cpp \
     conflation/MamaConnection.cpp \
     conflation/MamaServerConnection.cpp
