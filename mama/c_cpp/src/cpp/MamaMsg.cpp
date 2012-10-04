@@ -52,6 +52,7 @@ namespace Wombat
         , mTmpMsg               (NULL)
         , mString               (NULL)
         , mMsgField             (new MamaMsgField) 
+        , mCopyMsg              (NULL)
     {
     }
 
@@ -66,6 +67,7 @@ namespace Wombat
         , mTmpMsg               (NULL)
         , mString               (NULL)
         , mMsgField             (new MamaMsgField)
+        , mCopyMsg              (NULL)
     {
         this->copy (copy);
     }
@@ -124,11 +126,19 @@ namespace Wombat
         mamaTry (mamaMsg_copy (rhs.mMsg, &mMsg));
     }
 
+    MamaMsg* MamaMsg::getTempCopy()
+    {
+        if (!mCopyMsg)
+        {
+            mCopyMsg = new MamaMsg;
+            mCopyMsg->mDestroy = false;
+        }
+        if (mMsg) mamaTry(mamaMsg_getTempCopy(mMsg, &mCopyMsg->mMsg));
+        return mCopyMsg;
+    }
     void MamaMsg::clear (void)
     {
         if (mMsg) mamaTry (mamaMsg_clear (mMsg));
-
-        mDestroy = true;
 
         if (mCvectorMsg)
         {
@@ -161,7 +171,7 @@ namespace Wombat
         return mMsg;
     }
 
-    mamaPayloadType MamaMsg::getPayloadType (void)
+    mamaPayloadType MamaMsg::getPayloadType (void) const
     {
         mamaPayloadType result;    
         mamaTry (mamaMsg_getPayloadType (mMsg, &result));
@@ -2401,6 +2411,12 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         {
             delete mTmpMsg;
             mTmpMsg = NULL;
+        }
+
+        if (mCopyMsg)
+        {
+            delete mCopyMsg;
+            mCopyMsg = NULL;
         }
     }
 

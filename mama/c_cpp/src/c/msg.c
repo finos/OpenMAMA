@@ -84,6 +84,7 @@ typedef struct mamaMsgImpl_
     /*Reuseable field object for performance iteration*/
     mamaMsgField            mCurrentField;
     mamaDateTime            mCurrentDateTime;
+    mamaMsg                 mCopy;
 
     /*Hold onto the bridge impl for later use*/
     mamaBridgeImpl*         mBridgeImpl;
@@ -161,10 +162,16 @@ mamaMsg_destroy (mamaMsg msg)
         impl->mBridgeMessage = NULL;
     }
 
-    /*Destroy the reuseable field object*/
+    /*Destroy the reusable field object*/
     if (impl->mCurrentField)
     {
         mamaMsgField_destroy (impl->mCurrentField);
+    }
+    /*Destroy the reusable field object*/
+    if (impl->mCopy)
+    {
+        mamaMsg_destroy (impl->mCopy);
+        impl->mCopy = NULL;
     }
 
     impl->mDqStrategyContext = NULL;
@@ -467,7 +474,7 @@ mamaMsgImpl_setMsgBuffer(mamaMsg     msg,
     mamaMsgImpl*    impl        = (mamaMsgImpl*)msg;
     mama_status     status      = MAMA_STATUS_OK;
     msgPayload      payload     = NULL;
-    mamaPayloadBridgeImpl* newPayloadBridge = NULL;
+    
     if (impl == NULL)
     {
         mama_log (MAMA_LOG_LEVEL_WARN,
@@ -503,6 +510,12 @@ mamaMsgImpl_setMsgBuffer(mamaMsg     msg,
         impl->mBridgeMessage = NULL;
     }
     impl->mMessageOwner = 0;
+    /* If there is tempCopy of this message, destroy it */
+    if (impl->mCopy)
+    {
+        mamaMsg_destroy(impl->mCopy);
+        impl->mCopy = NULL;
+    }
 
     if (id == '\0')
         id = (char) ((const char*)data) [0];
@@ -703,6 +716,32 @@ mamaMsg_copy (mamaMsg src, mamaMsg* copy)
             strncpy (newImpl->mSource, source->mSource, MAX_SUBJECT);
     }
     return status;
+}
+
+mama_status
+mamaMsg_getTempCopy (mamaMsg src, mamaMsg* copy)
+{
+    mama_status ret;
+    mamaMsgImpl*    impl = (mamaMsgImpl*)src;
+
+    if (impl->mMessageOwner)
+    {
+        *copy = src;
+        return MAMA_STATUS_OK;
+    }
+
+    if (!impl->mCopy)
+    {
+        ret = mamaMsg_copy(src, &impl->mCopy);
+        if (ret != MAMA_STATUS_OK)
+        {
+            impl->mCopy = NULL;
+            return ret;
+        }
+    }
+    *copy = impl->mCopy;
+
+    return MAMA_STATUS_OK;
 }
 
 mama_status
