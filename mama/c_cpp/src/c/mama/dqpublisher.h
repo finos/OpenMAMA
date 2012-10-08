@@ -109,6 +109,10 @@ extern void
 mamaDQPublisher_setClosure (mamaDQPublisher pub, void*  closure);
 
 MAMAExpDLL
+extern void 
+mamaDQPublisher_enableSendTime (mamaDQPublisher pub, mama_bool_t enable);
+
+MAMAExpDLL
 extern void*
 mamaDQPublisher_getClosure (mamaDQPublisher pub);
 

@@ -58,6 +58,7 @@ typedef struct mamaDQPublisherManagerImpl_
     mamaQueue                           mQueue;
     char *                              mNameSpace;
     void*                               mClosure;
+    mama_bool_t                         mEnableSendTime;
 
 } mamaDQPublisherManagerImpl;
 
@@ -428,6 +429,7 @@ mama_status mamaDQPublisherManager_createPublisher (
             mamaDQPublisher_setSenderId(*newPublisher,  impl->mSenderId);
             mamaDQPublisher_setStatus(*newPublisher,  impl->mStatus);
             mamaDQPublisher_setSeqNum(*newPublisher, impl->mSeqNum);
+            mamaDQPublisher_enableSendTime(*newPublisher, impl->mEnableSendTime);
 
             length = strlen(impl->mNameSpace) + 1 + (strlen(symbol) + 1);
             topic = calloc(length, sizeof(char));
@@ -502,6 +504,14 @@ void mamaDQPublisherManager_setSeqNum (
 {
     mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
     impl->mSeqNum=num;
+}
+
+void mamaDQPublisherManager_enableSendTime (
+        mamaDQPublisherManager manager, 
+        mama_bool_t enable)
+{
+    mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
+    impl->mEnableSendTime=enable;
 }
 
 mama_status mamaDQPublisherManager_sendSyncRequest (

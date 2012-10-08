@@ -189,6 +189,12 @@ mamaDQPublisherManager_sendNoSubscribers (
         mamaDQPublisherManager manager,
         const char *symbol);
 
+MAMAExpDLL
+extern void 
+mamaDQPublisherManager_enableSendTime (
+        mamaDQPublisherManager manager, 
+        mama_bool_t enable);
+
 #if defined( __cplusplus )
 }
 #endif /* defined( __cplusplus ) */
