@@ -53,6 +53,9 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "qpid") == 0)
         return MAMA_MIDDLEWARE_QPID;
 
+    if (strcasecmp (str, "exegy") == 0)
+        return MAMA_MIDDLEWARE_EXEGY;
+
 
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
@@ -79,6 +82,8 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "rai";
         case MAMA_MIDDLEWARE_QPID:
             return "QPID";
+        case MAMA_MIDDLEWARE_EXEGY:
+            return "exegy";
         default:
             return "unknown";
     }

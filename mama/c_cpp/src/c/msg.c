@@ -382,6 +382,8 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "TICK42BLP";
         case MAMA_PAYLOAD_RAI:
             return "rai";
+        case MAMA_PAYLOAD_EXEGY:
+            return "EXEGY";
         default:
             return "unknown";
     }
