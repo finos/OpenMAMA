@@ -460,6 +460,12 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         && msgType != MAMA_MSG_TYPE_EXPIRE
         && msgType != MAMA_MSG_TYPE_UNKNOWN))
     {
+        /* If we are waiting for a recap and using the pre-recap cache, we
+           want to pass on any cached updates as STALE when the recap arrives */
+        if (state == DQ_STATE_WAITING_FOR_RECAP && mamaTransportImpl_preRecapCacheEnabled (transport))
+        {
+            ctx->mDqContext.mSetCacheMsgStale = 1;
+        }
         /*Add this message to the cache. If the message after the initial
          * results in a gap we will attempt to fill the gap from this cache
          * before asking for a recap.*/
@@ -475,7 +481,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
             mama_log (MAMA_LOG_LEVEL_FINE,
                            "%s%s %s%s"
                            " Subscription ignoring message received prior"
-                           " to initial or recap. Type: %d %d %p",
+                           " to initial or recap. Type: %d %s %p",
                            userSymbolFormatted, ctxSymbolFormatted,
                            msgType, mamaMsg_toString(msg), ctx);
         }

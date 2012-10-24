@@ -559,6 +559,7 @@ dqContext_initializeContext (mamaDqContext *ctx, int cacheSize,
     ctx->mSenderId      = 0;
     ctx->mSenderId      = 0;
     ctx->mRecapRequest  = recap;
+    ctx->mSetCacheMsgStale = 0;
     if (cacheSize > 0)
     {
         /*We may be simply resetting the context*/
@@ -688,6 +689,10 @@ dqContext_fillGap (mamaDqContext *ctx, mama_seqnum_t end, mamaSubscription subsc
             {
                 mama_log (MAMA_LOG_LEVEL_FINE, 
                                "Found a message for gap.");
+                if (ctx->mSetCacheMsgStale)
+                {
+                    msgUtils_setStatus (ctx->mCache[cur], MAMA_MSG_STATUS_STALE);
+                }
                 mamaSubscription_forwardMsg(subscription, ctx->mCache[cur]);
 
                 if (++nextSeqNum == end)
@@ -706,6 +711,7 @@ dqContext_fillGap (mamaDqContext *ctx, mama_seqnum_t end, mamaSubscription subsc
 
         } while (cur != ctx->mCurCacheIdx);
     }
+    ctx->mSetCacheMsgStale = 0;
 
     return 0;
 }

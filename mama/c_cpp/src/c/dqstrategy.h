@@ -67,6 +67,7 @@ typedef struct
     mama_u64_t    mSenderId;
 
     uint8_t       mDoNotForward;
+    mama_bool_t   mSetCacheMsgStale;
 } mamaDqContext;
 
 typedef struct dqStrategy_* dqStrategy;
