@@ -35,18 +35,16 @@ CFLAGS   += -I@builddir@/../../c
 CPPFLAGS += -I@builddir@/../../c
 
 LIBS = -lmamdabook -lmamda -lrt 
-LIBS += -lmama -lwombatcommon -lmamacpp
+LIBS += -lmama -lwombatcommon -lmamacpp -lgtest
 
 LDADD = -lgtest_main
 common_files = ../common/MainUnitTest.cpp ../common/MamdaUnitTestUtils.cpp 
 
 
-noinst_PROGRAMS = MamdaQuoteTests
-
-dist_MamdaQuoteTests_SOURCES = MamdaQuoteCallBackTests.cpp \
+dist_UnitTestMamdaQuote_SOURCES = MamdaQuoteCallBackTests.cpp \
                                MamdaQuoteFieldTests.cpp \
                                MamdaQuoteListenerPerfTests.cpp \
                                MamdaQuoteListenerShortSaleTests.cpp \
                                $(common_files)
 
-bin_PROGRAMS = MamdaQuoteTests
+bin_PROGRAMS = UnitTestMamdaQuote
