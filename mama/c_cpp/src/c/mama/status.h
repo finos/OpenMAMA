@@ -174,6 +174,34 @@ MAMAExpDLL
 extern const char*     
 mamaStatus_stringForStatus (mama_status status);
 
+#if defined(NDEBUG) && !defined(WITH_UNITTESTS)
+
+#define NULLARG_STATUS_CHECK
+#define NULLARG_STATUS_CHECK_STR
+
+#else
+
+#define NULLARG_STATUS_CHECK(x) \
+    do { \
+        if (!(x)) return MAMA_STATUS_NULL_ARG; \
+	} while(0);
+
+#define NULLARG_STATUS_CHECK_STR(x) \
+    do { \
+        if (!(x) || (strlen((x))==0) ) return MAMA_STATUS_NULL_ARG; \
+    } while(0);
+
+#endif
+
+#define NOMEM_STATUS_CHECK(x) \
+    do { \
+        if ((x==NULL))  \
+        {    \
+            mama_log (MAMA_LOG_LEVEL_SEVERE, "Could not allocate memory");   \
+            return MAMA_STATUS_NOMEM;      \
+         } \
+	} while(0);
+
 #if defined(__cplusplus)
 } /*extern "C" { */
 #endif
