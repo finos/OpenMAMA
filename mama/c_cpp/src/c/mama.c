@@ -64,14 +64,14 @@ extern void initReservedFields (void);
 
 #if (OEA_MAJVERSION == 2 && OEA_MINVERSION >= 11) || OEA_MAJVERSION > 2
 
-void WIN32_CB_FUNC_TYPE entitlementDisconnectCallback (oeaClient*,
+void MAMACALLTYPE entitlementDisconnectCallback (oeaClient*,
                                     const OEA_DISCONNECT_REASON,
                                     const char * const,
                                     const char * const,
                                     const char * const);
-void WIN32_CB_FUNC_TYPE entitlementUpdatedCallback (oeaClient*,
+void MAMACALLTYPE entitlementUpdatedCallback (oeaClient*,
                                  int openSubscriptionForbidden);
-void WIN32_CB_FUNC_TYPE entitlementCheckingSwitchCallback (oeaClient*,
+void MAMACALLTYPE entitlementCheckingSwitchCallback (oeaClient*,
                                         int isEntitlementsCheckingDisabled);
 #else
 
@@ -1555,7 +1555,7 @@ mama_registerEntitlementCallbacks (const mamaEntitlementCallbacks* entitlementCa
 }
 
 #if (OEA_MAJVERSION == 2 && OEA_MINVERSION >= 11) || OEA_MAJVERSION > 2
-void WIN32_CB_FUNC_TYPE entitlementDisconnectCallback (oeaClient*                  client,
+void MAMACALLTYPE entitlementDisconnectCallback (oeaClient*                  client,
                                     const OEA_DISCONNECT_REASON reason,
                                     const char * const          userId,
                                     const char * const          host,
@@ -1567,7 +1567,7 @@ void WIN32_CB_FUNC_TYPE entitlementDisconnectCallback (oeaClient*               
     }
 }
 
-void WIN32_CB_FUNC_TYPE entitlementUpdatedCallback (oeaClient* client,
+void MAMACALLTYPE entitlementUpdatedCallback (oeaClient* client,
                                  int openSubscriptionForbidden)
 {
     if (gEntitlementCallbacks.onEntitlementUpdate != NULL)
@@ -1576,7 +1576,7 @@ void WIN32_CB_FUNC_TYPE entitlementUpdatedCallback (oeaClient* client,
     }
 }
 
-void WIN32_CB_FUNC_TYPE entitlementCheckingSwitchCallback (oeaClient* client,
+void MAMACALLTYPE entitlementCheckingSwitchCallback (oeaClient* client,
                                         int isEntitlementsCheckingDisabled)
 {
     if (gEntitlementCallbacks.onEntitlementCheckingSwitch != NULL)

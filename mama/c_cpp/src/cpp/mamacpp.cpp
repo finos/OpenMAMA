@@ -80,7 +80,7 @@ namespace Wombat
 
     extern "C"
     {
-        void entitlementDisconnectCB (const sessionDisconnectReason reason,
+        void MAMACALLTYPE entitlementDisconnectCB (const sessionDisconnectReason reason,
                                       const char* userId,
                                       const char* host,
                                       const char* appName)
@@ -94,7 +94,7 @@ namespace Wombat
             }
         }
 
-        void entitlementUpdateCB ()
+        void MAMACALLTYPE entitlementUpdateCB ()
         {
             if (gMamaEntitlementCallback != NULL)
             {
@@ -102,7 +102,7 @@ namespace Wombat
             }
         }
 
-        void entitlementCheckingSwitchCB (const int isEntitlementCheckingDisabled)
+        void MAMACALLTYPE entitlementCheckingSwitchCB (const int isEntitlementCheckingDisabled)
         {
             if (gMamaEntitlementCallback != NULL)
             {
