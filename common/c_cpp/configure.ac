@@ -94,6 +94,41 @@ AC_CACHE_SAVE
 ##################################################
 
 ##################################################
+# UNIT TESTS: --with-unittests
+# Whether or not to build the unit tests
+# GTEST_HOME is the root directory of the gtest installation. It can be
+# specified as an environment variable or as a configure parameter
+##################################################
+UNIT_TEST_HOME=[$GTEST_HOME]
+AC_ARG_WITH(
+    unittests,
+    [AC_HELP_STRING([--with-unittests=DIR],
+                    [Location of the gtest API include/library files in DIR])],
+    [
+     if test -d $withval; then
+         UNIT_TEST_HOME="$withval"
+     fi
+     CPPFLAGS="$CPPFLAGS -I$UNIT_TEST_HOME/include -I$UNIT_TEST_HOME -DWITH_UNITTESTS "
+     AC_CHECK_HEADERS(
+         [$UNIT_TEST_HOME/include/gtest/gtest.h],
+         [
+          LDFLAGS="$LDFLAGS -L$UNIT_TEST_HOME/lib"
+
+      with_unittests=true
+         ],
+         [
+            AC_MSG_ERROR([Valid GTEST installation not found!])
+         ]
+         )
+    ],
+    [
+     with_unittests=false
+    ])
+AM_CONDITIONAL(WITH_UNITTESTS, test x$with_unittests = xtrue)
+
+##################################################
+
+##################################################
 #
 # PREREQUISITES
 #
