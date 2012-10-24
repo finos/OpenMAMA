@@ -62,7 +62,7 @@ typedef struct  msgBridge_*         msgBridge;
 
 /*
  Used in the bridge layer to set all appropriate functions
- on the mamaBridgeImpl struature
+ on the mamaBridgeImpl structure
 
  @param implIdentifer The identifier for the middleware rv, lbm, wmw or avis
  @param bridgeImpl    Pointer to the mamaBridgeImpl structure
