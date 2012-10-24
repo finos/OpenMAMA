@@ -26,12 +26,22 @@ bin_PROGRAMS = \
 	quoteselftest \
 	tradeselftest
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../..
+INCLUDES =  -I$(srcdir)/.. -I$(srcdir)/../.. \
+            -I${srcdir}/../cpp \
+            -I$(srcdir)/../cpp/mamda \
+            -I$(srcdir)/../cpp/options \
+            -I$(srcdir)/../cpp/orderbooks \
+            -I$(srcdir)/../../../../mama/c_cpp/src/cpp \
+            -I$(srcdir)/../../../../mama/c_cpp/src/c \
+            -I$(srcdir)/../../../../common/c_cpp/src/c
 
 LDFLAGS  += -L${srcdir}/../cpp \
             -L$(srcdir)/../cpp/mamda \
             -L$(srcdir)/../cpp/options \
-            -L$(srcdir)/../../../../mama/c_cpp/src/cpp
+            -L$(srcdir)/../cpp/orderbooks \
+            -L$(srcdir)/../../../../mama/c_cpp/src/cpp \
+            -L$(srcdir)/../../../../mama/c_cpp/src/c \
+            -L$(srcdir)/../../../../common/c_cpp/src/c
 
 LIBS += -lmamdabook -lmamda -lmamacpp -lpthread -lrt 
 LIBS += -lmama -lwombatcommon
