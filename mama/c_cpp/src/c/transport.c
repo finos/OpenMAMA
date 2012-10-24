@@ -455,13 +455,13 @@ static void setFtStrategy (mamaTransport transport)
     }
 }
 
-static void enablePreRecapCache (mamaTransport transport)
+static void enablePreRecapCache (mamaTransport transport, const char* middleware)
 {
     char propNameBuf[256];
 
     if (!self) return;
 
-    snprintf (propNameBuf, 256, "mama.transport.%s.prerecapcache.enable", self->mName);
+    snprintf (propNameBuf, 256, "mama.%s.transport.%s.prerecapcache.enable", middleware, self->mName);
 
     self->mPreRecapCacheEnabled = strtobool (mama_getProperty (propNameBuf));
 
@@ -865,7 +865,7 @@ mamaTransport_create (mamaTransport transport,
     setPreInitialStrategy ((mamaTransport)self);
     setDQStrategy ((mamaTransport)self);
     setFtStrategy ((mamaTransport)self);
-    enablePreRecapCache ((mamaTransport)self);
+    enablePreRecapCache ((mamaTransport)self, middleware);
 
     if (mamaTransportImpl_disableDisconnectCb (name))
     {
@@ -2606,6 +2606,7 @@ void mamaTransportImpl_clearTransportWithListeners (transportImpl *impl)
         refreshTransport_iterateListeners (impl->mRefreshTransport,
                 mamaTransportImpl_clearTransportCallback, NULL);
     }
+    /* Otherwise iterate the local list of subscriptions. */
     else
     {
         list_for_each (impl->mListeners, mamaTransportImpl_clearTransportCallback, NULL);
