@@ -22,7 +22,7 @@
 srcdir = @srcdir@
 VPATH  = @srcdir@
 
-SUBDIRS = cpp examples
+SUBDIRS = cpp 
 
 if WITH_UNITTESTS
 SUBDIRS += gunittest
@@ -30,4 +30,8 @@ endif
 
 if WITH_TESTTOOLS
 SUBDIRS += testtools
+endif
+
+if WITH_EXAMPLES
+SUBDIRS += examples
 endif

@@ -144,6 +144,21 @@ AM_CONDITIONAL(WITH_WOMBAT_COMMON, test x$with_wombat_common = "xtrue")
 # MAMA: --with-mama
 # Where to find MAMA
 ##################################################
+##################################################
+# EXAMPLES: --without-examples
+# Whether or not to build the example apps
+##################################################
+AC_ARG_WITH(
+    examples,
+    [AC_HELP_STRING([--without-examples],
+                    [exclude mama examples])],
+    [
+     with_examples=false
+    ],
+    [
+     with_examples=true
+    ])
+AM_CONDITIONAL(WITH_EXAMPLES, test x$with_examples = "xtrue")
 
 
 ##################################################
