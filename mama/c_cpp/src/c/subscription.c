@@ -2495,6 +2495,10 @@ mama_status mamaSubscription_allocate(mamaSubscription *subscription)
                 /* Write the value out in a log message. */
                 mama_log (MAMA_LOG_LEVEL_FINE, "PreInitialCacheSize set to %d", impl->mPreInitialCacheSize);
             }
+            else
+            {
+                impl->mPreInitialCacheSize = MAMA_SUBSCRIPTION_DEFAULT_PREINITIALCACHESIZE;
+            }
 
             /* Create the mutex, this is used to protect access during create and
              * destroy operations.
@@ -2512,7 +2516,6 @@ mama_status mamaSubscription_allocate(mamaSubscription *subscription)
             impl->mSubscMsgType           = MAMA_SUBSC_SUBSCRIBE;
             impl->mAppDataType            = MAMA_MD_DATA_TYPE_STANDARD;
             impl->mDebugLevel             = MAMA_LOG_LEVEL_WARN;
-            impl->mPreInitialCacheSize    = MAMA_SUBSCRIPTION_DEFAULT_PREINITIALCACHESIZE;
 
             /* Set the initial state of the subscription now that the memory has been allocated. */
             wInterlocked_initialize(&impl->mState);
