@@ -4434,7 +4434,6 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryString
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    jlong           stringPointer     =   0;
     jlong              msgPointer      =   0;         
      const char*        c_name          =   NULL;
      const char*     retVal_c        =   NULL;
@@ -4449,7 +4448,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryString
     /* Get the pointer to the underlying message*/                          
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);    
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
-		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);    stringPointer   = (*env)->GetLongField(env,result,jMamaStringValue_g);
+		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
     
     if(MAMA_STATUS_OK==(mamaTryIgnoreNotFound(env, mamaMsg_getString(
                         CAST_JLONG_TO_POINTER(mamaMsg,msgPointer),c_name, fid,
