@@ -2,7 +2,7 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="tradeticker"
+	Name="mamdatradeticker"
 	ProjectGUID="{7146D65F-1F62-4998-899F-F5B7BF3CCC7F}"
 	RootNamespace="tradeticker"
 	Keyword="Win32Proj"

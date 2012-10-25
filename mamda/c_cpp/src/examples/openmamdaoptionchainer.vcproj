@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="optionchainer"
-	ProjectGUID="{8D23B8A9-87A5-4995-BBE5-23E7E9CA19BB}"
+	Name="mamdaoptionchainer"
+	ProjectGUID="{846D1B38-E46B-4BE4-A7EB-A7DDEEB344FC}"
 	RootNamespace="optionchainer"
 	Keyword="Win32Proj"
 	>

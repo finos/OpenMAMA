@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="comboticker"
-	ProjectGUID="{558F231A-7504-4D14-87BA-6EF6F2E9DA5C}"
-	RootNamespace="comboticker"
+	Name="mamdasecstatuslisten"
+	ProjectGUID="{95F11497-C48C-41C1-885F-2238A7440694}"
+	RootNamespace="secstatuslisten"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -350,15 +350,15 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\comboticker.cpp"
-				>
-			</File>
-			<File
 				RelativePath=".\dictrequester.cpp"
 				>
 			</File>
 			<File
 				RelativePath=".\parsecmd.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\secstatuslisten.cpp"
 				>
 			</File>
 		</Filter>

@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="multipartticker"
-	ProjectGUID="{BB920D9E-E3DF-4A12-ABC9-B80586D52939}"
-	RootNamespace="multipart"
+	Name="mamdafundamentallisten"
+	ProjectGUID="{1E6D41F9-1E9E-428F-AE9B-66806D867A73}"
+	RootNamespace="fundamentallisten"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -354,7 +354,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\multipartticker.cpp"
+				RelativePath=".\fundamentallisten.cpp"
 				>
 			</File>
 			<File

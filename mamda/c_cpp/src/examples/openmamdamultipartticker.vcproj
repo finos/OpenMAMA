@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="auctionticker"
-	ProjectGUID="{634133A5-6AAF-4A37-9C67-76A95E7F3A2A}"
-	RootNamespace="auctionticker"
+	Name="mamdamultipartticker"
+	ProjectGUID="{BB920D9E-E3DF-4A12-ABC9-B80586D52939}"
+	RootNamespace="multipart"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -350,11 +350,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\auctionticker.cpp"
+				RelativePath=".\dictrequester.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\dictrequester.cpp"
+				RelativePath=".\multipartticker.cpp"
 				>
 			</File>
 			<File

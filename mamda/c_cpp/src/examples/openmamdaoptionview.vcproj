@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="secstatuslisten"
-	ProjectGUID="{95F11497-C48C-41C1-885F-2238A7440694}"
-	RootNamespace="secstatuslisten"
+	Name="mamdaoptionview"
+	ProjectGUID="{293DCD27-DE5E-4F1D-9689-7E82D75EC427}"
+	RootNamespace="optionview"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -43,7 +43,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp\options&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -120,7 +120,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp\options&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -198,7 +198,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp\options&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -276,7 +276,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp\options&quot;;&quot;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
@@ -342,6 +342,10 @@
 			ReferencedProjectIdentifier="{7F64D11F-C002-4271-BDEC-A82C614403EF}"
 			RelativePathToProject=".\mama\c_cpp\src\c\mamac.vcproj"
 		/>
+		<ProjectReference
+			ReferencedProjectIdentifier="{12E1DAF4-2EC8-42BD-8E87-27CF15C49E3C}"
+			RelativePathToProject=".\mamda\c_cpp\src\cpp\options\mamdaoptions.vcproj"
+		/>
 	</References>
 	<Files>
 		<Filter
@@ -354,11 +358,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\parsecmd.cpp"
+				RelativePath=".\optionview.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\secstatuslisten.cpp"
+				RelativePath=".\parsecmd.cpp"
 				>
 			</File>
 		</Filter>

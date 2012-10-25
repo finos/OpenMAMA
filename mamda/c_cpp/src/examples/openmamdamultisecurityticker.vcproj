@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="quoteticker"
-	ProjectGUID="{C721D6D7-9639-4704-B03A-646AE2F20BD6}"
-	RootNamespace="quoteticker"
+	Name="mamdamultisecurityticker"
+	ProjectGUID="{0E9A92A9-A489-4E35-8E65-D6E6E2D84785}"
+	RootNamespace="multisecurityticker"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -354,11 +354,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\parsecmd.cpp"
+				RelativePath=".\multisecurityticker.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\quoteticker.cpp"
+				RelativePath=".\parsecmd.cpp"
 				>
 			</File>
 		</Filter>
