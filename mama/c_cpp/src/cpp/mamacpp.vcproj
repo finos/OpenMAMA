@@ -546,6 +546,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\mama\MamaStatsCollector.h"
+				>
+			</File>
+			<File
 				RelativePath=".\mama\MamaStatus.h"
 				>
 			</File>
@@ -747,6 +751,10 @@
 			</File>
 			<File
 				RelativePath=".\MamaSourceManager.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\MamaStatsCollector.cpp"
 				>
 			</File>
 			<File
