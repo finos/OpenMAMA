@@ -61,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -142,6 +143,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -216,6 +218,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -293,6 +296,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"

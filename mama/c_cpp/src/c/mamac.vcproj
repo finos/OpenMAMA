@@ -27,7 +27,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine=""
+				CommandLine="$(InputDir)\generateMamaVersion.bat $(InputDir)"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -43,6 +43,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/D &quot;_CRTDBG_MAP_ALLOC&quot; /FI &quot;stdlib.h&quot; /FI &quot;crtdbg.h&quot; "
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MAMA_DLL;_USE_32BIT_TIME_T;MAMA;FD_SETSIZE=1024"
@@ -60,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -108,6 +110,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
+				CommandLine="$(InputDir)\generateMamaVersion.bat $(InputDir)"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -137,6 +140,7 @@
 			/>
 			<Tool
 				Name="VCResourceCompilerTool"
+				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"

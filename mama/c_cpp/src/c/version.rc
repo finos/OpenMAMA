@@ -1,7 +1,5 @@
-// Microsoft Visual C++ generated resource script.
-//
-#include "resource.h"
 
+#include "mama/version.h"
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -27,18 +25,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 // TEXTINCLUDE
 //
 
-1 TEXTINCLUDE 
+1 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE 
+2 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE 
+3 TEXTINCLUDE DISCARDABLE 
 BEGIN
     "\r\n"
     "\0"
@@ -53,8 +51,8 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 6,0,0,15
- PRODUCTVERSION 6,0,0,15
+ FILEVERSION RC_VERSION_NUMERICAL
+ PRODUCTVERSION RC_VERSION_NUMERICAL
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -71,12 +69,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "NYSE Technologies"
             VALUE "FileDescription", "MAMA API C"
-            VALUE "FileVersion", "6.0.0.15"
-            VALUE "InternalName", "MAMA"
-            VALUE "LegalCopyright", "Copyright © 2009 NYSE Technologies"
-            VALUE "OriginalFilename", "MAMAC"
+            VALUE "FileVersion", RC_VERSION_STRING
+            VALUE "InternalName", "MAMAC"
+            VALUE "LegalCopyright", "Copyright © 2012 NYSE Technologies"
+            VALUE "OriginalFilename", RC_C_DLL_NAME
             VALUE "ProductName", "NYSE Technologies MAMA"
-            VALUE "ProductVersion", "6.0.0.15"
+            VALUE "ProductVersion", RC_VERSION_STRING
         END
     END
     BLOCK "VarFileInfo"
