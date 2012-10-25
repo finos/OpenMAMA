@@ -62,7 +62,7 @@ void MamaOpenCloseTestC::TearDown(void)
 
 static void MAMACALLTYPE startCallback(mama_status status)
 {
-    printf("In start in background callback\n");
+    //printf("In start in background callback\n");
 }
 
 
@@ -84,19 +84,19 @@ TEST_F(MamaOpenCloseTestC, NestedOpenClose)
     mamaBridge mBridge;
     mama_loadBridge(&mBridge, getMiddleware());
 
-    printf("Attempt first open\n");
+    //printf("Attempt first open\n");
     mama_open();
 
-    printf("Attempt second open\n");
+    //printf("Attempt second open\n");
     mama_open();
 
-    printf("Attempt first close\n");
+    //printf("Attempt first close\n");
     mama_close();
 
-    printf("Attempt second close\n");
+    //printf("Attempt second close\n");
     mama_close();
 
-    printf("Finished nested testing\n");
+    //printf("Finished nested testing\n");
 }
 
 TEST_F(MamaOpenCloseTestC, OpenCloseReopenSameBridge)
@@ -108,12 +108,7 @@ TEST_F(MamaOpenCloseTestC, OpenCloseReopenSameBridge)
 
     mama_close();
 
-    ASSERT_EQ(MAMA_STATUS_OK, mama_open());
-
-    return;
-
-    // If we get here there is a problem
-    ASSERT_TRUE(1);
+    ASSERT_EQ(MAMA_STATUS_NO_BRIDGE_IMPL, mama_open());
 }
 
 TEST_F(MamaOpenCloseTestC, OpenCloseReopenNewBridge)
