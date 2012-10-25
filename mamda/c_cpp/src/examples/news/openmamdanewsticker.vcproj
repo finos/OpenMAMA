@@ -2,8 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="newsticker"
-	ProjectGUID="{AA0536F0-00F9-4DD4-8E5C-BD00F8E54E8B}"
+	Name="openmamdanewsticker"
+	ProjectGUID="{18533296-1F6C-4588-8432-51A9A6E755F6}"
 	RootNamespace="newsticker"
 	Keyword="Win32Proj"
 	>
