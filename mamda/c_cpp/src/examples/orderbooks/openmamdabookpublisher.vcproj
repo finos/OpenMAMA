@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="atomicbookbuilder"
-	ProjectGUID="{B4063D8E-1903-4AC4-AFD0-51C6A0A975ED}"
-	RootNamespace="atomicbookbuilder"
+	Name="openmamdabookpublisher"
+	ProjectGUID="{486D57E2-68C9-4E16-8ADE-00E667D051B6}"
+	RootNamespace="bookpublisher"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -354,7 +354,7 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\atomicbookbuilder.cpp"
+				RelativePath=".\bookpublisher.cpp"
 				>
 			</File>
 			<File

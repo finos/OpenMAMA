@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="listenerBookPublisher"
-	ProjectGUID="{54FCF8E4-7A3E-4C76-B65A-7360EA701D4C}"
-	RootNamespace="listenerBookPublisher"
+	Name="openmamdaatomicbookticker"
+	ProjectGUID="{79245718-94C7-4FFC-8528-E8CA8CE08D38}"
+	RootNamespace="atomicbookticker"
 	Keyword="Win32Proj"
 	>
 	<Platforms>
@@ -354,11 +354,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath="..\dictrequester.cpp"
+				RelativePath=".\atomicbookticker.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\listenerBookPublisher.cpp"
+				RelativePath="..\dictrequester.cpp"
 				>
 			</File>
 			<File
