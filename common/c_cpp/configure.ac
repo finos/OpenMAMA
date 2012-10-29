@@ -25,9 +25,9 @@
 # VERSION INFO
 #
 #################################################
-m4_define([product_version_major],     [6])
-m4_define([product_version_minor],     [0])
-m4_define([product_version_release],   [0rc19])
+m4_define([product_version_major],     [2])
+m4_define([product_version_minor],     [2])
+m4_define([product_version_release],   [1.1])
 m4_define([product_full_version],[product_version_major.product_version_minor.product_version_release])
 
 
