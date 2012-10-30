@@ -109,7 +109,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine=""
+				CommandLine="$(InputDir)\generateMamaVersion.bat $(InputDir)"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
