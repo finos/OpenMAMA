@@ -1,4 +1,4 @@
-/* $Id: Comparable.cs,v 1.2.38.5 2012/08/24 16:12:10 clintonmcdowell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

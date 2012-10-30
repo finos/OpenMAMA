@@ -1,4 +1,4 @@
-/* $Id: MamdaMultiSecurityHandler.cs,v 1.2.32.4 2012/08/24 16:12:11 clintonmcdowell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

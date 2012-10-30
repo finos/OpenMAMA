@@ -1,4 +1,4 @@
-/* $Id: MamaSymbolListSubscriberCS.cs,v 1.1.2.3 2012/09/07 07:44:52 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

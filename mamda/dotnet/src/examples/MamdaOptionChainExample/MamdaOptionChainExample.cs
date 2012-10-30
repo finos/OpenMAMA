@@ -1,4 +1,4 @@
-/* $Id: MamdaOptionChainExample.cs,v 1.6.30.7 2012/08/24 16:12:13 clintonmcdowell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

@@ -1,4 +1,4 @@
-/* $Id: MamaIoCS.cs,v 1.1.2.3 2012/08/24 16:12:02 clintonmcdowell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
