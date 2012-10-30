@@ -1,4 +1,4 @@
-/* $Id: stat.h,v 1.7.22.4 2011/08/10 14:53:28 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -56,6 +56,10 @@ typedef enum mamaStatType
     MAMA_STAT_TYPE_WOMBAT_MSGS                   =  125,
     MAMA_STAT_TYPE_RV_MSGS                       =  126,
     MAMA_STAT_TYPE_FAST_MSGS                     =  127,
+    MAMA_STAT_TYPE_UNKNOWN_MSGS                  =  128,
+    MAMA_STAT_TYPE_PUBLISHER_SEND                =  129,
+    MAMA_STAT_TYPE_PUBLISHER_INBOX_SEND          =  130,
+    MAMA_STAT_TYPE_PUBLISHER_REPLY_SEND          =  131,
     MAMA_STAT_TYPE_UNKNOWN                       =  999
 }mamaStatType;
 
@@ -66,7 +70,7 @@ typedef enum mamaStatType
  */
 MAMAExpDLL
 extern mama_status
-mamaStat_create (mamaStat* stat, mamaStatsCollector* collector, int lockable, const char* name, mama_fid_t type);
+mamaStat_create (mamaStat* stat, mamaStatsCollector collector, int lockable, const char* name, mama_fid_t type);
 
 /**
  * Destroy a mamaStats object
@@ -103,6 +107,35 @@ mamaStat_decrement (mamaStat stat);
 MAMAExpDLL
 extern mama_status
 mamaStat_reset (mamaStat stat);
+/**
+ * Adds the stats object counter with the value
+ *
+ * @param stat  The stats object to added 
+ * @param value The value to be added to be stat
+ */
+MAMAExpDLL
+extern mama_status
+mamaStat_add (mamaStat stat, int value);
+
+/**
+ * Subtract the stats object counter with the value
+ *
+ * @param stat  The stats object to subtracted 
+ * @param value the value to be subtracted from stat
+ */
+MAMAExpDLL
+extern mama_status
+mamaStat_subtract (mamaStat stat, int value);
+
+/**
+ * set the Interval value
+ *
+ * @param stat  The stats object to be changed
+ * @param value the value to be used
+ */
+MAMAExpDLL
+extern mama_status
+mamaStat_setIntervalValue (mamaStat stat, int value);
 
 /**
  * Get the FID used when publishing the
@@ -164,7 +197,7 @@ mamaStat_getTotalValue (mamaStat stat);
  */
 MAMAExpDLL
 extern void
-mamaStat_getStats (mamaStat stat, mama_u32_t* intervalValue, mama_u32_t* maxValue, mama_u32_t* totalValue);
+mamaStat_getStats (mamaStat stat, mama_i32_t* intervalValue, mama_u32_t* maxValue, mama_u32_t* totalValue);
 
 /**
  * Get the name of the stat

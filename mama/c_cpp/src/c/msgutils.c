@@ -1,4 +1,4 @@
-/* $Id: msgutils.c,v 1.36.22.5 2011/10/02 19:02:17 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

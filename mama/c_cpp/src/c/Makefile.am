@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.106.4.3.10.29 2011/09/27 15:45:03 emmapollock Exp $
+# $Id$
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Technologies, Inc.
@@ -90,11 +90,12 @@ nobase_include_HEADERS  = \
 CFLAGS   += -I${srcdir}/../../../../common/c_cpp/src/c
 LDFLAGS  += -L${srcdir}/../../../../common/c_cpp/src/c
 
-LIBS     += -ldl -lrt -lwombatcommon
+LIBS     += -lm -lrt -lwombatcommon -ldl -lpthread
 
 
 if USE_GCC_FLAGS
-CPPFLAGS += -pedantic -Wall -Wno-long-long -D_GNU_SOURCE
+CFLAGS   += -std=gnu99 -pedantic-errors -Wmissing-prototypes -Wstrict-prototypes
+CPPFLAGS += -pedantic-errors -Wall -Wno-long-long -D_GNU_SOURCE
 endif
 
 

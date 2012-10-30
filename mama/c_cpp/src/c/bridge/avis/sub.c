@@ -1,4 +1,4 @@
-/* $Id: sub.c,v 1.1.2.10 2011/10/02 19:02:18 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -199,6 +199,7 @@ avisBridgeMamaSubscription_create (subscriptionBridge* subscriber,
                                     void*               closure)
 {
     avisSubscription* impl = NULL;
+    
     if (!subscriber || !subscription || !transport )
         return MAMA_STATUS_NULL_ARG;
 
@@ -271,6 +272,7 @@ avisBridgeMamaSubscription_destroy (subscriptionBridge subscriber)
 {
     mama_status status = MAMA_STATUS_OK;
     wombatQueue   queue = NULL;
+
     CHECK_SUBSCRIBER(subscriber);
 
     elvin_subscription_remove_listener(avisSub(subscriber)->mAvisSubscription, avis_callback);
@@ -317,7 +319,7 @@ avisBridgeMamaSubscription_isValid (subscriptionBridge subscriber)
 
 mama_status
 avisBridgeMamaSubscription_getPlatformError (subscriptionBridge subscriber,
-                                              void**             error)
+                                             void**             error)
 {
     CHECK_SUBSCRIBER(subscriber);
     *error = &(avisSub(subscriber)->mAvis->error);
@@ -326,7 +328,7 @@ avisBridgeMamaSubscription_getPlatformError (subscriptionBridge subscriber,
 
 mama_status
 avisBridgeMamaSubscription_setTopicClosure (subscriptionBridge subscriber,
-                                             void* closure)
+                                            void* closure)
 {
     return MAMA_STATUS_NOT_IMPLEMENTED;
 }

@@ -1,4 +1,4 @@
-/* $Id: dqpublishermanager.h,v 1.2.22.3 2011/08/10 14:53:28 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -69,6 +69,9 @@ typedef void (MAMACALLTYPE *mamaDQPublisherErrorCB)(
         const char*        errortxt,
         mamaMsg     msg);
 
+typedef void (MAMACALLTYPE *mamaDQPublisherMsgCB)(
+        mamaDQPublisherManager manager,
+        mamaMsg     msg);
 
 typedef struct mamaDQPublisherManagerCallbacks_
 {
@@ -77,6 +80,7 @@ typedef struct mamaDQPublisherManagerCallbacks_
     mamaDQPublisherRequestCB        onRequest;
     mamaDQPublisherRefreshCB        onRefresh;
     mamaDQPublisherErrorCB          onError;
+    mamaDQPublisherMsgCB            onMsg;
 } mamaDQPublisherManagerCallbacks;
 
 
@@ -184,6 +188,12 @@ extern mama_status
 mamaDQPublisherManager_sendNoSubscribers (
         mamaDQPublisherManager manager,
         const char *symbol);
+
+MAMAExpDLL
+extern void 
+mamaDQPublisherManager_enableSendTime (
+        mamaDQPublisherManager manager, 
+        mama_bool_t enable);
 
 #if defined( __cplusplus )
 }

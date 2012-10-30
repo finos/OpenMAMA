@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1.2.2 2011/09/27 15:45:03 emmapollock Exp $
+# $Id$
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Technologies, Inc.
@@ -32,7 +32,7 @@ LDFLAGS += -L${srcdir}/../../../c \
            -L${srcdir}/../../../../../../common/c_cpp/src/c
 
 if USE_GCC_FLAGS
-CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes
+CFLAGS   += -std=gnu99 -pedantic -Wmissing-prototypes -Wstrict-prototypes
 CPPFLAGS += -pedantic -Wall -Wimplicit -Wno-long-long -D_GNU_SOURCE
 endif
 

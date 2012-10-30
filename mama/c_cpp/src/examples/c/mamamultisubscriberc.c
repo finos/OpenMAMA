@@ -1,4 +1,4 @@
-/* $Id: mamamultisubscriberc.c,v 1.1.2.6 2011/09/29 07:02:22 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

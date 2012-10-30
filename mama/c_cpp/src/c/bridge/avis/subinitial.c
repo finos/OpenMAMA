@@ -1,4 +1,4 @@
-/* $Id: subinitial.c,v 1.1.2.4 2011/09/27 11:39:48 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -20,7 +20,6 @@
  */
 
 #include <wombat/wUuid.h>
-
 #include <mama/mama.h>
 #include <bridge.h>
 #include <string.h>
@@ -112,6 +111,7 @@ avisBridgeMamaInbox_createByIndex (inboxBridge*           bridge,
    mamaMsgCallbacks cb;
    avisInboxImpl* impl = NULL;
    mama_status status = MAMA_STATUS_OK;
+
    if (!bridge || !transport || !queue || !msgCB) return MAMA_STATUS_NULL_ARG;
    impl = (avisInboxImpl*)calloc(1, sizeof(avisInboxImpl));
    if (!impl)

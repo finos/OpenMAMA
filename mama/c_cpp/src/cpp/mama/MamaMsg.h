@@ -65,6 +65,7 @@ namespace Wombat
         bool operator!=(const MamaMsgIterator&) const;
 
         MamaMsgField&    operator*();
+        MamaMsgField*    operator->();
         MamaMsgIterator& operator++();
 
     protected:
@@ -194,6 +195,17 @@ namespace Wombat
          */
         void copy (const MamaMsg&  rhs);
 
+        /**
+         * Get a temporary copy of the mamaMsg so to be able to modify the content.
+         * If the message can be modified directly, the message itself is returned.
+         * If the message cannot be modified then only one copy is performed the first time
+         * this method is called and then the same copy is returned when this method is
+         * called again.
+         * The copy has the same life time of the original message.
+         *
+         * @return The message copy.
+         */
+        MamaMsg* getTempCopy();
         void applyMsg (const MamaMsg&  msg);
         
         /**
@@ -2914,7 +2926,7 @@ namespace Wombat
          *
          * @return payloadType The payload type.
          */   
-        mamaPayloadType getPayloadType (void);
+        mamaPayloadType getPayloadType (void) const;
         
        /**
          * Get the native message structure for the underlying message
@@ -2955,6 +2967,7 @@ namespace Wombat
         mutable MamaMsg*       mTmpMsg;
         mutable const char*    mString;
         mutable MamaMsgField*  mMsgField;
+        mutable MamaMsg*       mCopyMsg;
 
         void setDestroyCMsg    (bool destroy);
         void cleanup           ();

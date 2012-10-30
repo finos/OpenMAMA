@@ -471,6 +471,21 @@ namespace Wombat
         switch (msgType)
         {
             case MAMA_MSG_TYPE_DELETE:
+                if (subscription->checkDebugLevel (MAMA_LOG_LEVEL_FINE))
+                {
+                    const char *contentSymbol = "N/A";
+                    msg.tryString (MamdaCommonFields::ISSUE_SYMBOL, contentSymbol);
+
+                    mama_forceLog (MAMA_LOG_LEVEL_FINE,
+                                   "MamdaSubscription (%s.%s(%s)) "
+                                   "ignoring msg. type: %s\n",
+                                   mSource->getPublisherSourceName(),
+                                   mSymbol.c_str (),
+                                   contentSymbol,
+                                   msg.getMsgTypeName());
+                }
+		onError (subscription, MAMA_STATUS_DELETE , "Msg Type Delete");
+                return;
             case MAMA_MSG_TYPE_EXPIRE:
                 if (subscription->checkDebugLevel (MAMA_LOG_LEVEL_FINE))
                 {
@@ -565,6 +580,11 @@ namespace Wombat
                 severity = MAMDA_SEVERITY_HIGH;
                 code     = MAMDA_ERROR_BAD_SYMBOL;
                 errStr   = "bad symbol";
+                break;
+            case MAMA_STATUS_DELETE:
+                severity = MAMDA_SEVERITY_OK;
+                code     = MAMDA_ERROR_DELETE;
+                errStr   = "message type delete";
                 break;
             case MAMA_STATUS_TIMEOUT:
                 severity = MAMDA_SEVERITY_HIGH;

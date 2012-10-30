@@ -1,4 +1,4 @@
-/* $Id: targetsxs.h,v 1.1.4.3.2.2 2012/04/17 10:52:12 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -30,6 +30,7 @@
 #elif (_MSC_VER >= 1400 && _MSC_VER < 1400)
 #define VC7
 #endif
+
 #ifndef VC7
 
 #ifdef VC8

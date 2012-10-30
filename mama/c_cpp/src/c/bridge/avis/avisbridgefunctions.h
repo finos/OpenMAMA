@@ -1,4 +1,4 @@
-/* $Id: avisbridgefunctions.h,v 1.1.2.3 2011/09/07 11:01:05 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

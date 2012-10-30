@@ -29,6 +29,7 @@
 #include <string>
 #include "MamaSubscriptionImpl.h"
 #include <mama/queue.h>
+#include <mama/MamaQueue.h>
 #include <mama/MamaReservedFields.h>
 
 namespace Wombat
@@ -60,7 +61,7 @@ namespace Wombat
     void Mama::open()
     {
         // Open MAMA
-        mama_status status = mamaTry (mama_open ());
+        mamaTry (mama_open ());
 
         MamaReservedFields::initReservedFields();
     }
@@ -69,7 +70,7 @@ namespace Wombat
                      const char* filename)
     {
         // Open MAMA
-        mama_status status = mamaTry (mama_openWithProperties (path, filename));
+        mamaTry (mama_openWithProperties (path, filename));
 
         MamaReservedFields::initReservedFields();
     }
@@ -79,7 +80,7 @@ namespace Wombat
 
     extern "C"
     {
-        void entitlementDisconnectCB (const sessionDisconnectReason reason,
+        void MAMACALLTYPE entitlementDisconnectCB (const sessionDisconnectReason reason,
                                       const char* userId,
                                       const char* host,
                                       const char* appName)
@@ -93,7 +94,7 @@ namespace Wombat
             }
         }
 
-        void entitlementUpdateCB ()
+        void MAMACALLTYPE entitlementUpdateCB ()
         {
             if (gMamaEntitlementCallback != NULL)
             {
@@ -101,7 +102,7 @@ namespace Wombat
             }
         }
 
-        void entitlementCheckingSwitchCB (const int isEntitlementCheckingDisabled)
+        void MAMACALLTYPE entitlementCheckingSwitchCB (const int isEntitlementCheckingDisabled)
         {
             if (gMamaEntitlementCallback != NULL)
             {
@@ -162,24 +163,18 @@ namespace Wombat
         mamaTry (mama_start (bridgeImpl));
     }
 
-    static MamaStartCallback* gMamaStartCallback = NULL;
-
     extern "C"
     {
-        void MAMACALLTYPE startCb (mama_status status)
+        void MAMACALLTYPE stopCb (mama_status status, mamaBridge, void* closure)
         {
-            if (gMamaStartCallback != NULL)
-            {
-                gMamaStartCallback->onStartComplete (MamaStatus (status));
-            }
+            static_cast<MamaStartCallback*>(closure)->onStartComplete(MamaStatus(status));
         }
     }
 
     void Mama::startBackground (mamaBridge bridgeImpl,
                                 MamaStartCallback* cb)
     {
-        gMamaStartCallback = cb;
-        mamaTry (mama_startBackground (bridgeImpl, startCb));
+        mamaTry (mama_startBackgroundEx (bridgeImpl, mamaStopCBEx(stopCb), static_cast<void*>(cb)));
     }
 
     void Mama::stop (mamaBridge bridgeImpl)
@@ -289,8 +284,7 @@ namespace Wombat
             mamaQueue_getClosure (defaultQueueC, (void**)(&defaultQueue));
             if (defaultQueue == NULL)
             {
-                defaultQueue = new MamaQueue();
-                defaultQueue->setCValue(defaultQueueC);
+                defaultQueue = new MamaQueue(defaultQueueC);
                 mamaQueue_setClosure(defaultQueueC, (void*) defaultQueue);
             }
             return defaultQueue;
@@ -311,6 +305,16 @@ namespace Wombat
     void Mama::setApplicationClassName (const char* className)
     {
         mamaTry (mama_setApplicationClassName (className));
+    }
+
+    void Mama::addStatsCollector (MamaStatsCollector* statsCollector)
+    {
+        mamaTry (mama_addStatsCollector (statsCollector->getStatsCollector()));
+    }
+
+    void Mama::removeStatsCollector (MamaStatsCollector* statsCollector)
+    {
+        mamaTry (mama_removeStatsCollector (statsCollector->getStatsCollector()));
     }
 
     template <typename T>

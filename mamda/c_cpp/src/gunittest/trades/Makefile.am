@@ -34,14 +34,13 @@ CFLAGS   += -I@builddir@/../../c
 CPPFLAGS += -I@builddir@/../../c
 
 LIBS = -lmamdabook -lmamda -lrt 
-LIBS += -lmama -lwombatcommon -lmamacpp
+LIBS += -lmama -lwombatcommon -lmamacpp -lgtest
 
 LDADD = -lgtest_main
 common_files = ../common/MainUnitTest.cpp ../common/MamdaUnitTestUtils.cpp
 
-noinst_PROGRAMS = MamdaTradeTests
 
-dist_MamdaTradeTests_SOURCES =  MamdaTradeCallBackTests.cpp \
+dist_UnitTestMamdaTradeTests_SOURCES =  MamdaTradeCallBackTests.cpp \
                                 MamdaTradeFieldTests.cpp \
                                 MamdaTradeListenerPerfTests.cpp \
                                 MamdaTradeListenerTradeIdTests.cpp \
@@ -49,6 +48,6 @@ dist_MamdaTradeTests_SOURCES =  MamdaTradeCallBackTests.cpp \
                                 MamdaTradeListenerShortSaleTests.cpp \
                                 $(common_files)
 
-bin_PROGRAMS = MamdaTradeTests
+bin_PROGRAMS = UnitTestMamdaTradeTests
 
 

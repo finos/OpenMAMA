@@ -39,12 +39,15 @@ public class MamaQueue
     /*Used to store pointer to the C closure used for queue monitoring*/
     private long monitorClosure_i  = 0;
 
+	public MamaMsg  reuseableMsg = null;
     public long getPointerVal()
     {
         return queuePointer_i;
     }
     
-    public MamaQueue () {};
+    public MamaQueue () {
+		reuseableMsg = new MamaMsg(false);
+	};
 
     public native void create (MamaBridge bridge);
 

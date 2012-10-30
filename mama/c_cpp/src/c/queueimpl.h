@@ -1,4 +1,4 @@
-/* $Id: queueimpl.h,v 1.7.6.2.2.1.4.3 2011/08/10 14:53:25 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -104,7 +104,7 @@ extern mama_status
 mamaQueueImpl_lowWatermarkExceeded (mamaQueue queue, size_t size);
 
 MAMAExpDLL
-extern mamaStatsCollector* 
+extern mamaStatsCollector 
 mamaQueueImpl_getStatsCollector (mamaQueue queue);
 
 #if defined(__cplusplus)

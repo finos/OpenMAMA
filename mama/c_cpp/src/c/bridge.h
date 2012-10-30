@@ -1,4 +1,4 @@
-/* $Id: bridge.h,v 1.76.4.2.2.1.4.10 2011/09/07 11:01:05 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -28,6 +28,7 @@
 #include "mama/subscmsgtype.h"
 #include "mamainternal.h"
 #include "conflation/manager_int.h"
+#include "wlock.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -61,7 +62,7 @@ typedef struct  msgBridge_*         msgBridge;
 
 /*
  Used in the bridge layer to set all appropriate functions
- on the mamaBridgeImpl struature
+ on the mamaBridgeImpl structure
 
  @param implIdentifer The identifier for the middleware rv, lbm, wmw or avis
  @param bridgeImpl    Pointer to the mamaBridgeImpl structure
@@ -71,6 +72,7 @@ do                                                                             \
 {                                                                              \
     bridgeImpl->mClosure            =   NULL;                                  \
     bridgeImpl->mNativeMsgBridge    =   NULL;                                  \
+    bridgeImpl->mLock               =   wlock_create();                        \
     /*mama.c function pointers*/                                               \
     bridgeImpl->bridgeOpen          =   implIdentifier ## Bridge_open;         \
     bridgeImpl->bridgeClose         =   implIdentifier ## Bridge_close;        \
@@ -701,6 +703,7 @@ typedef struct mamaBridgeImpl
 
     /*Associate arbitrary data with a bridge impl. Needed for the C++ wrapper*/
     void*     mClosure;
+    wLock     mLock;
 
     /* The set of methods used to access/populate a message in native format */
     mamaPayloadBridge mNativeMsgBridge;

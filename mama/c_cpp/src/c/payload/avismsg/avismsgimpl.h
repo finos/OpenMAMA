@@ -1,4 +1,4 @@
-/* $Id: avismsgimpl.h,v 1.1.2.8 2011/09/15 17:33:25 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

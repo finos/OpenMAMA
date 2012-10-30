@@ -156,9 +156,11 @@ namespace Wombat
             : mClosure          (NULL)
             , mEnqueueCallback  (NULL)
         	, mUserClosure      (NULL)
+        	, mOwner      		(false)
         {
         }
 
+		bool					  mOwner;
         void*                     mClosure;
         MamaQueueEnqueueCallback* mEnqueueCallback;
         MamaQueueMonitorCallback* mMonitorCallback;
@@ -174,6 +176,11 @@ namespace Wombat
     {
     }
 
+	MamaQueue::MamaQueue (mamaQueue cQueue)
+        : mPimpl (new MamaQueueImpl)
+        , mQueue (cQueue)
+    {
+    }
     MamaQueue::~MamaQueue (void)
     {
         destroy ();
@@ -183,6 +190,7 @@ namespace Wombat
     void MamaQueue::create (mamaBridge bridgeImpl)
     {
         mamaTry (mamaQueue_create (&mQueue, bridgeImpl));
+		mPimpl->mOwner=true;
     }
 
     void MamaQueue::create (mamaBridge  bridgeImpl, 
@@ -470,7 +478,7 @@ namespace Wombat
     {	
         mama_status status = MAMA_STATUS_OK;
 
-        if (mQueue)
+        if ((mQueue) && (mPimpl->mOwner))
         {
             status = mamaQueue_destroy (mQueue);        
         }

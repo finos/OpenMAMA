@@ -115,6 +115,48 @@ public class MamaBasicSubscription
     }
 
     /**
+    * Create a basic wildcard subscription.
+    *
+    * The topic must be a valid wildcard topic for the underlying middleware.
+    *
+    * For WMW a source with a NULL symbol parameter creates a "transport"
+    * subscription that receives all messages on the transport and bypasses the
+    * naming service. A publishing transport can be assigned a name with the
+    * publish_name property.
+    *
+    * @param subscription The subscription.
+    * @param transport The transport to use.
+    * @param queue The mama queue.
+    * @param callbacks The mamaMsgCallbacks structure containing the callback
+    * functions.
+    * @param source The source name of the feed handler to provide the
+    * subscription.
+    * @param symbol The symbol name.
+    * @param closure The closure will be passed to subsequent callback
+    * invocations for this subscription.
+    */
+    public void createBasicWildCardSubscription(
+        final MamaBasicWildCardSubscriptionCallback callback,
+        final MamaTransport                         transport,
+        final MamaQueue                             queue,
+        final String                                source,
+        final String                                topic,
+        final Object                                closure)
+    {
+        // Save the closure as well
+        myClosure = closure;
+
+        // Create the native subscription
+        createNativeWildCardSubscription(
+            callback,
+            transport,
+            queue,
+            source,
+            topic,
+            null);
+    }
+
+    /**
      * This function returns the closure supplied to the createSubscription
      * function.
      *
@@ -212,5 +254,13 @@ public class MamaBasicSubscription
 
     private native int getSubscriptionState();
     private static native void initIDs();
+
+    private native void createNativeWildCardSubscription(
+        final MamaBasicWildCardSubscriptionCallback callback,
+        final MamaTransport                         transport,
+        final MamaQueue                             queue,
+        final String                                source,
+        final String                                topic,
+        final Object                                closure);
 
 }/*End class*/

@@ -81,6 +81,10 @@ public class MamaMsgStatus
     /** Message with duplicate sequence number */
     public static final short STATUS_DUPLICATE = 15;
 
+    /** Message with the type of DELETE */
+    public static final short STATUS_DELETE = 17;
+
+
     public static final short STATUS_EXCEPTION = 999;
 
     /**

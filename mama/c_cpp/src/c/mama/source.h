@@ -1,4 +1,4 @@
-/* $Id: source.h,v 1.13.32.4 2011/08/10 14:53:28 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

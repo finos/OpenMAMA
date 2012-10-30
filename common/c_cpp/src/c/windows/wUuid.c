@@ -1,4 +1,4 @@
-/* $Id: wUuid.c,v 1.1.2.3 2012/04/05 09:33:15 evinkeating Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

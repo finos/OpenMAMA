@@ -57,7 +57,7 @@ namespace Wombat
         MAMDA_ERROR_TIME_OUT,
         MAMDA_ERROR_ENTITLEMENT,
         MAMDA_ERROR_NOT_FOUND,
-        MAMDA_ERROR_WATCH_THIS_SPACE
+        MAMDA_ERROR_DELETE
     };
 
     /**

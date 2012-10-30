@@ -73,19 +73,19 @@ TEST_F(MamaOpenCloseTest, NestedOpenClose)
     // Load the bridge
     Mama::loadBridge(getMiddleware());
 
-    printf("Attempt first open\n");
+    //printf("Attempt first open\n");
     Mama::open();
 
-    printf("Attempt second open\n");
+    //printf("Attempt second open\n");
     Mama::open();
 
-    printf("Attempt first close\n");
+    //printf("Attempt first close\n");
     Mama::close();
 
-    printf("Attempt second close\n");
+    //printf("Attempt second close\n");
     Mama::close();
     
-    printf("Finished nested testing\n");
+    //printf("Finished nested testing\n");
 }
 
 TEST_F(MamaOpenCloseTest, OpenCloseReopenSameBridge)
@@ -138,7 +138,7 @@ TEST_F(MamaOpenCloseTest, OpenCloseReopenNewBridge)
 //CPP Test
 void MamaOpenCloseTest::StartBackgroundCallback::onStartComplete(MamaStatus status)
 {
-    printf("Start completed\n");
+    //printf("Start completed\n");
 }
 
 TEST_F(MamaOpenCloseTest, StartStopDifferentThreads)

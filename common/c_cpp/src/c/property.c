@@ -1,4 +1,4 @@
-/* $Id: property.c,v 1.22.2.2.2.1.2.4 2011/09/07 09:45:08 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -323,19 +323,19 @@ properties_GetPropertyValueAsBoolean(const char* propertyValue)
 const char*
 properties_Get( wproperty_t handle, const char* name )
 {
-   propertiesImpl_ *this = (propertiesImpl_ *)handle;
-   const char*      rval = NULL;
+    propertiesImpl_ *this = (propertiesImpl_ *)handle;
+    const char*      rval = NULL;
 
-   if( name == NULL || NULL == this || strlen( name ) == 0 )
-   {
-       return NULL;
-   }
+    if( name == NULL || NULL == this || strlen( name ) == 0 )
+    {
+        return NULL;
+    }
 
-   rval = (char* )wtable_lookup( this->mTable, (char* )name );
+    rval = (char* )wtable_lookup( this->mTable, (char* )name );
 
-   if( gPropertyDebug )fprintf( stderr, "Get property: %s\n", rval );
+    if( gPropertyDebug )fprintf( stderr, "Get property: %s\n", rval );
 
-   return rval;
+    return rval;
 }
 
 int
@@ -593,12 +593,12 @@ propertiesImpl_AddProperty( propertiesImpl properties,
             return 0;
     }
 
-    if(-1 == (ret = wtable_insert( this->mTable, (char* )name, (caddr_t)value)))
+    if (-1 == (ret = wtable_insert( this->mTable, (char* )name, (caddr_t)value)))
     {
         return 0;
     }
 
-    if(0 == ret) /* If 0 is returned then data has been replaced. */
+    if (0 == ret) /* If 0 is returned then data has been replaced. */
     {
         /* If existing data in the table has now been replaced then the old data must be freed. */
         if(NULL != data)

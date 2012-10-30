@@ -93,4 +93,9 @@ namespace Wombat
         }
     }
 
+    void MamaLogFile::rollFiles()
+    {
+        mamaTry (mama_logForceRollLogFiles());
+    }
+
 } // namespace Wombat

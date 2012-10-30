@@ -161,7 +161,7 @@ static void lookupIPAddress (void)
     char           *addrStr = "not determined";
 
     struct         utsname uts;
-    memset( gIPAddress, 0, 16 );
+    memset( (void *)gIPAddress, 0, 16 );
     uname (&uts);
     gHostName = strdup (uts.nodename);
 

@@ -64,6 +64,11 @@ public class MamaInbox
         _destroy();
     }
 
+    protected void finalize() throws Throwable {
+        if(0!=inboxPointer_i)
+            _destroy();
+    } 
+
     private native void _destroy();
 
     private static native void initIDs();

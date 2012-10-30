@@ -1,4 +1,4 @@
-/* $Id: refreshtransport.h,v 1.11.24.6 2011/09/27 11:39:47 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

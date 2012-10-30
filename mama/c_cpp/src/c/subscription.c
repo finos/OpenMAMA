@@ -1,4 +1,4 @@
-/* $Id: subscription.c,v 1.152.4.15.2.8.2.10 2011/10/10 16:03:18 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -531,7 +531,7 @@ isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subs
 }
 
 
-char* mamaSubscriptionImpl_copyString (const char*  str)
+static char* mamaSubscriptionImpl_copyString (const char*  str)
 {
     /* Windows does not like strdup */
     size_t len = strlen (str) + 1;
@@ -540,7 +540,7 @@ char* mamaSubscriptionImpl_copyString (const char*  str)
     return result;
 }
 
-void checkFree (char**  str)
+static void checkFree (char**  str)
 {
     if (*str)
     {
@@ -549,7 +549,7 @@ void checkFree (char**  str)
     }
 }
 
-mama_status
+static mama_status
 setSubscInfo (
     mamaSubscription  subscription,
     mamaTransport     transport,
@@ -1470,12 +1470,6 @@ void mamaSubscriptionImpl_cleanup(mamaSubscriptionImpl *impl)
         impl->mUserSymbol = NULL;
     }
 
-    /* The subscription symbol. */
-    if(NULL != impl->mSubscSymbol)
-    {
-        free(impl->mSubscSymbol);
-        impl->mSubscSymbol = NULL;
-    }
 }
 
 
@@ -1834,6 +1828,12 @@ void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl)
     /* Destroy the state. */
        wInterlocked_destroy(&impl->mState);
 
+    /* The subscription symbol. */
+    if(NULL != impl->mSubscSymbol)
+    {
+        free(impl->mSubscSymbol);
+        impl->mSubscSymbol = NULL;
+    }
     /* Free the subscription impl. */
     free(impl);
 }
@@ -2029,19 +2029,19 @@ void mamaSubscriptionImpl_initialize(mamaSubscriptionImpl *impl)
     /* Increment the appropriate stats. */
     if(gGenerateQueueStats)
     {
-        mamaStatsCollector *queueStatsCollector = mamaQueueImpl_getStatsCollector(impl->mQueue);
-        mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatNumSubscriptions.mFid);
+        mamaStatsCollector queueStatsCollector = mamaQueueImpl_getStatsCollector(impl->mQueue);
+        mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatNumSubscriptions.mFid);
     }
 
     if(gGenerateTransportStats)
     {
-        mamaStatsCollector *transportStatsCollector = mamaTransport_getStatsCollector(impl->mTransport);
-        mamaStatsCollector_incrementStat(*transportStatsCollector, MamaStatNumSubscriptions.mFid);
+        mamaStatsCollector transportStatsCollector = mamaTransport_getStatsCollector(impl->mTransport);
+        mamaStatsCollector_incrementStat(transportStatsCollector, MamaStatNumSubscriptions.mFid);
     }
 
     if(mamaInternal_getGlobalStatsCollector() != NULL)
     {
-        mamaStatsCollector_incrementStat(*(mamaInternal_getGlobalStatsCollector()), MamaStatNumSubscriptions.mFid);
+        mamaStatsCollector_incrementStat(mamaInternal_getGlobalStatsCollector(), MamaStatNumSubscriptions.mFid);
     }
 }
 
@@ -2495,6 +2495,10 @@ mama_status mamaSubscription_allocate(mamaSubscription *subscription)
                 /* Write the value out in a log message. */
                 mama_log (MAMA_LOG_LEVEL_FINE, "PreInitialCacheSize set to %d", impl->mPreInitialCacheSize);
             }
+            else
+            {
+                impl->mPreInitialCacheSize = MAMA_SUBSCRIPTION_DEFAULT_PREINITIALCACHESIZE;
+            }
 
             /* Create the mutex, this is used to protect access during create and
              * destroy operations.
@@ -2512,7 +2516,6 @@ mama_status mamaSubscription_allocate(mamaSubscription *subscription)
             impl->mSubscMsgType           = MAMA_SUBSC_SUBSCRIBE;
             impl->mAppDataType            = MAMA_MD_DATA_TYPE_STANDARD;
             impl->mDebugLevel             = MAMA_LOG_LEVEL_WARN;
-            impl->mPreInitialCacheSize    = MAMA_SUBSCRIPTION_DEFAULT_PREINITIALCACHESIZE;
 
             /* Set the initial state of the subscription now that the memory has been allocated. */
             wInterlocked_initialize(&impl->mState);

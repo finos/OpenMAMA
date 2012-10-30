@@ -1,4 +1,4 @@
-/* $Id: msgstatus.h,v 1.11.24.7 2011/10/02 19:02:18 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

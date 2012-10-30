@@ -1,4 +1,4 @@
-/* $Id: statscollector.c,v 1.9.4.1.16.2 2011/08/10 14:53:26 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -29,21 +29,6 @@
 #include "mama/statscollector.h"
 #include "mama/statfields.h"
 
-#define MAMA_STAT_ARRAY_OFFSET 		105
-#define MAMA_STAT_MAX_STATS    		30
-
-typedef struct mamaStatsCollectorImpl__
-{
-    mamaStatsCollectorType 	mType;
-    const char* 			mName;
-    mamaStat    			mMamaStats[MAMA_STAT_MAX_STATS];
-    const char* 			mMiddleware;
-    collectorPollStatCb 	mPollCb;
-    void*       			mPollClosure;
-    int         			mPublishStats;
-    int         			mLogStats;
-} mamaStatsCollectorImpl;
-
 mama_status
 mamaStatsCollector_create (mamaStatsCollector* statsCollector, mamaStatsCollectorType type, const char* name, const char* middleware)
 {
@@ -57,6 +42,7 @@ mamaStatsCollector_create (mamaStatsCollector* statsCollector, mamaStatsCollecto
     impl->mPollClosure  = NULL;
     /* Default behaviour is to log, but not publish, stats */
     impl->mPublishStats = 0;
+    impl->mOffset = 0;
     impl->mLogStats     = 1;
 
     memset (impl->mMamaStats, 0, MAMA_STAT_MAX_STATS*sizeof(mamaStat));
@@ -71,9 +57,9 @@ mamaStatsCollector_destroy (mamaStatsCollector statsCollector)
     mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
-    free ((char*)impl->mName);
+    free (impl->mName);
     impl->mName         = NULL;
-    free ((char*)impl->mMiddleware);
+    free (impl->mMiddleware);
     impl->mMiddleware   = NULL;
     impl->mPollCb       = NULL;
     impl->mPollClosure  = NULL;
@@ -89,7 +75,8 @@ mamaStatsCollector_addStat (mamaStatsCollector statsCollector, mamaStat stat)
     mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
 
-    index = mamaStat_getFid (stat) - MAMA_STAT_ARRAY_OFFSET;
+    if (impl->mOffset==0) impl->mOffset=mamaStat_getFid (stat);
+    index = mamaStat_getFid (stat) - impl->mOffset;
     impl->mMamaStats[index] = stat;
 
     return MAMA_STATUS_OK;
@@ -102,7 +89,7 @@ mamaStatsCollector_incrementStat (mamaStatsCollector statsCollector, mama_fid_t 
     mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
 
-    index = identifier - MAMA_STAT_ARRAY_OFFSET;
+    index = identifier - impl->mOffset;
     mamaStat_increment (impl->mMamaStats[index]);
 
     return MAMA_STATUS_OK;
@@ -115,20 +102,20 @@ mamaStatsCollector_setStatIntervalValueFromTotal (mamaStatsCollector statsCollec
     mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
 
-    index = identifer - MAMA_STAT_ARRAY_OFFSET;
+    index = identifer - impl->mOffset;
     mamaStat_setIntervalValueFromTotal (impl->mMamaStats[index], value);
 
     return MAMA_STATUS_OK;
 }
 
 void
-mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector* statsCollector, mamaMsg msg, int* wasLogged)
+mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector statsCollector, mamaMsg msg, int* wasLogged)
 {
-    mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)*statsCollector;
+    mamaStatsCollectorImpl* impl = (mamaStatsCollectorImpl*)statsCollector;
     mama_fid_t  fid;
     const char* name = NULL;
     const char* type = NULL;
-    mama_u32_t  intervalValue = 0;
+    mama_i32_t  intervalValue = 0;
     mama_u32_t  maxValue      = 0;
     mama_u32_t  totalValue    = 0;
     int i;
@@ -150,7 +137,7 @@ mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector* stat
 
     if (impl->mPollCb != NULL)
     {
-        impl->mPollCb (*statsCollector, impl->mPollClosure);
+        impl->mPollCb (statsCollector, impl->mPollClosure);
     }
 
     for (i=0;i<MAMA_STAT_MAX_STATS;i++)
@@ -163,7 +150,7 @@ mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector* stat
                 name  = mamaStat_getName (impl->mMamaStats[i]);
 
                 mamaStat_getStats (impl->mMamaStats[i], &intervalValue, &maxValue, &totalValue);
-                mamaMsg_addU32 (msg, name, fid, intervalValue);
+                mamaMsg_addI32 (msg, name, fid, intervalValue);
             }
 
             if (impl->mLogStats && mamaStat_getLog (impl->mMamaStats[i]))
@@ -172,7 +159,7 @@ mamaStatsCollector_populateMsg /*And string logging */ (mamaStatsCollector* stat
                 {
                     /* Stats are logged at WARN so that users don't have to enable NORMAL (or higher)
                        logging, even though they aren't actually warnings...*/
-                       mama_log (MAMA_LOG_LEVEL_WARN, "%24.24s | %9.9s | %10.10s | %15.15s | %10u | %10u | %10u |",
+                       mama_log (MAMA_LOG_LEVEL_WARN, "%24.24s | %9.9s | %10.10s | %15.15s | %10i | %10u | %10u |",
                                                       logHeader ? impl->mName : "",
                                                       logHeader ? type : "",
                                                       logHeader ? impl->mMiddleware : "",
@@ -266,6 +253,7 @@ mamaStatsCollectorType_stringForType (mamaStatsCollectorType type)
     {
         case MAMA_STATS_COLLECTOR_TYPE_QUEUE     : return "Queue";
         case MAMA_STATS_COLLECTOR_TYPE_TRANSPORT : return "Transport";
+        case MAMA_STATS_COLLECTOR_TYPE_USER      : return "User";
         case MAMA_STATS_COLLECTOR_TYPE_GLOBAL    : return "Global";
         default : return "Unknown";
     }

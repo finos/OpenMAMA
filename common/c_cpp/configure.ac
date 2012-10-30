@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.15.2.2.6.2 2011/09/21 18:39:23 emmapollock Exp $
+# $Id$
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Technologies, Inc.
@@ -25,9 +25,9 @@
 # VERSION INFO
 #
 #################################################
-m4_define([product_version_major],     [6])
-m4_define([product_version_minor],     [0])
-m4_define([product_version_release],   [0rc19])
+m4_define([product_version_major],     [2])
+m4_define([product_version_minor],     [2])
+m4_define([product_version_release],   [1.1])
 m4_define([product_full_version],[product_version_major.product_version_minor.product_version_release])
 
 
@@ -90,6 +90,41 @@ AC_PREFIX_DEFAULT([/opt/openmama])
 
 # Flush all cached values to the cache file
 AC_CACHE_SAVE
+
+##################################################
+
+##################################################
+# UNIT TESTS: --with-unittests
+# Whether or not to build the unit tests
+# GTEST_HOME is the root directory of the gtest installation. It can be
+# specified as an environment variable or as a configure parameter
+##################################################
+UNIT_TEST_HOME=[$GTEST_HOME]
+AC_ARG_WITH(
+    unittests,
+    [AC_HELP_STRING([--with-unittests=DIR],
+                    [Location of the gtest API include/library files in DIR])],
+    [
+     if test -d $withval; then
+         UNIT_TEST_HOME="$withval"
+     fi
+     CPPFLAGS="$CPPFLAGS -I$UNIT_TEST_HOME/include -I$UNIT_TEST_HOME -DWITH_UNITTESTS "
+     AC_CHECK_HEADERS(
+         [$UNIT_TEST_HOME/include/gtest/gtest.h],
+         [
+          LDFLAGS="$LDFLAGS -L$UNIT_TEST_HOME/lib"
+
+      with_unittests=true
+         ],
+         [
+            AC_MSG_ERROR([Valid GTEST installation not found!])
+         ]
+         )
+    ],
+    [
+     with_unittests=false
+    ])
+AM_CONDITIONAL(WITH_UNITTESTS, test x$with_unittests = xtrue)
 
 ##################################################
 

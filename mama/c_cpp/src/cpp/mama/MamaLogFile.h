@@ -88,6 +88,11 @@ namespace Wombat
          */
         static bool loggingToFile( void );
 
+        /**
+         * Perform a log file rolling.
+         */
+        static void rollFiles();
+
     private:
         /**
          * Utility class. No instances.

@@ -1,6 +1,6 @@
 <project name="mamda" default="compile.base" basedir=".">
     <property name="product" value="mamda"></property>
-    <property name="version" value="6.0.0rc19"></property>
+    <property name="version" value="2.2.1.1"></property>
     <property name="release" value="${product}_${version}_jdk${java.version}"></property>
     <property name="build" location="${user.dir}/classes"></property>
     <property name="dist" location="${user.dir}/${product}"></property>
@@ -11,6 +11,7 @@
      <echo message="ant.java.version=${ant.java.version}"></echo>
      <condition property="isJava5or6">
      <or>
+     <equals arg1="${ant.java.version}" arg2="1.7"></equals>
      <equals arg1="${ant.java.version}" arg2="1.6"></equals>
      <equals arg1="${ant.java.version}" arg2="1.5"></equals>
      </or>

@@ -1,4 +1,4 @@
-/* $Id: publisher.c,v 1.19.12.1.4.4 2011/08/10 14:53:25 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -28,8 +28,14 @@
 
 #include "msgimpl.h"
 #include "publisherimpl.h"
+#include "mama/statscollector.h"
+#include "mama/statfields.h"
 
 #include "list.h"
+
+/* For Stats */
+extern int gGenerateTransportStats;
+extern int gGenerateGlobalStats;
 
 /*Main mamaPublisher structure for the API*/
 typedef struct mamaPublisherImpl_
@@ -157,7 +163,7 @@ mamaPublisher_create (mamaPublisher*    result,
                                         root);
 }
 
-mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
+static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
 {
     /* Returns. */
     mama_status        status   = MAMA_STATUS_OK;
@@ -232,14 +238,32 @@ mamaPublisher_send (mamaPublisher publisher,
                     mamaMsg       msg)
 {
     mamaPublisherImpl* impl     = (mamaPublisherImpl*)publisher;
+    mama_status        status; 
+    mamaStatsCollector tportStatsCollector = NULL;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
     if (!impl->mMamaPublisherBridgeImpl) return MAMA_STATUS_INVALID_ARG;
     if (!impl->mBridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
 
-    return impl->mBridgeImpl->bridgeMamaPublisherSend
+    status = impl->mBridgeImpl->bridgeMamaPublisherSend
         (impl->mMamaPublisherBridgeImpl,
          msg);
+    if (status == MAMA_STATUS_OK)
+    {
+        if (gGenerateTransportStats)
+        {
+            tportStatsCollector = mamaTransport_getStatsCollector (impl->mTport);
+        }
+        if (tportStatsCollector)
+            mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatPublisherSend.mFid);
+
+        if (mamaInternal_getGlobalStatsCollector() != NULL)
+            mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
+                    MamaStatPublisherSend.mFid);
+
+    }
+
+    return status;
 }
 
 mama_status
@@ -248,15 +272,33 @@ mamaPublisher_sendFromInbox (mamaPublisher  publisher,
                              mamaMsg        msg)
 {
     mamaPublisherImpl* impl     = (mamaPublisherImpl*)publisher;
+    mama_status        status; 
+    mamaStatsCollector tportStatsCollector = NULL;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
     if (!impl->mMamaPublisherBridgeImpl) return MAMA_STATUS_INVALID_ARG;
     if (!impl->mBridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
 
-    return impl->mBridgeImpl->bridgeMamaPublisherSendFromInbox
+    status = impl->mBridgeImpl->bridgeMamaPublisherSendFromInbox
         (impl->mMamaPublisherBridgeImpl,
          inbox,
          msg);
+    if (status == MAMA_STATUS_OK)
+    {
+        if (gGenerateTransportStats)
+        {
+            tportStatsCollector = mamaTransport_getStatsCollector (impl->mTport);
+        }
+        if (tportStatsCollector)
+            mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatPublisherInboxSend.mFid);
+
+        if (mamaInternal_getGlobalStatsCollector() != NULL)
+            mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
+                    MamaStatPublisherInboxSend.mFid);
+
+    }
+
+    return status;
 }
 
 mama_status
@@ -266,16 +308,34 @@ mamaPublisher_sendFromInboxByIndex (mamaPublisher  publisher,
                                     mamaMsg        msg)
 {
     mamaPublisherImpl* impl     = (mamaPublisherImpl*)publisher;
+    mama_status        status; 
+    mamaStatsCollector tportStatsCollector = NULL;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
     if (!impl->mMamaPublisherBridgeImpl) return MAMA_STATUS_INVALID_ARG;
     if (!impl->mBridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
 
-    return impl->mBridgeImpl->bridgeMamaPublisherSendFromInboxByIndex
+    status = impl->mBridgeImpl->bridgeMamaPublisherSendFromInboxByIndex
         (impl->mMamaPublisherBridgeImpl,
          tportIndex,
          inbox,
          msg);
+    if (status == MAMA_STATUS_OK)
+    {
+        if (gGenerateTransportStats)
+        {
+            tportStatsCollector = mamaTransport_getStatsCollector (impl->mTport);
+        }
+        if (tportStatsCollector)
+            mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatPublisherInboxSend.mFid);
+
+        if (mamaInternal_getGlobalStatsCollector() != NULL)
+            mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
+                    MamaStatPublisherInboxSend.mFid);
+
+    }
+
+    return status;
 }
 
 mama_status
@@ -285,6 +345,8 @@ mamaPublisher_sendReplyToInboxHandle (mamaPublisher publisher,
 {
     mamaPublisherImpl*  impl        = (mamaPublisherImpl*)publisher;
     mamaMsgReplyImpl*   replyStruct = ( mamaMsgReplyImpl *)replyAddress;
+    mama_status         status; 
+    mamaStatsCollector tportStatsCollector = NULL;
 
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
@@ -306,10 +368,26 @@ mamaPublisher_sendReplyToInboxHandle (mamaPublisher publisher,
     }
 
 
-    return impl->mBridgeImpl->bridgeMamaPublisherSendReplyToInboxHandle
+    status = impl->mBridgeImpl->bridgeMamaPublisherSendReplyToInboxHandle
         (impl->mMamaPublisherBridgeImpl,
          replyStruct->replyHandle,
          reply);
+    if (status == MAMA_STATUS_OK)
+    {
+        if (gGenerateTransportStats)
+        {
+            tportStatsCollector = mamaTransport_getStatsCollector (impl->mTport);
+        }
+        if (tportStatsCollector)
+            mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatPublisherReplySend.mFid);
+
+        if (mamaInternal_getGlobalStatsCollector() != NULL)
+            mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
+                    MamaStatPublisherReplySend.mFid);
+
+    }
+
+    return status;
 }
 
 mama_status
@@ -318,6 +396,8 @@ mamaPublisher_sendReplyToInbox (mamaPublisher publisher,
                                 mamaMsg       reply)
 {
     mamaPublisherImpl* impl     = (mamaPublisherImpl*)publisher;
+    mama_status         status; 
+    mamaStatsCollector tportStatsCollector = NULL;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
     if (!impl->mMamaPublisherBridgeImpl) return MAMA_STATUS_INVALID_ARG;
@@ -342,10 +422,26 @@ mamaPublisher_sendReplyToInbox (mamaPublisher publisher,
                   "Request message not from an inbox.");
         return MAMA_STATUS_INVALID_ARG;
     }
-    return impl->mBridgeImpl->bridgeMamaPublisherSendReplyToInbox
+    status = impl->mBridgeImpl->bridgeMamaPublisherSendReplyToInbox
         (impl->mMamaPublisherBridgeImpl,
          request,
          reply);
+    if (status == MAMA_STATUS_OK)
+    {
+        if (gGenerateTransportStats)
+        {
+            tportStatsCollector = mamaTransport_getStatsCollector (impl->mTport);
+        }
+        if (tportStatsCollector)
+            mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatPublisherReplySend.mFid);
+
+        if (mamaInternal_getGlobalStatsCollector() != NULL)
+            mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
+                    MamaStatPublisherReplySend.mFid);
+
+    }
+
+    return status;
 }
 
 /*Action function used with sendWithThrottle*/

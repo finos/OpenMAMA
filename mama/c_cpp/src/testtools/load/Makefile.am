@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.1.2.1 2011/09/23 14:41:18 emmapollock Exp $
+# $Id$
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Technologies, Inc.

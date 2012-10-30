@@ -1,4 +1,4 @@
-/* $Id: bridge.c,v 1.1.2.7 2011/10/02 19:02:18 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -37,6 +37,7 @@ void avisBridge_createImpl (mamaBridge* result)
 {
     avisBridgeImpl* avisBridge = NULL;
     mamaBridgeImpl* impl = NULL;
+    
     if (!result) return;
     *result = NULL;
 
@@ -79,7 +80,7 @@ avisBridge_getDefaultPayloadId (char***name, char** id)
 	*name = PAYLOAD_NAMES;
 	*id = PAYLOAD_IDS;
 
-     return MAMA_STATUS_OK;
+    return MAMA_STATUS_OK;
 }
 
 
@@ -90,6 +91,7 @@ avisBridge_open (mamaBridge bridgeImpl)
     mamaBridgeImpl* impl =  (mamaBridgeImpl*)bridgeImpl;
 
     wsocketstartup();
+    
     mama_log (MAMA_LOG_LEVEL_FINEST, "avisBridge_open(): Entering.");
 
     if (MAMA_STATUS_OK !=
@@ -126,32 +128,34 @@ avisBridge_open (mamaBridge bridgeImpl)
 mama_status
 avisBridge_close (mamaBridge bridgeImpl)
 {
-   mama_status     status = MAMA_STATUS_OK;
-   mamaBridgeImpl* impl   = NULL;
-   mama_log (MAMA_LOG_LEVEL_FINEST, "avisBridge_close(): Entering.");
+    mama_status     status = MAMA_STATUS_OK;
+    mamaBridgeImpl* impl   = NULL;
+    
+    mama_log (MAMA_LOG_LEVEL_FINEST, "avisBridge_close(): Entering.");
 
-   impl =  (mamaBridgeImpl*)bridgeImpl;
+    impl =  (mamaBridgeImpl*)bridgeImpl;
 
 
-   if (0 != destroyHeap (gTimerHeap))
-   {
+    if (0 != destroyHeap (gTimerHeap))
+    {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_close():"
                 "Failed to destroy Avis timer heap.");
         status = MAMA_STATUS_PLATFORM;
-   }
+    }
 
-   mamaQueue_destroyWait(impl->mDefaultEventQueue);
+    mamaQueue_destroyWait(impl->mDefaultEventQueue);
 
-   free (impl);
+    free (impl);
+    
     wsocketcleanup();
-   return status;
+    return status;
 }
 
 
 mama_status
 avisBridge_start(mamaQueue defaultEventQueue)
 {
-    mama_status status = MAMA_STATUS_OK;
+    mama_status     status     = MAMA_STATUS_OK;
     avisBridgeImpl* avisBridge = NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_start(): Start dispatching on default event queue.");
@@ -173,10 +177,11 @@ avisBridge_start(mamaQueue defaultEventQueue)
 mama_status
 avisBridge_stop(mamaQueue defaultEventQueue)
 {
-    mama_status status = MAMA_STATUS_OK;
+    mama_status     status     = MAMA_STATUS_OK;
     avisBridgeImpl* avisBridge = NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_stop(): Stopping bridge.");
+
     if (MAMA_STATUS_OK != (status = mamaBridgeImpl_getClosure((mamaBridge) mamaQueueImpl_getBridgeImpl(defaultEventQueue), (void**) &avisBridge))) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_stop(): Could not get Elvin object");
         return status;

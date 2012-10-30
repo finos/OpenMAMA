@@ -55,6 +55,7 @@
 extern "C"
 {
 #endif
+
 /* PTHREAD static locks are easy */
 typedef pthread_mutex_t wthread_static_mutex_t;
 #define WSTATIC_MUTEX_INITIALIZER PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
@@ -107,6 +108,7 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 
 #define wsocketpair(dom, type, prot, pair) (socketpair((dom),(type),(prot),(pair)))
 #define wsetnonblock(s) (fcntl((s), F_SETFL, fcntl((s), F_GETFL) | O_NONBLOCK))
+
 #define wread	read    
 #define wwrite	write   
 

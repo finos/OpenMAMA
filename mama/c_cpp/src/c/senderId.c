@@ -1,4 +1,4 @@
-/* $Id: senderId.c,v 1.4.22.4 2011/10/02 19:02:17 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

@@ -1,4 +1,4 @@
-/* $Id: queue.c,v 1.35.4.5.2.1.4.11 2011/09/27 12:38:50 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -79,7 +79,7 @@ typedef struct mamaQueueImpl_
     size_t                      mLowWatermark;
     size_t                      mHighWatermark;
     int                         mIsDefaultQueue;
-    mamaStatsCollector*         mStatsCollector;
+    mamaStatsCollector          mStatsCollector;
     mamaStat                    mInitialStat;
     mamaStat                    mRecapStat;
     mamaStat                    mUnknownMsgStat;
@@ -140,7 +140,7 @@ mamaQueue_getClosure ( mamaQueue queue, void** closure)
 }
 
 
-mama_status
+static mama_status
 mamaQueue_createReuseableMsg (mamaQueueImpl*  impl)
 {
 	 mama_status     status      =   MAMA_STATUS_OK;
@@ -266,9 +266,8 @@ mamaQueue_enableStats(mamaQueue queue)
     {
         middleware = impl->mBridgeImpl->bridgeGetName();
 
-        impl->mStatsCollector = (mamaStatsCollector*)mamaStatsGenerator_allocateStatsCollector (mamaInternal_getStatsGenerator());
         if (MAMA_STATUS_OK != (status=mamaStatsCollector_create (
-                                    impl->mStatsCollector,
+                                   &(impl->mStatsCollector),
                                     MAMA_STATS_COLLECTOR_TYPE_QUEUE,
                                     impl->mQueueName, middleware)))
         {
@@ -283,7 +282,7 @@ mamaQueue_enableStats(mamaQueue queue)
         if (!gLogQueueStats)
         {
             if (MAMA_STATUS_OK != (status=mamaStatsCollector_setLog (
-                                   *impl->mStatsCollector, 0)))
+                                   impl->mStatsCollector, 0)))
             {
                 return status;
             }
@@ -294,7 +293,7 @@ mamaQueue_enableStats(mamaQueue queue)
         if (gPublishQueueStats)
         {
             if (MAMA_STATUS_OK != (status=mamaStatsCollector_setPublish (
-                                   *impl->mStatsCollector, 1)))
+                                   impl->mStatsCollector, 1)))
             {
                 return status;
             }
@@ -735,7 +734,7 @@ mamaQueue_destroy (mamaQueue queue)
         if (impl->mStatsCollector)
         {
             mamaStatsGenerator_removeStatsCollector  (mamaInternal_getStatsGenerator(), impl->mStatsCollector);
-            mamaStatsCollector_destroy (*impl->mStatsCollector);
+            mamaStatsCollector_destroy (impl->mStatsCollector);
             impl->mStatsCollector = NULL;
         }
          if (impl->mQueueName)
@@ -1025,7 +1024,7 @@ mamaQueue_setQueueName (mamaQueue   queue,
 
     if (impl->mStatsCollector)
     {
-        mamaStatsCollector_setName (*impl->mStatsCollector, impl->mQueueName);
+        mamaStatsCollector_setName (impl->mStatsCollector, impl->mQueueName);
     }
 
     return MAMA_STATUS_OK;
@@ -1119,7 +1118,7 @@ mamaQueue_getQueueBridgeName (mamaQueue    queue,
     return MAMA_STATUS_OK;
 }
 
-mamaStatsCollector*
+mamaStatsCollector
 mamaQueueImpl_getStatsCollector (mamaQueue queue)
 {
     mamaQueueImpl* impl = (mamaQueueImpl*)queue;

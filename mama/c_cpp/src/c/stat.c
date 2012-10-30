@@ -1,4 +1,4 @@
-/* $Id: stat.c,v 1.8.22.5 2011/09/21 13:47:45 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -33,8 +33,8 @@ typedef struct mamaStatImpl__
 {
     const char*         mName;
     mama_fid_t          mFid;
-    mamaStatsCollector* mStatsCollector;
-    mama_u32_t          mIntervalValue;
+    mamaStatsCollector  mStatsCollector;
+    mama_i32_t          mIntervalValue;
     mama_u32_t          mMaxValue;
     mama_u32_t          mTotalValue;
     int                 mLockable;
@@ -46,7 +46,7 @@ typedef struct mamaStatImpl__
 } mamaStatImpl;
 
 mama_status
-mamaStat_create (mamaStat* stat, mamaStatsCollector* statsCollector, int lockable, const char* name, mama_fid_t fid)
+mamaStat_create (mamaStat* stat, mamaStatsCollector statsCollector, int lockable, const char* name, mama_fid_t fid)
 {
     mamaStatImpl* impl = (mamaStatImpl*) malloc (sizeof(mamaStatImpl));
     if (impl == NULL) return MAMA_STATUS_NOMEM;
@@ -66,7 +66,7 @@ mamaStat_create (mamaStat* stat, mamaStatsCollector* statsCollector, int lockabl
         wthread_mutex_init (&impl->mUpdateMutex, NULL);
 
     *stat = (mamaStat)impl;
-    mamaStatsCollector_addStat (*impl->mStatsCollector, *stat);
+    mamaStatsCollector_addStat (impl->mStatsCollector, *stat);
     return MAMA_STATUS_OK;
 }
 
@@ -125,6 +125,7 @@ mamaStat_decrement (mamaStat stat)
     }
 
     impl->mIntervalValue--;
+    impl->mTotalValue--;
 
     if (impl->mLockable)
     {
@@ -154,6 +155,71 @@ mamaStat_reset (mamaStat stat)
     return MAMA_STATUS_OK;
 }
 
+mama_status
+mamaStat_add (mamaStat stat, int value)
+{
+    mamaStatImpl* impl = (mamaStatImpl*)stat;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+
+    if (impl->mLockable)
+        wthread_mutex_lock (&impl->mUpdateMutex);
+
+    impl->mIntervalValue += value;
+    if (impl->mIntervalValue > impl->mMaxValue)
+    {
+        impl->mMaxValue = impl->mIntervalValue;
+    }
+    impl->mTotalValue += value;
+
+    if (impl->mLockable)
+        wthread_mutex_unlock (&impl->mUpdateMutex);
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaStat_subtract (mamaStat stat, int value)
+{
+    mamaStatImpl* impl = (mamaStatImpl*)stat;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+
+    if (impl->mLockable)
+    {
+        wthread_mutex_lock (&impl->mUpdateMutex);
+    }
+
+    impl->mIntervalValue -= value;
+    impl->mTotalValue -= value;
+
+    if (impl->mLockable)
+    {
+        wthread_mutex_unlock (&impl->mUpdateMutex);
+    }
+
+    return MAMA_STATUS_OK;
+}
+
+
+mama_status
+mamaStat_setIntervalValue (mamaStat stat, int value)
+{
+      mamaStatImpl* impl = (mamaStatImpl*)stat;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+
+    if (impl->mLockable)
+    {
+        wthread_mutex_lock (&impl->mUpdateMutex);
+    }
+
+    impl->mIntervalValue = value;
+
+    if (impl->mLockable)
+    {
+        wthread_mutex_unlock (&impl->mUpdateMutex);
+    }
+
+    return MAMA_STATUS_OK;
+}
 mama_fid_t
 mamaStat_getFid (mamaStat stat)
 {
@@ -233,7 +299,7 @@ mamaStat_getTotalValue (mamaStat stat)
 }
 
 void
-mamaStat_getStats (mamaStat stat, mama_u32_t* intervalValue, mama_u32_t* maxValue, mama_u32_t* totalValue)
+mamaStat_getStats (mamaStat stat, mama_i32_t* intervalValue, mama_u32_t* maxValue, mama_u32_t* totalValue)
 {
     mamaStatImpl* impl = (mamaStatImpl*)stat;
 
@@ -402,6 +468,18 @@ mamaStatType_fromString (const char* statTypeString)
     {
         return MAMA_STAT_TYPE_FAST_MSGS;
     }
+    if ((strcmp (statTypeString, "Publisher Send Msgs")) == 0)
+    {
+        return MAMA_STAT_TYPE_PUBLISHER_SEND;
+    }
+    if ((strcmp (statTypeString, "Publisher Inbox Send Msgs")) == 0)
+    {
+        return MAMA_STAT_TYPE_PUBLISHER_INBOX_SEND;
+    }
+    if ((strcmp (statTypeString, "Publisher Reply Send Msgs")) == 0)
+    {
+        return MAMA_STAT_TYPE_PUBLISHER_REPLY_SEND;
+    }
 
     return MAMA_STAT_TYPE_UNKNOWN;
 }
@@ -457,6 +535,12 @@ mamaStatType_toString (mamaStatType statType)
         case MAMA_STAT_TYPE_RV_MSGS                      : return "RV Messages";
                                                            break;
         case MAMA_STAT_TYPE_FAST_MSGS                    : return "FAST Messages";
+                                                           break;
+        case MAMA_STAT_TYPE_PUBLISHER_SEND               : return "Publisher Send Msgs";
+                                                           break;
+        case MAMA_STAT_TYPE_PUBLISHER_INBOX_SEND         : return "Publisher Inbox Send Msgs";
+                                                           break;
+        case MAMA_STAT_TYPE_PUBLISHER_REPLY_SEND         : return "Publisher Reply Send Msgs";
                                                            break;
         default                                          : return "Unknown";
                                                            break;

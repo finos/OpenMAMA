@@ -54,6 +54,7 @@ jmethodID   callbackOnDestroyId_g                =  NULL;
 /* Needed during create() */
 extern jfieldID    transportPointerFieldId_g;
 extern jfieldID    queuePointerFieldId_g;
+extern jfieldID    queuePointerMsg_g;
 extern jmethodID   messageConstructorId_g;
 extern jfieldID    messagePointerFieldId_g;
 
@@ -97,6 +98,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaInbox_create
     
     assert(NULL!=transport);
     assert(NULL!=callback);
+    assert(NULL!=queue);
     
     closureImpl->mInbox = (*env)->NewGlobalRef(env,this);
     closureImpl->mJavaCallback = (*env)->NewGlobalRef(env,callback);    
@@ -106,18 +108,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaInbox_create
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
 		"Null parameter, MamaTransport may have already been destroyed.")
 
-    if(queue)/*The queue is optional*/
-    {
         queuePointer = (*env)->GetLongField(env,queue,queuePointerFieldId_g);
         MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
 			"Null parameter, MamaQueue may have already been destroyed.")
 
         cQueue = CAST_JLONG_TO_POINTER(mamaQueue, queuePointer);
-    }
 
-    /*Create the reuseable Java message object*/
-    messageImpl = utils_createJavaMamaMsg(env);
-    if(NULL==messageImpl) return;/*Exception will have been thrown*/
+    /* Use the reuseable message object from our queue*/
+    messageImpl =  (*env)->GetObjectField(env,queue,queuePointerMsg_g);
 
     closureImpl->mReuseableMsgObject = (*env)->NewGlobalRef(env,messageImpl);
 
@@ -243,11 +241,6 @@ void MAMACALLTYPE destroyCB(mamaInbox inbox, void *closure)
             /* Destroy the global refs - allows objects to be garbage collected */
             if(NULL != closureImpl->mReuseableMsgObject)
             {
-                /* Clear the message field pointer in the re-usable message, it will then be destroyed by the garbage collector
-                 * when the global ref is deleted below, note that this object is only accessible to the JNI layer.
-                 */
-                (*env)->SetLongField(env, closureImpl->mReuseableMsgObject, messagePointerFieldId_g, 0);
-
                 /* Delete the global ref. */
                 (*env)->DeleteGlobalRef(env, closureImpl->mReuseableMsgObject);
             }

@@ -1,4 +1,4 @@
-/* $Id: playbackcapture.c,v 1.13.22.6 2011/10/02 19:02:18 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

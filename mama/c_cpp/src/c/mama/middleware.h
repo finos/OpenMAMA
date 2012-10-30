@@ -1,4 +1,4 @@
-/* $Id: middleware.h,v 1.5.24.3 2011/09/01 16:34:38 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -37,7 +37,12 @@ typedef enum mamaMiddleware_
     MAMA_MIDDLEWARE_LBM     = 1,
     MAMA_MIDDLEWARE_TIBRV   = 2,
     MAMA_MIDDLEWARE_AVIS    = 3,
-    MAMA_MIDDLEWARE_MAX     = 4,
+    MAMA_MIDDLEWARE_TICK42BLP = 4,
+    MAMA_MIDDLEWARE_SOLACE  = 5,
+    MAMA_MIDDLEWARE_RAI     = 6,
+    MAMA_MIDDLEWARE_QPID    = 7,
+    MAMA_MIDDLEWARE_EXEGY   = 8,
+    MAMA_MIDDLEWARE_MAX     = 9,
     MAMA_MIDDLEWARE_UNKNOWN = 99
 } mamaMiddleware;
 

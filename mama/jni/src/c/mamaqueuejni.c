@@ -71,6 +71,7 @@ extern  JavaVM*     javaVM_g;
 
 /*Global as also needed in mamadispatcherjni.c*/
 jfieldID    queuePointerFieldId_g   =   NULL;
+jfieldID    queuePointerMsg_g   =   NULL;
 
 /*Global as also needed in mamajni.c*/
 jmethodID   queueConstructorId_g    =   NULL;
@@ -747,7 +748,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_initIDs
     monitorClosureFieldId_g = (*env)->GetFieldID(env,
                                 class,"monitorClosure_i",
                                 UTILS_JAVA_POINTER_TYPE_SIGNATURE);
-    /*Get a reference to the subscription Callback class*/
+    queuePointerMsg_g = (*env)->GetFieldID(env,
+                                class,"reuseableMsg",
+                                "Lcom/wombat/mama/MamaMsg;");
+    
+/*Get a reference to the subscription Callback class*/
     queueMonitorCallbackClass = (*env)->FindClass(env,
             "com/wombat/mama/MamaQueueMonitorCallback");
     

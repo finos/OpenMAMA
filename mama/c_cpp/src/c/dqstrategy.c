@@ -1,4 +1,4 @@
-/* $Id: dqstrategy.c,v 1.66.4.1.16.5 2011/09/01 09:41:02 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -154,7 +154,7 @@ handleFTTakeover (dqStrategy        strategy,
 
     if (recoverOnRecap)
     {
-        ctx->mSeqNum = senderId;
+        ctx->mSeqNum = seqNum;
         ctx->mDQState = DQ_STATE_WAITING_FOR_RECAP_AFTER_FT;
     }
     else
@@ -183,7 +183,7 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
     mama_u16_t       conflateCnt    = 1;
     wombat_subscriptionGapCB onGap  = NULL;
     mamaTransport    transport; 
-    mamaStatsCollector* transportStatsCollector = NULL;
+    mamaStatsCollector transportStatsCollector = NULL;
     wombat_subscriptionQualityCB onQuality = NULL;
     mamaMsgStatus    msgStatus      = MAMA_MSG_STATUS_UNKNOWN;
     mamaTransport    tport        = NULL;
@@ -209,16 +209,17 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
             mamaSubscription_getTransport (subscription, &transport);
             transportStatsCollector = mamaTransport_getStatsCollector (transport);
 
-            mamaStatsCollector_incrementStat (*transportStatsCollector, 
+            mamaStatsCollector_incrementStat (transportStatsCollector, 
                                               MamaStatFtTakeovers.mFid);
         }
         if (mamaInternal_getGlobalStatsCollector() != NULL)
         {
-            mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()), 
+            mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(), 
                                               MamaStatFtTakeovers.mFid);
         }
         if (DQ_FT_WAIT_FOR_RECAP==mamaTransportImpl_getFtStrategyScheme(tport))
         {
+            ctx->mDoNotForward = 1;
             handleFTTakeover (strategy, msg, msgType, ctx, seqNum, senderId, 1);
         }
         else
@@ -227,12 +228,12 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
         }
     }
 
-    if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINER)
+    if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST)
     {
         const char*  symbol = NULL;
         mamaSubscription_getSymbol (subscription, &symbol);
         symbol = symbol == NULL ? "" : symbol;
-        mama_log (MAMA_LOG_LEVEL_FINER, 
+        mama_log (MAMA_LOG_LEVEL_FINEST,
                   "dqStrategy_checkSeqNum(): %s : seq# %ld",
                   symbol, 
                   seqNum);
@@ -276,14 +277,16 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
             /* If the sequence numbers for a message are correct then the
                subscription is OK. */
                 
-        msgStatus = mamaMsgStatus_statusForMsg (msg);
-        /* Check the status of the message.  If it is stale,
-           do not request a recap and do not set status OK. */
-        if (msgStatus == MAMA_MSG_STATUS_OK) 
-            resetDqState (strategy, ctx);
+            msgStatus = mamaMsgStatus_statusForMsg (msg);
+            /* Check the status of the message.  If it is stale,
+               do not request a recap and do not set status OK. */
+            if (msgStatus == MAMA_MSG_STATUS_OK) 
+		    {
+                resetDqState (strategy, ctx);
 
-            ctx->mSeqNum = seqNum; 
-            return MAMA_STATUS_OK;
+                ctx->mSeqNum = seqNum; 
+                return MAMA_STATUS_OK;
+            }
         }
 
         /* For late joins or middlewares that support a publish cache, it is possible that you will get old updates
@@ -381,9 +384,14 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
     case MAMA_MSG_TYPE_RECAP        :
     case MAMA_MSG_TYPE_BOOK_RECAP   :
 
+        if (mamaTransportImpl_preRecapCacheEnabled (tport))
+        {
+            self->mTryToFillGap = 1;
+        }
         mamaSubscription_unsetAllPossiblyStale (subscription);
         resetDqState (strategy, ctx);
         dqStrategyImpl_resetDqContext (ctx, seqNum, senderId);
+        ctx->mDoNotForward = 0;
         return MAMA_STATUS_OK;
     case MAMA_MSG_TYPE_DDICT_SNAPSHOT : /*No DQ checking for Datadictionary*/
         return MAMA_STATUS_OK;
@@ -551,6 +559,7 @@ dqContext_initializeContext (mamaDqContext *ctx, int cacheSize,
     ctx->mSenderId      = 0;
     ctx->mSenderId      = 0;
     ctx->mRecapRequest  = recap;
+    ctx->mSetCacheMsgStale = 0;
     if (cacheSize > 0)
     {
         /*We may be simply resetting the context*/
@@ -680,6 +689,10 @@ dqContext_fillGap (mamaDqContext *ctx, mama_seqnum_t end, mamaSubscription subsc
             {
                 mama_log (MAMA_LOG_LEVEL_FINE, 
                                "Found a message for gap.");
+                if (ctx->mSetCacheMsgStale)
+                {
+                    msgUtils_setStatus (ctx->mCache[cur], MAMA_MSG_STATUS_STALE);
+                }
                 mamaSubscription_forwardMsg(subscription, ctx->mCache[cur]);
 
                 if (++nextSeqNum == end)
@@ -698,6 +711,7 @@ dqContext_fillGap (mamaDqContext *ctx, mama_seqnum_t end, mamaSubscription subsc
 
         } while (cur != ctx->mCurCacheIdx);
     }
+    ctx->mSetCacheMsgStale = 0;
 
     return 0;
 }

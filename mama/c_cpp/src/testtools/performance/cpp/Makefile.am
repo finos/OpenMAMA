@@ -37,8 +37,8 @@ LDFLAGS += -L${srcdir}/../../../c \
            -L${srcdir}/../../../../../../common/c_cpp/src/cpp
 
 if USE_GCC_FLAGS
-CFLAGS   += -Wmissing-prototypes -Wstrict-prototypes
-CPPFLAGS += -pedantic -Wall -Wimplicit -Wno-long-long -D_GNU_SOURCE
+CFLAGS   += -std=gnu99 -pedantic-errors -Wmissing-prototypes -Wstrict-prototypes
+CPPFLAGS += -pedantic-errors -Wall -Wimplicit -Wno-long-long -D_GNU_SOURCE
 endif
 
 CFLAGS    += -I@builddir@/../../c

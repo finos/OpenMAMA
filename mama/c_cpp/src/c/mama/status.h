@@ -1,4 +1,4 @@
-/* $Id: status.h,v 1.29.4.3.2.1.4.6 2011/08/29 11:52:44 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -94,6 +94,8 @@ typedef enum
     MAMA_STATUS_INVALID_QUEUE               = 27,
      /* Not modifiable  */
     MAMA_STATUS_NOT_MODIFIABLE              = 28,
+     /* Message Type DELETE  */
+    MAMA_STATUS_DELETE                      = 29,
 	/* Not permissioned for the subject */
     MAMA_STATUS_NOT_PERMISSIONED			= 4001,
     /* Subscription is in an invalid state. */
@@ -171,6 +173,34 @@ typedef enum
 MAMAExpDLL
 extern const char*     
 mamaStatus_stringForStatus (mama_status status);
+
+#if defined(NDEBUG) && !defined(WITH_UNITTESTS)
+
+#define NULLARG_STATUS_CHECK
+#define NULLARG_STATUS_CHECK_STR
+
+#else
+
+#define NULLARG_STATUS_CHECK(x) \
+    do { \
+        if (!(x)) return MAMA_STATUS_NULL_ARG; \
+	} while(0);
+
+#define NULLARG_STATUS_CHECK_STR(x) \
+    do { \
+        if (!(x) || (strlen((x))==0) ) return MAMA_STATUS_NULL_ARG; \
+    } while(0);
+
+#endif
+
+#define NOMEM_STATUS_CHECK(x) \
+    do { \
+        if ((x==NULL))  \
+        {    \
+            mama_log (MAMA_LOG_LEVEL_SEVERE, "Could not allocate memory");   \
+            return MAMA_STATUS_NOMEM;      \
+         } \
+	} while(0);
 
 #if defined(__cplusplus)
 } /*extern "C" { */

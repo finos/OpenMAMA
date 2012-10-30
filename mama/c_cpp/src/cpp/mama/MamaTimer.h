@@ -26,6 +26,7 @@
 
 namespace Wombat 
 {
+    class MamaTimerCallback;
 
     /**
      * A repeating timer. The callback will be repeatedly called at the

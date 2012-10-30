@@ -1,5 +1,5 @@
 
-/* $Id: msg.c,v 1.86.4.5.2.1.4.23 2011/10/02 19:02:17 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -84,6 +84,7 @@ typedef struct mamaMsgImpl_
     /*Reuseable field object for performance iteration*/
     mamaMsgField            mCurrentField;
     mamaDateTime            mCurrentDateTime;
+    mamaMsg                 mCopy;
 
     /*Hold onto the bridge impl for later use*/
     mamaBridgeImpl*         mBridgeImpl;
@@ -161,10 +162,16 @@ mamaMsg_destroy (mamaMsg msg)
         impl->mBridgeMessage = NULL;
     }
 
-    /*Destroy the reuseable field object*/
+    /*Destroy the reusable field object*/
     if (impl->mCurrentField)
     {
         mamaMsgField_destroy (impl->mCurrentField);
+    }
+    /*Destroy the reusable field object*/
+    if (impl->mCopy)
+    {
+        mamaMsg_destroy (impl->mCopy);
+        impl->mCopy = NULL;
     }
 
     impl->mDqStrategyContext = NULL;
@@ -371,6 +378,12 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "V5";
         case MAMA_PAYLOAD_AVIS:
             return "AVIS";
+        case MAMA_PAYLOAD_TICK42BLP:
+            return "TICK42BLP";
+        case MAMA_PAYLOAD_RAI:
+            return "rai";
+        case MAMA_PAYLOAD_EXEGY:
+            return "EXEGY";
         default:
             return "unknown";
     }
@@ -463,7 +476,7 @@ mamaMsgImpl_setMsgBuffer(mamaMsg     msg,
     mamaMsgImpl*    impl        = (mamaMsgImpl*)msg;
     mama_status     status      = MAMA_STATUS_OK;
     msgPayload      payload     = NULL;
-    mamaPayloadBridgeImpl* newPayloadBridge = NULL;
+    
     if (impl == NULL)
     {
         mama_log (MAMA_LOG_LEVEL_WARN,
@@ -499,6 +512,12 @@ mamaMsgImpl_setMsgBuffer(mamaMsg     msg,
         impl->mBridgeMessage = NULL;
     }
     impl->mMessageOwner = 0;
+    /* If there is tempCopy of this message, destroy it */
+    if (impl->mCopy)
+    {
+        mamaMsg_destroy(impl->mCopy);
+        impl->mCopy = NULL;
+    }
 
     if (id == '\0')
         id = (char) ((const char*)data) [0];
@@ -699,6 +718,32 @@ mamaMsg_copy (mamaMsg src, mamaMsg* copy)
             strncpy (newImpl->mSource, source->mSource, MAX_SUBJECT);
     }
     return status;
+}
+
+mama_status
+mamaMsg_getTempCopy (mamaMsg src, mamaMsg* copy)
+{
+    mama_status ret;
+    mamaMsgImpl*    impl = (mamaMsgImpl*)src;
+
+    if (impl->mMessageOwner)
+    {
+        *copy = src;
+        return MAMA_STATUS_OK;
+    }
+
+    if (!impl->mCopy)
+    {
+        ret = mamaMsg_copy(src, &impl->mCopy);
+        if (ret != MAMA_STATUS_OK)
+        {
+            impl->mCopy = NULL;
+            return ret;
+        }
+    }
+    *copy = impl->mCopy;
+
+    return MAMA_STATUS_OK;
 }
 
 mama_status

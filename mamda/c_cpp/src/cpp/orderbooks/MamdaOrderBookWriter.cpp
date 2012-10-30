@@ -290,114 +290,117 @@ namespace Wombat
         size_t                     plCount    = 0;
         size_t                     entryCount = 0;
         
-        for (; iter !=end; ++iter)
+        if (delta.getSize() > 0)
         {
-            basicDelta = *iter;
-            pl = basicDelta->getPriceLevel();
-            
-            if (lastPl != pl)
+            for (; iter !=end; ++iter)
             {
-                if (lastPl != NULL)
+                basicDelta = *iter;
+                pl = basicDelta->getPriceLevel();
+                
+                if (lastPl != pl)
                 {
-                    MamaMsg& plMsg = *mPricelevels->mMsgVector[plCount];
-               
-                    addBookLevel  (plMsg, 
-                                  lastPl, 
-                                  savedBasicDelta->getPlDeltaSize(), 
-                                  savedBasicDelta->getPlDeltaAction(),
-                                  &(delta.getEventTime()));
-                                      
-                    if (1 == entryCount)
+                    if (lastPl != NULL)
                     {
-                        addBookEntry (plMsg,
-                                     flatEntryDelta->getEntry(),
-                                     flatEntryDelta->getEntryDeltaAction(), 
-                                     &(flatEntryPl->getTime()));
+                        MamaMsg& plMsg = *mPricelevels->mMsgVector[plCount];
+                   
+                        addBookLevel  (plMsg, 
+                                      lastPl, 
+                                      savedBasicDelta->getPlDeltaSize(), 
+                                      savedBasicDelta->getPlDeltaAction(),
+                                      &(delta.getEventTime()));
+                                          
+                        if (1 == entryCount)
+                        {
+                            addBookEntry (plMsg,
+                                         flatEntryDelta->getEntry(),
+                                         flatEntryDelta->getEntryDeltaAction(), 
+                                         &(flatEntryPl->getTime()));
 
+                        }
+                        if (entryCount > 1)
+                        {
+                            plMsg.addVectorMsg (NULL,
+                                               MamdaOrderBookFields::PL_ENTRIES->getFid(),
+                                               mEntries->mMsgVector,
+                                               entryCount);
+                        }
+                        if (defaultNumAttachedEntries != entryCount)
+                            plMsg.addI16 (NULL,
+                                         MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
+                                         (mama_i16_t) entryCount);
+                        ++plCount;
+                        entryCount = 0;
                     }
-                    if (entryCount > 1)
-                    {
-                        plMsg.addVectorMsg (NULL,
-                                           MamdaOrderBookFields::PL_ENTRIES->getFid(),
-                                           mEntries->mMsgVector,
-                                           entryCount);
-                    }
-                    if (defaultNumAttachedEntries != entryCount)
-                        plMsg.addI16 (NULL,
-                                     MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
-                                     (mama_i16_t) entryCount);
-                    ++plCount;
-                    entryCount = 0;
+                    lastPl = pl;
+                    savedBasicDelta = basicDelta;
                 }
-                lastPl = pl;
-                savedBasicDelta = basicDelta;
-            }
 
-            if (basicDelta->getEntry() != NULL)
-            {
-                MamaMsg& entMsg = *mEntries->mMsgVector[entryCount];
+                if (basicDelta->getEntry() != NULL)
+                {
+                    MamaMsg& entMsg = *mEntries->mMsgVector[entryCount];
 
-                addBookEntry (entMsg,
-                            basicDelta->getEntry(),
-                            basicDelta->getEntryDeltaAction(), 
-                            &(pl->getTime()));
-                ++entryCount;
-                //save this delta and pl
-                //used to flatten entry info into pl when no. of entries = 1
-                flatEntryDelta = basicDelta;
-                flatEntryPl = pl;
-            }
-        }    
+                    addBookEntry (entMsg,
+                                basicDelta->getEntry(),
+                                basicDelta->getEntryDeltaAction(), 
+                                &(pl->getTime()));
+                    ++entryCount;
+                    //save this delta and pl
+                    //used to flatten entry info into pl when no. of entries = 1
+                    flatEntryDelta = basicDelta;
+                    flatEntryPl = pl;
+                }
+            }    
 
-        // Add the last entry vector and other price level fields to the
-        // last price level message.
-        MamaMsg& plMsg = *mPricelevels->mMsgVector[plCount];
+            // Add the last entry vector and other price level fields to the
+            // last price level message.
+            MamaMsg& plMsg = *mPricelevels->mMsgVector[plCount];
 
-        addBookLevel (plMsg, pl,
-                      savedBasicDelta->getPlDeltaSize(),
-                      savedBasicDelta->getPlDeltaAction(),
-                      &(delta.getEventTime()));
-        
-        if (1 == entryCount)
-        {
-            addBookEntry (plMsg, basicDelta->getEntry(),
-                          basicDelta->getEntryDeltaAction(),
-                          &(pl->getTime()));
-
-        }              
-        if (entryCount > 1)
-        {
-            plMsg.addVectorMsg (NULL,
-                               MamdaOrderBookFields::PL_ENTRIES->getFid(),
-                               mEntries->mMsgVector,
-                               entryCount);
-
-        }
-        
-        if (defaultNumAttachedEntries != entryCount)
-            plMsg.addI16 (NULL,
-                         MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
-                         (mama_i16_t) entryCount);
-        ++plCount;
-
-        if (1 == plCount)
-        {
-            addBookLevel (msg, pl,
-                          basicDelta->getPlDeltaSize(),
-                          basicDelta->getPlDeltaAction(),
+            addBookLevel (plMsg, pl,
+                          savedBasicDelta->getPlDeltaSize(),
+                          savedBasicDelta->getPlDeltaAction(),
                           &(delta.getEventTime()));
+            
             if (1 == entryCount)
             {
-                addBookEntry (msg, basicDelta->getEntry(),
-                          basicDelta->getEntryDeltaAction(),
-                          &(pl->getTime()));
-            }
+                addBookEntry (plMsg, basicDelta->getEntry(),
+                              basicDelta->getEntryDeltaAction(),
+                              &(pl->getTime()));
+
+            }              
             if (entryCount > 1)
             {
-                msg.addVectorMsg (NULL,
-                               MamdaOrderBookFields::PL_ENTRIES->getFid(),
-                               mEntries->mMsgVector,
-                               entryCount);
+                plMsg.addVectorMsg (NULL,
+                                   MamdaOrderBookFields::PL_ENTRIES->getFid(),
+                                   mEntries->mMsgVector,
+                                   entryCount);
+
+            }
+            
+            if (defaultNumAttachedEntries != entryCount)
+                plMsg.addI16 (NULL,
+                             MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
+                             (mama_i16_t) entryCount);
+            ++plCount;
+
+            if (1 == plCount)
+            {
+                addBookLevel (msg, pl,
+                              basicDelta->getPlDeltaSize(),
+                              basicDelta->getPlDeltaAction(),
+                              &(delta.getEventTime()));
+                if (1 == entryCount)
+                {
+                    addBookEntry (msg, basicDelta->getEntry(),
+                              basicDelta->getEntryDeltaAction(),
+                              &(pl->getTime()));
+                }
+                if (entryCount > 1)
+                {
+                    msg.addVectorMsg (NULL,
+                                   MamdaOrderBookFields::PL_ENTRIES->getFid(),
+                                   mEntries->mMsgVector,
+                                   entryCount);
+                }
             }
         }
         
@@ -540,10 +543,13 @@ namespace Wombat
             addBookLevelEntries (plMsg, *pl);
         }
 
-        // Add the vector of plMsgs to the main msg
-        msg.addVectorMsg (NULL, MamdaOrderBookFields::PRICE_LEVELS->getFid(),
-                          mPricelevels->mMsgVector,
-                          plCount);
+        if (plCount > 0)
+        {
+            // Add the vector of plMsgs to the main msg
+            msg.addVectorMsg (NULL, MamdaOrderBookFields::PRICE_LEVELS->getFid(),
+                              mPricelevels->mMsgVector,
+                              plCount);
+        }
                   
         msg.addI16 (NULL, MamdaOrderBookFields::NUM_LEVELS->getFid(),
                     (mama_i16_t)plCount);

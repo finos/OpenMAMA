@@ -34,16 +34,14 @@ CFLAGS   += -I@builddir@/../../c
 CPPFLAGS += -I@builddir@/../../c
 
 LIBS = -lmamdabook -lmamda -lrt 
-LIBS += -lmama -lwombatcommon -lmamacpp
+LIBS += -lmama -lwombatcommon -lmamacpp -lgtest
 
 LDADD = -lgtest_main
 
 common_files = ../common/MainUnitTest.cpp ../common/MamdaUnitTestUtils.cpp
 
 
-noinst_PROGRAMS = MamdaOrderImbalanceTests
+dist_UnitTestMamdaOrderImbalance_SOURCES = MamdaOrderImbalanceFieldTests.cpp $(common_files)
 
-dist_MamdaOrderImbalanceTests_SOURCES = MamdaOrderImbalanceFieldTests.cpp $(common_files)
-
-bin_PROGRAMS = MamdaOrderImbalanceTests
+bin_PROGRAMS = UnitTestMamdaOrderImbalance
 

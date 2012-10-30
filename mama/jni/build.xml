@@ -1,7 +1,7 @@
 <project name="mama-jni" default="dist" basedir=".">
     <property name="product" value="mamajni"></property>
     <property name="base" value="mamajni"></property>
-    <property name="version" value="6.0.0rc19"></property> 
+    <property name="version" value="2.2.1.1"></property> 
     <property name="base.release" value="${base}_${version}"></property>
     <property name="release" value="${product}_${version}"></property>
     <property name="build" location="${user.dir}/classes"></property>
@@ -201,13 +201,13 @@
 
 		<copy todir="${dist}/doc/resources">
             <fileset dir="${basedir}/doc/">
-                <include name="nyse_technologies.png"></include>				
+                <include name="openmama.png"></include>				
             </fileset>
 
         </copy>                                    
 
         <javadoc access="public" source="1.5" destdir="${dist}/doc" failonerror="no" Overview="overview-jni.html" doctitle="MAMA (Middleware Agnostic Messaging API) JNI specification, v${version}" Bottom="Copyright 2011 NYSE Technologies" Windowtitle="MAMA JNI ${version}">
-			<Header>&lt;img src='{@docRoot}resources/nyse_technologies.png' alt='NYSE Technologies' /&gt;&lt;br/&gt;&lt;b&gt;MAMA JNI&lt;/b&gt;&lt;br&gt;&lt;font size='-1'&gt;version ${version}&lt;/font&gt;</Header>
+			<Header>&lt;img src='{@docRoot}resources/openmama.png' alt='NYSE Technologies' /&gt;&lt;br/&gt;&lt;b&gt;MAMA JNI&lt;/b&gt;&lt;br&gt;&lt;font size='-1'&gt;version ${version}&lt;/font&gt;</Header>
 			<fileset dir="./src">
                 <include name="**/*.java"></include>                
             </fileset>					  

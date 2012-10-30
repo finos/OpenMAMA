@@ -1,4 +1,4 @@
-/* $Id: statsgeneratorinternal.h,v 1.3.20.4 2011/08/10 14:53:26 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -51,7 +51,7 @@ mamaStatsGenerator_destroy (mamaStatsGenerator statsGenerator);
 
 MAMAExpDLL
 extern mama_status
-mamaStatsGenerator_removeStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector* statsCollector);
+mamaStatsGenerator_removeStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector statsCollector);
 
 MAMAExpDLL
 extern mama_status
@@ -75,7 +75,7 @@ mamaStatsGenerator_allocateStatsCollector (mamaStatsGenerator statsGenerator);
 
 MAMAExpDLL
 extern mama_status
-mamaStatsGenerator_addStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector* statsCollector);
+mamaStatsGenerator_addStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector statsCollector);
 
 #if defined (__cplusplus)
 }

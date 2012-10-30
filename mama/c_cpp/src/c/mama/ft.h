@@ -1,4 +1,4 @@
-/* $Id: ft.h,v 1.1.2.3 2011/09/01 16:34:38 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -154,6 +154,15 @@ extern mama_status
 mamaFtMember_getTimeoutInterval (
     const mamaFtMember  member,
     mama_f64_t*         result);
+
+/**
+ * Get the current heartbeat tick of the MAMA FT member.
+ */
+MAMAExpDLL
+extern mama_status
+mamaFtMember_getHeartbeatTick (
+    const mamaFtMember  member,
+    mama_u32_t*         result);
 
 /**
  * Get the closure argument (provided in the mamaFtMember_create()

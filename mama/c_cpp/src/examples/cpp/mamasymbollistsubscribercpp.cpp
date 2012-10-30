@@ -91,7 +91,7 @@ private:
     MamaTransport*           mDictTransport;
     bool                     mDictionaryComplete; 
     int                      mQuietness;
-    int						 mBuildDataDict;
+    bool					 mBuildDataDict;
     const char*              mSourceName;
     MamaDictionary*          mDictionary;
     void*                    mSubscriptionCallback;
@@ -401,13 +401,13 @@ MamaSymbolListSubscriber::MamaSymbolListSubscriber ():
     mDictTransport                     (NULL),
     mDictionaryComplete                (false),
     mQuietness                         (0),
+	mBuildDataDict                     (true),
     mSourceName                        (NULL),
     mDictionary                        (NULL),
     mSubscriptionCallback              (NULL),
     mSymbolListSubscriptionCallback    (NULL),
     mQueueGroup                        (NULL),
-    mMamaLogLevel                      (MAMA_LOG_LEVEL_WARN),
-	mBuildDataDict                     (true)
+    mMamaLogLevel                      (MAMA_LOG_LEVEL_WARN)
 {}
   
 MamaSymbolListSubscriber::~MamaSymbolListSubscriber ()

@@ -1,4 +1,4 @@
-/* $Id: listenermsgcallback.c,v 1.62.4.1.14.6 2011/09/01 09:41:02 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -50,7 +50,7 @@ void listenerMsgCallback_invokeErrorCallback(listenerMsgCallback callback,
         SubjectContext *ctx, mama_status mamaStatus, mamaSubscription
         subscription, const char *userSymbol);
 
-void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, int status,
+void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, mamaMsgStatus status,
         mamaSubscription subscription);
 
 /**
@@ -189,7 +189,8 @@ static void processPointToPointMessage (msgCallback*    callback,
     if (PRE_INITIAL_SCHEME_ON_INITIAL==
             mamaTransportImpl_getPreInitialScheme (tport))
     {
-        if (msgType==MAMA_MSG_TYPE_INITIAL || msgType == MAMA_MSG_TYPE_BOOK_INITIAL)
+        if (msgType==MAMA_MSG_TYPE_INITIAL || msgType == MAMA_MSG_TYPE_BOOK_INITIAL ||
+           (mamaTransportImpl_preRecapCacheEnabled (tport) &&  (msgType == MAMA_MSG_TYPE_RECAP || msgType == MAMA_MSG_TYPE_BOOK_RECAP )))
         {
             dqContext_applyPreInitialCache (&ctx->mDqContext, self->mSubscription);
 
@@ -246,15 +247,17 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                                 SubjectContext *ctx)
 {
     int               msgType           = mamaMsgType_typeForMsg (msg);
-    int               status            = mamaMsgImpl_getStatusFromMsg (msg);
+    mamaMsgStatus     status            = mamaMsgImpl_getStatusFromMsg (msg);
     msgCallback*      impl              = (msgCallback*)callback;
     mamaSubscription  subscription      = impl->mSubscription;
     int               expectingInitial  = 0;
     mamaQueue           queue;
     mamaTransport       transport;
-    mamaStatsCollector* queueStatsCollector = NULL;
-    mamaStatsCollector* tportStatsCollector = NULL;
+    mamaStatsCollector queueStatsCollector = NULL;
+    mamaStatsCollector tportStatsCollector = NULL;
     const char* userSymbol = NULL;
+	dqState state = DQ_STATE_NOT_ESTABLISHED;
+    mamaSubscription_getTransport (subscription, &transport);
 
     if (!ctx)
     {
@@ -275,18 +278,17 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
 
     if (gGenerateTransportStats)
     {
-        mamaSubscription_getTransport (subscription, &transport);
         tportStatsCollector = mamaTransport_getStatsCollector (transport);
     }
 
     if (queueStatsCollector)
-        mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatNumMessages.mFid);
+        mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatNumMessages.mFid);
 
     if (tportStatsCollector)
-        mamaStatsCollector_incrementStat (*tportStatsCollector, MamaStatNumMessages.mFid);
+        mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatNumMessages.mFid);
 
     if (mamaInternal_getGlobalStatsCollector() != NULL)
-        mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()),
+        mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
                                           MamaStatNumMessages.mFid);
 
     /* Get the user symbol from the subscription. */
@@ -355,21 +357,21 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
 
             if (queueStatsCollector)
             {
-                mamaStatsCollector_incrementStat (*queueStatsCollector,
+                mamaStatsCollector_incrementStat (queueStatsCollector,
                         MamaStatUnknownMsgs.mFid);
             }
             if (tportStatsCollector)
             {
-                mamaStatsCollector_incrementStat (*tportStatsCollector,
+                mamaStatsCollector_incrementStat (tportStatsCollector,
                         MamaStatUnknownMsgs.mFid);
             }
             if (mamaInternal_getGlobalStatsCollector())
             {
                 mamaStatsCollector_incrementStat
-                    (*(mamaInternal_getGlobalStatsCollector()),
+                (mamaInternal_getGlobalStatsCollector(),
                      MamaStatUnknownMsgs.mFid);
             }
-            return; //throw away msg
+            return; /* throw away msg */
             break;
         }
         default:
@@ -385,15 +387,15 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         case MAMA_MSG_TYPE_INITIAL :
              if (queueStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatInitials.mFid);
+                mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatInitials.mFid);
              }
              if (tportStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*tportStatsCollector, MamaStatInitials.mFid);
+                mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatInitials.mFid);
              }
              if (mamaInternal_getGlobalStatsCollector() != NULL)
              {
-                mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()),
+                mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
                                                   MamaStatInitials.mFid);
              }
              break;
@@ -401,30 +403,30 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         case MAMA_MSG_TYPE_BOOK_RECAP :
              if (queueStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatRecaps.mFid);
+                mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatRecaps.mFid);
              }
              if (tportStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*tportStatsCollector, MamaStatRecaps.mFid);
+                mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatRecaps.mFid);
              }
              if (mamaInternal_getGlobalStatsCollector())
              {
-                mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()),
+                mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
                                                   MamaStatRecaps.mFid);
              }
              break;
         case MAMA_MSG_TYPE_UNKNOWN :
              if (queueStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*queueStatsCollector, MamaStatUnknownMsgs.mFid);
+                mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatUnknownMsgs.mFid);
              }
              if (tportStatsCollector)
              {
-                mamaStatsCollector_incrementStat (*tportStatsCollector, MamaStatUnknownMsgs.mFid);
+                mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatUnknownMsgs.mFid);
              }
              if (mamaInternal_getGlobalStatsCollector())
              {
-                mamaStatsCollector_incrementStat (*(mamaInternal_getGlobalStatsCollector()),
+                mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
                                                   MamaStatUnknownMsgs.mFid);
              }
              break;
@@ -446,16 +448,24 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
      */
 
     mamaSubscription_getExpectingInitial (subscription, &expectingInitial);
+    dqStrategy_getDqState (ctx->mDqContext, &state);
 
     /*While we are waiting for initial values we also check whether we have an
      * initial for an individual context.
       If we are no longer waiting for initials we assume that it is ok to pass
      on the update - (probably a new symbol for a group)*/
-    if (expectingInitial && !ctx->mInitialArrived
+    if ((expectingInitial && !ctx->mInitialArrived) || 
+        (state == DQ_STATE_WAITING_FOR_RECAP && mamaTransportImpl_preRecapCacheEnabled (transport)
         && msgType != MAMA_MSG_TYPE_DELETE
         && msgType != MAMA_MSG_TYPE_EXPIRE
-        && msgType != MAMA_MSG_TYPE_UNKNOWN)
+        && msgType != MAMA_MSG_TYPE_UNKNOWN))
     {
+        /* If we are waiting for a recap and using the pre-recap cache, we
+           want to pass on any cached updates as STALE when the recap arrives */
+        if (state == DQ_STATE_WAITING_FOR_RECAP && mamaTransportImpl_preRecapCacheEnabled (transport))
+        {
+            ctx->mDqContext.mSetCacheMsgStale = 1;
+        }
         /*Add this message to the cache. If the message after the initial
          * results in a gap we will attempt to fill the gap from this cache
          * before asking for a recap.*/
@@ -471,7 +481,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
             mama_log (MAMA_LOG_LEVEL_FINE,
                            "%s%s %s%s"
                            " Subscription ignoring message received prior"
-                           " to initial update. Type: %d %s %p",
+                           " to initial or recap. Type: %d %s %p",
                            userSymbolFormatted, ctxSymbolFormatted,
                            msgType, mamaMsg_toString(msg), ctx);
         }
@@ -621,7 +631,7 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
 #endif /* WITH_ENTITLEMENTS */
 }
 
-void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, int status,
+void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, mamaMsgStatus status,
         mamaSubscription subscription)
 {
     /* Write the log at fine level. */

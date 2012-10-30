@@ -1,4 +1,4 @@
-/* $Id: wtable.c,v 1.12.10.2.12.4 2011/09/07 09:45:08 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

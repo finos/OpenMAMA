@@ -24,9 +24,9 @@
 # VERSION INFO
 #
 ##################################################
-m4_define([product_version_major],     [6])
-m4_define([product_version_minor],     [0])
-m4_define([product_version_release],   [0rc19])
+m4_define([product_version_major],     [2])
+m4_define([product_version_minor],     [2])
+m4_define([product_version_release],   [1.1])
 m4_define([product_full_version],[product_version_major.product_version_minor.product_version_release])
 
 
@@ -144,6 +144,21 @@ AM_CONDITIONAL(WITH_WOMBAT_COMMON, test x$with_wombat_common = "xtrue")
 # MAMA: --with-mama
 # Where to find MAMA
 ##################################################
+##################################################
+# EXAMPLES: --without-examples
+# Whether or not to build the example apps
+##################################################
+AC_ARG_WITH(
+    examples,
+    [AC_HELP_STRING([--without-examples],
+                    [exclude mama examples])],
+    [
+     with_examples=false
+    ],
+    [
+     with_examples=true
+    ])
+AM_CONDITIONAL(WITH_EXAMPLES, test x$with_examples = "xtrue")
 
 
 ##################################################

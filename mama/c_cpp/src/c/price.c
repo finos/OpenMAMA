@@ -1,4 +1,4 @@
-/* $Id: price.c,v 1.7.6.2.14.4 2011/08/24 13:13:15 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

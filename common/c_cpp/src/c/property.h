@@ -1,4 +1,4 @@
-/* $Id: property.h,v 1.10.2.1.14.3 2011/08/10 14:53:24 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

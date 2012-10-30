@@ -1,4 +1,4 @@
-/* $Id: priceimpl.h,v 1.1.2.3 2011/09/29 08:27:47 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

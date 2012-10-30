@@ -1,4 +1,4 @@
-/* $Id: transport.c,v 1.79.4.6.2.2.2.8 2011/10/02 19:02:17 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -42,6 +42,7 @@
 #include "mama/statfields.h"
 #include "statsgeneratorinternal.h"
 #include "mama/statscollector.h"
+#include "wombat/strutils.h"
 
 extern int gGenerateTransportStats;
 extern int gGenerateLbmStats;
@@ -122,7 +123,7 @@ typedef struct transportImpl_
     char*                    mDescription;
 
     int                     mDeactivateSubscriptionOnError;
-    mamaStatsCollector*     mStatsCollector;
+    mamaStatsCollector      mStatsCollector;
     mamaStat                mRecapStat;
     mamaStat                mUnknownMsgStat;
     mamaStat                mMessageStat;
@@ -159,6 +160,10 @@ typedef struct transportImpl_
     mamaStat                mLbmMsgsReceivedNoTopic;
     /*! Number of LBM requests received by LBT-RM transport */
     mamaStat                mLbmRequestsReceived;
+    /* Publisher Stats */
+    mamaStat                mPublisherSend;
+    mamaStat                mPublisherInboxSend;
+    mamaStat                mPublisherReplySend;
 
     int                     mGroupSizeHint;
 
@@ -169,6 +174,8 @@ typedef struct transportImpl_
     uint8_t                 mInternal;
     uint8_t                 mDisableDisconnectCb;
     preInitialScheme         mPreInitialScheme;
+    mama_bool_t             mPreRecapCacheEnabled;
+    void*                   mClosure;
 } transportImpl;
 
 static mama_status
@@ -186,6 +193,7 @@ init (transportImpl* transport, int createResponder)
     self->mDQStratScheme    = DQ_SCHEME_DELIVER_ALL;
     self->mFTStratScheme    = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
 
+    self->mClosure          = NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINEST,
              "%screating CmResponder for transport [%s]",
@@ -447,6 +455,19 @@ static void setFtStrategy (mamaTransport transport)
     }
 }
 
+static void enablePreRecapCache (mamaTransport transport, const char* middleware)
+{
+    char propNameBuf[256];
+
+    if (!self) return;
+
+    snprintf (propNameBuf, 256, "mama.%s.transport.%s.prerecapcache.enable", middleware, self->mName);
+
+    self->mPreRecapCacheEnabled = strtobool (mama_getProperty (propNameBuf));
+
+    mama_log (MAMA_LOG_LEVEL_NORMAL,
+              "%s: Pre-Recap cache %s", self->mName, self->mPreRecapCacheEnabled ? "enabled" : "disabled");
+}    
 void mamaTransport_disableRefresh(mamaTransport transport, uint8_t disable)
 {
     self->mDisableRefresh=disable;
@@ -717,14 +738,16 @@ mamaTransport_create (mamaTransport transport,
                 self->mLoadBalanceHandle = openSharedLib (sharedObjectName, NULL);
                 if (self->mLoadBalanceHandle)
                 {
+					void*	vp = NULL;
                     mama_log (MAMA_LOG_LEVEL_FINER,
                               "Using Library defined load balancing");
-                    self->mLoadBalanceCb =  (mamaTransportLbCB)
-                        loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
+                    vp = loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
                                 "loadBalance");
-                    self->mLoadBalanceInitialCb = (mamaTransportLbInitialCB)
-                        loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
+                    self->mLoadBalanceCb = *(mamaTransportLbCB*)&vp;
+
+                    vp = loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
                                 "loadBalanceInitial");
+                    self->mLoadBalanceInitialCb = *(mamaTransportLbInitialCB*)&vp;
                 }
                 else
                 {
@@ -840,8 +863,9 @@ mamaTransport_create (mamaTransport transport,
 
 
     setPreInitialStrategy ((mamaTransport)self);
-    setDQStrategy (self);
-    setFtStrategy (self);
+    setDQStrategy ((mamaTransport)self);
+    setFtStrategy ((mamaTransport)self);
+    enablePreRecapCache ((mamaTransport)self, middleware);
 
     if (mamaTransportImpl_disableDisconnectCb (name))
     {
@@ -871,11 +895,8 @@ mamaTransport_initStats (mamaTransport transport)
 
     middleware = self->mBridgeImpl->bridgeGetName ();
 
-    self->mStatsCollector = (mamaStatsCollector*) mamaStatsGenerator_allocateStatsCollector
-                                                            (mamaInternal_getStatsGenerator ());
-
     if (MAMA_STATUS_OK != (status=mamaStatsCollector_create (
-                               self->mStatsCollector,
+                               &(self->mStatsCollector),
                                 MAMA_STATS_COLLECTOR_TYPE_TRANSPORT,
                                 self->mName, middleware)))
     {
@@ -889,7 +910,7 @@ mamaTransport_initStats (mamaTransport transport)
     if (!gLogTransportStats)
     {
         if (MAMA_STATUS_OK != (status=mamaStatsCollector_setLog (
-                                    *self->mStatsCollector, 0)))
+                                    self->mStatsCollector, 0)))
         {
             return status;
         }
@@ -903,7 +924,7 @@ mamaTransport_initStats (mamaTransport transport)
     if (gPublishTransportStats)
     {
         if (MAMA_STATUS_OK != (status=mamaStatsCollector_setPublish (
-                                    *self->mStatsCollector, 1)))
+                                    self->mStatsCollector, 1)))
         {
             return status;
         }
@@ -982,6 +1003,26 @@ mamaTransport_initStats (mamaTransport transport)
                                   MAMA_STAT_NOT_LOCKABLE,
                                   MamaStatRvMsgs.mName,
                                   MamaStatRvMsgs.mFid);
+        if (status != MAMA_STATUS_OK) return status;
+        status = mamaStat_create (&self->mPublisherSend,
+                                  self->mStatsCollector,
+                                  MAMA_STAT_NOT_LOCKABLE,
+                                  MamaStatPublisherSend.mName,
+                                  MamaStatPublisherSend.mFid);
+        if (status != MAMA_STATUS_OK) return status;
+
+        status = mamaStat_create (&self->mPublisherInboxSend,
+                                  self->mStatsCollector,
+                                  MAMA_STAT_NOT_LOCKABLE,
+                                  MamaStatPublisherInboxSend.mName,
+                                  MamaStatPublisherInboxSend.mFid);
+        if (status != MAMA_STATUS_OK) return status;
+
+        status = mamaStat_create (&self->mPublisherReplySend,
+                                  self->mStatsCollector,
+                                  MAMA_STAT_NOT_LOCKABLE,
+                                  MamaStatPublisherReplySend.mName,
+                                  MamaStatPublisherReplySend.mFid);
         if (status != MAMA_STATUS_OK) return status;
     }
 
@@ -1228,6 +1269,24 @@ mamaTransport_destroy (mamaTransport transport)
         self->mRvMsgsStat = NULL;
     }
 
+    if (self->mPublisherSend)
+    {
+        mamaStat_destroy (self->mPublisherSend);
+        self->mPublisherSend = NULL;
+    }
+
+    if (self->mPublisherInboxSend)
+    {
+        mamaStat_destroy (self->mPublisherInboxSend);
+        self->mPublisherInboxSend = NULL;
+    }
+
+    if (self->mPublisherReplySend)
+    {
+        mamaStat_destroy (self->mPublisherReplySend);
+        self->mPublisherReplySend = NULL;
+    }
+
     if (self->mNakPacketsSent)
     {
         mamaStat_destroy (self->mNakPacketsSent);
@@ -1303,7 +1362,7 @@ mamaTransport_destroy (mamaTransport transport)
     if (self->mStatsCollector)
     {
         mamaStatsGenerator_removeStatsCollector  (mamaInternal_getStatsGenerator (), self->mStatsCollector);
-        mamaStatsCollector_destroy (*self->mStatsCollector);
+        mamaStatsCollector_destroy (self->mStatsCollector);
         self->mStatsCollector = NULL;
     }
 
@@ -1330,7 +1389,7 @@ mamaTransport_setName (mamaTransport transport,
 
     if (self->mStatsCollector)
     {
-        mamaStatsCollector_setName (*self->mStatsCollector, self->mName);
+        mamaStatsCollector_setName (self->mStatsCollector, self->mName);
     }
 
     return MAMA_STATUS_OK;
@@ -1549,7 +1608,8 @@ mamaTransport_addSubscription (mamaTransport    transport,
 
     if (self->mRefreshTransport)
         handle = refreshTransport_allocateSubscInfo (self->mRefreshTransport);
-
+    else
+        handle = (SubscriptionInfo*)list_allocate_element (self->mListeners);
     if (handle == NULL) return MAMA_STATUS_NOMEM;
 
     handle->mSubscription = subscription;
@@ -1558,6 +1618,8 @@ mamaTransport_addSubscription (mamaTransport    transport,
 
     if (self->mRefreshTransport)
         refreshTransport_addSubscription (self->mRefreshTransport, handle);
+    else
+        list_push_back (self->mListeners, handle);    
 
     return MAMA_STATUS_OK;
 }
@@ -1572,7 +1634,11 @@ mamaTransport_removeListener (mamaTransport transport,  void* handle)
     {
         refreshTransport_removeListener (self->mRefreshTransport, handle, 1);
     }
-
+    else
+    {
+        list_remove_element (self->mListeners, handle);
+        list_free_element (self->mListeners, handle);
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -1674,11 +1740,22 @@ mamaTransportImpl_getTransportTopicCallback (mamaTransport transport,
 }
 
 static void
+staleEventCallback (mamaQueue queue, void* closure)
+{
+    mamaSubscription sub = (mamaSubscription) closure;
+    mamaSubscription_setPossiblyStale (sub);
+}
+
+static void
 setStaleListenerIterator (wList list, void* element, void* closure)
 {
     SubscriptionInfo* subsc = (SubscriptionInfo*)element;
     if (mamaSubscription_isTportDisconnected (subsc->mSubscription))
-            mamaSubscription_setPossiblyStale (subsc->mSubscription);
+    {
+            mamaQueue queue = NULL;
+            mamaSubscription_getQueue (subsc->mSubscription, &queue);
+            mamaQueue_enqueueEvent (queue, (mamaQueueEventCB)staleEventCallback, subsc->mSubscription);
+    }
 }
 
 static void
@@ -1688,6 +1765,10 @@ setPossiblyStaleForListeners (transportImpl* transport)
     {
         refreshTransport_iterateListeners (self->mRefreshTransport,
                                       setStaleListenerIterator, NULL);
+    }
+    else
+    {
+        list_for_each (self->mListeners, setStaleListenerIterator, NULL);
     }
 }
 
@@ -1720,6 +1801,17 @@ mamaTransportImpl_getFtStrategyScheme (mamaTransport transport)
     }
     return DQ_FT_DO_NOT_WAIT_FOR_RECAP;
 }
+
+mama_bool_t
+mamaTransportImpl_preRecapCacheEnabled (mamaTransport transport)
+{
+    if (self)
+    {
+        return self->mPreRecapCacheEnabled;
+    }
+    return 0;
+}
+
 /* Process an advisory message and invokes callbacks
  *                    on all listeners.
  * @param transport The transport.
@@ -1831,6 +1923,8 @@ mamaTransportImpl_getTopicsAndTypesForSource (mamaTransport transport,
      */
     if (self->mRefreshTransport)
         size = refreshTransport_numListeners (self->mRefreshTransport);
+    else
+        size = list_size (self->mListeners); 
 
     closure.topics =
         (const char**) calloc (sizeof (char*), size);
@@ -1847,7 +1941,10 @@ mamaTransportImpl_getTopicsAndTypesForSource (mamaTransport transport,
         refreshTransport_iterateListeners (self->mRefreshTransport,
                                       topicsForSourceIterator, &closure);
     }
-
+    else
+    {
+        list_for_each (self->mListeners, topicsForSourceIterator, &closure);
+    }
     *topics = closure.topics;
     *types  = closure.types;
     *len = closure.curIdx;
@@ -2144,7 +2241,7 @@ void mamaTransportImpl_setAdvisoryCauseAndPlatformInfo (mamaTransport transport,
     {
         /* Set the cause. */
         impl->mCause        = cause;
-        impl->mPlatformInfo = platformInfo;
+        impl->mPlatformInfo = (void*) platformInfo;
     }
 
     /* Otherwise write an error log. */
@@ -2225,7 +2322,7 @@ mamaTransport_getNativeTransportNamingCtx (mamaTransport transport,
 }
 
 
-mamaStatsCollector*
+mamaStatsCollector
 mamaTransport_getStatsCollector (mamaTransport transport)
 {
     if (!self) return 0;
@@ -2450,6 +2547,26 @@ void mamaTransportImpl_invokeTransportCallback (mamaTransport transport,
     }
 }
 
+mama_status
+mamaTransport_setClosure (mamaTransport transport, void* closure)
+{
+    if (!self) return MAMA_STATUS_NULL_ARG;
+
+    self->mClosure = closure;
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaTransport_getClosure (mamaTransport transport, void** closure)
+{
+    if ((!self) || (!closure)) 
+        return MAMA_STATUS_NULL_ARG;
+
+    *closure = self->mClosure;
+
+    return MAMA_STATUS_OK;
+}
 /* *************************************************** */
 /* Private Functions. */
 /* *************************************************** */
@@ -2488,6 +2605,11 @@ void mamaTransportImpl_clearTransportWithListeners (transportImpl *impl)
     {
         refreshTransport_iterateListeners (impl->mRefreshTransport,
                 mamaTransportImpl_clearTransportCallback, NULL);
+    }
+    /* Otherwise iterate the local list of subscriptions. */
+    else
+    {
+        list_for_each (impl->mListeners, mamaTransportImpl_clearTransportCallback, NULL);
     }
 }
 

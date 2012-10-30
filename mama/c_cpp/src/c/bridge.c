@@ -1,4 +1,4 @@
-/* $Id: bridge.c,v 1.8.12.1.4.4 2011/09/07 11:01:05 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -83,6 +83,7 @@ mamaBridgeImpl_getInternalEventQueue (mamaBridge bridgeImpl, mamaQueue* internal
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
+	wlock_lock (impl->mLock);
     if (!impl->mInternalEventQueue)
     {
         if (MAMA_STATUS_OK != mamaQueue_create (&impl->mInternalEventQueue,
@@ -101,6 +102,7 @@ mamaBridgeImpl_getInternalEventQueue (mamaBridge bridgeImpl, mamaQueue* internal
             return MAMA_STATUS_NO_BRIDGE_IMPL;
         }
     }
+    wlock_unlock (impl->mLock);
     
     *internalQueue = impl->mInternalEventQueue;
     return MAMA_STATUS_OK;

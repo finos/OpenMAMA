@@ -1,4 +1,4 @@
-/* $Id: mamaproxyc.c,v 1.1.2.2 2011/09/27 16:54:39 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -182,10 +182,7 @@ static void createPublisher ()
                                    "_MD",
                                    NULL);
 
-	// Turn off updateing of the messages as incoming messages 
-	// from FH already have seqnum and senderid
-	mamaDQPublisherManager_setSeqNum(gDQPubManager, 0);
-	mamaDQPublisherManager_setSenderId(gDQPubManager, 0);
+    mamaDQPublisherManager_enableSendTime(gDQPubManager, 1);
     if (gSendSync)
     {
         mamaTimer_create (&gSyncTimer, gPubDefaultQueue, syncCallback, 15, gDQPubManager);

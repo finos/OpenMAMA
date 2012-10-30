@@ -1,4 +1,4 @@
-/* $Id: transportimpl.h,v 1.22.4.2.2.1.4.5 2011/09/01 16:34:38 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -252,6 +252,11 @@ mama_status mamaTransport_addPublisher(mamaTransport transport, mamaPublisher pu
 mama_status mamaTransport_removePublisher(mamaTransport transport, void *handle);
 preInitialScheme mamaTransportImpl_getPreInitialScheme (mamaTransport transport);
 
+dqStartegyScheme
+mamaTransportImpl_getDqStrategyScheme (mamaTransport transport);
+
+dqftStrategyScheme
+mamaTransportImpl_getFtStrategyScheme (mamaTransport transport);
 /**
  * This function will allocate an internal transport for use with the internal event queue, this sort
  * of transport is limited and does not support certain features, including
@@ -264,6 +269,7 @@ preInitialScheme mamaTransportImpl_getPreInitialScheme (mamaTransport transport)
  *              MAMA_STATUS_NULL_ARG
  *              MAMA_STATUS_OK
  */
+MAMAExpDLL
 mama_status mamaTransportImpl_allocateInternalTransport(mamaTransport *transport);
 
 /**
@@ -292,6 +298,10 @@ extern mama_status
 mamaTransportImpl_forceClientDisconnect (mamaTransport   transport,
                                          const char*     ipAddress,
                                          uint16_t        port);
+
+extern mama_bool_t
+mamaTransportImpl_preRecapCacheEnabled (mamaTransport transport);
+
 #if defined(__cplusplus)
 }
 #endif

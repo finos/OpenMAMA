@@ -87,11 +87,12 @@ typedef __int64 w_i64_t;
 #define PATH_DELIM ';'
 
 #define PATHSEP  "\\"
-COMMONExpDLL int 
-wsocketstartup (void);
 
-COMMONExpDLL void
-wsocketcleanup (void);
+COMMONExpDLL 
+int wsocketstartup (void);
+
+COMMONExpDLL 
+void wsocketcleanup (void);
 
 /* Socket Pair and set non blocking */
 COMMONExpDLL int
@@ -174,6 +175,7 @@ const char *index( const char *str, char c );
 */
 #define PRId64 "I64d"
 #define PRIu64 "I64u"
+
 #ifndef INT8_MIN
 #define INT8_MIN SCHAR_MIN
 #endif

@@ -1,4 +1,4 @@
-# $Id: configure.ac,v 1.211.4.6.2.15.2.37 2011/10/11 09:43:37 emmapollock Exp $
+# $Id$
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Technologies, Inc.
@@ -24,9 +24,9 @@
 # VERSION INFO
 #
 ##################################################
-m4_define([product_version_major],     [6])
-m4_define([product_version_minor],     [0])
-m4_define([product_version_release],   [0rc19])
+m4_define([product_version_major],     [2])
+m4_define([product_version_minor],     [2])
+m4_define([product_version_release],   [1.1])
 m4_define([product_full_version],[product_version_major.product_version_minor.product_version_release])
 
 

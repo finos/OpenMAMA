@@ -1,4 +1,4 @@
-/* $Id: mama.h,v 1.74.4.4.8.10 2011/10/02 19:02:18 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -324,8 +324,17 @@ extern "C"
     typedef void (MAMACALLTYPE *mamaStartCB) (mama_status status);
 
     /**
+     * Callback invoked when default thread for middleware has finished processing.
+     */
+    typedef void (MAMACALLTYPE *mamaStopCB) (mama_status);
+
+    /**
      * Start Mama in the background. This method invokes mama_start() in a
      * separate thread.
+     *
+     * This API uses the deprecated mamaStartCB callback type. mama_startBackgroundEx
+     * uses the replacement type mamaStopCBEx. To retain backward compatability
+     * mama_startBackground casts callback to mamaStopCB for further processing.
      *
      * @param bridgeImpl The bridge specific structure.
      * @param callback The callback for asynchronous status.
@@ -335,6 +344,27 @@ extern "C"
     extern mama_status
     mama_startBackground (mamaBridge    bridgeImpl,
                           mamaStartCB   callback);
+    /**
+     * Extended stop callback that improves on mamaStopCB by including a bridge impl
+     * pointer and closure in the signature.
+     */
+    typedef void (MAMACALLTYPE *mamaStopCBEx) (mama_status, mamaBridge, void*);
+
+    /**
+     * Start Mama in the background, with extended parameters.
+     *
+     * This method performs the same functionality as mama_startBackground accept it 
+     * provides the facility to pass in a closure. The C++ wrapper layer uses this 
+     * version of the function, and stores the MamaStartCallback object in the closure.
+     *
+     * @param[in] bridgeImpl The bridge specific structure.
+     * @param[in] callback The extended callback for asynchronous status.
+     * @return MAMA_STATUS_OK if successful.
+     */
+    MAMAExpDLL
+    extern mama_status mama_startBackgroundEx (mamaBridge   bridgeImpl,
+                                               mamaStopCBEx callback,
+                                               void*        closure);
 
     /**
      * Stop dispatching on the default event queue for the specified bridge.
@@ -544,6 +574,19 @@ extern "C"
     extern mama_status
     mama_setBridgeInfoCallback (mamaBridge         bridgeImpl,
                                 bridgeInfoCallback callback);
+    /**
+     * Add a user stats collector 
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_addStatsCollector (mamaStatsCollector  statsCollector);
+
+    /**
+     * Remove a user stats collector 
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_removeStatsCollector (mamaStatsCollector  statsCollector);
 
 #if defined(__cplusplus)
 }

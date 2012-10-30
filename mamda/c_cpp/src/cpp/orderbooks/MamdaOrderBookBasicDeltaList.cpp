@@ -91,6 +91,17 @@ namespace Wombat
     {
         clear();
         delete mImpl.mDeltas;  // can safely be NULL
+        
+        if (mImpl.mBidLevelDeltas)
+            delete mImpl.mBidLevelDeltas;
+        if (mImpl.mAskLevelDeltas)
+            delete mImpl.mAskLevelDeltas;
+
+        if (mImpl.mBidEntryDeltas)
+            delete mImpl.mBidEntryDeltas;
+        if (mImpl.mAskEntryDeltas)
+            delete mImpl.mAskEntryDeltas;
+        
         delete &mImpl;
     }
 

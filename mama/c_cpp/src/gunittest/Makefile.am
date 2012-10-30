@@ -1,4 +1,4 @@
-# $Id: Makefile.am,v 1.2.4.1.16.3 2011/08/29 19:35:50 ianbell Exp $
+# $Id$
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Technologies, Inc.
@@ -24,5 +24,3 @@ VPATH  = @srcdir@
 
 SUBDIRS = c cpp
 
-CPPFLAGS += -DWITH_UNIT_TESTS
-CFLAGS += -DWITH_UNIT_TESTS

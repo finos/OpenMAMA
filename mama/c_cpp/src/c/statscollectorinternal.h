@@ -1,4 +1,4 @@
-/* $Id: statscollectorinternal.h,v 1.2.22.3 2011/08/10 14:53:26 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -22,12 +22,30 @@
 #ifndef MamaStatsCollectorInternalH__
 #define MamaStatsCollectorInternalH__
 
+#include "mama/statscollector.h"
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 typedef void (
 *collectorPollStatCb) (mamaStatsCollector statsCollector, void* closure);
+
+#define MAMA_STAT_MAX_STATS    		35
+
+typedef struct mamaStatsCollectorImpl__
+{
+    mamaStatsCollectorType 	mType;
+    char* 			        mName;
+    mamaStat    			mMamaStats[MAMA_STAT_MAX_STATS];
+    char* 			        mMiddleware;
+    collectorPollStatCb 	mPollCb;
+    void*       			mPollClosure;
+    int         			mPublishStats;
+    int         			mLogStats;
+     int         			mOffset;
+    void*          			mHandle;
+} mamaStatsCollectorImpl;
 
 MAMAExpDLL
 extern mama_status
@@ -44,7 +62,7 @@ mamaStatsCollector_setPollCallback (mamaStatsCollector statsCollector, collector
  */
 MAMAExpDLL
 extern void
-mamaStatsCollector_populateMsg (mamaStatsCollector* statsCollector, mamaMsg msg, int* wasLogged);
+mamaStatsCollector_populateMsg (mamaStatsCollector statsCollector, mamaMsg msg, int* wasLogged);
 
 MAMAExpDLL
 extern mama_status

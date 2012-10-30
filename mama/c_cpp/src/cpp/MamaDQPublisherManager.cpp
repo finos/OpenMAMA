@@ -84,6 +84,10 @@ public:
 		short    					msgType,
 		MamaMsg&     				msg);
 
+	virtual void onMsg (
+		MamaDQPublisherManager*  	publisher,
+		MamaMsg&     				msg);
+
 	virtual void onError (
 		MamaDQPublisherManager*  	publisher,
 		const MamaStatus&  			status,
@@ -141,6 +145,17 @@ void DQPublisherManagerTestCallback::onRefresh (MamaDQPublisherManager* publishe
 	}
 }
 
+void DQPublisherManagerTestCallback::onMsg (MamaDQPublisherManager* publisher, MamaMsg& msg)
+{
+	try {
+		mCallback->onMsg(publisher, msg);
+	}
+	catch (...)
+	{
+		fprintf (stderr, "MamaDQPublisherCallback onMsg EXCEPTION CAUGHT\n");
+	}
+}
+
 void DQPublisherManagerTestCallback::onError (MamaDQPublisherManager* publisher, const MamaStatus& status, const char* errortxt, MamaMsg* msg)
 {
 	try {
@@ -156,8 +171,8 @@ void DQPublisherManagerTestCallback::onError (MamaDQPublisherManager* publisher,
 struct MamaDQPublisherManagerImpl
 {
     MamaDQPublisherManagerImpl (MamaDQPublisherManager* publisher): 
-		mCallback				(NULL),
-        mParent                 (publisher)
+        mParent                 (publisher),
+		mCallback				(NULL)
     {
     	mamaDQPublisherManager_allocate(&mDQPublisherManager);
     	mReuseableMsg.create();
@@ -196,7 +211,7 @@ void MAMACALLTYPE dqPublisherManagerImplCreateCb (
 {
 	MamaDQPublisherManagerImpl* mImpl = (MamaDQPublisherManagerImpl*)mamaDQPublisherManager_getClosure(manager);
 	mImpl->mCallback->onCreate(mImpl->mParent);
-    }
+}
     
 void MAMACALLTYPE dqPublisherManagerImplNewRequestCb(
         mamaDQPublisherManager manager,
@@ -204,11 +219,11 @@ void MAMACALLTYPE dqPublisherManagerImplNewRequestCb(
         short  subType,
         short    msgType,
         mamaMsg     msg)
-    {
+{
 	MamaDQPublisherManagerImpl* mImpl = (MamaDQPublisherManagerImpl*)mamaDQPublisherManager_getClosure(manager);
 	mImpl->mReuseableMsg.setMsg(msg);
 	mImpl->mCallback->onNewRequest(mImpl->mParent, symbol, subType,msgType, mImpl->mReuseableMsg);
-    }
+}
 
 void MAMACALLTYPE dqPublisherManagerImplRequestCb(
         mamaDQPublisherManager manager,
@@ -216,7 +231,7 @@ void MAMACALLTYPE dqPublisherManagerImplRequestCb(
         short  subType,
         short    msgType,
         mamaMsg     msg)
-    {
+{
 	MamaDQPublisherManagerImpl* mImpl = (MamaDQPublisherManagerImpl*)mamaDQPublisherManager_getClosure(manager);
 	mImpl->mReuseableMsg.setMsg(msg);
 	mImpl->setInfo(info);
@@ -247,6 +262,14 @@ void MAMACALLTYPE dqPublisherManagerImplErrorCb(
 	mImpl->mCallback->onError(mImpl->mParent, MamaStatus(status), errortxt, &mImpl->mReuseableMsg);
 }
 
+void MAMACALLTYPE dqPublisherManagerImplMsgCb(
+        mamaDQPublisherManager manager,
+        mamaMsg     msg)
+{
+	MamaDQPublisherManagerImpl* mImpl = (MamaDQPublisherManagerImpl*)mamaDQPublisherManager_getClosure(manager);
+	mImpl->mReuseableMsg.setMsg(msg);
+	mImpl->mCallback->onMsg(mImpl->mParent, mImpl->mReuseableMsg);
+}
 
 
 
@@ -367,11 +390,12 @@ void MamaDQPublisherManagerImpl::create (MamaTransport *transport,
     // This static structure contains all of the callback function pointers
     static mamaDQPublisherManagerCallbacks aDQPublisherManagerCb =
     {
-    		dqPublisherManagerImplCreateCb,
-    		dqPublisherManagerImplNewRequestCb,
-    		dqPublisherManagerImplRequestCb,
-    		dqPublisherManagerImplRefreshCb,
-    		dqPublisherManagerImplErrorCb
+	dqPublisherManagerImplCreateCb,
+	dqPublisherManagerImplNewRequestCb,
+	dqPublisherManagerImplRequestCb,
+	dqPublisherManagerImplRefreshCb,
+        dqPublisherManagerImplErrorCb,
+        dqPublisherManagerImplMsgCb
     };
 	
     mCallback = callback;
@@ -381,18 +405,15 @@ void MamaDQPublisherManagerImpl::create (MamaTransport *transport,
     }
 
 void MamaDQPublisherManagerImpl::destroy (void)
-	{
+{
+    mamaDQPublisherManager_destroy(mDQPublisherManager);
 
-        
-	mamaDQPublisherManager_destroy(mDQPublisherManager);
-
-
-	if (mamaInternal_getCatchCallbackExceptions())
-	{
-		delete mCallback;
-		mCallback = 0;
-	}
-	return;
+    if (mamaInternal_getCatchCallbackExceptions())
+    {
+	delete mCallback;
+	mCallback = 0;
+    }
+    return;
 }
 
 

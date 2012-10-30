@@ -1,4 +1,4 @@
-/* $Id: platform.h,v 1.9.16.2 2011/08/10 14:53:24 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

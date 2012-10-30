@@ -428,6 +428,11 @@ namespace Wombat
         mImpl.mNeedsReevaluation = false;
 
         // do not reset mImpl.mCheckVisibility
+
+        if (mImpl.mGenerateDeltas)
+        {
+            clearDeltaList();
+        }
     }
 
     void MamdaOrderBook::setSymbol (const char*  symbol)

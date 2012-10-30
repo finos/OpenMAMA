@@ -25,7 +25,7 @@ blddir=@builddir@
 
 
 if USE_GCC_FLAGS
-CFLAGS   += -pedantic -Wno-long-long -O2 -pthread -fPIC
+CFLAGS   += -std=gnu99 -pedantic -Wno-long-long -O2 -pthread -fPIC
 CPPFLAGS += -pedantic -Wno-long-long -O2 -pthread -fPIC
 endif
 
@@ -41,9 +41,9 @@ LDFLAGS  += -L${srcdir}/../../c \
 LIBS = -lmama -lwombatcommon -lgtest
 LDADD = -lgtest_main -ldl
 
-bin_PROGRAMS = MainUnitTestC
+bin_PROGRAMS = UnitTestMamaC
 
-nodist_MainUnitTestC_SOURCES = MainUnitTestC.cpp \
+nodist_UnitTestMamaC_SOURCES = MainUnitTestC.cpp \
 							msgtests.cpp \
 							iteration.cpp \
                             openclosetest.cpp \

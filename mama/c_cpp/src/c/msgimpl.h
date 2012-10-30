@@ -1,4 +1,4 @@
-/* $Id: msgimpl.h,v 1.28.4.1.16.8 2011/10/02 19:02:17 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

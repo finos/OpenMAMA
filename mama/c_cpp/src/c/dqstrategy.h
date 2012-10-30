@@ -1,4 +1,4 @@
-/* $Id: dqstrategy.h,v 1.14.4.1.16.3 2011/09/01 16:34:37 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -67,6 +67,7 @@ typedef struct
     mama_u64_t    mSenderId;
 
     uint8_t       mDoNotForward;
+    mama_bool_t   mSetCacheMsgStale;
 } mamaDqContext;
 
 typedef struct dqStrategy_* dqStrategy;

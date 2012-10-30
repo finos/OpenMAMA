@@ -1,4 +1,4 @@
-/* $Id: wConfig.h,v 1.1.2.1 2012/02/22 01:20:51 mikeschonberg Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

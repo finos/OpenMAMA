@@ -1,4 +1,4 @@
-/* $Id: MainUnitTestC.cpp,v 1.2.22.2.16.1 2012/04/17 10:52:12 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -21,6 +21,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <gtest/gtest.h>
+#include <mama/mama.h>
+#include <mama/status.h>
 #include <string>
 
 #ifndef WOMBAT_CONFIG_NO_NAMESPACES
@@ -38,11 +40,17 @@ static string version     ("APPNAMESTR:  Version " VERSIONSTR
 
 
 static const char*       gMiddleware         = "wmw";
+static const char*       gPayload         = "wmsg";
 
 
 const char* getMiddleware (void)
 {
 	return gMiddleware;
+}
+
+const char* getPayload (void)
+{
+	return gPayload;
 }
 
 static void parseCommandLine (int argc, char** argv)
@@ -55,6 +63,11 @@ static void parseCommandLine (int argc, char** argv)
 		if (strcmp ("-m", argv[i]) == 0)
 		{
 			gMiddleware = argv[i+1];
+			i += 2;
+		}
+		else if (strcmp ("-p", argv[i]) == 0)
+		{
+			gPayload = argv[i+1];
 			i += 2;
 		}
         else

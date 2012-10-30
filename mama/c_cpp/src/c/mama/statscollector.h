@@ -1,4 +1,4 @@
-/* $Id: statscollector.h,v 1.5.22.3 2011/08/10 14:53:28 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -32,7 +32,8 @@ typedef enum mamaStatsCollectorType
 {
     MAMA_STATS_COLLECTOR_TYPE_QUEUE     = 0,
     MAMA_STATS_COLLECTOR_TYPE_TRANSPORT = 1,
-    MAMA_STATS_COLLECTOR_TYPE_GLOBAL    = 2
+    MAMA_STATS_COLLECTOR_TYPE_USER      = 2,
+    MAMA_STATS_COLLECTOR_TYPE_GLOBAL    = 3
 } mamaStatsCollectorType;
 
 /**

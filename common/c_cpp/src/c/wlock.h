@@ -1,4 +1,4 @@
-/* $Id: wlock.h,v 1.5.16.1 2011/08/10 14:53:24 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -27,12 +27,14 @@
 #if defined (__cplusplus)
 extern "C" {
 #endif
+
 typedef void * wLock;
 
 COMMONExpDLL wLock    wlock_create( void );
 COMMONExpDLL void     wlock_destroy( wLock lock );
 COMMONExpDLL void     wlock_lock( wLock lock );
 COMMONExpDLL void     wlock_unlock( wLock lock );
+
 #if defined (__cplusplus)
 }
 #endif

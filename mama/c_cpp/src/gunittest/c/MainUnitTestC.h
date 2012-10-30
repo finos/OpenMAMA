@@ -1,4 +1,4 @@
-/* $Id: MainUnitTestC.h,v 1.1.2.1.16.1 2012/04/17 10:52:12 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -25,4 +25,5 @@
 
 const char* getMiddleware (void);
 
+const char* getPayload (void);
 #endif /* MAINUNITTESTC_H_ */

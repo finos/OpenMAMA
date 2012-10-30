@@ -1,4 +1,4 @@
-/* $Id: dqpublisher.c,v 1.2.22.3 2011/08/10 14:53:25 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -24,8 +24,11 @@
 
 #include "mama/dqpublisher.h"
 #include "mama/publisher.h"
+#include "mama/msg.h"
+#include "mama/msgfield.h"
 
 
+#define MAX_DATE_STR    50
 
 typedef struct mamaDQPublisherImpl_
 {
@@ -35,8 +38,13 @@ typedef struct mamaDQPublisherImpl_
     mama_seqnum_t   mSeqNum;
     void*           mClosure;
     void*           mCache;
+    mamaDateTime    mSendTime;
+    char*           mSendTimeFormat;
 } mamaDQPublisherImpl;
 
+
+mama_status updateSendTime (mamaDQPublisher pub, mamaMsg msg);
+mama_status updateSenderId (mamaDQPublisher pub, mamaMsg msg);
 
 mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
 {
@@ -44,7 +52,13 @@ mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
 
     impl = (mamaDQPublisherImpl*)calloc (1, sizeof (mamaDQPublisherImpl));
     if (!impl) return MAMA_STATUS_NOMEM;
-    
+        
+    impl->mSenderId = mamaSenderId_getSelf ();
+    impl->mStatus = MAMA_MSG_STATUS_OK;
+    impl->mSeqNum = 1;
+
+    impl->mSendTimeFormat = strdup("%T%;");
+
     *result = impl;
 
     return MAMA_STATUS_OK;
@@ -62,13 +76,6 @@ mama_status mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport
                            topic, 
                            NULL,
                            NULL);
-
-    if (status == MAMA_STATUS_OK)
-    {
-        impl->mSenderId = mamaSenderId_getSelf ();
-        impl->mStatus = MAMA_MSG_STATUS_OK;
-        impl->mSeqNum = 1;
-    }
     
     return status;
 }
@@ -77,10 +84,12 @@ mama_status mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport
 mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
 {     
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+    mamaMsg modifableMsg = NULL;
 
     if (impl->mSeqNum != 0)
     {
-        switch (mamaMsgType_typeForMsg (msg))
+        mamaMsg_getTempCopy (msg, &modifableMsg);
+        switch (mamaMsgType_typeForMsg (modifableMsg))
         {
             case MAMA_MSG_TYPE_REFRESH :
             case MAMA_MSG_TYPE_SYNC_REQUEST :
@@ -93,64 +102,45 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
             case MAMA_MSG_TYPE_RECAP        :
             case MAMA_MSG_TYPE_BOOK_RECAP   :
                 if(MAMA_STATUS_OK !=
-                        mamaMsg_updateU8(msg,MamaFieldMsgStatus.mName,
+                        mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
                             MamaFieldMsgStatus.mFid, impl->mStatus))
                 {
-                    mamaMsg_updateI16(msg,MamaFieldMsgStatus.mName,
+                    mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
                             MamaFieldMsgStatus.mFid, impl->mStatus);
                 }
                 break;
 
             default:
                 if(MAMA_STATUS_OK !=
-                        mamaMsg_updateU8(msg,MamaFieldMsgStatus.mName,
+                        mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
                             MamaFieldMsgStatus.mFid, impl->mStatus))
                 {
-                   mamaMsg_updateI16(msg,MamaFieldMsgStatus.mName,
+                   mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
                            MamaFieldMsgStatus.mFid, impl->mStatus);
                 }
                 impl->mSeqNum++;
                 break;
         }
-        mamaMsg_updateU32(msg, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
+        mamaMsg_updateU32(modifableMsg, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
                 impl->mSeqNum);
     }
     
     if (impl->mSenderId != 0)
     {
-        mamaMsgField senderIdField = NULL;
-        if (MAMA_STATUS_OK == mamaMsg_getField(msg, MamaFieldSenderId.mName,
-                    MamaFieldSenderId.mFid, &senderIdField))
-        {
-            mamaFieldType senderIdType = MAMA_FIELD_TYPE_UNKNOWN;
-            if (MAMA_STATUS_OK == mamaMsgField_getType(senderIdField,
-                        &senderIdType))
-            {
-                switch(senderIdType)
-                {
-                    case MAMA_FIELD_TYPE_U16:
-                        mamaMsgField_updateU16(senderIdField,
-                                (mama_u16_t)impl->mSenderId);
-                        break;
-
-                    case MAMA_FIELD_TYPE_U32:
-                        mamaMsgField_updateU32(senderIdField,
-                                (mama_u32_t)impl->mSenderId);
-                        break;
-
-                    case MAMA_FIELD_TYPE_U64:
-                    default:
-                        mamaMsgField_updateU64(senderIdField, impl->mSenderId);
-                        break;
-                }
-            }
-        }
-        else
-            mamaMsg_addU64(msg, MamaFieldSenderId.mName,
-                    MamaFieldSenderId.mFid, impl->mSenderId);
+        mamaMsg_getTempCopy (msg, &modifableMsg);
+        updateSenderId(impl, modifableMsg);
     }
 
-    return (mamaPublisher_send (impl->mPublisher, msg));
+    if (impl->mSendTime)
+        {
+        mamaMsg_getTempCopy (msg, &modifableMsg);
+        updateSendTime(impl, modifableMsg);
+    }
+
+    if (modifableMsg)
+        return (mamaPublisher_send (impl->mPublisher, modifableMsg));
+    else
+        return (mamaPublisher_send (impl->mPublisher, msg));
 } 
 
 mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
@@ -158,55 +148,25 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
                                        mamaMsg reply)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-
-    if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus))
-    {
-        mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus);
-    }
-    
+   
     if (impl->mSenderId != 0)
-    {
-            mamaMsgField senderIdField = NULL;
-            if (MAMA_STATUS_OK == mamaMsg_getField(reply,
-                        MamaFieldSenderId.mName, MamaFieldSenderId.mFid,
-                        &senderIdField))
-            {
-                mamaFieldType senderIdType = MAMA_FIELD_TYPE_UNKNOWN;
-                if (MAMA_STATUS_OK == mamaMsgField_getType(senderIdField,
-                            &senderIdType))
-                {
-                    switch(senderIdType)
-                    {
-                        case MAMA_FIELD_TYPE_U16:
-                            mamaMsgField_updateU16(senderIdField,
-                                    (mama_u16_t)impl->mSenderId);
-                            break;
-
-                        case MAMA_FIELD_TYPE_U32:
-                            mamaMsgField_updateU32(senderIdField,
-                                    (mama_u32_t)impl->mSenderId);
-                            break;
-
-                        case MAMA_FIELD_TYPE_U64:
-                        default:
-                            mamaMsgField_updateU64(senderIdField,
-                                    impl->mSenderId);
-                            break;
-                    }
-                }
-            }
-            else
-                mamaMsg_addU64(reply, MamaFieldSenderId.mName,
-                        MamaFieldSenderId.mFid, impl->mSenderId);
-        }
+        updateSenderId(impl, reply);
         
     if (impl->mSeqNum != 0)
     {
         mamaMsg_updateU32(reply, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
                 impl->mSeqNum);
+
+        if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
+                MamaFieldMsgStatus.mFid, impl->mStatus))
+        {
+            mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
+                MamaFieldMsgStatus.mFid, impl->mStatus);
+        }
     }
+
+    if (impl->mSendTime)
+    	updateSendTime(impl, reply);
 
     return (mamaPublisher_sendReplyToInbox (impl->mPublisher, request, reply));
 }
@@ -217,54 +177,24 @@ mama_status mamaDQPublisher_sendReplyWithHandle (mamaDQPublisher pub,
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
 
-    if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus))
-    {
-        mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus);
-    }
-
     if (impl->mSenderId != 0)
-    {
-            mamaMsgField senderIdField = NULL;
-            if (MAMA_STATUS_OK == mamaMsg_getField(reply,
-                        MamaFieldSenderId.mName, MamaFieldSenderId.mFid,
-                        &senderIdField))
-            {
-                mamaFieldType senderIdType = MAMA_FIELD_TYPE_UNKNOWN;
-                if (MAMA_STATUS_OK == mamaMsgField_getType(senderIdField,
-                            &senderIdType))
-                {
-                    switch(senderIdType)
-                    {
-                        case MAMA_FIELD_TYPE_U16:
-                            mamaMsgField_updateU16(senderIdField,
-                                    (mama_u16_t)impl->mSenderId);
-                            break;
-
-                        case MAMA_FIELD_TYPE_U32:
-                            mamaMsgField_updateU32(senderIdField,
-                                    (mama_u32_t)impl->mSenderId);
-                            break;
-
-                        case MAMA_FIELD_TYPE_U64:
-                        default:
-                            mamaMsgField_updateU64(senderIdField,
-                                    impl->mSenderId);
-                            break;
-                    }
-                }
-            }
-            else
-                mamaMsg_addU64(reply, MamaFieldSenderId.mName,
-                        MamaFieldSenderId.mFid, impl->mSenderId);
-        }
+        updateSenderId(impl, reply);
 
     if (impl->mSeqNum != 0)
     {
         mamaMsg_updateU32(reply, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
                 impl->mSeqNum);
+
+        if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
+                    MamaFieldMsgStatus.mFid, impl->mStatus))
+        {
+            mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
+                    MamaFieldMsgStatus.mFid, impl->mStatus);
+        }
     }
+
+    if (impl->mSendTime)
+    	updateSendTime(impl, reply);
 
     return (mamaPublisher_sendReplyToInboxHandle (impl->mPublisher,
                 replyAddress, reply));
@@ -279,6 +209,17 @@ void mamaDQPublisher_destroy (mamaDQPublisher pub)
         mamaPublisher_destroy (impl->mPublisher);
         impl->mPublisher = NULL;
     }
+
+    free (impl->mSendTimeFormat);
+    impl->mSendTimeFormat=NULL;
+
+    if (impl->mSendTime)
+    {
+        mamaDateTime_destroy (impl->mSendTime);
+        impl->mSendTime = NULL;
+    }
+
+    free(impl);
 }
 
 
@@ -301,6 +242,24 @@ void mamaDQPublisher_setSeqNum (mamaDQPublisher pub, mama_seqnum_t num)
     impl->mSeqNum=num;
 }
 
+void mamaDQPublisher_enableSendTime (mamaDQPublisher pub, mama_bool_t enable)
+{
+    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+
+    if (enable)
+    {
+        if (!impl->mSendTime)
+            mamaDateTime_create(&impl->mSendTime);
+    }
+    else
+    {
+        if (impl->mSendTime)
+        {
+            mamaDateTime_destroy(impl->mSendTime);
+            impl->mSendTime=NULL;
+        }
+    }
+}
 
 void mamaDQPublisher_setClosure (mamaDQPublisher pub, void*  closure)
 {
@@ -336,4 +295,95 @@ void* mamaDQPublisher_getCache (mamaDQPublisher pub)
         return impl->mCache;
     else
         return NULL;
+}
+
+mama_status updateSendTime (mamaDQPublisher pub, mamaMsg msg)
+{
+    mamaMsgField 	sendTimeField = NULL;
+    mama_u64_t	sendTime =0;
+    char  			sendtimestr[MAX_DATE_STR];
+    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+
+    mamaDateTime_setToNow(impl->mSendTime);
+
+    if (MAMA_STATUS_OK == mamaMsg_getField(msg, MamaFieldSendTime.mName,
+                MamaFieldSendTime.mFid, &sendTimeField))
+   {
+        mamaFieldType sendTimeType = MAMA_FIELD_TYPE_UNKNOWN;
+        if (MAMA_STATUS_OK == mamaMsgField_getType(sendTimeField,
+                    &sendTimeType))
+        {
+            switch(sendTimeType)
+            {
+                case MAMA_FIELD_TYPE_I64:
+                    mamaDateTime_getEpochTimeMilliseconds(impl->mSendTime, &sendTime);
+                    mamaMsgField_updateI64(sendTimeField,(mama_i64_t)sendTime);
+                    break;
+
+                case MAMA_FIELD_TYPE_STRING:
+                    mamaDateTime_getAsFormattedString (impl->mSendTime,
+                                                sendtimestr,
+                                                MAX_DATE_STR,
+                                                impl->mSendTimeFormat);
+                    mamaMsg_updateString(msg, MamaFieldSendTime.mName,
+                                    MamaFieldSendTime.mFid, sendtimestr);
+                    break;
+
+                case MAMA_FIELD_TYPE_TIME:
+                    mamaMsgField_updateDateTime(sendTimeField, impl->mSendTime);
+                    break;
+
+                default:
+                    mama_log(MAMA_LOG_LEVEL_WARN, "Unsupported sendtime field format");
+                    break;
+            }
+    	}
+    }
+    else
+        mamaMsg_addDateTime(msg, MamaFieldSendTime.mName,
+                    MamaFieldSendTime.mFid, impl->mSendTime);
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status updateSenderId (mamaDQPublisher pub, mamaMsg msg)
+{
+    mamaMsgField senderIdField = NULL;
+    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+
+    if (MAMA_STATUS_OK == mamaMsg_getField(msg,
+        MamaFieldSenderId.mName, MamaFieldSenderId.mFid,  &senderIdField))
+    {
+        mamaFieldType senderIdType = MAMA_FIELD_TYPE_UNKNOWN;
+        if (MAMA_STATUS_OK == mamaMsgField_getType(senderIdField,
+                                                                                                            &senderIdType))
+        {
+            switch(senderIdType)
+            {
+                case MAMA_FIELD_TYPE_U16:
+                mamaMsgField_updateU16(senderIdField,
+                (mama_u16_t)impl->mSenderId);
+                break;
+
+                case MAMA_FIELD_TYPE_U32:
+                mamaMsgField_updateU32(senderIdField,
+                (mama_u32_t)impl->mSenderId);
+                break;
+
+                case MAMA_FIELD_TYPE_U64:
+                    mamaMsgField_updateU64(senderIdField,
+                                                                         impl->mSenderId);
+                    break;
+
+                default:
+                    mama_log(MAMA_LOG_LEVEL_WARN, "Unsupported senderid field format");
+                    break;
+            }
+        }
+    }
+    else
+        mamaMsg_addU64(msg, MamaFieldSenderId.mName,
+                                                MamaFieldSenderId.mFid, impl->mSenderId);
+
+    return MAMA_STATUS_OK;
 }

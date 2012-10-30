@@ -1,4 +1,4 @@
-/* $Id: middleware.c,v 1.2.32.4 2011/08/22 16:28:26 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -41,6 +41,21 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "avis") == 0)
         return MAMA_MIDDLEWARE_AVIS;
 
+    if (strcasecmp (str, "tick42blp") == 0)
+        return MAMA_MIDDLEWARE_TICK42BLP;
+
+    if (strcasecmp (str, "solace") == 0)
+        return MAMA_MIDDLEWARE_SOLACE;
+    
+    if (strcasecmp (str, "rai") == 0)
+        return MAMA_MIDDLEWARE_RAI;
+
+    if (strcasecmp (str, "qpid") == 0)
+        return MAMA_MIDDLEWARE_QPID;
+
+    if (strcasecmp (str, "exegy") == 0)
+        return MAMA_MIDDLEWARE_EXEGY;
+
 
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
@@ -59,6 +74,16 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "tibrv";
         case MAMA_MIDDLEWARE_AVIS:
             return "AVIS";
+        case MAMA_MIDDLEWARE_TICK42BLP:
+            return "tick42blp";
+        case MAMA_MIDDLEWARE_SOLACE:
+            return "SOLACE";
+        case MAMA_MIDDLEWARE_RAI:
+            return "rai";
+        case MAMA_MIDDLEWARE_QPID:
+            return "QPID";
+        case MAMA_MIDDLEWARE_EXEGY:
+            return "exegy";
         default:
             return "unknown";
     }

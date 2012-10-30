@@ -1,4 +1,4 @@
-/* $Id: statslogger.c,v 1.1.2.6 2011/10/10 16:03:18 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

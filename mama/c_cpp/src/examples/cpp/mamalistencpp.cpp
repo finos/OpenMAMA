@@ -94,7 +94,7 @@ typedef vector<const char*>      SymbolList;
 
 #define BUFFER_SIZE 256
 
-static  char* gUsageString[]=
+static const char* gUsageString[]=
 {
     "mamalistencpp - Generic Mama API C++ subscriber.",
     "",
@@ -185,7 +185,7 @@ private:
     const char*              mDictTport;
     MamaTransport*           mDictTransport;
     int                      mDumpDataDict;
-    int						 mBuildDataDict;
+    bool					 mBuildDataDict;
     bool                     mDictionaryComplete;
     int                      mRequireInitial;
     int                      mSnapshot;
@@ -265,16 +265,16 @@ public:
     template <class Vector>
     void displayVectorField       (Vector*            field, 
                                    size_t             size,
-                                   char*              format);
+                                   const char*        format);
  
     template <class T>
-    void printData                (char*              format,
+    void printData                (const char*        format,
                                    T                  data);
 
     /* This is required for VC6 because it chokes on instantiating
      * the template with "unsigned char.
      */
-    void printData               (char*               format,
+    void printData               (const char*         format,
                                   unsigned char       data);
 
 private:
@@ -425,6 +425,7 @@ private:
 
 
 MamaListen::MamaListen():
+    mShutdownTime           (0),
     mBridgeImpl             (NULL),
     mMiddleware             ("wmw"),
     mDefaultQueue           (NULL),
@@ -439,6 +440,7 @@ MamaListen::MamaListen():
     mDictTport              (NULL),
     mDictTransport          (NULL),
     mDumpDataDict           (0),
+	mBuildDataDict			(true),
     mDictionaryComplete     (false),
     mRequireInitial         (1),
     mSnapshot               (0),
@@ -459,9 +461,7 @@ MamaListen::MamaListen():
     mPrintMessages          (false),
     mDisplayData            (true),
     mQualityForAll          (true),
-    mNewIterators           (false),
-    mShutdownTime           (0),
-	mBuildDataDict			(true)   
+    mNewIterators           (false)
 {}
 
 MamaListen::~MamaListen()
@@ -555,11 +555,6 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
         else if (strcmp (argv[i], "-D") == 0)
         {
             mDumpDataDict = 1;
-            i++;
-        }
-        else if (strcmp (argv[i], "-B") == 0)
-        {
-            mBuildDataDict = false;
             i++;
         }
         else if (strcmp (argv[i], "-I") == 0)
@@ -671,7 +666,7 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
         {
             const char* logfileName = argv[i+1];
             if (logfileName == NULL || logfileName[0] == '-'
-                || logfileName == "")
+                || strcmp(logfileName, "") == 0)
             {
                 logfileName = "mamalistencpp.log";
                 i++;
@@ -1518,7 +1513,7 @@ void DisplayCallback::displaySpecificFields (const MamaMsg& msg,
 }
 
 template <class T>
-void DisplayCallback::printData (char*        format,
+void DisplayCallback::printData (const char*  format,
                                  T            data)
 {
     if (mMamaListen->getQuietness () < 1)
@@ -1530,7 +1525,7 @@ void DisplayCallback::printData (char*        format,
     }
 }
 
-void DisplayCallback::printData (char*           format,
+void DisplayCallback::printData (const char*     format,
                                  unsigned char   data)
 {
     if (mMamaListen->getQuietness () < 1)
@@ -1545,7 +1540,7 @@ void DisplayCallback::printData (char*           format,
 template <class Vector>
 void DisplayCallback::displayVectorField  (Vector*  field, 
                                            size_t   size,
-                                           char*    format)
+                                           const char* format)
 {
     if(mMamaListen->printVectorFields ())
     {

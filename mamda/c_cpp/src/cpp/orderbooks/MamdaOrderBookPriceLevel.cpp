@@ -646,7 +646,7 @@ namespace Wombat
                 // found it
                 existingEntry->setDetails (entry);
                 
-                if ((mBook) && (mBook->getGenerateDeltaMsgs()))
+                if (mBook && mBook->getGenerateDeltaMsgs())
                 {
                     mBook->addDelta(const_cast<MamdaOrderBookEntry*>(&entry), entry.getPriceLevel(), 
                                      entry.getPriceLevel()->getSizeChange(),
@@ -726,7 +726,7 @@ namespace Wombat
     {
         bool checkState = mBook ? mBook->getCheckSourceState() : false;
         mEntries->erase(erasableIter);
-        mBook->detach (entry);
+        if (mBook) mBook->detach (entry);
         if (!checkState || entry->isVisible())
         {
             mSize -= entry->getSize();
@@ -734,6 +734,10 @@ namespace Wombat
             mNumEntries--;
         }
         mNumEntriesTotal--;
+
+        // If we don't have any book the entry has not been detached to be reused
+        if (!mBook)
+            delete entry;
     }
 
     void MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevelImpl::checkNotExist (
@@ -1017,7 +1021,7 @@ namespace Wombat
         mNumEntriesTotal++;
         newEntry = true;
 
-        if (mBook->getGenerateDeltaMsgs())
+        if (mBook && mBook->getGenerateDeltaMsgs())
         {
             //Need to set correct action based on numEntries in level
             MamdaOrderBookPriceLevel::Action plAction;

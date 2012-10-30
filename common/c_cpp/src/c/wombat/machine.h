@@ -1,4 +1,4 @@
-/* $Id: machine.h,v 1.14.16.7 2011/08/10 14:53:24 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

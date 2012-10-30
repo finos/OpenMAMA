@@ -34,15 +34,13 @@ CFLAGS   += -I@builddir@/../../c
 CPPFLAGS += -I@builddir@/../../c
 
 LIBS = -lmamdabook -lmamda -lrt 
-LIBS += -lmama -lwombatcommon -lmamacpp
+LIBS += -lmama -lwombatcommon -lmamacpp -lgtest
 
 LDADD = -lgtest_main
 common_files = ../common/MainUnitTest.cpp ../common/MamdaUnitTestUtils.cpp
 
 
-noinst_PROGRAMS = MamdaOrderBookTests
-
-dist_MamdaOrderBookTests_SOURCES =  MamdaOrderBookListenerFuncTests.cpp \
+dist_UnitTestMamdaOrderBook_SOURCES =  MamdaOrderBookListenerFuncTests.cpp \
                                     MamdaOrderBookEntryTests.cpp \
                                     MamdaOrderBookPriceLevelTests.cpp \
                                     MamdaOrderBookListenerCpuTests.cpp \
@@ -53,6 +51,6 @@ dist_MamdaOrderBookTests_SOURCES =  MamdaOrderBookListenerFuncTests.cpp \
                                     MamdaBookAtomicListenerV5Tests.cpp \
                                     $(common_files)
 
-bin_PROGRAMS = MamdaOrderBookTests
+bin_PROGRAMS = UnitTestMamdaOrderBook
 
 

@@ -115,6 +115,10 @@ mamdajni-clean: mamajni-clean
 # DOCS
 #####################################################
 docs:
-	echo "Building API Docs in mama/c_cpp/docs"
+	echo "Building API Docs in mama"
 	cd mama/c_cpp ; doxygen doxyconfig-c ; cd -
 	cd mama/c_cpp ; doxygen doxyconfig-cpp ; cd -
+	cd mama/jni ; ant -f build.xml -DwithDocs=true javadoc ; cd -
+	echo "Building API Docs in mamda"
+	cd mamda/c_cpp ; doxygen doxyconfig-cpp ; cd -
+	cd mamda/java ; ant -f build.xml -DwithDocs=true javadoc ; cd -

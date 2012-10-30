@@ -1,4 +1,4 @@
-/* $Id: msg.h,v 1.75.4.2.14.11 2011/10/02 19:02:18 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -47,6 +47,9 @@ typedef enum mamaPayloadType_
     MAMA_PAYLOAD_FAST       = 'F',
     MAMA_PAYLOAD_V5         = '5',
     MAMA_PAYLOAD_AVIS       = 'A',
+    MAMA_PAYLOAD_TICK42BLP  = 'B',
+    MAMA_PAYLOAD_RAI        = 'I',
+    MAMA_PAYLOAD_EXEGY      = 'X',
     MAMA_PAYLOAD_UNKNOWN    = 'U'
 } mamaPayloadType;
 
@@ -54,7 +57,8 @@ typedef enum mamaPayloadType_
  * Convert a mamaPayloadType value to a string.  Do no attempt to free the
  * string result.
  *
- * @param payloadType  The payloadType to convert.*/
+ * @param payloadType  The payloadType to convert.
+ */
 MAMAExpDLL
 extern const char*
 mamaPayload_convertToString (mamaPayloadType payloadType);
@@ -110,6 +114,20 @@ mamaMsg_createForTemplate (mamaMsg* msg, mama_u32_t templateId);
 MAMAExpDLL
 extern mama_status
 mamaMsg_copy (mamaMsg src, mamaMsg *copy);
+/**
+ * Get a temporary copy of the mamaMsg so to be able to modify the content.
+ * If the message can be modified directly, the message itself is returned.
+ * If the message cannot be modified then only one copy is performed the first time
+ * this function is called and then the same copy is returned when this function is
+ * called again.
+ * The copy is destroyed when the original message is destroyed.
+ *
+ * @param src The message to copy.
+ * @param copy A pointer to the destination message.
+ */
+MAMAExpDLL
+extern mama_status
+mamaMsg_getTempCopy (mamaMsg src, mamaMsg* copy);
 
 /**
  * Clear a msg. All fields are removed.
@@ -2057,9 +2075,7 @@ mamaMsg_getSeqNum(
 /**
  * Extract the type from the supplied message.
  *
- *
  * @param msg The message.
- * @param msg
  * @return The type.
  */
 MAMAExpDLL
@@ -2365,4 +2381,4 @@ mamaMsgIterator_destroy (mamaMsgIterator iterator);
 }
 #endif
 
-#endif /* MAMA_H__ */
+#endif /* MamaMsgH__ */

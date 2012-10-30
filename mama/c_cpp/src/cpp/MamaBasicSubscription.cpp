@@ -349,9 +349,6 @@ void MamaBasicSubscription::destroy(void)
          * during any of the callbacks.
          */
         mCallback  = NULL;
-        mClosure   = NULL;
-        mQueue     = NULL;
-        mTransport = NULL;
     }
 }
 
@@ -367,9 +364,6 @@ void MamaBasicSubscription::destroyEx(void)
          * during any of the callbacks.
          */
         mCallback  = NULL;
-        mClosure   = NULL;
-        mQueue    = NULL;
-        mTransport = NULL;
     }
 }
 

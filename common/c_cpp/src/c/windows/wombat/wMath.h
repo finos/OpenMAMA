@@ -1,4 +1,4 @@
-/* $Id: wMath.h,v 1.1.2.2 2012/03/20 11:15:17 emmapollock Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

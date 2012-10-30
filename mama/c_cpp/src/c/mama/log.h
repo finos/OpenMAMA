@@ -1,4 +1,4 @@
-/* $Id: log.h,v 1.30.4.2.16.4 2011/08/10 14:53:28 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -141,6 +141,10 @@ MAMAExpDLL
 extern void
 mama_logVa (MamaLogLevel level, const char *format, va_list args);
 
+/** Used  for the force logging using variable argument parameters*/
+MAMAExpDLL
+extern void
+mama_forceLogVa(const char   *format, va_list  args);
 MAMAExpDLL
 extern void
 mama_forceLog (MamaLogLevel level, const char *format, ...);
@@ -281,6 +285,15 @@ mama_logIncrementVerbosity(MamaLogLevel* level);
 MAMAExpDLL
 extern int
 mama_logDecrementVerbosity(MamaLogLevel* level);
+
+/**
+ * Force rolling the log file.
+ * 
+ * @return The status of the operation.
+ */
+MAMAExpDLL
+extern mama_status
+mama_logForceRollLogFiles(void);
 
 /**  Destroy memory held by the logging */
 void

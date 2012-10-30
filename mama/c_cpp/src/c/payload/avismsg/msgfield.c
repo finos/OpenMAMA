@@ -1,4 +1,4 @@
-/* $Id: msgfield.c,v 1.1.2.2 2011/08/30 15:54:05 billtorpey Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

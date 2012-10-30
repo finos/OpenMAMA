@@ -1,4 +1,4 @@
-/* $Id: datetimetest.cpp,v 1.1.2.1.8.2 2012/04/19 13:46:49 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -99,7 +99,7 @@ TEST_F(MamaDateTimeTestC, CompareDates)
 	// Format a string using today's date and a time, this should be as "2010-07-04 10:00:00.000"
 	const char *time = "10:00:00.000000";
 	char completeDateTime[100] = "";
-    mamaDateTime m_cDateTime;
+    mamaDateTime m_cDateTime = NULL;
 	sprintf(completeDateTime, "%s %s", stringDate, time);
 
 	// Set the date from this string

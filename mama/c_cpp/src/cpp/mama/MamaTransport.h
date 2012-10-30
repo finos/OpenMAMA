@@ -33,6 +33,36 @@ namespace Wombat
     class MamaServerConnection;
 
     /**
+    * TransportTopicEvent callback
+    */
+
+    class MAMACPPExpDLL MamaTransportTopicEventCallback
+    {
+    public:
+		virtual ~MamaTransportTopicEventCallback() 
+        {
+        };
+        /**
+         * Invoked when a topic is subscribed to.
+         */
+
+        virtual void onTopicSubscribe (MamaTransport* transport,
+                                       const char* topic,
+                                       const void* platformInfo)
+        {
+            return;
+        }
+
+        virtual void onTopicUnsubscribe (MamaTransport* transport,
+                                         const char* topic,
+                                         const void* platformInfo)
+        {
+            return;
+        }
+
+    };
+
+    /**
      * Transport callback.
      */
     class MAMACPPExpDLL MamaTransportCallback
@@ -280,6 +310,11 @@ namespace Wombat
             double               outboundThrottle,
             mamaThrottleInstance instance = MAMA_THROTTLE_DEFAULT);
 
+        /**
+         * Set the transport topic callback
+         */
+
+        void setTransportTopicCallback (MamaTransportTopicEventCallback* callback);
         /**
          * Set the transport callback.
          */

@@ -27,6 +27,7 @@
 * includes
 *******************************************************************************/
 #include <assert.h>
+#include <limits.h>
 
 #include "mamajniutils.h"
 #include "mamajni/com_wombat_mama_MamaMsg.h"
@@ -4433,7 +4434,6 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryString
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    jlong           stringPointer     =   0;
     jlong              msgPointer      =   0;         
      const char*        c_name          =   NULL;
      const char*     retVal_c        =   NULL;
@@ -4448,7 +4448,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryString
     /* Get the pointer to the underlying message*/                          
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);    
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
-		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);    stringPointer   = (*env)->GetLongField(env,result,jMamaStringValue_g);
+		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
     
     if(MAMA_STATUS_OK==(mamaTryIgnoreNotFound(env, mamaMsg_getString(
                         CAST_JLONG_TO_POINTER(mamaMsg,msgPointer),c_name, fid,
@@ -4799,10 +4799,15 @@ mama_status populateCMessageArray(mamaMsg *cArray, JNIEnv *env, jobjectArray jav
     return ret;
 }
 
-JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_nativeGetAsBuffer(JNIEnv *env, jobject this, jstring name, jint fid, jbyteArray byteArray, jint arraySize)
+JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_nativeGetAsBuffer
+    (JNIEnv *env, jobject this, jstring name, jint fid, jbyteArray byteArray, 
+     jint arraySize, jboolean throwOnError)
 {
     /* Returns. */
-    jint ret = 0;
+    /* Setting the default return value to INT_MAX which is 2147483647. By
+     *  doing this we can check if the field was found or not
+     */
+    jint ret = INT_MAX;
 
     /* Obtain the pointer to the managed object. */
     jlong msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
@@ -4853,6 +4858,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_nativeGetAsBuffer(JNIEnv *en
         }
 
         /* If something went wrong with the native function then throw an exception. */
+	    if (throwOnError)
 	    mamaTry(env, status, "MamaMsg_nativeGetAsBuffer()");
     }
 

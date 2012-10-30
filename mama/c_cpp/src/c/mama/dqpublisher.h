@@ -1,4 +1,4 @@
-/* $Id: dqpublisher.h,v 1.2.22.4 2011/08/10 14:53:28 nicholasmarriott Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -107,6 +107,10 @@ mamaDQPublisher_setSeqNum (mamaDQPublisher pub, mama_seqnum_t num);
 MAMAExpDLL
 extern void
 mamaDQPublisher_setClosure (mamaDQPublisher pub, void*  closure);
+
+MAMAExpDLL
+extern void 
+mamaDQPublisher_enableSendTime (mamaDQPublisher pub, mama_bool_t enable);
 
 MAMAExpDLL
 extern void*

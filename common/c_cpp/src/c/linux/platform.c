@@ -1,4 +1,5 @@
-/* 
+/* $Id$
+ *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
  *

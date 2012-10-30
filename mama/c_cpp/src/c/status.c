@@ -1,4 +1,4 @@
-/* $Id: status.c,v 1.18.4.3.2.1.4.5 2011/08/29 11:52:44 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -57,6 +57,7 @@ mamaStatus_stringForStatus (mama_status status)
     case MAMA_STATUS_NOT_INSTALLED : return "NOT_INSTALLED";
     case MAMA_STATUS_NO_BRIDGE_IMPL : return "NO_BRIDGE_IMPL";
     case MAMA_STATUS_INVALID_QUEUE : return "INVALID_QUEUE";
+    case MAMA_STATUS_DELETE : return "STATUS_DELETE";
     case MAMA_STATUS_NOT_MODIFIABLE : return "NOT_MODIFIABLE";
 	case MAMA_STATUS_NOT_PERMISSIONED : return "MAMA_STATUS_NOT_PERMISSIONED";        
     case MAMA_STATUS_SUBSCRIPTION_INVALID_STATE: return "MAMA_STATUS_SUBSCRIPTION_INVALID_STATE";

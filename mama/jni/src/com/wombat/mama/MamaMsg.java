@@ -42,30 +42,10 @@ public class MamaMsg
     /* Private Member Variables. */
     /* ************************************************** */
 
-    /* This array is used to read strings out of the native message
-     * without performing any memory allocations. It will store
-     * the string as a series of ASCII single byte characters.
+    /* This buffer provides an object wrapper to a MamaBuffer which
+     * will be used for getStringAsBuffer and tryStringAsBuffer functions.
      */
-    private byte[] mByteArray;
-
-    /* This array is used to read strings out of the native message
-     * without performing any memory allocations. It will store
-     * the string as a series of unicode 2 byte characters.
-     */
-    private char[] mCharArray;
-
-    /* This buffer provides an object wrapper to the mByteArray and
-     * will be returned to the client via the getStringAsByteBuffer
-     * function.
-     */
-    private ByteBuffer mByteBuffer;
-
-    /* This buffer provides an object wrapper to the mCharArray and
-     * will be returned to the client via the getStringAsCharBuffer
-     * function.
-     */
-    private CharBuffer mCharBuffer;
-
+    private MamaBuffer mamaBuffer;
     /* A long value containing a pointer to the underlying C message structure*/
     private long  msgPointer_i = 0;
 
@@ -113,8 +93,6 @@ public class MamaMsg
     public MamaMsg (char payloadId)
     {    
         createForPayload (payloadId);
-
-        allocateByteBuffers(1024);
     }
 
     /**
@@ -125,8 +103,6 @@ public class MamaMsg
     public MamaMsg (MamaPayloadBridge payloadBridge)
     {
         createForPayloadBridge (payloadBridge);
-
-        allocateByteBuffers(1024);
     }
 
     /*
@@ -142,32 +118,11 @@ public class MamaMsg
         {
             create ();
         }
-
-        // Allocate the buffers for string types
-        allocateByteBuffers(1024);
     }
 
     /* ************************************************** */
     /* Private Functions. */
     /* ************************************************** */
-
-    /**
-     * This function allocations the mByteArray and mCharArray arrays.
-     * Note that the arrays will be wrapped by the corresponding
-     * mByteBuffer and mCharBuffer managed objects.
-     *
-     * @param[in] length The length of the buffers to allocate.
-     */
-    private void allocateByteBuffers(int length)
-    {
-        // Allocate the byte and character buffers
-        mByteArray = new byte[length];
-        mCharArray = new char[length];
-
-        // Wrap these with the managed objects
-        mByteBuffer = ByteBuffer.wrap(mByteArray);
-        mCharBuffer = CharBuffer.wrap(mCharArray);
-    }
 
     /* ************************************************** */
     /* Public Functions. */
@@ -175,40 +130,47 @@ public class MamaMsg
 
     /**
      * This function will obtain a string from the mama message and return it
-     * inside a ByteBuffer object without performing any memory allocation that
+     * inside a MamaBuffer object without performing any memory allocation that
      * would cause future garbage collection.
      *
      * @param[in] fieldDesc The field descriptor.
-     * @return A ByteBuffer containing single byte ASCII characters, to obtain
-     *         a unicode string call getStringAsCharBuffer.
+     * @return A MamaBuffer containing single byte ASCII characters, to obtain
+     *         a unicode string call MamaBuffer.asCharBuffer.
      * @exception  WombatException Thrown if the field descriptor is null.
      */
-    public ByteBuffer getStringAsByteBuffer(MamaFieldDescriptor fieldDesc)
+    public MamaBuffer getStringAsBuffer(MamaFieldDescriptor fieldDesc)
     {
         // Check for a null field descriptor
         if(null == fieldDesc)
         {
-            throw new WombatException("getStringAsByteBuffer(): MamaFieldDescriptor was null.");
+            throw new WombatException("getStringAsBuffer(): MamaFieldDescriptor was null.");
         }
 
         // Call the overload
-        return getStringAsByteBuffer(fieldDesc.getName(), fieldDesc.getFid());
+        return getStringAsBuffer(fieldDesc.getName(), fieldDesc.getFid());
     }
 
     /**
      * This function will obtain a string from the mama message and return it
-     * inside a ByteBuffer object without performing any memory allocation that
+     * inside a MamaBuffer object without performing any memory allocation that
      * would cause future garbage collection.
      *
      * @param[in] name The field name.
      * @param[in] fid The field Id.
-     * @return A ByteBuffer containing single byte ASCII characters, to obtain
-     *         a unicode string call getStringAsCharBuffer.
+     * @return A MamaBuffer containing single byte ASCII characters, to obtain
+     *         a unicode string call MamaBuffer.asCharBuffer.
      */
-    public ByteBuffer getStringAsByteBuffer(String name, int fid)
+    public MamaBuffer getStringAsBuffer(String name, int fid)
     {
+		if (mamaBuffer==null)
+			mamaBuffer = new MamaBuffer();
+
         // First call the native function to populate the member array
-        int length = nativeGetAsBuffer(name, fid, mByteArray, mByteArray.length);
+        int length = nativeGetAsBuffer(name, fid, mamaBuffer.array(), mamaBuffer.array().length, true);
+
+        // The field was not found in the message
+        if (length==Integer.MAX_VALUE)
+            return null;
 
         /* The function will return a negative value if the buffer wasn't big
          * enough, note that an exception will be thrown if something actually
@@ -219,102 +181,68 @@ public class MamaMsg
             // The length required is just this number times -1
             int lengthRequired = (length * -1);
 
-            // Reallocate the member buffers to handle this number of characters
-            allocateByteBuffers(lengthRequired);
+            // Reallocate the member MamaBuffer to handle this number of characters
+            mamaBuffer.grow(mamaBuffer.array().length + lengthRequired);
 
             /* Call this function recursively to repeat the procedure now that
              * we have a large enough buffer.
              */
-            getStringAsByteBuffer(name, fid);
+            getStringAsBuffer(name, fid);
         }
-
         else
         {
             // Set the limit of the buffer to the string length
-            mByteBuffer.limit(length);
+            mamaBuffer.limit(length);
         }
 
-        // Return the member byte bufer
-        return mByteBuffer;
+        // Return the member MamaBuffer
+        return mamaBuffer;
     }
 
-    /**
+     /**
      * This function will obtain a string from the mama message and return it
-     * inside a CharBuffer object without performing any memory allocation that
-     * would cause future garbage collection.
-     *
-     * @param[in] fieldDesc The field descriptor.
-     * @return A CharBuffer containing unicode 2 byte characters, to obtain
-     *         an ASCII representation call getStringAsByteBuffer.
-     * @exception  WombatException Thrown if the field descriptor is null.
-     */
-    public CharBuffer getStringAsCharBuffer(MamaFieldDescriptor fieldDesc)
-    {
-        // Check for a null field descriptor
-        if(null == fieldDesc)
-        {
-            throw new WombatException("getStringAsCharBuffer(): MamaFieldDescriptor was null.");
-        }
-
-        // Call the overload
-        return getStringAsCharBuffer(fieldDesc.getName(), fieldDesc.getFid());
-    }
-
-    /**
-     * This function will obtain a string from the mama message and return it
-     * inside a CharBuffer object without performing any memory allocation that
-     * would cause future garbage collection.
+     * inside a MamaBuffer object without performing any memory allocation that
+     * would cause future garbage collection. If the field is not in the message
+     * the function will return FALSE.
      *
      * @param[in] name The field name.
      * @param[in] fid The field Id.
-     * @return A CharBuffer containing unicode 2 byte characters, to obtain
-     *         an ASCII representation call getStringAsByteBuffer.
-     * @exception  WombatException Thrown if the field descriptor is null.
+     * @param[in] buffer A MamaBuffer that will contain the string if it is present 
+     *             in the message.
+     * @return Boolean indicating of the field was present in the message or not.
      */
-    public CharBuffer getStringAsCharBuffer(String name, int fid)
+    public boolean tryStringAsBuffer(String name, int fid, MamaBuffer mamaBuffer)
     {
         // First call the native function to populate the member array
-        int length = nativeGetAsBuffer(name, fid, mByteArray, mByteArray.length);
+        int length = nativeGetAsBuffer(name, fid, mamaBuffer.array(), mamaBuffer.array().length, false);
 
-        /* The function will return a negative value if the buffer wasn't big
-         * enough, note that an exception will be thrown if something actually
-         * went wrong.
-         */
+        /* Exit with a FALSE if the length is equalled to INT_MAX as this will 
+        *    indicate that the field was not found from the native function above
+        */
+        if (length==Integer.MAX_VALUE)
+            return false;
+
         if(length < 0)
         {
             // The length required is just this number times -1
-            int lengthRequired = (-length);
+            int lengthRequired = (length * -1);
 
             // Reallocate the member buffers to handle this number of characters
-            allocateByteBuffers(lengthRequired);
+            mamaBuffer.grow(mamaBuffer.array().length + lengthRequired);
 
             /* Call this function recursively to repeat the procedure now that
-             * we have a large enough buffer.
+             * we have a large enough buffer
              */
-            getStringAsCharBuffer(name, fid);
+            tryStringAsBuffer(name, fid, mamaBuffer);
         }
-
         else
         {
-            // Enumerate all the bytes
-            for(int nextByte=0; nextByte<length; nextByte++)
-            {
-                /* Write the byte into the character array, note that each one
-                 * must be casted to ensure the high byte of the unicode
-                 * character is set to 0.
-                 */
-                mCharArray[nextByte] = (char)mByteArray[nextByte];
-            }
-
             // Set the limit of the buffer to the string length
-            mCharBuffer.limit(length);
+            mamaBuffer.limit(length);
         }
 
-        // Return the member character bufer
-        return mCharBuffer;
+        return true;
     }
-
-        
 
     public long getPointerVal()
     {
@@ -1550,10 +1478,11 @@ public class MamaMsg
      * @param[in] fid The field Id.
      * @param[in] byteArray The byte array to populate.
      * @param[in] arraySize The size of the array.
+     * @param[in] throwOnError Whether we want this function to return an exception or not.
      * @return The number of bytes copied to the buffer. If the buffer isn't
      *         big enough then the return will be the negative number of bytes
      *         required. Note that if anything goes wrong exceptions will be
      *         thrown.
      */
-    private native int nativeGetAsBuffer(String name, int fid, byte[] byteArray, int arraySize);
+    private native int nativeGetAsBuffer(String name, int fid, byte[] byteArray, int arraySize, boolean throwOnError);
 }

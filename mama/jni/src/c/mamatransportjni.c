@@ -1040,7 +1040,7 @@ void MAMACALLTYPE mamaTransportTopicListenerCB( mamaTransport      tport,
                 case MAMA_TRANSPORT_TOPIC_SUBSCRIBED:
                     (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicSubscribeId_g, cause, connection);
                     break;
-                case MAMA_TRANSPORT_TOPIC_UNSUBSRCIBED:
+                case MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED:
                     (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicUnsubscribeId_g, cause, connection);
                     break;
             }        

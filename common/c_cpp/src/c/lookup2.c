@@ -1,4 +1,4 @@
-/* $Id: lookup2.c,v 1.2.34.3 2011/08/10 13:06:52 nicholasmarriott Exp $ */
+/* $Id$ */
 
 /*
  * This file contains a hash alogorith by Bob Jenkins. It is used unchanged,

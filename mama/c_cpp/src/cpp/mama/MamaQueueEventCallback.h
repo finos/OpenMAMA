@@ -25,6 +25,8 @@
 namespace Wombat 
 {
 
+    class MamaQueue;
+
     /**
      * Definition of the callback method for when a user added event fires.
      * Concrete instances of this interface are registered with an

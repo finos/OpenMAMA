@@ -1,4 +1,4 @@
-/* $Id: timer.c,v 1.1.2.4 2011/09/23 12:35:42 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
