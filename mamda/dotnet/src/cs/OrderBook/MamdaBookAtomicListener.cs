@@ -1,4 +1,4 @@
-/* $Id: MamdaBookAtomicListener.cs,v 1.6.30.6 2012/09/07 07:44:57 ianbell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

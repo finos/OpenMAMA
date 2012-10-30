@@ -1,4 +1,4 @@
-/* $Id: MamaChurnCS.cs,v 1.1.2.1 2012/10/09 15:08:18 stuartbeattie Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

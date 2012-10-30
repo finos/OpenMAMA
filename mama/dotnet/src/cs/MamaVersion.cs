@@ -1,4 +1,4 @@
-/* $Id: MamaVersion.cs,v 1.1.6.14 2012/10/24 15:13:25 gregorymagee Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

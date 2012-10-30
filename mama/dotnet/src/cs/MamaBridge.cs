@@ -1,4 +1,4 @@
-/* $Id: MamaBridge.cs,v 1.3.12.5 2012/08/24 16:12:01 clintonmcdowell Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
