@@ -738,7 +738,8 @@ mama_openWithPropertiesCount (const char* path,
 		gCatchCallbackExceptions = 1;
 	}
 
-    mama_log (MAMA_LOG_LEVEL_FINE, "%s (gEntitled)",mama_version, gEntitled);
+
+     mama_log (MAMA_LOG_LEVEL_FINE, "%s (%s)",mama_version, gEntitled);
 
     /* Look for a bridge for each of the middlewares and open them */
     for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
