@@ -912,7 +912,7 @@ mamaMsgField_updateU8 (
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
     if (impl->myPayloadBridge)
     {
-        return impl->myPayloadBridge->msgFieldPayloadUpdateI8 (
+        return impl->myPayloadBridge->msgFieldPayloadUpdateU8 (
                                             impl->myPayload,
                                             payload,
                                             value);
