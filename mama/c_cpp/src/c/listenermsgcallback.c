@@ -313,6 +313,11 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                     MAMA_STATUS_NOT_FOUND, subscription, userSymbol);
             return;
 
+        case MAMA_MSG_STATUS_TIMEOUT:
+            listenerMsgCallback_invokeErrorCallback(callback, ctx,
+                     MAMA_MSG_STATUS_TIMEOUT, subscription, userSymbol);
+            return;
+
         case MAMA_MSG_STATUS_NO_SUBSCRIBERS:
         {
             handleNoSubscribers (impl, msg, ctx);
