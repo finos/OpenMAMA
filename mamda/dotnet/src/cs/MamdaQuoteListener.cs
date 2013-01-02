@@ -1092,7 +1092,8 @@ namespace Wombat
             {
                 MamaPrice bidPrice;
                 bidPrice = field.getPrice();
-                if (listener.mQuoteCache.mBidPrice.getValue() != bidPrice.getValue())
+                if (listener.mQuoteCache.mBidPrice.getValue() != bidPrice.getValue() ||
+                    listener.mQuoteCache.mBidPriceFieldState == MamdaFieldState.NOT_INITIALISED)
                 {
                     listener.mQuoteCache.mBidPrice.copy(bidPrice);
                     listener.mQuoteCache.mBidPriceFieldState = MamdaFieldState.MODIFIED;
