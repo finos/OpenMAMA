@@ -139,7 +139,13 @@ namespace Wombat
         SECURITY_STATUS_QUAL_VOLATILITY_PAUSE               = 116, // toString() - VolatilityPause
         SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME  = 117, // toString() - VolatilityPauseQuoteResume
         SECURITY_STATUS_QUAL_VOLATILITY_GUARD               = 118, // toString() - VolatilityGuard
-        SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME  = 119  // toString() - VolatilityGuardQuoteResume
+        SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME  = 119, // toString() - VolatilityGuardQuoteResume
+        SECURITY_STATUS_QUAL_LIMIT_STATE_BID                = 120, //toString() - LimitStateBid
+        SECURITY_STATUS_QUAL_LIMIT_STATE_ASK                = 121, //toString() - LimitStateAsk
+        SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK    = 122, //toString() - LimitStateBid:LimitStateAsk
+        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1        = 123, //toString() - CircuitBreakerLevel1
+        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2        = 124, //toString() - CircuitBreakerLevel2
+        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3        = 125 //toString() - CircuitBreakerLevel3
     };
 
 
