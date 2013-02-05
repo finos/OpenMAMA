@@ -27,7 +27,7 @@
 #include "mama/MamaSubscriptionCallback.h"
 #include "mamainternal.h"
 #include "mamacppinternal.h"
-#include "../c/mama/subscription.h"
+#include "mama/subscription.h"
 
 namespace Wombat
 {
@@ -163,21 +163,8 @@ namespace Wombat
      * the client will have full flexibility in destroying and recreating the subscription during the
      * callbacks.
      */
-    class MamaSubscriptionImpl
+    struct MamaSubscriptionImpl
     {
-        // The user callback
-        MamaSubscriptionCallback *mCallback;
-
-        // The user supplied closure
-        void *mClosure;
-
-        // The re-usable message
-        MamaMsg mResuableMsg;
-
-        // The C++ subscription class
-        MamaSubscription *mSubscription;
-
-    public:
 
         MamaSubscriptionImpl (MamaSubscriptionCallback *callback, 
                               void                     *closure, 
@@ -187,6 +174,7 @@ namespace Wombat
             mCallback      = callback;
             mClosure       = closure;
             mSubscription  = subscription;
+            mFreed         = false;
 
             // If callback exceptions are being caught then install this now
             if(mamaInternal_getCatchCallbackExceptions ())
@@ -289,6 +277,11 @@ namespace Wombat
                 mCallback->onRecapRequest (mSubscription);
             }
         }
+        bool                        mFreed;
+        MamaSubscriptionCallback*   mCallback;
+        void*                       mClosure;
+        MamaMsg                     mResuableMsg;
+        MamaSubscription*           mSubscription;
     };
 
     /* *************************************************** */
@@ -308,6 +301,24 @@ namespace Wombat
 
     MamaSubscription::~MamaSubscription (void) 
     {
+        destroy();
+
+        if(NULL != mSubscription)
+        {
+            bool invoke = false;
+            mamaSubscriptionState state = MAMA_SUBSCRIPTION_UNKNOWN;
+            mamaSubscription_getState(mSubscription, &state);
+            if (state == MAMA_SUBSCRIPTION_DESTROYING)
+                invoke = true;
+            mamaSubscription_deallocate(mSubscription);
+            if (invoke)
+            {
+                mImpl->InvokeDestroy();
+                mImpl->mFreed = true;
+                mImpl = NULL;
+            }
+            mSubscription = NULL;
+        }
         // Delete the source derivative
         if (NULL != mSourceDeriv)
         {
@@ -339,32 +350,10 @@ namespace Wombat
 
         if (NULL != impl)
         {
-            /* Get the state of the subscription before the callback is invoked, note that we must get the
-             * state from the C subscription and not the C++ object in the impl as the C++ class could
-             * have been delete by this stage whereas the C object will remain valid until at least after
-             * this callback has completed.
-             */
-            mamaSubscriptionState state = MAMA_SUBSCRIPTION_UNKNOWN;
-            mamaSubscription_getState (subscription, &state);
-
-            /* If the C++ subscription has been deleted then the state will be MAMA_SUBSCRIPTION_DEALLOCATING,
-             * in this case we do not invoke the destroy callback as the callback object will probably
-             * have been deleted as well.
-             */
-            if (MAMA_SUBSCRIPTION_DEALLOCATING != state)
-            {
-                // Invoke the callback
-                impl->InvokeDestroy ();
-            }
-            
-            /* The impl must be deleted if we are destroying or deallocating the subscription, note that this
-             * callback can also occur during de-activation.
-             */
-            if ((MAMA_SUBSCRIPTION_DESTROYED == state) || (MAMA_SUBSCRIPTION_DEALLOCATING == state))
-            {
-                // Destroy the impl as it is no longer needed
-                delete impl;
-            }
+            // Invoke the callback
+            impl->InvokeDestroy ();
+        
+            delete impl;
         }
     }
 
@@ -481,18 +470,12 @@ namespace Wombat
     {
         // Call the base class to perform the work
         MamaBasicSubscription::destroy ();
-
-        // Clear the callback in this class
-        mCallback = NULL;
     }
 
     void MamaSubscription::destroyEx(void)
     {
         // Call the base class to perform the work
         MamaBasicSubscription::destroyEx();
-
-        // Clear the callback in this class
-        mCallback = NULL;
     }
 
 
@@ -523,7 +506,7 @@ namespace Wombat
         // Save the queue so that calls to MamaBasicSubscription->getQueue () work
         mQueue = queue;
         // Create a new impl
-        MamaSubscriptionImpl *impl = new MamaSubscriptionImpl (callback, closure, this);
+        mImpl = new MamaSubscriptionImpl (callback, closure, this);
 
         // Delete the source deriviative if it is valid
         if (NULL != mSourceDeriv)
@@ -539,12 +522,13 @@ namespace Wombat
                                                       &subscriptionCallbacks,
                                                       source,
                                                       symbol,
-                                                      impl);
+                                                      mImpl);
 
         // If something went wrong then delete the impl
         if(MAMA_STATUS_OK != status)
         {
-            delete impl;
+            delete mImpl;
+            mImpl = NULL;
         }
 
         // Convert the status into an exception
@@ -584,7 +568,7 @@ namespace Wombat
         }
 
         // Create a new impl
-        MamaSubscriptionImpl *impl = new MamaSubscriptionImpl (callback, 
+        mImpl = new MamaSubscriptionImpl (callback,
                                                                closure, 
                                                                this);
 
@@ -594,12 +578,13 @@ namespace Wombat
                                                      &subscriptionCallbacks,
                                                      source->getCValue (),
                                                      symbol,
-                                                     impl);
+                                                     mImpl);
 
         // If something went wrong then delete the impl
         if (MAMA_STATUS_OK != status)
         {
-            delete impl;
+            delete mImpl;
+            mImpl = NULL;
         }
 
         // Convert the status into an exception

@@ -31,6 +31,7 @@ namespace Wombat
     class MamaSource;
     class MamaSourceDerivative;
 
+    struct MamaSubscriptionImpl;
     /**
      * The <code>MamaSubscription</code> interface represents a
      * subscription to a topic. It provides transparent market data
@@ -490,6 +491,7 @@ namespace Wombat
 
         // The source derivative
         MamaSourceDerivative *mSourceDeriv;    
+        MamaSubscriptionImpl    *mImpl;
     };
 
 } // namespace Wombat

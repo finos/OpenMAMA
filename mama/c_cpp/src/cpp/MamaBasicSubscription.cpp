@@ -111,7 +111,7 @@ public:
  * the client will have full flexibility in destroying and recreating the subscription during the
  * callbacks.
  */
-class MamaBasicSubscriptionImpl
+struct MamaBasicSubscriptionImpl
 {
     // The C++ subscription class
     MamaBasicSubscription *mBasicSubscription;
@@ -125,7 +125,7 @@ class MamaBasicSubscriptionImpl
     // The re-usable message
     MamaMsg mResuableMsg;
 
-public:
+    bool    mFreed;
 
     MamaBasicSubscriptionImpl(MamaBasicSubscriptionCallback *callback, void *closure, MamaBasicSubscription *basicSubscription)
     {
@@ -133,6 +133,7 @@ public:
         mCallback          = callback;
         mClosure           = closure;
         mBasicSubscription = basicSubscription;
+        mFreed             = false;
 
         // If callback exceptions are being caught then install this now
         if(mamaInternal_getCatchCallbackExceptions())
@@ -162,7 +163,7 @@ public:
 
     void InvokeDestroy(void)
     {
-        if(NULL != mCallback)
+        if ((NULL != mCallback) && (!mFreed))
         {
             // Invoke the onDestroy
             mCallback->onDestroy(mBasicSubscription, mClosure);
@@ -226,7 +227,19 @@ MamaBasicSubscription::~MamaBasicSubscription(void)
      */
     if(NULL != mSubscription)
     {
+        bool invoke = false;
+        mamaSubscriptionState state = MAMA_SUBSCRIPTION_UNKNOWN;
+        mamaSubscription_getState(mSubscription, &state);
+        if (state == MAMA_SUBSCRIPTION_DESTROYING)
+            invoke = true;
         mamaSubscription_deallocate(mSubscription);        
+        if (invoke)
+        {
+            mImpl->InvokeDestroy();
+            mImpl->mFreed = true;
+            mImpl = NULL;
+        }
+        mSubscription = NULL;
     }
 }
 
@@ -316,7 +329,7 @@ void MamaBasicSubscription::createBasic(
     };
         
     // Create a new impl
-    MamaBasicSubscriptionImpl *impl = new MamaBasicSubscriptionImpl(callback, closure, this);
+    mImpl = new MamaBasicSubscriptionImpl(callback, closure, this);
 
     // Create the basic subscription, note that we are registering for the destroy callbacks regardless
     mama_status status = mamaSubscription_createBasic(
@@ -325,12 +338,13 @@ void MamaBasicSubscription::createBasic(
                                 queue->getCValue(),
                                 &basicSubscriptionCallbacks,
                                 topic,
-                                impl);
+                                mImpl);
 
     // If something went wrong then delete the impl
     if(MAMA_STATUS_OK != status)
     {
-        delete impl;
+        delete mImpl;
+        mImpl = NULL;
     }
 
     // Convert the status into an exception
@@ -344,11 +358,6 @@ void MamaBasicSubscription::destroy(void)
     {
         // Destroy the underlying subscription
         mamaTry(mamaSubscription_destroy(mSubscription));
-
-        /* Reset all member variables, this must be done now in case the user recreates the subscription
-         * during any of the callbacks.
-         */
-        mCallback  = NULL;
     }
 }
 
@@ -359,11 +368,6 @@ void MamaBasicSubscription::destroyEx(void)
     {
         // Destroy the underlying subscription
         mamaTry(mamaSubscription_destroyEx(mSubscription));
-
-        /* Reset all member variables, this must be done now in case the user recreates the subscription
-         * during any of the callbacks.
-         */
-        mCallback  = NULL;
     }
 }
 

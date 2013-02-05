@@ -32,6 +32,7 @@ class MamaQueue;
 class MamaTransport;
 class MamaBasicSubscriptionCallback;
 
+struct MamaBasicSubscriptionImpl;
 /**
  * The <code>MamaBasicSubscription</code> interface represents a
  * subscription to a topic with no market data semantics.
@@ -186,6 +187,7 @@ private:
     // The callback class passed to the create function
     MamaBasicSubscriptionCallback *mCallback;
 
+    MamaBasicSubscriptionImpl*     mImpl;
 protected:
 
     // The closure passed to the create function
