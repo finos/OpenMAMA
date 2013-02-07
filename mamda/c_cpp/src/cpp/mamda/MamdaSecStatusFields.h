@@ -61,6 +61,8 @@ namespace Wombat
         static const MamaFieldDescriptor*  EVENT_SEQ_NUM;
         static const MamaFieldDescriptor*  FREE_TEXT;
         static const MamaFieldDescriptor*  SHORT_SALE_CIRCUIT_BREAKER;
+        static const MamaFieldDescriptor*  LULDINDICATOR;
+        static const MamaFieldDescriptor*  LULDTIME;
 
         // calling setDictionary will also set the Common Fields
         static void      setDictionary (const MamaDictionary&  dictionary);

@@ -128,6 +128,12 @@ namespace Wombat
     static const char* SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME = "VolatilityPauseQuoteResume";
     static const char* SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD              = "VolatilityGuard";
     static const char* SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME = "VolatilityGuardQuoteResume";
+    static const char* SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID               = "LimitStateBid";
+    static const char* SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK               = "LimitStateAsk";
+    static const char* SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK   = "LimitStateBid:LimitStateAsk";
+    static const char* SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1       = "CircuitBreakerLevel1";
+    static const char* SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2       = "CircuitBreakerLevel2";
+    static const char* SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3       = "CircuitBreakerLevel3";
     static const char* SECURITY_STATUS_QUAL_STR_UNKNOWN                       = "Unknown";
 
     const char* toString (MamdaSecurityStatusQual  securityStatusQual)
@@ -341,6 +347,18 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD;
         case SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME:
             return SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME;  
+        case SECURITY_STATUS_QUAL_LIMIT_STATE_BID:
+            return SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID;
+        case SECURITY_STATUS_QUAL_LIMIT_STATE_ASK:
+            return SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK;
+        case SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK:
+            return SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK;
+        case SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1:
+            return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1;
+        case SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2:
+            return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2;
+        case SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3:
+            return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3;
         }
         return SECURITY_STATUS_QUAL_STR_UNKNOWN;
     }
@@ -561,6 +579,18 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_VOLATILITY_GUARD;
         if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME) == 0)
             return SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME; 
+        if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID ) == 0)
+            return SECURITY_STATUS_QUAL_LIMIT_STATE_BID;
+        if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK ) == 0)
+            return SECURITY_STATUS_QUAL_LIMIT_STATE_ASK;
+        if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK ) == 0)
+            return SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK;
+        if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1 ) == 0)
+            return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1;
+        if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2 ) == 0)
+            return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
+        if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3 ) == 0)
+            return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
                  
             
 
@@ -767,6 +797,18 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_VOLATILITY_GUARD;
         if(strcmp(securityStatusQual, "119") == 0)
             return SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME; 
+        if(strcmp(securityStatusQual, "120") == 0)
+            return SECURITY_STATUS_QUAL_LIMIT_STATE_BID;
+        if(strcmp(securityStatusQual, "121") == 0)
+            return SECURITY_STATUS_QUAL_LIMIT_STATE_ASK;
+        if(strcmp(securityStatusQual, "122") == 0)
+            return SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK;
+        if(strcmp(securityStatusQual, "123") == 0)
+            return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1;
+        if(strcmp(securityStatusQual, "124") == 0)
+            return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
+        if(strcmp(securityStatusQual, "125") == 0)
+            return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
 
         return SECURITY_STATUS_QUAL_UNKNOWN;
     }

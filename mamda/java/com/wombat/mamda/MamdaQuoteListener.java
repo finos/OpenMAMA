@@ -1376,7 +1376,8 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         {
             if (msg.tryPrice (null, MamdaQuoteFields.BID_PRICE.getFid(), listener.mQuoteCache.tmpPrice))
             {
-                if (listener.mQuoteCache.tmpPrice.getValue() != listener.mQuoteCache.mBidPrice.getValue())
+                if (listener.mQuoteCache.tmpPrice.getValue() != listener.mQuoteCache.mBidPrice.getValue() ||
+                    listener.mQuoteCache.mBidPriceFieldState.getState() == MamdaFieldState.NOT_INITIALISED)
                 {
                     listener.mQuoteCache.mBidPrice.setValue (listener.mQuoteCache.tmpPrice.getValue());
                     listener.mQuoteCache.mGotBidPrice = true;

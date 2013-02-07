@@ -120,21 +120,17 @@ void MamaTimerTestC::TearDown(void)
 
 static void MAMACALLTYPE onTimerTick(mamaTimer timer, void* closure)
 {
-    //printf("Timer ticking....\n");
     mamaTimer_destroy(timer);
 }
 
 static void MAMACALLTYPE onTimerDestroy(mamaTimer timer, void* closure)
 {
-    //printf("Timer destroying...\n");
     MamaTimerTestC *fixture = (MamaTimerTestC *)closure;
     fixture->m_numberForCallbacks ++;
-    //printf("m_numberForCallbacks = %i\n", fixture->m_numberForCallbacks);
 
     // If all the timers have been destroyed then quit out
     if(fixture->m_numberForCallbacks == fixture->m_numberForTimers)
     {
-      //  printf("Stopping timer\n");
         mama_stop(fixture->m_bridge);
     }
 }
@@ -146,7 +142,6 @@ static void MAMACALLTYPE onStopDispatchingTimerTick(mamaTimer timer, void* closu
 
 static void MAMACALLTYPE onStopDispatchingTimerDestroy(mamaTimer timer, void* closure)
 {
-    //printf("Stopping Two Timers ticking\n");
     MamaTimerTestC* fixture = (MamaTimerTestC *)closure;
     mama_stop(fixture->m_bridge);
 
@@ -166,7 +161,6 @@ static void MAMACALLTYPE onRecursiveTimerTick(mamaTimer timer, void* closure)
 static void MAMACALLTYPE onRecursiveTimerDestroy(mamaTimer timer, void* closure)
 {
     // Cast the closure to a test fixture
-    //printf("in recursive onDestroy\n");
     MamaTimerTestC *fixture = (MamaTimerTestC *)closure;
 
     // Increment the number of times this function has been called
@@ -187,14 +181,12 @@ static void MAMACALLTYPE onRecursiveTimerDestroy(mamaTimer timer, void* closure)
 
 static void MAMACALLTYPE onTwoTimerTick(mamaTimer timer, void* closure)
 {
-    //printf("In TwoTimer Tick\n");
 
 }
 
 static void MAMACALLTYPE onTwoTimerDestroy(mamaTimer timer, void * closure)
 {
     // Cast the closure to a test fixture
-    //printf("In TwoTimer Destroy\n");
 }
 /* ************************************************************************* */
 /* Test Functions */
@@ -208,7 +200,6 @@ TEST_F(MamaTimerTestC, ForTimer)
     // Create a whole lot of timers
     for(int counter=0; counter<m_numberForTimers; counter++)
     {
-      //  printf("Creating new timer\n");
         m_timerInterval = (counter + 1)/100;
         mamaTimer_create2(&mtarray[counter], m_defaultQueue, onTimerTick, onTimerDestroy, m_timerInterval, m_this);
     }

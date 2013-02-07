@@ -1671,7 +1671,8 @@ namespace Wombat
         {
             MamaPrice bidPrice;
             field.getPrice (bidPrice);
-            if (impl.mQuoteCache.mBidPrice != bidPrice)
+            if (impl.mQuoteCache.mBidPrice != bidPrice ||
+                impl.mQuoteCache.mBidPriceFieldState == NOT_INITIALISED)
             {
                 impl.mQuoteCache.mBidPrice = bidPrice;
                 impl.mQuoteCache.mGotBidPrice = true;

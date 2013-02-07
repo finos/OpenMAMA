@@ -76,6 +76,8 @@ namespace Wombat
         mama_u32_t              mSecStatusCount;           MamdaFieldState     mSecStatusCountFieldState;
         mama_seqnum_t           mGapBegin;                 MamdaFieldState     mGapBeginFieldState;
         mama_seqnum_t           mGapEnd;                   MamdaFieldState     mGapEndFieldState;
+        char                    myLuldIndicator;            MamdaFieldState     myLuldIndicatorFieldState;
+        MamaDateTime            myLuldTime;                 MamdaFieldState     myLuldTimeFieldState;
     };
 
     class MamdaSecStatusListener::MamdaSecStatusListenerImpl 
@@ -160,6 +162,8 @@ namespace Wombat
         struct FieldUpdateSecStatusFreeText;
         struct FieldUpdateSecStatusEventSeqNum;
         struct FieldUpdateMsgQual;
+        struct FieldUpdateLuldTime;
+        struct FieldUpdateLuldIndicator;
 
         bool updated;
     };
@@ -295,6 +299,16 @@ namespace Wombat
         return mImpl.mSecStatusCache.mFreeText.c_str();
     }
 
+    const char MamdaSecStatusListener::getLuldIndicator() const
+    {
+        return mImpl.mSecStatusCache.myLuldIndicator;
+    }
+
+    const MamaDateTime& MamdaSecStatusListener::getLuldTime() const
+    {
+        return mImpl.mSecStatusCache.myLuldTime;
+    }
+
     /*  FieldState Accessors    */
 
     MamdaFieldState MamdaSecStatusListener::getIssueSymbolFieldState() const
@@ -405,6 +419,16 @@ namespace Wombat
     MamdaFieldState MamdaSecStatusListener::getSecurityStatusNativeFieldState() const
     {
         return mImpl.mSecStatusCache.mSecurityStatusNativeFieldState;
+    }
+
+    MamdaFieldState MamdaSecStatusListener::getLuldTimeFieldState() const
+    {
+        return mImpl.mSecStatusCache.myLuldTimeFieldState;
+    }
+
+    MamdaFieldState MamdaSecStatusListener::getLuldIndicatorFieldState() const
+    {
+        return mImpl.mSecStatusCache.myLuldIndicatorFieldState;
     }
     /*  End FieldState Accessors    */
 
@@ -549,6 +573,9 @@ namespace Wombat
         secStatusCache.mSecurityStatusNative    = "";
         secStatusCache.mSecurityStatusTime.clear();
         secStatusCache.mFreeText                = ""; 
+
+        secStatusCache.myLuldTime.clear();
+        secStatusCache.myLuldIndicator = ' ';
         
         secStatusCache.mIssueSymbolFieldState           = NOT_INITIALISED;
         secStatusCache.mSymbolFieldState                = NOT_INITIALISED;
@@ -573,6 +600,8 @@ namespace Wombat
         secStatusCache.mSecurityStatusNativeFieldState  = NOT_INITIALISED;
         secStatusCache.mSecurityStatusTimeFieldState    = NOT_INITIALISED;
         secStatusCache.mFreeTextFieldState              = NOT_INITIALISED;
+        secStatusCache.myLuldTimeFieldState             = NOT_INITIALISED;
+        secStatusCache.myLuldIndicatorFieldState        = NOT_INITIALISED;
     }
 
     void MamdaSecStatusListener::
@@ -640,6 +669,12 @@ namespace Wombat
 
         if (mSecStatusCache.mGapEndFieldState == MODIFIED)         
             mSecStatusCache.mGapEndFieldState = NOT_MODIFIED; 
+
+        if (mSecStatusCache.myLuldTimeFieldState == MODIFIED)
+            mSecStatusCache.myLuldTimeFieldState = NOT_MODIFIED;
+
+        if (mSecStatusCache.myLuldIndicatorFieldState == MODIFIED)
+            mSecStatusCache.myLuldIndicatorFieldState = NOT_MODIFIED;
     }
 
     void MamdaSecStatusListener::
@@ -988,6 +1023,34 @@ namespace Wombat
         }
     };
 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateLuldIndicator
+        : public SecStatusFieldUpdate
+    {
+        void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
+                       const MamaMsgField&                                  field)
+        {
+            if (field.getChar() != impl.mSecStatusCache.myLuldIndicator ||
+                impl.mSecStatusCache.myLuldIndicatorFieldState == NOT_INITIALISED)
+            {
+                impl.mSecStatusCache.myLuldIndicator = field.getChar();
+                impl.mSecStatusCache.myLuldIndicatorFieldState = MODIFIED;
+                impl.updated = true;
+            }
+        }
+    };
+
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateLuldTime
+        : public SecStatusFieldUpdate
+    {
+        void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
+                       const MamaMsgField&                                  field)
+        {
+            field.getDateTime(impl.mSecStatusCache.myLuldTime);
+            impl.mSecStatusCache.myLuldTimeFieldState = MODIFIED;
+        }
+    };
+
+
 
     SecStatusFieldUpdate**  MamdaSecStatusListener::MamdaSecStatusListenerImpl::
         mFieldUpdaters = NULL;
@@ -1074,6 +1137,14 @@ namespace Wombat
         initFieldUpdater (MamdaSecStatusFields::EVENT_SEQ_NUM,
                           new MamdaSecStatusListener::
                           MamdaSecStatusListenerImpl::FieldUpdateSecStatusEventSeqNum);
+
+        initFieldUpdater(MamdaSecStatusFields::LULDINDICATOR,
+                         new MamdaSecStatusListener::
+                         MamdaSecStatusListenerImpl::FieldUpdateLuldIndicator);
+
+        initFieldUpdater(MamdaSecStatusFields::LULDTIME,
+                         new MamdaSecStatusListener::
+                         MamdaSecStatusListenerImpl::FieldUpdateLuldTime);
     }
 
     void MamdaSecStatusListener::MamdaSecStatusListenerImpl::initFieldUpdater (

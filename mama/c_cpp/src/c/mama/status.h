@@ -103,7 +103,21 @@ typedef enum
     /* Queue has open objects. */
     MAMA_STATUS_QUEUE_OPEN_OBJECTS          = 5002,
     /* The function isn't supported for this type of subscription. */
-    MAMA_STATUS_SUBSCRIPTION_INVALID_TYPE   = 5003
+    MAMA_STATUS_SUBSCRIPTION_INVALID_TYPE   = 5003,
+    /* The underlying transport saw a gap. */
+    MAMA_STATUS_SUBSCRIPTION_GAP            = 5004,
+
+    /* A resource has not been initialised. */
+    MAMA_STATUS_NOT_INITIALISED             = 5005,
+
+    /* The transport line is reported to be down. */
+    MAMA_STATUS_NO_SUBSCRIBERS              = 5006,
+
+    /* The symbol has expired. */
+    MAMA_STATUS_EXPIRED                     = 5007,
+
+    /* The application's bandwidth limit has been exceeded. */
+    MAMA_STATUS_BANDWIDTH_EXCEEDED          = 5008
 
 #ifdef WITH_ENTITLEMENTS
     /* Out of memory */
