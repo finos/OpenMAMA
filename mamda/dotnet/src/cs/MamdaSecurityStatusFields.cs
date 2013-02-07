@@ -57,6 +57,8 @@ namespace Wombat
             string wShortSaleCircuitBreaker = lookupFieldName(properties,"wShortSaleCircuitBreaker");
 			string wSeqNum = lookupFieldName(properties, "wSeqNum");
 			string wReason = lookupFieldName(properties, "wReason");
+			string wLuldIndicator = lookupFieldName(properties, "wLuldIndicator");
+			string wLuldTime = lookupFieldName(properties, "wLuldTime");
 
 			SRC_TIME					= dictionary.getFieldByName(wSrcTime);
 			ACTIVITY_TIME				= dictionary.getFieldByName(wActivityTime);
@@ -67,6 +69,8 @@ namespace Wombat
             SHORT_SALE_CIRCUIT_BREAKER	= dictionary.getFieldByName(wShortSaleCircuitBreaker);
 			SEQNUM						= dictionary.getFieldByName(wSeqNum);
 			REASON						= dictionary.getFieldByName(wReason);
+            LULDINDICATOR               = dictionary.getFieldByName(wLuldIndicator);
+            LULDTIME                    = dictionary.getFieldByName(wLuldTime);
 
 			MAX_FID = dictionary.getMaxFid();
 			mInitialised = true;
@@ -99,6 +103,8 @@ namespace Wombat
             SHORT_SALE_CIRCUIT_BREAKER = null;
             SEQNUM					= null;
             REASON					= null;
+            LULDINDICATOR           = null;
+            LULDTIME                = null;
         }
 
 		public static MamaFieldDescriptor  SRC_TIME               = null;
@@ -110,6 +116,8 @@ namespace Wombat
         public static MamaFieldDescriptor  SHORT_SALE_CIRCUIT_BREAKER = null;
 		public static MamaFieldDescriptor  SEQNUM                 = null;
 		public static MamaFieldDescriptor  REASON				  = null;
+		public static MamaFieldDescriptor  LULDINDICATOR		  = null;
+		public static MamaFieldDescriptor  LULDTIME				  = null;
 		public static int  MAX_FID = 0;
 		private static bool mInitialised = false;
 	}

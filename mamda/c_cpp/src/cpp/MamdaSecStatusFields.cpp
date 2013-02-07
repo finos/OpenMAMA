@@ -42,6 +42,8 @@ namespace Wombat
     const MamaFieldDescriptor*  MamdaSecStatusFields::EVENT_SEQ_NUM         = NULL;
     const MamaFieldDescriptor*  MamdaSecStatusFields::FREE_TEXT             = NULL;
     const MamaFieldDescriptor*  MamdaSecStatusFields::SHORT_SALE_CIRCUIT_BREAKER        = NULL;
+    const MamaFieldDescriptor*  MamdaSecStatusFields::LULDINDICATOR         = NULL;
+    const MamaFieldDescriptor*  MamdaSecStatusFields::LULDTIME              = NULL;
 
     void MamdaSecStatusFields::setDictionary (const MamaDictionary&  dictionary)
     {
@@ -68,6 +70,8 @@ namespace Wombat
         EVENT_SEQ_NUM          = dictionary.getFieldByName ("wSeqNum");
         FREE_TEXT              = dictionary.getFieldByName ("wText");
         SHORT_SALE_CIRCUIT_BREAKER = dictionary.getFieldByName("wShortSaleCircuitBreaker");
+        LULDINDICATOR          = dictionary.getFieldByName ("wLuldIndicator");
+        LULDTIME               = dictionary.getFieldByName ("wLuldTime");
 
         theMaxFid = dictionary.getMaxFid();
         initialised = true;
@@ -95,6 +99,8 @@ namespace Wombat
         EVENT_SEQ_NUM          = NULL;
         FREE_TEXT              = NULL;
         SHORT_SALE_CIRCUIT_BREAKER       = NULL;
+        LULDINDICATOR          = NULL;
+        LULDTIME               = NULL;
     }
 
     bool MamdaSecStatusFields::isSet ()

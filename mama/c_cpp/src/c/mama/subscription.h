@@ -75,7 +75,7 @@ typedef enum
     /* The subscription has been allocated in memory. */
     MAMA_SUBSCRIPTION_ALLOCATED     = 1,
 
-    /* Inital setup work has been done, mamaSubscription_activate must still be called. Note that this state is only valid
+    /* Initial setup work has been done, mamaSubscription_activate must still be called. Note that this state is only valid
      * for market data subscriptions.
      */
     MAMA_SUBSCRIPTION_SETUP         = 2,
@@ -86,27 +86,28 @@ typedef enum
     /* The subscription is now fully activated and is processing messages. */
     MAMA_SUBSCRIPTION_ACTIVATED     = 4,
 
-    /* The subscription is being de-activated, it will not be fully deactivated until the onDestroy callback is received. */
+    /* The subscription is being de-activated, it will not be fully deactivated until the middleware removal of the listener is complete */
     MAMA_SUBSCRIPTION_DEACTIVATING  = 5,
 
     /* The subscription has been de-activated, messages are no longer being processed. */
     MAMA_SUBSCRIPTION_DEACTIVATED   = 6,
 
-    /* The subscription is being destroyed, it will not be fully destroyed until the onDestroy callback is received. */
+    /* The subscription is being destroyed, but waiting on deactivation to complete*/
     MAMA_SUBSCRIPTION_DESTROYING    = 7,
 
     /* The subscription has been fully destroyed. */
     MAMA_SUBSCRIPTION_DESTROYED     = 8,
 
-    /* The subscription is in the process of being de-allocated, this state is only valid if the mamaSubscription_deallocate
-     * function is called while the subscription is being destroyed.
-     */
+    /* The subscription is in the process of being de-allocated, but waiting on deactivation to complete*/
     MAMA_SUBSCRIPTION_DEALLOCATING  = 9,
 
-    /* The subscription has been de-allocated, this state is only supported so that the log entry will whenever the subscription
-     * has finally been freed.
+    /* The subscription has been de-allocated. This state is only temporary and exists until such point as the subscription's 
+     * memory is freed. It is provided so that a log entry will be written out.
      */
-    MAMA_SUBSCRIPTION_DEALLOCATED   = 10
+    MAMA_SUBSCRIPTION_DEALLOCATED   = 10,
+
+    /* The subscription is being re-activated, it will not be fully reactivated until deactivation complete */
+    MAMA_SUBSCRIPTION_REACTIVATING  = 11
 
 } mamaSubscriptionState;
 
@@ -138,7 +139,7 @@ typedef void (MAMACALLTYPE *wombat_subscriptionCreateCB)(
     void *closure);
 
 /**
- * Function invoked when a subscription has been completely destroyed or deactivated,
+ * Function invoked when a subscription has been completely destroyed,
  * the client can have confidence that no further messages will be placed on the queue
  * for this subscription.
  *

@@ -62,7 +62,6 @@ void MamaOpenCloseTestC::TearDown(void)
 
 static void MAMACALLTYPE startCallback(mama_status status)
 {
-    //printf("In start in background callback\n");
 }
 
 
@@ -84,19 +83,14 @@ TEST_F(MamaOpenCloseTestC, NestedOpenClose)
     mamaBridge mBridge;
     mama_loadBridge(&mBridge, getMiddleware());
 
-    //printf("Attempt first open\n");
     mama_open();
 
-    //printf("Attempt second open\n");
     mama_open();
 
-    //printf("Attempt first close\n");
     mama_close();
 
-    //printf("Attempt second close\n");
     mama_close();
 
-    //printf("Finished nested testing\n");
 }
 
 TEST_F(MamaOpenCloseTestC, OpenCloseReopenSameBridge)

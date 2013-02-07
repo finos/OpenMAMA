@@ -126,6 +126,12 @@ public class MamdaSecurityStatusQual
     public static final short SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME = 117;  // toString()  VolatilityPauseQuoteResume
     public static final short SECURITY_STATUS_QUAL_VOLATILITY_GUARD              = 118;  // toString()  VolatilityGuard
     public static final short SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME = 119;  // toString()  VolatilityGuardQuoteResume
+    public static final short SECURITY_STATUS_QUAL_LIMIT_STATE_BID               = 120;  // toString()  LimitStateBid
+    public static final short SECURITY_STATUS_QUAL_LIMIT_STATE_ASK               = 121;  // toString()  LimitStateAsk
+    public static final short SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK   = 122;  // toString()  LimitStateBid:LimitStateAsk
+    public static final short SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1       = 123;  // toString()  CircuitBreakerLevel1
+    public static final short SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2       = 124;  // toString()  CircuitBreakerLevel2
+    public static final short SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3       = 125;  // toString()  CircuitBreakerLevel3
     
     //Only used internally
     private static final String SECURITY_STATUS_QUAL_STR_NONE                               = "None";
@@ -231,6 +237,14 @@ public class MamdaSecurityStatusQual
     private static final String SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME      = "VolatilityPauseQuoteResume";
     private static final String SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD                   = "VolatilityGuard";
     private static final String SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME      = "VolatilityGuardQuoteResume";
+
+    private static final String SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID                    = "LimitStateBid";
+    private static final String SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK                    = "LimitStateAsk";
+    private static final String SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK        = "LimitStateBid:LimitStateAsk";
+    private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1            = "CircuitBreakerLevel1";
+    private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2            = "CircuitBreakerLevel2";
+    private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3            = "CircuitBreakerLevel3";
+
     private static final String SECURITY_STATUS_QUAL_STR_UNKNOWN                            = "Unknown";
 
      public static String toString (short securityStatusQual)
@@ -443,6 +457,18 @@ public class MamdaSecurityStatusQual
                 return SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD;
             case SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME:
                 return SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME;
+            case SECURITY_STATUS_QUAL_LIMIT_STATE_BID:
+                return SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID;
+            case SECURITY_STATUS_QUAL_LIMIT_STATE_ASK:
+                return SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK;
+            case SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK:
+                return SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK;
+            case SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1:
+                return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1;
+            case SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2:
+                return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2;
+            case SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3:
+                return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3;
         }
         return SECURITY_STATUS_QUAL_STR_UNKNOWN;
     }
@@ -658,6 +684,18 @@ public class MamdaSecurityStatusQual
             return SECURITY_STATUS_QUAL_VOLATILITY_GUARD;
         if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME))
             return SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME;
+        if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID))
+            return SECURITY_STATUS_QUAL_LIMIT_STATE_BID;
+        if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK))
+            return SECURITY_STATUS_QUAL_LIMIT_STATE_ASK;
+        if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK))
+            return SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK;
+        if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1))
+            return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1;
+        if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2))
+            return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
+        if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3))
+            return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
 
         // A misconfigured FH might send numbers as strings:
         if (securityStatusQual.equals ("0"))
@@ -864,6 +902,18 @@ public class MamdaSecurityStatusQual
           return SECURITY_STATUS_QUAL_VOLATILITY_GUARD;
         if(securityStatusQual.equals("119"))
           return SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME;
+        if(securityStatusQual.equals("120"))
+          return SECURITY_STATUS_QUAL_LIMIT_STATE_BID;
+        if(securityStatusQual.equals("121"))
+          return SECURITY_STATUS_QUAL_LIMIT_STATE_ASK;
+        if(securityStatusQual.equals("122"))
+          return SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK;
+        if(securityStatusQual.equals("123"))
+          return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1;
+        if(securityStatusQual.equals("124"))
+          return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
+        if(securityStatusQual.equals("125"))
+          return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
 
         return SECURITY_STATUS_QUAL_UNKNOWN;
     }

@@ -46,6 +46,8 @@ public class MamdaSecurityStatusFields extends MamdaFields
     public static MamaFieldDescriptor  SYMBOL                 = null;
     public static MamaFieldDescriptor  ISSUE_SYMBOL           = null;
     public static MamaFieldDescriptor  REASON                 = null;
+    public static MamaFieldDescriptor  LULDINDICATOR          = null;
+    public static MamaFieldDescriptor  LULDTIME               = null;
     public static int      MAX_FID     = 0;
     private static boolean initialised = false;
 
@@ -97,6 +99,10 @@ public class MamdaSecurityStatusFields extends MamdaFields
                                                       "wIssueSymbol");
         String wReason             = lookupFieldName (properties,
                                                       "wReason");
+        String wLuldIndicator      = lookupFieldName (properties,
+                                                      "wLuldIndicator");
+        String wLuldTime           = lookupFieldName (properties,
+                                                      "wLuldTime");
 
         SRC_TIME              = dictionary.getFieldByName (wSrcTime);
         ACTIVITY_TIME         = dictionary.getFieldByName (wActivityTime);
@@ -112,6 +118,8 @@ public class MamdaSecurityStatusFields extends MamdaFields
         SYMBOL                = dictionary.getFieldByName (wSymbol);
         ISSUE_SYMBOL          = dictionary.getFieldByName (wIssueSymbol);
         REASON                = dictionary.getFieldByName (wReason);
+        LULDINDICATOR         = dictionary.getFieldByName (wLuldIndicator);
+        LULDTIME              = dictionary.getFieldByName (wLuldTime);
 
         MAX_FID = dictionary.getMaxFid();
         initialised = true;
@@ -150,6 +158,8 @@ public class MamdaSecurityStatusFields extends MamdaFields
         SYMBOL                = null;
         ISSUE_SYMBOL          = null;
         REASON                = null;
+        LULDINDICATOR         = null;
+        LULDTIME              = null;
 
         MAX_FID               = 0;
         initialised           = false;

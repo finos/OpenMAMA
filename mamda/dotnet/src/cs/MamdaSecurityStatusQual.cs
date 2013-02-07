@@ -129,7 +129,13 @@ namespace Wombat
             SECURITY_STATUS_QUAL_VOLATILITY_PAUSE              = 116,    // toString VolatilityPause
             SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME = 117,    // toString VolatilityPauseQuoteResume
             SECURITY_STATUS_QUAL_VOLATILITY_GUARD              = 118,    // toString VolatilityGuard
-            SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME = 119     // toString VolatilityGuardQuoteResume
+            SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME = 119,    // toString VolatilityGuardQuoteResume
+            SECURITY_STATUS_QUAL_LIMIT_STATE_BID               = 120,    // toString() - LimitStateBid
+            SECURITY_STATUS_QUAL_LIMIT_STATE_ASK               = 121,    // toString() - LimitStateAsk
+            SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK   = 122,    // toString() - LimitStateBid:LimitStateAsk
+            SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1       = 123,    // toString() - CircuitBreakerLevel1
+            SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2       = 124,    // toString() - CircuitBreakerLevel2
+            SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3       = 125     // toString() - CircuitBreakerLevel3
 		}
 
 		private static string SECURITY_STATUS_QUAL_STR_NONE                           = "None";
@@ -235,7 +241,13 @@ namespace Wombat
         private static  string SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME = "VolatilityPauseQuoteResume";
         private static  string SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD              = "VolatilityGuard";
         private static  string SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME = "VolatilityGuardQuoteResume";
-		private static string SECURITY_STATUS_QUAL_STR_UNKNOWN                        = "Unknown";
+        private static  string SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID               = "LimitStateBid";
+        private static  string SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK               = "LimitStateAsk";
+        private static  string SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK   = "LimitStateBid:LimitStateAsk";
+        private static  string SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1       = "CircuitBreakerLevel1";
+        private static  string SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2       = "CircuitBreakerLevel2";
+        private static  string SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3       = "CircuitBreakerLevel3";
+        private static  string SECURITY_STATUS_QUAL_STR_UNKNOWN                        = "Unknown";
 
 		public string toString (MamdaSecurityStatusQual.mamdaSecurityStatusQual securityStatusQual)
 		{
@@ -448,6 +460,19 @@ namespace Wombat
                     return   SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD;
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME:
                     return  SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_BID:
+                    return SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_ASK:
+                    return SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK:
+                    return SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1:
+                    return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2:
+                    return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3:
+                    return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3;
+
 			}
 			return SECURITY_STATUS_QUAL_STR_UNKNOWN;
 		}
@@ -658,6 +683,18 @@ namespace Wombat
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD;  
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_BID;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_ASK;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;  
 
 			if (securityStatusQual == "0")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NONE;
@@ -864,6 +901,18 @@ namespace Wombat
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD;
             if (securityStatusQual == "119")         
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME;
+            if (securityStatusQual == "120")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_BID;
+            if (securityStatusQual == "121")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_ASK;
+            if (securityStatusQual == "122")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK;
+            if (securityStatusQual == "123")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1;
+            if (securityStatusQual == "124")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
+            if (securityStatusQual == "125")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
 
 			return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_UNKNOWN;
 		}

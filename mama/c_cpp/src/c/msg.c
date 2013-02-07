@@ -2038,7 +2038,7 @@ mamaMsg_updateI64 (
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
     if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
 
-    return impl->mPayloadBridge->msgPayloadUpdateU64 (impl->mPayload,
+    return impl->mPayloadBridge->msgPayloadUpdateI64 (impl->mPayload,
                                                       name,
                                                       fid,
                                                       value);
