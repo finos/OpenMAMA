@@ -72,7 +72,8 @@ typedef struct msgCallback_
 static int isInitialMessageOrRecap( msgCallback *callback, int msgType );
 static void handleNoSubscribers (msgCallback*       callback,
                                  mamaMsg            msg,
-                                 SubjectContext*    ctx);
+                                 SubjectContext*    ctx,
+                                 const char*        userSymbol);
 
 static int checkEntitlement     (msgCallback*       callback,
                                  mamaMsg            msg,
@@ -298,6 +299,9 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     {
         switch (status)
         {
+        case MAMA_MSG_STATUS_LINE_DOWN:
+            break;
+
         case MAMA_MSG_STATUS_NOT_PERMISSIONED:
             listenerMsgCallback_invokeErrorCallback(callback, ctx,
                     MAMA_STATUS_NOT_PERMISSIONED, subscription, userSymbol);
@@ -308,6 +312,11 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                     MAMA_STATUS_BAD_SYMBOL, subscription, userSymbol);
             return;
 
+        case MAMA_MSG_STATUS_EXPIRED:
+            listenerMsgCallback_invokeErrorCallback(callback, ctx,
+                    MAMA_STATUS_EXPIRED, subscription, userSymbol);
+            return;
+
         case MAMA_MSG_STATUS_NOT_FOUND:
             listenerMsgCallback_invokeErrorCallback(callback, ctx,
                     MAMA_STATUS_NOT_FOUND, subscription, userSymbol);
@@ -315,18 +324,18 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
 
         case MAMA_MSG_STATUS_TIMEOUT:
             listenerMsgCallback_invokeErrorCallback(callback, ctx,
-                     MAMA_MSG_STATUS_TIMEOUT, subscription, userSymbol);
+                    MAMA_STATUS_TIMEOUT, subscription, userSymbol);
             return;
 
         case MAMA_MSG_STATUS_NO_SUBSCRIBERS:
         {
-            handleNoSubscribers (impl, msg, ctx);
+            handleNoSubscribers (impl, msg, ctx, userSymbol);
             return;
         }
 
-           /* The possibly stale messages are sent by the MAMACACHE with a miscellanious type and should be translated
-            * into a quality event.
-            */
+        /* The possibly stale messages are sent by the MAMACACHE with
+         * a miscellaneous type and should be translated into a quality event.
+         */
         case MAMA_MSG_STATUS_POSSIBLY_STALE:
         {
             /* Verify that the type is misc. */
@@ -344,15 +353,40 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
 
         case MAMA_MSG_STATUS_MISC:
         {
-            if (msgType == MAMA_MSG_TYPE_REFRESH)
-            {
-                /* PAPA older than 2.99.6 publishes refresh messages as
-                 * MISC status. */
-                break;
-            }
-
-            /* Otherwise log the fact we have received an unknown message. */
+            /* Log the fact we have received an unknown message. */
             listenerMsgCallbackImpl_logUnknownStatus(ctx, status, subscription);
+            break;
+        }
+        case MAMA_MSG_STATUS_STALE:
+        {
+            break;
+        }
+        case MAMA_MSG_STATUS_PLATFORM_STATUS:
+        {
+            break;
+        }
+        case MAMA_MSG_STATUS_NOT_ENTITLED:
+        {
+#ifdef WITH_ENTITLEMENTS 
+            listenerMsgCallback_invokeErrorCallback(callback, ctx,
+                    MAMA_STATUS_NOT_ENTITLED, subscription, userSymbol);
+            return;
+#else
+            break;
+#endif
+        }
+        case MAMA_MSG_STATUS_TOPIC_CHANGE:
+        {
+            break;
+        }
+        case MAMA_MSG_STATUS_BANDWIDTH_EXCEEDED:
+        {
+            listenerMsgCallback_invokeErrorCallback(callback, ctx,
+                    MAMA_STATUS_BANDWIDTH_EXCEEDED, subscription, userSymbol);
+            return;
+        }
+        case MAMA_MSG_STATUS_DUPLICATE:
+        {
             break;
         }
         case MAMA_MSG_STATUS_UNKNOWN:
@@ -514,8 +548,24 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         break;
     case MAMA_MSG_TYPE_DELETE:
         mamaSubscription_stopWaitForResponse(subscription,ctx);
-        mamaSubscription_forwardMsg(subscription, msg);
-        break;
+        listenerMsgCallback_invokeErrorCallback(callback, ctx,
+                MAMA_STATUS_DELETE, subscription, userSymbol);
+        return;
+    case MAMA_MSG_TYPE_EXPIRE:
+        mamaSubscription_stopWaitForResponse(subscription,ctx);
+        listenerMsgCallback_invokeErrorCallback(callback, ctx,
+                MAMA_STATUS_EXPIRED, subscription, userSymbol);
+        return;
+    case MAMA_MSG_TYPE_NOT_PERMISSIONED:
+        mamaSubscription_stopWaitForResponse(subscription,ctx);
+        listenerMsgCallback_invokeErrorCallback(callback, ctx,
+                MAMA_STATUS_NOT_PERMISSIONED, subscription, userSymbol);
+        return;
+    case MAMA_MSG_TYPE_NOT_FOUND:
+        mamaSubscription_stopWaitForResponse(subscription,ctx);
+        listenerMsgCallback_invokeErrorCallback(callback, ctx,
+                MAMA_STATUS_NOT_FOUND, subscription, userSymbol);
+        return;
     case MAMA_MSG_TYPE_UNKNOWN:
         mama_log (MAMA_LOG_LEVEL_FINE,
                            "%s%s %s%s"
@@ -539,7 +589,10 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     }
 }
 
-static void handleNoSubscribers (msgCallback *callback, mamaMsg msg, SubjectContext* ctx)
+static void handleNoSubscribers (msgCallback *callback,
+                                 mamaMsg msg,
+                                 SubjectContext* ctx,
+                                 const char *userSymbol)
 {
     if( !mamaSubscription_hasWildcards( self->mSubscription ) )
     {
@@ -552,9 +605,8 @@ static void handleNoSubscribers (msgCallback *callback, mamaMsg msg, SubjectCont
                        MamaFieldMsgType.mFid,
                        MAMA_MSG_TYPE_MISC);
 
-    msgUtils_setStatus(msg,MAMA_MSG_STATUS_STALE);
-
-    mamaSubscription_forwardMsg( self->mSubscription, msg );
+    listenerMsgCallback_invokeErrorCallback(callback, ctx,
+            MAMA_STATUS_NO_SUBSCRIBERS, self->mSubscription, userSymbol);
 }
 
 /**
