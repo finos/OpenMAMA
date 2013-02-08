@@ -56,6 +56,8 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "exegy") == 0)
         return MAMA_MIDDLEWARE_EXEGY;
 
+    if (strcasecmp (str, "ibmwfo") == 0)
+        return MAMA_MIDDLEWARE_IBMWFO;
 
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
@@ -84,6 +86,8 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "QPID";
         case MAMA_MIDDLEWARE_EXEGY:
             return "exegy";
+        case MAMA_MIDDLEWARE_IBMWFO:
+            return "ibmwfo";
         default:
             return "unknown";
     }
