@@ -175,6 +175,11 @@ namespace Wombat
           MAMA_STATUS_INVALID_QUEUE               = 27,
 
           /// <summary>
+          /// Symbol deleted
+          /// </summary>
+          MAMA_STATUS_DELETE                      = 28,
+
+          /// <summary>
           /// Not permissioned for the subject.
           /// </summary>
           MAMA_STATUS_NOT_PERMISSIONED = 4001,
@@ -203,6 +208,21 @@ namespace Wombat
           /// A resource has not been initialised.
           /// </summary>
           MAMA_STATUS_NOT_INITIALISED = 5005,
+
+          /// <summary>
+          /// A symbol does not have any subscribers.
+          /// </summary>
+          MAMA_STATUS_NO_SUBSCRIBERS = 5006,
+
+          /// <summary>
+          /// A symbol has expired.
+          /// </summary>
+          MAMA_STATUS_EXPIRED = 5007,
+
+          /// <summary>
+          /// The application's bandwidth limit has been exceeded.
+          /// </summary>
+          MAMA_STATUS_BANDWIDTH_EXCEEDED = 5008,
 
           /// <summary>
           /// Entitlements: Out of memory.

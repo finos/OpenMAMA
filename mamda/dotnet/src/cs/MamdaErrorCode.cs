@@ -105,6 +105,11 @@ namespace Wombat
         MAMDA_ERROR_BANDWIDTH_EXCEEDED = 14,
 
         /// <summary>
+        /// Symbol deleted
+        /// </summary>
+        MAMDA_ERROR_DELETE = 15,
+
+        /// <summary>
         /// </summary>
         MAMDA_ERROR_EXCEPTION = 999
     }

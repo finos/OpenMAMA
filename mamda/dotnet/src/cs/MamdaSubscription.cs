@@ -397,54 +397,69 @@ namespace Wombat
 				}
 			}
 
-			public void onError(
-				MamaSubscription subscription,
-				MamaStatus.mamaStatus status,
-				string subject)
-			{
+            public void onError(
+                MamaSubscription subscription,
+                MamaStatus.mamaStatus status,
+                string subject)
+            {
                 MamdaErrorSeverity  severity = MamdaErrorSeverity.MAMDA_SEVERITY_OK;
                 MamdaErrorCode      code     = MamdaErrorCode.MAMDA_NO_ERROR;
-                string				errStr   = "unknown";
                     
                 switch (status)
                 {
-                case MamaStatus.mamaStatus.MAMA_STATUS_BAD_SYMBOL:
-                    severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
-                    code     = MamdaErrorCode.MAMDA_ERROR_BAD_SYMBOL;
-                    errStr   = "bad symbol";
-                    break;
-
-                case MamaStatus.mamaStatus.MAMA_STATUS_TIMEOUT:
-                    severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
-                    code     = MamdaErrorCode.MAMDA_ERROR_TIMEOUT;
-                    errStr   = "timeout";
-                    break;
-                case MamaStatus.mamaStatus.MAMA_STATUS_NOT_ENTITLED:
-                    severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
-                    code     = MamdaErrorCode.MAMDA_ERROR_NOT_ENTITLED;
-                    errStr   = "entitlement";
-                    break;
-                case MamaStatus.mamaStatus.MAMA_STATUS_NOT_FOUND:
-                    severity = MamdaErrorSeverity.MAMDA_SEVERITY_LOW;
-                    code     = MamdaErrorCode.MAMDA_ERROR_NOT_FOUND;
-                    errStr   = "not found";
-                    break;
-
-                default:
-                  break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_BAD_SYMBOL:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_BAD_SYMBOL;
+                        break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_TIMEOUT:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_TIMEOUT;
+                        break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_NOT_ENTITLED:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_NOT_ENTITLED;
+                        break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_NOT_FOUND:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_NOT_FOUND;
+                        break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_NO_SUBSCRIBERS:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_NO_SUBSCRIBERS;
+                        break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_EXPIRED:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_EXPIRED;
+                        break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_NOT_PERMISSIONED:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_NOT_PERMISSIONED;
+                        break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_BANDWIDTH_EXCEEDED:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_BANDWIDTH_EXCEEDED;
+                        break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_DELETE:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_DELETE;
+                        break;
+                    case MamaStatus.mamaStatus.MAMA_STATUS_PLATFORM:
+                    default:
+                        severity = MamdaErrorSeverity.MAMDA_SEVERITY_HIGH;
+                        code     = MamdaErrorCode.MAMDA_ERROR_PLATFORM_STATUS;
+                        break;
                 }
 
-				for (int i=0;i<mSubscription.mErrorListeners.Count;i++)
-				{
-					MamdaErrorListener listener = (MamdaErrorListener) mSubscription.mErrorListeners[i];
-					listener.onError(
-						mSubscription,
-						severity,
-						code,
-						MamdaErrorCodes.stringForMamdaError(code));
-				}
-			}
-			
+                for (int i=0;i<mSubscription.mErrorListeners.Count;i++)
+                {
+                    MamdaErrorListener listener = (MamdaErrorListener) mSubscription.mErrorListeners[i];
+                    listener.onError(
+                        mSubscription,
+                        severity,
+                        code,
+                        MamdaErrorCodes.stringForMamdaError(code));
+                }
+            }
 
 			public void onQuality(
 				MamaSubscription subscription,
