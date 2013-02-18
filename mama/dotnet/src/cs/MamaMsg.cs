@@ -258,11 +258,21 @@ namespace Wombat
         MAMA_MSG_TYPE_WORLD_VIEW        =   172,
 
         /// <summary>
+        /// A News Query message
+        /// </summary>
+        MAMA_MSG_TYPE_NEWS_QUERY        =   173,
+
+        /// <summary>
         /// A "keepalive" message
         /// This is an internal message type, it does not need to be
         /// processed by MAMA applications
         /// </summary>
         MAMA_MSG_TYPE_NULL              =   175,
+
+        /// <summary>
+        /// An Entitlements Refresh message
+        /// </summary>
+        MAMA_MSG_TYPE_ENTITLEMENTS_REFRESH =   176,
 
         /// <summary>
         /// Unknown message type
@@ -321,8 +331,8 @@ namespace Wombat
         /// <summary>
         /// Tibrv status / Middleware error status
         /// </summary>
-        MAMA_MSG_STATUS_TIBRV_STATUS        =   8,
         MAMA_MSG_STATUS_PLATFORM_STATUS     =   8,
+        MAMA_MSG_STATUS_TIBRV_STATUS        =   8,
 
         /// <summary>
         /// Not entitled to a subject
@@ -353,6 +363,11 @@ namespace Wombat
         /// Bandwidth exceeded
         /// </summary>
         MAMA_MSG_STATUS_BANDWIDTH_EXCEEDED  =   14,
+
+        /// <summary>
+        /// Message with duplicate sequence number
+        /// </summary>
+        MAMA_MSG_STATUS_DUPLICATE           =   15,
 
         /// <summary>
         /// Unknown status
