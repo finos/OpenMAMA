@@ -2448,6 +2448,14 @@ mamaSubscription_getBridgeImpl (mamaSubscription subscription)
     return self->mBridgeImpl; 
 }                              
 
+subscriptionBridge
+mamaSubscription_getSubscriptionBridge (mamaSubscription subscription)
+{
+    if (!self) return NULL;
+    
+    return self->mSubscBridge;
+}
+
 wildCardType
 mamaSubscription_getWildCardType( mamaSubscription subscription)
 {
