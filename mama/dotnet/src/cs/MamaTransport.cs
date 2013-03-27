@@ -50,6 +50,20 @@ namespace Wombat
             MAMA_THROTTLE_RECAP = 2
         }
 
+        /// <summary>
+        /// Enum to specify the Quality value supplied by the onQuality callback.
+        /// </summary>
+        public enum MamaQuality : int
+        {
+            MAMA_QUALITY_OK            = 0,
+            MAMA_QUALITY_MAYBE_STALE   = 1,
+            MAMA_QUALITY_STALE         = 2,
+            MAMA_QUALITY_PARTIAL_STALE = 3,
+            MAMA_QUALITY_FORCED_STALE  = 4,
+            MAMA_QUALITY_DUPLICATE     = 5,
+            MAMA_QUALITY_UNKNOWN       = 99
+        }
+
       /// <summary>
       /// Allocate a transport structure. 
       /// You need to call destroy() when the class is no more needed
@@ -156,6 +170,22 @@ namespace Wombat
 		{
 			return mCallbackForwarderSymbolMap.GetClosure();
 		}
+
+        /// <summary>
+        /// Accessor methods for the quality associated with a MamaTransport.
+        /// </summary>
+        public MamaQuality Quality
+        {
+            get
+            {
+                MamaQuality qual = MamaQuality.MAMA_QUALITY_UNKNOWN;
+                int code = MamaTransport.NativeMethods.mamaTransport_getQuality(nativeHandle,
+                                                                                ref qual);
+                CheckResultCode(code);
+
+                return qual;
+            }
+        }
 
         /// <summary>
         /// Request conflation for a MamaTransport.
@@ -397,6 +427,9 @@ namespace Wombat
             public static extern int mamaTransport_requestEndConflation(IntPtr transport);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaTransport_getNativeTransport (IntPtr nativeHandle, int index, ref IntPtr val);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaTransport_getQuality(IntPtr transport,
+                                                              ref MamaQuality qual);
 		}
 
 		// state
