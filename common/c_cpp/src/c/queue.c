@@ -265,6 +265,10 @@ wombatQueue_dispatchInt (wombatQueue queue, void** data, void** closure,
  
     /* remove the item */
     head                   = impl->mHead.mNext;
+    if (head == &impl->mTail) {
+       wthread_mutex_unlock (&impl->mLock);
+       return WOMBAT_QUEUE_OK;
+    }
     WQ_REMOVE (impl, head);
 
     if (data)
