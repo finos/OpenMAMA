@@ -553,21 +553,25 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         listenerMsgCallback_invokeErrorCallback(callback, ctx,
                 MAMA_STATUS_DELETE, subscription, userSymbol);
         return;
+        break;
     case MAMA_MSG_TYPE_EXPIRE:
         mamaSubscription_stopWaitForResponse(subscription,ctx);
         listenerMsgCallback_invokeErrorCallback(callback, ctx,
                 MAMA_STATUS_EXPIRED, subscription, userSymbol);
         return;
+        break;
     case MAMA_MSG_TYPE_NOT_PERMISSIONED:
         mamaSubscription_stopWaitForResponse(subscription,ctx);
         listenerMsgCallback_invokeErrorCallback(callback, ctx,
                 MAMA_STATUS_NOT_PERMISSIONED, subscription, userSymbol);
         return;
+        break;
     case MAMA_MSG_TYPE_NOT_FOUND:
         mamaSubscription_stopWaitForResponse(subscription,ctx);
         listenerMsgCallback_invokeErrorCallback(callback, ctx,
                 MAMA_STATUS_NOT_FOUND, subscription, userSymbol);
         return;
+        break;
     case MAMA_MSG_TYPE_UNKNOWN:
         mama_log (MAMA_LOG_LEVEL_FINE,
                            "%s%s %s%s"
