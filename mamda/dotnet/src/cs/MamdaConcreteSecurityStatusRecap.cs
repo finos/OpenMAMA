@@ -331,17 +331,129 @@ namespace Wombat
         {
           return MamdaFieldState.MODIFIED;
         }
+		///< summary>
+        /// Returns the security status Luld Time
+        /// </summary>
+        /// <returns></returns>
+        public DateTime getLuldTime()
+        {
+            return mLuldTime;
+        }
 
-		private long mSecurityStatus;
-		private long mSecurityStatusQualifier;
-		private MamdaSecurityStatus.mamdaSecurityStatus mSecurityStatusEnum;
-		private MamdaSecurityStatusQual.mamdaSecurityStatusQual mSecurityStatusQualifierEnum;
-		private string mSecurityStatusStr;
+        /// <summary>Returns Field State, always MODIFIED
+        /// </summary>
+        /// <returns>Field State MODIFIED</returns>
+        public MamdaFieldState getLuldTimeFieldState()
+        {
+          return MamdaFieldState.MODIFIED;
+        }
+
+                ///< summary>
+        /// Returns the security status Luld Indicator
+        /// </summary>
+        /// <returns></returns>
+        public char getLuldIndicator()
+        {
+            return mLuldIndicator;
+        }
+
+        /// <summary>Returns Field State, always MODIFIED
+        /// </summary>
+        /// <returns>Field State MODIFIED</returns>
+        public MamdaFieldState getLuldIndicatorFieldState()
+        {
+          return MamdaFieldState.MODIFIED;
+        }
+
+        ///< summary>
+        /// Returns the security status Luld High Limit
+        /// </summary>
+        /// <returns></returns>
+        public MamaPrice getLuldHighLimit()
+        {
+            return mLuldHighLimit;
+        }
+
+        /// <summary>Returns Field State, always MODIFIED
+        /// </summary>
+        /// <returns>Field State MODIFIED</returns>
+        public MamdaFieldState getLuldHighLimitFieldState()
+        {
+          return MamdaFieldState.MODIFIED;
+        }
+
+        ///< summary>
+        /// Returns the security status Luld LowLimit
+        /// </summary>
+        /// <returns></returns>
+        public MamaPrice getLuldLowLimit()
+        {
+            return mLuldLowLimit;
+        }
+
+        /// <summary>Returns Field State, always MODIFIED
+        /// </summary>
+        /// <returns>Field State MODIFIED</returns>
+        public MamdaFieldState getLuldLowLimitFieldState()
+        {
+          return MamdaFieldState.MODIFIED;
+        }
+
+        /// <summary>
+        /// Set the Limit Up Limit Down Time
+        /// </summary>
+        /// <param name="LuldTime"></param>
+
+        public void setLuldTime(DateTime luldTime)
+        {
+            if (luldTime != DateTime.MinValue)
+                mLuldTime = luldTime;
+        }
+
+        /// <summary>
+        /// Set the Limit Up Limit Down Indicator
+        /// </summary>
+        /// <param name="LuldIndicator"></param>
+
+        public void setLuldIndicator(char luldIndicator)
+        {
+            mLuldIndicator = luldIndicator;
+        }
+
+        /// <summary>
+        /// Set the Limit Up Limit Down High Limit
+        /// </summary>
+        /// <param name="LuldHighLimit"></param>
+
+        public void setLuldHighLimit(MamaPrice luldHighLimit)
+        {
+            mLuldHighLimit.copy(luldHighLimit);
+        }
+
+        /// <summary>
+        /// Set the Limit Up Limit Down Low Limit
+        /// </summary>
+        /// <param name="LuldHighLimit"></param>
+
+        public void setLuldLowLimit(MamaPrice luldLowLimit)
+        {
+            mLuldLowLimit.copy(luldLowLimit);
+        }
+
+        private long mSecurityStatus;
+        private long mSecurityStatusQualifier;
+        private MamdaSecurityStatus.mamdaSecurityStatus mSecurityStatusEnum;
+        private MamdaSecurityStatusQual.mamdaSecurityStatusQual mSecurityStatusQualifierEnum;
+        private string mSecurityStatusStr;
         private char mShortSaleCircuitBreaker;
         private string mSecurityStatusOrigStr;
-		private string mSecurityStatusQualifierStr;
-		private DateTime mActTime = DateTime.MinValue;
-		private DateTime mSrcTime = DateTime.MinValue;
+        private string mSecurityStatusQualifierStr;
+        private DateTime mActTime = DateTime.MinValue;
+        private DateTime mSrcTime = DateTime.MinValue;
         private string mReason = null;
+        private DateTime mLuldTime = DateTime.MinValue;
+        private char mLuldIndicator = ' ';
+        private MamaPrice mLuldHighLimit = new MamaPrice();
+        private MamaPrice mLuldLowLimit = new MamaPrice();
 	}
 }
