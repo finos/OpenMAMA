@@ -110,7 +110,7 @@ typedef enum
     /* A resource has not been initialised. */
     MAMA_STATUS_NOT_INITIALISED             = 5005,
 
-    /* The transport line is reported to be down. */
+    /* A symbol has no subscribers. */
     MAMA_STATUS_NO_SUBSCRIBERS              = 5006,
 
     /* The symbol has expired. */

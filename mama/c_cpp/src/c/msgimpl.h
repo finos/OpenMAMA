@@ -29,6 +29,13 @@
 
 #define MAX_SUBJECT 256
 
+#define CHECK_MODIFY(owner)                                                               \
+do                                                                                        \
+{                                                                                         \
+    if (!owner && !mamaInternal_getAllowMsgModify()) return MAMA_STATUS_NOT_MODIFIABLE;   \
+}                                                                                         \
+while(0);   
+
 #if defined(__cplusplus)
 extern "C" {
 #endif

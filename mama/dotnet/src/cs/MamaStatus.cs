@@ -175,9 +175,14 @@ namespace Wombat
           MAMA_STATUS_INVALID_QUEUE               = 27,
 
           /// <summary>
+          /// Not Modifiable
+          /// </summary>
+          MAMA_STATUS_NOT_MODIFIABLE              = 28,
+
+          /// <summary>
           /// Symbol deleted
           /// </summary>
-          MAMA_STATUS_DELETE                      = 28,
+          MAMA_STATUS_DELETE                      = 29,
 
           /// <summary>
           /// Not permissioned for the subject.

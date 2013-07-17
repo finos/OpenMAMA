@@ -135,6 +135,8 @@ mamaStat                gPublisherSend;
 mamaStat                gPublisherInboxSend;
 mamaStat                gPublisherReplySend;
 
+mama_bool_t gAllowMsgModify = 0;
+
 mama_status mama_statsInit (void);
 mama_status mama_setupStatsGenerator (void);
 
@@ -634,6 +636,12 @@ mamaInternal_getDefaultPayload (void)
     return gDefaultPayload;
 }
 
+mama_bool_t
+mamaInternal_getAllowMsgModify (void)
+{
+    return gAllowMsgModify;
+}
+
 static mama_status
 mama_openWithPropertiesCount (const char* path,
                               const char* filename,
@@ -643,7 +651,7 @@ mama_openWithPropertiesCount (const char* path,
     mama_size_t     numBridges              = 0;
     mamaMiddleware  middleware              = 0;
     const char*     appString               = NULL;
-    const char*		catchCallbackExceptions = NULL;
+    const char*		prop                     = NULL;
     char**			payloadName;
     char*			payloadId;
 
@@ -732,12 +740,18 @@ mama_openWithPropertiesCount (const char* path,
 		}
     }
 
-	catchCallbackExceptions = properties_Get (gProperties, "mama.catchcallbackexceptions.enable");
-	if (catchCallbackExceptions != NULL && strtobool(catchCallbackExceptions))
-	{
-		gCatchCallbackExceptions = 1;
-	}
+    prop = properties_Get (gProperties, "mama.catchcallbackexceptions.enable");
+    if (prop != NULL && strtobool(prop))
+    {
+        gCatchCallbackExceptions = 1;
+    }
 
+    prop = properties_Get (gProperties, "mama.message.allowmodify");
+    if (prop && strtobool (prop))
+    {
+        gAllowMsgModify = 1;
+        mama_log (MAMA_LOG_LEVEL_FINE, "mama.message.allowmodify: true");
+    }
 
      mama_log (MAMA_LOG_LEVEL_FINE, "%s (%s)",mama_version, gEntitled);
 

@@ -84,6 +84,9 @@ mamaInternal_findPayload (char id);
 mamaPayloadBridge
 mamaInternal_getDefaultPayload (void);
 
+mama_bool_t
+mamaInternal_getAllowMsgModify (void);
+
 #if defined(__cplusplus)
 }
 #endif

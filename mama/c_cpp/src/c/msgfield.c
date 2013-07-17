@@ -804,6 +804,7 @@ mamaMsgField_getAsString (
     mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)(msgField);
     msgPayload        payload = NULL;
     if (!impl) return MAMA_STATUS_INVALID_ARG;
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -829,9 +830,10 @@ mamaMsgField_updateBool (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
-    
+    CHECK_MODIFY (owner);
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateBool (
@@ -855,9 +857,10 @@ mamaMsgField_updateChar (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateChar (
@@ -881,9 +884,10 @@ mamaMsgField_updateI8 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateI8 (
@@ -907,9 +911,10 @@ mamaMsgField_updateU8 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateU8 (
@@ -933,9 +938,10 @@ mamaMsgField_updateI16 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateI16 (
@@ -959,9 +965,10 @@ mamaMsgField_updateU16 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateU16 (
@@ -985,9 +992,10 @@ mamaMsgField_updateI32 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateI32 (
@@ -1010,9 +1018,10 @@ mamaMsgField_updateU32 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateU32 (
@@ -1036,9 +1045,10 @@ mamaMsgField_updateI64 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateI64 (
@@ -1062,9 +1072,10 @@ mamaMsgField_updateU64 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateU64 (
@@ -1088,9 +1099,10 @@ mamaMsgField_updateF32 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateF32 (
@@ -1114,9 +1126,10 @@ mamaMsgField_updateF64 (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateF64 (
@@ -1140,9 +1153,10 @@ mamaMsgField_updateDateTime (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdateDateTime (
@@ -1165,9 +1179,10 @@ mamaMsgField_updatePrice (
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
-    if (!owner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (owner);
     
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
+
     if (impl->myPayloadBridge)
     {
         return impl->myPayloadBridge->msgFieldPayloadUpdatePrice (

@@ -730,7 +730,7 @@ mamaMsg_getTempCopy (mamaMsg src, mamaMsg* copy)
     mama_status ret;
     mamaMsgImpl*    impl = (mamaMsgImpl*)src;
 
-    if (impl->mMessageOwner)
+    if (impl->mMessageOwner || mamaInternal_getAllowMsgModify())
     {
         *copy = src;
         return MAMA_STATUS_OK;
@@ -884,7 +884,7 @@ mamaMsg_addBool(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddBool (impl->mPayload,
                                                     name,
@@ -902,7 +902,7 @@ mamaMsg_addChar(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddChar (impl->mPayload,
                                                     name,
@@ -920,7 +920,7 @@ mamaMsg_addI8(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddI8 (impl->mPayload,
                                                   name,
@@ -938,7 +938,7 @@ mamaMsg_addU8(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddU8 (impl->mPayload,
                                                   name,
@@ -956,7 +956,7 @@ mamaMsg_addI16(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddI16 (impl->mPayload,
                                                    name,
@@ -974,7 +974,7 @@ mamaMsg_addU16(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddU16 (impl->mPayload,
                                                    name,
@@ -994,7 +994,7 @@ mamaMsg_addI32 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddI32 (impl->mPayload,
                                                    name,
@@ -1012,7 +1012,7 @@ mamaMsg_addU32(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddU32 (impl->mPayload,
                                                    name,
@@ -1030,7 +1030,7 @@ mamaMsg_addI64 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddI64 (impl->mPayload,
                                                    name,
@@ -1048,7 +1048,7 @@ mamaMsg_addU64(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddU64 (impl->mPayload,
                                                    name,
@@ -1066,7 +1066,7 @@ mamaMsg_addF32(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddF32 (impl->mPayload,
                                                    name,
@@ -1084,7 +1084,7 @@ mamaMsg_addF64 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddF64 (impl->mPayload,
                                                    name,
@@ -1102,7 +1102,7 @@ mamaMsg_addString (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddString (impl->mPayload,
                                                       name,
@@ -1121,7 +1121,7 @@ mamaMsg_addOpaque(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddOpaque (impl->mPayload,
                                                       name,
@@ -1140,7 +1140,7 @@ mamaMsg_addDateTime(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddDateTime (impl->mPayload,
                                                         name,
@@ -1158,7 +1158,7 @@ mamaMsg_addPrice(
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddPrice (impl->mPayload,
                                                      name,
@@ -1177,7 +1177,7 @@ mamaMsg_addMsg(
     mamaMsgImpl*    subMsg   = (mamaMsgImpl*)value;
     if (!impl || !subMsg || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
 
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
    return impl->mPayloadBridge->msgPayloadAddMsg (impl->mPayload,
                                                        name,
@@ -1198,7 +1198,7 @@ mamaMsg_addVectorBool (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorBool (impl->mPayload,
                                                           name,
@@ -1218,7 +1218,7 @@ mamaMsg_addVectorChar (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorChar (impl->mPayload,
                                                           name,
@@ -1238,7 +1238,7 @@ mamaMsg_addVectorI8 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorI8 (impl->mPayload,
                                                         name,
@@ -1258,7 +1258,7 @@ mamaMsg_addVectorU8 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorU8 (impl->mPayload,
                                                         name,
@@ -1278,7 +1278,7 @@ mamaMsg_addVectorI16 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorI16 (impl->mPayload,
                                                          name,
@@ -1298,7 +1298,7 @@ mamaMsg_addVectorU16 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorU16 (impl->mPayload,
                                                          name,
@@ -1318,7 +1318,7 @@ mamaMsg_addVectorI32 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorI32 (impl->mPayload,
                                                          name,
@@ -1338,7 +1338,7 @@ mamaMsg_addVectorU32 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorU32 (impl->mPayload,
                                                          name,
@@ -1358,7 +1358,7 @@ mamaMsg_addVectorI64 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorI64 (impl->mPayload,
                                                          name,
@@ -1378,7 +1378,7 @@ mamaMsg_addVectorU64 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorU64 (impl->mPayload,
                                                          name,
@@ -1398,7 +1398,7 @@ mamaMsg_addVectorF32 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorF32 (impl->mPayload,
                                                          name,
@@ -1418,7 +1418,7 @@ mamaMsg_addVectorF64 (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorF64 (impl->mPayload,
                                                          name,
@@ -1438,7 +1438,7 @@ mamaMsg_addVectorString (
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorString (impl->mPayload,
                                                             name,
@@ -1458,7 +1458,7 @@ mamaMsg_addVectorDateTime (
     mamaMsgImpl* impl = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorDateTime (
                                                         impl->mPayload,
@@ -1477,8 +1477,9 @@ mamaMsg_addVectorPrice (
     mama_size_t         numElements)
 {
     mamaMsgImpl* impl = (mamaMsgImpl*)msg;
+
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadAddVectorPrice (impl->mPayload,
                                                            name,
@@ -1503,7 +1504,8 @@ mamaMsg_addVectorMsg(
         return MAMA_STATUS_NULL_ARG;
     }
 
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
+
     return impl->mPayloadBridge->msgPayloadAddVectorMsg (impl->mPayload,
                                                          name,
                                                          fid,
@@ -1864,7 +1866,7 @@ mamaMsg_updateBool(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl) return MAMA_STATUS_OK;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     if (impl->mPayloadBridge)
     {
@@ -1886,7 +1888,7 @@ mamaMsg_updateChar(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     if (impl->mPayloadBridge)
     {
@@ -1908,7 +1910,7 @@ mamaMsg_updateI8(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     if (impl->mPayloadBridge)
     {
@@ -1930,7 +1932,7 @@ mamaMsg_updateU8(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     if (impl->mPayloadBridge)
     {
@@ -1952,7 +1954,7 @@ mamaMsg_updateI16(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     if (impl->mPayloadBridge)
     {
@@ -1974,7 +1976,7 @@ mamaMsg_updateU16(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     if (impl->mPayloadBridge)
     {
@@ -1996,7 +1998,7 @@ mamaMsg_updateI32 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     if (impl->mPayloadBridge)
     {
@@ -2018,7 +2020,7 @@ mamaMsg_updateU32(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     if (impl->mPayloadBridge)
     {
@@ -2040,7 +2042,7 @@ mamaMsg_updateI64 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateI64 (impl->mPayload,
                                                       name,
@@ -2058,7 +2060,7 @@ mamaMsg_updateU64(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateU64 (impl->mPayload,
                                                       name,
@@ -2076,7 +2078,7 @@ mamaMsg_updateF32(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateF32 (impl->mPayload,
                                                       name,
@@ -2094,7 +2096,7 @@ mamaMsg_updateF64 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateF64 (impl->mPayload,
                                                       name,
@@ -2112,7 +2114,7 @@ mamaMsg_updateString (
     mamaMsgImpl*    impl    =  (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateString (impl->mPayload,
                                                          name,
@@ -2127,7 +2129,7 @@ mamaMsg_applyMsg (mamaMsg msg, mamaMsg src)
     mamaMsgImpl*    source  = (mamaMsgImpl*)src;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadApply (impl->mPayload,
                                                   source->mPayload);
@@ -2153,7 +2155,7 @@ mamaMsg_updateSubMsg (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateSubMsg (impl->mPayload,
                                                          name,
@@ -2172,7 +2174,7 @@ mamaMsg_updateOpaque (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateOpaque (impl->mPayload,
                                                          name,
@@ -2191,7 +2193,7 @@ mamaMsg_updateDateTime(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateDateTime (impl->mPayload,
                                                            name,
@@ -2209,7 +2211,7 @@ mamaMsg_updatePrice(
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdatePrice (impl->mPayload,
                                                         name,
@@ -2228,7 +2230,7 @@ mamaMsg_updateVectorMsg (
     mamaMsgImpl*    impl        = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorMsg (impl->mPayload,
                                                             name,
@@ -2248,7 +2250,7 @@ mamaMsg_updateVectorString (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorString (
                                                             impl->mPayload,
@@ -2269,7 +2271,7 @@ mamaMsg_updateVectorBool (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorBool (
                                                             impl->mPayload,
@@ -2290,7 +2292,7 @@ mamaMsg_updateVectorChar (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorChar (
                                                             impl->mPayload,
@@ -2311,7 +2313,7 @@ mamaMsg_updateVectorI8 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorI8 (impl->mPayload,
                                                            name,
@@ -2331,7 +2333,7 @@ mamaMsg_updateVectorU8 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorU8 (impl->mPayload,
                                                            name,
@@ -2352,7 +2354,7 @@ mamaMsg_updateVectorI16 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorI16 (impl->mPayload,
                                                             name,
@@ -2372,7 +2374,7 @@ mamaMsg_updateVectorU16 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorU16 (impl->mPayload,
                                                             name,
@@ -2392,7 +2394,7 @@ mamaMsg_updateVectorI32 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorI32 (impl->mPayload,
                                                             name,
@@ -2412,7 +2414,7 @@ mamaMsg_updateVectorU32 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorU32 (impl->mPayload,
                                                             name,
@@ -2432,7 +2434,7 @@ mamaMsg_updateVectorI64 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorI64 (impl->mPayload,
                                                             name,
@@ -2452,7 +2454,7 @@ mamaMsg_updateVectorU64 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorU64 (impl->mPayload,
                                                             name,
@@ -2472,7 +2474,7 @@ mamaMsg_updateVectorF32 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorF32 (impl->mPayload,
                                                             name,
@@ -2492,7 +2494,7 @@ mamaMsg_updateVectorF64 (
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
-    if (!impl->mMessageOwner) return MAMA_STATUS_NOT_MODIFIABLE;
+    CHECK_MODIFY (impl->mMessageOwner);
 
     return impl->mPayloadBridge->msgPayloadUpdateVectorF64 (impl->mPayload,
                                                             name,
