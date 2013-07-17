@@ -688,7 +688,7 @@ typedef mama_status
    (mama_start() needs to be called for each implementation
     mama_open() needs to be called for each implementation)
  */
-typedef struct mamaBridgeImpl
+typedef struct mamaBridgeImpl_
 {
     /* Used by mama_start() and mama_stop(). */
     unsigned int mRefCount;
