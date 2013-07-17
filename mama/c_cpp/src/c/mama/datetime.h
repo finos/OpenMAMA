@@ -692,6 +692,9 @@ mamaDateTime_getStructTmWithTz(const mamaDateTime dateTime,
  * for times is HH:MM:SS.mmmmmmm (where the precision of the
  * subseconds may vary depending upon any precision hints available).
  *
+ * The timezone must to set to UTC if calling this from multiple
+ * threads concurrently to avoid contention in strftime.
+ *
  * @param dateTime      The dateTime to set.
  * @param str           The string buffer to update.
  * @param maxLen        The maximum size of the string buffer (including
@@ -708,6 +711,9 @@ mamaDateTime_getAsString(const mamaDateTime dateTime,
  * HH:MM:SS.mmmmmmm (where the precision of the subseconds may vary
  * depending upon any precision hints available).
  *
+ * The timezone must to set to UTC if calling this from multiple
+ * threads concurrently to avoid contention in strftime.
+ *
  * @param dateTime      The dateTime to set.
  * @param str           The string buffer to update.
  * @param maxLen        The maximum size of the string buffer (including
@@ -722,6 +728,9 @@ mamaDateTime_getTimeAsString(const mamaDateTime dateTime,
 /**
  * Get the date (no time) as a string.  The format
  * for dates is YYYY-mm-dd (the ISO 8601 date format).
+ *
+ * The timezone must to set to UTC if calling this from multiple
+ * threads concurrently to avoid contention in strftime.
  *
  * @param dateTime      The dateTime to set.
  * @param str           The string buffer to update.

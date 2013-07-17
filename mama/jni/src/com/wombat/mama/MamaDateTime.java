@@ -245,17 +245,20 @@ public class MamaDateTime implements Comparable
     public native long getEpochTimeMilliseconds ();
 
     public native double getEpochTimeSeconds ();
-	
-	/**
-	 * Get the date and time as seconds since the Epoch, (using the UTC timezone). 
-	 * If no date value is contained in the dateTime then it will be set to today's date
-	 * and the calculation made.	 
-	 *	 
-	 * @return The number of seconds, (including partial seconds), since the Epoch.
-	 * @exception com.wombat.mama MamaException thrown if the underlying JNI object has been destroyed.
-	 * @exception com.wombat.common.WombatException for other general MAMA errors.
-	 */
-	public native double getEpochTimeSecondsWithCheck ();
+
+    /**
+    * Get the date and time as seconds since the Epoch, (using the UTC timezone).
+    * If no date value is contained in the dateTime then it will be set to today's date
+    * and the calculation made.
+    *
+    * The timezone must to set to UTC if calling this from multiple
+    * threads concurrently to avoid contention in strftime.
+    *
+    * @return The number of seconds, (including partial seconds), since the Epoch.
+    * @exception com.wombat.mama MamaException thrown if the underlying JNI object has been destroyed.
+    * @exception com.wombat.common.WombatException for other general MAMA errors.
+    */
+    public native double getEpochTimeSecondsWithCheck ();
 
     public native String getAsString ();
 

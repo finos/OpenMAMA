@@ -252,6 +252,8 @@ public:
      * alternative getAsString() methods are more efficient because
      * these method must allocate a temporary buffer (automatically
      * destroyed upon object destruction).
+     * The timezone must to set to UTC if calling this from multiple
+     * threads concurrently to avoid contention in strftime.p
      */
     const char*   getAsString     () const;
     const char*   getTimeAsString () const;
