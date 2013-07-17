@@ -59,6 +59,9 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "ibmwfo") == 0)
         return MAMA_MIDDLEWARE_IBMWFO;
 
+    if (strcasecmp (str, "activ") == 0)
+        return MAMA_MIDDLEWARE_ACTIV;
+
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
 
@@ -88,6 +91,8 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "exegy";
         case MAMA_MIDDLEWARE_IBMWFO:
             return "ibmwfo";
+        case MAMA_MIDDLEWARE_ACTIV:
+            return "activ";
         default:
             return "unknown";
     }

@@ -51,6 +51,7 @@ typedef enum mamaPayloadType_
     MAMA_PAYLOAD_RAI        = 'I',
     MAMA_PAYLOAD_EXEGY      = 'X',
     MAMA_PAYLOAD_IBMWFO     = 'S',
+    MAMA_PAYLOAD_ACTIV      = 'T',
     MAMA_PAYLOAD_UNKNOWN    = 'U'
 } mamaPayloadType;
 

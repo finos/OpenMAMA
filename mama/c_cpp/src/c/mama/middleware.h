@@ -43,7 +43,8 @@ typedef enum mamaMiddleware_
     MAMA_MIDDLEWARE_QPID    = 7,
     MAMA_MIDDLEWARE_EXEGY   = 8,
     MAMA_MIDDLEWARE_IBMWFO  = 9,
-    MAMA_MIDDLEWARE_MAX     = 10,
+    MAMA_MIDDLEWARE_ACTIV   = 10,
+    MAMA_MIDDLEWARE_MAX     = 11,
     MAMA_MIDDLEWARE_UNKNOWN = 99
 } mamaMiddleware;
 

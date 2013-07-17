@@ -386,6 +386,8 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "EXEGY";
         case MAMA_PAYLOAD_IBMWFO:
             return "ibmwfo";
+        case MAMA_PAYLOAD_ACTIV:
+            return "activ";
         default:
             return "unknown";
     }
