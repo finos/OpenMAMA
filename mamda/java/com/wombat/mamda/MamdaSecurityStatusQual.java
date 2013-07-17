@@ -132,6 +132,7 @@ public class MamdaSecurityStatusQual
     public static final short SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1       = 123;  // toString()  CircuitBreakerLevel1
     public static final short SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2       = 124;  // toString()  CircuitBreakerLevel2
     public static final short SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3       = 125;  // toString()  CircuitBreakerLevel3
+    public static final short SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE     = 126;  // toString()  VolatilityPauseStraddle
     
     //Only used internally
     private static final String SECURITY_STATUS_QUAL_STR_NONE                               = "None";
@@ -244,6 +245,7 @@ public class MamdaSecurityStatusQual
     private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1            = "CircuitBreakerLevel1";
     private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2            = "CircuitBreakerLevel2";
     private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3            = "CircuitBreakerLevel3";
+    private static final String SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE          = "VolatilityPauseStraddle";
 
     private static final String SECURITY_STATUS_QUAL_STR_UNKNOWN                            = "Unknown";
 
@@ -469,6 +471,8 @@ public class MamdaSecurityStatusQual
                 return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2;
             case SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3:
                 return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3;
+            case SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE:
+                return SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE;
         }
         return SECURITY_STATUS_QUAL_STR_UNKNOWN;
     }
@@ -696,6 +700,8 @@ public class MamdaSecurityStatusQual
             return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
         if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3))
             return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
+        if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE))
+            return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
 
         // A misconfigured FH might send numbers as strings:
         if (securityStatusQual.equals ("0"))
@@ -914,6 +920,8 @@ public class MamdaSecurityStatusQual
           return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
         if(securityStatusQual.equals("125"))
           return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
+        if(securityStatusQual.equals("126"))
+          return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
 
         return SECURITY_STATUS_QUAL_UNKNOWN;
     }
