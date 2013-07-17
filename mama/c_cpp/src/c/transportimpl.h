@@ -133,6 +133,11 @@ mamaTransportImpl_disconnectNoStale (mamaTransport      transport,
 
 MAMAExpDLL
 extern void
+mamaTransportImpl_setPossiblyStale (mamaTransport      transport,
+                                    mamaSubscription   subscription);
+
+MAMAExpDLL
+extern void
 mamaTransportImpl_getTransportTopicCallback (mamaTransport transport,
                                              mamaTransportTopicCB* callback,
                                              void** closure);
