@@ -76,8 +76,10 @@ namespace Wombat
         mama_u32_t              mSecStatusCount;           MamdaFieldState     mSecStatusCountFieldState;
         mama_seqnum_t           mGapBegin;                 MamdaFieldState     mGapBeginFieldState;
         mama_seqnum_t           mGapEnd;                   MamdaFieldState     mGapEndFieldState;
-        char                    myLuldIndicator;            MamdaFieldState     myLuldIndicatorFieldState;
-        MamaDateTime            myLuldTime;                 MamdaFieldState     myLuldTimeFieldState;
+        char                    mLuldIndicator;            MamdaFieldState     mLuldIndicatorFieldState;
+        MamaDateTime            mLuldTime;                 MamdaFieldState     mLuldTimeFieldState;
+        MamaPrice               mLuldHighLimit;            MamdaFieldState     mLuldHighLimitFieldState;
+        MamaPrice               mLuldLowLimit;             MamdaFieldState     mLuldLowLimitFieldState;
     };
 
     class MamdaSecStatusListener::MamdaSecStatusListenerImpl 
@@ -164,6 +166,8 @@ namespace Wombat
         struct FieldUpdateMsgQual;
         struct FieldUpdateLuldTime;
         struct FieldUpdateLuldIndicator;
+        struct FieldUpdateLuldHighLimit;
+        struct FieldUpdateLuldLowLimit;
 
         bool updated;
     };
@@ -301,14 +305,23 @@ namespace Wombat
 
     const char MamdaSecStatusListener::getLuldIndicator() const
     {
-        return mImpl.mSecStatusCache.myLuldIndicator;
+            return mImpl.mSecStatusCache.mLuldIndicator;
     }
 
     const MamaDateTime& MamdaSecStatusListener::getLuldTime() const
     {
-        return mImpl.mSecStatusCache.myLuldTime;
+            return mImpl.mSecStatusCache.mLuldTime;
     }
 
+    const MamaPrice& MamdaSecStatusListener::getLuldHighLimit() const
+    {
+        return mImpl.mSecStatusCache.mLuldHighLimit;
+    }
+
+    const MamaPrice& MamdaSecStatusListener::getLuldLowLimit() const
+    {
+        return mImpl.mSecStatusCache.mLuldLowLimit;
+    }
     /*  FieldState Accessors    */
 
     MamdaFieldState MamdaSecStatusListener::getIssueSymbolFieldState() const
@@ -423,12 +436,22 @@ namespace Wombat
 
     MamdaFieldState MamdaSecStatusListener::getLuldTimeFieldState() const
     {
-        return mImpl.mSecStatusCache.myLuldTimeFieldState;
+          return mImpl.mSecStatusCache.mLuldTimeFieldState;
     }
 
     MamdaFieldState MamdaSecStatusListener::getLuldIndicatorFieldState() const
     {
-        return mImpl.mSecStatusCache.myLuldIndicatorFieldState;
+          return mImpl.mSecStatusCache.mLuldIndicatorFieldState;
+    }
+
+    MamdaFieldState MamdaSecStatusListener::getLuldHighLimitFieldState() const
+    {
+      return mImpl.mSecStatusCache.mLuldHighLimitFieldState;
+    }
+
+    MamdaFieldState MamdaSecStatusListener::getLuldLowLimitFieldState() const
+    {
+      return mImpl.mSecStatusCache.mLuldLowLimitFieldState;
     }
     /*  End FieldState Accessors    */
 
@@ -574,8 +597,10 @@ namespace Wombat
         secStatusCache.mSecurityStatusTime.clear();
         secStatusCache.mFreeText                = ""; 
 
-        secStatusCache.myLuldTime.clear();
-        secStatusCache.myLuldIndicator = ' ';
+        secStatusCache.mLuldTime.clear();
+        secStatusCache.mLuldIndicator = ' ';
+        secStatusCache.mLuldHighLimit.clear();
+        secStatusCache.mLuldLowLimit.clear();
         
         secStatusCache.mIssueSymbolFieldState           = NOT_INITIALISED;
         secStatusCache.mSymbolFieldState                = NOT_INITIALISED;
@@ -600,8 +625,10 @@ namespace Wombat
         secStatusCache.mSecurityStatusNativeFieldState  = NOT_INITIALISED;
         secStatusCache.mSecurityStatusTimeFieldState    = NOT_INITIALISED;
         secStatusCache.mFreeTextFieldState              = NOT_INITIALISED;
-        secStatusCache.myLuldTimeFieldState             = NOT_INITIALISED;
-        secStatusCache.myLuldIndicatorFieldState        = NOT_INITIALISED;
+        secStatusCache.mLuldTimeFieldState             = NOT_INITIALISED;
+        secStatusCache.mLuldIndicatorFieldState        = NOT_INITIALISED;
+        secStatusCache.mLuldHighLimitFieldState         = NOT_INITIALISED;
+        secStatusCache.mLuldLowLimitFieldState          = NOT_INITIALISED;
     }
 
     void MamdaSecStatusListener::
@@ -670,11 +697,17 @@ namespace Wombat
         if (mSecStatusCache.mGapEndFieldState == MODIFIED)         
             mSecStatusCache.mGapEndFieldState = NOT_MODIFIED; 
 
-        if (mSecStatusCache.myLuldTimeFieldState == MODIFIED)
-            mSecStatusCache.myLuldTimeFieldState = NOT_MODIFIED;
+        if (mSecStatusCache.mLuldTimeFieldState == MODIFIED)
+            mSecStatusCache.mLuldTimeFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.myLuldIndicatorFieldState == MODIFIED)
-            mSecStatusCache.myLuldIndicatorFieldState = NOT_MODIFIED;
+        if (mSecStatusCache.mLuldIndicatorFieldState == MODIFIED)
+            mSecStatusCache.mLuldIndicatorFieldState = NOT_MODIFIED;
+
+        if (mSecStatusCache.mLuldHighLimitFieldState == MODIFIED)
+            mSecStatusCache.mLuldHighLimitFieldState = NOT_MODIFIED;
+
+        if (mSecStatusCache.mLuldLowLimitFieldState == MODIFIED)
+            mSecStatusCache.mLuldLowLimitFieldState = NOT_MODIFIED;
     }
 
     void MamdaSecStatusListener::
@@ -1029,11 +1062,11 @@ namespace Wombat
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
                        const MamaMsgField&                                  field)
         {
-            if (field.getChar() != impl.mSecStatusCache.myLuldIndicator ||
-                impl.mSecStatusCache.myLuldIndicatorFieldState == NOT_INITIALISED)
+            if (field.getChar() != impl.mSecStatusCache.mLuldIndicator ||
+                impl.mSecStatusCache.mLuldIndicatorFieldState == NOT_INITIALISED)
             {
-                impl.mSecStatusCache.myLuldIndicator = field.getChar();
-                impl.mSecStatusCache.myLuldIndicatorFieldState = MODIFIED;
+                impl.mSecStatusCache.mLuldIndicator = field.getChar();
+                impl.mSecStatusCache.mLuldIndicatorFieldState = MODIFIED;
                 impl.updated = true;
             }
         }
@@ -1045,12 +1078,37 @@ namespace Wombat
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
                        const MamaMsgField&                                  field)
         {
-            field.getDateTime(impl.mSecStatusCache.myLuldTime);
-            impl.mSecStatusCache.myLuldTimeFieldState = MODIFIED;
+            field.getDateTime(impl.mSecStatusCache.mLuldTime);
+            impl.mSecStatusCache.mLuldTimeFieldState = MODIFIED;
+            impl.updated = true;
         }
     };
 
+    struct MamdaSecStatusListener::
+        MamdaSecStatusListenerImpl::FieldUpdateLuldHighLimit
+        : public SecStatusFieldUpdate
+    {
+        void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
+                       const MamaMsgField&                          field)
+        {
+          field.getPrice(impl.mSecStatusCache.mLuldHighLimit);
+          impl.mSecStatusCache.mLuldHighLimitFieldState = MODIFIED;
+          impl.updated = true;
+        }
+    };
 
+    struct MamdaSecStatusListener::
+        MamdaSecStatusListenerImpl::FieldUpdateLuldLowLimit
+        : public SecStatusFieldUpdate
+    {
+        void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
+                       const MamaMsgField&                          field)
+        {
+          field.getPrice(impl.mSecStatusCache.mLuldLowLimit);
+          impl.mSecStatusCache.mLuldLowLimitFieldState = MODIFIED;
+          impl.updated = true;
+        }
+    };
 
     SecStatusFieldUpdate**  MamdaSecStatusListener::MamdaSecStatusListenerImpl::
         mFieldUpdaters = NULL;
@@ -1145,6 +1203,15 @@ namespace Wombat
         initFieldUpdater(MamdaSecStatusFields::LULDTIME,
                          new MamdaSecStatusListener::
                          MamdaSecStatusListenerImpl::FieldUpdateLuldTime);
+        initFieldUpdater(MamdaSecStatusFields::LULDHIGHLIMIT,
+                         new MamdaSecStatusListener::
+		                 MamdaSecStatusListenerImpl::
+		                 FieldUpdateLuldHighLimit);
+
+        initFieldUpdater(MamdaSecStatusFields::LULDLOWLIMIT,
+                         new MamdaSecStatusListener::
+		                 MamdaSecStatusListenerImpl::
+		                 FieldUpdateLuldLowLimit);
     }
 
     void MamdaSecStatusListener::MamdaSecStatusListenerImpl::initFieldUpdater (

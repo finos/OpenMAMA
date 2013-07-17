@@ -134,6 +134,7 @@ namespace Wombat
     static const char* SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1       = "CircuitBreakerLevel1";
     static const char* SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2       = "CircuitBreakerLevel2";
     static const char* SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3       = "CircuitBreakerLevel3";
+    static const char* SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE    = "VolatilityPauseStraddle";
     static const char* SECURITY_STATUS_QUAL_STR_UNKNOWN                       = "Unknown";
 
     const char* toString (MamdaSecurityStatusQual  securityStatusQual)
@@ -359,6 +360,8 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2;
         case SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3:
             return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3;
+        case SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE:
+            return SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE;
         }
         return SECURITY_STATUS_QUAL_STR_UNKNOWN;
     }
@@ -591,6 +594,8 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
         if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3 ) == 0)
             return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
+        if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE) == 0)
+            return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
                  
             
 
@@ -809,6 +814,8 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
         if(strcmp(securityStatusQual, "125") == 0)
             return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
+        if(strcmp(securityStatusQual, "126") == 0)
+            return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
 
         return SECURITY_STATUS_QUAL_UNKNOWN;
     }

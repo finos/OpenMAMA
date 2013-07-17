@@ -145,7 +145,8 @@ namespace Wombat
         SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK    = 122, //toString() - LimitStateBid:LimitStateAsk
         SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1        = 123, //toString() - CircuitBreakerLevel1
         SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2        = 124, //toString() - CircuitBreakerLevel2
-        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3        = 125 //toString() - CircuitBreakerLevel3
+        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3        = 125, //toString() - CircuitBreakerLevel3
+        SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE      = 126  //toString() - VolatilityPauseStraddle
     };
 
 
