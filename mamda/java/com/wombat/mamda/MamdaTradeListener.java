@@ -77,6 +77,48 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private class MamdaTradeCache 
     {
+        /**
+         * Create a list of Irreg FieldStates to check the Irreg state.
+         */
+        public MamdaTradeCache ()
+        {
+            int ii = 0;
+            mIrregFieldStates[ii++] = mIrregPriceFieldState;
+            mIrregFieldStates[ii++] = mIrregVolumeFieldState;
+            mIrregFieldStates[ii++] = mIrregPartIdFieldState;
+            mIrregFieldStates[ii++] = mIrregTimeFieldState;
+        }
+
+        /**
+         * IsIrregular determines whether the Trade is irregular. The wIsIrregualar 
+         * field is first checked if present. Otherwise, the presence of an 
+         * Irregular field implies that the Trade is irregular.
+         *
+         * @param None
+         *
+         * @return true if the Trade is Irregular.
+         */
+        public boolean IsIrregular ()
+        {
+            boolean result = false;
+
+            // Use the wIsIrregular field if present
+            if (MamdaFieldState.MODIFIED == mIsIrregularFieldState.getState ())
+            {
+                result = mIsIrregular.getValue ();
+            }
+            else
+            {
+                // An Irreg field implies that the Trade is irregular
+                for (int ii = 0 ; ( !result && (ii < mIrregFieldStates.length)) ; ++ii)
+                {
+                    result = (MamdaFieldState.MODIFIED == mIrregFieldStates[ii].getState ());
+                }
+            }
+
+            return result;
+        }
+
         // The following fields are used for caching the offical last
         // price and related fields.  These fields can be used by
         // applications for reference and will be passed for recaps.
@@ -92,7 +134,6 @@ public class MamdaTradeListener implements MamdaMsgListener,
         public MamaString       mOrigTradeId       = new MamaString ();
         public MamaString       mCorrTradeId       = new MamaString ();
         public MamaBoolean      mIsIrregular       = new MamaBoolean();
-        public boolean          mWasIrregular      = false;
         public MamaPrice        mLastPrice         = new MamaPrice();
         public MamaDouble       mLastVolume        = new MamaDouble();
         public MamaString       mLastPartId        = new MamaString();
@@ -211,7 +252,6 @@ public class MamdaTradeListener implements MamdaMsgListener,
         public MamdaFieldState  mSendTimeFieldState          = new MamdaFieldState();
         public MamdaFieldState  mPubIdFieldState             = new MamdaFieldState();
         public MamdaFieldState  mIsIrregularFieldState       = new MamdaFieldState();
-        public MamdaFieldState  mWasIrregularFieldState      = new MamdaFieldState();
         public MamdaFieldState  mLastPriceFieldState         = new MamdaFieldState();
         public MamdaFieldState  mLastVolumeFieldState        = new MamdaFieldState();
         public MamdaFieldState  mLastPartIdFieldState        = new MamdaFieldState();
@@ -312,6 +352,8 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
         public MamdaFieldState  mConflateCountFieldState     = new MamdaFieldState();
         public MamdaFieldState  mTradeCondStrFieldState      = new MamdaFieldState();      
+
+        private final MamdaFieldState[] mIrregFieldStates    = new MamdaFieldState[4];
     }
 
     // Additional fields for gaps:
@@ -1300,7 +1342,16 @@ public class MamdaTradeListener implements MamdaMsgListener,
         return mIsIndicative.getValue();
     }    
     
-    
+    /**
+     * IsIrregular Checks the explicit and implicit irregular fields.
+     *
+     * @return true if the Trade is irregular.
+     */
+    public boolean IsIrregular()
+    {
+        return mTradeCache.IsIrregular ();
+    }
+
 /*      FieldState Accessors        */
 
     public short getSymbolFieldState()
@@ -2049,7 +2100,6 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
         // If msg is a trade-related message, invoke the
         // appropriate callback:
-        mTradeCache.mWasIrregular = mTradeCache.mIsIrregular.getValue();
 
         switch (msgType)
         {
@@ -2095,7 +2145,6 @@ public class MamdaTradeListener implements MamdaMsgListener,
         updateFieldStates();
         updateTradeFields (msg);
 
-        mTradeCache.mIsIrregular.setValue(mTradeCache.mWasIrregular);
         mTradeCache.mIsIrregularFieldState.setState(MamdaFieldState.MODIFIED);
 
         checkTradeCount (subscription, msg, false);
@@ -2230,15 +2279,6 @@ public class MamdaTradeListener implements MamdaMsgListener,
         {
             MamdaTradeHandler handler = (MamdaTradeHandler) i.next();
             handler.onTradeClosing (subscription, this, msg, this, this);
-        }
-    }
-
-    private void getTradeFields (MamaMsg msg)
-    {
-        int i =0;
-        while (mUpdaters[i] != null)
-        {
-            mUpdaters[i++].onUpdate(msg, MamdaTradeListener.this);
         }
     }
 
@@ -2450,9 +2490,18 @@ public class MamdaTradeListener implements MamdaMsgListener,
         synchronized (this)
         {
             // Iterate over all of the fields in the message.
-            getTradeFields (msg);
+            MamaMsgIterator msgIterator = new MamaMsgIterator (msg, null);
+
+            while (msgIterator.hasNext())
+            {
+                MamaMsgField field = (MamaMsgField) msgIterator.next();
+                if (null != mUpdaters[field.getFid ()])
+                {
+                    mUpdaters[field.getFid ()].onUpdate (field, this);
+                }
+            }
         }
-        
+
         if (mTradeCache.mGotIssueSymbol)
         {
             mTradeCache.mSymbol.setValue(mTradeCache.mIssueSymbol.getValue());
@@ -2460,7 +2509,7 @@ public class MamdaTradeListener implements MamdaMsgListener,
         }
         
         // Check certain special fields.
-        if (mTradeCache.mIsIrregular.getValue())
+        if (mTradeCache.IsIrregular ())
         {
             // This is an irregular trade (does not update "last" fields).
             mTradeCache.mTradePrice = mTradeCache.mIrregPrice;
@@ -2577,16 +2626,16 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private interface TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener);
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener);
     }
 
     private static class MamdaTradeSymbol implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
             if (listener.mTradeCache.mSymbol.getValue() == null)
             {
-                msg.tryString (null, MamdaCommonFields.SYMBOL.getFid(), listener.mTradeCache.mSymbol);
+                listener.mTradeCache.mSymbol.setValue (field.getString ());
                 listener.mTradeCache.mSymbolFieldState.setState (MamdaFieldState.MODIFIED);
             }
         }
@@ -2594,10 +2643,11 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class MamdaTradeIssueSymbol implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if(msg.tryString (null, MamdaCommonFields.ISSUE_SYMBOL.getFid(), listener.mTradeCache.mIssueSymbol))
+            if (null != field.getString ())
             {
+                listener.mTradeCache.mIssueSymbol.setValue (field.getString ());
                 listener.mTradeCache.mGotIssueSymbol = true;
                 listener.mTradeCache.mIssueSymbolFieldState.setState (MamdaFieldState.MODIFIED);
             }
@@ -2606,12 +2656,11 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeLastPartId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.TRADE_PART_ID.getFid(), listener.mTradeCache.mLastPartId))
+            if (null != field.getString ())
             {
-                listener.mTradeCache.mIsIrregular.setValue(false);
-                listener.mTradeCache.mIsIrregularFieldState.setState (MamdaFieldState.MODIFIED);
+                listener.mTradeCache.mLastPartId.setValue (field.getString ());
                 listener.mTradeCache.mLastPartIdFieldState.setState  (MamdaFieldState.MODIFIED);
             }
         }
@@ -2619,12 +2668,12 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradePartId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaCommonFields.PART_ID.getFid(), listener.mTradeCache.mPartId))
+            if (null != field.getString ())
             {
+                listener.mTradeCache.mPartId.setValue (field.getString ());
                 listener.mTradeCache.mGotPartId = true;
-                listener.mTradeCache.mIsIrregular.setValue(false);
                 listener.mTradeCache.mPartIdFieldState.setState (MamdaFieldState.MODIFIED);
             }
         }
@@ -2632,68 +2681,82 @@ public class MamdaTradeListener implements MamdaMsgListener,
  
     private static class TradeUpdateAsTrade implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            msg.tryBoolean (null, MamdaTradeFields.UPDATE_AS_TRADE.getFid(), listener.mProcessUpdateAsTrade);   
+            listener.mProcessUpdateAsTrade.setValue (field.getBoolean ());
         }
     }
 
     private static class TradeSrcTime implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime (null, MamdaCommonFields.SRC_TIME.getFid(), listener.mTradeCache.mSrcTime))
+            if (null != field.getDateTime ())
+            {
+                listener.mTradeCache.mSrcTime.copy (field.getDateTime ());
                 listener.mTradeCache.mSrcTimeFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeActivityTime implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime (null, MamdaCommonFields.ACTIVITY_TIME.getFid(), listener.mTradeCache.mActTime))
+            if (null != field.getDateTime ())
+            {
+                listener.mTradeCache.mActTime.copy (field.getDateTime ());
                 listener.mTradeCache.mActTimeFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     public static class TradeLineTime implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime (null, MamdaCommonFields.LINE_TIME.getFid(), listener.mTradeCache.mLineTime))
+            if (null != field.getDateTime ())
+            {
+                listener.mTradeCache.mLineTime.copy (field.getDateTime ());
                 listener.mTradeCache.mLineTimeFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     public static class TradeSendTime implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime (null, MamdaCommonFields.SEND_TIME.getFid(), listener.mTradeCache.mSendTime))
+            if (null != field.getDateTime ())
+            {
+                listener.mTradeCache.mSendTime.copy (field.getDateTime ());
                 listener.mTradeCache.mSendTimeFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradePubId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaCommonFields.PUB_ID.getFid(), listener.mTradeCache.mPubId))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mPubId.setValue (field.getString ());
                 listener.mTradeCache.mPubIdFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-           listener.tmpField = msg.getField (null, MamdaTradeFields.TRADE_ID.getFid(), null);
-            if (listener.tmpField != null)
+            if (field != null)
             {
-                switch (listener.tmpField.getType())
+                switch (field.getType ())
                 {
                     case MamaFieldDescriptor.STRING:
-                        listener.mTradeCache.mTradeId.setValue(listener.tmpField.getString ());
+                        listener.mTradeCache.mTradeId.setValue (field.getString ());
                         listener.mTradeCache.mTradeIdFieldState.setState (MamdaFieldState.MODIFIED);
                         break;
                     case MamaFieldDescriptor.I8:
@@ -2704,7 +2767,7 @@ public class MamdaTradeListener implements MamdaMsgListener,
                     case MamaFieldDescriptor.U32:
                     case MamaFieldDescriptor.I64:
                     case MamaFieldDescriptor.U64:
-                        listener.mTradeCache.mTradeId.setValue(String.valueOf(listener.tmpField.getU64()));
+                        listener.mTradeCache.mTradeId.setValue (String.valueOf(field.getU64 ()));
                         listener.mTradeCache.mTradeIdFieldState.setState (MamdaFieldState.MODIFIED);
                     default:
                         break;
@@ -2715,15 +2778,14 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class OrigTradeId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-           listener.tmpField = msg.getField (null, MamdaTradeFields.ORIG_TRADE_ID.getFid(), null);
-            if (listener.tmpField != null)
+            if (field != null)
             {
-                switch (listener.tmpField.getType())
+                switch (field.getType())
                 {
                     case MamaFieldDescriptor.STRING:
-                        listener.mTradeCache.mOrigTradeId.setValue(listener.tmpField.getString ());
+                        listener.mTradeCache.mOrigTradeId.setValue (field.getString ());
                         listener.mTradeCache.mOrigTradeIdFieldState.setState (MamdaFieldState.MODIFIED);
                         break;
                     case MamaFieldDescriptor.I8:
@@ -2734,7 +2796,7 @@ public class MamdaTradeListener implements MamdaMsgListener,
                     case MamaFieldDescriptor.U32:
                     case MamaFieldDescriptor.I64:
                     case MamaFieldDescriptor.U64:
-                        listener.mTradeCache.mOrigTradeId.setValue(String.valueOf(listener.tmpField.getU64()));
+                        listener.mTradeCache.mOrigTradeId.setValue (String.valueOf(field.getU64 ()));
                         listener.mTradeCache.mOrigTradeIdFieldState.setState (MamdaFieldState.MODIFIED);
                     default:
                         break;
@@ -2745,10 +2807,11 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class CorrTradeId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.CORR_TRADE_ID.getFid(), listener.mTradeCache.mCorrTradeId))
+            if (null != field.getString ())
             {
+                listener.mTradeCache.mCorrTradeId.setValue (field.getString ());
                 listener.mTradeCache.mCorrTradeIdFieldState.setState (MamdaFieldState.MODIFIED);
             }
         }
@@ -2756,96 +2819,95 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeAccVolume implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.TOTAL_VOLUME.getFid(), listener.mTradeCache.mAccVolume))
-                listener.mTradeCache.mAccVolumeFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mAccVolume.setValue (field.getF64 ());
+            listener.mTradeCache.mAccVolumeFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeOffExAccVolume implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.OFF_EXCHANGE_TOTAL_VOLUME.getFid(), listener.mTradeCache.mOffExAccVolume))
-                listener.mTradeCache.mOffExAccVolumeFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOffExAccVolume.setValue (field.getF64 ());
+            listener.mTradeCache.mOffExAccVolumeFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeOnExAccVolume implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.ON_EXCHANGE_TOTAL_VOLUME.getFid(), listener.mTradeCache.mOnExAccVolume))
-                listener.mTradeCache.mOnExAccVolumeFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOnExAccVolume.setValue (field.getF64 ());
+            listener.mTradeCache.mOnExAccVolumeFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeNetChange implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.NET_CHANGE.getFid(), listener.mTradeCache.mNetChange))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mNetChange.copy (field.getPrice ());
                 listener.mTradeCache.mNetChangeFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class MamdaShortSaleCircuitBreaker implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryChar  (null, MamdaTradeFields.SHORT_SALE_CIRCUIT_BREAKER.getFid(), listener.mTradeCache.mShortSaleCircuitBreaker))
-                listener.mTradeCache.mShortSaleCircuitBreakerFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mShortSaleCircuitBreaker.setValue (field.getChar ());
+            listener.mTradeCache.mShortSaleCircuitBreakerFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }    
 
     private static class MamdaOrigShortSaleCircuitBreaker implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryChar  (null, MamdaTradeFields.ORIG_SHORT_SALE_CIRCUIT_BREAKER.getFid(), listener.mTradeCache.mOrigShortSaleCircuitBreaker))
-                listener.mTradeCache.mOrigShortSaleCircuitBreakerFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOrigShortSaleCircuitBreaker.setValue (field.getChar ());
+            listener.mTradeCache.mOrigShortSaleCircuitBreakerFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }    
 
     private static class MamdaCorrShortSaleCircuitBreaker implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryChar  (null, MamdaTradeFields.CORR_SHORT_SALE_CIRCUIT_BREAKER.getFid(), listener.mTradeCache.mCorrShortSaleCircuitBreaker))
-                listener.mTradeCache.mCorrShortSaleCircuitBreakerFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mCorrShortSaleCircuitBreaker.setValue (field.getChar ());
+            listener.mTradeCache.mCorrShortSaleCircuitBreakerFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }    
 
     private static class TradePctChange implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.PCT_CHANGE.getFid(), listener.mTradeCache.mPctChange))
-                listener.mTradeCache.mPctChangeFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mPctChange.setValue (field.getF64 ());
+            listener.mTradeCache.mPctChangeFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class AggressorSide implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
-        {           
-            if (msg.tryChar (null, MamdaTradeFields.AGGRESSOR_SIDE.getFid(), listener.mTradeCache.mTmpChar))
-            {               
-                listener.mTradeCache.mSide = Character.toString(listener.mTradeCache.mTmpChar.getValue());  
-                listener.mTradeCache.mSideFieldState.setState (MamdaFieldState.MODIFIED);        
-            }
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
+        {
+            listener.mTradeCache.mSide = Character.toString(field.getChar ());
+            listener.mTradeCache.mSideFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeSide implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {  
-            listener.tmpField = msg.getField (null, MamdaTradeFields.TRADE_SIDE.getFid(), null);  
-            if( listener.tmpField != null)
+            if (field != null)
             {
-                switch (listener.tmpField.getType())
+                switch (field.getType())
                 {
                     case MamaFieldDescriptor.I8:
                     case MamaFieldDescriptor.U8:
@@ -2853,12 +2915,12 @@ public class MamdaTradeListener implements MamdaMsgListener,
                     case MamaFieldDescriptor.U16:
                     case MamaFieldDescriptor.I32:
                     case MamaFieldDescriptor.U32:          
-                        listener.mTradeCache.mTmpSide.setState ((short)listener.tmpField.getU32()); 
+                        listener.mTradeCache.mTmpSide.setState ((short)field.getU32()); 
                         listener.mTradeCache.mSide = MamdaTradeSide.toString (listener.mTradeCache.mTmpSide.getState());
                         listener.mTradeCache.mSideFieldState.setState (MamdaFieldState.MODIFIED);               
-                        break;  
+                        break;
                     case MamaFieldDescriptor.STRING:
-                        listener.mTradeCache.mTmpSide.setState (MamdaTradeSide.mamdaTradeSideFromString(listener.tmpField.getString()));  
+                        listener.mTradeCache.mTmpSide.setState (MamdaTradeSide.mamdaTradeSideFromString (field.getString()));  
                         listener.mTradeCache.mSide = MamdaTradeSide.toString (listener.mTradeCache.mTmpSide.getState());
                         listener.mTradeCache.mSideFieldState.setState (MamdaFieldState.MODIFIED);
                     default:
@@ -2870,16 +2932,15 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeDirection implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
             /* Allow trade direction as either string or integer - 
              * allows it to be handled if (eg) feeds have mama-publish-enums-as-ints
              * turned on.
              */
-            listener.tmpField = msg.getField (null, MamdaTradeFields.TRADE_DIRECTION.getFid(), null);
-            if (listener.tmpField != null)
+            if (field != null)
             {
-                switch (listener.tmpField.getType())
+                switch (field.getType())
                 {
                     case MamaFieldDescriptor.I8:
                     case MamaFieldDescriptor.U8:
@@ -2887,11 +2948,11 @@ public class MamdaTradeListener implements MamdaMsgListener,
                     case MamaFieldDescriptor.U16:
                     case MamaFieldDescriptor.I32:
                     case MamaFieldDescriptor.U32:
-                        listener.mTradeCache.mTradeDirection.setValue (String.valueOf (listener.tmpField.getU32()));
+                        listener.mTradeCache.mTradeDirection.setValue (String.valueOf (field.getU32()));
                         listener.mTradeCache.mTradeDirectionFieldState.setState (MamdaFieldState.MODIFIED);
                         break;
                     case MamaFieldDescriptor.STRING:
-                        listener.mTradeCache.mTradeDirection.setValue (listener.tmpField.getString ());
+                        listener.mTradeCache.mTradeDirection.setValue (field.getString ());
                         listener.mTradeCache.mTradeDirectionFieldState.setState (MamdaFieldState.MODIFIED);
                         break;
                     default:
@@ -2903,235 +2964,262 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeOpenPrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.OPEN_PRICE.getFid(), listener.mTradeCache.mOpenPrice))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mOpenPrice.copy (field.getPrice ());
                 listener.mTradeCache.mOpenPriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeHighPrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.HIGH_PRICE.getFid(), listener.mTradeCache.mHighPrice))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mHighPrice.copy (field.getPrice ());
                 listener.mTradeCache.mHighPriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeLowPrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.LOW_PRICE.getFid(), listener.mTradeCache.mLowPrice))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mLowPrice.copy (field.getPrice ());
                 listener.mTradeCache.mLowPriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeClosePrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.CLOSE_PRICE.getFid(), listener.mTradeCache.mClosePrice))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mClosePrice.copy (field.getPrice ());
                 listener.mTradeCache.mClosePriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradePrevClosePrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.PREV_CLOSE_PRICE.getFid(), listener.mTradeCache.mPrevClosePrice))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mPrevClosePrice.copy (field.getPrice ());
                 listener.mTradeCache.mPrevClosePriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradePrevCloseDate implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime (null, MamdaTradeFields.PREV_CLOSE_DATE.getFid(), listener.mTradeCache.mPrevCloseDate))
+            if (null != field.getDateTime ())
+            {
+                listener.mTradeCache.mPrevCloseDate.copy (field.getDateTime ());
                 listener.mTradeCache.mPrevCloseDateFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeAdjPrevClose implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.ADJ_PREV_CLOSE.getFid(), listener.mTradeCache.mAdjPrevClose))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mAdjPrevClose.copy (field.getPrice ());
                 listener.mTradeCache.mAdjPrevCloseFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeBlockCount implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.BLOCK_COUNT.getFid(), listener.mTradeCache.mBlockCount))
-                listener.mTradeCache.mBlockCountFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mBlockCount.setValue (field.getI64 ());
+            listener.mTradeCache.mBlockCountFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeBlockVolume implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if(msg.tryF64  (null, MamdaTradeFields.BLOCK_VOLUME.getFid(), listener.mTradeCache.mBlockVolume))
-                listener.mTradeCache.mBlockVolumeFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mBlockVolume.setValue (field.getF64 ());
+            listener.mTradeCache.mBlockVolumeFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeVWap implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.VWAP.getFid(), listener.mTradeCache.mVwap))
-                listener.mTradeCache.mVwapFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mVwap.setValue (field.getF64 ());
+            listener.mTradeCache.mVwapFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeOffExVWap implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.OFF_EXCHANGE_VWAP.getFid(), listener.mTradeCache.mOffExVwap))
-                listener.mTradeCache.mOffExVwapFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOffExVwap.setValue (field.getF64 ());
+            listener.mTradeCache.mOffExVwapFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeOnExVWap implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.ON_EXCHANGE_VWAP.getFid(), listener.mTradeCache.mOnExVwap))
-                listener.mTradeCache.mOnExVwapFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOnExVwap.setValue (field.getF64 ());
+            listener.mTradeCache.mOnExVwapFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeTotalValue implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.TOTAL_VALUE.getFid(), listener.mTradeCache.mTotalValue))
-                listener.mTradeCache.mTotalValueFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mTotalValue.setValue (field.getF64 ());
+            listener.mTradeCache.mTotalValueFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeOffExTotalValue implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.OFF_EXCHANGE_TOTAL_VALUE.getFid(), listener.mTradeCache.mOffExTotalValue))
-                listener.mTradeCache.mOffExTotalValueFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOffExTotalValue.setValue (field.getF64 ());
+            listener.mTradeCache.mOffExTotalValueFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeOnExTotalValue implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.ON_EXCHANGE_TOTAL_VALUE.getFid(), listener.mTradeCache.mOnExTotalValue))
-                listener.mTradeCache.mOnExTotalValueFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOnExTotalValue.setValue (field.getF64 ());
+            listener.mTradeCache.mOnExTotalValueFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeStdDev implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.STD_DEV.getFid(), listener.mTradeCache.mStdDev))
-                listener.mTradeCache.mStdDevFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mStdDev.setValue (field.getF64 ());
+            listener.mTradeCache.mStdDevFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeStdDevSum implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.STD_DEV_SUM.getFid(), listener.mTradeCache.mStdDevSum))
-                listener.mTradeCache.mStdDevSumFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mStdDevSum.setValue (field.getF64 ());
+            listener.mTradeCache.mStdDevSumFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeStdDevSumSquares implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.STD_DEV_SUM_SQUARES.getFid(), listener.mTradeCache.mStdDevSumSquares))
-                listener.mTradeCache.mStdDevSumSquaresFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mStdDevSumSquares.setValue (field.getF64 ());
+            listener.mTradeCache.mStdDevSumSquaresFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeOrderId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.ORDER_ID.getFid(), listener.mTradeCache.mOrderId))
-                listener.mTradeCache.mOrderIdFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOrderId.setValue (field.getI64 ());
+            listener.mTradeCache.mOrderIdFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeSettlePrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.SETTLE_PRICE.getFid(), listener.mTradeCache.mSettlePrice))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mSettlePrice.copy (field.getPrice ());
                 listener.mTradeCache.mSettlePriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeSettleDate implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime (null, MamdaTradeFields.SETTLE_DATE.getFid(), listener.mTradeCache.mSettleDate))
+            if (null != field.getDateTime ())
+            {
+                listener.mTradeCache.mSettleDate.copy (field.getDateTime ());
                 listener.mTradeCache.mSettleDateFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeEventSeqNum implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.TRADE_SEQNUM.getFid(), listener.mTradeCache.mEventSeqNum))
-                listener.mTradeCache.mEventSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mEventSeqNum.setValue (field.getI64 ());
+            listener.mTradeCache.mEventSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeLastDate implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime  (null, MamdaTradeFields.TRADE_DATE.getFid(), listener.mTradeCache.mLastDate))
+            if (null != field.getDateTime ())
+            {
+                listener.mTradeCache.mLastDate.copy (field.getDateTime ());
                 listener.mTradeCache.mLastDateFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeLastTime implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime (null, MamdaTradeFields.TRADE_TIME.getFid(), listener.mTradeCache.mLastTime))
+            if (null != field.getDateTime ())
             {
-              listener.mTradeCache.mGotTradeTime = true;
-              listener.mTradeCache.mLastTimeFieldState.setState (MamdaFieldState.MODIFIED);
+                listener.mTradeCache.mGotTradeTime = true;
+                listener.mTradeCache.mLastTime.copy (field.getDateTime ());
+                listener.mTradeCache.mLastTimeFieldState.setState (MamdaFieldState.MODIFIED);
             }
         }
     }
 
     private static class TradeIrregPrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.IRREG_PRICE.getFid(), listener.mTradeCache.mIrregPrice))
+            if (null != field.getPrice ())
             {
-                if (listener.mTradeCache.mIrregPrice.getValue() != 0.0 && listener.mTradeCache.mIsIrregular.getValue() == false)
-                {
-                    listener.mTradeCache.mIsIrregular.setValue (true);
-                    listener.mTradeCache.mIsIrregularFieldState.setState (MamdaFieldState.MODIFIED);
-                }
                 listener.mTradeCache.mGotTradePrice = true;
+                listener.mTradeCache.mIrregPrice.copy (field.getPrice ());
                 listener.mTradeCache.mIrregPriceFieldState.setState (MamdaFieldState.MODIFIED);
             }
         }
@@ -3139,32 +3227,21 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeIrregVolume implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.IRREG_SIZE.getFid(), listener.mTradeCache.mIrregVolume))
-            {
-                if (listener.mTradeCache.mIrregVolume.getValue() != 0 && listener.mTradeCache.mIsIrregular.getValue() == false)
-                {
-                    listener.mTradeCache.mIsIrregular.setValue(true);
-                    listener.mTradeCache.mIsIrregularFieldState.setState (MamdaFieldState.MODIFIED);
-                }
-                listener.mTradeCache.mGotTradeSize = true;
-                listener.mTradeCache.mIrregVolumeFieldState.setState (MamdaFieldState.MODIFIED);
-            }
+            listener.mTradeCache.mGotTradeSize = true;
+            listener.mTradeCache.mIrregVolume.setValue (field.getF64 ());
+            listener.mTradeCache.mIrregVolumeFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeIrregPartId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.IRREG_PART_ID.getFid(), listener.mTradeCache.mIrregPartId))
+            if (null != field.getString ())
             {
-                if (listener.mTradeCache.mIrregPartId.getValue() == "" && listener.mTradeCache.mIsIrregular.getValue() == false)
-                {
-                    listener.mTradeCache.mIsIrregular.setValue(true);
-                    listener.mTradeCache.mIsIrregularFieldState.setState (MamdaFieldState.MODIFIED);
-                }
+                listener.mTradeCache.mIrregPartId.setValue (field.getString ());
                 listener.mTradeCache.mIrregPartIdFieldState.setState (MamdaFieldState.MODIFIED);
             }
         }
@@ -3172,16 +3249,12 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeIrregTime implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime (null, MamdaTradeFields.IRREG_TIME.getFid(), listener.mTradeCache.mIrregTime))
+            if (null != field.getDateTime ())
             {
-                if (listener.mTradeCache.mIrregTime.hasTime() && listener.mTradeCache.mIsIrregular.getValue() == false)
-                {
-                    listener.mTradeCache.mIsIrregular.setValue(true);
-                    listener.mTradeCache.mIsIrregularFieldState.setState (MamdaFieldState.MODIFIED);
-                }
                 listener.mTradeCache.mGotTradeTime = true;
+                listener.mTradeCache.mIrregTime.copy (field.getDateTime ());
                 listener.mTradeCache.mIrregTimeFieldState.setState (MamdaFieldState.MODIFIED);
             }
         }
@@ -3189,13 +3262,12 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeLastPrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.TRADE_PRICE.getFid(), listener.mTradeCache.mLastPrice))
+            if (null != field.getPrice ())
             {
-                listener.mTradeCache.mIsIrregular.setValue(false);
-                listener.mTradeCache.mIsIrregularFieldState.setState (MamdaFieldState.MODIFIED);
                 listener.mTradeCache.mGotTradePrice = true;
+                listener.mTradeCache.mLastPrice.copy (field.getPrice ());
                 listener.mTradeCache.mLastPriceFieldState.setState (MamdaFieldState.MODIFIED);
             }
         } 
@@ -3203,67 +3275,67 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeLastVolume implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.TRADE_SIZE.getFid(), listener.mTradeCache.mLastVolume))
-            {
-                listener.mTradeCache.mIsIrregular.setValue(false);
-                listener.mTradeCache.mIsIrregularFieldState.setState (MamdaFieldState.MODIFIED);
-                listener.mTradeCache.mGotTradeSize = true;
-                listener.mTradeCache.mLastVolumeFieldState.setState (MamdaFieldState.MODIFIED);
-            }
+            listener.mTradeCache.mGotTradeSize = true;
+            listener.mTradeCache.mLastVolume.setValue (field.getF64 ());
+            listener.mTradeCache.mLastVolumeFieldState.setState (MamdaFieldState.MODIFIED);
         } 
     }
 
     private static class TradeQualStr implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.TRADE_QUALIFIER.getFid(), listener.mTradeCache.mTradeQualStr))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mTradeQualStr.setValue (field.getString ());
                 listener.mTradeCache.mTradeQualStrFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeQualNativeStr implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.SALE_CONDITION.getFid(), listener.mTradeCache.mTradeQualNativeStr))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mTradeQualNativeStr.setValue (field.getString ());
                 listener.mTradeCache.mTradeQualNativeStrFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeSellerSalesDays implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.SELLERS_SALE_DAYS.getFid(), listener.mTradeCache.mSellersSaleDays))
-                listener.mTradeCache.mSellersSaleDaysFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mSellersSaleDays.setValue (field.getI64 ());
+            listener.mTradeCache.mSellersSaleDaysFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeStopStockInd implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
             // There is a bug in 2.14 FHs which can cause character fields to be sent as strings
             // FH property CharFieldAsStringField in 2.16-> can enable this behaviour
             // Adding support for this in MAMDA for client apps coded to expect this behaviour
-            listener.tmpField = msg.getField (null, MamdaTradeFields.STOP_STOCK_IND.getFid(), null);
-            if (listener.tmpField != null)
+            if (field != null)
             {
-                switch (listener.tmpField.getType())
+                switch (field.getType())
                 {
                     case MamaFieldDescriptor.I8 :
                     case MamaFieldDescriptor.CHAR :
-                        listener.mTradeCache.mStopStockInd.setValue(
-                            listener.tmpField.getChar ());
+                        listener.mTradeCache.mStopStockInd.setValue (field.getChar ());
                         listener.mTradeCache.mStopStockIndFieldState.setState (MamdaFieldState.MODIFIED);
                         break;
                     case MamaFieldDescriptor.STRING :
-                        if (listener.tmpField.getString().length() > 0)
+                        if (field.getString().length() > 0)
                         {
-                            listener.mTradeCache.mStopStockInd.setValue(listener.tmpField.getString().charAt(0));
+                            listener.mTradeCache.mStopStockInd.setValue (field.getString().charAt(0));
                             listener.mTradeCache.mStopStockIndFieldState.setState (MamdaFieldState.MODIFIED);
                         }
                         else
@@ -3280,16 +3352,15 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeExecVenue implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
             /* Allow trade execution venue as either string or integer - 
              * allows it to be handled if (eg) feeds have mama-publish-enums-as-ints
              * turned on.
              */
-            listener.tmpField = msg.getField (null, MamdaTradeFields.TRADE_EXEC_VENUE.getFid(), null);
-            if (listener.tmpField != null)
+            if (field != null)
             {
-                switch (listener.tmpField.getType())
+                switch (field.getType())
                 {
                     case MamaFieldDescriptor.I8:
                     case MamaFieldDescriptor.U8:
@@ -3297,11 +3368,11 @@ public class MamdaTradeListener implements MamdaMsgListener,
                     case MamaFieldDescriptor.U16:
                     case MamaFieldDescriptor.I32:
                     case MamaFieldDescriptor.U32:
-                        listener.mTradeCache.mTradeExecVenue.setValue (String.valueOf (listener.tmpField.getU32()));
+                        listener.mTradeCache.mTradeExecVenue.setValue (String.valueOf (field.getU32()));
                         listener.mTradeCache.mTradeExecVenueFieldState.setState (MamdaFieldState.MODIFIED);
                         break;
                     case MamaFieldDescriptor.STRING:
-                        listener.mTradeCache.mTradeExecVenue.setValue (listener.tmpField.getString ());
+                        listener.mTradeCache.mTradeExecVenue.setValue (field.getString ());
                         listener.mTradeCache.mTradeExecVenueFieldState.setState (MamdaFieldState.MODIFIED);
                         break;
                     default:
@@ -3313,173 +3384,193 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class OffExTradePrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.OFF_EXCHANGE_TRADE_PRICE.getFid(), listener.mTradeCache.mOffExTradePrice))
-              listener.mTradeCache.mOffExTradePriceFieldState.setState (MamdaFieldState.MODIFIED);
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mOffExTradePrice.copy (field.getPrice ());
+                listener.mTradeCache.mOffExTradePriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class OnExTradePrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.ON_EXCHANGE_TRADE_PRICE.getFid(), listener.mTradeCache.mOnExTradePrice))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mOnExTradePrice.copy (field.getPrice ());
                 listener.mTradeCache.mOnExTradePriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeCount implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.TRADE_COUNT.getFid(), listener.mTmpTradeCount))
-            {
-                listener.mTradeCache.mGotTradeCount = true;
-            }
+            listener.mTmpTradeCount.setValue (field.getI64 ());
+            listener.mTradeCache.mGotTradeCount = true;
         } 
     }
 
     private static class TradeUnits implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.TRADE_UNITS.getFid(), listener.mTradeCache.mTradeUnits))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mTradeUnits.setValue (field.getString ());
                 listener.mTradeCache.mTradeUnitsFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeLastSeqNum implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.LAST_SEQNUM.getFid(), listener.mTradeCache.mLastSeqNum))
-                listener.mTradeCache.mLastSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mLastSeqNum.setValue (field.getI64 ());
+            listener.mTradeCache.mLastSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeHighSeqNum implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.HIGH_SEQNUM.getFid(), listener.mTradeCache.mHighSeqNum))
-                listener.mTradeCache.mHighSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mHighSeqNum.setValue (field.getI64 ());
+            listener.mTradeCache.mHighSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeLowSeqNum implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.LOW_SEQNUM.getFid(), listener.mTradeCache.mLowSeqNum))
-                listener.mTradeCache.mLowSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mLowSeqNum.setValue (field.getI64 ());
+            listener.mTradeCache.mLowSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeTotalVolumeSeqNum implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.TOTAL_VOLUME_SEQNUM.getFid(), listener.mTradeCache.mTotalVolumeSeqNum))
-                listener.mTradeCache.mTotalVolumeSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mTotalVolumeSeqNum.setValue (field.getI64 ());
+            listener.mTradeCache.mTotalVolumeSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeCurrencyCode implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.CURRENCY_CODE.getFid(), listener.mTradeCache.mCurrencyCode))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mCurrencyCode.setValue (field.getString ());
                 listener.mTradeCache.mCurrencyCodeFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeOrigSeqNum implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.ORIG_SEQNUM.getFid(), listener.mTradeCache.mOrigSeqNum))
-                listener.mTradeCache.mOrigSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOrigSeqNum.setValue (field.getI64 ());
+            listener.mTradeCache.mOrigSeqNumFieldState.setState (MamdaFieldState.MODIFIED);
         } 
     }
 
     private static class TradeOrigPrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.ORIG_PRICE.getFid(), listener.mTradeCache.mOrigPrice))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mOrigPrice.copy (field.getPrice ());
                 listener.mTradeCache.mOrigPriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         } 
     }
 
     private static class TradeOrigVolume implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.ORIG_SIZE.getFid(), listener.mTradeCache.mOrigVolume))
-                listener.mTradeCache.mOrigVolumeFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOrigVolume.setValue (field.getF64 ());
+            listener.mTradeCache.mOrigVolumeFieldState.setState (MamdaFieldState.MODIFIED);
         } 
     }
 
     private static class TradeOrigPartId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.ORIG_PART_ID.getFid(), listener.mTradeCache.mOrigPartId))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mOrigPartId.setValue (field.getString ());
                 listener.mTradeCache.mOrigPartIdFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         } 
     }
 
     private static class TradeOrigQualStr implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.ORIG_TRADE_QUALIFIER.getFid(), listener.mTradeCache.mOrigQualStr))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mOrigQualStr.setValue (field.getString ());
                 listener.mTradeCache.mOrigQualStrFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         } 
     }
 
     private static class TradeOrigQualNativeStr implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.ORIG_SALE_CONDITION.getFid(), listener.mTradeCache.mOrigQualNativeStr))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mOrigQualNativeStr.setValue (field.getString ());
                 listener.mTradeCache.mOrigQualNativeStrFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeOrigSellersSaleDays implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.ORIG_SELLERS_SALE_DAYS.getFid(), listener.mTradeCache.mOrigSellersSaleDays))
-                listener.mTradeCache.mOrigSellersSaleDaysFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mOrigSellersSaleDays.setValue (field.getI64 ());
+            listener.mTradeCache.mOrigSellersSaleDaysFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeOrigStopStockInd implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
             // There is a bug in 2.14 FHs which can cause character fields to be sent as strings
             // FH property CharFieldAsStringField in 2.16-> can enable this behaviour
             // Adding support for this in MAMDA for client apps coded to expect this behaviour
-            listener.tmpField = msg.getField (null, MamdaTradeFields.ORIG_STOP_STOCK_IND.getFid(), null);
-            if (listener.tmpField != null)
+            if (field != null)
             {
-                switch (listener.tmpField.getType())
+                switch (field.getType())
                 {
                     case MamaFieldDescriptor.I8 :
                     case MamaFieldDescriptor.CHAR :                
-                        listener.mTradeCache.mOrigStopStockInd.setValue(
-                            listener.tmpField.getChar ());
+                        listener.mTradeCache.mOrigStopStockInd.setValue (field.getChar ());
                         listener.mTradeCache.mOrigStopStockIndFieldState.setState (MamdaFieldState.MODIFIED);
                         break;
                     case MamaFieldDescriptor.STRING :
-                        if (listener.tmpField.getString().length() > 0)
+                        if (field.getString().length() > 0)
                         {
                             listener.mTradeCache.mOrigStopStockInd.setValue(
-                                listener.tmpField.getString().charAt(0));
+                                field.getString().charAt(0));
                             listener.mTradeCache.mOrigStopStockIndFieldState.setState (MamdaFieldState.MODIFIED);
                         }
                         else
@@ -3496,81 +3587,91 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeCorrPrice implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryPrice  (null, MamdaTradeFields.CORR_PRICE.getFid(), listener.mTradeCache.mCorrPrice))
+            if (null != field.getPrice ())
+            {
+                listener.mTradeCache.mCorrPrice.copy (field.getPrice ());
                 listener.mTradeCache.mCorrPriceFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeCorrVolume implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryF64  (null, MamdaTradeFields.CORR_SIZE.getFid(), listener.mTradeCache.mCorrVolume))
-                listener.mTradeCache.mCorrVolumeFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mCorrVolume.setValue (field.getF64 ());
+            listener.mTradeCache.mCorrVolumeFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeCorrPartId implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.CORR_PART_ID.getFid(), listener.mTradeCache.mCorrPartId))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mCorrPartId.setValue (field.getString ());
                 listener.mTradeCache.mCorrPartIdFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeCorrQualStr implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.CORR_TRADE_QUALIFIER.getFid(), listener.mTradeCache.mCorrQualStr))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mCorrQualStr.setValue (field.getString ());
                 listener.mTradeCache.mCorrQualStrFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeCorrQualNativeStr implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryString (null, MamdaTradeFields.CORR_SALE_CONDITION.getFid(), listener.mTradeCache.mCorrQualNativeStr))
+            if (null != field.getString ())
+            {
+                listener.mTradeCache.mCorrQualNativeStr.setValue (field.getString ());
                 listener.mTradeCache.mCorrQualNativeStrFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeCorrSellersSaleDays implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryI64  (null, MamdaTradeFields.CORR_SELLERS_SALE_DAYS.getFid(), listener.mTradeCache.mCorrSellersSaleDays))
-                listener.mTradeCache.mCorrSellersSaleDaysFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mCorrSellersSaleDays.setValue (field.getI64 ());
+            listener.mTradeCache.mCorrSellersSaleDaysFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static class TradeCorrStopStockInd implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
             // There is a bug in 2.14 FHs which can cause character fields to be sent as strings
             // FH property CharFieldAsStringField in 2.16-> can enable this behaviour
             // Adding support for this in MAMDA for client apps coded to expect this behaviour
-            listener.tmpField = msg.getField (null, MamdaTradeFields.CORR_STOP_STOCK_IND.getFid(), null);
-            if (listener.tmpField != null)
+            if (field != null)
             {
-                switch (listener.tmpField.getType())
+                switch (field.getType())
                 {
                     case MamaFieldDescriptor.I8 :
                     case MamaFieldDescriptor.CHAR :
-                        listener.mTradeCache.mCorrStopStockInd.setValue(
-                            listener.tmpField.getChar ());
+                        listener.mTradeCache.mCorrStopStockInd.setValue (field.getChar ());
                         listener.mTradeCache.mCorrStopStockIndFieldState.setState (MamdaFieldState.MODIFIED);
                         break;
                     case MamaFieldDescriptor.STRING :
-                        if (listener.tmpField.getString().length() > 0)
+                        if (field.getString().length() > 0)
                         {
                             listener.mTradeCache.mCorrStopStockInd.setValue(
-                                listener.tmpField.getString().charAt(0));
+                                field.getString().charAt(0));
                             listener.mTradeCache.mCorrStopStockIndFieldState.setState (MamdaFieldState.MODIFIED);
                         }
                         else
@@ -3587,295 +3688,337 @@ public class MamdaTradeListener implements MamdaMsgListener,
 
     private static class TradeCorrTime implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime  (null, MamdaTradeFields.CORR_TIME.getFid(), listener.mTradeCache.mCorrTime))
+            if (null != field.getDateTime ())
+            {
+                listener.mTradeCache.mCorrTime.copy (field.getDateTime ());
                 listener.mTradeCache.mCorrTimeFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeCancelTime implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryDateTime  (null, MamdaTradeFields.CANCEL_TIME.getFid(), listener.mTradeCache.mCancelTime))
+            if (null != field.getDateTime ())
+            {
+                listener.mTradeCache.mCancelTime.copy (field.getDateTime ());
                 listener.mTradeCache.mCancelTimeFieldState.setState (MamdaFieldState.MODIFIED);
+            }
         }
     }
 
     private static class TradeIsIrregular implements TradeUpdate
     {
-        public void onUpdate (MamaMsg msg, MamdaTradeListener listener)
+        public void onUpdate (MamaMsgField field, MamdaTradeListener listener)
         {
-            if (msg.tryBoolean  (null, MamdaTradeFields.IS_IRREGULAR.getFid(), listener.mTradeCache.mIsIrregular))
-                listener.mTradeCache.mIsIrregularFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.mTradeCache.mIsIrregular.setValue (field.getBoolean ());
+            listener.mTradeCache.mIsIrregularFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
 
     private static void createUpdaters ()
     {
-        int i = 0;
         if (mUpdaters == null)
         {
+            // Trade maximum uses dictionary maximum
             mUpdaters = new TradeUpdate [MamdaTradeFields.getMaxFid() + 1];
         }
 
         if (MamdaCommonFields.SYMBOL != null)
-            mUpdaters[i++] = new  MamdaTradeSymbol();
+            addUpdater (MamdaCommonFields.SYMBOL.getFid(), new MamdaTradeSymbol());
 
         if (MamdaCommonFields.ISSUE_SYMBOL != null)
-            mUpdaters[i++] = new  MamdaTradeIssueSymbol();
+            addUpdater (MamdaCommonFields.ISSUE_SYMBOL.getFid(), new MamdaTradeIssueSymbol());
 
         if (MamdaCommonFields.PART_ID != null)
-            mUpdaters[i++] = new  TradePartId ();
+            addUpdater (MamdaCommonFields.PART_ID.getFid(), new TradePartId ());
 
         if (MamdaCommonFields.SRC_TIME != null)
-            mUpdaters[i++] = new  TradeSrcTime();
+            addUpdater (MamdaCommonFields.SRC_TIME.getFid(), new TradeSrcTime());
 
         if (MamdaCommonFields.ACTIVITY_TIME != null)
-            mUpdaters[i++] = new  TradeActivityTime();
+            addUpdater (MamdaCommonFields.ACTIVITY_TIME.getFid(), new TradeActivityTime());
 
         if (MamdaCommonFields.LINE_TIME != null)
-            mUpdaters[i++] = new  TradeLineTime();
+            addUpdater (MamdaCommonFields.LINE_TIME.getFid(), new TradeLineTime());
 
         if (MamdaCommonFields.SEND_TIME != null)
-            mUpdaters[i++] = new  TradeSendTime();
+            addUpdater (MamdaCommonFields.SEND_TIME.getFid(), new TradeSendTime());
 
         if (MamdaCommonFields.PUB_ID != null)
-            mUpdaters[i++] = new  TradePubId();
+            addUpdater (MamdaCommonFields.PUB_ID.getFid(), new TradePubId());
 
         if (MamdaTradeFields.TRADE_ID != null)
-            mUpdaters[i++] = new  TradeId();
+            addUpdater (MamdaTradeFields.TRADE_ID.getFid(), new TradeId());
 
         if (MamdaTradeFields.ORIG_TRADE_ID != null)
-            mUpdaters[i++] = new  OrigTradeId();
+            addUpdater (MamdaTradeFields.ORIG_TRADE_ID.getFid(), new OrigTradeId());
 
         if (MamdaTradeFields.CORR_TRADE_ID != null)
-            mUpdaters[i++] = new  CorrTradeId();
+            addUpdater (MamdaTradeFields.CORR_TRADE_ID.getFid(), new CorrTradeId());
 
         if (MamdaTradeFields.TRADE_PRICE != null)
-            mUpdaters[i++] = new  TradeLastPrice();
+            addUpdater (MamdaTradeFields.TRADE_PRICE.getFid(), new TradeLastPrice());
 
         if (MamdaTradeFields.TRADE_SIZE != null)
-            mUpdaters[i++] = new  TradeLastVolume ();
+            addUpdater (MamdaTradeFields.TRADE_SIZE.getFid(), new TradeLastVolume ());
 
         if (MamdaTradeFields.TRADE_DATE != null)
-            mUpdaters[i++] = new  TradeLastDate ();
+            addUpdater (MamdaTradeFields.TRADE_DATE.getFid(), new TradeLastDate ());
 
         if (MamdaTradeFields.TRADE_TIME != null)
-            mUpdaters[i++] = new  TradeLastTime();
+            addUpdater (MamdaTradeFields.TRADE_TIME.getFid(), new TradeLastTime());
 
         if (MamdaTradeFields.SHORT_SALE_CIRCUIT_BREAKER != null)
-            mUpdaters[i++] = new  MamdaShortSaleCircuitBreaker();
+            addUpdater (MamdaTradeFields.SHORT_SALE_CIRCUIT_BREAKER.getFid(), new MamdaShortSaleCircuitBreaker());
 
         if (MamdaTradeFields.ORIG_SHORT_SALE_CIRCUIT_BREAKER != null)
-            mUpdaters[i++] = new  MamdaOrigShortSaleCircuitBreaker();
+            addUpdater (MamdaTradeFields.ORIG_SHORT_SALE_CIRCUIT_BREAKER.getFid(), new MamdaOrigShortSaleCircuitBreaker());
 
         if (MamdaTradeFields.CORR_SHORT_SALE_CIRCUIT_BREAKER != null)
-            mUpdaters[i++] = new  MamdaCorrShortSaleCircuitBreaker();
+            addUpdater (MamdaTradeFields.CORR_SHORT_SALE_CIRCUIT_BREAKER.getFid(), new MamdaCorrShortSaleCircuitBreaker());
 
         if (MamdaTradeFields.TRADE_DIRECTION != null)
-            mUpdaters[i++] = new  TradeDirection();
+            addUpdater (MamdaTradeFields.TRADE_DIRECTION.getFid(), new TradeDirection());
 
         if (MamdaTradeFields.NET_CHANGE != null)
-            mUpdaters[i++] = new  TradeNetChange();
+            addUpdater (MamdaTradeFields.NET_CHANGE.getFid(), new TradeNetChange());
 
         if (MamdaTradeFields.PCT_CHANGE != null)
-            mUpdaters[i++] = new  TradePctChange();
+            addUpdater (MamdaTradeFields.PCT_CHANGE.getFid(), new TradePctChange());
     
         if (MamdaTradeFields.AGGRESSOR_SIDE != null)
-            mUpdaters[i++] = new AggressorSide();
+            addUpdater (MamdaTradeFields.AGGRESSOR_SIDE.getFid(), new AggressorSide());
 
         if (MamdaTradeFields.TRADE_SIDE != null)
-            mUpdaters[i++] = new TradeSide();
+            addUpdater (MamdaTradeFields.TRADE_SIDE.getFid(), new TradeSide());
 
         if (MamdaTradeFields.TOTAL_VOLUME != null)
-            mUpdaters[i++] = new  TradeAccVolume();
+            addUpdater (MamdaTradeFields.TOTAL_VOLUME.getFid(), new TradeAccVolume());
 
         if (MamdaTradeFields.OFF_EXCHANGE_TOTAL_VOLUME != null)
-            mUpdaters[i++] = new  TradeOffExAccVolume();
+            addUpdater (MamdaTradeFields.OFF_EXCHANGE_TOTAL_VOLUME.getFid(), new TradeOffExAccVolume());
 
         if (MamdaTradeFields.ON_EXCHANGE_TOTAL_VOLUME != null)
-            mUpdaters[i++] = new  TradeOnExAccVolume();
+            addUpdater (MamdaTradeFields.ON_EXCHANGE_TOTAL_VOLUME.getFid(), new TradeOnExAccVolume());
 
         if (MamdaTradeFields.HIGH_PRICE != null)
-            mUpdaters[i++] = new  TradeHighPrice ();
+            addUpdater (MamdaTradeFields.HIGH_PRICE.getFid(), new TradeHighPrice ());
 
         if (MamdaTradeFields.LOW_PRICE != null)
-            mUpdaters[i++] = new  TradeLowPrice();
+            addUpdater (MamdaTradeFields.LOW_PRICE.getFid(), new TradeLowPrice());
 
         if (MamdaTradeFields.OPEN_PRICE != null)
-            mUpdaters[i++] = new  TradeOpenPrice ();
+            addUpdater (MamdaTradeFields.OPEN_PRICE.getFid(), new TradeOpenPrice ());
 
         if (MamdaTradeFields.CLOSE_PRICE != null)
-            mUpdaters[i++] = new  TradeClosePrice();
+            addUpdater (MamdaTradeFields.CLOSE_PRICE.getFid(), new TradeClosePrice());
 
         if (MamdaTradeFields.PREV_CLOSE_PRICE != null)
-            mUpdaters[i++] = new  TradePrevClosePrice();
+            addUpdater (MamdaTradeFields.PREV_CLOSE_PRICE.getFid(), new TradePrevClosePrice());
 
         if (MamdaTradeFields.TRADE_SEQNUM != null)
-            mUpdaters[i++] = new  TradeEventSeqNum();
+            addUpdater (MamdaTradeFields.TRADE_SEQNUM.getFid(), new TradeEventSeqNum());
 
         if (MamdaTradeFields.TRADE_QUALIFIER != null)
-            mUpdaters[i++] = new  TradeQualStr();
+            addUpdater (MamdaTradeFields.TRADE_QUALIFIER.getFid(), new TradeQualStr());
 
         if (MamdaTradeFields.SALE_CONDITION != null)
-            mUpdaters[i++] = new  TradeQualNativeStr();
+            addUpdater (MamdaTradeFields.SALE_CONDITION.getFid(), new TradeQualNativeStr());
 
         if (MamdaTradeFields.TRADE_PART_ID != null)
-            mUpdaters[i++] = new  TradeLastPartId();
+            addUpdater (MamdaTradeFields.TRADE_PART_ID.getFid(), new TradeLastPartId());
 
         if (MamdaTradeFields.TOTAL_VALUE != null)
-            mUpdaters[i++] = new  TradeTotalValue();
+            addUpdater (MamdaTradeFields.TOTAL_VALUE.getFid(), new TradeTotalValue());
 
         if (MamdaTradeFields.OFF_EXCHANGE_TOTAL_VALUE != null)
-            mUpdaters[i++] = new  TradeOffExTotalValue();
+            addUpdater (MamdaTradeFields.OFF_EXCHANGE_TOTAL_VALUE.getFid(), new TradeOffExTotalValue());
 
         if (MamdaTradeFields.ON_EXCHANGE_TOTAL_VALUE != null)
-            mUpdaters[i++] = new  TradeOnExTotalValue();
+            addUpdater (MamdaTradeFields.ON_EXCHANGE_TOTAL_VALUE.getFid(), new TradeOnExTotalValue());
 
         if (MamdaTradeFields.VWAP != null)
-            mUpdaters[i++] = new  TradeVWap();
+            addUpdater (MamdaTradeFields.VWAP.getFid(), new TradeVWap());
 
         if (MamdaTradeFields.OFF_EXCHANGE_VWAP != null)
-            mUpdaters[i++] = new  TradeOffExVWap();
+            addUpdater (MamdaTradeFields.OFF_EXCHANGE_VWAP.getFid(), new TradeOffExVWap());
 
         if (MamdaTradeFields.ON_EXCHANGE_VWAP != null)
-            mUpdaters[i++] = new  TradeOnExVWap();
+            addUpdater (MamdaTradeFields.ON_EXCHANGE_VWAP.getFid(), new TradeOnExVWap());
 
         if (MamdaTradeFields.STD_DEV != null)
-            mUpdaters[i++] = new  TradeStdDev();
+            addUpdater (MamdaTradeFields.STD_DEV.getFid(), new TradeStdDev());
 
         if (MamdaTradeFields.STD_DEV_SUM != null)
-            mUpdaters[i++] = new  TradeStdDevSum();
+            addUpdater (MamdaTradeFields.STD_DEV_SUM.getFid(), new TradeStdDevSum());
 
         if (MamdaTradeFields.STD_DEV_SUM_SQUARES != null)
-            mUpdaters[i++] = new  TradeStdDevSumSquares();
+            addUpdater (MamdaTradeFields.STD_DEV_SUM_SQUARES.getFid(), new TradeStdDevSumSquares());
 
         if (MamdaTradeFields.ORDER_ID != null)
-            mUpdaters[i++] = new  TradeOrderId();
+            addUpdater (MamdaTradeFields.ORDER_ID.getFid(), new TradeOrderId());
 
         if (MamdaTradeFields.SETTLE_PRICE != null)
-            mUpdaters[i++] = new  TradeSettlePrice();
+            addUpdater (MamdaTradeFields.SETTLE_PRICE.getFid(), new TradeSettlePrice());
 
         if (MamdaTradeFields.SETTLE_DATE != null)
-            mUpdaters[i++] = new  TradeSettleDate();
+            addUpdater (MamdaTradeFields.SETTLE_DATE.getFid(), new TradeSettleDate());
 
         if (MamdaTradeFields.SELLERS_SALE_DAYS != null)
-            mUpdaters[i++] = new  TradeSellerSalesDays();
+            addUpdater (MamdaTradeFields.SELLERS_SALE_DAYS.getFid(), new TradeSellerSalesDays());
 
         if (MamdaTradeFields.STOP_STOCK_IND != null)
-            mUpdaters[i++] = new  TradeStopStockInd();
+            addUpdater (MamdaTradeFields.STOP_STOCK_IND.getFid(), new TradeStopStockInd());
 
         if (MamdaTradeFields.TRADE_EXEC_VENUE != null)
-            mUpdaters[i++] = new  TradeExecVenue();
+            addUpdater (MamdaTradeFields.TRADE_EXEC_VENUE.getFid(), new TradeExecVenue());
 
         if (MamdaTradeFields.OFF_EXCHANGE_TRADE_PRICE != null)
-            mUpdaters[i++] = new  OffExTradePrice();
+            addUpdater (MamdaTradeFields.OFF_EXCHANGE_TRADE_PRICE.getFid(), new OffExTradePrice());
 
         if (MamdaTradeFields.ON_EXCHANGE_TRADE_PRICE != null)
-            mUpdaters[i++] = new  OnExTradePrice();
+            addUpdater (MamdaTradeFields.ON_EXCHANGE_TRADE_PRICE.getFid(), new OnExTradePrice());
 
         if (MamdaTradeFields.TRADE_UNITS != null)
-            mUpdaters[i++] = new  TradeUnits();
+            addUpdater (MamdaTradeFields.TRADE_UNITS.getFid(), new TradeUnits());
 
         if (MamdaTradeFields.LAST_SEQNUM != null)
-            mUpdaters[i++] = new  TradeLastSeqNum();
+            addUpdater (MamdaTradeFields.LAST_SEQNUM.getFid(), new TradeLastSeqNum());
 
         if (MamdaTradeFields.HIGH_SEQNUM != null)
-            mUpdaters[i++] = new  TradeHighSeqNum();
+            addUpdater (MamdaTradeFields.HIGH_SEQNUM.getFid(), new TradeHighSeqNum());
 
         if (MamdaTradeFields.LOW_SEQNUM != null)
-            mUpdaters[i++] = new  TradeLowSeqNum();
+            addUpdater (MamdaTradeFields.LOW_SEQNUM.getFid(), new TradeLowSeqNum());
 
         if (MamdaTradeFields.TOTAL_VOLUME_SEQNUM != null)
-            mUpdaters[i++] = new  TradeTotalVolumeSeqNum();
+            addUpdater (MamdaTradeFields.TOTAL_VOLUME_SEQNUM.getFid(), new TradeTotalVolumeSeqNum());
 
         if (MamdaTradeFields.CURRENCY_CODE != null)
-            mUpdaters[i++] = new  TradeCurrencyCode();
+            addUpdater (MamdaTradeFields.CURRENCY_CODE.getFid(), new TradeCurrencyCode());
 
         if (MamdaTradeFields.ORIG_PART_ID  != null)
-            mUpdaters[i++] = new  TradeOrigPartId();
+            addUpdater (MamdaTradeFields.ORIG_PART_ID.getFid(), new TradeOrigPartId());
 
         if (MamdaTradeFields.ORIG_SIZE != null)
-            mUpdaters[i++] = new  TradeOrigVolume();
+            addUpdater (MamdaTradeFields.ORIG_SIZE.getFid(), new TradeOrigVolume());
 
         if (MamdaTradeFields.ORIG_PRICE != null)
-            mUpdaters[i++] = new  TradeOrigPrice();
+            addUpdater (MamdaTradeFields.ORIG_PRICE.getFid(), new TradeOrigPrice());
 
         if (MamdaTradeFields.ORIG_SEQNUM != null)
-            mUpdaters[i++] = new  TradeOrigSeqNum();
+            addUpdater (MamdaTradeFields.ORIG_SEQNUM.getFid(), new TradeOrigSeqNum());
 
         if (MamdaTradeFields.ORIG_TRADE_QUALIFIER != null)
-            mUpdaters[i++] = new  TradeOrigQualStr();
+            addUpdater (MamdaTradeFields.ORIG_TRADE_QUALIFIER.getFid(), new TradeOrigQualStr());
 
         if (MamdaTradeFields.ORIG_SALE_CONDITION != null)
-            mUpdaters[i++] = new  TradeOrigQualNativeStr();
+            addUpdater (MamdaTradeFields.ORIG_SALE_CONDITION.getFid(), new TradeOrigQualNativeStr());
 
         if (MamdaTradeFields.ORIG_SELLERS_SALE_DAYS != null)
-            mUpdaters[i++] = new  TradeOrigSellersSaleDays();
+            addUpdater (MamdaTradeFields.ORIG_SELLERS_SALE_DAYS.getFid(), new TradeOrigSellersSaleDays());
 
         if (MamdaTradeFields.ORIG_STOP_STOCK_IND != null)
-            mUpdaters[i++] = new  TradeOrigStopStockInd();
+            addUpdater (MamdaTradeFields.ORIG_STOP_STOCK_IND.getFid(), new TradeOrigStopStockInd());
 
         if (MamdaTradeFields.CORR_PART_ID != null)
-            mUpdaters[i++] = new  TradeCorrPartId();
+            addUpdater (MamdaTradeFields.CORR_PART_ID.getFid(), new TradeCorrPartId());
 
         if (MamdaTradeFields.CORR_SIZE != null)
-            mUpdaters[i++] = new  TradeCorrVolume();
+            addUpdater (MamdaTradeFields.CORR_SIZE.getFid(), new TradeCorrVolume());
 
         if (MamdaTradeFields.CORR_PRICE != null)
-            mUpdaters[i++] = new  TradeCorrPrice();
+            addUpdater (MamdaTradeFields.CORR_PRICE.getFid(), new TradeCorrPrice());
 
         if (MamdaTradeFields.CORR_TRADE_QUALIFIER != null)
-            mUpdaters[i++] = new  TradeCorrQualStr();
+            addUpdater (MamdaTradeFields.CORR_TRADE_QUALIFIER.getFid(), new TradeCorrQualStr());
 
         if (MamdaTradeFields.CORR_SALE_CONDITION != null)
-            mUpdaters[i++] = new  TradeCorrQualNativeStr();
+            addUpdater (MamdaTradeFields.CORR_SALE_CONDITION.getFid(), new TradeCorrQualNativeStr());
 
         if (MamdaTradeFields.CORR_SELLERS_SALE_DAYS != null)
-            mUpdaters[i++] = new  TradeCorrSellersSaleDays();
+            addUpdater (MamdaTradeFields.CORR_SELLERS_SALE_DAYS.getFid(), new TradeCorrSellersSaleDays());
 
         if (MamdaTradeFields.CORR_STOP_STOCK_IND != null)
-            mUpdaters[i++] = new  TradeCorrStopStockInd();
+            addUpdater (MamdaTradeFields.CORR_STOP_STOCK_IND.getFid(), new TradeCorrStopStockInd());
 
         if (MamdaTradeFields.CANCEL_TIME != null)
-            mUpdaters[i++] = new  TradeCancelTime();
+            addUpdater (MamdaTradeFields.CANCEL_TIME.getFid(), new TradeCancelTime());
 
         if (MamdaTradeFields.TRADE_COUNT != null)
-            mUpdaters[i++] = new  TradeCount();
+            addUpdater (MamdaTradeFields.TRADE_COUNT.getFid(), new TradeCount());
 
         if (MamdaTradeFields.BLOCK_COUNT != null)
-            mUpdaters[i++] = new  TradeBlockCount();
+            addUpdater (MamdaTradeFields.BLOCK_COUNT.getFid(), new TradeBlockCount());
 
         if (MamdaTradeFields.BLOCK_VOLUME != null)
-            mUpdaters[i++] = new  TradeBlockVolume();
+            addUpdater (MamdaTradeFields.BLOCK_VOLUME.getFid(), new TradeBlockVolume());
 
         if (MamdaTradeFields.PREV_CLOSE_DATE != null)
-            mUpdaters[i++] = new  TradePrevCloseDate();
+            addUpdater (MamdaTradeFields.PREV_CLOSE_DATE.getFid(), new TradePrevCloseDate());
 
         if (MamdaTradeFields.ADJ_PREV_CLOSE != null)
-            mUpdaters[i++] = new  TradeAdjPrevClose ();
+            addUpdater (MamdaTradeFields.ADJ_PREV_CLOSE.getFid(), new TradeAdjPrevClose ());
 
         if (MamdaTradeFields.IRREG_PRICE != null)
-            mUpdaters[i++] = new  TradeIrregPrice();
+            addUpdater (MamdaTradeFields.IRREG_PRICE.getFid(), new TradeIrregPrice());
 
         if (MamdaTradeFields.IRREG_SIZE != null)
-            mUpdaters[i++] = new  TradeIrregVolume();
+            addUpdater (MamdaTradeFields.IRREG_SIZE.getFid(), new TradeIrregVolume());
 
         if (MamdaTradeFields.IRREG_PART_ID != null)
-            mUpdaters[i++] = new  TradeIrregPartId();
+            addUpdater (MamdaTradeFields.IRREG_PART_ID.getFid(), new TradeIrregPartId());
 
         if (MamdaTradeFields.IRREG_TIME != null)
-            mUpdaters[i++] = new  TradeIrregTime();
+            addUpdater (MamdaTradeFields.IRREG_TIME.getFid(), new TradeIrregTime());
 
         if (MamdaTradeFields.UPDATE_AS_TRADE != null)
-            mUpdaters[i++] = new  TradeUpdateAsTrade();
+            addUpdater (MamdaTradeFields.UPDATE_AS_TRADE.getFid(), new TradeUpdateAsTrade());
 
         if (MamdaTradeFields.IS_IRREGULAR != null)
-            mUpdaters[i++] = new  TradeIsIrregular();
+            addUpdater (MamdaTradeFields.IS_IRREGULAR.getFid(), new TradeIsIrregular());
 
     }
+
+    /**
+     * addUpdater Adds a TradeUpdate object to the array of updaters.
+     *
+     * @param fid New fid of updaters to be added to the array
+     * @param updater New updater to be added to the array
+     *
+     * @return None
+     */
+    private static void addUpdater (int fid,
+                                    TradeUpdate updater)
+    {
+        ensureUpdatersCapacity (fid);
+
+        mUpdaters[fid] = updater;
+    }
+
+    /**
+     * ensureUpdatersCapacity Increases the size of the updaters
+     * array if necessary.
+     *
+     * @param fid New fid to be added to the array
+     *
+     * @return None
+     */
+    private static void ensureUpdatersCapacity (int fid)
+    {
+        if ((fid+1) > mUpdaters.length)
+        {
+            TradeUpdate[] tempUpdaters = mUpdaters;
+
+            mUpdaters = new TradeUpdate [fid + 1];
+            System.arraycopy (tempUpdaters, 0, mUpdaters, 0, tempUpdaters.length);
+        }
+    }
+
 }
 
 
