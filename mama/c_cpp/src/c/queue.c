@@ -600,7 +600,8 @@ mamaQueue_destroyTimedWait(mamaQueue queue,
             /* If the time has run out then return a specific error code. */
             if((MAMA_STATUS_OK != ret) && (currentTime >= timeout))
             {
-                ret = MAMA_STATUS_TIMEOUT;
+                mama_log (MAMA_LOG_LEVEL_FINEST, "mamaQueue_destroy(): timed out destroying queue.");
+                ret = MAMA_STATUS_OK;
             }
         }
     }
