@@ -33,7 +33,11 @@ LDFLAGS += -L${srcdir}/../../../c \
 
 if USE_GCC_FLAGS
 CFLAGS   += -std=gnu99 -pedantic -Wmissing-prototypes -Wstrict-prototypes
+if WITH_TESTTOOLS
+CPPFLAGS += -pedantic -Wall -Wimplicit -Wno-long-long -D_GNU_SOURCE -DTEST_BUILD
+else
 CPPFLAGS += -pedantic -Wall -Wimplicit -Wno-long-long -D_GNU_SOURCE
+endif
 endif
 
 LDADD     = -lmama -lpthread -lm -lwombatcommon -ldl -lrt
