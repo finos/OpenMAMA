@@ -42,16 +42,22 @@ struct wombatMsg_;
  Enum to reference the available MAMA message payloads. */
 typedef enum mamaPayloadType_
 {
-    MAMA_PAYLOAD_WOMBAT_MSG = 'W',
-    MAMA_PAYLOAD_TIBRV      = 'R',
-    MAMA_PAYLOAD_FAST       = 'F',
     MAMA_PAYLOAD_V5         = '5',
     MAMA_PAYLOAD_AVIS       = 'A',
     MAMA_PAYLOAD_TICK42BLP  = 'B',
+    MAMA_PAYLOAD_FAST       = 'F',
     MAMA_PAYLOAD_RAI        = 'I',
-    MAMA_PAYLOAD_EXEGY      = 'X',
+    MAMA_PAYLOAD_UMS        = 'L',
+    MAMA_PAYLOAD_TICK42RMDS = 'P',
+    MAMA_PAYLOAD_QPID       = 'Q',
+    MAMA_PAYLOAD_TIBRV      = 'R',
     MAMA_PAYLOAD_IBMWFO     = 'S',
     MAMA_PAYLOAD_ACTIV      = 'T',
+    MAMA_PAYLOAD_VULCAN     = 'V',
+    MAMA_PAYLOAD_WOMBAT_MSG = 'W',
+    MAMA_PAYLOAD_EXEGY      = 'X',
+
+/* Unknown Payload */
     MAMA_PAYLOAD_UNKNOWN    = 'U'
 } mamaPayloadType;
 

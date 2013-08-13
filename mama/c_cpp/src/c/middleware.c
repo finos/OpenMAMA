@@ -62,6 +62,15 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "activ") == 0)
         return MAMA_MIDDLEWARE_ACTIV;
 
+    if (strcasecmp (str, "tick42rmds") == 0)
+        return MAMA_MIDDLEWARE_TICK42RMDS;
+
+    if (strcasecmp (str, "ums") == 0)
+        return MAMA_MIDDLEWARE_UMS;
+
+    if (strcasecmp (str, "vulcan") == 0)
+        return MAMA_MIDDLEWARE_VULCAN;
+
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
 
@@ -93,6 +102,12 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "ibmwfo";
         case MAMA_MIDDLEWARE_ACTIV:
             return "activ";
+	case MAMA_MIDDLEWARE_TICK42RMDS:
+            return "tick42rmds";
+        case MAMA_MIDDLEWARE_UMS:
+            return "ums";
+        case MAMA_MIDDLEWARE_VULCAN:
+            return "vulcan";
         default:
             return "unknown";
     }

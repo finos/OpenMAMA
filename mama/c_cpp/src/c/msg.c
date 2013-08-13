@@ -368,26 +368,35 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
 {
     switch (payloadType)
     {
-        case MAMA_PAYLOAD_WOMBAT_MSG:
-            return "WombatMsg";
-        case MAMA_PAYLOAD_TIBRV:
-            return "TIBRV";
-        case MAMA_PAYLOAD_FAST:
-            return "FAST";
         case MAMA_PAYLOAD_V5:
             return "V5";
         case MAMA_PAYLOAD_AVIS:
             return "AVIS";
         case MAMA_PAYLOAD_TICK42BLP:
             return "TICK42BLP";
+        case MAMA_PAYLOAD_FAST:
+            return "FAST";
         case MAMA_PAYLOAD_RAI:
             return "rai";
-        case MAMA_PAYLOAD_EXEGY:
-            return "EXEGY";
+        case MAMA_PAYLOAD_UMS:
+            return "UMS";
+        case MAMA_PAYLOAD_TICK42RMDS:
+            return "TICK42RMDS";
+        case MAMA_PAYLOAD_QPID:
+            return "QPID";
+        case MAMA_PAYLOAD_TIBRV:
+            return "TIBRV";
         case MAMA_PAYLOAD_IBMWFO:
             return "ibmwfo";
         case MAMA_PAYLOAD_ACTIV:
             return "activ";
+        case MAMA_PAYLOAD_VULCAN:
+            return "Vulcan";
+        case MAMA_PAYLOAD_WOMBAT_MSG:
+            return "WombatMsg";
+        case MAMA_PAYLOAD_EXEGY:
+            return "EXEGY";
+
         default:
             return "unknown";
     }
