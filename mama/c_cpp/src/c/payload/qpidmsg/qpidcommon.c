@@ -1,0 +1,276 @@
+/* $Id$
+ *
+ * OpenMAMA: The open middleware agnostic messaging API
+ * Copyright (C) 2011 NYSE Inc.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+ * 02110-1301 USA
+ */
+
+/*=========================================================================
+  =                             Includes                                  =
+  =========================================================================*/
+
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <mama/mama.h>
+#include <proton/message.h>
+#include <proton/error.h>
+
+#include "payloadbridge.h"
+#include "msgfieldimpl.h"
+#include "qpidcommon.h"
+
+
+/*=========================================================================
+  =                  Public implementation functions                      =
+  =========================================================================*/
+
+mamaFieldType
+qpidmsgPayloadInternal_toMamaType (pn_type_t type)
+{
+    switch (type)
+    {
+    case PN_NULL:       return MAMA_FIELD_TYPE_UNKNOWN;
+    case PN_BOOL:       return MAMA_FIELD_TYPE_BOOL;
+    case PN_UBYTE:      return MAMA_FIELD_TYPE_U8;
+    case PN_BYTE:       return MAMA_FIELD_TYPE_I8;
+    case PN_USHORT:     return MAMA_FIELD_TYPE_U16;
+    case PN_SHORT:      return MAMA_FIELD_TYPE_I16;
+    case PN_UINT:       return MAMA_FIELD_TYPE_U32;
+    case PN_INT:        return MAMA_FIELD_TYPE_I32;
+    case PN_CHAR:       return MAMA_FIELD_TYPE_CHAR;
+    case PN_ULONG:      return MAMA_FIELD_TYPE_U64;
+    case PN_LONG:       return MAMA_FIELD_TYPE_I64;
+    case PN_TIMESTAMP:  return MAMA_FIELD_TYPE_TIME;
+    case PN_FLOAT:      return MAMA_FIELD_TYPE_F32;
+    case PN_DOUBLE:     return MAMA_FIELD_TYPE_F64;
+    case PN_DECIMAL32:  return MAMA_FIELD_TYPE_UNKNOWN;
+    case PN_DECIMAL64:  return MAMA_FIELD_TYPE_UNKNOWN;
+    case PN_DECIMAL128: return MAMA_FIELD_TYPE_UNKNOWN;
+    case PN_UUID:       return MAMA_FIELD_TYPE_UNKNOWN;
+    case PN_BINARY:     return MAMA_FIELD_TYPE_OPAQUE;
+    case PN_STRING:     return MAMA_FIELD_TYPE_STRING;
+    case PN_SYMBOL:     return MAMA_FIELD_TYPE_UNKNOWN;
+    case PN_DESCRIBED:  return MAMA_FIELD_TYPE_UNKNOWN;
+    case PN_ARRAY:      return MAMA_FIELD_TYPE_UNKNOWN;
+    case PN_LIST:       return MAMA_FIELD_TYPE_UNKNOWN;
+    case PN_MAP:        return MAMA_FIELD_TYPE_UNKNOWN;
+    default:            return MAMA_FIELD_TYPE_UNKNOWN;
+    }
+}
+
+mama_status
+qpidmsgPayloadInternal_toMamaStatus (int status)
+{
+    switch (status)
+    {
+    case PN_OK:        return MAMA_STATUS_OK;
+    case PN_EOS:       return MAMA_STATUS_PLATFORM;
+    case PN_ERR:       return MAMA_STATUS_PLATFORM;
+    case PN_OVERFLOW:  return MAMA_STATUS_PLATFORM;
+    case PN_UNDERFLOW: return MAMA_STATUS_PLATFORM;
+    case PN_STATE_ERR: return MAMA_STATUS_PLATFORM;
+    case PN_ARG_ERR:   return MAMA_STATUS_INVALID_ARG;
+    case PN_TIMEOUT:   return MAMA_STATUS_TIMEOUT;
+    case PN_INTR:      return MAMA_STATUS_PLATFORM;
+    default:           return MAMA_STATUS_PLATFORM;
+    }
+}
+
+mama_size_t
+qpidmsgPayloadInternal_elementToString (pn_data_t* payload,
+                                        pn_atom_t atom,
+                                        char* dest)
+{
+    char* originalPos = dest;
+
+    switch (atom.type)
+    {
+    case PN_NULL:
+        dest += sprintf (dest, "NULL");
+        break;
+    case PN_BOOL:
+        dest += sprintf (dest, "%u", atom.u.as_bool);
+        break;
+    case PN_UBYTE:
+        dest += sprintf (dest, "%u", atom.u.as_ubyte);
+        break;
+    case PN_BYTE:
+        dest += sprintf (dest, "%d", atom.u.as_byte);
+        break;
+    case PN_USHORT:
+        dest += sprintf (dest, "%u", atom.u.as_ushort);
+        break;
+    case PN_SHORT:
+        dest += sprintf (dest, "%d", atom.u.as_short);
+        break;
+    case PN_UINT:
+        dest += sprintf (dest, "%u", atom.u.as_uint);
+        break;
+    case PN_INT:
+        dest += sprintf (dest, "%d", atom.u.as_int);
+        break;
+    case PN_CHAR:
+        dest += sprintf (dest, "%c", atom.u.as_char);
+        break;
+    case PN_ULONG:
+        dest += sprintf (dest,
+                         "%llu",
+                         (long long unsigned int) atom.u.as_ulong);
+        break;
+    case PN_LONG:
+        dest += sprintf (dest, "%lld", (long long int) atom.u.as_long);
+        break;
+    case PN_TIMESTAMP:
+    {
+        pn_timestamp_t  stamp       = atom.u.as_timestamp;
+        uint32_t        micros      = (mama_u32_t) stamp;
+        uint32_t        seconds     = (mama_u32_t) (stamp >> 32);
+
+        dest += sprintf (dest, "%u.%u", seconds, micros);
+        break;
+    }
+    case PN_FLOAT:
+        dest += sprintf (dest, "%f", atom.u.as_float);
+        break;
+    case PN_DOUBLE:
+        dest += sprintf (dest, "%f", atom.u.as_double);
+        break;
+    case PN_DECIMAL32:
+        dest += sprintf (dest,
+                         "%lu",
+                         (long unsigned int) atom.u.as_decimal32);
+        break;
+    case PN_DECIMAL64:
+        dest += sprintf (dest,
+                         "%llu",
+                         (long long unsigned int) atom.u.as_decimal64);
+        break;
+    case PN_DECIMAL128:
+        dest += sprintf (dest, "%s", atom.u.as_decimal128.bytes);
+        break;
+    case PN_UUID:
+        dest += sprintf (dest, "%s", atom.u.as_uuid.bytes);
+        break;
+    case PN_BINARY:
+    {
+        mama_size_t i           = 0;
+        char*       bytePos    = NULL;
+        pn_bytes_t  bytes;
+
+        bytes    = atom.u.as_bytes;
+        bytePos  = bytes.start;
+
+        for (i = 0; i < bytes.size; i++)
+        {
+            dest += sprintf (dest, "%#x ", *bytePos);
+            bytePos++;
+        }
+        if(bytes.size > 0)
+        {
+            dest--;
+        }
+
+        break;
+    }
+    case PN_STRING:
+        dest += sprintf (dest, "%s", atom.u.as_bytes.start);
+        break;
+    case PN_SYMBOL:
+        dest += sprintf (dest, "PN_SYMBOL");
+        break;
+    case PN_DESCRIBED:
+        dest += sprintf (dest, "PN_DESCRIBED");
+        break;
+    case PN_ARRAY:
+    {
+        mama_size_t added = 0;
+
+        /* load list in underlying implementation */
+        pn_data_get_array (payload);
+
+        /* enter list in underlying implementation */
+        pn_data_enter (payload);
+
+        dest += sprintf (dest, "[");
+
+        /* move to first content in underlying implementation */
+        while (0 != pn_data_next (payload))
+        {
+            pn_atom_t atom = pn_data_get_atom (payload);
+
+            dest += qpidmsgPayloadInternal_elementToString (payload,
+                                                            atom,
+                                                            dest);
+            dest += sprintf (dest, ",");
+            added++;
+        }
+        if (added > 0)
+        {
+            /* move on top of the trailing comma to overwrite */
+            dest--;
+        }
+        dest += sprintf(dest, "]");
+
+        /* Name */
+        pn_data_exit (payload);
+        break;
+    }
+    case PN_LIST:
+    {
+        mama_size_t added = 0;
+
+        /* load list in underlying implementation */
+        pn_data_get_list (payload);
+
+        /* enter list in underlying implementation */
+        pn_data_enter    (payload);
+
+        dest += sprintf (dest, "{");
+
+        /* move to first content in underlying implementation */
+        while (0 != pn_data_next (payload))
+        {
+            pn_atom_t atom = pn_data_get_atom (payload);
+            dest += qpidmsgPayloadInternal_elementToString (payload,
+                                                            atom,
+                                                            dest);
+            dest += sprintf (dest, ",");
+            added++;
+        }
+        if (added > 0)
+        {
+            /* move on top of the trailing comma to overwrite */
+            dest--;
+        }
+        dest += sprintf (dest, "}");
+
+        /* Name */
+        pn_data_exit (payload);
+        break;
+    }
+    case PN_MAP:
+        dest += sprintf (dest, "PN_MAP");
+        break;
+    default:
+        dest += sprintf (dest, "?");
+        break;
+    }
+
+    return (dest - originalPos);
+}

@@ -1,7 +1,7 @@
-# $Id$
+# $Id: Makefile.am,v 1.1.2.9 2011/09/29 09:19:22 emmapollock Exp $
 #
 # OpenMAMA: The open middleware agnostic messaging API
-# Copyright (C) 2011 NYSE Technologies, Inc.
+# Copyright (C) 2011 NYSE Inc.
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,14 +21,39 @@
 
 srcdir = @srcdir@
 VPATH  = @srcdir@
-PACKAGE_VERSION = @PACKAGE_VERSION@
 
-SUBDIRS = 
+# Targets to be installed:
+lib_LTLIBRARIES = libmamaqpidimpl.la
 
-if WITH_AVIS
-SUBDIRS += avis
+
+CPPFLAGS += \
+    -I$(srcdir)/../../ \
+    -I$(srcdir)/../../../../../../common/c_cpp/src/c \
+    -I$(QPID_HOME)/include/ 
+
+LDFLAGS += \
+    -L../../ \
+    -L$(srcdir)/../../../../../../common/c_cpp/src/c \
+    -L$(QPID_HOME)/proton-c
+
+if USE_GCC_FLAGS
+CFLAGS += -Wimplicit -Wno-long-long -Wmissing-prototypes -Wstrict-prototypes -Wall
+CPPFLAGS += -Wno-long-long -Wimplicit -Wno-long-long -Wmissing-prototypes -Wstrict-prototypes -Wall
 endif
 
-if WITH_PROTON
-SUBDIRS += qpid
-endif
+LIBS    =  -luuid -lmama -lm -lwombatcommon -lqpid-proton
+
+libmamaqpidimpl_la_SOURCES = \
+	bridge.c \
+	transport.c \
+	queue.c \
+	publisher.c \
+	subscription.c \
+	msg.c \
+	io.c \
+	timer.c \
+	inbox.c \
+	codec.c \
+	endpointpool.c
+ 
+
