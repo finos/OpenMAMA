@@ -748,9 +748,10 @@ qpidmsgPayload_getSendSubject (const msgPayload    msg,
 const char*
 qpidmsgPayload_toString (const msgPayload msg)
 {
-    qpidmsgPayloadImpl* impl    = (qpidmsgPayloadImpl*) msg;
-    char*               bufPos  = NULL;
-    int                 result  = 0;
+    qpidmsgPayloadImpl* impl      = (qpidmsgPayloadImpl*) msg;
+    char*               bufPos    = NULL;
+    int                 result    = 0;
+    mama_size_t         bufferLen = QPID_BYTE_BUFFER_SIZE;
 
     if (NULL == impl)
     {
@@ -760,13 +761,13 @@ qpidmsgPayload_toString (const msgPayload msg)
     /* Allocate buffers and pointer to increment */
     qpidmsgPayloadImpl_allocateBufferMemory (&impl->mBuffer,
                                              &impl->mBufferSize,
-                                             QPID_BYTE_BUFFER_SIZE);
+                                             bufferLen);
 
     bufPos = impl->mBuffer;
 
     pn_data_rewind (impl->mBody);
 
-    result = sprintf (bufPos, "(");
+    result = snprintf (bufPos, bufferLen, "(");
 
     /* Check that sprintf has appended to the buffer correctly. If not
      * we run the risk of clobbering stuff... */
@@ -779,17 +780,25 @@ qpidmsgPayload_toString (const msgPayload msg)
         return "";
     } else {
         bufPos += result;
+        bufferLen -= result;
     }
 
     /* pn_data_next returns a typedef bool, in which 0 is false */
     while (0 != pn_data_next (impl->mBody))
     {
-        pn_atom_t atom  =   pn_data_get_atom (impl->mBody);
-        bufPos         +=  qpidmsgPayloadInternal_elementToString (impl->mBody,
+        pn_atom_t atom  =  pn_data_get_atom (impl->mBody);
+        result         +=  qpidmsgPayloadInternal_elementToString (impl->mBody,
                                                                    atom,
-                                                                   bufPos);
+                                                                   bufPos,
+                                                                   bufferLen);
+
+        if (result > 0 && result <= bufferLen)
+        {
+            bufPos    += result;
+            bufferLen -= result;
+        }
     }
-    result = sprintf(bufPos, ")");
+    result = snprintf(bufPos, bufferLen, ")");
 
     /* Check that sprintf has appended to the buffer correctly. If not
      * we run the risk of clobbering stuff... */
@@ -800,6 +809,8 @@ qpidmsgPayload_toString (const msgPayload msg)
                   "Failed to append \')\' to string. Return code: %d",
                   result);
         return "";
+    } else {
+        bufferLen -= result;
     }
 
     /* Revert to the previous iterator state if applicable */
@@ -1301,7 +1312,8 @@ qpidmsgPayload_getFieldAsString (const msgPayload    msg,
 
     written = qpidmsgPayloadInternal_elementToString (impl->mBody,
                                                       atom,
-                                                      buffer);
+                                                      buffer, 
+                                                      len);
 
     if (0 == written)
     {

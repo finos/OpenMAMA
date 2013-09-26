@@ -248,13 +248,15 @@ qpidmsgPayloadInternal_toMamaStatus (int status);
  * @param payload   The start position in the buffer iteration.
  * @param atom      The current atom to translate to a string.
  * @param dest      The location to write the string contents to.
+ * @param len       The length of the destination buffer.
  *
  * @return mamaFieldType containing the MAMA equivalent field type.
  */
 mama_size_t
 qpidmsgPayloadInternal_elementToString (pn_data_t*  payload,
                                         pn_atom_t   atom,
-                                        char*       dest);
+                                        char*       dest,
+                                        mama_size_t len);
 
 #if defined(__cplusplus)
 }

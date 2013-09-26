@@ -36,6 +36,11 @@
 #include "qpidcommon.h"
 
 
+inline void
+qpidmsgPayloadInternal_checkLengthAndIncDest (mama_size_t  written, 
+                                              mama_size_t* length, 
+                                              char**        dest);
+
 /*=========================================================================
   =                  Public implementation functions                      =
   =========================================================================*/
@@ -92,49 +97,75 @@ qpidmsgPayloadInternal_toMamaStatus (int status)
     }
 }
 
+inline void
+qpidmsgPayloadInternal_checkLengthAndIncDest (mama_size_t  written, 
+                                              mama_size_t* length, 
+                                              char**       dest)
+{
+    if (written > 0 && written <= *length)
+    {
+        *dest   += written;
+        *length -= written;
+    }
+}
+
 mama_size_t
 qpidmsgPayloadInternal_elementToString (pn_data_t* payload,
                                         pn_atom_t atom,
-                                        char* dest)
+                                        char* dest,
+                                        mama_size_t len)
 {
-    char* originalPos = dest;
+    char*       originalPos = dest;
+    int         written     = 0;
 
     switch (atom.type)
     {
     case PN_NULL:
-        dest += sprintf (dest, "NULL");
+        written = snprintf (dest, len, "NULL");
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_BOOL:
-        dest += sprintf (dest, "%u", atom.u.as_bool);
+        written = snprintf (dest, len, "%u", atom.u.as_bool);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_UBYTE:
-        dest += sprintf (dest, "%u", atom.u.as_ubyte);
+        written = snprintf (dest, len, "%u", atom.u.as_ubyte);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_BYTE:
-        dest += sprintf (dest, "%d", atom.u.as_byte);
+        written = snprintf (dest, len, "%d", atom.u.as_byte);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_USHORT:
-        dest += sprintf (dest, "%u", atom.u.as_ushort);
+        written = snprintf (dest, len, "%u", atom.u.as_ushort);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_SHORT:
-        dest += sprintf (dest, "%d", atom.u.as_short);
+        written = snprintf (dest, len, "%d", atom.u.as_short);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_UINT:
-        dest += sprintf (dest, "%u", atom.u.as_uint);
+        written = snprintf (dest, len, "%u", atom.u.as_uint);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_INT:
-        dest += sprintf (dest, "%d", atom.u.as_int);
+        written = snprintf (dest, len, "%d", atom.u.as_int);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_CHAR:
-        dest += sprintf (dest, "%c", atom.u.as_char);
+        written = snprintf (dest, len, "%c", atom.u.as_char);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_ULONG:
-        dest += sprintf (dest,
-                         "%llu",
-                         (long long unsigned int) atom.u.as_ulong);
+        written = snprintf (dest,
+                          len,
+                          "%llu",
+                          (long long unsigned int) atom.u.as_ulong);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_LONG:
-        dest += sprintf (dest, "%lld", (long long int) atom.u.as_long);
+        written = snprintf (dest, len, "%lld", (long long int) atom.u.as_long);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_TIMESTAMP:
     {
@@ -142,44 +173,54 @@ qpidmsgPayloadInternal_elementToString (pn_data_t* payload,
         uint32_t        micros      = (mama_u32_t) stamp;
         uint32_t        seconds     = (mama_u32_t) (stamp >> 32);
 
-        dest += sprintf (dest, "%u.%u", seconds, micros);
+        written = snprintf (dest, len, "%u.%u", seconds, micros);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     }
     case PN_FLOAT:
-        dest += sprintf (dest, "%f", atom.u.as_float);
+        written = snprintf (dest, len, "%f", atom.u.as_float);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_DOUBLE:
-        dest += sprintf (dest, "%f", atom.u.as_double);
+        written = snprintf (dest, len, "%f", atom.u.as_double);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_DECIMAL32:
-        dest += sprintf (dest,
-                         "%lu",
-                         (long unsigned int) atom.u.as_decimal32);
+        written = snprintf (dest,
+                            len,
+                            "%lu",
+                            (long unsigned int) atom.u.as_decimal32);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_DECIMAL64:
-        dest += sprintf (dest,
-                         "%llu",
-                         (long long unsigned int) atom.u.as_decimal64);
+        written = snprintf (dest,
+                            len,
+                            "%llu",
+                            (long long unsigned int) atom.u.as_decimal64);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_DECIMAL128:
-        dest += sprintf (dest, "%s", atom.u.as_decimal128.bytes);
+        written = snprintf (dest, len, "%s", atom.u.as_decimal128.bytes);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_UUID:
-        dest += sprintf (dest, "%s", atom.u.as_uuid.bytes);
+        written = snprintf (dest, len, "%s", atom.u.as_uuid.bytes);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_BINARY:
     {
-        mama_size_t i           = 0;
+        mama_size_t i          = 0;
         char*       bytePos    = NULL;
         pn_bytes_t  bytes;
 
         bytes    = atom.u.as_bytes;
         bytePos  = bytes.start;
 
-        for (i = 0; i < bytes.size; i++)
+        for (i = 0; i < bytes.size && len > 1; i++)
         {
             dest += sprintf (dest, "%#x ", *bytePos);
             bytePos++;
+            len--;
         }
         if(bytes.size > 0)
         {
@@ -189,13 +230,16 @@ qpidmsgPayloadInternal_elementToString (pn_data_t* payload,
         break;
     }
     case PN_STRING:
-        dest += sprintf (dest, "%s", atom.u.as_bytes.start);
+        written = snprintf (dest, len, "%s", atom.u.as_bytes.start);
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_SYMBOL:
-        dest += sprintf (dest, "PN_SYMBOL");
+        written = snprintf (dest, len, "PN_SYMBOL");
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_DESCRIBED:
-        dest += sprintf (dest, "PN_DESCRIBED");
+        written = snprintf (dest, len, "PN_DESCRIBED");
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     case PN_ARRAY:
     {
@@ -207,25 +251,34 @@ qpidmsgPayloadInternal_elementToString (pn_data_t* payload,
         /* enter list in underlying implementation */
         pn_data_enter (payload);
 
-        dest += sprintf (dest, "[");
+        written = snprintf (dest, len, "[");
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
 
         /* move to first content in underlying implementation */
-        while (0 != pn_data_next (payload))
+        while (0 != pn_data_next (payload) && len != 0)
         {
             pn_atom_t atom = pn_data_get_atom (payload);
 
-            dest += qpidmsgPayloadInternal_elementToString (payload,
-                                                            atom,
-                                                            dest);
-            dest += sprintf (dest, ",");
+            written = qpidmsgPayloadInternal_elementToString (payload,
+                                                             atom,
+                                                             dest, 
+                                                             len);
+
+            qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
+
+            written = snprintf (dest, len, ",");
+            qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
+
             added++;
         }
         if (added > 0)
         {
             /* move on top of the trailing comma to overwrite */
             dest--;
+            len++;
         }
-        dest += sprintf(dest, "]");
+        written = snprintf(dest, len, "]");
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
 
         /* Name */
         pn_data_exit (payload);
@@ -241,16 +294,21 @@ qpidmsgPayloadInternal_elementToString (pn_data_t* payload,
         /* enter list in underlying implementation */
         pn_data_enter    (payload);
 
-        dest += sprintf (dest, "{");
+        written = snprintf (dest, len, "{");
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
 
         /* move to first content in underlying implementation */
         while (0 != pn_data_next (payload))
         {
             pn_atom_t atom = pn_data_get_atom (payload);
-            dest += qpidmsgPayloadInternal_elementToString (payload,
-                                                            atom,
-                                                            dest);
-            dest += sprintf (dest, ",");
+            written = qpidmsgPayloadInternal_elementToString (payload,
+                                                              atom,
+                                                              dest,
+                                                              len);
+            qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
+
+            written = snprintf (dest, len, ",");
+            qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
             added++;
         }
         if (added > 0)
@@ -258,17 +316,20 @@ qpidmsgPayloadInternal_elementToString (pn_data_t* payload,
             /* move on top of the trailing comma to overwrite */
             dest--;
         }
-        dest += sprintf (dest, "}");
+        written = snprintf (dest, len, "}");
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
 
         /* Name */
         pn_data_exit (payload);
         break;
     }
     case PN_MAP:
-        dest += sprintf (dest, "PN_MAP");
+        written = snprintf (dest, len, "PN_MAP");
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     default:
-        dest += sprintf (dest, "?");
+        written = snprintf (dest, len, "?");
+        qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
         break;
     }
 
