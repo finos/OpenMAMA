@@ -295,7 +295,7 @@ do                                                                             \
     qpidmsgPayloadImpl_allocateBufferMemory (&(impl->mBuffer),                 \
                                              &(impl->mBufferSize),             \
                                              *size * sizeof (MAMATYPE));       \
-    temp = impl->mBuffer;                                                      \
+    temp = (MAMATYPE*) impl->mBuffer;                                          \
                                                                                \
     /* enter array */                                                          \
     pn_data_enter (impl->mBody);                                               \
@@ -543,7 +543,7 @@ qpidmsgPayload_create (msgPayload* msg)
 
     if (MAMA_STATUS_OK == status)
     {
-        impl            = *msg;
+        impl            = (qpidmsgPayloadImpl*) *msg;
         impl->mQpidMsg  = pn_message ();
 
         if (NULL == impl->mQpidMsg)
@@ -601,7 +601,7 @@ qpidmsgPayload_copy (const msgPayload    msg,
         }
     }
 
-    copyImpl    = *copy;
+    copyImpl    = (qpidmsgPayloadImpl*) *copy;
     qpidStatus  = pn_data_copy (copyImpl->mBody, impl->mBody);
 
     return qpidmsgPayloadInternal_toMamaStatus (qpidStatus);
@@ -763,7 +763,7 @@ qpidmsgPayload_toString (const msgPayload msg)
                                              &impl->mBufferSize,
                                              bufferLen);
 
-    bufPos = impl->mBuffer;
+    bufPos = (char*) impl->mBuffer;
 
     pn_data_rewind (impl->mBody);
 
@@ -816,7 +816,7 @@ qpidmsgPayload_toString (const msgPayload msg)
     /* Revert to the previous iterator state if applicable */
     qpidmsgPayloadImpl_resetToIteratorState (impl);
 
-    return impl->mBuffer;
+    return (const char*) impl->mBuffer;
 }
 
 mama_status
@@ -1233,7 +1233,8 @@ qpidmsgPayload_apply (msgPayload          dest,
              * Take the source payload, then convert it to a byte buffer,
              * so we can create a mamaMsg from it.
              */
-            qpidmsgPayloadImpl_payloadToMamaMsg (src, &tempMsg);
+            qpidmsgPayloadImpl_payloadToMamaMsg ((qpidmsgPayloadImpl*) src,
+				    &tempMsg);
 
             /*
              * This allows us to use the mamaMsg_get... calls, instead of native
@@ -1489,7 +1490,7 @@ qpidmsgPayload_addDateTime (msgPayload          msg,
     mama_u32_t              seconds      = 0;
     mama_u32_t              micros       = 0;
     mamaDateTimeHints       hints        = 0;
-    mamaDateTimePrecision   precision    = 0;
+    mamaDateTimePrecision   precision    = MAMA_DATE_TIME_PREC_UNKNOWN;
     pn_timestamp_t          stamp        = 0;
 
     if (NULL == value || NULL == impl)
@@ -1643,7 +1644,8 @@ qpidmsgPayload_addMsg (msgPayload  msg,
      * here
      */
 
-    status = qpidmsgPayloadImpl_payloadToMamaMsg (value, &tmpMsg);
+    status = qpidmsgPayloadImpl_payloadToMamaMsg ((qpidmsgPayloadImpl*) value,
+		             &tmpMsg);
 
     qpidmsgPayloadImpl_addBareMsg (msg, tmpMsg);
 
@@ -2141,7 +2143,7 @@ qpidmsgPayload_updateDateTime (msgPayload          msg,
     mama_u32_t              seconds         = 0;
     mama_u32_t              micros          = 0;
     mamaDateTimeHints       hints           = 0;
-    mamaDateTimePrecision   precision       = 0;
+    mamaDateTimePrecision   precision       = MAMA_DATE_TIME_PREC_UNKNOWN;
     pn_timestamp_t          stamp           = 0;
 
     if (NULL == impl || NULL == value)
@@ -2242,7 +2244,7 @@ qpidmsgPayload_updateSubMsg (msgPayload          msg,
     qpidmsgPayloadImpl* impl    = (qpidmsgPayloadImpl*) msg;
 
     /* Despite the prototype, subMsg seems to be a mamaMsg, so treat as such */
-    mamaMsg             valMsg  = subMsg;
+    mamaMsg             valMsg  = (mamaMsg) subMsg;
     mama_status         status  = MAMA_STATUS_OK;
 
     if (NULL == impl)
@@ -2767,7 +2769,7 @@ qpidmsgPayload_getDateTime (const msgPayload    msg,
     mamaDateTime_setWithHints (result,
                                seconds,
                                micros,
-                               precision,
+                               (mamaDateTimePrecision) precision,
                                hints);
 
     /* Revert to the previous iterator state if applicable */
@@ -2864,7 +2866,8 @@ qpidmsgPayload_getMsg (const msgPayload    msg,
     pn_data_get_list (impl->mBody);
     pn_data_enter    (impl->mBody);
 
-    status = qpidmsgPayloadImpl_getMessageFromBuffer (impl->mBody, childMsg);
+    status = qpidmsgPayloadImpl_getMessageFromBuffer (impl->mBody,
+		             (qpidmsgPayloadImpl*) childMsg);
 
     if (MAMA_STATUS_OK != status)
     {
@@ -3146,7 +3149,8 @@ qpidmsgPayload_getVectorMsg (const msgPayload    msg,
          }
 
          /* parse the payload to populate the message */
-         qpidmsgPayloadImpl_getMessageFromBuffer (impl->mBody, temp[i]);
+         qpidmsgPayloadImpl_getMessageFromBuffer (impl->mBody,
+	             (qpidmsgPayloadImpl*) temp[i]);
 
          pn_data_exit (impl->mBody);
      }
@@ -3344,7 +3348,7 @@ qpidmsgPayloadImpl_getFieldFromBuffer (pn_data_t*               buffer,
 
                 /* parse the payload to populate the message */
                 status = qpidmsgPayloadImpl_getMessageFromBuffer (buffer,
-                                                         childMsg);
+                                 (qpidmsgPayloadImpl*) childMsg);
 
                 if (MAMA_STATUS_OK != status)
                 {
@@ -3496,7 +3500,8 @@ qpidmsgPayloadImpl_getFieldFromBuffer (pn_data_t*               buffer,
         }
 
         /* parse the payload to populate the message */
-        status = qpidmsgPayloadImpl_getMessageFromBuffer (buffer, childMsg);
+        status = qpidmsgPayloadImpl_getMessageFromBuffer (buffer,
+                         (qpidmsgPayloadImpl*) childMsg);
 
         if (MAMA_STATUS_OK != status)
         {
@@ -3606,7 +3611,7 @@ qpidmsgPayloadImpl_resetToIteratorState (qpidmsgPayloadImpl* impl)
     }
     else
     {
-        size_t i = 0;
+        uint16_t i = 0;
         /* First move to the start of the content */
         qpidmsgPayloadImpl_moveDataToContentLocation (impl->mBody);
 
@@ -3890,10 +3895,12 @@ qpidmsgPayloadImpl_getMessageFromBuffer (pn_data_t*           buffer,
     while (0 != pn_data_next (buffer))
     {
         /* Get the buffer and translate it to a field */
-        qpidmsgPayloadImpl_getFieldFromBuffer (buffer, field);
+        qpidmsgPayloadImpl_getFieldFromBuffer (buffer,
+                (qpidmsgFieldPayloadImpl*) field);
 
         /* Add the instance of the field to the target to be returned */
-        qpidmsgPayloadImpl_addFieldToPayload (target, field);
+        qpidmsgPayloadImpl_addFieldToPayload (target,
+                (qpidmsgFieldPayloadImpl*) field);
     }
 
     return MAMA_STATUS_OK;
@@ -4049,7 +4056,7 @@ qpidmsgPayloadImpl_createImplementationOnly (msgPayload* msg)
         return MAMA_STATUS_NULL_ARG;
     }
 
-    impl = calloc (1, sizeof (qpidmsgPayloadImpl));
+    impl = (qpidmsgPayloadImpl*) calloc (1, sizeof (qpidmsgPayloadImpl));
     NOMEM_STATUS_CHECK (impl);
 
     impl->mBuffer                 = NULL; /* Created when first used */

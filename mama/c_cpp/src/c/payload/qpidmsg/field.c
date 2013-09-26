@@ -113,7 +113,7 @@ do                                                                             \
     qpidmsgPayloadImpl_allocateBufferMemory (&(impl->mBuffer),                 \
                                              &(impl->mBufferSize),             \
             impl->mDataArrayCount * sizeof(MAMATYPE));                         \
-    temp = impl->mBuffer;                                                      \
+    temp = (MAMATYPE*) impl->mBuffer;                                                      \
                                                                                \
     for (i = 0; i < impl->mDataArrayCount; i++)                                \
     {                                                                          \
@@ -133,9 +133,10 @@ do                                                                             \
     const TYPE * result = NULL;                                                \
     mama_size_t  size   = 0;                                                   \
     mama_size_t  i      = 0;                                                   \
-    mama_status  status = mamaMsgField_getVector##SUBSET (field,               \
-                                                          &result,             \
-                                                          &size);              \
+    mama_status  status = mamaMsgField_getVector##SUBSET (                     \
+                                  (const mamaMsgField) field,                  \
+                                  &result,                                     \
+                                  &size);                                      \
                                                                                \
     if (MAMA_STATUS_OK != status)                                              \
     {                                                                          \
@@ -202,7 +203,7 @@ qpidmsgFieldPayload_create (msgFieldPayload* field)
 mama_status
 qpidmsgFieldPayload_destroy (msgFieldPayload field)
 {
-    int                      i       = 0;
+    mama_size_t              i       = 0;
     qpidmsgFieldPayloadImpl* impl    = (qpidmsgFieldPayloadImpl*) field;
     qpidmsgPayloadImpl*      payload = NULL;
 
@@ -479,7 +480,7 @@ qpidmsgFieldPayload_updateDateTime
     mama_u32_t                  datetime_s   = 0;
     mama_u32_t                  datetime_us  = 0;
     mamaDateTimeHints           dt_hints     = 0;
-    mamaDateTimePrecision       dt_precision = 0;
+    mamaDateTimePrecision       dt_precision = MAMA_DATE_TIME_PREC_UNKNOWN;
     pn_timestamp_t              dt_stamp     = 0;
     pn_atom_t                   atom;
 
@@ -785,8 +786,8 @@ qpidmsgFieldPayload_getDateTime (const msgFieldPayload   field,
         mamaDateTime_setWithHints (result,
                                    seconds,
                                    micros,
-                                   precision,
-                                   hints);
+                                   (mamaDateTimePrecision) precision,
+                                   (mamaDateTimeHints) hints);
         break;
     }
     case MAMA_FIELD_TYPE_STRING:
@@ -1312,7 +1313,7 @@ qpidmsgFieldPayloadImpl_setDataVectorSize (qpidmsgFieldPayloadImpl* impl,
     mama_status         status     = MAMA_STATUS_OK;
 
     status = qpidmsgPayloadImpl_allocateBufferMemory (
-                     (void*) &impl->mDataVector,
+                     (void**) &impl->mDataVector,
                      &oldSize,
                      targetSize);
 
@@ -1355,8 +1356,8 @@ qpidmsgFieldPayloadImpl_setDataArraySize (qpidmsgFieldPayloadImpl* impl,
         impl->mDataMaxArrayCount = size;
 
         /* Reallocate data vector reference memory if required */
-        impl->mDataArray = realloc (impl->mDataArray,
-                                    size * sizeof (pn_atom_t));
+        impl->mDataArray = (pn_atom_t*) realloc (impl->mDataArray,
+                                   size * sizeof (pn_atom_t));
     }
 
     /* Update the vector count */

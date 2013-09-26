@@ -217,7 +217,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
         }
 
         /* The payload type is the first character */
-        payloadType = firstAtom.u.as_bytes.start[0];
+        payloadType = (mamaPayloadType) firstAtom.u.as_bytes.start[0];
 
         /* Use byte buffer to populate MAMA message */
         status = mamaMsgImpl_setMsgBuffer (
@@ -259,7 +259,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
 
     /* Get the message type out */
     pn_data_next (properties);
-    type = pn_data_get_ubyte (properties);
+    type = (qpidMsgType) pn_data_get_ubyte (properties);
 
     qpidBridgeMamaMsgImpl_setMsgType (bridgeMessage, type);
 

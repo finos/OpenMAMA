@@ -48,6 +48,7 @@ extern "C" {
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_createImpl      (mamaPayloadBridge* result, char* identifier);
 

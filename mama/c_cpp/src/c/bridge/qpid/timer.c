@@ -189,7 +189,7 @@ qpidBridgeMamaTimer_destroy (timerBridge timer)
      * Put the impl free at the back of the queue to be executed when all
      * pending timer events have been completed
      */
-    qpidBridgeMamaQueue_enqueueEvent (impl->mQueue,
+    qpidBridgeMamaQueue_enqueueEvent ((queueBridge) impl->mQueue,
                                       qpidBridgeMamaTimerImpl_destroyCallback,
                                       (void*) impl);
 
@@ -310,10 +310,10 @@ qpidBridgeMamaTimerImpl_timerCallback (timerElement  timer,
     if (0 == impl->mDestroying)
     {
         /* Set the timer for the next firing */
-        qpidBridgeMamaTimer_reset (closure);
+        qpidBridgeMamaTimer_reset ((timerBridge) closure);
 
         /* Enqueue the callback for handling */
-        qpidBridgeMamaQueue_enqueueEvent (impl->mQueue,
+        qpidBridgeMamaQueue_enqueueEvent ((queueBridge) impl->mQueue,
                                           qpidBridgeMamaTimerImpl_queueCallback,
                                           closure);
     }

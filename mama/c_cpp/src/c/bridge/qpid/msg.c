@@ -232,7 +232,8 @@ qpidBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
         return MAMA_STATUS_NULL_ARG;
     }
 
-    replyHandle = calloc (1, sizeof(struct qpidBridgeMsgReplyHandle));
+    replyHandle = (qpidBridgeMsgReplyHandle*) calloc (1,
+		                  sizeof (struct qpidBridgeMsgReplyHandle));
 
     if (NULL == replyHandle)
     {
@@ -263,7 +264,8 @@ qpidBridgeMamaMsg_copyReplyHandle (void* src, void** dest)
         return MAMA_STATUS_NULL_ARG;
     }
 
-    replyHandle = calloc (1, sizeof (struct qpidBridgeMsgReplyHandle));
+    replyHandle = (qpidBridgeMsgReplyHandle*) calloc (1,
+		                  sizeof (struct qpidBridgeMsgReplyHandle));
 
     if (NULL == replyHandle)
     {

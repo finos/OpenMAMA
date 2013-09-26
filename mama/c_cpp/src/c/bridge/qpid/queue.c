@@ -205,8 +205,7 @@ qpidBridgeMamaQueue_destroy (queueBridge queue)
     {
         mama_log (MAMA_LOG_LEVEL_WARN,
                   "qpidBridgeMamaQueue_destroy (): ",
-                  "%s Failed to destroy wombat queue (%d).",
-                  mamaStatus_stringForStatus(status),
+                  "Failed to destroy wombat queue (%d).",
                   status);
         return MAMA_STATUS_PLATFORM;
     }

@@ -137,7 +137,7 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "qpidBridgeMamaPublisher_createByIndex(): "
                   "Could not create qpid bridge message for publisher: %s.",
-                  mamaMsgStatus_stringForStatus (status));
+                  mamaStatus_stringForStatus (status));
         free (impl);
         return MAMA_STATUS_NOMEM;
     }

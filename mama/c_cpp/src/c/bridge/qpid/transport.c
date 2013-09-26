@@ -674,7 +674,8 @@ qpidBridgeMamaTransportImpl_getTransportBridge (mamaTransport transport)
     qpidTransportBridge*    impl;
     mama_status             status = MAMA_STATUS_OK;
 
-    status = mamaTransport_getBridgeTransport (transport, (void*) &impl);
+    status = mamaTransport_getBridgeTransport (transport,
+                                               (transportBridge*) &impl);
 
     if (status != MAMA_STATUS_OK || impl == NULL)
     {
@@ -739,12 +740,9 @@ qpidBridgeMamaTransportImpl_start (qpidTransportBridge* impl)
     /* Set the transport bridge mIsDispatching to true. */
     impl->mIsDispatching = 1;
 
-    /* Initialize and set thread detached attribute */
-    pthread_attr_init           (&attr);
-    pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_JOINABLE);
-
+    /* Initialize dispatch thread */
     rc = wthread_create (&(impl->mQpidDispatchThread),
-                         &attr,
+                         NULL,
                          qpidBridgeMamaTransportImpl_dispatchThread,
                          impl);
     if (0 != rc)
@@ -1090,7 +1088,7 @@ qpidMsgPool *qpidBridgeMamaTransportImpl_createMessagePool (int numMsgs,
         return NULL;
     }
 
-    pool = calloc (1, sizeof(qpidMsgPool));
+    pool = (qpidMsgPool*) calloc (1, sizeof(qpidMsgPool));
     if (NULL == pool)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -1139,7 +1137,7 @@ qpidBridgeMamaTransportImpl_extendMessagePool (qpidMsgPool* pool, int numMsgs)
 
     for (i = 0; i < numMsgs; i++)
     {
-        nextNode = malloc (sizeof (qpidMsgNode));
+        nextNode = (qpidMsgNode*) malloc (sizeof (qpidMsgNode));
         if (NULL == nextNode)
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -1392,7 +1390,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
             pn_data_next     (properties); /* Next lines up first entry */
 
             /* Pull out the packet type */
-            msgNode->mMsgType = pn_data_get_ubyte (properties);
+            msgNode->mMsgType = (qpidMsgType) pn_data_get_ubyte (properties);
 
             switch (msgNode->mMsgType)
             {
@@ -1521,7 +1519,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                                   pn_message_properties (msgNode->mMsg));
 
                     qpidBridgeMamaQueue_enqueueEvent (
-                            subscription->mQpidQueue,
+                            (queueBridge) subscription->mQpidQueue,
                             qpidBridgeMamaTransportImpl_queueCallback,
                             tmpMsgNode);
                 }
@@ -1533,7 +1531,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                 {
                     msgNode->mQpidSubscription = subscription;
                     qpidBridgeMamaQueue_enqueueEvent (
-                            subscription->mQpidQueue,
+                            (queueBridge) subscription->mQpidQueue,
                             qpidBridgeMamaTransportImpl_queueCallback,
                             msgNode);
                 }
