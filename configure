@@ -21,7 +21,9 @@
 #
 
 AVIS_HOME=/usr/local
+PROTON_HOME=/usr/local
 WITH_AVIS=
+WITH_PROTON=
 WITH_UNITTESTS=
 INSTALL_DIR=/opt/openmama
 EXTRA=
@@ -33,6 +35,10 @@ do
         --avis-path=*)
             AVIS_HOME=${i#*=}
             WITH_AVIS="--with-avis=${AVIS_HOME}"
+            ;;
+        --proton-path=*)
+            PROTON_HOME=${i#*=}
+            WITH_PROTON="--with-proton=${PROTON_HOME}"
             ;;
         --gtest-path=*)
             WITH_UNITTESTS="-with-unittests=${i#*=}"
@@ -60,7 +66,7 @@ cd -
 
 #configure mama
 cd mama/c_cpp
-./configure $WITH_AVIS $WITH_UNITTESTS $EXTRA
+./configure $WITH_AVIS $WITH_PROTON $WITH_UNITTESTS $EXTRA
 cd -
 
 #configure mamajni

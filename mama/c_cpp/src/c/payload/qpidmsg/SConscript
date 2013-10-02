@@ -1,0 +1,31 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+target = 'libmamaqpidmsgimpl'
+
+includePath = []
+includePath.append('.')
+includePath.append('../..')
+includePath.append('$qpidhome/include')
+includePath.append('#common/c_cpp/src/c')
+
+libPath = []
+libPath.append('$qpidhome/lib')
+libPath.append('$qpidhome/lib64')
+
+env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
+
+env.Append(LIBS=['mama', 'qpid-proton', 'm'], LIBPATH=libPath,
+           CPPPATH=[includePath])
+env.Append(CFLAGS=['-Werror'])
+
+sources = Glob('*.c')
+
+lib = []
+lib.append(env.SharedLibrary(target, sources))
+lib.append(env.StaticLibrary(target, sources))
+
+Alias('install', env.Install('$libdir', lib))
