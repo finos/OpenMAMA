@@ -27,6 +27,7 @@
 #include <mamda/MamdaFieldState.h>
 #include <mama/mamacpp.h>
 #include <mama/MamaSource.h>
+#include <MamdaErrorCode.h>
 #include <string>
 #include <vector>
 #include <iostream>
@@ -561,9 +562,7 @@ namespace Wombat
         const MamaStatus&  status,
         const char*        subject)
     {
-        MamdaErrorSeverity  severity = MAMDA_SEVERITY_OK;
-        MamdaErrorCode      code     = MAMDA_ERROR_NO_ERROR;
-        const char*         errStr   = "unknown";
+        MamdaErrorCode      errorCode     = MAMDA_ERROR_NO_ERROR;
             
         if (subscription->checkDebugLevel (MAMA_LOG_LEVEL_FINE))
         {
@@ -574,59 +573,7 @@ namespace Wombat
                            status.toString ());
         }
 
-        switch (status.getStatus())
-        {
-            case MAMA_STATUS_BAD_SYMBOL:
-                severity = MAMDA_SEVERITY_HIGH;
-                code     = MAMDA_ERROR_BAD_SYMBOL;
-                errStr   = "bad symbol";
-                break;
-            case MAMA_STATUS_DELETE:
-                severity = MAMDA_SEVERITY_OK;
-                code     = MAMDA_ERROR_DELETE;
-                errStr   = "message type delete";
-                break;
-            case MAMA_STATUS_TIMEOUT:
-                severity = MAMDA_SEVERITY_HIGH;
-                code     = MAMDA_ERROR_TIME_OUT;
-                errStr   = "timeout";
-                break;
-            case MAMA_STATUS_NOT_ENTITLED:
-                severity = MAMDA_SEVERITY_HIGH;
-                code     = MAMDA_ERROR_ENTITLEMENT;
-                errStr   = "entitlement";
-                break;
-            case MAMA_STATUS_NOT_FOUND:
-                severity = MAMDA_SEVERITY_LOW;
-                code     = MAMDA_ERROR_NOT_FOUND;
-                errStr   = "not found";
-                break;
-            case MAMA_STATUS_OK:
-            case MAMA_STATUS_NOMEM:
-            case MAMA_STATUS_PLATFORM:
-            case MAMA_STATUS_SYSTEM_ERROR:
-            case MAMA_STATUS_INVALID_ARG:
-            case MAMA_STATUS_NULL_ARG:
-            case MAMA_STATUS_TIMER_FAILURE:
-            case MAMA_STATUS_IP_NOT_FOUND:
-            case MAMA_STATUS_PROPERTY_TOO_LONG:
-            case MAMA_STATUS_MD_NOT_OPENED:
-            case MAMA_STATUS_PUB_SUB_NOT_OPENED:
-            case MAMA_STATUS_ENTITLEMENTS_NOT_ENABLED:
-            case MAMA_STATUS_BAD_TRANSPORT_TYPE:
-            case MAMA_STATUS_UNSUPPORTED_IO_TYPE:
-            case MAMA_STATUS_TOO_MANY_DISPATCHERS:
-            case MAMA_STATUS_NOT_IMPLEMENTED:
-            case MAMA_STATUS_WRONG_FIELD_TYPE:
-            case MAMA_STATUS_IO_ERROR:
-            case MAMA_STATUS_NOT_INSTALLED:
-            case MAMA_STATUS_CONFLATE_ERROR:
-            case MAMA_STATUS_QUEUE_FULL:
-            case MAMA_STATUS_QUEUE_END:
-            case MAMA_STATUS_NO_BRIDGE_IMPL:
-            case MAMA_STATUS_INVALID_QUEUE:
-                break;
-        }
+        errorCode = errorCodeForMamaStatus (status);
         
         /* The error handler wiil destroy any
            failed subscription .
@@ -642,9 +589,8 @@ namespace Wombat
             MamdaErrorListener* listener = mErrorListeners[i];
 
             listener->onError (&mSubscription, 
-                               severity, 
-                               code, 
-                               errStr);
+                               severityForErrorCode(errorCode), 
+                               errorCode, stringForErrorCode(errorCode));
 
             if (!mValid)
             {
