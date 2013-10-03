@@ -63,7 +63,10 @@ static void MAMACALLTYPE onFtStateChangeCb (mamaFtMember  ftMember,
                    mamaFtState   state,
                    void*         closure)
 {
-    printf("FT Notification: Current state is %s\n",mamaFtStateToString(state));
+    printf("FT Notification for group %s: Current state is %s\n",
+           ((NULL == groupName) ? "" : groupName),
+           mamaFtStateToString(state));
+    fflush (NULL);
 }
 
 
