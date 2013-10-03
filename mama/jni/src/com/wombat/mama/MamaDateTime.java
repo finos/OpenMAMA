@@ -240,11 +240,32 @@ public class MamaDateTime implements Comparable
 	 * @exception com.wombat.mama MamaException thrown if the underlying JNI object has been destroyed.
 	 * @exception com.wombat.common.WombatException for other general MAMA errors.
 	 */
-    public native long getEpochTimeMicroseconds ();
+    public long getEpochTimeMicroseconds ()
+    {
+        return getEpochTimeMicroseconds (null);
+    }
+    public long getEpochTimeMicroseconds (MamaTimeZone tz)
+    {
+        return _getEpochTimeMicroseconds (tz!=null ? tz.tz():null);
+    }
 
-    public native long getEpochTimeMilliseconds ();
+    public long getEpochTimeMilliseconds ()
+    {
+        return getEpochTimeMilliseconds (null);
+    }
+    public long getEpochTimeMilliseconds (MamaTimeZone tz)
+    {
+        return _getEpochTimeMilliseconds (tz!=null ? tz.tz():null);
+    }
 
-    public native double getEpochTimeSeconds ();
+    public double getEpochTimeSeconds ()
+    {
+        return getEpochTimeSeconds (null);
+    }
+    public double getEpochTimeSeconds (MamaTimeZone tz)
+    {
+        return _getEpochTimeSeconds (tz!=null ? tz.tz():null);
+    }
 
     /**
     * Get the date and time as seconds since the Epoch, (using the UTC timezone).
@@ -330,6 +351,12 @@ public class MamaDateTime implements Comparable
                                   
   
     private native short _getDayOfWeek();
+    
+    private native long _getEpochTimeMicroseconds (String tz);
+
+    private native long _getEpochTimeMilliseconds (String tz);
+    
+    private native double _getEpochTimeSeconds (String tz);
     
     /*Used to cache ids for callback methods/fields*/
     private static native void initIDs();
