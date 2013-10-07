@@ -1,4 +1,4 @@
-# $Id$
+# $Id: Makefile.am,v 1.1.2.2 2012/11/23 11:00:29 matthewmulhern Exp $
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Technologies, Inc.
@@ -18,11 +18,29 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
 # 02110-1301 USA
 #
-
 srcdir = @srcdir@
 VPATH  = @srcdir@
-                                                                                                                                                            
-SUBDIRS = c cpp
-if WITH_UNITTESTS
-SUBDIRS += gunittest
+blddir=@builddir@
+
+
+if USE_GCC_FLAGS
+CFLAGS   += -std=gnu99 -pedantic -Wno-long-long -O2 -pthread -fPIC
+CPPFLAGS += -pedantic -Wno-long-long -O2 -pthread -fPIC
 endif
+
+INCLUDES = -I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. -I$(srcdir)/../../c -I$(srcdir)../../../src/c
+
+CFLAGS   += -I@builddir@/../../c
+CPPFLAGS += -I@builddir@/../../c
+LDFLAGS  += -L@builddir@/../../enterprise/c -L@builddir@/../../c 
+
+LIBS = -lwombatcommon -lgtest
+LDADD = -lgtest_main -lpthread -ldl
+
+bin_PROGRAMS = UnitTestCommonC
+
+nodist_UnitTestCommonC_SOURCES = ../MainUnitTestC.cpp \
+                                 timertest.cpp \
+								 queuetest.cpp
+
+

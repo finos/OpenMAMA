@@ -179,4 +179,6 @@ AC_OUTPUT([Makefile \
 			src/Makefile \
 			src/c/Makefile \
 			src/cpp/Makefile \
+			src/gunittest/Makefile \
+			src/gunittest/c/Makefile \
 			])
