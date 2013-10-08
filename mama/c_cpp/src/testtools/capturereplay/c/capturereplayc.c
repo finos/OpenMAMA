@@ -78,6 +78,7 @@ static int                      gNumSymbols             = 0;
 static MamaLogLevel             gSubscLogLevel          = MAMA_LOG_LEVEL_NORMAL;
 static mamaTimer                gPubTimer               = NULL;
 static double                   gTimeInterval           = 0.5;
+static int                      gRewind                 = 0;
 #define DELIM                   ':'
 
 static void parseCommandLine (int argc, const char** argv);
@@ -143,7 +144,9 @@ static void pubCallback (mamaTimer timer, void* closure)
     {
         if (gSubscriptionList[index].fileParser)
         {
-            while (mamaPlaybackFileParser_getNextHeader(gSubscriptionList[index].fileParser, &headerString))
+            int header = 1;
+            while ((header = mamaPlaybackFileParser_getNextHeader (
+                    gSubscriptionList[index].fileParser, &headerString)))
             {
                 if (strlen (headerString) == 0) continue;
                 /*skip source and transport name*/
@@ -152,20 +155,46 @@ static void pubCallback (mamaTimer timer, void* closure)
                 source = strchr (temp,DELIM);
                 source++; /*skip :*/
 
-                temp = strchr (source,DELIM);
+                temp = strchr (source, DELIM);
 
+                if (mamaPlaybackFileParser_getNextMsg (
+                        gSubscriptionList[index].fileParser, &newMessage))
+                {
+                    int symLength = temp - source;
+                    if (0 == strncmp (gSubscriptionList[index].symbol,
+                                        source,
+                                        symLength)
+                       &&
+                        symLength == (strlen (gSubscriptionList[index].symbol))
+                       )
+                    {
+                        mamaMsg_applyMsg (gSubscriptionList[index].cachedMsg,
+                                          newMessage);
 
-				if (mamaPlaybackFileParser_getNextMsg (gSubscriptionList[index].fileParser,
-														&newMessage))
-				{
+                        mama_log (MAMA_LOG_LEVEL_FINEST,
+                                  "Publishing message: %s",
+                                  mamaMsg_toString(newMessage));
 
-					if ((strncmp (gSubscriptionList[index].symbol, source, temp-source) == 0)  && (strlen(gSubscriptionList[index].symbol) == temp-source))
-					{
-						mamaMsg_applyMsg (gSubscriptionList[index].cachedMsg, newMessage);
-						mamaDQPublisher_send(gSubscriptionList[index].pub, newMessage);
-						break;
-					}
-				}
+                        mamaDQPublisher_send (gSubscriptionList[index].pub,
+                                              newMessage);
+                        break;
+                    }
+                }
+            }
+            if (gRewind && !header) 
+            {
+                mama_log (MAMA_LOG_LEVEL_FINE, 
+                            "End of file reached for symbol %s - Rewinding.",
+                            gSubscriptionList[index].symbol);
+                mamaPlaybackFileParser_closeFile (
+                            gSubscriptionList[index].fileParser);
+                mamaPlaybackFileParser_openFile  (
+                            gSubscriptionList[index].fileParser,
+                            (char*) gFilename);
+            } else if (!header) {
+                mama_log (MAMA_LOG_LEVEL_FINE, 
+                            "End of file reached for symbol %s.", 
+                            gSubscriptionList[index].symbol);
             }
         }
     }
@@ -654,6 +683,11 @@ static void parseCommandLine (int argc, const char** argv)
         {
             gDictionaryFile = argv[i + 1];
             i += 2;
+        }
+        else if (strcmp (argv[i], "-r") == 0 || strcmp (argv[i], "-rewind") == 0)
+        {
+            gRewind = 1;
+            i++;
         }
         else if (strcmp (argv[i], "-v") == 0)
         {
