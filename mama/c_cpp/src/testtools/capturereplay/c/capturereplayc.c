@@ -31,20 +31,21 @@
 #include "string.h"
 #include "unistd.h"
 
-static const char *  gUsageString[] =
+static const char * gUsageString[] =
 {
-" This sample application demonstrates how to publish mama messages, and",
-" respond to requests from a clients inbox.",
-"",
-" It accepts the following command line arguments:",
-"      [-S source]       The source name to use for publisher Default is WOMBAT.",
-"      [-i interval]     The interval between messages .Default in  0.5.",
-"      [-f filename]     The capture filename",
-"      [-m middleware]   The middleware to use for publisher [wmw/lbm/tibrv]. Default is wmw.",
-"      [-tport name]     The transport parameters to be used from",
-"                        mama.properties. Default is pub",
-"      [-q]              Quiet mode. Suppress output.",
-NULL
+    " capturereplay - Sample application demonstrates how to publish mama messages, and",
+    " respond to requests from a client inbox.",
+    "",
+    " It accepts the following command line arguments:",
+    "      [-S source]       The source name to use for publisher Default is WOMBAT.",
+    "      [-i interval]     The interval between messages .Default in  0.5.",
+    "      [-f filename]     The capture filename",
+    "      [-m middleware]   The middleware to use for publisher [wmw/lbm/tibrv]. Default is wmw.",
+    "      [-tport name]     The transport parameters to be used from",
+    "                        mama.properties. Default is pub",
+    "      [-dictionary]     The dictionary file which is sent in response to client requests. Required.",
+    "      [-q]              Quiet mode. Suppress output.", 
+    NULL 
 };
 
 #define MAX_SUBSCRIPTIONS 250000
@@ -55,25 +56,28 @@ typedef struct pubCache_
     mamaDQPublisher         pub;
     mamaMsg                 cachedMsg;
     mamaPlaybackFileParser  fileParser;
-}pubCache;
+} pubCache;
 
-
-
-static mamaBridge               gPubBridge          = NULL;
-static const char*              gPubMiddleware      = "wmw";
-static mamaQueue                gPubDefaultQueue    = NULL;
-static const char*              gPubTransportName   = "pub";
-static int                      gQuietness          = 0;
-static const char*              gFilename           = NULL;
-static const char*              gPubSource          = "WOMBAT";
-static const char**             gSymbolList         = NULL;
-static mamaTransport            gPubTransport       = NULL;
-static mamaDQPublisherManager   gDQPubManager       = NULL;
-static pubCache*                gSubscriptionList   = NULL;
-static int                      gNumSymbols         = 0;
-static MamaLogLevel             gSubscLogLevel      = MAMA_LOG_LEVEL_WARN;
-static mamaTimer                gPubTimer           = NULL;
-static double                   gTimeInterval       = 0.5;
+static mamaBridge               gPubBridge              = NULL;
+static const char*              gPubMiddleware          = "wmw";
+static mamaQueue                gPubDefaultQueue        = NULL;
+static mamaSubscription         gDictionarySubscription = NULL;
+static mamaDictionary           gDictionary             = NULL;
+static const char*              gDictionaryFile         = NULL;
+static mamaMsg                  gDictionaryMessage      = NULL;
+static mamaPublisher            gDictionaryPublisher    = NULL;
+static const char*              gPubTransportName       = "pub";
+static int                      gQuietness              = 0;
+static const char*              gFilename               = NULL;
+static const char*              gPubSource              = "WOMBAT";
+static const char**             gSymbolList             = NULL;
+static mamaTransport            gPubTransport           = NULL;
+static mamaDQPublisherManager   gDQPubManager           = NULL;
+static pubCache*                gSubscriptionList       = NULL;
+static int                      gNumSymbols             = 0;
+static MamaLogLevel             gSubscLogLevel          = MAMA_LOG_LEVEL_NORMAL;
+static mamaTimer                gPubTimer               = NULL;
+static double                   gTimeInterval           = 0.5;
 #define DELIM                   ':'
 
 static void parseCommandLine (int argc, const char** argv);
@@ -107,12 +111,27 @@ subscriptionHandlerOnErrorCb(mamaDQPublisherManager manager,
 
 static void     createPublisher (void);
 static void     initializeMama (void);
-void            usage (int exitStatus);
+static void usage (int exitStatus);
 static void readSymbolsFromFile (void);
 
+/* Methods for managing dictionary requests: */
+static void prepareDictionaryListener (void);
 
-static void
-pubCallback (mamaTimer  timer, void*   closure)
+static void dictionarySubOnCreate  (mamaSubscription subsc, void* closure);
+static void dictionarySubOnDestroy (mamaSubscription subsc, void* closure);
+
+static void dictionarySubOnError   (mamaSubscription subsc, 
+                                    mama_status      status,
+                                    void*            platformError, 
+                                    const char*      subject,
+                                    void*            closure);
+
+static void dictionarySubOnMsg     (mamaSubscription subsc, 
+                                    mamaMsg          msg,
+                                    void*            closure, 
+                                    void*            itemClosure);
+
+static void pubCallback (mamaTimer timer, void* closure)
 {
     int index =0;
     char*temp=NULL;
@@ -186,19 +205,102 @@ static void start_timed_publish (void)
                       NULL);
 }
 
+static void prepareDictionaryListener (void)
+{
+    mama_status      status                     = MAMA_STATUS_OK;
+    mamaMsgCallbacks dictionarySubCallbacks;
+
+    dictionarySubCallbacks.onCreate       = dictionarySubOnCreate;
+    dictionarySubCallbacks.onDestroy      = dictionarySubOnDestroy;
+    dictionarySubCallbacks.onError        = dictionarySubOnError;
+    dictionarySubCallbacks.onMsg          = dictionarySubOnMsg;
+
+    /* Basic subscription so these are set to NULL */
+    dictionarySubCallbacks.onQuality      = NULL;
+    dictionarySubCallbacks.onGap          = NULL;
+    dictionarySubCallbacks.onRecapRequest = NULL;
+
+    status = mamaSubscription_allocate (&gDictionarySubscription);
+    if (MAMA_STATUS_OK != status) 
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "Could not allocate dictionary subscription.");
+        exit (1);
+    }
+
+    status = mamaSubscription_createBasic (gDictionarySubscription, 
+                                           gPubTransport,
+                                           gPubDefaultQueue, 
+                                           &dictionarySubCallbacks,
+                                           "_MDDD.WOMBAT.DATA_DICT", 
+                                           NULL);
+    if (status != MAMA_STATUS_OK) 
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "Could not create dictionary subscription");
+        exit (1);
+    }
+
+    /* Create the Dictionary Object */
+    mamaDictionary_create           (&gDictionary);
+    mamaDictionary_populateFromFile (gDictionary, gDictionaryFile);
+
+    /* Create Dictionary Response Message */
+    status = mamaDictionary_getDictionaryMessage (gDictionary,
+                                                  &gDictionaryMessage);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "Failed to allocate dictionary message.");
+        exit (1);
+    }
+
+    /* Build dictionary publisher */
+    status = mamaPublisher_create (&gDictionaryPublisher,
+                                   gPubTransport,
+                                   "WOMBAT.DATA_DICT",
+                                   NULL, 
+                                   NULL);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "Failed to create dictionary publisher.");
+        exit (1);
+    }
+
+    status = mamaMsg_updateU8 (gDictionaryMessage,
+                               MamaFieldMsgType.mName,
+                               MamaFieldMsgType.mFid,
+                               MAMA_MSG_TYPE_INITIAL);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "Failed to update dictionary message.");
+        exit (1);
+    }
+}
 
 static void initializeMama ()
 {
-    mama_status status;
+    mama_status status = MAMA_STATUS_OK;
+
     status = mama_loadBridge (&gPubBridge, gPubMiddleware);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "Could not load middleware bridge. Exiting.");
+        exit (1);
+    }
 
-    if (status != MAMA_STATUS_OK)
-        exit(1);
-
-    status = mama_open();
-
-    if (status != MAMA_STATUS_OK)
-        exit(1);
+    status = mama_open ();
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "Failed to Open MAMA. Exiting");
+        exit (1);
+    }
 
     mama_getDefaultEventQueue (gPubBridge, &gPubDefaultQueue);
 
@@ -216,10 +318,11 @@ int main (int argc, const char **argv)
 
     parseCommandLine (argc, argv);
 
-    printf ("Reading symbols from file, please standby.....\n");
+    mama_log (MAMA_LOG_LEVEL_NORMAL, 
+              "Reading symbols from file, please standby.");
 
-    fflush(stdout);
     initializeMama ();
+    prepareDictionaryListener();
 
     readSymbolsFromFile();
 
@@ -228,8 +331,7 @@ int main (int argc, const char **argv)
 
     start_timed_publish();
 
-    printf ("Ready for Subscriptions.\n");
-    fflush(stdout);
+    mama_log (MAMA_LOG_LEVEL_NORMAL, "Ready for Subscriptions.");
 
     mama_start (gPubBridge);
 
@@ -239,7 +341,7 @@ int main (int argc, const char **argv)
 static void
 subscriptionHandlerOnCreateCb (mamaDQPublisherManager manager)
 {
-    printf ("Created publisher subscription.\n");
+    mama_log (MAMA_LOG_LEVEL_NORMAL, "Created publisher subscription.");
 }
 
 static void
@@ -250,16 +352,18 @@ subscriptionHandlerOnErrorCb (mamaDQPublisherManager manager,
 {
     if (msg)
     {
-        printf ("Unhandled Msg: %s (%s) %s\n",
-                mamaStatus_stringForStatus (status),
-                mamaMsg_toString (msg),
-                errortxt);
+        mama_log (MAMA_LOG_LEVEL_WARN, 
+                  "Unhandled Msg: %s (%s) %s\n",
+                  mamaStatus_stringForStatus (status), 
+                  mamaMsg_toString (msg),
+                  errortxt);
     }
     else
     {
-        printf("Unhandled Msg: %s %s\n",
-               mamaStatus_stringForStatus (status),
-               errortxt);
+        mama_log (MAMA_LOG_LEVEL_WARN, 
+                  "Unhandled Msg: %s %s\n", 
+                  mamaStatus_stringForStatus (status),
+                  errortxt);
     }
 }
 
@@ -284,11 +388,15 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
 
     if (index == gNumSymbols)
     {
-        printf ("Received request for unknown symbol: %s\n", symbol);
+       mama_log  (MAMA_LOG_LEVEL_WARN, 
+                  "Received request for unknown symbol: %s", 
+                  symbol);
         return;
     }
 
-    printf ("Received new request: %s\n", symbol);
+    mama_log (MAMA_LOG_LEVEL_NORMAL, 
+              "Received new request: %s", 
+              symbol);
 
     mamaDQPublisherManager_createPublisher (manager, symbol, (void*)index, &gSubscriptionList[index].pub);
     mamaPlaybackFileParser_allocate (&gSubscriptionList[index].fileParser);
@@ -342,7 +450,9 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
 {
     int index =0;
 
-    printf ("Received request: %s\n", publishTopicInfo->symbol);
+    mama_log (MAMA_LOG_LEVEL_NORMAL, 
+              "Received request: %s", 
+              publishTopicInfo->symbol);
 
     switch (msgType)
     {
@@ -376,7 +486,9 @@ subscriptionHandlerOnRefreshCb (mamaDQPublisherManager  publisherManager,
                                 short                   msgType,
                                 mamaMsg                 msg)
 {
-    printf ("Received Refresh: %s\n",  publishTopicInfo->symbol);
+    mama_log (MAMA_LOG_LEVEL_NORMAL, 
+              "Received Refresh: %s", 
+              publishTopicInfo->symbol);
 }
 
 static void readSymbolsFromFile (void)
@@ -469,7 +581,12 @@ static void parseCommandLine (int argc, const char** argv)
             gTimeInterval = strtod (argv[i+1], NULL);
             i += 2;
         }
-        else if (strcmp( argv[i], "-v") == 0 )
+        else if (strcmp (argv[i], "-dictionary") == 0)
+        {
+            gDictionaryFile = argv[i + 1];
+            i += 2;
+        }
+        else if (strcmp (argv[i], "-v") == 0)
         {
             if (gSubscLogLevel == MAMA_LOG_LEVEL_WARN)
             {
@@ -500,15 +617,62 @@ static void parseCommandLine (int argc, const char** argv)
         }
     }
 
+    /*
+     * Dictionary is a required option. If not passed display a warning and
+     * drop out.
+     */
+    if (NULL == gDictionaryFile)
+    {
+        printf ("\nWARNING: A dictionary file must be specified. Please pass a "
+                "valid dictionary via the -dictionary command line option.\n\n");
+        usage(1);
+    }
 }
 
-void
-usage (int exitStatus)
+static void usage (int exitStatus)
 {
-   int i = 0;
-   while (gUsageString[i] != NULL)
-   {
-       printf ("%s\n", gUsageString[i++]);
-   }
-   exit(exitStatus);
+    int i = 0;
+    while (gUsageString[i] != NULL )
+    {
+        printf ("%s\n", gUsageString[i++]);
+    }
+    exit (exitStatus);
 }
+
+static void dictionarySubOnCreate (mamaSubscription subsc, void* closure)
+{
+    mama_log (MAMA_LOG_LEVEL_NORMAL, "Dictionary Subscription Created:");
+}
+
+static void dictionarySubOnDestroy (mamaSubscription subsc, void* closure)
+{
+    mama_log (MAMA_LOG_LEVEL_NORMAL, "Dictionary Subscription Destroyed:");
+}
+
+static void dictionarySubOnError (mamaSubscription subsc, 
+                                  mama_status      status,
+                                  void*            platformError, 
+                                  const char*      subject,
+                                  void*            closure)
+{
+    mama_log (MAMA_LOG_LEVEL_NORMAL, "Dictionary Subscription Error:");
+}
+
+static void dictionarySubOnMsg (mamaSubscription subsc, 
+                                mamaMsg          msg,
+                                void*            closure, 
+                                void*            itemClosure)
+{
+    mama_status status = MAMA_STATUS_OK;
+    status = mamaPublisher_sendReplyToInbox (gDictionaryPublisher,
+                                             msg,
+                                             gDictionaryMessage);
+
+    if (MAMA_STATUS_OK != status) 
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "Failed to send dictionary message.");
+        exit (1);
+    }
+}
+
