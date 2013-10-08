@@ -425,15 +425,33 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
 
         switch (msgType)
         {
-            case MAMA_SUBSC_SUBSCRIBE:
-            case MAMA_SUBSC_SNAPSHOT:
-                mamaMsg_updateU8(gSubscriptionList[index].cachedMsg, NULL, MamaFieldMsgType.mFid, MAMA_MSG_TYPE_INITIAL);
-                mamaDQPublisher_sendReply(gSubscriptionList[index].pub, msg, gSubscriptionList[index].cachedMsg);
-                break;
-            default:
-                mamaMsg_updateU8(gSubscriptionList[index].cachedMsg, NULL, MamaFieldMsgType.mFid, MAMA_MSG_TYPE_RECAP);
-                mamaDQPublisher_send(gSubscriptionList[index].pub, gSubscriptionList[index].cachedMsg);
-                break;
+        case MAMA_SUBSC_SUBSCRIBE:
+        case MAMA_SUBSC_SNAPSHOT:
+            if (subType == MAMA_SUBSC_TYPE_BOOK)
+            {
+                mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+                                  NULL,
+                                  MamaFieldMsgType.mFid, 
+                                  MAMA_MSG_TYPE_BOOK_INITIAL);
+            } else {
+                mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+                                  NULL,
+                                  MamaFieldMsgType.mFid, 
+                                  MAMA_MSG_TYPE_INITIAL);
+            }
+            mamaDQPublisher_sendReply (gSubscriptionList[index].pub, msg,
+                                       gSubscriptionList[index].cachedMsg);
+            break;
+        default:
+            mama_log (MAMA_LOG_LEVEL_NORMAL, "Publishing MAMA_MSG_TYPE_RECAP");
+            mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+                              NULL,
+                              MamaFieldMsgType.mFid, 
+                              MAMA_MSG_TYPE_RECAP);
+
+            mamaDQPublisher_send (gSubscriptionList[index].pub,
+                                  gSubscriptionList[index].cachedMsg);
+            break;
         }
     }
 
@@ -456,26 +474,44 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
 
     switch (msgType)
     {
-        case MAMA_SUBSC_SUBSCRIBE:
-        case MAMA_SUBSC_SNAPSHOT:
-            index =(int)publishTopicInfo->cache;
-            mamaMsg_updateU8(gSubscriptionList[index].cachedMsg, NULL, MamaFieldMsgType.mFid, MAMA_MSG_TYPE_INITIAL);
-            mamaDQPublisher_sendReply(gSubscriptionList[index].pub, msg, gSubscriptionList[index].cachedMsg);
-            break;
-        case MAMA_SUBSC_DQ_SUBSCRIBER :
-        case MAMA_SUBSC_DQ_PUBLISHER:
-        case MAMA_SUBSC_DQ_NETWORK:
-        case MAMA_SUBSC_DQ_UNKNOWN:
-        case MAMA_SUBSC_DQ_GROUP_SUBSCRIBER:
-            index =(int)publishTopicInfo->cache;
-            mamaMsg_updateU8(gSubscriptionList[index].cachedMsg, NULL, MamaFieldMsgType.mFid, MAMA_MSG_TYPE_RECAP);
-            mamaDQPublisher_send(gSubscriptionList[index].pub, gSubscriptionList[index].cachedMsg);
-            break;
-        case MAMA_SUBSC_UNSUBSCRIBE:
-        case MAMA_SUBSC_RESUBSCRIBE:
-        case MAMA_SUBSC_REFRESH:
-        default:
-            break;
+    case MAMA_SUBSC_SUBSCRIBE:
+    case MAMA_SUBSC_SNAPSHOT:
+        index = (int) publishTopicInfo->cache;
+
+        if (subType == MAMA_SUBSC_TYPE_BOOK) 
+        {
+            mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+                              NULL,
+                              MamaFieldMsgType.mFid, 
+                              MAMA_MSG_TYPE_BOOK_INITIAL);
+        } else {
+            mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+                              NULL,
+                              MamaFieldMsgType.mFid, 
+                              MAMA_MSG_TYPE_INITIAL);
+        }
+        mamaDQPublisher_sendReply (gSubscriptionList[index].pub, 
+                                   msg,
+                                   gSubscriptionList[index].cachedMsg);
+        break;
+    case MAMA_SUBSC_DQ_SUBSCRIBER:
+    case MAMA_SUBSC_DQ_PUBLISHER:
+    case MAMA_SUBSC_DQ_NETWORK:
+    case MAMA_SUBSC_DQ_UNKNOWN:
+    case MAMA_SUBSC_DQ_GROUP_SUBSCRIBER:
+        index = (int) publishTopicInfo->cache;
+        mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+                          NULL,
+                          MamaFieldMsgType.mFid, 
+                          MAMA_MSG_TYPE_RECAP);
+        mamaDQPublisher_send (gSubscriptionList[index].pub,
+                              gSubscriptionList[index].cachedMsg);
+        break;
+    case MAMA_SUBSC_UNSUBSCRIBE:
+    case MAMA_SUBSC_RESUBSCRIBE:
+    case MAMA_SUBSC_REFRESH:
+    default:
+        break;
     }
 }
 
