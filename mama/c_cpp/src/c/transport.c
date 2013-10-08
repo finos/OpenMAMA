@@ -1740,7 +1740,7 @@ mamaTransportImpl_getTransportTopicCallback (mamaTransport transport,
     *callback = self->mTportTopicCb;
 }
 
-static void
+static void MAMACALLTYPE
 staleEventCallback (mamaQueue queue, void* closure)
 {
     mamaSubscription sub = (mamaSubscription) closure;
