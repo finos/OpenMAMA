@@ -1,0 +1,83 @@
+# OpenMAMA: The open middleware agnostic messaging API
+# Copyright (C) 2011 NYSE Technologies, Inc.
+#
+# This library is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This library is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this library; if not, write to the Free Software
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
+# 02110-1301 USA
+#
+#=============================================================================
+# SOLARIS/Forte: The makefile will need modified to use the Solaris compiler.
+#                See example below.
+#=============================================================================
+API_HOME=../../../../../../../../install
+
+## Solaris/Forte compiler:
+#CXX      = CC
+#CC       = cc
+#BSTATIC  = -Bstatic
+#BDYNAMIC = -Bdynamic
+
+# GNU compiler:
+CXX      = g++
+CC       = gcc
+BSTATIC  = -Xlinker -Bstatic
+BDYNAMIC = -Xlinker -Bdynamic
+
+## Solaris system libraries:
+#SYS_LIBS = -lsocket -lgen -lnsl -ldl
+
+# Standard defines:
+CPPFLAGS = -I../ -I../../../c \
+			-I$(API_HOME)/include
+    
+LDFLAGS = -rdynamic \
+			-L$(API_HOME)/lib
+
+
+MAMA_LIBS = -lmama -lwombatcommon -lgtest -lpthread -ldl
+
+all: UnitTestMamaPayloadC
+
+
+UnitTestMamaPayloadC: ../MainUnitTestC.o \
+						fieldatomictests.o \
+						fieldvectortests.o \
+						fieldcompositetests.o \
+						payloadcompositetests.o \
+						payloadgeneraltests.o \
+						payloadvectortests.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+fieldatomictests: ../MainUnitTestC.o fieldatomictests.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+fieldcompositetests: ../MainUnitTestC.o fieldcompositetests.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+fieldvectortests: ../MainUnitTestC.o fieldvectortests.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+payloadatomictests: ../MainUnitTestC.o payloadatomictests.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+payloadcompositetests: ../MainUnitTestC.o payloadcompositetests.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+payloadvectortests: ../MainUnitTestC.o payloadvectortests.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+payloadgeneraltests: ../MainUnitTestC.o payloadgeneraltests.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+

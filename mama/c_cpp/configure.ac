@@ -420,5 +420,6 @@ AC_OUTPUT([Makefile \
     src/testtools/load/cpp/Makefile \
     src/gunittest/Makefile \
     src/gunittest/c/Makefile \
+    src/gunittest/c/payload/Makefile \
     src/gunittest/cpp/Makefile \
     ])
