@@ -530,11 +530,13 @@ subscriptionHandlerOnRefreshCb (mamaDQPublisherManager  publisherManager,
 static void readSymbolsFromFile (void)
 {
     mamaPlaybackFileParser  fileParser;
-    char*           headerString = NULL;
-    char*           temp = NULL;
-    char * source = NULL;
-    int             symbolIndex = 0, i=0;
-    mamaMsg        newMessage;
+    char*                   headerString    = NULL;
+    char*                   temp            = NULL;
+    char*                   source          = NULL;
+    int                     symbolIndex     = 0;
+    int                     i               = 0;
+    int                     iterations      = 0;
+    mamaMsg                 newMessage;
 
     gSubscriptionList = (pubCache*)calloc (MAX_SUBSCRIPTIONS,
                                                    sizeof (pubCache));
@@ -542,7 +544,8 @@ static void readSymbolsFromFile (void)
     mamaPlaybackFileParser_allocate (&fileParser);
     mamaPlaybackFileParser_openFile(fileParser, (char*)gFilename);
 
-    while (mamaPlaybackFileParser_getNextHeader(fileParser, &headerString))
+    mama_log (MAMA_LOG_LEVEL_NORMAL, "Continuing.");
+    while (mamaPlaybackFileParser_getNextHeader (fileParser, &headerString))
     {
         if (mamaPlaybackFileParser_getNextMsg (fileParser,
                                                 &newMessage))
@@ -567,12 +570,42 @@ static void readSymbolsFromFile (void)
                                                        sizeof (char));
                 strncpy (gSubscriptionList[symbolIndex].symbol, source, temp-source);
                 symbolIndex++;
+
+                if (0 == (symbolIndex % 20))
+                {
+                    mama_log (MAMA_LOG_LEVEL_NORMAL, 
+                              "Read %d symbols from playback file.\n"
+                              "Continuing.",
+                              symbolIndex);
+                }
+            }
+
+            /*
+             * Just some additional logging to help make it clear the application
+             * hasn't frozen when processing large files.
+             */
+            iterations++;
+            if (0 == (iterations % 5000))
+            {
+                printf (".");
+                fflush (stdout);
+
+                if (0 == (iterations % 50000))
+                {
+                    printf(".\n");
+                    mama_log (MAMA_LOG_LEVEL_NORMAL, "Continuing.");
+                }
             }
         }
     }
     gNumSymbols = symbolIndex;
 
-    mamaPlaybackFileParser_closeFile(fileParser);
+    /* End logging. */
+    mama_log (MAMA_LOG_LEVEL_NORMAL, 
+              "Symbols read from playback file. Total symbols:\t%d", 
+              gNumSymbols);
+
+    mamaPlaybackFileParser_closeFile  (fileParser);
     mamaPlaybackFileParser_deallocate (fileParser);
 }
 
