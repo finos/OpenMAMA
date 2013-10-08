@@ -158,7 +158,6 @@ public class MamaMsgField
     public native void destroy ();
     protected void finalize()
     {
-        if (msgFieldPointer_i != 0)
-        destroy();
+        destroy ();
     }
 }

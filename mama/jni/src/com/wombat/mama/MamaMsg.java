@@ -484,7 +484,7 @@ public class MamaMsg
         else
         {
             throw new WombatException("getString():"
-                    + " MamaFieldDescriptor was null.");
+                                      + " MamaFieldDescriptor was null.");
         }
     }
 
@@ -1400,14 +1400,16 @@ public class MamaMsg
     /*Needed for JNI so we know when to free the underlying C strucure
      Should only be called if the client app has created the message.
      i.e. do not call on messages passed in the callbacks as these are
-     managed interal to the MAMA API*/
+     managed internal to the MAMA API*/
     public void destroy ()
     {
+        mamaBuffer = null;
+
         if (myIterator != null)
         {
             myIterator.destroy();
         }
-        
+
         _destroy();
     }
 
@@ -1464,8 +1466,7 @@ public class MamaMsg
 
     protected void finalize ()
     {
-        if (msgPointer_i != 0)
-            destroy();
+        destroy ();
     }
 
     /* ************************************************** */
