@@ -917,6 +917,16 @@ mamaSubscription_initialize (mamaSubscription subscription)
                                  0,/*Not throttled*/
                                  0);/*Not a recap*/
     }
+    else if (mamaSubscription_requiresSubscribe (subscription))
+    {
+        mamaMsg subscribeMsg = NULL;
+        getSubscribeMessage (subscription, &subscribeMsg);
+        mamaPublisher_send (self->mSubscPublisher,
+                           subscribeMsg);
+        mamaMsg_destroy (subscribeMsg);
+        mama_log (MAMA_LOG_LEVEL_FINE,
+                   "Subscription send request without inbox().");
+    }
 
     if (self->mBridgeImpl && 
         (self->mBridgeImpl->bridgeMamaSubscriptionHasWildcards 
@@ -2334,6 +2344,22 @@ mamaSubscription_getPreIntitialCacheSize (
     return MAMA_STATUS_OK;
 }
 
+int
+mamaSubscription_requiresSubscribe (mamaSubscription subscription)
+{
+    if (!self) return 0;
+    if (!self->mBridgeImpl) return 0;
+    /* Bridge will be NULL for snapshots */
+    if (self->mSubscBridge != NULL &&
+        self->mBridgeImpl->bridgeMamaSubscriptionIsValid (self->mSubscBridge) &&
+        !self->mBridgeImpl->bridgeMamaSubscriptionHasWildcards
+                                            (self->mSubscBridge))
+    {
+        return 1;
+    }
+
+    return 0;
+}
 
 int
 mamaSubscription_checkDebugLevel (
