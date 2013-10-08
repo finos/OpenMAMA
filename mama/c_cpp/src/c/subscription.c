@@ -2664,8 +2664,8 @@ mama_status mamaSubscription_deactivate(mamaSubscription subscription)
                     ret = MAMA_STATUS_SUBSCRIPTION_INVALID_STATE;
                     break;
             }
-            mamaSubscription_deactivate_internal(impl);
-            wlock_lock(impl->mCreateDestroyLock);
+
+            wlock_unlock(impl->mCreateDestroyLock);
         }
     }
 
