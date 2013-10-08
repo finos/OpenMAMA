@@ -1157,6 +1157,7 @@ mamaTransport_destroy (mamaTransport transport)
         if(NULL != self->mCmResponder)
         {
             mamaCmResponder_destroy (self->mCmResponder);
+            self->mCmResponder = NULL;
         }
         /* Inform all listeners that the transport is about to be destroyed. */
         mamaTransportImpl_clearTransportWithListeners (self);
@@ -1186,12 +1187,6 @@ mamaTransport_destroy (mamaTransport transport)
         {
             wombatThrottle_destroy (self->mRecapThrottle);
             self->mRecapThrottle = 0;
-        }
-
-        if (self->mCmResponder)
-        {
-            mamaCmResponder_destroy (self->mCmResponder);
-
         }
 
         if (self->mLoadBalanceHandle)
