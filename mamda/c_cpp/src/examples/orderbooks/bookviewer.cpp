@@ -41,6 +41,8 @@
 #include "../parsecmd.h"
 #include "../dictrequester.h"
 
+#define KEYSTROKE_CHECK_TIME 0.5
+
 using std::endl;
 using std::vector;
 using std::cerr;
@@ -55,11 +57,13 @@ static void finish (int sig);
 static const char* sBidHeading = "            ID       Time        Size   Price |";
 static const char* sAskHeading = " Price   Size        Time       ID";
 static int         sMidColumn  = strlen (sBidHeading) - 1;
+static bool        gIoSupported = true;
 
 class BookViewer : public MamdaOrderBookHandler
                  , public MamdaErrorListener
                  , public MamdaQualityListener
                  , public MamaIoCallback
+                 , public MamaTimerCallback
 {
 public:
     BookViewer (const MamdaOrderBook& book);
@@ -125,10 +129,13 @@ public:
                                    int                             colorId);
     void displayFooter  ();
     void onIo (MamaIo* io, mamaIoType ioType);
+    void onTimer (MamaTimer* timer);
 
 private:
     const MamdaOrderBook&  mBook;
     bool                   mShowEntries;
+
+    void  handleKeyboardInput ();
 };
 
 
@@ -196,10 +203,45 @@ int main (int argc, const char **argv)
 
             aViewer->setShowEntries (false);
 
-            (new MamaIo ())->create (queues.getNextQueue (),
+            try
+            {
+                // If it's available, we should make use of the MAMA IO
+                // implementation provided by the middleware. This provides us
+                // with a fairly elegant approach for checking for IO events (in
+                // this case keyboard events). However, support for IO is an
+                // optional feature for middleware bridges, so we need to be
+                // able to handle the situation where IO isn't available, and
+                // gracefully drop out in that case.
+                (new MamaIo ())->create (queues.getNextQueue (),
+                                    aViewer,
+                                    0,  /* stdin */
+                                    MAMA_IO_READ);
+            }
+            catch (MamaStatus &e)
+            {
+                if (MAMA_STATUS_NOT_IMPLEMENTED != e.getStatus())
+                {
+                    cerr << "MamaIo Exception in main(): "
+                         << e.toString ()
+                         << endl;
+                    exit (1);
+                }
+                cout << "MamaIo Unavailable. Using timed check mode"
+                     << endl;
+                gIoSupported = false;
+
+                // Set keyboard input to nodelay, so getch is no longer a
+                // blocking call.
+                nodelay(stdscr, TRUE);
+
+                // Due to the lack of IO, we want to be able to still handle
+                // keystroke events. Therefore, we create a timer to periodically
+                // check the ncurses character buffer for new events.
+                MamaTimer* mTimer = new MamaTimer;
+                mTimer->create (queues.getNextQueue(),
                                 aViewer,
-                                0,  /* stdin */
-                                MAMA_IO_READ);
+                                KEYSTROKE_CHECK_TIME);
+            }
         }
 
         Mama::start (bridge);
@@ -351,6 +393,12 @@ void BookViewer::display (const MamdaOrderBook&  book)
         displayEntries (book);
     else
         displayLevels (book);
+
+    // If MamaIo isn't supported, check for keyboard input each time the screen
+    // is refreshed. This is combined with the use of the timer, so character
+    // handling should be fairly responsive.
+    if (!gIoSupported)
+        handleKeyboardInput();
     displayFooter ();
 }
 
@@ -526,9 +574,24 @@ void BookViewer::displayFooter ()
 
 void BookViewer::onIo (MamaIo* io, mamaIoType ioType)
 {
+    handleKeyboardInput();
+}
+
+void BookViewer::onTimer (MamaTimer* timer)
+{
+    handleKeyboardInput();
+}
+
+void BookViewer::handleKeyboardInput ()
+{
     // Handle keyboard events.
     int ch;
-    switch (ch = getch ())
+    ch = getch();
+
+    if (ERR == ch)
+        return;
+
+    switch (ch)
     {
         case 0x03: // CTRL-C
         case 'q':
