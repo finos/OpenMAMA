@@ -45,8 +45,8 @@ LDADD = -lgtest_main -ldl
 bin_PROGRAMS = UnitTestMamaC
 
 nodist_UnitTestMamaC_SOURCES = MainUnitTestC.cpp \
-							msgtests.cpp \
-							iteration.cpp \
+                            msgtests.cpp \
+                            iteration.cpp \
                             openclosetest.cpp \
                             datetimetest.cpp \
                             subscriptiontest.cpp \

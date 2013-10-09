@@ -32,7 +32,7 @@ INCLUDES = -I$(srcdir) -I$(srcdir)/.. -I$(srcdir)/../.. -I$(srcdir)/../../c -I$(
 
 CFLAGS   += -I@builddir@/../../c
 CPPFLAGS += -I@builddir@/../../c
-LDFLAGS  += -L@builddir@/../../enterprise/c -L@builddir@/../../c 
+LDFLAGS  += -L@builddir@/../../c 
 
 LIBS = -lwombatcommon -lgtest
 LDADD = -lgtest_main -lpthread -ldl
@@ -41,6 +41,5 @@ bin_PROGRAMS = UnitTestCommonC
 
 nodist_UnitTestCommonC_SOURCES = ../MainUnitTestC.cpp \
                                  timertest.cpp \
-								 queuetest.cpp
-
+                                 queuetest.cpp
 

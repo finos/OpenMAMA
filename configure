@@ -41,7 +41,7 @@ do
             WITH_PROTON="--with-proton=${PROTON_HOME}"
             ;;
         --gtest-path=*)
-            WITH_UNITTESTS="-with-unittests=${i#*=}"
+            WITH_UNITTESTS="--with-unittests=${i#*=}"
             ;;
         --prefix=*)
             INSTALL_DIR=${i#*=}
@@ -61,7 +61,7 @@ EOF
 
 # configure common
 cd common/c_cpp
-./configure $EXTRA
+./configure $EXTRA $WITH_UNITTESTS
 cd -
 
 #configure mama
@@ -76,5 +76,5 @@ cd -
 
 #configure mamda
 cd mamda/c_cpp
-./configure $EXTRA
+./configure $EXTRA $WITH_UNITTESTS
 cd -
