@@ -22,6 +22,7 @@
 #ifndef MAINUNITTESTC_H_
 #define MAINUNITTESTC_H_
 
+#define NOT_NULL	( (void*)1 )
 
 const char* getMiddleware (void);
 

@@ -1,4 +1,4 @@
-# $Id$
+# $Id: Makefile.am,v 1.1.2.1 2012/11/19 12:04:42 matthewmulhern Exp $
 #
 # OpenMAMA: The open middleware agnostic messaging API
 # Copyright (C) 2011 NYSE Technologies, Inc.
@@ -21,35 +21,26 @@
 
 srcdir = @srcdir@
 VPATH  = @srcdir@
-blddir=@builddir@
-
-SUBDIRS=payload mamamsg middleware
 
 if USE_GCC_FLAGS
-CFLAGS   += -std=gnu99 -pedantic -Wno-long-long -O2 -pthread -fPIC
+CFLAGS   += -pedantic -Wno-long-long -O2 -pthread -fPIC
 CPPFLAGS += -pedantic -Wno-long-long -O2 -pthread -fPIC
 endif
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../.. -I$(srcdir)/../../../examples -I$(srcdir)/../../../../../common/c_cpp/src/c
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../.. -I$(srcdir)/../../../../../../common/c_cpp/src/c
 
 CFLAGS   += -I@builddir@/../../c
 CPPFLAGS += -I@builddir@/../../c
-
-
 LDFLAGS  += -L${srcdir}/../../c \
-            -L${srcdir}/../../../../../common/c_cpp/src/c
+            -L${srcdir}/../../../../../../common/c_cpp/src/c
 
-LIBS = -lmama -lwombatcommon -lgtest
-LDADD = -lgtest_main -ldl
+LIBS = -lmama -lwombatcommon -lgtest -lpthread
+LDADD = -lgtest -ldl
 
-bin_PROGRAMS = UnitTestMamaC
+bin_PROGRAMS = UnitTestMamaMiddlewareC
 
-nodist_UnitTestMamaC_SOURCES = MainUnitTestC.cpp \
-                            msgtests.cpp \
-                            iteration.cpp \
-                            openclosetest.cpp \
-                            datetimetest.cpp \
-                            subscriptiontest.cpp \
-                            pricetest.cpp \
-                            timertest.cpp
-
+nodist_UnitTestMamaMiddlewareC_SOURCES =  ../MainUnitTestC.cpp \
+					middlewareGeneralTests.cpp \
+					middlewareIoTests.cpp \
+					middlewareMsgTests.cpp \
+					middlewareInboxTests.cpp 
