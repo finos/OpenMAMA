@@ -39,10 +39,12 @@ BDYNAMIC = -Xlinker -Bdynamic
 
 # Standard defines:
 CPPFLAGS = -I./ -I../../c \
-	-I$(API_HOME)/include
+	-I$(API_HOME)/include \
+	-I$(GTEST_HOME)/include
     
 LDFLAGS = -rdynamic \
-    -L$(API_HOME)/lib
+    -L$(API_HOME)/lib \
+    -L$(GTEST_HOME)/lib
 
 
 MAMA_LIBS = -lmama -lwombatcommon -lgtest -lpthread -ldl
@@ -70,9 +72,6 @@ openclosetest: MainUnitTestC.o openclosetest.o
 timertest: MainUnitTestC.o timertest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
-datetimetest: MainUnitTestC.o datetimetest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
 subscriptiontest: MainUnitTestC.o subscriptiontest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
@@ -86,9 +85,6 @@ inboxtest: MainUnitTestC.o inboxtest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
 iotest: MainUnitTestC.o iotest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-pricetest: MainUnitTestC.o pricetest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
 publishertest: MainUnitTestC.o publishertest.o
