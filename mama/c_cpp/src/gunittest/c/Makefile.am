@@ -51,5 +51,10 @@ nodist_UnitTestMamaC_SOURCES = MainUnitTestC.cpp \
                             datetimetest.cpp \
                             subscriptiontest.cpp \
                             pricetest.cpp \
+                            inboxtest.cpp \
+                            iotest.cpp \
+                            publishertest.cpp \
+                            queuetest.cpp \
+                            transporttest.cpp \
                             timertest.cpp
 
