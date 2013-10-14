@@ -29,8 +29,22 @@
 #include <string.h>
 #include "wombat/wincompat.h"
 
+#define YY_NO_INPUT ()
+
 extern int gPropertyDebug;
 wthread_static_mutex_t lexerLock = WSTATIC_MUTEX_INITIALIZER;
+
+int propertiesImpl_ImportPropertiesFromFile (propertiesImpl this,
+                                             const char* path, 
+                                             const char* fileName );
+int propertiesImpl_AddString (propertiesImpl this,
+                              const char* string );
+int propertiesImpl_destroy (propertiesImpl this);
+
+static char* concatString (const char* dest,
+                           const char* string);
+static char* concatEscape (char* toWhat,
+                           char escape);
 
 %}
 
@@ -86,7 +100,7 @@ WS                  [ \t]
                 break;
            }
 
-           return toWhat = concatString( toWhat, val );
+           return concatString( toWhat, val );
         }
 
 %x key
@@ -237,9 +251,3 @@ propertiesImpl_destroy( propertiesImpl this)
     return 1;
 }
 
-
-void foo()
-{
-    /* Get rid of compiler warning */
-    yyunput( 0, NULL);
-}
