@@ -166,7 +166,7 @@ wombatQueueStatus
 wombatQueue_setMaxSize (wombatQueue queue, unsigned int value)
 {
     wombatQueueImpl *impl = (wombatQueueImpl*)queue;
-    if (value < 0 || value > WOMBAT_QUEUE_MAX_SIZE)
+    if (value > WOMBAT_QUEUE_MAX_SIZE)
     {
         return WOMBAT_QUEUE_INVALID_ARG;
     }
