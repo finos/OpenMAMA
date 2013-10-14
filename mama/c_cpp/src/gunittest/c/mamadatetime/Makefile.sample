@@ -20,7 +20,7 @@
 # SOLARIS/Forte: The makefile will need modified to use the Solaris compiler.
 #                See example below.
 #=============================================================================
-API_HOME=../../../../../../../install
+API_HOME=../../../../../../../../install
 
 ## Solaris/Forte compiler:
 #CXX      = CC
@@ -38,61 +38,30 @@ BDYNAMIC = -Xlinker -Bdynamic
 #SYS_LIBS = -lsocket -lgen -lnsl -ldl
 
 # Standard defines:
-CPPFLAGS = -I./ -I../../c \
-	-I$(API_HOME)/include \
-	-I$(GTEST_HOME)/include
-    
+CPPFLAGS = -I../ -I../../../c \
+            -I$(GTEST_HOME)/include\
+			-I$(API_HOME)/include
+
 LDFLAGS = -rdynamic \
     -L$(API_HOME)/lib \
-    -L$(GTEST_HOME)/lib
+	-L$(GTEST_HOME)/lib
 
 
 MAMA_LIBS = -lmama -lwombatcommon -lgtest -lpthread -ldl
 
-all: UnitTestMamaC
+all: UnitTestMamaDateTimeC 
 
 
-UnitTestMamaC: MainUnitTestC.o \
-                               inboxtest.o \
-                               iotest.o \
-                               queuetest.o \
-                               transporttest.o \
-				               subscriptiontest.o \
-				               timertest.o \
-				               iteration.o \
-				               publishertest.o \
-                               payloadmiddlewareidtest.o
+UnitTestMamaDateTimeC: ../MainUnitTestC.o  \
+                    datetimetest.o \
+                    datetimerangetest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
-openclosetest: MainUnitTestC.o openclosetest.o
+
+datetimetest: ../MainUnitTestC.o datetimetest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
-timertest: MainUnitTestC.o timertest.o
+datetimerangetest: ../MainUnitTestC.o datetimerangetest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
-subscriptiontest: MainUnitTestC.o subscriptiontest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
-msgtests: MainUnitTestC.o msgtests.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-iteration: MainUnitTestC.o iteration.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-inboxtest: MainUnitTestC.o inboxtest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-iotest: MainUnitTestC.o iotest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-publishertest: MainUnitTestC.o publishertest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-queuetest: MainUnitTestC.o queuetest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-transporttest: MainUnitTestC.o transporttest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-payloadmiddlewareidtest: MainUnitTestC.o payloadmiddlewareidtest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
