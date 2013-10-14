@@ -19,11 +19,8 @@ You can use this free for any purpose.  It has no warranty.
 #include <stdio.h>
 #include <stddef.h>
 #include <stdlib.h>
-typedef  unsigned long  int  ub4;   /* unsigned 4-byte quantities */
-typedef  unsigned       char ub1;
 
-#define hashsize(n) ((ub4)1<<(n))
-#define hashmask(n) (hashsize(n)-1)
+#include "lookup2.h"
 
 /*
 --------------------------------------------------------------------
@@ -67,6 +64,14 @@ mix() takes 36 machine instructions, but only 18 cycles on a superscalar
   b -= c; b -= a; b = (b ^ (a<<10)) & 0xffffffff; \
   c -= a; c -= b; c = (c ^ (b>>15)) & 0xffffffff; \
 }
+
+static ub4 whash2 (register ub4 *k,
+                   register ub4 length,
+                   register ub4 initval);
+
+static ub4 whash3 (register ub1 *k,
+                   register ub4 length,
+                   register ub4 initval);
 
 /*
 --------------------------------------------------------------------
