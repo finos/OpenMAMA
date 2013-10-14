@@ -27,12 +27,13 @@ CFLAGS   += -pedantic -Wno-long-long -O2 -pthread -fPIC
 CPPFLAGS += -pedantic -Wno-long-long -O2 -pthread -fPIC
 endif
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../.. -I$(srcdir)/../../../../../../common/c_cpp/src/c
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../.. -I$(srcdir)/../../../../../../common/c_cpp/src/c -I$(srcdir)/../../../c
 
 CFLAGS   += -I@builddir@/../../c
 CPPFLAGS += -I@builddir@/../../c
 LDFLAGS  += -L${srcdir}/../../c \
-            -L${srcdir}/../../../../../../common/c_cpp/src/c
+            -L${srcdir}/../../../../../../common/c_cpp/src/c \
+            -L${srcdir}/../../../c
 
 LIBS = -lmama -lwombatcommon -lgtest -lpthread
 LDADD = -lgtest_main -ldl

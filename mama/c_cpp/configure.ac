@@ -423,5 +423,6 @@ AC_OUTPUT([Makefile \
     src/gunittest/c/payload/Makefile \
     src/gunittest/c/middleware/Makefile \
     src/gunittest/c/mamamsg/Makefile \
+    src/gunittest/c/mamaprice/Makefile \
     src/gunittest/cpp/Makefile \
     ])
