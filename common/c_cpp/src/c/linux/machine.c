@@ -302,11 +302,14 @@ pid_t getParentPid(pid_t pid, int childFlag)
 
         len = read(fd, buffer, sizeof(buffer)-1);
         close(fd);
-        if (len==-1)
+        if (len < 0)
         {
             return 0;
         }
-        buffer[len] = '\0';
+        else
+        {
+            buffer[len] = '\0';
+        }
     }
     /* parse out the status */
     p = buffer;
