@@ -55,12 +55,19 @@ MamaEnumTestsC::TearDown()
 void
 MamaEnumTestsC::CreateTestData()
 {
-    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_WOMBAT_MSG, "WombatMsg"));
-    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_TIBRV,      "TIBRV"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_V5,         "V5"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_AVIS,       "AVIS"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_TICK42BLP,  "TICK42BLP"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_FAST,       "FAST"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_RAI,        "rai"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_UMS,        "UMS"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_TICK42BLP,  "TICK42RMDS"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_QPID,       "QPID"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_TIBRV,      "TIBRV"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_IBMWFO,     "ibmwfo"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_ACTIV,      "activ"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_VULCAN,     "Vulcan"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_WOMBAT_MSG, "WombatMsg"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_EXEGY,      "EXEGY"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_UNKNOWN,    "unknown"));
 
@@ -73,6 +80,11 @@ MamaEnumTestsC::CreateTestData()
     middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_RAI,       "rai"));
     middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_QPID,      "QPID"));
     middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_EXEGY,     "exegy"));
+    middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_IBMWFO,    "ibmwfo"));
+    middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_ACTIV,     "activ"));
+    middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_TICK42RMDS, "tick42rmds"));
+    middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_UMS,       "ums"));
+    middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_VULCAN,    "vulcan"));
     middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_UNKNOWN,   "unknown"));
 }
 
