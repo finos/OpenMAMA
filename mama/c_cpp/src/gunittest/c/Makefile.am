@@ -54,5 +54,6 @@ nodist_UnitTestMamaC_SOURCES = MainUnitTestC.cpp \
                             publishertest.cpp \
                             queuetest.cpp \
                             transporttest.cpp \
-                            timertest.cpp
+                            timertest.cpp \
+                            payloadmiddlewareidtest.cpp
 
