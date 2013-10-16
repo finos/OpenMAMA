@@ -1,0 +1,40 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+target = 'libmamaavisimpl'
+
+libPath = []
+libPath.append('$libdir')
+libPath.append(os.path.join(env['avis_home'], 'lib'))
+
+incPath = []
+incPath.append('$avis_home/include')
+incPath.append('#mama/c_cpp/src/c')
+
+env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
+
+env.Append(LIBS=['avis', 'mama', 'm', 'wombatcommon', 'uuid'],
+           LIBPATH=libPath, CPPPATH=incPath)
+
+conf = Configure(env, config_h='./config.h', log_file='./config.log')
+
+if not env.GetOption('clean'):
+    if not conf.CheckCHeader('uuid/uuid.h'):
+        print '+- libuuid-devel required'
+        Exit(1)
+    if not conf.CheckCHeader('avis/avis_client_config.h'):
+        print '+- avis_client_config.h must be copied to ${avis_home}/include/avis'
+        Exit(1)
+
+env = conf.Finish()
+
+sources = Glob('*.c')
+
+lib = []
+lib.append(env.SharedLibrary(target, sources))
+lib.append(env.StaticLibrary(target, [sources]))
+
+Alias('install', env.Install('$libdir', lib))

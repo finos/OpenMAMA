@@ -1,0 +1,135 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('env')
+env = env.Clone()
+
+target = 'libmamacpp'
+
+InstMamaInclude = \
+    Split("""
+   mama/MamaBridgeCallback.h
+   mama/MamaSendCompleteCallback.h
+   mama/MamaBasicSubscription.h
+   mama/MamaBasicWildCardSubscription.h
+   mama/MamaBasicWildCardSubscriptionCallback.h
+   mama/MamaBasicSubscriptionCallback.h
+   mama/MamaDateTime.h
+   mama/MamaDictionary.h
+   mama/MamaDictionaryCallback.h
+   mama/MamaDispatcher.h
+   mama/MamaDQPublisher.h
+   mama/MamaDQPublisherManager.h
+   mama/MamaDQPublisherManagerCallback.h
+   mama/MamaFt.h
+   mama/MamaFieldDescriptor.h
+   mama/MamaInbox.h
+   mama/MamaInboxCallback.h
+   mama/MamaIo.h
+   mama/MamaIoCallback.h
+   mama/MamaMsg.h
+   mama/MamaMsgFieldIterator.h
+   mama/MamaMsgQual.h
+   mama/MamaPublisher.h
+   mama/MamaPrice.h
+   mama/MamaQueue.h
+   mama/MamaQueueEnqueueCallback.h
+   mama/MamaQueueMonitorCallback.h
+   mama/MamaQueueEventCallback.h
+   mama/MamaQueueGroup.h
+   mama/MamaSource.h
+   mama/MamaSourceDerivative.h
+   mama/MamaSourceGroup.h
+   mama/MamaSourceGroupManager.h
+   mama/MamaSourceManager.h
+   mama/MamaSourceStateChangeCallback.h
+   mama/MamaSymbolList.h
+   mama/MamaSymbolListHandlerTypes.h
+   mama/MamaSymbolListMember.h
+   mama/MamaSymbolSource.h
+   mama/MamaSymbolSourceCallback.h
+   mama/MamaSubscription.h
+   mama/MamaSubscriptionCallback.h
+   mama/MamaTimer.h
+   mama/MamaTimerCallback.h
+   mama/MamaTimeZone.h
+   mama/MamaTransport.h
+   mama/MamaTransportMap.h
+   mama/MamaMsgField.h
+   mama/MamaStatus.h
+   mama/MamaSymbolMap.h
+   mama/MamaSymbolMapFile.h
+   mama/MamaLogFile.h
+   mama/mamacpp.h
+   mama/MamaStat.h
+   mama/MamaStatsCollector.h
+   mama/MamaReservedFields.h   
+""")
+
+InstConflationInclude = \
+    Split("""
+   mama/conflation/MamaConnection.h
+""")
+
+includePath = []
+includePath.append('.')
+includePath.append('../c')
+includePath.append('$prefix/include')
+includePath.append('#commmon/c_cpp/src/c')
+
+libPath = []
+libPath.append('$libdir')
+
+libmama_sources = \
+    Split("""
+   datetime.cpp
+   mamacpp.cpp
+   MamaBasicSubscription.cpp
+   MamaBasicWildCardSubscription.cpp
+   MamaDictionary.cpp
+   MamaDispatcher.cpp
+   MamaDQPublisher.cpp
+   MamaDQPublisherManager.cpp
+   MamaFieldDescriptor.cpp
+   MamaFt.cpp
+   MamaInbox.cpp
+   MamaIo.cpp
+   MamaLogFile.cpp
+   MamaMsg.cpp
+   MamaMsgField.cpp
+   MamaMsgQual.cpp
+   MamaPrice.cpp
+   MamaPublisher.cpp
+   MamaQueue.cpp
+   MamaQueueGroup.cpp
+   MamaReservedFields.cpp
+   MamaSource.cpp
+   MamaSourceDerivative.cpp
+   MamaSourceGroup.cpp
+   MamaSourceGroupManager.cpp
+   MamaSourceManager.cpp
+   MamaStatus.cpp
+   MamaSubscription.cpp
+   MamaSymbolList.cpp
+   MamaSymbolListMember.cpp
+   MamaSymbolMapFile.cpp
+   MamaTimeZone.cpp
+   MamaTimer.cpp
+   MamaTransport.cpp
+   MamaTransportMap.cpp
+   MamaStat.cpp
+   MamaStatsCollector.cpp
+   conflation/MamaConnection.cpp
+   conflation/MamaServerConnection.cpp
+""")
+
+env.Append(CPPPATH=includePath, LIBPATH=libPath)
+
+lib = []
+lib.append(env.SharedLibrary(target, libmama_sources))
+lib.append(env.StaticLibrary(target, libmama_sources))
+
+Alias('install', env.Install('$libdir', lib))
+Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))
+Alias('install', env.Install('$prefix/include/mama/conflation',
+      InstConflationInclude))
