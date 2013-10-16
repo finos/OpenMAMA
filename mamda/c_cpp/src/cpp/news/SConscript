@@ -1,0 +1,52 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+InstMamdaNewsInclude = \
+    Split("""
+	mamda/MamdaNewsFields.h 
+	mamda/MamdaNewsHeadline.h
+	mamda/MamdaNewsHeadlineHandler.h
+	mamda/MamdaNewsManager.h
+	mamda/MamdaNewsMetaData.h
+	mamda/MamdaNewsQuery.h
+	mamda/MamdaNewsQueryHandler.h
+	mamda/MamdaNewsStory.h
+	mamda/MamdaNewsStoryHandler.h
+	mamda/MamdaNewsTypes.h
+""")
+
+includePath = []
+includePath.append('.')
+includePath.append('..')
+includePath.append('#mama/c_cpp/src/c')
+includePath.append('#mama/c_cpp/src/cpp')
+includePath.append('#mama/c_cpp/src/cpp/mama')
+includePath.append('#common/c_cpp/src/c')
+includePath.append('$prefix/include')
+
+libPath = []
+libPath.append('$prefix/lib')
+
+sources = \
+    Split("""
+   MamdaNewsFields.cpp \
+   MamdaNewsHeadline.cpp \
+   MamdaNewsManager.cpp \
+   MamdaNewsStory.cpp \
+   MamdaNewsUtils.cpp
+""")
+
+env.Append(CPPPATH=[includePath], LIBPATH=[libPath])
+
+target = 'libmamdanews'
+
+lmamdanewsso = env.SharedLibrary(target, sources)
+lmamdanews = env.StaticLibrary(target, [ sources, StaticLibs['libwombatcommon'] ] )
+
+Alias('install', env.Install('$prefix/lib', lmamdanews))
+Alias('install', env.Install('$prefix/lib', lmamdanewsso))
+Alias('install', env.Install('$prefix/include/mamda',
+      InstMamdaNewsInclude))

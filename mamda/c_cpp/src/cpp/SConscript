@@ -1,0 +1,172 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+releaseString = env['versions']['mamda']['releaseString']
+
+InstMamdaInclude = \
+    Split("""
+    mamda/MamdaVersion.h
+    mamda/MamdaLock.h
+    mamda/MamdaBasicEvent.h
+    mamda/MamdaBasicRecap.h
+    mamda/MamdaBasicSubscription.h
+    mamda/MamdaCommonFields.h
+    mamda/MamdaConcreteBasicEvent.h
+    mamda/MamdaDataException.h
+    mamda/MamdaErrorListener.h
+    mamda/MamdaFields.h
+    mamda/MamdaFieldState.h
+    mamda/MamdaFundamentalFields.h
+    mamda/MamdaFundamentalHandler.h
+    mamda/MamdaFundamentalListener.h
+    mamda/MamdaFundamentals.h
+    mamda/MamdaMsgListener.h
+    mamda/MamdaMultiParticipantHandler.h
+    mamda/MamdaMultiParticipantManager.h
+    mamda/MamdaMultiSecurityHandler.h
+    mamda/MamdaMultiSecurityManager.h
+    mamda/MamdaOrderImbalanceRecap.h
+    mamda/MamdaOrderImbalanceUpdate.h
+    mamda/MamdaOrderImbalanceHandler.h
+    mamda/MamdaPubStatusFields.h
+    mamda/MamdaPubStatus.h
+    mamda/MamdaPubStatusHandler.h
+    mamda/MamdaPubStatusListener.h
+    mamda/MamdaQualityListener.h
+    mamda/MamdaQuoteClosing.h
+    mamda/MamdaQuoteFields.h
+    mamda/MamdaQuoteGap.h
+    mamda/MamdaQuoteHandler.h
+    mamda/MamdaQuoteListener.h
+    mamda/MamdaQuoteChecker.h
+    mamda/MamdaCheckerHandler.h
+    mamda/MamdaCheckerType.h
+    mamda/MamdaQuoteOutOfSequence.h
+    mamda/MamdaQuotePossiblyDuplicate.h
+    mamda/MamdaQuoteRecap.h
+    mamda/MamdaQuoteUpdate.h
+    mamda/MamdaSecStatusFields.h
+    mamda/MamdaSecStatusHandler.h
+    mamda/MamdaSecStatusListener.h
+    mamda/MamdaSecStatus.h
+    mamda/MamdaSecStatusRecap.h
+    mamda/MamdaSecStatusSymbolSourceAdapter.h
+    mamda/MamdaSecurityStatus.h
+    mamda/MamdaSecurityStatusQual.h
+    mamda/MamdaSubscription.h
+    mamda/MamdaTradeCancelOrError.h
+    mamda/MamdaTradeClosing.h
+    mamda/MamdaTradeCorrection.h
+    mamda/MamdaTradeDirection.h
+    mamda/MamdaTradeExecVenue.h
+    mamda/MamdaTradeSide.h
+    mamda/MamdaTradeFields.h
+    mamda/MamdaTradeGap.h
+    mamda/MamdaTradeHandler.h
+    mamda/MamdaTradeListener.h
+    mamda/MamdaTradeOutOfSequence.h
+    mamda/MamdaTradePossiblyDuplicate.h
+    mamda/MamdaTradeRecap.h
+    mamda/MamdaTradeReport.h
+    mamda/MamdaTradeChecker.h
+    mamda/MamdaOrderImbalanceFields.h
+    mamda/MamdaOrderImbalanceType.h
+    mamda/MamdaOrderImbalanceSide.h
+    mamda/MamdaOrderImbalanceListener.h
+    mamda/MamdaCurrencyFields.h
+    mamda/MamdaCurrencyUpdate.h
+    mamda/MamdaCurrencyRecap.h
+    mamda/MamdaCurrencyListener.h
+    mamda/MamdaCurrencyHandler.h
+    mamda/MamdaConfig.h
+    mamda/MamdaOptionalConfig.h
+    mamda/MamdaQuery.h
+    mamda/MamdaUncrossPriceInd.h
+    mamda/MamdaAuctionListener.h
+    mamda/MamdaAuctionFields.h
+    mamda/MamdaAuctionHandler.h
+    mamda/MamdaAuctionRecap.h
+    mamda/MamdaAuctionUpdate.h 
+""")
+
+includePath = []
+includePath.append('.')
+includePath.append('..')
+includePath.append('#mama/c_cpp/src/c')
+includePath.append('#mama/c_cpp/src/cpp')
+includePath.append('#mama/c_cpp/src/cpp/mama')
+includePath.append('#common/c_cpp/src/c')
+includePath.append('$prefix/include')
+
+libPath = []
+libPath.append('$prefix/lib')
+
+env.Append(LIBPATH=libPath)
+
+sources = \
+    Split("""
+    MamdaLock.cpp
+    MamdaBasicSubscription.cpp
+    MamdaCommonFields.cpp
+    MamdaConcreteBasicEvent.cpp
+    MamdaFundamentalFields.cpp
+    MamdaFundamentalListener.cpp
+    MamdaMultiParticipantManager.cpp
+    MamdaMultiSecurityManager.cpp
+    MamdaPubStatusFields.cpp
+    MamdaPubStatusListener.cpp
+    MamdaQuoteFields.cpp
+    MamdaQuoteListener.cpp
+    MamdaQuoteChecker.cpp
+    MamdaCheckerType.cpp
+    MamdaSecStatusSymbolSourceAdapter.cpp
+    MamdaSecurityStatus.cpp
+    MamdaSecurityStatusQual.cpp
+    MamdaSecStatusFields.cpp
+    MamdaSecStatusListener.cpp
+    MamdaSubscription.cpp
+    MamdaTradeDirection.cpp
+    MamdaTradeExecVenue.cpp
+    MamdaTradeSide.cpp\
+    MamdaTradeFields.cpp
+    MamdaTradeListener.cpp
+    MamdaTradeChecker.cpp
+    MamdaUtils.cpp
+    MamdaVersion.cpp
+    MamdaOrderImbalanceFields.cpp
+    MamdaOrderImbalanceType.cpp
+    MamdaOrderImbalanceSide.cpp
+    MamdaOrderImbalanceListener.cpp
+    MamdaCurrencyFields.cpp
+    MamdaCurrencyListener.cpp
+    MamdaQuery.cpp
+    MamdaUncrossPriceInd.cpp
+    MamdaAuctionFields.cpp
+    MamdaAuctionListener.cpp
+""")
+
+verFile = open('version.c', 'w')
+verFile.write("""const char* mamda_version = "mamda %s";
+"""
+              % releaseString)
+verFile.close()
+
+sources.append('version.c')
+
+env.Append(CPPPATH=[includePath])
+
+lmamdaso = env.SharedLibrary('libmamda', sources)
+lmamda = env.StaticLibrary('libmamda', [ sources, StaticLibs['libwombatcommon'] ])
+
+Alias('install', env.Install('$libdir', lmamda))
+Alias('install', env.Install('$libdir', lmamdaso))
+Alias('install', env.Install('$prefix/include/mamda', InstMamdaInclude))
+
+env.SConscript('news/SConscript', 'env')
+env.SConscript('options/SConscript', 'env')
+env.SConscript('orderbooks/SConscript', 'env')
+
+Clean(lmamdaso, 'version.c')

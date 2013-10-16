@@ -1,0 +1,62 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+InstMamdaOptionsInclude = \
+    Split("""
+	mamda/MamdaOptionAtTheMoneyCompareType.h
+	mamda/MamdaOptionChain.h
+	mamda/MamdaOptionChainHandler.h
+	mamda/MamdaOptionChainListener.h
+	mamda/MamdaOptionChainView.h
+	mamda/MamdaOptionChainViewRangeHandler.h
+	mamda/MamdaOptionContract.h
+	mamda/MamdaOptionContractSet.h
+	mamda/MamdaOptionExchangeUtils.h
+	mamda/MamdaOptionExpirationDateSet.h
+	mamda/MamdaOptionExpirationStrikes.h
+	mamda/MamdaOptionFields.h
+	mamda/MamdaOptionSeriesUpdate.h
+	mamda/MamdaOptionStrikeSet.h
+	mamda/MamdaOptionTypes.h
+""")
+
+includePath = []
+includePath.append('.')
+includePath.append('..')
+includePath.append('#mama/c_cpp/src/c')
+includePath.append('#mama/c_cpp/src/cpp')
+includePath.append('#mama/c_cpp/src/cpp/mama')
+includePath.append('#common/c_cpp/src/c')
+includePath.append('$prefix/include')
+
+libPath = []
+libPath.append('$prefix/lib')
+
+sources = \
+    Split("""
+	MamdaOptionChain.cpp
+	MamdaOptionChainListener.cpp
+	MamdaOptionChainView.cpp
+	MamdaOptionContract.cpp
+	MamdaOptionContractSet.cpp
+	MamdaOptionExchangeUtils.cpp
+	MamdaOptionExpirationDateSet.cpp
+	MamdaOptionExpirationStrikes.cpp
+	MamdaOptionFields.cpp
+	MamdaOptionStrikeSet.cpp 
+""")
+
+env.Append(CPPPATH=[includePath], LIBPATH=libPath)
+
+target = 'libmamdaoptions'
+
+lmamdaoptso = env.SharedLibrary(target, sources)
+lmamdaopt = env.StaticLibrary(target, [ sources, StaticLibs['libwombatcommon'] ] )
+
+Alias('install', env.Install('$libdir', lmamdaopt))
+Alias('install', env.Install('$libdir', lmamdaoptso))
+Alias('install', env.Install('$prefix/include/mamda',
+      InstMamdaOptionsInclude))
