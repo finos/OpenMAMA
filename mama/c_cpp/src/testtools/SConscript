@@ -1,0 +1,8 @@
+Import('env')
+env = env.Clone()
+
+env.SConscript('load/c/SConscript','env')
+env.SConscript('load/cpp/SConscript','env')
+env.SConscript('performance/c/SConscript','env')
+env.SConscript('performance/cpp/SConscript','env')
+env.SConscript('capturereplay/c/SConscript','env')
