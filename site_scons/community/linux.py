@@ -25,6 +25,11 @@ class Linux:
 
         logger = Logger(optsEnv)
 
+        os_env = {}
+
+        if os.environ.get('LD_LIBRARY_PATH',None) != None:
+            os_env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
+
         if optsEnv['with_docs'] == True:
             tools.append( 'doxygen' )
             tools.append( 'javadoc' )
@@ -34,11 +39,11 @@ class Linux:
                 print 'java_home has not been set, exiting...'
                 Exit(1)
 
-            env = Environment(ENV={
-                'JAVA_HOME': '%s' % (optsEnv['java_home']),
-                'PATH': '%s:%s/bin' % (os.environ['PATH'], optsEnv['java_home']),
-                'LD_LIBRARY_PATH': '%s' % ( os.environ['LD_LIBRARY_PATH'] )},
-                tools = tools )
+            os_env['PATH']      = '%s:%s/bin' % (os.environ['PATH'], optsEnv['java_home'])
+            os_env['JAVA_HOME'] = optsEnv['java_home']
+
+            env = Environment(ENV=os_env,
+                    tools = tools )
 
             #ConfigureJNI searches os.env for java_home not env['ENV']['JAVA_HOME'] 
             #This is needed if set on cmd line via scons java_home=/path/to/java
@@ -50,10 +55,9 @@ class Linux:
             env['JAVAH'] = 'javah'
 
         else:
-            env = Environment(ENV={
-                    'PATH': '%s' % (os.environ['PATH']),
-                    'LD_LIBRARY_PATH': '%s' % ( os.environ['LD_LIBRARY_PATH'] )},
-                    tools = tools )
+            os_env['PATH'] = os.environ['PATH']
+            env = Environment(ENV=os_env,
+                        tools = tools )
 
         env['SPAWN'] = logger.log_output
         env['PRINT_CMD_LINE_FUNC'] = logger.log_command

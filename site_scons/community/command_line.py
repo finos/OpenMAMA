@@ -18,7 +18,7 @@ def get_command_line_opts( host, products, VERSIONS ):
                     PathVariable.PathAccept),
        PathVariable('java_home', 'JAVA Home folder', os.environ.get('JAVA_HOME',None) , PathVariable.PathAccept),
        PathVariable('logfile', 'Output Log File', 'scons.log', PathVariable.PathAccept),
-       BoolVariable('verbose','Whether to print verbose output',False),
+       BoolVariable('verbose','Whether to print verbose output',True),
        BoolVariable('package','Whether to tar up the installation directory',False),
        BoolVariable('with_docs','Build with documentation',False),
        BoolVariable('with_unittest','Build with gunit tests',False),
