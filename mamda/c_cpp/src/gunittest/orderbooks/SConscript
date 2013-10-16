@@ -1,0 +1,20 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('env')
+env = env.Clone()
+
+includePath = []
+includePath.append('.')
+
+env.Append(CPPPATH=includePath)
+
+sources = Glob('*.cpp')
+sources.append(Split("""
+../common/MainUnitTest.o
+../common/MamdaUnitTestUtils.o
+"""))
+
+binary = env.Program('UnitTestMamdaOrderBook', sources)
+
+Alias('install', env.Install('$bindir', binary))
