@@ -8,18 +8,21 @@ target = 'libmamaqpidimpl'
 
 libPath = []
 libPath.append('$libdir')
-libPath.append(os.path.join(env['qpidhome'], 'lib'))
-libPath.append(os.path.join(env['qpidhome'], 'lib64'))
+libPath.append(os.path.join(env['qpid_home'], 'lib'))
+libPath.append(os.path.join(env['qpid_home'], 'lib64'))
 
 incPath = []
-incPath.append('$qpidhome/include')
+incPath.append('$qpid_home/include')
 incPath.append('#mama/c_cpp/src/c')
 
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 
 env.Append(LIBS=['qpid-proton', 'mama', 'm', 'wombatcommon', 'uuid'],
            LIBPATH=libPath, CPPPATH=incPath)
-env.Append(CFLAGS=['-Werror'])
+''' Generally we would like to make use of -Werror, but unfortunately it causes
+    proton to choke during the build phase. Leaving the option here should we
+    find the proton issues resolved.'''
+#env.Append(CFLAGS=['-Werror'])
 
 
 conf = Configure(env, config_h='./config.h', log_file='./config.log')

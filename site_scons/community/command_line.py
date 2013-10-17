@@ -26,7 +26,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        BoolVariable('with_examples','Build with test tools',True),
        BoolVariable('entitled','Whether the build is entitled or unentitled',False),
        PathVariable('gtest_home','Path to Google Test home',None, PathVariable.PathIsDir),
-       ListVariable('middleware','Middleware(s) to be compiled in', 'avis', names = ['avis'] ),
+       ListVariable('middleware','Middleware(s) to be compiled in', 'avis', names = ['avis', 'qpid'] ),
 
     )
 
@@ -35,6 +35,8 @@ def get_command_line_opts( host, products, VERSIONS ):
             ListVariable( 'buildtype', 'Windows Build type e.g dynamic', 'all', names = ['dynamic','dynamic-debug','static','static-debug'] ),
             PathVariable('avis_home', 'Path to Avis',
                           'c:\\avis', PathVariable.PathAccept),
+            PathVariable('qpid_home', 'Path to QPID Proton Libraries',
+                          'c:\\proton', PathVariable.PathAccept),
             EnumVariable('vsver','Visual Studio Version to use', '10.0',
                 allowed_values=('8.0','9.0','10.0')),
             EnumVariable('product', 'Product to be built', 'mamda',
@@ -48,6 +50,8 @@ def get_command_line_opts( host, products, VERSIONS ):
     if host['os'] == 'Linux':
         opts.AddVariables(
             PathVariable('avis_home','Path to Avis', '/usr/local/', PathVariable.PathIsDir),
+            PathVariable('qpid_home','Path to QPID Proton Libraries', 
+                '/usr/local/', PathVariable.PathIsDir),
             PathVariable('cache_dir','Path to object cache', None, PathVariable.PathIsDir),
             EnumVariable('product', 'Product to be built', 'mamda',
                          #mamda all is a windows only build
