@@ -59,7 +59,6 @@ UnitTestMamaC: MainUnitTestC.o \
                                transporttest.o \
 				               subscriptiontest.o \
 				               timertest.o \
-				               iteration.o \
 				               publishertest.o \
                                payloadmiddlewareidtest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
@@ -71,12 +70,6 @@ timertest: MainUnitTestC.o timertest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
 subscriptiontest: MainUnitTestC.o subscriptiontest.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-msgtests: MainUnitTestC.o msgtests.o
-	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-
-iteration: MainUnitTestC.o iteration.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
 inboxtest: MainUnitTestC.o inboxtest.o
