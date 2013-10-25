@@ -276,8 +276,8 @@ TEST_F(MamaPriceTest, SetPrecisionDiv128)
 TEST_F(MamaPriceTest, SetPrecisionDiv256)
 {
     // Set the precision
-    ASSERT_EQ(mamaPrice_setPrecision(m_price, MAMA_PRICE_PREC_DIV_256), MAMA_STATUS_OK);
-    
+    // ASSERT_EQ(mamaPrice_setPrecision(m_price, MAMA_PRICE_PREC_DIV_256), MAMA_STATUS_OK);
+    m_price->setPrecision(MAMA_PRICE_PREC_DIV_256);
     // Get the value as a double
     double doubleValue = 0;
     //ASSERT_EQ(mamaPrice_getValue(m_price, &doubleValue), MAMA_STATUS_OK);
