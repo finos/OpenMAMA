@@ -91,6 +91,11 @@ qpidBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
 {
     qpidBridgeMsgImpl* impl = NULL;
 
+    if (NULL == msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     /* Null initialize the msgBridge pointer */
     *msg = NULL;
 
@@ -183,7 +188,7 @@ qpidBridgeMamaMsg_setSendSubject (msgBridge   msg,
     qpidBridgeMsgImpl* impl     = (qpidBridgeMsgImpl*) msg;
     mama_status        status   = MAMA_STATUS_OK;
 
-    if (NULL == impl)
+    if (NULL == impl || NULL == symbol || NULL == subject)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -213,7 +218,7 @@ mama_status
 qpidBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result)
 {
     qpidBridgeMsgImpl* impl = (qpidBridgeMsgImpl*) msg;
-    if (NULL == impl)
+    if (NULL == impl || NULL == result)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -259,7 +264,7 @@ qpidBridgeMamaMsg_copyReplyHandle (void* src, void** dest)
     qpidBridgeMsgReplyHandle* impl        = (qpidBridgeMsgReplyHandle*)src;
     qpidBridgeMsgReplyHandle* replyHandle = NULL;
 
-    if (NULL == impl)
+    if (NULL == impl || NULL == dest)
     {
         return MAMA_STATUS_NULL_ARG;
     }
