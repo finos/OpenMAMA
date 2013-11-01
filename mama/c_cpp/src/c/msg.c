@@ -396,6 +396,8 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "WombatMsg";
         case MAMA_PAYLOAD_EXEGY:
             return "EXEGY";
+        case MAMA_PAYLOAD_INRUSH:
+            return "INRUSH";
 
         default:
             return "unknown";

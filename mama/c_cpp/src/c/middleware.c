@@ -71,6 +71,9 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "vulcan") == 0)
         return MAMA_MIDDLEWARE_VULCAN;
 
+    if (strcasecmp (str, "inrush") == 0)
+        return MAMA_MIDDLEWARE_INRUSH;
+
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
 
@@ -108,6 +111,8 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "ums";
         case MAMA_MIDDLEWARE_VULCAN:
             return "vulcan";
+        case MAMA_MIDDLEWARE_INRUSH:
+            return "inrush";
         default:
             return "unknown";
     }
