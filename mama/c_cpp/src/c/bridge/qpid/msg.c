@@ -188,7 +188,7 @@ qpidBridgeMamaMsg_setSendSubject (msgBridge   msg,
     qpidBridgeMsgImpl* impl     = (qpidBridgeMsgImpl*) msg;
     mama_status        status   = MAMA_STATUS_OK;
 
-    if (NULL == impl || NULL == symbol || NULL == subject)
+    if (NULL == impl || NULL == symbol || (NULL == symbol && NULL == subject))
     {
         return MAMA_STATUS_NULL_ARG;
     }
