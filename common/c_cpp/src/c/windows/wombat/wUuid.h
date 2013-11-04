@@ -25,10 +25,18 @@
 
 typedef char* wUuid;
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 COMMONExpDLL
 void wUuid_generate_time (wUuid myUuid);
 
 COMMONExpDLL
 void wUuid_unparse (wUuid myUuid, char* out);
+
+#if defined(__cplusplus)
+} /* extern "C" */
+#endif
 
 #endif /* WUUID_H__ */
