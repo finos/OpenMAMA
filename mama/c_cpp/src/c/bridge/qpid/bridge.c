@@ -26,6 +26,7 @@
 
 #include <mama/mama.h>
 #include <timers.h>
+#include "io.h"
 #include "qpidbridgefunctions.h"
 
 
@@ -129,6 +130,9 @@ qpidBridge_open (mamaBridge bridgeImpl)
         return MAMA_STATUS_PLATFORM;
     }
 
+    /* Start the io thread */
+    qpidBridgeMamaIoImpl_start ();
+
     return MAMA_STATUS_OK;
 }
 
@@ -163,6 +167,9 @@ qpidBridge_close (mamaBridge bridgeImpl)
     /* Destroy once queue has been emptied */
     mamaQueue_destroyTimedWait (bridge->mDefaultEventQueue,
                                 QPID_SHUTDOWN_TIMEOUT);
+
+    /* Stop and destroy the io thread */
+    qpidBridgeMamaIoImpl_stop ();
 
     /* Wait for qpidBridge_start to finish before destroying implementation */
     if (NULL != bridgeImpl)

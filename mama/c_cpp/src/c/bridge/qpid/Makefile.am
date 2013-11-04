@@ -41,7 +41,7 @@ CFLAGS += -Wimplicit -Wno-long-long -Wmissing-prototypes -Wstrict-prototypes -Wa
 CPPFLAGS += -Wno-long-long -Wimplicit -Wno-long-long -Wmissing-prototypes -Wstrict-prototypes -Wall
 endif
 
-LIBS    =  -luuid -lmama -lm -lwombatcommon -lqpid-proton
+LIBS    =  -luuid -lmama -lm -lwombatcommon -lqpid-proton -levent
 
 libmamaqpidimpl_la_SOURCES = \
 	bridge.c \
