@@ -92,6 +92,8 @@ qpidBridge_open (mamaBridge bridgeImpl)
     mama_status         status  = MAMA_STATUS_OK;
     mamaBridgeImpl*     bridge  = (mamaBridgeImpl*) bridgeImpl;
 
+    wsocketstartup();
+
     if (NULL == bridgeImpl)
     {
         return MAMA_STATUS_NULL_ARG;
