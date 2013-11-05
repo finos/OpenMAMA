@@ -82,22 +82,18 @@ TEST_F(PayloadAtomicTestsC, addBoolValid)
 TEST_F(PayloadAtomicTestsC, addBoolInvalidFID)
 {
     mama_bool_t initialValue = (mama_bool_t)1;
-    mama_bool_t returnedValue = (mama_bool_t)0;
     mama_status res;
 
     /* Adding the boolean to the payload */
     res = m_payloadBridge->msgPayloadAddBool(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
-    res = m_payloadBridge->msgPayloadGetBool(m_payload, NULL, 0, &initialValue);
+    res = m_payloadBridge->msgPayloadAddBool(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F (PayloadAtomicTestsC, addBoolInValidName)
 {
     mama_bool_t initialValue = (mama_bool_t)1;
-    mama_bool_t returnedValue = (mama_bool_t)0;
     mama_status res;
 
     /* Adding the boolean to payload */
@@ -105,32 +101,17 @@ TEST_F (PayloadAtomicTestsC, addBoolInValidName)
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddBool(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddBoolNullPayload)
-{
-    mama_status res;
-    res = m_payloadBridge->msgPayloadAddBool(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-}
-
-
-/* The following code causes the tests to core */
-
-#if 0 
 TEST_F(PayloadAtomicTestsC, addBoolNullPayload)
 {
     mama_bool_t initialValue = (mama_bool_t)1;
+    mama_status res;
 
     /* Adding the boolean to payload. */
-    m_payloadBridge->msgPayloadAddBool(NULL, NULL, 1, initialValue);
-
-    /* Test initial and returned values match. */
-    //EXPECT_EQ(returnedValue, initialValue);
+    res = m_payloadBridge->msgPayloadAddBool(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
-#endif 
 
 TEST_F(PayloadAtomicTestsC, addCharValid)
 {
@@ -154,21 +135,17 @@ TEST_F(PayloadAtomicTestsC, addCharValid)
 TEST_F(PayloadAtomicTestsC, addCharInValidFID)
 {
     char        initialValue =  'A';
-    char        returnedValue = 'B';
     mama_status res;
     /* Adding the char to payload. */
     res = m_payloadBridge->msgPayloadAddChar(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddChar(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addCharInValidName)
 {
     char        initialValue =  'A';
-    char        returnedValue = 'B';
     mama_status res;
 
     /* Adding the char to the payload */
@@ -176,15 +153,16 @@ TEST_F(PayloadAtomicTestsC, addCharInValidName)
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddChar(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddCharNullPayload)
+TEST_F(PayloadAtomicTestsC, addCharNullPayload)
 {
+    char initialValue = 'A';
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddChar(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the char to payload. */
+    res = m_payloadBridge->msgPayloadAddChar(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addI8Valid)
@@ -208,38 +186,35 @@ TEST_F(PayloadAtomicTestsC, addI8Valid)
 TEST_F(PayloadAtomicTestsC, addI8InValidFID)
 {
     mama_i8_t        initialValue = (mama_i8_t)2;
-    mama_i8_t        returnedValue = (mama_i8_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the I8 to payload. */
     res = m_payloadBridge->msgPayloadAddI8(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddI8(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addI8InValidName)
 {
     mama_i8_t        initialValue =  (mama_i8_t)2;
-    mama_i8_t        returnedValue = (mama_i8_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the I8 to the payload */
     res = m_payloadBridge->msgPayloadAddI8(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddI8(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddI8NullPayload)
+TEST_F(PayloadAtomicTestsC, addI8NullPayload)
 {
+    mama_i8_t initialValue = (mama_i8_t)2;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddI8(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the I8 to payload. */
+    res = m_payloadBridge->msgPayloadAddI8(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addU8Valid)
@@ -267,13 +242,11 @@ TEST_F(PayloadAtomicTestsC, addU8InValidFID)
     mama_u8_t        returnedValue = (mama_u8_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the U8 to payload. */
     res = m_payloadBridge->msgPayloadAddU8(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddU8(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addU8InValidName)
@@ -282,20 +255,21 @@ TEST_F(PayloadAtomicTestsC, addU8InValidName)
     mama_u8_t        returnedValue = (mama_u8_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the U8 to the payload */
     res = m_payloadBridge->msgPayloadAddU8(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddU8(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddU8NullPayload)
+TEST_F(PayloadAtomicTestsC, addU8NullPayload)
 {
+    mama_u8_t initialValue = (mama_u8_t)2;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddU8(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the U8 to payload. */
+    res = m_payloadBridge->msgPayloadAddU8(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addI16Valid)
@@ -319,38 +293,35 @@ TEST_F(PayloadAtomicTestsC, addI16Valid)
 TEST_F(PayloadAtomicTestsC, addI16InValidFID)
 {
     mama_i16_t        initialValue = (mama_i16_t)2;
-    mama_i16_t        returnedValue = (mama_i16_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the I16 to payload. */
     res = m_payloadBridge->msgPayloadAddI16(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddI16(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addI16InValidName)
 {
     mama_i16_t        initialValue =  (mama_i16_t)2;
-    mama_i16_t        returnedValue = (mama_i16_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the I16 to the payload */
     res = m_payloadBridge->msgPayloadAddI16(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddI16(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddI16NullPayload)
+TEST_F(PayloadAtomicTestsC, addI16NullPayload)
 {
+    mama_i16_t initialValue = (mama_i16_t)2;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddI16(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the I16 to payload. */
+    res = m_payloadBridge->msgPayloadAddI16(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addU16Valid)
@@ -375,38 +346,35 @@ TEST_F(PayloadAtomicTestsC, addU16Valid)
 TEST_F(PayloadAtomicTestsC, addU16InValidFID)
 {
     mama_u16_t        initialValue = (mama_u16_t)2;
-    mama_u16_t        returnedValue = (mama_u16_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the U16 to payload. */
     res = m_payloadBridge->msgPayloadAddU16(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddU16(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addU16InValidName)
 {
     mama_u16_t        initialValue =  (mama_u16_t)2;
-    mama_u16_t        returnedValue = (mama_u16_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the U16 to the payload */
     res = m_payloadBridge->msgPayloadAddU16(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddU16(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddU16NullPayload)
+TEST_F(PayloadAtomicTestsC, addU16NullPayload)
 {
+    mama_u16_t initialValue = (mama_u16_t)2;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddU16(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the U16 to payload. */
+    res = m_payloadBridge->msgPayloadAddU16(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addI32Valid)
@@ -431,38 +399,35 @@ TEST_F(PayloadAtomicTestsC, addI32Valid)
 TEST_F(PayloadAtomicTestsC, addI32InValidFID)
 {
     mama_i32_t        initialValue = (mama_i32_t)2;
-    mama_i32_t        returnedValue = (mama_i32_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the I32 to payload. */
     res = m_payloadBridge->msgPayloadAddI32(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddI32(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addI32InValidName)
 {
     mama_i32_t        initialValue =  (mama_i32_t)2;
-    mama_i32_t        returnedValue = (mama_i32_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the I32 to the payload */
     res = m_payloadBridge->msgPayloadAddI32(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddI32(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddI32NullPayload)
+TEST_F(PayloadAtomicTestsC, addI32NullPayload)
 {
+    mama_i32_t initialValue = (mama_i32_t)2;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddI32(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the I32 to payload. */
+    res = m_payloadBridge->msgPayloadAddI32(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addU32Valid)
@@ -488,38 +453,35 @@ TEST_F(PayloadAtomicTestsC, addU32Valid)
 TEST_F(PayloadAtomicTestsC, addU32InValidFID)
 {
     mama_u32_t        initialValue = (mama_u32_t)2;
-    mama_u32_t        returnedValue = (mama_u32_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the U32 to payload. */
     res = m_payloadBridge->msgPayloadAddU32(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddU32(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addU32InValidName)
 {
     mama_u32_t        initialValue =  (mama_u32_t)2;
-    mama_u32_t        returnedValue = (mama_u32_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the U32 to the payload */
     res = m_payloadBridge->msgPayloadAddU32(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddU32(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddU32NullPayload)
+TEST_F(PayloadAtomicTestsC, addU32NullPayload)
 {
+    mama_u32_t initialValue = (mama_u32_t)2;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddU32(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the U32 to payload. */
+    res = m_payloadBridge->msgPayloadAddU32(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addI64Valid)
@@ -545,38 +507,35 @@ TEST_F(PayloadAtomicTestsC, addI64Valid)
 TEST_F(PayloadAtomicTestsC, addI64InValidFID)
 {
     mama_i64_t        initialValue = (mama_i64_t)2;
-    mama_i64_t        returnedValue = (mama_i64_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the I64 to payload. */
     res = m_payloadBridge->msgPayloadAddI64(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddI64(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addI64InValidName)
 {
     mama_i64_t        initialValue =  (mama_i64_t)2;
-    mama_i64_t        returnedValue = (mama_i64_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the I64 to the payload */
     res = m_payloadBridge->msgPayloadAddI64(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddI64(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddI64NullPayload)
+TEST_F(PayloadAtomicTestsC, addI64NullPayload)
 {
+    mama_i64_t initialValue = (mama_i64_t)2;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddI64(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the I64 to payload. */
+    res = m_payloadBridge->msgPayloadAddI64(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addU64Valid)
@@ -601,38 +560,35 @@ TEST_F(PayloadAtomicTestsC, addU64Valid)
 TEST_F(PayloadAtomicTestsC, addU64InValidFID)
 {
     mama_u64_t        initialValue = (mama_u64_t)2;
-    mama_u64_t        returnedValue = (mama_u64_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the U64 to payload. */
     res = m_payloadBridge->msgPayloadAddU64(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddU64(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addU64InValidName)
 {
     mama_u64_t        initialValue =  (mama_u64_t)2;
-    mama_u64_t        returnedValue = (mama_u64_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the U64 to the payload */
     res = m_payloadBridge->msgPayloadAddU64(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddU64(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddU64NullPayload)
+TEST_F(PayloadAtomicTestsC, addU64NullPayload)
 {
+    mama_u64_t initialValue = (mama_u64_t)2;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddU64(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the U64 to payload. */
+    res = m_payloadBridge->msgPayloadAddU64(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addF32Valid)
@@ -658,38 +614,35 @@ TEST_F(PayloadAtomicTestsC, addF32Valid)
 TEST_F(PayloadAtomicTestsC, addF32InValidFID)
 {
     mama_f32_t        initialValue = (mama_f32_t)2;
-    mama_f32_t        returnedValue = (mama_f32_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the F32 to payload. */
     res = m_payloadBridge->msgPayloadAddF32(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddF32(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addF32InValidName)
 {
     mama_f32_t        initialValue =  (mama_f32_t)2;
-    mama_f32_t        returnedValue = (mama_f32_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the F32 to the payload */
     res = m_payloadBridge->msgPayloadAddF32(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddF32(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddF32NullPayload)
+TEST_F(PayloadAtomicTestsC, addF32NullPayload)
 {
+    mama_f32_t initialValue = (mama_f32_t)2.0;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddF32(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the F32 to payload. */
+    res = m_payloadBridge->msgPayloadAddF32(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 TEST_F(PayloadAtomicTestsC, addF64Valid)
@@ -714,38 +667,35 @@ TEST_F(PayloadAtomicTestsC, addF64Valid)
 TEST_F(PayloadAtomicTestsC, addF64InValidFID)
 {
     mama_f64_t        initialValue = (mama_f64_t)2;
-    mama_f64_t        returnedValue = (mama_f64_t)3;
     mama_status res;
     
-    /* Adding the char to payload. */
+    /* Adding the F64 to payload. */
     res = m_payloadBridge->msgPayloadAddF64(m_payload, NULL, 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddF64(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
 TEST_F(PayloadAtomicTestsC, addF64InValidName)
 {
     mama_f64_t        initialValue =  (mama_f64_t)2;
-    mama_f64_t        returnedValue = (mama_f64_t)3;
     mama_status res;
 
-    /* Adding the char to the payload */
+    /* Adding the F64 to the payload */
     res = m_payloadBridge->msgPayloadAddF64(m_payload, "testValue", 1, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
     res = m_payloadBridge->msgPayloadAddF64(m_payload, NULL, 0, initialValue);
     EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
-
-    EXPECT_EQ(returnedValue, initialValue);
 }
 
-TEST_F(PayloadAtomicTestsC, AddF64NullPayload)
+TEST_F(PayloadAtomicTestsC, addF64NullPayload)
 {
+    mama_f64_t initialValue = (mama_f64_t)2.0;
     mama_status res;
-    res = m_payloadBridge->msgPayloadAddF64(NULL, NULL, 1, NULL);
-    EXPECT_EQ(res, MAMA_STATUS_NULL_ARG);
+
+    /* Adding the F64 to payload. */
+    res = m_payloadBridge->msgPayloadAddF64(NULL, NULL, 1, initialValue);
+    EXPECT_EQ(MAMA_STATUS_NULL_ARG, res);
 }
 
 /************************************************
@@ -754,13 +704,19 @@ TEST_F(PayloadAtomicTestsC, AddF64NullPayload)
 
 TEST_F(PayloadAtomicTestsC, updateBoolValid)
 {
-    mama_bool_t     updatedValue = (mama_bool_t) 0;
+    mama_bool_t     initialValue = (mama_bool_t)1;
+    mama_bool_t     updatedValue = (mama_bool_t)0;
     mama_bool_t     returnedValue = (mama_bool_t)1;
     mama_status     res;
 
     /* Adding the boolean to payload. */
-    res = m_payloadBridge->msgPayloadUpdateBool(m_payload, NULL, 1, updatedValue);
-    EXPECT_EQ(res, MAMA_STATUS_OK);    
+    res = m_payloadBridge->msgPayloadAddBool(m_payload, NULL, 1, initialValue);
+    EXPECT_EQ(res, MAMA_STATUS_OK);
+    /* Check the stored value. */
+    res = m_payloadBridge->msgPayloadGetBool(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_OK);
+    EXPECT_EQ(initialValue, returnedValue);
+
     /* Update the payload with the value from another bool.*/
     res = m_payloadBridge->msgPayloadUpdateBool(m_payload, NULL, 1, updatedValue);
     EXPECT_EQ(res, MAMA_STATUS_OK);
@@ -771,26 +727,6 @@ TEST_F(PayloadAtomicTestsC, updateBoolValid)
     EXPECT_EQ(res, MAMA_STATUS_OK);
     EXPECT_EQ(updatedValue, returnedValue);
 }
-
-TEST_F(PayloadAtomicTestsC, updateInvalidFid)
-{
-    mama_bool_t updatedValue =  (mama_bool_t)0;
-    mama_bool_t returnedValue = (mama_bool_t)1;
-    mama_status res;
-
-    res = m_payloadBridge->msgPayloadUpdateBool(m_payload, NULL, 1, updatedValue);
-    EXPECT_EQ(res, MAMA_STATUS_OK);
-    res = m_payloadBridge->msgPayloadUpdateBool(m_payload, NULL, 0, updatedValue);
-    EXPECT_EQ(res, MAMA_STATUS_OK);
-
-    /* Recover the voolean from the payload */
-    res = m_payloadBridge->msgPayloadGetBool(m_payload, NULL, 0, &returnedValue);
-    EXPECT_EQ(res, MAMA_STATUS_OK);
-    EXPECT_EQ(updatedValue, returnedValue);
-
-}
-
-
 
 TEST_F(PayloadAtomicTestsC, updateBoolNullPayload)
 {
@@ -1118,6 +1054,15 @@ TEST_F(PayloadAtomicTestsC, getCharValid)
     EXPECT_EQ(returnedValue, initialValue);
 }
 
+TEST_F(PayloadAtomicTestsC, getCharInValid)
+{
+    mama_status     res;
+    char            returnedValue = 'A';
+
+    res = m_payloadBridge->msgPayloadGetChar(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
+}
+
 TEST_F(PayloadAtomicTestsC, getI8Valid)
 {
     mama_i8_t     initialValue  = (mama_i8_t)1;
@@ -1134,6 +1079,41 @@ TEST_F(PayloadAtomicTestsC, getI8Valid)
     EXPECT_EQ(res, MAMA_STATUS_OK);
     EXPECT_EQ(returnedValue, returnedValue);
 }
+
+TEST_F(PayloadAtomicTestsC, getI8InValid)
+{
+    mama_status     res;
+    mama_i8_t     returnedValue = (mama_i8_t)0;
+
+    res = m_payloadBridge->msgPayloadGetI8(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
+}
+
+TEST_F(PayloadAtomicTestsC, getU8Valid)
+{
+    mama_u8_t     initialValue  = (mama_u8_t)1;
+    mama_u8_t     returnedValue = (mama_u8_t)1;
+    mama_status   res;
+
+    /* Adding the u16 to payload. */
+    res = m_payloadBridge->msgPayloadAddU8(m_payload, NULL, 1, initialValue);
+    
+    /* Recover the u16 from the payload. */
+    res = m_payloadBridge->msgPayloadGetU8(m_payload, NULL, 1, &returnedValue);
+
+    /* Test initial and returned values match. */
+    EXPECT_EQ(res, MAMA_STATUS_OK);
+    EXPECT_EQ(returnedValue, returnedValue);
+}
+
+TEST_F(PayloadAtomicTestsC, getU8InValid)
+{
+    mama_status     res;
+    mama_u8_t      returnedValue = (mama_u8_t)0;
+
+    res = m_payloadBridge->msgPayloadGetU8(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
+}   
 
 TEST_F(PayloadAtomicTestsC, getI16Valid)
 {
@@ -1152,6 +1132,15 @@ TEST_F(PayloadAtomicTestsC, getI16Valid)
     EXPECT_EQ(returnedValue, returnedValue);
 }   
 
+TEST_F(PayloadAtomicTestsC, getI16InValid)
+{
+    mama_status     res;
+    mama_i16_t      returnedValue = (mama_i16_t)0;
+
+    res = m_payloadBridge->msgPayloadGetI16(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
+}
+
 TEST_F(PayloadAtomicTestsC, getU16Valid)
 {
     mama_u16_t     initialValue  = (mama_u16_t)1;
@@ -1167,6 +1156,15 @@ TEST_F(PayloadAtomicTestsC, getU16Valid)
     /* Test initial and returned values match. */
     EXPECT_EQ(res, MAMA_STATUS_OK);
     EXPECT_EQ(returnedValue, returnedValue);
+}
+
+TEST_F(PayloadAtomicTestsC, getU16InValid)
+{
+    mama_status     res;
+    mama_u16_t      returnedValue = (mama_u16_t)0;
+
+    res = m_payloadBridge->msgPayloadGetU16(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
 }   
 
 TEST_F(PayloadAtomicTestsC, getI32Valid)
@@ -1186,6 +1184,15 @@ TEST_F(PayloadAtomicTestsC, getI32Valid)
     EXPECT_EQ(returnedValue, returnedValue);
 }
 
+TEST_F(PayloadAtomicTestsC, getI32InValid)
+{
+    mama_status     res;
+    mama_i32_t     returnedValue = (mama_i32_t)0;
+
+    res = m_payloadBridge->msgPayloadGetI32(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
+}
+
 TEST_F(PayloadAtomicTestsC, getU32Valid)
 {
     mama_u32_t     initialValue  = (mama_u32_t)1;
@@ -1201,6 +1208,15 @@ TEST_F(PayloadAtomicTestsC, getU32Valid)
     /* Test initial and returned values match. */
     EXPECT_EQ(res, MAMA_STATUS_OK);
     EXPECT_EQ(returnedValue, returnedValue);
+}
+
+TEST_F(PayloadAtomicTestsC, getU32InValid)
+{
+    mama_status     res;
+    mama_u32_t      returnedValue = (mama_u32_t)0;
+
+    res = m_payloadBridge->msgPayloadGetU32(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
 }
 
 TEST_F(PayloadAtomicTestsC, getI64Valid)
@@ -1220,6 +1236,15 @@ TEST_F(PayloadAtomicTestsC, getI64Valid)
     EXPECT_EQ(returnedValue, returnedValue);
 }
 
+TEST_F(PayloadAtomicTestsC, getI64InValid)
+{
+    mama_status     res;
+    mama_i64_t      returnedValue = (mama_i64_t)0;
+
+    res = m_payloadBridge->msgPayloadGetI64(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
+}
+
 TEST_F(PayloadAtomicTestsC, getU64Valid)
 {
     mama_u64_t     initialValue  = (mama_u64_t)1;
@@ -1235,6 +1260,15 @@ TEST_F(PayloadAtomicTestsC, getU64Valid)
     /* Test initial and returned values match. */
     EXPECT_EQ(res, MAMA_STATUS_OK);
     EXPECT_EQ(returnedValue, returnedValue);
+}
+
+TEST_F(PayloadAtomicTestsC, getU64InValid)
+{
+    mama_status     res;
+    mama_u64_t      returnedValue = (mama_u64_t)0;
+
+    res = m_payloadBridge->msgPayloadGetU64(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
 }
 
 TEST_F(PayloadAtomicTestsC, getF32Valid)
@@ -1254,6 +1288,15 @@ TEST_F(PayloadAtomicTestsC, getF32Valid)
     EXPECT_EQ(returnedValue, returnedValue);
 }
 
+TEST_F(PayloadAtomicTestsC, getF32InValid)
+{
+    mama_status     res;
+    mama_f32_t      returnedValue = (mama_f32_t)0;
+
+    res = m_payloadBridge->msgPayloadGetF32(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
+}
+
 TEST_F(PayloadAtomicTestsC, getF64Valid)
 {
     mama_f64_t     initialValue  = (mama_f64_t)1;
@@ -1270,23 +1313,13 @@ TEST_F(PayloadAtomicTestsC, getF64Valid)
     EXPECT_EQ(res, MAMA_STATUS_OK);
     EXPECT_EQ(returnedValue, returnedValue);
 }
-/*
-TEST_F(PayloadTestC, APIValid)
+
+TEST_F(PayloadAtomicTestsC, getF64InValid)
 {
+    mama_status     res;
+    mama_f64_t      returnedValue = (mama_f64_t)0;
+
+    res = m_payloadBridge->msgPayloadGetF64(m_payload, NULL, 1, &returnedValue);
+    EXPECT_EQ(res, MAMA_STATUS_NOT_FOUND);
 }
-
-
-TEST_F(ExamplePayloadTestC, APIinValid)
-{
-}
-
-TEST_F(PayloadTestC, APIValid)
-{
-}
-
-
-TEST_F(ExamplePayloadTestC, APIinValid)
-{
-}
-*/
 
