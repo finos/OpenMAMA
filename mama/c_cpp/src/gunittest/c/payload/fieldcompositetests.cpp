@@ -172,7 +172,7 @@ TEST_F(FieldStringTests, GetStringInvalidType)
     EXPECT_EQ(ret, MAMA_STATUS_OK);
 
     ret = aBridge->msgFieldPayloadGetString(field, &m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_INVALID_ARG);
+    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
 }
 
 TEST_F(FieldStringTests, GetStringInValid)
@@ -423,7 +423,7 @@ TEST_F(FieldOpaqueTests, GetOpaqueInvalidType)
     EXPECT_EQ(ret, MAMA_STATUS_OK);
 
     ret = aBridge->msgFieldPayloadGetOpaque(field, &m_out, &out_size);
-    ASSERT_EQ(ret,    MAMA_STATUS_INVALID_ARG);
+    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
 }
 
 TEST_F(FieldOpaqueTests, GetOpaqueInValid)
