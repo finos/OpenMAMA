@@ -75,7 +75,7 @@ protected:
 
 };
 
-TEST_F(FieldBoolTests, DISABLED_UpdateBoolValid)
+TEST_F(FieldBoolTests, UpdateBoolValid)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
@@ -90,11 +90,9 @@ TEST_F(FieldBoolTests, DISABLED_UpdateBoolValid)
 
     ret = aBridge->msgFieldPayloadUpdateBool(field, msg, m_update);
     ASSERT_EQ(ret,    MAMA_STATUS_OK);
-
-    ASSERT_EQ(ret, MAMA_STATUS_OK);
 }
 
-TEST_F(FieldBoolTests, DISABLED_UpdateBoolInvalidType)
+TEST_F(FieldBoolTests, UpdateBoolInvalidType)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
@@ -109,11 +107,9 @@ TEST_F(FieldBoolTests, DISABLED_UpdateBoolInvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateBool(field, msg, m_update);
     ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
-
-    ASSERT_EQ(ret, MAMA_STATUS_OK);
 }
 
-TEST_F(FieldBoolTests, DISABLED_UpdateBoolInValid)
+TEST_F(FieldBoolTests, UpdateBoolInValid)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
@@ -134,7 +130,7 @@ TEST_F(FieldBoolTests, DISABLED_UpdateBoolInValid)
     ASSERT_EQ(ret, MAMA_STATUS_OK);
 }
 
-TEST_F(FieldBoolTests, DISABLED_GetBoolValid)
+TEST_F(FieldBoolTests, GetBoolValid)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
@@ -149,11 +145,9 @@ TEST_F(FieldBoolTests, DISABLED_GetBoolValid)
 
     ret = aBridge->msgFieldPayloadGetBool(field, &m_out);
     ASSERT_EQ(ret,    MAMA_STATUS_OK);
-
-    ASSERT_EQ(ret, MAMA_STATUS_OK);
 }
 
-TEST_F(FieldBoolTests, DISABLED_GetBoolInvalidType)
+TEST_F(FieldBoolTests, GetBoolInvalidType)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
@@ -168,11 +162,9 @@ TEST_F(FieldBoolTests, DISABLED_GetBoolInvalidType)
 
     ret = aBridge->msgFieldPayloadGetBool(field, &m_out);
     ASSERT_EQ(ret,    MAMA_STATUS_INVALID_ARG);
-
-    ASSERT_EQ(ret, MAMA_STATUS_OK);
 }
 
-TEST_F(FieldBoolTests, DISABLED_GetBoolInValid)
+TEST_F(FieldBoolTests, GetBoolInValid)
 {
     msgFieldPayload     field = NULL;
     mama_status         ret = MAMA_STATUS_OK;
@@ -233,7 +225,7 @@ TEST_F(FieldCharTests, UpdateCharInvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -355,7 +347,7 @@ TEST_F(FieldI8Tests, UpdateI8InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -477,7 +469,7 @@ TEST_F(FieldU8Tests, UpdateU8InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -599,7 +591,7 @@ TEST_F(FieldI16Tests, UpdateI16InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -721,7 +713,7 @@ TEST_F(FieldU16Tests, UpdateU16InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -843,7 +835,7 @@ TEST_F(FieldI32Tests, UpdateI32InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -965,7 +957,7 @@ TEST_F(FieldU32Tests, UpdateU32InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -1087,7 +1079,7 @@ TEST_F(FieldI64Tests, UpdateI64InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -1209,7 +1201,7 @@ TEST_F(FieldU64Tests, UpdateU64InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -1330,7 +1322,7 @@ TEST_F(FieldF32Tests, UpdateF32InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
@@ -1452,7 +1444,7 @@ TEST_F(FieldF64Tests, UpdateF64InvalidType)
 
     ret = aBridge->msgPayloadCreate(&msg);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
-    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, 'A');
+    ret = aBridge->msgPayloadAddBool(msg, NULL, 1, (mama_bool_t)1);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     ASSERT_EQ(ret, MAMA_STATUS_OK);
