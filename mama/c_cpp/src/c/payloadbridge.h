@@ -342,6 +342,8 @@ do                                                                          \
                         = identifier ## FieldPayload_updateDateTime;        \
     msgPayloadImpl->msgFieldPayloadUpdatePrice                              \
                         = identifier ## FieldPayload_updatePrice;           \
+    msgPayloadImpl->msgFieldPayloadUpdateString                             \
+                        = identifier ## FieldPayload_updateString;          \
     msgPayloadImpl->msgFieldPayloadGetBool                                  \
                         = identifier ## FieldPayload_getBool;               \
     msgPayloadImpl->msgFieldPayloadGetChar                                  \
