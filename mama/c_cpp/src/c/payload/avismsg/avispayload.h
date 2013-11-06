@@ -774,6 +774,10 @@ avismsgFieldPayload_updatePrice  (msgFieldPayload         field,
                                 msgPayload              msg,
                                 const mamaPrice         value);
 extern mama_status
+avismsgFieldPayload_updateString (msgFieldPayload         field,
+                                  msgPayload              msg,
+                                  const char*             value);
+extern mama_status
 avismsgFieldPayload_getBool      (const msgFieldPayload   field,
                                 mama_bool_t*            result);
 extern mama_status
