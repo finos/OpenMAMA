@@ -219,7 +219,6 @@ static const char*       gAppName            = NULL;
 static size_t            gHighWaterMark      = 0;
 static size_t            gLowWaterMark       = 0;
 
-
 /* Contains the amount of time that the example program will run for, if set to 0 then it
  * will run indefinitely.
  */
@@ -263,9 +262,8 @@ subscriptionOnCreate (mamaSubscription    subscription,
 
 static void displayFields       (mamaMsg             msg,
                                  mamaSubscription    subscription);
-static void displaySpecificField(mamaFieldDescriptor field,
-                                 mamaMsg             msg);
 static void displayField        (mamaMsgField        field,
+                                 const char*         fieldName,
                                  const mamaMsg       msg,
                                  int                 indentLevel);
 static void displayAllFields    (mamaMsg             msg,
@@ -962,6 +960,10 @@ static void readSymbolsFromFile (void)
         if (isatty(fileno (fp)))
             printf ("Symbol> ");
     }
+    if (fp != stdin)
+    {
+        fclose (fp);
+    }
 }
 
 static void loadSymbolMap (void)
@@ -1329,7 +1331,7 @@ void displayFields (mamaMsg msg, mamaSubscription subscription )
         const char* issueSymbol = NULL;
         mamaMsg_getString (msg, NULL, 305, &issueSymbol);
         printf ("%s.%s.%s Type: %s Status %s \n",
-                       issueSymbol,
+                       issueSymbol ? issueSymbol : "",
                        source,
                        symbol,
                        mamaMsgType_stringForMsg (msg),
@@ -1338,75 +1340,28 @@ void displayFields (mamaMsg msg, mamaSubscription subscription )
 
     for (i = 0; i < gNumFields; i++)
     {
-        mamaFieldDescriptor field = NULL;
+        mamaFieldDescriptor fieldDescriptor = NULL;
 
         /*
             Get the field descriptor for the specified field from the data
             dictionary. This will be used to extract data for that field from
             the message.
         */
-        mamaDictionary_getFieldDescriptorByName (
-                    gDictionary,
-                    &field,
-                    gFieldList[i]);
-
-        displaySpecificField (field, msg);
-    }
-
-}
-
-void displaySpecificField (mamaFieldDescriptor field,
-                           mamaMsg             msg)
-{
-    const char* fieldName   =   NULL;
-    short       fid         =   0;
-    char value[256];
-
-    if (field == NULL) return;
-
-    /*
-        The mamaFieldDescriptor contains meta data describing a fields
-        attributes. The name and the fid for a field can be obtained from the
-        descriptor.
-    */
-    fieldName = mamaFieldDescriptor_getName (field);
-    fid = mamaFieldDescriptor_getFid (field);
-
-    if (fieldName == NULL || strlen (fieldName) == 0)
-    {
-        mamaFieldDescriptor dictEntry;
-        mamaDictionary_getFieldDescriptorByFid (gDictionary, &dictEntry, fid);
-
-        fieldName = mamaFieldDescriptor_getName (dictEntry);
-    }
-
-    if (gQuietness < 3)
-    {
-        /*
-          If performance is an issue do not use getFieldAsString. Rather, use
-          the strongly typed accessors on the message or field objects.
-          For absolute performance use field iteration rather than direct
-          message access.
-        */
-        mama_status status = mamaMsg_getFieldAsString (msg,
-                                                       fieldName,
-                                                       fid,
-                                                       value,
-                                                       256);
-        if (gQuietness < 1)
+        if (MAMA_STATUS_OK == mamaDictionary_getFieldDescriptorByName (
+                        gDictionary,
+                        &fieldDescriptor,
+                        gFieldList[i]))
         {
-            if (MAMA_STATUS_NOT_FOUND == status)
+            mamaMsgField field = NULL;
+            mama_fid_t fid = mamaFieldDescriptor_getFid(fieldDescriptor);
+            if (MAMA_STATUS_OK == mamaMsg_getField(msg, gFieldList[i], fid,
+                &field))
             {
-                sprintf (value,"%s","Field Not Found");
+                displayField (field, mamaFieldDescriptor_getName(fieldDescriptor), msg, 0);
             }
-
-            printf ("%-20s | %3d | %20s | %s\n",
-                    fieldName,
-                    fid,
-                    mamaFieldDescriptor_getTypeName (field),
-                    value);
         }
     }
+
 }
 
 #define printData(value, format)                \
@@ -1418,10 +1373,9 @@ do                                              \
     }                                           \
 } while (0)                                     \
 
-void displayField (mamaMsgField field, const mamaMsg msg, int indentLevel)
+void displayField (mamaMsgField field, const char* fieldName, const mamaMsg msg, int indentLevel)
 {
     mamaFieldType   fieldType       =   0;
-    const char*     fieldName       = NULL;
     const char*     fieldTypeName   = NULL;
     uint16_t        fid             = 0;
     const char*     indentOffset    = NULL;
@@ -1455,7 +1409,6 @@ void displayField (mamaMsgField field, const mamaMsg msg, int indentLevel)
             Attributes for a field can be obtained directly from the field
             rather than from the field descriptor describing that field.
         */
-        mamaMsgField_getName (field, &fieldName);
         mamaMsgField_getFid  (field, &fid);
         mamaMsgField_getTypeName (field, &fieldTypeName);
         printf (indentOffsetAll,
@@ -1537,14 +1490,14 @@ void displayField (mamaMsgField field, const mamaMsg msg, int indentLevel)
             {
                 int64_t result;
                 mamaMsgField_getI64 (field, &result);
-                printData (result, "%lld\n");
+                printData (result, "%" PRId64 "\n");
                 break;
             }
          case MAMA_FIELD_TYPE_U64:
             {
                 uint64_t result;
                 mamaMsgField_getU64 (field, &result);
-                printData (result, "%llu\n");
+                printData (result, "%" PRIu64 "\n");
                 break;
             }
          case MAMA_FIELD_TYPE_F32:
@@ -1680,7 +1633,10 @@ displayCb (const mamaMsg       msg,
                 const mamaMsgField  field,
                 void*               closure)
 {
-    displayField (field, msg, (int)closure);
+    const char*     fieldName = NULL;
+
+    mamaMsgField_getName (field, &fieldName);
+    displayField (field, fieldName, msg, (int)(intptr_t) closure);
 }
 
 void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
@@ -1688,6 +1644,7 @@ void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
 {
     mamaMsgField    field       =   NULL;
     mama_status     status      =   MAMA_STATUS_OK;
+    const char*     fieldName   =   NULL;
 
     if (gQuietness < 2 && subscription)
     {
@@ -1717,13 +1674,13 @@ void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
     */
     if (gNewIterators == 0)
     {
-        mamaMsg_iterateFields (msg, displayCb, gDictionary, (void*)indentLevel);
+        mamaMsg_iterateFields (msg, displayCb, gDictionary, (void*)(intptr_t) indentLevel);
     }
     else
     {
 	if (gNewIterators != 0)
     	{
-		mamaMsgIterator iterator = NULL;
+		    mamaMsgIterator iterator = NULL;
         	/*An iterator can be reused for efficiency - however, it cannot
 	  	be shared across all queues*/
         	mamaMsgIterator_create(&iterator, gDictionary);
@@ -1737,11 +1694,19 @@ void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
         	{
             		while ((field = mamaMsgIterator_next(iterator)) != NULL)
             		{
-                		displayField (field, msg, 0);
+                        if(MAMA_STATUS_OK!=(status=mamaMsgField_getName(field, &fieldName)))
+                        {
+                            fprintf (stderr, "Could not get name from message [%s]\n",
+                                                mamaStatus_stringForStatus (status));
+                        }
+                        else
+                        {
+                		    displayField (field, fieldName, msg, indentLevel);
+                        }
             		}
         	}
 
-		mamaMsgIterator_destroy(iterator);
+		    mamaMsgIterator_destroy(iterator);
     	}
     }
 }
