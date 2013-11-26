@@ -2614,6 +2614,9 @@ mama_status mamaSubscription_deactivate(mamaSubscription subscription)
                     mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEACTIVATING);
                     /* Deactivate the subscription, clean-up will be performed on the callback. */
                     ret = mamaSubscription_deactivate_internal(impl);
+                    if (impl->mSubscMsgType == MAMA_SUBSC_DDICT_SNAPSHOT ||
+                        impl->mSubscMsgType == MAMA_SUBSC_SNAPSHOT)
+                        mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEACTIVATED);
                     break;
             
                 case MAMA_SUBSCRIPTION_DEACTIVATING:
