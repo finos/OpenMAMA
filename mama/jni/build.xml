@@ -184,7 +184,10 @@
         <delete dir="${build}/junittests"></delete>
         <delete dir="${dist}"></delete>
         <delete dir="${noent_dist}"></delete>
-        <delete dir="${header.dir}"></delete>
+        <delete>
+            <!-- Only Remove Generated -->
+            <fileset dir="${header.dir}" includes="com_wombat_mama_*.h"/>
+        </delete>
         <delete dir="${build}/testtools/mama/jni/"></delete>
     </target>
 
