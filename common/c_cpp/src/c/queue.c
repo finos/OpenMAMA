@@ -201,7 +201,10 @@ wombatQueue_enqueue (wombatQueue queue,
     item = impl->mFirstFree.mNext;
 
     if (item == NULL)
+    {
+        wthread_mutex_unlock(&impl->mLock);
         return WOMBAT_QUEUE_FULL;
+    }
 
     impl->mFirstFree.mNext = item->mNext;
     /* Initialize the item. */
@@ -558,7 +561,10 @@ wombatQueue_insertAfter (wombatQueue   queue,
     item = impl->mFirstFree.mNext;
 
     if (item == NULL)
+    {
+        wthread_mutex_unlock (&impl->mLock);
         return WOMBAT_QUEUE_FULL;
+    }
 
     impl->mFirstFree.mNext = item->mNext;
     /* Initialize the item. */
@@ -602,7 +608,10 @@ wombatQueue_insertBefore (wombatQueue   queue,
     item = impl->mFirstFree.mNext;
 
     if (item == NULL)
+    {
+        wthread_mutex_unlock (&impl->mLock);
         return WOMBAT_QUEUE_FULL;
+    }
 
     impl->mFirstFree.mNext = item->mNext;
     /* Initialize the item. */
