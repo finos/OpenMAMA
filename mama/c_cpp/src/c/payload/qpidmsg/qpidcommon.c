@@ -36,7 +36,7 @@
 #include "qpidcommon.h"
 
 
-inline void
+static inline void
 qpidmsgPayloadInternal_checkLengthAndIncDest (mama_size_t  written, 
                                               mama_size_t* length, 
                                               char**        dest);
