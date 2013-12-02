@@ -40,70 +40,6 @@ protected:
 
     virtual void SetUp(void);
     virtual void TearDown(void);
-    
-protected:
-   void CreateTest(void);
-   void DestroyTest(void);
-   void ClearTest(void);
-   void ClearDateTest(void);
-   void ClearTimeTest(void);
-   void CopyTest(void);
-   void EmptyTest(void);
-   void EqualTest(void);
-   void CompareTest(void);
-   void SetEpochTimeTest(void);
-   void SetEpochTimeF64Test(void);
-   void SetEpochTimeMillisecondsTest(void);
-   void SetEpochTimeMicrosecondsTest(void);
-   void SetWithHintsTest(void);
-   void SetPrecisionTest(void);
-   void SetToNowTest(void);
-   void SetToMidnightTodayTest(void);
-   void SetWithPrecisionAndTzTest(void);
-   void SetTimeTest(void);
-   void SetTimeWithPrecisionAndTzTest(void);
-   void SetDateTest(void);
-   void CopyTimeTest(void);
-   void CopyDateTest(void);
-   void HasTimeTest(void);
-   void HasDateTest(void);
-   void AddSecondsTest(void);
-   void AddWholeSecondsTest(void);
-   void AddMicroSecondsTest(void);
-   void SetFromStringTest(void);
-   void SetFromStringWithTzTest(void);
-   void SetFromStringBufferTest(void);
-   void SetFromStringBufferWithTzTest(void);
-   void GetEpochTimeTest(void);
-   void GetEpochTimeWithTzTest(void);
-   void GetEpochTimeMicrosecondsTest(void);
-   void GetEpochTimeMicroecondsWithTzTest(void);
-   void GetEpochTimeMillisecondsTest(void);
-   void GetEpochTimeMillisecondsWithTzTest(void);
-   void GetEpochTimeSecondsTest(void);
-   void GetEpochTimeSecondsWithCheckTest(void);
-   void GetEpochTimeSecondsWithTzTest(void);
-   void GetWithHintsTest(void);
-   void GetStructTimeValTest(void);
-   void GetStructTimeValWithTzTest(void);
-   void GetStructTmTest(void);
-   void GetStructTmWithTzTest(void);
-   void GetAsStringTest(void);
-   void GetTimeAsStringTest(void);
-   void GetDateAsStringTest(void);
-   void GetAsFormattedStringTest(void);
-   void GetAsFormattedStringWithTzTest(void);
-   void GetYearTest(void);
-   void GetMonthTest(void);
-   void GetDayTest(void);
-   void GetHourTest(void);
-   void GetMinuteTest(void);
-   void GetSecondTest(void);
-   void GetMicroSecondTest(void);
-   void GetDayOfWeekTest(void);
-   void DiffSecondsTest(void);
-   void DiffSecondsSameDayTest(void);
-   void DiffMicroSecondsTest(void);
 };
 
 MamaDateTimeTestC::MamaDateTimeTestC(void)
@@ -125,43 +61,26 @@ MamaDateTimeTestC::TearDown(void)
 }
 
 // Test Create function will valid and NULL parameters
-void 
-MamaDateTimeTestC::CreateTest(void)
-{
-    mamaDateTime t, nullTime = NULL; 
-
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&nullTime) );
-
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(nullTime) );
-}
-
 TEST_F (MamaDateTimeTestC, TestCreate)
 {
-   CreateTest();
+    mamaDateTime t = NULL;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
 // Test Destroy function will valid and NULL parameters
-void 
-MamaDateTimeTestC::DestroyTest(void)
+TEST_F (MamaDateTimeTestC, TestDestroy)
 {
     mamaDateTime t, nullTime = NULL; 
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
-
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_destroy(nullTime) );
 }
 
-TEST_F (MamaDateTimeTestC, TestDestroy)
-{
-   DestroyTest();
-}
-
 // Test Clear function will valid and NULL parameters
-void 
-MamaDateTimeTestC::ClearTest(void)
+TEST_F (MamaDateTimeTestC, TestClear)
 {
     mamaDateTime t, nullTime = NULL; 
 
@@ -173,14 +92,8 @@ MamaDateTimeTestC::ClearTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestClear)
-{
-   ClearTest();
-}
-
 // Test ClearDate function will valid and NULL parameters
-void 
-MamaDateTimeTestC::ClearDateTest(void)
+TEST_F (MamaDateTimeTestC, TestClearDate)
 {
     mamaDateTime t, nullTime = NULL; 
 
@@ -192,14 +105,8 @@ MamaDateTimeTestC::ClearDateTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestClearDate)
-{
-   ClearDateTest();
-}
-
 // Test ClearTime function will valid and NULL parameters
-void 
-MamaDateTimeTestC::ClearTimeTest(void)
+TEST_F (MamaDateTimeTestC, TestClearTime)
 {
     mamaDateTime t, nullTime = NULL; 
 
@@ -211,14 +118,8 @@ MamaDateTimeTestC::ClearTimeTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestClearTime)
-{
-   ClearTimeTest();
-}
-
 // Test Copy function will valid and NULL parameters
-void 
-MamaDateTimeTestC::CopyTest(void)
+TEST_F (MamaDateTimeTestC, TestCopy)
 {
     mamaDateTime t,u, nullTime = NULL; 
 
@@ -238,15 +139,9 @@ MamaDateTimeTestC::CopyTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(u) );
 }
 
-TEST_F (MamaDateTimeTestC, TestCopy)
-{
-   CopyTest();
-}
-
 
 // Test Empty function will valid and NULL parameters
-void 
-MamaDateTimeTestC::EmptyTest(void)
+TEST_F (MamaDateTimeTestC, TestEmpty)
 {
     mamaDateTime t, nullTime = NULL; 
 
@@ -260,14 +155,8 @@ MamaDateTimeTestC::EmptyTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestEmpty)
-{
-   EmptyTest();
-}
-
 // Test Equal function will valid and NULL parameters
-void 
-MamaDateTimeTestC::EqualTest(void)
+TEST_F (MamaDateTimeTestC, TestEqual)
 {
     mamaDateTime t, u, nullTime = NULL; 
 
@@ -289,15 +178,9 @@ MamaDateTimeTestC::EqualTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(u) );
 }
 
-TEST_F (MamaDateTimeTestC, TestEqual)
-{
-   EqualTest();
-}
-
 
 // Test SetEpochTime with valid and invalid input parameters
-void 
-MamaDateTimeTestC::SetEpochTimeTest(void)
+TEST_F (MamaDateTimeTestC, TestSetEpochTime)
 {
     mamaDateTime t, nullTime = NULL;
     mama_u32_t secs    = 43200,  negSecs    = secs * -1,
@@ -325,24 +208,17 @@ MamaDateTimeTestC::SetEpochTimeTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetEpochTime)
-{
-   SetEpochTimeTest();
-}
-
 // Test Compare method iwth valid and invalid input parameters
-void 
-MamaDateTimeTestC::CompareTest(void)
+TEST_F (MamaDateTimeTestC, TestCompare)
 {
     mamaDateTime t, u, nullTime = NULL; 
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&u) );
 
-    // These next 3 tests should pass but the date time function causes a core.
-    //EXPECT_EQ ( 0, mamaDateTime_compare(nullTime, nullTime) );
-    //EXPECT_EQ ( 0, mamaDateTime_compare(t, nullTime) );
-    //EXPECT_EQ ( 0, mamaDateTime_compare(nullTime, t) );
+    EXPECT_EQ ( 0, mamaDateTime_compare(nullTime, nullTime) );
+    EXPECT_EQ ( 0, mamaDateTime_compare(t, nullTime) );
+    EXPECT_EQ ( 0, mamaDateTime_compare(nullTime, t) );
 
     EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_setToNow(u) );
     // t is less than u
@@ -355,14 +231,8 @@ MamaDateTimeTestC::CompareTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(u) );
 }
 
-TEST_F (MamaDateTimeTestC, TestCompare)
-{
-   CompareTest();
-}
-
 // Test Set Epoch Time F64 with valid and invalid parameters
-void 
-MamaDateTimeTestC::SetEpochTimeF64Test(void)
+TEST_F (MamaDateTimeTestC, TestSetEpochTimeF64)
 {
     mamaDateTime t, nullTime = NULL;
     mama_f64_t secs    = 43200,  negSecs    = secs * -1,
@@ -384,14 +254,8 @@ MamaDateTimeTestC::SetEpochTimeF64Test(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetEpochTimeF64)
-{
-   SetEpochTimeF64Test();
-}
-
 // Test Set Epoch Time Millisecond with valid and invalid parameters
-void 
-MamaDateTimeTestC::SetEpochTimeMillisecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestSetEpochTimeMilliseconds)
 {
     mamaDateTime t, nullTime = NULL;
     mama_u64_t mSecs      = 43200 * 1000,  negMSecs = mSecs * -1,
@@ -413,14 +277,8 @@ MamaDateTimeTestC::SetEpochTimeMillisecondsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetEpochTimeMilliseconds)
-{
-   SetEpochTimeMillisecondsTest();
-}
-
 // Test Set Epoch Time Microseconds with valid and invalid parameters
-void 
-MamaDateTimeTestC::SetEpochTimeMicrosecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestSetEpochTimeMicroseconds)
 {
     mamaDateTime t, nullTime = NULL;
     mama_u64_t m1 = 43200, m2 = 1000, m3 = 1000,
@@ -443,14 +301,8 @@ MamaDateTimeTestC::SetEpochTimeMicrosecondsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetEpochTimeMicroseconds)
-{
-   SetEpochTimeMicrosecondsTest();
-}
-
 // Test Set With Hints with valid and invalid parameters
-void 
-MamaDateTimeTestC::SetWithHintsTest(void)
+TEST_F (MamaDateTimeTestC, TestSetWithHints)
 {
     mamaDateTime t, nullTime = NULL;
     mama_u64_t  secs = 43200, negSecs = secs * -1,
@@ -458,7 +310,7 @@ MamaDateTimeTestC::SetWithHintsTest(void)
                secsPerDay = (24 * 60 * 60),
                secsPer2Days = secsPerDay * 2;
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
-    mama_u8_t hints =  (mama_u8_t) 0x01;
+    mamaDateTimeHints hints =  MAMA_DATE_TIME_HAS_DATE;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
 
@@ -476,14 +328,8 @@ MamaDateTimeTestC::SetWithHintsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetWithHints)
-{
-   SetEpochTimeMicrosecondsTest();
-}
-
 // Test Set Precsiosn with valid and invalid parameters
-void 
-MamaDateTimeTestC::SetPrecisionTest(void)
+TEST_F (MamaDateTimeTestC, TestSetPrecision)
 {
     mamaDateTime t, nullTime = NULL;
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
@@ -499,14 +345,8 @@ MamaDateTimeTestC::SetPrecisionTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetPrecision)
-{
-   SetPrecisionTest();
-}
-
 // Test Set To Now with valid and invalid parameters
-void 
-MamaDateTimeTestC::SetToNowTest(void)
+TEST_F (MamaDateTimeTestC, TestSetToNow)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -521,13 +361,8 @@ MamaDateTimeTestC::SetToNowTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetToNow)
-{
-   SetToNowTest();
-}
 
-void 
-MamaDateTimeTestC::SetToMidnightTodayTest(void)
+TEST_F (MamaDateTimeTestC, TestSetToMidnightToday)
 {
     mamaDateTime t, nullTime = NULL;
     mamaTimeZone z, nullTimeZone = NULL;
@@ -541,25 +376,18 @@ MamaDateTimeTestC::SetToMidnightTodayTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setToMidnightToday(t, z) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setToMidnightToday(t, nullTimeZone) );
 
-
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetToMidnightToday)
-{
-   SetToMidnightTodayTest();
-}
-
-void 
-MamaDateTimeTestC::SetWithPrecisionAndTzTest(void)
+TEST_F (MamaDateTimeTestC, TestSetWithPrecisionAndTzTest)
 {
     mamaDateTime t, nullTime = NULL;
-    mamaTimeZone tz  = mamaTimeZone_utc(), nullTz = NULL;;
+    mamaTimeZone tz  = mamaTimeZone_utc(), nullTz = NULL;
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
     // These are all valid values
     mama_u32_t year = 2013, month = 1, day = 7, hour = 9, minute = 21, second = 12, microsecond = 500;
 
-   // These are invalid values
+   // These are valid values which will get converted by the underlying implementation.
     mama_u32_t invyear = -2013, invmonth = 13, invday = 47, invhour = 29, invminute = 121, invsecond = 712, invmicrosecond = -500;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
@@ -578,20 +406,13 @@ MamaDateTimeTestC::SetWithPrecisionAndTzTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-
-TEST_F (MamaDateTimeTestC, TestSetWithPrecisionAndTzTest)
-{
-   SetWithPrecisionAndTzTest();
-}
-
-void
-MamaDateTimeTestC::SetTimeTest(void)
+TEST_F (MamaDateTimeTestC, TestSetTimeTest)
 {
     mamaDateTime t, nullTime = NULL;
     // These are all valid values
     mama_u32_t hour = 9, minute = 21, second = 12, microsecond = 500;
 
-   // Negative values
+   // Larger values, which are converted by the implemenation.
     mama_u32_t invhour = 29, invminute = 121, invsecond = 712, invmicrosecond = -500;
 
    
@@ -609,14 +430,8 @@ MamaDateTimeTestC::SetTimeTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetTimeTest)
-{
-   SetTimeTest();
-}
 
-
-void 
-MamaDateTimeTestC::SetTimeWithPrecisionAndTzTest(void)
+TEST_F (MamaDateTimeTestC, TestSetTimeWithPrecisionTzTest)
 {
     mamaDateTime t, nullTime = NULL;
     mamaTimeZone tz  = mamaTimeZone_utc(), nullTz = NULL;
@@ -624,9 +439,6 @@ MamaDateTimeTestC::SetTimeWithPrecisionAndTzTest(void)
     // These are all valid values
     mama_u32_t hour = 9, minute = 21, second = 12, microsecond = 500;
 
-   // These negative Values
-    mama_u32_t negHour = -29, negMinute = -121, negSecond = -712, negMicrosecond = -500;
-   
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     // Test with invalid arguments
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setTimeWithPrecisionAndTz(nullTime, hour, minute, second, microsecond, precision, tz) );
@@ -638,14 +450,7 @@ MamaDateTimeTestC::SetTimeWithPrecisionAndTzTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-
-TEST_F (MamaDateTimeTestC, TestSetTimeWithPrecisionTzTest)
-{
-   SetTimeWithPrecisionAndTzTest();
-}
-
-void 
-MamaDateTimeTestC::SetDateTest(void)
+TEST_F (MamaDateTimeTestC, TestSetDate)
 {
     mamaDateTime t, nullTime = NULL;
     mama_u32_t year = 2013,         month = 6,     day = 18,
@@ -664,14 +469,8 @@ MamaDateTimeTestC::SetDateTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetDate)
+TEST_F (MamaDateTimeTestC, TestCopyTime)
 {
-   SetDateTest();
-}
-
-void 
-MamaDateTimeTestC::CopyTimeTest(void)
-{ 
     mamaDateTime t1, t2, nullTime = NULL;
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t1) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t2) );
@@ -694,14 +493,8 @@ MamaDateTimeTestC::CopyTimeTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) ); 
 }
 
-TEST_F (MamaDateTimeTestC, TestCopyTime)
+TEST_F (MamaDateTimeTestC, TestCopyDate)
 {
-    CopyTimeTest();
-}
-
-void 
-MamaDateTimeTestC::CopyDateTest(void)
-{ 
     mamaDateTime t1, t2, nullTime = NULL;
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t1) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t2) );
@@ -722,13 +515,7 @@ MamaDateTimeTestC::CopyDateTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) ); 
 }
 
-TEST_F (MamaDateTimeTestC, TestCopyDate)
-{
-    CopyDateTest();
-}
-
-void 
-MamaDateTimeTestC::HasTimeTest(void)
+TEST_F (MamaDateTimeTestC, TestHasTime)
 {
     mamaDateTime t, nullTime = NULL;
     mama_bool_t b;
@@ -743,13 +530,7 @@ MamaDateTimeTestC::HasTimeTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) ); 
 }
 
-TEST_F (MamaDateTimeTestC, TestHasTime)
-{
-    HasTimeTest();
-}
-
-void 
-MamaDateTimeTestC::HasDateTest(void)
+TEST_F (MamaDateTimeTestC, TestHasDate)
 {
     mamaDateTime t, nullTime = NULL;
     mama_bool_t b;
@@ -765,13 +546,7 @@ MamaDateTimeTestC::HasDateTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) ); 
 }
 
-TEST_F (MamaDateTimeTestC, TestHasDate)
-{
-    HasDateTest();
-}
-
-void 
-MamaDateTimeTestC::AddSecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestAddSeconds)
 {
     mamaDateTime t, nullTime = NULL;
     mama_f64_t hour = 3600, minute = 60, second = 1, lessThanOneMin = 20, greaterThanOneMin = 520;
@@ -790,13 +565,7 @@ MamaDateTimeTestC::AddSecondsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestAddSeconds)
-{
-    AddSecondsTest();
-}
-
-void 
-MamaDateTimeTestC::AddWholeSecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestAddWholeSeconds)
 {
     mamaDateTime t, nullTime = NULL;
     mama_i32_t hour = 3600, minute = 60, second = 1, lessThanOneMin = 20, greaterThanOneMin = 520;
@@ -815,14 +584,7 @@ MamaDateTimeTestC::AddWholeSecondsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestAddWholeSeconds)
-{
-    AddWholeSecondsTest();
-}
-
-
-void 
-MamaDateTimeTestC::AddMicroSecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestAddMicroSeconds)
 {
     mamaDateTime t, nullTime = NULL;
     mama_i64_t mic = 1, milli = mic * 1000, sec = milli * 1000, minute = sec * 60, hour = minute * 60, day = hour * 24;
@@ -842,13 +604,7 @@ MamaDateTimeTestC::AddMicroSecondsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestAddMicroSeconds)
-{
-    AddMicroSecondsTest();
-}
-
-void 
-MamaDateTimeTestC::SetFromStringTest(void)
+TEST_F (MamaDateTimeTestC, TestSetFromString)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -874,13 +630,7 @@ MamaDateTimeTestC::SetFromStringTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetFromString)
-{
-    SetFromStringTest();
-}
-
-void 
-MamaDateTimeTestC::SetFromStringWithTzTest(void)
+TEST_F (MamaDateTimeTestC, TestSetFromStringWithTz)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -909,13 +659,7 @@ MamaDateTimeTestC::SetFromStringWithTzTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetFromStringWithTz)
-{
-    SetFromStringWithTzTest();
-}
-
-void 
-MamaDateTimeTestC::SetFromStringBufferTest(void)
+TEST_F (MamaDateTimeTestC, TestSetFromStringBuffer)
 {
     mamaDateTime t, nullTime = NULL;
     mama_size_t  bigBuff = 100, smallBuff = 1;
@@ -943,14 +687,7 @@ MamaDateTimeTestC::SetFromStringBufferTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-
-TEST_F (MamaDateTimeTestC, TestSetFromStringBuffer)
-{
-    SetFromStringBufferTest();
-}
-
-void 
-MamaDateTimeTestC::SetFromStringBufferWithTzTest(void)
+TEST_F (MamaDateTimeTestC, TestSetFromStringBufferWIthTz)
 {
     mamaDateTime t, nullTime = NULL;
     mama_size_t  bigBuff = 100, smallBuff = 1;
@@ -980,13 +717,7 @@ MamaDateTimeTestC::SetFromStringBufferWithTzTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestSetFromStringBufferWIthTz)
-{
-    SetFromStringBufferWithTzTest();
-}
-
-void 
-MamaDateTimeTestC::GetEpochTimeTest(void)
+TEST_F (MamaDateTimeTestC, TestGetEpochTime)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1010,13 +741,7 @@ MamaDateTimeTestC::GetEpochTimeTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetEpochTime)
-{
-    GetEpochTimeTest();
-}
-
-void 
-MamaDateTimeTestC::GetEpochTimeWithTzTest(void)
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeWithTz)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1042,13 +767,7 @@ MamaDateTimeTestC::GetEpochTimeWithTzTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetEpochTimeWithTz)
-{
-    GetEpochTimeWithTzTest();
-}
-
-void 
-MamaDateTimeTestC::GetEpochTimeMicrosecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeMicroseconds)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1070,14 +789,7 @@ MamaDateTimeTestC::GetEpochTimeMicrosecondsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-
-TEST_F (MamaDateTimeTestC, TestGetEpochTimeMicroseconds)
-{
-    GetEpochTimeMicrosecondsTest();
-}
-
-void 
-MamaDateTimeTestC::GetEpochTimeMicroecondsWithTzTest(void)
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeMicrosecondsWithTz)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1101,13 +813,7 @@ MamaDateTimeTestC::GetEpochTimeMicroecondsWithTzTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetEpochTimeMicrosecondsWithTz)
-{
-    GetEpochTimeMicroecondsWithTzTest();
-}
-
-void 
-MamaDateTimeTestC::GetEpochTimeMillisecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeMilliseconds)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1129,13 +835,7 @@ MamaDateTimeTestC::GetEpochTimeMillisecondsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetEpochTimeMilliseconds)
-{
-    GetEpochTimeMillisecondsTest();
-}
-
-void
-MamaDateTimeTestC::GetEpochTimeMillisecondsWithTzTest()
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeMillisecondsWithTz)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1159,19 +859,17 @@ MamaDateTimeTestC::GetEpochTimeMillisecondsWithTzTest()
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-
-TEST_F (MamaDateTimeTestC, TestGetEpochTimeMillisecondsWithTz)
-{
-    GetEpochTimeMillisecondsWithTzTest();
-}
-
-void 
-MamaDateTimeTestC::GetEpochTimeSecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeSeconds)
 {
     mamaDateTime t, nullTime = NULL;
 
     mama_u32_t secs32    = 43219,  milSecs32 = 123, micSecs32 = (milSecs32 * 1000) + 456;
-    mama_f64_t expectedSecs = secs32, actualSecs;
+    mama_f64_t expectedSecs, actualSecs;
+
+    /* The returned value will also take into account the microseconds value, so
+     * this should be factored into the expected value calculation.
+     */
+    expectedSecs = secs32 + (mama_f64_t)(micSecs32 / 1000000.0);
 
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
 
@@ -1187,18 +885,19 @@ MamaDateTimeTestC::GetEpochTimeSecondsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetEpochTimeSeconds)
-{
-    GetEpochTimeSecondsTest();
-}
-
-void 
-MamaDateTimeTestC::GetEpochTimeSecondsWithCheckTest(void)
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeSecondsWithCheck)
 {
     mamaDateTime t, nullTime = NULL;
 
-    mama_u32_t secs32    = 43219,  milSecs32 = 123, micSecs32 = (milSecs32 * 1000) + 456;
-    mama_f64_t expectedSecs = secs32, actualSecs;
+    mama_u32_t secs32    = 432190,  milSecs32 = 123, micSecs32 = (milSecs32 * 1000) + 456;
+    mama_f64_t expectedSecs, actualSecs;
+
+    /* In this case, we pass in a value for the seconds which is greater than
+     * those in single day. This ensures that the check for getting the time
+     * doesn't try and add the current date, making our expected calculation
+     * more straightforward.
+     */
+    expectedSecs = secs32 + (mama_f64_t)(micSecs32 / 1000000.0);
 
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
 
@@ -1214,20 +913,20 @@ MamaDateTimeTestC::GetEpochTimeSecondsWithCheckTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetEpochTimeSecondsWithCheck)
-{
-    GetEpochTimeSecondsWithCheckTest();
-}
-
-void 
-MamaDateTimeTestC::GetEpochTimeSecondsWithTzTest(void)
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeSecondsWithTz)
 {
     mamaDateTime t, nullTime = NULL;
 
     mamaTimeZone tz  = mamaTimeZone_utc();
 
     mama_u32_t secs32    = 43219,  milSecs32 = 123, micSecs32 = (milSecs32 * 1000) + 456;
-    mama_f64_t expectedSecs = secs32, actualSecs;
+    mama_f64_t expectedSecs, actualSecs;
+
+    /* Since we're using the UTC timezone, we don't need to take into account
+     * the offset at this point, though the test could be improved to consider
+     * it.
+     */
+    expectedSecs = secs32 + (mama_f64_t)(micSecs32 / 1000000.0);
 
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
 
@@ -1243,14 +942,7 @@ MamaDateTimeTestC::GetEpochTimeSecondsWithTzTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-
-TEST_F (MamaDateTimeTestC, TestGetEpochTimeSecondsWithTz)
-{
-    GetEpochTimeSecondsWithTzTest();
-}
-
-void
-MamaDateTimeTestC::GetWithHintsTest(void)
+TEST_F (MamaDateTimeTestC, TestGetWithHints)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1260,7 +952,7 @@ MamaDateTimeTestC::GetWithHintsTest(void)
                actualMilliSecs = 123,    expectedMilliSecs,
                actualMicroSecs = (actualMilliSecs * 1000) + 456, expectedMicroSecs;
 
-    mama_u8_t actualHints =  (mama_u8_t) 0x01, expectedHints;
+    mamaDateTimeHints actualHints = MAMA_DATE_TIME_HAS_DATE, expectedHints;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
 
@@ -1277,13 +969,7 @@ MamaDateTimeTestC::GetWithHintsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetWithHints)
-{
-    GetWithHintsTest();
-}
-
-void 
-MamaDateTimeTestC::GetStructTimeValTest(void)
+TEST_F (MamaDateTimeTestC, TestGetStructTimeVal)
 {
     struct timeval tVal;
 
@@ -1293,7 +979,7 @@ MamaDateTimeTestC::GetStructTimeValTest(void)
 
     mama_u32_t secs      = 43219, mSecs = 123, uSecs = (mSecs * 1000) + 456;
 
-    mama_u8_t hints =  (mama_u8_t) 0x01;
+    mamaDateTimeHints hints =  MAMA_DATE_TIME_HAS_DATE;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithHints(t, secs, uSecs, precision, hints) );
@@ -1309,14 +995,7 @@ MamaDateTimeTestC::GetStructTimeValTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-
-TEST_F (MamaDateTimeTestC, TestGetStructTimeVal)
-{
-    GetStructTimeValTest();
-}
-
-void 
-MamaDateTimeTestC::GetStructTimeValWithTzTest(void)
+TEST_F (MamaDateTimeTestC, TestGetStructTimeValWithTz)
 {
     struct timeval tVal;
 
@@ -1328,7 +1007,7 @@ MamaDateTimeTestC::GetStructTimeValWithTzTest(void)
 
     mama_u32_t secs      = 43219, mSecs = 123, uSecs = (mSecs * 1000) + 456;
 
-    mama_u8_t hints =  (mama_u8_t) 0x01;
+    mamaDateTimeHints hints =  MAMA_DATE_TIME_HAS_DATE;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithHints(t, secs, uSecs, precision, hints) );
@@ -1344,13 +1023,7 @@ MamaDateTimeTestC::GetStructTimeValWithTzTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetStructTimeValWithTz)
-{
-    GetStructTimeValWithTzTest();
-}
-
-void 
-MamaDateTimeTestC::GetStructTmTest(void)
+TEST_F (MamaDateTimeTestC, TestGetStructTm)
 {
     struct tm tM;
 
@@ -1380,13 +1053,7 @@ MamaDateTimeTestC::GetStructTmTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetStructTm)
-{
-    GetStructTmTest();
-}
-
-void 
-MamaDateTimeTestC::GetStructTmWithTzTest(void)
+TEST_F (MamaDateTimeTestC, TestGetStructTmWithTz)
 {
     struct tm tM;
 
@@ -1420,13 +1087,7 @@ MamaDateTimeTestC::GetStructTmWithTzTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetStructTmWithTz)
-{
-    GetStructTmWithTzTest();
-}
-
-void
-MamaDateTimeTestC::GetAsStringTest()
+TEST_F (MamaDateTimeTestC, TestGetAsString)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1443,14 +1104,7 @@ MamaDateTimeTestC::GetAsStringTest()
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-
-TEST_F (MamaDateTimeTestC, TestGetAsString)
-{
-    GetAsStringTest();
-}
-
-void 
-MamaDateTimeTestC::GetTimeAsStringTest(void)
+TEST_F (MamaDateTimeTestC, TestGetTimeAsString)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1468,13 +1122,7 @@ MamaDateTimeTestC::GetTimeAsStringTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetTimeAsString)
-{
-    GetTimeAsStringTest();
-}
-
-void 
-MamaDateTimeTestC::GetDateAsStringTest(void)
+TEST_F (MamaDateTimeTestC, TestGetDateAsString)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1492,13 +1140,7 @@ MamaDateTimeTestC::GetDateAsStringTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetDateAsString)
-{
-    GetDateAsStringTest();
-}
-
-void 
-MamaDateTimeTestC::GetYearTest(void)
+TEST_F (MamaDateTimeTestC, TestGetYear)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1515,14 +1157,8 @@ MamaDateTimeTestC::GetYearTest(void)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
- 
-TEST_F (MamaDateTimeTestC, TestGetYear)
-{
-    GetYearTest();
-}
 
-void 
-MamaDateTimeTestC::GetMonthTest(void)
+TEST_F (MamaDateTimeTestC, TestGetMonth)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1539,14 +1175,8 @@ MamaDateTimeTestC::GetMonthTest(void)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
- 
-TEST_F (MamaDateTimeTestC, TestGetMonth)
-{
-    GetMonthTest();
-}
 
-void 
-MamaDateTimeTestC::GetDayTest(void)
+TEST_F (MamaDateTimeTestC, TestGetDay)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1563,14 +1193,8 @@ MamaDateTimeTestC::GetDayTest(void)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
- 
-TEST_F (MamaDateTimeTestC, TestGetDay)
-{
-    GetDayTest();
-}
 
-void 
-MamaDateTimeTestC::GetHourTest(void)
+TEST_F (MamaDateTimeTestC, TestGetHour)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1587,14 +1211,8 @@ MamaDateTimeTestC::GetHourTest(void)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
- 
-TEST_F (MamaDateTimeTestC, TestGetHour)
-{
-    GetHourTest();
-}
 
-void 
-MamaDateTimeTestC::GetMinuteTest(void)
+TEST_F (MamaDateTimeTestC, TestGetMinute)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1611,14 +1229,8 @@ MamaDateTimeTestC::GetMinuteTest(void)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
- 
-TEST_F (MamaDateTimeTestC, TestGetMinute)
-{
-    GetMinuteTest();
-}
 
-void 
-MamaDateTimeTestC::GetSecondTest(void)
+TEST_F (MamaDateTimeTestC, TestGetSecond)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1635,14 +1247,8 @@ MamaDateTimeTestC::GetSecondTest(void)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
- 
-TEST_F (MamaDateTimeTestC, TestGetSecond)
-{
-    GetSecondTest();
-}
 
-void 
-MamaDateTimeTestC::GetMicroSecondTest(void)
+TEST_F (MamaDateTimeTestC, TestGetMicrosecond)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1660,14 +1266,7 @@ MamaDateTimeTestC::GetMicroSecondTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-TEST_F (MamaDateTimeTestC, TestGetMicrosecond)
-{
-    GetMicroSecondTest();
-}
-
- 
-void 
-MamaDateTimeTestC::GetDayOfWeekTest(void)
+TEST_F (MamaDateTimeTestC, TestGetDayOfWeek)
 {
     mamaDateTime t, nullTime = NULL;
 
@@ -1684,14 +1283,8 @@ MamaDateTimeTestC::GetDayOfWeekTest(void)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
- 
-TEST_F (MamaDateTimeTestC, TestGetDayOfWeek)
-{
-    GetDayOfWeekTest();
-}
 
-void 
-MamaDateTimeTestC::DiffSecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestDiffSeconds)
 {
     mamaDateTime t1, t2, nullTime = NULL;
 
@@ -1716,14 +1309,7 @@ MamaDateTimeTestC::DiffSecondsTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) );
 }
 
-TEST_F (MamaDateTimeTestC, TestDiffSeconds)
-{
-    DiffSecondsTest();
-}
-
-
-void 
-MamaDateTimeTestC::DiffSecondsSameDayTest(void)
+TEST_F (MamaDateTimeTestC, TestDiffSecondsSameDay)
 {
     mamaDateTime t1, t2, nullTime = NULL;
 
@@ -1748,13 +1334,7 @@ MamaDateTimeTestC::DiffSecondsSameDayTest(void)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) );
 }
 
-TEST_F (MamaDateTimeTestC, TestDiffSecondsSameDay)
-{
-    DiffSecondsSameDayTest();
-}
-
-void 
-MamaDateTimeTestC::DiffMicroSecondsTest(void)
+TEST_F (MamaDateTimeTestC, TestDiffMicroseconds)
 {
     mamaDateTime t1, t2, nullTime = NULL;
 
@@ -1778,11 +1358,6 @@ MamaDateTimeTestC::DiffMicroSecondsTest(void)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t1) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) );
-}
-
-TEST_F (MamaDateTimeTestC, TestDiffMicroseconds)
-{
-    DiffMicroSecondsTest();
 }
 
 /*  Description:     Get the current time since epoch by passing: 
@@ -1869,5 +1444,3 @@ TEST_F (MamaDateTimeTestC, CompareDates)
     /* These must be the same */
     ASSERT_EQ (completeDateSeconds, timeSeconds);
 }
-
-
