@@ -129,7 +129,7 @@ TEST_F (MamaTransportTestC, getName)
 {
     char          tportName[] = "test_tport";
     mamaTransport tport     = NULL;
-    const char*   testName  = "";
+    const char*   testName  = NULL;
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_allocate (&tport));
@@ -155,7 +155,6 @@ TEST_F (MamaTransportTestC, getMiddleware)
 {
     char          tportName[] = "test_tport";
     mamaTransport tport     = NULL;
-    const char*   testName  = "";
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_allocate (&tport));
@@ -180,7 +179,7 @@ TEST_F (MamaTransportTestC, Description)
     char          tportName[] = "test_tport";
     mamaTransport tport     = NULL;
     const char*   desc      = "description";
-    const char*   testDesc  = "";
+    const char*   testDesc  = NULL;
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_allocate (&tport));
@@ -252,5 +251,4 @@ TEST_F (MamaTransportTestC, GetQuality)
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_destroy (tport));
 }
-
 
