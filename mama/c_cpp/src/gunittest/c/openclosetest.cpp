@@ -127,16 +127,16 @@ TEST_F (MamaOpenCloseTestC, OpenCloseReopenSameBridge)
  *
  *  Expected Result: MAMA_STATUS_OK.
  */
-TEST_F (MamaOpenCloseTestC, OpenCloseReopenNewBridge)
+TEST_F (MamaOpenCloseTestC, DISABLED_OpenCloseReopenNewBridge)
 {
     mamaBridge mBridge;
-    ASSERT_EQ (MAMA_STATUS_OK,  mama_loadBridge (&mBridge, "wmw"));
+    ASSERT_EQ (MAMA_STATUS_OK,  mama_loadBridge (&mBridge, getMiddleware()));
 
     ASSERT_EQ (MAMA_STATUS_OK,  mama_open());
  
     ASSERT_EQ (MAMA_STATUS_OK,  mama_close());
 
-    ASSERT_EQ (MAMA_STATUS_OK,  mama_loadBridge (&mBridge, "lbm"));
+    ASSERT_EQ (MAMA_STATUS_OK,  mama_loadBridge (&mBridge, "avis"));
 
     ASSERT_EQ (MAMA_STATUS_OK,  mama_open());
 
@@ -149,7 +149,7 @@ TEST_F (MamaOpenCloseTestC, OpenCloseReopenNewBridge)
  *
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaOpenCloseTestC, DISABLED_StartStopDifferentThreads)
+TEST_F (MamaOpenCloseTestC, StartStopDifferentThreads)
 {
     mamaBridge mBridge;
     mama_loadBridge (&mBridge, getMiddleware());
