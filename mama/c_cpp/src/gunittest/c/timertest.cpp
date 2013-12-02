@@ -149,15 +149,12 @@ static void MAMACALLTYPE onStopTimerDestroy (mamaTimer timer, void* closure)
  *                   
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaTimerTestC, DISABLED_CreateDestroy)
+TEST_F (MamaTimerTestC, CreateDestroy)
 {
 
     MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
     fixture->tCounter  = 0;
     fixture->numTimers = 1;
-    
-    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
-    
     
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTimer_create2 (&timer, fixture->queue, onTimerTick, 
@@ -174,13 +171,11 @@ TEST_F (MamaTimerTestC, DISABLED_CreateDestroy)
  *
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaTimerTestC, DISABLED_CreateDestroyMany)
+TEST_F (MamaTimerTestC, CreateDestroyMany)
 {
     MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
     fixture->tCounter  = 0;
     fixture->numTimers = 100;
-    
-    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
     
     for (int x=0; x!=fixture->numTimers; x++)
     {
@@ -200,13 +195,11 @@ TEST_F (MamaTimerTestC, DISABLED_CreateDestroyMany)
  *                   
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaTimerTestC, DISABLED_RecursiveCreateDestroy)
+TEST_F (MamaTimerTestC, RecursiveCreateDestroy)
 {
     MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
     fixture->tCounter  = 0;
     fixture->numTimers = 11;
-    
-    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
     
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTimer_create2(&timer, fixture->queue, onTimerTick, 
@@ -223,11 +216,9 @@ TEST_F (MamaTimerTestC, DISABLED_RecursiveCreateDestroy)
  *                   
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaTimerTestC, DISABLED_TwoTimer)
+TEST_F (MamaTimerTestC, TwoTimer)
 {
     MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
-
-    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTimer_create(&shortTimer, fixture->queue, onShortTimerTick, 
