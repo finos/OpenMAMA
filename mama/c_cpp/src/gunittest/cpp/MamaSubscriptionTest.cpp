@@ -776,7 +776,7 @@ public:
 /* Test Functions - Basic Subscription */
 /* ************************************************************************* */
 
-TEST_F(MamaSubscriptionTest, BasicSubscription)
+TEST_F(MamaSubscriptionTest, DISABLED_BasicSubscription)
 {
     // Create a callback object
     TestBasicCallback *testCallback = new TestBasicCallback(m_bridge);
