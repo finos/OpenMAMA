@@ -54,6 +54,11 @@ do                                                                             \
         return MAMA_STATUS_NULL_ARG;                                           \
     }                                                                          \
                                                                                \
+    if (NULL == name && 0 == fid)                                              \
+    {                                                                          \
+        return MAMA_STATUS_NULL_ARG;                                           \
+    }                                                                          \
+                                                                               \
     qpidmsgPayloadImpl_moveDataToInsertLocation (impl->mBody, impl);           \
                                                                                \
     /* Each field is a separate list of name | FID | value */                  \
@@ -165,9 +170,9 @@ do                                                                             \
 {                                                                              \
     qpidmsgPayloadImpl* impl   = (qpidmsgPayloadImpl*) msg;                    \
     mama_status         status = MAMA_STATUS_OK;                               \
-    mama_size_t         i      = 0;	                                           \
+    mama_size_t         i      = 0;                                            \
                                                                                \
-    if (NULL == impl || NULL == value)                                         \
+    if (NULL == impl || NULL == value || (NULL == name && 0 == fid))           \
     {                                                                          \
         return MAMA_STATUS_NULL_ARG;                                           \
     }                                                                          \
@@ -213,7 +218,7 @@ do                                                                             \
     mama_size_t         i    = 0;                                              \
     qpidmsgPayloadImpl* impl = (qpidmsgPayloadImpl*) msg;                      \
                                                                                \
-    if (NULL == impl || NULL == value)                                         \
+    if (NULL == impl || NULL == value || (NULL == name && 0 == fid))           \
     {                                                                          \
         return MAMA_STATUS_NULL_ARG;                                           \
     }                                                                          \
@@ -272,7 +277,8 @@ do                                                                             \
     qpidmsgPayloadImpl* impl   = (qpidmsgPayloadImpl*) msg;                    \
     mama_status         status = MAMA_STATUS_OK;                               \
                                                                                \
-    if (NULL == impl || NULL == result || NULL == size)                        \
+    if (NULL == impl || NULL == result || NULL == size ||                      \
+            (NULL == name && 0 == fid))                                        \
     {                                                                          \
         return MAMA_STATUS_NULL_ARG;                                           \
     }                                                                          \
@@ -1044,6 +1050,11 @@ qpidmsgPayload_apply (msgPayload          dest,
     const char*     name    = NULL;
     uint16_t        fid     = 0;
 
+    if (NULL == dest || NULL == src)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     qpidmsgPayloadIter_create (&iter, src);
 
     while (NULL != (field = qpidmsgPayloadIter_next (iter, NULL, src)))
@@ -1795,7 +1806,8 @@ qpidmsgPayload_addVectorString (msgPayload          msg,
     qpidmsgPayloadImpl* impl        = (qpidmsgPayloadImpl*) msg;
     pn_bytes_t          tmpPnBytes;
 
-    if (NULL == impl || 0 == size || NULL == value)
+    if (NULL == impl || 0 == size || NULL == value 
+            || (NULL == name && 0 == fid))
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -1854,7 +1866,8 @@ qpidmsgPayload_addVectorMsg (msgPayload          msg,
     mama_size_t          i    = 0;
     qpidmsgPayloadImpl*  impl = (qpidmsgPayloadImpl*) msg;
 
-    if (NULL == impl || 0 == size || NULL == value)
+    if (NULL == impl || 0 == size || NULL == value
+            || (NULL == name && 0 == fid))
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -2297,7 +2310,7 @@ qpidmsgPayload_updateVectorMsg (msgPayload          msg,
 
     if (NULL == name && 0 == fid)
     {
-        return MAMA_STATUS_INVALID_ARG;
+        return MAMA_STATUS_NULL_ARG;
     }
 
     /* Find field - takes us directly to the content */
@@ -2352,9 +2365,9 @@ qpidmsgPayload_updateVectorString (msgPayload   msg,
         return MAMA_STATUS_NULL_ARG;
     }
 
-    if (NULL == name)
+    if (NULL == name && fid == 0)
     {
-        return MAMA_STATUS_INVALID_ARG;
+        return MAMA_STATUS_NULL_ARG;
     }
 
     /* Find field - takes us directly to the content */
