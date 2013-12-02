@@ -53,10 +53,12 @@ MiddlewareMsgTests::~MiddlewareMsgTests(void)
 void MiddlewareMsgTests::SetUp(void)
 {
 	mama_loadBridge (&mBridge,getMiddleware());
+    mama_open();
 }
 
 void MiddlewareMsgTests::TearDown(void)
 {
+    mama_close( );
 }
 
 
@@ -108,7 +110,7 @@ TEST_F (MiddlewareMsgTests, isFromInbox)
 
 TEST_F (MiddlewareMsgTests, isFromInboxInvalid)
 {
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+    ASSERT_EQ (-1,
                mBridge->bridgeMamaMsgIsFromInbox(NULL));
 }
 
@@ -173,14 +175,19 @@ TEST_F (MiddlewareMsgTests, getPlatformError)
     mamaMsg   parent     = NULL;
     int       destroyMsg = 1;
     void*     error      = NULL;
+    mama_status status   = MAMA_STATUS_OK;
 
     ASSERT_EQ(MAMA_STATUS_OK,mamaMsg_create(&parent));
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaMsgCreate(&msg,parent));
     
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgGetPlatformError(msg, &error));
+
+    status = mBridge->bridgeMamaMsgGetPlatformError(msg, &error);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ(MAMA_STATUS_OK, status);
     
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaMsgDestroy(msg,destroyMsg));
@@ -190,17 +197,23 @@ TEST_F (MiddlewareMsgTests, getPlatformError)
 TEST_F (MiddlewareMsgTests, getPlatformErrorInvalidMsgBridge)
 {
     void* error = NOT_NULL;
+    mama_status status = MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaMsgGetPlatformError(NULL,&error));
+    status = mBridge->bridgeMamaMsgGetPlatformError(NULL,&error);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, status);
 }
 
 TEST_F (MiddlewareMsgTests, getPlatformErrorInvalidError)
 {
     msgBridge msg = (msgBridge) NOT_NULL;
+    mama_status status = MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaMsgGetPlatformError(msg,NULL));
+    status = mBridge->bridgeMamaMsgGetPlatformError(msg,NULL);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, status);
 }
 
 TEST_F (MiddlewareMsgTests,setSendSubject )
