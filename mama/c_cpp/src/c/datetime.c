@@ -149,8 +149,15 @@ int mamaDateTime_equal (const mamaDateTime lhs,
 int mamaDateTime_compare (const mamaDateTime lhs,
                           const mamaDateTime rhs)
 {
-    mama_time_t lhsTimeOnly = mamaDateTimeImpl_getTimeOnly(*lhs);
-    mama_time_t rhsTimeOnly = mamaDateTimeImpl_getTimeOnly(*rhs);
+    mama_time_t lhsTimeOnly;
+    mama_time_t rhsTimeOnly;
+
+    if (NULL == lhs || NULL == rhs)
+        return 0;
+
+    lhsTimeOnly = mamaDateTimeImpl_getTimeOnly(*lhs);
+    rhsTimeOnly = mamaDateTimeImpl_getTimeOnly(*rhs);
+
     if (lhsTimeOnly > rhsTimeOnly)
         return 1;
     else if (lhsTimeOnly == rhsTimeOnly)
