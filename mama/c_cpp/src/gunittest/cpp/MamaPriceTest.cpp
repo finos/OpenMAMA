@@ -74,6 +74,7 @@ void MamaPriceTest::TearDown(void)
 	{
         //ASSERT_EQ(mamaPrice_destroy(m_price), MAMA_STATUS_OK);
         delete m_price;
+        m_price = NULL;
 	}
     ASSERT_TRUE(m_price == NULL);
 }
