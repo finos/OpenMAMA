@@ -81,6 +81,10 @@ TEST_F(PayloadGeneralTests, CreateInValid)
    EXPECT_EQ(result, MAMA_STATUS_NULL_ARG);
 }
 
+/* OPTIONAL TEST:
+ * Since a large proportion of middlewares don't use templates, this functionality
+ * isn't required.
+ */
 TEST_F(PayloadGeneralTests, CreateForTemplateValid)
 {
    mama_u32_t           g_templateId = 0;
@@ -100,28 +104,21 @@ TEST_F(PayloadGeneralTests, GetTypeValid)
    EXPECT_NE(result, MAMA_PAYLOAD_UNKNOWN);
 }
 
-TEST_F(PayloadGeneralTests, DISABLED_CopyValid)
+TEST_F(PayloadGeneralTests, CopyValid)
 {
-    /*  Cores in UnitTestMamaPayloadC - but not locally:
-     *
-     *      #0  0x00007f634acc3db5 in wombatmsg_setData (msg=0xf215f0, data=0xf225f0)
-     *          at /var/userspace/gmolloy/unittesting/src/products/wombatmsg/c_cpp/src/c/msg.c:4126
-     *      4126            ftype = *((char*)data+offset);
-     *
-     */
     msgPayload          testPayload = NULL;
     msgPayload          copyPayload = NULL;
 
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (result, MAMA_STATUS_OK);
 
+    result = aBridge->msgPayloadCreate(&copyPayload);
+    EXPECT_EQ (result, MAMA_STATUS_OK);
+
     aBridge->msgPayloadAddString (testPayload, "name2", 102, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 103, "Testing");
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
-
-    result = aBridge->msgPayloadCopy(testPayload, &copyPayload);
-    EXPECT_EQ(result, MAMA_STATUS_OK);
 
     result = aBridge->msgPayloadCopy(testPayload, &copyPayload);
     EXPECT_EQ(result, MAMA_STATUS_OK);
@@ -135,15 +132,11 @@ TEST_F(PayloadGeneralTests, CopyInValidPayload)
    EXPECT_EQ(result, MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F(PayloadGeneralTests, DISABLED_CopyInValidCopy)
+/* Requires discussion regarding what this test is actually expecting to check.
+ * Assuming the CopyValid test requires a payload to be created first.
+ */
+TEST_F(PayloadGeneralTests, CopyInValidCopy)
 {
-    /*  Cores in UnitTestMamaPayloadC - but not locally:
-     *
-     *      #0  0x00007f634acc3db5 in wombatmsg_setData (msg=0xf215f0, data=0xf225f0)
-     *          at /var/userspace/gmolloy/unittesting/src/products/wombatmsg/c_cpp/src/c/msg.c:4126
-     *      4126            ftype = *((char*)data+offset);
-     *
-     */
    msgPayload           testPayload = NULL;
    msgPayload           copyPayload = NULL;
 
@@ -218,16 +211,8 @@ TEST_F(PayloadGeneralTests, SetParentInValidPayload)
    EXPECT_EQ(result, MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F(PayloadGeneralTests, DISABLED_SetParentInValidParent)
+TEST_F(PayloadGeneralTests, SetParentInValidParent)
 {
-   /*  Cores due to invalid parameters - missing parent
-    *
-    *  #0  0x00007f98cf4c41e1 in wmsgPayload_setParent (payload=0x4271c6, parent=0x0)
-    *      at /var/userspace/gmolloy/unittesting/src/products/mama/c_cpp/src/c/payload/wombatmsg/wmsgpayload.c:477
-    *      477      impl->mParent = parent;
-    *
-    */
-
    msgPayload           testPayload = NULL;
 
    result = aBridge->msgPayloadSetParent(testPayload, NULL);
@@ -392,6 +377,11 @@ TEST_F(PayloadGeneralTests, ToStringInValid)
 	EXPECT_STREQ (char_result, NULL);
 }
 
+/*
+ * TODO: At present this test doesn't really check anything, and should be
+ * made significantly better. Passing NULL messages, fields and callbacks
+ * should all trigger a MAMA_STATUS_NULL_ARG.
+ */
 TEST_F(PayloadGeneralTests, IterateFieldsValid)
 {
     msgPayload          testPayload = NULL;
@@ -407,6 +397,9 @@ TEST_F(PayloadGeneralTests, IterateFieldsValid)
 	EXPECT_EQ (result, MAMA_STATUS_OK);
 }
 
+/* TODO: This test should return NULL, but  needs to have the parent msg, 
+ * callback and mama field created before it is a valid test.
+ */
 TEST_F(PayloadGeneralTests, IterateFieldsInValidPayload)
 {
     mamaMsg             testMamaMsg = NULL;
@@ -418,6 +411,9 @@ TEST_F(PayloadGeneralTests, IterateFieldsInValidPayload)
 	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
 }
 
+/* TODO: This test should return NULL, but  needs to have the callback and
+ * mama field created before it is a valid test.
+ */
 TEST_F(PayloadGeneralTests, IterateFieldsInValidParent)
 {
     msgPayload          testPayload = NULL;
@@ -429,9 +425,12 @@ TEST_F(PayloadGeneralTests, IterateFieldsInValidParent)
 	EXPECT_EQ (result, MAMA_STATUS_OK);
 
 	result = aBridge->msgPayloadIterateFields(testPayload, NULL, testMamaField, testMamaMsgIteratorCb, &testClosure);
-	EXPECT_EQ (result, MAMA_STATUS_OK);
+	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
 }
 
+/* TODO: This test should return NULL, but  needs to have the parent msg and 
+ * callback created before it is a valid test.
+ */
 TEST_F(PayloadGeneralTests, IterateFieldsInValidMamaField)
 {
     msgPayload          testPayload = NULL;
@@ -443,9 +442,12 @@ TEST_F(PayloadGeneralTests, IterateFieldsInValidMamaField)
 	EXPECT_EQ (result, MAMA_STATUS_OK);
 
 	result = aBridge->msgPayloadIterateFields(testPayload, testMamaMsg, NULL, testMamaMsgIteratorCb, &testClosure);
-	EXPECT_EQ (result, MAMA_STATUS_OK);
+	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
 }
 
+/* TODO: This test should return NULL, but  needs to have the parent msg and 
+ * mama field created before it is a valid test.
+ */
 TEST_F(PayloadGeneralTests, IterateFieldsInValidCallBack)
 {
     msgPayload          testPayload = NULL;
@@ -457,9 +459,13 @@ TEST_F(PayloadGeneralTests, IterateFieldsInValidCallBack)
 	EXPECT_EQ (result, MAMA_STATUS_OK);
 
 	result = aBridge->msgPayloadIterateFields(testPayload, testMamaMsg, testMamaField, NULL, &testClosure);
-	EXPECT_EQ (result, MAMA_STATUS_OK);
+	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
 }
 
+/* TODO: This test should return OK (since we don't touch the closure) but needs
+ * to have the parent msg, mama field, and callbacks all created before it will
+ * be a valid test.
+ */
 TEST_F(PayloadGeneralTests, IterateFieldsInValidClosure)
 {
     msgPayload          testPayload = NULL;
@@ -667,19 +673,8 @@ TEST_F(PayloadGeneralTests, GetByteBufferInValidBufferLength)
 	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F(PayloadGeneralTests, DISABLED_SetByteBufferValid)
+TEST_F(PayloadGeneralTests, SetByteBufferValid)
 {
-    /*
-     * Cores
-     *  
-     *  #0  0x00007fe9eb676423 in wombatmsg_strValClear (msg=0x24a74f0)
-     *      at /var/userspace/gmolloy/unittesting/src/products/wombatmsg/c_cpp/src/c/msg.c:4294
-     *      #1  0x00007fe9eb6696cf in wombatmsg_setNewBufferEx (msg=0x24a74f0, buffer=0x7fffc7840918, 
-     *          bufferSize=80, copyBuffer=0 '\000')
-     *              at /var/userspace/gmolloy/unittesting/src/products/wombatmsg/c_cpp/src/c/msg.c:284
-     *
-     */
-
     msgPayload          testPayload = NULL;
     const char*         testBuffer;
     mama_size_t         testBufferLength = 100;
@@ -715,17 +710,8 @@ TEST_F(PayloadGeneralTests, SetByteBufferInValidPayload)
 	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F(PayloadGeneralTests, DISABLED_SetByteBufferInValidBridge)
+TEST_F(PayloadGeneralTests, SetByteBufferInValidBridge)
 {
-    /* Cores
-     *
-     *  #0  0x00007fa2e7e7c70e in wombatmsg_setNewBufferEx (msg=0xb8ad90, buffer=0x7fffdf5a8b68, 
-     *      bufferSize=6, copyBuffer=0 '\000')
-     *          at /var/userspace/gmolloy/unittesting/src/products/wombatmsg/c_cpp/src/c/msg.c:292
-     *          292         msg->iterator->currentField = msg->firstField;
-     *
-     */
-
     msgPayload          testPayload = NULL;
     const char*         testBuffer;
     mama_size_t         testBufferLength = 0;
@@ -771,6 +757,8 @@ TEST_F(PayloadGeneralTests, SetByteBufferInValidBufferLength)
 	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
 }
 
+/* TODO: Check the values in the created payload.
+ */
 TEST_F(PayloadGeneralTests, CreateFromByteBufferValid)
 {
     msgPayload          testPayload = NULL;
@@ -796,14 +784,6 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferValid)
 
 TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidPayLoad)
 {
-    /* Core
-     *
-     *  #0  0x00007ff1f63c9ef0 in wmsgPayload_createFromByteBuffer (payload=0x0, bridge=0x1741660, 
-     *      buffer=0x1741cd0, bufferLength=20)
-     *          at /var/userspace/gmolloy/unittesting/src/products/mama/c_cpp/src/c/payload/wombatmsg/wmsgpayload.c:355
-     *
-     */
-
     msgPayload          testPayload = NULL;
     char*               testBuffer;
     mama_size_t         testBufferLength = 0;
@@ -1282,7 +1262,7 @@ TEST_F(PayloadGeneralTests, IterEndValid)
     msgFieldPayload     output = NULL;
 
     output = aBridge->msgPayloadIterEnd(&testIter, testMsg);
-	//EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
+
     if (output != NULL)
         FAIL();
 }
@@ -1293,7 +1273,7 @@ TEST_F(PayloadGeneralTests, IterEndInValidIter)
     msgFieldPayload     output = NULL;
 
     output = aBridge->msgPayloadIterEnd(NULL, testMsg);
-	//EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
+
     if (output != NULL)
         FAIL();
 }
@@ -1304,7 +1284,7 @@ TEST_F(PayloadGeneralTests, IterEndInValidMsg)
     msgFieldPayload     output = NULL;
 
     output = aBridge->msgPayloadIterEnd(&testIter, NULL);
-	//EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
+
     if (output != NULL)
         FAIL();
 }
