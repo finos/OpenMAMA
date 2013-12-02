@@ -76,10 +76,6 @@ void onInboxDestroy(mamaInbox inbox, void *closure)
  ====================================================================*/
 TEST_F (MiddlewareInboxTests, create)
 {
-    /*causes CreateDestroy to fail on avis as the transport is not 
-     *destroyed so it is already connected when create is called in
-     *2nd test.
-     */
     inboxBridge   bridge    = NULL;
     mamaTransport transport = NULL;
     mamaQueue     queue     = NULL;
@@ -110,6 +106,12 @@ TEST_F (MiddlewareInboxTests, create)
                                               closure,
                                               parent));
 
+    /* We have to clean up here and destroy the transport, otherwise other
+     * tests will fail to run correctly.
+     */
+    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeMamaInboxDestroy(bridge));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaInbox_destroy(parent));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTransport_destroy(transport));
 }
 
 TEST_F (MiddlewareInboxTests, createInvalidBridge)
