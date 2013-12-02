@@ -150,14 +150,14 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetDescriptorInValidResult)
 TEST_F (MsgFieldCompositeTestsC, msgFieldGetFidValid)
 {
     mamaMsgField      mMsgField  = NULL;
-    uint16_t*         result     = 0;
+    uint16_t         result     = 0;
 
     //Create & add fields to msg
     mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
-    ASSERT_EQ (mamaMsgField_getFid(mMsgField, result), MAMA_STATUS_OK);
+    ASSERT_EQ (mamaMsgField_getFid(mMsgField, &result), MAMA_STATUS_OK);
 }
 
 TEST_F (MsgFieldCompositeTestsC, msgFieldGetFidInValidMsgField)
