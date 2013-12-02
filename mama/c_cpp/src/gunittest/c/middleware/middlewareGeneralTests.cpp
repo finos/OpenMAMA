@@ -64,37 +64,18 @@ void MiddlewareGeneralTests::TearDown(void)
 /*===================================================================
  =                      Used in mama.c                              =
  ====================================================================*/
-TEST_F (MiddlewareGeneralTests, open)
-{
-    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeOpen(mBridge));
-}
-TEST_F (MiddlewareGeneralTests, openInvalid)
-{
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, mBridge->bridgeOpen(NULL));
-}
-
-TEST_F (MiddlewareGeneralTests, DISABLED_openClose)
-/*calling bridgeClose in this test causes next test to seg fault always*/
-{
-    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeOpen(mBridge));
-    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeClose(mBridge));
-}
-
-TEST_F (MiddlewareGeneralTests, closeInvalid)
-{
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, mBridge->bridgeClose(NULL));
-}
-
+/* TODO: Rewrite this test to call bridgeStart on a separate thread, since it is
+ * a blocking call. Otherwise, bridgeStop is never called.
+ *
+ */
 TEST_F (MiddlewareGeneralTests, DISABLED_startStop)
-/* hangs, bridgeClose never executed */
-/* MH - Seems to be an issue in wSemaphore.c with the sem_timedwait() function */
 {
     mamaQueue defaultEventQueue = NULL;
-    
+
     ASSERT_EQ (MAMA_STATUS_OK, 
                mama_getDefaultEventQueue(mBridge, &defaultEventQueue));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
+
+    ASSERT_EQ (MAMA_STATUS_OK,
                mBridge->bridgeStart(defaultEventQueue));
 
     ASSERT_EQ (MAMA_STATUS_OK,
