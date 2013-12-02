@@ -91,6 +91,11 @@ qpidBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
 {
     qpidBridgeMsgImpl* impl = NULL;
 
+    if (NULL == msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     /* Null initialize the msgBridge pointer */
     *msg = NULL;
 
@@ -134,7 +139,7 @@ qpidBridgeMamaMsg_destroy (msgBridge msg, int destroyMsg)
 {
     if (NULL == msg)
     {
-        return MAMA_STATUS_INVALID_ARG;
+        return MAMA_STATUS_NULL_ARG;
     }
     /* Free the underlying implementation */
     free (msg);
@@ -150,6 +155,10 @@ qpidBridgeMamaMsg_destroyMiddlewareMsg (msgBridge msg)
      * the underlying middleware message (it's owned by publishers and
      * transports) so no need to do anything here
      */
+    if (NULL == msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -161,6 +170,10 @@ qpidBridgeMamaMsg_detach (msgBridge msg)
      * the underlying middleware message (it's owned by publishers and
      * transports) so no need to do anything here
      */
+    if (NULL == msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -213,7 +226,7 @@ mama_status
 qpidBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result)
 {
     qpidBridgeMsgImpl* impl = (qpidBridgeMsgImpl*) msg;
-    if (NULL == impl)
+    if (NULL == impl || NULL == result)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -259,7 +272,7 @@ qpidBridgeMamaMsg_copyReplyHandle (void* src, void** dest)
     qpidBridgeMsgReplyHandle* impl        = (qpidBridgeMsgReplyHandle*)src;
     qpidBridgeMsgReplyHandle* replyHandle = NULL;
 
-    if (NULL == impl)
+    if (NULL == impl || NULL == dest)
     {
         return MAMA_STATUS_NULL_ARG;
     }
