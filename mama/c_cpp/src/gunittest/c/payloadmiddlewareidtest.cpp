@@ -61,7 +61,7 @@ MamaEnumTestsC::CreateTestData()
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_FAST,       "FAST"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_RAI,        "rai"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_UMS,        "UMS"));
-    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_TICK42BLP,  "TICK42RMDS"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_TICK42RMDS, "TICK42RMDS"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_QPID,       "QPID"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_TIBRV,      "TIBRV"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_IBMWFO,     "ibmwfo"));
