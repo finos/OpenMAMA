@@ -19,19 +19,19 @@
  * 02110-1301 USA
  */
 
+/*  Description: These tests will check the basic functionality behind
+ *               opening and closing middleware bridges.
+ */
+
 #include <gtest/gtest.h>
 #include "mama/mama.h"
 #include "mama/status.h"
 #include "MainUnitTestC.h"
 
+
 class MamaOpenCloseTestC : public ::testing::Test
 {
 protected:
-
-    /* Work around for problem in gtest where the this pointer can't be accessed
-     * from a test fixture.
-     */
-    MamaOpenCloseTestC *m_this;
 
     MamaOpenCloseTestC(void);
     virtual ~MamaOpenCloseTestC(void);
@@ -52,15 +52,13 @@ MamaOpenCloseTestC::~MamaOpenCloseTestC(void)
 
 void MamaOpenCloseTestC::SetUp(void)
 {
-    m_this = this;
 }
 
 void MamaOpenCloseTestC::TearDown(void)
 {
-    m_this = NULL;
 }
 
-static void MAMACALLTYPE startCallback(mama_status status)
+static void MAMACALLTYPE startCallback (mama_status status)
 {
 }
 
@@ -68,74 +66,104 @@ static void MAMACALLTYPE startCallback(mama_status status)
 /* ************************************************************************* */
 /* Tests */
 /* ************************************************************************* */
-TEST_F(MamaOpenCloseTestC, OpenClose)
+
+/*  Description:     Load the middleware bridge, initialize MAMA, close MAMA.
+ *
+ *  Expected Result: MAMA_STATUS_OK 
+ */
+TEST_F (MamaOpenCloseTestC, OpenClose)
 {
     mamaBridge mBridge;
-    mama_loadBridge(&mBridge, getMiddleware());
+    mama_loadBridge (&mBridge, getMiddleware());
 
-    mama_open();
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
-    mama_close();
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 }
 
-TEST_F(MamaOpenCloseTestC, NestedOpenClose)
+/*  Description:     Load the middleware bridge, initialize MAMA, increase the
+ *                   reference count to 2 by calling mama_open() a second time,
+ *                   then close MAMA by calling mama_close() twice.
+ *
+ *  Expected Result: MAMA_STATUS_OK 
+ */
+TEST_F (MamaOpenCloseTestC, NestedOpenClose)
 {
     mamaBridge mBridge;
-    mama_loadBridge(&mBridge, getMiddleware());
+    mama_loadBridge (&mBridge, getMiddleware());
 
-    mama_open();
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
-    mama_open();
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
-    mama_close();
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 
-    mama_close();
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 
 }
 
-TEST_F(MamaOpenCloseTestC, OpenCloseReopenSameBridge)
+/*  Description:     Load the middleware bridge, initialize MAMA, close MAMA,
+ *                   re-initialize MAMA.
+ *
+ *  Expected Result: MAMA_STATUS_OK 
+ */
+TEST_F (MamaOpenCloseTestC, OpenCloseReopenSameBridge)
 {
     mamaBridge mBridge;
-    mama_loadBridge(&mBridge, getMiddleware());
+    mama_loadBridge (&mBridge, getMiddleware());
 
-    mama_open();
+    ASSERT_EQ (MAMA_STATUS_OK,  mama_open());
 
-    mama_close();
-
-    ASSERT_EQ(MAMA_STATUS_NO_BRIDGE_IMPL, mama_open());
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
+    
+    /* bridge must be loaded again after close */
+    mama_loadBridge (&mBridge, getMiddleware());
+    
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 }
 
-TEST_F(MamaOpenCloseTestC, OpenCloseReopenNewBridge)
+/*  Description:     Load a wombat middleware bridge, initialize MAMA, close
+ *                   MAMA, Load an LBM middleware bridge, close MAMA.
+ *
+ *  Expected Result: MAMA_STATUS_OK.
+ */
+TEST_F (MamaOpenCloseTestC, DISABLED_OpenCloseReopenNewBridge)
 {
     mamaBridge mBridge;
-    mama_loadBridge(&mBridge, "wmw");
+    ASSERT_EQ (MAMA_STATUS_OK,  mama_loadBridge (&mBridge, getMiddleware()));
 
-    mama_open();
+    ASSERT_EQ (MAMA_STATUS_OK,  mama_open());
+ 
+    ASSERT_EQ (MAMA_STATUS_OK,  mama_close());
 
-    mama_close();
+    ASSERT_EQ (MAMA_STATUS_OK,  mama_loadBridge (&mBridge, "avis"));
 
-    mama_loadBridge(&mBridge, "lbm");
+    ASSERT_EQ (MAMA_STATUS_OK,  mama_open());
 
-    mama_open();
-
-    mama_close();
+    ASSERT_EQ (MAMA_STATUS_OK,  mama_close());
 }
 
-TEST_F(MamaOpenCloseTestC, StartStopDifferentThreads)
+/*  Description:     Load the middleware bridge, initialize MAMA, begin
+ *                   processing messages in a non-default thread, stop
+ *                   processing on the non-default thread, close MAMA.
+ *
+ *  Expected Result: MAMA_STATUS_OK
+ */
+TEST_F (MamaOpenCloseTestC, StartStopDifferentThreads)
 {
     mamaBridge mBridge;
-    mama_loadBridge(&mBridge, getMiddleware());
+    mama_loadBridge (&mBridge, getMiddleware());
 
-    mama_open();
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
-    // Start mama in the background so it uses a different thread
-    ASSERT_EQ(MAMA_STATUS_OK, mama_startBackground(mBridge,  startCallback));
+    /* Start mama in the background so it uses a different thread */
+    ASSERT_EQ (MAMA_STATUS_OK, mama_startBackground (mBridge, startCallback));
 
-    // Sleep to allow the other thread to complete startup
+    /* Sleep to allow the other thread to complete startup */
     sleep(2);
 
-    mama_stop(mBridge);
+    ASSERT_EQ (MAMA_STATUS_OK, mama_stop (mBridge));
 
-    mama_close();
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 }
 

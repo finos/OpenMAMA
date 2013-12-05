@@ -23,3 +23,6 @@ srcdir = @srcdir@
 VPATH  = @srcdir@
                                                                                                                                                             
 SUBDIRS = c cpp
+if WITH_UNITTESTS
+SUBDIRS += gunittest
+endif

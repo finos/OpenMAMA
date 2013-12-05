@@ -23,6 +23,7 @@ srcdir = @srcdir@
 VPATH  = @srcdir@
 blddir=@builddir@
 
+SUBDIRS=payload mamamsg middleware mamaprice mamadatetime
 
 if USE_GCC_FLAGS
 CFLAGS   += -std=gnu99 -pedantic -Wno-long-long -O2 -pthread -fPIC
@@ -44,11 +45,13 @@ LDADD = -lgtest_main -ldl
 bin_PROGRAMS = UnitTestMamaC
 
 nodist_UnitTestMamaC_SOURCES = MainUnitTestC.cpp \
-							msgtests.cpp \
-							iteration.cpp \
                             openclosetest.cpp \
-                            datetimetest.cpp \
                             subscriptiontest.cpp \
-                            pricetest.cpp \
-                            timertest.cpp
+                            inboxtest.cpp \
+                            iotest.cpp \
+                            publishertest.cpp \
+                            queuetest.cpp \
+                            transporttest.cpp \
+                            timertest.cpp \
+                            payloadmiddlewareidtest.cpp
 

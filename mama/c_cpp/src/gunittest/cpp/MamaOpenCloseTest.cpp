@@ -114,7 +114,10 @@ TEST_F(MamaOpenCloseTest, OpenCloseReopenSameBridge)
     ASSERT_TRUE(1);
 }
 
-TEST_F(MamaOpenCloseTest, OpenCloseReopenNewBridge)
+/* Additional changes are required to make this test appropriate for an
+ * open source environment, where multiple bridges may not be available.
+ */
+TEST_F(MamaOpenCloseTest, DISABLED_OpenCloseReopenNewBridge)
 {
     // Load the bridge
     Mama::loadBridge("wmw");

@@ -30,8 +30,14 @@ endif
 
 INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../.. -I$(srcdir)/../../../examples
 
-CFLAGS   += -I@builddir@/../../c
-CPPFLAGS += -I@builddir@/../../c
+CPPFLAGS += -I$(srcdir)/../../cpp -I$(srcdir)/../../cpp/orderbooks \
+        -I$(srcdir)/../../../../../mama/c_cpp/src/c/ \
+        -I$(srcdir)/../../../../../mama/c_cpp/src/cpp \
+        -I$(srcdir)/../../../../../common/c_cpp/src/c/
+
+LDFLAGS  += -L${blddir}/../../cpp -L${blddir}/../../cpp/orderbooks \
+        -L${blddir}/../../../../../mama/c_cpp/src/c/ \
+        -L${blddir}/../../../../../mama/c_cpp/src/cpp
 
 LIBS = -lmamdabook -lmamda -lrt 
 LIBS += -lmama -lwombatcommon -lmamacpp -lgtest

@@ -139,7 +139,7 @@ qpidBridgeMamaMsg_destroy (msgBridge msg, int destroyMsg)
 {
     if (NULL == msg)
     {
-        return MAMA_STATUS_INVALID_ARG;
+        return MAMA_STATUS_NULL_ARG;
     }
     /* Free the underlying implementation */
     free (msg);
@@ -155,6 +155,10 @@ qpidBridgeMamaMsg_destroyMiddlewareMsg (msgBridge msg)
      * the underlying middleware message (it's owned by publishers and
      * transports) so no need to do anything here
      */
+    if (NULL == msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -166,6 +170,10 @@ qpidBridgeMamaMsg_detach (msgBridge msg)
      * the underlying middleware message (it's owned by publishers and
      * transports) so no need to do anything here
      */
+    if (NULL == msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
     return MAMA_STATUS_OK;
 }
 
