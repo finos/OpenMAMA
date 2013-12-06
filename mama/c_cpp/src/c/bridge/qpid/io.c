@@ -146,6 +146,8 @@ qpidBridgeMamaIo_create         (ioBridge*   result,
     }
     gQpidIoContainer.mEventsRegistered++;
 
+    *result = (ioBridge)impl;
+
     return MAMA_STATUS_OK;
 }
 
@@ -159,8 +161,10 @@ qpidBridgeMamaIo_destroy        (ioBridge io)
         return MAMA_STATUS_NULL_ARG;
     }
     event_del (&impl->mEvent);
+
     free (impl);
     gQpidIoContainer.mEventsRegistered--;
+
     return MAMA_STATUS_OK;
 }
 
@@ -211,6 +215,12 @@ qpidBridgeMamaIoImpl_stop ()
 {
     gQpidIoContainer.mActive = 0;
 
+    /* Alert the semaphore so the dispatch loop can exit */
+    wsem_post (&gQpidIoContainer.mResumeDispatching);
+
+    /* Tell the event loop to exit */
+    event_base_loopexit (gQpidIoContainer.mEventBase, NULL);
+
     /* Join with the dispatch thread - it should exit shortly */
     wthread_join (gQpidIoContainer.mDispatchThread, NULL);
     wsem_destroy (&gQpidIoContainer.mResumeDispatching);
@@ -238,7 +248,7 @@ qpidBridgeMamaIoImpl_dispatchThread (void* closure)
     while (0 != gQpidIoContainer.mActive)
     {
         dispatchResult = event_base_loop (gQpidIoContainer.mEventBase,
-                                          EVLOOP_ONCE);
+                                          EVLOOP_NONBLOCK | EVLOOP_ONCE);
 
         /* If no events are currently registered */
         if (1 == dispatchResult)
