@@ -58,11 +58,13 @@ void MamaIoTestC::SetUp(void)
 {	
     m_this = this;
 
-    mama_loadBridge (&mBridge, getMiddleware());  
+    mama_loadBridge (&mBridge, getMiddleware());
+    mama_open ();
 }
 
 void MamaIoTestC::TearDown(void)
 {
+    mama_close ();
     m_this = NULL;
 }
 
