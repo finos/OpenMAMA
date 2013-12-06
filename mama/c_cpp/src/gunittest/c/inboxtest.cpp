@@ -109,4 +109,7 @@ TEST_F (MamaInboxTestC, CreateDestroy)
                                   onInboxDestroy, m_this));
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaInbox_destroy (inbox));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaQueue_destroy (queue));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTransport_destroy (tport));
 }
