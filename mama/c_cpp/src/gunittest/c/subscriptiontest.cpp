@@ -143,6 +143,7 @@ void MamaSubscriptionTest::SetUp(void)
 
 void MamaSubscriptionTest::TearDown(void)
 {
+    mamaTransport_destroy (m_transport);
     m_transport = NULL;
 
     mama_close();
