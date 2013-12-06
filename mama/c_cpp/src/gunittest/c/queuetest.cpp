@@ -65,10 +65,12 @@ MamaQueueTestC::~MamaQueueTestC()
 void MamaQueueTestC::SetUp()
 {
     mama_loadBridge (&mBridge, getMiddleware());
+    mama_open();
 }
 
 void MamaQueueTestC::TearDown()
 {
+    mama_close();
 }
 
 static void MAMACALLTYPE startCallback (mama_status status)
