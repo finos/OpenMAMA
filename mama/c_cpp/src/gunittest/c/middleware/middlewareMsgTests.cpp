@@ -255,15 +255,6 @@ TEST_F (MiddlewareMsgTests, setSendSubjectInvalidSymbol)
                mBridge->bridgeMamaMsgSetSendSubject(msg,NULL,subject));
 }
 
-TEST_F (MiddlewareMsgTests, setSendSubjectInvalidSubject)
-{
-    msgBridge   msg    = (msgBridge) NOT_NULL;
-    const char* symbol = (char*)     NOT_NULL;
-
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaMsgSetSendSubject(msg,symbol,NULL));
-}
-
 TEST_F (MiddlewareMsgTests, getNativeHandle)
 {
     msgBridge msg        = NULL;
