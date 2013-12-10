@@ -496,6 +496,7 @@ int main (int argc, const char **argv)
         bool             strictChecking      = !cmdLine.getOptBool  ('C');
         bool             processMarketOrders = cmdLine.getOptBool   ('k');
         bool             showDeltas          = cmdLine.showDeltas   ();
+        const char*      dictFile            = cmdLine.getOptString("use_dict_file");
         MamaSource*      source              = cmdLine.getSource    ();
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);
         DictRequester    dictRequester (bridge);
@@ -514,10 +515,19 @@ int main (int argc, const char **argv)
         }
 
         // Get and initialize the dictionary
-        dictRequester.requestDictionary     (cmdLine.getDictSource());
-        MamdaCommonFields::setDictionary    (*dictRequester.getDictionary());
-        MamdaOrderBookFields::setDictionary (*dictRequester.getDictionary ());
-
+        if(dictFile)
+        {
+            MamaDictionary* dict =new MamaDictionary;
+            dict->populateFromFile(dictFile);
+            MamdaCommonFields::setDictionary    (*dict);
+            MamdaOrderBookFields::setDictionary (*dict);
+        }
+        else
+        {
+            dictRequester.requestDictionary     (cmdLine.getDictSource());
+            MamdaCommonFields::setDictionary    (*dictRequester.getDictionary());
+            MamdaOrderBookFields::setDictionary (*dictRequester.getDictionary ());
+        }
         const char* symbolMapFile = cmdLine.getSymbolMapFile ();
         if (symbolMapFile)
         {
