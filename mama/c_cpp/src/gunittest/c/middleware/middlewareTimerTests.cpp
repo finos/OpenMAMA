@@ -152,7 +152,8 @@ TEST_F (MiddlewareTimerTests, createInvalidDestroyCB)
                                               interval, parent, closure));
 }
 
-TEST_F (MiddlewareTimerTests, createInvalidInterval)
+/* TODO: Determine if interval maybe a NULL value */
+TEST_F (MiddlewareTimerTests, DISABLED_createInvalidInterval)
 {
     timerBridge   result            = (timerBridge) NOT_NULL;
     void*         nativeQueueHandle =               NOT_NULL;
@@ -277,7 +278,8 @@ TEST_F (MiddlewareTimerTests, setIntervalInvalidTimerBridge)
                mBridge->bridgeMamaTimerSetInterval(NULL,interval));
 }
 
-TEST_F (MiddlewareTimerTests, setIntervalInvalidInterval)
+/* TODO: Determine if interval can be set to a NULL value (0.0 in this case) */
+TEST_F (MiddlewareTimerTests, DISABLED_setIntervalInvalidInterval)
 {
     timerBridge timer = (timerBridge) NOT_NULL;
 
