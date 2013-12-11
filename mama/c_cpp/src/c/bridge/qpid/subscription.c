@@ -58,11 +58,17 @@ qpidBridgeMamaSubscription_create (subscriptionBridge* subscriber,
     mama_status             status      = MAMA_STATUS_OK;
     pn_data_t*              data        = NULL;
 
+    if ( NULL == subscriber || NULL == subscription || NULL == tport )
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "qpidBridgeMamaSubscription_create(): something NULL");
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     status = mamaTransport_getBridgeTransport (tport,
                                                (transportBridge*) &transport);
 
-    if (MAMA_STATUS_OK != status || NULL == subscriber
-         || NULL == subscription || NULL == transport)
+    if (MAMA_STATUS_OK != status || NULL == transport)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                 "qpidBridgeMamaSubscription_create(): something NULL");
@@ -226,7 +232,8 @@ qpidBridgeMamaSubscription_destroy (subscriptionBridge subscriber)
      * Invoke the subscription callback to inform that the bridge has been
      * destroyed.
      */
-    (*(wombat_subscriptionDestroyCB)destroyCb)(parent, closure);
+    if (NULL != destroyCb)
+        (*(wombat_subscriptionDestroyCB)destroyCb)(parent, closure);
 
     return MAMA_STATUS_OK;
 }
