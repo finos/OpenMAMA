@@ -327,6 +327,8 @@ TEST_F (MiddlewareInboxTests, CreateDestroy)
 
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaInboxDestroy(bridge));
+
+    mamaTransport_destroy (transport);
 }
 
 TEST_F (MiddlewareInboxTests, destroyInvalid)
