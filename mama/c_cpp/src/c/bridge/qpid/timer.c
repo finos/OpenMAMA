@@ -113,7 +113,9 @@ qpidBridgeMamaTimer_create (timerBridge*  result,
     int                         timerResult     = 0;
     struct timeval              timeout;
 
-    if (NULL == result)
+    if (NULL == result || NULL == nativeQueueHandle
+            || NULL == action
+            || NULL == parent )
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -252,7 +254,7 @@ qpidBridgeMamaTimer_getInterval (timerBridge    timer,
                                 mama_f64_t*    interval)
 {
     qpidTimerImpl* impl  = NULL;
-    if (NULL == timer)
+    if (NULL == timer || NULL == interval)
     {
         return MAMA_STATUS_NULL_ARG;
     }
