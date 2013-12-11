@@ -359,6 +359,11 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
     int                     poolSize   = 0;
     mama_status             status     = MAMA_STATUS_OK;
 
+    if (NULL == result || NULL == name || NULL == parent)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     impl = (qpidTransportBridge*) calloc (1, sizeof (qpidTransportBridge));
 
     /* Back reference the MAMA transport */
@@ -574,6 +579,11 @@ qpidBridgeMamaTransport_getNumLoadBalanceAttributes (
         const char*     name,
         int*            numLoadBalanceAttributes)
 {
+    if (NULL == numLoadBalanceAttributes)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     *numLoadBalanceAttributes = 0;
     return MAMA_STATUS_OK;
 }
@@ -583,6 +593,11 @@ qpidBridgeMamaTransport_getLoadBalanceSharedObjectName (
         const char*     name,
         const char**    loadBalanceSharedObjectName)
 {
+    if (NULL == loadBalanceSharedObjectName)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     *loadBalanceSharedObjectName = NULL;
     return MAMA_STATUS_OK;
 }
@@ -591,6 +606,11 @@ mama_status
 qpidBridgeMamaTransport_getLoadBalanceScheme (const char*       name,
                                               tportLbScheme*    scheme)
 {
+    if (NULL == scheme)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     *scheme = TPORT_LB_SCHEME_STATIC;
     return MAMA_STATUS_OK;
 }
@@ -608,6 +628,11 @@ mama_status
 qpidBridgeMamaTransport_isConnectionIntercepted (mamaConnection connection,
                                                  uint8_t*       result)
 {
+    if (NULL == result)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     *result = 0;
     return MAMA_STATUS_NOT_IMPLEMENTED;
 }
@@ -647,7 +672,7 @@ qpidBridgeMamaTransport_getNativeTransport (transportBridge     transport,
 {
     qpidTransportBridge* impl = (qpidTransportBridge*)transport;
 
-    if (NULL == transport)
+    if (NULL == transport || NULL == result)
     {
         return MAMA_STATUS_NULL_ARG;
     }
