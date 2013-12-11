@@ -219,6 +219,9 @@ qpidBridgeMamaQueue_getEventCount (queueBridge queue, size_t* count)
     qpidQueueBridge* impl       = (qpidQueueBridge*) queue;
     int              countInt   = 0;
 
+    if (NULL == count)
+        return MAMA_STATUS_NULL_ARG;
+
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
 
@@ -351,6 +354,9 @@ qpidBridgeMamaQueue_enqueueEvent (queueBridge        queue,
     wombatQueueStatus   status;
     qpidQueueBridge*    impl = (qpidQueueBridge*) queue;
 
+    if (NULL == callback)
+        return MAMA_STATUS_NULL_ARG;
+
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
 
@@ -400,6 +406,10 @@ qpidBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
 {
     qpidQueueBridge* impl   = (qpidQueueBridge*) queue;
 
+    if (NULL == callback)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
 
@@ -431,6 +441,11 @@ qpidBridgeMamaQueue_getNativeHandle (queueBridge queue,
 {
     qpidQueueBridge* impl = (qpidQueueBridge*) queue;
 
+    if (NULL == nativeHandle)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
 
@@ -446,6 +461,10 @@ qpidBridgeMamaQueue_setHighWatermark (queueBridge queue,
 {
     qpidQueueBridge* impl = (qpidQueueBridge*) queue;
 
+    if (0 == highWatermark)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
 
@@ -461,6 +480,10 @@ qpidBridgeMamaQueue_setLowWatermark (queueBridge    queue,
 {
     qpidQueueBridge* impl = (qpidQueueBridge*) queue;
 
+    if (0 == lowWatermark)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
 
