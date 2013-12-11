@@ -29,6 +29,29 @@
 using std::cout;
 using std::endl;
 
+static void onCreate (mamaSubscription subscription, void* closure);
+
+static void onError(mamaSubscription subscription,
+                    mama_status      status,
+                    void*            platformError,
+                    const char*      subject,
+                    void*            closure);
+
+static void onQuality(mamaSubscription subsc,
+                      mamaQuality      quality,
+                      const char*      symbol,
+                      short            cause,
+                      const void*      platformInfo,
+                      void*            closure);
+
+static void onMsg(mamaSubscription subscription,
+                  mamaMsg          msg,
+                  void*            closure,
+                  void*            itemClosure);
+
+static void onGap(mamaSubscription subsc, void* closure);
+static void onRecapRequest(mamaSubscription subsc, void* closure);
+static void onDestroy(mamaSubscription subsc, void* closure);
 
 class MiddlewareSubscriptionTests : public ::testing::Test
 {
@@ -40,50 +63,88 @@ protected:
     virtual void TearDown(void);
 
     mamaBridge mBridge;
+    mamaTransport tport;
+    const char*   tportName;
+
+    subscriptionBridge subscriber;
+    mamaSource         source;
+    const char*        sourceName;
+    const char*        symbol;
+    mamaQueue          queue;
+    void*              closure;
+    mamaSubscription   parent;
+    mamaMsgCallbacks   callbacks;
 };
 
 MiddlewareSubscriptionTests::MiddlewareSubscriptionTests(void)
+    : tport (NULL),
+      tportName ("test_tport"),
+      source (NULL),
+      sourceName ("src"),
+      symbol ("SYM"),
+      queue (NULL),
+      closure (NULL)
 {
+    mama_loadBridge (&mBridge, getMiddleware());
+
+    mamaQueue_create(&queue, mBridge);
 }
 
 MiddlewareSubscriptionTests::~MiddlewareSubscriptionTests(void)
 {
+    mamaQueue_destroy (queue);
 }
 
 void MiddlewareSubscriptionTests::SetUp(void)
 {
-	mama_loadBridge (&mBridge,getMiddleware());
+    mamaTransport_allocate (&tport);
+    mamaTransport_create   (tport, tportName, mBridge);
+
+    mamaSource_create(&source);
+    mamaSource_setId(source, "SRC");
+    mamaSource_setTransport(source, tport);
+    mamaSource_setSymbolNamespace(source, "NASDAQ");
+
+    callbacks.onCreate          = onCreate; 
+    callbacks.onError           = onError; 
+    callbacks.onQuality         = onQuality; 
+    callbacks.onMsg             = onMsg; 
+    callbacks.onGap             = onGap; 
+    callbacks.onRecapRequest    = onRecapRequest;
+    callbacks.onDestroy         = onDestroy;
 }
 
 void MiddlewareSubscriptionTests::TearDown(void)
 {
+    mamaTransport_destroy (tport);
 }
 
-static void onCreate(mamaSubscription subscription, void*	closure)
+static void onCreate (mamaSubscription subscription,
+                      void* closure)
 {
 }
 
-static void onError(mamaSubscription subscription, 
-                    mama_status       status, 
-                    void*            platformError, 
-                    const char*      subject, 
+static void onError(mamaSubscription subscription,
+                    mama_status      status,
+                    void*            platformError,
+                    const char*      subject,
                     void*            closure)
 {
 }
 
-static void onQuality(mamaSubscription subsc, 
-                      mamaQuality      quality, 
-                      const char*      symbol, 
-                      short            cause, 
-                      const void*      platformInfo, 
+static void onQuality(mamaSubscription subsc,
+                      mamaQuality      quality,
+                      const char*      symbol,
+                      short            cause,
+                      const void*      platformInfo,
                       void*            closure)
 {
 }
 
 static void onMsg(mamaSubscription subscription,
-                  mamaMsg	       msg,
-                  void*	           closure,
-                  void*	           itemClosure)
+                  mamaMsg          msg,
+                  void*            closure,
+                  void*            itemClosure)
 {
 }
 
@@ -94,41 +155,23 @@ static void onGap(mamaSubscription subsc, void* closure)
 static void onRecapRequest(mamaSubscription subsc, void* closure)
 {
 }
+
+static void onDestroy(mamaSubscription subsc, void* closure)
+{
+}
+
+
 /*===================================================================
  =               mamaSubscription bridge functions                   =
  ====================================================================*/
 
+/* TODO:
+ * Discuss the validity of these tests - ultimately we double create
+ * subscriptions, which I would assume isn't supposed to be expected behaviour.
+ */
 TEST_F (MiddlewareSubscriptionTests, DISABLED_createDestroy)
 /* cores*/
 {
-    subscriptionBridge subscriber = NULL;
-    mamaTransport      tport      = NULL;
-    const char*        tportName  = "test_tport";
-    mamaSource         source     = NULL;
-    const char*        sourceName = "src";
-    const char*        symbol     = "SYM";
-    mamaQueue          queue      = NULL;
-    void*              closure    = NULL;
-    mamaSubscription   parent     = NULL;
-
-    mamaTransport_allocate(&tport);
-    mamaTransport_create(tport, tportName, mBridge);
-    
-    mamaSource_create(&source);
-    mamaSource_setId(source, "SRC");
-    mamaSource_setTransport(source, tport);
-    mamaSource_setSymbolNamespace(source, "NASDAQ");
-    
-    mamaMsgCallbacks callbacks; 
-    callbacks.onCreate          = onCreate; 
-    callbacks.onError           = onError; 
-    callbacks.onQuality         = onQuality; 
-    callbacks.onMsg             = onMsg; 
-    callbacks.onGap             = onGap; 
-    callbacks.onRecapRequest    = onRecapRequest;
-
-    mamaQueue_create(&queue,mBridge);
-    
     mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
@@ -149,14 +192,6 @@ TEST_F (MiddlewareSubscriptionTests, DISABLED_createDestroy)
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidResult)
 {
-    mamaTransport      tport      = (mamaTransport)      NOT_NULL;
-    const char*        sourceName = (char*)              NOT_NULL;
-    const char*        symbol     = (char*)              NOT_NULL;
-    mamaQueue          queue      = (mamaQueue)          NOT_NULL;
-    void*              closure    =                      NULL;
-    mamaSubscription   parent     = (mamaSubscription)   NOT_NULL;
-    mamaMsgCallbacks   callbacks;
-    
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionCreate(NULL, sourceName, symbol,
                                                     tport, queue, callbacks,
@@ -165,14 +200,6 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidResult)
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidTport)
 {
-    subscriptionBridge subscriber = (subscriptionBridge) NOT_NULL; 
-    const char*        sourceName = (char*)              NOT_NULL;
-    const char*        symbol     = (char*)              NOT_NULL;
-    mamaQueue          queue      = (mamaQueue)          NOT_NULL;
-    void*              closure    =                      NULL;
-    mamaSubscription   parent     = (mamaSubscription)   NOT_NULL;
-    mamaMsgCallbacks   callbacks;
-    
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
                                                     NULL, queue, callbacks,
@@ -181,14 +208,6 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidTport)
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidSourceName)
 {
-    subscriptionBridge subscriber = (subscriptionBridge) NOT_NULL; 
-    mamaTransport      tport      = (mamaTransport)      NOT_NULL;
-    const char*        symbol     = (char*)              NOT_NULL;
-    mamaQueue          queue      = (mamaQueue)          NOT_NULL;
-    void*              closure    =                      NULL;
-    mamaSubscription   parent     = (mamaSubscription)   NOT_NULL;
-    mamaMsgCallbacks   callbacks;
-    
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, NULL, symbol,
                                                     tport, queue, callbacks,
@@ -197,14 +216,6 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidSourceName)
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidSymbol)
 {
-    subscriptionBridge subscriber = (subscriptionBridge) NOT_NULL; 
-    mamaTransport      tport      = (mamaTransport)      NOT_NULL;
-    const char*        sourceName = (char*)              NOT_NULL;
-    mamaQueue          queue      = (mamaQueue)          NOT_NULL;
-    void*              closure    =                      NULL;
-    mamaSubscription   parent     = (mamaSubscription)   NOT_NULL;
-    mamaMsgCallbacks   callbacks;
-    
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, NULL,
                                                     tport, queue, callbacks,
@@ -213,14 +224,6 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidSymbol)
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidQueue)
 {
-    subscriptionBridge subscriber = (subscriptionBridge) NOT_NULL; 
-    mamaTransport      tport      = (mamaTransport)      NOT_NULL;
-    const char*        sourceName = (char*)              NOT_NULL;
-    const char*        symbol     = (char*)              NOT_NULL;
-    void*              closure    =                      NULL;
-    mamaSubscription   parent     = (mamaSubscription)   NOT_NULL;
-    mamaMsgCallbacks   callbacks;
-    
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
                                                     tport, NULL, callbacks,
@@ -229,14 +232,6 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidQueue)
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidParent)
 {
-    subscriptionBridge subscriber = (subscriptionBridge) NOT_NULL; 
-    mamaTransport      tport      = (mamaTransport)      NOT_NULL;
-    const char*        sourceName = (char*)              NOT_NULL;
-    const char*        symbol     = (char*)              NOT_NULL;
-    mamaQueue          queue      = (mamaQueue)          NOT_NULL;
-    void*              closure    =                      NULL;
-    mamaMsgCallbacks   callbacks;
-    
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
                                                     tport, queue, callbacks,
@@ -245,14 +240,6 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidParent)
 /* TEST COMMENTED OUT BECAUSE mamaMsgCallbacks CAN'T BE CAST AS NULL!
 TEST_F (MiddlewareSubscriptionTests, createInvalidCallbacks)
 {
-    subscriptionBridge subscriber = (subscriptionBridge) NOT_NULL; 
-    mamaTransport      tport      = (mamaTransport)      NOT_NULL;
-    const char*        sourceName = (char*)              NOT_NULL;
-    const char*        symbol     = (char*)              NOT_NULL;
-    mamaQueue          queue      = (mamaQueue)          NOT_NULL;
-    void*              closure    =                      NULL;
-    mamaSubscription   parent     = (mamaSubscription)   NOT_NULL;
-    
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
                                                     tport, queue, NULL,
@@ -262,31 +249,14 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidCallbacks)
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidResult)
 {
-    const char*         source      = (char*)              NOT_NULL;
-    const char*         symbol      = (char*)              NOT_NULL;
-    mamaTransport       tport       = (mamaTransport)      NOT_NULL;
-    mamaQueue           queue       = (mamaQueue)          NOT_NULL;
-    mamaSubscription    parent      = (mamaSubscription)   NOT_NULL;
-    void*               closure     =                      NULL;
-    mamaMsgCallbacks    callbacks; 
-    
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(NULL, source, symbol, 
+              mBridge->bridgeMamaSubscriptionCreateWildCard(NULL, sourceName, symbol, 
                                                             tport, queue, callbacks, 
                                                             parent, closure));
 }
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidSource)
 {
-    subscriptionBridge  subscriber  = (subscriptionBridge) NOT_NULL;
-    const char*         source      = (char*)              NOT_NULL;
-    const char*         symbol      = (char*)              NOT_NULL;
-    mamaTransport       tport       = (mamaTransport)      NOT_NULL;
-    mamaQueue           queue       = (mamaQueue)          NOT_NULL;
-    mamaSubscription    parent      = (mamaSubscription)   NOT_NULL;
-    void*               closure     =                      NULL;
-    mamaMsgCallbacks    callbacks; 
-    
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, NULL, symbol, 
                                                             tport, queue, callbacks, 
@@ -295,80 +265,40 @@ TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidSource)
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidSymbol)
 {
-    subscriptionBridge  subscriber  = (subscriptionBridge) NOT_NULL;
-    const char*         source      = (char*)              NOT_NULL;
-    mamaTransport       tport       = (mamaTransport)      NOT_NULL;
-    mamaQueue           queue       = (mamaQueue)          NOT_NULL;
-    mamaSubscription    parent      = (mamaSubscription)   NOT_NULL;
-    void*               closure     =                      NULL;
-    mamaMsgCallbacks    callbacks; 
-    
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, source, NULL, 
+              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, NULL, 
                                                             tport, queue, callbacks, 
                                                             parent, closure));
 }
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidTport)
 {
-    subscriptionBridge  subscriber  = (subscriptionBridge) NOT_NULL;
-    const char*         source      = (char*)              NOT_NULL;
-    const char*         symbol      = (char*)              NOT_NULL;
-    mamaQueue           queue       = (mamaQueue)          NOT_NULL;
-    mamaSubscription    parent      = (mamaSubscription)   NOT_NULL;
-    void*               closure     =                      NULL;
-    mamaMsgCallbacks    callbacks; 
-    
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, source, symbol, 
+              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol, 
                                                             NULL, queue, callbacks, 
                                                             parent, closure));
 }
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidQueue)
 {
-    subscriptionBridge  subscriber  = (subscriptionBridge) NOT_NULL;
-    const char*         source      = (char*)              NOT_NULL;
-    const char*         symbol      = (char*)              NOT_NULL;
-    mamaTransport       tport       = (mamaTransport)      NOT_NULL;
-    mamaSubscription    parent      = (mamaSubscription)   NOT_NULL;
-    void*               closure     =                      NULL;
-    mamaMsgCallbacks    callbacks; 
-    
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, source, symbol, 
+              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol, 
                                                             tport, NULL, callbacks, 
                                                             parent, closure));
 }
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidParent)
 {
-    subscriptionBridge  subscriber  = (subscriptionBridge) NOT_NULL;
-    const char*         source      = (char*)              NOT_NULL;
-    const char*         symbol      = (char*)              NOT_NULL;
-    mamaTransport       tport       = (mamaTransport)      NOT_NULL;
-    mamaQueue           queue       = (mamaQueue)          NOT_NULL;
-    void*               closure     =                      NULL;
-    mamaMsgCallbacks    callbacks; 
-    
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, source, symbol, 
+              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol, 
                                                             tport, queue, callbacks, 
                                                             NULL, closure));
 }
 /* COMMENTED OUT BECAUSE mamaMsg Callbacks CAN'T BE CAST AS NULL
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidCallbacks)
 {
-    subscriptionBridge  subscriber  = (subscriptionBridge) NOT_NULL;
-    const char*         source      = (char*)              NOT_NULL;
-    const char*         symbol      = (char*)              NOT_NULL;
-    mamaTransport       tport       = (mamaTransport)      NOT_NULL;
-    mamaQueue           queue       = (mamaQueue)          NOT_NULL;
-    mamaSubscription    parent      = (mamaSubscription)   NOT_NULL;
-    void*               closure     =                      NULL;
-    
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, source, symbol, 
+              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol, 
                                                             tport, queue, NULL, 
                                                             parent, closure));
 }
@@ -376,34 +306,6 @@ TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidCallbacks)
 
 TEST_F (MiddlewareSubscriptionTests, mute)
 {
-    subscriptionBridge subscriber = NULL;
-    mamaTransport      tport      = NULL;
-    const char*        tportName  = "test_tport";
-    mamaSource         source     = NULL;
-    const char*        sourceName = "src";
-    const char*        symbol     = "SYM";
-    mamaQueue          queue      = NULL;
-    void*              closure    = NULL;
-    mamaSubscription   parent     = NULL;
-
-    mamaTransport_allocate(&tport);
-    mamaTransport_create(tport, tportName, mBridge);
-    
-    mamaSource_create(&source);
-    mamaSource_setId(source, "SRC");
-    mamaSource_setTransport(source, tport);
-    mamaSource_setSymbolNamespace(source, "NASDAQ");
-    
-    mamaMsgCallbacks callbacks; 
-    callbacks.onCreate       = onCreate; 
-    callbacks.onError        = onError; 
-    callbacks.onQuality      = onQuality; 
-    callbacks.onMsg          = onMsg; 
-    callbacks.onGap          = onGap; 
-    callbacks.onRecapRequest = onRecapRequest;
-
-    mamaQueue_create(&queue,mBridge);
-    
     mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
@@ -434,35 +336,7 @@ TEST_F (MiddlewareSubscriptionTests, destroyInvalid)
 
 TEST_F (MiddlewareSubscriptionTests, isValid)
 {
-    subscriptionBridge subscriber = NULL;
-    mamaTransport      tport      = NULL;
-    const char*        tportName  = "test_tport";
-    mamaSource         source     = NULL;
-    const char*        sourceName = "src";
-    const char*        symbol     = "SYM";
-    mamaQueue          queue      = NULL;
-    void*              closure    = NULL;
-    mamaSubscription   parent     = NULL;
-    int                res        = NULL;
-
-    mamaTransport_allocate(&tport);
-    mamaTransport_create(tport, tportName, mBridge);
-    
-    mamaSource_create(&source);
-    mamaSource_setId(source, "SRC");
-    mamaSource_setTransport(source, tport);
-    mamaSource_setSymbolNamespace(source, "NASDAQ");
-    
-    mamaMsgCallbacks callbacks; 
-    callbacks.onCreate       = onCreate; 
-    callbacks.onError        = onError; 
-    callbacks.onQuality      = onQuality; 
-    callbacks.onMsg          = onMsg; 
-    callbacks.onGap          = onGap; 
-    callbacks.onRecapRequest = onRecapRequest;
-
-    mamaQueue_create(&queue,mBridge);
-    
+    int res = NULL;
     mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
@@ -498,35 +372,7 @@ TEST_F (MiddlewareSubscriptionTests, hasWildcards)
 
 TEST_F (MiddlewareSubscriptionTests, getPlatformError)
 {
-    subscriptionBridge subscriber = NULL;
-    mamaTransport      tport      = NULL;
-    const char*        tportName  = "test_tport";
-    mamaSource         source     = NULL;
-    const char*        sourceName = "src";
-    const char*        symbol     = "SYM";
-    mamaQueue          queue      = NULL;
-    void*              closure    = NULL;
-    mamaSubscription   parent     = NULL;
-    void*              error      = NULL;
-
-    mamaTransport_allocate(&tport);
-    mamaTransport_create(tport, tportName, mBridge);
-    
-    mamaSource_create(&source);
-    mamaSource_setId(source, "SRC");
-    mamaSource_setTransport(source, tport);
-    mamaSource_setSymbolNamespace(source, "NASDAQ");
-    
-    mamaMsgCallbacks callbacks; 
-    callbacks.onCreate       = onCreate; 
-    callbacks.onError        = onError; 
-    callbacks.onQuality      = onQuality; 
-    callbacks.onMsg          = onMsg; 
-    callbacks.onGap          = onGap; 
-    callbacks.onRecapRequest = onRecapRequest;
-
-    mamaQueue_create(&queue,mBridge);
-    
+    void* error = NOT_NULL;
     mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
@@ -545,8 +391,6 @@ TEST_F (MiddlewareSubscriptionTests, getPlatformError)
 
 TEST_F (MiddlewareSubscriptionTests, getPlatformErrorInvalidError)
 {
-    subscriptionBridge subscriber = (subscriptionBridge) NOT_NULL;
-
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaSubscriptionGetPlatformError(subscriber,
                                                                NULL));
@@ -563,34 +407,7 @@ TEST_F (MiddlewareSubscriptionTests, getPlatformErrorInvalidSubBridge)
 
 TEST_F (MiddlewareSubscriptionTests, isTportDisconnected)
 {
-    subscriptionBridge subscriber = NULL;
-    mamaTransport      tport      = NULL;
-    const char*        tportName  = "test_tport";
-    mamaSource         source     = NULL;
-    const char*        sourceName = "src";
-    const char*        symbol     = "SYM";
-    mamaQueue          queue      = NULL;
-    void*              closure    = NULL;
-    mamaSubscription   parent     = NULL;
-    int                res        = NULL;
-    mamaTransport_allocate(&tport);
-    mamaTransport_create(tport, tportName, mBridge);
-    
-    mamaSource_create(&source);
-    mamaSource_setId(source, "SRC");
-    mamaSource_setTransport(source, tport);
-    mamaSource_setSymbolNamespace(source, "NASDAQ");
-    
-    mamaMsgCallbacks callbacks; 
-    callbacks.onCreate       = onCreate; 
-    callbacks.onError        = onError; 
-    callbacks.onQuality      = onQuality; 
-    callbacks.onMsg          = onMsg; 
-    callbacks.onGap          = onGap; 
-    callbacks.onRecapRequest = onRecapRequest;
-
-    mamaQueue_create(&queue,mBridge);
-    
+    int res = NULL;
     mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
@@ -615,35 +432,7 @@ TEST_F (MiddlewareSubscriptionTests, isTportDisconnectedInvalid)
 
 TEST_F (MiddlewareSubscriptionTests, setTopicClosure)
 {
-    subscriptionBridge subscriber = NULL;
-    mamaTransport      tport      = NULL;
-    const char*        tportName  = "test_tport";
-    mamaSource         source     = NULL;
-    const char*        sourceName = "src";
-    const char*        symbol     = "SYM";
-    mamaQueue          queue      = NULL;
-    void*              closure    = NULL;
-    void*              newClosure = NULL;
-    mamaSubscription   parent     = NULL;
-
-    mamaTransport_allocate(&tport);
-    mamaTransport_create(tport, tportName, mBridge);
-    
-    mamaSource_create(&source);
-    mamaSource_setId(source, "SRC");
-    mamaSource_setTransport(source, tport);
-    mamaSource_setSymbolNamespace(source, "NASDAQ");
-    
-    mamaMsgCallbacks callbacks; 
-    callbacks.onCreate       = onCreate; 
-    callbacks.onError        = onError; 
-    callbacks.onQuality      = onQuality; 
-    callbacks.onMsg          = onMsg; 
-    callbacks.onGap          = onGap; 
-    callbacks.onRecapRequest = onRecapRequest;
-
-    mamaQueue_create(&queue,mBridge);
-    
+    void* newClosure = NOT_NULL;
     mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
@@ -672,34 +461,6 @@ TEST_F (MiddlewareSubscriptionTests, setTopicClosureInvalidSubBridge)
 
 TEST_F (MiddlewareSubscriptionTests, muteCurrentTopic)
 {
-    subscriptionBridge subscriber = NULL;
-    mamaTransport      tport      = NULL;
-    const char*        tportName  = "test_tport";
-    mamaSource         source     = NULL;
-    const char*        sourceName = "src";
-    const char*        symbol     = "SYM";
-    mamaQueue          queue      = NULL;
-    void*              closure    = NULL;
-    mamaSubscription   parent     = NULL;
-
-    mamaTransport_allocate(&tport);
-    mamaTransport_create(tport, tportName, mBridge);
-    
-    mamaSource_create(&source);
-    mamaSource_setId(source, "SRC");
-    mamaSource_setTransport(source, tport);
-    mamaSource_setSymbolNamespace(source, "NASDAQ");
-    
-    mamaMsgCallbacks callbacks; 
-    callbacks.onCreate       = onCreate; 
-    callbacks.onError        = onError; 
-    callbacks.onQuality      = onQuality; 
-    callbacks.onMsg          = onMsg; 
-    callbacks.onGap          = onGap; 
-    callbacks.onRecapRequest = onRecapRequest;
-
-    mamaQueue_create(&queue,mBridge);
-    
     mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
