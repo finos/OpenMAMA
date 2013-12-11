@@ -39,20 +39,34 @@ protected:
     virtual void SetUp(void);
     virtual void TearDown(void);
 
-    mamaBridge mBridge;
+    mamaBridge      mBridge;
+    transportBridge tport;
+    const char*     name;
+    const char*     parentName;
+    mamaTransport   parentTport;
 };
 
 MiddlewareTransportTests::MiddlewareTransportTests(void)
+    : tport (NULL),
+      name  ("test_tport"),
+      parentName ("test_tport"),
+      parentTport (NULL)
 {
+
+    mama_loadBridge (&mBridge, getMiddleware());
+    mamaTransport_allocate (&parentTport);
+
+    mamaTransport_create (parentTport, parentName, mBridge);
+    mamaTransport_getNativeTransport (parentTport, 0, (void**)&tport);
 }
 
 MiddlewareTransportTests::~MiddlewareTransportTests(void)
 {
+    mamaTransport_destroy (parentTport);
 }
 
 void MiddlewareTransportTests::SetUp(void)
 {
-	mama_loadBridge (&mBridge,getMiddleware());
 }
 
 void MiddlewareTransportTests::TearDown(void)
@@ -67,83 +81,18 @@ void MiddlewareTransportTests::TearDown(void)
 
 TEST_F (MiddlewareTransportTests, isValidInvalid)
 {
-    int res = NULL;
-    
-    res = mBridge->bridgeMamaTransportIsValid(NULL);
-
-    ASSERT_TRUE(res != NULL);
+    ASSERT_EQ(0, mBridge->bridgeMamaTransportIsValid(NULL));
 }
 
 TEST_F (MiddlewareTransportTests, isValid)
 {
-    transportBridge tport       = NULL;
-    const char*     name        = "test_tport";
-    const char*     parentName  = "test_tport";
-    mamaTransport   parentTport = NULL;
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
-
     ASSERT_EQ(1,mBridge->bridgeMamaTransportIsValid(tport));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
-}
-
-
-TEST_F (MiddlewareTransportTests, destroy)
-{
-    transportBridge tport       = NULL;
-    const char*     name        = "test_tport";
-    const char*     parentName  = "test_tport";
-    mamaTransport   parentTport = NULL;
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
-
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
 }
 
 TEST_F (MiddlewareTransportTests, destroyInvalid)
 {
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaTransportDestroy(NULL));
-}
-
-TEST_F (MiddlewareTransportTests, create)
-{
-    transportBridge result      = NULL;
-    const char*     name        = "test_tport";
-    const char*     parentName  = "test_tport";
-    mamaTransport   parentTport = NULL;
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&result,name,
-                                                  parentTport));
 }
 
 TEST_F (MiddlewareTransportTests, createInvalidTransportBridge)
@@ -191,32 +140,15 @@ TEST_F (MiddlewareTransportTests, forceClientDisconnectInvalidTransportBridge)
 
 TEST_F (MiddlewareTransportTests, forceClientDisconnect)
 {
-    transportBridge tport         = NULL;
     int             numTransports = 1;
-    const char*     name          = "test_tport";
-    const char*     parentName    = "test_tport";
-    mamaTransport   parentTport   = NULL;
     const char*     ip            = "127.0.0.1";
     uint16_t        port          = 80;
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
 
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaTransportForceClientDisconnect(&tport,
                                                                  numTransports,
                                                                  ip,
                                                                  port));
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
 }
 
 
@@ -261,34 +193,17 @@ TEST_F (MiddlewareTransportTests, forceClientDisconnectInvalidPort)
 
 TEST_F (MiddlewareTransportTests, findConnection)
 {
-    transportBridge tport         = NULL;
     int             numTransports = 1;
-    const char*     name          = "test_tport";
-    const char*     parentName    = "test_tport";
-    mamaTransport   parentTport   = NULL;
     const char*     ip            = "127.0.0.1";
     uint16_t        port          = 80;
     mamaConnection result         = NULL;
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
-    ASSERT_EQ (MAMA_STATUS_OK, 
+    ASSERT_EQ (MAMA_STATUS_OK,
                mBridge->bridgeMamaTransportFindConnection(&tport,
                                                           numTransports,
                                                           &result,
                                                           ip,
                                                           port));
-
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
 }
 
 TEST_F (MiddlewareTransportTests, findConnectionInvalidTransportBridge)
@@ -368,33 +283,15 @@ TEST_F (MiddlewareTransportTests, findConnectionInvalidPort)
 
 TEST_F (MiddlewareTransportTests, getAllConnections)
 {
-    transportBridge tport         = NULL;
     int             numTransports = 1;
-    const char*     name          = "test_tport";
-    const char*     parentName    = "test_tport";
-    mamaTransport   parentTport   = NULL;
-    mamaConnection* result        = NULL;   //sort of cheating to get it to compile, should probably be more like line below
-    /*mamaConnection  result[]      = {NULL};*/ 
+    mamaConnection* result        = NULL;
     uint32_t        len           = 1;
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
 
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaTransportGetAllConnections(&tport,
                                                              numTransports,
                                                              &result,
                                                              &len));
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsInvalidTransportBridge)
@@ -483,26 +380,10 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidNumTransports)
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsForTopic)
 {
-    transportBridge tport         = NULL;
     int             numTransports = 1;
-    const char*     name          = "test_tport";
-    const char*     parentName    = "test_tport";
-    mamaTransport   parentTport   = NULL;
-    mamaConnection* result        = NULL;   //sort of cheating to get it to compile, should probably be more like line below
-/*  mamaconnection  result[]      = {NULL}; */
+    mamaConnection* result        = NULL;
     uint32_t        len           = 1;
     const char*     topic         = "topic";
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
 
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&tport,
@@ -510,8 +391,6 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsForTopic)
                                                              topic,
                                                              &result,
                                                              &len));
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidTopic)
@@ -562,27 +441,10 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidLen)
 TEST_F (MiddlewareTransportTests, requestConflation)
 {
     int             numTransports = 1;
-    transportBridge tport         = NULL;
-    const char*     name          = "test_tport";
-    const char*     parentName    = "test_tport";
-    mamaTransport   parentTport   = NULL;
-     
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
 
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportRequestConflation(&tport, numTransports));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
+               mBridge->bridgeMamaTransportRequestConflation(&tport,
+                                                             numTransports));
 }
 
 TEST_F (MiddlewareTransportTests, requestConflationInvalidTransportBridge)
@@ -605,30 +467,12 @@ TEST_F (MiddlewareTransportTests, requestConflationInvalidNumTransports)
 TEST_F (MiddlewareTransportTests, requestEndConflation)
 {
     int             numTransports = 1;
-    transportBridge tport         = NULL;
-    const char*     name          = "test_tport";
-    const char*     parentName    = "test_tport";
-    mamaTransport   parentTport   = NULL;
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
 
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaTransportRequestEndConflation(&tport, numTransports));
     
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaTransportRequestConflation(&tport, numTransports));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
 }
 
 TEST_F (MiddlewareTransportTests, requestEndConflationInvalidTransportBridge)
@@ -805,28 +649,12 @@ TEST_F (MiddlewareTransportTests, freeAllConnectionsInvalidLen)
 
 TEST_F (MiddlewareTransportTests, getNumLoadBalanceAttributes)
 {
-    transportBridge tport         = NULL;
-    const char*     name          = "test_tport";
-    const char*     parentName    = "test_tport";
-    mamaTransport   parentTport   = NULL;
-    int numLoadBalanceAttributes  = NULL;
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
+    const char* name = (char*) NOT_NULL;
+    int numLoadBalanceAttributes = 0;
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaTransportGetNumLoadBalanceAttributes(name, 
                                                         &numLoadBalanceAttributes));
- 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
 }
 
 TEST_F (MiddlewareTransportTests, getNumLoadBalanceAttributesInvalidName)
