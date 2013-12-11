@@ -189,24 +189,6 @@ TEST_F(MiddlewarePublisherTests, DISABLED_createByIndexInvalidRoot)
                                                          parent));
 }
 
-TEST_F(MiddlewarePublisherTests, createByIndexInvalidNativeQueueHandle)
-{
-    publisherBridge  result            = (publisherBridge) NOT_NULL;
-    mamaTransport    tport             = (mamaTransport)   NOT_NULL;
-    int              tportIndex        =                   0;
-    const char*      topic             = (char*)           NOT_NULL;
-    const char*      source            = (char*)           NOT_NULL;
-    const char*      root              = (char*)           NOT_NULL;
-    mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
-    
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreateByIndex(&result, tport,
-                                                         tportIndex,
-                                                         topic, source,
-                                                         root, NULL, 
-                                                         parent));
-}
-
 TEST_F(MiddlewarePublisherTests, createByIndexInvalidParent)
 {
     publisherBridge  result            = (publisherBridge) NOT_NULL;
@@ -258,7 +240,14 @@ TEST_F (MiddlewarePublisherTests, createInvalidTport)
                                                   parent));
 }
 
-TEST_F (MiddlewarePublisherTests, createInvalidTopic)
+/* TODO: Disabling this these tests temporarily:
+ * - Firstly, it's not clear that all the arguments are required for the
+ *   publisher
+ * - Secondly, the simple NOT_NULL attributes make the rest of the test invalid.
+ *   This actually needs to be changed for ALL these tests, but the impact is
+ *   clearest here.
+ */
+TEST_F (MiddlewarePublisherTests, DISABLED_createInvalidTopic)
 {
     publisherBridge  result            = (publisherBridge) NOT_NULL;
     mamaTransport    tport             = (mamaTransport)   NOT_NULL;
@@ -274,7 +263,7 @@ TEST_F (MiddlewarePublisherTests, createInvalidTopic)
                                                   parent));
 }
 
-TEST_F (MiddlewarePublisherTests, createInvalidSource)
+TEST_F (MiddlewarePublisherTests, DISABLED_createInvalidSource)
 {
     publisherBridge  result            = (publisherBridge) NOT_NULL;
     mamaTransport    tport             = (mamaTransport)   NOT_NULL;
@@ -290,7 +279,7 @@ TEST_F (MiddlewarePublisherTests, createInvalidSource)
                                                   parent));
 }
 
-TEST_F (MiddlewarePublisherTests, createInvalidRoot)
+TEST_F (MiddlewarePublisherTests, DISABLED_createInvalidRoot)
 {
     publisherBridge  result            = (publisherBridge) NOT_NULL;
     mamaTransport    tport             = (mamaTransport)   NOT_NULL;
@@ -304,21 +293,6 @@ TEST_F (MiddlewarePublisherTests, createInvalidRoot)
                                                   source, NULL, 
                                                   nativeQueueHandle,
                                                   parent));
-}
-
-TEST_F (MiddlewarePublisherTests, createInvalidNativeQueueHandle)
-{
-    publisherBridge  result            = (publisherBridge) NOT_NULL;
-    mamaTransport    tport             = (mamaTransport)   NOT_NULL;
-    const char*      topic             = (char*)           NOT_NULL;
-    const char*      source            = (char*)           NOT_NULL;
-    const char*      root              = (char*)           NOT_NULL;
-    mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
-    
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreate(&result, tport, topic,
-                                                  source, root, 
-                                                  NULL, parent));
 }
 
 TEST_F (MiddlewarePublisherTests, createInvalidPublisher)
