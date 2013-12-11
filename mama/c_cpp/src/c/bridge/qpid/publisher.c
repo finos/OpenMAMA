@@ -109,6 +109,13 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
     qpidTransportBridge*    transport   = NULL;
     mama_status             status      = MAMA_STATUS_OK;
 
+    if (NULL == result
+            || NULL == tport
+            || NULL == parent)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     transport = qpidBridgeMamaTransportImpl_getTransportBridge (tport);
     if (NULL == transport)
     {
@@ -232,6 +239,10 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
                   "qpidBridgeMamaPublisher_send(): No publisher.");
         return MAMA_STATUS_INVALID_ARG;
     }
+    else if (NULL == msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
 
     /* Get the bridge message type if specified already by inbox handlers */
     qpidBridgeMamaMsgImpl_getMsgType (impl->mMamaBridgeMsg, &type);
@@ -316,7 +327,7 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
     msgBridge               bridgeMsg       = NULL;
     mama_status             status          = MAMA_STATUS_OK;
 
-    if (NULL == publisher)
+    if (NULL == publisher || NULL == request || NULL == reply)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -413,7 +424,7 @@ qpidBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge     publisher,
     const char*               replyTo        = NULL;
     mama_status               status         = MAMA_STATUS_OK;
 
-    if (NULL == publisher)
+    if (NULL == publisher || NULL == inbox || NULL == reply)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -504,7 +515,7 @@ qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
     inboxBridge             inboxImpl   = NULL;
     mama_status             status      = MAMA_STATUS_OK;
 
-    if (NULL == impl)
+    if (NULL == impl || NULL == inbox || NULL == msg)
     {
         return MAMA_STATUS_NULL_ARG;
     }
