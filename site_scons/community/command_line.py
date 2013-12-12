@@ -12,7 +12,7 @@ def get_command_line_opts( host, products, VERSIONS ):
     opts.AddVariables(
        # Must be #install by default, otherwise when it comes to cleaning the
        # install folder, can remove whole tree
-       PathVariable('prefix', 'Installation prefix', '#wombat_products_%s' % (VERSIONS['mama']['releaseString']),
+       PathVariable('prefix', 'Installation prefix', '#openmama_install_%s' % (VERSIONS['mama']['releaseString']),
                     PathVariable.PathAccept),
        PathVariable('blddir', 'Object directory', '#objdir',
                     PathVariable.PathAccept),

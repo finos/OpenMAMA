@@ -42,10 +42,12 @@ try:
 except:
     pass
 
-if env['prefix'] == '#wombat_products_%s' % (VERSIONS['mama']['releaseString']):
+if (env['prefix'] == '#wombat_products_%s' % (VERSIONS['mama']['releaseString'])
+    or  env['prefix'] == '#openmama_install_%s' % (VERSIONS['mama']['releaseString'])):
     env.LogDefaultValue( 'Prefix',env['prefix'] )
 
-if 'wombat_products_%s' % (VERSIONS['mama']['releaseString']) not in env['prefix']:
+if ('wombat_products_%s' % (VERSIONS['mama']['releaseString']) not in env['prefix']
+    and os.path.isdir ('site_scons/enterprise')):
     env['prefix'] = posixpath.join( env['prefix'], 'wombat_products_%s' % (VERSIONS['mama']['releaseString']) )
     env.LogUserValue( 'Prefix',env['prefix'] )
 
