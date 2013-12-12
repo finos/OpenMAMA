@@ -22,13 +22,10 @@ env.Append(LIBPATH=libpath, LIBS=['dl', 'wombatcommon', 'mama'],
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 
 sources = Split("""
-datetimetest.cpp
 inboxtest.cpp
 iotest.cpp
-iteration.cpp
-msgtests.cpp
 openclosetest.cpp
-pricetest.cpp
+payloadmiddlewareidtest.cpp
 publishertest.cpp
 queuetest.cpp
 subscriptiontest.cpp
@@ -48,21 +45,26 @@ env.PrependENVPath('LD_LIBRARY_PATH', Dir('%s/lib' % env['prefix'
 
 bins = []
 
-MiddlewareCSrc = Split("""
-middleware/middlewareGeneralTests.cpp
-middleware/middlewareInboxTests.cpp
-""")
+MamaDateTimeSrc = Glob('mamadatetime/*.cpp')
+MamaDateTimeSrc.append( MainUnitTest )
+
+MamaMsgSrc = Glob('mamamsg/*.cpp')
+MamaMsgSrc.append( MainUnitTest )
+
+MamaPriceSrc = Glob('mamaprice/*.cpp')
+MamaPriceSrc.append( MainUnitTest )
+
+MiddlewareCSrc = Glob('middleware/*.cpp')
 MiddlewareCSrc.append( MainUnitTest )
 
 PayloadCSrc = Glob('payload/*.cpp')
 PayloadCSrc.append( MainUnitTest )
 
-MamaMsgSrc = Glob('mamamsg/*.cpp')
-MamaMsgSrc.append( MainUnitTest )
-
+bins += env.Program( 'UnitTestMamaDateTimeC', MamaMsgSrc )
+bins += env.Program( 'UnitTestMamaMiddlewareC', MiddlewareCSrc )
 bins += env.Program( 'UnitTestMamaMsgC', MamaMsgSrc )
 bins += env.Program( 'UnitTestMamaPayloadC', PayloadCSrc )
-bins += env.Program( 'UnitTestMamaMiddlewareC', MiddlewareCSrc )
+bins += env.Program( 'UnitTestMamaPriceC', MamaMsgSrc )
 
 Alias( 'install',env.Install('$bindir',bins) )
 
