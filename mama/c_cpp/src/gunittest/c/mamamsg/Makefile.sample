@@ -62,7 +62,8 @@ UnitTestMamaMsgC: ../MainUnitTestC.o \
                       msgfieldatomictests.o \
                       msgfieldcompositetests.o \
                       msgfieldvectortests.o \
-                      msgstatustests.o
+                      msgstatustests.o \
+                      msgiterationtests.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
 

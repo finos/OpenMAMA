@@ -48,4 +48,5 @@ nodist_UnitTestMamaMsgC_SOURCES = ../MainUnitTestC.cpp \
                       msgfieldatomictests.cpp \
                       msgfieldcompositetests.cpp \
                       msgfieldvectortests.cpp \
-                      msgstatustests.cpp
+                      msgstatustests.cpp \
+                      msgiterationtests.cpp
