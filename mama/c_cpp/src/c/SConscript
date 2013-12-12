@@ -1,0 +1,167 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+releaseString = env['versions']['mama']['releaseString']
+
+InstMamaInclude = \
+    Split("""
+	mama/clientmanage.h 
+	mama/config.h 
+	mama/datetime.h 
+	mama/dictionary.h 
+    mama/error.h 
+	mama/fielddesc.h 
+	mama/inbox.h 
+	mama/io.h 
+	mama/log.h 
+	mama/mama.h 
+	mama/marketdata.h 
+    mama/middleware.h 
+	mama/msg.h 
+	mama/msgfield.h 
+	mama/msgqualifier.h 
+	mama/msgstatus.h 
+	mama/msgtype.h 
+	mama/price.h 
+	mama/publisher.h 
+    mama/dqpublisher.h 
+    mama/dqpublishermanager.h 
+	mama/quality.h 
+	mama/queue.h 
+	mama/reservedfields.h 
+	mama/senderId.h 
+	mama/servicelevel.h 
+	mama/source.h 
+	mama/sourceman.h 
+	mama/stat.h 
+	mama/statscollector.h 
+	mama/statfields.h 
+	mama/status.h 
+	mama/subscmsgtype.h 
+	mama/subscription.h 
+	mama/subscriptiontype.h 
+	mama/symbollist.h 
+	mama/ft.h 
+	mama/symbollistmember.h 
+	mama/symbollisttypes.h 
+    mama/symbolmap.h 
+	mama/symbolmapfile.h 
+	mama/timer.h 
+	mama/timezone.h 
+	mama/transport.h 
+	mama/types.h 
+	mama/version.h
+""")
+
+InstConflInclude = Split("""
+    mama/conflation/connection.h 
+""")
+
+includePath = []
+includePath.append('#mama/c_cpp/src/c')
+includePath.append('$prefix/include')
+includePath.append('#common/c_cpp/src/c')
+
+libPath = []
+libPath.append('$libdir')
+
+env.Append(LIBS=['m', 'rt', 'wombatcommon', 'dl', 'pthread'],
+           LIBPATH=libPath, CPPPATH=[includePath])
+
+libmama_sources = \
+    Split("""
+    bridge.c
+	clientmanageresponder.c
+    datetime.c
+	dictionary.c
+	dqstrategy.c
+    error.c
+	fielddesc.c
+	imagerequest.c
+	listenermsgcallback.c
+	log.c
+    mama.c
+    mamaStrUtils.c
+	marketdata.c
+    middleware.c
+	msg.c
+	msgfield.c
+	msgqualifier.c
+	msgstatus.c
+	msgtype.c
+	msgutils.c
+    publisher.c
+    dqpublisher.c
+    dqpublishermanager.c
+    inbox.c
+	quality.c
+	reservedfields.c
+	senderId.c
+	servicelevel.c
+    queue.c
+    io.c
+    price.c
+    priceimpl.c
+    refreshtransport.c
+    timer.c
+    timezone.c
+	source.c
+	sourceman.c
+    status.c
+	stat.c
+	statscollector.c
+	statfields.c
+	statsgenerator.c
+	subscmsgtype.c
+	subscription.c
+	subscriptiontype.c
+	statslogger.c
+	statsloggerfields.c
+	symbollist.c
+	ft.c
+    version.c
+	symbollistmember.c
+	symbolmapfile.c
+	syncresponder.c
+	throttle.c
+	transport.c
+    fileutils.c
+    playback/playbackFileParser.c
+    playback/playbackpublisher.c
+    playback/playbackcapture.c
+    conflation/connection.c
+    conflation/serverconnection.c
+    conflation/manager.c
+""")
+
+objects = []
+StaticLibs['libmama'] = []
+
+if env['entitled'] == True:
+    env.Append( 
+        LIBPATH = [ os.path.join(env['entitle_home'],'lib') ],
+        LIBS = ['oeac'],
+        CPPDEFINES = ['WITH_ENTITLEMENTS'],
+    )
+
+for s in libmama_sources:
+    obj = env.Object(s)
+    StaticLibs['libmama'].append(obj)
+    objects.append(obj)
+
+lib = []
+lib.append(env.SharedLibrary('.libs/libmama', libmama_sources))
+lib.append(env.StaticLibrary('.libs/libmama', [objects, StaticLibs['libwombatcommon'] ]))
+
+Alias('install', env.Install('$libdir', lib))
+Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))
+Alias('install', env.Install('$prefix/include/mama/conflation',
+      InstConflInclude))
+
+env.SConscript('bridge/SConscript', 'env')
+env.SConscript('payload/SConscript', 'env')
+
+Clean(lib, 'version.c')

@@ -1,0 +1,31 @@
+import os
+Import('env')
+env = env.Clone()
+
+includePath = []
+includePath.append('.')
+includePath.append('../../c')
+includePath.append('../../cpp')
+includePath.append('#common/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/cpp')
+includePath.append('$prefix/include')
+
+libPath = []
+libPath.append('$prefix/lib')
+
+examples = Glob('*.cpp')
+examples.append('Makefile.sample')
+
+env.Append( LIBPATH = libPath )
+env.Append( CPPPATH = [ includePath ] )
+env.Append( LIBS = [ 'mamacpp','mama','pthread','dl' ] )
+
+bins = [ 'mamalistencpp','mamasubscribercpp','mamaproxycpp','mamapublishercpp','mamainboxcpp','mamaiocpp','mamaftmembercpp','mamasymbollistsubscribercpp' ]
+
+binary = []
+
+for b in bins:
+   binary.append( env.Program( b, '%s.cpp' % (b) ) )
+
+Alias('install',env.Install('$bindir',binary))
+Alias('install',env.Install('$prefix/examples/mama/cpp',examples))

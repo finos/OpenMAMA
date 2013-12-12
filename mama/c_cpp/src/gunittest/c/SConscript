@@ -1,0 +1,88 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import subprocess
+import os
+Import('*')
+env = env.Clone()
+
+target = 'UnitTestMamaC'
+
+incpath = []
+incpath.append('.')
+incpath.append('$incdir')
+incpath.append('#common/c_cpp/src/c')
+incpath.append('#mama/c_cpp/src/c')
+
+libpath = []
+libpath.append('$libdir')
+
+env.Append(LIBPATH=libpath, LIBS=['dl', 'wombatcommon', 'mama'],
+           CPPPATH=incpath)
+
+env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
+
+sources = Split("""
+datetimetest.cpp
+inboxtest.cpp
+iotest.cpp
+iteration.cpp
+msgtests.cpp
+openclosetest.cpp
+pricetest.cpp
+publishertest.cpp
+queuetest.cpp
+subscriptiontest.cpp
+timertest.cpp
+transporttest.cpp
+""")
+
+MainUnitTest = env.Object( 'MainUnitTestC.cpp' ) 
+sources.append( MainUnitTest )
+
+bin = env.Program(target, sources)
+
+Alias('install', env.Install('$bindir', bin))
+
+env.PrependENVPath('LD_LIBRARY_PATH', Dir('%s/lib' % env['prefix'
+                   ]).abspath)
+
+bins = []
+
+MiddlewareCSrc = Split("""
+middleware/middlewareGeneralTests.cpp
+middleware/middlewareInboxTests.cpp
+""")
+MiddlewareCSrc.append( MainUnitTest )
+
+PayloadCSrc = Glob('payload/*.cpp')
+PayloadCSrc.append( MainUnitTest )
+
+MamaMsgSrc = Glob('mamamsg/*.cpp')
+MamaMsgSrc.append( MainUnitTest )
+
+bins += env.Program( 'UnitTestMamaMsgC', MamaMsgSrc )
+bins += env.Program( 'UnitTestMamaPayloadC', PayloadCSrc )
+bins += env.Program( 'UnitTestMamaMiddlewareC', MiddlewareCSrc )
+
+Alias( 'install',env.Install('$bindir',bins) )
+
+def runUnitTest(env, target, program):
+    env = dict(os.environ)
+    env['LD_LIBRARY_PATH'] = Dir('$libdir').abspath
+    args = ['--gtest_output=%s' % target]
+    p = subprocess.Popen(
+        args,
+        shell=True,
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        env=env,
+        )
+    p.communicate()[0]
+    print 'Finished'
+
+
+if 'test' in BUILD_TARGETS:
+    test_alias = Alias('test', env.Command('%s.xml' % bin[0].name, bin,
+                       '$SOURCE --gtest_output=xml:$TARGET'))
+    AlwaysBuild(test_alias)

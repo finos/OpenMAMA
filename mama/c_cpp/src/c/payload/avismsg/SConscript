@@ -4,26 +4,20 @@ import os
 Import('*')
 env = env.Clone()
 
-target = 'libmamaqpidmsgimpl'
+target = 'libmamaavismsgimpl'
 
 includePath = []
 includePath.append('.')
 includePath.append('../..')
-includePath.append('$qpid_home/include')
 includePath.append('#common/c_cpp/src/c')
 
 libPath = []
-libPath.append('$qpid_home/lib')
-libPath.append('$qpid_home/lib64')
+libPath.append('$avis_home/lib')
 
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 
-env.Append(LIBS=['mama', 'qpid-proton', 'm'], LIBPATH=libPath,
+env.Append(LIBS=['mama', 'avis', 'm'], LIBPATH=libPath,
            CPPPATH=[includePath])
-''' Generally we would like to make use of -Werror, but unfortunately it causes
-    proton to choke during the build phase. Leaving the option here should we
-    find the proton issues resolved.'''
-#env.Append(CFLAGS=['-Werror'])
 
 sources = Glob('*.c')
 

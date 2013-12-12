@@ -1,0 +1,7 @@
+Import('env')
+
+env = env.Clone()
+
+if 'dynamic' in env['build']:
+	env.SConscript('load/c/SConscript.win','env')
+	env.SConscript('load/cpp/SConscript.win','env')

@@ -1,0 +1,91 @@
+import posixpath
+import os
+Import('*')
+env = env.Clone()
+
+env.Append( 
+	CPPDEFINES 	= ['MAMA'],
+)
+
+sources = []
+
+target = 'libmamac'
+
+versionRes = env.RES('version.rc')
+
+sources = Split( """
+version.res
+version.c
+bridge.c
+dictionary.c
+dqstrategy.c
+datetime.c
+timezone.c
+io.c
+fielddesc.c
+status.c
+stat.c
+statscollector.c
+statfields.c
+statsgenerator.c
+statslogger.c
+statsloggerfields.c
+imagerequest.c
+subscmsgtype.c
+quality.c
+error.c
+queue.c
+timer.c
+subscriptiontype.c
+listenermsgcallback.c
+log.c
+mama.c
+middleware.c
+msgfield.c
+msg.c
+msgstatus.c
+publisher.c
+dqpublisher.c
+dqpublishermanager.c
+inbox.c
+msgtype.c
+msgutils.c
+senderId.c
+reservedfields.c
+subscription.c
+throttle.c
+price.c
+priceimpl.c
+mamaStrUtils.c
+syncresponder.c
+clientmanageresponder.c
+refreshtransport.c
+source.c
+ft.c
+msgqualifier.c
+sourceman.c
+fileutils.c
+symbolmapfile.c
+transport.c
+symbollist.c
+symbollistmember.c
+conflation/connection.c
+conflation/serverconnection.c
+""")
+
+headers = Glob("mama/*.h")
+
+if env['entitled'] == True:
+    EntLIB = posixpath.join( env['entitle_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix']))
+    EntDLL = posixpath.join( env['entitle_home'], 'bin/%s/liboeac%s.dll' % ( env['build'],env['suffix']))
+    env.Append( LIBS = posixpath.join( env['entitle_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix'])) )
+    if 'dynamic' in env['build']:
+        Alias('install', env.Install('$bindir',EntDLL))
+    Alias('install', env.Install('$libdir',EntLIB))
+
+env.InstallLibrary(sources, target)
+
+
+if ( env['build'] == 'dynamic' or len(env['buildtype']) == 1):
+    env.Install('$prefix/include/mama',headers)
+    env.Install('$prefix/include/mama/conflation','mama/conflation/connection.h')
