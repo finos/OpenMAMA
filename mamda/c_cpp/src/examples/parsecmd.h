@@ -75,6 +75,7 @@ public:
     int                         getQuery     ();
     int                         getQueryType ();
     int                         getQueries   ();
+    bool                        getPublishRecaps ();
     
 private:
     struct CommonCommandLineParserImpl;
