@@ -53,6 +53,7 @@ struct CommonCommandLineParser::CommonCommandLineParserImpl
     MamaSource*          mSource;
     const char*          mDictSourceName;
     const char*          mDictTportName;
+    const char*          mDictFileName;
     MamaSource*          mDictSource;
     const char*          mOptionSourceName;
     const char*          mOptionTportName;
@@ -384,6 +385,10 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
         {
             mSourceName = argv[i + 1];
             handled = true;
+        }
+        else if ((strcmp (argv[i], "-use_dict_file") == 0))
+        {
+            mDictFileName = argv[i + 1];
         }
         else if ((strcmp (argv[i], "-DS") == 0) ||
             (strcmp (argv[i], "-dict-source") == 0) ||
