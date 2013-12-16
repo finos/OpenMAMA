@@ -137,7 +137,7 @@ TEST_F (MiddlewareTimerTests, createInvalidActionCB)
                                               interval, parent, closure));
 }
 
-TEST_F (MiddlewareTimerTests, createInvalidDestroyCB)
+TEST_F (MiddlewareTimerTests, DISABLED_createInvalidDestroyCB)
 {
     timerBridge   result            = (timerBridge) NOT_NULL;
     void*         nativeQueueHandle =               NOT_NULL;
