@@ -17,7 +17,7 @@ incpath.append('#mama/c_cpp/src/c')
 libpath = []
 libpath.append('$libdir')
 
-env.Append(LIBPATH=libpath, LIBS=['dl', 'wombatcommon', 'mama'],
+env.Append(LIBPATH=libpath, LIBS=['dl', 'wombatcommon', 'mama', 'pthread'],
            CPPPATH=incpath)
 
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
