@@ -60,11 +60,11 @@ MiddlewareCSrc.append( MainUnitTest )
 PayloadCSrc = Glob('payload/*.cpp')
 PayloadCSrc.append( MainUnitTest )
 
-bins += env.Program( 'UnitTestMamaDateTimeC', MamaMsgSrc )
+bins += env.Program( 'UnitTestMamaDateTimeC', MamaDateTimeSrc )
 bins += env.Program( 'UnitTestMamaMiddlewareC', MiddlewareCSrc )
 bins += env.Program( 'UnitTestMamaMsgC', MamaMsgSrc )
 bins += env.Program( 'UnitTestMamaPayloadC', PayloadCSrc )
-bins += env.Program( 'UnitTestMamaPriceC', MamaMsgSrc )
+bins += env.Program( 'UnitTestMamaPriceC', MamaPriceSrc )
 
 Alias( 'install',env.Install('$bindir',bins) )
 
