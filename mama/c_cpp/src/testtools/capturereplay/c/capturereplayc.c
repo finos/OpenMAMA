@@ -139,6 +139,7 @@ static void pubCallback (mamaTimer timer, void* closure)
     char*source=NULL;
     char*           headerString = NULL;
     mamaMsg        newMessage;
+    mama_status status = MAMA_STATUS_OK;
 
     for (index=0; index < gNumSymbols; index++)
     {
@@ -186,11 +187,14 @@ static void pubCallback (mamaTimer timer, void* closure)
                 mama_log (MAMA_LOG_LEVEL_FINE, 
                             "End of file reached for symbol %s - Rewinding.",
                             gSubscriptionList[index].symbol);
-                mamaPlaybackFileParser_closeFile (
+                status = mamaPlaybackFileParser_rewindFile(
                             gSubscriptionList[index].fileParser);
-                mamaPlaybackFileParser_openFile  (
-                            gSubscriptionList[index].fileParser,
-                            (char*) gFilename);
+
+                if (MAMA_STATUS_OK != status)
+                {
+                  mama_log(MAMA_LOG_LEVEL_FINE, "Failed to rewind file %s",
+                           mamaStatus_stringForStatus(status));
+                }
             } else if (!header) {
                 mama_log (MAMA_LOG_LEVEL_FINE, 
                             "End of file reached for symbol %s.", 
