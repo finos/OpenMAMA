@@ -51,7 +51,7 @@ typedef struct mamaPlaybackFileParser_
     void*           myFiledata;
     off_t           myFileSize;
     char*           myFilePointer;
-    int             myLastPos;
+    mama_u64_t      myLastPos;
     mama_size_t     myMamaMsgLen;
     mama_size_t     myLastMsgLen;
     char*     myMsgBuffer;
