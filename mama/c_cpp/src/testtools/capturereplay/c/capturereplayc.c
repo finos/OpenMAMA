@@ -349,6 +349,10 @@ int main (int argc, const char **argv)
 
     gSymbolList = (const char**)calloc (MAX_SUBSCRIPTIONS, sizeof (char*));
 
+    /* Enabling Normal MAMA Logging, to provide feedback to users regarding
+     * processing.
+     */
+    mama_enableLogging (stderr, MAMA_LOG_LEVEL_NORMAL);
     parseCommandLine (argc, argv);
 
     mama_log (MAMA_LOG_LEVEL_NORMAL, 
@@ -607,9 +611,10 @@ static void readSymbolsFromFile (void)
                 if (0 == (symbolIndex % 20))
                 {
                     mama_log (MAMA_LOG_LEVEL_NORMAL, 
-                              "Read %d symbols from playback file.\n"
-                              "Continuing.",
+                              "Read %d symbols from playback file.",
                               symbolIndex);
+                    mama_log (MAMA_LOG_LEVEL_NORMAL,
+                              "Continuing.");
                 }
             }
 
