@@ -45,7 +45,9 @@ static const char * gUsageString[] =
     "                        mama.properties. Default is pub",
     "      [-dictionary]     The dictionary file which is sent in response to client requests. Required.",
     "      [-q]              Quiet mode. Suppress output.", 
-    NULL 
+    "      [-rewind|-r]      Rewind symbols when they reach the end of the file.",
+    "      [-v]              Increase logging verbosity.",
+    NULL
 };
 
 #define MAX_SUBSCRIPTIONS 250000
