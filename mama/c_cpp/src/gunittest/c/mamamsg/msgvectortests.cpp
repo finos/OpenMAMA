@@ -3447,8 +3447,6 @@ TEST_F(MsgVectorMsgTestsC, GetVectorMsgNullAdd)
                                     VECTOR_SIZE);
     ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
-    FAIL();
-
     mStatus = mamaMsg_getVectorMsg (mMsg,
                                     NULL,
                                     1,
