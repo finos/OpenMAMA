@@ -116,6 +116,7 @@ do                                                                             \
     case PN_MAP:                                                               \
     case PN_NULL:                                                              \
     default:                                                                   \
+        status = MAMA_STATUS_WRONG_FIELD_TYPE;                                 \
         break;                                                                 \
     }                                                                          \
 } while(0)
