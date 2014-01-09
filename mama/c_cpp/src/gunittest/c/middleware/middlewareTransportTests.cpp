@@ -130,12 +130,17 @@ TEST_F (MiddlewareTransportTests, forceClientDisconnectInvalidTransportBridge)
     int              numTransports =                   0;
     const char*      ipAddress     = (char*)           NOT_NULL;
     uint16_t         port          =                   80;
+    mama_status      status        =				   MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportForceClientDisconnect(NULL,
+            numTransports,
+            ipAddress,
+            port);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportForceClientDisconnect(NULL,
-                                                                 numTransports,
-                                                                 ipAddress,
-                                                                 port));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, forceClientDisconnect)
@@ -143,12 +148,17 @@ TEST_F (MiddlewareTransportTests, forceClientDisconnect)
     int             numTransports = 1;
     const char*     ip            = "127.0.0.1";
     uint16_t        port          = 80;
+    mama_status     status	      = MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportForceClientDisconnect(&tport,
+            numTransports,
+            ip,
+            port);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportForceClientDisconnect(&tport,
-                                                                 numTransports,
-                                                                 ip,
-                                                                 port));
+               status);
 }
 
 
@@ -157,12 +167,16 @@ TEST_F (MiddlewareTransportTests, forceClientDisconnectInvalidNumTransports)
     transportBridge  transports    = (transportBridge) NOT_NULL;
     const char*      ipAddress     = (char*)           NOT_NULL;
     uint16_t         port          =                   80;
+    mama_status      status        =			       MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportForceClientDisconnect(&transports,
-                                                                 NULL,
+    status = mBridge->bridgeMamaTransportForceClientDisconnect(&transports,
+                                                                 0,
                                                                  ipAddress,
-                                                                 port));
+                                                                 port);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, forceClientDisconnectInvalidIPAddress)
@@ -170,12 +184,17 @@ TEST_F (MiddlewareTransportTests, forceClientDisconnectInvalidIPAddress)
     transportBridge  transports    = (transportBridge) NOT_NULL;
     int              numTransports =                   0;
     uint16_t         port          =                   80;
+    mama_status      status        = 				   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportForceClientDisconnect(&transports,
+    status = mBridge->bridgeMamaTransportForceClientDisconnect(&transports,
                                                                  numTransports,
                                                                  NULL,
-                                                                 port));
+                                                                 port);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, forceClientDisconnectInvalidPort)
@@ -183,12 +202,17 @@ TEST_F (MiddlewareTransportTests, forceClientDisconnectInvalidPort)
     transportBridge  transports    = (transportBridge) NOT_NULL;
     int              numTransports =                   0;
     const char*      ipAddress     = (char*)           NOT_NULL;
+    mama_status      status        =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportForceClientDisconnect(&transports,
+    status = mBridge->bridgeMamaTransportForceClientDisconnect(&transports,
                                                                  numTransports,
                                                                  ipAddress,
-                                                                 NULL));
+                                                                 0);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, findConnection)
@@ -196,14 +220,19 @@ TEST_F (MiddlewareTransportTests, findConnection)
     int             numTransports = 1;
     const char*     ip            = "127.0.0.1";
     uint16_t        port          = 80;
-    mamaConnection result         = NULL;
+    mamaConnection  result        = NULL;
+    mama_status     status        = MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mBridge->bridgeMamaTransportFindConnection(&tport,
+    status = mBridge->bridgeMamaTransportFindConnection(&tport,
                                                           numTransports,
                                                           &result,
                                                           ip,
-                                                          port));
+                                                          port);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, findConnectionInvalidTransportBridge)
@@ -212,13 +241,18 @@ TEST_F (MiddlewareTransportTests, findConnectionInvalidTransportBridge)
     mamaConnection   result        = (mamaConnection)  NOT_NULL;
     const char*      ipAddress     = (char*)           NOT_NULL;
     uint16_t         port          =                   80;
+    mama_status      status        =				   MAMA_STATUS_OK;
     
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFindConnection(NULL,
+    status = mBridge->bridgeMamaTransportFindConnection(NULL,
                                                           numTransports,
                                                           &result,
                                                           ipAddress,
-                                                          port));
+                                                          port);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, findConnectionInvalidNumTransports)
@@ -227,13 +261,18 @@ TEST_F (MiddlewareTransportTests, findConnectionInvalidNumTransports)
     mamaConnection   result        = (mamaConnection)  NOT_NULL;
     const char*      ipAddress     = (char*)           NOT_NULL;
     uint16_t         port          =                   80;
+    mama_status      status        =                   MAMA_STATUS_OK;
     
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFindConnection(&transports,
-                                                          NULL,
+    status = mBridge->bridgeMamaTransportFindConnection(&transports,
+                                                          0,
                                                           &result,
                                                           ipAddress,
-                                                          port));
+                                                          port);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, findConnectionInvalidResult)
@@ -242,13 +281,18 @@ TEST_F (MiddlewareTransportTests, findConnectionInvalidResult)
     int              numTransports =                   0;
     const char*      ipAddress     = (char*)           NOT_NULL;
     uint16_t         port          =                   80;
+    mama_status      status        =                   MAMA_STATUS_OK;
     
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFindConnection(&transports,
+    status = mBridge->bridgeMamaTransportFindConnection(&transports,
                                                           numTransports,
                                                           NULL,
                                                           ipAddress,
-                                                          port));
+                                                          port);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, findConnectionInvalidIPAddress)
@@ -257,13 +301,18 @@ TEST_F (MiddlewareTransportTests, findConnectionInvalidIPAddress)
     int              numTransports =                   0;
     mamaConnection   result        = (mamaConnection)  NOT_NULL;
     uint16_t         port          =                   80;
+    mama_status      status        =                   MAMA_STATUS_OK;
     
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFindConnection(&transports,
+    status = mBridge->bridgeMamaTransportFindConnection(&transports,
                                                           numTransports,
                                                           &result,
                                                           NULL,
-                                                          port));
+                                                          port);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, findConnectionInvalidPort)
@@ -272,13 +321,18 @@ TEST_F (MiddlewareTransportTests, findConnectionInvalidPort)
     int              numTransports =                   0;
     mamaConnection   result        = (mamaConnection)  NOT_NULL;
     const char*      ipAddress     = (char*)           NOT_NULL;
+    mama_status      status        =                   MAMA_STATUS_OK;
     
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFindConnection(&transports,
+    status = mBridge->bridgeMamaTransportFindConnection(&transports,
                                                           numTransports,
                                                           &result,
                                                           ipAddress,
-                                                          NULL));
+                                                          0);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnections)
@@ -286,12 +340,17 @@ TEST_F (MiddlewareTransportTests, getAllConnections)
     int             numTransports = 1;
     mamaConnection* result        = NULL;
     uint32_t        len           = 1;
+    mama_status     status        = MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportGetAllConnections(&tport,
+    status = mBridge->bridgeMamaTransportGetAllConnections(&tport,
                                                              numTransports,
                                                              &result,
-                                                             &len));
+                                                             &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsInvalidTransportBridge)
@@ -299,12 +358,17 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsInvalidTransportBridge)
     int              numTransports =                   0;
     mamaConnection*  result        = (mamaConnection*) NOT_NULL;
     uint32_t         len           =                   0;
+    mama_status      status        =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllConnections(NULL,
+    status = mBridge->bridgeMamaTransportGetAllConnections(NULL,
                                                              numTransports,
                                                              &result,
-                                                             &len));
+                                                             &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsInvalidNumTransports)
@@ -312,12 +376,17 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsInvalidNumTransports)
     transportBridge  transports    = (transportBridge) NOT_NULL;
     mamaConnection*  result        = (mamaConnection*) NOT_NULL;
     uint32_t         len           =                   0;
+    mama_status      status        =                   MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportGetAllConnections(&transports,
+                                                             0,
+                                                             &result,
+                                                             &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllConnections(&transports,
-                                                             NULL,
-                                                             &result,
-                                                             &len));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsInvalidResult)
@@ -325,12 +394,17 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsInvalidResult)
     transportBridge  transports    = (transportBridge) NOT_NULL;
     int              numTransports =                   0;
     uint32_t         len           =                   0;
+    mama_status      status        =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllConnections(&transports,
+    status = mBridge->bridgeMamaTransportGetAllConnections(&transports,
                                                              numTransports,
                                                              NULL,
-                                                             &len));
+                                                             &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsInvalidLen)
@@ -338,12 +412,17 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsInvalidLen)
     transportBridge  transports    = (transportBridge) NOT_NULL;
     int              numTransports =                   0;
     mamaConnection*  result        = (mamaConnection*) NOT_NULL;
+    mama_status      status        = 				   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllConnections(&transports,
+    status = mBridge->bridgeMamaTransportGetAllConnections(&transports,
                                                              numTransports,
                                                              &result,
-                                                             NULL));
+                                                             NULL);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidTransportBridge)
@@ -352,13 +431,18 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidTransportBridg
     const char*      topic         = (char*)           NOT_NULL;
     mamaConnection*  result        = (mamaConnection*) NOT_NULL;
     uint32_t         len           =                   0;
+    mama_status      status        =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllConnectionsForTopic(NULL,
+    status = mBridge->bridgeMamaTransportGetAllConnectionsForTopic(NULL,
                                                                      numTransports,
                                                                      topic,
                                                                      &result,
-                                                                     &len));
+                                                                     &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidNumTransports)
@@ -367,13 +451,18 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidNumTransports)
     const char*      topic         = (char*)           NOT_NULL;
     mamaConnection*  result        = (mamaConnection*) NOT_NULL;
     uint32_t         len           =                   0;
+    mama_status      status        =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&transports,
-                                                                     NULL,
+    status = mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&transports,
+                                                                     0,
                                                                      topic,
                                                                      &result,
-                                                                     &len));
+                                                                     &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 
@@ -384,13 +473,18 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsForTopic)
     mamaConnection* result        = NULL;
     uint32_t        len           = 1;
     const char*     topic         = "topic";
+    mama_status     status        = MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&tport,
+    status = mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&tport,
                                                              numTransports,
                                                              topic,
                                                              &result,
-                                                             &len));
+                                                             &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidTopic)
@@ -399,13 +493,17 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidTopic)
     int              numTransports =                   0;
     mamaConnection*  result        = (mamaConnection*) NOT_NULL;
     uint32_t         len           =                   0;
+    mama_status      status        =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&transports,
+    status = mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&transports,
                                                                      numTransports,
                                                                      NULL,
                                                                      &result,
-                                                                     &len));
+                                                                     &len);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidResult)
@@ -414,13 +512,18 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidResult)
     int              numTransports =                   0;
     const char*      topic         = (char*)           NOT_NULL;
     uint32_t         len           =                   0;
+    mama_status      status        =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&transports,
+    status = mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&transports,
                                                                      numTransports,
                                                                      topic,
                                                                      NULL,
-                                                                     &len));
+                                                                     &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidLen)
@@ -429,66 +532,98 @@ TEST_F (MiddlewareTransportTests, getAllConnectionsForTopicInvalidLen)
     int              numTransports =                   0;
     const char*      topic         = (char*)           NOT_NULL;
     mamaConnection*  result        = (mamaConnection*) NOT_NULL;
+    mama_status      status        =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&transports,
+    status = mBridge->bridgeMamaTransportGetAllConnectionsForTopic(&transports,
                                                                      numTransports,
                                                                      topic,
                                                                      &result,
-                                                                     NULL));
+                                                                     NULL);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, requestConflation)
 {
     int             numTransports = 1;
+    mama_status     status        = MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportRequestConflation(&tport,
+                                                             numTransports);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportRequestConflation(&tport,
-                                                             numTransports));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, requestConflationInvalidTransportBridge)
 {
-    int numTransports = 0;
+    int             numTransports = 1;
+    mama_status     status        = MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportRequestConflation(NULL, numTransports);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportRequestConflation(NULL, numTransports));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, requestConflationInvalidNumTransports)
 {
     transportBridge transports = (transportBridge) NOT_NULL;
+    mama_status     status     =                   MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportRequestConflation(&transports, 0);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportRequestConflation(&transports, NULL));
+               status);
 }
 
 
 TEST_F (MiddlewareTransportTests, requestEndConflation)
 {
     int             numTransports = 1;
+    mama_status     status        = MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportRequestEndConflation(&tport, numTransports);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportRequestEndConflation(&tport, numTransports));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportRequestConflation(&tport, numTransports));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, requestEndConflationInvalidTransportBridge)
 {
-    int numTransports = 0;
+    int             numTransports = 1;
+    mama_status     status        = MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportRequestEndConflation(NULL,numTransports);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportRequestEndConflation(NULL,numTransports));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, requestEndConflationInvalidNumTransports)
 {
     transportBridge transports = (transportBridge) NOT_NULL;
+    mama_status     status     =                   MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportRequestEndConflation(&transports,0);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportRequestEndConflation(&transports,NULL));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllServerConnectionsInvalidTransportBridge)
@@ -496,12 +631,17 @@ TEST_F (MiddlewareTransportTests, getAllServerConnectionsInvalidTransportBridge)
     int                    numTransports =                         0;
     mamaServerConnection*  result        = (mamaServerConnection*) NOT_NULL;
     uint32_t               len           =                         0;
+    mama_status            status        =                         MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllServerConnections(NULL,
+    status = mBridge->bridgeMamaTransportGetAllServerConnections(NULL,
                                                                    numTransports,
                                                                    &result,
-                                                                   &len));
+                                                                   &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllServerConnectionsInvalidNumTransports)
@@ -509,12 +649,17 @@ TEST_F (MiddlewareTransportTests, getAllServerConnectionsInvalidNumTransports)
     transportBridge        transports    = (transportBridge)       NOT_NULL;
     mamaServerConnection*  result        = (mamaServerConnection*) NOT_NULL;
     uint32_t               len           =                         0;
+    mama_status            status        =                         MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportGetAllServerConnections(&transports,
+                                                                   0,
+                                                                   &result,
+                                                                   &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllServerConnections(&transports,
-                                                                   NULL,
-                                                                   &result,
-                                                                   &len));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllServerConnectionsInvalidResult)
@@ -522,12 +667,17 @@ TEST_F (MiddlewareTransportTests, getAllServerConnectionsInvalidResult)
     transportBridge        transports    = (transportBridge)       NOT_NULL;
     int                    numTransports =                         0;
     uint32_t               len           =                         0;
+    mama_status            status        =                         MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllServerConnections(&transports,
+    status = mBridge->bridgeMamaTransportGetAllServerConnections(&transports,
                                                                    numTransports,
                                                                    NULL,
-                                                                   &len));
+                                                                   &len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getAllServerConnectionsInvalidLen)
@@ -535,12 +685,17 @@ TEST_F (MiddlewareTransportTests, getAllServerConnectionsInvalidLen)
     transportBridge        transports    = (transportBridge)       NOT_NULL;
     int                    numTransports =                         0;
     mamaServerConnection*  result        = (mamaServerConnection*) NOT_NULL;
+    mama_status            status        =                         MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetAllServerConnections(&transports,
+    status = mBridge->bridgeMamaTransportGetAllServerConnections(&transports,
                                                                    numTransports,
                                                                    &result,
-                                                                   NULL));
+                                                                   NULL);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, freeAllServerConnectionsInvalidTransportBridge)
@@ -548,12 +703,17 @@ TEST_F (MiddlewareTransportTests, freeAllServerConnectionsInvalidTransportBridge
     int                   numTransports =                        0;
     mamaServerConnection  result        = (mamaServerConnection) NOT_NULL;
     uint32_t              len           =                        0;
+    mama_status           status        =                        MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFreeAllServerConnections(NULL,
+    status = mBridge->bridgeMamaTransportFreeAllServerConnections(NULL,
                                                                     numTransports,
                                                                     &result,
-                                                                    len));
+                                                                    len);
+
+	CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, freeAllServerConnectionsInvalidNumTransports)
@@ -561,12 +721,17 @@ TEST_F (MiddlewareTransportTests, freeAllServerConnectionsInvalidNumTransports)
     transportBridge       transports    = (transportBridge)      NOT_NULL;
     mamaServerConnection  result        = (mamaServerConnection) NOT_NULL;
     uint32_t              len           =                        0;
+    mama_status           status        =                        MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportFreeAllServerConnections(&transports,
+                                                                    0,
+                                                                    &result,
+                                                                    len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFreeAllServerConnections(&transports,
-                                                                    NULL,
-                                                                    &result,
-                                                                    len));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, freeAllServerConnectionsInvalidServerConnection)
@@ -574,12 +739,17 @@ TEST_F (MiddlewareTransportTests, freeAllServerConnectionsInvalidServerConnectio
     transportBridge       transports    = (transportBridge)      NOT_NULL;
     int                   numTransports =                        0;
     uint32_t              len           =                        0;
+    mama_status           status        =                        MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFreeAllServerConnections(&transports,
+    status = mBridge->bridgeMamaTransportFreeAllServerConnections(&transports,
                                                                     numTransports,
                                                                     NULL,
-                                                                    len));
+                                                                    len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, freeAllServerConnectionsInvalidLen)
@@ -587,12 +757,17 @@ TEST_F (MiddlewareTransportTests, freeAllServerConnectionsInvalidLen)
     transportBridge       transports    = (transportBridge)      NOT_NULL;
     int                   numTransports =                        0;
     mamaServerConnection  result        = (mamaServerConnection) NOT_NULL;
+    mama_status           status        =                        MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFreeAllServerConnections(&transports,
+    status = mBridge->bridgeMamaTransportFreeAllServerConnections(&transports,
                                                                     numTransports,
                                                                     &result,
-                                                                    NULL));
+                                                                    0);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, freeAllConnectionsInvalidTransportBridge)
@@ -600,12 +775,17 @@ TEST_F (MiddlewareTransportTests, freeAllConnectionsInvalidTransportBridge)
     int              numTransports =                   0;
     mamaConnection   result        = (mamaConnection)  NOT_NULL;
     uint32_t         len           =                   0;
+    mama_status      status		   = 				   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFreeAllConnections(NULL,
+    status = mBridge->bridgeMamaTransportFreeAllConnections(NULL,
                                                               numTransports,
                                                               &result,
-                                                              len));
+                                                              len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, freeAllConnectionsInvalidNumTransports)
@@ -613,12 +793,17 @@ TEST_F (MiddlewareTransportTests, freeAllConnectionsInvalidNumTransports)
     transportBridge  transports    = (transportBridge) NOT_NULL;
     mamaConnection   result        = (mamaConnection)  NOT_NULL;
     uint32_t         len           =                   0;
+    mama_status      status        =				   MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportFreeAllConnections(&transports,
+                                                              0,
+                                                              &result,
+                                                              len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFreeAllConnections(&transports,
-                                                              NULL,
-                                                              &result,
-                                                              len));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, freeAllConnectionsInvalidConnection)
@@ -626,12 +811,17 @@ TEST_F (MiddlewareTransportTests, freeAllConnectionsInvalidConnection)
     transportBridge  transports    = (transportBridge) NOT_NULL;
     int              numTransports =                   0;
     uint32_t         len           =                   0;
+    mama_status      status        =				   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFreeAllConnections(&transports,
+    status = mBridge->bridgeMamaTransportFreeAllConnections(&transports,
                                                               numTransports,
                                                               NULL,
-                                                              len));
+                                                              len);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, freeAllConnectionsInvalidLen)
@@ -639,109 +829,103 @@ TEST_F (MiddlewareTransportTests, freeAllConnectionsInvalidLen)
     transportBridge  transports    = (transportBridge) NOT_NULL;
     int              numTransports =                   0;
     mamaConnection   result        = (mamaConnection)  NOT_NULL;
+    mama_status      status        =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportFreeAllConnections(&transports,
+    status = mBridge->bridgeMamaTransportFreeAllConnections(&transports,
                                                               numTransports,
                                                               &result,
-                                                              NULL));
+                                                              0);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getNumLoadBalanceAttributes)
 {
     const char* name = (char*) NOT_NULL;
     int numLoadBalanceAttributes = 0;
+    mama_status status = mBridge->bridgeMamaTransportGetNumLoadBalanceAttributes(name,
+                                                        &numLoadBalanceAttributes);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportGetNumLoadBalanceAttributes(name, 
-                                                        &numLoadBalanceAttributes));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getNumLoadBalanceAttributesInvalidName)
 {
     int numLoadBalanceAttributes = 0;
+    mama_status status = mBridge->bridgeMamaTransportGetNumLoadBalanceAttributes(NULL,
+                                                        &numLoadBalanceAttributes);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetNumLoadBalanceAttributes(NULL, 
-                                                        &numLoadBalanceAttributes));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getNumLoadBalanceAttributesInvalidAttributes)
 {
     const char* name = (char*) NOT_NULL;
+    mama_status status = mBridge->bridgeMamaTransportGetNumLoadBalanceAttributes(name, NULL);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetNumLoadBalanceAttributes(name, NULL));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getLoadBalanceSharedObjectName)
 {
-    transportBridge tport                     = NULL;
     const char*     name                      = "test_tport";
-    const char*     parentName                = "test_tport";
-    mamaTransport   parentTport               = NULL;
-    int             numLoadBalanceAttributes  = NULL;
     const char*     loadName                  = "";
+    mama_status     status                    = MAMA_STATUS_OK;
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
+    status = mBridge->bridgeMamaTransportGetLoadBalanceSharedObjectName(name,
+                                                      &loadName);
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
+	CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportGetLoadBalanceSharedObjectName(name,
-                                                      &loadName));
+               status);
  
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
+
 }
 
 TEST_F (MiddlewareTransportTests, getLoadBalanceSharedObjectNameInvalidName)
 {
     const char* loadBalanceSharedObjectName = "name";
+    mama_status status = mBridge->bridgeMamaTransportGetLoadBalanceSharedObjectName(NULL,
+                                                      &loadBalanceSharedObjectName);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetLoadBalanceSharedObjectName(NULL,
-                                                      &loadBalanceSharedObjectName));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getLoadBalanceSharedObjectNameInvalidObjectName)
 {
     const char* name = (char*) NOT_NULL;
+    mama_status status = mBridge->bridgeMamaTransportGetLoadBalanceSharedObjectName(name,NULL);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetLoadBalanceSharedObjectName(name,NULL));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getLoadBalanceScheme)
 {
-    transportBridge tport       = NULL;
     const char*     name        = "test_tport";
-    const char*     parentName  = "test_tport";
-    mamaTransport   parentTport = NULL;
     tportLbScheme   scheme      = TPORT_LB_SCHEME_STATIC ;
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaTransportGetLoadBalanceScheme(name,
                                                       &scheme));
- 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
 }
 
 TEST_F (MiddlewareTransportTests, getLoadBalanceSchemeInvalidName)
@@ -765,12 +949,17 @@ TEST_F (MiddlewareTransportTests, sendMsgToConnectionInvalidTransportBridge)
     mamaConnection  connection = (mamaConnection)  NOT_NULL;
     mamaMsg         msg        = (mamaMsg)         NOT_NULL;
     const char*     topic      = (char*)           NOT_NULL;
+    mama_status     status     =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportSendMsgToConnection(NULL,
+    status = mBridge->bridgeMamaTransportSendMsgToConnection(NULL,
                                                                connection,
                                                                msg,
-                                                               topic));
+                                                               topic);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, sendMsgToConnectionInvalidConnection)
@@ -778,12 +967,17 @@ TEST_F (MiddlewareTransportTests, sendMsgToConnectionInvalidConnection)
     transportBridge tport      = (transportBridge) NOT_NULL;
     mamaMsg         msg        = (mamaMsg)         NOT_NULL;
     const char*     topic      = (char*)           NOT_NULL;
+    mama_status     status     =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportSendMsgToConnection(tport,
+    status = mBridge->bridgeMamaTransportSendMsgToConnection(tport,
                                                                NULL,
                                                                msg,
-                                                               topic));
+                                                               topic);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, sendMsgToConnectionInvalidMsg)
@@ -791,12 +985,17 @@ TEST_F (MiddlewareTransportTests, sendMsgToConnectionInvalidMsg)
     transportBridge tport      = (transportBridge) NOT_NULL;
     mamaConnection  connection = (mamaConnection)  NOT_NULL;
     const char*     topic      = (char*)           NOT_NULL;
+    mama_status     status     =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportSendMsgToConnection(tport,
+    status = mBridge->bridgeMamaTransportSendMsgToConnection(tport,
                                                                connection,
                                                                NULL,
-                                                               topic));
+                                                               topic);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, sendMsgToConnectionInvalidTopic)
@@ -804,20 +1003,28 @@ TEST_F (MiddlewareTransportTests, sendMsgToConnectionInvalidTopic)
     transportBridge tport      = (transportBridge) NOT_NULL;
     mamaConnection  connection = (mamaConnection)  NOT_NULL;
     mamaMsg         msg        = (mamaMsg)         NOT_NULL;
+    mama_status     status     =                   MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportSendMsgToConnection(tport,
+    status = mBridge->bridgeMamaTransportSendMsgToConnection(tport,
                                                                connection,
                                                                msg,
-                                                               NULL));
+                                                               NULL);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, isConnectionInterceptedInvalidConnection)
 {
     uint8_t result = 0;
+    mama_status status = mBridge->bridgeMamaTransportIsConnectionIntercepted(NULL,&result);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportIsConnectionIntercepted(NULL,&result));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, isConnectionInterceptedInvalidResult)
@@ -834,13 +1041,18 @@ TEST_F (MiddlewareTransportTests, installConnectConflateMgrInvalidTransportBridg
     mamaConnection        connection = (mamaConnection)        NOT_NULL;
     conflateProcessCb     onProcess  = (conflateProcessCb)     NOT_NULL;
     conflateGetMsgCb      onMsg      = (conflateGetMsgCb)      NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportInstallConnectConflateMgr(NULL,
+    status = mBridge->bridgeMamaTransportInstallConnectConflateMgr(NULL,
                                                                      mgr,
                                                                      connection,
                                                                      onProcess,
-                                                                     onMsg));
+                                                                     onMsg);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, installConnectConflateMgrInvalidManager)
@@ -849,13 +1061,18 @@ TEST_F (MiddlewareTransportTests, installConnectConflateMgrInvalidManager)
     mamaConnection        connection = (mamaConnection)        NOT_NULL;
     conflateProcessCb     onProcess  = (conflateProcessCb)     NOT_NULL;
     conflateGetMsgCb      onMsg      = (conflateGetMsgCb)      NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportInstallConnectConflateMgr(handle,
+    status = mBridge->bridgeMamaTransportInstallConnectConflateMgr(handle,
                                                                      NULL,
                                                                      connection,
                                                                      onProcess,
-                                                                     onMsg));
+                                                                     onMsg);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, installConnectConflateMgrInvalidConnection)
@@ -864,13 +1081,18 @@ TEST_F (MiddlewareTransportTests, installConnectConflateMgrInvalidConnection)
     mamaConflationManager mgr        = (mamaConflationManager) NOT_NULL;
     conflateProcessCb     onProcess  = (conflateProcessCb)     NOT_NULL;
     conflateGetMsgCb      onMsg      = (conflateGetMsgCb)      NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportInstallConnectConflateMgr(handle,
+    status = mBridge->bridgeMamaTransportInstallConnectConflateMgr(handle,
                                                                      mgr,
                                                                      NULL,
                                                                      onProcess,
-                                                                     onMsg));
+                                                                     onMsg);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, installConnectConflateMgrInvalidProcessCB)
@@ -879,13 +1101,18 @@ TEST_F (MiddlewareTransportTests, installConnectConflateMgrInvalidProcessCB)
     mamaConflationManager mgr        = (mamaConflationManager) NOT_NULL;
     mamaConnection        connection = (mamaConnection)        NOT_NULL;
     conflateGetMsgCb      onMsg      = (conflateGetMsgCb)      NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportInstallConnectConflateMgr(handle,
+    status = mBridge->bridgeMamaTransportInstallConnectConflateMgr(handle,
                                                                      mgr,
                                                                      connection,
                                                                      NULL,
-                                                                     onMsg));
+                                                                     onMsg);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, installConnectConflateMgrInvalidMsgCB)
@@ -894,99 +1121,115 @@ TEST_F (MiddlewareTransportTests, installConnectConflateMgrInvalidMsgCB)
     mamaConflationManager mgr        = (mamaConflationManager) NOT_NULL;
     mamaConnection        connection = (mamaConnection)        NOT_NULL;
     conflateProcessCb     onProcess  = (conflateProcessCb)     NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportInstallConnectConflateMgr(handle,
+    status = mBridge->bridgeMamaTransportInstallConnectConflateMgr(handle,
                                                                      mgr,
                                                                      connection,
                                                                      onProcess,
-                                                                     NULL));
+                                                                     NULL);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, uninstallConnectConflateMgrInvalidTransportBridge)
 {
     mamaConflationManager mgr        = (mamaConflationManager) NOT_NULL;
     mamaConnection        connection = (mamaConnection)        NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportUninstallConnectConflateMgr(NULL, mgr,
+                                                                       connection);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportUninstallConnectConflateMgr(NULL, mgr, 
-                                                                       connection));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, uninstallConnectConflateMgrInvalidMgr)
 {
     transportBridge       handle     = (transportBridge)       NOT_NULL;
     mamaConnection        connection = (mamaConnection)        NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportUninstallConnectConflateMgr(handle, NULL,
+                                                                       connection);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportUninstallConnectConflateMgr(handle, NULL, 
-                                                                       connection));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, uninstallConnectConflateMgrInvalidConnection)
 {
     transportBridge       handle     = (transportBridge)       NOT_NULL;
     mamaConflationManager mgr        = (mamaConflationManager) NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportUninstallConnectConflateMgr(handle, mgr,
+                                                                       NULL);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportUninstallConnectConflateMgr(handle, mgr, 
-                                                                       NULL));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, startConnectionConflationInvalidTransportBridge)
 {
     mamaConflationManager mgr        = (mamaConflationManager) NOT_NULL;
     mamaConnection        connection = (mamaConnection)        NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportStartConnectionConflation(NULL,mgr,
+                                                                     connection);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportStartConnectionConflation(NULL,mgr,
-                                                                     connection));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, startConnectionConflationInvalidMgr)
 {
     transportBridge       tport      = (transportBridge)       NOT_NULL;
     mamaConnection        connection = (mamaConnection)        NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportStartConnectionConflation(tport,NULL,
+                                                                     connection);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportStartConnectionConflation(tport,NULL,
-                                                                     connection));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, startConnectionConflationInvalidConnection)
 {
     transportBridge       tport      = (transportBridge)       NOT_NULL;
     mamaConflationManager mgr        = (mamaConflationManager) NOT_NULL;
+    mama_status           status     =                         MAMA_STATUS_OK;
+
+    status = mBridge->bridgeMamaTransportStartConnectionConflation(tport,mgr,
+                                                                     NULL);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportStartConnectionConflation(tport,mgr,
-                                                                     NULL));
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getNativeTransport)
 {
-    transportBridge tport       = NULL;
-    const char*     name        = "test_tport";
-    const char*     parentName  = "test_tport";
-    mamaTransport   parentTport = NULL;
     void*           result      = NULL;
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
-    
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaTransportGetNativeTransport(tport,&result));
-
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
 }
 
 TEST_F (MiddlewareTransportTests, getNativeTransportInvalidTransportBridge)
@@ -1007,42 +1250,38 @@ TEST_F (MiddlewareTransportTests, getNativeTransportInvalidResult)
 
 TEST_F (MiddlewareTransportTests, getNativeTransportNamingCtx)
 {
-    transportBridge tport       = NULL;
-    const char*     name        = "test_tport";
-    const char*     parentName  = "test_tport";
-    mamaTransport   parentTport = NULL;
     void*           result      = NULL;
+    mama_status     status      = MAMA_STATUS_OK;
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&parentTport));
+    status = mBridge->bridgeMamaTransportGetNativeTransportNamingCtx(tport,&result);
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(parentTport, parentName,
-                                   mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportCreate(&tport,name,
-                                                  parentTport));
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportGetNativeTransportNamingCtx(tport,&result));
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaTransportDestroy(tport));
+               status);
+
+
 }
 
 TEST_F (MiddlewareTransportTests, getNativeTransportNamingCtxInvalidTransportBridge)
 {
     void* result = NOT_NULL;
+    mama_status status = mBridge->bridgeMamaTransportGetNativeTransportNamingCtx(NULL,&result);
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetNativeTransportNamingCtx(NULL,&result));
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareTransportTests, getNativeTransportNamingCtxInvalidResult)
 {
     transportBridge transport = (transportBridge) NOT_NULL;
+    mama_status status = mBridge->bridgeMamaTransportGetNativeTransportNamingCtx(transport,NULL);
 
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTransportGetNativeTransportNamingCtx(transport,NULL));
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+              status);
 }
 
