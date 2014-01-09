@@ -138,7 +138,7 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
     impl->mTransport = transport;
 
     /* Create an underlying bridge message with no parent to be used in sends */
-    status = qpidBridgeMamaMsg_create (&impl->mMamaBridgeMsg, NULL);
+    status = qpidBridgeMamaMsgImpl_createMsgOnly (&impl->mMamaBridgeMsg);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -237,7 +237,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "qpidBridgeMamaPublisher_send(): No publisher.");
-        return MAMA_STATUS_INVALID_ARG;
+        return MAMA_STATUS_NULL_ARG;
     }
     else if (NULL == msg)
     {
