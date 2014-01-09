@@ -95,7 +95,7 @@ TEST_F (MiddlewareIoTests, createInvalidResult)
     void*      closure           =              NOT_NULL;
     mamaQueue  queue             = (mamaQueue)  NOT_NULL;
 
-    ASSERT_EQ(MAMA_STATUS_OK,
+    ASSERT_EQ(MAMA_STATUS_NULL_ARG,
               mBridge->bridgeMamaIoCreate(NULL,queue, descriptor,
                                           onIo, ioType, parent, closure));
 }
