@@ -192,7 +192,7 @@ TEST_F (MiddlewareSubscriptionTests, DISABLED_createDestroy)
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidResult)
 {
-    ASSERT_EQ(MAMA_STATUS_OK,
+    ASSERT_EQ(MAMA_STATUS_NULL_ARG,
               mBridge->bridgeMamaSubscriptionCreate(NULL, sourceName, symbol,
                                                     tport, queue, callbacks,
                                                     parent, closure));
@@ -200,7 +200,7 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidResult)
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidTport)
 {
-    ASSERT_EQ(MAMA_STATUS_OK,
+    ASSERT_EQ(MAMA_STATUS_NULL_ARG,
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
                                                     NULL, queue, callbacks,
                                                     parent, closure));
@@ -232,7 +232,7 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidQueue)
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidParent)
 {
-    ASSERT_EQ(MAMA_STATUS_OK,
+    ASSERT_EQ(MAMA_STATUS_NULL_ARG,
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
                                                     tport, queue, callbacks,
                                                     NULL, closure));
@@ -249,50 +249,62 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidCallbacks)
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidResult)
 {
+	mama_status status = mBridge->bridgeMamaSubscriptionCreateWildCard(NULL, sourceName, symbol,
+                                                            tport, queue, callbacks,
+                                                            parent, closure);
+	CHECK_NON_IMPLEMENTED_OPTIONAL(status);
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(NULL, sourceName, symbol, 
-                                                            tport, queue, callbacks, 
-                                                            parent, closure));
+    		  status);
 }
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidSource)
 {
+	mama_status status = mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, NULL, symbol,
+                                                            tport, queue, callbacks,
+                                                            parent, closure);
+	CHECK_NON_IMPLEMENTED_OPTIONAL(status);
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, NULL, symbol, 
-                                                            tport, queue, callbacks, 
-                                                            parent, closure));
+    		  status);
 }
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidSymbol)
 {
+	mama_status status = mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, NULL,
+                                                            tport, queue, callbacks,
+                                                            parent, closure);
+	CHECK_NON_IMPLEMENTED_OPTIONAL(status);
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, NULL, 
-                                                            tport, queue, callbacks, 
-                                                            parent, closure));
+    		  status);
 }
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidTport)
 {
+	mama_status status = mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol,
+                                                            NULL, queue, callbacks,
+                                                            parent, closure);
+	CHECK_NON_IMPLEMENTED_OPTIONAL(status);
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol, 
-                                                            NULL, queue, callbacks, 
-                                                            parent, closure));
+    		  status);
 }
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidQueue)
 {
+	mama_status status = mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol,
+                                                            tport, NULL, callbacks,
+                                                            parent, closure);
+	CHECK_NON_IMPLEMENTED_OPTIONAL(status);
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol, 
-                                                            tport, NULL, callbacks, 
-                                                            parent, closure));
+    		  status);
 }
 
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidParent)
 {
+	mama_status status = mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol,
+                                                            tport, queue, callbacks,
+                                                            NULL, closure);
+	CHECK_NON_IMPLEMENTED_OPTIONAL(status);
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreateWildCard(&subscriber, sourceName, symbol, 
-                                                            tport, queue, callbacks, 
-                                                            NULL, closure));
+              status);
 }
 /* COMMENTED OUT BECAUSE mamaMsg Callbacks CAN'T BE CAST AS NULL
 TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidCallbacks)
@@ -373,36 +385,44 @@ TEST_F (MiddlewareSubscriptionTests, hasWildcards)
 TEST_F (MiddlewareSubscriptionTests, getPlatformError)
 {
     void* error = NOT_NULL;
+    mama_status status = MAMA_STATUS_OK;
     mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
-                                                    tport, queue, callbacks,
-                                                    parent, closure));
+    ASSERT_EQ (MAMA_STATUS_OK,
+    		   mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
+    		                                                    tport, queue, callbacks,
+    		                                                    parent, closure));
 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaSubscriptionGetPlatformError(subscriber, &error));
+    status = mBridge->bridgeMamaSubscriptionGetPlatformError(subscriber, &error);
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionDestroy(subscriber));
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ(MAMA_STATUS_OK,
+              status);
 }
 
 TEST_F (MiddlewareSubscriptionTests, getPlatformErrorInvalidError)
 {
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaSubscriptionGetPlatformError(subscriber,
-                                                               NULL));
+	mama_status status = mBridge->bridgeMamaSubscriptionGetPlatformError(subscriber,
+                                                               NULL);
+	CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG,
+               status);
 }
 
 TEST_F (MiddlewareSubscriptionTests, getPlatformErrorInvalidSubBridge)
 {
     void* error = NOT_NULL;
-
+    mama_status status = mBridge->bridgeMamaSubscriptionGetPlatformError(NULL,
+                                                               &error);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaSubscriptionGetPlatformError(NULL,
-                                                               &error));
+               status);
 }
 
 TEST_F (MiddlewareSubscriptionTests, isTportDisconnected)
@@ -433,6 +453,7 @@ TEST_F (MiddlewareSubscriptionTests, isTportDisconnectedInvalid)
 TEST_F (MiddlewareSubscriptionTests, setTopicClosure)
 {
     void* newClosure = NOT_NULL;
+    mama_status status = MAMA_STATUS_OK;
     mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
@@ -442,20 +463,27 @@ TEST_F (MiddlewareSubscriptionTests, setTopicClosure)
                                                     tport, queue, callbacks,
                                                     parent, closure));
 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaSubscriptionSetTopicClosure(subscriber,newClosure));
+    status = mBridge->bridgeMamaSubscriptionSetTopicClosure(subscriber,newClosure);
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionDestroy(subscriber));
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               status);
 }
 
 TEST_F (MiddlewareSubscriptionTests, setTopicClosureInvalidSubBridge)
 {
     void* closure = NOT_NULL;
+    mama_status status = mBridge->bridgeMamaSubscriptionSetTopicClosure(NULL,
+                                                              closure);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaSubscriptionSetTopicClosure(NULL,
-                                                              closure));
+               status);
 }
 
 
