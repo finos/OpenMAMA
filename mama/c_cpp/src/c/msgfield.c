@@ -186,7 +186,7 @@ mamaMsgField_getBool (
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
 
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -203,7 +203,7 @@ mamaMsgField_getChar (
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -220,7 +220,7 @@ mamaMsgField_getI8(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -237,7 +237,7 @@ mamaMsgField_getU8(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -254,7 +254,7 @@ mamaMsgField_getI16(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -271,7 +271,7 @@ mamaMsgField_getU16(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -288,7 +288,7 @@ mamaMsgField_getI32(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -305,7 +305,7 @@ mamaMsgField_getU32(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -322,7 +322,7 @@ mamaMsgField_getI64(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -339,7 +339,7 @@ mamaMsgField_getU64(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -356,7 +356,7 @@ mamaMsgField_getF32(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -373,7 +373,7 @@ mamaMsgField_getF64(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {
@@ -390,7 +390,7 @@ mamaMsgField_getString(
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {

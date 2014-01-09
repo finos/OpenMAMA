@@ -872,7 +872,7 @@ mamaMsg_getByteSize (const mamaMsg msg, mama_size_t* size)
     mamaMsgImpl*    impl     =   (mamaMsgImpl*)msg;
 
     if (!msg)   return MAMA_STATUS_NULL_ARG;
-    if (!size)  return MAMA_STATUS_INVALID_ARG;
+    if (!size)  return MAMA_STATUS_NULL_ARG;
 
     *size = 0; /* for 64 bit */
 
@@ -1876,7 +1876,7 @@ mamaMsg_updateBool(
 {
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 
-    if (!impl) return MAMA_STATUS_OK;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
     CHECK_MODIFY (impl->mMessageOwner);
 
     if (impl->mPayloadBridge)
@@ -2640,7 +2640,6 @@ mamaMsg_iterateFields (const mamaMsg            msg,
     mamaMsgImpl* impl = (mamaMsgImpl*)(msg);
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
-
     impl->mCurrentField->myDictionary  = dict;
 
     if (impl->mPayloadBridge)
@@ -3038,7 +3037,7 @@ mamaMsg_getVectorMsg (
     mamaMsgImpl* impl = (mamaMsgImpl*)msg;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    if (!result0) return MAMA_STATUS_INVALID_ARG;
+    if (!result0 || !resultLen) return MAMA_STATUS_NULL_ARG;
 
     *result0   = NULL;
     *resultLen = 0;
