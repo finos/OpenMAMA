@@ -89,32 +89,23 @@ static mama_status qpidBridgeMamaMsgImpl_setStringValue (char*          dest,
 mama_status
 qpidBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
 {
-    qpidBridgeMsgImpl* impl = NULL;
+    qpidBridgeMsgImpl* impl   = NULL;
+    mama_status        status = MAMA_STATUS_OK;
 
-    if (NULL == msg)
+    if (NULL == msg || NULL == parent)
     {
         return MAMA_STATUS_NULL_ARG;
     }
 
-    /* Null initialize the msgBridge pointer */
-    *msg = NULL;
-
-    /* Allocate memory for the implementation struct */
-    impl = (qpidBridgeMsgImpl*) calloc (1, sizeof (qpidBridgeMsgImpl));
-    if (NULL == impl)
+    status = qpidBridgeMamaMsgImpl_createMsgOnly (msg);
+    if (MAMA_STATUS_OK != status)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaMsg_create (): "
-                  "Failed to allocate memory for bridge message.");
-        return MAMA_STATUS_NOMEM;
+    	return status;
     }
 
-    /* Back reference the parent message */
+    /* Cast back to implementation to set parent */
+    impl = (qpidBridgeMsgImpl*) *msg;
     impl->mParent       = parent;
-    impl->mIsValid      = 1;
-
-    /* Populate the msgBridge pointer with the implementation */
-    *msg = (msgBridge) impl;
 
     return MAMA_STATUS_OK;
 }
@@ -558,6 +549,41 @@ mama_status qpidBridgeMamaMsgReplyHandleImpl_setReplyTo (
     }
     return qpidBridgeMamaMsgImpl_setStringValue (impl->mReplyTo, value);
 }
+
+/* Non-interface version of create which permits null parent */
+mama_status
+qpidBridgeMamaMsgImpl_createMsgOnly (msgBridge* msg)
+{
+    qpidBridgeMsgImpl* impl = NULL;
+
+    if (NULL == msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Null initialize the msgBridge pointer */
+    *msg = NULL;
+
+    /* Allocate memory for the implementation struct */
+    impl = (qpidBridgeMsgImpl*) calloc (1, sizeof (qpidBridgeMsgImpl));
+    if (NULL == impl)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "qpidBridgeMamaMsg_create (): "
+                  "Failed to allocate memory for bridge message.");
+        return MAMA_STATUS_NOMEM;
+    }
+
+    /* Back reference the parent message */
+    impl->mIsValid      = 1;
+
+    /* Populate the msgBridge pointer with the implementation */
+    *msg = (msgBridge) impl;
+
+    return MAMA_STATUS_OK;
+}
+
+
 /*=========================================================================
   =                  Private implementation functions                     =
   =========================================================================*/

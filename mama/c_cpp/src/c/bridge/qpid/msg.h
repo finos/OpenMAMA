@@ -247,6 +247,15 @@ mama_status
 qpidBridgeMamaMsgReplyHandleImpl_setReplyTo   (void*       replyHandle,
                                                const char* value);
 
+/**
+ * This will create a bridge message but will not create a parent with it.
+ *
+ * @param msg    The bridge message to create.
+ *
+ * @return mama_status indicating whether the method succeeded or failed.
+ */
+mama_status
+qpidBridgeMamaMsgImpl_createMsgOnly 		  (msgBridge*  msg);
 
 #if defined(__cplusplus)
 }
