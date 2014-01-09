@@ -74,12 +74,7 @@ qpidmsgPayloadIter_create (msgPayloadIter* iter,
     impl->mField->mParentBody = msgImpl->mBody;
     impl->mMsg                = msgImpl;
 
-    /* First entry is expected to be NULL, move onto next */
-    pn_data_next (msgImpl->mBody);
-
-    /* Enter into the main message */
-    pn_data_get_list (msgImpl->mBody);
-    pn_data_enter    (msgImpl->mBody);
+    qpidmsgPayloadImpl_moveDataToContentLocation (msgImpl->mBody);
 
     *iter = impl;
 
