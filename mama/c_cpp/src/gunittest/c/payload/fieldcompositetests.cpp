@@ -349,19 +349,11 @@ TEST_F(FieldDateTimeTests, GetDateTimeInvalidType)
 
 TEST_F(FieldDateTimeTests, GetDateTimeInValid)
 {
-    msgFieldPayload     field = NULL;
     mama_status         ret = MAMA_STATUS_OK;
-
-    ret = aBridge->msgFieldPayloadCreate(&field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadGetDateTime(NULL, m_out);
     ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
-
-    /*Null Underlying field*/
-    ret = aBridge->msgFieldPayloadGetDateTime(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_INVALID_ARG);
 }
 
 /**********************************************************************
@@ -568,19 +560,11 @@ TEST_F(FieldPriceTests, GetPriceInvalidType)
 
 TEST_F(FieldPriceTests, GetPriceInValid)
 {
-    msgFieldPayload     field = NULL;
     mama_status         ret = MAMA_STATUS_OK;
-
-    ret = aBridge->msgFieldPayloadCreate(&field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadGetPrice(NULL, m_out);
     ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
-
-    /*Null Underlying field*/
-    ret = aBridge->msgFieldPayloadGetPrice(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_INVALID_ARG);
 }
 
 /**********************************************************************
