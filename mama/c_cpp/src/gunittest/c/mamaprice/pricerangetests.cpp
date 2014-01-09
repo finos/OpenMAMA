@@ -528,7 +528,7 @@ TEST_F (MamaPriceRangeTestC, testSetAndGetForString)
                szEightDP     = "1.12345679",
                szNineDP      = "1.123456789",
                szTenDP       = "1.1234567890",
-               szUnknownDP   = "1.12345678901234567891";
+               szUnknownDP   = "1.123457";
 
    SetAndGetTestForStrings(szZeroDP,    MAMA_PRICE_PREC_INT, val); 
    SetAndGetTestForStrings(szOneDP,     MAMA_PRICE_PREC_10, val); 
@@ -541,5 +541,5 @@ TEST_F (MamaPriceRangeTestC, testSetAndGetForString)
    SetAndGetTestForStrings(szEightDP,   MAMA_PRICE_PREC_100000000, val); 
    SetAndGetTestForStrings(szNineDP,    MAMA_PRICE_PREC_1000000000, val); 
    SetAndGetTestForStrings(szTenDP,     MAMA_PRICE_PREC_10000000000, val); 
-   SetAndGetTestForStrings(szUnknownDP, MAMA_PRICE_PREC_UNKNOWN, val); 
+   SetAndGetTestForStrings(szUnknownDP, MAMA_PRICE_PREC_UNKNOWN, val);
 }
