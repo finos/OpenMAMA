@@ -83,14 +83,15 @@ qpidBridgeMamaSubscription_create (subscriptionBridge* subscriber,
     }
 
     mamaQueue_getNativeHandle(queue, &impl->mQpidQueue);
-    impl->mMamaCallback     = callback;
-    impl->mMamaSubscription = subscription;
-    impl->mMamaQueue        = queue;
-    impl->mTransport        = (mamaTransport)transport;
-    impl->mSymbol           = symbol;
-    impl->mClosure          = closure;
-    impl->mIsNotMuted       = 1;
-    impl->mSubjectKey       = NULL;
+    impl->mMamaCallback        = callback;
+    impl->mMamaSubscription    = subscription;
+    impl->mMamaQueue           = queue;
+    impl->mTransport           = (mamaTransport)transport;
+    impl->mSymbol              = symbol;
+    impl->mClosure             = closure;
+    impl->mIsNotMuted          = 1;
+    impl->mIsTportDisconnected = 1;
+    impl->mSubjectKey          = NULL;
 
     /* Use a standard centralized method to determine a topic key */
     qpidBridgeMamaSubscriptionImpl_generateSubjectKey (NULL,
@@ -260,13 +261,18 @@ mama_status
 qpidBridgeMamaSubscription_getPlatformError (subscriptionBridge subscriber,
                                              void** error)
 {
-    return MAMA_STATUS_OK;
+    return MAMA_STATUS_NOT_IMPLEMENTED;
 }
 
 int
 qpidBridgeMamaSubscription_isTportDisconnected (subscriptionBridge subscriber)
 {
-    return 0;
+	qpidSubscription* impl = (qpidSubscription*) subscriber;
+	if (NULL == impl)
+	{
+		return MAMA_STATUS_NULL_ARG;
+	}
+    return impl->mIsTportDisconnected;
 }
 
 mama_status
