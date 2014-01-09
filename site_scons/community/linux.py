@@ -30,6 +30,14 @@ class Linux:
         if os.environ.get('LD_LIBRARY_PATH',None) != None:
             os_env['LD_LIBRARY_PATH'] = os.environ['LD_LIBRARY_PATH']
 
+        compiler = optsEnv['compiler']
+        if compiler != 'default':
+            if compiler == 'clang':
+                tools.append( 'clang' )
+                tools.append( 'clang++' )
+            if compiler == 'clang-analyzer':
+                tools.append( 'scan-build')
+
         if optsEnv['with_docs'] == True:
             tools.append( 'doxygen' )
             tools.append( 'javadoc' )
@@ -43,7 +51,8 @@ class Linux:
             os_env['JAVA_HOME'] = optsEnv['java_home']
 
             env = Environment(ENV=os_env,
-                    tools = tools )
+                    tools = tools,
+                    toolpath = ['site_scons/site_tools'])
 
             #ConfigureJNI searches os.env for java_home not env['ENV']['JAVA_HOME'] 
             #This is needed if set on cmd line via scons java_home=/path/to/java
@@ -57,7 +66,8 @@ class Linux:
         else:
             os_env['PATH'] = os.environ['PATH']
             env = Environment(ENV=os_env,
-                        tools = tools )
+                        tools = tools, 
+                        toolpath = ['site_scons/site_tools'])
 
         env['SPAWN'] = logger.log_output
         env['PRINT_CMD_LINE_FUNC'] = logger.log_command

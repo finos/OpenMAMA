@@ -60,6 +60,8 @@ def get_command_line_opts( host, products, VERSIONS ):
             EnumVariable('product', 'Product to be built', 'mamda',
                          #mamda all is a windows only build
                          allowed_values=( [ x for x in products if x != "mamdaall" ] )),
+            EnumVariable( 'compiler', 'Compiler to use for building OpenMAMA',
+                         'default', allowed_values=('default', 'gcc', 'clang', 'clang-analyzer')),
         )
 
     return opts
