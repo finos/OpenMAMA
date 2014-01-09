@@ -793,7 +793,7 @@ TEST_F (MamaPriceTestC, testSetIsValidPriceMamaPrice)
 
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setIsValidPrice(price, t) );
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getIsValidPrice(price, &expected) );
-   EXPECT_EQ ( t, expected );
+   EXPECT_NE ( f, expected );
 
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setIsValidPrice(price, f) );
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getIsValidPrice(price, &expected) );
