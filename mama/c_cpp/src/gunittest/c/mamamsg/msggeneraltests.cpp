@@ -45,16 +45,19 @@ protected:
     virtual void SetUp(void) 
     {
         mama_loadPayloadBridge (&mPayloadBridge, getPayload());
+        mama_loadBridge (&mMiddlewareBridge, getMiddleware());
         mamaMsg_create (&mMsg);
     };
 
     virtual void TearDown(void) 
     {
         mamaMsg_destroy(mMsg);
+        mama_close();
     };
     
     mamaMsg            mMsg;
     mamaPayloadBridge  mPayloadBridge;
+    mamaBridge         mMiddlewareBridge;
     mama_status        mStatus;
 };
 
@@ -138,7 +141,12 @@ TEST_F (MsgGeneralTestsC, msgDetachValid)
     //Create & add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test");
 
-    mamaMsgImpl_setQueue (mMsg, queue);    
+    mamaMsgImpl_setBridgeImpl (mMsg, mMiddlewareBridge);
+
+    mama_getDefaultEventQueue(mMiddlewareBridge, &queue);
+
+    mamaMsgImpl_setQueue (mMsg, queue);
+
     ASSERT_EQ (mamaMsg_detach(mMsg), MAMA_STATUS_OK);
 }
 
@@ -237,7 +245,6 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgCreateFromByteBufferInValidMsg)
 
 TEST_F (MsgGeneralTestsC, DISABLED_msgCreateFromByteBufferInValidBuffer)
 {
-    const void*   buffer       = NULL;
     mama_size_t   bufferLength = 0;
     mamaMsg       newMsg       = NULL;
 
@@ -346,9 +353,9 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetMessageOwnerInValidMsg)
     ASSERT_EQ (mamaMsgImpl_setMessageOwner(NULL, owner), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, msgImplSetMessageOwnerInValidOwner)
+TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetMessageOwnerInValidOwner)
 {
-    const char*  testString = "test"; 
+    const char*  testString = "test";
 
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, testString);
@@ -421,13 +428,15 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgIterateFieldsInValidClosure)
  
 TEST_F (MsgGeneralTestsC, msgImplSetQueueValid)
 {
-    mamaQueue       mQueue     = NULL;
+    mamaQueue       queue     = NULL;
+
+    mama_getDefaultEventQueue(mMiddlewareBridge, &queue);
     
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
     
-    ASSERT_EQ (mamaMsgImpl_setQueue(mMsg, mQueue), MAMA_STATUS_OK);
+    ASSERT_EQ (mamaMsgImpl_setQueue(mMsg, queue), MAMA_STATUS_OK);
 }
 
 TEST_F (MsgGeneralTestsC, msgImplSetQueueInValidMsg)
@@ -496,12 +505,17 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetDqStrategyContextInValidDq)
 TEST_F (MsgGeneralTestsC, msgGetSendSubjectValid)
 {
     const char*       subject    = "";
+    mama_status       status;
    
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
     
-    ASSERT_EQ (mamaMsg_getSendSubject(mMsg, &subject), MAMA_STATUS_OK);
+    status = mamaMsg_getSendSubject(mMsg, &subject);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+
+    ASSERT_EQ (status, MAMA_STATUS_OK);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetSendSubjectInValidMsg)
@@ -585,7 +599,7 @@ TEST_F (MsgGeneralTestsC, msgImplGetStatusInValidStatus)
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
 
-    ASSERT_EQ (mamaMsgImpl_getStatus(mMsg, NULL), MAMA_STATUS_INVALID_ARG);
+    ASSERT_EQ (mamaMsgImpl_getStatus(mMsg, NULL), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgImplGetStatusFromMsgValid)
@@ -597,7 +611,11 @@ TEST_F (MsgGeneralTestsC, msgImplGetStatusFromMsgValid)
     mamaMsg_addI32 (mMsg, "name0", 101, 8);
     mamaMsg_getI32 (mMsg, "Name", 100, &result);
 
-    mamaMsgImpl_getStatus(mMsg, &status);   
+    mamaMsgImpl_getStatus(mMsg, &status);
+
+    mamaMsg_addI32 (mMsg,
+    		MamaFieldMsgStatus.mName, MamaFieldMsgStatus.mFid, status);
+
     ASSERT_EQ (mamaMsgImpl_getStatusFromMsg(mMsg), status);
 }
 
@@ -612,21 +630,18 @@ TEST_F (MsgGeneralTestsC, msgImplGetStatusFromMsgInValid)
 
 TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecValid)
 {
-    const char*          name         = "";
-    mama_fid_t           fid          = 0;
-    mama_u64_t*          milliseconds = 0;
+    const char*          name         = "test";
+    mama_fid_t           fid          = 102;
+    mama_u64_t           milliseconds = 0;
     mamaDateTime         dateTime     = NULL;
-    mamaDateTime         m_out        = NULL;
 
     //add fields to msg
     mamaDateTime_create(&dateTime);
-    mamaDateTime_create(&m_out);
     mamaDateTime_setToNow(dateTime);
 
-    mamaMsg_addDateTime(mMsg, NULL, 102, dateTime);
-    mamaMsg_getDateTime(mMsg, NULL, 102, m_out);
+    mamaMsg_addDateTime(mMsg, name, fid, dateTime);
 
-    ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, name, fid, milliseconds), MAMA_STATUS_OK); 
+    ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, name, fid, &milliseconds), MAMA_STATUS_OK);
 }
 
 TEST_F (MsgGeneralTestsC, DISABLED_msgGetDateTimeMSecInValidMsg)
@@ -664,7 +679,7 @@ TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidName)
     mamaMsg_addDateTime(mMsg, NULL, 102, dateTime);
     mamaMsg_getDateTime(mMsg, NULL, 102, m_out);
 
-    ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, NULL, fid, milliseconds), MAMA_STATUS_NOT_FOUND); 
+    ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, NULL, fid, milliseconds), MAMA_STATUS_INVALID_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidFid)
@@ -682,7 +697,7 @@ TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidFid)
     mamaMsg_addDateTime(mMsg, NULL, 102, dateTime);
     mamaMsg_getDateTime(mMsg, NULL, 102, m_out);
     
-    ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, name, 0, milliseconds), MAMA_STATUS_NOT_FOUND); 
+    ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, name, 0, milliseconds), MAMA_STATUS_INVALID_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidMilliseconds)
@@ -700,17 +715,17 @@ TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidMilliseconds)
     mamaMsg_addDateTime(mMsg, NULL, 102, dateTime);
     mamaMsg_getDateTime(mMsg, NULL, 102, m_out);
     
-    ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, name, fid, 0), MAMA_STATUS_NOT_FOUND); 
+    ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, name, fid, 0), MAMA_STATUS_INVALID_ARG);
 }
 
 
 TEST_F (MsgGeneralTestsC, msgGetEntitleCodeValid)
 {
-    mama_i32_t             entitleCode  = 0;
+    mama_i32_t             entitleCode  = 100;
 
     //add fields to msg
     mamaMsg_create (&mMsg);
-    mamaMsg_addString (mMsg, "name", 100, "test");
+    mamaMsg_addI32 (mMsg, ENTITLE_FIELD_NAME, ENTITLE_FIELD_ID, entitleCode);
 
     ASSERT_EQ (mamaMsg_getEntitleCode(mMsg, &entitleCode), MAMA_STATUS_OK);
 }
@@ -735,14 +750,13 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgGetEntitleCodeInValidEntitleCode)
 
 TEST_F (MsgGeneralTestsC, msgGetFieldAsStringValid)
 {
-    mamaMsg              mMsg         = NULL;
-    const char*          fieldName    = "";
-    mama_fid_t           fid          = 0;
-    char*                buffer       = NULL;
-    mama_size_t          bufferLength = 0;
+    const char*          fieldName    = "name1";
+    mama_fid_t           fid          = 101;
+    char                 buffer[100];
+    mama_size_t          bufferLength = 100;
    
     //add fields to msg
-    mamaMsg_addBool (mMsg, "name1", 101, true);
+    mamaMsg_addBool (mMsg, fieldName, fid, true);
   
     ASSERT_EQ (mamaMsg_getFieldAsString(mMsg, fieldName, fid, buffer, bufferLength), MAMA_STATUS_OK);
 }
@@ -819,7 +833,7 @@ TEST_F (MsgGeneralTestsC, msgSetNewBufferValid)
 
     mamaMsg_getByteBuffer (mMsg, &buffer, &size);
  
-    ASSERT_EQ (mamaMsg_setNewBuffer(mMsg, &buffer, size), MAMA_STATUS_OK);
+    ASSERT_EQ (mamaMsg_setNewBuffer(mMsg, (void*)buffer, size), MAMA_STATUS_OK);
 }
 
 TEST_F (MsgGeneralTestsC, msgSetNewBufferInValidMsg)
