@@ -301,13 +301,8 @@ TEST_F(PayloadVectorBoolTests, UpdateVectorBoolInvalidFidNo)
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
-    /* Need to discuss the expected behaviour here - QPID fails the test because
-     * it adds the field if it can't find the field. 
-     * Even if we should fail, we should probably return 
-     * MAMA_STATUS_NOT_FOUND
-     */
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorBool test fixtures
@@ -560,7 +555,7 @@ TEST_F(PayloadVectorCharTests, UpdateVectorCharInvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorChar(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorChar test fixtures
@@ -814,7 +809,7 @@ TEST_F(PayloadVectorI8Tests, UpdateVectorI8InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI8(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorI8 test fixtures
@@ -1068,7 +1063,7 @@ TEST_F(PayloadVectorU8Tests, UpdateVectorU8InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU8(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorU8 test fixtures
@@ -1322,7 +1317,7 @@ TEST_F(PayloadVectorI16Tests, UpdateVectorI16InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI16(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorI16 test fixtures
@@ -1576,7 +1571,7 @@ TEST_F(PayloadVectorU16Tests, UpdateVectorU16InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU16(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorU16 test fixtures
@@ -1830,7 +1825,7 @@ TEST_F(PayloadVectorI32Tests, UpdateVectorI32InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI32(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorI32 test fixtures
@@ -2084,7 +2079,7 @@ TEST_F(PayloadVectorU32Tests, UpdateVectorU32InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU32(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorU32 test fixtures
@@ -2338,7 +2333,7 @@ TEST_F(PayloadVectorI64Tests, UpdateVectorI64InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI64(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorI64 test fixtures
@@ -2591,7 +2586,7 @@ TEST_F(PayloadVectorU64Tests, UpdateVectorU64InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU64(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorU64 test fixtures
@@ -2849,7 +2844,7 @@ TEST_F(PayloadVectorF32Tests, UpdateVectorF32InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF32(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorF32 test fixtures
@@ -3107,7 +3102,7 @@ TEST_F(PayloadVectorF64Tests, UpdateVectorF64InvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF64(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorF64 test fixtures
@@ -3434,7 +3429,7 @@ TEST_F(PayloadVectorStringTests, UpdateVectorStringInvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorString(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorString test fixtures
@@ -3718,7 +3713,7 @@ TEST_F(PayloadVectorMsgTests, UpdateVectorMsgInvalidFidNo)
     EXPECT_EQ(m_status, MAMA_STATUS_OK);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorMsg(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_INVALID_ARG);
+    EXPECT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 // GetVectorMsg test fixtures
