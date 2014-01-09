@@ -231,7 +231,7 @@ qpidBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
     qpidBridgeMsgImpl*          impl        = (qpidBridgeMsgImpl*) msg;
     qpidBridgeMsgReplyHandle*   replyHandle = NULL;
 
-    if (NULL == impl)
+    if (NULL == impl || NULL == result)
     {
         return MAMA_STATUS_NULL_ARG;
     }
