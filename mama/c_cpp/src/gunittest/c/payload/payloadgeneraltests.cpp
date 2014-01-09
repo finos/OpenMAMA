@@ -61,6 +61,13 @@ void PayloadGeneralTests::TearDown(void)
 {
 }
 
+void dummyIteratorCallback (const mamaMsg       msg,
+                            const mamaMsgField  field,
+                            void*               closure)
+{
+
+}
+
 
 /* ************************************************************************* */
 /* Tests */
@@ -92,6 +99,8 @@ TEST_F(PayloadGeneralTests, CreateForTemplateValid)
    mamaPayloadBridge    g_bridge = NULL;
 
    result = aBridge->msgPayloadCreateForTemplate(&testPayload, g_bridge, g_templateId);
+
+   CHECK_NON_IMPLEMENTED_OPTIONAL(result);
 
    EXPECT_EQ(result, MAMA_STATUS_OK);
 }
@@ -233,6 +242,9 @@ TEST_F(PayloadGeneralTests, GetByteSizeValid)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
     result = aBridge->msgPayloadGetByteSize(testPayload, &testSize);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(result);
+
     EXPECT_EQ(result, MAMA_STATUS_OK);
 }
 
@@ -313,6 +325,9 @@ TEST_F(PayloadGeneralTests, GetSendSubjectInValidMsg)
     const char**          mySubject = NULL;
 
 	result = aBridge->msgPayloadGetSendSubject(NULL, mySubject);
+
+	CHECK_NON_IMPLEMENTED_OPTIONAL(result);
+
 	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
 }
 
@@ -384,16 +399,22 @@ TEST_F(PayloadGeneralTests, ToStringInValid)
  */
 TEST_F(PayloadGeneralTests, IterateFieldsValid)
 {
-    msgPayload          testPayload = NULL;
-    mamaMsg             testMamaMsg = NULL;
-    mamaMsgField        testMamaField = NULL;
-    mamaMsgIteratorCb   testMamaMsgIteratorCb = NULL;
-    void*               testClosure;
+    msgPayload          testPayload   = NULL;
+    msgFieldPayload     testMamaField = NULL;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (result, MAMA_STATUS_OK);
+	ASSERT_EQ (result, MAMA_STATUS_OK);
 
-	result = aBridge->msgPayloadIterateFields(testPayload, testMamaMsg, testMamaField, testMamaMsgIteratorCb, &testClosure);
+	aBridge->msgFieldPayloadCreate(&testMamaField);
+	ASSERT_EQ (result, MAMA_STATUS_OK);
+
+	result = aBridge->msgPayloadIterateFields(
+			testPayload,
+			(mamaMsg)NOT_NULL,
+			(mamaMsgField)testMamaField,
+			dummyIteratorCallback,
+			NULL);
+
 	EXPECT_EQ (result, MAMA_STATUS_OK);
 }
 
@@ -460,24 +481,6 @@ TEST_F(PayloadGeneralTests, IterateFieldsInValidCallBack)
 
 	result = aBridge->msgPayloadIterateFields(testPayload, testMamaMsg, testMamaField, NULL, &testClosure);
 	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
-}
-
-/* TODO: This test should return OK (since we don't touch the closure) but needs
- * to have the parent msg, mama field, and callbacks all created before it will
- * be a valid test.
- */
-TEST_F(PayloadGeneralTests, IterateFieldsInValidClosure)
-{
-    msgPayload          testPayload = NULL;
-    mamaMsg             testMamaMsg = NULL;
-    mamaMsgField        testMamaField = NULL;
-    mamaMsgIteratorCb   testMamaMsgIteratorCb = NULL;
-
-    result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (result, MAMA_STATUS_OK);
-
-	result = aBridge->msgPayloadIterateFields(testPayload, testMamaMsg, testMamaField, testMamaMsgIteratorCb, NULL);
-	EXPECT_EQ (result, MAMA_STATUS_OK);
 }
 
 TEST_F(PayloadGeneralTests, SerializeValid)
@@ -1077,7 +1080,7 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBufferLength)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
     result = aBridge->msgPayloadGetFieldAsString(testPayload, &testName, testFid, testBuf, 0);
-	EXPECT_EQ (result, MAMA_STATUS_NULL_ARG);
+	EXPECT_EQ (result, MAMA_STATUS_INVALID_ARG);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldValid)
@@ -1302,9 +1305,6 @@ TEST_F(PayloadGeneralTests, IterNextValid)
     aBridge->msgPayloadAddString (testPayload, "name3", 103, "Testing");
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
-
-    result = aBridge->msgFieldPayloadCreate(&testField);
-    EXPECT_EQ(result, MAMA_STATUS_OK);
 
     result = aBridge->msgPayloadIterCreate(&testIter, testPayload);
 	EXPECT_EQ (result, MAMA_STATUS_OK);
