@@ -427,7 +427,7 @@ TEST_F (MsgFieldI32Tests, getI32Valid)
 {
     mamaMsg_getField( mMsg, "name", 1, &mMsgField );
     ASSERT_EQ( mamaMsgField_getI32( mMsgField, &mOut ), MAMA_STATUS_OK );
-    ASSERT_EQ( mOut, 123456 );
+    ASSERT_EQ( mOut, mUpdate );
 }
 
 TEST_F (MsgFieldI32Tests, getI32Invalid)
