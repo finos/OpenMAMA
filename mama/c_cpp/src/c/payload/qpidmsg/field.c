@@ -48,13 +48,19 @@
 #define GET_SCALAR_FIELD(TYPE,MAMATYPE)                                        \
 do                                                                             \
 {                                                                              \
-    qpidmsgFieldPayloadImpl* impl = (qpidmsgFieldPayloadImpl*)field;           \
+    qpidmsgFieldPayloadImpl* impl   = (qpidmsgFieldPayloadImpl*) field;        \
+    mama_status              status = MAMA_STATUS_OK;                          \
                                                                                \
     if (NULL == impl || NULL == result) return MAMA_STATUS_NULL_ARG;           \
                                                                                \
+    if (impl->mFid == 0 && impl->mName.start == NULL)                          \
+    {                                                                          \
+    	return MAMA_STATUS_INVALID_ARG;                                        \
+    }                                                                          \
+                                                                               \
     GET_ATOM_AS_MAMA_TYPE (impl->mData, MAMATYPE, *result);                    \
                                                                                \
-    return MAMA_STATUS_OK;                                                     \
+    return status;                                                             \
 } while(0)
 
 
@@ -665,7 +671,7 @@ mama_status
 qpidmsgFieldPayload_getI32  (const msgFieldPayload   field,
                              mama_i32_t*             result)
 {
-    GET_SCALAR_FIELD (_int, mama_u16_t);
+    GET_SCALAR_FIELD (_int, mama_i32_t);
 }
 
 mama_status
@@ -694,15 +700,21 @@ qpidmsgFieldPayload_getF32  (const msgFieldPayload   field,
                              mama_f32_t*             result)
 {
     qpidmsgFieldPayloadImpl* impl = (qpidmsgFieldPayloadImpl*) field;
+    mama_status status = MAMA_STATUS_OK;
 
     if (NULL == impl || NULL == result)
     {
         return MAMA_STATUS_NULL_ARG;
     }
 
+    if (impl->mFid == 0 && impl->mName.start == NULL)
+    {
+    	return MAMA_STATUS_INVALID_ARG;
+    }
+
     GET_ATOM_AS_MAMA_TYPE (impl->mData, mama_f32_t, *result);
 
-    return MAMA_STATUS_OK;
+    return status;
 }
 
 mama_status
@@ -723,6 +735,16 @@ qpidmsgFieldPayload_getString (const msgFieldPayload   field,
         return MAMA_STATUS_NULL_ARG;
     }
 
+    if (impl->mFid == 0 && impl->mName.start == NULL)
+    {
+    	return MAMA_STATUS_INVALID_ARG;
+    }
+
+    if (PN_STRING != impl->mData.type)
+    {
+    	return MAMA_STATUS_WRONG_FIELD_TYPE;
+    }
+
     *result = impl->mData.u.as_bytes.start;
 
     return MAMA_STATUS_OK;
@@ -740,9 +762,14 @@ qpidmsgFieldPayload_getOpaque (const msgFieldPayload   field,
         return MAMA_STATUS_NULL_ARG;
     }
 
-    if (NULL == impl->mParentBody || MAMA_FIELD_TYPE_OPAQUE != impl->mMamaType)
+    if (NULL == impl->mParentBody)
     {
         return MAMA_STATUS_INVALID_ARG;
+    }
+
+    if (MAMA_FIELD_TYPE_OPAQUE != impl->mMamaType)
+    {
+    	return MAMA_STATUS_WRONG_FIELD_TYPE;
     }
 
     *result = impl->mData.u.as_bytes.start;
@@ -761,7 +788,7 @@ qpidmsgFieldPayload_getDateTime (const msgFieldPayload   field,
 {
     qpidmsgFieldPayloadImpl* impl = (qpidmsgFieldPayloadImpl*) field;
 
-    if (NULL == impl)
+    if (NULL == impl || NULL == result)
     {
         return MAMA_STATUS_NULL_ARG;
     }
