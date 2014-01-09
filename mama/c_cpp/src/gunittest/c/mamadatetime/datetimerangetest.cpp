@@ -320,9 +320,6 @@ DateTimeRangeTests::EqualAndCompareTest(const mamaDateTime& t)
    mama_u32_t year, month, day;
 
    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&cpy) );
-   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getYear(cpy, &year) );
-   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getMonth(cpy, &month) );
-   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getDay(cpy, &day) );
 
    // Copy t
    // Chek both date times are eaual
@@ -333,6 +330,9 @@ DateTimeRangeTests::EqualAndCompareTest(const mamaDateTime& t)
    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setToNow(cpy) );
    EXPECT_NE ( 1, mamaDateTime_equal(t, cpy) );
 
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getYear(cpy, &year) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getMonth(cpy, &month) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getDay(cpy, &day) );
 
    // Copy t
    // Check that Compare is ZERO
@@ -345,7 +345,7 @@ DateTimeRangeTests::EqualAndCompareTest(const mamaDateTime& t)
    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setDate(cpy, year - 1, month, day) );
    EXPECT_EQ ( 1, mamaDateTime_compare(t, cpy) );
    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_copy(cpy,t) );
-   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setDate(cpy, year + 10, month, day) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setDate(cpy, year + 1, month, day) );
    EXPECT_EQ ( -1, mamaDateTime_compare(t, cpy) );
 
    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(cpy) );
