@@ -32,9 +32,15 @@ protected:
     MsgFieldCompositeTestsC(void) 
         : mMsg           (NULL)
         , mPayloadBridge (NULL)
-    {}
+        , mDict          (NULL)
+    {
+    	mamaDictionary_create (&mDict);
+    }
 
-    virtual ~MsgFieldCompositeTestsC(void) {};
+    virtual ~MsgFieldCompositeTestsC(void)
+    {
+    	mamaDictionary_destroy (mDict);
+    };
 
     virtual void SetUp(void) 
     {
@@ -47,9 +53,18 @@ protected:
         mamaMsg_destroy(mMsg);
     };
     
-    mamaMsg            mMsg;
+    mamaMsg           mMsg;
     mamaPayloadBridge mPayloadBridge;
+    mamaDictionary    mDict;
 };
+
+static void msgOnField (const mamaMsg	   msg,
+                        const mamaMsgField field,
+                        void*              closure)
+{
+	mamaFieldDescriptor result = NULL;
+    ASSERT_EQ (mamaMsgField_getDescriptor(field, &result), MAMA_STATUS_OK);
+}
 
 /*************************************************************
  * General Tests
@@ -58,8 +73,8 @@ protected:
 TEST_F (MsgFieldCompositeTestsC, msgFieldGetAsStringValid)
 {
     mamaMsgField      mMsgField  = NULL;
-    char*             buffer     = NULL;
-    size_t            len        = 0;
+    size_t            len        = 5;
+    char              buffer[5];
 
     //Create & add fields to msg
     mamaMsg_create (&mMsg);
@@ -111,15 +126,24 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetAsStringInValidLen)
 
 TEST_F (MsgFieldCompositeTestsC, msgFieldGetDescriptorValid)
 {
-    mamaMsgField          mMsgField  = NULL;
-    mamaFieldDescriptor   result     = NULL;
+    mamaFieldDescriptor   original   = NULL;
+    mama_fid_t            fid        = 101;
+    const char*           name       = "fieldName";
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_createFieldDescriptor (
+                    mDict,
+                    fid,
+                    name,
+                    MAMA_FIELD_TYPE_STRING,
+                    &original));
 
     //Create & add fields to msg
     mamaMsg_create (&mMsg);
-    mamaMsg_addString( mMsg, "name", 1, "test");
-    mamaMsg_getField (mMsg, "name", 1, &mMsgField);
+    mamaMsg_addString( mMsg, name, fid, "test");
 
-    ASSERT_EQ (mamaMsgField_getDescriptor(mMsgField, &result), MAMA_STATUS_OK);
+    /* iterate through the msg's fields to populate dictionary */
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaMsg_iterateFields (mMsg, msgOnField, mDict, NULL));
 }
 
 TEST_F (MsgFieldCompositeTestsC, msgFieldGetDescriptorInValidMsgField)
@@ -227,14 +251,14 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetNameInValidResult)
 TEST_F (MsgFieldCompositeTestsC, msgFieldGetTypeValid)
 {
     mamaMsgField      mMsgField  = NULL;
-    mamaFieldType*    result     = NULL;
+    mamaFieldType     result;
 
     //Create & add fields to msg
     mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
-    ASSERT_EQ (mamaMsgField_getType(mMsgField, result), MAMA_STATUS_OK);
+    ASSERT_EQ (mamaMsgField_getType(mMsgField, &result), MAMA_STATUS_OK);
 }
 
 TEST_F (MsgFieldCompositeTestsC, msgFieldGetTypeInValidMsgField)
@@ -359,7 +383,7 @@ TEST_F (FieldStringTestsC, getStringValid)
 
 TEST_F (FieldStringTestsC, getStringInValidField)
 {
-    ASSERT_EQ (mamaMsgField_getString(NULL, &mOut), MAMA_STATUS_INVALID_ARG);
+    ASSERT_EQ (mamaMsgField_getString(NULL, &mOut), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (FieldStringTestsC, getStringInValidValue)
