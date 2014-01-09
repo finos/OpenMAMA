@@ -26,6 +26,7 @@
 #include <string>
 
 // MAMA Headers
+#include "mama/mama.h"
 #include "mama/msgstatus.h"
 
 class MsgStatusTestsC : public ::testing::Test
@@ -42,7 +43,8 @@ protected:
    typedef std::map<mamaMsgStatus, std::string>  MsgStatusMapType;
 
    MsgStatusMapType testData; 
-
+   mamaMsg            mMsg;
+   mamaPayloadBridge  mPayloadBridge;
 private:   
    void CreateTestData();
 
@@ -59,11 +61,14 @@ MsgStatusTestsC::~MsgStatusTestsC() {}
 void
 MsgStatusTestsC::SetUp()
 {
+    mama_loadPayloadBridge (&mPayloadBridge, getPayload());
+    mamaMsg_create (&mMsg);
 }
 
 void
 MsgStatusTestsC::TearDown()
 {
+	mamaMsg_destroy(mMsg);
 }
 
 void
@@ -113,9 +118,8 @@ TEST_F (MsgStatusTestsC, testStringForStatus)
 TEST_F (MsgStatusTestsC, testStatusForMsg)
 {
 
-    mamaMsg msg = NULL;
     mamaMsgStatus expected = MAMA_MSG_STATUS_OK;
-    mamaMsgStatus result = mamaMsgStatus_statusForMsg(msg);
+    mamaMsgStatus result = mamaMsgStatus_statusForMsg(mMsg);
 
     ASSERT_EQ( result, expected );
 }
@@ -123,9 +127,8 @@ TEST_F (MsgStatusTestsC, testStatusForMsg)
 TEST_F (MsgStatusTestsC, testStringForMsg)
 {
     std::string szExpected = "OK"; 
-    mamaMsg msg = NULL;
     
-    std::string szResult = mamaMsgStatus_stringForMsg(msg);
+    std::string szResult = mamaMsgStatus_stringForMsg(mMsg);
 
     ASSERT_EQ( szResult, szExpected );
 }
