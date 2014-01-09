@@ -60,9 +60,9 @@
 #define     TPORT_PARAM_RECV_BLOCK_SIZE     "recv_block_size"
 
 /* Default values for corresponding configuration parameters */
-#define     DEFAULT_OUTGOING_URL            "amqp://127.0.0.1/"
-#define     DEFAULT_INCOMING_URL            "amqp://~127.0.0.1/"
-#define     DEFAULT_REPLY_URL               "amqp://127.0.0.1/"
+#define     DEFAULT_OUTGOING_URL            "amqp://127.0.0.1:7777"
+#define     DEFAULT_INCOMING_URL            "amqp://~127.0.0.1:6666"
+#define     DEFAULT_REPLY_URL               "amqp://127.0.0.1:6666"
 #define     DEFAULT_SUB_POOL_SIZE           128
 #define     DEFAULT_SUB_POOL_INC_SIZE       128
 #define     DEFAULT_RECV_BLOCK_SIZE         10
@@ -579,7 +579,7 @@ qpidBridgeMamaTransport_getNumLoadBalanceAttributes (
         const char*     name,
         int*            numLoadBalanceAttributes)
 {
-    if (NULL == numLoadBalanceAttributes)
+    if (NULL == numLoadBalanceAttributes || NULL == name)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -599,14 +599,14 @@ qpidBridgeMamaTransport_getLoadBalanceSharedObjectName (
     }
 
     *loadBalanceSharedObjectName = NULL;
-    return MAMA_STATUS_OK;
+    return MAMA_STATUS_NOT_IMPLEMENTED;
 }
 
 mama_status
 qpidBridgeMamaTransport_getLoadBalanceScheme (const char*       name,
                                               tportLbScheme*    scheme)
 {
-    if (NULL == scheme)
+    if (NULL == scheme || NULL == name)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -1515,6 +1515,11 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
             for (subInc = 0; subInc < subCount; subInc++)
             {
                 subscription = (qpidSubscription*)subs[subInc];
+
+                if (1 == subscription->mIsTportDisconnected)
+                {
+                	subscription->mIsTportDisconnected = 0;
+                }
 
                 if (1 != subscription->mIsNotMuted)
                 {

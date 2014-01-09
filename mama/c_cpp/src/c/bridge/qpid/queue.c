@@ -93,7 +93,7 @@ qpidBridgeMamaQueue_create (queueBridge* queue,
     qpidQueueBridge*    impl                = NULL;
     wombatQueueStatus   underlyingStatus    = WOMBAT_QUEUE_OK;
 
-    if (queue == NULL)
+    if (queue == NULL || parent == NULL)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -154,7 +154,7 @@ qpidBridgeMamaQueue_create_usingNative (queueBridge* queue,
                                         void*        nativeQueue)
 {
     qpidQueueBridge* impl = NULL;
-    if (NULL == queue)
+    if (NULL == queue || NULL == parent || NULL == nativeQueue)
     {
         return MAMA_STATUS_NULL_ARG;
     }

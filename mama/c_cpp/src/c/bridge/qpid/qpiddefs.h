@@ -119,6 +119,7 @@ typedef struct qpidSubscription_
     void*               mClosure;
     int                 mIsNotMuted;
     int                 mIsValid;
+    int                 mIsTportDisconnected;
     pn_message_t*       mMsg;
     const char*         mEndpointIdentifier;
 } qpidSubscription;
