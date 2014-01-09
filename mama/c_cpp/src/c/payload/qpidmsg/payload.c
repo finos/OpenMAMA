@@ -704,14 +704,18 @@ mama_status
 qpidmsgPayload_getByteSize (msgPayload    msg,
                             mama_size_t*  size)
 {
+	mama_status status = MAMA_STATUS_OK;
+	const void* buffer = NULL;
+
     if (NULL == msg || NULL == size)
     {
         return MAMA_STATUS_NULL_ARG;
     }
 
-    *size = 0;
+    /* Proton provides no way to figure this out without serializing */
+    status = qpidmsgPayload_serialize (msg, &buffer, size);
 
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    return status;
 }
 
 mama_status
@@ -758,10 +762,11 @@ qpidmsgPayload_toString (const msgPayload msg)
     char*               bufPos    = NULL;
     int                 result    = 0;
     mama_size_t         bufferLen = QPID_BYTE_BUFFER_SIZE;
+    mama_size_t         rootNodes = 0;
 
     if (NULL == impl)
     {
-        return "";
+        return NULL;
     }
 
     /* Allocate buffers and pointer to increment */
@@ -772,22 +777,6 @@ qpidmsgPayload_toString (const msgPayload msg)
     bufPos = (char*) impl->mBuffer;
 
     pn_data_rewind (impl->mBody);
-
-    result = snprintf (bufPos, bufferLen, "(");
-
-    /* Check that sprintf has appended to the buffer correctly. If not
-     * we run the risk of clobbering stuff... */
-    if (result < 0)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
-                  "qpidmsgPayload_toString(): "
-                  "Failed to append \'(\' to string. Return Code: %d",
-                  result);
-        return "";
-    } else {
-        bufPos += result;
-        bufferLen -= result;
-    }
 
     /* pn_data_next returns a typedef bool, in which 0 is false */
     while (0 != pn_data_next (impl->mBody))
@@ -803,20 +792,7 @@ qpidmsgPayload_toString (const msgPayload msg)
             bufPos    += result;
             bufferLen -= result;
         }
-    }
-    result = snprintf(bufPos, bufferLen, ")");
-
-    /* Check that sprintf has appended to the buffer correctly. If not
-     * we run the risk of clobbering stuff... */
-    if (result < 0)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
-                  "qpidmsgPayload_toString(): "
-                  "Failed to append \')\' to string. Return code: %d",
-                  result);
-        return "";
-    } else {
-        bufferLen -= result;
+        rootNodes++;
     }
 
     /* Revert to the previous iterator state if applicable */
@@ -1023,6 +999,11 @@ qpidmsgPayload_createFromByteBuffer (msgPayload*         msg,
                                      mama_size_t         bufferLength)
 {
     mama_status status = qpidmsgPayloadImpl_createImplementationOnly (msg);
+
+    if (0 == bufferLength)
+    {
+    	return MAMA_STATUS_INVALID_ARG;
+    }
 
     if (MAMA_STATUS_OK == status)
     {
@@ -1308,6 +1289,11 @@ qpidmsgPayload_getFieldAsString (const msgPayload    msg,
     if (NULL == impl || NULL == buffer)
     {
         return MAMA_STATUS_NULL_ARG;
+    }
+
+    if (0 == len)
+    {
+    	return MAMA_STATUS_INVALID_ARG;
     }
 
     /* Find field */
@@ -4053,7 +4039,7 @@ qpidmsgPayloadImpl_findField (qpidmsgPayloadImpl* impl,
     }
     else
     {
-        return MAMA_STATUS_NULL_ARG;
+        return MAMA_STATUS_INVALID_ARG;
     }
 
     return MAMA_STATUS_NOT_FOUND;
