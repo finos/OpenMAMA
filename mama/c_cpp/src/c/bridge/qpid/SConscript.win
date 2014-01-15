@@ -1,0 +1,42 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+target = 'libmamaqpidimpl'
+
+env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H'] )
+
+libPath = []
+libPath.append('$libdir')
+
+libPath.append('%s/lib' %(env['qpid_home']) )
+libPath.append('$libevent_home')
+
+incPath = []
+incPath.append('$libevent_home/WIN32-Code')
+incPath.append('$libevent_home')
+incPath.append('$qpid_home/include')
+incPath.append('#common/c_cpp/src/c/windows')
+incPath.append('#common/c_cpp/src/c')
+incPath.append('#mama/c_cpp/src/c')
+
+libs = []
+libs.append('libwombatcommon%s.lib' % ( env['suffix'] ))
+libs.append('libmamac%s.lib' % ( env['suffix'] ))
+
+if 'debug' in env['build']:
+  libs.append('qpid-protond')
+else:
+  libs.append('qpid-proton')
+
+libs.append('libevent_core')
+
+env['CCFLAGS'].append(['/TP', '/WX-'])
+env['CPPPATH'] = incPath
+env.Append(LIBS = libs, LIBPATH=libPath) 
+
+sources = Glob('*.c')
+
+env.InstallLibrary(sources, target)
