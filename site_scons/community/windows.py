@@ -82,6 +82,8 @@ class Windows:
 
         env['Logger'] = logger
 
+        env['ENV']['TMP'] = os.environ['TMP']
+
         opts.Update( env )
 
         AddMethod( env, Log )
