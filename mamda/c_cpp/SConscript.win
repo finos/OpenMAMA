@@ -20,7 +20,7 @@ includePath.append( '#mama/c_cpp/src/enterprise/cpp' )
 includePath.append( '#mamda/c_cpp/src/cpp' )
 includePath.append( '#mamda/c_cpp/src/cpp/options' )
 
-h = os.path.join( Dir('#').abspath, 'mamda\\c_cpp\\src\\cpp\\mamda\\version.h' )
+h = os.path.join( Dir('#').abspath, 'mamda\\c_cpp\\src\\cpp\\version.h' )
 c = os.path.join( Dir('#').abspath, 'mamda\\c_cpp\\src\\cpp\\version.c' )
 
 major = versions['major']
@@ -38,7 +38,7 @@ verH.write("""/* This file was automatically generated */
 #define MAMDA_VERSION_MINOR %s
 #define MAMDA_VERSION_RELEASE %s
 #define MAMDA_VERSION "mamda %s"
-extern const char* mamda_version;
+extern "C" const char* mamda_version;
 #endif
 """ % ( major, minor, release, releaseString ) )
 verH.close()
