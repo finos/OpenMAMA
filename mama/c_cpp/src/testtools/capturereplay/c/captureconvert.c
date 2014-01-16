@@ -597,6 +597,8 @@ static void copyMamaMsg (mamaMsg sourceMessage,
         {
             const mamaMsg* result;
             mama_size_t resultLen;
+            mamaMsg* outputMessageList = NULL;
+            mama_size_t counter;
 
             status = mamaMsgField_getVectorMsg (currentField, &result,
                                                 &resultLen);
@@ -609,9 +611,8 @@ static void copyMamaMsg (mamaMsg sourceMessage,
                 exit (1);
             }
 
-            mamaMsg* outputMessageList = (mamaMsg*) calloc (resultLen,
-                                                            (sizeof(mamaMsg)));
-            mama_size_t counter;
+            outputMessageList = (mamaMsg*) calloc (resultLen,
+                                                   (sizeof(mamaMsg)));
 
             for (counter = 0; counter < resultLen; counter++)
             {
