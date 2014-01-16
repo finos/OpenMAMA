@@ -29,7 +29,7 @@
 #include "mama/dqpublishermanager.h"
 #include "playback/playbackFileParser.h"
 #include "string.h"
-#include "unistd.h"
+#include "wombat/port.h"
 
 static const char * gUsageString[] =
 {
@@ -85,28 +85,28 @@ static int                      gRewind                 = 0;
 
 static void parseCommandLine (int argc, const char** argv);
 
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnCreateCb (mamaDQPublisherManager manager);
 
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnNewRequestCb(mamaDQPublisherManager manager,
                                   const char*            symbol,
                                   short                  subType,
                                   short                  msgType,
                                   mamaMsg                msg);
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnRequestCb(mamaDQPublisherManager manager,
                                mamaPublishTopic*      info,
                                short                  subType,
                                short                  msgType,
                                mamaMsg                msg);
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnRefreshCb(mamaDQPublisherManager manager,
                                mamaPublishTopic*      info,
                                short                  subType,
                                short                  msgType,
                                mamaMsg                msg);
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnErrorCb(mamaDQPublisherManager manager,
                              mama_status            status,
                              const char*            errortxt,
@@ -120,21 +120,21 @@ static void readSymbolsFromFile (void);
 /* Methods for managing dictionary requests: */
 static void prepareDictionaryListener (void);
 
-static void dictionarySubOnCreate  (mamaSubscription subsc, void* closure);
-static void dictionarySubOnDestroy (mamaSubscription subsc, void* closure);
+static void MAMACALLTYPE  dictionarySubOnCreate  (mamaSubscription subsc, void* closure);
+static void MAMACALLTYPE  dictionarySubOnDestroy (mamaSubscription subsc, void* closure);
 
-static void dictionarySubOnError   (mamaSubscription subsc, 
+static void MAMACALLTYPE  dictionarySubOnError   (mamaSubscription subsc, 
                                     mama_status      status,
                                     void*            platformError, 
                                     const char*      subject,
                                     void*            closure);
 
-static void dictionarySubOnMsg     (mamaSubscription subsc, 
+static void MAMACALLTYPE dictionarySubOnMsg     (mamaSubscription subsc, 
                                     mamaMsg          msg,
                                     void*            closure, 
                                     void*            itemClosure);
 
-static void pubCallback (mamaTimer timer, void* closure)
+static void MAMACALLTYPE pubCallback (mamaTimer timer, void* closure)
 {
     int index =0;
     char*temp=NULL;
@@ -377,13 +377,13 @@ int main (int argc, const char **argv)
     return 0;
 }
 
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnCreateCb (mamaDQPublisherManager manager)
 {
     mama_log (MAMA_LOG_LEVEL_NORMAL, "Created publisher subscription.");
 }
 
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnErrorCb (mamaDQPublisherManager manager,
                               mama_status            status,
                               const char*            errortxt,
@@ -406,7 +406,7 @@ subscriptionHandlerOnErrorCb (mamaDQPublisherManager manager,
     }
 }
 
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
                                    const char*            symbol,
                                    short                  subType,
@@ -498,7 +498,7 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
 
 
 
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
                                 mamaPublishTopic*      publishTopicInfo,
                                 short                  subType,
@@ -554,7 +554,7 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
     }
 }
 
-static void
+static void MAMACALLTYPE 
 subscriptionHandlerOnRefreshCb (mamaDQPublisherManager  publisherManager,
                                 mamaPublishTopic*       publishTopicInfo,
                                 short                   subType,
@@ -753,17 +753,17 @@ static void usage (int exitStatus)
     exit (exitStatus);
 }
 
-static void dictionarySubOnCreate (mamaSubscription subsc, void* closure)
+static void MAMACALLTYPE dictionarySubOnCreate (mamaSubscription subsc, void* closure)
 {
     mama_log (MAMA_LOG_LEVEL_NORMAL, "Dictionary Subscription Created:");
 }
 
-static void dictionarySubOnDestroy (mamaSubscription subsc, void* closure)
+static void MAMACALLTYPE dictionarySubOnDestroy (mamaSubscription subsc, void* closure)
 {
     mama_log (MAMA_LOG_LEVEL_NORMAL, "Dictionary Subscription Destroyed:");
 }
 
-static void dictionarySubOnError (mamaSubscription subsc, 
+static void MAMACALLTYPE dictionarySubOnError (mamaSubscription subsc, 
                                   mama_status      status,
                                   void*            platformError, 
                                   const char*      subject,
@@ -772,7 +772,7 @@ static void dictionarySubOnError (mamaSubscription subsc,
     mama_log (MAMA_LOG_LEVEL_NORMAL, "Dictionary Subscription Error:");
 }
 
-static void dictionarySubOnMsg (mamaSubscription subsc, 
+static void MAMACALLTYPE dictionarySubOnMsg (mamaSubscription subsc, 
                                 mamaMsg          msg,
                                 void*            closure, 
                                 void*            itemClosure)
