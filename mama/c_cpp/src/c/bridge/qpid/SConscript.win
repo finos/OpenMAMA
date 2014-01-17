@@ -11,7 +11,6 @@ env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H'] )
 libPath = []
 libPath.append('$libdir')
 
-libPath.append('%s/lib' %(env['qpid_home']) )
 libPath.append('$libevent_home')
 
 incPath = []
@@ -27,8 +26,10 @@ libs.append('libwombatcommon%s.lib' % ( env['suffix'] ))
 libs.append('libmamac%s.lib' % ( env['suffix'] ))
 
 if 'debug' in env['build']:
+  libPath.append('%s/Debug' %(env['qpid_home']) )
   libs.append('qpid-protond')
 else:
+  libPath.append('%s/Release' %(env['qpid_home']) )
   libs.append('qpid-proton')
 
 libs.append('libevent_core')

@@ -14,13 +14,14 @@ includePath.append('#common/c_cpp/src/c')
 
 libPath = []
 libPath.append('$libdir')
-libPath.append('%s/lib' %(env['qpid_home']) )
 
 libs = []
 libs.append('libmamac%s.lib' % ( env['suffix'] ))
 if 'debug' in env['build']:
+  libPath.append('%s/Debug' %(env['qpid_home']) )
   libs.append('qpid-protond')
 else:
+  libPath.append('%s/Release' %(env['qpid_home']) )
   libs.append('qpid-proton')
 
 env['CCFLAGS'].append(['/TP', '/WX-'])
