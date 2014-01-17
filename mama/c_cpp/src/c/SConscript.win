@@ -71,9 +71,13 @@ symbollist.c
 symbollistmember.c
 conflation/connection.c
 conflation/serverconnection.c
+playback/playbackcapture.c
+playback/playbackFileParser.c
+playback/playbackpublisher.c
 """)
 
 headers = Glob("mama/*.h")
+playbackHeaders = Glob("mama/playback/*.h")
 
 if env['entitled'] == True:
     EntLIB = posixpath.join( env['entitle_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix']))
@@ -89,3 +93,4 @@ env.InstallLibrary(sources, target)
 if ( env['build'] == 'dynamic' or len(env['buildtype']) == 1):
     env.Install('$prefix/include/mama',headers)
     env.Install('$prefix/include/mama/conflation','mama/conflation/connection.h')
+    env.Install('$prefix/include/mama/playback', playbackHeaders)
