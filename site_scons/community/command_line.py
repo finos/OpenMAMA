@@ -47,6 +47,8 @@ def get_command_line_opts( host, products, VERSIONS ):
                      PathVariable.PathIsDir),
             PathVariable('libevent_home', 'Path to libevent Libraries',
                           'c:\\libevent', PathVariable.PathAccept),
+            EnumVariable('target_arch', 'Specifies if the build should target 32 or 64 bit architectures.',
+                          host['arch'], allowed_values=['x86', 'x86_64']),
         )
 
     if host['os'] == 'Linux':
