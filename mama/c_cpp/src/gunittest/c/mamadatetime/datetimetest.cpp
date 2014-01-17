@@ -506,7 +506,7 @@ TEST_F (MamaDateTimeTestC, TestCopyDate)
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_copyDate(nullTime,t2) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setToNow(t1) );
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setToNow(t2) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_copy(t2,t1) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setDate(t2, year, month, day) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_copyDate(t1,t2) );
     EXPECT_EQ ( 1, mamaDateTime_equal(t1,t2) );
