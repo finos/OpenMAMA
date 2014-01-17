@@ -34,6 +34,16 @@ class Windows:
             if not optsEnv.has_key('avis_home'):
                 print 'ERROR: Avis home must be specified'
                 Exit(1)
+         
+        if 'qpid' in optsEnv['middleware']:
+            if not optsEnv.has_key('qpid_home'):
+                print 'ERROR: Qpid home must be specified'
+                Exit(1)
+            
+            if not optsEnv.has_key('libevent_home'):
+                print 'ERROR: In order to build the QPID bridge, '\
+                      'Libevent home must be specified'
+                Exit(1)
 
         if optsEnv['with_unittest'] == True:
             if not optsEnv.has_key('gtest_home'):
@@ -71,6 +81,8 @@ class Windows:
         env['PRINT_CMD_LINE_FUNC'] = logger.log_command
 
         env['Logger'] = logger
+
+        env['ENV']['TMP'] = os.environ['TMP']
 
         opts.Update( env )
 

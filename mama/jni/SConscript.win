@@ -5,6 +5,10 @@ import os,posixpath
 Import('*')
 env = env.Clone()
 
+if not ConfigureJNI(env):
+    print 'Java Native Interface is required...Exiting'
+    Exit(1)
+
 java_classdir_builder = CreateJavaClassDirBuilder( env)
 java_classdir_builder.emitter = emit_java_classes_norecurse
 

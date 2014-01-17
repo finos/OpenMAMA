@@ -45,6 +45,8 @@ def get_command_line_opts( host, products, VERSIONS ):
                      allowed_values=('1.0','2.0', '4.0')),
             PathVariable('dotnet_framework', 'Path to desired dotnet framework', None,
                      PathVariable.PathIsDir),
+            PathVariable('libevent_home', 'Path to libevent Libraries',
+                          'c:\\libevent', PathVariable.PathAccept),
         )
 
     if host['os'] == 'Linux':
