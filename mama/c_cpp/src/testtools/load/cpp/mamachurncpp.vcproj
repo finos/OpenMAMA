@@ -338,10 +338,6 @@
 			ReferencedProjectIdentifier="{66CB8ABC-8EA3-4FF6-B715-D878B37CCCB3}"
 			RelativePathToProject=".\mama\c_cpp\src\cpp\mamacpp.vcproj"
 		/>
-		<ProjectReference
-			ReferencedProjectIdentifier="{45F0CC89-C5CD-4AF6-9911-DDF0557F788A}"
-			RelativePathToProject=".\common\c_cpp\src\c\commonc.vcproj"
-		/>
 	</References>
 	<Files>
 		<Filter

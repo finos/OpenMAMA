@@ -2,10 +2,8 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="8.00"
-	Name="capturec"
-	ProjectGUID="{23AAC519-29F2-4AED-A2F2-2E22A47C4451}"
-	RootNamespace="capturec"
-	Keyword="Win32Proj"
+	Name="qpidmsg"
+	ProjectGUID="{5EBEA257-3507-45E6-92A0-E4597B8C0260}"
 	>
 	<Platforms>
 		<Platform
@@ -22,7 +20,7 @@
 			Name="Debug|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -42,16 +40,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="4"
+				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
+				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -64,10 +54,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="2"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				TargetMachine="1"
+				AdditionalDependencies="wsock32.lib qpid-protond.lib libevent_core.lib %(AdditionalDependencies)"
+				OutputFile="$(OutDir)\libmama$(ProjectName)implmdd.dll"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -98,9 +86,8 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -119,12 +106,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
+				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -137,12 +120,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="1"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
-				TargetMachine="1"
+				AdditionalDependencies="wsock32.lib qpid-proton.lib libevent_core.lib %(AdditionalDependencies)"
+				OutputFile="$(OutDir)\libmama$(ProjectName)implmd.dll"
+				AdditionalLibraryDirectories="$(PROTON_HOME)\Release;$(EVENT_HOME);%(AdditionalLibraryDirectories)"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -173,7 +153,7 @@
 			Name="Debug|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -194,16 +174,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				Optimization="0"
-				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\mama\c_cpp\src\c&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;_CONSOLE"
-				MinimalRebuild="true"
-				BasicRuntimeChecks="3"
-				RuntimeLibrary="3"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
+				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -216,9 +188,8 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="2"
-				GenerateDebugInformation="true"
-				SubSystem="1"
+				AdditionalDependencies="wsock32.lib;qpid-protond.lib;libevent_core.lib;%(AdditionalDependencies)"
+				OutputFile="$(OutDir)\libmama$(ProjectName)implmdd.dll"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -250,9 +221,8 @@
 			Name="Release|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
-			WholeProgramOptimization="1"
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
@@ -272,12 +242,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_CONSOLE"
-				RuntimeLibrary="2"
-				UsePrecompiledHeader="0"
-				WarningLevel="3"
-				Detect64BitPortabilityProblems="true"
-				DebugInformationFormat="3"
+				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
+				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -290,11 +256,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				LinkIncremental="1"
-				GenerateDebugInformation="true"
-				SubSystem="1"
-				OptimizeReferences="2"
-				EnableCOMDATFolding="2"
+				AdditionalDependencies="wsock32.lib;qpid-proton.lib;libevent_core.lib;%(AdditionalDependencies)"
+				OutputFile="$(OutDir)\libmama$(ProjectName)implmd.dll"
+				AdditionalLibraryDirectories="$(PROTON_HOME)\Release;$(EVENT_HOME);%(AdditionalLibraryDirectories)"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -325,6 +289,10 @@
 	</Configurations>
 	<References>
 		<ProjectReference
+			ReferencedProjectIdentifier="{45F0CC89-C5CD-4AF6-9911-DDF0557F788A}"
+			RelativePathToProject=".\common\c_cpp\src\c\commonc.vcproj"
+		/>
+		<ProjectReference
 			ReferencedProjectIdentifier="{7F64D11F-C002-4271-BDEC-A82C614403EF}"
 			RelativePathToProject=".\mama\c_cpp\src\c\mamac.vcproj"
 		/>
@@ -336,21 +304,49 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\capturec.c"
+				RelativePath=".\field.c"
 				>
 			</File>
-		</Filter>
-		<Filter
-			Name="Header Files"
-			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
-			>
+			<File
+				RelativePath=".\iterator.c"
+				>
+			</File>
+			<File
+				RelativePath=".\payload.c"
+				>
+			</File>
+			<File
+				RelativePath=".\qpidcommon.c"
+				>
+			</File>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav"
 			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
 			>
+		</Filter>
+		<Filter
+			Name="Header Files"
+			Filter="h;hpp;hxx;hm;inl;inc;xsd"
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
+			<File
+				RelativePath=".\field.h"
+				>
+			</File>
+			<File
+				RelativePath=".\payload.h"
+				>
+			</File>
+			<File
+				RelativePath=".\qpidcommon.h"
+				>
+			</File>
+			<File
+				RelativePath=".\qpidpayloadfunctions.h"
+				>
+			</File>
 		</Filter>
 	</Files>
 	<Globals>
