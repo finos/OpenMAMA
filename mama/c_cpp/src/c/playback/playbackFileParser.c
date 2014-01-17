@@ -389,7 +389,7 @@ mamaPlaybackFileParser_rewindFile (mamaPlaybackFileParser fileParser)
         return MAMA_STATUS_NULL_ARG;
     impl = (mamaPlaybackFileParserImpl*)fileParser;
 
-#ifndef MAMA_PLAYBACK_USE_FILE_STREAMS
+#ifdef MAMA_PLAYBACK_USE_FILE_STREAMS
     /* Set the file position back to the first byte in the file */
     fseek (impl->myFileHandle, 0, SEEK_SET);
 #else
