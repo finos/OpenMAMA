@@ -83,7 +83,7 @@ void  mamaPriceImpl_getAsString (const mama_price_t*  price,
             mamaPriceImpl_getAsStringSpecFraction (value, 64, 2, 0, buf, bufMaxLen);
             break;
         default:
-            snprintf (buf, bufMaxLen, "%g", value);
+            snprintf (buf, bufMaxLen, "%f", value);
         }
     }
 }

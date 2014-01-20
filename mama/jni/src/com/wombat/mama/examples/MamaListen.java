@@ -977,77 +977,72 @@ public class MamaListen
             }
         }
 
-        private synchronized void displayField (MamaFieldDescriptor field,
+        private synchronized void displayField (MamaFieldDescriptor fieldDesc,
                                                 final MamaMsg msg)
         {
+            String fieldName = fieldDesc.getName ();
+            int fid = fieldDesc.getFid ();
+            MamaMsgField field = msg.getField (fieldName,
+                                               fid,
+                                               dictionary);
+
             if (field == null                                   ||
                 field.getType() == MamaFieldDescriptor.U32ARRAY ||
                 field.getType() == MamaFieldDescriptor.U16ARRAY ||
-                field.getType() == MamaFieldDescriptor.MSG )
+                field.getType() == MamaFieldDescriptor.MSG)
             {
                 return;
             }
 
-            String fieldName = field.getName();
-
-            if (fieldName == null || fieldName.length() == 0)
-            {
-                MamaFieldDescriptor tmpField =
-                    dictionary.getFieldByFid (field.getFid());
-                if (tmpField != null) fieldName = tmpField.getName();
-            }
-
-            if (fieldName == null) fieldName = "unknown";
-
             if (quietness < 1)
             {
                 System.out.print ("\t");
-                print (fieldName, 20);
+                print ( ((null == fieldName) ? "unknown" : fieldName), 20);
                 System.out.print (" | ");
-                print ("" + field.getFid(), 4);
+                print ("" + fid, 4);
                 System.out.print (" | ");
-                print (MamaFieldDescriptor.getTypeName( field.getType() ), 10);
+                print (field.getTypeName (), 10);
                 System.out.print (" | ");
                 try
                 {
                     switch (field.getType())
                     {
                         case MamaFieldDescriptor.CHAR:
-                            System.out.println (msg.getChar(field));
+                            System.out.println (msg.getChar(fieldName, fid));
                             break;
                         case MamaFieldDescriptor.U8:
-                            System.out.println (msg.getU8(field));
+                            System.out.println (msg.getU8(fieldName, fid));
                             break;
                         case MamaFieldDescriptor.I16:
-                            System.out.println (msg.getI16(field));
+                            System.out.println (msg.getI16(fieldName, fid));
                             break;
                         case MamaFieldDescriptor.I32:
-                            System.out.println (msg.getI32(field));
+                            System.out.println (msg.getI32(fieldName, fid));
                             break;
                         case MamaFieldDescriptor.U32:
-                            System.out.println (msg.getU32(field));
+                            System.out.println (msg.getU32(fieldName, fid));
                             break;
                         case MamaFieldDescriptor.I64:
-                            System.out.println (msg.getI64(field));
+                            System.out.println (msg.getI64(fieldName, fid));
                             break;
                         case MamaFieldDescriptor.U64:
-                            System.out.println (msg.getU64(field));
+                            System.out.println (msg.getU64(fieldName, fid));
                             break;
                         case MamaFieldDescriptor.F64:
-                            System.out.println (msg.getF64(field));
+                            System.out.println (msg.getF64(fieldName, fid));
                             break;
                         case MamaFieldDescriptor.STRING:
-                            System.out.println (msg.getString(field));
+                            System.out.println (msg.getString(fieldName, fid));
                             break;
                         case MamaFieldDescriptor.TIME:
-                            System.out.println (msg.getDateTime (field));
+                            System.out.println (msg.getDateTime (fieldName, fid));
                             break;
                         case MamaFieldDescriptor.PRICE:
-                            System.out.println (msg.getPrice (field));
+                            System.out.println (msg.getPrice (fieldName, fid));
                             break;
                         default:
                             System.out.println (
-                                    msg.getFieldAsString(field.getFid(),dictionary));
+                                    msg.getFieldAsString (fid, dictionary));
                     }
                 }
                 catch (MamaFieldNotFoundException e)

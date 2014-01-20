@@ -1,0 +1,83 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from SCons.Tool import CreateJavaClassDirBuilder
+import os,posixpath
+Import('*')
+env = env.Clone()
+
+if not ConfigureJNI(env):
+    print 'Java Native Interface is required...Exiting'
+    Exit(1)
+
+java_classdir_builder = CreateJavaClassDirBuilder( env)
+java_classdir_builder.emitter = emit_java_classes_norecurse
+
+testtools_source = Split("""
+#mama/jni/src/com/wombat/mama/testtools/load/MamaChurnTest.java
+#mama/jni/src/com/wombat/mama/testtools/performance/MamaProducerJava.java
+#mama/jni/src/com/wombat/mama/testtools/performance/MamaConsumerJava.java
+""")
+
+testtools = []
+
+jExamples = Glob('src/com/wombat/mama/examples/*java')
+
+version = env['versions']['mama']['releaseString']
+
+c = os.path.join(Dir('#').abspath, 'mama/jni/src/c/version.c')
+verFile = open(c, 'w')
+verFile.write("""const char mamajni_version[] = "@(#) openmamajni %s";"""
+               % version)
+verFile.close()
+
+common_source   = [ '#common/jni/src/com/wombat/common/' ]
+mama_source     = [ '#mama/jni/src/com/wombat/mama' ]
+
+env.Append( JAVACFLAGS=['-Xlint:deprecation'],
+    JAVACLASSPATH = Dir('classes').path )
+
+common_classes  = env.Java('classes',common_source)
+mama_classes    = env.Java('classes',mama_source)
+
+if env['with_testtools'] == True and 'dynamic' in env['build']:
+    for t in testtools_source:
+        testtools.append( env.Java( 'classes', t ) )
+
+env.Depends( mama_classes, common_classes )
+env.Depends( testtools, mama_classes )
+
+# Builds all of the header files which is unnecessary but no reason not to
+# do this
+headers = env.JavaH(target=Dir('src/c/mamajni').abspath,source= [ mama_classes, common_classes ])
+
+env.Depends( headers, [ mama_classes, common_classes, testtools ] )
+
+jar = env.Jar(target='mamajni.jar', source='classes', JARCHDIR = Dir('classes').abspath  )
+
+Jars['mamajni.jar'] = jar
+
+Alias('install', env.InstallAs('$libdir/mamajni_%s.jar' % version, jar))
+Alias('install', env.InstallAs('$libdir/mamajni.jar', jar))
+Alias('install', env.Install('$prefix/examples/mamajni', jExamples))
+
+
+if 'dynamic' in env['build']:
+    env.Append( CPPDEFINES = ['MAMA_DLL'] )
+    env.Append( LINKFLAGS = ['/MAP'] )
+    env.Append( LIBS = ['ws2_32.lib', 'advapi32.lib', 'kernel32.lib'] )
+if float(env['vsver']) == 7:
+    env.Append( LIBS = ['secur32.lib'])
+
+env.SConscript('src/c/SConscript.win', 'env')
+
+if env['with_docs'] == True and not env.GetOption('clean'):
+    overview = posixpath.join( Dir('#mama/jni/doc').abspath, 'overview-jni.html' )
+    env.Append(
+        PROJECT_DOC_TITLE       = "MAMA (Middleware Agnostic Messaging API) JNI specification,  v%s" % (version),
+        PROJECT_OVERVIEW        = overview,
+        PROJECT_WINDOW_TITLE    = "MAMA JNI %s" % (version),
+        PROJECT_BOTTOM          = "Copyright 2011 NYSE Technologies",
+        PROJECT_HEADER          = "<img src='./resources/nyse_technologies.png' alt='NYSE Technologies' /><br/><b>MAMA JNI</b><br><font size='-1'>version %s</font>" % (version),
+    )
+
+    env.JavaDocBuilder( '$prefix/doc/mama/jni/html','#mama/jni/src' )

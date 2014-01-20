@@ -81,8 +81,8 @@ namespace Wombat
         MamdaOptionPutCall   putCall)
         : mImpl (*new MamdaOptionContractImpl)
     {
-        snprintf (mImpl.mSymbol,     MAX_SYMBOL_LEN,      symbol);
-        snprintf (mImpl.mExchange,   MAX_PART_ID_LEN,     exchange);
+        snprintf (mImpl.mSymbol,     MAX_SYMBOL_LEN,      "%s", symbol);
+        snprintf (mImpl.mExchange,   MAX_PART_ID_LEN,     "%s", exchange);
 
         mImpl.mExpireDate        = expireDate;
         mImpl.mGotExpireDate     = true;
@@ -101,8 +101,8 @@ namespace Wombat
         const char*          exchange)
         : mImpl (*new MamdaOptionContractImpl)
     {
-        snprintf (mImpl.mSymbol,     MAX_SYMBOL_LEN,      symbol);
-        snprintf (mImpl.mExchange,   MAX_PART_ID_LEN,     exchange);
+        snprintf (mImpl.mSymbol,     MAX_SYMBOL_LEN,      "%s", symbol);
+        snprintf (mImpl.mExchange,   MAX_PART_ID_LEN,     "%s", exchange);
 
         mImpl.mExpireDate.clear();
         mImpl.mGotExpireDate     = false;

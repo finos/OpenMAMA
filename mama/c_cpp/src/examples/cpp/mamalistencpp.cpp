@@ -224,7 +224,10 @@ class DisplayCallback : public MamaSubscriptionCallback
                     
 {
 public:
-    DisplayCallback               () {};
+    DisplayCallback               () 
+                                  : mMamaListen (NULL),
+                                    mFieldList (NULL)
+                                    {};
     virtual ~DisplayCallback      (void);
 
     DisplayCallback               (MamaListen*        mamaListen,
@@ -252,14 +255,12 @@ public:
     void displaySpecificFields    (const MamaMsg&     msg,
                                    MamaSubscription   *subsc );
 
-    void displayField             (const MamaMsg&     msg,
-                                   const MamaFieldDescriptor *field);
-
     void displayAllFields         (const MamaMsg&     msg);
 
     void subMsgDisplayAllFields   (const MamaMsg&     msg);
 
-    void displayMsgField          (const MamaMsg&     msg, 
+    void displayMsgField          (const MamaMsg&     msg,
+                                   const char*        name,
                                    const MamaMsgField&  field);
 
     template <class Vector>
@@ -291,7 +292,9 @@ MsgIteratorCallback - Implementation of interface for iterating   *
 class MsgIteratorCallback : public MamaMsgFieldIterator
 {
 public:
-    MsgIteratorCallback          () {}
+    MsgIteratorCallback          () 
+        : mMamaListen (NULL)
+    {}
     MsgIteratorCallback          (MamaListen* mamaListen);
     
     virtual ~MsgIteratorCallback (void) {}
@@ -407,16 +410,16 @@ public:
                                           size_t size, 
                                           void* closure)
     {
-        printf ("%s queue high water mark exceeded. Size %d\n",
-                queue->getQueueName(), size); 
+        std::cout << queue->getQueueName() << "queue high water mark exceeded."
+                  << " Size: " << size << std::endl;
     }
 
     virtual void onLowWatermark (MamaQueue* queue, 
                                  size_t size, 
                                  void *closure)
     {
-        printf ("%s queue low water mark exceeded. Size %d\n",
-                queue->getQueueName(), size); 
+        std::cout << queue->getQueueName() << "queue low water mark exceeded."
+                  << " Size: " << size << std::endl;
     }
 private:
     QueueMonitorCallback    (const QueueMonitorCallback& copy);
@@ -1079,6 +1082,10 @@ void MamaListen::readSymbolsFromFile (void)
             printf ("Symbol> ");
         }
     }
+    if (fp != stdin)
+    {
+        fclose (fp);
+    }
 }
 
 void MamaListen::removeSubscription (MamaSubscription* subscribed)
@@ -1132,17 +1139,18 @@ void MsgIteratorCallback::onField (const MamaMsg&       msg,
                                    void*                closure)
 {
     ((DisplayCallback*)mMamaListen
-        ->getDisplayCallback())->displayMsgField (msg, field);
+        ->getDisplayCallback())->displayMsgField (msg, field.getName (), field);
 }
 
 void DisplayCallback::displayMsgField (const MamaMsg&       msg,
+                                       const char*          name,
                                        const MamaMsgField&  field)
 {
     if (mMamaListen->getQuietness () < 1)
     {
         char fieldBuffer [BUFFER_SIZE];
         sprintf(fieldBuffer,"%20s | %3d | %20s | ",
-                field.getName (), field.getFid (),
+                name, field.getFid (),
                 field.getTypeName ());
  
        printData ("%s", fieldBuffer);
@@ -1352,25 +1360,6 @@ DisplayCallback::~DisplayCallback ()
 {   
 }
 
-void DisplayCallback::displayField (const MamaMsg&             msg,
-                                    const MamaFieldDescriptor* field)
-{
-    char fieldValueStr[256];
-    if (field)
-    {
-        msg.getFieldAsString (field, fieldValueStr, 256);
-        if (mMamaListen->getQuietness () < 1)
-        {
-            printf ("%20s | %3d | %20s | %s\n",
-                    field->getName (),     
-                    field->getFid (),
-                    field->getTypeName (), 
-                    fieldValueStr);
-        }
-    }
-    
-}
-
 void DisplayCallback::displayAllFields (const MamaMsg& msg)
 {
     printData ("%s", "\n");
@@ -1391,7 +1380,8 @@ void DisplayCallback::displayAllFields (const MamaMsg& msg)
         
         while (*(*mMamaMsgIterator) != NULL)
         {
-            displayMsgField (msg, *(*mMamaMsgIterator));
+            MamaMsgField afield = *(*mMamaMsgIterator);
+            displayMsgField (msg, afield.getName (), afield);
             ++(*mMamaMsgIterator);
         }
 
@@ -1415,7 +1405,8 @@ void DisplayCallback::subMsgDisplayAllFields (const MamaMsg& msg)
         
         while (*subiterator != NULL)
         {
-            displayMsgField (msg, *subiterator);
+            MamaMsgField afield = *subiterator;
+            displayMsgField (msg, afield.getName (), afield);
             ++subiterator;
         }
         
@@ -1491,24 +1482,20 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
 void DisplayCallback::displaySpecificFields (const MamaMsg& msg, 
                                              MamaSubscription* subsc)
 {
-    if (mMamaListen->getQuietness () < 2)
-    {
-        char msgBuffer[BUFFER_SIZE];
-        sprintf(msgBuffer,"%s.%s Type: %s Status %s \n",
-                subsc->getSubscSource (),
-                subsc->getSymbol (),
-                msg.getMsgTypeName (),
-                msg.getMsgStatusString ());
-        printData ("%s",msgBuffer);
-    }
 
     for (FieldList::iterator i = mFieldList->begin();
          i != mFieldList->end();
          i++)
     {
-        const MamaFieldDescriptor *field =
+        const MamaFieldDescriptor *fieldDesc =
             mMamaListen->getMamaDictionary()->getFieldByName (*i);
-        displayField (msg, field);
+
+        if (fieldDesc)
+        {
+            MamaMsgField *field = msg.getField (fieldDesc);
+            if (field)
+                displayMsgField (msg, fieldDesc->getName (), *field);
+        }
     }
 }
 
@@ -1623,15 +1610,16 @@ void MamaListen::usage (int exitStatus)
 int main (int argc, const char** argv)
 {
     MamaListen  mMamaListen;
-    mMamaListen.parseCommandLine (argc, argv);
-
-    if (mMamaListen.hasSymbols ())
-    {
-        mMamaListen.readSymbolsFromFile ();
-    }
 
     try
     {
+        mMamaListen.parseCommandLine (argc, argv);
+
+        if (mMamaListen.hasSymbols ())
+        {
+            mMamaListen.readSymbolsFromFile ();
+        }
+
         mMamaListen.initializeMama      ();
         mMamaListen.buildDataDictionary ();
         mMamaListen.dumpDataDictionary  ();
@@ -1647,7 +1635,7 @@ int main (int argc, const char** argv)
         mMamaListen.start            ();
         mMamaListen.shutdownListener ();
     }
-    catch (MamaStatus status)
+    catch (MamaStatus const & status)
     {
         cerr << "Exception MamaStatus: " << status.toString () << endl;
     }

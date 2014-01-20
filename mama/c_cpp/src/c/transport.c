@@ -1157,6 +1157,7 @@ mamaTransport_destroy (mamaTransport transport)
         if(NULL != self->mCmResponder)
         {
             mamaCmResponder_destroy (self->mCmResponder);
+            self->mCmResponder = NULL;
         }
         /* Inform all listeners that the transport is about to be destroyed. */
         mamaTransportImpl_clearTransportWithListeners (self);
@@ -1186,12 +1187,6 @@ mamaTransport_destroy (mamaTransport transport)
         {
             wombatThrottle_destroy (self->mRecapThrottle);
             self->mRecapThrottle = 0;
-        }
-
-        if (self->mCmResponder)
-        {
-            mamaCmResponder_destroy (self->mCmResponder);
-
         }
 
         if (self->mLoadBalanceHandle)
@@ -1614,6 +1609,7 @@ mamaTransport_addSubscription (mamaTransport    transport,
 
     handle->mSubscription = subscription;
 
+
     *result = handle;
 
     if (self->mRefreshTransport)
@@ -1739,7 +1735,7 @@ mamaTransportImpl_getTransportTopicCallback (mamaTransport transport,
     *callback = self->mTportTopicCb;
 }
 
-static void
+static void MAMACALLTYPE
 staleEventCallback (mamaQueue queue, void* closure)
 {
     mamaSubscription sub = (mamaSubscription) closure;
@@ -1964,13 +1960,34 @@ void mamaTransportImpl_disconnectNoStale (mamaTransport      transport,
         return;
     }
 
-    self->mQuality = MAMA_QUALITY_MAYBE_STALE;
-
-    if (!self->mDisableDisconnectCb && self->mTportCb != NULL )
+    if (self->mQuality == MAMA_QUALITY_OK)
     {
-        self->mTportCb (transport, event,
-                        self->mCause, connectionInfo,
-                        self->mTportClosure);
+        self->mQuality = MAMA_QUALITY_MAYBE_STALE;
+
+        if (!self->mDisableDisconnectCb && self->mTportCb != NULL )
+        {
+            self->mTportCb (transport, event,
+                            self->mCause, connectionInfo,
+                            self->mTportClosure);
+        }
+    }
+}
+
+void mamaTransportImpl_setPossiblyStale (mamaTransport    transport,
+                                         mamaSubscription subscription)
+{
+    if (!self)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mamaTrabsportImpl_setPossiblyStale(): "
+                                  "Could not set. NULL transport.");
+        return;
+    }
+
+    if (self->mSetPossiblyStaleForAll)
+    {
+        mamaQueue queue = NULL;
+        mamaSubscription_getQueue (subscription, &queue);
+        mamaQueue_enqueueEvent (queue, (mamaQueueEventCB)staleEventCallback, subscription);
     }
 }
 

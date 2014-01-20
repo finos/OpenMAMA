@@ -169,6 +169,7 @@ public:
     MamaQueueGroup*     getQueueGroup            ();
     void                onCreate                 (MamaDQPublisherManager*  publisher);
     bool                publishingSymbol         (const char*  symbol);
+    bool                mPublishRecaps;
 
     void onNewRequest (MamaDQPublisherManager* publisherManager,
                        const char*             symbol,
@@ -267,7 +268,9 @@ int main (int argc, const char **argv)
         const char* symbol      = cmdLine.getOptString("s");          
         const char* partId      = cmdLine.getOptString("p");          
         const char* pubSource   = cmdLine.getOptString("SP");
-        MamaSource* source      = cmdLine.getSource();   
+        const char* dictFile    = cmdLine.getOptString("use_dict_file");
+        MamaSource* source      = cmdLine.getSource();
+        mBookPublisher->mPublishRecaps = cmdLine.getPublishRecaps();
         
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);
         mBookPublisher->setQueueGroup (&queues);;
@@ -277,11 +280,20 @@ int main (int argc, const char **argv)
         mBookPublisher->createPublisherManager (pubSource, bridge);
 
         // Get and initialize the dictionary
-        DictRequester    dictRequester      (bridge);
-        dictRequester.requestDictionary     (cmdLine.getDictSource());
-        MamdaCommonFields::setDictionary    (*dictRequester.getDictionary());
-        MamdaOrderBookFields::setDictionary (*dictRequester.getDictionary());
-                     
+        if (dictFile)
+        {
+            MamaDictionary* dict =new MamaDictionary;
+            dict->populateFromFile(dictFile);
+            MamdaCommonFields::setDictionary    (*dict);
+            MamdaOrderBookFields::setDictionary (*dict);
+        }
+        else
+        {
+            DictRequester    dictRequester      (bridge);
+            dictRequester.requestDictionary     (cmdLine.getDictSource());
+            MamdaCommonFields::setDictionary    (*dictRequester.getDictionary());
+            MamdaOrderBookFields::setDictionary (*dictRequester.getDictionary());
+        }
         //create publisher and also set up MamaTimer to process order and publish changes
         mBookPublisher->createTimer   (symbol, bridge);
         mBookPublisher->createMessage ();
@@ -342,7 +354,15 @@ void BookPublisher::onTimer (MamaTimer* timer)
         processOrder();
         processOrder();
         // get changes to the book and publish
-        publish = mBook->populateDelta(mPublishMsg);
+        if (mPublishRecaps)
+        {
+            mBook->populateRecap(mPublishMsg);
+            publish=true;
+        }
+        else
+        {
+            publish = mBook->populateDelta(mPublishMsg);
+        }
     }
     if (publish) publishMessage(NULL);    
     releaseLock();
@@ -692,7 +712,8 @@ BookPublisher::BookPublisher()
     
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: bookpublisher [-SP publisher source] -s symbol [-s symbol ...]\n " 
-              << "[-DT dict tport] [-p partId] [-e] process entries [-threads num. of threads] \n";
+    std::cerr << "Usage: bookpublisher [-SP publisher source] -s symbol [-s symbol ...]\n" 
+              << "[-DT dict tport] [-use_dict_file dict file] [-p partId] [-e] process entries [-threads num. of threads]\n"
+              << "[-PR] publish recaps\n";
     exit (exitStatus);
 }

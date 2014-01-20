@@ -153,7 +153,9 @@ void FtMemberDemo::onFtStateChange (MamaFtMember*  member,
                                     mamaFtState    state)
 {
     mState = state;
-    printState ("FT Notification");
+    std::string context ("FT Notification for group: ");
+    context += groupName;
+    printState (context.c_str());
 }
 
 void FtMemberDemo::onTimer  (MamaTimer*  timer)
@@ -169,7 +171,7 @@ void FtMemberDemo::onDestroy  (MamaTimer*  timer, void* closure)
 void FtMemberDemo::printState  (const char*  context)
 {
     cout << "(" << context << ") Current state is: "
-         << mamaFtStateToString (mState) << "\n";
+         << mamaFtStateToString (mState) << std::endl;
 }
 
 void FtMemberDemo::parseCommandLine (int argc, const char* argv[])

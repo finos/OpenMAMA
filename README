@@ -1,6 +1,9 @@
 OpenMAMA Client Library
 ============================
 
+Release: 2.3.0
+Change Log: http://git.openmama.org/?p=OpenMAMA.git;a=shortlog;h=refs/tags/OpenMAMA-2.3.0
+
 Project Page
 ------------
 
@@ -34,6 +37,8 @@ Supported distributions are
     * Windows XP +
     * Java SE 6 (from Oracle)
 
+
+
 Requirements for End Users
 --------------------------
 
@@ -52,11 +57,12 @@ These are the base requirements to build and use OpenMAMA from a source package
   * gnu flex (fast lexical analyzer) available from http://flex.sourceforge.net
     or as part of many Linux distributions
 
-To use OpenMAMA you will need a middleware/payload. An example middleware bridge
-and payload is included for Avis. Avis can be obtained from the following
-website:
+To use OpenMAMA you will need a middleware/payload. Example middleware bridges
+and payloads are included for Avis and QPID. These middlewares can be obtained
+from the following websites:
 
-    http://avis.sourceforge.net.
+    http://avis.sourceforge.net
+    http://qpid.apache.org/proton
 
 OpenMAMA API reference documentation depends on:
 
@@ -146,9 +152,11 @@ mama/c_cpp/
     
 mama/c_cpp/src/c/             c files for mama C library
     bridge/avis/              c files for avis middleware bridge 
+    bridge/qpid/              c files for qpid proton middleware bridge 
     conflation/               c files for mama conflation component
     mama/                     header files for mama
-    payload/avismsg /         c files for avis payload bridge implementation
+    payload/avismsg/          c files for avis payload bridge implementation
+    payload/qpidmsg/          c files for qpid proton payload bridge implementation
     playback/                 c files for mama playback component
 
 mama/c_cpp/src/cpp/           cpp files for mama C++ library
@@ -263,9 +271,8 @@ Building OpenMAMA
 
 ### Avis Install ###
 
-Currently OpenMAMA assumes Avis is the middleware to be built with, as this is
-currently the only opensource middleware supported.  Therefore, the Avis client
-libraries must be available.  
+Currently OpenMAMA assumes Avis is the middleware to be built with unless told
+otherwise. To build the avis client libraries:
 
 The Avis router (avisd) is avalaible from:
     http://sourceforge.net/projects/avis/viles/Avis%20router/
@@ -280,11 +287,32 @@ To build the avis client:
 
 The default install of Avis is missing a header file. This needs to be moved
 manually in the include directory.  The OpenMAMA configure script checks for
-this header and will exit with an error if not found.
+this header and will exit with an error if not found. Use
+--with-avis=/path/to/avis to specify where to find avis if it is not installed
+to a default location.
 
   mv ${AVIS_SOURCE}/platforms/gnu_automake/avis_client_config.h ${AVIS_HOME}/include/avis
 
 
+### Qpid Proton Install ###
+
+To build with the qpid proton bridge, the qpid proton bridge must already be
+compiled and installed. Note a version greater than or equal to 0.5 is
+recommended.
+
+The qpid proton release can be downloaded and compiled from their website:
+    http://qpid.apache.org/proton/
+
+Then once compiled and installed, OpenMAMA can be compiled with proton support
+by using the following command *if you are using mama/c_cpp/configure*:
+    ./configure --with-proton=/path/to/proton
+
+If you are using the *top level* configure script, you can do the equivalent
+by running:
+    ./configure --proton-path=/path/to/proton
+
+For more information on the Qpid Proton bridge, see:
+    http://wiki.openmama.org/index.php/Qpid_Bridge
 
 ### Google Test Install ###
 
@@ -326,6 +354,9 @@ specify an alternative install location:
 
 specify non default Avis install:
 --avis-path=${AVIS_HOME}
+
+specify non default Qpid Proton install:
+--proton-path=${AVIS_HOME}
 
 build unittests, specify google test location:
 --gtest-path=${GTEST_HOME}
@@ -420,12 +451,11 @@ Complete the following steps to run the test suite:
   
    export LD_LIBRARY_PATH=/path/to/OpenMAMA/lib
 
-2. To run with avis, add avis libraries to LD_LIBRARY_PATH (avis only)
+2. To run with middleware, add middleware libraries to LD_LIBRARY_PATH
 
-    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/avis/client/lib
+    export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/path/to/middleware/lib
 
-3. Set WOMBAT_PATH to mama.properties file (Not required for avis running on
-   default port) 
+3. Set WOMBAT_PATH to mama.properties file
  
    export WOMBAT_PATH=/path/to/mamaproperties/
 

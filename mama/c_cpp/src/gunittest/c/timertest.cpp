@@ -19,13 +19,6 @@
  * 02110-1301 USA
  */
 
-/*
- * Description	:	This test harness will cover MAMA issue 3418 which includes
- *                  several timer tests. See the function header for each 
- *                  fixture for more information. Note that this test should
- *					be run against different versions of LBM including 3.5.2
- *					and an earlier version.
- */
 
 #include <gtest/gtest.h>
 #include "MainUnitTestC.h"
@@ -47,47 +40,22 @@ protected:
     virtual void SetUp();        
     virtual void TearDown ();    
 public:
-    // Initialise all member variables
-    int             m_numberForCallbacks;
-    int             m_numberForTimers;
-    int             m_numberRecursiveCallbacks;
-    double          m_timerInterval;    
-    mamaBridge      m_bridge;
-    mamaQueue       m_defaultQueue;
-    mamaTransport   m_transport;
-
-    mamaTimer       mtarray[1000];
-
     MamaTimerTestC *m_this;
-    char transportName[10];
-
-    mamaTimer shortTimer;
-    mamaTimer longTimer;
-    mamaTimer stopperTimer;
-    mamaTimer recursiveTimer;
-
-    mamaTimerCb m_TickCallback;
-    mamaTimerCb m_DestroyCallback;
-
+    mamaBridge mBridge;
+    
+    int         tCounter;
+    int         numTimers;
+    mamaTimer   tarray[100];
+    mamaTimer   longTimer;
+    mamaTimer   shortTimer;
+    mamaTimer   stopTimer;
+    mamaTimer   timer;
+    mamaQueue   queue;
+    mama_f64_t  interval;
 };
 
 MamaTimerTestC::MamaTimerTestC()
 {
-    m_numberForCallbacks        = 0;
-    m_numberForTimers           = 10;
-    m_numberRecursiveCallbacks  = 0;
-    m_timerInterval             = 0.0001;    
-    m_bridge                    = NULL;
-    m_defaultQueue              = NULL;
-    m_transport                 = NULL;
-    shortTimer                  = NULL;
-    longTimer                   = NULL;
-    stopperTimer                = NULL;
-    recursiveTimer              = NULL;
-
-    m_TickCallback              = NULL;
-    m_DestroyCallback           = NULL;
-    m_this                      = NULL;
 }
 
 MamaTimerTestC::~MamaTimerTestC()
@@ -96,154 +64,176 @@ MamaTimerTestC::~MamaTimerTestC()
 
 void MamaTimerTestC::SetUp(void)
 {	
-	// Save the this pointer in the member variable to get around gtest problems
-	m_this = this;
-    
-    mama_loadBridge(&m_bridge, getMiddleware());
+    interval = 0.01;
+    m_this   = this;
 
-    mama_open();
-
-    mama_getDefaultEventQueue(m_bridge, &m_defaultQueue);
-
-    transportName[0] = '\0';
-    strncat(transportName, "sub_", 5);
-    strncat(transportName, getMiddleware(), 4);
-
-    mamaTransport_allocate(&m_transport);
-    mamaTransport_create(m_transport, transportName, m_bridge); 
+    mama_loadBridge (&mBridge, getMiddleware());
+    mama_open (); 
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mama_getDefaultEventQueue (mBridge, &queue));
 }
 
 void MamaTimerTestC::TearDown(void)
 {
+    mama_close ();
     m_this = NULL;
 }
 
-static void MAMACALLTYPE onTimerTick(mamaTimer timer, void* closure)
+static void MAMACALLTYPE onTimerTick (mamaTimer timer, void* closure)
 {
-    mamaTimer_destroy(timer);
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTimer_destroy(timer));
 }
 
-static void MAMACALLTYPE onTimerDestroy(mamaTimer timer, void* closure)
+static void MAMACALLTYPE onTimerDestroy (mamaTimer timer, void* closure)
 {
-    MamaTimerTestC *fixture = (MamaTimerTestC *)closure;
-    fixture->m_numberForCallbacks ++;
+    MamaTimerTestC* fixture = (MamaTimerTestC *)closure;
+    fixture->tCounter++;
 
-    // If all the timers have been destroyed then quit out
-    if(fixture->m_numberForCallbacks == fixture->m_numberForTimers)
+    if (fixture->tCounter == fixture->numTimers)
     {
-        mama_stop(fixture->m_bridge);
+        ASSERT_EQ (MAMA_STATUS_OK,
+                   mama_stop (fixture->mBridge));
     }
 }
 
-static void MAMACALLTYPE onStopDispatchingTimerTick(mamaTimer timer, void* closure)
-{
-    mamaTimer_destroy(timer);
-}
-
-static void MAMACALLTYPE onStopDispatchingTimerDestroy(mamaTimer timer, void* closure)
+static void MAMACALLTYPE onRecursiveTimerDestroy (mamaTimer timer, void* closure)
 {
     MamaTimerTestC* fixture = (MamaTimerTestC *)closure;
-    mama_stop(fixture->m_bridge);
+    fixture->tCounter++;
 
-    mamaTimer_destroy(fixture->shortTimer);
-    mamaTimer_destroy(fixture->longTimer);
-}
-
-
-static void MAMACALLTYPE onRecursiveTimerTick(mamaTimer timer, void* closure)
-{
-    MamaTimerTestC *fixture = (MamaTimerTestC*) closure;
-    EXPECT_EQ(mamaTimer_destroy(timer), MAMA_STATUS_OK);
-    fixture->recursiveTimer = NULL;
-}
-
-
-static void MAMACALLTYPE onRecursiveTimerDestroy(mamaTimer timer, void* closure)
-{
-    // Cast the closure to a test fixture
-    MamaTimerTestC *fixture = (MamaTimerTestC *)closure;
-
-    // Increment the number of times this function has been called
-     fixture->m_numberRecursiveCallbacks ++;
-
-    // If this is the 10th pass then quit out
-    if(fixture->m_numberRecursiveCallbacks == 10)
+    if (fixture->tCounter == fixture->numTimers)
     {
-        //EXPECT_EQ(mama_stop(fixture->m_init->bridge), MAMA_STATUS_OK);
-        mama_stop(fixture->m_bridge);
+        ASSERT_EQ (MAMA_STATUS_OK,
+                   mama_stop(fixture->mBridge));
     }
     else
     {
-        mamaTimer_create2(&fixture->recursiveTimer, fixture->m_defaultQueue, onRecursiveTimerTick, onRecursiveTimerDestroy, fixture->m_timerInterval, fixture->m_this);
+        mamaTimer_create2 (&timer, fixture->queue, onTimerTick, 
+                           onRecursiveTimerDestroy, fixture->interval, fixture);
     }
-}
-
-
-static void MAMACALLTYPE onTwoTimerTick(mamaTimer timer, void* closure)
-{
 
 }
 
-static void MAMACALLTYPE onTwoTimerDestroy(mamaTimer timer, void * closure)
+static void MAMACALLTYPE onShortTimerTick (mamaTimer timer, void* closure)
 {
-    // Cast the closure to a test fixture
+}
+
+static void MAMACALLTYPE onLongTimerTick (mamaTimer timer, void* closure)
+{
+}
+
+static void MAMACALLTYPE onTwoTimerDestroy (mamaTimer timer, void* closure)
+{
+}
+
+static void MAMACALLTYPE onStopTimerTick (mamaTimer timer, void* closure)
+{
+    mamaTimer_destroy(timer);
+}
+
+static void MAMACALLTYPE onStopTimerDestroy (mamaTimer timer, void* closure)
+{
+    MamaTimerTestC* fixture = (MamaTimerTestC *)closure;
+
+    mamaTimer_destroy (fixture->shortTimer);
+    mamaTimer_destroy (fixture->longTimer);
+    
+    mama_stop (fixture->mBridge);
 }
 /* ************************************************************************* */
 /* Test Functions */
 /* ************************************************************************* */
 
-/*  Description :   This test will create a large number of timers in a for loop, each one will
- *                  be freed in its callback function.
+/*  Description: Create a mamaTimer which destroys itself in it's callback.
+ *                   
+ *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F(MamaTimerTestC, ForTimer)
+TEST_F (MamaTimerTestC, CreateDestroy)
 {
-    // Create a whole lot of timers
-    for(int counter=0; counter<m_numberForTimers; counter++)
+
+    MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
+    fixture->tCounter  = 0;
+    fixture->numTimers = 1;
+    
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTimer_create2 (&timer, fixture->queue, onTimerTick, 
+                                  onTimerDestroy, fixture->interval, m_this));
+    
+    ASSERT_EQ (MAMA_STATUS_OK, mama_start (mBridge));
+    
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
+
+}
+
+/*  Description: Create many mamaTimers which destroy themselves when fired.    
+ *               mama_close() is called once the last timer has fired.
+ *
+ *  Expected Result: MAMA_STATUS_OK
+ */
+TEST_F (MamaTimerTestC, CreateDestroyMany)
+{
+    MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
+    fixture->tCounter  = 0;
+    fixture->numTimers = 100;
+    
+    for (int x=0; x!=fixture->numTimers; x++)
     {
-        m_timerInterval = (counter + 1)/100;
-        mamaTimer_create2(&mtarray[counter], m_defaultQueue, onTimerTick, onTimerDestroy, m_timerInterval, m_this);
+        ASSERT_EQ (MAMA_STATUS_OK,
+                   mamaTimer_create2 (&tarray[x], fixture->queue, onTimerTick, 
+                                      onTimerDestroy,fixture->interval, m_this));
     }
 
-    ASSERT_EQ(MAMA_STATUS_OK, mama_start(m_bridge));
- 
-}    
+    ASSERT_EQ (MAMA_STATUS_OK, mama_start (mBridge));
+    
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 
+}
 
-/*  Description :   This function will create a timer which will create another timer
- *                  in its callback function, (the first timer will be destroyed).
+/*  Description: Create a timer whiich creates another timer when fired.
+ *               This repeats for 10 additional timers.
+ *                   
+ *  Expected Result: MAMA_STATUS_OK
  */
-
-TEST_F(MamaTimerTestC, RecursiveTimer)
-{    
-    //Store the call
-    mamaTimer_create2(&recursiveTimer, m_defaultQueue, onRecursiveTimerTick, onRecursiveTimerDestroy, m_timerInterval, m_this);
-
-    // Start processing messages, after 10 timers have been created this will stop blocking
-    mama_start(m_bridge);
-}    
-
-
-/*  Description :   This test will create 2 timers, the first will constantly reset itself
- *                  while the second will continue to reset the first timer as well.
- *                  The whole test will run for 3 seconds.
- */
-TEST_F(MamaTimerTestC, TwoTimer)
+TEST_F (MamaTimerTestC, RecursiveCreateDestroy)
 {
-
-    double interval = 0.1;
-    double testDuration = 3.0;
-
-    mamaTimer_create2(&shortTimer, m_defaultQueue, onTwoTimerTick, onTwoTimerDestroy, interval, m_this);
-    mamaTimer_create2(&longTimer, m_defaultQueue, onTwoTimerTick, onTwoTimerDestroy, interval*2.0, m_this); //use same callback
-
-    mamaTimer_create2(  &stopperTimer, 
-                        m_defaultQueue, 
-                        onStopDispatchingTimerTick, 
-                        onStopDispatchingTimerDestroy, 
-                        testDuration, 
-                        m_this); 
+    MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
+    fixture->tCounter  = 0;
+    fixture->numTimers = 11;
     
-    mama_start(m_bridge);
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTimer_create2(&timer, fixture->queue, onTimerTick, 
+                                 onRecursiveTimerDestroy, fixture->interval, m_this));
+     
+    ASSERT_EQ (MAMA_STATUS_OK, mama_start(mBridge));
     
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
+
+}
+
+/*  Description: Two timers are created which tick indefinately at different rates,
+ *               A third timer is used to destroy both of these after a set duration.
+ *                   
+ *  Expected Result: MAMA_STATUS_OK
+ */
+TEST_F (MamaTimerTestC, TwoTimer)
+{
+    MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTimer_create(&shortTimer, fixture->queue, onShortTimerTick, 
+                                fixture->interval, m_this));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTimer_create (&longTimer, fixture->queue, onLongTimerTick, 
+                                 ((fixture->interval)*2), m_this));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTimer_create2 (&stopTimer, fixture->queue, onStopTimerTick, 
+                                  onStopTimerDestroy, ((fixture->interval)*100), m_this));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_start (mBridge));
+    
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 }
 

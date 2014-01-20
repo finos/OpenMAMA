@@ -86,7 +86,7 @@ struct in_addr wresolve_ip (const char * arg)
         if (ioctl(sock, SIOCGIFCONF, &ifc) < 0)
         {
             perror ("SIOCGIFCONF");
-            resolved.s_addr = (unsigned long) -1;
+            resolved.s_addr = INADDR_NONE;
             return resolved;
         }
         if (ifc.ifc_len == (sizeof(struct ifreq) * numreqs))
@@ -110,7 +110,8 @@ struct in_addr wresolve_ip (const char * arg)
         if (ioctl(sock, SIOCGIFADDR, ifr) < 0)
         {
             perror ("SIOCGIFADDR");
-            resolved.s_addr = (unsigned long)-1;
+            resolved.s_addr = INADDR_NONE;
+            close (sock);
             return resolved;
         }
         memcpy (&hostaddr, &(ifr->ifr_addr), sizeof(struct sockaddr_in));
@@ -118,7 +119,8 @@ struct in_addr wresolve_ip (const char * arg)
         if (ioctl(sock, SIOCGIFNETMASK, ifr) < 0)
         {
             perror ("SIOCGIFNETMASK");
-            resolved.s_addr = (unsigned long)-1;
+            resolved.s_addr = INADDR_NONE;
+            close (sock);
             return resolved;
         }
         memcpy (&netmask, &(ifr->ifr_addr), sizeof (struct sockaddr_in));
@@ -147,7 +149,7 @@ struct in_addr wresolve_ip (const char * arg)
 
     if (!resolved.s_addr)
     {
-        resolved.s_addr = (unsigned long)-1;
+        resolved.s_addr = INADDR_NONE;
     } 
     return (resolved);
 }

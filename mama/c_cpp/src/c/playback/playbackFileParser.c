@@ -21,6 +21,10 @@
 
 #include "playbackFileParser.h"
 
+#ifdef WIN32
+#define MAMA_PLAYBACK_USE_FILE_STREAMS 1
+#endif
+
 static void
 rightCopy (char* input, char* output, int start);
 static
@@ -163,6 +167,12 @@ mamaPlaybackFileParser_openFile (mamaPlaybackFileParser fileParser,
                   "openFile: checking for file: %s", fileName);
         mamaPlaybackFileParser_setSize (impl,fileName);
 
+#ifdef MAMA_PLAYBACK_USE_FILE_STREAMS
+        if ((impl->myFileHandle = fopen (fileName, "rb")) == NULL)
+        {
+            status = MAMA_STATUS_PLATFORM;
+        }
+#else
         if ((impl->myFileDescriptor = (open (fileName,
                                              /*O_RDWR*/O_RDONLY | O_NONBLOCK,
                                              0))) >= 0)
@@ -184,6 +194,7 @@ mamaPlaybackFileParser_openFile (mamaPlaybackFileParser fileParser,
         {
             status = MAMA_STATUS_PLATFORM;
         }
+#endif
     }
     else
     {
@@ -200,7 +211,11 @@ mamaPlaybackFileParser_closeFile (mamaPlaybackFileParser fileParser)
     {
         return MAMA_STATUS_NULL_ARG;
     }
+#ifdef MAMA_PLAYBACK_USE_FILE_STREAMS
+    fclose (impl->myFileHandle);
+#else
     munmap(impl->myFiledata, impl->myFileSize);
+#endif
     return MAMA_STATUS_OK;
 }
 
@@ -252,9 +267,6 @@ mamaPlaybackFileParser_getNextHeader (mamaPlaybackFileParser fileParser,
      /*clear contents*/
      memset (impl->myBlockHeader,0,HEADER_SIZE);
 
-     impl->myFilePointer = (char*)impl->myFiledata+
-          impl->myLastPos;
-
      if (impl->myLastPos >= impl->myFileSize )
      {
          mama_log (MAMA_LOG_LEVEL_FINEST,
@@ -262,12 +274,22 @@ mamaPlaybackFileParser_getNextHeader (mamaPlaybackFileParser fileParser,
          return FALSE;
      }
 
+#ifdef MAMA_PLAYBACK_USE_FILE_STREAMS
+     /* With fseek etc, we're already at the last position so just read */
+     while ((impl->myBlockHeader[i] = fgetc (impl->myFileHandle)) != delim)
+     {
+         i++;
+     }
+#else
+     impl->myFilePointer = (char*)impl->myFiledata+
+          impl->myLastPos;
      while (*impl->myFilePointer != delim)
      {
         impl->myBlockHeader[i]= *impl->myFilePointer;
         ++impl->myFilePointer;
         i++;
      }
+#endif
 
      impl->myLastPos += i;
      impl->myBlockHeader[i++] = '\0';
@@ -303,14 +325,26 @@ mamaPlaybackFileParser_getNextMsg (mamaPlaybackFileParser fileParser,
         }
         impl->myLastMsgLen = impl->myMamaMsgLen;
     }
-    impl->myFilePointer = (char*)impl->myFiledata+
-                           impl->myLastPos + 1 ;
-    /*moved filepointer past the GS delim*/
 
     if (impl->myLastPos >= impl->myFileSize )
         return -1; /*end of file*/
 
     msgEnd = impl->myLastPos + impl->myMamaMsgLen;
+
+#ifdef MAMA_PLAYBACK_USE_FILE_STREAMS
+    counter = (long) fread (impl->myMsgBuffer, 1, impl->myMamaMsgLen, impl->myFileHandle);
+    if (counter != impl->myMamaMsgLen)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mamaPlaybackFileParser_getNextMsg(): Bytes read (%lu) "
+                  "does not match bytes requested (%lu)",
+                  counter,
+                  impl->myMamaMsgLen);
+    }
+#else
+    impl->myFilePointer = (char*)impl->myFiledata+
+                           impl->myLastPos + 1 ;
+    /*moved filepointer past the GS delim*/
 
     for (i = impl->myLastPos ; i < msgEnd ; i++)
     {
@@ -318,7 +352,7 @@ mamaPlaybackFileParser_getNextMsg (mamaPlaybackFileParser fileParser,
         ++impl->myFilePointer;
         counter++;
     }
-
+#endif
     impl->myLastPos += impl->myMamaMsgLen + 1;
      /* moved forward to  begining of next header*/
 
@@ -355,7 +389,12 @@ mamaPlaybackFileParser_rewindFile (mamaPlaybackFileParser fileParser)
         return MAMA_STATUS_NULL_ARG;
     impl = (mamaPlaybackFileParserImpl*)fileParser;
 
+#ifdef MAMA_PLAYBACK_USE_FILE_STREAMS
+    /* Set the file position back to the first byte in the file */
+    fseek (impl->myFileHandle, 0, SEEK_SET);
+#else
     impl->myFilePointer = (char*)impl->myFiledata;
+#endif
     impl->myLastPos = 0;
 
     return MAMA_STATUS_OK;

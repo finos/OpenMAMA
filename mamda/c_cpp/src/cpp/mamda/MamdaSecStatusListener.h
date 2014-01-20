@@ -81,6 +81,8 @@ namespace Wombat
         mama_seqnum_t           getEventSeqNum                  () const;
         const MamaDateTime&     getLuldTime                     () const;
         const char              getLuldIndicator                () const;
+        const MamaPrice&        getLuldHighLimit                () const;
+        const MamaPrice&        getLuldLowLimit                 () const;
         
         MamdaFieldState         getSymbolFieldState             () const;
         MamdaFieldState         getPartIdFieldState             () const;
@@ -93,6 +95,8 @@ namespace Wombat
         MamdaFieldState         getEventSeqNumFieldState        () const;
         MamdaFieldState         getLuldIndicatorFieldState      () const;
         MamdaFieldState         getLuldTimeFieldState           () const;
+        MamdaFieldState         getLuldHighLimitFieldState      () const;
+        MamdaFieldState         getLuldLowLimitFieldState       () const;
 
 
         const char*             getIssueSymbol                  () const;

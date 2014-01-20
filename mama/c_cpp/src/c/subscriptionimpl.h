@@ -196,7 +196,19 @@ mamaSubscription_getAdvisoryCauseAndPlatformInfo(
 MAMAExpDLL
 extern mamaBridgeImpl*
 mamaSubscription_getBridgeImpl(
-    mamaSubscription subscription);           
+    mamaSubscription subscription);
+
+/**
+ * This function returns the subscription bridge from the subscription.
+ *
+ * @param[in] subscription The subscription.
+ *
+ * @return The subscription bridge. Structure is defined by bridge implementation.
+ */
+MAMAExpDLL
+extern subscriptionBridge
+mamaSubscription_getSubscriptionBridge(
+    mamaSubscription subscription);
 
 /**
  * This function returns a flag indicating whether or not the subscription is expecting an initial to

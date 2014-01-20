@@ -47,15 +47,17 @@ typedef struct mamaPlaybackFileParser_
 {
     char            myBlockHeader[HEADER_SIZE];
     mamaMsg         myMamaMsg;
-    int             myFileDescriptor; 
+    int             myFileDescriptor;
+    FILE*           myFileHandle;
     void*           myFiledata;
     off_t           myFileSize;
     char*           myFilePointer;
-    int             myLastPos;
+    mama_u64_t      myLastPos;
     mama_size_t     myMamaMsgLen;
     mama_size_t     myLastMsgLen;
-    char*     myMsgBuffer;
+    char*           myMsgBuffer;
 }mamaPlaybackFileParserImpl;
+
 /*************************************************************************
  * Declarations
 **************************************************************************/

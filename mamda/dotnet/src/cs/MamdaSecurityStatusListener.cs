@@ -86,8 +86,10 @@ namespace Wombat
 			cache.mSecStatusOrigStr = null;  
             cache.mShortSaleCircuitBreaker = ' ';
 			cache.mReason = null;
-            cache.LuldTime = DateTime.MinValue;
-            cache.LuldIndicator = ' ';
+            cache.mLuldTime = DateTime.MinValue;
+            cache.mLuldIndicator = ' ';
+            cache.mLuldHighLimit = new MamaPrice();
+            cache.mLuldLowLimit = new MamaPrice();
             
             cache.mSrcTimeFieldState                 = MamdaFieldState.NOT_INITIALISED;
             cache.mActTimeFieldState                 = MamdaFieldState.NOT_INITIALISED;
@@ -100,8 +102,10 @@ namespace Wombat
             cache.mSecStatusOrigStrFieldState        = MamdaFieldState.NOT_INITIALISED;
             cache.mShortSaleCircuitBreakerFieldState = MamdaFieldState.NOT_INITIALISED;
             cache.mReasonFieldState                  = MamdaFieldState.NOT_INITIALISED;
-            cache.LuldTimeFieldState                 = MamdaFieldState.NOT_INITIALISED;
-            cache.LuldIndicatorFieldState            = MamdaFieldState.NOT_INITIALISED;
+            cache.mLuldTimeFieldState                 = MamdaFieldState.NOT_INITIALISED;
+            cache.mLuldIndicatorFieldState            = MamdaFieldState.NOT_INITIALISED;
+            cache.mLuldHighLimitFieldState            = MamdaFieldState.NOT_INITIALISED;
+            cache.mLuldLowLimitFieldState             = MamdaFieldState.NOT_INITIALISED;
 		}
 
 		public void populateRecap(MamdaConcreteSecurityStatusRecap recap)
@@ -117,6 +121,10 @@ namespace Wombat
                 recap.setShortSaleCircuitBreaker(mSecurityStatusCache.mShortSaleCircuitBreaker);
 				recap.setSecurityStatusQualifierStr(mSecurityStatusCache.mSecStatusQualStr);
 				recap.setReason(mSecurityStatusCache.mReason);
+				recap.setLuldTime(mSecurityStatusCache.mLuldTime);
+                recap.setLuldIndicator(mSecurityStatusCache.mLuldIndicator);
+                recap.setLuldHighLimit(mSecurityStatusCache.mLuldHighLimit);
+                recap.setLuldLowLimit(mSecurityStatusCache.mLuldLowLimit);
 			}
 		}
 
@@ -187,14 +195,25 @@ namespace Wombat
 
         public DateTime getLuldTime()
         {
-            return mSecurityStatusCache.LuldTime;
+            return mSecurityStatusCache.mLuldTime;
         }
 
         public char getLuldIndicator()
         {
-            return mSecurityStatusCache.LuldIndicator;
+            return mSecurityStatusCache.mLuldIndicator;
         }
 
+        public MamaPrice getLuldHighLimit()
+        {
+            return mSecurityStatusCache.mLuldHighLimit;
+        }
+
+        public MamaPrice getLuldLowLimit()
+        {
+            return mSecurityStatusCache.mLuldLowLimit;
+        }
+
+        /*  Field State Accessors       */
         public MamdaFieldState getSrcTimeFieldState()
         {
           return mSecurityStatusCache.mSrcTimeFieldState;
@@ -262,12 +281,22 @@ namespace Wombat
 
         public MamdaFieldState getLuldTimeFieldState()
         {
-          return mSecurityStatusCache.LuldTimeFieldState;
+          return mSecurityStatusCache.mLuldTimeFieldState;
         }
 
         public MamdaFieldState getLuldIndicatorFieldState()
         {
-          return mSecurityStatusCache.LuldIndicatorFieldState;
+          return mSecurityStatusCache.mLuldIndicatorFieldState;
+        }
+
+        public MamdaFieldState getLuldHighLimitFieldState()
+        {
+          return mSecurityStatusCache.mLuldHighLimitFieldState;
+        }
+
+        public MamdaFieldState getLuldLowLimitFieldState()
+        {
+          return mSecurityStatusCache.mLuldLowLimitFieldState;
         }
 
 		/// <summary>
@@ -352,10 +381,14 @@ namespace Wombat
                 mSecurityStatusCache.mShortSaleCircuitBreakerFieldState = MamdaFieldState.NOT_MODIFIED;
             if (mSecurityStatusCache.mReasonFieldState           == MamdaFieldState.MODIFIED) 
                 mSecurityStatusCache.mReasonFieldState           = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.LuldIndicatorFieldState     == MamdaFieldState.MODIFIED)
-                mSecurityStatusCache.LuldIndicatorFieldState     = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.LuldTimeFieldState          == MamdaFieldState.MODIFIED)
-                mSecurityStatusCache.LuldTimeFieldState          = MamdaFieldState.NOT_MODIFIED;
+            if (mSecurityStatusCache.mLuldIndicatorFieldState     == MamdaFieldState.MODIFIED)
+                mSecurityStatusCache.mLuldIndicatorFieldState     = MamdaFieldState.NOT_MODIFIED;
+            if (mSecurityStatusCache.mLuldTimeFieldState          == MamdaFieldState.MODIFIED)
+                mSecurityStatusCache.mLuldTimeFieldState          = MamdaFieldState.NOT_MODIFIED;
+            if (mSecurityStatusCache.mLuldHighLimitFieldState     == MamdaFieldState.MODIFIED)
+                mSecurityStatusCache.mLuldHighLimitFieldState     = MamdaFieldState.NOT_MODIFIED;
+            if (mSecurityStatusCache.mLuldLowLimitFieldState      == MamdaFieldState.MODIFIED)
+                mSecurityStatusCache.mLuldLowLimitFieldState      = MamdaFieldState.NOT_MODIFIED;
         }
 		private static SecurityStatusUpdate[] createUpdaters()
 		{
@@ -373,6 +406,8 @@ namespace Wombat
 
 			addUpdaterToList(updaters, MamdaSecurityStatusFields.LULDINDICATOR, new SecurityStatusLuldIndicator());
 			addUpdaterToList(updaters, MamdaSecurityStatusFields.LULDTIME, new SecurityStatusLuldTime());
+			addUpdaterToList(updaters, MamdaSecurityStatusFields.LULDHIGHLIMIT, new SecurityStatusLuldHighLimit());
+			addUpdaterToList(updaters, MamdaSecurityStatusFields.LULDLOWLIMIT, new SecurityStatusLuldLowLimit());
 			return updaters;
 		}
 
@@ -515,25 +550,47 @@ namespace Wombat
 			}
 		}
 
-		private class SecurityStatusLuldTime : SecurityStatusUpdate
-		{
-			public void onUpdate(MamdaSecurityStatusListener listener, MamaMsgField field)
-			{
-				listener.mSecurityStatusCache.LuldTime = field.getDateTime();
-                listener.mSecurityStatusCache.LuldTimeFieldState = MamdaFieldState.MODIFIED;
-			}
-		}
+        private class SecurityStatusLuldTime : SecurityStatusUpdate
+        {
+            public void onUpdate(MamdaSecurityStatusListener listener, MamaMsgField field)
+            {
+                listener.mSecurityStatusCache.mLuldTime = field.getDateTime();
+                listener.mSecurityStatusCache.mLuldTimeFieldState = MamdaFieldState.MODIFIED;
+                listener.mUpdated = true;
+            }
+        }
 
         private class SecurityStatusLuldIndicator : SecurityStatusUpdate
         {
             public void onUpdate(MamdaSecurityStatusListener listener, MamaMsgField field)
             {            
-                if ((field != null) && (listener.mSecurityStatusCache.LuldIndicator != field.getChar() || listener.mSecurityStatusCache.LuldIndicatorFieldState == MamdaFieldState.NOT_INITIALISED))
+                if ((field != null) && (listener.mSecurityStatusCache.mLuldIndicator != field.getChar() || listener.mSecurityStatusCache.mLuldIndicatorFieldState == MamdaFieldState.NOT_INITIALISED))
                 {
-                    listener.mSecurityStatusCache.LuldIndicator = field.getChar();
-                    listener.mSecurityStatusCache.LuldIndicatorFieldState = MamdaFieldState.MODIFIED;
+                    listener.mSecurityStatusCache.mLuldIndicator = field.getChar();
+                    listener.mSecurityStatusCache.mLuldIndicatorFieldState = MamdaFieldState.MODIFIED;
                     listener.mUpdated = true;
                 } 
+            }
+        }
+
+        private class SecurityStatusLuldHighLimit : SecurityStatusUpdate
+        {
+            public void onUpdate(MamdaSecurityStatusListener listener, MamaMsgField field)
+            {
+                listener.mSecurityStatusCache.mLuldHighLimit.copy(field.getPrice());
+                listener.mSecurityStatusCache.mLuldHighLimitFieldState = MamdaFieldState.MODIFIED;
+                listener.mUpdated = true;
+            }
+        }
+
+       
+        private class SecurityStatusLuldLowLimit : SecurityStatusUpdate
+        {
+            public void onUpdate(MamdaSecurityStatusListener listener, MamaMsgField field)
+            {
+                listener.mSecurityStatusCache.mLuldLowLimit.copy(field.getPrice());
+                listener.mSecurityStatusCache.mLuldLowLimitFieldState = MamdaFieldState.MODIFIED;
+                listener.mUpdated = true;
             }
         }
 
@@ -590,8 +647,10 @@ namespace Wombat
 			public string	mSecStatusOrigStr; 
             public char     mShortSaleCircuitBreaker;
 			public string	mReason;
-            public DateTime LuldTime        = DateTime.MinValue;
-            public char     LuldIndicator;
+            public DateTime mLuldTime               = DateTime.MinValue;
+            public char     mLuldIndicator;
+			public MamaPrice    mLuldHighLimit      = new MamaPrice ();
+			public MamaPrice    mLuldLowLimit       = new MamaPrice ();
             
             //Field States
             public MamdaFieldState  mSrcTimeFieldState          = new MamdaFieldState();
@@ -605,8 +664,10 @@ namespace Wombat
             public MamdaFieldState  mSecStatusOrigStrFieldState = new MamdaFieldState();
             public MamdaFieldState  mShortSaleCircuitBreakerFieldState = new MamdaFieldState();
             public MamdaFieldState  mReasonFieldState           = new MamdaFieldState();
-            public MamdaFieldState  LuldTimeFieldState          = new MamdaFieldState();
-            public MamdaFieldState  LuldIndicatorFieldState     = new MamdaFieldState();
+            public MamdaFieldState  mLuldTimeFieldState         = new MamdaFieldState();
+            public MamdaFieldState  mLuldIndicatorFieldState    = new MamdaFieldState();
+            public MamdaFieldState  mLuldHighLimitFieldState    = new MamdaFieldState();
+            public MamdaFieldState  mLuldLowLimitFieldState     = new MamdaFieldState();
 		}
 
 		#region State

@@ -1,0 +1,8 @@
+Import('env')
+
+env = env.Clone()
+
+# We do not build example apps statically
+if 'dynamic' in env['build']:
+    env.SConscript('c/SConscript.win','env')
+    env.SConscript('cpp/SConscript.win','env')

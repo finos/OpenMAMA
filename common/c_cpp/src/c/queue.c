@@ -166,7 +166,7 @@ wombatQueueStatus
 wombatQueue_setMaxSize (wombatQueue queue, unsigned int value)
 {
     wombatQueueImpl *impl = (wombatQueueImpl*)queue;
-    if (value < 0 || value > WOMBAT_QUEUE_MAX_SIZE)
+    if (value > WOMBAT_QUEUE_MAX_SIZE)
     {
         return WOMBAT_QUEUE_INVALID_ARG;
     }
@@ -201,7 +201,10 @@ wombatQueue_enqueue (wombatQueue queue,
     item = impl->mFirstFree.mNext;
 
     if (item == NULL)
+    {
+        wthread_mutex_unlock(&impl->mLock);
         return WOMBAT_QUEUE_FULL;
+    }
 
     impl->mFirstFree.mNext = item->mNext;
     /* Initialize the item. */
@@ -265,6 +268,10 @@ wombatQueue_dispatchInt (wombatQueue queue, void** data, void** closure,
  
     /* remove the item */
     head                   = impl->mHead.mNext;
+    if (head == &impl->mTail) {
+       wthread_mutex_unlock (&impl->mLock);
+       return WOMBAT_QUEUE_OK;
+    }
     WQ_REMOVE (impl, head);
 
     if (data)
@@ -554,7 +561,10 @@ wombatQueue_insertAfter (wombatQueue   queue,
     item = impl->mFirstFree.mNext;
 
     if (item == NULL)
+    {
+        wthread_mutex_unlock (&impl->mLock);
         return WOMBAT_QUEUE_FULL;
+    }
 
     impl->mFirstFree.mNext = item->mNext;
     /* Initialize the item. */
@@ -598,7 +608,10 @@ wombatQueue_insertBefore (wombatQueue   queue,
     item = impl->mFirstFree.mNext;
 
     if (item == NULL)
+    {
+        wthread_mutex_unlock (&impl->mLock);
         return WOMBAT_QUEUE_FULL;
+    }
 
     impl->mFirstFree.mNext = item->mNext;
     /* Initialize the item. */

@@ -137,5 +137,54 @@ namespace Wombat
         /// <returns></returns>
         MamdaFieldState getShortSaleCircuitBreakerFieldState();
 
+        /// <summary>
+        /// <see cref="MamdaSecurityStatusUpdate.getLuldTime()"/>
+        /// </summary>
+        /// <returns></returns>
+        DateTime getLuldTime();
+
+         /// <summary>
+         /// Get the field state
+         /// </summary>
+         /// <returns>Field State</returns>
+         MamdaFieldState getLuldTimeFieldState();
+
+        /// <summary>
+        /// <see cref="MamdaSecurityStatusUpdate.getLuldIndicator()"/>
+        /// </summary>
+        /// <returns></returns>
+        char getLuldIndicator();
+
+         /// <summary>
+         /// Get the field state
+         /// </summary>
+         /// <returns>Field State</returns>
+         MamdaFieldState getLuldIndicatorFieldState();
+
+        // <summary>
+        /// <see cref="MamdaSecurityStatusUpdate.getLuldHighLimit()"/>
+        /// </summary>
+        /// <returns></returns>
+        MamaPrice getLuldHighLimit();
+
+         /// <summary>
+         /// Get the field state
+         /// </summary>
+         /// <returns>Field State</returns>
+         MamdaFieldState getLuldHighLimitFieldState();
+
+        /// <summary>
+        /// <see cref="MamdaSecurityStatusUpdate.getLuldLowLimit()"/>
+        /// </summary>
+        /// <returns></returns>
+        MamaPrice getLuldLowLimit();
+
+         /// <summary>
+         /// Get the field state
+         /// </summary>
+         /// <returns>Field State</returns>
+         MamdaFieldState getLuldLowLimitFieldState();
+
+
 	}
 }

@@ -82,8 +82,10 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
         public String          mReason          = null;
         public boolean         mGotIssueSymbol  = false;
         public boolean         mUpdated  		= false;
-        public MamaDateTime    myLuldTime       = new MamaDateTime();
-        public char            myLuldIndicator  = ' ';
+        public MamaDateTime    mLuldTime        = new MamaDateTime();
+        public char            mLuldIndicator   = ' ';
+        public MamaPrice       mLuldHighLimit   = new MamaPrice();
+        public MamaPrice       mLuldLowLimit    = new MamaPrice();
         
         public MamdaFieldState    mSrcTimeFieldState           = new MamdaFieldState();
         public MamdaFieldState    mActTimeFieldState           = new MamdaFieldState();
@@ -103,8 +105,10 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
         public MamdaFieldState    mReasonFieldState            = new MamdaFieldState();
         public MamdaFieldState    mGotIssueSymbolFieldState    = new MamdaFieldState();
         public MamdaFieldState    mUpdatedFieldState           = new MamdaFieldState();
-        public MamdaFieldState    myLuldIndicatorFieldState    = new MamdaFieldState();
-        public MamdaFieldState    myLuldTimeFieldState         = new MamdaFieldState();
+        public MamdaFieldState    mLuldIndicatorFieldState     = new MamdaFieldState();
+        public MamdaFieldState    mLuldTimeFieldState          = new MamdaFieldState();
+        public MamdaFieldState    mLuldHighLimitFieldState          = new MamdaFieldState();
+        public MamdaFieldState    mLuldLowLimitFieldState          = new MamdaFieldState();
 
     }
 
@@ -154,8 +158,10 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
         cache.mSymbol           = null;
         cache.mIssueSymbol      = null;
         cache.mReason           = null;
-        cache.myLuldTime.clear  ();
-        cache.myLuldIndicator   = ' ';
+        cache.mLuldTime.clear  ();
+        cache.mLuldIndicator   = ' ';
+        cache.mLuldHighLimit.clear();
+        cache.mLuldLowLimit.clear();
         
         cache.mSrcTimeFieldState.setState           (MamdaFieldState.NOT_INITIALISED);
         cache.mActTimeFieldState.setState           (MamdaFieldState.NOT_INITIALISED); 
@@ -175,8 +181,10 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
         cache.mReasonFieldState.setState            (MamdaFieldState.NOT_INITIALISED);
         cache.mGotIssueSymbolFieldState.setState    (MamdaFieldState.NOT_INITIALISED);
         cache.mUpdatedFieldState.setState           (MamdaFieldState.NOT_INITIALISED);
-        cache.myLuldTimeFieldState.setState         (MamdaFieldState.NOT_INITIALISED);
-        cache.myLuldIndicatorFieldState.setState    (MamdaFieldState.NOT_INITIALISED);
+        cache.mLuldTimeFieldState.setState         (MamdaFieldState.NOT_INITIALISED);
+        cache.mLuldIndicatorFieldState.setState    (MamdaFieldState.NOT_INITIALISED);
+        cache.mLuldHighLimitFieldState.setState    (MamdaFieldState.NOT_INITIALISED);
+        cache.mLuldLowLimitFieldState.setState     (MamdaFieldState.NOT_INITIALISED);
     }
 
     // Inherited from MamdaBasicRecap and MamdaBasicEvent:
@@ -270,12 +278,22 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
 
     public MamaDateTime getLuldTime()
     {
-        return securityStatusCache.myLuldTime;
+        return securityStatusCache.mLuldTime;
     }
 
     public char getLuldIndicator()
     {
-        return securityStatusCache.myLuldIndicator;
+        return securityStatusCache.mLuldIndicator;
+    }
+
+    public MamaPrice getLuldHighLimit()
+    {
+        return securityStatusCache.mLuldHighLimit;
+    }
+
+    public MamaPrice getLuldLowLimit()
+    {
+        return securityStatusCache.mLuldLowLimit;
     }
 
     /*      Field State Accessors       */
@@ -369,12 +387,22 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
 
     public short getLuldIndicatorFieldState()
     {
-        return securityStatusCache.myLuldIndicatorFieldState.getState();
+        return securityStatusCache.mLuldIndicatorFieldState.getState();
     }
 
     public short getLuldTimeFieldState()
     {
-        return securityStatusCache.myLuldTimeFieldState.getState();
+        return securityStatusCache.mLuldTimeFieldState.getState();
+    }
+
+    public short getLuldHighLimitFieldState()
+    {
+      return securityStatusCache.mLuldHighLimitFieldState.getState();
+    }
+
+    public short getLuldLowLimitFieldState()
+    {
+      return securityStatusCache.mLuldLowLimitFieldState.getState();
     }
  
     /**
@@ -503,10 +531,14 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
             securityStatusCache.mGotIssueSymbolFieldState.setState(MamdaFieldState.NOT_MODIFIED);
         if (securityStatusCache.mUpdatedFieldState.getState() == MamdaFieldState.MODIFIED)
             securityStatusCache.mUpdatedFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-        if (securityStatusCache.myLuldIndicatorFieldState.getState() == MamdaFieldState.MODIFIED)
-            securityStatusCache.myLuldIndicatorFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-        if (securityStatusCache.myLuldTimeFieldState.getState() == MamdaFieldState.MODIFIED)
-            securityStatusCache.myLuldTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
+        if (securityStatusCache.mLuldIndicatorFieldState.getState() == MamdaFieldState.MODIFIED)
+            securityStatusCache.mLuldIndicatorFieldState.setState(MamdaFieldState.NOT_MODIFIED);
+        if (securityStatusCache.mLuldTimeFieldState.getState() == MamdaFieldState.MODIFIED)
+            securityStatusCache.mLuldTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
+        if (securityStatusCache.mLuldHighLimitFieldState.getState() == MamdaFieldState.MODIFIED)
+            securityStatusCache.mLuldHighLimitFieldState.setState(MamdaFieldState.NOT_MODIFIED);
+        if (securityStatusCache.mLuldLowLimitFieldState.getState() == MamdaFieldState.MODIFIED)
+            securityStatusCache.mLuldLowLimitFieldState.setState(MamdaFieldState.NOT_MODIFIED);
     }
     private static void createUpdaters ()
     {
@@ -544,6 +576,10 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
                              new SecurityStatusLuldIndicator());
         addUpdaterToList (MamdaSecurityStatusFields.LULDTIME,
                              new SecurityStatusLuldTime());
+        addUpdaterToList (MamdaSecurityStatusFields.LULDHIGHLIMIT,
+                            new SecurityStatusLuldHighLimit());
+        addUpdaterToList (MamdaSecurityStatusFields.LULDLOWLIMIT,
+                            new SecurityStatusLuldLowLimit());
 
     }
 
@@ -766,8 +802,9 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
         public void onUpdate (MamdaSecurityStatusListener listener,
                               MamaMsgField                field)
         {
-            listener.securityStatusCache.myLuldTime.copy (field.getDateTime());
-            listener.securityStatusCache.myLuldTimeFieldState.setState(MamdaFieldState.MODIFIED);
+            listener.securityStatusCache.mLuldTime.copy (field.getDateTime());
+            listener.securityStatusCache.mLuldTimeFieldState.setState(MamdaFieldState.MODIFIED);
+            listener.securityStatusCache.mUpdated = true;
         }
     }
 
@@ -777,15 +814,38 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
                               MamaMsgField                field)
         {  
          
-            if (listener.securityStatusCache.myLuldIndicator != field.getChar() ||
-                listener.securityStatusCache.myLuldIndicatorFieldState.getState() == MamdaFieldState.NOT_INITIALISED)
+            if (listener.securityStatusCache.mLuldIndicator != field.getChar() ||
+                listener.securityStatusCache.mLuldIndicatorFieldState.getState() == MamdaFieldState.NOT_INITIALISED)
             {
-                listener.securityStatusCache.myLuldIndicator = field.getChar(); 
-                listener.securityStatusCache.myLuldIndicatorFieldState.setState(MamdaFieldState.MODIFIED);
+                listener.securityStatusCache.mLuldIndicator = field.getChar();
+                listener.securityStatusCache.mLuldIndicatorFieldState.setState(MamdaFieldState.MODIFIED);
+                listener.securityStatusCache.mUpdated = true;
             }
+        }
+            }
+
+    private static class SecurityStatusLuldHighLimit implements SecurityStatusUpdate
+    {
+        public void onUpdate (MamdaSecurityStatusListener listener,
+                              MamaMsgField                field)
+        {
+            listener.securityStatusCache.mLuldHighLimit.copy (field.getPrice());
+            listener.securityStatusCache.mLuldHighLimitFieldState.setState(MamdaFieldState.MODIFIED);
+            listener.securityStatusCache.mUpdated = true;
         }
     }
 
+
+    private static class SecurityStatusLuldLowLimit implements SecurityStatusUpdate
+    {
+        public void onUpdate (MamdaSecurityStatusListener listener,
+                              MamaMsgField                field)
+        {
+            listener.securityStatusCache.mLuldLowLimit.copy (field.getPrice());
+            listener.securityStatusCache.mLuldLowLimitFieldState.setState(MamdaFieldState.MODIFIED);
+            listener.securityStatusCache.mUpdated = true;
+        }
+    }
     /*************************************************************
      *Private class used for Field Iteration
      ************************************************************/

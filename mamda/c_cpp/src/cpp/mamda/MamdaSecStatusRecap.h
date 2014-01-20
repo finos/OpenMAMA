@@ -430,6 +430,55 @@ namespace Wombat
          */
         virtual MamdaFieldState  getFreeTextFieldState() const = 0;
         
+        /**
+         * Limit Up Limit Down Indicator
+         *
+         * @return Limit Up Limit Down Indicator
+         */
+        virtual const char  getLuldIndicator() const = 0;
+
+        /**
+         * @return LULD Indicator field state.
+         */
+        virtual MamdaFieldState  getLuldIndicatorFieldState() const = 0;
+
+        /**
+         * Limit Up Limit Down Time
+         *
+         * @return Limit Up Limit Down Time
+         */
+        virtual const MamaDateTime&  getLuldTime() const = 0;
+
+        /**
+         * @return LULD Time field state.
+         */
+        virtual MamdaFieldState  getLuldTimeFieldState() const = 0;
+
+        /**
+         * Limit Up Limit Down High Limit
+         *
+         * @return Limit Up Limit Down High Limit
+         */
+        virtual const MamaPrice&  getLuldHighLimit() const = 0;
+
+        /**
+         * @return LULD High Limit field state.
+         */
+        virtual MamdaFieldState  getLuldHighLimitFieldState() const = 0;
+
+        /**
+         * Limit Up Limit Down Low Limit
+         *
+         * @return Limit Up Limit Down Low Limit
+         */
+        virtual const MamaPrice&  getLuldLowLimit() const = 0;
+
+        /**
+         * @return LULD Low Limit field state.
+         */
+        virtual MamdaFieldState  getLuldLowLimitFieldState() const = 0;
+
+
         virtual ~MamdaSecStatusRecap() {};
 
     };

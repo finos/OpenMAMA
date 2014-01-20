@@ -1,0 +1,102 @@
+import posixpath
+Import('*')
+env = env.Clone()
+
+binaries = [
+'comboticker',
+'mamdalisten',
+'multipartticker',
+'multisecurityticker',
+'optionchainer',
+'optionview',
+'quoteticker',
+'tradeticker',
+'secstatuslisten',
+'fundamentallisten',
+'auctionticker',
+]
+
+news = [
+'newsticker'
+]
+
+books = [
+'atomicbookbuilder',
+'atomicbookticker',
+'bookpublisher',
+'bookticker',
+]
+
+libs = []
+libs.append( 'libmamda%s' % env['suffix'] )
+libs.append( 'libmamac%s' % env['suffix'] )
+libs.append( 'libmamacpp%s' % env['suffix'] )
+
+includePath = []
+includePath.append( '.' )
+includePath.append('#mamda/c_cpp/src/cpp/options')
+includePath.append('#mamda/c_cpp/src/cpp/news')
+includePath.append('#mamda/c_cpp/src/cpp/orderbooks')
+
+env['CPPDEFINES'] = [ x for x in env['CPPDEFINES'] if x != 'MAMDA' ]
+env.Append(
+    LIBS = libs,
+    CPPPATH = includePath,
+    CPPDEFINES = ['MAMDAOPT','MAMDA_DLL']
+    )
+
+
+parsecmdObj = env.Object('parsecmd', 'parsecmd.cpp')
+dictrequesterObj = env.Object('dictrequester', 'dictrequester.cpp')
+
+binary = []
+for b in binaries:
+    sources = []
+    sources.append( '%s.cpp' % b )
+    sources.append( [ parsecmdObj, dictrequesterObj ] )
+
+    if 'option' in b:
+        example = env.Program(b, sources, LIBS = env['LIBS'] + ['libmamdaoptions%s' % env['suffix']])
+    else:
+        example = env.Program(b, sources)
+
+    if env['vsver'] >= 8:
+		env.AddPostAction( example, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;1')
+
+    binary.append( example )
+
+for b in news:
+    sources = []
+    sources.append( 'news/%s.cpp' % b)
+    sources.append( [ parsecmdObj, dictrequesterObj ] )
+
+    example = env.Program(b, sources, LIBS = env['LIBS'] + ['libmamdanews%s' % env['suffix']])
+    if env['vsver'] >= 8:
+		env.AddPostAction( example, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;1')
+    binary.append( example )
+
+for b in books:
+    sources = []
+    sources.append( 'orderbooks/%s.cpp' % b)
+    sources.append( [ parsecmdObj, dictrequesterObj ] )
+
+    example = env.Program(b, sources, LIBS = env['LIBS'] + ['libmamdabook%s' % env['suffix']])
+    if env['vsver'] >= 8:
+		env.AddPostAction( example, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;1')
+
+    binary.append( example )
+
+Alias('install', env.Install('$bindir', binary))
+
+if not Media.has_key('mamda/c_cpp/src/examples'):
+  env.Install('$prefix/examples/mamda', Glob('*.h'))
+  env.Install('$prefix/examples/mamda', Glob('orderbooks/*.h'))
+  env.Install('$prefix/examples/mamda', Glob('news/*.h'))
+
+  env.Install('$prefix/examples/mamda', Glob('*.cpp'))
+  env.Install('$prefix/examples/mamda', Glob('orderbooks/*.cpp'))
+  env.Install('$prefix/examples/mamda', Glob('news/*.cpp'))
+
+  Media['mamda/c_cpp/src/examples'] = 1
+
+

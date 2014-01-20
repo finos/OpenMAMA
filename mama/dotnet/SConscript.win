@@ -1,0 +1,214 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+import posixpath
+import platform
+from custom_builders import install_dotnet_library
+from custom_builders import build_ndoc
+Import('env')
+env = env.Clone()
+versions = env['versions']['mama']
+major = versions['major']
+minor = versions['minor']
+release = versions['release']
+buildNum = versions['build']
+winrelease = versions['winrelease']
+releaseString = versions['releaseString']
+
+env.AddMethod(install_dotnet_library, "InstallDotNetLibrary")
+env.AddMethod(build_ndoc, "BuildNDoc")
+
+dotnet_version = env['dotnet_version']
+
+if platform.machine() == 'AMD64':
+    framework = 'Framework64'
+else:
+    framework = 'Framework'
+
+framework_dir = posixpath.join( 'c:/windows/Microsoft.NET/',framework )
+
+if dotnet_version == '2.0':
+    framework_dir = posixpath.join( framework_dir, 'v2.0.50727' )
+
+elif dotnet_version == '1.0':
+    framework_dir = posixpath.join( framework_dir, 'v1.1.4322' )
+
+env['CSC'] = posixpath.join(framework_dir,'csc.exe')
+AssemblyRefs = []
+AssemblyRefs.append(posixpath.join( framework_dir, 'mscorlib.dll'))
+AssemblyRefs.append(posixpath.join( framework_dir, 'system.dll'))
+
+env.Append(
+    CSCFLAGS        = ['/nostdlib+'],
+    ASSEMBLYREFS    = AssemblyRefs
+)
+cs = os.path.join( Dir('#').abspath, 'mama\\dotnet\\src\\cs\\MamaVersion.cs' )
+ai = os.path.join( Dir('#').abspath, 'mama\\dotnet\\src\\cs\\AssemblyInfo.cs' )
+
+ver = open( cs , "w" )
+ver.write("""
+namespace Wombat
+{
+    /// ^<summary^>MAMA version information^</summary^>
+    public class MamaVersion
+    {
+        public static int MAMADOTNET_VERSION_MAJOR = %s;
+        public static int MAMADOTNET_VERSION_MINOR = %s;
+        public static string MAMADOTNET_VERSION_RELEASE = "%s";
+        public static string MAMADOTNET_VERSION = "mamadotnet %s";
+    }
+}
+""" % ( major,minor,release, releaseString ) )
+ver.close()
+
+assembly = open( ai , "w" )
+#TODO Strong naming (keyfile) is not implemented
+assembly.write("""
+using System.Reflection;
+using System.Runtime.CompilerServices;
+[assembly: AssemblyTitle("MAMA")]
+[assembly: AssemblyDescription("MAMA API C#")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("NYSE Technologies")]
+[assembly: AssemblyProduct("NYSE Technologies MAMA")]
+[assembly: AssemblyCopyright("Copyright 2009 NYSE Technologies")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+[assembly: AssemblyDelaySign(false)]
+[assembly: AssemblyKeyName("")]
+[assembly: AssemblyVersion("%s.%s.%s.%s")]
+[assembly: AssemblyKeyFile("")]
+""" % ( major, minor, winrelease, buildNum ) )
+assembly.close()
+
+build = env['build']
+
+sources = Split("""
+src/cs/MamaVersion.cs
+src/cs/AssemblyInfo.cs
+src/cs/ISourceManager.cs
+src/cs/MAMA.cs
+src/cs/MamaBasicSubscription.cs
+src/cs/MamaBasicSubscriptionCallback.cs
+src/cs/MamaBridge.cs
+src/cs/MamaCallbackStore.cs
+src/cs/MamaCallbackWrapper.cs
+src/cs/MamaClientProfile.cs
+src/cs/MamaDictionary.cs
+src/cs/MamaDictionaryCallback.cs
+src/cs/MamaException.cs
+src/cs/MamaFieldDescriptor.cs
+src/cs/MamaFtMember.cs
+src/cs/MamaFtMemberCallback.cs
+src/cs/MamaInbox.cs
+src/cs/MamaInboxCallback.cs
+src/cs/MamaIo.cs
+src/cs/MamaIoCallback.cs
+src/cs/MamaIoType.cs
+src/cs/MamaLogFileCallback.cs
+src/cs/MamaLogFileCallback2.cs
+src/cs/MamaMsg.cs
+src/cs/MamaMsgField.cs
+src/cs/MamaMsgFieldIterator.cs
+src/cs/MamaPayloadBridge.cs
+src/cs/MamaPrice.cs
+src/cs/MamaPublisher.cs
+src/cs/MamaQueue.cs
+src/cs/MamaQueueEnqueueCallback.cs
+src/cs/MamaQueueEventCallback.cs
+src/cs/MamaQueueGroup.cs
+src/cs/MamaQueueMonitorCallback.cs
+src/cs/MamaReservedFields.cs
+src/cs/MamaSendCompleteCallback.cs
+src/cs/MamaSource.cs
+src/cs/MamaSourceGroup.cs
+src/cs/MamaSourceGroupManager.cs
+src/cs/MamaSourceManager.cs
+src/cs/MamaSourceState.cs
+src/cs/MamaSourceStateChangeCallback.cs
+src/cs/MamaStartBackgroundCallback.cs
+src/cs/MamaStatus.cs
+src/cs/MamaSubscription.cs
+src/cs/MamaSubscriptionCallback.cs
+src/cs/MamaSubscriptionState.cs
+src/cs/MamaSymbolMapCallback.cs
+src/cs/MamaSymbolMapFile.cs
+src/cs/MamaTimer.cs
+src/cs/MamaTimerCallback.cs
+src/cs/MamaTransport.cs
+src/cs/MamaTransportCallback.cs
+src/cs/MamaWeightedSource.cs
+src/cs/MamaWrapper.cs
+src/cs/NullableTypes\NullableBool.cs
+src/cs/NullableTypes\NullableInt.cs
+src/cs/NullableTypes\NullableLong.cs
+""")
+
+examples={}
+
+mamaftmember_sources = Split("""
+src\examples\MamaFtMember\AssemblyInfo.cs
+src\examples\MamaFtMember\MamaFtMemberCS.cs""")
+examples['MamaFtMemberCS'] = mamaftmember_sources
+
+
+mamainbox_sources = Split("""
+src\examples\MamaInbox\AssemblyInfo.cs
+src\examples\MamaInbox\MamaInboxCS.cs""")
+examples['MamaInboxCS'] = mamainbox_sources
+
+mamachurn_sources = Split("""
+src\\testtools\load\MamaChurn\AssemblyInfo.cs
+src\\testtools\load\MamaChurn\MamaChurnCS.cs""")
+examples['MamaChurnCS'] = mamachurn_sources
+
+mamaio_sources = Split("""
+src\examples\MamaIo\AssemblyInfo.cs
+src\examples\MamaIo\MamaIoCS.cs""")
+examples['MamaIoCS'] = mamaio_sources
+
+mamamultisubscriber_sources = Split("""
+src\examples\MamaMultiSubscriber\AssemblyInfo.cs
+src\examples\MamaMultiSubscriber\MamaMultiSubscriberCS.cs""")
+examples['MamaMultiSubscriberCS'] = mamamultisubscriber_sources
+
+mamasubscriber_sources = "src\examples\MamaSubscriber\MamaSubscriberCS.cs"
+examples['MamaSubscriberCS'] = mamasubscriber_sources
+
+mamalistencs_sources = Split("""src\examples\MamaListen\AssemblyInfo.cs
+src\examples\MamaListen\MamaListenCS.cs""")
+examples['MamaListenCS'] = mamalistencs_sources
+
+mamapublisher_sources = Split("""
+src\examples\MamaPublisher\AssemblyInfo.cs
+src\examples\MamaPublisher\MamaPublisherCS.cs""")
+examples['MamaPublisherCS'] = mamapublisher_sources
+
+mamasymbollistsubscriber_sources = Split("""
+src\examples\MamaSymbolListSubscriber\AssemblyInfo.cs
+src\examples\MamaSymbolListSubscriber\MamaSymbolListSubscriberCS.cs""")
+examples['MamaSymbolListSubscriberCS'] = mamasymbollistsubscriber_sources
+
+target = "MAMA"
+doc_dir = "%s/doc/mama/dotnet/" % (env['prefix'])
+
+lib = None
+
+if 'dynamic' in env['build']:
+    lib, doc_xml = env.InstallDotNetLibrary( target, sources)
+
+    if env['with_examples'] == True:
+        for key in examples:
+            exe = env.CLIProgram( key + '.exe', examples[key],
+                                    ASSEMBLYREFS = [ AssemblyRefs, lib ],
+                                    WINEXE = 0)
+            Alias('install',env.Install('$bindir',exe ) )
+
+    if env['with_testtools'] == True:
+        env.Log("C# testtool MamdaBookSelfTest included in examples")
+
+
+if env['with_docs'] == True:
+    doc = env.BuildNDoc(lib, doc_xml, doc_dir)
+
+Clean(lib, [ cs, ai,])

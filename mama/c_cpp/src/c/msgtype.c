@@ -83,7 +83,9 @@ mamaMsgType_stringForType (mamaMsgType type)
     case MAMA_MSG_TYPE_SYNC_REQUEST:         return "SYNC_REQUEST";
     case MAMA_MSG_TYPE_REFRESH:              return "REFRESH";
     case MAMA_MSG_TYPE_WORLD_VIEW:           return "WORLD_VIEW";
+    case MAMA_MSG_TYPE_NEWS_QUERY:           return "NEWS_QUERY";
     case MAMA_MSG_TYPE_NULL:                 return "NULL";    
+    case MAMA_MSG_TYPE_ENTITLEMENTS_REFRESH: return "ENTITLEMENTS_REFRESH";
     case MAMA_MSG_TYPE_UNKNOWN:              return "UNKNOWN";
     default:                                 return "error";
     }

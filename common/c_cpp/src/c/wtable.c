@@ -185,8 +185,9 @@ wtable_t wtable_create (const char * name, unsigned long size)
     wtable->buckets = (bucket_t **) calloc (tsize, sizeof (bucket_t *));
     if (!wtable->buckets)
     {
+        wtable_destroy ((wtable_t) wtable);
         return NULL;
-    } 
+    }
     
     if (wtable_debug)
     {

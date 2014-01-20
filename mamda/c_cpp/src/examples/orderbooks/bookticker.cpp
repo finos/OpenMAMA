@@ -60,8 +60,10 @@ public:
     PrettyPrint () : mShowEntries (false) {}
     virtual ~PrettyPrint () {}
 
-    void prettyPrint (const MamdaOrderBook&  book)
+    void prettyPrint (string const &symbol, const MamdaOrderBook&  book)
     {
+        cout << "Book for: " << symbol << endl;
+
         if (mShowEntries)
             prettyPrintEntries (book);
         else
@@ -92,7 +94,6 @@ public:
 
     void prettyPrintLevels (const MamdaOrderBook&  book)
     {
-        printf ("Book for: %s\n", book.getSymbol ());
         printf ("%s | %s\n",
                 "        Time     Num    Size   Price Act",
                 "Act Price   Size    Num       Time  ");
@@ -179,7 +180,6 @@ public:
 
     void prettyPrintEntries (const MamdaOrderBook&  book)
     {
-        printf ("Book for: %s\n", book.getSymbol ());
         printf ("%s\n",
             "     ID/Num           Time       Size   Price");
         MamdaOrderBook::constBidIterator bidIter = book.bidBegin ();
@@ -337,8 +337,8 @@ public:
         if (gExampleLogLevel >= EXAMPLE_LOG_LEVEL_NORMAL)
         {
             mama_seqnum_t seqNum = (msg) ? msg->getSeqNum() : 0;
-            cout << "RECAP!!!  (seq# " << seqNum << ")\n";
-            prettyPrint (book);
+            cout << "RECAP!!!  (seq# " << seqNum << ")" << endl;
+            prettyPrint (subscription->getSymbol(), book);
         }
     }
     
@@ -368,30 +368,15 @@ public:
             
             cout << (orderType ==
                      MamdaOrderBookPriceLevel::MAMDA_BOOK_LEVEL_MARKET ? "MARKET " : "")
-                 << "DELTA!!!  (seq# " << seqNum << ")\n";
-            
-            
-
-            if (const MamdaOrderBookEntry * const entr = delta.getEntry ())
-            {
-                std::cout << entr->getOrderBook()->getSymbol () 
-                          << ' ' << (entr->getTime()).getAsString() 
-                          << ' ' << entr->getId() 
-                          << ' ' << entr->getUniqueId () 
-                          << ' ' << (char)delta.getEntryDeltaAction() 
-                          << ' ' << (entr->getPrice())
-                          << ' ' << (char)entr->getSide() 
-                          << ' ' << entr->getSize () << '\n';
-            }
+                 << "DELTA!!!  (seq# " << seqNum << ")" << endl;
 
             if (mShowDeltas) 
             {
                 prettyPrint (delta);
             }
 
-            prettyPrint (book);
+            prettyPrint (subscription->getSymbol(), book);
         }
-        flush (cout);
     }
 
     void onBookComplexDelta (
@@ -418,7 +403,7 @@ public:
             mama_seqnum_t seqNum = (msg) ? msg->getSeqNum() : 0;
            cout << (orderType ==
                     MamdaOrderBookPriceLevel::MAMDA_BOOK_LEVEL_MARKET ? "MARKET " : "")
-                << "COMPLEX DELTA!!!  (seq# " << seqNum << ")\n";
+                << "COMPLEX DELTA!!!  (seq# " << seqNum << ")" << endl;
             MamdaOrderBookComplexDelta::iterator end = delta.end();
             MamdaOrderBookComplexDelta::iterator i   = delta.begin();
             if (mShowDeltas)
@@ -429,9 +414,8 @@ public:
                     prettyPrint (*basicDelta);
                 }
             }
-            prettyPrint (book);
+            prettyPrint (subscription->getSymbol(), book);
         }
-        flush (cout);
     }
 
     void onBookClear (
@@ -444,10 +428,9 @@ public:
         if (gExampleLogLevel >= EXAMPLE_LOG_LEVEL_NORMAL)
         {
             mama_seqnum_t seqNum = (msg) ? msg->getSeqNum() : 0;
-            cout << "CLEAR!!!  (seq# " << seqNum << ")\n";
-            prettyPrint (book);
+            cout << "CLEAR!!!  (seq# " << seqNum << ")" << endl;
+            prettyPrint (subscription->getSymbol(), book);
         }
-        flush (cout);
     }
 
     void onBookGap (
@@ -459,8 +442,7 @@ public:
     {
         cout << "Book gap for " << subscription->getSymbol()
              << " (" << event.getBeginGapSeqNum()
-             << "-"  << event.getEndGapSeqNum() << ")\n";
-        flush (cout);
+             << "-"  << event.getEndGapSeqNum() << ")" << endl;
     }
 
     void onError (
@@ -471,9 +453,8 @@ public:
     {
         if (gExampleLogLevel >= EXAMPLE_LOG_LEVEL_NORMAL)
         {
-            cout << "bookticker: ERROR: " << errorStr << "\n";
+            cout << "bookticker: ERROR: " << errorStr << endl;
         }
-        flush (cout);
     }
 
     void onQuality (
@@ -482,9 +463,8 @@ public:
     {
         if (gExampleLogLevel >= EXAMPLE_LOG_LEVEL_NORMAL)
         {
-            cout << "bookticker: QUALITY: " << quality << "\n";
+            cout << "bookticker: QUALITY: " << quality << endl;
         }
-        flush (cout);
     }
 
     void setShowDeltas (bool  showDeltas)
@@ -502,6 +482,7 @@ int main (int argc, const char **argv)
     try
     {
         CommonCommandLineParser  cmdLine (argc, argv);
+        setvbuf (stdout, (char *) NULL, _IONBF, 0);
         // Initialise the MAMA API
         mamaBridge bridge = cmdLine.getBridge();
         Mama::open ();
@@ -515,6 +496,7 @@ int main (int argc, const char **argv)
         bool             strictChecking      = !cmdLine.getOptBool  ('C');
         bool             processMarketOrders = cmdLine.getOptBool   ('k');
         bool             showDeltas          = cmdLine.showDeltas   ();
+        const char*      dictFile            = cmdLine.getOptString("use_dict_file");
         MamaSource*      source              = cmdLine.getSource    ();
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);
         DictRequester    dictRequester (bridge);
@@ -533,10 +515,19 @@ int main (int argc, const char **argv)
         }
 
         // Get and initialize the dictionary
-        dictRequester.requestDictionary     (cmdLine.getDictSource());
-        MamdaCommonFields::setDictionary    (*dictRequester.getDictionary());
-        MamdaOrderBookFields::setDictionary (*dictRequester.getDictionary ());
-
+        if(dictFile)
+        {
+            MamaDictionary* dict =new MamaDictionary;
+            dict->populateFromFile(dictFile);
+            MamdaCommonFields::setDictionary    (*dict);
+            MamdaOrderBookFields::setDictionary (*dict);
+        }
+        else
+        {
+            dictRequester.requestDictionary     (cmdLine.getDictSource());
+            MamdaCommonFields::setDictionary    (*dictRequester.getDictionary());
+            MamdaOrderBookFields::setDictionary (*dictRequester.getDictionary ());
+        }
         const char* symbolMapFile = cmdLine.getSymbolMapFile ();
         if (symbolMapFile)
         {

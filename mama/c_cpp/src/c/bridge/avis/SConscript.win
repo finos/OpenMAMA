@@ -1,0 +1,45 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+target = 'libmamaavisimpl'
+
+env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL'] )
+
+libPath = []
+libPath.append('$libdir')
+if 'debug' in env['build']:
+	libPath.append('%s/Debug' %(env['avis_home']) )
+	avisInstLibs = [ '%s/Debug/avis.dll' % (env['avis_home'])]
+else:
+	libPath.append('%s/Release' %(env['avis_home']) )
+	avisInstLibs = [ '%s/Release/avis.dll' % (env['avis_home'])]
+
+
+incPath = []
+incPath.append('$avis_home/include')
+incPath.append('#mama/c_cpp/src/c')
+
+libs = []
+libs.append('libwombatcommon%s.lib' % ( env['suffix'] ))
+libs.append('libmamac%s.lib' % ( env['suffix'] ))
+libs.append('avis')
+
+env.Append(LIBS = libs, LIBPATH=libPath, CPPPATH=incPath)
+
+conf = Configure(env, config_h='./config.h', log_file='./config.log')
+
+if not env.GetOption('clean'):
+    if not conf.CheckCHeader('avis/avis_client_config.h'):
+        print '+- avis_client_config.h must be copied to ${avis_home}/include/avis'
+        Exit(1)
+
+env = conf.Finish()
+
+sources = Glob('*.c')
+
+env.InstallLibrary(sources, target)
+
+Alias('install', env.Install('$bindir', avisInstLibs))

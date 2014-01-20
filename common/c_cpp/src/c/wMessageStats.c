@@ -272,7 +272,7 @@ int createStatisticsCache(statsCache** sCache,int numMsgCategories,
 
             if(mysCache->mHeader == 1 && mysCache->mOutfile == stdout)
             {
-                fprintf(mysCache->mOutfile,opHeaderPeriod);
+                fprintf(mysCache->mOutfile, "%s", opHeaderPeriod);
                 mysCache->mHeader=0;
             }
 
@@ -294,7 +294,7 @@ int createStatisticsCache(statsCache** sCache,int numMsgCategories,
         {
             if(mysCache->mHeader == 1 && mysCache->mOutfile == stdout)
             {
-                fprintf(mysCache->mOutfile,opHeaderPeriod);
+                fprintf(mysCache->mOutfile, "%s", opHeaderPeriod);
                 mysCache->mHeader=0;
             }
 
@@ -917,7 +917,7 @@ int printPerfData(perfData* pData,int headerFlag)
             if(headerFlag==1)
             {
                    /* print stats header every time for all symbols */
-                 fprintf(pData->mOutfile,opHeaderPeriod);
+                 fprintf(pData->mOutfile, "%s", opHeaderPeriod);
             }
             fprintf(pData->mOutfile," %-13s,",pData->mSymbol);
             fprintf(pData->mOutfile,"%-13.2f,",pData->mTotalTime);
@@ -999,7 +999,7 @@ void perfDataReportHeader(FILE* outfile)
         fprintf(outfile,
         "\n\n\n\t\t\t\t\t *** Statistics Summary For Execution ***\n");
         fprintf(outfile, "  Symbol Name ,");
-        fprintf(outfile,opHeaderAcrossAll);
+        fprintf(outfile, "%s", opHeaderAcrossAll);
     }
 }
 void printPerfDataReport(perfData* pData,FILE* outfile)

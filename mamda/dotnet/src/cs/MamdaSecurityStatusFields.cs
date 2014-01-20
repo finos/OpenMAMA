@@ -59,6 +59,8 @@ namespace Wombat
 			string wReason = lookupFieldName(properties, "wReason");
 			string wLuldIndicator = lookupFieldName(properties, "wLuldIndicator");
 			string wLuldTime = lookupFieldName(properties, "wLuldTime");
+			string wLuldHighLimit = lookupFieldName(properties, "wHighLimit");
+			string wLuldLowLimit = lookupFieldName(properties, "wLowLimit");
 
 			SRC_TIME					= dictionary.getFieldByName(wSrcTime);
 			ACTIVITY_TIME				= dictionary.getFieldByName(wActivityTime);
@@ -71,6 +73,8 @@ namespace Wombat
 			REASON						= dictionary.getFieldByName(wReason);
             LULDINDICATOR               = dictionary.getFieldByName(wLuldIndicator);
             LULDTIME                    = dictionary.getFieldByName(wLuldTime);
+            LULDHIGHLIMIT               = dictionary.getFieldByName(wLuldHighLimit);
+            LULDLOWLIMIT                = dictionary.getFieldByName(wLuldLowLimit);
 
 			MAX_FID = dictionary.getMaxFid();
 			mInitialised = true;
@@ -105,6 +109,8 @@ namespace Wombat
             REASON					= null;
             LULDINDICATOR           = null;
             LULDTIME                = null;
+            LULDHIGHLIMIT          = null;
+            LULDLOWLIMIT           = null;
         }
 
 		public static MamaFieldDescriptor  SRC_TIME               = null;
@@ -118,6 +124,8 @@ namespace Wombat
 		public static MamaFieldDescriptor  REASON				  = null;
 		public static MamaFieldDescriptor  LULDINDICATOR		  = null;
 		public static MamaFieldDescriptor  LULDTIME				  = null;
+		public static MamaFieldDescriptor  LULDHIGHLIMIT		  = null;
+		public static MamaFieldDescriptor  LULDLOWLIMIT 		  = null;
 		public static int  MAX_FID = 0;
 		private static bool mInitialised = false;
 	}

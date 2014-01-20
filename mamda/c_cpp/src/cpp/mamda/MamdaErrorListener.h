@@ -51,13 +51,23 @@ namespace Wombat
      */
     enum MamdaErrorCode
     {
-        MAMDA_ERROR_NO_ERROR,
-        MAMDA_ERROR_BAD_SYMBOL,
-        MAMDA_ERROR_EXPIRED,
-        MAMDA_ERROR_TIME_OUT,
-        MAMDA_ERROR_ENTITLEMENT,
-        MAMDA_ERROR_NOT_FOUND,
-        MAMDA_ERROR_DELETE
+        MAMDA_ERROR_NO_ERROR                   = 0,
+        MAMDA_ERROR_LINE_DOWN                  = 1,
+        MAMDA_ERROR_NO_SUBSCRIBERS             = 2,
+        MAMDA_ERROR_BAD_SYMBOL                 = 3,
+        MAMDA_ERROR_EXPIRED                    = 4,
+        MAMDA_ERROR_TIME_OUT                   = 5,
+        MAMDA_ERROR_MISC                       = 6,
+        MAMDA_ERROR_STALE                      = 7,
+        MAMDA_ERROR_PLATFORM_STATUS            = 8,
+        MAMDA_ERROR_ENTITLEMENT                = 9,
+        MAMDA_ERROR_NOT_FOUND                  = 10,
+        MAMDA_ERROR_POSSIBLY_STALE             = 11,
+        MAMDA_ERROR_NOT_PERMISSIONED           = 12,
+        MAMDA_ERROR_TOPIC_CHANGE               = 13,
+        MAMDA_ERROR_BANDWIDTH_EXCEEDED         = 14,
+        MAMDA_ERROR_DELETE                     = 17,
+        MAMDA_ERROR_EXCEPTION                  = 999
     };
 
     /**

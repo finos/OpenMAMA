@@ -27,17 +27,18 @@ CFLAGS   += -std=gnu99 -pedantic -Wno-long-long -O2 -pthread -fPIC
 CPPFLAGS += -pedantic -Wno-long-long -O2 -pthread -fPIC
 endif
 
-INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../../c -I$(srcdir)/../../../examples -I$(srcdir)/../../../../../common/c_cpp/src/c
+#INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../../c -I$(srcdir)/../../../examples -I$(srcdir)/../../../../../common/c_cpp/src/c
+INCLUDES = -I$(srcdir)/.. -I$(srcdir)/../../c -I$(srcdir)/../../../../../common/c_cpp/src/c
 
 CFLAGS   += -I@builddir@/../../c
 CPPFLAGS += -I@builddir@/../../cpp
 
 LIBS = -lmama -lmamacpp -lwombatcommon -lgtest
 LDADD = -lgtest_main -ldl
+LDFLAGS  += -L${srcdir}/../../c -L${srcdir}/../../cpp
 
 
 
-#if WITH_UNITTESTS
 bin_PROGRAMS = UnitTestMamaCPP
 
 nodist_UnitTestMamaCPP_SOURCES =  MainUnitTestCpp.cpp \
@@ -48,5 +49,3 @@ nodist_UnitTestMamaCPP_SOURCES =  MainUnitTestCpp.cpp \
     MamaMsgTest.cpp \
     MamaTimerTest.cpp
 	
-#endif
-

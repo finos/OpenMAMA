@@ -1,0 +1,34 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+Import('env')
+env = env.Clone()
+
+target = 'UnitTestMamaCPP'
+
+incpath = []
+incpath.append('.')
+incpath.append('#common/c_cpp/src/c')
+incpath.append('#mama/c_cpp/src/c')
+incpath.append('#mama/c_cpp/src/cpp')
+
+libpath = []
+libpath.append('$libdir')
+
+env.Append(LIBPATH=libpath, LIBS=['mama', 'mamacpp', 'wombatcommon',
+           'dl'], CPPPATH=incpath)
+
+env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
+
+sources = Glob('*.cpp')
+
+bin = env.Program(target, sources)
+
+Alias('install', env.Install('$bindir', bin))
+
+env.PrependENVPath('LD_LIBRARY_PATH', Dir('%s/lib' % env['prefix'
+                   ]).abspath)
+
+if 'test' in BUILD_TARGETS:
+    test_alias = Alias('test', env.Command('%s.xml' % bin[0].name, bin,
+                       '$SOURCE --gtest_output=xml:$TARGET'))
+    AlwaysBuild(test_alias)

@@ -1,0 +1,49 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+target = 'libmamaqpidimpl'
+
+libPath = []
+libPath.append('$libdir')
+libPath.append(os.path.join(env['qpid_home'], 'lib'))
+libPath.append(os.path.join(env['qpid_home'], 'lib64'))
+
+incPath = []
+incPath.append('$qpid_home/include')
+incPath.append('#mama/c_cpp/src/c')
+
+env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
+
+env.Append(LIBS=['qpid-proton', 'mama', 'm', 'wombatcommon', 'uuid', 'event'],
+           LIBPATH=libPath, CPPPATH=incPath)
+''' Generally we would like to make use of -Werror, but unfortunately it causes
+    proton to choke during the build phase. Leaving the option here should we
+    find the proton issues resolved.'''
+#env.Append(CFLAGS=['-Werror'])
+
+
+conf = Configure(env, config_h='./config.h', log_file='./config.log')
+
+if not env.GetOption('clean'):
+    if not conf.CheckCHeader('uuid/uuid.h'):
+        print '+- libuuid-devel required'
+        Exit(1)
+    if not conf.CheckCHeader('proton/parser.h'):
+        print '+- could not find parser.h in ${QPID_HOME}/include/proton'
+        Exit(1)
+    if conf.CheckCHeader('proton/version.h'):
+        print '+- proton release appears to include ${QPID_HOME}/include/proton/version.h'
+        env.Append(CCFLAGS=['-DHAVE_QPID_PROTON_VERSION_H'])
+
+env = conf.Finish()
+
+sources = Glob('*.c')
+
+lib = []
+lib.append(env.SharedLibrary(target, sources))
+lib.append(env.StaticLibrary(target, [sources]))
+
+Alias('install', env.Install('$libdir', lib))

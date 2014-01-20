@@ -48,6 +48,8 @@ public class MamdaSecurityStatusFields extends MamdaFields
     public static MamaFieldDescriptor  REASON                 = null;
     public static MamaFieldDescriptor  LULDINDICATOR          = null;
     public static MamaFieldDescriptor  LULDTIME               = null;
+    public static MamaFieldDescriptor  LULDHIGHLIMIT          = null;
+    public static MamaFieldDescriptor  LULDLOWLIMIT           = null;
     public static int      MAX_FID     = 0;
     private static boolean initialised = false;
 
@@ -103,6 +105,10 @@ public class MamdaSecurityStatusFields extends MamdaFields
                                                       "wLuldIndicator");
         String wLuldTime           = lookupFieldName (properties,
                                                       "wLuldTime");
+        String wLuldHighLimit      = lookupFieldName (properties,
+                                                      "wHighLimit");
+        String wLuldLowLimit       = lookupFieldName (properties,
+                                                      "wLowLimit");
 
         SRC_TIME              = dictionary.getFieldByName (wSrcTime);
         ACTIVITY_TIME         = dictionary.getFieldByName (wActivityTime);
@@ -120,6 +126,8 @@ public class MamdaSecurityStatusFields extends MamdaFields
         REASON                = dictionary.getFieldByName (wReason);
         LULDINDICATOR         = dictionary.getFieldByName (wLuldIndicator);
         LULDTIME              = dictionary.getFieldByName (wLuldTime);
+        LULDHIGHLIMIT         = dictionary.getFieldByName (wLuldHighLimit);
+        LULDLOWLIMIT          = dictionary.getFieldByName (wLuldLowLimit);
 
         MAX_FID = dictionary.getMaxFid();
         initialised = true;
@@ -160,6 +168,8 @@ public class MamdaSecurityStatusFields extends MamdaFields
         REASON                = null;
         LULDINDICATOR         = null;
         LULDTIME              = null;
+        LULDHIGHLIMIT         = null;
+        LULDLOWLIMIT          = null;
 
         MAX_FID               = 0;
         initialised           = false;

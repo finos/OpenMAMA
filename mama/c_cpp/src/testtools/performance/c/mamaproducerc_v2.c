@@ -196,7 +196,6 @@ static const char *         gUsageString[]      =
 "      [-m middleware]      The middleware to use [wmw/lbm/tibrv]; default is wmw.",
 "      [-numTopics topics]  The number of topics to create in the form MAMA_TOPIC00 MAMA_TOPIC01 etc",
 "                           uses [-s topic] as root.",
-"      [-numTrans trans]    The number of transports to create.",
 "      [-priority X ]       Set the process's scheduler priority to X.",
 "      [-random]            Randomise rate between randomLow and randomHigh values at randomInterval second intervals.",
 "      [-randomHigh X]      Upper rate for random range. Default is 500000 msgs/sec.",
@@ -217,6 +216,12 @@ static const char *         gUsageString[]      =
 "      [-v]                 Increase verbosity. Can be passed multiple times.",
 NULL
 };
+
+#ifdef TEST_BUILD
+static const char *			numTransStrTestBuild =		"      [-numTrans trans]    The number of transports to create. Note, based on -tport e.g. pub0, pub1, pubN ...";
+#else
+static const char *			numTransStr =			"      [-numTrans trans]    The number of transports to create.";
+#endif
 
 static __inline__ uint64_t
 rdtsc(void) {
@@ -551,7 +556,7 @@ int main (int argc, const char **argv)
     uint64_t        nsecStepInterval = 0;
     uint64_t        startStep = 0;
 
-    if(setvbuf(stdout, NULL, _IONBF, 0))
+	if(setvbuf(stdout, NULL, _IONBF, 0))
     {
         printf("Failed to change the buffer of stdout\n");
         return (1);
@@ -1172,6 +1177,10 @@ static void initializeMama
 {
     int i = 0;
 
+#ifdef TEST_BUILD
+    char currentTransport[1024];
+#endif
+
     if (gAppName)
     {
         mama_setApplicationName (gAppName);
@@ -1183,7 +1192,6 @@ static void initializeMama
 
     gTransportArray = (mamaTransport*) calloc (gNumTrans,
                                                sizeof *gTransportArray);
-
     for (i=0; i<gNumTrans; i++)
     {
         MAMA_CHECK( mamaTransport_allocate (&gTransportArray[i]));
@@ -1193,11 +1201,21 @@ static void initializeMama
                                                 transportCb,
                                                 NULL);
         }
+
+#ifdef TEST_BUILD
+        snprintf (currentTransport, 1024, "%s%.1d", transportName, i);
+
+        MAMA_CHECK( mamaTransport_create (gTransportArray[i],
+                                          currentTransport,
+                                          gMamaBridge));
+#else
         MAMA_CHECK( mamaTransport_create (gTransportArray[i],
                                           transportName,
                                           gMamaBridge));
+#endif
     }
 }
+
 static void initializePublishers
 (
     uint32_t    msgSize,
@@ -1992,6 +2010,13 @@ static void usage
     {
         printf ("%s\n", gUsageString[i++]);
     }
+
+#ifdef TEST_BUILD
+	printf ("%s\n", numTransStrTestBuild);
+#else
+	printf ("%s\n", numTransStr);
+#endif
+
     exit (exitStatus);
 }
 

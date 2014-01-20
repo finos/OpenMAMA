@@ -44,8 +44,41 @@ namespace Wombat
         virtual const char*       getDividendPayDate()                const = 0;  
         virtual const char*       getDividendRecordDate()             const = 0;  
         virtual const char*       getDividendCurrency()               const = 0;  
+
+        /**
+         * @brief getSharesOut return the number of shares.
+         *
+         * @param None.
+         *
+         * @return long
+         *
+         * @deprecated This function is deprecated, use getSharesOutEx instead.
+         *
+         */
         virtual long              getSharesOut()                      const = 0;
+
+        /**
+         * @brief getSharesFloat return the number of floating shares.
+         *
+         * @param None.
+         *
+         * @return long
+         *
+         * @deprecated This function is deprecated, use getSharesFloatEx instead.
+         *
+         */
         virtual long              getSharesFloat()                    const = 0;
+
+        /**
+         * @brief getSharesAuthorized return the number of authorized shares.
+         *
+         * @param None.
+         *
+         * @return long
+         *
+         * @deprecated This function is deprecated, use getSharesAuthorizedEx instead.
+         *
+         */
         virtual long              getSharesAuthorized()               const = 0;
         virtual double            getEarningsPerShare()               const = 0;
         virtual double            getVolatility()                     const = 0;
@@ -57,6 +90,37 @@ namespace Wombat
         virtual const char*       getMarketSector()                   const = 0;
         virtual double            getHistoricalVolatility()           const = 0;  
         virtual double            getRiskFreeRate()                   const = 0;
+
+        /**
+         * @brief getSharesOutEx return the number of shares.
+         *
+         * @param None.
+         *
+         * @return mama_u64_t
+         *
+         */
+        virtual mama_u64_t  getSharesOutEx()                          const = 0;
+
+        /**
+         * @brief getSharesFloatEx return the number of floating shares.
+         *
+         * @param None.
+         *
+         * @return mama_u64_t
+         *
+         */
+        virtual mama_u64_t  getSharesFloatEx()                        const = 0;
+
+        /**
+         * @brief getSharesAuthorizedEx return the number of authorized
+         *        shares.
+         *
+         * @param None.
+         *
+         * @return mama_u64_t
+         *
+         */
+        virtual mama_u64_t        getSharesAuthorizedEx()             const = 0;
 
         virtual MamdaFieldState   getCorporateActionTypeFieldState()  const = 0;
         virtual MamdaFieldState   getDividendPriceFieldState()        const = 0;

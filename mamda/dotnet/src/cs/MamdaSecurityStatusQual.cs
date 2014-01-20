@@ -135,7 +135,8 @@ namespace Wombat
             SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK   = 122,    // toString() - LimitStateBid:LimitStateAsk
             SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1       = 123,    // toString() - CircuitBreakerLevel1
             SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2       = 124,    // toString() - CircuitBreakerLevel2
-            SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3       = 125     // toString() - CircuitBreakerLevel3
+            SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3       = 125,     // toString() - CircuitBreakerLevel3
+            SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE     = 126    //toString() - VolatilityPauseStraddle
 		}
 
 		private static string SECURITY_STATUS_QUAL_STR_NONE                           = "None";
@@ -247,6 +248,7 @@ namespace Wombat
         private static  string SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1       = "CircuitBreakerLevel1";
         private static  string SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2       = "CircuitBreakerLevel2";
         private static  string SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3       = "CircuitBreakerLevel3";
+        private static  string SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE     = "VolatilityPauseStraddle";
         private static  string SECURITY_STATUS_QUAL_STR_UNKNOWN                        = "Unknown";
 
 		public string toString (MamdaSecurityStatusQual.mamdaSecurityStatusQual securityStatusQual)
@@ -472,6 +474,8 @@ namespace Wombat
                     return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2;
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3:
                     return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE:
+                    return SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE;
 
 			}
 			return SECURITY_STATUS_QUAL_STR_UNKNOWN;
@@ -695,6 +699,8 @@ namespace Wombat
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;  
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
 
 			if (securityStatusQual == "0")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NONE;
@@ -913,6 +919,8 @@ namespace Wombat
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
             if (securityStatusQual == "125")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
+            if (securityStatusQual == "126")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
 
 			return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_UNKNOWN;
 		}

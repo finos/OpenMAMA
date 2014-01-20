@@ -1514,7 +1514,7 @@ namespace Wombat
     {
         // Fix up explicit numbers provided by the message.
         level->setSize       (plSize);
-        if (!mHaveEntries)
+        if (1 != mBookMsgFields.mBookType)
             level->setNumEntries ((mama_u32_t)plNumEntries);
 
         if ((!mProcessEntries && !mBookMsgFields.mBookType ==1) || mBookMsgFields.mBookType==2)

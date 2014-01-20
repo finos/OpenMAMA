@@ -917,6 +917,16 @@ mamaSubscription_initialize (mamaSubscription subscription)
                                  0,/*Not throttled*/
                                  0);/*Not a recap*/
     }
+    else if (mamaSubscription_requiresSubscribe (subscription))
+    {
+        mamaMsg subscribeMsg = NULL;
+        getSubscribeMessage (subscription, &subscribeMsg);
+        mamaPublisher_send (self->mSubscPublisher,
+                           subscribeMsg);
+        mamaMsg_destroy (subscribeMsg);
+        mama_log (MAMA_LOG_LEVEL_FINE,
+                   "Subscription send request without inbox().");
+    }
 
     if (self->mBridgeImpl && 
         (self->mBridgeImpl->bridgeMamaSubscriptionHasWildcards 
@@ -2334,6 +2344,22 @@ mamaSubscription_getPreIntitialCacheSize (
     return MAMA_STATUS_OK;
 }
 
+int
+mamaSubscription_requiresSubscribe (mamaSubscription subscription)
+{
+    if (!self) return 0;
+    if (!self->mBridgeImpl) return 0;
+    /* Bridge will be NULL for snapshots */
+    if (self->mSubscBridge != NULL &&
+        self->mBridgeImpl->bridgeMamaSubscriptionIsValid (self->mSubscBridge) &&
+        !self->mBridgeImpl->bridgeMamaSubscriptionHasWildcards
+                                            (self->mSubscBridge))
+    {
+        return 1;
+    }
+
+    return 0;
+}
 
 int
 mamaSubscription_checkDebugLevel (
@@ -2447,6 +2473,14 @@ mamaSubscription_getBridgeImpl (mamaSubscription subscription)
     
     return self->mBridgeImpl; 
 }                              
+
+subscriptionBridge
+mamaSubscription_getSubscriptionBridge (mamaSubscription subscription)
+{
+    if (!self) return NULL;
+    
+    return self->mSubscBridge;
+}
 
 wildCardType
 mamaSubscription_getWildCardType( mamaSubscription subscription)
@@ -2580,6 +2614,9 @@ mama_status mamaSubscription_deactivate(mamaSubscription subscription)
                     mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEACTIVATING);
                     /* Deactivate the subscription, clean-up will be performed on the callback. */
                     ret = mamaSubscription_deactivate_internal(impl);
+                    if (impl->mSubscMsgType == MAMA_SUBSC_DDICT_SNAPSHOT ||
+                        impl->mSubscMsgType == MAMA_SUBSC_SNAPSHOT)
+                        mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEACTIVATED);
                     break;
             
                 case MAMA_SUBSCRIPTION_DEACTIVATING:
@@ -2630,8 +2667,8 @@ mama_status mamaSubscription_deactivate(mamaSubscription subscription)
                     ret = MAMA_STATUS_SUBSCRIPTION_INVALID_STATE;
                     break;
             }
-            mamaSubscription_deactivate_internal(impl);
-            wlock_lock(impl->mCreateDestroyLock);
+
+            wlock_unlock(impl->mCreateDestroyLock);
         }
     }
 

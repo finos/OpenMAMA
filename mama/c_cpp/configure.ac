@@ -205,6 +205,42 @@ AC_ARG_WITH(
     ])
 AM_CONDITIONAL(WITH_AVIS, test x$with_avis = "xtrue")
 
+##################################################
+# QPID: --with-proton
+# Whether or not to link in the Avis middleware
+##################################################
+# Whether to build and where to find the Qpid proton API headers and libraries
+# (usually /usr/local):
+PROTON_HOME=[${PROTON_HOME}]
+AC_ARG_WITH(
+    proton,
+    [AC_HELP_STRING([--with-proton=DIR],
+                    [Location of Proton API include/library files in DIR])],
+    [
+     if test -d "$withval"; then
+         PROTON_HOME="$withval"
+     fi
+     AC_CHECK_FILE(
+         [$PROTON_HOME/include/proton/parser.h],
+         [
+           CFLAGS="$CFLAGS -I$PROTON_HOME/include"
+           LDFLAGS="$LDFLAGS -L$PROTON_HOME/lib -L$PROTON_HOME/lib64"
+           with_proton=true
+           mama_platform=proton
+           mama_payload=proton
+           mwbridge=true
+           payloadbridge=true
+         ],
+         [
+            AC_MSG_ERROR([Valid QPID Proton installation not found! Check $PROTON_HOME/include/proton)])
+         ])
+    AC_CHECK_FILE(
+         [$PROTON_HOME/include/proton/version.h],
+         [
+           CFLAGS="$CFLAGS -DHAVE_QPID_PROTON_VERSION_H"
+         ],[])
+    ])
+AM_CONDITIONAL(WITH_PROTON, test x$with_proton = "xtrue")
 
 ##################################################
 ##################################################
@@ -365,8 +401,10 @@ AC_OUTPUT([Makefile \
     src/c/Makefile \
     src/c/bridge/Makefile \
     src/c/bridge/avis/Makefile \
+    src/c/bridge/qpid/Makefile \
     src/c/payload/Makefile \
     src/c/payload/avismsg/Makefile \
+    src/c/payload/qpidmsg/Makefile \
     src/cpp/Makefile \
     src/examples/Makefile \
     src/examples/c/Makefile \
@@ -382,5 +420,10 @@ AC_OUTPUT([Makefile \
     src/testtools/load/cpp/Makefile \
     src/gunittest/Makefile \
     src/gunittest/c/Makefile \
+    src/gunittest/c/payload/Makefile \
+    src/gunittest/c/middleware/Makefile \
+    src/gunittest/c/mamamsg/Makefile \
+    src/gunittest/c/mamaprice/Makefile \
+    src/gunittest/c/mamadatetime/Makefile \
     src/gunittest/cpp/Makefile \
     ])

@@ -100,6 +100,9 @@ namespace Wombat
         const char* getMarketSector()         const;
         double      getHistoricalVolatility() const;  
         double      getRiskFreeRate()         const;
+        mama_u64_t  getSharesOutEx()          const;
+        mama_u64_t  getSharesFloatEx()        const;
+        mama_u64_t  getSharesAuthorizedEx()   const;
 
         MamdaFieldState     getCorporateActionTypeFieldState()  const;
         MamdaFieldState     getDividendPriceFieldState()        const;

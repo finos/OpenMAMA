@@ -35,7 +35,6 @@
 
 #include "avispayload.h"
 #include "avismsgimpl.h"
-#include "msgfield.h"
 #include "msgfieldimpl.h"
 #include "../../bridge/avis/avisdefs.h"
 #include "platform.h"
@@ -2197,6 +2196,13 @@ avismsgFieldPayload_updatePrice  (msgFieldPayload         field,
     return avisMsg_setPrice(avisPayload(msg), avisField(field)->mName, 0, value);
 }
 
+mama_status
+avismsgFieldPayload_updateString  (msgFieldPayload         field,
+                                   msgPayload              msg,
+                                   const char*             value)
+{
+    return avisMsg_setString(avisPayload(msg), avisField(field)->mName, 0, value);
+}
 
 /******************************************************************************
 * field get functions

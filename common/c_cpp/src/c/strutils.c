@@ -317,13 +317,14 @@ int wmFastPrintF64 (
         case 6: multiplier = 1000000.0; break;
         case 7: multiplier = 10000000.0; break;
         case 8: multiplier = 100000000.0; break;
-        default:                          break;
+        default:
         {
             unsigned int i = 8;
             multiplier = 100000000.0;
             for (; i < places; i++)
                 multiplier *= 10;
 
+            break;
         }
         }
         posValue -= integral;

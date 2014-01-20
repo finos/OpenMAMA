@@ -29,3 +29,6 @@ if WITH_AVIS
 SUBDIRS += avis
 endif
 
+if WITH_PROTON
+SUBDIRS += qpid
+endif

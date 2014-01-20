@@ -35,8 +35,8 @@ extern "C" {
 #endif
 
 /* Used to convert a macro argument to a string */
-#define xstr(s) str(s)
-#define str(s) #s
+#define XSTR(s) STR(s)
+#define STR(s) #s
 
 /***** The types used to identify the bridge specific implementations ******/
 typedef struct  queueBridge_*       queueBridge;
@@ -248,7 +248,7 @@ do                                                                             \
                     implIdentifier ## BridgeMamaMsg_destroyReplyHandle;        \
     /* Register the bridge with Mama */                                        \
     mamaInternal_registerBridge (                                              \
-                    (mamaBridge)bridgeImpl,xstr(implIdentifier));              \
+                    (mamaBridge)bridgeImpl,XSTR(implIdentifier));              \
 }                                                                              \
 while(0)                                                                       \
 
@@ -688,7 +688,7 @@ typedef mama_status
    (mama_start() needs to be called for each implementation
     mama_open() needs to be called for each implementation)
  */
-typedef struct mamaBridgeImpl
+typedef struct mamaBridgeImpl_
 {
     /* Used by mama_start() and mama_stop(). */
     unsigned int mRefCount;

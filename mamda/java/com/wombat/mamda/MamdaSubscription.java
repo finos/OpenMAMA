@@ -559,7 +559,7 @@ public class MamdaSubscription
                     mSubscription,
                     MamdaErrorSeverity.severityForErrorCode (errorCode),
                     errorCode,
-                    MamdaErrorCode.stringForMamdaError (wombatStatus));
+                    MamdaErrorCode.stringForMamdaError (errorCode));
             }
         }
 

@@ -1,0 +1,32 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+target = 'libmamaqpidmsgimpl'
+
+env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H'] )
+
+includePath = []
+includePath.append('$qpid_home/include')
+includePath.append('#common/c_cpp/src/c')
+
+libPath = []
+libPath.append('$libdir')
+
+libs = []
+libs.append('libmamac%s.lib' % ( env['suffix'] ))
+if 'debug' in env['build']:
+  libPath.append('%s/Debug' %(env['qpid_home']) )
+  libs.append('qpid-protond')
+else:
+  libPath.append('%s/Release' %(env['qpid_home']) )
+  libs.append('qpid-proton')
+
+env['CCFLAGS'].append(['/TP', '/WX-'])
+env.Append(LIBS=libs, LIBPATH=libPath, CPPPATH=[includePath])
+
+sources = Glob('*.c')
+
+env.InstallLibrary(sources, target)

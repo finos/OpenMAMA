@@ -46,5 +46,4 @@ LIBS    = -lavis -lmama -lm
 # Sources:
 libmamaavismsgimpl_la_SOURCES = \
 	avispayload.c  \
-	avismsgimpl.c  \
-	msgfield.c
+	avismsgimpl.c

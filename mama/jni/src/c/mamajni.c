@@ -1089,7 +1089,9 @@ void MAMACALLTYPE onMamaLog(MamaLogLevel level, const char *format, va_list argu
 		/* Only continue if the callback has been supplied. */
 		if(mLogCallback != NULL)
 		{
-			/* Format the message as a string. */
+			jstring javaBuffer = NULL;
+
+            /* Format the message as a string. */
 			char buffer[4096] = "";
 
 			/* Format the message into the buffer. */
@@ -1097,14 +1099,15 @@ void MAMACALLTYPE onMamaLog(MamaLogLevel level, const char *format, va_list argu
 		
 			/* Add a null terminator. */
 			strcat(buffer, "\0");
-			{
-				/* Convert the character pointer to a java string. */
-				jstring javaBuffer = (*env)->NewStringUTF(env, buffer);	
 
-				/* Create a new object array. */
-				(*env)->CallVoidMethod(env, mLogCallback, onLogId_g, level, javaBuffer);			
-			}
-		}
+            /* Convert the character pointer to a java string. */
+            javaBuffer = (*env)->NewStringUTF(env, buffer);	
+
+            /* Invoke the log method. */
+            (*env)->CallVoidMethod(env, mLogCallback, onLogId_g, level, javaBuffer);			
+
+            (*env)->DeleteLocalRef(env, javaBuffer);
+        }
 	}
 
     return;

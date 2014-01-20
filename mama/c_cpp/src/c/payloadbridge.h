@@ -31,8 +31,8 @@ extern "C" {
 #include <mamainternal.h>
 #include <mama/subscmsgtype.h>
 
-#define xstr(s) str(s)
-#define str(s) #s
+#define XSTR(s) STR(s)
+#define STR(s) #s
 
 typedef void* msgPayload;
 typedef void* msgFieldPayload;
@@ -342,6 +342,8 @@ do                                                                          \
                         = identifier ## FieldPayload_updateDateTime;        \
     msgPayloadImpl->msgFieldPayloadUpdatePrice                              \
                         = identifier ## FieldPayload_updatePrice;           \
+    msgPayloadImpl->msgFieldPayloadUpdateString                             \
+                        = identifier ## FieldPayload_updateString;          \
     msgPayloadImpl->msgFieldPayloadGetBool                                  \
                         = identifier ## FieldPayload_getBool;               \
     msgPayloadImpl->msgFieldPayloadGetChar                                  \

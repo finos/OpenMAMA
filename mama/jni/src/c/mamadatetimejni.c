@@ -451,10 +451,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_addMicroSeconds
  * Method:    getEpochTimeMicroseconds
  * Signature: ()J
  */
-JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeMicroseconds
-  (JNIEnv* env, jobject this)
+JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeMicroseconds
+  (JNIEnv* env, jobject this, jstring timeZone)
 {
     jlong       pDateTime   = 0;
+    jlong       pTimeZone   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u64_t  epochTime   = 0;
     char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
@@ -462,14 +463,27 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeMicrosecon
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
+
+    if (NULL != timeZone)
+    {
+        pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
+        if(0 == pTimeZone)
+        {
+            pTimeZone = createTimeZone (env,this);
+            assert (0!=pTimeZone);
+        }
+        timeZone_set (env, pTimeZone, timeZone);
+    }
     
-    if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeMicroseconds(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), &epochTime)))
+    if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeMicrosecondsWithTz(
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
+                            &epochTime,
+                            CAST_JLONG_TO_POINTER (mamaTimeZone,pTimeZone))))
     {
          utils_buildErrorStringForStatus (
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
-                "Error calling MamaDateTime.getEpochTimeMicroseconds().",
+                "Error calling MamaDateTime.getEpochTimeMicrosecondsWithTz().",
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;
@@ -482,10 +496,11 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeMicrosecon
  * Method:    getEpochTimeMilliseconds
  * Signature: (J)V
  */
-JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeMilliseconds
-  (JNIEnv* env, jobject this)
+JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeMilliseconds
+  (JNIEnv* env, jobject this, jstring timeZone)
  {
     jlong       pDateTime   = 0;
+    jlong       pTimeZone   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u64_t  epochTime   = 0;
     char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
@@ -494,13 +509,26 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeMillisecon
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
     
-    if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeMilliseconds(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), &epochTime)))
+    if (NULL != timeZone)
+    {
+        pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
+        if(0 == pTimeZone)
+        {
+            pTimeZone = createTimeZone (env,this);
+            assert (0!=pTimeZone);
+        }
+        timeZone_set (env, pTimeZone, timeZone);
+    }
+    
+    if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeMillisecondsWithTz(
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
+                            &epochTime,
+                            CAST_JLONG_TO_POINTER (mamaTimeZone,pTimeZone))))
     {
          utils_buildErrorStringForStatus(
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
-                "Error calling MamaDateTime.getEpochTimeMilliseconds().",
+                "Error calling MamaDateTime.getEpochTimeMillisecondsWithTz().",
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;
@@ -513,10 +541,11 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeMillisecon
  * Method:    getEpochTimeSeconds
  * Signature: ()D
  */
-JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeSeconds
-  (JNIEnv* env, jobject this)
+JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeSeconds
+  (JNIEnv* env, jobject this, jstring timeZone)
  {
     jlong       pDateTime   = 0;
+    jlong       pTimeZone   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_f64_t  epochTime   = 0;
     char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
@@ -525,14 +554,26 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeSeconds
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
     
-    if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeSeconds (
+    if (NULL != timeZone)
+    {
+        pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
+        if(0 == pTimeZone)
+        {
+            pTimeZone = createTimeZone (env,this);
+            assert (0!=pTimeZone);
+        }
+        timeZone_set (env, pTimeZone, timeZone);
+    }
+    
+    if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeSecondsWithTz (
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
-                            &epochTime)))
+                            &epochTime,
+                            CAST_JLONG_TO_POINTER (mamaTimeZone,pTimeZone))))
     {
          utils_buildErrorStringForStatus(
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
-                "Error calling MamaDateTime.getEpochTimeSeconds().",
+                "Error calling MamaDateTime.getEpochTimeSecondsWithTz().",
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;

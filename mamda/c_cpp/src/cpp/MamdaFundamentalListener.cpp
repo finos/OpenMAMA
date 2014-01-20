@@ -102,9 +102,6 @@ namespace Wombat
         string      mDivPayDate;           MamdaFieldState      mDivPayDateFieldState;
         string      mDivRecordDate;        MamdaFieldState      mDivRecordDateFieldState;
         string      mDivCurrency;          MamdaFieldState      mDivCurrencyFieldState;
-        int32_t     mSharesOut;            MamdaFieldState      mSharesOutFieldState;
-        int32_t     mSharesFloat;          MamdaFieldState      mSharesFloatFieldState;
-        int32_t     mSharesAuth;           MamdaFieldState      mSharesAuthFieldState;
         double      mEarnPerShare;         MamdaFieldState      mEarnPerShareFieldState;
         double      mVolatility;           MamdaFieldState      mVolatilityFieldState;
         double      mPeRatio;              MamdaFieldState      mPeRatioFieldState;
@@ -115,6 +112,9 @@ namespace Wombat
         string      mMarketSector;         MamdaFieldState      mMarketSectorFieldState;
         double      mHistVolatility;       MamdaFieldState      mHistVolatilityFieldState;
         double      mRiskFreeRate;         MamdaFieldState      mRiskFreeRateFieldState;
+        mama_u64_t  mSharesOut;            MamdaFieldState      mSharesOutFieldState;
+        mama_u64_t  mSharesFloat;          MamdaFieldState      mSharesFloatFieldState;
+        mama_u64_t  mSharesAuth;           MamdaFieldState      mSharesAuthFieldState;
 
         static void initFieldUpdaters ();
         static void initFieldUpdater  (const MamaFieldDescriptor*  fieldDesc,
@@ -239,17 +239,17 @@ namespace Wombat
 
     long MamdaFundamentalListener::getSharesOut() const
     {
-        return mImpl.mSharesOut;
+        return (long) mImpl.mSharesOut;
     }
 
     long MamdaFundamentalListener::getSharesFloat() const
     {
-        return mImpl.mSharesFloat;
+        return (long) mImpl.mSharesFloat;
     }
 
     long MamdaFundamentalListener::getSharesAuthorized() const
     {
-        return mImpl.mSharesAuth;
+        return (long) mImpl.mSharesAuth;
     }
 
     double MamdaFundamentalListener::getEarningsPerShare() const
@@ -300,6 +300,21 @@ namespace Wombat
     double MamdaFundamentalListener::getRiskFreeRate() const
     {
         return mImpl.mRiskFreeRate;
+    }
+
+    mama_u64_t MamdaFundamentalListener::getSharesOutEx() const
+    {
+        return mImpl.mSharesOut;
+    }
+
+    mama_u64_t MamdaFundamentalListener::getSharesFloatEx() const
+    {
+        return mImpl.mSharesFloat;
+    }
+
+    mama_u64_t MamdaFundamentalListener::getSharesAuthorizedEx() const
+    {
+        return mImpl.mSharesAuth;
     }
 
     /*      FieldAccessors      */
@@ -484,6 +499,53 @@ namespace Wombat
         , mYield          (0.0)
         , mHistVolatility (0.0)
         , mRiskFreeRate   (0.0)
+        , mSymbol           ("")
+        , mSymbolIsModified (false)
+        , mPartId           ("")
+        , mSrcTime          ("")
+        , mActTime          ("")
+        , mLineTime         ("")
+        , mSendTime         ("")
+
+        , mCorpActType      ("")
+        , mDivFreq          ("")
+        , mDivExDate        ("")
+        , mDivPayDate       ("")
+        , mDivRecordDate    ("")
+        , mDivCurrency      ("")
+        , mMrktSegmNative   ("")
+        , mMrktSectNative   ("")
+        , mMarketSegment    ("")
+        , mMarketSector     ("")
+
+        , mSymbolFieldState           (NOT_INITIALISED)
+        , mPartIdFieldState           (NOT_INITIALISED)
+        , mSrcTimeFieldState          (NOT_INITIALISED)
+        , mActivityTimeFieldState     (NOT_INITIALISED)
+        , mLineTimeFieldState         (NOT_INITIALISED)
+        , mSendTimeFieldState         (NOT_INITIALISED)
+
+        , mCorpActTypeFieldState      (NOT_INITIALISED)
+        , mDividendPriceFieldState    (NOT_INITIALISED)
+        , mDivFreqFieldState          (NOT_INITIALISED)
+        , mDivExDateFieldState        (NOT_INITIALISED)
+        , mDivPayDateFieldState       (NOT_INITIALISED)
+        , mDivRecordDateFieldState    (NOT_INITIALISED)
+        , mDivCurrencyFieldState      (NOT_INITIALISED)
+
+        , mEarnPerShareFieldState     (NOT_INITIALISED)
+        , mVolatilityFieldState       (NOT_INITIALISED)
+        , mPeRatioFieldState          (NOT_INITIALISED)
+        , mYieldFieldState            (NOT_INITIALISED)
+        , mMrktSegmNativeFieldState   (NOT_INITIALISED)
+        , mMrktSectNativeFieldState   (NOT_INITIALISED)
+        , mMarketSegmentFieldState    (NOT_INITIALISED)
+        , mMarketSectorFieldState     (NOT_INITIALISED)
+        , mHistVolatilityFieldState   (NOT_INITIALISED)
+        , mRiskFreeRateFieldState     (NOT_INITIALISED)
+        , mSharesOutFieldState        (NOT_INITIALISED)
+        , mSharesFloatFieldState      (NOT_INITIALISED)
+        , mSharesAuthFieldState       (NOT_INITIALISED)
     {
     }
 
@@ -922,7 +984,7 @@ namespace Wombat
         void onUpdate (MamdaFundamentalListener::MamdaFundamentalListenerImpl&  impl,
                        const MamaMsgField&                                      field)
         {
-            impl.mSharesOut = field.getI32();
+            impl.mSharesOut = field.getU64();
             impl.mSharesOutFieldState = MODIFIED;
         }
     };
@@ -933,7 +995,7 @@ namespace Wombat
         void onUpdate (MamdaFundamentalListener::MamdaFundamentalListenerImpl&  impl,
                        const MamaMsgField&                                      field)
         {
-            impl.mSharesFloat = field.getI32();
+            impl.mSharesFloat = field.getU64();
             impl.mSharesFloatFieldState = MODIFIED;
         }
     };
@@ -944,7 +1006,7 @@ namespace Wombat
         void onUpdate (MamdaFundamentalListener::MamdaFundamentalListenerImpl&  impl,
                        const MamaMsgField&                                      field)
         {
-            impl.mSharesAuth = field.getI32();
+            impl.mSharesAuth = field.getU64();
             impl.mSharesAuthFieldState = MODIFIED;
         }
     };

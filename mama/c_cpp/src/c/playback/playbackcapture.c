@@ -25,7 +25,7 @@
 #include <string.h>
 #include <property.h>
 #include "playbackcapture.h"
-#include <unistd.h>
+#include <wombat/port.h>
 
 #define LENGTH 15
 #define self ((mamaCaptureConfigImpl*)(mamaCapture))
@@ -127,7 +127,7 @@ int mamaCapture_openFile(mamaPlaybackCapture* mamaCapture,
         mama_log (MAMA_LOG_LEVEL_FINE,
                   "mamaCapture_openFile: opening file: %s",
                   impl->myPlayBackFileName);
-        myPlaybackFile = fopen(impl->myPlayBackFileName,"wa");
+        myPlaybackFile = fopen(impl->myPlayBackFileName,"w");
 
         mama_log (MAMA_LOG_LEVEL_FINE,
                   "mamaCapture_openFile: file  %s succesfully opened.",

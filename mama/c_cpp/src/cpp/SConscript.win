@@ -1,0 +1,64 @@
+import os
+Import('env')
+env = env.Clone()
+
+sources = []
+
+target = 'libmamacpp'
+
+env.Append( CPPDEFINES = ['MAMACPP'] )
+env.Append( LIBS = ['libmamac%s.lib' % ( env['suffix'] ) ] )
+
+versionRes = env.RES('version.rc')
+
+sources = Split( """
+mamacpp.cpp
+version.res
+MamaQueueGroup.cpp
+datetime.cpp
+MamaSymbolMapFile.cpp
+MamaBasicSubscription.cpp
+MamaBasicWildCardSubscription.cpp
+MamaDictionary.cpp
+MamaDispatcher.cpp
+MamaFieldDescriptor.cpp
+MamaInbox.cpp
+MamaIo.cpp
+MamaLogFile.cpp
+MamaMsg.cpp
+MamaMsgField.cpp
+MamaPublisher.cpp
+MamaDQPublisher.cpp
+MamaDQPublisherManager.cpp
+MamaQueue.cpp
+MamaStatus.cpp
+MamaSubscription.cpp
+MamaTimer.cpp
+MamaTimeZone.cpp
+MamaTransport.cpp
+MamaTransportMap.cpp
+MamaPrice.cpp
+MamaSource.cpp
+MamaSourceDerivative.cpp
+MamaSourceGroup.cpp
+MamaSourceGroupManager.cpp
+MamaSourceManager.cpp
+MamaStat.cpp
+MamaStatsCollector.cpp
+MamaSymbolList.cpp
+MamaSymbolListFile.cpp
+MamaSymbolListMember.cpp
+MamaMsgQual.cpp
+MamaReservedFields.cpp
+MamaFt.cpp
+MamaReservedFields.cpp
+conflation\MamaConnection.cpp
+conflation\MamaServerConnection.cpp
+""")
+
+headers = Glob('mama/*.h')
+
+env.InstallLibrary(sources, target)
+
+if ( env['build'] == 'dynamic' or len(env['buildtype']) == 1):
+    env.Install('$prefix/include/mama',headers)

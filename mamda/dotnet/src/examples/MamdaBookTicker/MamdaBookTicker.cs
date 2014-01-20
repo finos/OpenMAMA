@@ -353,39 +353,17 @@ namespace Wombat.Mamda.Examples
 				paddedPrint(strVal, padLen, padAfter);
 			}
             
-            private void paddedPrintPrice(object val, int padLen, bool padAfter)
+            private void paddedPrintPrice(MamaPrice price, int padLen, bool padAfter)
             {
-                string strVal = val != null ? val.ToString() : "null";
+                String precisionStr = "F2";
 
-                decimal dVal = System.Convert.ToDecimal(strVal);
-                string roundVal;
-
-                switch(myPrecision)
+                if (myPrecision >= 1 && myPrecision <=6)
                 {
-                    case 2:
-                    roundVal = (Decimal.Round(dVal,2)).ToString("0.00");
-                    break;
-                    case 1:
-                    roundVal = (Decimal.Round(dVal,1)).ToString("0.0");
-                    break;
-                    case 3:
-                    roundVal = (Decimal.Round(dVal,3)).ToString("0.000");
-                    break;
-                    case 4:
-                    roundVal = (Decimal.Round(dVal,4)).ToString("0.0000");
-                    break;
-                    case 5:
-                    roundVal = (Decimal.Round(dVal,5)).ToString("0.00000");
-                    break;
-                    case 6:
-                    roundVal = (Decimal.Round(dVal,6)).ToString("0.000000");
-                    break;
-                    default:
-                    roundVal = (Decimal.Round(dVal,2)).ToString("0.00");
-                    break;
+                    precisionStr = "F" + myPrecision;
                 }
-                paddedPrint(roundVal, padLen, padAfter);
-              
+
+                double val = price.getValue();
+                paddedPrint(val.ToString(precisionStr), padLen, padAfter);
             }
 
 			private void paddedPrint(string val, int padLen, bool padAfter)

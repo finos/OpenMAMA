@@ -1,0 +1,16 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+Import('env')
+env = env.Clone()
+
+incpath = []
+incpath.append('$gtest_home/include')
+
+libpath = []
+libpath.append('$gtest_home/lib')
+
+env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=['gtest', 'gtest_main'
+           ])
+
+env.SConscript('c/SConscript', 'env')
+env.SConscript('cpp/SConscript', 'env')

@@ -1,0 +1,43 @@
+import os
+import posixpath
+Import('env')
+env = env.Clone()
+
+InstBin = []
+
+binaries = Split("""
+	mamainboxcpp
+	mamaftmembercpp
+	mamaiocpp
+	mamalistencpp
+	mamamsgpublishercpp
+	mamaproxycpp
+	mamapublishercpp
+	mamasubscribercpp
+	mamasymbollistsubscribercpp
+""")
+
+libs = []
+libs.append('libmamac%s' % ( env['suffix'] ))
+libs.append('libmamacpp%s' % ( env['suffix'] ))
+
+incpath = []
+incpath.append( '#mama/c_cpp/src/cpp' )
+
+libpath = []
+libpath.append('$libdir')
+libpath.append('%s/%s/wombatmsg/c_cpp/src/c' % ( env['blddir'], env['build'] ))
+
+env.Append( 
+	LIBS 		= libs,
+	LIBPATH 	= libpath,
+	CPPPATH	= incpath,
+)
+
+for b in binaries:
+	example = env.Program(b, '%s.cpp' % (b) )
+	InstBin.append( example )
+	if env['vsver'] >= 8:
+		env.AddPostAction( example, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;1')
+
+Alias( 'install', env.Install('$bindir',InstBin) )

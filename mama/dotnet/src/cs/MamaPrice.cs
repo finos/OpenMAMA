@@ -350,9 +350,9 @@ namespace Wombat
 		public int CompareTo(object rhs) // IComparable
 		{
 			double ret = compare(rhs as MamaPrice);
-			if (ret < 0) return -1;
+			if (Math.Abs(ret) < Math.Abs( this.getValue() * 0.00000000001D)) return 0;
 			else if (ret > 0) return 1;
-			else return 0;
+			else return -1;
 		}
 
 		public override int GetHashCode()

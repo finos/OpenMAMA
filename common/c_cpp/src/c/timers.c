@@ -92,8 +92,17 @@ int createTimerHeap (timerHeap* heap)
         return -1;
     }
 
-    wsetnonblock(heapImpl->mSockPair[0]);
-    wsetnonblock(heapImpl->mSockPair[1]);
+    if (-1 == wsetnonblock(heapImpl->mSockPair[0]))
+    {
+        free (heapImpl);
+        return -1;
+    }
+
+    if (-1 == wsetnonblock(heapImpl->mSockPair[1]))
+    {
+        free (heapImpl);
+        return -1;
+    }
 
     *heap = heapImpl;
     return 0;

@@ -163,6 +163,7 @@ static uint64_t             gStatsGroupIndex    = 0;
 
 #define NUM_STATS_GROUPS 10
 #define MAX_NUM_PERCENTILES 100
+#define MAX_TPORTS 100
 
 static uint32_t             gMaxSubscriptions   = 1300000;
 static uint32_t             gMaxSources         = 100;
@@ -175,7 +176,7 @@ static mamaTimeZone         gTimeZone           = NULL;
 static mamaQueue            gDefaultQueue       = NULL;
 static mamaQueue            gDisplayQueue       = NULL;
 static mamaQueue*           gQueues             = NULL;
-static mamaTransport        gTransport          = NULL;
+static mamaTransport        gTransport[MAX_TPORTS];
 static mamaDispatcher*      gDispatchers        = NULL;
 static mamaDispatcher       gDisplayDispatcher  = NULL;
 static mamaSubscription*    gSubscriptionList   = NULL;
@@ -229,6 +230,7 @@ static int                  gStartLogging       = 5;
 static int                  gCountInitials      = 0;
 static int                  gCountTimeout       = 0;
 static int                  gNumSources         = 0;
+static int                  gNumTports          = 1;
 static int                  gLogResults         = 0;
 static uint64_t             gStatsCount         = 0;
 static int                  gIntervalStats      = 0;
@@ -311,6 +313,10 @@ static const char *     gUsageString[] =
 "    [-v]                   Increase verbosity. Can be passed multiple times.",
 NULL
 };
+
+#ifdef TEST_BUILD
+static const char*		numTransStr	= "    [-numTrans]            Round robin across X tranports based on -tport e.g. sub0, sub1, sub2, subN ...";
+#endif
 
 /**********************************************************
  *                  FUNCTION PROTOTYPES                   *
@@ -802,7 +808,7 @@ int main (int argc, const char** argv)
     int                 i                   = 0;
     int                 read                = 0;
 
-    gFilep = stdout;
+	gFilep = stdout;
 
     /*Set standard out to be line buffered and non-blocking */
     if (setvbuf (stdout, NULL, _IOLBF, 0))
@@ -1297,9 +1303,14 @@ static void consumerShutdown (void)
 
     /*Transport*/
     fprintf (gFilep, "Shutdown: Destroying Transport\n");
-    if (gTransport != NULL)
+	
+    for (i = 0; i < gNumTports; i++)
     {
-        MAMA_CHECK (mamaTransport_destroy (gTransport));
+        
+        if (gTransport[i] != NULL)
+        {
+            MAMA_CHECK (mamaTransport_destroy (gTransport[i]));
+        }
     }
 
     if (gStatsFile)
@@ -1474,18 +1485,42 @@ static void initializeMama (const char*     middleware)
     MAMA_CHECK (mama_loadBridge (&gMamaBridge, middleware));
     MAMA_CHECK (mama_open ());
     mama_getDefaultEventQueue (gMamaBridge, &gDefaultQueue);
-    MAMA_CHECK (mamaTransport_allocate (&gTransport));
+	
+    for (i = 0; i < gNumTports; i++)
+    {
+		MAMA_CHECK (mamaTransport_allocate (&gTransport[i]));
+    }
 
     if (gTransportCallbacks)
     {
         /*Register interest in transport related events*/
-        mamaTransport_setTransportCallback(gTransport, transportCb, NULL);
+		for (i = 0; i < gNumTports; i++)
+		{
+			mamaTransport_setTransportCallback(gTransport[i], transportCb, NULL);
+		}
     }
 
-    MAMA_CHECK (mamaTransport_setOutboundThrottle (gTransport,
-                                                   MAMA_THROTTLE_DEFAULT,
-                                                   -1));
-    MAMA_CHECK (mamaTransport_create (gTransport, gTransportName, gMamaBridge));
+    for (i = 0; i < gNumTports; i++)
+    {
+        MAMA_CHECK (mamaTransport_setOutboundThrottle (gTransport[i],
+                                                       MAMA_THROTTLE_DEFAULT,
+                                                       -1));
+    }	
+	
+    if (gNumTports == 1)
+    {
+        MAMA_CHECK (mamaTransport_create (gTransport[0], gTransportName, gMamaBridge));
+    }
+    else
+    {
+        char currentTransport[1024];
+
+        for (i = 0; i < gNumTports; i++)
+        {
+            snprintf (currentTransport, 1024, "%s%.1d", gTransportName, i);
+            MAMA_CHECK (mamaTransport_create (gTransport[i], currentTransport, gMamaBridge));
+        }				
+    }
 
     setQueueMonitors (&gDefaultQueue);
     /*
@@ -1599,12 +1634,12 @@ static void subscribeToSymbols (void)
     else
         onMsg = subscriptionOnMsg;
 
-        for (i=0; i < gNumSources; ++i)
+    for (i=0; i < gNumSources; ++i)
     {
         /* create that source and have it ready for use by init below */
         MAMA_CHECK (mamaSource_create (&gSubscriptionSourceList[i]));
         mamaSource_setId (gSubscriptionSourceList[i], gSources[i]);
-        mamaSource_setTransport (gSubscriptionSourceList[i], gTransport);
+        mamaSource_setTransport (gSubscriptionSourceList[i], gTransport[i % gNumTports]);
         mamaSource_setSymbolNamespace (gSubscriptionSourceList[i], gSources[i]);
     }
 
@@ -1658,7 +1693,7 @@ static void subscribeToSymbols (void)
                 strcpy (tmpSym,gSymbolList[i].mName);
 
             MAMA_CHECK (mamaSubscription_createBasic (gSubscriptionList[i],
-                                                      gTransport,
+                                                      gTransport[i % gNumTports],
                                                       localQueue,
                                                       &callbacks,
                                                       tmpSym,
@@ -2976,6 +3011,13 @@ static void parseCommandLine
                 gSymbolNamespace = argv[i+1];
                 i += 2;
             }
+#ifdef TEST_BUILD
+	    else if (strcmp(argv[i], "-numTrans") == 0)
+            {
+                gNumTports = atoi (argv[i+1]);
+                i += 2;
+            }
+#endif
             else if (strcmp ("-percentiles", argv[i]) == 0)
             {
                 char* c = strdup(argv[i+1]);
@@ -3031,6 +3073,9 @@ static void usage
     {
         fprintf (gFilep, "%s\n", gUsageString[i++]);
     }
+#ifdef TEST_BUILD
+	fprintf (gFilep, "%s\n", numTransStr);
+#endif
     exit (exitStatus);
 }
 

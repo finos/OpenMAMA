@@ -56,6 +56,23 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "exegy") == 0)
         return MAMA_MIDDLEWARE_EXEGY;
 
+    if (strcasecmp (str, "ibmwfo") == 0)
+        return MAMA_MIDDLEWARE_IBMWFO;
+
+    if (strcasecmp (str, "activ") == 0)
+        return MAMA_MIDDLEWARE_ACTIV;
+
+    if (strcasecmp (str, "tick42rmds") == 0)
+        return MAMA_MIDDLEWARE_TICK42RMDS;
+
+    if (strcasecmp (str, "ums") == 0)
+        return MAMA_MIDDLEWARE_UMS;
+
+    if (strcasecmp (str, "vulcan") == 0)
+        return MAMA_MIDDLEWARE_VULCAN;
+
+    if (strcasecmp (str, "inrush") == 0)
+        return MAMA_MIDDLEWARE_INRUSH;
 
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
@@ -84,6 +101,18 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "QPID";
         case MAMA_MIDDLEWARE_EXEGY:
             return "exegy";
+        case MAMA_MIDDLEWARE_IBMWFO:
+            return "ibmwfo";
+        case MAMA_MIDDLEWARE_ACTIV:
+            return "activ";
+	case MAMA_MIDDLEWARE_TICK42RMDS:
+            return "tick42rmds";
+        case MAMA_MIDDLEWARE_UMS:
+            return "ums";
+        case MAMA_MIDDLEWARE_VULCAN:
+            return "vulcan";
+        case MAMA_MIDDLEWARE_INRUSH:
+            return "inrush";
         default:
             return "unknown";
     }

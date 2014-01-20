@@ -501,6 +501,13 @@ namespace Wombat
 			}
 		}
 
+		private bool doubleEquals(
+			double lhs,
+			double rhs)
+		{
+			return (Math.Abs(lhs-rhs) < Math.Abs(lhs * 0.00000000001D));
+		}
+
 		private TreeMap determineDiffs(
 			TreeMap resultSide,
 			TreeMap lhs,
@@ -534,10 +541,8 @@ namespace Wombat
 					rhsSize  = rhsLevel.getSize();
 				}
 
-				// CHECK: it's usually wrong to compare two doubles w/o using an epsilon
-				//		so the condition should be rewritten as
-				//			lhsLevel.getPrice().equals(rhsLevel.getPrice())
-				if ((lhsPrice == rhsPrice) && (lhsSize == rhsSize))
+				// Compare two doubles using an epsilon
+				if ((doubleEquals(lhsPrice, rhsPrice)) && (lhsSize == rhsSize))
 				{
 					// Usual scenario: both levels are the same
 					lhsHasNext = lhsEnum.MoveNext();
@@ -545,7 +550,7 @@ namespace Wombat
 					continue;
 				}
 
-				if (lhsPrice == rhsPrice)
+				if (doubleEquals(lhsPrice, rhsPrice))
 				{
 					// Same price, different size.  Need to determine the
 					// different entries.

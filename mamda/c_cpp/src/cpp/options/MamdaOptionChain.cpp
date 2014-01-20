@@ -572,6 +572,7 @@ namespace Wombat
         while (i != end)
         {
             strikeSet.insert(*i);
+            i++;
         }
     }
 

@@ -24,6 +24,10 @@
 
 #include "wombat/port.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus */
+
 typedef void* timerElement;
 typedef void* timerHeap;
 
@@ -36,5 +40,9 @@ COMMONExpDLL int destroyHeap (timerHeap heap);
 
 COMMONExpDLL int createTimer (timerElement* timer, timerHeap heap, timerFireCb cb, struct timeval* timeout, void* closure);
 COMMONExpDLL int destroyTimer (timerHeap heap, timerElement timer);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus */
 
 #endif

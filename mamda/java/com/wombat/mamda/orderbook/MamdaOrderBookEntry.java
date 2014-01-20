@@ -38,10 +38,14 @@ public class MamdaOrderBookEntry
      * message with ACTION_UPDATE may consist of entries with
      * ACTION_ADD, ACTION_UPDATE or ACTION_DELETE.
      */
-    public static final char ACTION_ADD     = 'A'; /** A new entry. */
-    public static final char ACTION_UPDATE  = 'U'; /** An updated entry. */
-    public static final char ACTION_DELETE  = 'D'; /** A deleted entry. */
-    public static final char ACTION_UNKNOWN = 'Z'; /** Unknown action (error). */
+    /** A new entry. */
+    public static final char ACTION_ADD     = 'A';
+    /** An updated entry. */
+    public static final char ACTION_UPDATE  = 'U';
+    /** A deleted entry. */
+    public static final char ACTION_DELETE  = 'D';
+    /** Unknown action (error). */
+    public static final char ACTION_UNKNOWN = 'Z';
 
     private static boolean theStrictChecking = false;
 

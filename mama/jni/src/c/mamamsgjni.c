@@ -3874,65 +3874,56 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1destroy
     jint        jMsgArraySize   =   0;
     jint        i               =   0;
     jobject     jMsg            =   NULL;
-    
-    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
-		"Null parameter, MamaMsg may have already been destroyed.");
 
-
-    if(MAMA_STATUS_OK!=(status=mamaMsg_destroy(
-                            CAST_JLONG_TO_POINTER(mamaMsg,msgPointer))))
+    if (0 != msgPointer)
     {
-        utils_buildErrorStringForStatus(
-                errorString,
-                UTILS_MAX_ERROR_STRING_LENGTH,
-                "Could not destroy mamaMsg.",
-                status);
-        utils_throwExceptionForMamaStatus(env,status,errorString);
-        return;
-    }
+        mamaMsg_destroy (CAST_JLONG_TO_POINTER(mamaMsg,msgPointer));
 
-    (*env)->SetLongField(env, this,
-         messagePointerFieldId_g,
-         0);
+        (*env)->SetLongField(env, this,
+             messagePointerFieldId_g,
+             0);
+    }
     
     /* Both will be 0/NULL if this is the first call */
     jMsgArrayPointer = (*env)->GetLongField(env,this,jMsgArrayFieldId_g);
     jMsgArraySize = (*env)->GetIntField(env,this,jMsgArraySizeFieldId_g);   
     
     jMsgArray = CAST_JLONG_TO_POINTER(jobject*,jMsgArrayPointer);
-    for (; i != jMsgArraySize; ++i)
-    {
-       jMsg = CAST_JLONG_TO_POINTER(jobject,jMsgArray[i]);
-       (*env)->SetLongField(env, jMsg,
-                         messagePointerFieldId_g,
-                         0);
-       (*env)->DeleteGlobalRef(env,jMsg);
 
-    }
-    
     if (jMsgArray)
     {
+        for (; i != jMsgArraySize; ++i)
+        {
+           jMsg = CAST_JLONG_TO_POINTER(jobject,jMsgArray[i]);
+           (*env)->SetLongField(env, jMsg,
+                             messagePointerFieldId_g,
+                             0);
+           (*env)->DeleteGlobalRef(env,jMsg);
+
+        }
+    
         free (CAST_JLONG_TO_POINTER(jobject*,jMsgArray));
         jMsgArray = 0; 
         (*env)->SetLongField(env, this,
              jMsgArrayFieldId_g,
              0);
-    } 
-    jMsgArraySize = 0;
-    
-    (*env)->SetIntField (env, this, jMsgArraySizeFieldId_g, jMsgArraySize);
-	
+    }
+
+    if (0 != jMsgArraySize) 
+    {
+        jMsgArraySize = 0;
+        (*env)->SetIntField (env, this, jMsgArraySizeFieldId_g, jMsgArraySize);
+    }
+
 	/* Free the byte buffer if it is held. */
 	if(NULL != g_byteBuffer)
 	{
 		free(g_byteBuffer);
 		g_byteBuffer = NULL;
 	}
-    
+
     return;
 }
 

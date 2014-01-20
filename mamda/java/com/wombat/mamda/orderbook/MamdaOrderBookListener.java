@@ -1226,7 +1226,7 @@ public class MamdaOrderBookListener
     {
         // Fix up explicit numbers provided by the message.
         level.setSize (plSize);
-        if (!mHaveEntries)
+        if (1 != mBookMsgFields.mBookType.getValue())
             level.setNumEntries (plNumEntries);
 
         if ((!mProcessEntries && (mBookMsgFields.mBookType.getValue() != 1)) 

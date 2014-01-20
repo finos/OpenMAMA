@@ -53,6 +53,7 @@ struct CommonCommandLineParser::CommonCommandLineParserImpl
     MamaSource*          mSource;
     const char*          mDictSourceName;
     const char*          mDictTportName;
+    const char*          mDictFileName;
     MamaSource*          mDictSource;
     const char*          mOptionSourceName;
     const char*          mOptionTportName;
@@ -83,6 +84,7 @@ struct CommonCommandLineParser::CommonCommandLineParserImpl
     int                  mQuery;
     int                  mQueryType;
     int                  mQueryCycles;
+    bool                 mPublishRecaps;
 };
 
 CommonCommandLineParser::CommonCommandLineParser (
@@ -95,6 +97,11 @@ CommonCommandLineParser::CommonCommandLineParser (
 CommonCommandLineParser::~CommonCommandLineParser ()
 {
     delete &mImpl;
+}
+
+bool CommonCommandLineParser::getPublishRecaps()
+{
+    return mImpl.mPublishRecaps;
 }
 
 MamaSource*  CommonCommandLineParser::getSource ()
@@ -360,7 +367,8 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
     mDictSourceName   = "WOMBAT";
     mOptionSourceName = "OPRA";
     mSnapShot         = false;
-    
+    mPublishRecaps    = false;
+
     mQueryArg1   = NULL;
     mQueryArg2   = NULL;
     mQueryArg3   = NULL;
@@ -384,6 +392,10 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
         {
             mSourceName = argv[i + 1];
             handled = true;
+        }
+        else if ((strcmp (argv[i], "-use_dict_file") == 0))
+        {
+            mDictFileName = argv[i + 1];
         }
         else if ((strcmp (argv[i], "-DS") == 0) ||
             (strcmp (argv[i], "-dict-source") == 0) ||
@@ -572,6 +584,10 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
         {
             usage(1);
             handled = true;     
+        }
+        else if (strcmp (argv[i], "-PR") == 0)
+        {
+            mPublishRecaps = true;
         }
         else if (strcmp (argv[i], "-1") == 0)
         {

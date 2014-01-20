@@ -21,6 +21,9 @@
 
 package com.wombat.mamda;
 
+import com.wombat.mama.MamaPrice;
+import com.wombat.mama.MamaDateTime;
+
 /**
  * MamdaSecurityStatusRecap is an interface that provides access to security status
  * related fields.
@@ -363,5 +366,57 @@ public interface MamdaSecurityStatusUpdate extends MamdaBasicEvent
      * @return the reason Field State
      */
     public short getShortSaleCircuitBreakerFieldState();
+
+    /**
+     * @see MamdaSecurityStatusUpdate#getLuldIndicator()
+     */
+    public char getLuldIndicator();
+
+    /**
+     * return the Limit Up Limit Down High Limit
+     * MODIFIED (2) value indicates the field was updated in last tick
+     * NOT MODIFIED (1) value indicate that there was no change in the last tick
+     * NOT_INITIALISED (0) value indicates that the field has never been updated
+     */
+    public short getLuldIndicatorFieldState();
+
+    /**
+     * @see MamdaSecurityStatusUpdate#getLuldTime()
+     */
+    public MamaDateTime getLuldTime();
+
+    /**
+     * return the Limit Up Limit Down High Limit
+     * MODIFIED (2) value indicates the field was updated in last tick
+     * NOT MODIFIED (1) value indicate that there was no change in the last tick
+     * NOT_INITIALISED (0) value indicates that the field has never been updated
+     */
+    public short getLuldTimeFieldState();
+
+    /**
+     * @see MamdaSecurityStatusUpdate#getLuldHighLimit()
+     */
+    public MamaPrice getLuldHighLimit();
+
+    /**
+     * return the Limit Up Limit Down High Limit
+     * MODIFIED (2) value indicates the field was updated in last tick
+     * NOT MODIFIED (1) value indicate that there was no change in the last tick
+     * NOT_INITIALISED (0) value indicates that the field has never been updated
+     */
+    public short getLuldHighLimitFieldState();
+
+    /**
+     * @see MamdaSecurityStatusUpdate#getLuldLowLimit()
+     */
+    public MamaPrice getLuldLowLimit();
+
+    /**
+     * return the Limit Up Limit Down Low Limit
+     * MODIFIED (2) value indicates the field was updated in last tick
+     * NOT MODIFIED (1) value indicate that there was no change in the last tick
+     * NOT_INITIALISED (0) value indicates that the field has never been updated
+     */
+    public short getLuldLowLimitFieldState();
 
 }

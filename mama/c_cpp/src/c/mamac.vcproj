@@ -593,6 +593,22 @@
 				RelativePath=".\version.c"
 				>
 			</File>
+			<Filter
+				Name="playback"
+				>
+				<File
+					RelativePath=".\playback\playbackcapture.c"
+					>
+				</File>
+				<File
+					RelativePath=".\playback\playbackFileParser.c"
+					>
+				</File>
+				<File
+					RelativePath=".\playback\playbackpublisher.c"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
@@ -931,6 +947,22 @@
 				RelativePath=".\mama\version.h"
 				>
 			</File>
+			<Filter
+				Name="playback"
+				>
+				<File
+					RelativePath=".\playback\playbackcapture.h"
+					>
+				</File>
+				<File
+					RelativePath=".\playback\playbackFileParser.h"
+					>
+				</File>
+				<File
+					RelativePath=".\playback\playbackpublisher.h"
+					>
+				</File>
+			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"

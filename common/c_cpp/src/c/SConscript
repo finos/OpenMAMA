@@ -1,0 +1,76 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+
+Import('*')
+env = env.Clone()
+
+#TODO - this needs changed at the source level. There should be another
+# dir under linux called womabt with these headers. There's probably other
+# stuff to change as well. This is too messy at the minute.
+if env['host']['os'] == 'Linux':
+    symlinks = [
+        ('common/c_cpp/src/c/wombat/port.h',
+         'common/c_cpp/src/c/linux/port.h'),
+        ('common/c_cpp/src/c/wombat/wMath.h',
+         'common/c_cpp/src/c/linux/wMath.h'),
+        ('common/c_cpp/src/c/wombat/wUuid.h',
+         'common/c_cpp/src/c/linux/wUuid.h'),
+        ('common/c_cpp/src/c/wombat/wConfig.h',
+         'common/c_cpp/src/c/linux/wConfig.h'),
+        ('common/c_cpp/src/c/wombat/wInterlocked.h',
+         'common/c_cpp/src/c/linux/wInterlocked.h'),
+        ('common/c_cpp/src/c/machine_port.c',
+         'common/c_cpp/src/c/linux/machine.c'),
+        ('common/c_cpp/src/c/platform.c',
+         'common/c_cpp/src/c/linux/platform.c'),
+        ('common/c_cpp/src/c/wSemaphore.c',
+         'common/c_cpp/src/c/linux/wSemaphore.c'),
+        ('common/c_cpp/src/c/network.c',
+         'common/c_cpp/src/c/linux/network.c'),
+        ('common/c_cpp/src/c/environment.c',
+         'common/c_cpp/src/c/linux/environment.c'),
+        ]
+
+srcdir = os.path.join(Dir('#').abspath, 'common/c_cpp/src/c')
+
+symboliclinks = env.SymLinkFiles(symlinks)
+
+InstHeaders = \
+    Split("""
+    destroyHandle.h
+    list.h
+    lookup2.h
+    platform.h
+    property.h
+    wlock.h
+    timers.h
+""")
+
+InstWomHeaders = Glob('wombat/*.h')
+
+includePath = []
+includePath.append('.')
+includePath.append('./linux')
+includePath.append('../..')
+
+env.Append(LIBS='-ldl -luuid', CPPPATH=includePath, CCFLAGS=['-fPIC'])
+
+sources = Glob('*.c')
+sources.append('properties.l')
+
+objects = []
+StaticLibs['libwombatcommon'] = []
+
+for s in sources:
+    obj = env.Object(s)
+    StaticLibs['libwombatcommon'].append(obj)
+    objects.append(obj)
+
+lib = env.StaticLibrary('libwombatcommon', objects)
+
+Alias('install', env.Install('$libdir', lib))
+Alias('install', env.Install('$incdir', InstHeaders))
+Alias('install', env.Install('$incdir/wombat', InstWomHeaders))
+
+Clean(lib, symboliclinks)
