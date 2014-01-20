@@ -1,6 +1,9 @@
 OpenMAMA Client Library
 ============================
 
+Release: 2.3.0
+Change Log: http://git.openmama.org/?p=OpenMAMA.git;a=shortlog;h=refs/tags/OpenMAMA-2.3.0
+
 Project Page
 ------------
 
@@ -33,6 +36,8 @@ Supported distributions are
     * SuSe 10
     * Windows XP +
     * Java SE 6 (from Oracle)
+
+
 
 Requirements for End Users
 --------------------------
