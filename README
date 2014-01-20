@@ -71,7 +71,10 @@ http://www.junit.org/
 
 OpenMAMA's own regression tests also rely on:
 
-    *Python version 2.3 or newer
+    * Python version 2.3 or newer
+
+The Qpid Proton middleware has an additional dependency on the libevent event
+management library, which is used for it's IO implementation.
 
 Windows
 -----
@@ -85,7 +88,7 @@ Use one of the following methods to obtain the OpenMAMA source code:
 
     * Download a stable source release in archive format
     * Check out the source from our GIT repository.
-    
+
 The GIT checkout requires a few extra steps, and extra software packages to be
 installed on your system. However, it provides easier tracking of the latest
 development and make patches.
@@ -109,6 +112,13 @@ following site:
 
 http://www.openmama.org/downloads/git-repository
 
+The primary OpenMAMA git repository is located at:
+
+http://git.openmama.org/OpenMAMA.git
+
+Navigating to the site will also allow interactive web access to the
+repository.
+
 OpenMAMA Directory Structure
 ----------------------------
 
@@ -116,18 +126,22 @@ configure                     configure script.
 Makefile                      GNU Makefile
 README                        this file
 COPYING                       Licence
+SConstruct                    Main entry point for SCons build system
+site_scons                    Additional code used for SCons build system
 
 common/c_cpp/
     configure.ac              autoconf script
     Makefile.am               autoconf makefile
     Makefile.common.vcc       windows makefile
+    SConscript                Configuration and setup for common SCons build
+    SConscript.win            Equivalent for Windows builds
     src/c/                    c files for common library
     src/c/linux/              linux specific c files for common library
     src/c/windows/            windows specific c files for common library
     src/c/windows/wombat/     windows specific header for common library
     src/c/wombat/             header files for common library
     src/cpp/                  cpp files for common library
-    src/cpp/wombat/           cpp header files for common library                 
+    src/cpp/wombat/           cpp header files for common library
 common/jni/
     src/com/wombat/common/    java files for common library
     
@@ -142,7 +156,9 @@ mama/c_cpp/
     Makefile.mak              windows makefile
     doxyconfig-c.in           doxygen config for C reference guide
     doxyconfig-cpp.in         doxygen config for C++ reference guide
-    doc/                      
+    SConscript                Configuration and setup for MAMA SCons build
+    SConscript.win            Equivalent SCons file for Windows build
+    doc/
     doc/images/               reference guide images
     
 mama/c_cpp/src/c/             c files for mama C library
@@ -188,6 +204,8 @@ mama/jni/
     configure.ac              autoconf script
     Makefile.am               autoconf makefile
     Makefile.vcc              windows makefile
+    SConscript                Configuration and setup for MAMA JNI SCons build
+    SConscript.win            Equivalent SCons file for Windows builds
     doc/                      reference guide files
 
 mama/jni/src/c/               c files for mama JNI library
@@ -214,6 +232,8 @@ mamda/c_cpp/
     Makefile.options.vcc      windows makefile
     Makefile.orderbooks.vcc   windows makefile
     Makefile.mak              windows makefile
+    SConscript                Configuration and setup for MAMDA SCons build
+    SConscript.win            Equivalent SCons file for Windows builds
     doxyconfig-cpp.in         doxygen config for C++ reference guide
     doc/                      reference guide style
     doc/images/               reference guide images
@@ -244,6 +264,8 @@ mamda/c_cpp/sec/testtools/    mamda test apps
 
 mamda/java/
     build.xml                 java build file
+    SConscript                Configuration and setup for MAMDA Java SCons build
+    SConscript.win            Equivalent SCons file for Windows builds
 
 mamda/java/com/wombat/mamda/  mamda java files
     examples/                 mamda java example apps
@@ -291,15 +313,35 @@ to a default location.
 
 ### Qpid Proton Install ###
 
-To build with the qpid proton bridge, the qpid proton bridge must already be
-compiled and installed. Note a version greater than or equal to 0.5 is
-recommended.
+To build with the Qpid Proton bridge, the Qpid Proton bridge must already be
+compiled and installed. Note that the recommended version for use with OpenMAMA
+is 0.5.
 
 The qpid proton release can be downloaded and compiled from their website:
     http://qpid.apache.org/proton/
 
-Then once compiled and installed, OpenMAMA can be compiled with proton support
-by using the following command *if you are using mama/c_cpp/configure*:
+Alternatively, Qpid Proton can be often be installed using common package
+managers. For example, to install using "Yum" on a RedHat, Centos or Fedora
+system, use:
+
+    sudo yum install qpid-proton-c-devel
+
+Once compiled and installed, OpenMAMA can be compiled with Proton support using
+the following additions to the SCons command:
+
+    scons middleware=qpid qpid_home=/path/to/proton
+
+If building on Windows, you'll also need to include the "libevent_home" command
+line argument, pointing to your local libevent install.
+
+For more information, checkout the documentation on the OpenMAMA Wiki, at:
+
+    http://wiki.openmama.org
+
+#### Legacy Build System ####
+If building with the legacy Autotools system, OpenMAMA can be compiled with
+proton support by using the following command *if you are using
+mama/c_cpp/configure*:
     ./configure --with-proton=/path/to/proton
 
 If you are using the *top level* configure script, you can do the equivalent
@@ -318,8 +360,103 @@ ${GTEST_HOME}/include - include files
 ${GTEST_HOME}/lib - library files
 
 
+### SCons Instructions ###
 
-### GNU Automake Instructions ###
+The following uses the default settings to build the OpenMAMA and OpenMAMDA
+libraries and example applications, along with the Qpid Proton Bridge. This
+assumes Qpid is installed in /usr, and will install OpenMAMA to an
+openmama_install_* directory within the current directory.
+
+In the top level directory for the OpenMAMA source files:
+
+    scons middleware=qpid
+
+### SCons Arguments ###
+
+vis_home: Path to Avis ( /path/to/avis_home )
+ Default: /usr/local/ [ /usr/local/ ]
+
+blddir: Object directory ( /path/to/blddir )
+ Default: #objdir [ #objdir ]
+
+cache_dir: Path to object cache ( /path/to/cache_dir )
+ Default: None [ None ]
+
+compiler: Compiler to use for building OpenMAMA (default|gcc|clang|clang-analyzer)
+ Default: default [ clang ]
+
+entitled: Whether the build is entitled or unentitled (yes|no)
+ Default: False [ False ]
+
+gtest_home: Path to Google Test home ( /path/to/gtest_home )
+ Default: None [ /usr/local ]
+
+java_home: JAVA Home folder ( /path/to/java_home )
+ Default: None [ /usr/java/latest/ ]
+
+logfile: Output Log File ( /path/to/logfile )
+ Default: scons.log [ scons.log ]
+
+middleware: Middleware(s) to be compiled in
+    (all|none|comma-separated list of names)
+    allowed names: avis qpid
+ Default: avis [ qpid ]
+
+package: Whether to tar up the installation directory (yes|no)
+ Default: False [ False ]
+
+prefix: Installation prefix ( /path/to/prefix )
+ Default: #openmama_install_6.0.1rc2 [ /home/damian/workspace/openmama/OpenMAMA-dev/install ]
+
+product: Product to be built (mamda|mamajni|common|mamdajni|mama)
+ Default: mamda [ mama ]
+
+qpid_home: Path to QPID Proton Libraries ( /path/to/qpid_home )
+ Default: /usr/local/ [ /home/damian/lib/proton-0.5/ ]
+
+verbose: Whether to print verbose output (yes|no)
+ Default: True [ True ]
+
+with_docs: Build with documentation (yes|no)
+ Default: False [ False ]
+
+with_examples: Build with test tools (yes|no)
+ Default: True [ True ]
+
+with_testtools: Build with test tools (yes|no)
+ Default: False [ True ]
+
+with_unittest: Build with gunit tests (yes|no)
+ Default: False [ True ]
+
+Use scons -H for help about command-line options.
+
+
+### Windows Build Using SCons ###
+
+The following uses the default settings to build the OpenMAMA library and
+example applications. It assumes you have a local install of Qpid Proton and
+libevent, as well as JDK and Flex binaries available.
+
+Begin by setting the appropriate environment variables:
+
+    set PATH=%PATH%;C:\PROGRA~2\GnuWin32\bin
+    set PATH=%PATH%;C:\PROGRA~1\Java\jdk1.7.0_45\bin
+    set JAVA_HOME=C:\PROGRA~1\Java\jdk1.7.0_45\bin
+    set PATH=%PATH%;C:\Python27\Scripts\
+
+Then in the top level of the OpenMAMA source, execute the following:
+
+    scons middleware=qpid qpid_home=C:\Path\To\Qpid 
+    libevent_home=C:\Path\To\libevent product=mama
+
+More detailed Windows build instructions (including details for resolving
+the build dependencies can be found at:
+
+    http://wiki.openmama.org/index.php/Build_instructions_(Windows)
+
+
+### Legacy GNU Automake Instructions ###
 
 The following uses the default settings to build the OpenMAMA library and
 example applications.  This assumes that Avis middleware is available in
@@ -361,7 +498,7 @@ build testtools:
 
 
 
-### Building the API Reference ###
+### Legacy Building the API Reference ###
  
 To build the latest API reference guide, use the following command after
 Configure:
@@ -374,21 +511,30 @@ This will build the reference in the mama/c_cpp/src/doc folder.
  
 ### Running Unit tests ###
  
-After the build is complete, an extra binary can be found in the bin folder of
-the install.
- 
- MainUnitTestC
- 
-This runs the full set of unit tests using the google test framework.
+After the build is complete (built with the with_unittests flag set to true, and
+gtest_home directed to a local gtest installation), a series of extra binaries
+can be found in the bin folder of the install.
+
+ UnitTestCommonC
+ UnitTestMamaC
+ UnitTestMamaCPP
+ UnitTestMama*
+
+Each runs a subset of the available MAMA unit tests, using the Google test
+framework. 
  
 The following command line argument is available, as well as the normal Google
 test options:
  
  -m ${MIDDLEWARE}
 
+Tests which interact with the underlying payload directly also accept the
+following:
 
- 
-### Windows C/C++ build ###
+ -p ${PAYLOAD}
+
+
+### Legacy Windows C/C++ build ###
 
 Set the AVIS_HOME environment variable appropriately.  This should contain
 debug, release, and include folders.
@@ -412,7 +558,7 @@ Concurrent building of multiple products may cause build fail.
 Flex perbuild command is run when building common.
 
 
-### Windows Java build ###
+### Legacy Windows Java build ###
 
 Follow the above steps to build MAMA in C, which the JNI files depend on.
 
@@ -426,7 +572,8 @@ The following build arguments are optional:
 For MAMDA JNI, in the mamda folder, run ant on the build.xml file with target
 dist ant -f build.xml dist
 
-Run generatewindist in the root OpenMAMA folder. This will create a directory called 'install' containing all the files for distribution.
+Run generatewindist in the root OpenMAMA folder. This will create a directory
+called 'install' containing all the files for distribution.
 
 
 
@@ -497,7 +644,7 @@ Contributing
 -------------
 
 Can be done through the OpenMAMA website
-http://www.openmama.org/developers
+http://www.openmama.org/get-involved
 
 
 License
