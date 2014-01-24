@@ -164,7 +164,7 @@ static uint32_t             gRun                = 1;
 static int                  gInitials       = 0;
 static int                  gInitialDelay       = 0;
 static int                  gUsePlayback	    = 0;
-static const char*          gPlaybackFilename   = NULL;
+static char*          gPlaybackFilename   = NULL;
 static mamaPlaybackFileParser gFileParser		= NULL;
 static wtable_t 			gPublisherTable		= NULL;
 static mamaMsg				gCachedMsg			= NULL;
@@ -1731,7 +1731,7 @@ static void parseCommandLine
 					FILE*fp = NULL;
 					char charbuf[1024];
 
-				char * filename = argv[i+1];
+				const char * filename = argv[i+1];
 				if ((fp = fopen(filename, "r")) == (FILE*)NULL)
 					exit(1);
 				
@@ -1882,7 +1882,7 @@ static void parseCommandLine
 			}
             else if (strcmp ("-playback", argv[i]) == 0)
 			{
-				gPlaybackFilename = argv[i+1];
+				gPlaybackFilename = strdup(argv[i+1]);
 				gUsePlayback = 1;
                 i += 2;
             }
