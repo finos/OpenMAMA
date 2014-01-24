@@ -565,7 +565,8 @@ mama_status
 mamaDateTime_copyTime(mamaDateTime       dest,
                       const mamaDateTime src)
 {
-    mama_u32_t  tmpSeconds = 0;
+    mama_u32_t  tmpSeconds      = 0;
+    mama_u32_t  tmpMicroseconds = 0;
     if (!dest || !src)
         return MAMA_STATUS_INVALID_ARG;
 
@@ -573,7 +574,9 @@ mamaDateTime_copyTime(mamaDateTime       dest,
     tmpSeconds =  (mamaDateTimeImpl_getSeconds (*dest) / SECONDS_IN_A_DAY) *
                                                          SECONDS_IN_A_DAY;
     tmpSeconds += mamaDateTimeImpl_getSeconds (*src)  % SECONDS_IN_A_DAY;
+    tmpMicroseconds = mamaDateTimeImpl_getMicroSeconds (*src);
     mamaDateTimeImpl_setSeconds      (*dest, tmpSeconds);
+    mamaDateTimeImpl_setMicroSeconds (*dest, tmpMicroseconds);
     mamaDateTimeImpl_setHasTime      (*dest);
     return MAMA_STATUS_OK;
 }
