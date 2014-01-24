@@ -272,6 +272,7 @@ mamaDateTime_setWithHints(mamaDateTime           dateTime,
     mamaDateTimeImpl_setMicroSeconds (*dateTime, microseconds);
     mamaDateTimeImpl_setPrecision    (*dateTime, precision);
     mamaDateTimeImpl_setHasTime      (*dateTime);
+    mamaDateTimeImpl_setHint         (*dateTime, hints);
     if (seconds > SECONDS_IN_A_DAY)
         mamaDateTimeImpl_setHasDate (*dateTime);
     return MAMA_STATUS_OK;
@@ -915,6 +916,8 @@ mamaDateTime_getWithHints(const mamaDateTime     dateTime,
     *microseconds = mamaDateTimeImpl_getMicroSeconds (*dateTime);
     if (precision)
         *precision = mamaDateTimeImpl_getPrecision   (*dateTime);
+    if (hints)
+        *hints = mamaDateTimeImpl_getHint            (*dateTime);
     return MAMA_STATUS_OK;
 }
 
