@@ -48,7 +48,7 @@ static char         PAYLOAD_IDS[]           =   { MAMA_PAYLOAD_QPID, '\0' };
 
 /* Version identifiers */
 #define             QPID_BRIDGE_NAME            "qpid"
-#define             QPID_BRIDGE_VERSION         "0.8b"
+#define             QPID_BRIDGE_VERSION         "1.0"
 
 /* Name to be given to the default queue. Should be bridge-specific. */
 #define             QPID_DEFAULT_QUEUE_NAME     "QPID_DEFAULT_MAMA_QUEUE"
