@@ -175,7 +175,7 @@ jobject utils_createJavaMamaMsg(JNIEnv* env)
     jclass  mamaMsgImplClass    =   NULL;
 
     mamaMsgImplClass = (*env)->FindClass(env,"com/wombat/mama/MamaMsg");
-    if (!mamaMsgImplClass) return;
+    if (!mamaMsgImplClass) return NULL;
     
     /*Create the message object*/
     javaMamaMsg = (*env)->NewObject(env, mamaMsgImplClass,
