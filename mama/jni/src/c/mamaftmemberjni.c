@@ -214,8 +214,8 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaFtMember_isActive
     char        errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     ftMemberPointer = (*env)->GetLongField(env,this,ftMemberPointerFieldId_g);
-        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(ftMemberPointer,
-    "MamaFtMember.isActive(): Null parameter, MamaFtMember may have already been destroyed.");
+        MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(ftMemberPointer,
+    "MamaFtMember.isActive(): Null parameter, MamaFtMember may have already been destroyed.",(jboolean)isActive);
 
     assert(0!=ftMemberPointer);
 
@@ -249,8 +249,8 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaFtMember_getGroupName
     char        errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     ftMemberPointer = (*env)->GetLongField(env,this,ftMemberPointerFieldId_g);
-        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(ftMemberPointer,
-    "MamaFtMember.getGroupName(): Null parameter, MamaFtMember may have already been destroyed.");
+        MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(ftMemberPointer,
+    "MamaFtMember.getGroupName(): Null parameter, MamaFtMember may have already been destroyed.", NULL);
 
     assert(0!=ftMemberPointer);
 
@@ -288,8 +288,8 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaFtMember_getWeight
     char        errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     ftMemberPointer = (*env)->GetLongField(env,this,ftMemberPointerFieldId_g);
-        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(ftMemberPointer,
-    "MamaFtMember.getWeight(): Null parameter, MamaFtMember may have already been destroyed.");
+        MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(ftMemberPointer,
+    "MamaFtMember.getWeight(): Null parameter, MamaFtMember may have already been destroyed.",(jint)weight);
 
     assert(0!=ftMemberPointer);
 
@@ -322,8 +322,9 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaFtMember_getHeartbeatInterval
     char        errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     ftMemberPointer = (*env)->GetLongField(env,this,ftMemberPointerFieldId_g);
-        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(ftMemberPointer,
-    "MamaFtMember.getHeartbeatInterval(): Null parameter, MamaFtMember may have already been destroyed.");
+        MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(ftMemberPointer,
+    "MamaFtMember.getHeartbeatInterval(): Null parameter, MamaFtMember may have already been destroyed.",
+                                              (jdouble)heartbeatInterval);
 
     assert(0!=ftMemberPointer);
 
@@ -356,8 +357,9 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaFtMember_getTimeoutInterval
     char        errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     ftMemberPointer = (*env)->GetLongField(env,this,ftMemberPointerFieldId_g);
-        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(ftMemberPointer,
-    "MamaFtMember.getTimeoutInterval(): Null parameter, MamaFtMember may have already been destroyed.");
+        MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(ftMemberPointer,
+    "MamaFtMember.getTimeoutInterval(): Null parameter, MamaFtMember may have already been destroyed.",
+                                               (jdouble)timeoutInterval);
 
     assert(0!=ftMemberPointer);
 
