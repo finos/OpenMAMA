@@ -105,6 +105,8 @@ void MiddlewareSubscriptionTests::SetUp(void)
     mamaSource_setTransport(source, tport);
     mamaSource_setSymbolNamespace(source, "NASDAQ");
 
+    mamaSubscription_allocate(&parent);
+
     callbacks.onCreate          = onCreate; 
     callbacks.onError           = onError; 
     callbacks.onQuality         = onQuality; 
@@ -117,6 +119,7 @@ void MiddlewareSubscriptionTests::SetUp(void)
 void MiddlewareSubscriptionTests::TearDown(void)
 {
     mamaTransport_destroy (tport);
+    mamaSubscription_deallocate(parent);
 }
 
 static void onCreate (mamaSubscription subscription,
@@ -172,7 +175,6 @@ static void onDestroy(mamaSubscription subsc, void* closure)
 TEST_F (MiddlewareSubscriptionTests, DISABLED_createDestroy)
 /* cores*/
 {
-    mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
 
@@ -318,7 +320,6 @@ TEST_F (MiddlewareSubscriptionTests, createWildCardInvalidCallbacks)
 
 TEST_F (MiddlewareSubscriptionTests, mute)
 {
-    mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
 
@@ -349,7 +350,6 @@ TEST_F (MiddlewareSubscriptionTests, destroyInvalid)
 TEST_F (MiddlewareSubscriptionTests, isValid)
 {
     int res = NULL;
-    mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
 
@@ -386,7 +386,6 @@ TEST_F (MiddlewareSubscriptionTests, getPlatformError)
 {
     void* error = NOT_NULL;
     mama_status status = MAMA_STATUS_OK;
-    mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
 
@@ -428,7 +427,6 @@ TEST_F (MiddlewareSubscriptionTests, getPlatformErrorInvalidSubBridge)
 TEST_F (MiddlewareSubscriptionTests, isTportDisconnected)
 {
     int res = NULL;
-    mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
 
@@ -454,7 +452,6 @@ TEST_F (MiddlewareSubscriptionTests, setTopicClosure)
 {
     void* newClosure = NOT_NULL;
     mama_status status = MAMA_STATUS_OK;
-    mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
 
@@ -489,7 +486,6 @@ TEST_F (MiddlewareSubscriptionTests, setTopicClosureInvalidSubBridge)
 
 TEST_F (MiddlewareSubscriptionTests, muteCurrentTopic)
 {
-    mamaSubscription_allocate(&parent);
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
 
