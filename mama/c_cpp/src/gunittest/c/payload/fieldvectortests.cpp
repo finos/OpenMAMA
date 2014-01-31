@@ -65,8 +65,6 @@ protected:
         
         m_status = m_payloadBridge->msgPayloadCreate(&m_msg);
         ASSERT_EQ(m_status, MAMA_STATUS_OK);
-        m_status = m_payloadBridge->msgFieldPayloadCreate(&m_field);
-        ASSERT_EQ(m_status, MAMA_STATUS_OK);
     }
 
     // Common TearDown
@@ -912,21 +910,14 @@ protected:
     mamaDateTime        m_in[VECTOR_SIZE];
     const mamaDateTime* m_out;
 
-    mamaDateTime m_compare_0;
-    mamaDateTime m_compare_1;
-
     FieldVectorDateTimeTests() 
         : m_out(NULL)
     {
         mamaDateTime_create(&m_in[0]);
         mamaDateTime_create(&m_in[1]);
-        mamaDateTime_create(&m_compare_0);
-        mamaDateTime_create(&m_compare_1);
 
         mamaDateTime_setEpochTime(m_in[0], 1, 0, MAMA_DATE_TIME_PREC_SECONDS);
         mamaDateTime_setEpochTime(m_in[1], 2, 0, MAMA_DATE_TIME_PREC_SECONDS);
-        mamaDateTime_setEpochTime(m_compare_0, 1, 0, MAMA_DATE_TIME_PREC_SECONDS);
-        mamaDateTime_setEpochTime(m_compare_1, 2, 0, MAMA_DATE_TIME_PREC_SECONDS);
     }
     
     virtual ~FieldVectorDateTimeTests() 
@@ -943,16 +934,16 @@ protected:
 
     virtual void TearDown()
     {
-        if (m_compare_0)
+        if (m_in[0])
         {
-            mamaDateTime_destroy (m_compare_0);
-            m_compare_0 = NULL;
+            mamaDateTime_destroy (m_in[0]);
+            m_in[0] = NULL;
         }
 
-        if (m_compare_1)
+        if (m_in[1])
         {
-            mamaDateTime_destroy (m_compare_1);
-            m_compare_1 = NULL;
+            mamaDateTime_destroy (m_in[1]);
+            m_in[1] = NULL;
         }
 
         FieldVectorTests::TearDown();
@@ -995,25 +986,16 @@ protected:
     mamaPrice        m_in[VECTOR_SIZE];
     const mamaPrice* m_out;
 
-    mamaPrice m_compare_0;
-    mamaPrice m_compare_1;
-
     FieldVectorPriceTests() 
         : m_in ()
         , m_out (NULL)
-        , m_compare_0 (NULL)
-        , m_compare_1 (NULL)
     {
         ::memset ((void *) m_in, 0, sizeof (m_in));
         mamaPrice_create(&m_in[0]);
         mamaPrice_create(&m_in[1]);
-        mamaPrice_create(&m_compare_0);
-        mamaPrice_create(&m_compare_1);
 
         mamaPrice_setValue(m_in[0], 1.0f);
         mamaPrice_setValue(m_in[1], 2.0f);
-        mamaPrice_setValue(m_compare_0, 1.0f);
-        mamaPrice_setValue(m_compare_1, 2.0f);
     }
     
     virtual ~FieldVectorPriceTests() 
@@ -1030,16 +1012,16 @@ protected:
 
     virtual void TearDown()
     {
-        if (m_compare_0)
+        if (m_in[0])
         {
-            mamaPrice_destroy (m_compare_0);
-            m_compare_0 = NULL;
+            mamaPrice_destroy (m_in[0]);
+            m_in[0] = NULL;
         }
 
-        if (m_compare_1)
+        if (m_in[1])
         {
-            mamaPrice_destroy (m_compare_1);
-            m_compare_1 = NULL;
+            mamaPrice_destroy (m_in[1]);
+            m_in[1] = NULL;
         }
 
         FieldVectorTests::TearDown();

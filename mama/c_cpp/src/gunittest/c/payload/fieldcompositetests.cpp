@@ -85,11 +85,7 @@ protected:
 
 };
 
-/*
- * The update string tests are disabled as the current payload Macro, 
- * INITIALIZE_PAYLOAD_BRIDGE, omits the updateString function.
- */
-TEST_F(FieldStringTests, DISABLED_UpdateStringValid)
+TEST_F(FieldStringTests, UpdateStringValid)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
@@ -106,7 +102,7 @@ TEST_F(FieldStringTests, DISABLED_UpdateStringValid)
     ASSERT_EQ(ret,    MAMA_STATUS_OK);
 }
 
-TEST_F(FieldStringTests, DISABLED_UpdateStringInvalidType)
+TEST_F(FieldStringTests, UpdateStringInvalidType)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
@@ -123,7 +119,7 @@ TEST_F(FieldStringTests, DISABLED_UpdateStringInvalidType)
     ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
 }
 
-TEST_F(FieldStringTests, DISABLED_UpdateStringInValid)
+TEST_F(FieldStringTests, UpdateStringInValid)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
