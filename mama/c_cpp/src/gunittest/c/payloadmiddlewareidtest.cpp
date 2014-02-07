@@ -69,6 +69,7 @@ MamaEnumTestsC::CreateTestData()
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_VULCAN,     "Vulcan"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_WOMBAT_MSG, "WombatMsg"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_EXEGY,      "EXEGY"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_SOLACE,     "solacemsg"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_UNKNOWN,    "unknown"));
 
     middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_WMW,       "wmw"));

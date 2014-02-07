@@ -77,6 +77,7 @@ TEST_F (MsgGeneralTestsC, payloadConvertToString)
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_TICK42BLP), "TICK42BLP");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_RAI), "rai");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_EXEGY), "EXEGY");
+    ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_SOLACE), "solacemsg");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_UNKNOWN), "unknown");
 }
 

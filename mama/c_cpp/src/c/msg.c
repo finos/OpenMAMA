@@ -368,6 +368,8 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
 {
     switch (payloadType)
     {
+        case MAMA_PAYLOAD_SOLACE:
+            return "solacemsg";
         case MAMA_PAYLOAD_V5:
             return "V5";
         case MAMA_PAYLOAD_AVIS:

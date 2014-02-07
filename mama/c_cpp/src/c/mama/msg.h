@@ -42,6 +42,7 @@ struct wombatMsg_;
  Enum to reference the available MAMA message payloads. */
 typedef enum mamaPayloadType_
 {
+    MAMA_PAYLOAD_SOLACE     = '1',
     MAMA_PAYLOAD_V5         = '5',
     MAMA_PAYLOAD_AVIS       = 'A',
     MAMA_PAYLOAD_TICK42BLP  = 'B',

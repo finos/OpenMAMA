@@ -58,6 +58,11 @@ namespace Wombat
         MAMA_PAYLOAD_AVIS = 'A',
 
         /// <summary>
+        /// TIBRV Message
+        /// </summary>
+        MAMA_PAYLOAD_SOLACE = '1',
+
+        /// <summary>
         /// Unknown Type
         /// </summary>
         MAMA_PAYLOAD_UNKNOWN = 'U'

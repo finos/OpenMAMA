@@ -37,6 +37,8 @@ public class MamaPayloadType
     public static final char MAMA_PAYLOAD_V5            =   '5';
     /** AVIS Message */
     public static final char MAMA_PAYLOAD_AVIS          =   'A';
+    /** Solace Message */
+    public static final char MAMA_PAYLOAD_SOLACE        =   '1';
     /** Unknown type */
     public static final char MAMA_PAYLOAD_UNKNOWN       =   'U';
 }
