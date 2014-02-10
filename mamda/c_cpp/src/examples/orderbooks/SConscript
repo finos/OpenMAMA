@@ -13,6 +13,7 @@ atomicbookticker.cpp
 bookchurn.cpp
 bookpublisher.cpp
 bookticker.cpp
+bookviewer.cpp
 """)
 
 examples.append('Makefile.sample')
@@ -24,7 +25,7 @@ examples.append('../parsecmd.h')
 env.Append(LIBS=['mamdabook'])
 
 bins = ['atomicbookbuilder', 'atomicbookticker', 'bookticker',
-        'bookpublisher']
+        'bookpublisher', 'bookviewer']
 
 binary = []
 
