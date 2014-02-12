@@ -80,7 +80,6 @@
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs" />
     <Compile Include="MamaMultiSubscriberCS.cs" />
-    <Compile Include="MamaSymbolListSubscriberCS.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\cs\mamadotnet.csproj">
