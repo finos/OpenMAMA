@@ -59,7 +59,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib qpid-protond.lib libevent_core.lib %(AdditionalDependencies)"
+				AdditionalDependencies="wsock32.lib qpid-protond.lib libevent.lib"
 				OutputFile="$(OutDir)\libmama$(ProjectName)implmdd.dll"
 				AdditionalLibraryDirectories="&quot;$(PROTON_HOME)\Debug&quot;;&quot;$(EVENT_HOME)\WIN32-Prj\Debug&quot;"
 				IgnoreDefaultLibraryNames="/NODEFAULTLIB:libcmtd.lib"
@@ -129,7 +129,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib;qpid-protond.lib;libevent_core.lib;%(AdditionalDependencies)"
+				AdditionalDependencies="wsock32.lib qpid-protond.lib libevent.lib"
 				OutputFile="$(OutDir)\libmama$(ProjectName)implmdd.dll"
 				AdditionalLibraryDirectories="&quot;$(PROTON_HOME)\x64\Debug&quot;;&quot;$(EVENT_HOME)\WIN32-Prj\x64\Debug&quot;"
 				TargetMachine="17"
@@ -198,7 +198,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib qpid-proton.lib libevent_core.lib %(AdditionalDependencies)"
+				AdditionalDependencies="wsock32.lib qpid-proton.lib libevent.lib"
 				OutputFile="$(OutDir)\libmama$(ProjectName)implmd.dll"
 				AdditionalLibraryDirectories="$(PROTON_HOME)\Release;$(EVENT_HOME)"
 			/>
@@ -267,7 +267,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib;qpid-proton.lib;libevent_core.lib;%(AdditionalDependencies)"
+				AdditionalDependencies="wsock32.lib qpid-proton.lib libevent.lib"
 				OutputFile="$(OutDir)\libmama$(ProjectName)implmd.dll"
 				AdditionalLibraryDirectories="&quot;$(PROTON_HOME)\Release&quot;;&quot;$(EVENT_HOME)&quot;"
 				TargetMachine="17"
