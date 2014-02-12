@@ -24,9 +24,9 @@
   =                             Includes                                  =
   =========================================================================*/
 
+#include <mama/mama.h>
 #include <string.h>
 #include <wombat/wtable.h>
-#include <mama/mama.h>
 #include "endpointpool.h"
 
 
