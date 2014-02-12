@@ -112,6 +112,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
+				CompileAs="2"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -180,6 +181,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
+				CompileAs="2"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -248,6 +250,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
+				CompileAs="2"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
