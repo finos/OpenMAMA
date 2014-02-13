@@ -59,8 +59,16 @@ extern "C"
 /* PTHREAD static locks are easy */
 typedef pthread_mutex_t wthread_static_mutex_t;
 #define WSTATIC_MUTEX_INITIALIZER PTHREAD_RECURSIVE_MUTEX_INITIALIZER_NP
+#define WTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
 #define wthread_static_mutex_lock(x) pthread_mutex_lock((x))
 #define wthread_static_mutex_unlock(x) pthread_mutex_unlock((x))
+
+/* Queue Max Size */
+#ifdef SEM_VALUE_MAX
+#define WOMBAT_QUEUE_MAX_SIZE SEM_VALUE_MAX /* 2_147_483_647 on Linux */
+#else
+#define WOMBAT_QUEUE_MAX_SIZE 2147483647 /* max possible size */
+#endif
 
 /* Type for handle to dynamically loaded library */
 typedef void*       LIB_HANDLE;

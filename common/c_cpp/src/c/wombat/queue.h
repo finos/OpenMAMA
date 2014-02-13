@@ -25,11 +25,6 @@
 /*
  * Fully thread safe queue implementation.
  */
-#ifdef SEM_VALUE_MAX
-#define WOMBAT_QUEUE_MAX_SIZE SEM_VALUE_MAX /* 2_147_483_647 on Linux */
-#else
-#define WOMBAT_QUEUE_MAX_SIZE 2147483647 /* max possible size */
-#endif
 #define WOMBAT_QUEUE_CHUNK_SIZE 64  /* default chunk size */
 
 #if defined (__cplusplus)
