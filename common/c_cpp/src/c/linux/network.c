@@ -154,7 +154,7 @@ struct in_addr wresolve_ip (const char * arg)
     return (resolved);
 }
 
-static const char gIPAddress[16];
+static char gIPAddress[16];
 static const char* gHostName = NULL;
 
 static void lookupIPAddress (void)
