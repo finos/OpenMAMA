@@ -125,7 +125,7 @@ namespace Wombat
         {
 
             status = pthread_mutexattr_settype(&mMutexAttr, 
-						    PTHREAD_MUTEX_RECURSIVE_NP);
+						    WTHREAD_MUTEX_RECURSIVE);
 
             if (0 != status)
             {
