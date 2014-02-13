@@ -14,6 +14,8 @@ if host['os'] == 'Windows':
     buildWrapper = Windows()
 if host['os'] == 'Linux':
     buildWrapper = Linux()
+if host['os'] == 'Darwin':
+    buildWrapper = Darwin()
 
 parseconfig = ParseIni()
 

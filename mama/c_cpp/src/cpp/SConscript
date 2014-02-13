@@ -123,7 +123,8 @@ libmama_sources = \
    conflation/MamaServerConnection.cpp
 """)
 
-env.Append(CPPPATH=includePath, LIBPATH=libPath)
+
+env.Append(LIBS=['mama'],CPPPATH=includePath, LIBPATH=libPath)
 
 lib = []
 lib.append(env.SharedLibrary(target, libmama_sources))

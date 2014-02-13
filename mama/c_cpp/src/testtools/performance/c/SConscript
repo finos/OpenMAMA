@@ -15,7 +15,10 @@ sources = Glob('*.c')
 
 env.Append( LIBPATH = libPath )
 env.Append( CPPPATH = [ includePath ] )
-env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','dl','rt' ] )
+if env['host']['os'] == 'Darwin':
+    env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','dl'] )
+else:
+    env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','dl','rt' ] )
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 
 

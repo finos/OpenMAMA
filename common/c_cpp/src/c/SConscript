@@ -4,11 +4,13 @@ import os
 
 Import('*')
 env = env.Clone()
+includePath = []
 
 #TODO - this needs changed at the source level. There should be another
 # dir under linux called womabt with these headers. There's probably other
 # stuff to change as well. This is too messy at the minute.
 if env['host']['os'] == 'Linux':
+    includePath.append('./linux')
     symlinks = [
         ('common/c_cpp/src/c/wombat/port.h',
          'common/c_cpp/src/c/linux/port.h'),
@@ -31,6 +33,30 @@ if env['host']['os'] == 'Linux':
         ('common/c_cpp/src/c/environment.c',
          'common/c_cpp/src/c/linux/environment.c'),
         ]
+elif env['host']['os'] == 'Darwin':
+    includePath.append('./darwin')
+    symlinks = [
+        ('common/c_cpp/src/c/wombat/port.h',
+         'common/c_cpp/src/c/darwin/port.h'),
+        ('common/c_cpp/src/c/wombat/wMath.h',
+         'common/c_cpp/src/c/linux/wMath.h'),
+        ('common/c_cpp/src/c/wombat/wUuid.h',
+         'common/c_cpp/src/c/linux/wUuid.h'),
+        ('common/c_cpp/src/c/wombat/wConfig.h',
+         'common/c_cpp/src/c/linux/wConfig.h'),
+        ('common/c_cpp/src/c/wombat/wInterlocked.h',
+         'common/c_cpp/src/c/linux/wInterlocked.h'),
+        ('common/c_cpp/src/c/machine_port.c',
+         'common/c_cpp/src/c/linux/machine.c'),
+        ('common/c_cpp/src/c/platform.c',
+         'common/c_cpp/src/c/linux/platform.c'),
+        ('common/c_cpp/src/c/wSemaphore.c',
+         'common/c_cpp/src/c/darwin/wSemaphore.c'),
+        ('common/c_cpp/src/c/network.c',
+         'common/c_cpp/src/c/linux/network.c'),
+        ('common/c_cpp/src/c/environment.c',
+         'common/c_cpp/src/c/linux/environment.c'),
+    ]
 
 srcdir = os.path.join(Dir('#').abspath, 'common/c_cpp/src/c')
 
@@ -49,12 +75,13 @@ InstHeaders = \
 
 InstWomHeaders = Glob('wombat/*.h')
 
-includePath = []
 includePath.append('.')
-includePath.append('./linux')
 includePath.append('../..')
 
-env.Append(LIBS='-ldl -luuid', CPPPATH=includePath, CCFLAGS=['-fPIC'])
+if env['host']['os'] == 'Darwin':
+    env.Append(LIBS='-ldl -lm', CPPPATH=includePath, CCFLAGS=['-fPIC'])
+else:
+    env.Append(LIBS='-ldl -luuid', CPPPATH=includePath, CCFLAGS=['-fPIC'])
 
 sources = Glob('*.c')
 sources.append('properties.l')

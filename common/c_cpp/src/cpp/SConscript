@@ -10,7 +10,10 @@ InstWomHeaders = Split("""
 wombat/Lock.h
 """)
 
-env.Append(LIBS=['dl', 'rt', 'wombatcommon'])
+if env['host']['os'] == 'Darwin':
+    env.Append(LIBS=['dl', 'rt', 'wombatcommon'])
+else:
+    env.Append(LIBS=['dl', 'm', 'wombatcommon'])
 
 env.Append(CFLAGS=['-fPIC', '-pedantic-errors', '-Wmissing-prototypes',
            '-Wstrict-prototypes'])
