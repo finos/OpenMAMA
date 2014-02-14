@@ -4550,8 +4550,8 @@ namespace Wombat
         {   
             char msg[256];
             snprintf (msg, 256, "different TradeExecVenue (%s != %s)",
-                      mTradeCache.mTradeExecVenue,
-                      rhs.mTradeCache.mTradeExecVenue);
+                      toString(mTradeCache.mTradeExecVenue),
+                      toString(rhs.mTradeCache.mTradeExecVenue));
             throw MamdaDataException (msg);
         }
 
