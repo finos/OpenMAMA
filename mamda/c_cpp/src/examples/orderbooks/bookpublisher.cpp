@@ -116,7 +116,7 @@ const EntAction ENTUPDATE = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UPDATE;
 const EntAction ENTDELETE = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE;
 
 //  The struct "order" represents all pl and entry info of a typical book order                                                          
-typedef struct order
+struct order
 {
     Side        side;
     PlAction    plAction;
