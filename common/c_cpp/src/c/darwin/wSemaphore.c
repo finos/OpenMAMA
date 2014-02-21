@@ -63,7 +63,7 @@ wsem_post(wsem_t * sem) {
     int result;
 
     if(dispatch_semaphore_signal(sem->dsema) == 0) {
-        OSAtomicIncrement32(&sem->count);
+        OSAtomicIncrement32Barrier(&sem->count);
         result =  WSEM_SUCCEED;
     }
     else
@@ -77,7 +77,8 @@ int wsem_wait(wsem_t * sem) {
     int result;
 
     if (dispatch_semaphore_wait(sem->dsema, DISPATCH_TIME_FOREVER) == 0) {
-        OSAtomicDecrement32(&sem->count);
+        if(sem->count)
+            OSAtomicDecrement32Barrier(&sem->count);
         result = WSEM_SUCCEED;
     }
     else
@@ -91,7 +92,7 @@ int wsem_trywait(wsem_t * sem) {
     int result;
 
     if (dispatch_semaphore_wait(sem->dsema, DISPATCH_TIME_NOW) == 0) {
-        OSAtomicDecrement32(&sem->count);
+        OSAtomicDecrement32Barrier(&sem->count);
         result = WSEM_SUCCEED;
     }
     else
@@ -106,11 +107,12 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts) {
 
     if (dispatch_semaphore_wait(sem->dsema,
                                 dispatch_time(DISPATCH_TIME_NOW, ts * 1000)) == 0) {
-        OSAtomicDecrement32(&sem->count);
+        if(sem->count)
+            OSAtomicDecrement32Barrier(&sem->count);
         result = WSEM_SUCCEED;
     }
     else
-       result = WSEM_FAILED;
+        result = WSEM_FAILED;
 
     return result;
 }
