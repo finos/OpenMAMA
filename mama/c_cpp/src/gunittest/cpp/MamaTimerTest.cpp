@@ -214,5 +214,9 @@ TEST_F(MamaTimerTestCPP, TwoTimer)
     
     mtarray[0].destroy();
     mtarray[1].destroy();
+
+    // Cleanup
+    delete timerCb;
+    delete stopperCb;
 }
 

@@ -23,9 +23,18 @@
 #include <mama/MamaReservedFields.h>
 #include <mama/MamaFieldDescriptor.h>
 
+#define CREATE_FIELD(x) do {\
+    if (!x) {\
+        x = new MamaFieldDescriptor (MamaReservedField ## x);\
+    }\
+} while (0)
+
+#define DESTROY_FIELD(x) do {\
+    delete x; x = NULL;\
+} while (0)
+
 namespace Wombat
 {
-
     const MamaFieldDescriptor*  MamaReservedFields::MsgType            = NULL;
     const MamaFieldDescriptor*  MamaReservedFields::MsgStatus          = NULL;
     const MamaFieldDescriptor*  MamaReservedFields::FieldIndex         = NULL;
@@ -45,51 +54,48 @@ namespace Wombat
     const MamaFieldDescriptor*  MamaReservedFields::EntitleCode        = NULL;
     const MamaFieldDescriptor*  MamaReservedFields::SymbolList         = NULL;
 
-
-
     void MamaReservedFields::initReservedFields()
     {
-        MsgType             = new MamaFieldDescriptor (MamaReservedFieldMsgType);
-        MsgStatus           = new MamaFieldDescriptor (MamaReservedFieldMsgStatus);
-        FieldIndex          = new MamaFieldDescriptor (MamaReservedFieldFieldIndex);
-        MsgNum              = new MamaFieldDescriptor (MamaReservedFieldMsgNum);
-        MsgTotal            = new MamaFieldDescriptor (MamaReservedFieldMsgTotal);
-        SeqNum              = new MamaFieldDescriptor (MamaReservedFieldSeqNum);
-        FeedName            = new MamaFieldDescriptor (MamaReservedFieldFeedName);
-        FeedHost            = new MamaFieldDescriptor (MamaReservedFieldFeedHost);
-        FeedGroup           = new MamaFieldDescriptor (MamaReservedFieldFeedGroup);
-        ItemSeqNum          = new MamaFieldDescriptor (MamaReservedFieldItemSeqNum);
-        SendTime            = new MamaFieldDescriptor (MamaReservedFieldSendTime);
-        AppDataType         = new MamaFieldDescriptor (MamaReservedFieldAppDataType);
-        AppMsgType          = new MamaFieldDescriptor (MamaReservedFieldAppMsgType);
-        SenderId            = new MamaFieldDescriptor (MamaReservedFieldSenderId);
-        MsgQual             = new MamaFieldDescriptor (MamaReservedFieldMsgQual);
-        ConflateQuoteCount  = new MamaFieldDescriptor (MamaReservedFieldConflateQuoteCount);
-        EntitleCode         = new MamaFieldDescriptor (MamaReservedFieldEntitleCode);
-        SymbolList          = new MamaFieldDescriptor (MamaReservedFieldSymbolList);
-
+        CREATE_FIELD (MsgType);
+        CREATE_FIELD (MsgStatus);
+        CREATE_FIELD (FieldIndex);
+        CREATE_FIELD (MsgNum);
+        CREATE_FIELD (MsgTotal);
+        CREATE_FIELD (SeqNum);
+        CREATE_FIELD (FeedName);
+        CREATE_FIELD (FeedHost);
+        CREATE_FIELD (FeedGroup);
+        CREATE_FIELD (ItemSeqNum);
+        CREATE_FIELD (SendTime);
+        CREATE_FIELD (AppDataType);
+        CREATE_FIELD (AppMsgType);
+        CREATE_FIELD (SenderId);
+        CREATE_FIELD (MsgQual);
+        CREATE_FIELD (ConflateQuoteCount);
+        CREATE_FIELD (EntitleCode);
+        CREATE_FIELD (SymbolList);
     }
 
     void MamaReservedFields::uninitReservedFields()
     {    
-        if(NULL != MsgType)             delete MsgType;
-        if(NULL != MsgStatus)           delete MsgStatus;
-        if(NULL != FieldIndex)          delete FieldIndex;
-        if(NULL != MsgNum)              delete MsgNum;
-        if(NULL != MsgTotal)            delete MsgTotal;
-        if(NULL != SeqNum)              delete SeqNum;
-        if(NULL != FeedName)            delete FeedName;
-        if(NULL != FeedHost)            delete FeedHost;
-        if(NULL != FeedGroup)           delete FeedGroup;
-        if(NULL != ItemSeqNum)          delete ItemSeqNum;
-        if(NULL != SendTime)            delete SendTime;
-        if(NULL != AppDataType)         delete AppDataType;
-        if(NULL != AppMsgType)          delete AppMsgType;
-        if(NULL != SenderId)            delete SenderId;
-        if(NULL != MsgQual)             delete MsgQual;
-        if(NULL != ConflateQuoteCount)  delete ConflateQuoteCount;
-        if(NULL != EntitleCode)         delete EntitleCode;
-        if(NULL != SymbolList)          delete SymbolList;     
+        DESTROY_FIELD (MsgType);
+        DESTROY_FIELD (MsgStatus);
+        DESTROY_FIELD (FieldIndex);
+        DESTROY_FIELD (MsgNum);
+        DESTROY_FIELD (MsgTotal);
+        DESTROY_FIELD (SeqNum);
+        DESTROY_FIELD (FeedName);
+        DESTROY_FIELD (FeedHost);
+        DESTROY_FIELD (FeedGroup);
+        DESTROY_FIELD (ItemSeqNum);
+        DESTROY_FIELD (SendTime);
+        DESTROY_FIELD (AppDataType);
+        DESTROY_FIELD (AppMsgType);
+        DESTROY_FIELD (SenderId);
+        DESTROY_FIELD (MsgQual);
+        DESTROY_FIELD (ConflateQuoteCount);
+        DESTROY_FIELD (EntitleCode);
+        DESTROY_FIELD (SymbolList);
     } 
 
 }

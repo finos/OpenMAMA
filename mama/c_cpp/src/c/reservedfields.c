@@ -22,6 +22,22 @@
 #include <mama/mama.h>
 #include "reservedfieldsimpl.h"
 
+#define CREATE_FIELD(x, type) do {\
+    if (!MamaReservedField ## x) {\
+        mamaFieldDescriptor_create (&MamaReservedField ## x,\
+                                    MamaField ## x.mFid,\
+                                    MAMA_FIELD_TYPE_ ## type,\
+                                    MamaField ## x.mName);\
+    }\
+} while (0)
+
+#define DESTROY_FIELD(x) do {\
+    if (MamaReservedField ## x) {\
+        mamaFieldDescriptor_destroy (MamaReservedField ## x);\
+        MamaReservedField ## x = NULL;\
+    }\
+} while (0)
+
 const long WOMBAT_MAX_RESERVED_FID = 100;
 
 const MamaReservedField MamaFieldMsgType          = { "MdMsgType",          1 };
@@ -96,116 +112,44 @@ mamaFieldDescriptor MamaReservedFieldEntitleCode        = NULL;
 
 void initReservedFields (void)
 {
-    mamaFieldDescriptor_create (&MamaReservedFieldMsgType,
-                                1,
-                                MAMA_FIELD_TYPE_U8,
-                                "MdMsgType");
-    mamaFieldDescriptor_create (&MamaReservedFieldMsgStatus,
-                                2,
-                                MAMA_FIELD_TYPE_U8,
-                                "MdMsgStatus");
-    mamaFieldDescriptor_create (&MamaReservedFieldFieldIndex,
-                                3,
-                                MAMA_FIELD_TYPE_VECTOR_U16,
-                                "MdFieldIndex");
-    mamaFieldDescriptor_create (&MamaReservedFieldMsgNum,
-                                7,
-                                MAMA_FIELD_TYPE_U8,
-                                "MdMsgNum");
-    mamaFieldDescriptor_create (&MamaReservedFieldMsgTotal,
-                                8,
-                                MAMA_FIELD_TYPE_U8,
-                                "MdMsgTotal");
-    mamaFieldDescriptor_create (&MamaReservedFieldSeqNum,
-                                10,
-                                MAMA_FIELD_TYPE_U32,
-                                "MdSeqNum");
-    mamaFieldDescriptor_create (&MamaReservedFieldFeedName,
-                                11,
-                                MAMA_FIELD_TYPE_STRING,
-                                "MdFeedName");
-    mamaFieldDescriptor_create (&MamaReservedFieldFeedHost,
-                                12,
-                                MAMA_FIELD_TYPE_STRING,
-                                "MdFeedHost");
-    mamaFieldDescriptor_create (&MamaReservedFieldFeedGroup,
-                                13,
-                                MAMA_FIELD_TYPE_STRING,
-                                "MdFeedGroup");
-    mamaFieldDescriptor_create (&MamaReservedFieldItemSeqNum,
-                                15,
-                                MAMA_FIELD_TYPE_U32,
-                                "MdItemSeq");
-    mamaFieldDescriptor_create (&MamaReservedFieldSendTime,
-                                16,
-                                MAMA_FIELD_TYPE_TIME,
-                                "MamaSendTime");
-    mamaFieldDescriptor_create (&MamaReservedFieldAppDataType,
-                                17,
-                                MAMA_FIELD_TYPE_U8,
-                                "MamaAppDataType");
-    mamaFieldDescriptor_create (&MamaReservedFieldAppMsgType,
-                                18,
-                                MAMA_FIELD_TYPE_U8,
-                                "MamaAppMsgType");
-    mamaFieldDescriptor_create (&MamaReservedFieldSenderId,
-                                20,
-                                MAMA_FIELD_TYPE_U64,
-                                "MamaSenderId");
-    mamaFieldDescriptor_create (&MamaReservedFieldMsgQual,
-                                21,
-                                MAMA_FIELD_TYPE_U8,
-                                "wMsgQual");
-    mamaFieldDescriptor_create (&MamaReservedFieldConflateQuoteCount,
-                                23,
-                                MAMA_FIELD_TYPE_U32,
-                                "wConflateQuoteCount");
-    mamaFieldDescriptor_create (&MamaReservedFieldSymbolList,
-                                81,
-                                MAMA_FIELD_TYPE_VECTOR_STRING,
-                                "MamaSymbolList");    
-    mamaFieldDescriptor_create (&MamaReservedFieldEntitleCode,
-                                496,
-                                MAMA_FIELD_TYPE_U32,
-                                "wEntitleCode");
+    CREATE_FIELD (MsgType,            U8);
+    CREATE_FIELD (MsgStatus,          U8);
+    CREATE_FIELD (FieldIndex,         U16);
+    CREATE_FIELD (MsgNum,             U8);
+    CREATE_FIELD (MsgTotal,           U8);
+    CREATE_FIELD (SeqNum,             U32);
+    CREATE_FIELD (FeedName,           STRING);
+    CREATE_FIELD (FeedHost,           STRING);
+    CREATE_FIELD (FeedGroup,          STRING);
+    CREATE_FIELD (ItemSeqNum,         U32);
+    CREATE_FIELD (SendTime,           TIME);
+    CREATE_FIELD (AppDataType,        U8);
+    CREATE_FIELD (AppMsgType,         U8);
+    CREATE_FIELD (SenderId,           U64);
+    CREATE_FIELD (MsgQual,            U8);
+    CREATE_FIELD (ConflateQuoteCount, U32);
+    CREATE_FIELD (SymbolList,         VECTOR_STRING);
+    CREATE_FIELD (EntitleCode,        U32);
 }
 
 void cleanupReservedFields (void)
 {
-    if (MamaReservedFieldMsgType)
-        mamaFieldDescriptor_destroy (MamaReservedFieldMsgType);
-    if (MamaReservedFieldMsgStatus)
-        mamaFieldDescriptor_destroy (MamaReservedFieldMsgStatus);
-    if (MamaReservedFieldFieldIndex)
-        mamaFieldDescriptor_destroy (MamaReservedFieldFieldIndex);
-    if (MamaReservedFieldMsgNum)
-        mamaFieldDescriptor_destroy (MamaReservedFieldMsgNum);
-    if (MamaReservedFieldMsgTotal)
-        mamaFieldDescriptor_destroy (MamaReservedFieldMsgTotal);
-    if (MamaReservedFieldSeqNum)
-        mamaFieldDescriptor_destroy (MamaReservedFieldSeqNum);
-    if (MamaReservedFieldFeedName)
-        mamaFieldDescriptor_destroy (MamaReservedFieldFeedName);
-    if (MamaReservedFieldFeedHost)
-        mamaFieldDescriptor_destroy (MamaReservedFieldFeedHost);
-    if (MamaReservedFieldFeedGroup)
-        mamaFieldDescriptor_destroy (MamaReservedFieldFeedGroup);
-    if (MamaReservedFieldItemSeqNum)
-        mamaFieldDescriptor_destroy (MamaReservedFieldItemSeqNum);
-    if (MamaReservedFieldSendTime)
-        mamaFieldDescriptor_destroy (MamaReservedFieldSendTime);
-    if (MamaReservedFieldAppDataType)
-        mamaFieldDescriptor_destroy (MamaReservedFieldAppDataType);
-    if (MamaReservedFieldAppMsgType)
-        mamaFieldDescriptor_destroy (MamaReservedFieldAppMsgType);
-    if (MamaReservedFieldSenderId)
-        mamaFieldDescriptor_destroy (MamaReservedFieldSenderId);
-    if (MamaReservedFieldMsgQual)
-        mamaFieldDescriptor_destroy (MamaReservedFieldMsgQual);
-    if (MamaReservedFieldSymbolList)
-        mamaFieldDescriptor_destroy (MamaReservedFieldSymbolList);    
-    if (MamaReservedFieldEntitleCode)
-        mamaFieldDescriptor_destroy (MamaReservedFieldEntitleCode);
-    if (MamaReservedFieldConflateQuoteCount)
-        mamaFieldDescriptor_destroy (MamaReservedFieldConflateQuoteCount);
+    DESTROY_FIELD (MsgType);
+    DESTROY_FIELD (MsgStatus);
+    DESTROY_FIELD (FieldIndex);
+    DESTROY_FIELD (MsgNum);
+    DESTROY_FIELD (MsgTotal);
+    DESTROY_FIELD (SeqNum);
+    DESTROY_FIELD (FeedName);
+    DESTROY_FIELD (FeedHost);
+    DESTROY_FIELD (FeedGroup);
+    DESTROY_FIELD (ItemSeqNum);
+    DESTROY_FIELD (SendTime);
+    DESTROY_FIELD (AppDataType);
+    DESTROY_FIELD (AppMsgType);
+    DESTROY_FIELD (SenderId);
+    DESTROY_FIELD (MsgQual);
+    DESTROY_FIELD (ConflateQuoteCount);
+    DESTROY_FIELD (SymbolList);
+    DESTROY_FIELD (EntitleCode);
 }
