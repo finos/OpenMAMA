@@ -28,17 +28,14 @@ using namespace Wombat;
 
 void MamaMsgTestCPP::SetUp(void)
 {
-    
     m_bridge = Mama::loadBridge(getMiddleware());
 
     Mama::open();
-
 }
 
 void MamaMsgTestCPP::TearDown(void)
 {
     Mama::close();
-    MamaReservedFields::uninitReservedFields();
 }
 
 TEST_F (MamaMsgTestCPP, CreateTest)
