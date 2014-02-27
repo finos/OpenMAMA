@@ -92,7 +92,8 @@ int wsem_trywait(wsem_t * sem) {
     int result;
 
     if (dispatch_semaphore_wait(sem->dsema, DISPATCH_TIME_NOW) == 0) {
-        OSAtomicDecrement32Barrier(&sem->count);
+        if(sem->count)
+            OSAtomicDecrement32Barrier(&sem->count);
         result = WSEM_SUCCEED;
     }
     else
