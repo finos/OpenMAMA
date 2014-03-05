@@ -358,7 +358,7 @@ do                                                                             \
 {                                                                              \
     const MAMATYPE* result  = NULL;                                            \
     mama_size_t     size    = 0;                                               \
-    qpidmsgPayload_getVector##SUFFIX        (field, name, fid, &result,&size); \
+    qpidmsgFieldPayload_getVector##SUFFIX   (field, &result, &size);           \
     return qpidmsgPayload_addVector##SUFFIX (msg, name, fid, result, size);    \
 } while (0)
 
