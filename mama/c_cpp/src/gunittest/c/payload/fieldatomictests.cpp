@@ -126,7 +126,7 @@ TEST_F(FieldBoolTests, UpdateBoolInValid)
     ret = aBridge->msgFieldPayloadUpdateBool(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 
-    ret = aBridge->msgPayloadDestroy(field);
+    ret = aBridge->msgFieldPayloadDestroy(field);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
 }
 
