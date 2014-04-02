@@ -60,6 +60,14 @@ InstConflInclude = Split("""
     mama/conflation/connection.h 
 """)
 
+InstFieldCacheInclude = Split("""
+    mama/fieldcache/fieldcache.h
+    mama/fieldcache/fieldcachefield.h
+    mama/fieldcache/fieldcacheiterator.h
+    mama/fieldcache/fieldcacherecord.h
+    mama/fieldcache/fieldcachetypes.h
+""")
+
 includePath = []
 includePath.append('#mama/c_cpp/src/c')
 includePath.append('$prefix/include')
@@ -139,6 +147,18 @@ libmama_sources = \
     conflation/connection.c
     conflation/serverconnection.c
     conflation/manager.c
+    fieldcache/fieldcache.c
+    fieldcache/fieldcachefieldimpl.c
+    fieldcache/fieldcacheiterator.c
+    fieldcache/fieldcachemaparray.c
+    fieldcache/fieldcachemap.c
+    fieldcache/fieldcacherecord.c
+    fieldcache/fieldcachefield.c
+    fieldcache/fieldcacheimpl.c
+    fieldcache/fieldcachelist.c
+    fieldcache/fieldcachemapbinary.c
+    fieldcache/fieldcachemapmonitor.c
+    fieldcache/fieldcachevector.c
 """)
 
 objects = []
@@ -164,6 +184,8 @@ Alias('install', env.Install('$libdir', lib))
 Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))
 Alias('install', env.Install('$prefix/include/mama/conflation',
       InstConflInclude))
+Alias('install', env.Install('$prefix/include/mama/fieldcache',
+      InstFieldCacheInclude))
 
 env.SConscript('bridge/SConscript', 'env')
 env.SConscript('payload/SConscript', 'env')

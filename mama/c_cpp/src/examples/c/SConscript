@@ -21,7 +21,8 @@ if env['host']['os'] == 'Darwin':
 else:
     env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','rt' ] )
 
-bins = [ 'mamalistenc','mamaproxyc','mamapublisherc','mamasubscriberc','mamainboxc','mamaio','mamasymbollistsubscriberc','mamamultisubscriberc','mamaftmemberc','mamasymbollistsubscriberc' ]
+bins = [ 'mamalistenc','mamaproxyc','mamapublisherc','mamasubscriberc','mamainboxc','mamaio','mamasymbollistsubscriberc','mamamultisubscriberc','mamaftmemberc','mamasymbollistsubscriberc',
+'mamalistencachedc' ]
 
 binary = []
 

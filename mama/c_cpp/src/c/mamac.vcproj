@@ -370,6 +370,54 @@
 				>
 			</File>
 			<File
+				RelativePath=".\fieldcache\fieldcache.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachefield.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachefieldimpl.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcacheimpl.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcacheiterator.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachelist.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachemaparray.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachemapbinary.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachemap.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachemapmonitor.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcacherecord.c"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachevector.c"
+				>
+			</File>
+			<File
 				RelativePath=".\datetime.c"
 				>
 			</File>
@@ -637,6 +685,66 @@
 			</File>
 			<File
 				RelativePath=".\conflation\connection_int.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mama\fieldcache\fieldcache.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mama\fieldcache\fieldcachetypes.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mama\fieldcache\fieldcacherecord.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mama\fieldcache\fieldcacheiterator.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mama\fieldcache\fieldcachefield.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachefieldimpl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcacheimpl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcacheiteratorimpl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachemap.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachelist.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachemapmonitor.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachemapbinary.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachemaparray.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcacherecordimpl.h"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\fieldcachevector.h"
 				>
 			</File>
 			<File

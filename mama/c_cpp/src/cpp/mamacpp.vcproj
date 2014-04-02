@@ -528,6 +528,22 @@
 				>
 			</File>
 			<File
+				RelativePath=".\mama\fieldcache\MamaFieldCacheField.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mama\fieldcache\MamaFieldCacheFieldTypes.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mama\fieldcache\MamaFieldCache.h"
+				>
+			</File>
+			<File
+				RelativePath=".\mama\fieldcache\MamaFieldCacheRecord.h"
+				>
+			</File>
+			<File
 				RelativePath=".\mama\MamaSource.h"
 				>
 			</File>
@@ -661,6 +677,22 @@
 			</File>
 			<File
 				RelativePath=".\conflation\MamaConnection.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\MamaFieldCache.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\MamaFieldCacheField.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\MamaFieldCacheFieldTypes.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\fieldcache\MamaFieldCacheRecord.cpp"
 				>
 			</File>
 			<File

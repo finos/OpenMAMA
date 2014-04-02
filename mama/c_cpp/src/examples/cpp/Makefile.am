@@ -52,7 +52,8 @@ bin_PROGRAMS =  mamalistencpp   \
                 mamainboxcpp \
                 mamaiocpp \
                 mamaftmembercpp \
-				mamasymbollistsubscribercpp 
+				mamasymbollistsubscribercpp \
+				mamalistencachedcpp
 
 dist_mamalistencpp_SOURCES              	= mamalistencpp.cpp     
 dist_mamaproxycpp_SOURCES            		= mamaproxycpp.cpp
@@ -62,6 +63,7 @@ dist_mamainboxcpp_SOURCES                	= mamainboxcpp.cpp
 dist_mamaiocpp_SOURCES                    	= mamaiocpp.cpp
 dist_mamasymbollistsubscribercpp_SOURCES 	= mamasymbollistsubscribercpp.cpp
 dist_mamaftmembercpp_SOURCES 	    		= mamaftmembercpp.cpp
+dist_mamalistencachedcpp_SOURCES 			= mamalistencachedcpp.cpp
 
 # Additional installation directory for sample source code
 exampledir = ${prefix}/examples/mama/cpp
@@ -77,4 +79,5 @@ example_DATA = \
         $(dist_mamainboxcpp_SOURCES) \
         $(dist_mamaiocpp_SOURCES) \
 		$(dist_mamasymbollistsubscribercpp_SOURCES) \
+		$(dist_mamalistencachedcpp_SOURCES) \
 		Makefile.sample

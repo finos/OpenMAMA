@@ -15,6 +15,7 @@ binaries = Split("""
 	mamapublishercpp
 	mamasubscribercpp
 	mamasymbollistsubscribercpp
+	mamalistencachedcpp
 """)
 
 libs = []

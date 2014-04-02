@@ -23,7 +23,7 @@ srcdir = @srcdir@
 VPATH  = @srcdir@
 blddir=@builddir@
 
-SUBDIRS=payload mamamsg middleware mamaprice mamadatetime
+SUBDIRS=payload mamamsg middleware mamaprice mamadatetime fieldcache
 
 if USE_GCC_FLAGS
 CFLAGS   += -std=gnu99 -pedantic -Wno-long-long -O2 -pthread -fPIC

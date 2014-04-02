@@ -32,6 +32,13 @@ queuetest.cpp
 subscriptiontest.cpp
 timertest.cpp
 transporttest.cpp
+fieldcache/fieldcachevectortest.cpp
+fieldcache/fieldcachelisttest.cpp
+fieldcache/fieldcachemaptest.cpp
+fieldcache/fieldcachefieldtest.cpp
+fieldcache/fieldcacheiteratortest.cpp
+fieldcache/fieldcacherecordtest.cpp
+fieldcache/fieldcachetest.cpp
 """)
 
 MainUnitTest = env.Object( 'MainUnitTestC.cpp' ) 
