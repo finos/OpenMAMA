@@ -38,6 +38,7 @@
 #include <netinet/in.h>
 #include <netdb.h>
 #include <semaphore.h>
+#include <dispatch/dispatch.h>
 #include <dirent.h>
 #include <dlfcn.h>
 #include <unistd.h>
@@ -53,10 +54,10 @@ extern "C"
 #endif
 /* PTHREAD static locks are easy */
 typedef pthread_mutex_t wthread_static_mutex_t;
-#define WSTATIC_MUTEX_INITIALIZER PTHREAD_RECURSIVE_MUTEX_INITIALIZER
-#define WTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE
-#define wthread_static_mutex_lock(x) pthread_mutex_lock((x))
-#define wthread_static_mutex_unlock(x) pthread_mutex_unlock((x))
+#define WSTATIC_MUTEX_INITIALIZER       PTHREAD_RECURSIVE_MUTEX_INITIALIZER
+#define WTHREAD_MUTEX_RECURSIVE         PTHREAD_MUTEX_RECURSIVE
+#define wthread_static_mutex_lock(x)    pthread_mutex_lock((x))
+#define wthread_static_mutex_unlock(x)  pthread_mutex_unlock((x))
 
 /* Type for handle to dynamically loaded library */
 typedef void*       LIB_HANDLE;
@@ -78,101 +79,103 @@ typedef void*       LIB_HANDLE;
 /* For delimiting multiple paths in env variables properties */
 #define PATH_DELIM ':'
 
-#define PATHSEP  "/"
+#define PATHSEP "/"
 
 /* Thread local storage */
 typedef pthread_key_t wthread_key_t;
-#define wthread_key_create(x, val) pthread_key_create((x), (val))
-#define wthread_key_delete(x) pthread_key_delete((x))
-#define wthread_setspecific(x, val) pthread_setspecific((x),(void*)((val)))
-#define wthread_getspecific(x) pthread_getspecific((x))
+#define wthread_key_create(x, val)      pthread_key_create((x), (val))
+#define wthread_key_delete(x)           pthread_key_delete((x))
+#define wthread_setspecific(x, val)     pthread_setspecific((x),(void*)((val)))
+#define wthread_getspecific(x)          pthread_getspecific((x))
 
 /* Queue Max Size */
 #define WOMBAT_QUEUE_MAX_SIZE 2147483647
 
-/* No POSIX unnamed semaphores for Mac OS X */
+/* Use dispatch semaphores for Mac OS X */
 #define WSEM_FAILED    -1
 #define WSEM_SUCCEED   0
-#include <dispatch/dispatch.h>
-typedef struct wsem_t {
+typedef struct wsem_t
+{
     volatile int count;
     dispatch_semaphore_t dsema;
 } wsem_t;
 
-int wsem_init(wsem_t * sem, int shared, unsigned int value);
-int wsem_destroy(wsem_t * sem) ;
-int wsem_getvalue(wsem_t * sem, int * i);
-int wsem_post(wsem_t * sem);
-int wsem_wait(wsem_t * sem);
-int wsem_trywait(wsem_t * sem);
+int wsem_init (wsem_t * sem, int shared, unsigned int value);
+int wsem_destroy (wsem_t * sem) ;
+int wsem_getvalue (wsem_t * sem, int * i);
+int wsem_post (wsem_t * sem);
+int wsem_wait (wsem_t * sem);
+int wsem_trywait (wsem_t * sem);
 int wsem_timedwait (wsem_t* sem, unsigned int ts);
 
 /* Windows does not support AF_UNIX sockets, socketpairs, etc */
 #define wsocketstartup()
 #define wsocketcleanup()
 
-#define wsocketpair(dom, type, prot, pair) (socketpair((dom),(type),(prot),(pair)))
-#define wsetnonblock(s) (fcntl((s), F_SETFL, fcntl((s), F_GETFL) | O_NONBLOCK))
-#define wread	read
-#define wwrite	write
+#define wsocketpair(dom, type, prot, pair)  (socketpair((dom),(type),(prot),(pair)))
+#define wsetnonblock(s)                     (fcntl((s), F_SETFL, fcntl((s), F_GETFL) | O_NONBLOCK))
+#define wread                               read
+#define wwrite                              write
 
-#define CPU_AFFINITY_SET 				cpu_set_t
+#define CPU_AFFINITY_SET    cpu_set_t
 
 /* Use pthreads for Mac OS X */
 #define INVALID_THREAD (-1)
 
-#define wthread_mutex_t         pthread_mutex_t
-#define wthread_mutex_init      pthread_mutex_init
-#define wthread_mutex_unlock    pthread_mutex_unlock
-#define wthread_mutex_lock      pthread_mutex_lock
-#define wthread_mutex_destroy   pthread_mutex_destroy
-#define wthread_t               pthread_t
-#define wthread_detach          pthread_detach
-#define wthread_self            pthread_self
-#define wthread_equal           pthread_equal
-#define wthread_cleanup_push    pthread_cleanup_push
-#define wthread_cleanup_pop     pthread_cleanup_pop
-#define wthread_join		pthread_join
-#define wthread_create		pthread_create
-#define wthread_exit            pthread_exit
+#define wthread_mutex_t             pthread_mutex_t
+#define wthread_mutex_init          pthread_mutex_init
+#define wthread_mutex_unlock        pthread_mutex_unlock
+#define wthread_mutex_lock          pthread_mutex_lock
+#define wthread_mutex_destroy       pthread_mutex_destroy
+#define wthread_t                   pthread_t
+#define wthread_detach              pthread_detach
+#define wthread_self                pthread_self
+#define wthread_equal               pthread_equal
+#define wthread_cleanup_push        pthread_cleanup_push
+#define wthread_cleanup_pop         pthread_cleanup_pop
+#define wthread_join                pthread_join
+#define wthread_create              pthread_create
+#define wthread_exit                pthread_exit
 
-#define wthread_cond_t	        pthread_cond_t
-#define wthread_cond_init       pthread_cond_init
-#define wthread_cond_signal     pthread_cond_signal
-#define wthread_cond_destroy    pthread_cond_destroy
-#define wthread_cond_wait	pthread_cond_wait
+#define wthread_cond_t              pthread_cond_t
+#define wthread_cond_init           pthread_cond_init
+#define wthread_cond_signal         pthread_cond_signal
+#define wthread_cond_destroy        pthread_cond_destroy
+#define wthread_cond_wait           pthread_cond_wait
 
-#define wthread_spinlock_t     OSSpinLock
-#define wthread_spin_init      pthread_spin_init        // TODO - add
-#define wthread_spin_unlock    OSSpinLockUnlock
-#define wthread_spin_lock      OSSpinLockLock
-#define wthread_spin_destroy   pthread_spin_destroy     // TODO - add
-#define wthread_attr_t   pthread_attr_t
-#define wthread_attr_init pthread_attr_init
+// Spin Lock incomplete and untested as not used in OpenMAMA
+#define wthread_spinlock_t          OSSpinLock
+#define wthread_spin_init           pthread_spin_init
+#define wthread_spin_unlock         OSSpinLockUnlock
+#define wthread_spin_lock           OSSpinLockLock
+#define wthread_spin_destroy        pthread_spin_destroy
+
+#define wthread_attr_t              pthread_attr_t
+#define wthread_attr_init           pthread_attr_init
 #define wthread_attr_setdetachstate pthread_attr_setdetachstate
 
-#define wthread_mutexattr_t pthread_mutexattr_t
-#define wthread_mutexattr_init pthread_mutexattr_init
-#define wthread_mutexattr_settype pthread_mutexattr_settype
+#define wthread_mutexattr_t         pthread_mutexattr_t
+#define wthread_mutexattr_init      pthread_mutexattr_init
+#define wthread_mutexattr_settype   pthread_mutexattr_settype
 
-#define wGetCurrentThreadId     pthread_self
+#define wGetCurrentThreadId         pthread_self
 
 /* macros for shared libraries */
-#define wdlopen dlopen
-#define wdlsym dlsym
-#define wdlclose dlclose
-#define wdlerror dlerror
+#define wdlopen     dlopen
+#define wdlsym      dlsym
+#define wdlclose    dlclose
+#define wdlerror    dlerror
 
 /* timegm() and nanosleep not available on Windows */
-#define wtimegm timegm
+#define wtimegm     timegm
 
 struct wtimespec
 {
     time_t tv_sec;
-    long   tv_nsec;
+    long tv_nsec;
 };
 
-#define wnanosleep(ts, remain) nanosleep(((struct timespec*)(ts)),(remain))
+#define wnanosleep(ts, remain)      nanosleep(((struct timespec*)(ts)),(remain))
 
 
 /* net work utility functions */
