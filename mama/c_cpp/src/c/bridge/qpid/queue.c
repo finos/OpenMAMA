@@ -106,7 +106,7 @@ qpidBridgeMamaQueue_create (queueBridge* queue,
     if (NULL == impl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_create (): ",
+                  "qpidBridgeMamaQueue_create (): "
                   "Failed to allocate memory for queue.");
         return MAMA_STATUS_NOMEM;
     }
@@ -122,7 +122,7 @@ qpidBridgeMamaQueue_create (queueBridge* queue,
     if (WOMBAT_QUEUE_OK != underlyingStatus)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_create (): ",
+                  "qpidBridgeMamaQueue_create (): "
                   "Failed to allocate memory for underlying queue.");
         free (impl);
         return MAMA_STATUS_NOMEM;
@@ -135,7 +135,7 @@ qpidBridgeMamaQueue_create (queueBridge* queue,
     if (WOMBAT_QUEUE_OK != underlyingStatus)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_create (): ",
+                  "qpidBridgeMamaQueue_create (): "
                   "Failed to create underlying queue.");
         wombatQueue_destroy (impl->mQueue);
         free (impl);
@@ -167,7 +167,7 @@ qpidBridgeMamaQueue_create_usingNative (queueBridge* queue,
     if (NULL == impl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_create_usingNative (): ",
+                  "qpidBridgeMamaQueue_create_usingNative (): "
                   "Failed to allocate memory for queue.");
         return MAMA_STATUS_NOMEM;
     }
@@ -204,7 +204,7 @@ qpidBridgeMamaQueue_destroy (queueBridge queue)
     if (WOMBAT_QUEUE_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_WARN,
-                  "qpidBridgeMamaQueue_destroy (): ",
+                  "qpidBridgeMamaQueue_destroy (): "
                   "Failed to destroy wombat queue (%d).",
                   status);
         return MAMA_STATUS_PLATFORM;
@@ -308,7 +308,7 @@ qpidBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout)
     if (WOMBAT_QUEUE_OK != status && WOMBAT_QUEUE_TIMEOUT != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_timedDispatch (): ",
+                  "qpidBridgeMamaQueue_timedDispatch (): "
                   "Failed to dispatch Qpid Middleware queue (%d).",
                   status);
         return MAMA_STATUS_PLATFORM;
@@ -337,7 +337,7 @@ qpidBridgeMamaQueue_dispatchEvent (queueBridge queue)
     if (WOMBAT_QUEUE_OK != status && WOMBAT_QUEUE_TIMEOUT != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_dispatchEvent (): ",
+                  "qpidBridgeMamaQueue_dispatchEvent (): "
                   "Failed to dispatch Qpid Middleware queue (%d).",
                   status);
         return MAMA_STATUS_PLATFORM;
@@ -376,7 +376,7 @@ qpidBridgeMamaQueue_enqueueEvent (queueBridge        queue,
     if (WOMBAT_QUEUE_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_enqueueEvent (): ",
+                  "qpidBridgeMamaQueue_enqueueEvent (): "
                   "Failed to enqueueEvent (%d). Callback: %p; Closure: %p",
                   status, callback, closure);
         return MAMA_STATUS_PLATFORM;
