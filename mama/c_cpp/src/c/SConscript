@@ -68,8 +68,12 @@ includePath.append('#common/c_cpp/src/c')
 libPath = []
 libPath.append('$libdir')
 
-env.Append(LIBS=['m', 'rt', 'wombatcommon', 'dl', 'pthread'],
-           LIBPATH=libPath, CPPPATH=[includePath])
+if env['host']['os'] == 'Darwin':
+    env.Append(LIBS=['m', 'wombatcommon', 'dl', 'pthread'],
+               LIBPATH=libPath, CPPPATH=[includePath])
+else:
+    env.Append(LIBS=['m', 'rt', 'wombatcommon', 'dl', 'pthread'],
+               LIBPATH=libPath, CPPPATH=[includePath])
 
 libmama_sources = \
     Split("""

@@ -368,7 +368,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaSubscription_getSubscSource
                 "Could not get Symbol for mamaSubscription.",
                 status);
         utils_throwWombatException(env,errorString);
-        return;
+        return NULL;
     }
 
     return (*env)->NewStringUTF(env, retVal_c);

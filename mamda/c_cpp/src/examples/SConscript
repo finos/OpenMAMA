@@ -44,15 +44,25 @@ examples.append('parsecmd.h')
 env.Append(LDFLAGS=['-rdynamic'])
 env.Append(LIBPATH=libPath)
 env.Append(CPPPATH=[includePath])
-env.Append(LIBS=[
-    'mama',
-    'mamacpp',
-    'mamda',
-    'pthread',
-    'dl',
-    'nsl',
-    'm',
-    ])
+if env['host']['os'] == 'Darwin':
+    env.Append(LIBS=[
+                     'mama',
+                     'mamacpp',
+                     'mamda',
+                     'pthread',
+                     'dl',
+                     'm',
+                     ])
+else:
+    env.Append(LIBS=[
+                     'mama',
+                     'mamacpp',
+                     'mamda',
+                     'pthread',
+                     'dl',
+                     'nsl',
+                     'm',
+                     ])
 
 bins = [
     'comboticker',

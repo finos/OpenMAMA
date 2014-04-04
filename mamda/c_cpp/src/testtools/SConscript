@@ -22,15 +22,25 @@ libPath.append('$libdir')
 
 env.Append(LIBPATH=libPath)
 env.Append(CPPPATH=[includePath])
-env.Append(LIBS=[
-    'mamdabook',
-    'mamda',
-    'mamacpp',
-    'wombatcommon',
-    'mama',
-    'rt',
-    'pthread',
-    ])
+if env['host']['os'] == 'Darwin':
+    env.Append(LIBS=[
+                     'mamdabook',
+                     'mamda',
+                     'mamacpp',
+                     'wombatcommon',
+                     'mama',
+                     'pthread',
+                     ])
+else:
+    env.Append(LIBS=[
+                     'mamdabook',
+                     'mamda',
+                     'mamacpp',
+                     'wombatcommon',
+                     'mama',
+                     'rt',
+                     'pthread',
+                     ])
 
 bins = ['bookselftest', 'quoteselftest', 'tradeselftest']
 

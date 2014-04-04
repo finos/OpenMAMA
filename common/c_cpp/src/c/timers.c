@@ -76,7 +76,7 @@ int createTimerHeap (timerHeap* heap)
         return -1;
 
     wthread_mutexattr_init    (&attr);
-    wthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE_NP);
+    wthread_mutexattr_settype (&attr, WTHREAD_MUTEX_RECURSIVE);
 
     /* Need to make the lock recursive as it should be possible to remove timers
        in the call back */

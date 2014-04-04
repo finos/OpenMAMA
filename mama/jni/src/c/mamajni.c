@@ -927,7 +927,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_Mama_getProperty
     if (name)
     {
       c_name = (*env)->GetStringUTFChars(env,name,0);
-      if (!c_name) return; /* Exception auto thrown */
+      if (!c_name) return NULL; /* Exception auto thrown */
     }
 
     c_retVal=mama_getProperty(c_name);

@@ -512,7 +512,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getByteBuffer(JNIEnv* 
 	
 	/* Get the pointer to the underlying message*/
     jlong msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer, "Null parameter, MamaMsg may have already been destroyed.");
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer, "Null parameter, MamaMsg may have already been destroyed.",NULL);
 	{
 		/* Get the byte buffer from the underlying message. */
 		mama_size_t cResultLen 	= 0;
@@ -546,7 +546,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getByteBuffer(JNIEnv* 
 					"Could not get the byte buffer from the mamaMsg.",
 					gbb);        
 			utils_throwExceptionForMamaStatus(env,gbb ,errorString);
-			return;
+			return NULL;
 		}
 	}
     
@@ -1140,7 +1140,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaMsg_getMsg
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
         (*env)->DeleteLocalRef(env, msgClass);
         utils_throwExceptionForMamaStatus(env,status,errorString);
-        return;
+        return NULL;
     }
 
     if (c_result)
@@ -1183,7 +1183,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getOpaque
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
         if(!c_name)
-            return;
+            return NULL;
     }
     
     if (MAMA_STATUS_OK!=(status=mamaMsg_getOpaque(
@@ -1200,7 +1200,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getOpaque
                 status);
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
         utils_throwExceptionForMamaStatus(env,status,errorString);
-        return;
+        return NULL;
     }
 
     /*If we actually have a valid result convert to Java*/
@@ -1370,7 +1370,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayMsg
                 status);
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
         utils_throwExceptionForMamaStatus(env,status,errorString);
-        return;
+        return NULL;
     }
     
     if(resultLength>0)
@@ -1548,7 +1548,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayString
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
         (*env)->DeleteLocalRef(env, stringArrayClass);
         utils_throwExceptionForMamaStatus(env,status,errorString);
-        return;
+        return NULL;
     }
     
     if(resultLength>0)
@@ -1587,8 +1587,8 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsDefinitelyDuplicate
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.");
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+        "Null parameter, MamaMsg may have already been destroyed.",NULL);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsDefinitelyDuplicate(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -1619,8 +1619,8 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsPossiblyDuplicate
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.");
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+        "Null parameter, MamaMsg may have already been destroyed.",NULL);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsPossiblyDuplicate(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -1651,8 +1651,8 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsPossiblyDelayed
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.");
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+        "Null parameter, MamaMsg may have already been destroyed.",NULL);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsPossiblyDelayed(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -1683,8 +1683,8 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsDefinitelyDelayed
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.");
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+        "Null parameter, MamaMsg may have already been destroyed.",NULL);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsDefinitelyDelayed(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -1715,8 +1715,8 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsOutOfSequence
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.");
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+        "Null parameter, MamaMsg may have already been destroyed.",NULL);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsOutOfSequence(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -3690,8 +3690,8 @@ JNIEXPORT jchar JNICALL Java_com_wombat_mama_MamaMsg_getPayloadType
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.");
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+        "Null parameter, MamaMsg may have already been destroyed.",NULL);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getPayloadType(
                         CAST_JLONG_TO_POINTER(mamaMsg, msgPointer), &cResult)));
@@ -3845,7 +3845,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaMsg_detach
                 "Could not clear mamaMsg.",
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
-        return;
+        return NULL;
     }
     
 

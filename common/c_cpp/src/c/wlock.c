@@ -41,7 +41,7 @@ wlock_create( void )
 
     wthread_mutexattr_t attr;
     wthread_mutexattr_init (&attr);
-    wthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE_NP);
+    wthread_mutexattr_settype (&attr, WTHREAD_MUTEX_RECURSIVE);
     wthread_mutex_init (&rval->mMutex, &attr);
 
     return( rval );
