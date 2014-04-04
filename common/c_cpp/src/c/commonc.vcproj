@@ -27,7 +27,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="flex -o$(InputDir)\lex.yy.c $(InputDir)\properties.l"
+				CommandLine="flex -o&quot;$(InputDir)\lex.yy.c&quot; &quot;$(InputDir)\properties.l&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -45,7 +45,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;COMMON_DLL;_USE_32BIT_TIME_T;$(NOINHERIT)"
+				PreprocessorDefinitions="YY_NO_UNISTD_H;WIN32;_DEBUG;COMMON_DLL;_USE_32BIT_TIME_T;$(NOINHERIT)"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -117,7 +117,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="flex -o$(InputDir)\lex.yy.c $(InputDir)\properties.l"
+				CommandLine="flex -o&quot;$(InputDir)\lex.yy.c&quot; &quot;$(InputDir)\properties.l&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -136,7 +136,7 @@
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat&quot;"
-				PreprocessorDefinitions="WIN32;_DEBUG;COMMON_DLL;$(NOINHERIT)"
+				PreprocessorDefinitions="YY_NO_UNISTD_H;WIN32;_DEBUG;COMMON_DLL;$(NOINHERIT)"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="0"
 				RuntimeLibrary="3"
@@ -209,7 +209,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="flex -o$(InputDir)\lex.yy.c $(InputDir)\properties.l"
+				CommandLine="flex -o&quot;$(InputDir)\lex.yy.c&quot; &quot;$(InputDir)\properties.l&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -226,7 +226,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;COMMON_DLL;_USE_32BIT_TIME_T;$(NOINHERIT)"
+				PreprocessorDefinitions="YY_NO_UNISTD_H;WIN32;NDEBUG;COMMON_DLL;_USE_32BIT_TIME_T;$(NOINHERIT)"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -291,7 +291,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="flex -o$(InputDir)\lex.yy.c $(InputDir)\properties.l"
+				CommandLine="flex -o&quot;$(InputDir)\lex.yy.c&quot; &quot;$(InputDir)\properties.l&quot;"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -309,7 +309,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c&quot;;&quot;$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat&quot;"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;COMMON_DLL;$(NOINHERIT)"
+				PreprocessorDefinitions="YY_NO_UNISTD_H;WIN32;NDEBUG;_WINDOWS;_USRDLL;COMMON_DLL;$(NOINHERIT)"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"

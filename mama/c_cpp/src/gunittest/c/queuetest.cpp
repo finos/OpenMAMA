@@ -19,7 +19,6 @@
 
 
 #include <gtest/gtest.h>
-#include <pthread.h>
 #include "mama/mama.h"
 #include "mama/status.h"
 #include "MainUnitTestC.h"
@@ -89,7 +88,7 @@ void lowWaterMarkCallback (mamaQueue queue, size_t size, void* closure)
     fixture->m_lowWaterMarkOccurance++;
 }
 
-void onEvent (mamaQueue queue, void* closure)
+void MAMACALLTYPE onEvent (mamaQueue queue, void* closure)
 {
     MamaQueueTestC* fixture = (MamaQueueTestC *)closure;
     fixture->m_eventCounter++;
@@ -98,11 +97,11 @@ void onEvent (mamaQueue queue, void* closure)
         mamaQueue_stopDispatch (queue);
     }
 }
-void onTimedEvent (mamaQueue queue, void* closure)
+void MAMACALLTYPE onTimedEvent (mamaQueue queue, void* closure)
 {
 }
 
-void onBgEvent (mamaQueue queue, void* closure)
+void MAMACALLTYPE onBgEvent (mamaQueue queue, void* closure)
 {
     MamaQueueTestC* fixture = (MamaQueueTestC *)closure;
     fixture->m_numDispatches++;
@@ -116,15 +115,15 @@ void onBgEvent (mamaQueue queue, void* closure)
     }
 }
 
-void onEnqueue (mamaQueue queue, void* closure)
+void MAMACALLTYPE onEnqueue (mamaQueue queue, void* closure)
 {
 }
 
-void onHighWatermark (mamaQueue queue, size_t size, void* closure)
+void MAMACALLTYPE onHighWatermark (mamaQueue queue, size_t size, void* closure)
 {
 }
 
-void onLowWatermark (mamaQueue queue, size_t size, void* closure)
+void MAMACALLTYPE onLowWatermark (mamaQueue queue, size_t size, void* closure)
 {
 }
 
