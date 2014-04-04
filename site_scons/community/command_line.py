@@ -27,6 +27,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        BoolVariable('entitled','Whether the build is entitled or unentitled',False),
        PathVariable('gtest_home','Path to Google Test home',None, PathVariable.PathIsDir),
        ListVariable('middleware','Middleware(s) to be compiled in', 'avis', names = ['avis', 'qpid'] ),
+       ('jobs', 'Number of scons threads to spawn, if n is passed the number of availabe cores is calculated and used', '1'),
 
     )
 

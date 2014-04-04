@@ -4,7 +4,6 @@ import posixpath,string
 from custom_utils import *
 from SCons.Script import *
 import subprocess,time,shlex
-import multiprocessing
 
 from config import ParseIni
 
@@ -38,11 +37,10 @@ opts.Save('omama.conf', env)
 
 Help(opts.GenerateHelpText(env, sort=True))
 
-try:
-    SetOption('num_jobs', multiprocessing.cpu_count())
-    print "running with -j", GetOption('num_jobs')
-except:
-    pass
+if env['jobs'] == 'n':
+    env['jobs'] = host['cpus']
+
+SetOption('num_jobs', env['jobs'])
 
 if (env['prefix'] == '#wombat_products_%s' % (VERSIONS['mama']['releaseString'])
     or  env['prefix'] == '#openmama_install_%s' % (VERSIONS['mama']['releaseString'])):
