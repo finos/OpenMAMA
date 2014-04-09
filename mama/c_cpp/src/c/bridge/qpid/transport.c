@@ -1632,11 +1632,22 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 
             /* Move to the first element inside */
             pn_data_next     (properties); /* Move past first NULL byte */
-            pn_data_enter    (properties); /* Enter into meta list */
-            pn_data_next     (properties); /* Next lines up first entry */
+            pn_data_get_map(properties);
+            pn_data_enter    (properties); /* Enter into meta map */
 
-            /* Pull out the packet type */
-            msgNode->mMsgType = (qpidMsgType) pn_data_get_ubyte (properties);
+            int found = 0;
+            found = pn_data_lookup(properties,QPID_KEY_MSGTYPE);
+            if (found)
+            {
+                msgNode->mMsgType = (qpidMsgType) pn_data_get_ubyte (properties);
+            }
+            else
+            {
+                mama_log (MAMA_LOG_LEVEL_ERROR,
+                          "qpidBridgeMamaTransportImpl_dispatchThread(): "
+                          "Unable to retrieve message type from message");
+                return NULL;
+            }
 
             switch (msgNode->mMsgType)
             {

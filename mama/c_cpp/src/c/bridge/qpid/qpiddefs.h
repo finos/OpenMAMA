@@ -108,6 +108,11 @@ typedef enum qpidTransportType_
 
 #endif /* _PROTON_VERSION_H */
 
+/* Keys for application property map */
+#define QPID_KEY_MSGTYPE        "MAMAT"
+#define QPID_KEY_INBOXNAME      "MAMAI"
+#define QPID_KEY_REPLYTO        "MAMAR"
+#define QPID_KEY_TARGETSUBJECT  "MAMAS"
 
 /*=========================================================================
   =                Typedefs, structs, enums and globals                   =

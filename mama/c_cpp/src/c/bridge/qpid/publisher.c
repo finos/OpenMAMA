@@ -629,12 +629,13 @@ qpidBridgePublisherImpl_setMessageType (pn_message_t* message, qpidMsgType type)
     /* Ensure position is at the start */
     pn_data_rewind (properties);
 
-    /* Main container should be a list to allow expansion */
-    pn_data_put_list (properties);
-    pn_data_enter (properties);
+    /* Container for application properties is a map */
+    pn_data_put_map(properties);
+    pn_data_enter(properties);
 
     /* Add the type */
-    pn_data_put_ubyte (properties, type);
+    pn_data_put_string(properties,pn_bytes(strlen(QPID_KEY_MSGTYPE),QPID_KEY_MSGTYPE));
+    pn_data_put_ubyte(properties,type);
 
     pn_data_exit (properties);
 
