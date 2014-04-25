@@ -33,6 +33,7 @@
 #include "transportbridge.h"
 #include "msgimpl.h"
 #include "avisdefs.h"
+#include "sub.h"
 
 typedef struct avisPublisherBridge
 {
@@ -284,29 +285,27 @@ avisBridgeMamaPublisher_create (publisherBridge* result,
 static mama_status
 avisBridgeMamaPublisherImpl_buildSendSubject (avisPublisherBridge* impl)
 {
-    char lSubject[256];
+    mama_status status    = MAMA_STATUS_OK;
+    char*       keyTarget = NULL;
+    const char* root      = impl->mRoot;
+    const char* source    = impl->mSource;
+    const char* topic     = impl->mTopic;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
-
-    if (impl->mRoot != NULL && impl->mSource != NULL )
+    /* If this is a special _MD publisher, lose the topic unless dictionary */
+    if (root != NULL && 0 != strcmp (root, "_MDDD"))
     {
-            snprintf (lSubject, sizeof(lSubject),"%s.%s",
-                      impl->mRoot, impl->mSource);
-    }
-    else if (impl->mSource != NULL && impl->mTopic != NULL)
-    {
-        snprintf (lSubject, sizeof(lSubject), "%s.%s",
-                  impl->mSource, impl->mTopic);
-    }
-    else if (impl->mTopic != NULL)
-    {
-        snprintf (lSubject, sizeof(lSubject), "%s",
-                  impl->mTopic);
+        topic = NULL;
     }
 
-    impl->mSubject = strdup(lSubject);
+    status = avisBridgeMamaSubscriptionImpl_generateSubjectKey (root,
+                                                                source,
+                                                                topic,
+                                                                &keyTarget);
 
-    return MAMA_STATUS_OK;
+    /* Set the subject for publishing here */
+    impl->mSubject = keyTarget;
+
+    return status;
 }
 
 /*Send a message.*/

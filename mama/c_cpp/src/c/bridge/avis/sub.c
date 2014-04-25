@@ -32,6 +32,7 @@
 #include "transportbridge.h"
 #include "avisdefs.h"
 #include "subinitial.h"
+#include "sub.h"
 
 typedef struct avisSubscription
 {
@@ -45,7 +46,7 @@ typedef struct avisSubscription
 
     const char*       mSource;
     const char*       mSymbol;
-    char              mSubject[256];
+    char*             mSubject;
     void*             mClosure;
 
     int               mIsNotMuted;
@@ -329,27 +330,11 @@ avisBridgeMamaSubscription_create (subscriptionBridge* subscriber,
     if (!avisTransport)
         return MAMA_STATUS_INVALID_ARG;
 
-    if (source != NULL && source[0])
-    {
-        impl->mSource = source;
-    }
-    else
-    {
-        impl->mSource = "";
-    }
-
-    if (symbol != NULL && symbol[0])
-    {
-        impl->mSymbol = symbol;
-        snprintf (impl->mSubject, sizeof(impl->mSubject), "%s.%s",
-                  impl->mSource, impl->mSymbol);
-    }
-    else
-    {
-        impl->mSymbol = "";
-        snprintf (impl->mSubject, sizeof(impl->mSubject), "%s",
-                  impl->mSource );
-    }
+    /* Use a standard centralized method to determine a topic key */
+    avisBridgeMamaSubscriptionImpl_generateSubjectKey (NULL,
+                                                       source,
+                                                       symbol,
+                                                       &impl->mSubject);
 
     impl->mMamaCallback       = callback;
     impl->mMamaSubscription   = subscription;
@@ -434,6 +419,7 @@ avisBridgeMamaSubscription_destroy (subscriptionBridge subscriber)
 
     wsem_destroy(&avisSub(subscriber)->mCreateDestroySem);
 
+    free(avisSub(subscriber)->mSubject);
     free(avisSub(subscriber));
 
     return status;
@@ -489,4 +475,49 @@ avisBridgeMamaSubscription_isTportDisconnected (subscriptionBridge subscriber)
 {
     CHECK_SUBSCRIBER(subscriber);
     return elvin_is_open(avisSub(subscriber)->mAvis) ? 0 : 1;
+}
+
+#define COPY_TOKEN_AND_SLIDE(dst, src, remaining, first)\
+do {\
+    if (src) {\
+        size_t written = snprintf (dst, remaining, (first?"%s":".%s"), src);\
+        dst       += written;\
+        remaining -= written;\
+    }\
+} while(0);
+
+/*
+ * Internal function to ensure that the topic names are always calculated
+ * in a particular way
+ */
+mama_status
+avisBridgeMamaSubscriptionImpl_generateSubjectKey (const char* root,
+                                                   const char* source,
+                                                   const char* topic,
+                                                   char**      keyTarget)
+{
+    char   subject_[MAX_SUBJECT_LENGTH];
+    char*  subject   = subject_;
+    size_t remaining = MAX_SUBJECT_LENGTH;
+
+    COPY_TOKEN_AND_SLIDE(subject, root,   remaining, (subject_==subject));
+    COPY_TOKEN_AND_SLIDE(subject, source, remaining, (subject_==subject));
+    COPY_TOKEN_AND_SLIDE(subject, topic,  remaining, (subject_==subject));
+
+    mama_log (MAMA_LOG_LEVEL_FINEST,
+              "avisBridgeMamaSubscriptionImpl_generateSubjectKey(): %s", subject_);
+
+    /*
+     * Allocate the memory for copying the string. Caller is responsible for
+     * destroying.
+     */
+    *keyTarget = strdup (subject_);
+    if (NULL == *keyTarget)
+    {
+        return MAMA_STATUS_NOMEM;
+    }
+    else
+    {
+        return MAMA_STATUS_OK;
+    }
 }
