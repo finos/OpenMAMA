@@ -78,6 +78,8 @@ avisInbox_onDestroy(
 
    if (avisInbox(closure)->mOnInboxDestroyed)
       (avisInbox(closure)->mOnInboxDestroyed)(avisInbox(closure)->mParent, avisInbox(closure)->mClosure);
+
+   free (avisInbox(closure));
 }
 
 static void MAMACALLTYPE
@@ -178,11 +180,18 @@ avisBridgeMamaInbox_create (inboxBridge*           bridge,
 mama_status
 avisBridgeMamaInbox_destroy (inboxBridge inbox)
 {
-   CHECK_INBOX(inbox);
-   mamaSubscription_destroy(avisInbox(inbox)->mSubscription);
-   mamaSubscription_deallocate(avisInbox(inbox)->mSubscription);
-   free(avisInbox(inbox));
-   return MAMA_STATUS_OK;
+    mamaSubscription sub = NULL;
+
+    CHECK_INBOX(inbox);
+
+    /* Store subscription before callign destroy as the inbox might be
+     * freed before we get a chance to deallocate it. */
+    sub = avisInbox(inbox)->mSubscription;
+
+    mamaSubscription_destroy(sub);
+    mamaSubscription_deallocate(sub);
+
+    return MAMA_STATUS_OK;
 }
 
 

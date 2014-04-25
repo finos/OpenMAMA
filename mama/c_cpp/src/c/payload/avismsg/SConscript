@@ -10,7 +10,6 @@ includePath = []
 includePath.append('.')
 includePath.append('../..')
 includePath.append('#common/c_cpp/src/c')
-includePath.append('$avis_home/include')
 
 libPath = []
 libPath.append('$avis_home/lib')

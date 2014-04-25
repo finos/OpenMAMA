@@ -24,6 +24,7 @@
 
 #include <avis/elvin.h>
 #include <wombat/wSemaphore.h>
+#include <wombat/wInterlocked.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -36,21 +37,25 @@ extern "C" {
        if (!elvin_is_open(avis)) return MAMA_STATUS_INVALID_ARG; \
      } while(0)
 
-#define SUBJECT_FIELD_NAME  "__subj"
-#define INBOX_FIELD_NAME    "__inbx"
-#define MAX_SUBJECT_LENGTH    256
+#define SUBJECT_FIELD_NAME      "__subj"
+#define INBOX_FIELD_NAME        "__inbx"
+#define ENCLOSED_MSG_FIELD_NAME "__emsg"
+
+#define MAX_SUBJECT_LENGTH      256
+
+typedef struct avisBridgeImpl avisBridgeImpl;
 
 typedef struct avisTransportBridge
 {
     Elvin*               mAvis;
     mamaTransport        mTransport;
     wsem_t               mAvisDispatchSem;
+    wthread_t            mThreadId;
+    wInterlockedInt      mDispatching;
 } avisTransportBridge;
-
 
 typedef struct avisBridgeImpl
 {
-    avisTransportBridge*   mTransportBridge;
 } avisBridgeImpl;
 #define avisBridge(bridgeImpl) ((avisBridgeImpl*) bridgeImpl)
 

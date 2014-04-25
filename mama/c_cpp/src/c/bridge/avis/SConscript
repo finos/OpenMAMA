@@ -17,10 +17,10 @@ incPath.append('#mama/c_cpp/src/c')
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 
 if env['host']['os'] == 'Darwin':
-    env.Append(LIBS=['avis', 'mama', 'm', 'wombatcommon'],
+    env.Append(LIBS=['avis', 'mamaavismsgimpl', 'mama', 'm', 'wombatcommon'],
                LIBPATH=libPath, CPPPATH=incPath)
 else:
-    env.Append(LIBS=['avis', 'mama', 'm', 'wombatcommon', 'uuid'],
+    env.Append(LIBS=['avis', 'mamaavismsgimpl', 'mama', 'm', 'wombatcommon', 'uuid'],
                LIBPATH=libPath, CPPPATH=incPath)
 
 conf = Configure(env, config_h='./config.h', log_file='./config.log')

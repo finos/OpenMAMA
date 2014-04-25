@@ -33,6 +33,7 @@
 #include "transportbridge.h"
 #include "avisbridgefunctions.h"
 #include "avisdefs.h"
+#include <wombat/wInterlocked.h>
 
 #define TPORT_PREFIX    "mama.avis.transport"
 #define TPORT_PARAM     "url"
@@ -59,16 +60,24 @@ void log_avis_error(MamaLogLevel logLevel, Elvin* avis)
         avis->error.message);
 }
 
+static
+void closeNotification (Elvin* avis,
+                        void*  closure)
+{
+}
+
 void closeListener(Elvin* avis, 
                    CloseReason reason, 
                    const char* message, 
                    void* closure)
 {
-    const char* errMsg;
-    if (avisBridge(closure) == NULL) 
+    const char*          errMsg = NULL;
+    avisTransportBridge* bridge = (avisTransportBridge*) closure;
+
+    if (bridge == NULL) 
     {
         mama_log (MAMA_LOG_LEVEL_FINE, 
-            "Avis closeListener: could not get Avis bridge");
+            "Avis closeListener: could not get Avis transport bridge");
         return;
     }
 
@@ -89,12 +98,22 @@ void closeListener(Elvin* avis,
         default:                                
             errMsg = "Unknown Avis error";
     }
+
+    mama_log (MAMA_LOG_LEVEL_FINE, "%s : %s", errMsg, message);
+
+    if (REASON_PROTOCOL_VIOLATION == reason)
+    {
+        /* Ignore protocol violations */
+        return;
+    }
+
     mamaTransportImpl_disconnect(
-        avisBridge(closure)->mTransportBridge->mTransport, 
+        bridge->mTransport, 
         MAMA_TRANSPORT_DISCONNECT, 
         NULL, 
         NULL);
-    mama_log (MAMA_LOG_LEVEL_FINE, "%s : %s", errMsg, message);
+
+    wInterlocked_set (0, &bridge->mDispatching);
 }
 
 static const char*
@@ -140,53 +159,88 @@ Elvin* getAvis(mamaTransport transport)
 void* avisDispatchThread(void* closure)
 {
     avisTransportBridge* transportBridge = (avisTransportBridge*) closure;
-    elvin_event_loop(transportBridge->mAvis);
-    wsem_post(&transportBridge->mAvisDispatchSem);
+
+    while (1 == wInterlocked_read (&transportBridge->mDispatching))
+    {
+        elvin_poll (transportBridge->mAvis);
+
+        if (ELVIN_ERROR_TIMEOUT == transportBridge->mAvis->error.code)
+        {
+            /* Timeout is acceptable and expected */
+            elvin_error_reset (&transportBridge->mAvis->error);
+        }
+    }
+
+    wsem_post (&transportBridge->mAvisDispatchSem);
     return NULL;
 }
 
 
 mama_status avisTransportBridge_start(avisTransportBridge* transportBridge)
 {
-   /* stop Avis event loop */
-   wthread_t tid;
-   int rc;
-   
-   CHECK_TRANSPORT(transportBridge); 
+    /* stop Avis event loop */
+    int rc;
 
-   rc = wthread_create(&tid, NULL, avisDispatchThread, transportBridge);
-   if (0 != rc)
-   {
-      mama_log (MAMA_LOG_LEVEL_ERROR, "wthread_create returned %d", rc);
-      return MAMA_STATUS_SYSTEM_ERROR;
-   }
+    CHECK_TRANSPORT(transportBridge); 
 
-   return MAMA_STATUS_OK;   
+    if (1 == wInterlocked_read (&transportBridge->mDispatching))
+    {
+        mama_log (MAMA_LOG_LEVEL_WARN, "avisTransportBridge_start(): "
+                                       "Avis already dispatching");
+        log_avis_error (MAMA_LOG_LEVEL_WARN, transportBridge->mAvis);
+        return MAMA_STATUS_OK;
+    }
+
+    wInterlocked_set (1, &transportBridge->mDispatching);
+
+    rc = wthread_create (&transportBridge->mThreadId, NULL, 
+                        avisDispatchThread, transportBridge);
+
+    if (0 != rc)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, "wthread_create returned %d", rc);
+        return MAMA_STATUS_SYSTEM_ERROR;
+    }
+
+    return MAMA_STATUS_OK;   
 }
-
-
 
 mama_status avisTransportBridge_stop(avisTransportBridge* transportBridge)
 {
-   CHECK_TRANSPORT(transportBridge); 
-   
-   /* stop Avis event loop */
-   elvin_remove_close_listener(transportBridge->mAvis, closeListener);
-   if (!elvin_invoke_close(transportBridge->mAvis)) 
-   {
-      /* there appears to be a race condition in Avis libs where router socket
-       * can sometimes be closed before we receive the disconnect reply -- log
-       * it, and continue */
-      log_avis_error(MAMA_LOG_LEVEL_FINE, transportBridge->mAvis);
-   }
+    CHECK_TRANSPORT(transportBridge); 
 
-   while (-1 == wsem_wait(&transportBridge->mAvisDispatchSem)) 
-   {
-      if (errno != EINTR) return MAMA_STATUS_SYSTEM_ERROR;
-   }
+    if (0 == wInterlocked_read (&transportBridge->mDispatching))
+    {
+        mama_log (MAMA_LOG_LEVEL_WARN, "avisTransportBridge_stop(): "
+                                       "Avis already stopped");
+        log_avis_error (MAMA_LOG_LEVEL_WARN, transportBridge->mAvis);
+        return MAMA_STATUS_OK;
+    }
 
-   return MAMA_STATUS_OK;
+    wInterlocked_set (0, &transportBridge->mDispatching);
+
+    /* Dispatch a dummy notification to get the event polling to iterate
+     * another loop and examine the mDispatching state */
+    elvin_invoke (transportBridge->mAvis, &closeNotification, transportBridge);
+
+    while (-1 == wsem_wait(&transportBridge->mAvisDispatchSem)) 
+    {
+        if (errno != EINTR) return MAMA_STATUS_SYSTEM_ERROR;
+    }
+
+    wthread_join (transportBridge->mThreadId, NULL);
+
+    return MAMA_STATUS_OK;
 }      
+
+int
+avisTransportBridge_isDispatching (
+    avisTransportBridge* transportBridge)
+{
+    CHECK_TRANSPORT(transportBridge); 
+
+    return wInterlocked_read (&transportBridge->mDispatching);
+}
 
 /*=========================================================================
   =                    Functions for the mamaTransport                    =
@@ -255,14 +309,6 @@ avisBridgeMamaTransport_create (transportBridge* result,
         return status;
     }
 
-    if (avisBridge->mTransportBridge != NULL) 
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
-            "avisBridgeMamaTransport_create(): Avis already connected");
-        free(transport);
-        return MAMA_STATUS_PLATFORM;
-    }
-
     /* create the Elvin object */
     transport->mAvis = (Elvin*)calloc (1, sizeof (Elvin));
     if (transport->mAvis == NULL) 
@@ -290,22 +336,23 @@ avisBridgeMamaTransport_create (transportBridge* result,
         return MAMA_STATUS_PLATFORM;
     }
 
-    avisBridge->mTransportBridge = transport;
-    elvin_add_close_listener(transport->mAvis, closeListener,  avisBridge);
+    wInterlocked_initialize (&transport->mDispatching);
+
+    elvin_add_close_listener(transport->mAvis, closeListener, transport);
     wsem_init(&transport->mAvisDispatchSem, 0, 0);
 
     *result = (transportBridge) transport;
 
-    return MAMA_STATUS_OK;
+    return avisTransportBridge_start(transport);
 }
 
 mama_status
 avisBridgeMamaTransport_destroy (transportBridge transport)
 {
     mama_status status;
-    avisBridgeImpl* avisBridge = NULL;
-    mamaBridgeImpl* bridgeImpl = NULL;
-    
+    avisTransportBridge* transportBridge = (avisTransportBridge*) transport;
+    avisBridgeImpl*      avisBridge      = NULL;
+    mamaBridgeImpl*      bridgeImpl      = NULL;
     
     bridgeImpl = mamaTransportImpl_getBridgeImpl(
         avisTransport(transport)->mTransport);
@@ -327,11 +374,25 @@ avisBridgeMamaTransport_destroy (transportBridge transport)
         return status;
     }
 
+    if (1 == wInterlocked_read (&transportBridge->mDispatching))
+    {
+        avisTransportBridge_stop (transportBridge);
+    }
+
+    elvin_remove_close_listener (transportBridge->mAvis, closeListener);
+
+    if (!elvin_close (transportBridge->mAvis)) 
+    {
+        /* there appears to be a race condition in Avis libs where router socket
+         * can sometimes be closed before we receive the disconnect reply -- log
+         * it, and continue */
+        log_avis_error(MAMA_LOG_LEVEL_FINE, transportBridge->mAvis);
+    }
+
+    wInterlocked_destroy (&transportBridge->mDispatching);
     wsem_destroy(&avisTransport(transport)->mAvisDispatchSem);
-    elvin_error_free(&avisTransport(transport)->mAvis->error);
     free(avisTransport(transport)->mAvis);
     free(avisTransport(transport));
-    avisBridge->mTransportBridge = NULL;
     return MAMA_STATUS_OK;
 }
 

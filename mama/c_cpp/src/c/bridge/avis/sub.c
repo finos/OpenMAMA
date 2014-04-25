@@ -26,6 +26,7 @@
 #include <msgimpl.h>
 #include <queueimpl.h>
 #include <wombat/queue.h>
+#include <wombat/wSemaphore.h>
 
 #include "avisbridgefunctions.h"
 #include "transportbridge.h"
@@ -50,7 +51,15 @@ typedef struct avisSubscription
     int               mIsNotMuted;
     int               mIsValid;
 
+    wsem_t            mCreateDestroySem;
+
 } avisSubscription;
+
+typedef struct avisCallbackContext
+{
+    void* attributes;
+    void* subscriber;
+} avisCallbackContext;
 
 #define avisSub(subscriber) ((avisSubscription*)(subscriber))
 #define CHECK_SUBSCRIBER(subscriber) \
@@ -72,18 +81,48 @@ const char* makeAvisSubject(const char* subject)
 }
 
 
-static void MAMACALLTYPE
-destroy_callback(void* subscriber, void* closure)
+static
+void subscribeAvis (Elvin* avis,
+                    void*  closure)
 {
-    // cant do anything without a subscriber
-    if (!avisSub(subscriber)) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avis_callback(): called with NULL subscriber!");
+    avisSubscription* impl = (avisSubscription*) closure;
+
+    impl->mAvisSubscription = elvin_subscribe(impl->mAvis, makeAvisSubject(impl->mSubject));
+
+    if (impl->mAvisSubscription == NULL)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, "subscribeAvis(): "
+                                        "Failed to subscribe to: %s", impl->mSubject);
+
+        wsem_post (&impl->mCreateDestroySem);
+    
         return;
     }
 
-    (*avisSub(subscriber)->mMamaCallback.onDestroy)(avisSub(subscriber)->mMamaSubscription, avisSub(subscriber)->mClosure);
+    elvin_subscription_add_listener (impl->mAvisSubscription, avis_callback, impl);
 
-    free(avisSub(subscriber));
+    mama_log (MAMA_LOG_LEVEL_FINER,
+              "Made Avis subscription to: %s", impl->mSubject);
+
+    wsem_post (&impl->mCreateDestroySem);
+}
+
+static
+void unsubscribeAvis (Elvin* avis,
+                      void*  closure)
+{
+    Subscription* sub = (Subscription*) closure;
+
+    elvin_subscription_remove_listener (sub, avis_callback);
+
+    if (!elvin_unsubscribe(avis, sub))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, "unsubscribeAvis(): "
+                                        "Failed to unsubscribe to: %s",
+                                        sub->subscription_expr);
+    }
+
+    free (sub);
 }
 
 /**
@@ -93,28 +132,49 @@ destroy_callback(void* subscriber, void* closure)
  * @param closure The subscriber
  */
 static void MAMACALLTYPE
-avis_queue_callback (void* data, void* closure)
+avis_queue_callback (mamaQueue queue,
+                     void*     closure)
 {
-    mama_status status;
-    mamaMsg tmpMsg;
-    msgBridge bridgeMsg;
+    mama_status status     = MAMA_STATUS_OK;
+    mamaMsg     tmpMsg     = NULL;
+    msgBridge   bridgeMsg  = NULL;
+    const void* buf        = NULL;
+    mama_size_t bufSize    = 0;
+
+    avisCallbackContext* ctx = (avisCallbackContext*) closure;
+
+    void* data       = ctx->attributes;
+    void* subscriber = ctx->subscriber;
 
     /* cant do anything without a subscriber */
-    if (!avisSub(closure)) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avis_callback(): called with NULL subscriber!");
+    if (!subscriber)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "avis_callback(): called with NULL subscriber!");
+
+        attributes_destroy (data);
+        free (ctx);
         return;
     }
 
     /*Make sure that the subscription is processing messages*/
-    if ((!avisSub(closure)->mIsNotMuted) || (!avisSub(closure)->mIsValid)) return;
-
+    if ((!avisSub(subscriber)->mIsNotMuted) || 
+        (!avisSub(subscriber)->mIsValid))
+    {
+        attributes_destroy (data);
+        free (ctx);
+        return;
+    }
 
     /*This is the reuseable message stored on the associated MamaQueue*/
-    tmpMsg = mamaQueueImpl_getMsg(avisSub(closure)->mQueue);
+    tmpMsg = mamaQueueImpl_getMsg(avisSub(subscriber)->mQueue);
     if (!tmpMsg)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avis_callback(): "
                   "Could not get cached mamaMsg from event queue.");
+
+        attributes_destroy (data);
+        free (ctx);
         return;
     }
 
@@ -125,12 +185,13 @@ avis_queue_callback (void* data, void* closure)
         mama_log (MAMA_LOG_LEVEL_ERROR, "avis_callback(): "
                   "Could not get bridge message from cached"
                   " queue mamaMsg [%d]", status);
+
+        attributes_destroy (data);
+        free (ctx);
         return;
     }
 
     /*Set the buffer and the reply handle on the bridge message structure*/
-    avisBridgeMamaMsgImpl_setAttributesAndSecure (bridgeMsg, data, 0);
-
     if (MAMA_STATUS_OK!=(status=mamaMsgImpl_setMsgBuffer (tmpMsg,
                                 data,
                                 0, MAMA_PAYLOAD_AVIS)))
@@ -138,21 +199,79 @@ avis_queue_callback (void* data, void* closure)
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "avis_callback(): mamaMsgImpl_setMsgBuffer() failed. [%d]",
                   status);
+
+        attributes_destroy (data);
+        free (ctx);
         return;
     }
 
-    /*Process the message as normal*/
-    if (MAMA_STATUS_OK != (status=mamaSubscription_processMsg
-                (avisSub(closure)->mMamaSubscription, tmpMsg)))
+    if (MAMA_STATUS_OK == mamaMsg_getOpaque (
+            tmpMsg, ENCLOSED_MSG_FIELD_NAME, 0, &buf, &bufSize) && 
+            bufSize > 0)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "avis_callback(): "
-                  "mamaSubscription_processMsg() failed. [%d]",
-                  status);
+        mamaMsg         encMsg = NULL;
+        mamaBridgeImpl* bridge = 
+            mamaSubscription_getBridgeImpl (avisSub(subscriber)->mMamaSubscription);
+
+        status = mamaMsg_createFromByteBuffer (&encMsg, buf, bufSize);
+
+        if (MAMA_STATUS_OK != status)
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                      "avis_callback(): "
+                      "Could not create message from enclosed byte buffer. [%d]",
+                      status);
+
+            attributes_destroy (data);
+            free (ctx);
+            return;
+        }
+
+        mamaMsgImpl_useBridgePayload (encMsg, bridge);
+        mamaMsgImpl_getBridgeMsg (encMsg, &bridgeMsg);
+
+        /*Set the buffer and the reply handle on the bridge message structure*/
+        avisBridgeMamaMsgImpl_setAttributesAndSecure (bridgeMsg, data, 0);
+
+        if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST)
+        {
+            mama_log (MAMA_LOG_LEVEL_FINEST, "avis_callback(): "
+                      "Received enclosed message: %s", mamaMsg_toString (encMsg));
+        }
+
+        if (MAMA_STATUS_OK != (status=mamaSubscription_processMsg
+                    (avisSub(subscriber)->mMamaSubscription, encMsg)))
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                      "avis_callback(): "
+                      "mamaSubscription_processMsg() failed. [%d]",
+                      status);
+        }
+
+        mamaMsg_destroy (encMsg);
+    }
+    else
+    {
+        avisBridgeMamaMsgImpl_setAttributesAndSecure (bridgeMsg, data, 0);
+
+        if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST)
+        {
+            mama_log (MAMA_LOG_LEVEL_FINEST, "avis_callback(): "
+                           "Received message: %s", mamaMsg_toString (tmpMsg));
+        }
+
+        /*Process the message as normal*/
+        if (MAMA_STATUS_OK != (status=mamaSubscription_processMsg
+                    (avisSub(subscriber)->mMamaSubscription, tmpMsg)))
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                      "avis_callback(): "
+                      "mamaSubscription_processMsg() failed. [%d]",
+                      status);
+        }
     }
 
-    attributes_free ((Attributes*)data);
-    free ((Attributes*)data);
+    free (ctx);
 }
 
 static void
@@ -162,8 +281,6 @@ avis_callback(
     bool            secure,
     void*           subscriber)
 {
-    wombatQueue queue = NULL;
-
     /* cant do anything without a subscriber */
     if (!avisSub(subscriber)) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avis_callback(): called with NULL subscriber!");
@@ -173,20 +290,13 @@ avis_callback(
     /*Make sure that the subscription is processing messages*/
     if ((!avisSub(subscriber)->mIsNotMuted) || (!avisSub(subscriber)->mIsValid)) return;
 
-    mamaQueue_getNativeHandle(avisSub(subscriber)->mQueue, &queue);
-    if (!queue)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avis_callback(): "
-                  "Could not get event queue.");
-        return;
-    }
+    avisCallbackContext* ctx = (avisCallbackContext*) malloc (sizeof (avisCallbackContext));
+    ctx->attributes = attributes_clone (attributes);
+    ctx->subscriber = subscriber;
 
-    wombatQueue_enqueue (queue, avis_queue_callback,
-        attributes_clone(attributes), subscriber);
-
-    return;
+    mamaQueue_enqueueEvent (avisSub (subscriber)->mQueue,
+                            avis_queue_callback, ctx);
 }
-
 
 mama_status
 avisBridgeMamaSubscription_create (subscriptionBridge* subscriber,
@@ -198,7 +308,8 @@ avisBridgeMamaSubscription_create (subscriptionBridge* subscriber,
                                     mamaSubscription    subscription,
                                     void*               closure)
 {
-    avisSubscription* impl = NULL;
+    avisSubscription*    impl          = NULL;
+    avisTransportBridge* avisTransport = NULL;
     
     if (!subscriber || !subscription || !transport )
         return MAMA_STATUS_NULL_ARG;
@@ -208,8 +319,15 @@ avisBridgeMamaSubscription_create (subscriptionBridge* subscriber,
        return MAMA_STATUS_NOMEM;
 
     impl->mAvis = getAvis(transport);
+
     if (!impl->mAvis)
        return MAMA_STATUS_INVALID_ARG;
+
+    mamaTransport_getBridgeTransport (
+        transport, (void*) &avisTransport);
+
+    if (!avisTransport)
+        return MAMA_STATUS_INVALID_ARG;
 
     if (source != NULL && source[0])
     {
@@ -240,16 +358,22 @@ avisBridgeMamaSubscription_create (subscriptionBridge* subscriber,
     impl->mClosure            = closure;
     impl->mIsNotMuted         = 1;
     impl->mIsValid            = 1;
+    impl->mAvisSubscription   = NULL;
 
-    impl->mAvisSubscription = elvin_subscribe(impl->mAvis, makeAvisSubject(impl->mSubject));
-    if (impl->mAvisSubscription == NULL)
-       return MAMA_STATUS_PLATFORM;
-
-    elvin_subscription_add_listener(impl->mAvisSubscription, avis_callback, impl);
-    mama_log (MAMA_LOG_LEVEL_FINER,
-              "Made Avis subscription to: %s", impl->mSubject);
+    wsem_init(&impl->mCreateDestroySem, 0, 0);
 
     *subscriber =  (subscriptionBridge) impl;
+
+    if (avisTransportBridge_isDispatching (avisTransport))
+    {
+        elvin_invoke (impl->mAvis, &subscribeAvis, impl);
+        wsem_wait (&impl->mCreateDestroySem);
+    }
+    else
+    {
+        subscribeAvis (impl->mAvis, impl);
+    }
+
     return MAMA_STATUS_OK;
 }
 
@@ -270,32 +394,47 @@ avisBridgeMamaSubscription_createWildCard (
 mama_status
 avisBridgeMamaSubscription_destroy (subscriptionBridge subscriber)
 {
-    mama_status status = MAMA_STATUS_OK;
-    wombatQueue   queue = NULL;
+    mama_status          status        = MAMA_STATUS_OK;
+    wombatQueue          queue         = NULL;
+    avisTransportBridge* avisTransport = NULL;
 
     CHECK_SUBSCRIBER(subscriber);
 
-    elvin_subscription_remove_listener(avisSub(subscriber)->mAvisSubscription, avis_callback);
+    mamaTransport_getBridgeTransport (
+        avisSub(subscriber)->mTransport, (void*) &avisTransport);
 
-    if (!elvin_unsubscribe(avisSub(subscriber)->mAvis, avisSub(subscriber)->mAvisSubscription)) {
-        // NOTE: elvin_unsubscribe sometimes returns failure for no apparent reason, so dont log errors here:
-        // 2011-09-02 11:59:10: avis error code=2, error msg=Illegal frame size: 61
-        //log_avis_error(MAMA_LOG_LEVEL_ERROR, avisSub(subscriber)->mAvis);
-        //status = MAMA_STATUS_PLATFORM;
+    if (!avisTransport)
+        return MAMA_STATUS_INVALID_ARG;
+
+    if (avisTransportBridge_isDispatching (avisTransport))
+    {
+        elvin_invoke (avisSub(subscriber)->mAvis, &unsubscribeAvis, 
+                      avisSub(subscriber)->mAvisSubscription);
+    }
+    else
+    {
+        unsubscribeAvis (avisSub(subscriber)->mAvis,
+                         avisSub(subscriber)->mAvisSubscription);
     }
 
-    free(avisSub(subscriber)->mAvisSubscription);
-
+    avisSub(subscriber)->mAvisSubscription = NULL;
+    
     mamaQueue_getNativeHandle(avisSub(subscriber)->mQueue, &queue);
+
     if (!queue)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avis_callback(): "
+        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaSubscription_destroy(): "
                   "Could not get event queue.");
         return MAMA_STATUS_PLATFORM;
     }
+                            
+    avisSub(subscriber)->mMamaCallback.onDestroy (
+        avisSub(subscriber)->mMamaSubscription, 
+        avisSub(subscriber)->mClosure);
 
-    wombatQueue_enqueue (queue, destroy_callback,
-    		(void*)subscriber, NULL);
+    wsem_destroy(&avisSub(subscriber)->mCreateDestroySem);
+
+    free(avisSub(subscriber));
 
     return status;
 }

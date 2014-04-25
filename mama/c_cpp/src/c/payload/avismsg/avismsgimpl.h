@@ -618,6 +618,14 @@ mama_status avisValue_getMsg(const Value* pValue, mamaMsg* result);
 
 mama_status avisValue_getFieldAsString(const Value* pValue, const char* name, mama_fid_t fid, char* buf, size_t len);
 
+mama_status
+avismsgPayload_setAttributes (msgPayload  msg,
+                              Attributes* attributes);
+
+mama_status
+avismsgPayload_copyAttributes (msgPayload  msg,
+                               Attributes* attributes);
+
 #if defined(__cplusplus)
 }
 #endif
