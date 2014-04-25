@@ -43,8 +43,6 @@ extern "C" {
 
 #define MAX_SUBJECT_LENGTH      256
 
-typedef struct avisBridgeImpl avisBridgeImpl;
-
 typedef struct avisTransportBridge
 {
     Elvin*               mAvis;
