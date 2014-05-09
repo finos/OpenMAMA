@@ -590,6 +590,46 @@ extern void
 mamaSubscription_unsetAllPossiblyStale(
     mamaSubscription subscription);
 
+extern void
+mamaSubscription_setIsThrottled(
+    mamaSubscription  subscription,
+    int               isThrottled);
+
+extern mamaMsgCallbacks *
+mamaSubscription_getWombatMsgCallbacks(
+    mamaSubscription subscription);
+
+extern void
+mamaSubscription_setAcceptMultipleInitials(
+    mamaSubscription subscription,
+    int              accept);
+
+void
+mamaSubscriptionImpl_clearTransport(
+    mamaSubscription subscription);
+
+extern const char *
+mamaSubscription_getEntitleSubject(
+    mamaSubscription subscription);
+
+extern int
+mamaSubscription_getRespondToNextRefresh(
+    mamaSubscription subscription);
+
+extern mama_status
+mamaSubscription_setRespondToNextRefresh(
+    mamaSubscription subscription,
+    const int value);
+
+extern void
+mamaSubscription_resetRefreshForListener(
+    mamaSubscription subscription);
+
+extern void MAMACALLTYPE
+mamaSubscription_DestroyThroughQueueCB(
+    mamaQueue Queue,
+    void* closure);
+
 
 #if defined(__cplusplus)
 }
