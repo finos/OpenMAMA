@@ -64,14 +64,14 @@ protected:
         mama_loadPayloadBridge(&m_payloadBridge, m_payload.c_str());
         
         m_status = m_payloadBridge->msgPayloadCreate(&m_msg);
-        ASSERT_EQ(m_status, MAMA_STATUS_OK);
+        ASSERT_EQ (MAMA_STATUS_OK, m_status);
     }
 
     // Common TearDown
     virtual void TearDown()
     {
         m_status = m_payloadBridge->msgPayloadDestroy(m_msg);
-        ASSERT_EQ(m_status, MAMA_STATUS_OK);
+        ASSERT_EQ (MAMA_STATUS_OK, m_status);
     }
 };
 
@@ -118,19 +118,19 @@ TEST_F(FieldVectorBoolTests, GetVectorBool)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorBool(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NOT_IMPLEMENTED);
+    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
 }
 
 TEST_F(FieldVectorBoolTests, GetVectorBoolNullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorBool(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NOT_IMPLEMENTED);
+    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
 }
 
 TEST_F(FieldVectorBoolTests, GetVectorBoolNullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorBool(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NOT_IMPLEMENTED);
+    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
 }
 
 /**
@@ -177,22 +177,22 @@ TEST_F(FieldVectorCharTests, GetVectorChar)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorChar(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], 'X');
-    ASSERT_EQ(m_out[1], 'Y');
-    ASSERT_EQ(m_size, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ ('X', m_out[0]);
+    ASSERT_EQ ('Y', m_out[1]);
+    ASSERT_EQ ((mama_size_t)VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorCharTests, GetVectorCharNullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorChar(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorCharTests, GetVectorCharNullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorChar(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -239,22 +239,22 @@ TEST_F(FieldVectorI8Tests, GetVectorI8)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI8(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], 1);
-    ASSERT_EQ(m_out[1], 2);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE * sizeof(mama_i8_t));
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (1, m_out[0]);
+    ASSERT_EQ (2, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE * sizeof(mama_i8_t), m_size);
 }
 
 TEST_F(FieldVectorI8Tests, GetVectorI8NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI8(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorI8Tests, GetVectorI8NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI8(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -303,22 +303,22 @@ TEST_F(FieldVectorU8Tests, GetVectorU8)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU8(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], 128);
-    ASSERT_EQ(m_out[1], 255);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (128, m_out[0]);
+    ASSERT_EQ (255, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorU8Tests, GetVectorU8NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU8(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorU8Tests, GetVectorU8NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU8(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -369,22 +369,22 @@ TEST_F(FieldVectorI16Tests, GetVectorI16)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI16(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], -32768);
-    ASSERT_EQ(m_out[1], 32767);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (-32768, m_out[0]);
+    ASSERT_EQ (32767, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorI16Tests, GetVectorI16NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI16(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorI16Tests, GetVectorI16NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI16(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -432,22 +432,22 @@ TEST_F(FieldVectorU16Tests, GetVectorU16)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU16(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], 32768);
-    ASSERT_EQ(m_out[1], 65535);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (32768, m_out[0]);
+    ASSERT_EQ (65535, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorU16Tests, GetVectorU16NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU16(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorU16Tests, GetVectorU16NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU16(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -494,22 +494,22 @@ TEST_F(FieldVectorI32Tests, GetVectorI32)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI32(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], -214783648);
-    ASSERT_EQ(m_out[1], 214783647);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (-214783648, m_out[0]);
+    ASSERT_EQ (214783647, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorI32Tests, GetVectorI32NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI32(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorI32Tests, GetVectorI32NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI32(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -556,22 +556,22 @@ TEST_F(FieldVectorU32Tests, GetVectorU32)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU32(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], 2147483648);
-    ASSERT_EQ(m_out[1], 4294967295);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (2147483648, m_out[0]);
+    ASSERT_EQ (4294967295, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorU32Tests, GetVectorU32NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU32(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorU32Tests, GetVectorU32NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU32(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -622,22 +622,22 @@ TEST_F(FieldVectorI64Tests, GetVectorI64)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI64(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], -9223372036854775807);
-    ASSERT_EQ(m_out[1], 9223372036854775807);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (-9223372036854775807, m_out[0]);
+    ASSERT_EQ (9223372036854775807, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorI64Tests, GetVectorI64NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI64(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorI64Tests, GetVectorI64NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorI64(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -693,22 +693,22 @@ TEST_F(FieldVectorU64Tests, GetVectorU64)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU64(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], FieldVectorU64Tests::LARGE_NUM_1);
-    ASSERT_EQ(m_out[1], FieldVectorU64Tests::LARGE_NUM_2);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (FieldVectorU64Tests::LARGE_NUM_1, m_out[0]);
+    ASSERT_EQ (FieldVectorU64Tests::LARGE_NUM_2, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorU64Tests, GetVectorU64NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU64(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorU64Tests, GetVectorU64NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorU64(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -755,22 +755,22 @@ TEST_F(FieldVectorF32Tests, GetVectorF32)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorF32(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], 1.0f);
-    ASSERT_EQ(m_out[1], 2.0f);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (1.0f, m_out[0]);
+    ASSERT_EQ (2.0f, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorF32Tests, GetVectorF32NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorF32(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorF32Tests, GetVectorF32NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorF32(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -817,22 +817,22 @@ TEST_F(FieldVectorF64Tests, GetVectorF64)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorF64(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_out[0], 1.0f);
-    ASSERT_EQ(m_out[1], 2.0f);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (1.0f, m_out[0]);
+    ASSERT_EQ (2.0f, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorF64Tests, GetVectorF64NullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorF64(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorF64Tests, GetVectorF64NullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorF64(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -879,22 +879,22 @@ TEST_F(FieldVectorStringTests, GetVectorString)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorString(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_STREQ(m_out[0], "ABC");
-    EXPECT_STREQ(m_out[1], "XYZ");
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_STREQ ("ABC", m_out[0]);
+    EXPECT_STREQ ("XYZ", m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorStringTests, GetVectorStringNullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorString(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorStringTests, GetVectorStringNullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorString(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -958,19 +958,19 @@ protected:
 TEST_F(FieldVectorDateTimeTests, GetVectorDateTime)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorDateTime(m_field, m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NOT_IMPLEMENTED);
+    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
 }
 
 TEST_F(FieldVectorDateTimeTests, GetVectorDateTimeNullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorDateTime(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NOT_IMPLEMENTED);
+    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
 }
 
 TEST_F(FieldVectorDateTimeTests, GetVectorDateTimeNullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorDateTime(m_field, m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NOT_IMPLEMENTED);
+    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
 }
 
 /**
@@ -1036,19 +1036,19 @@ protected:
 TEST_F(FieldVectorPriceTests, GetVectorPrice)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorPrice(m_field, m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NOT_IMPLEMENTED);
+    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
 }
 
 TEST_F(FieldVectorPriceTests, GetVectorPriceNullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorPrice(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NOT_IMPLEMENTED);
+    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
 }
 
 TEST_F(FieldVectorPriceTests, GetVectorPriceNullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorPrice(m_field, m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NOT_IMPLEMENTED);
+    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
 }
 
 /**
@@ -1114,24 +1114,24 @@ TEST_F(FieldVectorSubMsgTests, GetVectorSubMsg)
     char             testName;
 
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     // The following is to populate impl->mWombatField
     m_status = m_payloadBridge->msgPayloadGetField(m_msg, &testName, 1, &m_field);
 
     m_status = m_payloadBridge->msgFieldPayloadGetVectorMsg(m_field, &m_out, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    ASSERT_EQ(m_size, (mama_size_t) VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE, m_size);
 }
 
 TEST_F(FieldVectorSubMsgTests, GetVectorSubMsgNullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorMsg(m_field, NULL, &m_size);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorSubMsgTests, GetVectorSubMsgNullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorMsg(m_field, &m_out, NULL);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }

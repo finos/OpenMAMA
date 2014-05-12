@@ -140,12 +140,12 @@ protected:
 TEST_F(PayloadVectorBoolTests, AddVectorBool)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -153,15 +153,15 @@ TEST_F(PayloadVectorBoolTests, AddVectorBool)
 TEST_F(PayloadVectorBoolTests, AddVectorBoolAfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    EXPECT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -169,31 +169,31 @@ TEST_F(PayloadVectorBoolTests, AddVectorBoolAfterInit)
 TEST_F(PayloadVectorBoolTests, AddVectorBoolNullAdd)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorBoolTests, AddVectorBoolNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorBoolTests, AddVectorBoolInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorBoolTests, AddVectorBoolInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorBool test fixtures
@@ -202,107 +202,107 @@ TEST_F(PayloadVectorBoolTests, AddVectorBoolInvalidFid)
 TEST_F(PayloadVectorBoolTests, UpdateVectorBool)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorBoolTests, UpdateVectorBoolInitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorBoolTests, UpdateVectorBoolInitByFid)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(m_msg, "Rhubarb", 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, "Rhubarb", 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorBoolTests, UpdateVectorBoolNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorBoolTests, UpdateVectorBoolNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorBoolTests, UpdateVectorBoolInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorBoolTests, UpdateVectorBoolInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorBoolTests, UpdateVectorBoolInvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorBool test fixtures
@@ -311,50 +311,50 @@ TEST_F(PayloadVectorBoolTests, UpdateVectorBoolInvalidFidNo)
 TEST_F(PayloadVectorBoolTests, GetVectorBool)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorBool(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorBoolTests, GetVectorBoolNullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorBoolTests, GetVectorBoolNullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorBoolTests, GetVectorBoolNotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorBool(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorBool(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -406,38 +406,38 @@ protected:
 TEST_F(PayloadVectorCharTests, AddVectorChar)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorCharTests, AddVectorCharNullChar)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorCharTests, AddVectorCharNullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorCharTests, AddVectorCharAfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -445,19 +445,19 @@ TEST_F(PayloadVectorCharTests, AddVectorCharAfterInit)
 TEST_F(PayloadVectorCharTests, AddVectorCharInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorCharTests, AddVectorCharInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorChar test fixtures
@@ -466,96 +466,96 @@ TEST_F(PayloadVectorCharTests, AddVectorCharInvalidFid)
 TEST_F(PayloadVectorCharTests, UpdateVectorChar)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorChar(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(char) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(char) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorCharTests, UpdateVectorCharInitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorChar(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorCharTests, UpdateVectorCharNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorChar(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorCharTests, UpdateVectorCharNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorChar(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorCharTests, UpdateVectorCharInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorChar(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorCharTests, UpdateVectorCharInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorChar(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorCharTests, UpdateVectorCharInvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorChar(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorChar test fixtures
@@ -564,50 +564,50 @@ TEST_F(PayloadVectorCharTests, UpdateVectorCharInvalidFidNo)
 TEST_F(PayloadVectorCharTests, GetVectorChar)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(char) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorChar(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(char) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(char) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(char) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorCharTests, GetVectorCharNullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorCharTests, GetVectorCharNullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorCharTests, GetVectorCharNotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorChar(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorChar(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -660,38 +660,38 @@ protected:
 TEST_F(PayloadVectorI8Tests, AddVectorI8)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorI8Tests, AddVectorI8NullI8)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorI8Tests, AddVectorI8NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI8Tests, AddVectorI8AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -699,19 +699,19 @@ TEST_F(PayloadVectorI8Tests, AddVectorI8AfterInit)
 TEST_F(PayloadVectorI8Tests, AddVectorI8InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI8Tests, AddVectorI8InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorI8 test fixtures
@@ -720,96 +720,96 @@ TEST_F(PayloadVectorI8Tests, AddVectorI8InvalidFid)
 TEST_F(PayloadVectorI8Tests, UpdateVectorI8)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI8(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_i8_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_i8_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI8Tests, UpdateVectorI8NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI8(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI8Tests, UpdateVectorI8NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI8(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI8Tests, UpdateVectorI8InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorI8(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI8Tests, UpdateVectorI8InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI8(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI8Tests, UpdateVectorI8InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI8(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI8Tests, UpdateVectorI8InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI8(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorI8 test fixtures
@@ -818,50 +818,50 @@ TEST_F(PayloadVectorI8Tests, UpdateVectorI8InvalidFidNo)
 TEST_F(PayloadVectorI8Tests, GetVectorI8)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI8(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_i8_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_i8_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_i8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI8Tests, GetVectorI8NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI8Tests, GetVectorI8NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI8Tests, GetVectorI8NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI8(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -914,38 +914,38 @@ protected:
 TEST_F(PayloadVectorU8Tests, AddVectorU8)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorU8Tests, AddVectorU8NullU8)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorU8Tests, AddVectorU8NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU8Tests, AddVectorU8AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -953,19 +953,19 @@ TEST_F(PayloadVectorU8Tests, AddVectorU8AfterInit)
 TEST_F(PayloadVectorU8Tests, AddVectorU8InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU8Tests, AddVectorU8InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorU8 test fixtures
@@ -974,96 +974,96 @@ TEST_F(PayloadVectorU8Tests, AddVectorU8InvalidFid)
 TEST_F(PayloadVectorU8Tests, UpdateVectorU8)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU8(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_u8_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_u8_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU8Tests, UpdateVectorU8NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU8(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU8Tests, UpdateVectorU8NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU8(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU8Tests, UpdateVectorU8InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorU8(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU8Tests, UpdateVectorU8InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU8(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU8Tests, UpdateVectorU8InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU8(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU8Tests, UpdateVectorU8InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU8(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorU8 test fixtures
@@ -1072,50 +1072,50 @@ TEST_F(PayloadVectorU8Tests, UpdateVectorU8InvalidFidNo)
 TEST_F(PayloadVectorU8Tests, GetVectorU8)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU8(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_u8_t) * VECTOR_UPDATE_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_u8_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_u8_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU8Tests, GetVectorU8NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU8Tests, GetVectorU8NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU8Tests, GetVectorU8NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU8(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU8(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -1168,38 +1168,38 @@ protected:
 TEST_F(PayloadVectorI16Tests, AddVectorI16)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorI16Tests, AddVectorI16NullI16)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorI16Tests, AddVectorI16NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI16Tests, AddVectorI16AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -1207,19 +1207,19 @@ TEST_F(PayloadVectorI16Tests, AddVectorI16AfterInit)
 TEST_F(PayloadVectorI16Tests, AddVectorI16InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI16Tests, AddVectorI16InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorI16 test fixtures
@@ -1228,96 +1228,96 @@ TEST_F(PayloadVectorI16Tests, AddVectorI16InvalidFid)
 TEST_F(PayloadVectorI16Tests, UpdateVectorI16)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI16(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI16Tests, UpdateVectorI16NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI16(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI16Tests, UpdateVectorI16NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI16(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI16Tests, UpdateVectorI16InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorI16(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI16Tests, UpdateVectorI16InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI16(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI16Tests, UpdateVectorI16InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI16(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI16Tests, UpdateVectorI16InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI16(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorI16 test fixtures
@@ -1326,50 +1326,50 @@ TEST_F(PayloadVectorI16Tests, UpdateVectorI16InvalidFidNo)
 TEST_F(PayloadVectorI16Tests, GetVectorI16)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI16(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_i16_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_i16_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_i16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI16Tests, GetVectorI16NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI16Tests, GetVectorI16NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI16Tests, GetVectorI16NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI16(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -1422,38 +1422,38 @@ protected:
 TEST_F(PayloadVectorU16Tests, AddVectorU16)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorU16Tests, AddVectorU16NullU16)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorU16Tests, AddVectorU16NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU16Tests, AddVectorU16AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -1461,19 +1461,19 @@ TEST_F(PayloadVectorU16Tests, AddVectorU16AfterInit)
 TEST_F(PayloadVectorU16Tests, AddVectorU16InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU16Tests, AddVectorU16InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorU16 test fixtures
@@ -1482,96 +1482,96 @@ TEST_F(PayloadVectorU16Tests, AddVectorU16InvalidFid)
 TEST_F(PayloadVectorU16Tests, UpdateVectorU16)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU16(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_u16_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_u16_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU16Tests, UpdateVectorU16NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU16(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU16Tests, UpdateVectorU16NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU16(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU16Tests, UpdateVectorU16InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorU16(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU16Tests, UpdateVectorU16InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU16(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU16Tests, UpdateVectorU16InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU16(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU16Tests, UpdateVectorU16InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU16(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorU16 test fixtures
@@ -1580,50 +1580,50 @@ TEST_F(PayloadVectorU16Tests, UpdateVectorU16InvalidFidNo)
 TEST_F(PayloadVectorU16Tests, GetVectorU16)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU16(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_u16_t) * VECTOR_UPDATE_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_u16_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_u16_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU16Tests, GetVectorU16NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU16Tests, GetVectorU16NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU16Tests, GetVectorU16NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU16(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU16(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -1676,38 +1676,38 @@ protected:
 TEST_F(PayloadVectorI32Tests, AddVectorI32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorI32Tests, AddVectorI32NullI32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorI32Tests, AddVectorI32NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI32Tests, AddVectorI32AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -1715,19 +1715,19 @@ TEST_F(PayloadVectorI32Tests, AddVectorI32AfterInit)
 TEST_F(PayloadVectorI32Tests, AddVectorI32InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI32Tests, AddVectorI32InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorI32 test fixtures
@@ -1736,96 +1736,96 @@ TEST_F(PayloadVectorI32Tests, AddVectorI32InvalidFid)
 TEST_F(PayloadVectorI32Tests, UpdateVectorI32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI32(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_i32_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_i32_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI32Tests, UpdateVectorI32NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI32(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI32Tests, UpdateVectorI32NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI32(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI32Tests, UpdateVectorI32InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorI32(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI32Tests, UpdateVectorI32InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI32(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI32Tests, UpdateVectorI32InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI32(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI32Tests, UpdateVectorI32InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI32(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorI32 test fixtures
@@ -1834,50 +1834,50 @@ TEST_F(PayloadVectorI32Tests, UpdateVectorI32InvalidFidNo)
 TEST_F(PayloadVectorI32Tests, GetVectorI32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI32(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_i32_t) * VECTOR_UPDATE_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_i32_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_i32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI32Tests, GetVectorI32NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI32Tests, GetVectorI32NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI32Tests, GetVectorI32NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI32(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -1930,38 +1930,38 @@ protected:
 TEST_F(PayloadVectorU32Tests, AddVectorU32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorU32Tests, AddVectorU32NullU32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorU32Tests, AddVectorU32NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU32Tests, AddVectorU32AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -1969,19 +1969,19 @@ TEST_F(PayloadVectorU32Tests, AddVectorU32AfterInit)
 TEST_F(PayloadVectorU32Tests, AddVectorU32InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU32Tests, AddVectorU32InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorU32 test fixtures
@@ -1990,96 +1990,96 @@ TEST_F(PayloadVectorU32Tests, AddVectorU32InvalidFid)
 TEST_F(PayloadVectorU32Tests, UpdateVectorU32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU32(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_u32_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_u32_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU32Tests, UpdateVectorU32NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU32(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU32Tests, UpdateVectorU32NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU32(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU32Tests, UpdateVectorU32InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorU32(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU32Tests, UpdateVectorU32InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU32(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU32Tests, UpdateVectorU32InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU32(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU32Tests, UpdateVectorU32InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU32(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorU32 test fixtures
@@ -2088,50 +2088,50 @@ TEST_F(PayloadVectorU32Tests, UpdateVectorU32InvalidFidNo)
 TEST_F(PayloadVectorU32Tests, GetVectorU32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU32(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_u32_t) * VECTOR_UPDATE_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_u32_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_u32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU32Tests, GetVectorU32NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU32Tests, GetVectorU32NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU32Tests, GetVectorU32NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU32(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -2184,38 +2184,38 @@ protected:
 TEST_F(PayloadVectorI64Tests, AddVectorI64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorI64Tests, AddVectorI64NullI64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorI64Tests, AddVectorI64NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI64Tests, AddVectorI64AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -2223,19 +2223,19 @@ TEST_F(PayloadVectorI64Tests, AddVectorI64AfterInit)
 TEST_F(PayloadVectorI64Tests, AddVectorI64InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI64Tests, AddVectorI64InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorI64 test fixtures
@@ -2244,96 +2244,96 @@ TEST_F(PayloadVectorI64Tests, AddVectorI64InvalidFid)
 TEST_F(PayloadVectorI64Tests, UpdateVectorI64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI64(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_i64_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_i64_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI64Tests, UpdateVectorI64NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI64(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI64Tests, UpdateVectorI64NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI64(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI64Tests, UpdateVectorI64InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorI64(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI64Tests, UpdateVectorI64InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI64(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI64Tests, UpdateVectorI64InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI64(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI64Tests, UpdateVectorI64InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI64(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorI64 test fixtures
@@ -2342,49 +2342,49 @@ TEST_F(PayloadVectorI64Tests, UpdateVectorI64InvalidFidNo)
 TEST_F(PayloadVectorI64Tests, GetVectorI64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorI64(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_i64_t) * VECTOR_UPDATE_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_i64_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_i64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorI64Tests, GetVectorI64NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI64Tests, GetVectorI64NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorI64Tests, GetVectorI64NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorI64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorI64(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -2437,38 +2437,38 @@ protected:
 TEST_F(PayloadVectorU64Tests, AddVectorU64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorU64Tests, AddVectorU64NullU64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorU64Tests, AddVectorU64NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU64Tests, AddVectorU64AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -2476,19 +2476,19 @@ TEST_F(PayloadVectorU64Tests, AddVectorU64AfterInit)
 TEST_F(PayloadVectorU64Tests, AddVectorU64InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU64Tests, AddVectorU64InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorU64 test fixtures
@@ -2497,96 +2497,96 @@ TEST_F(PayloadVectorU64Tests, AddVectorU64InvalidFid)
 TEST_F(PayloadVectorU64Tests, UpdateVectorU64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU64(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_u64_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_u64_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU64Tests, UpdateVectorU64NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU64(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU64Tests, UpdateVectorU64NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU64(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU64Tests, UpdateVectorU64InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorU64(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU64Tests, UpdateVectorU64InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU64(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU64Tests, UpdateVectorU64InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU64(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU64Tests, UpdateVectorU64InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU64(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorU64 test fixtures
@@ -2595,50 +2595,50 @@ TEST_F(PayloadVectorU64Tests, UpdateVectorU64InvalidFidNo)
 TEST_F(PayloadVectorU64Tests, GetVectorU64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorU64(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_u64_t) * VECTOR_UPDATE_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_u64_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_u64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorU64Tests, GetVectorU64NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU64Tests, GetVectorU64NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorU64Tests, GetVectorU64NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorU64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorU64(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -2695,38 +2695,38 @@ protected:
 TEST_F(PayloadVectorF32Tests, AddVectorF32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorF32Tests, AddVectorF32NullF32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorF32Tests, AddVectorF32NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF32Tests, AddVectorF32AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -2734,19 +2734,19 @@ TEST_F(PayloadVectorF32Tests, AddVectorF32AfterInit)
 TEST_F(PayloadVectorF32Tests, AddVectorF32InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF32Tests, AddVectorF32InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorF32 test fixtures
@@ -2755,96 +2755,96 @@ TEST_F(PayloadVectorF32Tests, AddVectorF32InvalidFid)
 TEST_F(PayloadVectorF32Tests, UpdateVectorF32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF32(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_f32_t) * VECTOR_UPDATE_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_f32_t) * VECTOR_UPDATE_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorF32Tests, UpdateVectorF32NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF32(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF32Tests, UpdateVectorF32NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF32(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF32Tests, UpdateVectorF32InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorF32(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorF32Tests, UpdateVectorF32InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF32(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF32Tests, UpdateVectorF32InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF32(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF32Tests, UpdateVectorF32InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF32(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorF32 test fixtures
@@ -2853,50 +2853,50 @@ TEST_F(PayloadVectorF32Tests, UpdateVectorF32InvalidFidNo)
 TEST_F(PayloadVectorF32Tests, GetVectorF32)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF32(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_f32_t) * VECTOR_UPDATE_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_f32_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_f32_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorF32Tests, GetVectorF32NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF32Tests, GetVectorF32NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF32Tests, GetVectorF32NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF32(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF32(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -2953,38 +2953,38 @@ protected:
 TEST_F(PayloadVectorF64Tests, AddVectorF64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorF64Tests, AddVectorF64NullF64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorF64Tests, AddVectorF64NullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF64Tests, AddVectorF64AfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 2, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ( 0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     //freeVector( m_out );
 }
@@ -2992,19 +2992,19 @@ TEST_F(PayloadVectorF64Tests, AddVectorF64AfterInit)
 TEST_F(PayloadVectorF64Tests, AddVectorF64InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF64Tests, AddVectorF64InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorF64 test fixtures
@@ -3013,96 +3013,96 @@ TEST_F(PayloadVectorF64Tests, AddVectorF64InvalidFid)
 TEST_F(PayloadVectorF64Tests, UpdateVectorF64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF64(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorF64Tests, UpdateVectorF64NullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF64(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF64Tests, UpdateVectorF64NullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF64(NULL, NULL, 1, m_update, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF64Tests, UpdateVectorF64InitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorF64(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_update, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorF64Tests, UpdateVectorF64InvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, "Bob", 0, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF64(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF64Tests, UpdateVectorF64InvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, ::memcmp( m_in, m_out, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF64(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF64Tests, UpdateVectorF64InvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF64(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorF64 test fixtures
@@ -3111,50 +3111,50 @@ TEST_F(PayloadVectorF64Tests, UpdateVectorF64InvalidFidNo)
 TEST_F(PayloadVectorF64Tests, GetVectorF64)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
     EXPECT_NE(0, memcmp( m_update, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorF64(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(0, memcmp( m_update, m_out, (sizeof(mama_f64_t) * VECTOR_UPDATE_SIZE) ) );
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, memcmp( m_update, m_out, (sizeof(mama_f64_t) * VECTOR_UPDATE_SIZE) ) );
     EXPECT_NE(0, memcmp( m_in, m_out, (sizeof(mama_f64_t) * VECTOR_SIZE) ) );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorF64Tests, GetVectorF64NullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF64Tests, GetVectorF64NullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorF64Tests, GetVectorF64NotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorF64(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorF64(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -3225,10 +3225,10 @@ protected:
 TEST_F(PayloadVectorStringTests, AddVectorString)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
 
     int getResult(0);
     for( unsigned int ii( 0 ) ; ((ii < VECTOR_SIZE) && (0 == getResult)) ; ++ii )
@@ -3236,29 +3236,29 @@ TEST_F(PayloadVectorStringTests, AddVectorString)
         getResult = ::strncmp( m_in[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ( 0, getResult );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    EXPECT_EQ ( 0, getResult );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorStringTests, AddVectorStringNullString)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorStringTests, AddVectorStringNullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorStringTests, AddVectorStringAfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 2, &m_out, &m_outSize);
 
@@ -3268,26 +3268,26 @@ TEST_F(PayloadVectorStringTests, AddVectorStringAfterInit)
         getResult = ::strncmp( m_in[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ( 0, getResult );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    EXPECT_EQ ( 0, getResult );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorStringTests, AddVectorStringInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorStringTests, AddVectorStringInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorString test fixtures
@@ -3296,10 +3296,10 @@ TEST_F(PayloadVectorStringTests, AddVectorStringInvalidFid)
 TEST_F(PayloadVectorStringTests, UpdateVectorString)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     int getResult(0);
     for( unsigned int ii( 0 ) ; ((ii < VECTOR_SIZE) && (0 == getResult)) ; ++ii )
@@ -3307,14 +3307,14 @@ TEST_F(PayloadVectorStringTests, UpdateVectorString)
         getResult = ::strncmp( m_in[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ( 0, getResult );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ( 0, getResult );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorString(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
     ASSERT_EQ(MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     getResult = 0;
     for( unsigned int ii( 0 ) ; ((ii < VECTOR_UPDATE_SIZE) && (0 == getResult)) ; ++ii )
@@ -3322,54 +3322,54 @@ TEST_F(PayloadVectorStringTests, UpdateVectorString)
         getResult = ::strncmp( m_update[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ(0, getResult);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (0, getResult);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorStringTests, UpdateVectorStringNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
     int getResult(0);
     for( unsigned int ii( 0 ) ; ((ii < VECTOR_SIZE) && (0 == getResult)) ; ++ii )
     {
         getResult = ::strncmp( m_in[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ( 0, getResult );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ( 0, getResult );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorString(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorStringTests, UpdateVectorStringNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
     int getResult(0);
     for( unsigned int ii( 0 ) ; ((ii < VECTOR_SIZE) && (0 == getResult)) ; ++ii )
     {
         getResult = ::strncmp( m_in[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ( 0, getResult );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ( 0, getResult );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorString(NULL, NULL, 1, m_update, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorStringTests, UpdateVectorStringInitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorString(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, "Bob", 0, &m_out, &m_outSize);
 
@@ -3379,14 +3379,14 @@ TEST_F(PayloadVectorStringTests, UpdateVectorStringInitByName)
         getResult = ::strncmp( m_update[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ( 0, getResult );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ ( 0, getResult );
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorStringTests, UpdateVectorStringInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, "Bob", 0, &m_out, &m_outSize);
     int getResult(0);
@@ -3395,41 +3395,41 @@ TEST_F(PayloadVectorStringTests, UpdateVectorStringInvalidName)
         getResult = ::strncmp( m_in[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ( 0, getResult );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ( 0, getResult );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorString(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorStringTests, UpdateVectorStringInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
     int getResult(0);
     for( unsigned int ii( 0 ) ; ((ii < VECTOR_SIZE) && (0 == getResult)) ; ++ii )
     {
         getResult = ::strncmp( m_in[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ( 0, getResult );
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ ( 0, getResult );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorString(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorStringTests, UpdateVectorStringInvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorString(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorString test fixtures
@@ -3438,10 +3438,10 @@ TEST_F(PayloadVectorStringTests, UpdateVectorStringInvalidFidNo)
 TEST_F(PayloadVectorStringTests, GetVectorString)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     int getResult(0);
     for( unsigned int ii( 0 ) ; ((ii < VECTOR_SIZE) && (0 == getResult)) ; ++ii )
@@ -3449,14 +3449,14 @@ TEST_F(PayloadVectorStringTests, GetVectorString)
         getResult = ::strncmp( m_in[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ( 0, getResult );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    EXPECT_EQ ( 0, getResult );
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorString(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     getResult = 0;
     for( unsigned int ii( 0 ) ; ((ii < VECTOR_UPDATE_SIZE) && (0 == getResult)) ; ++ii )
@@ -3464,36 +3464,36 @@ TEST_F(PayloadVectorStringTests, GetVectorString)
         getResult = ::strncmp( m_update[ii], m_out[ii], 20 );
     }
 
-    EXPECT_EQ(0, getResult);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
-    EXPECT_NE(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ (0, getResult);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_NE ((mama_size_t)VECTOR_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorStringTests, GetVectorStringNullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorStringTests, GetVectorStringNullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 1, &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorStringTests, GetVectorStringNotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorString(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorString(m_msg, NULL, 2, &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -3579,62 +3579,62 @@ protected:
 TEST_F(PayloadVectorMsgTests, AddVectorMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg,
                                                        NULL,
                                                        1,
                                                        (void* const**) &m_out,
                                                        &m_outSize);
-    EXPECT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    EXPECT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorMsgTests, AddVectorMsgNullMsgDst)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorMsgTests, AddVectorMsgNullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorMsgTests, AddVectorMsgAfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg,
                                                        NULL,
                                                        1,
                                                        (void* const**) &m_out,
                                                        &m_outSize);
-    EXPECT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    EXPECT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 }
 
 TEST_F(PayloadVectorMsgTests, AddVectorMsgInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorMsgTests, AddVectorMsgInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorMsg test fixtures
@@ -3643,77 +3643,77 @@ TEST_F(PayloadVectorMsgTests, AddVectorMsgInvalidFid)
 TEST_F(PayloadVectorMsgTests, UpdateVectorMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorMsg(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg, NULL, 1, (void* const**) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorMsgTests, UpdateVectorMsgNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorMsg(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorMsgTests, UpdateVectorMsgNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorMsg(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorMsgTests, UpdateVectorMsgInitByName)
 {
     m_status = m_payloadBridge->msgPayloadUpdateVectorMsg(m_msg, "Bob", 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg, "Bob", 0, (void* const**) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorMsgTests, UpdateVectorMsgInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg, "Bob", 0, (void* const**) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorMsg(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorMsgTests, UpdateVectorMsgInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg, NULL, 1, (void* const**) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorMsg(m_msg, NULL, 0, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorMsgTests, UpdateVectorMsgInvalidFidNo)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorMsg(m_msg, "Bob", 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 // GetVectorMsg test fixtures
@@ -3722,45 +3722,45 @@ TEST_F(PayloadVectorMsgTests, UpdateVectorMsgInvalidFidNo)
 TEST_F(PayloadVectorMsgTests, GetVectorMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg, NULL, 1, (void* const**) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ( m_outSize, (mama_size_t)VECTOR_SIZE );
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE , m_outSize);
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorMsg(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg, NULL, 1, (void* const**) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 }
 
 TEST_F(PayloadVectorMsgTests, GetVectorMsgNullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg, NULL, 1, (void* const**) NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorMsgTests, GetVectorMsgNullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg, NULL, 1, (void* const**) &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorMsgTests, GetVectorMsgNotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorMsg(m_msg, NULL, 2, (void* const**) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
 // ****************************************************************************
@@ -3835,11 +3835,11 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTime)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( m_outSize, VECTOR_SIZE );
+    ASSERT_EQ (MAMA_STATUS_OK , m_status);
+    EXPECT_EQ (VECTOR_SIZE , m_outSize);
 
     for( unsigned int ii(0) ; ii < VECTOR_SIZE ; ++ii )
     {
@@ -3848,7 +3848,7 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTime)
                                      m_out[ii] );
         mamaDateTime_getAsString(m_in[ii], buf, 56);
         mamaDateTime_getAsString(m_out[ii], buf, 56);
-        EXPECT_EQ(1, eq);
+        EXPECT_EQ (1, eq);
     }
 }
 
@@ -3856,44 +3856,44 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeNullDateTime)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeNullMsg)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeAfterInit)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeInvalidName)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeInvalidFid)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorDateTime test fixtures
@@ -3902,11 +3902,11 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeInvalidFid)
 TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    //EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    //EXPECT_EQ(m_outSize, VECTOR_SIZE);
+    //EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    //EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
     /*
     if( MAMA_STATUS_OK == m_status )
@@ -3915,7 +3915,7 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTime)
         {
             int eq = mamaDateTime_equal( m_in[ii],
                                          m_out[ii] );
-            EXPECT_EQ(0, eq);
+            EXPECT_EQ (0, eq);
         }
     }
     else
@@ -3925,11 +3925,11 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTime)
     */
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorTime(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    //EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    //EXPECT_EQ(m_outSize, VECTOR_UPDATE_SIZE);
+    //EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    //EXPECT_EQ (VECTOR_UPDATE_SIZE, m_outSize);
 
     /*
     if( MAMA_STATUS_OK == m_status )
@@ -3938,7 +3938,7 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTime)
         {
             int eq = mamaDateTime_equal( m_update[ii],
                                          m_out[ii] );
-            EXPECT_EQ(0, eq);
+            EXPECT_EQ (0, eq);
         }
     }
     else
@@ -3952,11 +3952,11 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullUpdate)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    //EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    //EXPECT_EQ(m_outSize, VECTOR_SIZE);
+    //EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    //EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
     /*
     if( MAMA_STATUS_OK == m_status )
@@ -3965,7 +3965,7 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullUpdate)
         {
             int eq = mamaDateTime_equal( m_in[ii],
                                          m_out[ii] );
-            EXPECT_EQ(0, eq);
+            EXPECT_EQ (0, eq);
         }
     }
     else
@@ -3975,18 +3975,18 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullUpdate)
     */
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorTime(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullMessage)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    //EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    //EXPECT_EQ(m_outSize, VECTOR_SIZE);
+    //EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    //EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
     /*
     if( MAMA_STATUS_OK == m_status )
@@ -3996,7 +3996,7 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullMessage)
             int eq = mamaDateTime_equal( m_in[ii],
                                          m_out[ii] );
 
-            EXPECT_EQ(0, eq);
+            EXPECT_EQ (0, eq);
         }
     }
     else
@@ -4006,7 +4006,7 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullMessage)
     */
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorTime(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // GetVectorDateTime test fixtures
@@ -4015,12 +4015,12 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTime)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorDateTime
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4029,7 +4029,7 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTime)
             int eq = mamaDateTime_equal( m_in[ii],
                                          m_out[ii] );
 
-            EXPECT_EQ(1, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
@@ -4038,12 +4038,12 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTime)
     }
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorTime(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorDateTime
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4052,7 +4052,7 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTime)
             int eq = mamaDateTime_equal( m_update[ii],
                                          m_out[ii] );
 
-            EXPECT_EQ(1, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
@@ -4065,22 +4065,22 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTimeNullResult)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorDateTime
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTimeNullSize)
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorDateTime
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // ****************************************************************************
@@ -4149,13 +4149,13 @@ TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPrice)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorPrice
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
-    EXPECT_EQ( m_status, MAMA_STATUS_OK );
+    EXPECT_EQ (MAMA_STATUS_OK , m_status);
 
-    EXPECT_EQ( m_outSize, VECTOR_SIZE );
+    EXPECT_EQ (VECTOR_SIZE , m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4163,7 +4163,7 @@ TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPrice)
         {
             int eq = mamaPrice_equal( m_in[ii],
                                       m_out[ii] );
-            EXPECT_EQ(1, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
@@ -4176,44 +4176,44 @@ TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceNullPrice)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    EXPECT_EQ( m_status, MAMA_STATUS_NULL_ARG );
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceNullMsg)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceAfterInit)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 2, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceInvalidName)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceInvalidFid)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 0, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // UpdateVectorPrice test fixtures
@@ -4223,11 +4223,11 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPrice)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, VECTOR_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4235,7 +4235,7 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPrice)
         {
             int eq = mamaPrice_equal( m_in[ii],
                                          m_out[ii] );
-            EXPECT_EQ(1, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
@@ -4245,12 +4245,12 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPrice)
 
     // TODO Interface inconsistent
     m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(m_msg, NULL, 1, (void* const**) m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     /*
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (VECTOR_UPDATE_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4258,7 +4258,7 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPrice)
         {
             int eq = mamaPrice_equal( m_update[ii],
                                          m_out[ii] );
-            EXPECT_EQ(1, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
@@ -4272,12 +4272,12 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullUpdate)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorPrice
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4285,7 +4285,7 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullUpdate)
         {
             int eq = mamaPrice_equal( m_in[ii],
                                       m_out[ii] );
-            EXPECT_EQ(1, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
@@ -4294,19 +4294,19 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullUpdate)
     }
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullMessage)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorPrice
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4315,7 +4315,7 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullMessage)
             int eq = mamaPrice_equal( m_in[ii],
                                       m_out[ii] );
 
-            EXPECT_EQ(1, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
@@ -4324,7 +4324,7 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullMessage)
     }
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(NULL, NULL, 1, (void* const**) m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // GetVectorPrice test fixtures
@@ -4333,12 +4333,12 @@ TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPrice)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorPrice
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4347,7 +4347,7 @@ TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPrice)
             int eq = mamaPrice_equal( m_in[ii],
                                          m_out[ii] );
 
-            EXPECT_EQ(1, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
@@ -4357,11 +4357,11 @@ TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPrice)
 
     // TODO Interface Inconsistent
     m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(m_msg, NULL, 1, (void* const**) m_update, VECTOR_UPDATE_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(m_outSize, (mama_size_t)VECTOR_UPDATE_SIZE);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4370,7 +4370,7 @@ TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPrice)
             int eq = mamaPrice_equal( m_update[ii],
                                          m_out[ii] );
 
-            EXPECT_EQ(1, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
@@ -4383,29 +4383,29 @@ TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPriceNullResult)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, NULL, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPriceNullSize)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPriceNotFound)
 // Disabled as mamaMsg_addVectorPrice is not implemented.
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 2, (void* const*) &m_out, &m_outSize);
-    EXPECT_EQ(m_status, MAMA_STATUS_NOT_FOUND);
+    EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 
