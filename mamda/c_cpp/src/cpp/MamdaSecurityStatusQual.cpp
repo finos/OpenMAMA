@@ -61,6 +61,9 @@ namespace Wombat
     static const char* SECURITY_STATUS_QUAL_STR_IPO_IMBALANCE_BUY       = "IpoImbBuy";
     static const char* SECURITY_STATUS_QUAL_STR_IPO_IMBALANCE_SELL      = "IpoImbSell";
     static const char* SECURITY_STATUS_QUAL_STR_NO_IPO_IMBALANCE        = "IpoNoImb";
+    static const char* SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY             = "EmcImbBuy";
+    static const char* SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL            = "EmcImbSell";
+    static const char* SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE            = "EmcImbNone";
     static const char* SECURITY_STATUS_QUAL_STR_OPEN_DELAY              = "OpenDelay";
     static const char* SECURITY_STATUS_QUAL_STR_NO_OPEN_NO_RESUME       = "NoOpenNoResume";
     static const char* SECURITY_STATUS_QUAL_STR_PRICE_IND               = "PriceInd";
@@ -77,9 +80,6 @@ namespace Wombat
     static const char* SECURITY_STATUS_QUAL_STR_RELATED                 = "Related";
     static const char* SECURITY_STATUS_QUAL_STR_IPO                     = "IPO";
 
-    static const char* SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY                   = "EmcImbBuy";
-    static const char* SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL                  = "EmcImbSell";
-    static const char* SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE                  = "EmcImbNone";
     static const char* SECURITY_STATUS_QUAL_STR_PRE_CROSS                     = "Pre-Cross";
     static const char* SECURITY_STATUS_QUAL_STR_CROSS                         = "Cross";
     static const char* SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION        = "Released For Quotation (IPO)";
@@ -120,10 +120,10 @@ namespace Wombat
     static const char* SECURITY_STATUS_QUAL_STR_NEWS_PENDING_RELATED          = "NewsPendingRelated";
     static const char* SECURITY_STATUS_QUAL_STR_EQUIPMENT_CHANGEOVER_RELATED  = "EquipChangeOverRelated";
     static const char* SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED     = "SubPennyTradingRelated";
-    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY         = "ImbPreOpenBuy";
-    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL        = "ImbPreOpenSell";
-    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY        = "ImbPreCloseBuy";
-    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL       = "ImbPreCloseSell";
+    static const char* SECURITY_STATUS_QUAL_STR_POST_TRADING                  = "PostTrading";
+    static const char* SECURITY_STATUS_QUAL_STR_ONE_SIDED                     = "OneSided";
+    static const char* SECURITY_STATUS_QUAL_STR_PRE_CALL                      = "PreCall";
+    static const char* SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN               = "RestrictedOpen";
     static const char* SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE              = "VolatilityPause";
     static const char* SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME = "VolatilityPauseQuoteResume";
     static const char* SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD              = "VolatilityGuard";
@@ -134,7 +134,15 @@ namespace Wombat
     static const char* SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1       = "CircuitBreakerLevel1";
     static const char* SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2       = "CircuitBreakerLevel2";
     static const char* SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3       = "CircuitBreakerLevel3";
-    static const char* SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE    = "VolatilityPauseStraddle";
+    static const char* SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE     = "VolatilityPauseStraddle";
+    static const char* SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED         = "ShortSaleRestricted";
+    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY         = "ImbPreOpenBuy";
+    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL        = "ImbPreOpenSell";
+    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_NONE        = "ImbPreOpenNone"; 
+    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY        = "ImbPreCloseBuy";
+    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL       = "ImbPreCloseSell";
+    static const char* SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_NONE       = "ImbPreCloseNone";
+    static const char* SECURITY_STATUS_QUAL_STR_SCHEDULED_INTRADAY            = "ScheduledIntraday";
     static const char* SECURITY_STATUS_QUAL_STR_UNKNOWN                       = "Unknown";
 
     const char* toString (MamdaSecurityStatusQual  securityStatusQual)
@@ -213,6 +221,12 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_STR_IPO_IMBALANCE_SELL ;  
         case SECURITY_STATUS_QUAL_NO_IPO_IMBALANCE:           
             return SECURITY_STATUS_QUAL_STR_NO_IPO_IMBALANCE;   
+        case SECURITY_STATUS_QUAL_EMC_IMB_BUY:
+                return SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY;
+        case SECURITY_STATUS_QUAL_EMC_IMB_SELL:
+                return SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL;
+        case SECURITY_STATUS_QUAL_EMC_IMB_NONE:
+                return SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE;
         case SECURITY_STATUS_QUAL_OPEN_DELAY:         
 	        return SECURITY_STATUS_QUAL_STR_OPEN_DELAY;
         case SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME:  
@@ -246,12 +260,6 @@ namespace Wombat
         case SECURITY_STATUS_QUAL_UNKNOWN:
             return SECURITY_STATUS_QUAL_STR_UNKNOWN;
 
-        case SECURITY_STATUS_QUAL_EMC_IMB_BUY:                
-            return SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY;       
-        case SECURITY_STATUS_QUAL_EMC_IMB_SELL:               
-            return SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL;      
-        case SECURITY_STATUS_QUAL_EMC_IMB_NONE:               
-            return SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE;      
         case SECURITY_STATUS_QUAL_PRE_CROSS:                  
             return SECURITY_STATUS_QUAL_STR_PRE_CROSS;        
         case SECURITY_STATUS_QUAL_CROSS:                      
@@ -332,14 +340,14 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_STR_EQUIPMENT_CHANGEOVER_RELATED;          
         case SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED  :        
             return SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED;  
-        case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY:        
-            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY;  
-        case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL:        
-            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL;  
-        case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY:        
-            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY;  
-        case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL:        
-            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL;          
+        case SECURITY_STATUS_QUAL_POST_TRADING:
+            return SECURITY_STATUS_QUAL_STR_POST_TRADING;
+        case SECURITY_STATUS_QUAL_ONE_SIDED:
+            return SECURITY_STATUS_QUAL_STR_ONE_SIDED;
+        case SECURITY_STATUS_QUAL_PRE_CALL:
+            return SECURITY_STATUS_QUAL_STR_PRE_CALL;
+        case SECURITY_STATUS_QUAL_RESTRICTED_OPEN:
+            return SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN;
         case SECURITY_STATUS_QUAL_VOLATILITY_PAUSE:
             return SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE;
         case SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME:
@@ -362,6 +370,22 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3;
         case SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE:
             return SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE;
+        case SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED:
+            return SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED;
+        case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY:        
+            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY;  
+        case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL:        
+            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL;  
+        case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE:
+            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_NONE;
+        case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY:        
+            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY;  
+        case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL:        
+            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL;          
+        case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE:
+            return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_NONE;
+        case SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY:
+            return SECURITY_STATUS_QUAL_STR_SCHEDULED_INTRADAY;
         }
         return SECURITY_STATUS_QUAL_STR_UNKNOWN;
     }
@@ -377,9 +401,9 @@ namespace Wombat
         // Older FH configurations sent strings:
         if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_NONE) == 0)
             return SECURITY_STATUS_QUAL_NONE;
-          if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_OPENING) == 0)
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_OPENING) == 0)
             return SECURITY_STATUS_QUAL_OPENING;
-         if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_OPENING) == 0)
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_OPENING) == 0)
             return SECURITY_STATUS_QUAL_OPENING;    
         if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_EXCUSED) == 0)
             return SECURITY_STATUS_QUAL_EXCUSED; 
@@ -449,6 +473,12 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_IPO_IMBALANCE_SELL;
         if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_NO_IPO_IMBALANCE) == 0)
             return SECURITY_STATUS_QUAL_NO_IPO_IMBALANCE;    
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY) == 0)               
+            return SECURITY_STATUS_QUAL_EMC_IMB_BUY;           
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL) == 0)              
+            return SECURITY_STATUS_QUAL_EMC_IMB_SELL;          
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE) == 0)              
+            return SECURITY_STATUS_QUAL_EMC_IMB_NONE;          
         if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_OPEN_DELAY) == 0)
             return SECURITY_STATUS_QUAL_OPEN_DELAY;
         if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_NO_OPEN_NO_RESUME) == 0)
@@ -480,12 +510,6 @@ namespace Wombat
         if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IPO) == 0)
             return SECURITY_STATUS_QUAL_IPO;
 
-        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY) == 0)               
-            return SECURITY_STATUS_QUAL_EMC_IMB_BUY;           
-        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL) == 0)              
-            return SECURITY_STATUS_QUAL_EMC_IMB_SELL;          
-        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE) == 0)              
-            return SECURITY_STATUS_QUAL_EMC_IMB_NONE;          
         if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_PRE_CROSS) == 0)                 
             return SECURITY_STATUS_QUAL_PRE_CROSS;             
         if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_CROSS) == 0)                     
@@ -566,14 +590,14 @@ namespace Wombat
             return  SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED;   
         if (strcmp (securityStatusQual,SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED) == 0)         
             return  SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED;   
-        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY) == 0)         
-            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;       
-        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL) == 0)         
-            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;     
-        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY) == 0)         
-            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;       
-        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL) == 0)         
-            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL; 
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_POST_TRADING) == 0)
+            return  SECURITY_STATUS_QUAL_POST_TRADING;
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_ONE_SIDED) == 0)
+            return  SECURITY_STATUS_QUAL_ONE_SIDED;
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_PRE_CALL) == 0)
+            return  SECURITY_STATUS_QUAL_PRE_CALL;
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN) == 0)
+            return  SECURITY_STATUS_QUAL_RESTRICTED_OPEN;
         if(strcmp(securityStatusQual, SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE) == 0)
             return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE;
         if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME) == 0)
@@ -596,12 +620,29 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
         if(strcmp(securityStatusQual,SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE) == 0)
             return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
-                 
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED) == 0)
+            return  SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED;
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY) == 0)         
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;       
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL) == 0)         
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;     
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_NONE) == 0)
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE;
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY) == 0)         
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;       
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL) == 0)         
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL; 
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_NONE) == 0)
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE;
+        if (strcmp (securityStatusQual, SECURITY_STATUS_QUAL_STR_SCHEDULED_INTRADAY) == 0)
+            return  SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY;
             
 
         // A misconfigured FH might send numbers as strings:
         if (strcmp (securityStatusQual, "0") == 0)
             return SECURITY_STATUS_QUAL_NONE;
+        if (strcmp (securityStatusQual, "1") == 0)
+            return SECURITY_STATUS_QUAL_OPENING;
         if (strcmp (securityStatusQual, "7") == 0)
             return SECURITY_STATUS_QUAL_EXCUSED; 
         if (strcmp (securityStatusQual, "8") == 0)
@@ -670,6 +711,12 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_IPO_IMBALANCE_SELL; 
         if (strcmp (securityStatusQual, "44") == 0)
             return SECURITY_STATUS_QUAL_NO_IPO_IMBALANCE; 
+        if (strcmp (securityStatusQual, "46") == 0)               
+            return SECURITY_STATUS_QUAL_EMC_IMB_BUY;           
+        if (strcmp (securityStatusQual, "47") == 0)              
+            return SECURITY_STATUS_QUAL_EMC_IMB_SELL;          
+        if (strcmp (securityStatusQual, "48") == 0)              
+            return SECURITY_STATUS_QUAL_EMC_IMB_NONE;          
         if (strcmp (securityStatusQual, "51") == 0)
             return SECURITY_STATUS_QUAL_OPEN_DELAY;
         if (strcmp (securityStatusQual, "52") == 0)
@@ -694,18 +741,12 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_SEC;  
         if (strcmp (securityStatusQual, "62") == 0)
             return SECURITY_STATUS_QUAL_TIMES; 
-        if (strcmp (securityStatusQual, "62") == 0)
+        if (strcmp (securityStatusQual, "63") == 0)
             return SECURITY_STATUS_QUAL_OTHER; 
         if (strcmp (securityStatusQual, "64") == 0)
             return SECURITY_STATUS_QUAL_RELATED;
         if (strcmp (securityStatusQual, "65") == 0)
             return SECURITY_STATUS_QUAL_IPO;
-        if (strcmp (securityStatusQual, "46") == 0)               
-            return SECURITY_STATUS_QUAL_EMC_IMB_BUY;           
-        if (strcmp (securityStatusQual, "47") == 0)              
-            return SECURITY_STATUS_QUAL_EMC_IMB_SELL;          
-        if (strcmp (securityStatusQual, "48") == 0)              
-            return SECURITY_STATUS_QUAL_EMC_IMB_NONE;          
         if (strcmp (securityStatusQual, "66") == 0)                 
             return SECURITY_STATUS_QUAL_PRE_CROSS;             
         if (strcmp (securityStatusQual, "67") == 0)                     
@@ -786,14 +827,14 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED; 
         if (strcmp (securityStatusQual, "110") == 0)         
             return SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED;    
+        if (strcmp (securityStatusQual, "111") == 0)
+            return  SECURITY_STATUS_QUAL_POST_TRADING;
         if (strcmp (securityStatusQual, "112") == 0)         
-            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;  
+            return  SECURITY_STATUS_QUAL_ONE_SIDED;
         if (strcmp (securityStatusQual, "113") == 0)         
-            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;  
+            return  SECURITY_STATUS_QUAL_PRE_CALL;
         if (strcmp (securityStatusQual, "114") == 0)         
-            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;  
-        if (strcmp (securityStatusQual, "115") == 0)         
-            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;  
+            return  SECURITY_STATUS_QUAL_RESTRICTED_OPEN; 
         if(strcmp(securityStatusQual, "116") == 0)
             return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE;
         if(strcmp(securityStatusQual, "117") == 0)
@@ -816,6 +857,22 @@ namespace Wombat
             return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
         if(strcmp(securityStatusQual, "126") == 0)
             return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
+        if(strcmp(securityStatusQual, "127") == 0)
+            return  SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED;
+        if(strcmp(securityStatusQual, "128") == 0)
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;
+        if(strcmp(securityStatusQual, "129") == 0)
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;
+        if(strcmp(securityStatusQual, "130") == 0)
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE;
+        if(strcmp(securityStatusQual, "131") == 0)
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;
+        if(strcmp(securityStatusQual, "132") == 0)
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;
+        if(strcmp(securityStatusQual, "133") == 0)
+            return  SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE;
+        if(strcmp(securityStatusQual, "134") == 0)
+            return  SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY;
 
         return SECURITY_STATUS_QUAL_UNKNOWN;
     }

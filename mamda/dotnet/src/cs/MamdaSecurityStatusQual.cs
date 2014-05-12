@@ -92,7 +92,7 @@ namespace Wombat
             SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN            = 74,     // toString SecurityForbidden
             SECURITY_STATUS_QUAL_FAST_MARKET                   = 75,     // toString FastMarket
             SECURITY_STATUS_QUAL_SLOW_MARKET                   = 76,     // toString SlowMarket
-            SECURITY_STATUS_QUAL_SUM_PENNY_TRADING             = 77,     // toString SubPennyTrading
+            SECURITY_STATUS_QUAL_SUB_PENNY_TRADING             = 77,     // toString SubPennyTrading
             SECURITY_STATUS_QUAL_ORDER_INPUT                   = 78,     // toString OrderInput
             SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING            = 79,     // toString PreOrderMatching
             SECURITY_STATUS_QUAL_ORDER_MATCHING                = 80,     // toString OrderMatching
@@ -122,10 +122,10 @@ namespace Wombat
             SECURITY_STATUS_QUAL_NEWS_PENDING_RELATED          = 108,    // toString NewsPendingRelated
             SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED  = 109,    // toString EquipChangeOverRelated
             SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED     = 110,    // toString SubPennyTradingRelated   
-            SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY         = 112,    // toString ImbPreOpenBuy
-            SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL        = 113,    // toString ImbPreOpenSell
-            SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY        = 114,    // toString ImbPreCloseBuy
-            SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL       = 115,    // toString ImbPreCloseSell
+            SECURITY_STATUS_QUAL_POST_TRADING                  = 111,    // toString PostTrading
+            SECURITY_STATUS_QUAL_ONE_SIDED                     = 112,    // toString OneSided
+            SECURITY_STATUS_QUAL_PRE_CALL                      = 113,    // toString PreCall
+            SECURITY_STATUS_QUAL_RESTRICTED_OPEN               = 114,    // toString RestrictedOpen
             SECURITY_STATUS_QUAL_VOLATILITY_PAUSE              = 116,    // toString VolatilityPause
             SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME = 117,    // toString VolatilityPauseQuoteResume
             SECURITY_STATUS_QUAL_VOLATILITY_GUARD              = 118,    // toString VolatilityGuard
@@ -135,8 +135,16 @@ namespace Wombat
             SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK   = 122,    // toString() - LimitStateBid:LimitStateAsk
             SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1       = 123,    // toString() - CircuitBreakerLevel1
             SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2       = 124,    // toString() - CircuitBreakerLevel2
-            SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3       = 125,     // toString() - CircuitBreakerLevel3
-            SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE     = 126    //toString() - VolatilityPauseStraddle
+            SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3       = 125,    // toString() - CircuitBreakerLevel3
+            SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE     = 126,    // toString() - VolatilityPauseStraddle
+            SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED         = 127,    // toString ShortSaleRestricted
+            SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY         = 128,    // toString ImbPreOpenBuy
+            SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL        = 129,    // toString ImbPreOpenSell
+            SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE        = 130,    // toString ImbPreOpenNone
+            SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY        = 131,    // toString ImbPreCloseBuy
+            SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL       = 132,    // toString ImbPreCloseSell
+            SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE       = 133,    // toString ImbPreCloseNone
+            SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY            = 134     // toString ScheduledIntraday
 		}
 
 		private static string SECURITY_STATUS_QUAL_STR_NONE                           = "None";
@@ -205,7 +213,7 @@ namespace Wombat
         private static  string SECURITY_STATUS_QUAL_STR_SECURITY_FORBIDDEN            = "SecurityForbidden";
         private static  string SECURITY_STATUS_QUAL_STR_FAST_MARKET                   = "FastMarket";
         private static  string SECURITY_STATUS_QUAL_STR_SLOW_MARKET                   = "SlowMarket";
-        private static  string SECURITY_STATUS_QUAL_STR_SUM_PENNY_TRADING             = "SubPennyTrading";
+        private static  string SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING             = "SubPennyTrading";
         private static  string SECURITY_STATUS_QUAL_STR_ORDER_INPUT                   = "OrderInput";
         private static  string SECURITY_STATUS_QUAL_STR_PRE_ORDER_MATCHING            = "PreOrderMatching";
         private static  string SECURITY_STATUS_QUAL_STR_ORDER_MATCHING                = "OrderMatching";
@@ -234,10 +242,10 @@ namespace Wombat
         private static  string SECURITY_STATUS_QUAL_STR_NEWS_PENDING_RELATED          = "NewsPendingRelated";
         private static  string SECURITY_STATUS_QUAL_STR_EQUIPMENT_CHANGEOVER_RELATED  = "EquipChangeOverRelated";
         private static  string SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED     = "SubPennyTradingRelated";
-        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY         = "ImbPreOpenBuy";
-        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL        = "ImbPreOpenSell";
-        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY        = "ImbPreCloseBuy";
-        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL       = "ImbPreCloseSell";
+        private static  string SECURITY_STATUS_QUAL_STR_POST_TRADING                  = "PostTrading";
+        private static  string SECURITY_STATUS_QUAL_STR_ONE_SIDED                     = "OneSided";
+        private static  string SECURITY_STATUS_QUAL_STR_PRE_CALL                      = "PreCall";
+        private static  string SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN               = "RestrictedOpen";
         private static  string SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE              = "VolatilityPause";
         private static  string SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME = "VolatilityPauseQuoteResume";
         private static  string SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD              = "VolatilityGuard";
@@ -249,6 +257,14 @@ namespace Wombat
         private static  string SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2       = "CircuitBreakerLevel2";
         private static  string SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3       = "CircuitBreakerLevel3";
         private static  string SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE     = "VolatilityPauseStraddle";
+        private static  string SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED         = "ShortSaleRestricted";
+        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY         = "ImbPreOpenBuy";
+        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL        = "ImbPreOpenSell";
+        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_NONE        = "ImbPreOpenNone";
+        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY        = "ImbPreCloseBuy";
+        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL       = "ImbPreCloseSell";
+        private static  string SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_NONE       = "ImbPreCloseNone";
+        private static  string SECURITY_STATUS_QUAL_STR_SCHEDULED_INTRADAY            = "ScheduledIntraday";
         private static  string SECURITY_STATUS_QUAL_STR_UNKNOWN                        = "Unknown";
 
 		public string toString (MamdaSecurityStatusQual.mamdaSecurityStatusQual securityStatusQual)
@@ -385,8 +401,8 @@ namespace Wombat
                     return SECURITY_STATUS_QUAL_STR_FAST_MARKET;            
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SLOW_MARKET:                
                     return SECURITY_STATUS_QUAL_STR_SLOW_MARKET;            
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUM_PENNY_TRADING:          
-                    return SECURITY_STATUS_QUAL_STR_SUM_PENNY_TRADING;      
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING:          
+                    return SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING;      
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INPUT:                
                     return SECURITY_STATUS_QUAL_STR_ORDER_INPUT;            
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING:         
@@ -446,14 +462,14 @@ namespace Wombat
                     return SECURITY_STATUS_QUAL_STR_EQUIPMENT_CHANGEOVER_RELATED;
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED:
                     return SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED;
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY:
-                    return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY;
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL:
-                    return  SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL;
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY:
-                    return  SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY;
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL:
-                    return  SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_POST_TRADING:
+                    return  SECURITY_STATUS_QUAL_STR_POST_TRADING;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ONE_SIDED:
+                    return SECURITY_STATUS_QUAL_STR_ONE_SIDED;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CALL:
+                    return  SECURITY_STATUS_QUAL_STR_PRE_CALL;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESTRICTED_OPEN:
+                    return  SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN;
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE:
                     return   SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE;
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME:
@@ -476,6 +492,22 @@ namespace Wombat
                     return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3;
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE:
                     return SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED:
+                    return SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY:
+                    return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL:
+                    return  SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE:
+                    return  SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_NONE;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY:
+                    return  SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL:
+                    return  SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE:
+                    return  SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_NONE;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY:
+                    return  SECURITY_STATUS_QUAL_STR_SCHEDULED_INTRADAY;
 
 			}
 			return SECURITY_STATUS_QUAL_STR_UNKNOWN;
@@ -613,8 +645,8 @@ namespace Wombat
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FAST_MARKET;   
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SLOW_MARKET)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SLOW_MARKET;   
-            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SUM_PENNY_TRADING)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUM_PENNY_TRADING;   
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING;   
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ORDER_INPUT)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INPUT;   
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_PRE_ORDER_MATCHING)
@@ -671,14 +703,14 @@ namespace Wombat
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED;  
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED;  
-            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;  
-            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;  
-            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;  
-            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_POST_TRADING)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_POST_TRADING;
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ONE_SIDED)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ONE_SIDED;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_PRE_CALL)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CALL;  
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESTRICTED_OPEN;  
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE;  
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME)
@@ -701,6 +733,22 @@ namespace Wombat
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;  
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED;
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_NONE)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE;
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_NONE)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE;
+            if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SCHEDULED_INTRADAY)
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY;
 
 			if (securityStatusQual == "0")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NONE;
@@ -774,6 +822,12 @@ namespace Wombat
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO_IMBALANCE_SELL;
             if (securityStatusQual == "44")
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NO_IPO_IMBALANCE;
+            if (securityStatusQual == "46")               
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_BUY;           
+            if (securityStatusQual == "47")              
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_SELL;          
+            if (securityStatusQual == "48")              
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_NONE;          
 			if (securityStatusQual == "51")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPEN_DELAY;
 			if (securityStatusQual == "52")
@@ -798,19 +852,13 @@ namespace Wombat
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SEC;
 			if (securityStatusQual == "62")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_TIMES;
-			if (securityStatusQual == "62")
+			if (securityStatusQual == "63")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OTHER;
 			if (securityStatusQual == "64")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RELATED;
 			if (securityStatusQual == "65")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO;
             
-            if (securityStatusQual == "46")               
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_BUY;           
-            if (securityStatusQual == "47")              
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_SELL;          
-            if (securityStatusQual == "48")              
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_NONE;          
             if (securityStatusQual == "66")                 
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CROSS;             
             if (securityStatusQual == "67")                     
@@ -834,7 +882,7 @@ namespace Wombat
             if (securityStatusQual == "76")           
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SLOW_MARKET;           
             if (securityStatusQual == "77")     
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUM_PENNY_TRADING;     
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING;     
             if (securityStatusQual == "78")           
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INPUT;           
             if (securityStatusQual == "79")    
@@ -891,14 +939,14 @@ namespace Wombat
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED;
             if (securityStatusQual == "110")         
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED;
+            if (securityStatusQual == "111")         
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_POST_TRADING;
             if (securityStatusQual == "112")         
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ONE_SIDED;
             if (securityStatusQual == "113")         
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CALL;
             if (securityStatusQual == "114")         
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;
-            if (securityStatusQual == "115")         
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESTRICTED_OPEN;
             if (securityStatusQual == "116")         
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE;
             if (securityStatusQual == "117")         
@@ -921,6 +969,22 @@ namespace Wombat
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
             if (securityStatusQual == "126")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
+            if (securityStatusQual == "127")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED;
+            if (securityStatusQual == "128")         
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;
+            if (securityStatusQual == "129")         
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;
+            if (securityStatusQual == "130")         
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE;
+            if (securityStatusQual == "131")         
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;
+            if (securityStatusQual == "132")         
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;
+            if (securityStatusQual == "133")         
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE;
+            if (securityStatusQual == "134")         
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY;
 
 			return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_UNKNOWN;
 		}

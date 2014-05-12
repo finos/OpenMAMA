@@ -130,23 +130,31 @@ namespace Wombat
         SECURITY_STATUS_QUAL_NEWS_PENDING_RELATED           = 108, // toString() - NewsPendingRelated
         SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED   = 109, // toString() - EquipChangeOverRelated
         SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED      = 110, // toString() - SubPennyTradingRelated
-        
-        SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY          = 112, // toString() - ImbPreOpenBuy
-        SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL         = 113, // toString() - ImbPreOpenSell
-        SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY         = 114, // toString() - ImbPreCloseBuy
-        SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL        = 115, // toString() - ImbPreCloseSell    
+        SECURITY_STATUS_QUAL_POST_TRADING                   = 111, // toString() - PostTrading
+        SECURITY_STATUS_QUAL_ONE_SIDED                      = 112, // toString() - OneSided
+        SECURITY_STATUS_QUAL_PRE_CALL                       = 113, // toString() - PreCall
+        SECURITY_STATUS_QUAL_RESTRICTED_OPEN                = 114, // toString() - RestrictedOpen
         
         SECURITY_STATUS_QUAL_VOLATILITY_PAUSE               = 116, // toString() - VolatilityPause
         SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME  = 117, // toString() - VolatilityPauseQuoteResume
         SECURITY_STATUS_QUAL_VOLATILITY_GUARD               = 118, // toString() - VolatilityGuard
         SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME  = 119, // toString() - VolatilityGuardQuoteResume
-        SECURITY_STATUS_QUAL_LIMIT_STATE_BID                = 120, //toString() - LimitStateBid
-        SECURITY_STATUS_QUAL_LIMIT_STATE_ASK                = 121, //toString() - LimitStateAsk
-        SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK    = 122, //toString() - LimitStateBid:LimitStateAsk
-        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1        = 123, //toString() - CircuitBreakerLevel1
-        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2        = 124, //toString() - CircuitBreakerLevel2
-        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3        = 125, //toString() - CircuitBreakerLevel3
-        SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE      = 126  //toString() - VolatilityPauseStraddle
+        SECURITY_STATUS_QUAL_LIMIT_STATE_BID                = 120, // toString() - LimitStateBid
+        SECURITY_STATUS_QUAL_LIMIT_STATE_ASK                = 121, // toString() - LimitStateAsk
+        SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK    = 122, // toString() - LimitStateBid:LimitStateAsk
+        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1        = 123, // toString() - CircuitBreakerLevel1
+        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2        = 124, // toString() - CircuitBreakerLevel2
+        SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3        = 125, // toString() - CircuitBreakerLevel3
+        SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE      = 126, // toString() - VolatilityPauseStraddle
+
+        SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED          = 127, // toString() - ShortSaleRestricted
+        SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY          = 128, // toString() - ImbPreOpenBuy
+        SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL         = 129, // toString() - ImbPreOpenSell
+        SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE         = 130, // toString() - ImbPreOpenNone
+        SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY         = 131, // toString() - ImbPreCloseBuy
+        SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL        = 132, // toString() - ImbPreCloseSell    
+        SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE        = 133, // toString() - ImbPreCloseNone    
+        SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY             = 134  // toString() - ScheduledIntraday    
     };
 
 

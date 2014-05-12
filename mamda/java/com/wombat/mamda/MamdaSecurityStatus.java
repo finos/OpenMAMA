@@ -37,6 +37,7 @@ public class MamdaSecurityStatus
     public static final short SECURITY_STATUS_CROSSING           = 7;
     public static final short SECURITY_STATUS_SUSPENDED          = 8;
     public static final short SECURITY_STATUS_AT_LAST            = 9;
+    public static final short SECURITY_STATUS_INACTIVE           = 10;
     public static final short SECURITY_STATUS_UNKNOWN            = 99;
     
     //Only used internally
@@ -50,6 +51,8 @@ public class MamdaSecurityStatus
     private static final String SECURITY_STATUS_STR_CROSSING    = "Crossing";
     private static final String SECURITY_STATUS_STR_SUSPENDED   = "Suspended";
     private static final String SECURITY_STATUS_STR_AT_LAST     = "AtLast";
+    private static final String SECURITY_STATUS_STR_INACTIVE    = "Inactive";
+    private static final String SECURITY_STATUS_STR_UNKNOWN     = "Unknown";
 
     /**
      * Convert a MamdaSecurityStatus to an appropriate, displayable
@@ -72,6 +75,7 @@ public class MamdaSecurityStatus
             case  SECURITY_STATUS_CROSSING:         return SECURITY_STATUS_STR_CROSSING;
             case  SECURITY_STATUS_SUSPENDED:        return SECURITY_STATUS_STR_SUSPENDED;
             case  SECURITY_STATUS_AT_LAST:          return SECURITY_STATUS_STR_AT_LAST;
+            case  SECURITY_STATUS_INACTIVE:         return SECURITY_STATUS_STR_INACTIVE;
             case  SECURITY_STATUS_UNKNOWN:   
             default:
                 return "Unknown";
@@ -114,6 +118,10 @@ public class MamdaSecurityStatus
             return SECURITY_STATUS_SUSPENDED;
         if (securityStatus.equals (SECURITY_STATUS_STR_AT_LAST))
             return SECURITY_STATUS_AT_LAST;
+        if (securityStatus.equals (SECURITY_STATUS_STR_INACTIVE))
+            return SECURITY_STATUS_INACTIVE;
+        if (securityStatus.equals (SECURITY_STATUS_STR_UNKNOWN))
+            return SECURITY_STATUS_UNKNOWN;
         
         //A misconfigured FH might send numbers as strings
         if (securityStatus.equals ("0"))
@@ -136,6 +144,10 @@ public class MamdaSecurityStatus
             return SECURITY_STATUS_SUSPENDED;
         if (securityStatus.equals ("9"))
             return SECURITY_STATUS_AT_LAST;
+        if (securityStatus.equals ("10"))
+            return SECURITY_STATUS_INACTIVE;
+        if (securityStatus.equals ("99"))
+            return SECURITY_STATUS_UNKNOWN;
 
         return SECURITY_STATUS_UNKNOWN;
     }

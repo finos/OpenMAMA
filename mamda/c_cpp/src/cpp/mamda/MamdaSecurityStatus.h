@@ -43,6 +43,7 @@ namespace Wombat
         SECURITY_STATUS_CROSSING,    /* toString() returns "Crossing" */
         SECURITY_STATUS_SUSPENDED,   /* toString() returns "Suspended" */
         SECURITY_STATUS_AT_LAST,     /* toString() returns "AtLast" */
+        SECURITY_STATUS_INACTIVE,    /* toString() returns "Inactive" */
         SECURITY_STATUS_UNKNOWN = 99 /* toString() returns "Unknown" */
     };
 
