@@ -22,8 +22,12 @@ API_HOME=../../../
 #BDYNAMIC = -Bdynamic
 
 # GNU compiler:
-CXX      = g++
-CC       = gcc
+ifneq (,$(CXX))
+  CXX = g++
+endif
+ifneq (,$(CC))
+  CC = gcc
+endif
 BSTATIC  = -Xlinker -Bstatic
 BDYNAMIC = -Xlinker -Bdynamic
 
