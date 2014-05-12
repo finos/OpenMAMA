@@ -40,7 +40,7 @@
 #include "wombat/targetsxs.h"
 #include "wombat/wConfig.h"
 #include "windows/lock.h"
-#include "windows/mmap.h"
+#include "windows/mman.h"
 
 #if defined(__cplusplus)
 extern "C" {
