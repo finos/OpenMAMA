@@ -413,6 +413,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\fileparser.c"
+				>
+			</File>
+			<File
 				RelativePath=".\windows\network.c"
 				>
 			</File>
