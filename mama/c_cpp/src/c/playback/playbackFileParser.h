@@ -28,6 +28,7 @@ extern "C" {
 #endif
 
 #include "wombat/port.h"
+#include "wombat/fileparser.h"
 
 #include <stdlib.h>
 #include <fcntl.h>
@@ -47,15 +48,11 @@ typedef struct mamaPlaybackFileParser_
 {
     char            myBlockHeader[HEADER_SIZE];
     mamaMsg         myMamaMsg;
-    int             myFileDescriptor;
-    FILE*           myFileHandle;
-    void*           myFiledata;
-    off_t           myFileSize;
-    char*           myFilePointer;
-    mama_u64_t      myLastPos;
+    mama_u64_t      myFileSize;
     mama_size_t     myMamaMsgLen;
-    mama_size_t     myLastMsgLen;
+    mama_size_t     myMaxMsgLen;
     char*           myMsgBuffer;
+    fileParser      myFileReader;
 }mamaPlaybackFileParserImpl;
 
 /*************************************************************************
