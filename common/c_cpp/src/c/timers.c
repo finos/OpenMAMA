@@ -242,6 +242,12 @@ writeagain:
                                &heapImpl->mEndingLock);
         }
         wthread_mutex_unlock (&heapImpl->mEndingLock);
+
+        wthread_join (heapImpl->mDispatchThread, NULL);
+
+        close (heapImpl->mSockPair[0]);
+        close (heapImpl->mSockPair[1]);
+
         free (heapImpl);
     }
     return 0;
