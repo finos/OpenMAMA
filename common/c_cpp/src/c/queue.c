@@ -23,8 +23,10 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "wombat/queue.h"
 #include "wombat/wSemaphore.h"
+#include "wombat/wInterlocked.h"
 
 #define WQ_REMOVE(impl, ele)                  \
     (ele)->mPrev->mNext = (ele)->mNext;       \
@@ -51,7 +53,7 @@ typedef struct
     wsem_t                mSem;
     wthread_mutex_t      mLock; /* for multiple readers */
     
-    uint8_t              mUnblocking;
+    wInterlockedInt      mUnblocking;
 
     uint32_t             mMaxSize;
     uint32_t             mChunkSize;
@@ -85,10 +87,16 @@ wombatQueue_allocate (wombatQueue *result)
     impl->mChunkSize    = WOMBAT_QUEUE_CHUNK_SIZE;
     impl->mIterator     = &impl->mHead;
 
+    memset (&impl->mHead, 0, sizeof (impl->mHead));
+    memset (&impl->mTail, 0, sizeof (impl->mTail));
+
     impl->mHead.mNext = &impl->mTail;
     impl->mHead.mPrev = &impl->mHead; /* for iteration */
     impl->mTail.mPrev = &impl->mHead;
     impl->mTail.mNext = &impl->mTail; /* for iteration */
+
+    wInterlocked_initialize (&impl->mUnblocking);
+    wInterlocked_set (0, &impl->mUnblocking);
 
     return WOMBAT_QUEUE_OK;
 }
@@ -155,6 +163,8 @@ wombatQueue_destroy (wombatQueue queue)
     {
         result = WOMBAT_QUEUE_SEM_ERR;
     }
+
+    wInterlocked_destroy (&impl->mUnblocking);
     
     wthread_mutex_destroy( &impl->mLock);
     free (impl);
@@ -257,21 +267,25 @@ wombatQueue_dispatchInt (wombatQueue queue, void** data, void** closure,
             if (errno != EINTR)
                 return WOMBAT_QUEUE_SEM_ERR;
         }
-        if (impl->mUnblocking)
-        {
-            impl->mUnblocking = 0;
-            return WOMBAT_QUEUE_OK;
-        }
     }
 
     wthread_mutex_lock (&impl->mLock); /* May be multiple readers */
+
+    if (wInterlocked_read (&impl->mUnblocking))
+    {
+        wInterlocked_set (0, &impl->mUnblocking);
+        wthread_mutex_unlock (&impl->mLock);
+        return WOMBAT_QUEUE_OK;
+    }
  
     /* remove the item */
-    head                   = impl->mHead.mNext;
-    if (head == &impl->mTail) {
-       wthread_mutex_unlock (&impl->mLock);
-       return WOMBAT_QUEUE_OK;
+    head = impl->mHead.mNext;
+    if (head == &impl->mTail) 
+    {
+        wthread_mutex_unlock (&impl->mLock);
+        return WOMBAT_QUEUE_OK;
     }
+
     WQ_REMOVE (impl, head);
 
     if (data)
@@ -324,8 +338,8 @@ wombatQueue_poll (wombatQueue queue, void** data, void** closure)
     }
 
     wthread_mutex_lock (&impl->mLock); 
-   
-    head             = impl->mHead.mNext;
+
+    head = impl->mHead.mNext;
     WQ_REMOVE (impl, head);
 
     /* so we can unlock (allows cb to dequeue) */
@@ -386,8 +400,11 @@ wombatQueue_unblock (wombatQueue queue)
 {
     wombatQueueImpl* impl    = (wombatQueueImpl*)queue;
 
-    impl->mUnblocking = 1;
+    wthread_mutex_lock (&impl->mLock);
+    wInterlocked_set (1, &impl->mUnblocking);
     wsem_post (&impl->mSem);
+    wthread_mutex_unlock (&impl->mLock);
+
     return WOMBAT_QUEUE_OK;
 }
 
