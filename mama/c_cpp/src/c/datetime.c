@@ -984,9 +984,6 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
 {
     time_t    seconds;
     struct tm tmValue;
-    size_t    bytesUsed;
-    size_t    precision;
-    uint8_t   hasTime = 0;
 
     if (!dateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
@@ -994,22 +991,18 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
     seconds = (time_t) mamaDateTimeImpl_getSeconds(*dateTime);
     utcTm (&tmValue, seconds);
     buf[0] = '\0';
-    hasTime = mamaDateTimeImpl_getHasTime (*dateTime);
-    if (mamaDateTimeImpl_getHasDate(*dateTime))
+    if (mamaDateTimeImpl_getHasTime (*dateTime))
     {
-        if (hasTime)
-            bytesUsed = strftime (buf, bufMaxLen, "%Y-%m-%d ", &tmValue);
-        else
-            bytesUsed = strftime (buf, bufMaxLen, "%Y-%m-%d", &tmValue);
-        if (bytesUsed > 0)
+        size_t    bytesUsed = 0;
+        size_t    precision = 0;
+        if (mamaDateTimeImpl_getHasDate(*dateTime))
         {
-            buf       += bytesUsed;
-            bufMaxLen -= bytesUsed;
+            bytesUsed = strftime (buf, bufMaxLen, "%Y-%m-%d %H:%M:%S", &tmValue);
         }
-    }
-    if (hasTime)
-    {
-        bytesUsed = strftime (buf, bufMaxLen, "%H:%M:%S", &tmValue);
+        else
+        {
+            bytesUsed = strftime (buf, bufMaxLen, "%H:%M:%S", &tmValue);
+        }
         if (bytesUsed > 0)
         {
             buf       += bytesUsed;
@@ -1034,6 +1027,10 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
             }
             snprintf (buf, bufMaxLen, ".%0*d", (int)precision, digits);
         }
+    }
+    else if (mamaDateTimeImpl_getHasDate(*dateTime))
+    {
+        strftime (buf, bufMaxLen, "%Y-%m-%d", &tmValue);
     }
     return MAMA_STATUS_OK;
 }

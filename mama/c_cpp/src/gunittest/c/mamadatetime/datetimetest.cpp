@@ -1104,6 +1104,38 @@ TEST_F (MamaDateTimeTestC, TestGetAsString)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
+TEST_F (MamaDateTimeTestC, TestGetAsStringTimeOnly)
+{
+    mamaDateTime t = NULL;
+
+    const char* stringTime = "10:03:21.123";
+    char stringBuffer[50];
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&t));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_setFromString (t, stringTime));
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50));
+    EXPECT_STREQ (stringTime, stringBuffer);
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (t));
+}
+
+TEST_F (MamaDateTimeTestC, TestGetAsStringDateOnly)
+{
+    mamaDateTime t = NULL;
+
+    const char* stringTime = "2013-07-04";
+    char stringBuffer[50];
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&t));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_setFromString (t, stringTime));
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50));
+    EXPECT_STREQ (stringTime, stringBuffer);
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (t));
+}
+
 TEST_F (MamaDateTimeTestC, TestGetTimeAsString)
 {
     mamaDateTime t, nullTime = NULL;
