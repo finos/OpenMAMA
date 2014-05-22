@@ -400,6 +400,8 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "EXEGY";
         case MAMA_PAYLOAD_INRUSH:
             return "INRUSH";
+        case MAMA_PAYLOAD_KWANTUM:
+            return "KWANTUM";
 
         default:
             return "unknown";

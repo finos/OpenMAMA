@@ -39,6 +39,8 @@ public class MamaPayloadType
     public static final char MAMA_PAYLOAD_FAST          =   'F';
     /** RAI Message */
     public static final char MAMA_PAYLOAD_RAI           =   'I';
+    /** KWANTUM Message */
+    public static final char MAMA_PAYLOAD_KWANTUM       =   'K';
     /** UMS Message */
     public static final char MAMA_PAYLOAD_UMS           =   'L';
     /** Inrush Message */

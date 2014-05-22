@@ -48,7 +48,8 @@ typedef enum mamaMiddleware_
     MAMA_MIDDLEWARE_UMS     = 12,
     MAMA_MIDDLEWARE_VULCAN  = 13,
     MAMA_MIDDLEWARE_INRUSH  = 14,
-    MAMA_MIDDLEWARE_MAX     = 15,
+    MAMA_MIDDLEWARE_LBMKOMODO = 15,
+    MAMA_MIDDLEWARE_MAX     = 16,
     MAMA_MIDDLEWARE_UNKNOWN = 99
 } mamaMiddleware;
 

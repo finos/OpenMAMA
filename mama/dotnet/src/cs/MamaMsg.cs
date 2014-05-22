@@ -63,6 +63,11 @@ namespace Wombat
         MAMA_PAYLOAD_RAI = 'I',
 
         /// <summary>
+        /// KWANTUM Message
+        /// </summary>
+        MAMA_PAYLOAD_KWANTUM = 'K',
+
+        /// <summary>
         /// UMS Message
         /// </summary>
         MAMA_PAYLOAD_UMS = 'L',

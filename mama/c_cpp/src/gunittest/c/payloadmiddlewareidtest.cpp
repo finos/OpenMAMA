@@ -60,6 +60,7 @@ MamaEnumTestsC::CreateTestData()
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_TICK42BLP,  "TICK42BLP"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_FAST,       "FAST"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_RAI,        "rai"));
+    payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_KWANTUM,    "KWANTUM"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_UMS,        "UMS"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_INRUSH,     "INRUSH"));
     payloadTestData.insert (MamaPayloadPair (MAMA_PAYLOAD_TICK42RMDS, "TICK42RMDS"));
@@ -88,6 +89,7 @@ MamaEnumTestsC::CreateTestData()
     middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_UMS,       "ums"));
     middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_VULCAN,    "vulcan"));
     middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_INRUSH,    "inrush"));
+    middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_LBMKOMODO, "lbmkomodo"));
     middlewareTestData.insert (MamaMiddlewarePair (MAMA_MIDDLEWARE_UNKNOWN,   "unknown"));
 }
 
