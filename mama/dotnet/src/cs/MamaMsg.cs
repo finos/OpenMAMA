@@ -33,19 +33,9 @@ namespace Wombat
     public enum mamaPayloadType
     {
         /// <summary>
-        /// Wombat Message
+        /// Solace Message
         /// </summary>
-        MAMA_PAYLOAD_WOMBAT_MSG = 'W',
-
-        /// <summary>
-        /// TIBRV Message
-        /// </summary>
-        MAMA_PAYLOAD_TIBRV = 'R',
-
-        /// <summary>
-        /// FAST Message
-        /// </summary>
-        MAMA_PAYLOAD_FAST = 'F',
+        MAMA_PAYLOAD_SOLACE = '1',
 
         /// <summary>
         /// V5 Message
@@ -58,9 +48,69 @@ namespace Wombat
         MAMA_PAYLOAD_AVIS = 'A',
 
         /// <summary>
+        /// Tick42 BLP Message
+        /// </summary>
+        MAMA_PAYLOAD_TICK42BLP = 'B',
+
+        /// <summary>
+        /// FAST Message
+        /// </summary>
+        MAMA_PAYLOAD_FAST = 'F',
+
+        /// <summary>
+        /// RAI Message
+        /// </summary>
+        MAMA_PAYLOAD_RAI = 'I',
+
+        /// <summary>
+        /// UMS Message
+        /// </summary>
+        MAMA_PAYLOAD_UMS = 'L',
+
+        /// <summary>
+        /// Inrush Message
+        /// </summary>
+        MAMA_PAYLOAD_INRUSH = 'N',
+
+        /// <summary>
+        /// Tick42 RMDS Message
+        /// </summary>
+        MAMA_PAYLOAD_TICK42RMDS = 'P',
+
+        /// <summary>
+        /// QPID Message
+        /// </summary>
+        MAMA_PAYLOAD_QPID = 'Q',
+
+        /// <summary>
         /// TIBRV Message
         /// </summary>
-        MAMA_PAYLOAD_SOLACE = '1',
+        MAMA_PAYLOAD_TIBRV = 'R',
+
+        /// <summary>
+        /// IBMWFO Message
+        /// </summary>
+        MAMA_PAYLOAD_IBMWFO = 'S',
+
+        /// <summary>
+        /// ACTIV Message
+        /// </summary>
+        MAMA_PAYLOAD_ACTIV = 'T',
+
+        /// <summary>
+        /// Vulcan Message
+        /// </summary>
+        MAMA_PAYLOAD_VULCAN = 'V',
+
+        /// <summary>
+        /// Wombat Message
+        /// </summary>
+        MAMA_PAYLOAD_WOMBAT_MSG = 'W',
+
+        /// <summary>
+        /// Exegy Message
+        /// </summary>
+        MAMA_PAYLOAD_EXEGY = 'X',
 
         /// <summary>
         /// Unknown Type
