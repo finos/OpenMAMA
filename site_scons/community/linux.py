@@ -36,6 +36,11 @@ class Linux:
                 tools.append( 'clang' )
                 tools.append( 'clang++' )
             if compiler == 'clang-analyzer':
+                if 'scan-build' not in os.environ['_'] and not GetOption('clean'):
+                    print 'If you wish to run with the static analyzer, please ensure ' \
+                            'you execute scons within the scan-build tool.'
+                    print '\tscan-build <scan-build-arguments> scons <scons-arguments>'
+                    exit (1)
                 tools.append( 'scan-build')
 
         if optsEnv['with_docs'] == True:

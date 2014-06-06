@@ -21,19 +21,29 @@ def generate(env):
     SCons.Tool.gcc.generate(env)
     gplusplus.generate(env)
 
-    """Add Builders and construction variables for gcc to an Environment."""
+    if env.GetOption('clean'):
+        return
+
     env['CC']    = os.environ['CC'] or 'ccc-analyzer'
     env['CXX']   = os.environ['CXX'] or 'c++-analyzer'
     env['CLANG'] = os.environ['CLANG']
     env['CLANG_CXX'] = os.environ['CLANG_CXX']
 
+    env['ENV']['CC']    = env['CC']
+    env['ENV']['CXX']   = env['CXX']
+    env['ENV']['CLANG'] = env['CLANG']
+    env['ENV']['CLANG_CXX'] = env['CLANG_CXX']
+
     for item in os.environ.items():
         if item[0].startswith('CCC_'):
-            print item
             env[item[0]] = item[1]
+            env['ENV'][item[0]] = item[1]
 
     env['CXXFLAGS'].append('-fcolor-diagnostics')
     env['CFLAGS'].append('-fcolor-diagnostics')
+
+    env['ENV']['CXXFLAGS'] = env['CXXFLAGS']
+    env['ENV']['CFLAGS']   = env['CFLAGS']
 
 def exists(env):
     return env.Detect(compilers)
