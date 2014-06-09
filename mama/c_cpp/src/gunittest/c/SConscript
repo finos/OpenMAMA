@@ -24,6 +24,7 @@ env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 sources = Split("""
 inboxtest.cpp
 iotest.cpp
+msgutils.cpp
 openclosetest.cpp
 payloadmiddlewareidtest.cpp
 publishertest.cpp
