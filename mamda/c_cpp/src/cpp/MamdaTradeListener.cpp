@@ -372,8 +372,6 @@ namespace Wombat
         struct FieldUpdateSettleDate;
         struct FieldUpdateOffExchangeTradePrice;
         struct FieldUpdateOnExchangeTradePrice;
-        struct FieldUpdateTradeId;
-        struct FieldUpdateOrigTradeId;
         struct FieldUpdateGenericFlag;
         struct FieldUpdateShortSaleCircuitBreaker;    
         struct FieldUpdateOrigShortSaleCircuitBreaker;    
