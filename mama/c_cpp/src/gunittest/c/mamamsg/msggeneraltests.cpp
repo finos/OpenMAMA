@@ -311,6 +311,32 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsInValidNumFields)
     ASSERT_EQ (mamaMsg_getNumFields(mMsg, NULL), MAMA_STATUS_INVALID_ARG);
 }
 
+TEST_F (MsgGeneralTestsC, msgGetNumFieldsSubMessage)
+{
+    mamaMsg     submsg      = NULL;
+    const char* testString  = "test";
+    mama_status status      = MAMA_STATUS_OK;
+    mama_size_t numFields   = 0;
+    mama_size_t addedFields = 3;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_create(&submsg));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addString (mMsg, "name0", 101, testString));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addU32    (mMsg, "name1", 102, 12345));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addBool (submsg, "sub1", 10001, (mama_bool_t)1));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addI8   (submsg, "sub2", 10002, -12));
+
+    status = mamaMsg_addMsg (mMsg, "name2", 103, submsg);
+
+    ALLOW_NON_IMPLEMENTED (status);
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaMsg_getNumFields (mMsg, &numFields));
+    EXPECT_EQ (addedFields, numFields);
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (submsg));
+}
+
 TEST_F (MsgGeneralTestsC, msgGetPayloadTypeValid)
 {
     mamaPayloadType  payloadType = MAMA_PAYLOAD_UNKNOWN;

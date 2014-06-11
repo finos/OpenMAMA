@@ -729,14 +729,15 @@ qpidmsgPayload_getNumFields (const msgPayload    msg,
         return MAMA_STATUS_NULL_ARG;
     }
 
+    *numFields = 0;
+
     /* Move to where the first field is entered */
     qpidmsgPayloadImpl_moveDataToContentLocation (impl->mBody);
 
-    /*
-     * OpenMAMA fields are stored as a three element list of Name, FID, Value.
-     * The list element itself also counts as a QPID field so divide by four.
-     */
-    *numFields = pn_data_size (impl->mBody) / QPID_FIELDS_PER_MAMA_FIELD;
+    while (0 != pn_data_next (impl->mBody))
+    {
+        (*numFields)++;
+    }
 
     /* Revert to the previous iterator state if applicable */
     qpidmsgPayloadImpl_resetToIteratorState (impl);
