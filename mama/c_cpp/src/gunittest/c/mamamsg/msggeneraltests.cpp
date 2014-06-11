@@ -824,6 +824,71 @@ TEST_F (MsgGeneralTestsC, msgGetFieldAsStringInValidBufferLength)
     ASSERT_EQ (mamaMsg_getFieldAsString(mMsg, fieldName, fid, buffer, 0), MAMA_STATUS_NULL_ARG);
 }
 
+TEST_F (MsgGeneralTestsC, msgGetFieldAsStringLargeVectorLargeBuffer)
+{
+    const char*          fieldName    = "name2";
+    mama_fid_t           fid          = 102;
+    char                 buffer[200];
+    mama_size_t          bufferLen    = 200;
+    int                  i            = 1;
+
+    mamaMsg              msgs[5];
+
+    for (i = 0; i < 5; ++i)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_create (&msgs[i]));
+        ASSERT_EQ (MAMA_STATUS_OK,
+                    mamaMsg_addBool (msgs[i], "field1", 101, true));
+    }
+
+    // Add fields to msg
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addBool (mMsg, "name1", 101, true));
+    ASSERT_EQ (MAMA_STATUS_OK,
+                    mamaMsg_addVectorMsg (mMsg, fieldName, fid, msgs, 5));
+
+    EXPECT_EQ (MAMA_STATUS_OK,
+                mamaMsg_getFieldAsString(mMsg, fieldName, fid, buffer, bufferLen));
+
+    // Cleanup message array.
+    for (i = 0; i < 5; ++i)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (msgs[i]));
+    }
+}
+
+TEST_F (MsgGeneralTestsC, msgGetFieldAsStringLargeVectorSmallBuffer)
+{
+    const char*          fieldName    = "name2";
+    mama_fid_t           fid          = 102;
+    char                 buffer[10];
+    mama_size_t          bufferLen    = 10;
+    int                  i            = 1;
+
+    mamaMsg              msgs[5];
+
+    for (i = 0; i < 5; ++i)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_create (&msgs[i]));
+        ASSERT_EQ (MAMA_STATUS_OK,
+                    mamaMsg_addBool (msgs[i], "field1", 101, true));
+    }
+
+    // Add fields to msg
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addBool (mMsg, "name1", 101, true));
+    ASSERT_EQ (MAMA_STATUS_OK,
+                    mamaMsg_addVectorMsg (mMsg, fieldName, fid, msgs, 5));
+
+    EXPECT_EQ (MAMA_STATUS_OK,
+                mamaMsg_getFieldAsString (mMsg, fieldName, fid, buffer, bufferLen));
+
+    // Cleanup message array.
+    for (i = 0; i < 5; ++i)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (msgs[i]));
+    }
+}
+
+
 TEST_F (MsgGeneralTestsC, msgSetNewBufferValid)
 {
     const void*          buffer       = NULL;
