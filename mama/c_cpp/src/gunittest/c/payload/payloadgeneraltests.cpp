@@ -25,6 +25,7 @@
 #include "payloadbridge.h"
 #include "msgimpl.h"
 #include <set>
+#include <limits>
 using std::cout;
 using std::endl;
 
@@ -86,6 +87,228 @@ TEST_F(PayloadGeneralTests, CreateInValid)
    result = aBridge->msgPayloadCreate(NULL);
 
    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+}
+
+TEST_F(PayloadGeneralTests, SerializeRoundtrip)
+{
+    msgPayload testPayload = NULL;
+    result = aBridge->msgPayloadCreate (&testPayload);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    mama_bool_t b = 1;
+    char ch = 'V';
+    char chVector [] = {'A', 'B', 'C'};
+    mama_size_t chVectorSize = sizeof(chVector)/sizeof(chVector[0]);
+    const char* str = "LONG TEST STRING";
+    std::string s = "TEST";
+    mamaDateTime dt;
+    mamaPrice prc;
+    ASSERT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&dt));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaDateTime_setToNow (dt));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaPrice_create (&prc));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaPrice_setValue (prc, 17.79));
+
+    mama_fid_t orig_fid = 100;
+    mama_fid_t fid = orig_fid;
+    mama_status ret = MAMA_STATUS_OK;
+    ret = aBridge->msgPayloadAddBool (testPayload, "FirstNameOnly", ++fid, b);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddChar (testPayload, NULL, ++fid, ch);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddI8 (testPayload, NULL, ++fid, std::numeric_limits<mama_i8_t>::min ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddU8 (testPayload, NULL, ++fid, std::numeric_limits<mama_u8_t>::max ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddI16 (testPayload, NULL, ++fid, std::numeric_limits<mama_i16_t>::min ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddU16 (testPayload, NULL, ++fid, std::numeric_limits<mama_u16_t>::max ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddI32 (testPayload, NULL, ++fid, std::numeric_limits<mama_i32_t>::min ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddU32 (testPayload, NULL, ++fid, std::numeric_limits<mama_u32_t>::max ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddI64 (testPayload, NULL, ++fid, std::numeric_limits<mama_i64_t>::min ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddU64 (testPayload, NULL, ++fid, std::numeric_limits<mama_u64_t>::max ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddF32 (testPayload, NULL, ++fid, std::numeric_limits<mama_f32_t>::max ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddF64 (testPayload, NULL, ++fid, std::numeric_limits<mama_f64_t>::max ());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddString (testPayload, NULL, ++fid, str);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddOpaque (testPayload, NULL, ++fid, (void*)s.data(), s.size());
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddDateTime (testPayload, NULL, ++fid, dt);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddPrice (testPayload, NULL, ++fid, prc);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddVectorChar (testPayload, NULL, ++fid, chVector,
+                                            chVectorSize);
+
+    bool hasVectors = (MAMA_STATUS_NOT_IMPLEMENTED != ret);
+    if (hasVectors)
+        EXPECT_EQ (MAMA_STATUS_OK, ret);
+    else
+        --fid;
+
+    // Create an populate a submessage...
+    msgPayload subMsg = NULL;
+    ret = aBridge->msgPayloadCreate (&subMsg);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+
+    ret = aBridge->msgPayloadAddU32 (subMsg, NULL, 101, 123);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = aBridge->msgPayloadAddString (subMsg, NULL, 102, str);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+
+    ret = aBridge->msgPayloadAddMsg (testPayload, NULL, ++fid, subMsg);
+
+    bool hasSubMessages = (MAMA_STATUS_NOT_IMPLEMENTED != ret);
+    if (hasSubMessages)
+        EXPECT_EQ (MAMA_STATUS_OK, ret);
+    else
+        --fid;
+
+    mama_size_t numFieldsOut = 0;
+    ret = aBridge->msgPayloadGetNumFields (testPayload, &numFieldsOut);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (fid-orig_fid, numFieldsOut);
+
+    const void* buf = NULL;
+    mama_size_t bufSize = 0;
+    ret = aBridge->msgPayloadSerialize (testPayload, &buf, &bufSize);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_NE ((void*)NULL, buf);
+    EXPECT_NE (0, bufSize);
+
+    msgPayload testPayloadIn = NULL;
+    result = aBridge->msgPayloadCreate (&testPayloadIn);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    ret = aBridge->msgPayloadUnSerialize (testPayloadIn, (const void**)buf, bufSize);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+
+    mama_size_t bs = 0;
+    ret = aBridge->msgPayloadGetByteSize (testPayloadIn, &bs);
+    if (ret != MAMA_STATUS_NOT_IMPLEMENTED)
+    {
+        EXPECT_EQ (MAMA_STATUS_OK, ret);
+        EXPECT_EQ (bufSize, bs);
+    }
+
+    mama_size_t numFieldsIn = 0;
+    ret = aBridge->msgPayloadGetNumFields (testPayloadIn, &numFieldsIn);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (numFieldsOut, numFieldsIn);
+
+    mama_bool_t bIn = 0;
+    char chIn = '\0';
+    mama_i8_t i8In = 0;
+    mama_u8_t u8In = 0;
+    mama_i16_t i16In = 0;
+    mama_u16_t u16In = 0;
+    mama_i32_t i32In = 0;
+    mama_u32_t u32In = 0;
+    mama_i64_t i64In = 0;
+    mama_u64_t u64In = 0;
+    mama_f32_t f32In = 0;
+    mama_f64_t f64In = 0;
+    const char* strIn = "";
+    void* bufIn = NULL;
+    mama_size_t bufInSize = 0;
+    mamaDateTime dtIn;
+    mamaPrice prcIn;
+    ASSERT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&dtIn));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaPrice_create (&prcIn));
+
+    fid = orig_fid;
+    ret = aBridge->msgPayloadGetBool (testPayloadIn, NULL, ++fid, &bIn);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (b, bIn);
+    ret = aBridge->msgPayloadGetChar (testPayloadIn, NULL, ++fid, &chIn);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (ch, chIn);
+    ret = aBridge->msgPayloadGetI8 (testPayloadIn, NULL, ++fid, &i8In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_i8_t>::min (), i8In);
+    ret = aBridge->msgPayloadGetU8 (testPayloadIn, NULL, ++fid, &u8In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_u8_t>::max (), u8In);
+    ret = aBridge->msgPayloadGetI16 (testPayloadIn, NULL, ++fid, &i16In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_i16_t>::min (), i16In);
+    ret = aBridge->msgPayloadGetU16 (testPayloadIn, NULL, ++fid, &u16In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_u16_t>::max (), u16In);
+    ret = aBridge->msgPayloadGetI32 (testPayloadIn, NULL, ++fid, &i32In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_i32_t>::min (), i32In);
+    ret = aBridge->msgPayloadGetU32 (testPayloadIn, NULL, ++fid, &u32In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_u32_t>::max (), u32In);
+    ret = aBridge->msgPayloadGetI64 (testPayloadIn, NULL, ++fid, &i64In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_i64_t>::min (), i64In);
+    ret = aBridge->msgPayloadGetU64 (testPayloadIn, NULL, ++fid, &u64In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_u64_t>::max (), u64In);
+    ret = aBridge->msgPayloadGetF32 (testPayloadIn, NULL, ++fid, &f32In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_f32_t>::max (), f32In);
+    ret = aBridge->msgPayloadGetF64 (testPayloadIn, NULL, ++fid, &f64In);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (std::numeric_limits<mama_f64_t>::max (), f64In);
+    ret = aBridge->msgPayloadGetString (testPayloadIn, NULL, ++fid, &strIn);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_STREQ (str, strIn);
+    ret = aBridge->msgPayloadGetOpaque (testPayloadIn, NULL, ++fid, (const void**)&bufIn, &bufInSize);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (0, memcmp (s.data(), bufIn, bufInSize));
+    EXPECT_EQ (s.size(), bufInSize);
+    ret = aBridge->msgPayloadGetDateTime (testPayload, NULL, ++fid, dtIn);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (1, mamaDateTime_equal (dt, dtIn));
+    ret = aBridge->msgPayloadGetPrice (testPayloadIn, NULL, ++fid, prcIn);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    EXPECT_EQ (1, mamaPrice_equal (prc, prcIn));
+
+    if (hasVectors)
+    {
+        const char* chVectorIn = NULL;
+        mama_size_t chVectorInSize = 0;
+        ret = aBridge->msgPayloadGetVectorChar (testPayloadIn, NULL, ++fid, &chVectorIn,
+                                                &chVectorInSize);
+        EXPECT_EQ (MAMA_STATUS_OK, ret);
+        EXPECT_EQ (chVectorSize, chVectorInSize);
+        for (mama_size_t k = 0; k < chVectorInSize; ++k)
+        {
+            EXPECT_EQ (chVector[k], chVectorIn[k]);
+        }
+    }
+
+    if (hasSubMessages)
+    {
+        msgPayload testPayloadInSub = NULL;
+        ret = aBridge->msgPayloadGetMsg (testPayloadIn, NULL, ++fid, &testPayloadInSub);
+        EXPECT_EQ (MAMA_STATUS_OK, ret);
+
+        mama_size_t numFieldsInSub = 0;
+        ret = aBridge->msgPayloadGetNumFields (testPayloadInSub, &numFieldsInSub);
+        EXPECT_EQ (MAMA_STATUS_OK, ret);
+        EXPECT_EQ (2, numFieldsInSub);
+
+        EXPECT_EQ (MAMA_STATUS_OK, aBridge->msgPayloadDestroy (testPayloadInSub));
+    }
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (dt));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (dtIn));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaPrice_destroy (prc));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaPrice_destroy (prcIn));
+
+    EXPECT_EQ (MAMA_STATUS_OK, aBridge->msgPayloadDestroy (testPayload));
+    EXPECT_EQ (MAMA_STATUS_OK, aBridge->msgPayloadDestroy (testPayloadIn));
+    EXPECT_EQ (MAMA_STATUS_OK, aBridge->msgPayloadDestroy (subMsg));
 }
 
 /* OPTIONAL TEST:
