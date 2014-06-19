@@ -342,10 +342,10 @@ DateTimeRangeTests::EqualAndCompareTest(const mamaDateTime& t)
    // Check that compare = -1
    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_copy(cpy,t) );
    EXPECT_EQ ( 0, mamaDateTime_compare(t, cpy) );
-   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setDate(cpy, year - 1, month, day) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setDate(cpy, year - 20, month, day) );
    EXPECT_EQ ( 1, mamaDateTime_compare(t, cpy) );
    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_copy(cpy,t) );
-   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setDate(cpy, year + 1, month, day) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setDate(cpy, year + 20, month, day) );
    EXPECT_EQ ( -1, mamaDateTime_compare(t, cpy) );
 
    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(cpy) );
