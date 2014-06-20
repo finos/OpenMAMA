@@ -281,6 +281,18 @@ namespace Wombat
         {
             mImpl.mMamaSubscription = new MamaSubscription();
         }
+        else
+        {
+            mamaSubscriptionState state = MAMA_SUBSCRIPTION_UNKNOWN;
+            state = mImpl.mMamaSubscription->getState();
+
+            if ((state == MAMA_SUBSCRIPTION_DEACTIVATING)
+                    || (state == MAMA_SUBSCRIPTION_DEACTIVATED))
+            {
+                mImpl.mMamaSubscription->activate();
+                return;
+            }
+        }
           
         mImpl.mMamaSubscription->setAppDataType      (mImpl.mMdDataType);
         mImpl.mMamaSubscription->setSubscriptionType (mImpl.mType);
@@ -302,6 +314,8 @@ namespace Wombat
         if (mImpl.mMamaSubscription)
         {
             mImpl.mMamaSubscription->destroy();
+            delete mImpl.mMamaSubscription;
+            mImpl.mMamaSubscription = NULL;
         }    
     }
 
