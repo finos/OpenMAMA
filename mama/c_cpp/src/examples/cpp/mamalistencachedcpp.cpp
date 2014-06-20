@@ -1,4 +1,4 @@
-/* $Id: mamalistencachedcpp.cpp,v 1.1.2.5.2.3 2012/05/14 14:45:38 gmolloy Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

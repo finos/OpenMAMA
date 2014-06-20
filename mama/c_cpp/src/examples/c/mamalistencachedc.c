@@ -1,4 +1,4 @@
-/* $Id: mamalistencachedc.c,v 1.1.2.19 2012/04/16 10:56:24 gmolloy Exp $
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
