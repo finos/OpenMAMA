@@ -431,6 +431,11 @@ int getProcessInfo(int pid ,memVals *memV,cpuVals *cpuV,int childFlag)
     /* parse out the status */
     p = buffer;
     p = strchr(p, '(')+1;                       /* skip pid */
+    if (p==NULL)
+    {
+        /* Process has exited since the pid was initially obtained */
+        return 0;
+    }
     {
         char name[64];
         char *q = strrchr(p, ')'); /*process name*/
