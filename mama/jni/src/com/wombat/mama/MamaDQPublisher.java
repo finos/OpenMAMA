@@ -32,6 +32,9 @@ public class MamaDQPublisher
 	/*A long value containing a pointer to the underlying C dqpublisher structure*/
 	private long dqPublisherPointer_i = 0;
 
+    /* Object container to hold the user supplied cache */
+    private Object myCache;
+
 	static
 	{
 		initIDs();
@@ -145,4 +148,24 @@ public class MamaDQPublisher
 					"before invoking create()");
 		}
 	}
+
+    /**
+     * Set a cache for the MamaDQPublisher
+     *
+     * @param cache The cache to save against the publisher
+     */
+    public void setCache (Object cache)
+    {
+        myCache = cache;
+    }
+
+    /**
+     * Return the cache for the MamaDQPublisher
+     *
+     * @return Object The cache for the publisher
+     */
+    public Object getCache()
+    {
+        return myCache;
+    }
 }

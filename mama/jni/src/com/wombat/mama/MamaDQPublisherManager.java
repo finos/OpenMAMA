@@ -22,6 +22,7 @@
 package com.wombat.mama;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 /**
  * The <code>MamaDQPublisherManager</code> interface represents a collection of subscriptions.
@@ -109,7 +110,7 @@ public class MamaDQPublisherManager
      */
     public MamaDQPublisher removePublisher (String symbol)
     {
-        checkIsCreated("addPublisher");
+        checkIsCreated("removePublisher");
         return _removePublisher(symbol);
     }
     
@@ -120,7 +121,7 @@ public class MamaDQPublisherManager
      */
     public void destroyPublisher (String symbol)
     {
-        checkIsCreated("addPublisher");
+        checkIsCreated("destroyPublisher");
         _destroyPublisher(symbol);
     }
     
@@ -140,6 +141,7 @@ public class MamaDQPublisherManager
         MamaDQPublisher myPub = new MamaDQPublisher();
         MamaPublishTopic myTopic = new MamaPublishTopic(symbol, myPub, cache);
         _createPublisher (symbol, myPub, myTopic);
+        myPub.setCache(cache);
         myTopics.add (myTopic);
         return myPub;
 	}
@@ -295,4 +297,24 @@ public class MamaDQPublisherManager
 			return symbol;
 		}
 	}
+
+    /**
+     * Retrieve the cache associated with the given topic.
+     *
+     * @param symbol The symbol for the which you want to get the cache
+     *
+     * @return The cache associated with the symbol/publisher
+     */
+    public static Object getCache(String symbol)
+    {
+        Iterator it = myTopics.iterator();
+        while(it.hasNext())
+        {
+            MamaPublishTopic myTopic = (MamaPublishTopic) it.next();
+            if (myTopic.getSymbol().equals(symbol))
+                return myTopic.getCache();
+        }
+        return null;
+    }
+
 }
