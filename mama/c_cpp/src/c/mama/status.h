@@ -190,8 +190,8 @@ mamaStatus_stringForStatus (mama_status status);
 
 #if defined(NDEBUG) && !defined(WITH_UNITTESTS)
 
-#define NULLARG_STATUS_CHECK
-#define NULLARG_STATUS_CHECK_STR
+#define NULLARG_STATUS_CHECK(x)
+#define NULLARG_STATUS_CHECK_STR(x)
 
 #else
 
