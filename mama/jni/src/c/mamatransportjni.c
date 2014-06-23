@@ -87,8 +87,10 @@ static jmethodID    transportListenerOnNamingServiceConnectId_g     =   NULL;
 static jmethodID    transportListenerOnNamingServiceDisconnectId_g  =   NULL;
 
 /*Method ids for the MamaTransportTopicListener callback*/
-static jmethodID    transportTopicListenerOnTopicSubscribeId_g    =   NULL;
-static jmethodID    transportTopicListenerOnTopicUnsubscribeId_g  =   NULL;
+static jmethodID    transportTopicListenerOnTopicSubscribeId_g        =   NULL;
+static jmethodID    transportTopicListenerOnTopicUnsubscribeId_g      =   NULL;
+static jmethodID    transportTopicListenerOrigOnTopicSubscribeId_g    =   NULL;
+static jmethodID    transportTopicListenerOrigOnTopicUnsubscribeId_g  =   NULL;
 
 /* Pointer field of the bridge */
 extern  jfieldID    bridgePointerFieldId_g;
@@ -107,11 +109,11 @@ mamaTransportListenerCB( mamaTransport        tport,
 
 static void
 MAMACALLTYPE
-mamaTransportTopicListenerCB( mamaTransport        tport,
-                              mamaTransportEvent   event,
-                              short                cause,
-                              const void*          platformInfo,
-                              void*                closure);
+mamaTransportTopicListenerCB( mamaTransport             tport,
+                              mamaTransportTopicEvent   transportTopicEvent,
+                              const char*               topic,
+                              const void*               platformInfo,
+                              void*                     closure);
 
 /**
  * This function will obtain a mamaConnection pointer from the supplied platform info and
@@ -662,6 +664,24 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_initIDs
         return;
     }
 
+    transportTopicListenerOrigOnTopicSubscribeId_g = (*env)->GetMethodID(env,
+                        mamaTransportTopicListenerClass,"onTopicSubscribe",
+                        UTILS_TTL_ORIG_ON_TOPIC_SUBSCRIBE);
+    if(!transportTopicListenerOrigOnTopicSubscribeId_g)
+    {   
+        (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
+        return;
+    }
+
+    transportTopicListenerOrigOnTopicUnsubscribeId_g = (*env)->GetMethodID(env,
+                        mamaTransportTopicListenerClass,"onTopicUnsubscribe",
+                        UTILS_TTL_ORIG_ON_TOPIC_UNSUBSCRIBE);
+    if(!transportTopicListenerOrigOnTopicUnsubscribeId_g)
+    {   
+        (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
+        return;
+    }
+
    (*env)->DeleteLocalRef(env, mamaTransportListenerClass);
    (*env)->DeleteLocalRef(env, mamaTransportListenerClass); 
    (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
@@ -750,7 +770,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeAddTopicListener
 				if(NULL != closure->mTopicCallback)
 				{
 					/* Install the transport topic callback. */
-					ret = mamaTransport_setTransportTopicCallback(transport, (mamaTransportCB)mamaTransportTopicListenerCB, (void *)closure);
+					ret = mamaTransport_setTransportTopicCallback(transport, (mamaTransportTopicCB)mamaTransportTopicListenerCB, (void *)closure);
 				}
             }
         }
@@ -1015,10 +1035,10 @@ void MAMACALLTYPE mamaTransportListenerCB( mamaTransport      tport,
 }
 
 void MAMACALLTYPE mamaTransportTopicListenerCB( mamaTransport      tport,
-                             mamaTransportEvent transportEvent,
-                             short              cause,
-                             const void*        platformInfo,
-                             void*              closure )
+                                                mamaTransportTopicEvent transportTopicEvent,
+                                                const char*        topic,
+                                                const void*        platformInfo,
+                                                void*              closure )
 {
     /* Get the impl from the closure. */
     transportListenerClosure *closureImpl = (transportListenerClosure *)closure;
@@ -1034,14 +1054,24 @@ void MAMACALLTYPE mamaTransportTopicListenerCB( mamaTransport      tport,
              */
             jobject connection = mamaTransportImpl_getConnectionObject(env, platformInfo, closureImpl);
 
+            /* Convert the C-string topic into a java string. */
+            jstring cTopic = (*env)->NewStringUTF(env, topic);
+
+            /* cause will be used for backward compatibility */
+            short cause = 0;
+
             /* Check the type of transport event. */
-            switch (transportEvent)
+            switch (transportTopicEvent)
             {
                 case MAMA_TRANSPORT_TOPIC_SUBSCRIBED:
-                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicSubscribeId_g, cause, connection);
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicSubscribeId_g, cTopic, connection);
+                    /* Call the Original callback to maintain backward compatibility */
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOrigOnTopicSubscribeId_g, cause, connection);
                     break;
                 case MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED:
-                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicUnsubscribeId_g, cause, connection);
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicUnsubscribeId_g, cTopic, connection);
+                    /* Call the Original callback to maintain backward compatibility */
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOrigOnTopicUnsubscribeId_g, cause, connection);
                     break;
             }        
 

@@ -179,6 +179,24 @@ public class MamaTransport
         /* Interface Implementations. */
         /* ****************************************************** */
 
+        public void onTopicSubscribe(String topic, final Object platformInfo)
+        {
+            /* Call the client topic listener if it has been provided. */
+            if(null != mClientTopicListener)
+            {
+                mClientTopicListener.onTopicSubscribe(topic, platformInfo);
+            }
+        }
+
+        public void onTopicUnsubscribe(String topic, final Object platformInfo)
+        {
+            /* Call the client topic listener if it has been provided. */
+            if(null != mClientTopicListener)
+            {
+                mClientTopicListener.onTopicUnsubscribe(topic, platformInfo);
+            }
+        }
+
         public void onTopicSubscribe(short cause, final Object platformInfo)
         {
             /* Call the client topic listener if it has been provided. */
