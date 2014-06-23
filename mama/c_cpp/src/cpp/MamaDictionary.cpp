@@ -387,20 +387,20 @@ DictionaryImpl::~DictionaryImpl (void)
     for (int i = 0; i <= getMaxFid(); i++)
     {
         mamaFieldDescriptor fd = 0;
-        mamaTryIgnoreNotFound (mamaDictionary_getFieldDescriptorByFid (
+        mamaDictionary_getFieldDescriptorByFid (
                 mDictionary,
                 &fd,
-                i));
+                i);
         if (fd)
         {
             void* closureData;
-            mamaTry (mamaFieldDescriptor_getClosure (fd, &closureData));
+            mamaFieldDescriptor_getClosure (fd, &closureData);
             MamaFieldDescriptor* cppFd = (MamaFieldDescriptor*)closureData;
             delete cppFd;
         }
     }
 
-    mamaTry (mamaDictionary_destroy (mDictionary));
+    mamaDictionary_destroy (mDictionary);
     mDictionary = 0;
 }
 

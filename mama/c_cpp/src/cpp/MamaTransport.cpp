@@ -319,9 +319,9 @@ namespace Wombat
 		    {
 			    delete mPimpl->mCallback;
 		    }
-            if (mPimpl->mDeleteCTransport)
+            if (mPimpl->mDeleteCTransport && NULL != mTransport)
             {
-                mamaTry (mamaTransport_destroy (mTransport));
+                mamaTransport_destroy (mTransport);
             }
             delete mPimpl;
             mPimpl = NULL;
