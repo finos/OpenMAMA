@@ -27,7 +27,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="$(ANT_HOME)\bin\ant -f &quot;$(SOLUTIONDIR)\mama\jni\build.xml&quot; headers"
+				CommandLine="&quot;$(ANT_HOME)\bin\ant&quot; -f &quot;$(SOLUTIONDIR)\mama\jni\build.xml&quot; headers"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -107,7 +107,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="$(ANT_HOME)\bin\ant -f &quot;$(SOLUTIONDIR)\mama\jni\build.xml&quot; headers"
+				CommandLine="&quot;$(ANT_HOME)\bin\ant&quot; -f &quot;$(SOLUTIONDIR)\mama\jni\build.xml&quot; headers"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -185,7 +185,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="$(ANT_HOME)\bin\ant -f &quot;$(SOLUTIONDIR)\mama\jni\build.xml&quot; headers"
+				CommandLine="&quot;$(ANT_HOME)\bin\ant&quot; -f &quot;$(SOLUTIONDIR)\mama\jni\build.xml&quot; headers"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
@@ -266,7 +266,7 @@
 			>
 			<Tool
 				Name="VCPreBuildEventTool"
-				CommandLine="$(ANT_HOME)\bin\ant -f &quot;$(SOLUTIONDIR)\mama\jni\build.xml&quot; headers"
+				CommandLine="&quot;$(ANT_HOME)\bin\ant&quot; -f &quot;$(SOLUTIONDIR)\mama\jni\build.xml&quot; headers"
 			/>
 			<Tool
 				Name="VCCustomBuildTool"
