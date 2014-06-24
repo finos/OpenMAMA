@@ -24,10 +24,7 @@ else:
     env.Append(LIBS=['qpid-proton', 'mama', 'm', 'wombatcommon', 'uuid', 'event'],
                LIBPATH=libPath, CPPPATH=incPath)
 
-''' Generally we would like to make use of -Werror, but unfortunately it causes
-    proton to choke during the build phase. Leaving the option here should we
-    find the proton issues resolved.'''
-#env.Append(CFLAGS=['-Werror'])
+env.Append(CFLAGS=['-Werror'])
 
 
 conf = Configure(env, config_h='./config.h', log_file='./config.log')
