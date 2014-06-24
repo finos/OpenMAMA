@@ -31,52 +31,52 @@ extern "C"
 #endif
 
 /**
- * IO Types. Not all implementation support all mamaIoTypes.
+ * @brief IO Types.
  *
- * MAMA_IO_READ: the socket is readable.
- * MAMA_IO_WRITE: the socket is writable.
- * MAMA_IO_CONNECT: the socket is connected
- * MAMA_IO_ACCEPT: the socket accepted a connection
- * MAMA_IO_CLOSE: the socket was closed
- * MAMA_IO_ERROR: an error occurred
- * MAMA_IO_EXCEPT: An exceptional event like out of band data occurred.
+ * @details Note not all implementations support all mamaIoTypes.
  */
 typedef enum
 {
-    MAMA_IO_READ,
-    MAMA_IO_WRITE,
-    MAMA_IO_CONNECT,
-    MAMA_IO_ACCEPT,
-    MAMA_IO_CLOSE,
-    MAMA_IO_ERROR,
-    MAMA_IO_EXCEPT 
+    MAMA_IO_READ,       /**< the socket is readable */
+    MAMA_IO_WRITE,      /**< the socket is writable */
+    MAMA_IO_CONNECT,    /**< the socket is connected */
+    MAMA_IO_ACCEPT,     /**< the socket accepted a connection */
+    MAMA_IO_CLOSE,      /**< the socket was closed */
+    MAMA_IO_ERROR,      /**< an error occurred */
+    MAMA_IO_EXCEPT      /**< An exceptional event like out of band data occurred */
 } mamaIoType;
 
 /**
- * Prototype for callback invoked by IO handler.
+ * @brief Prototype for callback invoked by IO handler.
  *
- * @param io The mamaIo handle.
- * @param ioType The mamaIoType for the event.
- * @param closure Caller supplied closure.
+ * @param[in] io The mamaIo handle.
+ * @param[in] ioType The mamaIoType for the event.
+ * @param[in] closure Caller supplied closure.
  */
 typedef void (MAMACALLTYPE *mamaIoCb) (mamaIo     io,
                                        mamaIoType ioType,
                                        void*      closure); 
 
 /**
- * Create a IO handler.
+ * @brief Create a IO handler.
  *
- * If the underlying infrastructure does not support the requested mamaIoType,
+ * @details If the underlying infrastructure does not support the requested mamaIoType,
  * mamaIo_create returns MAMA_STATUS_UNSUPPORTED_IO_TYPE. For example RV only
  * supports READ, WRITE, and EXCEPT. LBM supports all types except ERROR.
  *
- * @param result A pointer to the io handle.
- * @param queue The event queue for the io events. NULL specifies the Mama
+ * @param[in] result A pointer to the io handle.
+ * @param[in] queue The event queue for the io events. NULL specifies the Mama
  *  default queue.
- * @param action The callback to be invoked when an event occurs.
- * @param descriptor Wait for IO on this descriptor.
- * @param ioType Wait for occurrences of this type.
- * @param closure The closure that is passed to the callback.
+ * @param[in] action The callback to be invoked when an event occurs.
+ * @param[in] descriptor Wait for IO on this descriptor.
+ * @param[in] ioType Wait for occurrences of this type.
+ * @param[in] closure The closure that is passed to the callback.
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_NULL_ARG
+ *              MAMA_STATUS_INVALID_QUEUE
+ *              MAMA_STATUS_NO_BRIDGE_IMPL
+ *              MAMA_STATUS_OK
  */
 MAMAExpDLL extern
 mama_status mamaIo_create (mamaIo*    result,
@@ -87,13 +87,30 @@ mama_status mamaIo_create (mamaIo*    result,
                            void*      closure);
 
 /**
- * Get the descriptor.
+ * @brief Get the IO descriptor.
+ *
+ * @param[in] io The mamaIo handle.
+ *
+ * @param[out] d The associated descriptor for the mamaIO handle.
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_NULL_ARG
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_NO_BRIDGE_IMPL
  */
 MAMAExpDLL extern
 mama_status mamaIo_getDescriptor (mamaIo io, uint32_t* d);
 
 /**
- * Destroy the IO.
+ * @brief Destroy the IO.
+ *
+ * @param[in] io The mamaIo handle to be destroyed.
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_NULL_ARG
+ *              MAMA_STATUS_NO_BRIDGE_IMPL
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_OK
  */
 MAMAExpDLL extern
 mama_status mamaIo_destroy (mamaIo io);
