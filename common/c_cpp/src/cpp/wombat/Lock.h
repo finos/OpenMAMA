@@ -22,6 +22,7 @@
 #define LockCppH__
 
 #include <memory>
+#include "wombat/wConfig.h"
 
 namespace Wombat {
 
