@@ -38,19 +38,23 @@ extern "C" {
 /* *************************************************** */
 
 /**
- * Prototype for add symbol callback. 
- * The registered add symbol callback is executed for each 
+ * @brief The registered add symbol callback is executed for each 
  * symbol added to the symbol list.
  *
- * @param symbol   The symbol to be added to the list
- * @param userData User-data to be associated with symbol
+ * @param[in] symbol   The symbol to be added to the list
+ * @param[in] userData User-data to be associated with symbol
+*
+* @return mama_status return code can be one of: 
+*           MAMA_STATUS_NULL_ARG
+*           MAMA_STATUS_OK
+*
  */
 typedef mama_status (MAMACALLTYPE *addSymbolCbType) (
   mamaSymbolListMember  symbol, 
   void*                 closure);
 
 /**
- * Function invoked when completing the iteration over the symbol list
+ * @brief Function invoked when completing the iteration over the symbol list
  * using mamaSymbolList_iterate().
  */
 typedef void (MAMACALLTYPE *mamaSymbolListIterateCompleteFunc) (
@@ -58,8 +62,7 @@ typedef void (MAMACALLTYPE *mamaSymbolListIterateCompleteFunc) (
     void*                 closure);
 
 /**
- * Function invoked for each member of the symbol list when iterating
- * using mamaSymbolList_iterate().
+ * @brief Function prototype for mamaSymbolList_iterate() which iterates over each member of the symbol list.
  */
 typedef void (MAMACALLTYPE *mamaSymbolListIterateMemberFunc) (
     mamaSymbolList        symbolList,
@@ -68,10 +71,10 @@ typedef void (MAMACALLTYPE *mamaSymbolListIterateMemberFunc) (
 
 /**
  * Prototype for remove symbol callback.
- * The registered remove symbol callback is executed just prior 
+ * @brief The registered remove symbol callback is executed just prior 
  * to a symbol being removed from the symbol list.
  *
- * @param symbol   The symbol to be removed from the list
+ * @param[in] symbol   The symbol to be removed from the list
  * @param userData User-data previously associated with symbol
  */
 typedef mama_status (MAMACALLTYPE *removeSymbolCbType) (
@@ -83,11 +86,11 @@ typedef mama_status (MAMACALLTYPE *removeSymbolCbType) (
 /* *************************************************** */
 
 /**
- * Add a symbol member to the symbol list, this will cause the add callback to be invoked if it
+ * @brief Add a symbol member to the symbol list, this will cause the add callback to be invoked if it
  * has been installed.
  *
  * @param[in] symbolList The symbolList.
- * @param[in] member The symbol member.
+ * @param[out] member The symbol member.
  *
  * @return mama_status return code can be one of
  *              MAMA_STATUS_NULL_ARG 
@@ -100,7 +103,7 @@ mamaSymbolList_addMember(
     mamaSymbolListMember member);
 
 /**
- * Allocate and initialize memory for a new symbolList, mamaSymbolList_deallocate should
+ * @brief Allocate and initialize memory for a new symbolList, mamaSymbolList_deallocate should
  * be called on the returned symbol list.
  *
  * @param[out] symbolList The address of the allocated symbolList.
@@ -116,7 +119,7 @@ mamaSymbolList_allocate(
     mamaSymbolList *symbolList);
 
 /**
- * Allocate a symbolListMember. 
+ * @brief Allocate a symbolListMember. 
  *
  * @param[in] symbolList  The symbolList the member to be allocated in.
  *
@@ -128,7 +131,7 @@ mamaSymbolList_allocateMember(
     mamaSymbolList symbolList);
 
 /**
- * Clear the symbol list.
+ * @brief Clear the symbol list.
  *
  * @param[in] symbolList  The symbolList.
  * @param[in] membersToo Whether to also clear all members of the list.
@@ -144,9 +147,9 @@ mamaSymbolList_clear(
     int              membersToo);
 
 /**
- * Free a symbol list created by mamaSymbolList_allocate.
+ * @brief Free a symbol list created by mamaSymbolList_allocate.
  *
- * @param[in] symbolList The symbolList to be deallocated.
+ * @param[out] symbolList The symbolList to be deallocated.
  *
  * @return mama_status return code can be one of
  *              MAMA_STATUS_NULL_ARG 
@@ -158,7 +161,7 @@ mamaSymbolList_deallocate(
     mamaSymbolList symbolList);
 
 /**
- * Deallocate a symbolListMember. 
+ * @brief Deallocate a symbolListMember. 
  *
  * @param[in] symbolList The symbolList the member belongs to.
  * @param[in] member The member of the list to deallocate.
@@ -174,10 +177,10 @@ mamaSymbolList_deallocateMember (
     mamaSymbolListMember member);
 
 /** 
- * Free the memory for the symbolList and
+ * @brief Free the memory for the symbolList and
  * all members.
  * 
- * @param symbolList  The symbolList to be deallocated.
+ * @param[in] symbolList  The symbolList to be deallocated.
  *
  * @return mama_status return code can be one of
  *              MAMA_STATUS_NULL_ARG 
@@ -189,7 +192,7 @@ mamaSymbolList_deallocateWithMembers(
     mamaSymbolList  symbolList);
 
 /**
- * Find a symbol member in the symbol list.
+ * @brief Find a symbol member in the symbol list.
  *
  * @param[in] symbolList  The symbolList.
  * @param[in] symbol      The name of the symbol to find.
@@ -212,7 +215,7 @@ mamaSymbolList_findMember(
     mamaSymbolListMember*  member);
 
 /**
- * Get the closure associated with the this symbolList
+ * @brief Get the closure associated with the this symbolList
  *
  * @param[in] symbolList  The symbolList.
  * @param[out] closure     The closure
@@ -228,7 +231,7 @@ mamaSymbolList_getClosure(
     void**                closure);
 
 /**
- * Get the size of the symbolList
+ * @brief Get the size of the symbolList
  *
  * @param[in] symbolList The symbolList.
  * @param[in] size The size
@@ -244,7 +247,7 @@ mamaSymbolList_getSize(
     unsigned long *size); 
 
 /**
- * Iterate over the symbol list.  The "handler" function will be
+ * @brief Iterate over the symbol list.  The "handler" function will be
  * invoked for each
  *
  * @param[in] symbolList  The symbolList.
@@ -265,7 +268,7 @@ mamaSymbolList_iterate(
     void*                               iterateClosure);
 
 /**
- * Remove a symbol member from the symbol list.
+ * @brief Remove a symbol member from the symbol list.
  *
  * @param[in] symbolList  The symbolList.
  * @param[in] symbol      The name of the symbol to be removed.
@@ -290,10 +293,10 @@ mamaSymbolList_removeMember (
     mamaSymbolListMember*  member);
 
 /**
- * Remove a symbol member from the symbol list.
+ * @brief Remove a symbol member from the symbol list.
  *
- * @param symbolList  The symbolList.
- * @param member      The symbol to be removed.
+ * @param[in] symbolList  The symbolList.
+ * @param[out] member      The symbol to be removed.
  *
  * @return mama_status return code can be one of
  *              MAMA_STATUS_NULL_ARG 
@@ -305,8 +308,9 @@ extern mama_status mamaSymbolList_removeMemberByRef(
   mamaSymbolListMember member);
 
 /**
- * Registers the user defined add symbol callback with the symbolList.
- * The registered callback will get called each time a symbol is added to 
+ * @brief Registers the user defined add symbol callback with the symbolList.
+ *
+ * @details The registered callback will get called each time a symbol is added to 
  * the symbol list.
  *
  * @param[in] symbolList  The symbolList.
@@ -324,7 +328,7 @@ mamaSymbolList_setAddSymbolHandler(
     addSymbolCbType  addCb);
 
 /**
- * Set the closure associated with the this symbolList
+ * @brief Set the closure associated with the this symbolList
  *
  * @param[in] symbolList  The symbolList.
  * @param[in] closure     The closure
@@ -340,8 +344,9 @@ mamaSymbolList_setClosure(
     void*           closure);
 
 /**
- * Registers the user defined remove symbol callback with the symbolList.
- * The registered callback will get called each time a symbol is deleted 
+ * @brief Registers the user defined remove symbol callback with the symbolList.
+ *
+ * @details The registered callback will get called each time a symbol is deleted 
  * from the symbol list.
  *
  * @param[in] symbolList  The symbolList.

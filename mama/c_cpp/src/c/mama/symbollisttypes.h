@@ -29,7 +29,14 @@ extern "C" {
 /* *************************************************** */
 /* Forward Declarations. */
 /* *************************************************** */
+/**
+* @brief  Structure containing all fields to implement a symbol list
+*
+*/
 typedef struct mamaSymbolList_*        mamaSymbolList;
+/**
+* @brief Structure containing all fields to implement a symbollist member
+*/
 typedef struct mamaSymbolListMember_*  mamaSymbolListMember;
 
 #if defined(__cplusplus)

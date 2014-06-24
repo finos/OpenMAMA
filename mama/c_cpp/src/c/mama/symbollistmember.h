@@ -37,7 +37,7 @@ extern "C" {
 /* *************************************************** */
 
 /**
- * This function will allocate a new symbol list member.
+ * @brief This function will allocate a new symbol list member.
  * The returned member should be freed using mamaSymbolListMember_deallocate.
  *
  * @param[in] symbolList The parent symbol list that the member will
@@ -55,7 +55,7 @@ mamaSymbolListMember_allocate(
     mamaSymbolListMember *member);
 
 /**
- * Frees a symbol list member previously created by a called to 
+ * @brief Frees a symbol list member previously created by a called to 
  * mamaSymbolListMember_allocate.
  *
  * @param[in] member The member to free. 
@@ -70,10 +70,10 @@ mamaSymbolListMember_deallocate(
     mamaSymbolListMember member);
 
 /**
- * This function returns the closure assocated with the symbol list member.
+ * @brief This function returns the closure assocated with the symbol list member.
  *
  * @param[in] member The member to free. 
- * @param[out] closure To return the closure.
+ * @param[out] closure The closure to return.
  *
  * @return mama_status value can be one of
  *          MAMA_STATUS_NULL_ARG
@@ -88,10 +88,10 @@ mamaSymbolListMember_getClosure(
 int mamaSymbolListMember_getSize (void);
 
 /**
- * This function returns the source assocated with the symbol list member.
+ * @brief This function returns the source assocated with the symbol list member.
  *
  * @param[in] member The member to free. 
- * @param[out] source To return the source.
+ * @param[out] source The source to return.
  *
  * @return mama_status value can be one of
  *          MAMA_STATUS_NULL_ARG
@@ -104,10 +104,10 @@ mamaSymbolListMember_getSource(
     const char **source);
 
 /**
- * This function returns the symbol assocated with the symbol list member.
+ * @brief This function returns the symbol assocated with the symbol list member.
  *
  * @param[in] member The member to free. 
- * @param[out] symbol To return the symbol.
+ * @param[out] symbol The symbol to return.
  *
  * @return mama_status value can be one of
  *          MAMA_STATUS_NULL_ARG
@@ -120,10 +120,10 @@ mamaSymbolListMember_getSymbol(
     const char **symbol);
 
 /**
- * This function returns the symbol list assocated with the symbol list member.
+ * @brief This function returns the symbol list assocated with the symbol list member.
  *
  * @param[in] member The member to free. 
- * @param[out] symbolList To return the symbol list.
+ * @param[out] symbolList The symbol list to return
  *
  * @return mama_status value can be one of
  *          MAMA_STATUS_NULL_ARG
@@ -136,7 +136,7 @@ mamaSymbolListMember_getSymbolList(
     mamaSymbolList *symbolList);
 
 /**
- * This function returns the transport assocated with the symbol list member.
+ * @brief This function returns the transport assocated with the symbol list member.
  *
  * @param[in] member The member to free. 
  * @param[out] transport To return the transport.
@@ -151,29 +151,80 @@ mamaSymbolListMember_getTransport(
     const mamaSymbolListMember member,
     mamaTransport *transport);
 
-
-
-
+/**
+ * @brief Set the closure assocated with the symbol list member.
+ *
+ * @param[in] member The symbollist member.
+ * @param[in] closure The closure
+ *
+ * @return mama_status value can be one of
+ *          MAMA_STATUS_NULL_ARG
+ *          MAMA_STATUS_OK
+ */
 
 MAMAExpDLL
 extern mama_status
 mamaSymbolListMember_setClosure (mamaSymbolListMember  member,
                                  void*                 closure);
 
+/**
+ * @brief Set the source assocated with the symbol list member.
+ *
+ * @param[in] member The symbollist member.
+ * @param[in] The source
+ *
+ * @return mama_status value can be one of
+ *          MAMA_STATUS_NULL_ARG
+ *          MAMA_STATUS_OK
+ */
+
 MAMAExpDLL
 extern mama_status
 mamaSymbolListMember_setSource (mamaSymbolListMember    member,
                                 const char*             source);
+
+/**
+ * @brief Set the symbol assocated with the symbol list member.
+ *
+ * @param[in] member The symbollist member.
+ * @param[in] The symbol
+ *
+ * @return mama_status value can be one of
+ *          MAMA_STATUS_NULL_ARG
+ *          MAMA_STATUS_OK
+ */
 
 MAMAExpDLL
 extern mama_status
 mamaSymbolListMember_setSymbol (mamaSymbolListMember    member,
                                 const char*             symbol);
 
+/**
+ * @brief Set the symbol list assocated with the symbol list member.
+ *
+ * @param[in] member The symbollist member.
+ * @param[in] The symbollist
+ *
+ * @return mama_status value can be one of
+ *          MAMA_STATUS_NULL_ARG
+ *          MAMA_STATUS_OK
+ */
+
 MAMAExpDLL
 extern mama_status
 mamaSymbolListMember_setSymbolList (mamaSymbolListMember  member,
                                     mamaSymbolList        symbolList);
+
+/**
+ * @brief This function sets the transport assocated with the symbol list member.
+ *
+ * @param[in] member The symbollist member.
+ * @param[out] transport The transport
+ *
+ * @return mama_status value can be one of
+ *          MAMA_STATUS_NULL_ARG
+ *          MAMA_STATUS_OK
+ */
 
 MAMAExpDLL
 extern mama_status
