@@ -37,11 +37,13 @@
 #include <timers.h>
 #include <stdio.h>
 #include <wombat/queue.h>
+#include <wombat/wUuid.h>
 
 #include "transport.h"
 #include "publisher.h"
 #include "qpidbridgefunctions.h"
 #include "qpiddefs.h"
+#include "qpidcommon.h"
 #include "msg.h"
 #include "codec.h"
 #include "endpointpool.h"
@@ -58,11 +60,14 @@
 #define     TPORT_PARAM_SUB_POOL_SIZE       "msg_pool_size"
 #define     TPORT_PARAM_SUB_POOL_INC_SIZE   "msg_pool_inc_size"
 #define     TPORT_PARAM_RECV_BLOCK_SIZE     "recv_block_size"
+#define     TPORT_PARAM_TPORT_TYPE          "type"
 
 /* Default values for corresponding configuration parameters */
 #define     DEFAULT_OUTGOING_URL            "amqp://127.0.0.1:7777"
 #define     DEFAULT_INCOMING_URL            "amqp://~127.0.0.1:6666"
 #define     DEFAULT_REPLY_URL               "amqp://127.0.0.1:6666"
+#define     DEFAULT_TPORT_TYPE              "p2p"
+#define     DEFAULT_TPORT_TYPE_VALUE        QPID_TRANSPORT_TYPE_P2P
 #define     DEFAULT_SUB_POOL_SIZE           128
 #define     DEFAULT_SUB_POOL_INC_SIZE       128
 #define     DEFAULT_RECV_BLOCK_SIZE         10
@@ -76,6 +81,10 @@
 #define     MAX_SUB_POOL_INC_SIZE           2000L
 #define     MIN_RECV_BLOCK_SIZE             -1L
 #define     MAX_RECV_BLOCK_SIZE             100L
+#define     CONFIG_VALUE_TPORT_TYPE_BROKER  "broker"
+#define     CONFIG_VALUE_TPORT_TYPE_P2P     "p2p"
+#define     UUID_STRING_BUF_SIZE            37
+#define     KNOWN_SOURCES_WTABLE_SIZE       10
 
 
 /*=========================================================================
@@ -345,6 +354,21 @@ qpidBridgeMamaTransport_destroy (transportBridge transport)
     endpointPool_destroy (impl->mSubEndpoints);
     endpointPool_destroy (impl->mPubEndpoints);
 
+    /* Free the strdup-ed keys still held by the wtable */
+    wtable_free_all_xdata (impl->mKnownSources);
+    /* Finally, destroy the wtable */
+    wtable_destroy (impl->mKnownSources);
+
+    if (NULL != impl->mReplyAddress)
+    {
+        free ((void*) impl->mReplyAddress);
+    }
+
+    if (NULL != impl->mUuid)
+    {
+        free ((void*) impl->mUuid);
+    }
+
     free (impl);
 
     return status;
@@ -358,6 +382,8 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
     qpidTransportBridge*    impl       = NULL;
     int                     poolSize   = 0;
     mama_status             status     = MAMA_STATUS_OK;
+    const char*             tportType  = NULL;
+    const char*             tmpReply   = NULL;
 
     if (NULL == result || NULL == name || NULL == parent)
     {
@@ -374,6 +400,8 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
     impl->mMsg                 = pn_message ();
     impl->mQpidDispatchStatus  = MAMA_STATUS_OK;
     impl->mName                = name;
+    impl->mKnownSources        = wtable_create ("mKnownSources",
+                                                KNOWN_SOURCES_WTABLE_SIZE);
 
     mama_log (MAMA_LOG_LEVEL_FINE,
               "qpidBridgeMamaTransport_create(): Initializing Transport %s",
@@ -390,14 +418,14 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
     /* Set the outgoing address */
     impl->mOutgoingAddress =
         qpidBridgeMamaTransportImpl_getParameter (
-            NULL,
+            DEFAULT_OUTGOING_URL,
             "%s.%s.%s",
             TPORT_PARAM_PREFIX,
             name,
             TPORT_PARAM_OUTGOING_URL);
 
     /* Set the reply address */
-    impl->mReplyAddress =
+    tmpReply =
         qpidBridgeMamaTransportImpl_getParameter (
             DEFAULT_REPLY_URL,
             "%s.%s.%s",
@@ -405,6 +433,44 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
             name,
             TPORT_PARAM_REPLY_URL);
 
+    /* Expand the wildcards in the reply then populates mReplyAddress with a
+     * newly allocated result */
+    qpidBridgeCommon_generateSubjectUri (
+            tmpReply,
+            NULL,
+            NULL,
+            NULL,
+            qpidBridgeMamaTransportImpl_getUuid ((transportBridge) impl),
+            &impl->mReplyAddress);
+
+    /* Set the transport type */
+    tportType =
+        qpidBridgeMamaTransportImpl_getParameter (
+            DEFAULT_TPORT_TYPE,
+            "%s.%s.%s",
+            TPORT_PARAM_PREFIX,
+            name,
+            TPORT_PARAM_TPORT_TYPE);
+
+    if (0 == strcmp (tportType, CONFIG_VALUE_TPORT_TYPE_BROKER))
+    {
+        impl->mQpidTransportType = QPID_TRANSPORT_TYPE_BROKER;
+    }
+    else if (0 == strcmp (tportType, CONFIG_VALUE_TPORT_TYPE_P2P))
+    {
+        impl->mQpidTransportType = QPID_TRANSPORT_TYPE_P2P;
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "Could not parse %s.%s.%s=%s. Using [%s].",
+                TPORT_PARAM_PREFIX,
+                name,
+                TPORT_PARAM_TPORT_TYPE,
+                tportType,
+                DEFAULT_TPORT_TYPE);
+        impl->mQpidTransportType = DEFAULT_TPORT_TYPE_VALUE;
+    }
 
     /* Set the message pool size for pool initialization later */
     poolSize =
@@ -475,14 +541,18 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
         return MAMA_STATUS_PLATFORM;
     }
 
-    status = endpointPool_create (&impl->mPubEndpoints, "mPubEndpoints");
-    if (MAMA_STATUS_OK != status)
+    /* Endpoints are only required if a broker is not being used */
+    if (QPID_TRANSPORT_TYPE_P2P == impl->mQpidTransportType)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaTransport_create(): "
-                  "Failed to create publishing endpoints");
-        free (impl);
-        return MAMA_STATUS_PLATFORM;
+        status = endpointPool_create (&impl->mPubEndpoints, "mPubEndpoints");
+        if (MAMA_STATUS_OK != status)
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                      "qpidBridgeMamaTransport_create(): "
+                      "Failed to create publishing endpoints");
+            free (impl);
+            return MAMA_STATUS_PLATFORM;
+        }
     }
 
     impl->mIsValid = 1;
@@ -693,6 +763,51 @@ qpidBridgeMamaTransport_getNativeTransportNamingCtx (transportBridge transport,
   =                  Public implementation functions                      =
   =========================================================================*/
 
+/* Call this every time a known MAMA symbol namespace is created */
+void
+qpidBridgeMamaTransportImpl_addKnownMamaSymbolNamespace (transportBridge transport,
+        const char* symbolNamespace)
+{
+    qpidTransportBridge*    impl   = (qpidTransportBridge*) transport;
+
+    if (NULL == impl)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "qpidBridgeMamaTransportImpl_addKnownMamaSymbolNamespace(): "
+                "transport NULL");
+        return;
+    }
+
+    wtable_insert (impl->mKnownSources, symbolNamespace, (void*) symbolNamespace);
+
+    return;
+}
+
+/* Check if this is a publisher for a namespace which we know about */
+mama_bool_t
+qpidBridgeMamaTransportImpl_isKnownMamaSymbolNamespace (transportBridge transport,
+        const char* symbolNamespace)
+{
+    qpidTransportBridge*    impl   = (qpidTransportBridge*) transport;
+
+    if (NULL == impl)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "qpidBridgeMamaTransportImpl_isKnownMamaSymbolNamespace(): "
+                "transport NULL");
+        return 0;
+    }
+
+    if (NULL == wtable_lookup (impl->mKnownSources, symbolNamespace))
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
 qpidTransportBridge*
 qpidBridgeMamaTransportImpl_getTransportBridge (mamaTransport transport)
 {
@@ -710,6 +825,74 @@ qpidBridgeMamaTransportImpl_getTransportBridge (mamaTransport transport)
     return impl;
 }
 
+qpidTransportType
+qpidBridgeMamaTransportImpl_getType (transportBridge transport)
+{
+    qpidTransportBridge*    impl = (qpidTransportBridge*) transport;
+
+    if (impl == NULL)
+    {
+        return DEFAULT_TPORT_TYPE_VALUE;
+    }
+
+    return impl->mQpidTransportType;
+}
+
+const char*
+qpidBridgeMamaTransportImpl_getUuid (transportBridge transport)
+{
+    qpidTransportBridge*    impl = (qpidTransportBridge*) transport;
+    if (NULL == impl->mUuid)
+    {
+        wUuid                tempUuid;
+        char                 uuidStringBuffer[UUID_STRING_BUF_SIZE];
+
+        wUuid_generate_time  (tempUuid);
+        wUuid_unparse        (tempUuid, uuidStringBuffer);
+        impl->mUuid = strdup (uuidStringBuffer);
+    }
+    return impl->mUuid;
+}
+
+
+const char*
+qpidBridgeMamaTransportImpl_getOutgoingAddress (transportBridge transport)
+{
+    qpidTransportBridge*    impl = (qpidTransportBridge*) transport;
+
+    if (impl == NULL)
+    {
+        return NULL;
+    }
+
+    return impl->mOutgoingAddress;
+}
+
+const char*
+qpidBridgeMamaTransportImpl_getIncomingAddress (transportBridge transport)
+{
+    qpidTransportBridge*    impl = (qpidTransportBridge*) transport;
+
+    if (impl == NULL)
+    {
+        return NULL;
+    }
+
+    return impl->mIncomingAddress;
+}
+
+const char*
+qpidBridgeMamaTransportImpl_getReplyAddress (transportBridge transport)
+{
+    qpidTransportBridge*    impl = (qpidTransportBridge*) transport;
+
+    if (impl == NULL)
+    {
+        return NULL;
+    }
+
+    return impl->mReplyAddress;
+}
 
 /*=========================================================================
   =                  Private implementation functions                     =
@@ -750,15 +933,37 @@ qpidBridgeMamaTransportImpl_start (qpidTransportBridge* impl)
             return MAMA_STATUS_PLATFORM;
         }
 
-        if (pn_messenger_subscribe (impl->mIncoming,
-                                    impl->mIncomingAddress) <= 0)
+        /* Blanket subscriptions are only required in p2p */
+        if (QPID_TRANSPORT_TYPE_P2P == impl->mQpidTransportType)
+        {
+            if (pn_messenger_subscribe (impl->mIncoming,
+                                        impl->mIncomingAddress) <= 0)
+            {
+                mama_log (MAMA_LOG_LEVEL_ERROR, "qpidBridgeMamaTransportImpl_start(): "
+                          "Error Subscribing to %s : %s",
+                          impl->mIncomingAddress,
+                          PN_MESSENGER_ERROR(impl->mIncoming));
+                PN_MESSENGER_STOP(impl->mIncoming);
+                return MAMA_STATUS_PLATFORM;
+            }
+        }
+        else if (QPID_TRANSPORT_TYPE_BROKER == impl->mQpidTransportType)
         {
             mama_log (MAMA_LOG_LEVEL_ERROR, "qpidBridgeMamaTransportImpl_start(): "
-                      "Error Subscribing to %s : %s",
-                      impl->mIncomingAddress,
+                      "Subscribing to %s : %s",
+                      impl->mReplyAddress,
                       PN_MESSENGER_ERROR(impl->mIncoming));
-            PN_MESSENGER_STOP(impl->mIncoming);
-            return MAMA_STATUS_PLATFORM;
+            /* Subscribe to the URL advertised in reply_to */
+            if (pn_messenger_subscribe (impl->mIncoming,
+                                        impl->mReplyAddress) <= 0)
+            {
+                mama_log (MAMA_LOG_LEVEL_ERROR, "qpidBridgeMamaTransportImpl_start(): "
+                          "Error Subscribing to %s : %s",
+                          impl->mReplyAddress,
+                          PN_MESSENGER_ERROR(impl->mIncoming));
+                PN_MESSENGER_STOP(impl->mIncoming);
+                return MAMA_STATUS_PLATFORM;
+            }
         }
     }
 
@@ -892,9 +1097,11 @@ qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure)
         return;
     }
 
+    /* If this is a broker connection, we don't need to be selective at our
+     * layer */
     if (0 == endpointPool_isRegistedByContent (impl->mSubEndpoints,
-                                            subject,
-                                            subscription))
+                                               subject,
+                                               subscription))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "qpidBridgeMamaTransportImpl_queueCallback(): "
@@ -1369,11 +1576,25 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
      */
     while (1 == impl->mIsDispatching)
     {
-        if (pn_messenger_recv (impl->mIncoming, impl->mQpidRecvBlockSize))
+        int pnErr = 0;
+
+        pnErr = pn_messenger_recv (impl->mIncoming,
+                impl->mQpidRecvBlockSize);
+
+
+        if (PN_TIMEOUT == pnErr)
+        {
+            continue;
+        }
+
+        if (0 != pnErr)
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "qpidBridgeMamaTransportImpl_dispatchThread():",
-                      PN_MESSENGER_ERROR (impl->mIncoming));
+                      "qpidBridgeMamaTransportImpl_dispatchThread(): "
+                      "Recv Error [%d] (%s) '%s'",
+                      pnErr,
+                      pn_code(pnErr),
+                      PN_MESSENGER_ERROR(impl->mIncoming));
             impl->mQpidDispatchStatus = MAMA_STATUS_PLATFORM;
             return NULL;
         }

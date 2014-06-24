@@ -37,9 +37,9 @@
 #include "msg.h"
 #include "codec.h"
 #include "inbox.h"
-#include "subscription.h"
 #include "publisher.h"
 #include "endpointpool.h"
+#include "qpidcommon.h"
 
 /*=========================================================================
  =                Typedefs, structs, enums and globals                   =
@@ -52,6 +52,7 @@ typedef struct qpidPublisherBridge
     const char*             mSource;
     const char*             mRoot;
     const char*             mSubject;
+    const char*             mUri;
     pn_message_t*           mQpidRawMsg;
     msgBridge               mMamaBridgeMsg;
 } qpidPublisherBridge;
@@ -76,20 +77,6 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg               msg,
                                                   const char*           url,
                                                   qpidPublisherBridge*  impl);
 
-/**
- * When a qpid publisher is created, it calls this function to generate a
- * standard subject key using qpidBridgeMamaSubscriptionImpl_generateSubjectKey
- * with different parameters depending on if it's a market data publisher,
- * basic publisher or a data dictionary publisher.
- *
- * @param msg   The MAMA message to enqueue for sending.
- * @param url   The URL to eneueue the message for sending to.
- * @param impl  The related qpid publisher bridge.
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-static mama_status
-qpidBridgeMamaPublisherImpl_buildSendSubject (qpidPublisherBridge* impl);
 
 /*=========================================================================
  =               Public interface implementation functions               =
@@ -105,9 +92,11 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
                                        void*                nativeQueueHandle,
                                        mamaPublisher        parent)
 {
-    qpidPublisherBridge*    impl        = NULL;
-    qpidTransportBridge*    transport   = NULL;
-    mama_status             status      = MAMA_STATUS_OK;
+    qpidPublisherBridge*    impl            = NULL;
+    qpidTransportBridge*    transport       = NULL;
+    mama_status             status          = MAMA_STATUS_OK;
+    const char*             outgoingAddress = NULL;
+    const char*             uuid            = NULL;
 
     if (NULL == result
             || NULL == tport
@@ -149,23 +138,50 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
         return MAMA_STATUS_NOMEM;
     }
 
-    if (NULL != topic)
+    /* Get the outgoing address format string */
+    outgoingAddress = qpidBridgeMamaTransportImpl_getOutgoingAddress (
+                            (transportBridge) impl->mTransport);
+
+    /* Get the transport UUID which is unique to the transport in case we need
+     * it during format string expansion */
+    uuid = qpidBridgeMamaTransportImpl_getUuid (
+                 (transportBridge) impl->mTransport);
+
+    /* Collapse subject key to single string based on supplied values
+     *
+     * _MD requests do not use the topic on the wire as the responder may not
+     * necessarily be listening for requests on that topic until the first
+     * request comes in. */
+    if (NULL != root && 0 == strcmp (root, MAMA_ROOT_MARKET_DATA))
     {
-        impl->mTopic = topic;
+        qpidBridgeCommon_generateSubjectKey (root,
+                                             source,
+                                             NULL,
+                                             &impl->mSubject);
+    }
+    else
+    {
+        qpidBridgeCommon_generateSubjectKey (root,
+                                             source,
+                                             topic,
+                                             &impl->mSubject);
     }
 
-    if (NULL != source)
-    {
-        impl->mSource = source;
-    }
+    /* Parse the collapsed string to extract the standardized values */
+    qpidBridgeCommon_parseSubjectKey (impl->mSubject,
+                                      &impl->mRoot,
+                                      &impl->mSource,
+                                      &impl->mTopic,
+                                      (transportBridge) impl->mTransport);
 
-    if (NULL != root)
-    {
-        impl->mRoot = root;
-    }
 
-    /* Generate a topic name based on the publisher details */
-    status = qpidBridgeMamaPublisherImpl_buildSendSubject (impl);
+    /* Generate subject URI based on standardized values */
+    qpidBridgeCommon_generateSubjectUri (outgoingAddress,
+                                         impl->mRoot,
+                                         impl->mSource,
+                                         impl->mTopic,
+                                         uuid,
+                                         &impl->mUri);
 
     /* Create a reusable proton message */
     impl->mQpidRawMsg = pn_message ();
@@ -211,6 +227,22 @@ qpidBridgeMamaPublisher_destroy (publisherBridge publisher)
     if (NULL != impl->mSubject)
     {
         free ((void*) impl->mSubject);
+    }
+    if (NULL != impl->mUri)
+    {
+        free ((void*) impl->mUri);
+    }
+    if (NULL != impl->mRoot)
+    {
+        free ((void*) impl->mRoot);
+    }
+    if (NULL != impl->mSource)
+    {
+        free ((void*) impl->mSource);
+    }
+    if (NULL != impl->mTopic)
+    {
+        free ((void*) impl->mTopic);
     }
     if (NULL != impl->mMamaBridgeMsg)
     {
@@ -258,7 +290,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
         /* Use the publisher's default send destination for request */
         qpidBridgePublisherImpl_enqueueMessageForAddress (
                 msg,
-                (char*) impl->mTransport->mOutgoingAddress,
+                (char*) impl->mUri,
                 impl);
         break;
     case QPID_MSG_INBOX_RESPONSE:
@@ -274,25 +306,35 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
                                           impl->mSubject,
                                           impl->mSource);
 
-        /* For each known downstream destination */
-        status = endpointPool_getRegistered (impl->mTransport->mPubEndpoints,
-                                             impl->mSubject,
-                                             &targets,
-                                             &targetCount);
-
-        if (targetCount == 0)
+        if (QPID_TRANSPORT_TYPE_P2P ==
+                qpidBridgeMamaTransportImpl_getType (
+                        (transportBridge) impl->mTransport))
         {
-            mama_log (MAMA_LOG_LEVEL_FINEST, "qpidBridgeMamaPublisher_send(): "
-                      "No one subscribed to subject '%s', not publishing.",
-                      impl->mSubject);
-            return MAMA_STATUS_OK;
+            /* For each known downstream destination */
+            status = endpointPool_getRegistered (impl->mTransport->mPubEndpoints,
+                                                 impl->mSubject,
+                                                 &targets,
+                                                 &targetCount);
+
+            if (targetCount == 0)
+            {
+                mama_log (MAMA_LOG_LEVEL_FINEST, "qpidBridgeMamaPublisher_send(): "
+                          "No one subscribed to subject '%s', not publishing.",
+                          impl->mSubject);
+                return MAMA_STATUS_OK;
+            }
+
+            /* Push the message out to the send queue for each interested party */
+            for (targetInc = 0; targetInc < targetCount; targetInc++)
+            {
+                url = (char*) targets[targetInc];
+                qpidBridgePublisherImpl_enqueueMessageForAddress (msg, url, impl);
+            }
         }
-
-        /* Push the message out to the send queue for each interested party */
-        for (targetInc = 0; targetInc < targetCount; targetInc++)
+        else
         {
-            url = (char*) targets[targetInc];
-            qpidBridgePublisherImpl_enqueueMessageForAddress (msg, url, impl);
+            qpidBridgePublisherImpl_enqueueMessageForAddress (msg, impl->mUri,
+                    impl);
         }
         break;
     }
@@ -641,47 +683,4 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg               msg,
         return;
     }
 
-}
-
-mama_status
-qpidBridgeMamaPublisherImpl_buildSendSubject (qpidPublisherBridge* impl)
-{
-    char* keyTarget = NULL;
-
-    /* If this is a special _MD publisher, lose the topic unless dictionary */
-    if (impl->mRoot != NULL)
-    {
-        /*
-         * May use strlen here to increase speed but would need to test to
-         * verify this is the only circumstance in which we want to consider the
-         * topic when a root is specified.
-         */
-        if (strcmp (impl->mRoot, "_MDDD") == 0)
-        {
-            qpidBridgeMamaSubscriptionImpl_generateSubjectKey (impl->mRoot,
-                                                               impl->mSource,
-                                                               impl->mTopic,
-                                                               &keyTarget);
-        }
-        else
-        {
-            qpidBridgeMamaSubscriptionImpl_generateSubjectKey (impl->mRoot,
-                                                               impl->mSource,
-                                                               NULL,
-                                                               &keyTarget);
-        }
-    }
-    /* If this isn't a special _MD publisher */
-    else
-    {
-        qpidBridgeMamaSubscriptionImpl_generateSubjectKey (NULL,
-                                                           impl->mSource,
-                                                           impl->mTopic,
-                                                           &keyTarget);
-    }
-
-    /* Set the subject for publishing here */
-    impl->mSubject = keyTarget;
-
-    return MAMA_STATUS_OK;
 }

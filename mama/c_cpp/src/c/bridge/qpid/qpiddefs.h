@@ -56,9 +56,11 @@ extern "C" {
 
 /* Maximum topic length */
 #define     MAX_SUBJECT_LENGTH              256
+#define     MAX_URI_LENGTH                  1024
 
 /* Default timeout for send working threads */
 #define     QPID_MESSENGER_SEND_TIMEOUT     -1
+#define     QPID_MESSENGER_TIMEOUT          1 /* milliseconds */
 
 /* Message types */
 typedef enum qpidMsgType_
@@ -69,6 +71,13 @@ typedef enum qpidMsgType_
     QPID_MSG_SUB_REQUEST,
     QPID_MSG_TERMINATE      =               0xff
 } qpidMsgType;
+
+/* Message types */
+typedef enum qpidTransportType_
+{
+    QPID_TRANSPORT_TYPE_P2P,
+    QPID_TRANSPORT_TYPE_BROKER
+} qpidTransportType;
 
 /* If a proton version header has been parsed at this point (version >= 0.5) */
 #ifdef _PROTON_VERSION_H
@@ -113,9 +122,12 @@ typedef struct qpidSubscription_
     mamaSubscription    mMamaSubscription;
     mamaQueue           mMamaQueue;
     void*               mQpidQueue;
-    mamaTransport       mTransport;
-    const char*         mSymbol;
-    char*               mSubjectKey;
+    transportBridge     mTransport;
+    const char*         mSource;
+    const char*         mTopic;
+    const char*         mRoot;
+    char*               mSubject;
+    const char*         mUri;
     void*               mClosure;
     int                 mIsNotMuted;
     int                 mIsValid;
@@ -138,11 +150,14 @@ typedef struct qpidTransportBridge_
     const char*         mOutgoingAddress;
     const char*         mReplyAddress;
     const char*         mName;
+    const char*         mUuid;
     wthread_t           mQpidDispatchThread;
     int                 mIsDispatching;
     mama_status         mQpidDispatchStatus;
     endpointPool_t      mSubEndpoints;
     endpointPool_t      mPubEndpoints;
+    qpidTransportType   mQpidTransportType;
+    wtable_t            mKnownSources;
 } qpidTransportBridge;
 
 struct qpidMsgNode_

@@ -26,29 +26,6 @@
 extern "C" {
 #endif
 
-/*=========================================================================
-  =                  Public implementation functions                      =
-  =========================================================================*/
-
-/**
- * This function will generate a string which is unique to the root, source
- * and topic provided. Centralization of this function means that it can be used
- * in both the publisher and the subscriber in order to generate a consistent
- * topic for use throughout the platform.
- *
- * @param root      Prefix to associate with the subject (e.g. _MDDD)
- * @param inbox     Source to base the subject key on (e.g. EXCHANGENAME).
- * @param topic     Topic to base the subject key on (e.g. ISIN.CURRENCY).
- * @param keyTarget Pointer to populate with the generated subject key.
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-mama_status
-qpidBridgeMamaSubscriptionImpl_generateSubjectKey (const char*  root,
-                                                   const char*  source,
-                                                   const char*  topic,
-                                                   char**       keyTarget);
-
 #if defined(__cplusplus)
 }
 #endif
