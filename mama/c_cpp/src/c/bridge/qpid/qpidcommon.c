@@ -36,7 +36,7 @@
   =========================================================================*/
 
 mama_status
-qpidBridgeCommon_parseSubjectKey (char*             key,
+qpidBridgeCommon_parseSubjectKey (const char*       key,
                                   const char**      root,
                                   const char**      source,
                                   const char**      topic,
@@ -137,7 +137,7 @@ mama_status
 qpidBridgeCommon_generateSubjectKey (const char*  root,
                                      const char*  source,
                                      const char*  topic,
-                                     char**       keyTarget)
+                                     const char** keyTarget)
 {
     char        subject[MAX_SUBJECT_LENGTH];
     char*       subjectPos     = subject;

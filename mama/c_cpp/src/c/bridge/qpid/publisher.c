@@ -340,7 +340,8 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     }
 
     /* Note the messages don't actually get published until here */
-    if (PN_MESSENGER_SEND(impl->mTransport->mOutgoing))
+    if (pn_messenger_send(impl->mTransport->mOutgoing,
+            QPID_MESSENGER_SEND_TIMEOUT))
     {
         qpidError = PN_MESSENGER_ERROR (impl->mTransport->mOutgoing);
         mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidBridgeMamaPublisher_send(): "

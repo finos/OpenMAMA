@@ -150,14 +150,15 @@ qpidBridgeMamaSubscription_create (subscriptionBridge* subscriber,
 
         /* Add in the subject key as the only string inside */
         pn_data_put_string      (data, pn_bytes (strlen (impl->mSubject),
-                                                 impl->mSubject));
+                                                 (char*) impl->mSubject));
 
         /* Send out the subscription registration of interest message */
         if (NULL != transport->mOutgoingAddress)
         {
             pn_messenger_put    (transport->mOutgoing, transport->mMsg);
 
-            if (0 != PN_MESSENGER_SEND (transport->mOutgoing))
+            if (0 != pn_messenger_send (transport->mOutgoing,
+                    QPID_MESSENGER_SEND_TIMEOUT))
             {
                 const char* qpid_error = PN_MESSENGER_ERROR (transport->mOutgoing);
                 mama_log (MAMA_LOG_LEVEL_SEVERE,
@@ -257,7 +258,7 @@ qpidBridgeMamaSubscription_destroy (subscriptionBridge subscriber)
 
     if (NULL != impl->mSubject)
     {
-        free (impl->mSubject);
+        free ((void*)impl->mSubject);
     }
 
     if (NULL != impl->mRoot)

@@ -260,9 +260,6 @@ qpidBridgeMamaTransportImpl_releasePoolMsg (qpidMsgPool* pool,
 static void*
 qpidBridgeMamaTransportImpl_dispatchThread (void* closure);
 
-/* These functions depend on methods only introduced in qpid proton 0.5 */
-#if (PN_VERSION_MAJOR > 0 || PN_VERSION_MINOR > 4)
-
 /**
  * This function is a wrapper for pn_messenger_stop as it caused deadlock
  * before qpid proton 0.5 and pn_messenger_interrupt as it was not introduced
@@ -281,8 +278,6 @@ qpidBridgeMamaTransportImpl_stopProtonMessenger (pn_messenger_t* messenger);
  */
 static void
 qpidBridgeMamaTransportImpl_freeProtonMessenger (pn_messenger_t* messenger);
-
-#endif
 
 /*=========================================================================
   =               Public interface implementation functions               =
@@ -348,8 +343,8 @@ qpidBridgeMamaTransport_destroy (transportBridge transport)
     pn_message_free(impl->mMsg);
 
     /* Macro wrapped as these caused deadlock prior to v0.5 of qpid proton */
-    PN_MESSENGER_FREE(impl->mIncoming);
-    PN_MESSENGER_FREE(impl->mOutgoing);
+    qpidBridgeMamaTransportImpl_freeProtonMessenger (impl->mIncoming);
+    qpidBridgeMamaTransportImpl_freeProtonMessenger (impl->mOutgoing);
 
     endpointPool_destroy (impl->mSubEndpoints);
     endpointPool_destroy (impl->mPubEndpoints);
@@ -943,7 +938,7 @@ qpidBridgeMamaTransportImpl_start (qpidTransportBridge* impl)
                           "Error Subscribing to %s : %s",
                           impl->mIncomingAddress,
                           PN_MESSENGER_ERROR(impl->mIncoming));
-                PN_MESSENGER_STOP(impl->mIncoming);
+                (impl->mIncoming);
                 return MAMA_STATUS_PLATFORM;
             }
         }
@@ -961,7 +956,7 @@ qpidBridgeMamaTransportImpl_start (qpidTransportBridge* impl)
                           "Error Subscribing to %s : %s",
                           impl->mReplyAddress,
                           PN_MESSENGER_ERROR(impl->mIncoming));
-                PN_MESSENGER_STOP(impl->mIncoming);
+                qpidBridgeMamaTransportImpl_stopProtonMessenger (impl->mIncoming);
                 return MAMA_STATUS_PLATFORM;
             }
         }
@@ -994,21 +989,6 @@ mama_status qpidBridgeMamaTransportImpl_stop (qpidTransportBridge* impl)
      */
     mama_status     status = MAMA_STATUS_OK;
 
-    /*
-     * Ask the messenger nicely to stop by sending a special subject (best we
-     * can do prior to qpid 0.5 when recv was not interruptable). Known to
-     * deadlock pn_messenger_recv if the recv block = 1.
-     */
-    pn_message_t*   msg    = pn_message ();
-
-    /* Set the byte to indicate this is a termination message */
-    qpidBridgePublisherImpl_setMessageType (msg, QPID_MSG_TERMINATE);
-
-    /* Create the messenger for publishing out this desist message */
-    pn_message_set_address  (msg, impl->mReplyAddress);
-    pn_messenger_put        (impl->mOutgoing, msg);
-    PN_MESSENGER_SEND       (impl->mOutgoing);
-
     /* Set the transportBridge mIsDispatching to false */
     impl->mIsDispatching = 0;
 
@@ -1020,17 +1000,11 @@ mama_status qpidBridgeMamaTransportImpl_stop (qpidTransportBridge* impl)
 
     mama_log (MAMA_LOG_LEVEL_FINE, "qpidBridgeMamaTransportImpl_stop(): "
                       "Stopping the outgoing messenger.");
-    PN_MESSENGER_STOP(impl->mOutgoing);
+    qpidBridgeMamaTransportImpl_stopProtonMessenger (impl->mOutgoing);
 
     mama_log (MAMA_LOG_LEVEL_FINE, "qpidBridgeMamaTransportImpl_stop(): "
                       "Stopping the incoming messenger.");
-    PN_MESSENGER_STOP(impl->mIncoming);
-
-    /* Destroy the temporarily created proton message */
-    if (NULL != msg)
-    {
-        pn_message_free (msg);
-    }
+    qpidBridgeMamaTransportImpl_stopProtonMessenger (impl->mIncoming);
 
     mama_log (MAMA_LOG_LEVEL_FINEST, "qpidBridgeMamaTransportImpl_stop(): "
                       "Rejoined with status: %s.",
@@ -1806,7 +1780,6 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 }
 
 /* These functions depend on methods only introduced in qpid proton 0.5 */
-#if (PN_VERSION_MAJOR > 0 || PN_VERSION_MINOR > 4)
 void qpidBridgeMamaTransportImpl_stopProtonMessenger (pn_messenger_t* messenger)
 {
     mama_log (MAMA_LOG_LEVEL_FINE,
@@ -1815,7 +1788,6 @@ void qpidBridgeMamaTransportImpl_stopProtonMessenger (pn_messenger_t* messenger)
               messenger,
               pn_messenger_name(messenger));
 
-    pn_messenger_interrupt (messenger);
     pn_messenger_stop (messenger);
 }
 
@@ -1823,4 +1795,3 @@ void qpidBridgeMamaTransportImpl_freeProtonMessenger (pn_messenger_t* messenger)
 {
     pn_messenger_free (messenger);
 }
-#endif

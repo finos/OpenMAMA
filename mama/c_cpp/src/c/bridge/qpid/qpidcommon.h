@@ -77,7 +77,7 @@ mama_status
 qpidBridgeCommon_generateSubjectKey (const char*  root,
                                      const char*  source,
                                      const char*  topic,
-                                     char**       keyTarget);
+                                     const char** keyTarget);
 
 /**
  * This function will take the provided format string and use the root, source,
@@ -138,7 +138,7 @@ qpidBridgeCommon_generateSubjectUri (const char*  format,
  * @return mama_status indicating whether the method succeeded or failed.
  */
 mama_status
-qpidBridgeCommon_parseSubjectKey (char*             key,
+qpidBridgeCommon_parseSubjectKey (const char*       key,
                                   const char**      root,
                                   const char**      source,
                                   const char**      topic,

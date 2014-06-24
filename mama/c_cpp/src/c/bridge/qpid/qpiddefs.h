@@ -32,18 +32,13 @@
 #include <list.h>
 
 /* Qpid include files */
+#include <proton/version.h>
 #include <proton/driver.h>
 #include <proton/message.h>
 #include <proton/util.h>
 #include <proton/messenger.h>
 
 #include "endpointpool.h"
-
-/* If this version of proton has provided a version header file (build system
- * to provide this macro) */
-#ifdef HAVE_QPID_PROTON_VERSION_H
-#include <proton/version.h>
-#endif
 
 #if defined(__cplusplus)
 extern "C" {
@@ -79,34 +74,8 @@ typedef enum qpidTransportType_
     QPID_TRANSPORT_TYPE_BROKER
 } qpidTransportType;
 
-/* If a proton version header has been parsed at this point (version >= 0.5) */
-#ifdef _PROTON_VERSION_H
-
-#if (PN_VERSION_MAJOR > 0 || PN_VERSION_MINOR > 4)
-#define PN_MESSENGER_SEND(messenger)                                           \
-    pn_messenger_send(messenger, QPID_MESSENGER_SEND_TIMEOUT)
 #define PN_MESSENGER_ERROR(messenger)                                          \
     pn_error_text(pn_messenger_error(messenger))
-#define PN_MESSENGER_STOP(messenger)                                           \
-    qpidBridgeMamaTransportImpl_stopProtonMessenger (messenger)
-#define PN_MESSENGER_FREE(messenger)                                           \
-    qpidBridgeMamaTransportImpl_freeProtonMessenger (messenger)
-#endif
-
-/* Place other version specific macros here */
-
-#else
-
-/* Earliest supported version is 0.4 - header was added in 0.5 */
-#define     PN_VERSION_MAJOR                0
-#define     PN_VERSION_MINOR                4
-
-#define PN_MESSENGER_SEND(messenger) pn_messenger_send(messenger)
-#define PN_MESSENGER_ERROR(messenger) pn_messenger_error(messenger)
-#define PN_MESSENGER_STOP(messenger) /* disabled as it deadlocks in this ver */
-#define PN_MESSENGER_FREE(messenger) /* disabled as it deadlocks in this ver */
-
-#endif /* _PROTON_VERSION_H */
 
 /* Keys for application property map */
 #define QPID_KEY_MSGTYPE        "MAMAT"
@@ -131,7 +100,7 @@ typedef struct qpidSubscription_
     const char*         mSource;
     const char*         mTopic;
     const char*         mRoot;
-    char*               mSubject;
+    const char*         mSubject;
     const char*         mUri;
     void*               mClosure;
     int                 mIsNotMuted;
