@@ -245,8 +245,8 @@ writeagain:
 
         wthread_join (heapImpl->mDispatchThread, NULL);
 
-        close (heapImpl->mSockPair[0]);
-        close (heapImpl->mSockPair[1]);
+        wclosesocket (heapImpl->mSockPair[0]);
+        wclosesocket (heapImpl->mSockPair[1]);
 
         free (heapImpl);
     }

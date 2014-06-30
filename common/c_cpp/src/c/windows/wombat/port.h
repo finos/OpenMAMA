@@ -160,6 +160,7 @@ int wsem_getvalue (wsem_t*, int* items);
 #define wwrite(x,y,z) send((x),(y),(z),0)
 #define close _close
 #define sleep(x) Sleep( (x)*1000)
+#define wclosesocket(x) closesocket(x)
 
 COMMONExpDLL
 int gettimeofday( struct timeval *result, void *dummy );
