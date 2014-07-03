@@ -113,6 +113,7 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 /* Windows does not support AF_UNIX sockets, socketpairs, etc */
 #define wsocketstartup()
 #define wsocketcleanup()
+#define wclosesocket(x) close(x)
 
 #define wsocketpair(dom, type, prot, pair) (socketpair((dom),(type),(prot),(pair)))
 #define wsetnonblock(s) (fcntl((s), F_SETFL, fcntl((s), F_GETFL) | O_NONBLOCK))

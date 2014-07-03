@@ -111,6 +111,7 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 /* Windows does not support AF_UNIX sockets, socketpairs, etc */
 #define wsocketstartup()
 #define wsocketcleanup()
+#define wclosesocket(x) close(x)
 
 #define wsocketpair(dom, type, prot, pair)  (socketpair((dom),(type),(prot),(pair)))
 #define wsetnonblock(s)                     (fcntl((s), F_SETFL, fcntl((s), F_GETFL) | O_NONBLOCK))
@@ -126,6 +127,7 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 #define wthread_mutex_init          pthread_mutex_init
 #define wthread_mutex_unlock        pthread_mutex_unlock
 #define wthread_mutex_lock          pthread_mutex_lock
+#define wthread_destroy
 #define wthread_mutex_destroy       pthread_mutex_destroy
 #define wthread_t                   pthread_t
 #define wthread_detach              pthread_detach

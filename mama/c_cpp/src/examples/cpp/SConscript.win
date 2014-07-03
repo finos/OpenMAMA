@@ -4,6 +4,8 @@ Import('env')
 env = env.Clone()
 
 InstBin = []
+InstExamples = []
+InstExamples.append('Makefile.sample')
 
 binaries = Split("""
 	mamainboxcpp
@@ -36,9 +38,12 @@ env.Append(
 )
 
 for b in binaries:
-	example = env.Program(b, '%s.cpp' % (b) )
+	examplesrc = '%s.cpp' % (b)
+	example = env.Program(b, examplesrc )
+	InstExamples.append( examplesrc )
 	InstBin.append( example )
 	if env['vsver'] >= 8:
 		env.AddPostAction( example, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;1')
 
 Alias( 'install', env.Install('$bindir',InstBin) )
+Alias( 'install', env.Install('$prefix/examples/mama/cpp/', InstExamples) )
