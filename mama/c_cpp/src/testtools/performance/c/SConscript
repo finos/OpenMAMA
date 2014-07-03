@@ -15,14 +15,21 @@ sources = Glob('*.c')
 
 env.Append( LIBPATH = libPath )
 env.Append( CPPPATH = [ includePath ] )
-env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','dl','rt' ] )
+if env['host']['os'] == 'Darwin':
+    env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','dl'] )
+else:
+    env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','dl','rt' ] )
+env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
+
 
 mamaproducer = env.Program('mamaproducerc','mamaproducerc.c')
 mamaconsumer = env.Program('mamaconsumerc','mamaconsumerc.c')
-#mamaconsumerv2 = env.Program('mamaconsumerc_v2','mamaconsumerc_v2.c')
+mamaproducerv2 = env.Program('mamaproducerc_v2','mamaproducerc_v2.c')
+mamaconsumerv2 = env.Program('mamaconsumerc_v2','mamaconsumerc_v2.c')
 mamapingpong = env.Program('mamapingpongc','mamapingpongc.c')
 
 Alias('install',env.Install('$prefix/bin',mamaproducer))
 Alias('install',env.Install('$prefix/bin',mamaconsumer))
-#Alias('install',env.Install('$prefix/bin',mamaconsumerv2))
+Alias('install',env.Install('$prefix/bin',mamaconsumerv2))
+Alias('install',env.Install('$prefix/bin',mamaproducerv2))
 Alias('install',env.Install('$prefix/bin',mamapingpong))

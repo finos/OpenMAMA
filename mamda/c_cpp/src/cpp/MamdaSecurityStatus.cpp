@@ -35,6 +35,8 @@ namespace Wombat
     static const char* SECURITY_STATUS_STR_CROSSING   = "Crossing";
     static const char* SECURITY_STATUS_STR_SUSPENDED  = "Suspended";
     static const char* SECURITY_STATUS_STR_AT_LAST    = "AtLast";
+    static const char* SECURITY_STATUS_STR_INACTIVE   = "Inactive";
+    static const char* SECURITY_STATUS_STR_UNKNOWN    = "Unknown";
 
     const char* toString (MamdaSecurityStatus  securityStatus)
     {
@@ -50,6 +52,7 @@ namespace Wombat
             case SECURITY_STATUS_CROSSING:  return SECURITY_STATUS_STR_CROSSING;
             case SECURITY_STATUS_SUSPENDED: return SECURITY_STATUS_STR_SUSPENDED;
             case SECURITY_STATUS_AT_LAST:   return SECURITY_STATUS_STR_AT_LAST;
+            case SECURITY_STATUS_INACTIVE:  return SECURITY_STATUS_STR_INACTIVE;
             case SECURITY_STATUS_UNKNOWN:
             default:                        return "Unknown";
         }
@@ -73,6 +76,8 @@ namespace Wombat
         if (strcmp (securityStatus, SECURITY_STATUS_STR_CROSSING)  == 0)    return SECURITY_STATUS_CROSSING;
         if (strcmp (securityStatus, SECURITY_STATUS_STR_SUSPENDED) == 0)    return SECURITY_STATUS_SUSPENDED;
         if (strcmp (securityStatus, SECURITY_STATUS_STR_AT_LAST)   == 0)    return SECURITY_STATUS_AT_LAST;
+        if (strcmp (securityStatus, SECURITY_STATUS_STR_INACTIVE)  == 0)    return SECURITY_STATUS_INACTIVE;
+        if (strcmp (securityStatus, SECURITY_STATUS_STR_UNKNOWN)   == 0)    return SECURITY_STATUS_UNKNOWN;
 
         // A misconfigured FH might send numbers as strings:
         if (strcmp (securityStatus,"0") == 0)   return SECURITY_STATUS_NONE;
@@ -85,6 +90,8 @@ namespace Wombat
         if (strcmp (securityStatus,"7") == 0)   return SECURITY_STATUS_CROSSING;
         if (strcmp (securityStatus,"8") == 0)   return SECURITY_STATUS_SUSPENDED;
         if (strcmp (securityStatus,"9") == 0)   return SECURITY_STATUS_AT_LAST;
+        if (strcmp (securityStatus,"10")== 0)   return SECURITY_STATUS_INACTIVE;
+        if (strcmp (securityStatus,"99")== 0)   return SECURITY_STATUS_UNKNOWN;
 
         return SECURITY_STATUS_UNKNOWN;
     }

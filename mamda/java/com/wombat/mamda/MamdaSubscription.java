@@ -219,9 +219,21 @@ public class MamdaSubscription
     public synchronized void activate ()
     {
         /*Already activated if not null*/
-        if (mSubscription != null) return;         
-       
-        mSubscription = new MamaSubscription ();
+        if (mSubscription != null) 
+        {
+            MamaSubscriptionState state = mSubscription.getState();
+
+            if((state == MamaSubscriptionState.MAMA_SUBSCRIPTION_DEACTIVATING) ||
+                (state == MamaSubscriptionState.MAMA_SUBSCRIPTION_DEACTIVATED))
+            {
+                mSubscription.activate ();
+                return;
+            }
+        }
+        else
+        {         
+            mSubscription = new MamaSubscription ();
+        }
 
         mSubscription.setSubscriptionType (mType);
         mSubscription.setServiceLevel     (mServiceLevel,mServiceLevelOpt);

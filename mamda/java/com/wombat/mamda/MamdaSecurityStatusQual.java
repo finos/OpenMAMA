@@ -118,10 +118,10 @@ public class MamdaSecurityStatusQual
     public static final short SECURITY_STATUS_QUAL_NEWS_PENDING_RELATED          = 108;  // toString()  NewsPendingRelated
     public static final short SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED  = 109;  // toString()  EquipChangeOverRelated
     public static final short SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED     = 110;  // toString()  SubPennyTradingRelated
-    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY         = 112;  // toString()  ImbPreOpenBuy
-    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL        = 113;  // toString()  ImbPreOpenSell
-    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY        = 114;  // toString()  ImbPreCloseBuy
-    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL       = 115;  // toString()  ImbPreCloseSell  
+    public static final short SECURITY_STATUS_QUAL_POST_TRADING                  = 111;  // toString()  PostTrading
+    public static final short SECURITY_STATUS_QUAL_ONE_SIDED                     = 112;  // toString()  OneSided
+    public static final short SECURITY_STATUS_QUAL_PRE_CALL                      = 113;  // toString()  PreCall
+    public static final short SECURITY_STATUS_QUAL_RESTRICTED_OPEN               = 114;  // toString()  RestrictedOpen
     public static final short SECURITY_STATUS_QUAL_VOLATILITY_PAUSE              = 116;  // toString()  VolatilityPause
     public static final short SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME = 117;  // toString()  VolatilityPauseQuoteResume
     public static final short SECURITY_STATUS_QUAL_VOLATILITY_GUARD              = 118;  // toString()  VolatilityGuard
@@ -133,6 +133,14 @@ public class MamdaSecurityStatusQual
     public static final short SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2       = 124;  // toString()  CircuitBreakerLevel2
     public static final short SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3       = 125;  // toString()  CircuitBreakerLevel3
     public static final short SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE     = 126;  // toString()  VolatilityPauseStraddle
+    public static final short SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED         = 127;  // toString()  ShortSaleRestricted
+    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY         = 128;  // toString()  ImbPreOpenBuy
+    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL        = 129;  // toString()  ImbPreOpenSell
+    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE        = 130;  // toString()  ImbPreOpenNone
+    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY        = 131;  // toString()  ImbPreCloseBuy
+    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL       = 132;  // toString()  ImbPreCloseSell
+    public static final short SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE       = 133;  // toString()  ImbPreCloseNone
+    public static final short SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY            = 134;  // toString()  ScheduledIntraday 
     
     //Only used internally
     private static final String SECURITY_STATUS_QUAL_STR_NONE                               = "None";
@@ -230,10 +238,10 @@ public class MamdaSecurityStatusQual
     private static final String SECURITY_STATUS_QUAL_STR_NEWS_PENDING_RELATED               = "NewsPendingRelated";
     private static final String SECURITY_STATUS_QUAL_STR_EQUIPMENT_CHANGEOVER_RELATED       = "EquipChangeOverRelated";
     private static final String SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED          = "SubPennyTradingRelated";
-    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY              = "ImbPreOpenBuy";
-    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL             = "ImbPreOpenSell";
-    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY             = "ImbPreCloseBuy";
-    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL            = "ImbPreCloseSell";
+    private static final String SECURITY_STATUS_QUAL_STR_POST_TRADING                       = "PostTrading";
+    private static final String SECURITY_STATUS_QUAL_STR_ONE_SIDED                          = "OneSided";
+    private static final String SECURITY_STATUS_QUAL_STR_PRE_CALL                           = "PreCall";
+    private static final String SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN                    = "RestrictedOpen";
     private static final String SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE                   = "VolatilityPause";
     private static final String SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME      = "VolatilityPauseQuoteResume";
     private static final String SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD                   = "VolatilityGuard";
@@ -246,6 +254,15 @@ public class MamdaSecurityStatusQual
     private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2            = "CircuitBreakerLevel2";
     private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3            = "CircuitBreakerLevel3";
     private static final String SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE          = "VolatilityPauseStraddle";
+    
+    private static final String SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED              = "ShortSaleRestricted";
+    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY              = "ImbPreOpenBuy";
+    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL             = "ImbPreOpenSell";
+    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_NONE             = "ImbPreOpenNone";
+    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY             = "ImbPreCloseBuy";
+    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL            = "ImbPreCloseSell";
+    private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_NONE            = "ImbPreCloseNone";
+    private static final String SECURITY_STATUS_QUAL_STR_SCHEDULED_INTRADAY                 = "ScheduledIntraday";
 
     private static final String SECURITY_STATUS_QUAL_STR_UNKNOWN                            = "Unknown";
 
@@ -443,14 +460,14 @@ public class MamdaSecurityStatusQual
                 return SECURITY_STATUS_QUAL_STR_EQUIPMENT_CHANGEOVER_RELATED;
             case SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED:
                 return SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED;
-            case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY:
-                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY;
-            case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL:
-                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL;
-            case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY:
-                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY;
-            case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL:
-                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL;
+            case SECURITY_STATUS_QUAL_POST_TRADING:
+                return SECURITY_STATUS_QUAL_STR_POST_TRADING;
+            case SECURITY_STATUS_QUAL_ONE_SIDED:
+                return SECURITY_STATUS_QUAL_STR_ONE_SIDED;
+            case SECURITY_STATUS_QUAL_PRE_CALL:
+                return SECURITY_STATUS_QUAL_STR_PRE_CALL;
+            case SECURITY_STATUS_QUAL_RESTRICTED_OPEN:
+                return SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN;
             case SECURITY_STATUS_QUAL_VOLATILITY_PAUSE:
                 return SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE;
             case SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME:
@@ -473,6 +490,22 @@ public class MamdaSecurityStatusQual
                 return SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3;
             case SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE:
                 return SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE;
+            case SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED:
+                return SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED;
+            case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY:
+                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY;
+            case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL:
+                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL;
+            case SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE:
+                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_NONE;
+            case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY:
+                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY;
+            case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL:
+                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL;
+            case SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE:
+                return SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_NONE;
+            case SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY:
+                return SECURITY_STATUS_QUAL_STR_SCHEDULED_INTRADAY;
         }
         return SECURITY_STATUS_QUAL_STR_UNKNOWN;
     }
@@ -672,14 +705,14 @@ public class MamdaSecurityStatusQual
             return  SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED;
         if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED))
             return SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED;
-        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY))
-            return SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;
-        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL))
-            return SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;
-        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY))
-            return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;
-        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL ))
-            return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_POST_TRADING))
+            return SECURITY_STATUS_QUAL_POST_TRADING;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_ONE_SIDED))
+            return SECURITY_STATUS_QUAL_ONE_SIDED;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_PRE_CALL))
+            return SECURITY_STATUS_QUAL_PRE_CALL;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN))
+            return SECURITY_STATUS_QUAL_RESTRICTED_OPEN;
         if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE))
             return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE;
         if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME))
@@ -702,6 +735,22 @@ public class MamdaSecurityStatusQual
             return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
         if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE))
             return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED))
+            return SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY))
+            return SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL))
+            return SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_NONE))
+            return SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_BUY))
+            return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_SELL))
+            return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_IMBALANCE_PRECLOSE_NONE))
+            return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE;
+        if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_SCHEDULED_INTRADAY ))
+            return SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY;
 
         // A misconfigured FH might send numbers as strings:
         if (securityStatusQual.equals ("0"))
@@ -806,7 +855,7 @@ public class MamdaSecurityStatusQual
             return SECURITY_STATUS_QUAL_SEC;
         if (securityStatusQual.equals ("62"))
             return SECURITY_STATUS_QUAL_TIMES;
-        if (securityStatusQual.equals ("62"))
+        if (securityStatusQual.equals ("63"))
             return SECURITY_STATUS_QUAL_OTHER;
         if (securityStatusQual.equals ("64"))
             return SECURITY_STATUS_QUAL_RELATED;
@@ -892,14 +941,14 @@ public class MamdaSecurityStatusQual
           return SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED;
         if(securityStatusQual.equals("110"))
           return SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED;
+        if(securityStatusQual.equals("111"))
+          return SECURITY_STATUS_QUAL_POST_TRADING;
         if(securityStatusQual.equals("112"))
-          return SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;
+          return SECURITY_STATUS_QUAL_ONE_SIDED;
         if(securityStatusQual.equals("113"))
-          return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;
+          return  SECURITY_STATUS_QUAL_PRE_CALL;
         if(securityStatusQual.equals("114"))
-          return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;
-        if(securityStatusQual.equals("115"))
-          return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;
+          return SECURITY_STATUS_QUAL_RESTRICTED_OPEN;
         if(securityStatusQual.equals("116"))
           return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE;
         if(securityStatusQual.equals("117"))
@@ -922,6 +971,22 @@ public class MamdaSecurityStatusQual
           return SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
         if(securityStatusQual.equals("126"))
           return SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
+        if(securityStatusQual.equals("127"))
+          return SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED;
+        if(securityStatusQual.equals("128"))
+          return SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;
+        if(securityStatusQual.equals("129"))
+          return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;
+        if(securityStatusQual.equals("130"))
+          return  SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE;
+        if(securityStatusQual.equals("131"))
+          return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;
+        if(securityStatusQual.equals("132"))
+          return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;
+        if(securityStatusQual.equals("133"))
+          return SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE;
+        if(securityStatusQual.equals("134"))
+          return SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY;
 
         return SECURITY_STATUS_QUAL_UNKNOWN;
     }

@@ -9,6 +9,7 @@ target = 'libmamaavismsgimpl'
 includePath = []
 includePath.append('.')
 includePath.append('../..')
+includePath.append('$avis_home/include')
 includePath.append('#common/c_cpp/src/c')
 
 libPath = []

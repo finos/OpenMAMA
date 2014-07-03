@@ -3,7 +3,7 @@
 Import('*')
 env = env.Clone()
 
-target = 'libmamajni'
+target = 'mamajni'
 #target = 'libmamajni%s' % (env['suffix'])
 #targetLIB = 'libmamajni%s.lib' % (env['suffix'])
 #targetDLL = 'libmamajni%s.dll' % (env['suffix'])
@@ -51,4 +51,20 @@ sources = \
     mamaloghandler.c
 """)
 
-env.InstallLibrary(sources, target)
+# Java, when loading the mamajni dll, expects it to be called mamajni.dll, without
+# the lib prefix or 'md/mdd' suffix. Therefore, we cannot use the InstallLibrary
+# method used elsewhere.
+if 'dynamic' in env['build']:
+    dll, pdb, lib, exp = env.SharedLibrary(target, sources)
+    library = [ dll, pdb, lib, exp ]
+    env.Alias('install', env.Install('$bindir', dll ))
+    env.Alias('install', env.Install('$bindir', pdb ))
+
+    if env['vsver_maj'] >= 8:
+        env.AddPostAction( library, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;2')
+
+elif 'static' in env['build']:
+    lib = env.StaticLibrary(target, source)
+    library = [ lib ]
+
+env.Alias('install', env.Install('$libdir', lib )) #Always install the .lib

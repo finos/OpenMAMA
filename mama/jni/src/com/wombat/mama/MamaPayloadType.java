@@ -27,16 +27,40 @@ package com.wombat.mama;
  */
 public class MamaPayloadType
 {
-    /** Wombat Message */
-    public static final char MAMA_PAYLOAD_WOMBAT_MSG    =   'W';
-    /** TIBRV Message */
-    public static final char MAMA_PAYLOAD_TIBRV         =   'R';
-    /** FAST Message */
-    public static final char MAMA_PAYLOAD_FAST          =   'F';
+    /** Solace Message */
+    public static final char MAMA_PAYLOAD_SOLACE        =   '1';
     /** V5 Message */
     public static final char MAMA_PAYLOAD_V5            =   '5';
     /** AVIS Message */
     public static final char MAMA_PAYLOAD_AVIS          =   'A';
+    /** Tick42 BLP Message */
+    public static final char MAMA_PAYLOAD_TICK42BLP     =   'B';
+    /** FAST Message */
+    public static final char MAMA_PAYLOAD_FAST          =   'F';
+    /** RAI Message */
+    public static final char MAMA_PAYLOAD_RAI           =   'I';
+    /** KWANTUM Message */
+    public static final char MAMA_PAYLOAD_KWANTUM       =   'K';
+    /** UMS Message */
+    public static final char MAMA_PAYLOAD_UMS           =   'L';
+    /** Inrush Message */
+    public static final char MAMA_PAYLOAD_INRUSH        =   'N';
+    /** Tick42 RMDS Message */
+    public static final char MAMA_PAYLOAD_TICK42RMDS    =   'P';
+    /** QPID Message */
+    public static final char MAMA_PAYLOAD_QPID          =   'Q';
+    /** TIBRV Message */
+    public static final char MAMA_PAYLOAD_TIBRV         =   'R';
+    /** IBMWFO Message */
+    public static final char MAMA_PAYLOAD_IBMWFO        =   'S';
+    /** ACTIV Message */
+    public static final char MAMA_PAYLOAD_ACTIV         =   'T';
+    /** Vulcan Message */
+    public static final char MAMA_PAYLOAD_VULCAN        =   'V';
+    /** Wombat Message */
+    public static final char MAMA_PAYLOAD_WOMBAT_MSG    =   'W';
+    /** Wombat Message */
+    public static final char MAMA_PAYLOAD_EXEGY         =   'X';
     /** Unknown type */
     public static final char MAMA_PAYLOAD_UNKNOWN       =   'U';
 }

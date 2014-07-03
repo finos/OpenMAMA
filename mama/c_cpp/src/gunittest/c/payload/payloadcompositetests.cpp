@@ -59,14 +59,14 @@ protected:
 
         mama_loadPayloadBridge(&m_payloadBridge, m_payload.c_str());
         m_status = m_payloadBridge->msgPayloadCreate(&m_msg);
-        ASSERT_EQ(m_status, MAMA_STATUS_OK);
+        ASSERT_EQ (MAMA_STATUS_OK, m_status);
     }
 
     // Common TearDown
     virtual void TearDown()
     {
         m_status = m_payloadBridge->msgPayloadDestroy(m_msg);
-        EXPECT_EQ(m_status, MAMA_STATUS_OK);
+        EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
         //ForkedTest::TearDown();
     }
@@ -112,20 +112,20 @@ protected:
 TEST_F(PayloadStringTests, AddString)
 {
     m_status = m_payloadBridge->msgPayloadAddString(m_msg, NULL, 1, m_in);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 TEST_F(PayloadStringTests, AddStringNullAdd)
 {
     ASSERT_NO_FATAL_FAILURE(m_payloadBridge->msgPayloadAddString(m_msg, NULL, 1, NULL));
     m_status = m_payloadBridge->msgPayloadAddString(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadStringTests, AddStringNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddString(NULL, NULL, 1, m_in);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -138,7 +138,7 @@ TEST_F(PayloadStringTests, UpdateString)
     m_payloadBridge->msgPayloadAddString(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadUpdateString(m_msg, NULL, 1, m_update);
     m_payloadBridge->msgPayloadGetString(m_msg, NULL, 1, &m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_STREQ(m_out, m_update);
 }
 
@@ -146,20 +146,20 @@ TEST_F(PayloadStringTests, UpdateStringNoAdd)
 {
     m_status = m_payloadBridge->msgPayloadUpdateString(m_msg, NULL, 1, m_update);
     m_payloadBridge->msgPayloadGetString(m_msg, NULL, 1, &m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_STREQ(m_out, m_update);
 }
 
 TEST_F(PayloadStringTests, UpdateStringNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadUpdateString(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadStringTests, UpdateStringNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadUpdateString(NULL, NULL, 1, m_update);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -171,7 +171,7 @@ TEST_F(PayloadStringTests, GetString)
 {
     m_payloadBridge->msgPayloadAddString(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadGetString(m_msg, NULL, 1, &m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_STREQ(m_out, m_in);
 }
 
@@ -179,14 +179,14 @@ TEST_F(PayloadStringTests, GetStringNullOutput)
 {
     m_payloadBridge->msgPayloadAddString(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadGetString(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadStringTests, GetStringNullMessage)
 {
     m_payloadBridge->msgPayloadAddString(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadGetString(NULL, NULL, 1, &m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -232,19 +232,19 @@ protected:
 TEST_F(PayloadOpaqueTests, AddOpaque)
 {
     m_status = m_payloadBridge->msgPayloadAddOpaque(m_msg, NULL, 1, (void*)&m_in, sizeof(uint32_t));
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 TEST_F(PayloadOpaqueTests, AddOpaqueNullAdd)
 {
     m_status = m_payloadBridge->msgPayloadAddOpaque(m_msg, NULL, 1, NULL, sizeof(uint32_t));
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadOpaqueTests, AddOpaqueNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddOpaque(NULL, NULL, 1, (void*)&m_in, sizeof(uint32_t));
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -258,9 +258,9 @@ TEST_F(PayloadOpaqueTests, UpdateOpaque)
     m_payloadBridge->msgPayloadAddOpaque(m_msg, NULL, 1, (void*)&m_in, sizeof(uint32_t));
     m_status = m_payloadBridge->msgPayloadUpdateOpaque(m_msg, NULL, 1, (void*)&m_update, sizeof(uint32_t));
     m_payloadBridge->msgPayloadGetOpaque(m_msg, NULL, 1, (const void**)&m_out, &size);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(std::memcmp((void*)&m_update, (void*)m_out, sizeof(uint32_t)), 0);
-    EXPECT_EQ(size, sizeof(uint32_t));
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, std::memcmp((void*)&m_update, (void*)m_out, sizeof(uint32_t)));
+    EXPECT_EQ (sizeof(uint32_t), size);
 }
 
 TEST_F(PayloadOpaqueTests, UpdateOpaqueNoAdd)
@@ -268,23 +268,23 @@ TEST_F(PayloadOpaqueTests, UpdateOpaqueNoAdd)
     mama_size_t size;
     m_status = m_payloadBridge->msgPayloadUpdateOpaque(m_msg, NULL, 1, (void*)&m_update, sizeof(uint32_t));
     m_payloadBridge->msgPayloadGetOpaque(m_msg, NULL, 1, (const void**)&m_out, &size);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(std::memcmp((void*)&m_update, (void*)m_out, sizeof(uint32_t)), 0);
-    EXPECT_EQ(size, sizeof(uint32_t));
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, std::memcmp((void*)&m_update, (void*)m_out, sizeof(uint32_t)));
+    EXPECT_EQ (sizeof(uint32_t), size);
 }
 
 TEST_F(PayloadOpaqueTests, UpdateOpaqueNullUpdate)
 {
     m_payloadBridge->msgPayloadAddOpaque(m_msg, NULL, 1, (void*)&m_in, sizeof(uint32_t));
     m_status = m_payloadBridge->msgPayloadUpdateOpaque(m_msg, NULL, 1, NULL, sizeof(uint32_t));
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadOpaqueTests, UpdateOpaqueNullMessage)
 {
     m_payloadBridge->msgPayloadAddOpaque(m_msg, NULL, 1, (void*)&m_in, sizeof(uint32_t));
     m_status = m_payloadBridge->msgPayloadUpdateOpaque(NULL, NULL, 1, (void*)&m_update, sizeof(uint32_t));
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -297,9 +297,9 @@ TEST_F(PayloadOpaqueTests, GetOpaque)
     mama_size_t size (0);
     m_payloadBridge->msgPayloadAddOpaque(m_msg, NULL, 1, (void*)&m_in, sizeof(uint32_t));
     m_status = m_payloadBridge->msgPayloadGetOpaque(m_msg, NULL, 1, (const void**)&m_out, &size);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(std::memcmp((void*)&m_in, (void*)m_out, sizeof(uint32_t)), 0);
-    EXPECT_EQ(size, sizeof(uint32_t));
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (0, std::memcmp((void*)&m_in, (void*)m_out, sizeof(uint32_t)));
+    EXPECT_EQ (sizeof(uint32_t), size);
 }
 
 TEST_F(PayloadOpaqueTests, GetOpaqueNullOutput)
@@ -307,7 +307,7 @@ TEST_F(PayloadOpaqueTests, GetOpaqueNullOutput)
     mama_size_t size (0);
     m_payloadBridge->msgPayloadAddOpaque(m_msg, NULL, 1, (void*)&m_in, sizeof(uint32_t));
     m_status = m_payloadBridge->msgPayloadGetOpaque(m_msg, NULL, 1, NULL, &size);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadOpaqueTests, GetOpaqueNullMessage)
@@ -315,7 +315,7 @@ TEST_F(PayloadOpaqueTests, GetOpaqueNullMessage)
     mama_size_t size (0);
     m_payloadBridge->msgPayloadAddOpaque(m_msg, NULL, 1, (void*)&m_in, sizeof(uint32_t));
     m_status = m_payloadBridge->msgPayloadAddOpaque(NULL, NULL, 1, (void*)&m_in, size);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -367,19 +367,19 @@ protected:
 TEST_F(PayloadDateTimeTests, AddDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddDateTime(m_msg, NULL, 1, m_in);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 TEST_F(PayloadDateTimeTests, AddDateTimeNullAdd)
 {
     m_status = m_payloadBridge->msgPayloadAddDateTime(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadDateTimeTests, AddDateTimeNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddDateTime(NULL, NULL, 1, m_in);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 
@@ -393,30 +393,30 @@ TEST_F(PayloadDateTimeTests, UpdateDateTime)
     m_payloadBridge->msgPayloadAddDateTime(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadUpdateDateTime(m_msg, NULL, 1, m_update);
     m_payloadBridge->msgPayloadGetDateTime(m_msg, NULL, 1, m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(mamaDateTime_equal(m_out, m_update), 1);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (1, mamaDateTime_equal(m_out, m_update));
 }
 
 TEST_F(PayloadDateTimeTests, UpdateDateTimeNoAdd)
 {
     m_status = m_payloadBridge->msgPayloadUpdateDateTime(m_msg, NULL, 1, m_update);
     m_payloadBridge->msgPayloadGetDateTime(m_msg, NULL, 1, m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(mamaDateTime_equal(m_out, m_update), 1);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (1, mamaDateTime_equal(m_out, m_update));
 }
 
 TEST_F(PayloadDateTimeTests, UpdateDateTimeNullUpdate)
 {
     m_payloadBridge->msgPayloadAddDateTime(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadUpdateDateTime(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadDateTimeTests, UpdateDateTimeNullMessage)
 {
     m_payloadBridge->msgPayloadAddDateTime(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadUpdateDateTime(NULL, NULL, 1, m_update);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -428,22 +428,22 @@ TEST_F(PayloadDateTimeTests, GetDateTime)
 {
     m_payloadBridge->msgPayloadAddDateTime(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadGetDateTime(m_msg, NULL, 1, m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(mamaDateTime_equal(m_in, m_out), 1);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (1, mamaDateTime_equal(m_in, m_out));
 }
 
 TEST_F(PayloadDateTimeTests, GetDateTimeNullOutput)
 {
     m_payloadBridge->msgPayloadAddDateTime(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadGetDateTime(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadDateTimeTests, GetDateTimeNullMessage)
 {
     m_payloadBridge->msgPayloadAddDateTime(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadGetDateTime(NULL, NULL, 1, m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -496,20 +496,20 @@ TEST_F(PayloadPriceTests, AddPrice)
 {
     m_status = m_payloadBridge->msgPayloadAddPrice(m_msg, NULL, 1, m_in);
     m_payloadBridge->msgPayloadGetPrice(m_msg, NULL, 1, m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(mamaPrice_equal(m_out, m_in), 1);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (1, mamaPrice_equal(m_out, m_in));
 }
 
 TEST_F(PayloadPriceTests, AddPriceNullAdd)
 {
     m_status = m_payloadBridge->msgPayloadAddPrice(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadPriceTests, AddPriceNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddPrice(NULL, NULL, 1, m_in);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -522,30 +522,30 @@ TEST_F(PayloadPriceTests, UpdatePrice)
     m_payloadBridge->msgPayloadAddPrice(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadUpdatePrice(m_msg, NULL, 1, m_update);
     m_payloadBridge->msgPayloadGetPrice(m_msg, NULL, 1, m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(mamaPrice_equal(m_out, m_update), 1);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (1, mamaPrice_equal(m_out, m_update));
 }
 
 TEST_F(PayloadPriceTests, UpdatePriceNoAdd)
 {
     m_status = m_payloadBridge->msgPayloadUpdatePrice(m_msg, NULL, 1, m_update);
     m_payloadBridge->msgPayloadGetPrice(m_msg, NULL, 1, m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(mamaPrice_equal(m_out, m_update), 1);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (1, mamaPrice_equal(m_out, m_update));
 }
 
 TEST_F(PayloadPriceTests, UpdatePriceNullUpdate)
 {
     m_payloadBridge->msgPayloadAddPrice(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadUpdatePrice(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadPriceTests, UpdatePriceNullMessage)
 {
     m_payloadBridge->msgPayloadAddPrice(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadUpdatePrice(NULL, NULL, 1, m_update);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -557,22 +557,22 @@ TEST_F(PayloadPriceTests, GetPrice)
 {
     m_payloadBridge->msgPayloadAddPrice(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadGetPrice(m_msg, NULL, 1, m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
-    EXPECT_EQ(mamaPrice_equal(m_in, m_out), 1);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (1, mamaPrice_equal(m_in, m_out));
 }
 
 TEST_F(PayloadPriceTests, GetPriceNullOutput)
 {
     m_payloadBridge->msgPayloadAddPrice(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadGetPrice(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadPriceTests, GetPriceNullMessage)
 {
     m_payloadBridge->msgPayloadAddPrice(m_msg, NULL, 1, m_in);
     m_status = m_payloadBridge->msgPayloadGetPrice(NULL, NULL, 1, m_out);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -616,19 +616,19 @@ protected:
 TEST_F(PayloadSubMsgTests, AddSubMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddMsg(m_msg, NULL, 1, m_in);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 TEST_F(PayloadSubMsgTests, AddSubMsgNullAdd)
 {
     m_status = m_payloadBridge->msgPayloadAddMsg(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadSubMsgTests, AddSubMsgNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddMsg(NULL, NULL, 1, m_in);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -640,19 +640,19 @@ TEST_F(PayloadSubMsgTests, UpdateSubMsg)
 {
     /* TODO revist this */
     m_status = m_payloadBridge->msgPayloadUpdateSubMsg(m_msg, NULL, 1, m_update);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
 TEST_F(PayloadSubMsgTests, UpdateSubMsgNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadUpdateSubMsg(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadSubMsgTests, UpdateSubMsgNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadUpdateSubMsg(NULL, NULL, 1, m_update);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**
@@ -666,7 +666,7 @@ TEST_F(PayloadSubMsgTests, GetSubMsg)
     m_payloadBridge->msgPayloadGetMsg(m_msg, NULL, 1, &m_out);
 //    m_payloadBridge->msgPayloadGetBool(m_in, NULL, 2, &a);
 //    m_payloadBridge->msgPayloadGetBool(m_in, NULL, 2, &b);
-    EXPECT_EQ(m_status, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
 //    EXPECT_EQ(a|b, 0xFF);
 //    TODO: Fix
 }
@@ -674,11 +674,11 @@ TEST_F(PayloadSubMsgTests, GetSubMsg)
 TEST_F(PayloadSubMsgTests, GetSubMsgNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddMsg(m_msg, NULL, 1, NULL);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadSubMsgTests, GetSubMsgNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddMsg(NULL, NULL, 1, m_in);
-    EXPECT_EQ(m_status, MAMA_STATUS_NULL_ARG);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }

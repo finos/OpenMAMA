@@ -49,7 +49,7 @@ sources = \
 	MamdaOptionStrikeSet.cpp 
 """)
 
-env.Append(CPPPATH=[includePath], LIBPATH=libPath)
+env.Append(LIBS=['mamda','mamacpp'],CPPPATH=[includePath], LIBPATH=libPath)
 
 target = 'libmamdaoptions'
 

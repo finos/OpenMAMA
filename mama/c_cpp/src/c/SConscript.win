@@ -74,10 +74,23 @@ conflation/serverconnection.c
 playback/playbackcapture.c
 playback/playbackFileParser.c
 playback/playbackpublisher.c
+fieldcache/fieldcachefield.c
+fieldcache/fieldcachemapbinary.c
+fieldcache/fieldcachemaparray.c
+fieldcache/fieldcachemapmonitor.c
+fieldcache/fieldcacheimpl.c
+fieldcache/fieldcachemap.c
+fieldcache/fieldcacheiterator.c
+fieldcache/fieldcachevector.c
+fieldcache/fieldcachefieldimpl.c
+fieldcache/fieldcache.c
+fieldcache/fieldcachelist.c
+fieldcache/fieldcacherecord.c
 """)
 
 headers = Glob("mama/*.h")
 playbackHeaders = Glob("mama/playback/*.h")
+fieldcacheHeaders = Glob("mama/fieldcache/*.h")
 
 if env['entitled'] == True:
     EntLIB = posixpath.join( env['entitle_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix']))
@@ -94,3 +107,4 @@ if ( env['build'] == 'dynamic' or len(env['buildtype']) == 1):
     env.Install('$prefix/include/mama',headers)
     env.Install('$prefix/include/mama/conflation','mama/conflation/connection.h')
     env.Install('$prefix/include/mama/playback', playbackHeaders)
+    env.Install('$prefix/include/mama/fieldcache', fieldcacheHeaders)

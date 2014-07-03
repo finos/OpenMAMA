@@ -77,6 +77,7 @@ TEST_F (MsgGeneralTestsC, payloadConvertToString)
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_TICK42BLP), "TICK42BLP");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_RAI), "rai");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_EXEGY), "EXEGY");
+    ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_SOLACE), "solacemsg");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_UNKNOWN), "unknown");
 }
 
@@ -308,6 +309,32 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsInValidNumFields)
     mamaMsg_addI8 (mMsg, "name2", 103, 8);
    
     ASSERT_EQ (mamaMsg_getNumFields(mMsg, NULL), MAMA_STATUS_INVALID_ARG);
+}
+
+TEST_F (MsgGeneralTestsC, msgGetNumFieldsSubMessage)
+{
+    mamaMsg     submsg      = NULL;
+    const char* testString  = "test";
+    mama_status status      = MAMA_STATUS_OK;
+    mama_size_t numFields   = 0;
+    mama_size_t addedFields = 3;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_create(&submsg));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addString (mMsg, "name0", 101, testString));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addU32    (mMsg, "name1", 102, 12345));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addBool (submsg, "sub1", 10001, (mama_bool_t)1));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addI8   (submsg, "sub2", 10002, -12));
+
+    status = mamaMsg_addMsg (mMsg, "name2", 103, submsg);
+
+    ALLOW_NON_IMPLEMENTED (status);
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaMsg_getNumFields (mMsg, &numFields));
+    EXPECT_EQ (addedFields, numFields);
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (submsg));
 }
 
 TEST_F (MsgGeneralTestsC, msgGetPayloadTypeValid)
@@ -822,6 +849,71 @@ TEST_F (MsgGeneralTestsC, msgGetFieldAsStringInValidBufferLength)
   
     ASSERT_EQ (mamaMsg_getFieldAsString(mMsg, fieldName, fid, buffer, 0), MAMA_STATUS_NULL_ARG);
 }
+
+TEST_F (MsgGeneralTestsC, msgGetFieldAsStringLargeVectorLargeBuffer)
+{
+    const char*          fieldName    = "name2";
+    mama_fid_t           fid          = 102;
+    char                 buffer[200];
+    mama_size_t          bufferLen    = 200;
+    int                  i            = 1;
+
+    mamaMsg              msgs[5];
+
+    for (i = 0; i < 5; ++i)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_create (&msgs[i]));
+        ASSERT_EQ (MAMA_STATUS_OK,
+                    mamaMsg_addBool (msgs[i], "field1", 101, true));
+    }
+
+    // Add fields to msg
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addBool (mMsg, "name1", 101, true));
+    ASSERT_EQ (MAMA_STATUS_OK,
+                    mamaMsg_addVectorMsg (mMsg, fieldName, fid, msgs, 5));
+
+    EXPECT_EQ (MAMA_STATUS_OK,
+                mamaMsg_getFieldAsString(mMsg, fieldName, fid, buffer, bufferLen));
+
+    // Cleanup message array.
+    for (i = 0; i < 5; ++i)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (msgs[i]));
+    }
+}
+
+TEST_F (MsgGeneralTestsC, msgGetFieldAsStringLargeVectorSmallBuffer)
+{
+    const char*          fieldName    = "name2";
+    mama_fid_t           fid          = 102;
+    char                 buffer[10];
+    mama_size_t          bufferLen    = 10;
+    int                  i            = 1;
+
+    mamaMsg              msgs[5];
+
+    for (i = 0; i < 5; ++i)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_create (&msgs[i]));
+        ASSERT_EQ (MAMA_STATUS_OK,
+                    mamaMsg_addBool (msgs[i], "field1", 101, true));
+    }
+
+    // Add fields to msg
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_addBool (mMsg, "name1", 101, true));
+    ASSERT_EQ (MAMA_STATUS_OK,
+                    mamaMsg_addVectorMsg (mMsg, fieldName, fid, msgs, 5));
+
+    EXPECT_EQ (MAMA_STATUS_OK,
+                mamaMsg_getFieldAsString (mMsg, fieldName, fid, buffer, bufferLen));
+
+    // Cleanup message array.
+    for (i = 0; i < 5; ++i)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (msgs[i]));
+    }
+}
+
 
 TEST_F (MsgGeneralTestsC, msgSetNewBufferValid)
 {

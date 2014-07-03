@@ -30,6 +30,8 @@
 typedef struct avisQueueBridge {
     mamaQueue          mParent;
     wombatQueue        mQueue;
+    mamaQueueEnqueueCB mEnqueueCb;
+    void*              mEnqueueClosure;
     uint8_t            mIsNative;
 } avisQueueBridge;
 
@@ -61,7 +63,9 @@ avisBridgeMamaQueue_create (queueBridge* queue,
     if (avisQueue == NULL)
         return MAMA_STATUS_NOMEM;
 
-    avisQueue->mParent  = parent;
+    avisQueue->mParent         = parent;
+    avisQueue->mEnqueueCb      = NULL;
+    avisQueue->mEnqueueClosure = NULL;
 
     wombatQueue_allocate (&avisQueue->mQueue);
     wombatQueue_create (avisQueue->mQueue, 0, 0, 0);
@@ -86,9 +90,11 @@ avisBridgeMamaQueue_create_usingNative (queueBridge* queue,
     if (avisQueue == NULL)
         return MAMA_STATUS_NOMEM;
 
-    avisQueue->mParent  = parent;
-    avisQueue->mQueue   = (wombatQueue)nativeQueue;
-    avisQueue->mIsNative = 1;
+    avisQueue->mParent         = parent;
+    avisQueue->mEnqueueCb      = NULL;
+    avisQueue->mEnqueueClosure = NULL;
+    avisQueue->mQueue          = (wombatQueue)nativeQueue;
+    avisQueue->mIsNative       = 1;
 
     *queue = (queueBridge) avisQueue;
 
@@ -99,7 +105,7 @@ mama_status
 avisBridgeMamaQueue_destroy (queueBridge queue)
 {
     CHECK_QUEUE(queue);
-    if (avisQueue(queue)->mIsNative)
+    if (!avisQueue(queue)->mIsNative)
         wombatQueue_destroy (avisQueue(queue)->mQueue);
     free(avisQueue(queue));
     return MAMA_STATUS_OK;
@@ -210,6 +216,12 @@ avisBridgeMamaQueue_enqueueEvent (queueBridge        queue,
     if (status != WOMBAT_QUEUE_OK)
         return MAMA_STATUS_PLATFORM;
 
+    if (avisQueue(queue)->mEnqueueCb)
+    {
+        avisQueue(queue)->mEnqueueCb (avisQueue(queue)->mParent, 
+                                      avisQueue(queue)->mEnqueueClosure);
+    }
+
     return MAMA_STATUS_OK;
 }
 
@@ -240,14 +252,22 @@ avisBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
                                         void*              closure)
 {
     CHECK_QUEUE(queue);
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+
+    avisQueue(queue)->mEnqueueCb      = callback;
+    avisQueue(queue)->mEnqueueClosure = closure;
+
+    return MAMA_STATUS_OK;
 }
 
 mama_status
 avisBridgeMamaQueue_removeEnqueueCallback (queueBridge queue)
 {
     CHECK_QUEUE(queue);
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+
+    avisQueue(queue)->mEnqueueCb      = NULL;
+    avisQueue(queue)->mEnqueueClosure = NULL;
+
+    return MAMA_STATUS_OK;
 }
 
 mama_status

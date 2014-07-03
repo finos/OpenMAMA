@@ -55,75 +55,10 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib qpid-protond.lib libevent_core.lib %(AdditionalDependencies)"
+				AdditionalDependencies="wsock32.lib qpid-protond.lib libevent.lib"
 				OutputFile="$(OutDir)\libmama$(ProjectName)implmdd.dll"
-			/>
-			<Tool
-				Name="VCALinkTool"
-			/>
-			<Tool
-				Name="VCManifestTool"
-			/>
-			<Tool
-				Name="VCXDCMakeTool"
-			/>
-			<Tool
-				Name="VCBscMakeTool"
-			/>
-			<Tool
-				Name="VCFxCopTool"
-			/>
-			<Tool
-				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
-			/>
-			<Tool
-				Name="VCPostBuildEventTool"
-			/>
-		</Configuration>
-		<Configuration
-			Name="Release|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
-			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="2"
-			CharacterSet="1"
-			>
-			<Tool
-				Name="VCPreBuildEventTool"
-			/>
-			<Tool
-				Name="VCCustomBuildTool"
-			/>
-			<Tool
-				Name="VCXMLDataGeneratorTool"
-			/>
-			<Tool
-				Name="VCWebServiceProxyGeneratorTool"
-			/>
-			<Tool
-				Name="VCMIDLTool"
-			/>
-			<Tool
-				Name="VCCLCompilerTool"
-				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
-				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
-			/>
-			<Tool
-				Name="VCManagedResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCResourceCompilerTool"
-			/>
-			<Tool
-				Name="VCPreLinkEventTool"
-			/>
-			<Tool
-				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib qpid-proton.lib libevent_core.lib %(AdditionalDependencies)"
-				OutputFile="$(OutDir)\libmama$(ProjectName)implmd.dll"
-				AdditionalLibraryDirectories="$(PROTON_HOME)\Release;$(EVENT_HOME);%(AdditionalLibraryDirectories)"
+				AdditionalLibraryDirectories="&quot;$(PROTON_HOME)\Debug&quot;;&quot;$(EVENT_HOME)\WIN32-Prj\Debug&quot;"
+				IgnoreDefaultLibraryNames="/NODEFAULTLIB:LIBCMTD"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -177,6 +112,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
+				CompileAs="2"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -189,9 +125,78 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib;qpid-protond.lib;libevent_core.lib;%(AdditionalDependencies)"
+				AdditionalDependencies="wsock32.lib qpid-protond.lib libevent.lib"
 				OutputFile="$(OutDir)\libmama$(ProjectName)implmdd.dll"
+				AdditionalLibraryDirectories="&quot;$(PROTON_HOME)\x64\Debug&quot;;&quot;$(EVENT_HOME)\WIN32-Prj\x64\Debug&quot;"
 				TargetMachine="17"
+			/>
+			<Tool
+				Name="VCALinkTool"
+			/>
+			<Tool
+				Name="VCManifestTool"
+			/>
+			<Tool
+				Name="VCXDCMakeTool"
+			/>
+			<Tool
+				Name="VCBscMakeTool"
+			/>
+			<Tool
+				Name="VCFxCopTool"
+			/>
+			<Tool
+				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
+			/>
+			<Tool
+				Name="VCPostBuildEventTool"
+			/>
+		</Configuration>
+		<Configuration
+			Name="Release|Win32"
+			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			IntermediateDirectory="$(ConfigurationName)"
+			ConfigurationType="2"
+			CharacterSet="1"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
+			<Tool
+				Name="VCCLCompilerTool"
+				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
+				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
+				CompileAs="2"
+			/>
+			<Tool
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
+			<Tool
+				Name="VCLinkerTool"
+				AdditionalDependencies="wsock32.lib qpid-proton.lib libevent.lib"
+				OutputFile="$(OutDir)\libmama$(ProjectName)implmd.dll"
+				AdditionalLibraryDirectories="&quot;$(PROTON_HOME)\Release&quot;;&quot;$(EVENT_HOME)\WIN32-Prj\Release&quot;"
 			/>
 			<Tool
 				Name="VCALinkTool"
@@ -245,6 +250,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="$(EVENT_HOME)\WIN32-Code;$(EVENT_HOME);$(PROTON_HOME)\include;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)"
 				PreprocessorDefinitions="HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32"
+				CompileAs="2"
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
@@ -257,9 +263,9 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalDependencies="wsock32.lib;qpid-proton.lib;libevent_core.lib;%(AdditionalDependencies)"
+				AdditionalDependencies="wsock32.lib qpid-proton.lib libevent.lib"
 				OutputFile="$(OutDir)\libmama$(ProjectName)implmd.dll"
-				AdditionalLibraryDirectories="$(PROTON_HOME)\Release;$(EVENT_HOME);%(AdditionalLibraryDirectories)"
+				AdditionalLibraryDirectories="&quot;$(PROTON_HOME)\x64\Release&quot;;&quot;$(EVENT_HOME)WIN32-Prj\x64\Release&quot;"
 				TargetMachine="17"
 			/>
 			<Tool

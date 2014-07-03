@@ -1,4 +1,5 @@
 import os,sys
+import subprocess
 import SCons.Action
 import SCons.Builder
 import SCons.Util
@@ -66,10 +67,14 @@ def ConfigureJNI(env):
 
     if sys.platform == 'darwin':
 
-        # Apple does not use Sun's naming convention
+        # Apple does not use Oracles'folder structure
+        if isJava7OrGreater():
+            java_headers = [os.path.join(java_base, 'include'),os.path.join(java_base, 'include/darwin')]
+            java_libs = [os.path.join(java_base, 'lib')]
+        else:
+            java_headers = [os.path.join(java_base, 'Headers')]
+            java_libs = [os.path.join(java_base, 'Libraries')]
 
-        java_headers = [os.path.join(java_base, 'Headers')]
-        java_libs = [os.path.join(java_base, 'Libraries')]
     else:
 
         # windows and linux
@@ -104,7 +109,7 @@ def ConfigureJNI(env):
 
     if sys.platform == 'darwin':
         env.Append(SHLINKFLAGS='-dynamiclib -framework JavaVM')
-        env['SHLIBSUFFIX'] = '.jnilib'
+        env['SHLIBSUFFIX'] = '.dylib'
     elif sys.platform == 'cygwin':
         env.Append(CCFLAGS='-mno-cygwin')
         env.Append(SHLINKFLAGS='-mno-cygwin -Wl,--kill-at')
@@ -220,3 +225,10 @@ def emit_java_classes_norecurse(target, source, env):
         full_tlist.extend(tlist)
 
     return full_tlist, slist
+
+def isJava7OrGreater():
+    sp = subprocess.Popen(["javac", "-version"], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    _, versionString = sp.communicate();
+    versionNumber = (versionString.split(' ')[1]).rstrip()
+    version = float('.'.join(versionNumber.split('.')[:2]))
+    return (version > 1.6)

@@ -130,6 +130,7 @@ avisBridge_close (mamaBridge bridgeImpl)
 {
     mama_status     status = MAMA_STATUS_OK;
     mamaBridgeImpl* impl   = NULL;
+    avisBridgeImpl* avisBridge = NULL;
     
     mama_log (MAMA_LOG_LEVEL_FINEST, "avisBridge_close(): Entering.");
 
@@ -141,6 +142,15 @@ avisBridge_close (mamaBridge bridgeImpl)
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_close():"
                 "Failed to destroy Avis timer heap.");
         status = MAMA_STATUS_PLATFORM;
+    }
+
+    wlock_destroy (impl->mLock);
+
+    mamaBridgeImpl_getClosure(impl, &avisBridge);
+
+    if (avisBridge)
+    {
+        free (avisBridge);
     }
 
     mamaQueue_destroyWait(impl->mDefaultEventQueue);
@@ -160,16 +170,6 @@ avisBridge_start(mamaQueue defaultEventQueue)
 
     mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_start(): Start dispatching on default event queue.");
 
-    // start Avis event loop(s)
-    if (MAMA_STATUS_OK != (status = mamaBridgeImpl_getClosure((mamaBridge) mamaQueueImpl_getBridgeImpl(defaultEventQueue), (void**) &avisBridge))) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_start(): Could not get Elvin object");
-        return status;
-    }
-    if (MAMA_STATUS_OK != (status = avisTransportBridge_start(avisBridge->mTransportBridge))) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_start(): Could not start dispatching on Avis");
-        return status;
-    }
-
     // start Mama event loop
     return mamaQueue_dispatch(defaultEventQueue);
 }
@@ -181,15 +181,6 @@ avisBridge_stop(mamaQueue defaultEventQueue)
     avisBridgeImpl* avisBridge = NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_stop(): Stopping bridge.");
-
-    if (MAMA_STATUS_OK != (status = mamaBridgeImpl_getClosure((mamaBridge) mamaQueueImpl_getBridgeImpl(defaultEventQueue), (void**) &avisBridge))) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_stop(): Could not get Elvin object");
-        return status;
-    }
-    if (MAMA_STATUS_OK != (status = avisTransportBridge_stop(avisBridge->mTransportBridge))) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_stop(): Could not stop dispatching on Avis %d", status);
-        return status;
-    }
 
     // stop Mama event loop
     status = mamaQueue_stopDispatch (defaultEventQueue);

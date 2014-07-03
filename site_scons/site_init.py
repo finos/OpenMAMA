@@ -26,5 +26,6 @@ try:
 except ImportError:
     from community.linux import Linux
     from community.windows import Windows
+    from community.darwin import Darwin
     from community.command_line import *
     from community.log_helper import *

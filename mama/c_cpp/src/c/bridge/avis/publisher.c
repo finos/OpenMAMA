@@ -22,15 +22,18 @@
 #include <string.h>
 
 #include <mama/mama.h>
+#include <mama/msg.h>
 #include <mama/inbox.h>
 #include <mama/publisher.h>
 #include <bridge.h>
+#include <msgimpl.h>
 #include <inboximpl.h>
 #include "subinitial.h"
 #include "avisbridgefunctions.h"
 #include "transportbridge.h"
 #include "msgimpl.h"
 #include "avisdefs.h"
+#include "sub.h"
 
 typedef struct avisPublisherBridge
 {
@@ -50,12 +53,175 @@ typedef struct avisPublisherBridge
        if (!elvin_is_open(avisPublisher(publisher)->mAvis)) return MAMA_STATUS_INVALID_ARG; \
      } while(0)
 
+static
+void sendAvisMessage (Elvin* avis,
+                      void*  closure)
+{
+    mamaMsg     msg     = (mamaMsg) closure;
+    Attributes* attr    = NULL;
+    mama_size_t dataLen = 0;
 
+    mamaMsgImpl_getPayloadBuffer (msg, (const void**)&attr, &dataLen);
 
+    if (!elvin_send (avis, attr))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "sendAvisMessage(): "
+                  "Could not send message - %s", avis->error.message);
+    }
+
+    if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINEST, "sendAvisMessage(): "
+                       "Send message: %s", mamaMsg_toString (msg));
+    }
+
+    mamaMsg_destroy (msg);
+}
 
 static mama_status
 avisBridgeMamaPublisherImpl_buildSendSubject (avisPublisherBridge* impl);
 
+static
+mama_status
+avisBridgeMamaPublisherImpl_prepareMessage (mamaMsg* msg)
+{
+    mama_status     ret     = MAMA_STATUS_OK;
+    mamaPayloadType payload = MAMA_PAYLOAD_UNKNOWN;
+
+    ret = mamaMsg_getPayloadType (*msg, &payload);
+
+    if (MAMA_STATUS_OK != ret)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisherImpl_prepareMessage(): "
+                  "Could not get message payload type. [%d]", ret);
+
+        return ret;
+    }
+
+    if (MAMA_PAYLOAD_AVIS == payload)
+    {
+        /* Avis message, just perform a copy and detach so that it
+         * can be enqueued on the avis dispatch thread. */
+        mamaMsg copyMsg = NULL;
+
+        ret = mamaMsg_copy (*msg, &copyMsg);
+
+        if (MAMA_STATUS_OK != ret)
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR, 
+                      "avisBridgeMamaPublisherImpl_prepareMessage(): "
+                      "Could not copy message. [%d]", ret);
+
+            return ret;
+        }
+
+        *msg = copyMsg;
+    }
+    else
+    {
+        /* Non-Avis message - Strategy is to wrap it within the enclosed field
+         * of a new Avis message.  If the existing message had a bridged message
+         * within it, then this forms the basis for the new message.  Otherwise,
+         * a brand new message is constructed. */
+        mamaMsg     encMsg     = NULL;
+        msgBridge   bridgeMsg  = NULL;
+        const void* buf        = NULL;
+        mama_size_t bufSize    = 0;
+
+        if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST)
+        {
+            mama_log (MAMA_LOG_LEVEL_FINEST, 
+                      "sendAvisMessage(): "
+                      "Enclosing message: %s", mamaMsg_toString (*msg));
+        }
+
+        ret = mamaMsg_getByteBuffer (*msg, &buf, &bufSize);
+
+        if (MAMA_STATUS_OK != ret)
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR, 
+                      "avisBridgeMamaPublisherImpl_prepareMessage(): "
+                      "Could not get byte buffer for message. [%d]", ret);
+
+            return ret;
+        }
+
+        mamaMsgImpl_getBridgeMsg (*msg, &bridgeMsg);
+
+        if (bridgeMsg)
+        {
+            msgPayload  payloadMsg = NULL;
+
+            avisBridgeMamaMsg_getNativeHandle (bridgeMsg, (void**) &payloadMsg);
+
+            if (payloadMsg)
+            {
+                const void* buf     = NULL;
+                mama_size_t bufSize = 0;
+                Attributes* attributes = NULL;
+
+                avismsgPayload_getByteBuffer (payloadMsg, &buf, &bufSize);
+
+                buf = (const void*)attributes_clone ((Attributes*)buf);
+
+                mamaMsg_create (&encMsg);
+                mamaMsgImpl_setMsgBuffer (encMsg, buf, bufSize, MAMA_PAYLOAD_AVIS);
+                mamaMsgImpl_setMessageOwner (encMsg, 1);
+            }
+        }
+
+        if (!encMsg)
+        {
+            ret = mamaMsg_createForPayload (&encMsg, MAMA_PAYLOAD_AVIS);
+
+            if (MAMA_STATUS_OK != ret)
+            {
+                mama_log (MAMA_LOG_LEVEL_ERROR, 
+                          "avisBridgeMamaPublisherImpl_prepareMessage(): "
+                          "Could not create enclosed message. [%d]", ret);
+
+                return ret;
+            }
+        }
+
+        ret = mamaMsg_addOpaque (encMsg, ENCLOSED_MSG_FIELD_NAME, 0,
+                                 buf, bufSize);
+
+        if (MAMA_STATUS_OK != ret)
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR, 
+                      "avisBridgeMamaPublisherImpl_prepareMessage(): "
+                      "Could not add enclosed message as opaque field. [%d]", ret);
+
+            return ret;
+        }
+
+        *msg = encMsg;
+    }
+
+    return MAMA_STATUS_OK;
+}
+
+
+static
+mama_status
+avisBridgeMamaPublisherImpl_sendMessage (publisherBridge publisher, mamaMsg msg)
+{
+    if (!elvin_invoke (avisPublisher(publisher)->mAvis, &sendAvisMessage, msg))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisherImpl_sendMessage(): "
+                  "Could not send message.");
+
+        mamaMsg_destroy (msg);
+
+        return MAMA_STATUS_PLATFORM;
+    }
+
+    return MAMA_STATUS_OK;
+}
 
 mama_status
 avisBridgeMamaPublisher_createByIndex (publisherBridge* result,
@@ -119,95 +285,117 @@ avisBridgeMamaPublisher_create (publisherBridge* result,
 static mama_status
 avisBridgeMamaPublisherImpl_buildSendSubject (avisPublisherBridge* impl)
 {
-    char lSubject[256];
+    mama_status status    = MAMA_STATUS_OK;
+    char*       keyTarget = NULL;
+    const char* root      = impl->mRoot;
+    const char* source    = impl->mSource;
+    const char* topic     = impl->mTopic;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
-
-    if (impl->mRoot != NULL && impl->mSource != NULL )
+    /* If this is a special _MD publisher, lose the topic unless dictionary */
+    if (root != NULL && 0 != strcmp (root, "_MDDD"))
     {
-            snprintf (lSubject, sizeof(lSubject),"%s.%s",
-                      impl->mRoot, impl->mSource);
-    }
-    else if (impl->mSource != NULL && impl->mTopic != NULL)
-    {
-        snprintf (lSubject, sizeof(lSubject), "%s.%s",
-                  impl->mSource, impl->mTopic);
-    }
-    else if (impl->mTopic != NULL)
-    {
-        snprintf (lSubject, sizeof(lSubject), "%s",
-                  impl->mTopic);
+        topic = NULL;
     }
 
-    impl->mSubject = strdup(lSubject);
+    status = avisBridgeMamaSubscriptionImpl_generateSubjectKey (root,
+                                                                source,
+                                                                topic,
+                                                                &keyTarget);
 
-    return MAMA_STATUS_OK;
+    /* Set the subject for publishing here */
+    impl->mSubject = keyTarget;
+
+    return status;
 }
 
 /*Send a message.*/
 mama_status
 avisBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
 {
-    mama_size_t        dataLen;
-    mama_status        status;
-    Attributes* attributes = NULL;
-    
+    mama_status ret = MAMA_STATUS_OK;
+
     CHECK_PUBLISHER(publisher);
 
-    status = mamaMsgImpl_getPayloadBuffer (msg, (const void**)&attributes, &dataLen);
-    if (attributes == NULL)
-        return MAMA_STATUS_INVALID_ARG;
+    ret = avisBridgeMamaPublisherImpl_prepareMessage (&msg);
 
-    mamaMsg_updateString(msg, SUBJECT_FIELD_NAME, 0, avisPublisher(publisher)->mSubject);
+    if (MAMA_STATUS_OK != ret)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisher_send(): "
+                  "Could not prepare message. [%d]", ret);
 
-    if (!elvin_send(avisPublisher(publisher)->mAvis, attributes)) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaPublisher_send(): "
-                  "Could not send message.");
-        return MAMA_STATUS_PLATFORM;
+        return ret;
     }
 
-    mama_log (MAMA_LOG_LEVEL_FINEST, "avisBridgeMamaPublisher_send(): "
-                   "Send message. %s", mamaMsg_toString(msg));
-    return MAMA_STATUS_OK;
+    ret = mamaMsg_updateString(msg, SUBJECT_FIELD_NAME, 0, avisPublisher(publisher)->mSubject);
+
+    if (MAMA_STATUS_OK != ret)
+    {
+        return ret;
+    }
+
+    return avisBridgeMamaPublisherImpl_sendMessage (publisher, msg);
 }
 
 /* Send reply to inbox. */
 mama_status
 avisBridgeMamaPublisher_sendReplyToInbox (publisherBridge  publisher,
-                                           mamaMsg          request,
-                                           mamaMsg          reply)
+                                          mamaMsg          request,
+                                          mamaMsg          reply)
 {
-    Attributes*  requestMsg = NULL;
-    Attributes*  replyMsg   = NULL;
-    const char*  replyAddr  = NULL;
-    mama_size_t  dataLen;
+    msgPayload   requestMsg  = NULL;
+    mamaMsgReply replyHandle = NULL;
+    const char*  replyAddr   = NULL;
     mama_status  status;
     
     CHECK_PUBLISHER(publisher);
 
     mamaMsg_getNativeHandle(request, (void**) &requestMsg);
-    mamaMsgImpl_getPayloadBuffer (reply, (const void**)&replyMsg, &dataLen);
 
-    if (!requestMsg || !replyMsg) return MAMA_STATUS_NULL_ARG;
+    if (!requestMsg) return MAMA_STATUS_NULL_ARG;
 
-    status = mamaMsg_getString(request, INBOX_FIELD_NAME, 0, &replyAddr);
-    if ((status != MAMA_STATUS_OK) || (replyAddr == NULL) || (strlen(replyAddr) == 0)) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaPublisher_sendReplyToInbox(): "
-                  "No reply address in message.");
+    status = avisBridgeMamaPublisherImpl_prepareMessage (&reply);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisher_sendReplyToInbox(): "
+                  "Could not prepare message. [%d]", status);
+
+        return status;
+    }
+
+    status = mamaMsg_getReplyHandle (request, &replyHandle);
+
+    if (replyHandle)
+    {
+        replyAddr = ((mamaMsgReplyImpl*)replyHandle)->replyHandle;
+    }
+
+    if (status != MAMA_STATUS_OK || (replyAddr == NULL) || replyAddr[0] == '\0')
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisher_sendReplyToInbox(): "
+                  "No reply address in message. [%d]", status);
+
+        mamaMsg_destroyReplyHandle (replyHandle);
+        mamaMsg_destroy (reply);
+
         return MAMA_STATUS_INVALID_ARG;
     }
 
     status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, replyAddr);
-    if (status != MAMA_STATUS_OK)
-        return status;
 
-    if (!elvin_send(avisPublisher(publisher)->mAvis, replyMsg)) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridgeMamaPublisher_send(): "
-                  "Could not send message.");
-        return MAMA_STATUS_PLATFORM;
+    mamaMsg_destroyReplyHandle (replyHandle);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        mamaMsg_destroy (reply);
+
+        return status;
     }
 
-    return MAMA_STATUS_OK;
+    return avisBridgeMamaPublisherImpl_sendMessage (publisher, reply);
 }
 
 /* Destroy the publisher.*/
@@ -232,23 +420,43 @@ avisBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge publisher,
     const char* replyAddr = NULL;
     mama_status status;
 
-    //  CHECK_PUBLISHER(publisher);
-    if (avisPublisher(publisher) == 0)
-    	return MAMA_STATUS_NULL_ARG;
-    if (avisPublisher(publisher)->mAvis == 0)
-    	return MAMA_STATUS_INVALID_ARG;
-    if (!elvin_is_open(avisPublisher(publisher)->mAvis))
-    	return MAMA_STATUS_INVALID_ARG;
+    CHECK_PUBLISHER(publisher);
+
+    status = avisBridgeMamaPublisherImpl_prepareMessage (&msg);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisher_sendFromInboxByIndex(): "
+                  "Could not prepare message. [%d]", status);
+
+        return status;
+    }
 
     // get reply address from inbox
     replyAddr = avisInboxImpl_getReplySubject(mamaInboxImpl_getInboxBridge(inbox));
 
     // set reply address in msg
     status = mamaMsg_updateString(msg, INBOX_FIELD_NAME, 0, replyAddr);
-    if (status != MAMA_STATUS_OK)
-        return status;
 
-    return avisBridgeMamaPublisher_send(publisher, msg);
+    if (status != MAMA_STATUS_OK)
+    {
+        mamaMsg_destroy (msg);
+
+        return status;
+    }
+
+    status = mamaMsg_updateString (msg, SUBJECT_FIELD_NAME, 0, 
+                                   avisPublisher(publisher)->mSubject);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mamaMsg_destroy (msg);
+
+        return status;
+    }
+
+    return avisBridgeMamaPublisherImpl_sendMessage (publisher, msg);
 }
 
 mama_status
@@ -269,9 +477,148 @@ avisBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge publisher,
 
     CHECK_PUBLISHER(publisher);
 
-    status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, (const char*) inbox);
-    if (status != MAMA_STATUS_OK)
-        return status;
+    status = avisBridgeMamaPublisherImpl_prepareMessage (&reply);
 
-    return  avisBridgeMamaPublisher_sendFromInboxByIndex(publisher, 0, (mamaInbox) inbox, reply);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisher_sendReplyToInboxHandle(): "
+                  "Could not prepare message. [%d]", status);
+
+        return status;
+    }
+
+    status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, (const char*) inbox);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        mamaMsg_destroy (reply);
+
+        return status;
+    }
+
+    return avisBridgeMamaPublisherImpl_sendMessage (publisher, reply);
+}
+
+/* Send reply to inbox. */
+mama_status
+avisBridgeMamaPublisher_sendReplyFromInboxToInbox (publisherBridge  publisher,
+                                                   mamaInbox        inbox,
+                                                   mamaMsg          request,
+                                                   mamaMsg          reply)
+{
+    msgPayload   requestMsg = NULL;
+    mamaMsgReply replyHandle = NULL;
+    const char*  fromAddr   = NULL;
+    const char*  replyAddr  = NULL;
+    mama_status  status;
+    
+    CHECK_PUBLISHER(publisher);
+
+    mamaMsg_getNativeHandle(request, (void**) &requestMsg);
+
+    if (!requestMsg) return MAMA_STATUS_NULL_ARG;
+
+    status = avisBridgeMamaPublisherImpl_prepareMessage (&reply);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisher_sendFromInboxToInbox(): "
+                  "Could not prepare message. [%d]", status);
+
+        return status;
+    }
+
+    status = mamaMsg_getReplyHandle (request, &replyHandle);
+
+    if (replyHandle)
+    {
+        replyAddr = ((mamaMsgReplyImpl*)replyHandle)->replyHandle;
+    }
+
+    if ((status != MAMA_STATUS_OK) || (fromAddr == NULL) || (*fromAddr == '\0'))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisher_sendReplyFromInboxToInbox(): "
+                  "No reply address in message. [%d]", status);
+
+        mamaMsg_destroyReplyHandle (replyHandle);
+        mamaMsg_destroy (reply);
+
+        return MAMA_STATUS_INVALID_ARG;
+    }
+
+    status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, fromAddr);
+
+    mamaMsg_destroyReplyHandle (replyHandle);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        mamaMsg_destroy (reply);
+
+        return status;
+    }
+
+    // get reply address from inbox
+    replyAddr = avisInboxImpl_getReplySubject(mamaInboxImpl_getInboxBridge(inbox));
+
+    // set reply address in msg
+    status = mamaMsg_updateString(reply, INBOX_FIELD_NAME, 0, replyAddr);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        mamaMsg_destroy (reply);
+
+        return status;
+    }
+
+    return avisBridgeMamaPublisherImpl_sendMessage (publisher, reply);
+}
+
+mama_status
+avisBridgeMamaPublisher_sendReplyFromInboxToInboxHandle (publisherBridge publisher,
+                                                         mamaInbox       inbox,
+                                                         void*           replyAddress,
+                                                         mamaMsg         reply)
+{
+    const char* fromAddr = NULL;
+    mama_status status;
+
+    CHECK_PUBLISHER(publisher);
+
+    status = avisBridgeMamaPublisherImpl_prepareMessage (&reply);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, 
+                  "avisBridgeMamaPublisher_sendFromInboxToInbox(): "
+                  "Could not prepare message. [%d]", status);
+
+        return status;
+    }
+
+    // get reply address from inbox
+    fromAddr = avisInboxImpl_getReplySubject(mamaInboxImpl_getInboxBridge(inbox));
+
+    // set reply address in msg
+    status = mamaMsg_updateString(reply, INBOX_FIELD_NAME, 0, fromAddr);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        mamaMsg_destroy (reply);
+
+        return status;
+    }
+
+    status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, (const char*) replyAddress);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        mamaMsg_destroy (reply);
+
+        return status;
+    }
+
+    return avisBridgeMamaPublisherImpl_sendMessage (publisher, reply);
 }

@@ -240,7 +240,7 @@ int createStatisticsCache(statsCache** sCache,int numMsgCategories,
     statsCache* mysCache = (statsCache*)calloc(1,sizeof(statsCache));
     if(!mysCache)
     {
-        mysCacheStatus = STATS_NO_MEMORY;
+        return STATS_NO_MEMORY;
     } 
     mysCache->mNumMsg = numMsgCategories;
     mysCache->mHeader = header;
@@ -284,22 +284,19 @@ int createStatisticsCache(statsCache** sCache,int numMsgCategories,
         /* Global statistics */
         const char* dummySymbol = "Global"; 
         mysCache->mPData =(perfData*)calloc(1,sizeof(perfData));
-        if(!mysCache)
+        if(!mysCache->mPData)
         {
             return STATS_NO_MEMORY;
         }
-    initPerfData(mysCache->mPData, outfile, dummySymbol);
+        initPerfData(mysCache->mPData, outfile, dummySymbol);
 
-        if(mysCache->mPData)
+        if(mysCache->mHeader == 1 && mysCache->mOutfile == stdout)
         {
-            if(mysCache->mHeader == 1 && mysCache->mOutfile == stdout)
-            {
-                fprintf(mysCache->mOutfile, "%s", opHeaderPeriod);
-                mysCache->mHeader=0;
-            }
-
-            *sCache = mysCache;
+            fprintf(mysCache->mOutfile, "%s", opHeaderPeriod);
+            mysCache->mHeader=0;
         }
+
+        *sCache = mysCache;
     }
     return STATS_OK;
 }
@@ -598,10 +595,9 @@ latencyVals calcLatency1TimeStamp(const char* timeStamp,
     int mins=0;
 #endif
 
-    lenTimeFormat = strlen(timeFormat);
-    lenTimeStamp = strlen(timeStamp);
-    if ((timeStamp == NULL) || (timeFormat== NULL)
-        || (lenTimeFormat == 0) || (lenTimeStamp == 0))
+    lenTimeFormat = ((NULL == timeFormat) ? 0 : strlen(timeFormat));
+    lenTimeStamp = ((NULL == timeStamp) ? 0 : strlen(timeStamp));
+    if ((lenTimeFormat == 0) || (lenTimeStamp == 0))
     {
       fprintf(stderr,"Error - calcLatency\n");
       return noLatVals;

@@ -164,10 +164,14 @@ static uint32_t             gRun                = 1;
 static int                  gInitials       = 0;
 static int                  gInitialDelay       = 0;
 static int                  gUsePlayback	    = 0;
-static const char*          gPlaybackFilename   = NULL;
+static char*          gPlaybackFilename   = NULL;
 static mamaPlaybackFileParser gFileParser		= NULL;
 static wtable_t 			gPublisherTable		= NULL;
 static mamaMsg				gCachedMsg			= NULL;
+
+static int                  gFlat               = 0;
+static mamaMsg              gFlatMsg            = NULL;
+
 /* DJD condition variable for shutdown */
 pthread_cond_t              pendingShutdown     = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t             pendingShutdownLock = PTHREAD_MUTEX_INITIALIZER;
@@ -191,6 +195,7 @@ static const char *         gUsageString[]      =
 "      [-d msgDelta]        The number of bytes to change message by i.e. msg will be -l +- -d; default delta is 0.",
 "      [-dupTopics]         Duplicate topics across available transports.",
 "      [-fifo]              Set the scheduler as first in first out.",
+"      [-flat]              Publish a predefined message with sequence numbers updated.",
 "      [-l bytes]           The published message size in bytes; default is 200B.",
 "      [-lock]              Configure malloc to lock all memory in RAM.",
 "      [-m middleware]      The middleware to use [wmw/lbm/tibrv]; default is wmw.",
@@ -285,6 +290,8 @@ static void initializePublishers
     uint32_t        msgSize,
     uint32_t        msgVar
 );
+
+static mama_status initilizeFlatMessage(void);
 
 static void initializeMessages
 (
@@ -617,6 +624,11 @@ int main (int argc, const char **argv)
     initializePublishers (msgSize,
                           msgVar);
 
+    if (gFlat)
+    {
+        mama_log(MAMA_LOG_LEVEL_NORMAL, "Initializing flat message");
+        MAMA_CHECK(initilizeFlatMessage());
+    }
     mama_startBackground (gMamaBridge,
                           startCompleteCallback);
 
@@ -1372,6 +1384,35 @@ static void initializePublishers
     }
 }
 
+static mama_status initilizeFlatMessage(void)
+{
+    mama_status status = MAMA_STATUS_OK;
+    
+    mamaMsg_create(&gFlatMsg);
+   
+    status = mamaMsg_addU8  (gFlatMsg, "MdMsgType", 1, 13);
+    status = mamaMsg_addU8  (gFlatMsg, "MdMsgStatus", 2, 0);
+    status = mamaMsg_addU32 (gFlatMsg, "MdSeqNum", 10, 2);
+    status = mamaMsg_addU16 (gFlatMsg, "MamaSenderId", 20, 1);
+    status = mamaMsg_addU16 (gFlatMsg, "wEntitleCode", 496, 77);
+    status = mamaMsg_addU32 (gFlatMsg, "wSeqNum", 498, 26662561);
+    status = mamaMsg_addF64 (gFlatMsg, "wBidPrice", 237, 43.8);
+    status = mamaMsg_addU32 (gFlatMsg, "wBidSize", 238, 41);
+    status = mamaMsg_addU32 (gFlatMsg, "wAskSize", 110, 33);
+    status = mamaMsg_addF64 (gFlatMsg, "wAskPrice", 109, 44.15);
+    status = mamaMsg_addU32 (gFlatMsg, "wQuoteCount", 1034, 2);
+    status = mamaMsg_addU32 (gFlatMsg, "wQuoteSeqNum", 441, 26662561);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        printf ("Error adding int to msg: %s\n",
+                 mamaStatus_stringForStatus (status));
+        exit (status);
+    }
+    mama_log(MAMA_LOG_LEVEL_FINEST,"InitFlatMsg: %s",mamaMsg_toString(gFlatMsg));
+    return status;
+}
+
 static void initializeMessages
 (
     publisher*      pub,
@@ -1503,7 +1544,14 @@ static void publishMessage
 	else
 	{
 		pub = &gPublisherList[pubIndex];
-		msg = pub->mMamaMsgs[msgSample];
+		if (gFlat)
+        {
+            msg=gFlatMsg;
+        }
+        else
+        {
+            msg = pub->mMamaMsgs[msgSample];
+        }
 	}
 
 
@@ -1545,20 +1593,31 @@ static void publishMessageRdtsc
     uint64_t*       nowTsc
 )
 {
+    mamaMsg msg = NULL;
     publisher* pub = &gPublisherList[pubIndex];
-    MAMA_CHECK(mamaMsg_updateU32 (pub->mMamaMsgs[msgSample],
+    
+    if (gFlat)
+    {
+        msg=gFlatMsg;
+    }
+    else
+    {
+        msg=pub->mMamaMsgs[msgSample];
+    }
+    
+    MAMA_CHECK(mamaMsg_updateU32 (msg,
                                   "NULL",
                                   SEQ_NUM_FID,
                                   pub->mMsgNum++));
 
     pthread_mutex_lock(&gMutex);
     *nowTsc = rdtsc();
-    MAMA_CHECK (mamaMsg_updateU64 (pub->mMamaMsgs[msgSample],
+    MAMA_CHECK (mamaMsg_updateU64 (msg,
                                    NULL,
                                    SEND_TIME_FID,
                                    *nowTsc));
 
-    MAMA_CHECK (mamaPublisher_send (pub->mMamaPublisher, pub->mMamaMsgs[msgSample]));
+    MAMA_CHECK (mamaPublisher_send (pub->mMamaPublisher, msg));
     pthread_mutex_unlock(&gMutex);
 }
 
@@ -1594,6 +1653,11 @@ static void parseCommandLine
                  (strcmp (argv[i], "-?")     == 0))
         {
             usage(0);
+        }
+        else if (strcmp ("-flat", argv[i]) == 0)
+        {
+            gFlat=1;
+            i++;
         }
         else if (strcmp ("-rdtsc", argv[i]) == 0)
         {
@@ -1731,7 +1795,7 @@ static void parseCommandLine
 					FILE*fp = NULL;
 					char charbuf[1024];
 
-				char * filename = argv[i+1];
+				const char * filename = argv[i+1];
 				if ((fp = fopen(filename, "r")) == (FILE*)NULL)
 					exit(1);
 				
@@ -1882,7 +1946,7 @@ static void parseCommandLine
 			}
             else if (strcmp ("-playback", argv[i]) == 0)
 			{
-				gPlaybackFilename = argv[i+1];
+				gPlaybackFilename = strdup(argv[i+1]);
 				gUsePlayback = 1;
                 i += 2;
             }

@@ -30,16 +30,27 @@ libpath.append('$libdir')
 
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 
-env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=[
-    'gtest',
-    'gtest_main',
-    'mama',
-    'mamacpp',
-    'mamda',
-    'mamdabook',
-    'rt',
-    'wombatcommon',
-    ])
+if env['host']['os'] == 'Darwin':
+    env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=[
+                                                       'gtest',
+                                                       'gtest_main',
+                                                       'mama',
+                                                       'mamacpp',
+                                                       'mamda',
+                                                       'mamdabook',
+                                                       'wombatcommon',
+                                                       ])
+else:
+    env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=[
+                                                       'gtest',
+                                                       'gtest_main',
+                                                       'mama',
+                                                       'mamacpp',
+                                                       'mamda',
+                                                       'mamdabook',
+                                                       'rt',
+                                                       'wombatcommon',
+                                                       ])
 
 #conf = Configure(env, config_h='./config.h', log_file='./config.log')
 #

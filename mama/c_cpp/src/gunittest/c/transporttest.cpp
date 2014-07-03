@@ -67,7 +67,7 @@ void MamaTransportTestC::TearDown(void)
     m_this = NULL;
 }
 
-void tportCB (mamaTransport      tport, 
+void MAMACALLTYPE tportCB (mamaTransport      tport, 
               mamaTransportEvent event, 
               short              cause, 
               const void*        platformInfo, 

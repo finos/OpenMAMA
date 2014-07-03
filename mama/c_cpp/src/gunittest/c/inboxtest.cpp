@@ -66,15 +66,15 @@ void MamaInboxTestC::TearDown(void)
     m_this = NULL;
 }
 
-void onInboxMsg (mamaMsg msg, void *closure)
+void MAMACALLTYPE onInboxMsg (mamaMsg msg, void *closure)
 {
 }
 
-void onInboxError (mama_status status, void *closure)
+void MAMACALLTYPE onInboxError (mama_status status, void *closure)
 {
 }
 
-void onInboxDestroy (mamaInbox inbox, void *closure)
+void MAMACALLTYPE onInboxDestroy (mamaInbox inbox, void *closure)
 {
 }
 

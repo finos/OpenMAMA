@@ -23,14 +23,24 @@ libPath.append('$prefix/lib')
 
 env.Append(LIBPATH=libPath)
 env.Append(CPPPATH=[includePath])
-env.Append(LIBS=[
-    'mama',
-    'mamacpp',
-    'mamda',
-    'mamdabook',
-    'rt',
-    'wombatcommon',
-    ])
+if env['host']['os'] == 'Darwin':
+    env.Append(LIBS=[
+                     'mama',
+                     'mamacpp',
+                     'mamda',
+                     'mamdabook',
+                     'wombatcommon',
+                     ])
+else:
+    env.Append(LIBS=[
+                     'mama',
+                     'mamacpp',
+                     'mamda',
+                     'mamdabook',
+                     'rt',
+                     'wombatcommon',
+                     ])
+
 
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 

@@ -62,7 +62,7 @@ namespace Wombat
 
             if (lastDot!= NULL)
             {
-                if (lastDot+1 != '\0')
+                if (lastDot[1] != '\0')
                 {
                     partId = lastDot+1;
                 }

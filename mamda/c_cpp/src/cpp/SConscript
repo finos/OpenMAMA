@@ -104,7 +104,7 @@ includePath.append('$prefix/include')
 libPath = []
 libPath.append('$prefix/lib')
 
-env.Append(LIBPATH=libPath)
+env.Append(LIBS=['mama','mamacpp'],LIBPATH=libPath)
 
 sources = \
     Split("""

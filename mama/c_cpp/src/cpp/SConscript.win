@@ -54,11 +54,17 @@ MamaFt.cpp
 MamaReservedFields.cpp
 conflation\MamaConnection.cpp
 conflation\MamaServerConnection.cpp
+fieldcache\MamaFieldCacheField.cpp
+fieldcache\MamaFieldCache.cpp
+fieldcache\MamaFieldCacheRecord.cpp
+fieldcache\MamaFieldCacheFieldTypes.cpp
 """)
 
 headers = Glob('mama/*.h')
+fieldcacheHeaders = Glob('mama/fieldcache/*.h')
 
 env.InstallLibrary(sources, target)
 
 if ( env['build'] == 'dynamic' or len(env['buildtype']) == 1):
     env.Install('$prefix/include/mama',headers)
+    env.Install('$prefix/include/mama/fieldcache',fieldcacheHeaders)

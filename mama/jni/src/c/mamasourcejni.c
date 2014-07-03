@@ -566,7 +566,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaSource_getTransport
     char         errorString [UTILS_MAX_ERROR_STRING_LENGTH];
     jclass       transportClass_g = (*env)->FindClass(env,
                                                       "com/wombat/mama/MamaTransport");
-    if(!transportClass_g) return;
+    if(!transportClass_g) return NULL;
     
     transportConstructorId_g = (*env)->GetMethodID(env, transportClass_g,
                                                    "<init>", "()V" );

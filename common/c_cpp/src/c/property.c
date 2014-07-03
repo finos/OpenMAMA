@@ -77,8 +77,9 @@ properties_Load( const char* path, const char* fileName )
 
     this->mTable = wtable_create( "", 10 );
 
-    if( this->mTable == NULL && this->mKeys != NULL )
+    if(this->mTable == NULL)
     {
+        free (this);
         return NULL;
     }
 
@@ -224,9 +225,9 @@ properties_Create( void )
         return NULL;
     }
     this->mTable = wtable_create( "", 10 );
-    if( this->mTable == NULL && this->mKeys != NULL )
+    if(this->mTable == NULL)
     {
-        free( (void* )this->mKeys );
+        free(this);
         return NULL;
     }
 
@@ -496,10 +497,12 @@ properties_AddEscapes (const char* src, const char chars[], int num)
 {
    int i = 0, j = 0, retIdx = 0, matches = 0;
    char* retStr;
-   int strln = strlen (src);
+   int strln = 0;
 
    if (!src)
       return NULL;
+
+   strln = strlen (src);
 
    /* First need to number chars to escape to malloc the correct string len */
    for (;i < strln; i++)

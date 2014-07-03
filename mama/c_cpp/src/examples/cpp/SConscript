@@ -20,7 +20,7 @@ env.Append( LIBPATH = libPath )
 env.Append( CPPPATH = [ includePath ] )
 env.Append( LIBS = [ 'mamacpp','mama','pthread','dl' ] )
 
-bins = [ 'mamalistencpp','mamasubscribercpp','mamaproxycpp','mamapublishercpp','mamainboxcpp','mamaiocpp','mamaftmembercpp','mamasymbollistsubscribercpp' ]
+bins = [ 'mamalistencpp','mamasubscribercpp','mamaproxycpp','mamapublishercpp','mamainboxcpp','mamaiocpp','mamaftmembercpp','mamasymbollistsubscribercpp','mamalistencachedcpp' ]
 
 binary = []
 

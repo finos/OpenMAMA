@@ -1,4 +1,5 @@
-/*
+/* $Id$
+ *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
  *
@@ -18,11 +19,31 @@
  * 02110-1301 USA
  */
 
-#ifndef WINDOWS_MMAP_H__
-#define WINDOWS_MMAP_H__
+#ifndef MamaFieldCacheRecordImplH__
+#define MamaFieldCacheRecordImplH__
 
-/**
- * Open a file that will be mapped to memory. Return 
- */
+#include <mama/config.h>
+#include <mama/fielddesc.h>
+#include <mama/types.h>
+#include <mama/fieldcache/fieldcachetypes.h>
+#include "fieldcachevector.h"
 
-#endif /* WINDOWS_MMAP_H__ */
+#if defined(__cplusplus)
+extern "C" {
+#endif /* defined(__cplusplus) */
+
+    /* This structure describes a record of fields
+     */
+typedef struct mamaFieldCacheRecordImpl_
+{
+    /* dynamic resizable vector containing mamaFieldCacheField pointers */
+    mamaFieldCacheVector mFields;
+    /* number of fields stored */
+    mama_size_t mSize;
+} mamaFieldCacheRecordImpl;
+
+#if defined(__cplusplus)
+}
+#endif
+
+#endif	/* MamaFieldCacheRecordImplH__ */

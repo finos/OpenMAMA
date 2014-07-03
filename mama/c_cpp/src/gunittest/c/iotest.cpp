@@ -68,7 +68,7 @@ void MamaIoTestC::TearDown(void)
     m_this = NULL;
 }
 
-void onIo (mamaIo io, mamaIoType ioType, void* closure)
+void MAMACALLTYPE onIo (mamaIo io, mamaIoType ioType, void* closure)
 {
 }
 

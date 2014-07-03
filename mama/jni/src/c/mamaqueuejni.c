@@ -595,7 +595,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaQueue_getQueueName
                 "mamaQueue_getQueueName() failed.",
                 status);
         utils_throwMamaException(env,errorString);
-        return;
+        return NULL;
     }
 
     if (queueName)
@@ -634,7 +634,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaQueue_getQueueBridgeName
             "mamaQueue_getQueueBridgeName() failed.",
             status);
         utils_throwMamaException(env,errorString);
-        return;
+        return NULL;
     }
 
     if (queueBridgeName)

@@ -554,7 +554,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1removePu
     {
          cSymbol= (*env)->GetStringUTFChars(env,symbol,0);
          if(!cSymbol)
-			return;
+			return NULL;
     }
     
     

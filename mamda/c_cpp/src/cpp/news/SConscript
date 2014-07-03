@@ -39,7 +39,7 @@ sources = \
    MamdaNewsUtils.cpp
 """)
 
-env.Append(CPPPATH=[includePath], LIBPATH=[libPath])
+env.Append(LIBS=['mamacpp','mamda'],CPPPATH=[includePath], LIBPATH=[libPath])
 
 target = 'libmamdanews'
 

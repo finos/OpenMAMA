@@ -71,7 +71,7 @@ sources = \
    MamdaQuoteToBookListener.cpp
 """)
 
-env.Append(CPPFLAGS=['-Wno-non-virtual-dtor'], CPPPATH=includePath,
+env.Append(LIBS=['mamda','mamacpp'],CPPFLAGS=['-Wno-non-virtual-dtor'], CPPPATH=includePath,
            LIBPATH=libPath)
 
 target = 'libmamdabook'

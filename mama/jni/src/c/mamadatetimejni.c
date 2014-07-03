@@ -1498,7 +1498,7 @@ jlong createTimeZone (JNIEnv* env, jobject this)
                 "Could not create mamaTimeZone().",
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
-        return;
+        return jTimeZone;
     }
   
 	/* Cast the cTimeZone to a jlong. */

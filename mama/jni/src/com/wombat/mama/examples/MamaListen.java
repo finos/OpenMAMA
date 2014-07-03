@@ -77,6 +77,7 @@ public class MamaListen
 
     private static MamaDictionary   dictionary;
     private static String           dictSource          = "WOMBAT";
+    private static String           dictFile            = null;
     private static boolean          dumpDataDict        = false;
     private static final ArrayList  fieldList           = new ArrayList();
     private static boolean          dictionaryComplete  = false;
@@ -111,7 +112,6 @@ public class MamaListen
     private static boolean          myGroupSubscription = false;
     private static MamaSource       mySource            = null;   
     private static MamaSource       myDictSource        = null;
-
     /* Contains the amount of time that the example program will run for, if set to 0 then it
      * will run indefinitely.
      */
@@ -130,7 +130,22 @@ public class MamaListen
             }
 
             initializeMama ();
-            buildDataDictionary ();
+            if (dictFile != null)
+            {
+                System.out.println("Dictionary file specified, building dictionary from " + dictFile);
+                try 
+                {
+                    dictionary= new MamaDictionary();
+                    dictionary.populateFromFile(dictFile);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
+            else
+            {
+                buildDataDictionary ();
+            }
             dumpDataDictionary ();
             subscribeToSubjects ();
             
@@ -579,6 +594,11 @@ public class MamaListen
 		myDictTportName = args[i + 1];
 		i += 2;
 	    }
+            else if (args[i].equals("-dictionary"))
+            {
+                dictFile = args[i + 1];
+                i += 2;
+            }
             else if (args[i].equals ("-D"))
             {
                 dumpDataDict = true;

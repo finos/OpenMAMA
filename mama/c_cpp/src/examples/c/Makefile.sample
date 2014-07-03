@@ -22,8 +22,12 @@ API_HOME=../../../
 #BDYNAMIC = -Bdynamic
 
 # GNU compiler:
-CXX      = g++
-CC       = gcc
+ifneq (,$(CXX))
+  CXX = g++
+endif
+ifneq (,$(CC))
+  CC = gcc
+endif
 BSTATIC  = -Xlinker -Bstatic
 BDYNAMIC = -Xlinker -Bdynamic
 
@@ -47,7 +51,8 @@ all: mamalistenc mamainboxc \
  	mamapublisherc mamasubscriberc \
  	mamasymbollistsubscriberc \
 	mamaproxyc mamaio \
-	mamamultisubscriberc mamaftmemberc
+	mamamultisubscriberc mamaftmemberc \
+	mamalistencachedc
     
 mamalistenc: mamalistenc.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
@@ -75,3 +80,7 @@ mamasymbollistsubscriberc: mamasymbollistsubscriberc.o
 
 mamaftmemberc: mamaftmemberc.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamalistencachedc: mamalistencachedc.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+

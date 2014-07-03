@@ -33,8 +33,10 @@ typedef uint64_t mama_time_t;
 #define MAMA_TIME_IMPL_MASK_SECONDS       ((uint64_t)0xffffffff00000000ULL)
 #define MAMA_TIME_IMPL_MASK_MICROSECONDS  ((uint64_t)0x00000000000fffffULL)
 #define MAMA_TIME_IMPL_MASK_PRECISION     ((uint64_t)0x00000000f0000000ULL)
+#define MAMA_TIME_IMPL_MASK_HINT          ((uint64_t)0x000000000f000000ULL)
 #define MAMA_TIME_IMPL_BIT_HAS_DATE       ((uint64_t)0x0000000001000000ULL)
 #define MAMA_TIME_IMPL_BIT_HAS_TIME       ((uint64_t)0x0000000002000000ULL)
+#define MAMA_TIME_IMPL_BIT_NO_TIMEZONE    ((uint64_t)0x0000000004000000ULL)
 #define MAMA_TIME_IMPL_MASK_TIME_ONLY     ((uint64_t)0xffffffff000fffffULL)
 
 #define mamaDateTimeImpl_clear(t)             ((t) =  MAMA_TIME_IMPL_NULL)
@@ -48,10 +50,14 @@ typedef uint64_t mama_time_t;
       ((t) &= ~MAMA_TIME_IMPL_MASK_MICROSECONDS)
 #define mamaDateTimeImpl_clearPrecision(t) \
       ((t) &= ~MAMA_TIME_IMPL_MASK_PRECISION)
+#define mamaDateTimeImpl_clearHint(t) \
+      ((t) &= ~MAMA_TIME_IMPL_MASK_HINT)
 #define mamaDateTimeImpl_clearHasDate(t) \
       ((t) &= ~MAMA_TIME_IMPL_BIT_HAS_DATE)
 #define mamaDateTimeImpl_clearHasTime(t) \
       ((t) &= ~MAMA_TIME_IMPL_BIT_HAS_TIME)
+#define mamaDateTimeImpl_clearNoTimezone(t) \
+      ((t) &= ~MAMA_TIME_IMPL_NO_TIMEZONE)
 
 #define mamaDateTimeImpl_getSeconds(t) \
       (uint32_t) (((t) & MAMA_TIME_IMPL_MASK_SECONDS)   >> 32)
@@ -59,10 +65,14 @@ typedef uint64_t mama_time_t;
       (uint32_t) ((t) & MAMA_TIME_IMPL_MASK_MICROSECONDS)
 #define mamaDateTimeImpl_getPrecision(t) \
       (uint32_t) (((t) & MAMA_TIME_IMPL_MASK_PRECISION) >> 28)
+#define mamaDateTimeImpl_getHint(t) \
+      (uint32_t) (((t) & MAMA_TIME_IMPL_MASK_HINT)      >> 24)
 #define mamaDateTimeImpl_getHasDate(t) \
       (uint8_t) (((t) & MAMA_TIME_IMPL_BIT_HAS_DATE) >> 24)
 #define mamaDateTimeImpl_getHasTime(t) \
       (uint8_t) (((t) & MAMA_TIME_IMPL_BIT_HAS_TIME) >> 24)
+#define mamaDateTimeImpl_getNoTimezone(t) \
+      (uint8_t) (((t) & MAMA_TIME_IMPL_NO_TIMEZONE) >> 24)
 #define mamaDateTimeImpl_getTimeOnly(t) \
       ((t) & MAMA_TIME_IMPL_MASK_TIME_ONLY)
 
@@ -72,10 +82,14 @@ typedef uint64_t mama_time_t;
       ((t) = ((t) & ~MAMA_TIME_IMPL_MASK_MICROSECONDS) | ((uint64_t)(us)))
 #define mamaDateTimeImpl_setPrecision(t,p) \
       ((t) = ((t) & ~MAMA_TIME_IMPL_MASK_PRECISION)    | ((uint64_t)(p) << 28))
+#define mamaDateTimeImpl_setHint(t,p) \
+      ((t) = ((t) & ~MAMA_TIME_IMPL_MASK_HINT)         | ((uint64_t)(p) << 24))
 #define mamaDateTimeImpl_setHasDate(t) \
       ((t) |= MAMA_TIME_IMPL_BIT_HAS_DATE)
 #define mamaDateTimeImpl_setHasTime(t) \
       ((t) |= MAMA_TIME_IMPL_BIT_HAS_TIME)
+#define mamaDateTimeImpl_setNoTimezone(t) \
+      ((t) |= MAMA_TIME_IMPL_NO_TIMEZONE)
 
 #define MAMA_TIME_IMPL_SECONDS_IN_DAY  (24*60*60)
 

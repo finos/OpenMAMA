@@ -24,6 +24,7 @@ env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 sources = Split("""
 inboxtest.cpp
 iotest.cpp
+msgutils.cpp
 openclosetest.cpp
 payloadmiddlewareidtest.cpp
 publishertest.cpp
@@ -31,6 +32,13 @@ queuetest.cpp
 subscriptiontest.cpp
 timertest.cpp
 transporttest.cpp
+fieldcache/fieldcachevectortest.cpp
+fieldcache/fieldcachelisttest.cpp
+fieldcache/fieldcachemaptest.cpp
+fieldcache/fieldcachefieldtest.cpp
+fieldcache/fieldcacheiteratortest.cpp
+fieldcache/fieldcacherecordtest.cpp
+fieldcache/fieldcachetest.cpp
 """)
 
 MainUnitTest = env.Object( 'MainUnitTestC.cpp' ) 

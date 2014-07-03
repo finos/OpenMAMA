@@ -298,8 +298,11 @@ avisMsg_setOpaque(
 		snprintf (tempName, 63, "%d", fid);
 		id=tempName;
 	}
-	pArray->items = avis_memdup(value, size);
+
+    memcpy (pArray->items, value, size);
+
     attributes_set_opaque(attributes, id, *pArray);
+
     return MAMA_STATUS_OK;
 }
 

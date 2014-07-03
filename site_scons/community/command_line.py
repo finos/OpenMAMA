@@ -27,6 +27,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        BoolVariable('entitled','Whether the build is entitled or unentitled',False),
        PathVariable('gtest_home','Path to Google Test home',None, PathVariable.PathIsDir),
        ListVariable('middleware','Middleware(s) to be compiled in', 'avis', names = ['avis', 'qpid'] ),
+       ('jobs', 'Number of scons threads to spawn, if n is passed the number of availabe cores is calculated and used', '1'),
 
     )
 
@@ -49,6 +50,8 @@ def get_command_line_opts( host, products, VERSIONS ):
                           'c:\\libevent', PathVariable.PathAccept),
             EnumVariable('target_arch', 'Specifies if the build should target 32 or 64 bit architectures.',
                           host['arch'], allowed_values=['x86', 'x86_64']),
+            EnumVariable( 'compiler', 'Compiler to use for building OpenMAMA',
+                          'default', allowed_values=('default', 'gcc', 'clang', 'clang-analyzer')),
         )
 
     if host['os'] == 'Linux':
@@ -60,6 +63,23 @@ def get_command_line_opts( host, products, VERSIONS ):
             EnumVariable('product', 'Product to be built', 'mamda',
                          #mamda all is a windows only build
                          allowed_values=( [ x for x in products if x != "mamdaall" ] )),
+            EnumVariable( 'compiler', 'Compiler to use for building OpenMAMA',
+                         'default', allowed_values=('default', 'gcc', 'clang', 'clang-analyzer')),
         )
+
+    if host['os'] == 'Darwin':
+        opts.AddVariables(
+            PathVariable('avis_home','Path to Avis', '/usr/local/', PathVariable.PathIsDir),
+            PathVariable('qpid_home','Path to QPID Proton Libraries',
+                '/usr/local/', PathVariable.PathIsDir),
+            PathVariable('cache_dir','Path to object cache', None, PathVariable.PathIsDir),
+            EnumVariable('product', 'Product to be built', 'mamda',
+                         #mamda all is a windows only build
+                         allowed_values=( [ x for x in products if x != "mamdaall" ] )),
+            EnumVariable( 'compiler', 'Compiler to use for building OpenMAMA',
+                         'default', allowed_values=('default', 'clang', 'clang-analyzer')),
+            EnumVariable('osx_version', 'OS X Version to target build at', 'current',
+                         allowed_values=('current','10.8','10.9')),
+            )
 
     return opts

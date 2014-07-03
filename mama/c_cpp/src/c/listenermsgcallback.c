@@ -353,7 +353,15 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
 
         case MAMA_MSG_STATUS_MISC:
         {
-            /* Log the fact we have received an unknown message. */
+            if (msgType == MAMA_MSG_TYPE_REFRESH)
+            {
+                /* Without this, refresh acknowledgements will be ignored
+                 * and every client will refresh every symbol.
+                 */
+                break;
+            }
+
+            /* Otherwise log the fact we have received an unknown message. */
             listenerMsgCallbackImpl_logUnknownStatus(ctx, status, subscription);
             break;
         }

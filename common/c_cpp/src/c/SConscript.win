@@ -18,9 +18,11 @@ windows/wUuid.c
 property.c
 wMessageStats.c
 libyywrap.c
+fileparser.c
 windows/strpcasecmp.c
 windows/strptime.c
 windows/platform.c
+windows/mman.c
 windows/wSemaphore.c
 windows/network.c
 windows/environment.c

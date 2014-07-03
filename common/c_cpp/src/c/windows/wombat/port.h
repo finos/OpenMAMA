@@ -40,7 +40,7 @@
 #include "wombat/targetsxs.h"
 #include "wombat/wConfig.h"
 #include "windows/lock.h"
-#include "windows/mmap.h"
+#include "windows/mman.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -119,6 +119,12 @@ wthread_key_create(wthread_key_t* key, void* val);
 #define wthread_setspecific(x, val) TlsSetValue((x),(void*)((val)))
 #define wthread_getspecific(x) TlsGetValue((x))
 
+/* Queue Max Size */
+#define WOMBAT_QUEUE_MAX_SIZE 2147483647
+
+/* Posix Semaphores for Windows */
+#define WTHREAD_MUTEX_RECURSIVE PTHREAD_MUTEX_RECURSIVE_NP
+
 /* Posix Semaphores for Windows */
 typedef void* wsem_t;
 
@@ -154,6 +160,7 @@ int wsem_getvalue (wsem_t*, int* items);
 #define wwrite(x,y,z) send((x),(y),(z),0)
 #define close _close
 #define sleep(x) Sleep( (x)*1000)
+#define wclosesocket(x) closesocket(x)
 
 COMMONExpDLL
 int gettimeofday( struct timeval *result, void *dummy );

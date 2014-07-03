@@ -85,60 +85,56 @@ protected:
 
 };
 
-/*
- * The update string tests are disabled as the current payload Macro, 
- * INITIALIZE_PAYLOAD_BRIDGE, omits the updateString function.
- */
-TEST_F(FieldStringTests, DISABLED_UpdateStringValid)
+TEST_F(FieldStringTests, UpdateStringValid)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddString(msg, NULL, 1, m_in);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadUpdateString(field, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
 }
 
-TEST_F(FieldStringTests, DISABLED_UpdateStringInvalidType)
+TEST_F(FieldStringTests, UpdateStringInvalidType)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddChar(msg, NULL, 1, 'A');
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadUpdateString(field, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
+    ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
 }
 
-TEST_F(FieldStringTests, DISABLED_UpdateStringInValid)
+TEST_F(FieldStringTests, UpdateStringInValid)
 {
     msgFieldPayload     field = NULL;
     msgPayload          msg = NULL;
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgFieldPayloadCreate(&field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadUpdateString(NULL, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateString(field, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 }
 
 TEST_F(FieldStringTests, GetStringValid)
@@ -148,14 +144,14 @@ TEST_F(FieldStringTests, GetStringValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddString(msg, NULL, 1, m_in);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadGetString(field, &m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
 }
 
 TEST_F(FieldStringTests, GetStringInvalidType)
@@ -165,14 +161,14 @@ TEST_F(FieldStringTests, GetStringInvalidType)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddChar(msg, NULL, 1, '0');
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadGetString(field, &m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
+    ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
 }
 
 TEST_F(FieldStringTests, GetStringInValid)
@@ -181,15 +177,15 @@ TEST_F(FieldStringTests, GetStringInValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgFieldPayloadCreate(&field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadGetString(NULL, &m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetString(field, &m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_INVALID_ARG);
+    ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
 }
 
 /**********************************************************************
@@ -235,14 +231,14 @@ TEST_F(FieldDateTimeTests, UpdateDateTimeValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddDateTime(msg, NULL, 1, m_in);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadUpdateDateTime(field, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
 }
 
 TEST_F(FieldDateTimeTests, UpdateDateTimeInvalidType)
@@ -252,14 +248,14 @@ TEST_F(FieldDateTimeTests, UpdateDateTimeInvalidType)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddChar(msg, NULL, 1, 'A');
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadUpdateDateTime(field, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
+    ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
 }
 
 TEST_F(FieldDateTimeTests, UpdateDateTimeInValid)
@@ -269,15 +265,15 @@ TEST_F(FieldDateTimeTests, UpdateDateTimeInValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgFieldPayloadCreate(&field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadUpdateDateTime(NULL, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateDateTime(field, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 }
 
 TEST_F(FieldDateTimeTests, GetDateTimeValid)
@@ -287,42 +283,42 @@ TEST_F(FieldDateTimeTests, GetDateTimeValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     //DateTime
     ret = aBridge->msgPayloadAddDateTime(msg, NULL, 1, m_in);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgFieldPayloadGetDateTime(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
     //String
     ret = aBridge->msgPayloadAddString(msg, NULL, 2, m_str);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 2, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgFieldPayloadGetDateTime(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
     //F64
     ret = aBridge->msgPayloadAddF64(msg, NULL, 3, 123456.009);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 3, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgFieldPayloadGetDateTime(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
     //I64
     ret = aBridge->msgPayloadAddI64(msg, NULL, 4, 1234556);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 4, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgFieldPayloadGetDateTime(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
     //U64
     ret = aBridge->msgPayloadAddU64(msg, NULL, 5, 1234556);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 5, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgFieldPayloadGetDateTime(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
 
 
 
@@ -337,14 +333,14 @@ TEST_F(FieldDateTimeTests, GetDateTimeInvalidType)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddChar(msg, NULL, 1, '0');
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadGetDateTime(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
+    ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
 }
 
 TEST_F(FieldDateTimeTests, GetDateTimeInValid)
@@ -353,7 +349,7 @@ TEST_F(FieldDateTimeTests, GetDateTimeInValid)
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadGetDateTime(NULL, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 }
 
 /**********************************************************************
@@ -391,14 +387,14 @@ TEST_F(FieldOpaqueTests, GetOpaqueValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddOpaque(msg, NULL, 1, m_in, in_size);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadGetOpaque(field, &m_out, &out_size);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
 }
 
 TEST_F(FieldOpaqueTests, GetOpaqueInvalidType)
@@ -408,14 +404,14 @@ TEST_F(FieldOpaqueTests, GetOpaqueInvalidType)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddChar(msg, NULL, 1, '0');
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadGetOpaque(field, &m_out, &out_size);
-    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
+    ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
 }
 
 TEST_F(FieldOpaqueTests, GetOpaqueInValid)
@@ -424,15 +420,15 @@ TEST_F(FieldOpaqueTests, GetOpaqueInValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgFieldPayloadCreate(&field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadGetOpaque(NULL, &m_out, &out_size);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetOpaque(field, &m_out, &out_size);
-    ASSERT_EQ(ret,    MAMA_STATUS_INVALID_ARG);
+    ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
 }
 
 /**********************************************************************
@@ -472,14 +468,14 @@ TEST_F(FieldPriceTests, UpdatePriceValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddPrice(msg, NULL, 1, m_in);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadUpdatePrice(field, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
 }
 
 TEST_F(FieldPriceTests, UpdatePriceInvalidType)
@@ -489,14 +485,14 @@ TEST_F(FieldPriceTests, UpdatePriceInvalidType)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddChar(msg, NULL, 1, 'A');
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadUpdatePrice(field, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
+    ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
 }
 
 TEST_F(FieldPriceTests, UpdatePriceInValid)
@@ -506,15 +502,15 @@ TEST_F(FieldPriceTests, UpdatePriceInValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgFieldPayloadCreate(&field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadUpdatePrice(NULL, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdatePrice(field, msg, m_update);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 }
 
 TEST_F(FieldPriceTests, GetPriceValid)
@@ -524,21 +520,21 @@ TEST_F(FieldPriceTests, GetPriceValid)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     //Price
     ret = aBridge->msgPayloadAddPrice(msg, NULL, 1, m_in);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgFieldPayloadGetPrice(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
     //F64
     ret = aBridge->msgPayloadAddF64(msg, NULL, 3, 123456.009);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 3, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgFieldPayloadGetPrice(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
 }
 
 TEST_F(FieldPriceTests, GetPriceInvalidType)
@@ -548,14 +544,14 @@ TEST_F(FieldPriceTests, GetPriceInvalidType)
     mama_status         ret = MAMA_STATUS_OK;
 
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddChar(msg, NULL, 1, '0');
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadGetPrice(field, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
+    ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
 }
 
 TEST_F(FieldPriceTests, GetPriceInValid)
@@ -564,7 +560,7 @@ TEST_F(FieldPriceTests, GetPriceInValid)
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadGetPrice(NULL, m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 }
 
 /**********************************************************************
@@ -599,14 +595,14 @@ TEST_F(FieldMsgTests, GetMsgValid)
 
     aBridge->msgPayloadCreate(&m_in);
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddMsg(msg, NULL, 1, m_in);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadGetMsg(field, &m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_OK);
+    ASSERT_EQ (MAMA_STATUS_OK, ret);
 
     aBridge->msgPayloadDestroy(m_in);
 }
@@ -619,14 +615,14 @@ TEST_F(FieldMsgTests, GetMsgInvalidType)
 
     aBridge->msgPayloadCreate(&m_in);
     ret = aBridge->msgPayloadCreate(&msg);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgPayloadAddChar(msg, NULL, 1, '0');
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgFieldPayloadGetMsg(field, &m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_WRONG_FIELD_TYPE);
+    ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
 
     aBridge->msgPayloadDestroy(m_in);
 }
@@ -639,15 +635,15 @@ TEST_F(FieldMsgTests, GetMsgInValid)
     aBridge->msgPayloadCreate(&m_in);
 
     ret = aBridge->msgFieldPayloadCreate(&field);
-    EXPECT_EQ(ret, MAMA_STATUS_OK);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     /*Null Field*/
     ret = aBridge->msgFieldPayloadGetMsg(NULL, &m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
 
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetMsg(field, &m_out);
-    ASSERT_EQ(ret,    MAMA_STATUS_INVALID_ARG);
+    ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
 
     aBridge->msgPayloadDestroy(m_in);
 }

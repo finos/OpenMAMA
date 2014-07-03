@@ -34,27 +34,27 @@ typedef struct avisTimerImpl_
     mamaTimerCb   mAction;
     void*         mClosure;
     mamaTimer     mParent;
-    wombatQueue   mQueue;
+    mamaQueue     mQueue;
 
     /* This callback will be invoked whenever the timer has been completely destroyed. */
     mamaTimerCb     mOnTimerDestroyed;
 
-    /* TODO: add queue */
 } avisTimerImpl;
 
 static void MAMACALLTYPE
-destroy_callback(void* timer, void* closure)
+destroy_callback (mamaQueue queue, void* closure)
 {
-	avisTimerImpl* impl = (avisTimerImpl*)timer;
+	avisTimerImpl* impl  = (avisTimerImpl*) closure; 
 
     (*impl->mOnTimerDestroyed)(impl->mParent, impl->mClosure);
+
     free (impl);
 }
 
 static void MAMACALLTYPE
-timerQueueCb (void* data, void* closure)
+timerQueueCb (mamaQueue queue, void* closure)
 {
-    avisTimerImpl* impl = (avisTimerImpl*)data;
+    avisTimerImpl* impl = (avisTimerImpl*)closure;
 
     if (impl->mAction)
         impl->mAction (impl->mParent, impl->mClosure);
@@ -73,6 +73,7 @@ timerCb (timerElement  timer,
     /* Mama timers are repeating */
     timeout.tv_sec = (time_t)impl->mInterval;
     timeout.tv_usec = ((impl->mInterval- timeout.tv_sec) * 1000000.0);
+
     if (0 != createTimer (&impl->mTimerElement,
                           gTimerHeap,
                           timerCb,
@@ -84,12 +85,13 @@ timerCb (timerElement  timer,
               "mamaTimer_create ():");
     }
 
-    wombatQueue_enqueue (impl->mQueue, timerQueueCb,
-            (void*)impl, NULL);
+    mamaQueue_enqueueEvent (impl->mQueue, 
+                            timerQueueCb,
+                            (void*)impl);
 }
 
 mama_status
-avisBridgeMamaTimer_create (timerBridge*  result,
+avisBridgeMamaTimer_create (timerBridge* result,
                            void*         nativeQueueHandle,
                            mamaTimerCb   action,
                            mamaTimerCb   onTimerDestroyed,
@@ -112,17 +114,21 @@ avisBridgeMamaTimer_create (timerBridge*  result,
     impl = (avisTimerImpl*)calloc (1, sizeof (avisTimerImpl));
     if (impl == NULL) return MAMA_STATUS_NOMEM;
 
-    impl->mQueue    = (wombatQueue)nativeQueueHandle;
+    impl->mQueue    = NULL;
     impl->mParent   = parent;
     impl->mAction   = action;
     impl->mClosure  = closure;
     impl->mInterval = interval;
+
+    mamaTimer_getQueue (parent, &impl->mQueue);
+
     impl->mOnTimerDestroyed = onTimerDestroyed;
 
     *result = (timerBridge)impl;
 
     timeout.tv_sec = (time_t)interval;
     timeout.tv_usec = ((interval-timeout.tv_sec) * 1000000.0);
+
     if (0 != createTimer (&impl->mTimerElement,
                           gTimerHeap,
                           timerCb,
@@ -150,8 +156,8 @@ avisBridgeMamaTimer_destroy (timerBridge timer)
 
     impl->mAction = NULL;
     mama_log (MAMA_LOG_LEVEL_FINEST,
-              "%s Entering.",
-              "avisMamaTimer_destroy ():");
+              "%s Entering for 0x%x",
+              "avisMamaTimer_destroy ():", impl);
 
     if (0 != destroyTimer (gTimerHeap, impl->mTimerElement))
     {
@@ -161,9 +167,9 @@ avisBridgeMamaTimer_destroy (timerBridge timer)
         returnStatus = MAMA_STATUS_PLATFORM;
     }
 
-
-    wombatQueue_enqueue (impl->mQueue, destroy_callback,
-            (void*)impl, NULL);
+    mamaQueue_enqueueEvent (impl->mQueue,
+                            destroy_callback,
+                            (void*)impl);
 
     return returnStatus;
 }
@@ -208,6 +214,7 @@ avisBridgeMamaTimer_reset (timerBridge timer)
             status = MAMA_STATUS_PLATFORM;
         }
     }
+
     return status;
 }
 

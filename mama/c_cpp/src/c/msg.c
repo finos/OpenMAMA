@@ -368,6 +368,8 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
 {
     switch (payloadType)
     {
+        case MAMA_PAYLOAD_SOLACE:
+            return "solacemsg";
         case MAMA_PAYLOAD_V5:
             return "V5";
         case MAMA_PAYLOAD_AVIS:
@@ -398,6 +400,8 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "EXEGY";
         case MAMA_PAYLOAD_INRUSH:
             return "INRUSH";
+        case MAMA_PAYLOAD_KWANTUM:
+            return "KWANTUM";
 
         default:
             return "unknown";
@@ -3123,21 +3127,21 @@ mamaMsg_isFromInbox (const mamaMsg msg)
     mamaMsgImpl* impl = (mamaMsgImpl*)msg;
     if (!impl)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
+        mama_log (MAMA_LOG_LEVEL_FINEST,
                   "mamaMsg_isFromInbox(): NULL message.");
         return 0;
     }
 
     if (!impl->mBridgeImpl)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
+        mama_log (MAMA_LOG_LEVEL_FINEST,
                  "mamaMsg_isFromInbox(): NULL bridge.");
         return 0;
     }
 
     if (!impl->mBridgeMessage)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
+        mama_log (MAMA_LOG_LEVEL_FINEST,
                   "mamaMsg_isFromInbox(): NULL bridge message");
         return 0;
     }

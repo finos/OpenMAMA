@@ -42,6 +42,7 @@ Elvin* getAvis(mamaTransport transport);
 mama_status avisTransportBridge_start(avisTransportBridge* transportBridge);
 mama_status avisTransportBridge_stop(avisTransportBridge* transportBridge);
 
+int avisTransportBridge_isDispatching (avisTransportBridge* transportBridge);
 
 #if defined(__cplusplus)
 }

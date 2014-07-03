@@ -84,7 +84,12 @@ nobase_include_HEADERS  = \
 	mama/transport.h \
 	mama/types.h \
     mama/conflation/connection.h \
-	mama/version.h
+	mama/version.h \
+    mama/fieldcache/fieldcache.h \
+    mama/fieldcache/fieldcachefield.h \
+    mama/fieldcache/fieldcacheiterator.h \
+    mama/fieldcache/fieldcacherecord.h \
+    mama/fieldcache/fieldcachetypes.h
 
    
 CFLAGS   += -I${srcdir}/../../../../common/c_cpp/src/c
@@ -173,7 +178,19 @@ libmama_la_SOURCES = \
     playback/playbackcapture.c \
     conflation/connection.c \
     conflation/serverconnection.c \
-    conflation/manager.c
+    conflation/manager.c \
+    fieldcache/fieldcachevector.c \
+    fieldcache/fieldcachelist.c \
+    fieldcache/fieldcachemap.c \
+    fieldcache/fieldcachemaparray.c \
+    fieldcache/fieldcachemapbinary.c \
+    fieldcache/fieldcachemapmonitor.c \
+    fieldcache/fieldcacheiterator.c \
+    fieldcache/fieldcachefieldimpl.c \
+    fieldcache/fieldcachefield.c \
+    fieldcache/fieldcacherecord.c \
+    fieldcache/fieldcacheimpl.c \
+    fieldcache/fieldcache.c
         
 nodist_libmama_la_SOURCES = \
 	@builddir@/version.c

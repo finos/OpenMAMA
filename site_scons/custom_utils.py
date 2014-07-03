@@ -5,7 +5,7 @@ import shutil,ConfigParser
 
 import os
 import sys
-import platform
+import platform,multiprocessing
 
 # workaround for http://bugs.python.org/issue7860
 # platform.machine on 32b python returns 32 on 64b machine
@@ -40,6 +40,7 @@ def getHostInfo():
     host['arch'] = machine
     host['os'] = system
     host['hostname'] = hostname
+    host['cpus'] = multiprocessing.cpu_count()
     return host
 
 def createDir( dir ):

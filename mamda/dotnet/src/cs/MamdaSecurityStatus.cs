@@ -44,6 +44,7 @@ namespace Wombat
 			SECURITY_STATUS_CROSSING           = 7,
             SECURITY_STATUS_SUSPENDED          = 8,
             SECURITY_STATUS_AT_LAST            = 9,
+            SECURITY_STATUS_INACTIVE           = 10,
 			SECURITY_STATUS_UNKNOWN            = 99
 		}
 
@@ -57,6 +58,8 @@ namespace Wombat
 		private static string SECURITY_STATUS_STR_CROSSING    = "Crossing";
         private static string SECURITY_STATUS_STR_SUSPENDED   = "Suspended";
         private static string SECURITY_STATUS_STR_AT_LAST     = "AtLast";
+        private static string SECURITY_STATUS_STR_INACTIVE    = "Inactive";
+        private static string SECURITY_STATUS_STR_UNKNOWN     = "Unknown";
 
 		/// <summary>
 		/// Convert a MamdaSecurityStatus to an appropriate, displayable string
@@ -75,6 +78,7 @@ namespace Wombat
 				case  mamdaSecurityStatus.SECURITY_STATUS_CROSSING:		return SECURITY_STATUS_STR_CROSSING;
                 case  mamdaSecurityStatus.SECURITY_STATUS_SUSPENDED:    return SECURITY_STATUS_STR_SUSPENDED;
                 case  mamdaSecurityStatus.SECURITY_STATUS_AT_LAST:      return SECURITY_STATUS_STR_AT_LAST;
+                case  mamdaSecurityStatus.SECURITY_STATUS_INACTIVE:     return SECURITY_STATUS_STR_INACTIVE;
 				case  mamdaSecurityStatus.SECURITY_STATUS_UNKNOWN:
 				default:
 					return "Unknown";
@@ -111,6 +115,10 @@ namespace Wombat
                 return mamdaSecurityStatus.SECURITY_STATUS_SUSPENDED;
             if (securityStatus == SECURITY_STATUS_STR_AT_LAST)
                 return mamdaSecurityStatus.SECURITY_STATUS_AT_LAST;
+            if (securityStatus == SECURITY_STATUS_STR_INACTIVE)
+                return mamdaSecurityStatus.SECURITY_STATUS_INACTIVE;
+            if (securityStatus == SECURITY_STATUS_STR_UNKNOWN)
+                return mamdaSecurityStatus.SECURITY_STATUS_UNKNOWN;
 
 			if (securityStatus == "0")
 				return mamdaSecurityStatus.SECURITY_STATUS_NONE;
@@ -132,6 +140,10 @@ namespace Wombat
                 return mamdaSecurityStatus.SECURITY_STATUS_SUSPENDED;
             if (securityStatus == "9")
                 return mamdaSecurityStatus.SECURITY_STATUS_AT_LAST;
+            if (securityStatus == "10")
+                return mamdaSecurityStatus.SECURITY_STATUS_INACTIVE;
+            if (securityStatus == "99")
+                return mamdaSecurityStatus.SECURITY_STATUS_UNKNOWN;
 
 			return mamdaSecurityStatus.SECURITY_STATUS_UNKNOWN;
 		}

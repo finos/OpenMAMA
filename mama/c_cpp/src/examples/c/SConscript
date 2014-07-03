@@ -16,9 +16,13 @@ libPath.append('$prefix/lib')
 
 env.Append( LIBPATH = libPath )
 env.Append( CPPPATH = [ includePath ] )
-env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','rt' ] )
+if env['host']['os'] == 'Darwin':
+    env.Append( LIBS = [ 'mama','pthread','m','wombatcommon'] )
+else:
+    env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','rt' ] )
 
-bins = [ 'mamalistenc','mamaproxyc','mamapublisherc','mamasubscriberc','mamainboxc','mamaio','mamasymbollistsubscriberc','mamamultisubscriberc','mamaftmemberc','mamasymbollistsubscriberc' ]
+bins = [ 'mamalistenc','mamaproxyc','mamapublisherc','mamasubscriberc','mamainboxc','mamaio','mamasymbollistsubscriberc','mamamultisubscriberc','mamaftmemberc','mamasymbollistsubscriberc',
+'mamalistencachedc' ]
 
 binary = []
 

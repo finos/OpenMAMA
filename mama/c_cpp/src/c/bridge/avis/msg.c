@@ -29,13 +29,14 @@
 #include <msgimpl.h>
 #include "avisdefs.h"
 #include "avisbridgefunctions.h"
-
+#include "../../payload/avismsg/avispayload.h"
+#include "../../payload/avismsg/avismsgimpl.h"
 
 typedef struct avisMsgImpl
 {
-    Attributes*     mAvisMsg;
-    mamaMsg         mParent;
-    bool            mSecure;
+    msgPayload mAvisMsg;
+    mamaMsg    mParent;
+    bool       mSecure;
 } avisMsgImpl;
 
 #define avisMsg(msg) ((avisMsgImpl*)(msg))
@@ -60,9 +61,13 @@ avisBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
     impl = (avisMsgImpl*) calloc(1, sizeof(avisMsgImpl));
     if (!impl) return MAMA_STATUS_NOMEM;
 
-    mamaMsg_getNativeMsg(parent, (void**)&impl->mAvisMsg);
-    impl->mParent = parent;
+    /* mamaMsg_getNativeMsg(parent, (void**)&impl->mAvisMsg); */
+    avismsgPayload_create (&impl->mAvisMsg);
+
+    impl->mParent  = parent;
+
     *msg = (msgBridge) impl;
+
     return MAMA_STATUS_OK;
 }
 
@@ -71,10 +76,12 @@ mama_status
 avisBridgeMamaMsg_destroy (msgBridge msg, int destroyMsg)
 {
     CHECK_MSG(msg);
+
     if (destroyMsg)
     {
        avisBridgeMamaMsg_destroyMiddlewareMsg(msg);
     }
+
     free(avisMsg(msg));
 
     return MAMA_STATUS_OK;
@@ -84,7 +91,8 @@ mama_status
 avisBridgeMamaMsg_destroyMiddlewareMsg (msgBridge msg)
 {
     CHECK_MSG(msg);
-    attributes_destroy(avisMsg(msg)->mAvisMsg);
+
+    avismsgPayload_destroy (avisMsg(msg)->mAvisMsg);
     avisMsg(msg)->mAvisMsg = NULL;
 
     return MAMA_STATUS_OK;
@@ -94,7 +102,8 @@ mama_status
 avisBridgeMamaMsg_detach (msgBridge msg)
 {
     CHECK_MSG(msg);
-    avisMsg(msg)->mAvisMsg = attributes_clone(avisMsg(msg)->mAvisMsg);
+
+    avismsgPayload_copy (avisMsg(msg)->mAvisMsg, &avisMsg(msg)->mAvisMsg);
 
     return MAMA_STATUS_OK;
 }
@@ -110,8 +119,12 @@ mama_status
 avisBridgeMamaMsgImpl_setReplyHandle (msgBridge msg, void* result)
 {
     mama_status status = MAMA_STATUS_OK;
+
     CHECK_MSG(msg);
-    if (MAMA_STATUS_OK != (status = mamaMsg_updateString(avisMsg(msg)->mParent, INBOX_FIELD_NAME, 0, (const char*) result))) {
+
+    if (MAMA_STATUS_OK != (status = avismsgPayload_updateString (
+            avisMsg(msg)->mAvisMsg, INBOX_FIELD_NAME, 0, (const char*) result)))
+    {
         return status;
     }
 
@@ -129,7 +142,11 @@ int
 avisBridgeMamaMsg_isFromInbox (msgBridge msg)
 {
     const char* dummy;
-    return (mamaMsg_getString(avisMsg(msg)->mParent, INBOX_FIELD_NAME, 0, &dummy) == MAMA_STATUS_OK) ? 1 : 0;
+
+    CHECK_MSG(msg);
+
+    return (MAMA_STATUS_OK == avismsgPayload_getString(
+        avisMsg(msg)->mAvisMsg, INBOX_FIELD_NAME, 0, &dummy));
 }
 
 mama_status
@@ -138,6 +155,7 @@ avisBridgeMamaMsg_setSendSubject (msgBridge   msg,
                                   const char* subject)
 {
     mama_status status = MAMA_STATUS_OK;
+
     CHECK_MSG(msg);
 
     if (MAMA_STATUS_OK != (status = mamaMsg_updateString(avisMsg(msg)->mParent, SUBJECT_FIELD_NAME, 0, subject))) {
@@ -145,9 +163,9 @@ avisBridgeMamaMsg_setSendSubject (msgBridge   msg,
     }
 
     mamaMsg_updateString (avisMsg(msg)->mParent,
-                              MamaFieldSubscSymbol.mName,
-                              MamaFieldSubscSymbol.mFid,
-                              symbol);
+                          MamaFieldSubscSymbol.mName,
+                          MamaFieldSubscSymbol.mFid,
+                          symbol);
 
     return MAMA_STATUS_OK;
 }
@@ -167,11 +185,15 @@ avisBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
     mama_status status = MAMA_STATUS_OK;
 
     CHECK_MSG(msg);
-    if (MAMA_STATUS_OK != (status = mamaMsg_getString(avisMsg(msg)->mParent, INBOX_FIELD_NAME, 0, &replyAddr))) {
+
+    if (MAMA_STATUS_OK != (status = avismsgPayload_getString(
+        avisMsg(msg)->mAvisMsg, INBOX_FIELD_NAME, 0, &replyAddr)))
+    {
         return status;
     }
 
     *result = (void*) strdup(replyAddr);
+
     return MAMA_STATUS_OK;
 }
 
@@ -193,7 +215,10 @@ avisBridgeMamaMsg_destroyReplyHandle (void* result)
 mama_status
 avisBridgeMamaMsgImpl_setAttributesAndSecure (msgBridge msg, void* attributes, uint8_t secure)
 {
-    avisMsg(msg)->mAvisMsg=(Attributes*)attributes;
+    CHECK_MSG(msg);
+
+    avismsgPayload_setAttributes (avisMsg(msg)->mAvisMsg, (Attributes*)attributes);
     avisMsg(msg)->mSecure=secure;
+
     return MAMA_STATUS_OK;
 }

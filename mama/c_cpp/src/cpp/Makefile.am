@@ -92,7 +92,11 @@ nobase_include_HEADERS  = \
     mama/mamacpp.h \
 	mama/MamaStat.h \
 	mama/MamaStatsCollector.h \
-    mama/MamaReservedFields.h   
+    mama/MamaReservedFields.h \
+    mama/fieldcache/MamaFieldCacheField.h \
+    mama/fieldcache/MamaFieldCacheFieldTypes.h \
+    mama/fieldcache/MamaFieldCacheRecord.h \
+    mama/fieldcache/MamaFieldCache.h
 
 
 CPPFLAGS += -I@srcdir@ \
@@ -148,4 +152,9 @@ libmamacpp_la_SOURCES = \
 	MamaStat.cpp \
 	MamaStatsCollector.cpp \
     conflation/MamaConnection.cpp \
-    conflation/MamaServerConnection.cpp
+    conflation/MamaServerConnection.cpp \
+    fieldcache/MamaFieldCacheField.cpp \
+    fieldcache/MamaFieldCacheFieldTypes.cpp \
+    fieldcache/MamaFieldCacheRecord.cpp \
+    fieldcache/MamaFieldCache.cpp
+

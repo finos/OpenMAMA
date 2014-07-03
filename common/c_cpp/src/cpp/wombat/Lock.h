@@ -25,7 +25,7 @@
 
 namespace Wombat {
 
-class Lock
+class COMMONExpDLL Lock
 {
 public:
     Lock       ();
