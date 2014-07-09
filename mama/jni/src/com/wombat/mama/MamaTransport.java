@@ -140,7 +140,7 @@ public class MamaTransport
          * This function will set the client listener which will then
          * receive events from the transport.
          *
-         * @param[in] clientListener The client listener.
+         * @param clientListener The client listener.
          */
         public void setClientListener(MamaTransportListener clientListener)
         {
@@ -205,7 +205,7 @@ public class MamaTransport
          * This function will set the client topic listener which will then
          * receive events from the transport.
          *
-         * @param[in] clientTopicListener The client topic listener.
+         * @param clientTopicListener The client topic listener.
          */
         public void setClientTopicListener(MamaTransportTopicListener clientTopicListener)
         {
@@ -280,7 +280,7 @@ public class MamaTransport
     /**
      * This function will allocate the underlying transport.
      *
-     * @param[in] connection The re-usable connection object that will be passed
+     * @param connection The re-usable connection object that will be passed
      *                       back up into listener callbacks.
      */
     private native void allocateTransport(MamaConnection connection);
@@ -292,7 +292,7 @@ public class MamaTransport
      * Unregistration at the C layer will only occur whenever the transport
      * is destroyed.
      *
-     * @param[in] listenerEx The listener to add.
+     * @param listenerEx The listener to add.
      */
     private native void nativeAddListener(MamaTransportListener listener);
 
@@ -303,7 +303,7 @@ public class MamaTransport
      * Unregistration at the C layer will only occur whenever the transport
      * is destroyed.
      *
-     * @param[in] listenerEx The listener to add.
+     * @param listenerEx The listener to add.
      */
     private native void nativeAddTopicListener(MamaTransportTopicListener topicListener);
 
@@ -315,7 +315,7 @@ public class MamaTransport
      * This function will set the client listener, note that only one
      * listener or extended listener is supported at any one time.
      *
-     * @param[in] transportListener The new listener, null can be passed to
+     * @param transportListener The new listener, null can be passed to
      *                              remove the current listener.
      */
     public void addTransportListener(MamaTransportListener transportListener)
@@ -338,7 +338,7 @@ public class MamaTransport
      * This function will set the client topic listener, note that only one
      * topic listener is supported at any one time.
      *
-     * @param[in] transportTopicListener The new listener, null can be passed
+     * @param transportTopicListener The new listener, null can be passed
      *                                   to remove the current listener.
      */
     public void addTransportTopicListener(MamaTransportTopicListener transportTopicListener)
@@ -361,7 +361,7 @@ public class MamaTransport
      * This function will remove the current transport listener.
      * It will actually remove both the basic and extended listeners.
      *
-     * @param[in] transportListener The transport listener. Note that this
+     * @param transportListener The transport listener. Note that this
      *                              parameter is currently redundant.
      */
     public void removeTransportListener(MamaTransportListener transportListener)

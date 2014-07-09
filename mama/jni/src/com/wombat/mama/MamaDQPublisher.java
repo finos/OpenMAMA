@@ -21,6 +21,12 @@
 
 package com.wombat.mama;
 
+/**
+ * The <code>MamaDQPublisher</code> interface represents a subscription for a symbol.
+ * It can also allow for the broadcast and point-to-point publishing of messages to clients.
+ *
+ * @see Mama
+ */
 public class MamaDQPublisher
 {
 	/*A long value containing a pointer to the underlying C dqpublisher structure*/
@@ -31,46 +37,84 @@ public class MamaDQPublisher
 		initIDs();
 	}
 
+    /**
+     * Constructor for MamaDQPublisher
+     */
     public MamaDQPublisher()
     {
         /* nothing to do */
     }
     
+    /**
+     * Create a new MamaDQPublisher
+     *
+     * @param transport The transport for which to create the new publisher against
+     * @param topic The topic associated with the new publisher
+     */
 	public void create (MamaTransport transport, String topic)
 	{
 		_create (transport, topic);
 	}
 
+    /**
+     * Send a message (broadcast) from the MamaDQPublisher
+     *
+     * @param msg The MamaMsg that will be sent from this publisher
+     */
 	public void send (MamaMsg msg)
 	{
 		checkIsCreated("send");
 		_send(msg);
 	}
 
+    /**
+     * Send a message (point-to-point) from the MamaDQPublisher
+     *
+     * @param request The request message (from an inbox)
+     * @param reply The reply message containing the relevant data
+     */
 	public void sendReply (MamaMsg request, MamaMsg reply)
 	{
 		checkIsCreated ("sendReply");
 		_sendReply(request, reply);
 	}
 
+    /**
+     * Destroy the MamaDQPublisher
+     */
 	public void destroy ()
 	{
 		checkIsCreated ("destroy");
 		_destroy();
 	}
 
+    /**
+     * Set the status for the MamaDQPublisher
+     *
+     * @param status The mamaMsgStatus to set for the publisher
+     */
 	public void setStatus (int status)
 	{
 		checkIsCreated ("setStatus");
 		_setStatus (status);
 	}
 
+    /**
+     * Set the sender ID for the MamaDQPublisher
+     *
+     * @param id The publisher sender id to set for the publisher
+     */
 	public void setSenderId (long id)
 	{
 		checkIsCreated ("setSenderId");
 		_setSenderId (id);
 	}
 
+    /**
+     * Set the message sequence number for the MamaDQPublisher
+     *
+     * @param num The sequence number to set for the publisher
+     */
 	public void setSeqNum (long num)
 	{
 		checkIsCreated ("setSeqNum");

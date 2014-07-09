@@ -120,9 +120,9 @@ public class Mama
      * If null is passed as the filename the API will look for the default
      * filename of mama.properties.
      *
-     * @param[in] path Fully qualified path to the directory containing the properties
+     * @param path Fully qualified path to the directory containing the properties
      * file
-     * @param[in] filename The name of the file containing MAMA properties.
+     * @param filename The name of the file containing MAMA properties.
      *     
      */
     public static native void open (String path, String filename);
@@ -141,7 +141,7 @@ public class Mama
      *
      * This function is thread safe.
      *
-     * @param[in] bridge The bridge specific structure.
+     * @param bridge The bridge specific structure.
      */
     public static native void start (MamaBridge bridge);
 
@@ -149,8 +149,8 @@ public class Mama
      * Start processing MAMA internal events in the background. This
      * method invokes Mama::start () in a separate thread.
      *
-     * @param[in] bridge The middleware-specific bridge structure
-     * @param[in] callback The callback for asynchronous status.
+     * @param bridge The middleware-specific bridge structure
+     * @param callback The callback for asynchronous status.
      */
     public static native void startBackground (MamaBridge bridge, MamaStartBackgroundCallback callback);
 
@@ -164,7 +164,7 @@ public class Mama
      *
      * This function is thread safe.
      * 
-     * @param[in] bridgeImpl The bridge specific structure.
+     * @param bridge The bridge specific structure.
      */
     public static native void stop (MamaBridge bridge);
 
