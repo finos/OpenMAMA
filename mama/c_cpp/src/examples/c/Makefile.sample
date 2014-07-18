@@ -22,10 +22,10 @@ API_HOME=../../../
 #BDYNAMIC = -Bdynamic
 
 # GNU compiler:
-ifneq (,$(CXX))
+ifeq (,$(CXX))
   CXX = g++
 endif
-ifneq (,$(CC))
+ifeq (,$(CC))
   CC = gcc
 endif
 BSTATIC  = -Xlinker -Bstatic
