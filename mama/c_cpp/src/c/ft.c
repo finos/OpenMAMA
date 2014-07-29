@@ -628,7 +628,7 @@ ftHeartbeatTimerCb (mamaTimer          timer,
                          void*              closure)
 {
     mamaFtMemberImpl* impl = (mamaFtMemberImpl*)closure;
-    mama_log (MAMA_LOG_LEVEL_FINEST, "MAMA multicast FT: heartbeat timer has fired");
+    mama_log (MAMA_LOG_LEVEL_FINEST, "MAMA FT: heartbeat timer has fired");
     impl->myHeartbeatTick++;
     impl->ftSendHeartbeat (impl);
 }
@@ -639,7 +639,7 @@ ftTimeoutTimerCb (mamaTimer          timer,
 {
     mamaFtMemberImpl* impl = (mamaFtMemberImpl*)closure;
     mama_log (MAMA_LOG_LEVEL_FINE,
-              "MAMA multicast FT: timeout timer has fired; Going Active");
+              "MAMA FT: timeout timer has fired; Going Active");
 
     foundheartbeat=0;
 
