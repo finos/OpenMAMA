@@ -51,6 +51,7 @@ int main (int argc, const char** argv)
 //            book.addUniqueEntry (uniqueId, price, size, side, now);
         }
     }
+    flush (cout);
 
     return 0;
 }

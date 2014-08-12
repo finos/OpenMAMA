@@ -68,6 +68,7 @@ public:
             prettyPrintEntries (book);
         else
             prettyPrintLevels (book);
+        flush (cout);
     }
 
     void prettyPrint (const MamdaOrderBookBasicDelta&  delta)
@@ -88,6 +89,7 @@ public:
             printf (" %7g MARKET %c \n",size, action);
 
         }
+        flush (cout);
     }
 
     void prettyPrintLevels (const MamdaOrderBook&  book)
@@ -175,6 +177,7 @@ public:
             printf ("\n");
         }
         printf ("\n");
+        flush (cout);
     }
 
     void prettyPrintEntries (const MamdaOrderBook&  book)
@@ -290,6 +293,7 @@ public:
             }
             ++askIter;
         }
+        flush (cout);
         
     }
 
@@ -376,6 +380,7 @@ public:
 
             prettyPrint (subscription->getSymbol(), book);
         }
+        flush (cout);
     }
 
     void onBookComplexDelta (
@@ -415,6 +420,7 @@ public:
             }
             prettyPrint (subscription->getSymbol(), book);
         }
+        flush (cout);
     }
 
     void onBookClear (
@@ -430,6 +436,7 @@ public:
             cout << "CLEAR!!!  (seq# " << seqNum << ")" << endl;
             prettyPrint (subscription->getSymbol(), book);
         }
+        flush (cout);
     }
 
     void onBookGap (
@@ -442,6 +449,7 @@ public:
         cout << "Book gap for " << subscription->getSymbol()
              << " (" << event.getBeginGapSeqNum()
              << "-"  << event.getEndGapSeqNum() << ")" << endl;
+        flush (cout);
     }
 
     void onError (
@@ -454,6 +462,7 @@ public:
         {
             cout << "bookticker: ERROR: " << errorStr << endl;
         }
+        flush (cout);
     }
 
     void onQuality (
@@ -464,6 +473,7 @@ public:
         {
             cout << "bookticker: QUALITY: " << quality << endl;
         }
+        flush (cout);
     }
 
     void setShowDeltas (bool  showDeltas)

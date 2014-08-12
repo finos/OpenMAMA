@@ -208,6 +208,7 @@ public:
         cout << "Option trade closing: " 
              << event.getClosePrice().getAsString() << " - " 
              << event.getIsIndicative () << "\n";
+        flush (cout);
     }
 
     void onTradeOutOfSequence (
@@ -226,6 +227,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";        
+        flush (cout);
     }
 
     void onTradePossiblyDuplicate (
@@ -244,6 +246,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuoteRecap (
@@ -286,6 +289,7 @@ public:
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
              << recap.getAskSize () << "\n";
+        flush (cout);
     }
 
     void onQuoteOutOfSequence (
@@ -305,6 +309,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuotePossiblyDuplicate (
@@ -324,6 +329,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";        
+        flush (cout);
     }
 
     void onFundamentals (
@@ -335,6 +341,7 @@ public:
         cout << "Underlying Fundamentals: "
              << fundas.getHistoricalVolatility () << " | "
              << fundas.getRiskFreeRate () << "\n";
+        flush (cout);
     }
 
 private:
@@ -374,6 +381,7 @@ public:
     {
         cout << "Underlying trade: " << trade.getTradeVolume ()
              << " @ " << trade.getTradePrice().getAsString() << "\n";
+        flush (cout);
     }
     void onTradeGap (
         MamdaSubscription*              subscription,
@@ -406,6 +414,7 @@ public:
         cout << "Underlying trade closing: " 
              << event.getClosePrice().getAsString() << " - " 
              << event.getIsIndicative() << "\n";
+        flush (cout);
     } 
 
     void onTradeOutOfSequence (
@@ -424,6 +433,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onTradePossiblyDuplicate (
@@ -442,6 +452,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuoteRecap (
@@ -471,6 +482,7 @@ public:
         else
             cout << "  strikes within 15%: " << *strikeSet.begin ()
                  << " " << *strikeSet.rbegin () << "\n";
+        flush (cout);
     }
 
     void onQuoteGap (
@@ -492,6 +504,7 @@ public:
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
              << recap.getAskSize () << "\n";
+        flush (cout);
     }
 
     void onQuoteOutOfSequence (
@@ -511,6 +524,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuotePossiblyDuplicate (
@@ -530,6 +544,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onFundamentals (
@@ -541,6 +556,7 @@ public:
         cout << "Underlying Fundamentals: "
              << fundas.getDividendPayDate() << " - "
              << fundas.getDividendPrice() << "\n";
+        flush (cout);
     }
 
 private:
@@ -559,6 +575,7 @@ public:
     {
         Mama::stop (mBridge);
         cout << "Scheduled shutdown using -duration cmdline option" << endl;
+        flush (cout);
         exit (0);
     }
 
@@ -766,6 +783,7 @@ void OptionChainDisplay::printChain (const MamdaOptionChain&  chain)
         cout << "\n";
         ++i;
     }
+    flush (cout);
 }
 
 void OptionChainDisplay::printContract (const MamdaOptionContract&  contract)
@@ -799,6 +817,7 @@ void OptionChainDisplay::printContract (const MamdaOptionContract&  contract)
             (int)accVolume,
             histVola,
             riskFreeRate);
+    flush (cout);
 }
 
 void OptionChainDisplay::printlnContract (const MamdaOptionContract&  contract)
@@ -807,4 +826,5 @@ void OptionChainDisplay::printlnContract (const MamdaOptionContract&  contract)
         return;
     printContract (contract);
     cout << "\n";
+    flush (cout);
 }

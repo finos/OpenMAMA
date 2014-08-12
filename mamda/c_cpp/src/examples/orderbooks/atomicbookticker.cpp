@@ -82,6 +82,7 @@ public:
         {
             cout << "BEGIN BOOK - " <<  subscription->getSymbol () << endl;
         }
+        flush (cout);
     }
 
     void onBookAtomicClear (
@@ -93,6 +94,7 @@ public:
         {
             cout << "BOOK CLEAR - " <<  subscription->getSymbol () << endl << endl;
         }
+        flush (cout);
     }
   
     void onBookAtomicGap (
@@ -107,6 +109,7 @@ public:
             cout << "\t Begin Gap: " << listener.getBeginGapSeqNum () << endl;
             cout << "\t End Gap  : " << listener.getEndGapSeqNum ()   << endl << endl;
         }
+        flush (cout);
     }
 
   
@@ -128,6 +131,7 @@ public:
             }
             cout << endl;
         }
+        flush (cout);
     }
 
     void onBookAtomicLevelEntryRecap (
@@ -176,6 +180,7 @@ public:
         {
             cout << "atomicbookticker: ERROR: " << errorStr << "\n";
         }
+        flush (cout);
     }
 
     void onQuality (MamdaSubscription* subscription, mamaQuality quality)
@@ -184,6 +189,7 @@ public:
         {
             cout << "atomicbookticker: QUALITY: " << quality << "\n";
         }
+        flush (cout);
     }
 
     void prettyPrint (MamdaSubscription*                subscription,
@@ -198,6 +204,7 @@ public:
 
         cout << "\tENTRY | " << symbol << " | " << actNumEntries << " | ";
         cout << entryAction << " | " << entryId << " | " << entrySize << endl;
+        flush (cout);
     }
 
     void prettyPrint (MamdaSubscription*           subscription, 
@@ -218,6 +225,7 @@ public:
         cout << setiosflags(ios::fixed) << setprecision(2) << price << setprecision(0) << " | ";
 
         cout << size << " | " << action << " | " << side << " | " << numEntries << " | " << time << endl;
+        flush (cout);
     }
 };
 

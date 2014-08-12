@@ -215,6 +215,7 @@ public:
         cout << "Option trade closing: " 
              << event.getClosePrice().getAsString() << " - " 
              << event.getIsIndicative() << "\n";
+        flush (cout);
     }
 
     void onTradeOutOfSequence (
@@ -233,6 +234,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n"; 
+        flush (cout);
     }
 
     void onTradePossiblyDuplicate (
@@ -251,6 +253,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuoteRecap (
@@ -293,6 +296,7 @@ public:
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
              << recap.getAskSize() << "\n";
+        flush (cout);
     }
 
     void onQuoteOutOfSequence (
@@ -312,6 +316,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuotePossiblyDuplicate (
@@ -332,6 +337,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";           
+        flush (cout);
     }
 
     void onFundamentals (
@@ -377,6 +383,7 @@ public:
     {
         cout << "Underlying trade: " << trade.getTradeVolume ()
              << " @ " << trade.getTradePrice().getAsString() << "\n";
+        flush (cout);
     }
     void onTradeGap (
         MamdaSubscription*              subscription,
@@ -409,6 +416,7 @@ public:
         cout << "Underlying trade closing: " 
              << event.getClosePrice().getAsString() << " - " 
              << event.getIsIndicative() << "\n";
+        flush (cout);
     }
 
     void onTradeOutOfSequence (
@@ -427,6 +435,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";        
+        flush (cout);
     }
 
     void onTradePossiblyDuplicate (
@@ -445,6 +454,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";        
+        flush (cout);
     }
 
     void onQuoteRecap (
@@ -474,6 +484,7 @@ public:
         else
             cout << "  strikes within 15%: " << *strikeSet.begin ()
                  << " " << *strikeSet.rbegin () << "\n";
+        flush (cout);
     }
 
     void onQuoteGap (
@@ -495,6 +506,7 @@ public:
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
              << recap.getAskSize() << "\n";
+        flush (cout);
     } 
 
     void onQuoteOutOfSequence (
@@ -515,6 +527,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuotePossiblyDuplicate (
@@ -534,6 +547,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onFundamentals (
@@ -545,6 +559,7 @@ public:
         cout << "Underlying Fundamentals: "
              << fundas.getDividendPayDate() << " - "
              << fundas.getDividendPrice() << "\n";
+        flush (cout);
     }
 
 private:
@@ -715,6 +730,7 @@ void OptionChainDisplay::printView ()
     }
 
     cout << "\nDone with chain\n";
+    flush (cout);
 }
 
 void OptionChainDisplay::printExpireStrikes (
@@ -739,6 +755,7 @@ void OptionChainDisplay::printExpireStrikes (
         printContractSet (putContracts,  "Put");
         ++strikeIter;
     }
+    flush (cout);
 }
 
 void OptionChainDisplay::printContractSet (
@@ -760,6 +777,7 @@ void OptionChainDisplay::printContractSet (
     {
         printContract (i->second);
     }
+    flush (cout);
 }
 
 void OptionChainDisplay::printContract (const MamdaOptionContract*  contract)
@@ -789,4 +807,5 @@ void OptionChainDisplay::printContract (const MamdaOptionContract*  contract)
             bidPrice.getValue(),
             askPrice.getValue(),
             (int)accVolume);
+    flush (cout);
 }

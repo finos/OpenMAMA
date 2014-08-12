@@ -93,6 +93,7 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Recap \n");
         book.dump(std::cout);
+        flush (cout);
     }
     
     void onBookDelta (
@@ -104,6 +105,7 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Delta \n");
         book.dump(std::cout);
+        flush (cout);
     }
     
    void onBookComplexDelta (
@@ -115,6 +117,7 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Complex Delta \n");
         book.dump(std::cout);
+        flush (cout);
     }
     void onBookClear (
         MamdaSubscription*          subscription,
@@ -125,6 +128,7 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Clear \n");
         book.dump(std::cout);
+        flush (cout);
     }
 
     void onBookGap (
@@ -136,6 +140,7 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Gap \n");
         book.dump(std::cout);
+        flush (cout);
     }
 };
 

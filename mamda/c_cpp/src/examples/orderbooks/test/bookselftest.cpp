@@ -64,6 +64,7 @@ public:
             cout << "Successful check ("
                  << mamdaOrderBookCheckTypeToString(type) << ")\n";
         }
+        flush (cout);
     }
 
     void onInconclusive (MamdaOrderBookCheckType  type,
@@ -75,6 +76,7 @@ public:
                  << mamdaOrderBookCheckTypeToString(type) << "): "
                  << ": " << reason << "\n";
         }
+        flush (cout);
     }
 
     void onFailure (MamdaOrderBookCheckType  type,
@@ -94,6 +96,7 @@ public:
             cout << "Failed checking book: "; checkBook.dump(cout);
             cout << "\n";
         }
+        flush (cout);
     }
 };
 

@@ -80,6 +80,7 @@ public:
             cout << "Quote Recap (" << recap.getSymbol ()
                  << " ("            << recap.getPartId () << "))\n";
         }
+        flush (cout);
     }
 
     void onQuoteUpdate (
@@ -321,6 +322,7 @@ public:
              << "    Status:"     << recap.getSecurityStatus ()
              <<  "   Symbol:"     << recap.getIssueSymbol ()
              << "\n";
+        flush (cout);
     }
 
     void onSecStatusUpdate (
@@ -332,6 +334,7 @@ public:
              << "):  Action:"     << listener.getSecurityAction ()
              << "    Status:"     << listener.getSecurityStatus ()
              <<  "   Symbol:"     << listener.getIssueSymbol ();
+        flush (cout);
     }
                             
     void onError (

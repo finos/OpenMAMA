@@ -170,7 +170,7 @@ int main (int argc, const char** argv)
            targetEntry->getId(), entryDepth, searchTimes,
            endMicrosecs-beginMicrosecs);
 
-
+    flush (cout);
     return 0;
 }
 

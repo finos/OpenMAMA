@@ -153,6 +153,7 @@ public:
             cout << "QUALITY - " << mamaQuality_convertToString (quality);
             cout << "\n";
         }
+        flush (cout);
     }
 
 private:
@@ -285,6 +286,7 @@ void MamdaPublisher::onCreate (MamaDQPublisherManager*  publisher)
     {
         cout << "Created publisher subscription.\n";
     }
+    flush (cout);
 }
 
 void MamdaPublisher::onError (
@@ -311,6 +313,7 @@ void MamdaPublisher::onError (
                  << "\n";
         }
     }
+    flush (cout);
 }
 
 void MamdaPublisher::onNewRequest (
@@ -350,6 +353,7 @@ void MamdaPublisher::onNewRequest (
     else
         if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
             cout << "Received request for unknown symbol: " <<  symbol << endl;
+    flush (cout);
 }
 void MamdaPublisher::onRequest (
     MamaDQPublisherManager*  publisherManager,
@@ -392,6 +396,7 @@ void MamdaPublisher::onRequest (
         default:
             break;
     }
+    flush (cout);
 }
 
 void MamdaPublisher::createPublisherTransport (mamaBridge bridge, const char* pubTport)

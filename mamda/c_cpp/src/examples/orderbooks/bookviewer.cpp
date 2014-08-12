@@ -321,6 +321,7 @@ void BookViewer::onBookGap (
     cout << "GAP!!!\n";
     cout << "Book gap (" << event.getBeginGapSeqNum () << "-" 
          << event.getEndGapSeqNum () << ")\n";
+    flush (cout);
 }
 
 void BookViewer::onError (
@@ -330,6 +331,7 @@ void BookViewer::onError (
     const char*          errorStr)
 {
     cout << "bookticker: ERROR: " << errorStr << "\n";
+    flush (cout);
 }
 
 void BookViewer::onQuality (
@@ -337,6 +339,7 @@ void BookViewer::onQuality (
     mamaQuality          quality)
 {
     cout << "bookticker: QUALITY: " << quality << "\n";
+    flush (cout);
 }
 
 void BookViewer::setShowEntries (bool  showEntries)

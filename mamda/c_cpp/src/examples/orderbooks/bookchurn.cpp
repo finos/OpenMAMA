@@ -102,6 +102,7 @@ public:
         const MamdaOrderBook&              book)
      {
          cout<<"\nComplexDelta";
+         flush (cout);
      }
      
     void onBookGap (
@@ -122,6 +123,7 @@ public:
         const MamdaOrderBook&       book)
     {
         cout<<"\nBookClear";
+        flush (cout);
     }
     
     void onError (
@@ -131,6 +133,7 @@ public:
         const char*          errorStr)
     {
         cout<<"\nonError";
+        flush (cout);
     }
     
     void onQuality (
@@ -253,6 +256,7 @@ class StatsTimerCallback : public MamaTimerCallback
             gUpdateStats  = 0;
             gBookGapStats = 0;
             gQualityStats = 0;
+            flush (cout);
         }
 };
 

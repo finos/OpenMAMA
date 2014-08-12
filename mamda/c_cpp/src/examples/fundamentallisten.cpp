@@ -59,6 +59,7 @@ public:
              << "\nMarketSegment: " << fundas.getMarketSegment()
              << "\nMarketSector: "  << fundas.getMarketSector()
              << "\n";
+        flush (cout);
     }
 };
 

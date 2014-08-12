@@ -115,6 +115,7 @@ public:
         const char*          errorStr)
     {
         cout << "Error (" << subscription->getSymbol () << ")";
+        flush (cout);
     }
 
     void onQuality (
@@ -122,6 +123,7 @@ public:
         mamaQuality          quality)
     {
         cout << "Quality (" << subscription->getSymbol () << "): " << quality;
+        flush (cout);
     }
     
 };

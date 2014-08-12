@@ -59,6 +59,7 @@ public:
              << "    Status:"         << recap.getSecurityStatus ()
              <<  "   Symbol:"         << recap.getIssueSymbol ()
              << "\n";
+        flush (cout);
     }
 
     void onSecStatusUpdate (
@@ -71,6 +72,7 @@ public:
              << "    Status:"         << listener.getSecurityStatus ()
              <<  "   Symbol:"         << listener.getIssueSymbol ()
              << "\n";
+        flush (cout);
     }
 };
 

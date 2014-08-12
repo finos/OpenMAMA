@@ -89,6 +89,7 @@ public:
     {
         cout << "Quote Recap (" << recap.getSymbol ()
              << " ("            << recap.getPartId () << "))\n";
+        flush (cout);
     }
 
     void onQuoteUpdate (
@@ -111,6 +112,7 @@ public:
              << "; quoteTime: " << quote.getEventTime().getAsString()
              << "; qual: "      << quote.getQuoteQualStr ()
              << ")\n";
+        flush (cout);
     }
 
     void onQuoteGap (
@@ -122,6 +124,7 @@ public:
     {
         cout << "Quote gap (" << event.getBeginGapSeqNum () << "-" 
              << event.getEndGapSeqNum () << ")\n";
+        flush (cout);
     }
 
     void onQuoteClosing (
@@ -137,6 +140,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuoteOutOfSequence (
@@ -154,6 +158,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuotePossiblyDuplicate (
@@ -171,6 +176,7 @@ public:
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onTradeRecap (
@@ -181,6 +187,7 @@ public:
     {
         cout << "Trade Recap (" << recap.getSymbol ()
              << " ("            << recap.getPartId () << ")" << "): \n";
+        flush (cout);
     }
 
     void onTradeReport (
@@ -205,6 +212,7 @@ public:
              << "; bid: "       << mQuoteListener.getBidPrice().getAsString()
              << "; ask; "       << mQuoteListener.getAskPrice().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onTradeGap (
@@ -240,6 +248,7 @@ public:
              << "price: "         << event.getClosePrice().getAsString()
              << "; accVol: "      << recap.getAccVolume ()
              << "\n";
+        flush (cout);
     }
 
     void onTradeOutOfSequence (
@@ -257,6 +266,7 @@ public:
              << " (seq#: "    << event.getEventSeqNum()
              << "; time: "    << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
     }
     
     void onTradePossiblyDuplicate (
@@ -274,6 +284,7 @@ public:
              << " (seq#: "    << event.getEventSeqNum()
              << "; time: "    << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
     }
     
     void onError (

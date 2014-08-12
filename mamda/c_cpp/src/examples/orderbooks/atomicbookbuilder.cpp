@@ -213,6 +213,7 @@ private:
             printf ("\n");
         }
         printf ("\n");
+        flush (cout);
     }
 
     /*
@@ -332,6 +333,7 @@ private:
             }
             ++askIter;
         }
+        flush (cout);
     }
 
     /*
@@ -369,6 +371,7 @@ private:
             << price  << " " 
             << side   << " "
             << size   << endl;
+        flush (cout);
     }
 
     /*
@@ -395,6 +398,7 @@ private:
             << price       << " " 
             << entrySide   << " "
             << size        << endl;
+        flush (cout);
     }
     
     /**
@@ -463,6 +467,7 @@ private:
 
             mLevelPtr = NULL;
         }
+        flush (cout);
     }
 
     /**
@@ -568,6 +573,7 @@ private:
             mEntryPtr = NULL;
             mLevelPtr = NULL;
         }
+        flush (cout);
     }
 
     /**
@@ -650,6 +656,7 @@ public:
                 cout << "DELTA!!!\n";
             }
         }
+        flush (cout);
     }
 
     /**
@@ -678,6 +685,7 @@ public:
             cout << " (" << listener.getBeginGapSeqNum ();
             cout << "-" << listener.getEndGapSeqNum () << ")\n";
         }
+        flush (cout);
     }
 
     /**
@@ -712,6 +720,7 @@ public:
             prettyPrint(mOrderBook);
         }
         cout<< "BOOK END\n";
+        flush (cout);
     }
 
     /**
@@ -838,6 +847,7 @@ public:
         {
             cout << "atomicbookbuilder: ERROR: " << errorStr << "\n";
         }
+        flush (cout);
     }
 
     void onQuality (MamdaSubscription* subscription, mamaQuality quality)
@@ -848,6 +858,7 @@ public:
         }
 
         mOrderBook.setQuality (quality);
+        flush (cout);
     }
     
 };

@@ -168,6 +168,7 @@ public:
                  << headline.getNewsStoryId() << "\n";
             manager.requestStory (headline, this, NULL);
         }
+        flush (cout);
     }
 
     void onNewsStory (
@@ -203,6 +204,7 @@ public:
             default:
                 ;
         }
+        flush (cout);
     }
 
     void onNewsStoryError (
@@ -213,6 +215,7 @@ public:
     {
         cout << "NewsTicker: could not fetch story ID " << storyId
              << ": reason???\n";
+        flush (cout);
     }
 
     void onError (
@@ -224,6 +227,7 @@ public:
         cout << "NewsTicker:: OnError () sub =  " \
 			 <<  subscription->getSymbol() << " errorStr = \"" 
              << errorStr << "\"\n";
+        flush (cout);
     }
 
     void onQuality (

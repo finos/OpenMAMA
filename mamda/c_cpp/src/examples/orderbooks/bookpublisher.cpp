@@ -499,6 +499,7 @@ void BookPublisher::onCreate (MamaDQPublisherManager*  publisher)
     {
         cout << "Created publisher subscription.\n";
     }
+    flush (cout);
 }
 
 void BookPublisher::onError (
@@ -525,6 +526,7 @@ void BookPublisher::onError (
                  << "\n";
         }
     }
+    flush (cout);
 }
 
 void BookPublisher::onNewRequest (
@@ -563,6 +565,7 @@ void BookPublisher::onNewRequest (
     {        
         cout << "Received request for unknown symbol: " <<  symbol << endl;
     }
+    flush (cout);
 }
 
 void BookPublisher::onRequest (
@@ -616,6 +619,7 @@ void BookPublisher::onRequest (
         default:
             break;
     }
+    flush (cout);
 }
 
 void BookPublisher::createPublisherTransport (mamaBridge bridge)
