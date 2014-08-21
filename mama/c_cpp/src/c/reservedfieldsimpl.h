@@ -30,6 +30,8 @@ extern "C" {
   API*/    
 extern void initReservedFields (void);
 
+extern void cleanupReservedFields (void);
+
 #if defined(__cplusplus)
 }
 #endif

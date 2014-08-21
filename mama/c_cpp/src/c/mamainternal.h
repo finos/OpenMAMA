@@ -66,10 +66,6 @@ MAMAExpDLL
 extern mamaStatsCollector
 mamaInternal_getGlobalStatsCollector (void);
 
-MAMAExpDLL
-extern void
-cleanupReservedFields (void);
-
 MAMAExpBridgeDLL
 extern int
 mamaInternal_generateLbmStats (void);
