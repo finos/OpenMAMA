@@ -79,6 +79,7 @@ mama_status mamaPlaybackFileParser_init (mamaPlaybackFileParser
     impl->myMamaMsgLen  = 0;
     impl->myMaxMsgLen   = 0;
     impl->myMsgBuffer   = NULL;
+    impl->myMamaMsg    = NULL;
     return MAMA_STATUS_OK;
 }
 
@@ -98,7 +99,6 @@ mamaPlaybackFileParser_allocate (mamaPlaybackFileParser* fileParser)
     {
         return MAMA_STATUS_NOMEM;
     }
-	mamaMsg_create(&impl->myMamaMsg);
 
     mamaPlaybackFileParser_init (impl);
     *fileParser = (mamaPlaybackFileParserImpl*)impl;
