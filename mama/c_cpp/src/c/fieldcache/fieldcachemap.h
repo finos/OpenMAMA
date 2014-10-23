@@ -83,8 +83,7 @@ typedef enum
 } mamaFieldCacheMapType;
 
 extern const mamaFieldCacheMapType gMamaFieldCacheMapType;
-extern const mama_bool_t gUseMamaFieldCacheMapMonitor;
-        
+
 mama_status
 mamaFieldCacheMap_create(mamaFieldCacheMap* map);
 

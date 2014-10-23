@@ -535,14 +535,6 @@ void setFieldValue(MamaFieldCacheField& field, const MamaPrice& value);
  */
 void setFieldValue(MamaFieldCacheField& field, const MamaDateTime& value);
 
-/*
-template <class Field, class Value>
-void setFieldValue(MamaFieldCacheField& field, const Value& value)
-{
-    Field setField;
-    setField.set(field, value);
-}
-*/
 
 template <mamaFieldType fieldType>
 class Type

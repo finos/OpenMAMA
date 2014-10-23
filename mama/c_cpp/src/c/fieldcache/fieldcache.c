@@ -47,13 +47,13 @@ mama_status mamaFieldCache_create(mamaFieldCache* fieldCache)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-    
+
     localCache = (mamaFieldCache)calloc(1, sizeof(mamaFieldCacheImpl));
     if(!localCache)
     {
         return MAMA_STATUS_NOMEM;
     }
-    
+
     localCache->mLock = wlock_create();
 
     propstring = properties_Get (mamaInternal_getProperties (), "mama.fieldcache.type");
@@ -275,13 +275,12 @@ mama_status mamaFieldCache_applyMessage(
     {
         if (!fieldCache->mCacheMsg)
         {
-	   		ret=mamaMsg_copy(message, &fieldCache->mCacheMsg);
+            ret=mamaMsg_copy(message, &fieldCache->mCacheMsg);
         }
-		else
-		{
-        	ret=mamaMsg_applyMsg(fieldCache->mCacheMsg, message);
-		
-		}	
+        else
+        {
+            ret=mamaMsg_applyMsg(fieldCache->mCacheMsg, message);
+        }
         return ret;
     }
 
@@ -364,7 +363,7 @@ mama_status mamaFieldCache_getFullMessage(
     }
 
     mamaMsg_getNumFields(message, &numFields);
-    mamaFieldCacheIterator_create(&iterator, fieldCache);    
+    mamaFieldCacheIterator_create(&iterator, fieldCache);
     FIELD_CACHE_LOCK(fieldCache);
     while (mamaFieldCacheIterator_hasNext(iterator))
     {
@@ -377,7 +376,7 @@ mama_status mamaFieldCache_getFullMessage(
     }
     FIELD_CACHE_UNLOCK(fieldCache);
     mamaFieldCacheIterator_destroy(iterator);
-    
+
     return MAMA_STATUS_OK;
 }
 
@@ -467,15 +466,15 @@ mama_status mamaFieldCache_setTrackModified(
     {
         return MAMA_STATUS_NULL_ARG;
     }
-	if (!fieldCache->mCachePayload)
+    if (!fieldCache->mCachePayload)
     {
-    	fieldCache->mTrackModified = trackModified;
+        fieldCache->mTrackModified = trackModified;
     }
-	return MAMA_STATUS_OK;
+    return MAMA_STATUS_OK;
 }
 
 mama_status mamaFieldCache_getTrackModified(
-    mamaFieldCache fieldCache, 
+    mamaFieldCache fieldCache,
     mama_bool_t* trackModified)
 {
     if (!fieldCache || !trackModified)

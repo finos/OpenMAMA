@@ -124,11 +124,11 @@ mama_status mamaFieldCacheField_destroy(mamaFieldCacheField field)
                         (mamaFieldCacheVector)field->mData.data);
             }
             break;
-        default: /* something is wrong here */
+        default:
             break;
         }
     }
-  
+
     free(field);
 
     return MAMA_STATUS_OK;
@@ -1178,7 +1178,7 @@ mama_status mamaFieldCacheField_setPrice(const mamaFieldCacheField field,
 {
     mamaPrice price = NULL;
     void* old = NULL;
-    
+
     if (!field || !value)
     {
         return MAMA_STATUS_NULL_ARG;
@@ -1194,7 +1194,7 @@ mama_status mamaFieldCacheField_setPrice(const mamaFieldCacheField field,
         mamaFieldCacheField_setDataPointer(field, (void*)price, &old);
     }
     mamaPrice_copy((mamaPrice)field->mData.data, value);
-    
+
     return MAMA_STATUS_OK;
 }
 
@@ -1203,7 +1203,7 @@ mama_status mamaFieldCacheField_setDateTime(const mamaFieldCacheField field,
 {
     mamaDateTime dateTime = NULL;
     void* old = NULL;
-    
+
     if (!field || !value)
     {
         return MAMA_STATUS_NULL_ARG;
@@ -1219,7 +1219,7 @@ mama_status mamaFieldCacheField_setDateTime(const mamaFieldCacheField field,
         mamaFieldCacheField_setDataPointer(field, (void*)dateTime, &old);
     }
     mamaDateTime_copy((mamaDateTime)field->mData.data, value);
-    
+
     return MAMA_STATUS_OK;
 }
 
