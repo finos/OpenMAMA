@@ -50,18 +50,17 @@ namespace Wombat
                                                 MamaSource*  source);
         mama_size_t               size         () const;
 
-
+        
         class MAMACPPExpDLL iterator
         {
-        protected:
+        private:
             friend class          MamaSourceManager;
             struct                iteratorImpl;
             iteratorImpl&         mImpl;
-
+            iterator                           (const iteratorImpl& copy);
         public:
             iterator                           ();
             iterator                           (const iterator& copy);
-            iterator                           (const iteratorImpl& copy);
             ~iterator                          ();
 
             iterator&             operator=    (const iterator& rhs);
