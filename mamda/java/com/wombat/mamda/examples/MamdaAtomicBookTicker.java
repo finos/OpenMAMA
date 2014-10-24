@@ -280,6 +280,7 @@ public class MamdaAtomicBookTicker
                 }
                 System.out.print ("\n");
             }
+            System.out.flush();
         }
     
         public void onBookAtomicLevelEntryRecap (

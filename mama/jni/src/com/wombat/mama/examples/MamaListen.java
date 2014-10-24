@@ -555,6 +555,7 @@ public class MamaListen
             System.err.println ("No subjects specified");
             System.exit (1);
         }
+        System.out.flush();
     }
 
     private static void print (final String what, final int width)
@@ -573,6 +574,7 @@ public class MamaListen
             
             System.out.print (sb.toString());
         }
+        System.out.flush();
     }
 
     private static void parseCommandLine (final String[] args)
@@ -1070,6 +1072,7 @@ public class MamaListen
                     System.out.println ("Field not found in message.");
                 }
             }
+            System.out.flush();
         }
 
         private synchronized void displayAllFields(

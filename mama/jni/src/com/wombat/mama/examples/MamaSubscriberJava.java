@@ -340,6 +340,7 @@ public class MamaSubscriberJava
             sb.append(" ");
         
         System.out.print(sb.toString());
+        System.out.flush();
     }
     
     private static class SubscriptionCallback 

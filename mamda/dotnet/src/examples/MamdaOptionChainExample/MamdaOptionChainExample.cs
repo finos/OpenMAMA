@@ -279,6 +279,7 @@ namespace Wombat.Mamda.Examples
 					Console.WriteLine();
 					++i;
 				}
+                Console.Out.Flush();
 			}
 
 			public void printContract(MamdaOptionContract  contract)
@@ -300,6 +301,7 @@ namespace Wombat.Mamda.Examples
 					symbol + " " + exchange + ")  | " +
 					lastPrice + " | " + bidPrice + " | " +
 					askPrice + " | " + accVolume);
+                Console.Out.Flush();
 			}
 
 			public void printlnContract(MamdaOptionContract  contract)

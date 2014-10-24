@@ -1009,6 +1009,7 @@ void MamaEntitle::unsubscribeFromSymbols (void)
 int main (int argc, const char** argv)
 {
     MamaEntitle  mMamaEntitle;
+    setbuf (stdout, NULL);
     mMamaEntitle.parseCommandLine (argc, argv);
 
     if (mMamaEntitle.hasSymbols ())

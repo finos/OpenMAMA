@@ -255,6 +255,7 @@ private:
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     try
     {
         BookPublisher* mBookPublisher = new BookPublisher;

@@ -2020,6 +2020,7 @@ void MamaListen::usage (int exitStatus)
 int main (int argc, const char** argv)
 {
     MamaListen  mMamaListen;
+    setbuf (stdout, NULL);
     mMamaListen.parseCommandLine (argc, argv);
 
     if (mMamaListen.hasSymbols ())

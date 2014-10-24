@@ -37,6 +37,7 @@
 #include "wombat/port.h"
 #include <iostream>
 #include <errno.h>
+#include <stdio.h>
 
 using std::cerr;
 using std::cout;
@@ -65,6 +66,7 @@ static void createIOHandlers    (void);
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
 
     initializeMama ();

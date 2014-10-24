@@ -28,6 +28,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <vector>
+#include <stdio.h>
 #include <mama/MamaQueueGroup.h>
 #include <mama/MamaSource.h>
 #include "../parsecmd.h"
@@ -244,6 +245,7 @@ int main (int argc, const char **argv)
         NewsTicker*         aTicker        = new NewsTicker;
         mamaBridge          bridge         = NULL;
 
+        setbuf (stdout, NULL);
         CommonCommandLineParser     cmdLine (argc, argv);
         
         bridge = cmdLine.getBridge();

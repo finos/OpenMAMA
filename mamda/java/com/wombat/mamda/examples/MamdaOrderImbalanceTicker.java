@@ -195,6 +195,7 @@ public class MamdaOrderImbalanceTicker
                                     + "; NearClPrice:" + listener.getNearClearingPrice().getValue()
                                     + "; HighIndPrice:" +  listener.getHighIndicationPrice().getValue()
                                     + "; LowIndPrice:" +  listener.getLowIndicationPrice().getValue() + ")\n");
+                System.out.flush();
             }
 
         public void onNoOrderImbalance (
@@ -214,6 +215,7 @@ public class MamdaOrderImbalanceTicker
                                     + "; NearClPrice:" + listener.getNearClearingPrice().getValue()
                                     + "; HighIndPrice:" +  listener.getHighIndicationPrice().getValue()
                                     + "; LowIndPrice:" +  listener.getLowIndicationPrice().getValue() + ")\n");
+                System.out.flush();
             }            
 
         public  void onOrderImbalanceRecap (
@@ -223,6 +225,7 @@ public class MamdaOrderImbalanceTicker
             MamdaOrderImbalanceRecap     imbalance)
             {
                 System.out.print("OrderImbalanceRecap for (Symbol:" + subscription.getSymbol () + ")\n");
+                System.out.flush();
             }
 
         public void onStale (

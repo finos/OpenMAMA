@@ -22,6 +22,7 @@
 #include <mamda/MamdaOrderBook.h>
 #include <mamda/MamdaOrderBookEntry.h>
 #include <assert.h>
+#include <stdio.h>
 
 using namespace Wombat;
 
@@ -33,6 +34,7 @@ int main (int argc, const char** argv)
 {
     MamaDateTime now;
     MamdaOrderBook  book;
+    setbuf (stdout, NULL);
     book.setSymbol (symbol);
 
     now.setToNow();

@@ -39,6 +39,7 @@
 #include <vector>
 #include <stdexcept>
 #include <iomanip>
+#include <stdio.h>
 
 #include <mamda/MamdaOrderBook.h>
 #include <mamda/MamdaOrderBookPriceLevel.h>
@@ -854,6 +855,7 @@ int main (int argc, const char** argv)
 {
     MamaQueueGroup*             queues = NULL;
     mamaBridge                  bridge = NULL;
+    setbuf (stdout, NULL);
     try
     {
         // Initialize the MAMA API

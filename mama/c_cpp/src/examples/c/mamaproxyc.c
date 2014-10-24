@@ -28,6 +28,7 @@
 #include "mama/dqpublisher.h"
 #include "mama/dqpublishermanager.h"
 #include "string.h"
+#include <stdio.h>
 
 static const char *  gUsageString[] =
 {
@@ -285,6 +286,7 @@ syncCallback (mamaTimer timer, void* closure)
 int main (int argc, const char **argv)
 {
 
+    setbuf (stdout, NULL);
     gSymbolList = (const char**)calloc (MAX_SUBSCRIPTIONS, sizeof (char*));
 
     parseCommandLine (argc, argv);

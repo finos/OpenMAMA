@@ -323,6 +323,7 @@ int main (int argc, const char **argv)
     gSubscriptionList = (mamaSubscription*)calloc (MAX_SUBSCRIPTIONS,
                                                    sizeof (mamaSubscription));
 
+    setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
 
     if (gNumSymbols == 0 && !gPrintVersionAndExit)

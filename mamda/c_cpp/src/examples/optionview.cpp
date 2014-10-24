@@ -56,6 +56,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <vector>
+#include <stdio.h>
 #include "parsecmd.h"
 #include "dictrequester.h"
 #include "mama/MamaQueueGroup.h"
@@ -553,6 +554,7 @@ private:
 
 int main (int argc, const char** argv)
 {
+    setbuf (stdout, NULL);
     try
     {
         // Process some command line arguments:

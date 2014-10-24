@@ -39,6 +39,7 @@ using std::cerr;
 using std::cout;
 using std::endl;
 
+#include <stdio.h>
 #include "mama/mama.h"
 #include "mama/mamacpp.h"
 
@@ -64,6 +65,7 @@ static void sendRequest         (void);
 int main (int argc, const char **argv)
 {
     int i = 0; 
+    setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
 
     initializeMama ();
