@@ -33,7 +33,6 @@ namespace Wombat
     class MamaPrice;
     class MamaMsgFieldIterator;
     class MamaDictionary;
-    class WombatMsg;
     class MamaMsg;
 
     /**
@@ -117,7 +116,6 @@ namespace Wombat
 
         MamaMsg (void);
         MamaMsg (const MamaMsg&  mm);
-        MamaMsg (WombatMsg&      wm);
 
         /**
          * Create the actual underlying wire format message. This method will
@@ -141,14 +139,6 @@ namespace Wombat
          * @param id The payload bridge to be used.
          */
         void createForPayloadBridge (mamaPayloadBridge payloadBridge);
-
-
-       
-        /**
-         * The underlying wire format for the message will be Wombat Message
-         * regardless of the middleware being used.
-         */
-        void createForWombatMsg (void);
 
         /**
         * Create a MamaMsg from the provided byte buffer. The application
