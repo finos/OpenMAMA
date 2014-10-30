@@ -20,8 +20,7 @@
  */
 
 #ifndef MAMA_BRIDGE_CALLBACK_CPP_H
-#define MAMA_BRIDEG_CALLBACK_CPP_H
-#endif
+#define MAMA_BRIDGE_CALLBACK_CPP_H
 
 #include "mama/mama.h"
 
@@ -51,3 +50,4 @@ public:
 };
 
 } //namespace Wombat
+#endif
