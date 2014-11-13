@@ -234,13 +234,19 @@ MAMAExpDLL
 extern void
 mama_forceLogVa(const char   *format, va_list  args);
 
-/** Used to add a custom prefix to the start of the line being loggedf */
+/**
+ * @brief Used to add a custom prefix to a log line with a variable arg list.
+ *
+ * @param[in] prefix The prefix to prepend to the log line.
+ * @param[in] format The format of the log message.
+ * @param[in] args Variable argument list.
+ *
+ */
 MAMAExpDLL
 extern void
-mama_forceLogVaWithPrefix (const char* level,
+mama_forceLogVaWithPrefix (const char* prefix,
                            const char* format,
                            va_list     args);
-
 
 /**
  * @brief Used for of logging within the API
@@ -252,6 +258,19 @@ mama_forceLogVaWithPrefix (const char* level,
 MAMAExpDLL
 extern void
 mama_forceLog (MamaLogLevel level, const char *format, ...);
+
+/**
+ * @brief Used to add a custom prefix when logging a line.
+ *
+ * @param[in] prefix The prefix to prepend to the log line.
+ * @param[in] format The format of the log message.
+ * @param[in] ... Variable argument list.
+ */
+MAMAExpDLL
+extern void
+mama_forceLogWithPrefix (const char* prefix,
+                         const char* format,
+                         ...);
 
 /**
  * @brief Set the callback to be used for mama_log calls. If not set then
