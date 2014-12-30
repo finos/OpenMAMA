@@ -321,11 +321,6 @@ namespace Wombat
         void setTransportCallback (
             MamaTransportCallback*  callback);
         
-         /**
-         * Get the transport callback.
-         */
-        MamaTransportCallback* getTransportCallback ();
-
         /**
          * Set the symbology mapping class.
          *
