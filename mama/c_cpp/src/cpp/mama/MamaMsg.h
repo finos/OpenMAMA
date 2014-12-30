@@ -164,22 +164,6 @@ namespace Wombat
             size_t       bufferLength);
 
         /**
-        * Create a mamaMsg from the provided byte buffer using either the native 
-        * format for the bridge (e.g. TIB/RV messages for the TIB/RV bridge) or 
-        * a wombatmsg.  The function can determine from the buffer whether it is a 
-        * wombatmsg or the native format for the transport being used.  The application 
-        * is responsible for destroying the message.
-        *
-        * @param buffer       The byte array containing the wire format of the message
-        * @param bufferLength The length, in bytes, of the supplied buffer
-        * @param bridge       The bridge to use
-        */
-        void createForBridgeFromBuffer (
-            const void*  buffer,
-            size_t       bufferLength,
-            mamaBridge   bridge);
-
-        /**
          * Copy the message from another, severing all links to the
          * original message
          */
@@ -2808,17 +2792,6 @@ namespace Wombat
             const void*&  buffer,
             size_t&       bufferLength) const;
 
-        /**
-         * Create a MamaMsg. This will create a message using the native
-         * format for the bridge e.g. TIB/RV messages for the TIB/RV bridge.
-         * For middlewares which only do not have a native message format,
-         * a wombatmsg will be created.
-         *
-         * @param bridgeImpl the bridge to use
-         */
-        void createForBridge (
-            mamaBridge  bridgeImpl); 
-        
         /**
          * Normally the Mama API owns incoming mamaMsg objects and they go out of 
 	     * scope and are freed when the message callback returns. Calling this 
