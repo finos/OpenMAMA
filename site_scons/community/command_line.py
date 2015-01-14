@@ -82,7 +82,7 @@ def get_command_line_opts( host, products, VERSIONS ):
             EnumVariable( 'compiler', 'Compiler to use for building OpenMAMA',
                          'default', allowed_values=('default', 'clang', 'clang-analyzer')),
             EnumVariable('osx_version', 'OS X Version to target build at', 'current',
-                         allowed_values=('current','10.8','10.9')),
+                         allowed_values=('current','10.8','10.9','10.10')),
             )
 
     return opts
