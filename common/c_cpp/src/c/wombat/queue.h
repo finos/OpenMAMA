@@ -73,10 +73,23 @@ wombatQueue_create (wombatQueue queue, uint32_t maxSize, uint32_t initialSize,
                     uint32_t growBySize);
 
 /**
- * Destroy the Queue. 
+ * Destroy the Queue, and free any memory associated
+ * with the Queue.
+ *
+ * wombatQueue_create() must have been successfully called
+ * before calling this method.
  */
 COMMONExpDLL wombatQueueStatus
 wombatQueue_destroy (wombatQueue queue);
+
+/**
+ * Free any memory associated with the Queue.
+ *
+ * Unless wombatQueue_create() failed, prefer calling
+ * wombatQueue_destroy().
+ */
+COMMONExpDLL wombatQueueStatus
+wombatQueue_deallocate(wombatQueue queue);
 
 /** 
  * Set the maximum size of the queue. WOMBAT_QUEUE_MAX_SIZE is the maximum
