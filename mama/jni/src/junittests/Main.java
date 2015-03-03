@@ -53,6 +53,7 @@ public class Main
         suite.addTestSuite(MamaPriceGetRoundedPrice.class);
         suite.addTestSuite(MamaSetLogCallback.class);
         suite.addTestSuite(MamaTimerCallbacks.class);
+		suite.addTestSuite(MamaPublisherTest.class);
 
         return suite;
     }

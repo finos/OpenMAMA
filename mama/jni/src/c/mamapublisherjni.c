@@ -76,40 +76,47 @@ static void MAMACALLTYPE sendCompleteCB (mamaPublisher publisher,
 /*
  * Class:     com_wombat_mama_MamaPublisher
  * Method:    _create
- * Signature: (Lcom/wombat/mama/Transport;Ljava/lang/String;)V
+ * Signature: (Lcom/wombat/mama/MamaTransport;Ljava/lang/String;Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1create
-  (JNIEnv* env, jobject this, jobject transport, jstring topic)
+  (JNIEnv* env, jobject this, jobject transport, jstring topic, jstring source)
 {
-    mamaPublisher   cPublisher          =   NULL;
+	mamaPublisher   cPublisher          =   NULL;
     mamaTransport   cTransport          =   NULL;
-    const char*     cTopic              =   NULL;
+    const char*     cSource             =   NULL;
+	const char*     cTopic				=   NULL;
     jlong           transportPointer    =   0;
     mama_status     status              =   MAMA_STATUS_OK;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-  
     /*Get the transport pointer*/
     assert(transport!=NULL);
     transportPointer = (*env)->GetLongField(env, transport,
             transportPointerFieldId_g);
-    cTransport = CAST_JLONG_TO_POINTER(mamaTransport, transportPointer);
-    assert(transportPointer!=0);
 
+    cTransport = CAST_JLONG_TO_POINTER(mamaTransport, transportPointer);
+
+    assert(transportPointer!=0);
     /*Get the char* from the jstring*/
     if(NULL!=topic)
     {
          cTopic = (*env)->GetStringUTFChars(env,topic,0);
          if(!cTopic)return;
     }
-    
+	if(NULL!=source)
+    {
+         cSource = (*env)->GetStringUTFChars(env,source,0);
+         if(!cSource)return;
+    }
+
     if(MAMA_STATUS_OK!=(mamaPublisher_create(
                     &cPublisher,
                     cTransport,
                     cTopic,
-                    NULL,
+                    cSource,
                     NULL)))
     {
-        if(cTopic)(*env)->ReleaseStringUTFChars(env,topic, cTopic);
+		if(cTopic)(*env)->ReleaseStringUTFChars(env,topic, cTopic);
+        if(cSource)(*env)->ReleaseStringUTFChars(env,source, cSource);
         utils_buildErrorStringForStatus(
                 errorString, UTILS_MAX_ERROR_STRING_LENGTH,
                 "Failed to create publisher.", status);
@@ -121,6 +128,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1create
                          CAST_POINTER_TO_JLONG(cPublisher));
         
     if(cTopic)(*env)->ReleaseStringUTFChars(env,topic, cTopic);
+	if(cSource)(*env)->ReleaseStringUTFChars(env,source, cSource);
     
     return;
 }
