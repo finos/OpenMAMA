@@ -496,6 +496,21 @@ mamaDictionary_getDictionaryMessage (
 }
 
 mama_status
+	mamaDictionary_fillDictionaryMessage (
+	mamaDictionary dictionary,
+	mamaMsg* msg)
+{
+	mamaDictionaryImpl* impl = (mamaDictionaryImpl*)dictionary;
+
+	if (!impl) return MAMA_STATUS_NULL_ARG;
+	if (!msg) return MAMA_STATUS_INVALID_ARG;
+
+	populateMessageFromDictionary (impl, *msg);
+
+	return MAMA_STATUS_OK;
+}
+
+mama_status
 mamaDictionary_createFieldDescriptor (
                 mamaDictionary       dictionary,
                 mama_fid_t           fid,
