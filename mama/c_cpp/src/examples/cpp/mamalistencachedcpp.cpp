@@ -1287,6 +1287,22 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              printData             ("%s\n", price);
          } 
          break;
+    case MAMA_FIELD_TYPE_VECTOR_BOOL:
+         {
+             const mama_bool_t* vectorBool;
+             size_t             resultLen;
+             field.getVectorBool (vectorBool, resultLen);
+             displayVectorField (vectorBool, resultLen, "%d");
+         }
+         break;
+    case MAMA_FIELD_TYPE_VECTOR_CHAR:
+         {
+             const char*        vectorChar;
+             size_t             resultLen;
+             field.getVectorChar (vectorChar, resultLen);
+             displayVectorField (vectorChar, resultLen, "%c");
+         }
+         break;
     case MAMA_FIELD_TYPE_VECTOR_I8:
          {    
              const int8_t*      vectorI8;
@@ -2147,6 +2163,30 @@ std::ostream& operator<<(std::ostream& os, const MamaFieldCacheField& field)
     {
         MamaFieldCacheFieldPrice cachedPriceField;
         os << cachedPriceField.get(field).getAsString();
+        break;
+    }
+    case MAMA_FIELD_TYPE_VECTOR_BOOL:
+    {
+        MamaFieldCacheFieldBoolVector cachedVectorField;
+        const mama_bool_t* values = NULL;
+        mama_size_t size = 0;
+        cachedVectorField.get(field,values,size);
+        for (mama_size_t i = 0; i < size; ++i)
+        {
+            os << "[" << (values[i] ? 1 : 0) << "]";
+        }
+        break;
+    }
+    case MAMA_FIELD_TYPE_VECTOR_CHAR:
+    {
+        MamaFieldCacheFieldCharVector cachedVectorField;
+        const char* values = NULL;
+        mama_size_t size = 0;
+        cachedVectorField.get(field,values,size);
+        for (mama_size_t i = 0; i < size; ++i)
+        {
+            os << "[" << (char)values[i] << "]";
+        }
         break;
     }
     case MAMA_FIELD_TYPE_VECTOR_I8:

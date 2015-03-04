@@ -1166,6 +1166,16 @@ qpidmsgPayload_apply (msgPayload          dest,
             UPDATE_VECTOR_FIELD (U8, mama_u8_t);
             break;
         }
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            UPDATE_VECTOR_FIELD (Bool, mama_bool_t);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        {
+            UPDATE_VECTOR_FIELD (Char, char);
+            break;
+        }
         case MAMA_FIELD_TYPE_VECTOR_I8:
         {
             UPDATE_VECTOR_FIELD (I8, mama_i8_t);
@@ -3733,6 +3743,12 @@ qpidmsgPayloadImpl_addFieldToPayload (msgPayload                 msg,
         return status;
         break;
     }
+    case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        ADD_VECTOR_FIELD_VALUE_TO_MESSAGE(Bool, mama_bool_t);
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        ADD_VECTOR_FIELD_VALUE_TO_MESSAGE(Char, char);
+        break;
     case MAMA_FIELD_TYPE_VECTOR_I8:
         ADD_VECTOR_FIELD_VALUE_TO_MESSAGE(I8, mama_i8_t);
         break;
@@ -3912,14 +3928,14 @@ qpidmsgPayloadImpl_arrayToMamaType (pn_type_t type)
     switch(type)
     {
     case PN_NULL:       return MAMA_FIELD_TYPE_UNKNOWN;
-    case PN_BOOL:       return MAMA_FIELD_TYPE_VECTOR_U8;
+    case PN_BOOL:       return MAMA_FIELD_TYPE_VECTOR_BOOL;
     case PN_UBYTE:      return MAMA_FIELD_TYPE_VECTOR_U8;
     case PN_BYTE:       return MAMA_FIELD_TYPE_VECTOR_I8;
     case PN_USHORT:     return MAMA_FIELD_TYPE_VECTOR_U16;
     case PN_SHORT:      return MAMA_FIELD_TYPE_VECTOR_I16;
     case PN_UINT:       return MAMA_FIELD_TYPE_VECTOR_U32;
     case PN_INT:        return MAMA_FIELD_TYPE_VECTOR_I32;
-    case PN_CHAR:       return MAMA_FIELD_TYPE_VECTOR_U8;
+    case PN_CHAR:       return MAMA_FIELD_TYPE_VECTOR_CHAR;
     case PN_ULONG:      return MAMA_FIELD_TYPE_VECTOR_U64;
     case PN_LONG:       return MAMA_FIELD_TYPE_VECTOR_I64;
     case PN_TIMESTAMP:  return MAMA_FIELD_TYPE_VECTOR_TIME;

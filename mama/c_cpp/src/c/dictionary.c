@@ -952,6 +952,8 @@ void populateMessageFromDictionary (mamaDictionaryImpl* impl,
     int         i      = 0;
     mama_status status = MAMA_STATUS_OK;
 
+    const mama_bool_t bool_vector[] = {0};
+    const char char_vector[] = {' '};
     const mama_i8_t i8_vector[] = {1};
     const mama_u8_t u8_vector[] = {1};
     const mama_i16_t i16_vector[] = {1};
@@ -1047,6 +1049,12 @@ void populateMessageFromDictionary (mamaDictionaryImpl* impl,
                     break;
                 case MAMA_FIELD_TYPE_PRICE:
                     ADD_TO_DICT (Price, price);
+                    break;
+                case MAMA_FIELD_TYPE_VECTOR_BOOL:
+                    ADD_VECTOR_TO_DICT (Bool, bool_vector);
+                    break;
+                case MAMA_FIELD_TYPE_VECTOR_CHAR:
+                    ADD_VECTOR_TO_DICT (Char, char_vector);
                     break;
                 case MAMA_FIELD_TYPE_VECTOR_I8:
                     ADD_VECTOR_TO_DICT (I8, i8_vector);

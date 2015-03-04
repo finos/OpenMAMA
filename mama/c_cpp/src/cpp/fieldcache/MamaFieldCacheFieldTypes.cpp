@@ -273,6 +273,66 @@ const MamaDateTime& MamaFieldCacheFieldDateTime::get(const MamaFieldCacheField& 
     return mDateTime;
 }
 
+// MAMA_FIELD_TYPE_VECTOR_BOOL
+template <>
+void MamaFieldCacheFieldBoolVector::set(MamaFieldCacheField& field,
+                                        const mama_bool_t* values,
+                                        mama_size_t size)
+{
+    checkType(field);
+    mamaFieldCacheField_setBoolVector(field.getCValue(), values, size);
+}
+template <>
+void MamaFieldCacheFieldBoolVector::get(const MamaFieldCacheField& field,
+                                        const mama_bool_t*& values,
+                                        mama_size_t& size) const
+{
+    checkType(field);
+    mamaFieldCacheField_getBoolVector(field.getCValue(), &values, &size);
+}
+template <>
+const mama_bool_t& MamaFieldCacheFieldBoolVector::get(const MamaFieldCacheField& field,
+                                                      mama_size_t index) const
+{
+    checkType(field);
+    const mama_bool_t* values = NULL;
+    mama_size_t size = 0;
+    mamaFieldCacheField_getBoolVector(field.getCValue(), &values, &size);
+    if (index < size)
+        return values[index];
+    throw std::out_of_range("MamaFieldCacheFieldBoolVector::get");
+}
+
+// MAMA_FIELD_TYPE_VECTOR_CHAR
+template <>
+void MamaFieldCacheFieldCharVector::set(MamaFieldCacheField& field,
+                                        const char* values,
+                                        mama_size_t size)
+{
+    checkType(field);
+    mamaFieldCacheField_setCharVector(field.getCValue(), values, size);
+}
+template <>
+void MamaFieldCacheFieldCharVector::get(const MamaFieldCacheField& field,
+                                        const char*& values,
+                                        mama_size_t& size) const
+{
+    checkType(field);
+    mamaFieldCacheField_getCharVector(field.getCValue(), &values, &size);
+}
+template <>
+const char& MamaFieldCacheFieldCharVector::get(const MamaFieldCacheField& field,
+                                               mama_size_t index) const
+{
+    checkType(field);
+    const char* values = NULL;
+    mama_size_t size = 0;
+    mamaFieldCacheField_getCharVector(field.getCValue(), &values, &size);
+    if (index < size)
+        return values[index];
+    throw std::out_of_range("MamaFieldCacheFieldCharVector::get");
+}
+
 // MAMA_FIELD_TYPE_VECTOR_I8
 template <>
 void MamaFieldCacheFieldI8Vector::set(MamaFieldCacheField& field,

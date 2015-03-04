@@ -919,7 +919,7 @@ qpidmsgFieldPayload_getVectorBool (const msgFieldPayload   field,
                                    const mama_bool_t**     result,
                                    mama_size_t*            size)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    GET_VECTOR_FIELD (_bool, mama_bool_t);
 }
 
 mama_status
@@ -1262,6 +1262,16 @@ qpidmsgFieldPayload_getAsString       (const msgFieldPayload   field,
                                     U64,
                                     "%llu",
                                     long long unsigned);
+        break;
+    }
+    case MAMA_FIELD_TYPE_VECTOR_BOOL:
+    {
+        EXPAND_PRINT_VECTOR_MACROS (mama_bool_t, Bool, "%u", mama_bool_t);
+        break;
+    }
+    case MAMA_FIELD_TYPE_VECTOR_CHAR:
+    {
+        EXPAND_PRINT_VECTOR_MACROS (char, Char, "%c", char);
         break;
     }
     case MAMA_FIELD_TYPE_VECTOR_I8:

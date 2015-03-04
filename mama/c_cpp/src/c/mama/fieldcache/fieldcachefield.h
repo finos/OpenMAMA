@@ -442,6 +442,40 @@ mamaFieldCacheField_getDateTime(const mamaFieldCacheField field,
                                 const mamaDateTime* result);
 
 /**
+ * This function will get the values a <code>mamaFieldCacheField</code> of type Bool vector.
+ *
+ * @param field (in) The field.
+ * @param values (out) The array of values of the field.
+ * @param size (out) The number of values.
+ * @return Resulting status of the call which can be
+ *      MAMA_STATUS_NULL_ARG
+ *      MAMA_STATUS_INVALID_ARG
+ *      MAMA_STATUS_OK
+ */
+MAMAExpDLL
+extern mama_status
+mamaFieldCacheField_getBoolVector(const mamaFieldCacheField field,
+                                  const mama_bool_t** values,
+                                  mama_size_t* size);
+/**
+ * This function will get the values a <code>mamaFieldCacheField</code> of type Char vector.
+ *
+ * @param field (in) The field.
+ * @param values (out) The array of values of the field.
+ * @param size (out) The number of values.
+ * @return Resulting status of the call which can be
+ *      MAMA_STATUS_NULL_ARG
+ *      MAMA_STATUS_INVALID_ARG
+ *      MAMA_STATUS_OK
+ */
+MAMAExpDLL
+extern mama_status
+mamaFieldCacheField_getCharVector(const mamaFieldCacheField field,
+                                  const char** values,
+                                  mama_size_t* size);
+
+
+/**
  * This function will get the values a <code>mamaFieldCacheField</code> of type I8 vector.
  *
  * @param field (in) The field.
@@ -877,6 +911,37 @@ MAMAExpDLL
 extern mama_status
 mamaFieldCacheField_setDateTime(const mamaFieldCacheField field,
                                 const mamaDateTime value);
+
+/**
+ * This function will set the values of a <code>mamaFieldCacheField</code> of type Bool vector.
+ *
+ * @param field (in) The field to set the value to.
+ * @param value (in) The new value of the field.
+ * @return Resulting status of the call which can be
+ *      MAMA_STATUS_NULL_ARG
+ *      MAMA_STATUS_INVALID_ARG
+ *      MAMA_STATUS_OK
+ */
+MAMAExpDLL
+extern mama_status
+mamaFieldCacheField_setBoolVector(const mamaFieldCacheField field,
+                                  const mama_bool_t* values,
+                                  mama_size_t size);
+/**
+ * This function will set the values of a <code>mamaFieldCacheField</code> of type Char vector.
+ *
+ * @param field (in) The field to set the value to.
+ * @param value (in) The new value of the field.
+ * @return Resulting status of the call which can be
+ *      MAMA_STATUS_NULL_ARG
+ *      MAMA_STATUS_INVALID_ARG
+ *      MAMA_STATUS_OK
+ */
+MAMAExpDLL
+extern mama_status
+mamaFieldCacheField_setCharVector(const mamaFieldCacheField field,
+                                  const char* values,
+                                  mama_size_t size);
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type I8 vector.
