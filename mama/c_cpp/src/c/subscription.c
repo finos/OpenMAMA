@@ -2616,7 +2616,19 @@ mama_status mamaSubscription_deactivate(mamaSubscription subscription)
                     ret = mamaSubscription_deactivate_internal(impl);
                     if (impl->mSubscMsgType == MAMA_SUBSC_DDICT_SNAPSHOT ||
                         impl->mSubscMsgType == MAMA_SUBSC_SNAPSHOT)
+                    {
+                        /* Snapshot subscriptions don't have a bridge and are transitioned to deactivated
+                         * immediately after deactivating.
+                         * Also, since there is no bridge subscription callback to be called later with
+                         * mamaSubscriptionImpl_onSubscriptionDestroyed, the necessary actions for deactivated
+                         * state are performed here. Namely the queue object count is decremented.
+                         */
+                        if(NULL != impl->mQueue)
+                        {
+                            mamaQueue_decrementObjectCount(&impl->mLockHandle, impl->mQueue);
+                        }
                         mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEACTIVATED);
+                    }
                     break;
             
                 case MAMA_SUBSCRIPTION_DEACTIVATING:
