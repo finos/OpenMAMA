@@ -292,13 +292,16 @@ public class MamaSubscription
         // Save the source in the Java layer to prevent a context switch to C
         mySource = source;
 
+        // Save the closure
+        myClosure = closure;
+
         // Create the native subscription
         setupNativeSubscription(
             callback,
             queue,
             source,
             symbol,
-            closure);
+            null);
     }
     
     public void setAppDataType (MamaMdDataType type)
