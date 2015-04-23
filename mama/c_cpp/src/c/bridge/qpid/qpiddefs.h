@@ -34,7 +34,6 @@
 /* Qpid include files */
 #include <proton/driver.h>
 #include <proton/message.h>
-#include <proton/util.h>
 #include <proton/messenger.h>
 
 #include "endpointpool.h"
@@ -82,6 +81,11 @@ typedef enum qpidMsgType_
     qpidBridgeMamaTransportImpl_stopProtonMessenger (messenger)
 #define PN_MESSENGER_FREE(messenger)                                           \
     qpidBridgeMamaTransportImpl_freeProtonMessenger (messenger)
+#endif
+
+/* The proton header util.h was removed in version 0.8 */
+#if (PN_VERSION_MAJOR == 0 && PN_VERSION_MINOR <= 7)
+#include <proton/util.h>
 #endif
 
 /* Place other version specific macros here */
