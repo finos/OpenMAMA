@@ -35,13 +35,13 @@
 #include <payloadbridge.h>
 #include <property.h>
 #include <platform.h>
+#include <plugin.h>
 
 #include "fileutils.h"
 #include "reservedfieldsimpl.h"
 #include <mama/statslogger.h>
 #include <mama/stat.h>
 #include <mama/statfields.h>
-#include <statsgeneratorinternal.h>
 #include <statsgeneratorinternal.h>
 #include <mama/statscollector.h>
 #include "transportimpl.h"
@@ -740,6 +740,9 @@ mama_openWithPropertiesCount (const char* path,
 		}
     }
 
+    /* This will initialise all plugins */
+    mama_initPlugins();
+
     prop = properties_Get (gProperties, "mama.catchcallbackexceptions.enable");
     if (prop != NULL && strtobool(prop))
     {
@@ -1253,8 +1256,11 @@ mama_closeCount (unsigned int* count)
                 gImpl.myPayloadLibraries[(uint8_t)payload] = NULL;
             }
         }
-        
+
        gDefaultPayload = NULL;
+
+       /* This will shutdown all plugins */
+       mama_shutdownPlugins();
 
         /* Look for a bridge for each of the middlewares and close them */
         for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)

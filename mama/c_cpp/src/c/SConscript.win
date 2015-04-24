@@ -50,6 +50,7 @@ dqpublishermanager.c
 inbox.c
 msgtype.c
 msgutils.c
+plugin.c
 senderId.c
 reservedfields.c
 subscription.c

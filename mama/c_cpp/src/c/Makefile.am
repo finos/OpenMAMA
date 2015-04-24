@@ -131,6 +131,7 @@ libmama_la_SOURCES = \
     mamaStrUtils.h \
     mamaStrUtils.c \
 	marketdata.c \
+    plugin.c \
     middleware.c \
 	msg.c \
 	msgfield.c \
