@@ -590,4 +590,11 @@ mama_status mamaPublisherImpl_clearTransport (mamaPublisher publisher)
     return mamaPublisherImpl_destroy((mamaPublisherImpl *)publisher);
 }
 
+mamaTransport
+mamaPublisherImpl_getTransportImpl (mamaPublisher publisher)
+{
+    mamaPublisherImpl* impl   = (mamaPublisherImpl*)publisher;
 
+    if (!impl) return NULL;
+    return impl->mTport;
+}
