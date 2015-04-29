@@ -942,7 +942,7 @@ qpidBridgeMamaTransportImpl_start (qpidTransportBridge* impl)
                           "Error Subscribing to %s : %s",
                           impl->mIncomingAddress,
                           PN_MESSENGER_ERROR(impl->mIncoming));
-                (impl->mIncoming);
+                qpidBridgeMamaTransportImpl_stopProtonMessenger(impl->mIncoming);
                 return MAMA_STATUS_PLATFORM;
             }
         }
