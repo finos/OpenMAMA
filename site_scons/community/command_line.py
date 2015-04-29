@@ -26,6 +26,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        BoolVariable('with_examples','Build with test tools',True),
        BoolVariable('entitled','Whether the build is entitled or unentitled',False),
        PathVariable('gtest_home','Path to Google Test home',None, PathVariable.PathIsDir),
+       PathVariable('junit_home','Path to Junit home',None, PathVariable.PathIsDir),
        ListVariable('middleware','Middleware(s) to be compiled in', 'avis', names = ['avis', 'qpid'] ),
        ('jobs', 'Number of scons threads to spawn, if n is passed the number of availabe cores is calculated and used', '1'),
 
@@ -39,7 +40,7 @@ def get_command_line_opts( host, products, VERSIONS ):
             PathVariable('qpid_home', 'Path to QPID Proton Libraries',
                           'c:\\proton', PathVariable.PathAccept),
             EnumVariable('vsver','Visual Studio Version to use', '10.0',
-                allowed_values=('8.0','9.0','10.0')),
+                allowed_values=('8.0','9.0','10.0','11.0','12.0')),
             EnumVariable('product', 'Product to be built', 'mamda',
                      allowed_values=( products )),
             EnumVariable('dotnet_version', 'Dotnet Version used to determine framework directory', '2.0',
@@ -63,6 +64,8 @@ def get_command_line_opts( host, products, VERSIONS ):
             EnumVariable('product', 'Product to be built', 'mamda',
                          #mamda all is a windows only build
                          allowed_values=( [ x for x in products if x != "mamdaall" ] )),
+            EnumVariable('target_arch', 'Specifies if the build should target 32 or 64 bit architectures.',
+                          host['arch'], allowed_values=['x86', 'x86_64']),
             EnumVariable( 'compiler', 'Compiler to use for building OpenMAMA',
                          'default', allowed_values=('default', 'gcc', 'clang', 'clang-analyzer')),
         )
