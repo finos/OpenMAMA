@@ -216,9 +216,6 @@ mama_initPlugins(void)
         }
     }
 
-    mama_log (MAMA_LOG_LEVEL_FINE, "mama_initPlugins(): Initialising mamacenterprise");
-    mama_loadPlugin ("mamacenterprise");
-
     return MAMA_STATUS_OK;
 }
 
@@ -243,15 +240,10 @@ mama_loadPlugin (const char* pluginName)
     if (pluginImpl == NULL)
     {
        /* The plugin name should be of the format mamaplugin<name> */
-        if (strncmp(pluginName, "mamacenterprise", MAX_PLUGIN_STRING) == 0)
-            snprintf(loadPluginName, MAX_PLUGIN_STRING,
-                "%s",
-                pluginName);
-        else
-            snprintf(loadPluginName, MAX_PLUGIN_STRING,
-                "%s%s",
-                PLUGIN_NAME,
-                pluginName);
+        snprintf(loadPluginName, MAX_PLUGIN_STRING,
+            "%s%s",
+            PLUGIN_NAME,
+            pluginName);
 
         pluginLib = openSharedLib (loadPluginName, NULL);
 
@@ -345,31 +337,34 @@ mama_shutdownPlugins (void)
 
     for (plugin = 0; plugin <= gPluginNo; plugin++)
     {
-        if (gPlugins[plugin]->mPluginHandle != NULL)
+        if (gPlugins[plugin] != NULL)
         {
-            /* Fire the user shutdown hook first - if one is present */
-            if (gPlugins[plugin]->mamaPluginShutdownHook != NULL)
+            if (gPlugins[plugin]->mPluginHandle != NULL)
             {
-                gPlugins[plugin]->mamaPluginShutdownHook (gPlugins[plugin]->mPluginInfo);
-            }
+                /* Fire the user shutdown hook first - if one is present */
+                if (gPlugins[plugin]->mamaPluginShutdownHook != NULL)
+                {
+                    gPlugins[plugin]->mamaPluginShutdownHook (gPlugins[plugin]->mPluginInfo);
+                }
 
-            ret = closeSharedLib (gPlugins[plugin]->mPluginHandle);
-            if (0!=ret)
-            {
-                 mama_log (MAMA_LOG_LEVEL_WARN,
-                            "mama_shutdownPlugins(): Failed to close Mama Plugin [%s]",
-                            gPlugins[plugin]->mPluginName);
-            }
-            else
-            {
-                 mama_log (MAMA_LOG_LEVEL_WARN,
-                            "mama_shutdownPlugins(): Mama Plugin [%s] successfully closed",
-                            gPlugins[plugin]->mPluginName);
-            }
+                ret = closeSharedLib (gPlugins[plugin]->mPluginHandle);
+                if (0!=ret)
+                {
+                     mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mama_shutdownPlugins(): Failed to close Mama Plugin [%s]",
+                                gPlugins[plugin]->mPluginName);
+                }
+                else
+                {
+                     mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mama_shutdownPlugins(): Mama Plugin [%s] successfully closed",
+                                gPlugins[plugin]->mPluginName);
+                }
 
-            free ((char*)gPlugins[plugin]->mPluginName);
-            free (gPlugins[plugin]);
-            gPlugins[plugin] = NULL;
+                free ((char*)gPlugins[plugin]->mPluginName);
+                free (gPlugins[plugin]);
+                gPlugins[plugin] = NULL;
+            }
         }
     }
     return status;
