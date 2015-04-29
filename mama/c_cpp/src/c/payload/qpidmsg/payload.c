@@ -3783,7 +3783,7 @@ qpidmsgPayloadImpl_addFieldToPayload (msgPayload                 msg,
         ADD_VECTOR_FIELD_VALUE_TO_MESSAGE(F64, mama_f64_t);
         break;
     case MAMA_FIELD_TYPE_VECTOR_STRING:
-        ADD_VECTOR_FIELD_VALUE_TO_MESSAGE(String, const char*);
+        ADD_VECTOR_FIELD_VALUE_TO_MESSAGE(String, char*);
         break;
     case MAMA_FIELD_TYPE_VECTOR_MSG:
     {
