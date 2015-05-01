@@ -85,6 +85,8 @@ void qpidBridge_createImpl (mamaBridge* result)
 
     /* Return the newly created bridge */
     *result = (mamaBridge) bridge;
+
+    mamaBridgeImpl_setReadOnlyProperty ((mamaBridge)bridge, "mama.qpid.entitlements.deferred", "false");
 }
 
 mama_status

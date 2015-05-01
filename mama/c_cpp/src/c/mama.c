@@ -1707,6 +1707,8 @@ enableEntitlements (const char **servers)
     const char* altUserId;
     const char* altIp;
     const char* site;
+    mamaMiddleware middleware = 0;
+    int entitlementsRequired = 0; /*boolean*/
 
 
     if (gEntitlementClient != 0)
@@ -1714,6 +1716,30 @@ enableEntitlements (const char **servers)
         oeaClient_destroy (gEntitlementClient);
         gEntitlementClient = 0;
     }
+
+    for (middleware=0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
+    {
+        mamaBridgeImpl* impl = (mamaBridgeImpl*) gImpl.myBridges [middleware];
+        if (impl)
+        {
+            /* Check if entitlements are deferred to bridge */
+            if (mamaBridgeImpl_areEntitlementsDeferred(impl) == 1)
+            {
+                mama_log (MAMA_LOG_LEVEL_WARN,
+                    "Entitlements deferred on %s bridge.",
+                    mamaMiddleware_convertToString (middleware));
+            }
+            else
+            {
+                /* Entitlements are not deferred, continue with entitlement checking */
+                entitlementsRequired = 1;
+            }
+        }
+    }
+
+    /* Entitlements are deferred, do not continue with entitlement checking */
+    if (entitlementsRequired==0)
+        return MAMA_STATUS_OK;
 
     if (servers == NULL)
     {
