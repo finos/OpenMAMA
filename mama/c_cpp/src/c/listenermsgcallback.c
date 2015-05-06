@@ -171,7 +171,15 @@ static void processPointToPointMessage (msgCallback*    callback,
         mamaSubscription_deactivate (self->mSubscription);
     }
 
-    mamaSubscription_forwardMsg (self->mSubscription, msg);
+    if (!ctx->mDqContext.mDoNotForward)
+    {
+        mamaSubscription_forwardMsg (self->mSubscription, msg);
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "Subscription for %s not forwarded as message seqnum is before seqnum expecting", userSymbol);
+    }
 
     /*
        NB!!!  - can't destroy a subscription after an initial!!!!!
