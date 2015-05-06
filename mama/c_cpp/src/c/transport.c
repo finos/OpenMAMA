@@ -416,6 +416,12 @@ static void setDQStrategy (mamaTransport transport)
             self->mDQStratScheme = DQ_SCHEME_DELIVER_ALL;
         }
     }
+
+    if (self->mDQStratScheme == DQ_SCHEME_INGORE_DUPS)
+    {
+        mama_log (MAMA_LOG_LEVEL_NORMAL,
+                  "%s: Using dq strategy: DQ_SCHEME_IGNORE_DUPS", self->mName);
+    }
     else
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL,
