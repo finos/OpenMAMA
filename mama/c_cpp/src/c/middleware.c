@@ -77,6 +77,9 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "lbmkomodo") == 0)
         return MAMA_MIDDLEWARE_LBMKOMODO;
 
+    if (strcasecmp (str, "umdskomodo") == 0)
+        return MAMA_MIDDLEWARE_UMDSKOMODO;
+
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
 
@@ -118,6 +121,8 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "inrush";
         case MAMA_MIDDLEWARE_LBMKOMODO:
             return "lbmkomodo";
+        case MAMA_MIDDLEWARE_UMDSKOMODO:
+            return "umdskomodo";
         default:
             return "unknown";
     }
