@@ -210,7 +210,7 @@ qpidmsgPayloadInternal_elementToString (pn_data_t* payload,
     case PN_BINARY:
     {
         mama_size_t i          = 0;
-        char*       bytePos    = NULL;
+        const char* bytePos    = NULL;
         pn_bytes_t  bytes;
 
         bytes    = atom.u.as_bytes;
