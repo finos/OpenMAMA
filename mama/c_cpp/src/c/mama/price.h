@@ -287,6 +287,10 @@ mamaPrice_getIsValidPrice (const mamaPrice price,
  *
  * @param price         The price to get.
  * @param hints          The price hints.
+ * @return Indicates whether the function succeeded or failed and could be one of:
+ *				- MAMA_STATUS_INVALID_ARG
+ *				- MAMA_STATUS_OK
+ * @note                This function is intended for internal use only.
  */
 MAMAExpDLL
 extern mama_status

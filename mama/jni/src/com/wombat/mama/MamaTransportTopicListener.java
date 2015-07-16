@@ -26,6 +26,43 @@ public class MamaTransportTopicListener
     /**
      * Invoked when a topic is subscribed to
      *
+     * @param topic The topic of the topic subscription
+     * @param platformInfo Info associated with the topic subscription
+     *
+     * The topic and platformInfo are supplied only by some middlewares.
+     * The information provided by platformInfo is middleware specific.
+     * The following middlewares are supported:
+     *
+     * tibrv: provides the String object version of the tibrv advisory message
+     * Wombat Middleware
+     */
+    public void onTopicSubscribe(String topic, final Object platformInfo)
+    {
+        return;
+    }
+
+    /**
+     * Invoked when a topic is unsubscribed to
+     *
+     * @param topic The topic of the topic unsubscription
+     * @param platformInfo Info associated with the topic unsubscription
+     *
+     * The topic and platformInfo are supplied only by some middlewares.
+     * The information provided by platformInfo is middleware specific.
+     * The following middlewares are supported:
+     *
+     * tibrv: provides the String object version of the tibrv advisory message
+     * Wombat Middleware
+     */
+    public void onTopicUnsubscribe(String topic, final Object platformInfo)
+    {
+        return;
+    }
+
+    /*  Original callbacks for backward compatibility  */
+    /**
+     * Invoked when a topic is subscribed to
+     *
      * @param cause The cause of the topic subscription
      * @param platformInfo Info associated with the topic subscription
      *
@@ -35,8 +72,10 @@ public class MamaTransportTopicListener
      *
      * tibrv: provides the String object version of the tibrv advisory message
      * Wombat Middleware
+     *
+     * @deprecated use onTopicSubscribe(String topic, final Object platformInfo) instead.
      */
-    public void onTopicSubscribe(short cause, final Object platformInfo)
+    @Deprecated public void onTopicSubscribe(short cause, final Object platformInfo)
     {
         return;
     }
@@ -53,8 +92,10 @@ public class MamaTransportTopicListener
      *
      * tibrv: provides the String object version of the tibrv advisory message
      * Wombat Middleware
+     *
+     * @deprecated use onTopicUnsubscribe(String topic, final Object platformInfo) instead.
      */
-    public void onTopicUnsubscribe(short cause, final Object platformInfo)
+    @Deprecated public void onTopicUnsubscribe(short cause, final Object platformInfo)
     {
         return;
     }

@@ -25,6 +25,7 @@
 #include <mama/log.h>
 #include <iostream>
 #include <stdlib.h>
+#include <stdio.h>
 
 using namespace Wombat;
 using namespace std;
@@ -77,6 +78,7 @@ private:
  *****************************************************************************/
 int main (int argc, const char** argv)
 {
+    setbuf (stdout, NULL);
     try
     {
         FtMemberDemo ftDemo;

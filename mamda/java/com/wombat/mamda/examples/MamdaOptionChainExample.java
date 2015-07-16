@@ -336,6 +336,7 @@ public class MamdaOptionChainExample
                 System.out.println ();
                 ++i;
             }
+            System.out.flush();
         }
 
         public void printContract (MamdaOptionContract  contract)
@@ -369,6 +370,7 @@ public class MamdaOptionChainExample
                                   lastPrice + " | "   + bidPrice    + " | "   +
                                   askPrice  + " | "   + accVolume);
             }
+            System.out.flush();
         }
 
         public void printlnContract (MamdaOptionContract  contract)

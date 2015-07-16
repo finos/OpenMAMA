@@ -36,40 +36,90 @@ typedef void (MAMACALLTYPE *mamaConflationEnqueueCallback)(mamaMsg     msg,
                                                            const char* topic,
                                                            void*       closure);
 
+/**
+ * @brief Allocation of memory for the mama conflation manager 
+ *
+ * @param[out] mgr The mama conflation manager
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_NOMEM
+ *              MAMA_STATUS_OK
+ */
 mama_status
 mamaConflationManager_allocate (mamaConflationManager* mgr);
 
+/**
+ * @brief Creation of the mama conflation manager 
+ *
+ * @param[in] mgr The mama conflation manager
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_NOMEM
+ *              MAMA_STATUS_CONFLATE_ERROR
+ */
 mama_status
 mamaConflationManager_create (mamaConflationManager mgr);
 
+/**
+ * @brief Destroy the mama conflation manager
+ *
+ * @param[in] mgr The mama conflation manager
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_OK
+ */
 mama_status
 mamaConflationManager_destroy (mamaConflationManager mgr);
 
 /*
- * Start conflating. After this call, MAMA routes outbound messages 
+ * @brief Start conflating. After this call, MAMA routes outbound messages 
  * through the conflation manager until the publisher calls end().
+ *
+ * @param[in] mgr The mama conflation manager
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_CONFLATE_ERROR
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_start (mamaConflationManager mgr);
 
 /* 
- * End conflation. Invoking this method flushes the queue and resumes
+ * @brief End conflation. Invoking this method flushes the queue and resumes
  * sending messages directly through the transport. Calling start() 
  * again restarts conflation.
+ *
+ * @param[in] mgr The mama conflation manager
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_NOT_INSTALLED
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_end (mamaConflationManager mgr);
 
 /*
- * If set, new messages are passed to the specified callback rather than
+ * @brief If set, new messages are passed to the specified callback rather than
  * being queued directly to the conflation queue. If it is set to NULL or
  * not set, new messages are automatically appended to the end of the
  * conflation queue in the conflation manager.
  *
- * In general this method should be called prior to invoking start(). 
+ * @details In general this method should be called prior to invoking start(). 
  *
- * If you subclass the MamaConflationManager, you can override the 
+ * @details If you subclass the MamaConflationManager, you can override the 
  * mamaConflationManager_enqueue (mamaConflationManager mgr) method rather than setting the enqueue callback.
+ *
+ * @param[in] mgr      The mama conflation manager
+ * @param[in] callback Conflation manager callback
+ * @param[in] closure  User supplied data
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_setEnqueueCallback (mamaConflationManager         mgr,
@@ -77,13 +127,22 @@ mamaConflationManager_setEnqueueCallback (mamaConflationManager         mgr,
                                           void*                         closure);
 
 /*
- * Enqueue a message to the MamaConflationManager's queue. If there is no
+ * @brief Enqueue a message to the MamaConflationManager's queue. If there is no
  * MamaConflationEnqueueCallback specified, the conflation manager invokes
  * this automatically. Applications may call this from the Enqueue callback
  * to append the message to the queue.
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ *
+ * @param[in] mgr   The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic The Topic 
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_NOT_INSTALLED
+ *              MAMA_STATUS_NOMEM
  */
 mama_status
 mamaConflationManager_enqueue (mamaConflationManager mgr, 
@@ -91,10 +150,20 @@ mamaConflationManager_enqueue (mamaConflationManager mgr,
                                const char* topic);
 
 /*
- * Remove the first message from the queue. This method blocks if the queue is empty.
+ * @brief Remove the first message from the queue. This method blocks if the queue is empty.
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ *
+ * @param[in] mgr   The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_NOT_INSTALLED
+ *              MAMA_STATUS_CONFLATE_ERROR
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_dequeue(mamaConflationManager mgr, 
@@ -102,10 +171,20 @@ mamaConflationManager_dequeue(mamaConflationManager mgr,
                               const char** topic);
 
 /* 
- * Remove a message from the queue. If the queue is empty, return immediately.
+ * @brief Remove a message from the queue. If the queue is empty, return immediately.
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ *
+ * @param[in] mgr   The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_NOT_INSTALLED
+ *              MAMA_STATUS_CONFLATE_ERROR
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_poll(mamaConflationManager mgr, 
@@ -113,12 +192,21 @@ mamaConflationManager_poll(mamaConflationManager mgr,
                            const char** topic);
 
 /*
- * Send a message. Pass the message to the transport to be sent. This
+ * @brief Send a message. Pass the message to the transport to be sent. This
  * message does not return to the conflation queue, it gets sent over the
  * network.
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ *
+ * @param[in] mgr   The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_NOT_IMPLEMENTED
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_publish (mamaConflationManager mgr, 
@@ -126,7 +214,14 @@ mamaConflationManager_publish (mamaConflationManager mgr,
                                const char* topic);
 
 /*
- * Send all the messages on the queue until it is empty.
+ * @brief Send all the messages on the queue until it is empty.
+ *
+ * @param[in] mgr The mama conflation manager
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_CONFLATE_ERROR
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_flush (mamaConflationManager mgr);
@@ -140,11 +235,20 @@ mamaConflationManager_flush (mamaConflationManager mgr);
  * the message that dequeue() would remove).
  */
 
-/* Get the current message without removing it. Or advancing the iterator.
+/* @brief Get the current message without removing it. Or advancing the iterator.
  * Returns MAMA_STATUS_QUEUE_END if the queue is empty.
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ * 
+ * @param[in] mgr   The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_QUEUE_END
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_currentMsg (mamaConflationManager mgr, 
@@ -152,11 +256,20 @@ mamaConflationManager_currentMsg (mamaConflationManager mgr,
                                   const char** topic);
 
 /* 
- * Get the next message in the queue. Returns MAMA_STATUS_QUEUE_END if the
+ * @brief Get the next message in the queue. Returns MAMA_STATUS_QUEUE_END if the
  * iterator is at the end of the queue.
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ * 
+ * @param[in] mgr   The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_QUEUE_END
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_nextMsg (mamaConflationManager mgr, 
@@ -164,71 +277,141 @@ mamaConflationManager_nextMsg (mamaConflationManager mgr,
                                const char** topic);
 
 /* 
- * Get the previous message in the queue. Returns MAMA_STATUS_QUEUE_END if the
+ * @brief Get the previous message in the queue. Returns MAMA_STATUS_QUEUE_END if the
  * iterator is at the beginning of the queue.
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ * 
+ * @param[in] mgr   The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_QUEUE_END
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_prevMsg (mamaConflationManager mgr,
                                mamaMsg* msg,
                                const char** topic);
 
-/* Remove and return the current message. The iterator advances to the next 
+/* @brief Remove and return the current message. The iterator advances to the next 
  * message. Returns MAMA_STATUS_QUEUE_END if queue not positioned on valid
  * element.
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ *
+ * @param[in] mgr   The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_QUEUE_END
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_removeMsg (mamaConflationManager mgr, 
                                  mamaMsg* msg,
                                  const char** topic);
 
-/* Insert a message in front of the current message. 
+/* @brief Insert a message in front of the current message. 
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ * 
+ * @param[in] mgr   The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_QUEUE_FULL
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_insertBefore (mamaConflationManager mgr,
                                     mamaMsg msg,
                                     const char* topic);
 
-/* Insert a message behind the current message
+/* @brief Insert a message behind the current message
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ * 
+ * @param[in] mgr The mama conflation manager
+ * @param[in] msg   The mama message
+ * @param[in] topic
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_QUEUE_FULL
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_insertAfter (mamaConflationManager mgr,
                                    mamaMsg msg,
                                    const char* topic);
 
-/* Replace the current message. Return message being replaced 
+/* @brief Replace the current message. Return message being replaced 
  *
- * NOTE: Applications should not modify messages as the data may be shared
+ * @details NOTE: Applications should not modify messages as the data may be shared
  * in the underlying middleware for efficiency. Use mamaMsg_copy().
+ *
+ * @param[in] mgr The mama conflation manager
+ * @param[in] newMsg
+ * @param[in] topic
+ * @param[in] topic The topic
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_QUEUE_FULL
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_replaceMsg (mamaConflationManager mgr,
                                   mamaMsg newMsg,
                                   const char* topic);
 
-/* Put the iterator at the tail of the queue. Algorithms that
+/* @brief Put the iterator at the tail of the queue. Algorithms that
  * process the most recent message first may use this.
+ *
+ * @param[in] mgr The mama conflation manager
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_CONFLATE_ERROR
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_gotoTail (mamaConflationManager mgr);
 
+/**
+ * @brief Put the iterator at the head of the queue. Algorithms that
+ * process the most recent message first may use this.
+ *
+ * @param[in] mgr The mama conflation manager
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_CONFLATE_ERROR
+ *              MAMA_STATUS_OK
+ */
 mama_status
 mamaConflationManager_gotoHead (mamaConflationManager mgr);
 
 /**
- * Associate this conflation manager with a transport. The manager must
+ * @brief Associate this conflation manager with a transport. The manager must
  * not be already installed for a transport or connection.
+ *
+ * @param[in] mgr       The mama conflation manager
+ * @param[in] transport
+ *
+ * @return mama_status return code MAMA_STATUS_NOT_IMPLEMENTED
  */
 mama_status
 mamaConflationManager_installTransportConflationManager (
@@ -236,8 +419,17 @@ mamaConflationManager_installTransportConflationManager (
         mamaTransport         transport);
                                                                         
 /**
- * Associate this conflation manager with a connection. The manager must
+ * @brief Associate this conflation manager with a connection. The manager must
  * not be already installed for a transport or connection.
+ * 
+ * @param[in] mgr       The mama conflation manager
+ * @param[in] transport 
+ * @param[in] connection
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_CONFLATE_ERROR
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_installConnectionConflationManager (
@@ -246,9 +438,16 @@ mamaConflationManager_installConnectionConflationManager (
             mamaConnection        connection);
    
 /**
- * Uninstall the conflation manager if it is associated with a transport
+ * @brief Uninstall the conflation manager if it is associated with a transport
  * or connection. After invoking this method it may be installed for
  * another connection or transport.
+ *
+ * @param[in] mgr The mama conflation manager
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_INVALID_ARG
+ *              MAMA_STATUS_CONFLATE_ERROR
+ *              MAMA_STATUS_OK
  */
 mama_status
 mamaConflationManager_uninstallConflationManager (mamaConflationManager mgr);

@@ -48,15 +48,14 @@ namespace Wombat
 
         class MAMACPPExpDLL iterator
         {
-        protected:
+        private:
             friend class           MamaSourceGroupManager;
             struct                 iteratorImpl;
             iteratorImpl&          mImpl;
-
+            iterator                            (const iteratorImpl& copy);
         public:
             iterator                            ();
             iterator                            (const iterator& copy);
-            iterator                            (const iteratorImpl& copy);
             ~iterator                           ();
 
             iterator&              operator=    (const iterator& rhs);

@@ -22,6 +22,7 @@
 #include "wombat/port.h"
 #include "mama/mama.h"
 #include "string.h"
+#include <stdio.h>
 
 static mamaTransport    gTransport    = NULL;
 static mamaInbox        gInbox        = NULL;
@@ -94,6 +95,7 @@ static void createIntervalTimer (void)
 
 int main (int argc, const char** argv)
 {
+    setbuf (stdout, NULL);
     parseCommandLine(argc, argv);
 
     initializeMama ();

@@ -182,6 +182,7 @@ const char *index( const char *str, char c );
 */
 #define PRId64 "I64d"
 #define PRIu64 "I64u"
+#define PRIi64 "I64i"
 
 #ifndef INT8_MIN
 #define INT8_MIN SCHAR_MIN

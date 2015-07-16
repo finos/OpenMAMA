@@ -370,5 +370,6 @@ class CommandLineProcessor
             e.printStackTrace();
                 System.exit (0);
         }
+        System.out.flush();
     }
 }

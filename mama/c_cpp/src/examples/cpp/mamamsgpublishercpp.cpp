@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdio.h>
 #include <iostream>
 
 using std::cerr;
@@ -121,6 +122,7 @@ public:
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
     gBridge = Mama::loadBridge (gMiddleware);
     Mama::open ();

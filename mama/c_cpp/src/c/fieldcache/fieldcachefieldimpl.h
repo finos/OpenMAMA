@@ -57,17 +57,15 @@ typedef union cacheData_
 
 typedef struct mamaFieldCacheFieldImpl_
 {
-    /* DO NOT CHANGE THE ORDER - IT CAN BREAK THE MEMORY ALIGNMENT */
-
     /* Field identification */
     mamaFieldType mType;  /* 4 bytes */
     mama_fid_t mFid;      /* 2 bytes */
 
     /* This flag specifies if the field must never be published (0) or can be
      * published (1)
-     */    
+     */
     mama_bool_t mPublish; /* 1 byte */
-    
+
     /* This flag specifies if the field should be checked for modifications (1)
      * to decide if it must be published
      */
@@ -84,25 +82,17 @@ typedef struct mamaFieldCacheFieldImpl_
      * If the type is an opaque then it will contain the number of bytes.
      */
     mama_size_t mVectorSize;
-    
+
     /* Pointer to a field descriptor - NO COPY */
     mamaFieldDescriptor mDescriptor;
 
     /* Explicit field name - overrides the field descriptor name */
     const char* mName;
-    
+
     /* The current modification state of the field. */
     mama_bool_t mIsModified; /* 1 byte */
 } mamaFieldCacheFieldImpl;
 
-/* Get the pointer to the internal data and the size of the memory allocated */
-/*
-mama_status
-mamaFieldCacheField_getData(
-    const mamaFieldCacheField field,
-    void** data,
-    mama_u32_t* size);
-*/
 /* Copy size byte starting at pointer data to field to the internal field data.
  * New memory is allocated with malloc and old one is freed with free (if needed).
  */
@@ -135,4 +125,4 @@ mamaFieldCacheField_destroyDateTimeVector(mamaFieldCacheVector dateTimeVector);
 }
 #endif
 
-#endif	/* MamaFieldCacheFieldImplH__ */
+#endif  /* MamaFieldCacheFieldImplH__ */

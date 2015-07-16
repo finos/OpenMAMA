@@ -50,7 +50,7 @@ typedef struct
     mamaTimer        mTimer;
     int              mCurIndex;
     mama_u16_t       mTopicsPerMsg;
-    const char**     mTopics;
+    const char**     mTopics;                       /* Array of deep copies of the symbol names. */
     int              mTopicsLen;
     mama_i32_t*      mTypes;
     double           mResponseInterval;
@@ -163,6 +163,7 @@ setup (syncCommand* impl)
  * Invoked by CmManager once it finsishes its clean up */
 void syncCommand_dtor(void *handle)
 {
+    int ii = 0;
     syncCommand *impl = (syncCommand*)handle;
 
     mama_log (MAMA_LOG_LEVEL_FINE, "Destroying sync command.");
@@ -173,6 +174,11 @@ void syncCommand_dtor(void *handle)
     {
         mamaTimer_destroy (impl->mTimer);
         impl->mTimer = NULL;
+    }
+
+    for (ii = 0; ii < impl->mTopicsLen; ++ii)
+    {
+        free ((void*)impl->mTopics [ii]);
     }
 
     free ((void*)impl->mTopics);

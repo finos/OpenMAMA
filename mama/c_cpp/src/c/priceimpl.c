@@ -103,7 +103,7 @@ void mamaPriceImpl_getAsStringInteger (double     value,
                                  mama_size_t     bufMaxLen)
 {
     int64_t  integer    = (int64_t)value;
-    snprintf (buf, bufMaxLen, "%lld", integer);
+    snprintf (buf, bufMaxLen, "%"PRIi64, integer);
 }
 
 
@@ -117,18 +117,18 @@ void mamaPriceImpl_getAsStringFraction (double    value,
     int64_t  numer    = (int64_t)((double)denom * fraction);
     if (numer == 0)
     {
-        snprintf (buf, bufMaxLen, "%lld", integer);
+        snprintf (buf, bufMaxLen, "%"PRIi64, integer);
     }
     else if (integer == 0)
     {
 		char formatSpecifier[20] = "";
-		sprintf(formatSpecifier, "%s/%s", "%lld", "%ld");
+		sprintf(formatSpecifier, "%s/%s", "%"PRIi64, "%ld");
         snprintf (buf, bufMaxLen, formatSpecifier, numer, denom);
     }
     else
     {
 		char formatSpecifier[20] = "";
-		sprintf(formatSpecifier, "%s %s/%s", "%lld", "%lld", "%ld");
+		sprintf(formatSpecifier, "%s %s/%s", "%"PRIi64, "%"PRIi64, "%ld");
         if (integer < 0)
 		{
             numer = -numer;

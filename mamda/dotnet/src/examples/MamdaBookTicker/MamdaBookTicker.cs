@@ -299,6 +299,7 @@ namespace Wombat.Mamda.Examples
 				{
 					Console.WriteLine("");
 				}
+                Console.Out.Flush();
 			}
 
 			public void prettyPrintEntries(MamdaOrderBook book)
@@ -345,6 +346,7 @@ namespace Wombat.Mamda.Examples
 						}
 					}
 				}
+                Console.Out.Flush();
 			}
 
 			private void paddedPrint(object val, int padLen, bool padAfter)
@@ -388,6 +390,7 @@ namespace Wombat.Mamda.Examples
 						Console.Write (val);
 					}
 				}
+                Console.Out.Flush();
 			}
 		}
 

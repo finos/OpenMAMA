@@ -144,7 +144,10 @@ public class MamaSource extends MamaSourceManager
     
     /**
      * Add a subscriptions to the mamaSource
-     * @param MamaSubscription object
+     *
+     * @param key Key value to use to insert Subscription into a Subscription Map
+     * @param subscription MamaSubscription object
+     * @exception MamaException will be thrown is the key value already exists in the Map
      */
     public void addSubscription (final String key, 
                                  MamaSubscription subscription)
@@ -162,7 +165,7 @@ public class MamaSource extends MamaSourceManager
     }
     /**
      * find a MamaSubscription, null will be returned if not found
-     * @param The String identifier key for the subscription
+     * @param key The String identifier key for the subscription
      * @return The mama subscription object
      */
     public MamaSubscription findSubscription (final String key)

@@ -49,8 +49,10 @@
 
 /*Constants for the MamaTransportTopicListener Java class*/
 #define UTILS_TRANSPORT_TOPIC_LISTENER_CLASS_NAME "com/wombat/mama/MamaTransportTopicListener"
-#define UTILS_TTL_ON_TOPIC_SUBSCRIBE "(SLjava/lang/Object;)V"
-#define UTILS_TTL_ON_TOPIC_UNSUBSCRIBE "(SLjava/lang/Object;)V"
+#define UTILS_TTL_ON_TOPIC_SUBSCRIBE "(Ljava/lang/String;Ljava/lang/Object;)V"
+#define UTILS_TTL_ON_TOPIC_UNSUBSCRIBE "(Ljava/lang/String;Ljava/lang/Object;)V"
+#define UTILS_TTL_ORIG_ON_TOPIC_SUBSCRIBE "(SLjava/lang/Object;)V"
+#define UTILS_TTL_ORIG_ON_TOPIC_UNSUBSCRIBE "(SLjava/lang/Object;)V"
 
 /*Constants for the Colleciton interface in Java*/
 #define UTILS_ARRAYLIST_CLASS_NAME "java/util/ArrayList"

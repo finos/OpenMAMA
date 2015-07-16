@@ -37,6 +37,7 @@
 #include <iostream>
 #include <stdexcept>
 #include <vector>
+#include <stdio.h>
 #include "parsecmd.h"
 #include "dictrequester.h"
 #include <mama/MamaQueueGroup.h>
@@ -351,6 +352,7 @@ private:
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     try
     {
         

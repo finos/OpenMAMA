@@ -305,6 +305,7 @@ namespace Wombat.Mamda.Examples
 				Console.Error.WriteLine(e.ToString());
 				Environment.Exit(0);
 			}
+            Console.Out.Flush();
 		}
 
 		private string				mSource         = "WOMBAT";

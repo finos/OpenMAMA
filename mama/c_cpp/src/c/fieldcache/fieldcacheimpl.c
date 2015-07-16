@@ -274,20 +274,12 @@ mama_status mamaFieldCache_updateCacheFromMsgField(mamaFieldCache fieldCache,
         case MAMA_FIELD_TYPE_VECTOR_PRICE:
         {
             /* TODO: mamaMsgField does not provide methods to get price vector
-            const mamaPrice* values = NULL;
-            mama_size_t size;
-            mamaMsgField_getVectorPrice(messageField, &values, &size);
-            mamaFieldCacheField_setPriceVector(field, values, size);
              */
             break;
         }
         case MAMA_FIELD_TYPE_VECTOR_TIME:
         {
             /* TODO: mamaMsgField does not provide methods to get time vector
-            const mamaDateTime* values = NULL;
-            mama_size_t size;
-            mamaMsgField_getVectorDateTime(messageField, &values, &size);
-            mamaFieldCacheField_setDateTimeVector(field, values, size);
              */
             break;
         }
@@ -662,8 +654,7 @@ mama_status mamaFieldCache_updateMsgField(mamaFieldCache fieldCache,
             {
                 return MAMA_STATUS_INVALID_ARG;
             }
-            status = /*useUpdate ? mamaMsg_updateVectorPrice(message, name, fid, values, size)
-                               : */mamaMsg_addVectorPrice(message, name, fid, values, size);
+            status = mamaMsg_addVectorPrice(message, name, fid, values, size);
             break;
         }
         case MAMA_FIELD_TYPE_VECTOR_TIME:
@@ -675,8 +666,7 @@ mama_status mamaFieldCache_updateMsgField(mamaFieldCache fieldCache,
             {
                 return MAMA_STATUS_INVALID_ARG;
             }
-            status = /*useUpdate ? mamaMsg_updateVectorTime(message, name, fid, values, size)
-                               : */mamaMsg_addVectorDateTime(message, name, fid, values, size);
+            status = mamaMsg_addVectorDateTime(message, name, fid, values, size);
             break;
         }
         default:

@@ -553,30 +553,33 @@ namespace MamaListen
                              msg.getStatus());
                 }
 
-                if (m_iterator)
+                if (m_quietness < 1)
                 {
-                    // Set the iterator to the beginning of the message
-                    msg.begin(ref m_messageIterator);
-
-                    // Keep going until there are no more fields
-                    MamaMsgField field = m_messageIterator.getField();
-                    while (field != null)
+                    if (m_iterator)
                     {
-                        // Display the field
-                        fieldCallback.displayField(field, 0);
+                        // Set the iterator to the beginning of the message
+                        msg.begin(ref m_messageIterator);
 
-                        m_messageIterator++;
+                        // Keep going until there are no more fields
+                        MamaMsgField field = m_messageIterator.getField();
+                        while (field != null)
+                        {
+                            // Display the field
+                            fieldCallback.displayField(field, 0);
 
-                        // Get the next field
-                        field = m_messageIterator.getField();
+                            m_messageIterator++;
+
+                            // Get the next field
+                            field = m_messageIterator.getField();
+                        }
                     }
-                }
 
-                else
-                {
-                    // Otherwise use the iteration function on the message itself
-                    int indentlevel = 0;
-                    msg.iterateFields(fieldCallback, m_dictionary, indentlevel);
+                    else
+                    {
+                        // Otherwise use the iteration function on the message itself
+                        int indentlevel = 0;
+                        msg.iterateFields(fieldCallback, m_dictionary, indentlevel);
+                    }
                 }
             }
         }
@@ -598,7 +601,7 @@ namespace MamaListen
 
             public void LowWatermark(MamaQueue mamaQueue, int size, object closure)
             {
-                Console.WriteLine("Default queue high water mark exceeded. Size " + size);
+                Console.WriteLine("Default queue low water mark exceeded. Size " + size);
             }
         }
 

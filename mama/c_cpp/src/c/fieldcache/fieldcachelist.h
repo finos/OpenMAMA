@@ -46,7 +46,7 @@ typedef mamaFieldCacheListImpl* mamaFieldCacheList;
 /**
  * Create a generic list.
  *
- * @param lsit (out) The list to create.
+ * @param list (out) The list to create.
  * @return Result of the operation.
  */
 mama_status
@@ -132,4 +132,4 @@ mamaFieldCacheList_getSize(mamaFieldCacheList list, mama_size_t* size);
 }
 #endif
 
-#endif	/* MamaFieldCacheListH__ */
+#endif  /* MamaFieldCacheListH__ */

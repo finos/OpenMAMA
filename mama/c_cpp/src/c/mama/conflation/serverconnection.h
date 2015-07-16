@@ -34,14 +34,23 @@ extern "C" {
 #endif
 
 /**
- * Free the server connection.
+ * @brief Free the server connection.
+ *
+ * @param[in] connection The mama server connection
+ *
+ * @return mama_status return code MAMA_STATUS_OK
  */
 MAMAExpDLL
 mama_status
 mamaServerConnection_free (mamaServerConnection connection);
 
 /**
- * Get the IP address of the connected server.
+ * @brief Get the IP address of the connected server.
+ *
+ * @param[in]  connection The mama server connection
+ * @param[out] address    Returning the associated IP address
+ *
+ * @return mama_status return code MAMA_STATUS_OK
  */
 MAMAExpDLL
 mama_status
@@ -49,14 +58,24 @@ mamaServerConnection_getIpAddress (mamaServerConnection connection,
                                    const char**         address);
 
 /**
- * Get the port of the connected server.
+ * @brief Get the port of the connected server.
+ *
+ * @param[in]  connection The mama server connection
+ * @param[out] port       Returning the associated port
+ *
+ * @return mama_status return code MAMA_STATUS_OK
  */
 MAMAExpDLL
 mama_status
 mamaServerConnection_getPort (mamaServerConnection connection, uint16_t* port);
 
 /**
- * Get the status of the server connection.
+ * @brief Get the status of the server connection.
+ *
+ * @param[in]  connection The mama server connection
+ * @param[out] connectionStatus Returning the connection status
+ *
+ * @return mama_status return code MAMA_STATUS_OK
  */
 MAMAExpDLL
 mama_status

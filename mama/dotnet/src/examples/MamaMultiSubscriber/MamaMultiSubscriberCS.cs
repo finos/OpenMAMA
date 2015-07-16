@@ -238,6 +238,7 @@ namespace Wombat
 						   Console.WriteLine(String.Format("{0,20}",field.getAsString()));
 						   break;
 				   }
+                   Console.Out.Flush();
 			   }
         
 		private void displayAllFields(MamaMsg msg)

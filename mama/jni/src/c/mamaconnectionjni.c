@@ -143,6 +143,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaConnection_create
                                                         (uint32_t)maxQueueSize,
                                                         (uint32_t)curQueueSize,
                                                         (uint32_t)msgCount,
+                                                        bytesSent,
                                                         cUserName,
                                                         cAppName,
                                                         NULL)))

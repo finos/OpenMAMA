@@ -61,27 +61,35 @@ extern "C" {
 
 /** Commands */
 
+/**
+ *@brief The enumeration of supported commands
+ */    
+
 typedef enum 
 {
-    /** Sync Request */
-    MAMA_COMMAND_SYNC = 1
+    MAMA_COMMAND_SYNC = 1 /** Sync Request */
 } mamaCmCommand;
 
 /**
- * This structure allows for generic commands to be destroyed by the
- * clientmanageresponder. It contains a handle and a pointer to a destructor
- * function.
+ * @brief The function prototype for command
+ */
+
+typedef void (*cmCommandDtor)(void* handle);
+
+/**
+ * @brief This structure allows for generic commands to be destroyed by the
+ * clientmanageresponder.
  *
- * It is not correct for the commands to destroy themselves on completion
+ * @param[in] mHandle Command handler
+ * @param[in] mDtor   Callback destructor
+ *
+ * @details It is not correct for the commands to destroy themselves on completion
  * since the responder creates them. Furthermore, there would be problems at
  * shutdown.
  *
  * Every command needs to populate this structure accordingly.
  *
  */
-
-
-typedef void (*cmCommandDtor)(void* handle);
 
 typedef struct
 {
@@ -90,8 +98,11 @@ typedef struct
 } mamaCommand;
 
 /**
- * Commands invoke this callback when they complete so the responder can
+ * @brief Commands invoke this callback when they complete so the responder can
  * destroy them.
+ * 
+ * @param[in] command The sync command
+ * @param[in] closure User supplied data
  */
 typedef void (*mamaCommandEndCB)(mamaCommand* command, void *closure);
 

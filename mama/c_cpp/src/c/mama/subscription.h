@@ -48,7 +48,7 @@ extern "C" {
 *
 * PRE_INITIAL_SCHEME_ON_GAP (default) MAMA waits until the message after the
 * initialvalue and only tries to use the cache if a gap is detected.
-* This reduces the need to reap the subscription.
+* This reduces the need to recap the subscription.
 *
 * PRE_INITIAL_SCHEME_ON_INITIAL MAMA checks the pre-initial cache to see if
 * there are any messages which sequentially follow the initial value and pass
@@ -69,10 +69,10 @@ typedef enum
  */
 typedef enum
 {
-    /* The state of the subscription is unknown. */
+    /**< The state of the subscription is unknown. */
     MAMA_SUBSCRIPTION_UNKNOWN       = 0,
 
-    /* The subscription has been allocated in memory. */
+    /**< The subscription has been allocated in memory. */
     MAMA_SUBSCRIPTION_ALLOCATED     = 1,
 
     /* Initial setup work has been done, mamaSubscription_activate must still be called. Note that this state is only valid
@@ -128,43 +128,43 @@ typedef enum
 /* *************************************************** */
 
 /**
- * Function invoked when subscription creation is complete, and before any calls
+ * @brief Function invoked when subscription creation is complete, and before any calls
  * to <code>wombat_subscriptionOnMsgCB</code>.
  *
- * @param subscription The subscription.
- * @param closure The closure passed to the mamaSubscription_create function.
+ * @param[in] subscription The subscription.
+ * @param[in] closure The closure passed to the mamaSubscription_create function.
  */
 typedef void (MAMACALLTYPE *wombat_subscriptionCreateCB)(
     mamaSubscription subscription,
     void *closure);
 
 /**
- * Function invoked when a subscription has been completely destroyed,
+ * @brief Function invoked when a subscription has been completely destroyed,
  * the client can have confidence that no further messages will be placed on the queue
  * for this subscription.
  *
- * @param subscription the <code>MamaSubscription</code>.
- * @param closure The closure passed to the mamaSubscription_create function.
+ * @param[in] subscription the <code>MamaSubscription</code>.
+ * @param[in] closure The closure passed to the mamaSubscription_create function.
  */
 typedef void (MAMACALLTYPE *wombat_subscriptionDestroyCB)(
     mamaSubscription subscription,
     void *closure);
 
 /**
- * Invoked if an error occurs during prior to subscription creation or if the
+ * @brief Invoked if an error occurs during prior to subscription creation or if the
  * subscription receives a message for an unentitled subject.
- * <p>
- * If the status is <code>MAMA_MSG_STATUS_NOT_ENTITTLED</code> the subject
+ *
+ * @details If the status is <code>MAMA_MSG_STATUS_NOT_ENTITTLED</code> the subject
  * parameter is the specific unentitled subject. If the subscription subject
  * contains wildcards, the subscription may still receive messages for other
  * entitled subjects. Note wildcard subscriptions are not supported on  all
  * platforms.
  *
- * @param subscription The subscription.
- * @param status The error code.
- * @param platformError Third party, platform specific messaging error.
- * @param subject The subject for NOT_ENTITLED
- * @param closure The closure passed to the mamaSubscription_create function.
+ * @param[in] subscription The subscription.
+ * @param[in] status The error code.
+ * @param[in] platformError Third party, platform specific messaging error.
+ * @param[in] subject The subject for NOT_ENTITLED
+ * @param[in] closure The closure passed to the mamaSubscription_create function.
  */
 typedef void (MAMACALLTYPE *wombat_subscriptionErrorCB)(
     mamaSubscription subscription,
@@ -174,25 +174,26 @@ typedef void (MAMACALLTYPE *wombat_subscriptionErrorCB)(
     void *closure);
 
 /**
- * Function invoked when a sequence number gap is detected. At this
- * point the topic is considered stale and the subscription will not
+ * @brief Function invoked when a sequence number gap is detected.
+ *
+ * @details At this point the topic is considered stale and the subscription will not
  * receive further messages until the feed handler satisfies a
  * recap request.
  *
- * @param subscription the <code>MamaSubscription</code>.
- * @param closure The closure passed to the mamaSubscription_create function.
+ * @param[in] subscription the <code>MamaSubscription</code>.
+ * @param[in] closure The closure passed to the mamaSubscription_create function.
  */
 typedef void (MAMACALLTYPE *wombat_subscriptionGapCB)(
     mamaSubscription subscription,
     void *closure);
 
 /**
- * Invoked when a message arrives.
+ * @brief Invoked when a message arrives.
  *
- * @param subscription the <code>MamaSubscription</code>.
- * @param msg The mamaMsg.
- * @param closure The closure passed to the mamaSubscription_create function.
- * @param itemClosure The item closure for the subscription can be set with
+ * @param[in] subscription the <code>MamaSubscription</code>.
+ * @param[in] msg The mamaMsg.
+ * @param[in] closure The closure passed to the mamaSubscription_create function.
+ * @param[in] itemClosure The item closure for the subscription can be set with
  *                    mamaSubscription_setItemClosure.
  */
 typedef void (MAMACALLTYPE *wombat_subscriptionOnMsgCB)(
@@ -202,16 +203,16 @@ typedef void (MAMACALLTYPE *wombat_subscriptionOnMsgCB)(
     void *itemClosure);
 
 /**
- * Invoked to indicate a data quality event.
+ * @brief Invoked to indicate a data quality event.
  *
- * @param subscription the <code>MamaSubscription</code>.
- * @param quality The new quality.
- * @param symbol The symbol.
- * @param cause The cause of the data quality event.
- * @param platformInfo Info associated with the data quality event.
- * @param closure The closure passed to the mamaSubscription_create function.
+ * @param[in] subscription the <code>MamaSubscription</code>.
+ * @param[in] quality The new quality.
+ * @param[in] symbol The symbol.
+ * @param[in] cause The cause of the data quality event.
+ * @param[in] platformInfo Info associated with the data quality event.
+ * @param[in] closure The closure passed to the mamaSubscription_create function.
  *
- * The cause and platformInfo are supplied only by some middlewares.
+ * @details The cause and platformInfo are supplied only by some middlewares.
  * The information provided by platformInfo is middleware specific.
  * The following middlewares are supported:
  *
@@ -226,24 +227,24 @@ typedef void (MAMACALLTYPE *wombat_subscriptionQualityCB)(
     void *closure);
 
 /**
- * Function invoked when a recap is requested upon detecting a
+ * @brief Function invoked when a recap is requested upon detecting a
  * sequence number gap.
  *
- * @param subscription the <code>MamaSubscription</code>.
- * @param closure The closure passed to the mamaSubscription_create function.
+ * @param[in] subscription the <code>MamaSubscription</code>.
+ * @param[in] closure The closure passed to the mamaSubscription_create function.
  */
 typedef void (MAMACALLTYPE *wombat_subscriptionRecapCB)(
     mamaSubscription subscription,
     void *closure);
 
 /**
- * Invoked when a message arrives for a wild card subscrption.
+ * @brief Invoked when a message arrives for a wild card subscrption.
  *
- * @param subscription the <code>MamaSubscription</code>.
- * @param msg The mamaMsg.
- * @param topic The symbol.
- * @param closure The closure passed to the mamaSubscription_create function.
- * @param itemClosure Symbol specific closure.
+ * @param[in] subscription the <code>MamaSubscription</code>.
+ * @param[in] msg The mamaMsg.
+ * @param[in] topic The symbol.
+ * @param[in] closure The closure passed to the mamaSubscription_create function.
+ * @param[in] itemClosure Symbol specific closure.
  */
 typedef void (MAMACALLTYPE *wombat_subscriptionWildCardOnMsgCB)(
     mamaSubscription subscription,
@@ -288,9 +289,10 @@ typedef struct mamaWildCardMsgCallbacks_
 /* *************************************************** */
 
 /**
- * Activate a subscription that has been set up by
+ * @brief Activate a subscription that has been set up by
  * mamaSubscription_setup().
- * Subscription creation actually occurs on the throttle queue.
+ *
+ * @details Subscription creation actually occurs on the throttle queue.
  * An individual subscription cannot be assumed to be fully created until
  * its onCreate() callback has been successfully invoked.
  * The subscription rate can be governed via the
@@ -313,8 +315,9 @@ mamaSubscription_activate(
     mamaSubscription subscription);
 
 /**
- * Allocate memory for a new subscription. The subscription is not
- * actually created until a call to one of the create() functions is made.
+ * @brief Allocate memory for a new subscription.
+ *
+ * @details The subscription is not actually created until a call to one of the create() functions is made.
  * Memory must be freed using the <code>mamaSubscription_deallocate()</code>
  * function.
  *
@@ -332,13 +335,13 @@ mamaSubscription_allocate(
     mamaSubscription *result);
 
 /**
- * Return whether the debug level for this subscription equals or
+ * @brief Return whether the debug level for this subscription equals or
  * exceeds some level.
  *
  * @param[in] subscription The subscription.
  * @param[in] level The debug level to check.
  *
- * @return whether the level equals or exceeds the set level for this
+ * @return A mama_status value to reflect whether the level equals or exceeds the set level for this
  * subscription.
  */
 MAMAExpDLL
@@ -348,7 +351,7 @@ mamaSubscription_checkDebugLevel(
     MamaLogLevel level);
 
 /**
- * Create and activate subscription.  This is effectively a pair of
+ * @brief Create and activate subscription.  This is effectively a pair of
  * calls to mamaSubscription_setup() and mamaSubscription_activate().
  *
  * @param[in] subscription The subscription.
@@ -378,7 +381,7 @@ mamaSubscription_create (
     void*                     closure);
 
 /**
- * Create a basic subscription without marketdata semantics.
+ * @brief Create a basic subscription without marketdata semantics.
  *
  * @param[in] subscription The subscription.
  * @param[in] transport The transport to use. Must be a basic transport.
@@ -408,11 +411,11 @@ mamaSubscription_createBasic (
     void*                     closure);
 
 /**
- * Crate and activate  a wildcard  subscription that may be actually
+ * @brief Create and activate  a wildcard  subscription that may be actually
  * activated later.  Activate the subscription using
  * mamaSubscription_activate().
  *
- * The topic must be a valid wildcard topic for the underlying middleware.
+ * @details The topic must be a valid wildcard topic for the underlying middleware.
  *
  * Applications may set and retireve per-topic closures using
  * mamaSubscription_setItemClosure() however this method is only guaranteed to
@@ -457,8 +460,9 @@ mamaSubscription_createBasicWildCard(
     void*                            closure);
 
 /**
- * Create a snapshot subscription for initial value only (no updates).
- * This function is equivalent to mamaSubscription_create () with
+ * @brief Create a snapshot subscription for initial value only (no updates).
+ *
+ * @details This function is equivalent to mamaSubscription_create () with
  * svcLevel set to MAMA_SERVICE_LEVEL_SNAPSHOT and default arguments
  * for type, svcLevelOpt, requiresInitial, retries, timeout.
  *
@@ -488,9 +492,10 @@ mamaSubscription_createSnapshot(
     void*                     closure);
 
 /**
- * Deactivate a subscription.  The subscription can be reactivated if
+ * @brief Deactivate a subscription.  The subscription can be reactivated if
  * desired using mamaSubscription_activate().
- * Note that the subscription will not be fully deactivated until the
+ *
+ * @details  Note that the subscription will not be fully deactivated until the
  * onDestroy callback is received.
  *
  * @param[in] subscription The subscription.
@@ -509,9 +514,10 @@ mamaSubscription_deactivate(
     mamaSubscription subscription);
 
 /**
- * Free the memory for a mamaSubscription which was allocated via
+ * @brief Free the memory for a mamaSubscription which was allocated via
  * a call to <code>mamaSubscription_allocate()</code>
- * This function will call <code>mamaSubscription_destroy()</code> if the subscription has
+ *
+ * @details This function will call <code>mamaSubscription_destroy()</code> if the subscription has
  * not already been destroyed.
  *
  * @param[in] subscription The subscription to be deallocated.
@@ -527,8 +533,9 @@ mamaSubscription_deallocate(
     mamaSubscription subscription);
 
 /**
- * Destroy the subscription. <p>
- * This function must be called to destroy resources associated with the
+ * @brief Destroy the subscription.
+ *
+ * @details This function must be called to destroy resources associated with the
  * subscription. It sends an unsubscribe to the feed handler for subscription
  * management.
  * This function does not free the memory associated with the subscription.
@@ -551,9 +558,10 @@ mamaSubscription_destroy(
     mamaSubscription subscription);
 
 /**
- * This function will destroy the subscription and can be called from
+ * @brief This function will destroy the subscription and can be called from
  * any thread.
- * Note that the subscription will not be fully destroyed until the
+ *
+ * @details Note that the subscription will not be fully destroyed until the
  * onDestroy callback is received.
  * To destroy from the dispatching thread the mamaSubscription_destroy
  * function should be used in preference.
@@ -570,7 +578,7 @@ mamaSubscription_destroyEx(
     mamaSubscription subscription);
 
 /**
- * Retrieve the application-specific data type.
+ * @brief Retrieve the application-specific data type.
  *
  * @param[in] subscription The subscription.
  * @param[out] appDataType A pointer to a uint8_t to hold the value.
@@ -586,7 +594,7 @@ mamaSubscription_getAppDataType (
     uint8_t *appDataType);
 
 /**
- * Return the closure.
+ * @brief Return the closure.
  *
  * @param[in] subscription The subscription.
  * @param[out] closure holds the result.
@@ -602,7 +610,7 @@ mamaSubscription_getClosure(
     void **closure);
 
 /**
- * Return the debug level for this subscription.
+ * @brief Return the debug level for this subscription.
  *
  * @param[in] subscription The subscription.
  *
@@ -615,7 +623,7 @@ mamaSubscription_getDebugLevel(
 
 
 /**
- * Return the item closure for the current message for the subscription.
+ * @brief Return the item closure for the current message for the subscription.
  * See <code>setItemClosure</code> for more detail.
  *
  * @param[in] subscription The subscription.
@@ -632,7 +640,7 @@ mamaSubscription_getItemClosure (
     void **closure);
 
 /**
- * Get the filters that discard message according to the message
+ * @brief Get the filters that discard message according to the message
  * qualifier.
  *
  * @param[in] subscription The subscription from which the filer is being obtained.
@@ -667,8 +675,9 @@ mamaSubscription_getMsgQualifierFilter(
     int *ignoreOutOfSequence);
 
 /**
- * Return the middleware-specific platform error. When a mamaSubscription_
- * method return MAMA_STATUS_PLATFORM the error will be the result from the
+ * @brief Return the middleware-specific platform error.
+ *
+ * @details When a mamaSubscription_method return MAMA_STATUS_PLATFORM the error will be the result from the
  * underlying platform.
  *
  * @param[in] subsc The subscription.
@@ -686,7 +695,7 @@ mamaSubscription_getPlatformError(
     void **error);
 
 /**
- * Return the initial value cache size.
+ * @brief Return the initial value cache size.
  *
  * @param[in] subscription The subscription.
  * @param[out] result A pointer to an int for the result.
@@ -702,7 +711,7 @@ mamaSubscription_getPreIntitialCacheSize(
     int *result);
 
 /**
- * Return the <code>mamaQueue</code> for this subscription.
+ * @brief Return the <code>mamaQueue</code> for this subscription.
  *
  * @param[in] subscription The subscription.
  * @param[out] queue  A pointer to hold the queue.
@@ -718,7 +727,7 @@ mamaSubscription_getQueue(
     mamaQueue *queue);
 
 /**
- * Returns a value of 1 or 0 indicating whether the subscription has
+ * @brief Returns a value of 1 or 0 indicating whether the subscription has
  * received an initial.
  *
  * @param[in] subscription The subscription
@@ -735,11 +744,11 @@ mamaSubscription_getReceivedInitial(
     int *receivedInitial);
 
 /**
- * Whether the specified subscription will attempt to recover from sequence
+ * @brief Whether the specified subscription will attempt to recover from sequence
  * number gaps.
  *
- * @param subscription[in] The subscription
- * @param doesRecover[out] 0 - does not recover, 1 - does attempt to recover
+ * @param[in] subscription The subscription
+ * @param[out] doesRecover 0 - does not recover, 1 - does attempt to recover
  *
  * @return mama_status return code can be one of:
  *              MAMA_STATUS_NULL_ARG
@@ -752,7 +761,7 @@ mamaSubscription_getRecoverGaps (
     int *doesRecover);
 
 /**
- * Returns a value of 1 or 0 indicating whether this subscription is
+ * @brief Returns a value of 1 or 0 indicating whether this subscription is
  * interested in initial values.
  *
  * @param[in] subscription The subscription
@@ -769,7 +778,7 @@ mamaSubscription_getRequiresInitial(
     int *requiresInitial);
 
 /**
- * Retrieve the retries.
+ * @brief Retrieve the retries.
  *
  * @param[in] subscription The subscription.
  * @param[out] retries A pointer to a int to hold the value.
@@ -785,7 +794,7 @@ mamaSubscription_getRetries(
     int *retries);
 
 /**
- * Get the service level for the specified subscription.
+ * @brief Get the service level for the specified subscription.
  *
  * @param[in] subscription The subscription for which the service level is being
  * obtained.
@@ -802,7 +811,7 @@ mamaSubscription_getServiceLevel(
     mamaServiceLevel *serviceLevel);
 
 /**
- * Get the service level options for the specified subscription.
+ * @brief Get the service level options for the specified subscription.
  *
  * @param[in] subscription The subscription for which the service level is being
  * obtained.
@@ -820,8 +829,9 @@ mamaSubscription_getServiceLevelOpt(
 
 
 /**
- * Return the source for the specified subscription.
- * Note that this function just returns a pointer to the source inside the
+ * @brief Return the source for the specified subscription.
+ *
+ * @details Note that this function just returns a pointer to the source inside the
  * subscription and does not allocate any memory.
  *
  * @param[in] subscription The subscription.
@@ -838,9 +848,9 @@ mamaSubscription_getSource(
     const char**      source);
 
 /**
- * This function will return the current state of the subscription, this function
- * should be used in preference to the mamaSubscription_isActive or mamaSubscription_isValid
- *                          functions.
+ * @brief This function will return the current state of the subscription.
+ *
+ * @details This function should be used in preference to the mamaSubscription_isActive or mamaSubscription_isValid functions.
  * This function is thread-safe.
  *
  * @param[in] subscription The subscription to return the state for.
@@ -857,7 +867,7 @@ mamaSubscription_getState(
     mamaSubscriptionState *state);
 
 /**
- * Returns the underlying <code>mamaSubscriptionType</code> for the specified
+ * @brief Returns the underlying <code>mamaSubscriptionType</code> for the specified
  * subscription.
  *
  * @param[in] subscription The subscription for which the type will be returned.
@@ -874,9 +884,10 @@ mamaSubscription_getSubscriptionType(
     mamaSubscriptionType *type);
 
 /**
- * Return the symbol as subscribed to (i.e., as mapped by the mapping
+ * @brief Return the symbol as subscribed to (i.e., as mapped by the mapping
  * function, if any, for the mamaTransport).
- * Note that this function just returns a pointer to the symbol inside the
+ *
+ * @details Note that this function just returns a pointer to the symbol inside the
  * subscription and does not allocate any memory.
  *
  * @param[in] subscription The subscription.
@@ -893,8 +904,9 @@ mamaSubscription_getSubscSymbol(
     const char **symbol);
 
 /**
- * Return the symbol as provided by the user (before any symbol mapping).
- * Note that this function just returns a pointer to the symbol inside the
+ * @brief Return the symbol as provided by the user (before any symbol mapping).
+ *
+ * @details Note that this function just returns a pointer to the symbol inside the
  * subscription and does not allocate any memory.
  *
  * @param[in] subscription The subscription.
@@ -911,7 +923,7 @@ mamaSubscription_getSymbol(
     const char **symbol);
 
 /**
- * Retrieve the timeout.
+ * @brief Retrieve the timeout.
  *
  * @param[in] subscription The subscription.
  * @param[out] timeout A pointer to a double to hold the value.
@@ -927,7 +939,7 @@ mamaSubscription_getTimeout(
     double *timeout);
 
 /**
- * Return the <code>mamaTransport</code> for this subscription.
+ * @brief Return the <code>mamaTransport</code> for this subscription.
  *
  * @param[in] subscription  The subscription.
  * @param[out] transport     A pointer to hold the transport.
@@ -943,7 +955,7 @@ mamaSubscription_getTransport (
     mamaTransport *transport);
 
 /**
- * Returns a pointer to the <code>mamaMsgCallbacks</code> structure.
+ * @brief Returns a pointer to the <code>mamaMsgCallbacks</code> structure.
  *
  * @param[in] subscription The <code>mamaSubscription</code>
  *
@@ -956,7 +968,7 @@ mamaSubscription_getUserCallbacks(
     mamaSubscription subscription);
 
 /**
- * Returns whether the subscription is active, note that this function has
+ * @brief Returns whether the subscription is active, note that this function has
  * been deprecated, use mamaSubscription_getState instead.
  *
  * @param[in] subscription The subscription.
@@ -969,7 +981,7 @@ mamaSubscription_isActive (
     mamaSubscription subscription);
 
 /**
- * Return whether the subscription is valid, note that this function has
+ * @brief Return whether the subscription is valid, note that this function has
  * been deprecated, use mamaSubscription_getState instead.
  *
  * @param[in] subscription The subscription
@@ -982,7 +994,7 @@ mamaSubscription_isValid (
     mamaSubscription subscription);
 
 /**
- * Mute the current topic for wildcard subscriptions. Applications should only
+ * @brief Mute the current topic for wildcard subscriptions. Applications should only
  * invoke this method from the message callback. When invoked for a WMW
  * transport subsription, the subscription will cease receiving calbacks on the current
  * topic.
@@ -1003,7 +1015,7 @@ mamaSubscription_muteCurrentTopic(
     mamaSubscription subscription);
 
 /**
- * Set the application-specific data type.
+ * @brief Set the application-specific data type.
  *
  * @param[in] subscription The subscription.
  * @param[in] appDataType The application-specific data type.
@@ -1020,7 +1032,7 @@ mamaSubscription_setAppDataType(
     uint8_t appDataType);
 
 /**
- * Set the debug level for this subscription.
+ * @brief Set the debug level for this subscription.
  *
  * @param[in] subscription The subscription.
  * @param[in] level        The new debug level.
@@ -1036,7 +1048,7 @@ mamaSubscription_setDebugLevel (
     MamaLogLevel level);
 
 /**
- * A hint as to the expected size of size of groups when making group subscriptions.
+ * @brief A hint as to the expected size of size of groups when making group subscriptions.
  *
  * @param[in] subscription The subscription
  * @param[in] groupSizeHint The size of the groups
@@ -1052,9 +1064,9 @@ mamaSubscription_setGroupSizeHint (
     int groupSizeHint);
 
 /**
- * Set the item closure for group subscriptions.
+ * @brief Set the item closure for group subscriptions.
  *
- * Group subscriptions receive updates for multiple symbols. This method allows
+ * @details Group subscriptions receive updates for multiple symbols. This method allows
  * calls to set a per-symbol closure which will be passed as the fourth argument
  * to subsequent calls to the onMsg callback. This method may only be called
  * during the onMsg callback.
@@ -1078,7 +1090,7 @@ mamaSubscription_setItemClosure (
     void *closure);
 
 /**
- * Set a filter to discard messages.
+ * @brief Set a filter to discard messages.
  *
  * @param[in] subscription The subscription on which the filter is being set.
  *
@@ -1112,8 +1124,10 @@ mamaSubscription_setMsgQualifierFilter(
     int ignoreOutOfSequence);
 
 /**
- * Set the number of messages to cache for each symbol before the initial
- * value arrives. This allows the subscription to recover when the initial
+ * @brief Set the number of messages to cache for each symbol before the initial
+ * value arrives.
+ *
+ * @details This allows the subscription to recover when the initial
  * value arrives late (after a subsequent trade or quote already arrived).
  *
  * For group subscription, a separate cache is used for each group member.
@@ -1134,7 +1148,7 @@ mamaSubscription_setPreIntitialCacheSize(
     int cacheSize);
 
 /**
- * Whether a subscription should attempt to recover from
+ * @brief Whether a subscription should attempt to recover from
  * sequence number gaps.
  *
  * @param[in] subscription The subscription
@@ -1152,9 +1166,9 @@ mamaSubscription_setRecoverGaps (
     int              doesRecover);
 
 /**
- * Whether an initial value is required for the specified subscription.
- * This only applies to market data subscriptions and not to basic
- * subscriptions.
+ * @brief Whether an initial value is required for the specified subscription.
+ *
+ * @details This only applies to market data subscriptions and not to basic subscriptions.
  * Default value of 1 indicating that initial values are required.
  *
  * @param[in] subscription The subscription
@@ -1171,7 +1185,7 @@ mamaSubscription_setRequiresInitial (
     int requiresInitial);
 
 /**
- * Set the service level. This method must be invoked before createXXX ().
+ * @brief Set the service level. This method must be invoked before createXXX ().
  *
  * @param[in] subscription The subscription for which the service level is being
  * set.
@@ -1192,7 +1206,7 @@ mamaSubscription_setServiceLevel(
     long serviceLevelOpt);
 
 /**
- * Set the number of retries when requesting recaps.
+ * @brief Set the number of retries when requesting recaps.
  *
  * @param[in] subscription The subscription.
  * @param[in] retries The number of retries.
@@ -1208,8 +1222,9 @@ mamaSubscription_setRetries (
     int retries);
 
 /**
- * Set the subscription type for the subscription being created.
- * If not called the subscription type defaults to MAMA_SUBSC_TYPE_NORMAL.
+ * @brief Set the subscription type for the subscription being created.
+ *
+ * @details If not called the subscription type defaults to MAMA_SUBSC_TYPE_NORMAL.
  * See <code>mamaSubscriptionType</code> enum for valid values.
  *
  * @param[in] subscription The subscription for which the type is being set.
@@ -1226,7 +1241,7 @@ mamaSubscription_setSubscriptionType(
     mamaSubscriptionType type);
 
 /**
- * Set the symbol (e.g. to change symbol mapping).
+ * @brief Set the symbol (e.g. to change symbol mapping).
  *
  * @param[in] subscription The subscription.
  * @param[in] symbol.
@@ -1243,7 +1258,7 @@ mamaSubscription_setSymbol (
     const char *symbol);
 
 /**
- * Set the timeout for this subscription. The timeout is used for
+ * @brief Set the timeout for this subscription. The timeout is used for
  * requesting recaps.
  *
  * @param[in] subscription The subscription.
@@ -1260,7 +1275,7 @@ mamaSubscription_setTimeout (
     double timeout);
 
 /**
- * Set the parameters for a subscription that may be actually
+ * @brief Set the parameters for a subscription that may be actually
  * activated later.  Activate the subscription using
  * mamaSubscription_activate().
  *
@@ -1293,7 +1308,7 @@ mamaSubscription_setup(
     void*                     closure);
 
 /**
- * Set the parameters for a subscription that may be actually
+ * @brief Set the parameters for a subscription that may be actually
  * activated later.  Activate the subscription using
  * mamaSubscription_activate().
  *
@@ -1328,11 +1343,11 @@ mamaSubscription_setup2(
     void *closure);
 
 /**
- * Set the parameters for a wildcard  subscription that may be actually
+ * @brief Set the parameters for a wildcard  subscription that may be actually
  * activated later.  Activate the subscription using
  * mamaSubscription_activate().
  *
- * The topic must be a valid wildcard topic for the underlying middleware.
+ * @details The topic must be a valid wildcard topic for the underlying middleware.
  *
  * Applications may set and retireve per-topic closures using
  * mamaSubscription_setItemClosure() however this method is only guaranteed to
@@ -1341,15 +1356,15 @@ mamaSubscription_setup2(
  * topic. The topicClosure argument to the callback is NULL prior to an
  * application setting the closure for the topic.
  *
- * @param subscription The subscription.
- * @param transport The transport to use.
- * @param queue The mama queue.
- * @param callbacks The mamaMsgCallbacks structure containing the callback
+ * @param[in] subscription The subscription.
+ * @param[in] transport The transport to use.
+ * @param[in] queue The mama queue.
+ * @param[in] callbacks The mamaMsgCallbacks structure containing the callback
  * functions.
- * @param source The source name of the feed handler to provide the
+ * @param[in] source The source name of the feed handler to provide the
  * subscription.
- * @param symbol The symbol name.
- * @param closure The closure will be passed to subsequent callback
+ * @param[in] symbol The symbol name.
+ * @param[in] closure The closure will be passed to subsequent callback
  * invocations for this subscription.
  *
  * @return mama_status return code can be one of:
@@ -1373,7 +1388,7 @@ mamaSubscription_setupBasicWildCard (
     void*                            closure);
 
 /**
- * This function will return the string representation of the subscription state. The subscription state
+ * @brief This function will return the string representation of the subscription state. The subscription state
  * can be obtained by calling the mamaSubscription_getState function.
  *
  * @param[in] state The state to obtain the string representation for.

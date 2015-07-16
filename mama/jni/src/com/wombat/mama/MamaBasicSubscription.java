@@ -124,16 +124,15 @@ public class MamaBasicSubscription
     * naming service. A publishing transport can be assigned a name with the
     * publish_name property.
     *
-    * @param subscription The subscription.
+    * @param callbacks The mamaMsgCallbacks structure containing the callback
+    *                   functions.
     * @param transport The transport to use.
     * @param queue The mama queue.
-    * @param callbacks The mamaMsgCallbacks structure containing the callback
-    * functions.
     * @param source The source name of the feed handler to provide the
-    * subscription.
-    * @param symbol The symbol name.
+    *                   subscription.
+    * @param topic The symbol name.
     * @param closure The closure will be passed to subsequent callback
-    * invocations for this subscription.
+    *                   invocations for this subscription.
     */
     public void createBasicWildCardSubscription(
         final MamaBasicWildCardSubscriptionCallback callback,

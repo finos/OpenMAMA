@@ -158,6 +158,7 @@ int main (int argc, const char **argv)
                                                    sizeof (mamaSubscription));
 
 
+    setbuf (stdout, NULL);
     memset(&symbolListCallbacks, 0, sizeof(symbolListCallbacks));
     symbolListCallbacks.onMsg          = symbolListSubscriptionOnMsg;
     symbolListCallbacks.onCreate       = symbolListSubscriptionOnCreate;

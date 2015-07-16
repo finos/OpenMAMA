@@ -372,10 +372,6 @@
 				>
 			</File>
 			<File
-				RelativePath=".\InboxImpl.h"
-				>
-			</File>
-			<File
 				RelativePath=".\mama\MamaBasicSubscription.h"
 				>
 			</File>

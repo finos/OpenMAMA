@@ -20,7 +20,6 @@
  */
 
 #include <mama/mamacpp.h>
-#include "InboxImpl.h"
 #include "mamacppinternal.h"
 #include "mama/senderId.h"
 

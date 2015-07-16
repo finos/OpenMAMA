@@ -21,17 +21,13 @@
 
 #include "fieldcachemap.h"
 #include "fieldcachemaparray.h"
-#include "fieldcachemapbinary.h"
-#include "fieldcachemapmonitor.h"
 #include <assert.h>
 
 const mamaFieldCacheMapType gMamaFieldCacheMapType = MAMAFIELDCACHE_MAP_MODE_ARRAY;
-const mama_bool_t gUseMamaFieldCacheMapMonitor = 0;
 
 mama_status mamaFieldCacheMap_create(mamaFieldCacheMap* map)
 {
     mamaFieldCacheMap localMap = NULL;
-    mamaFieldCacheMap monitorMap = NULL;
     mama_status ret = MAMA_STATUS_NULL_ARG;
 
     assert(map);
@@ -42,20 +38,9 @@ mama_status mamaFieldCacheMap_create(mamaFieldCacheMap* map)
             ret = mamaFieldCacheMapArray_create(&localMap);
             break;
         case MAMAFIELDCACHE_MAP_MODE_BINARY:
-            ret = mamaFieldCacheMapBinary_create(&localMap);
             break;
         default:
             break;
-    }
-
-    if(ret == MAMA_STATUS_OK && gUseMamaFieldCacheMapMonitor)
-    {
-        ret = mamaFieldCacheMapMonitor_create(&monitorMap, localMap);
-        if(ret == MAMA_STATUS_OK)
-        {
-            localMap = monitorMap;
-        }
-        /* If something went wrong, go on without the monitor */
     }
 
     /* Return the map. */

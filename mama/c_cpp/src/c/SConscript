@@ -156,8 +156,6 @@ libmama_sources = \
     fieldcache/fieldcachefield.c
     fieldcache/fieldcacheimpl.c
     fieldcache/fieldcachelist.c
-    fieldcache/fieldcachemapbinary.c
-    fieldcache/fieldcachemapmonitor.c
     fieldcache/fieldcachevector.c
 """)
 

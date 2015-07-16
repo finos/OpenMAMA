@@ -30,6 +30,7 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <stdio.h>
 #include "parsecmd.h"
 #include "dictrequester.h"
 #include "mama/MamaQueueGroup.h"
@@ -202,6 +203,7 @@ public:
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     try
     {
         CommonCommandLineParser     cmdLine (argc, argv);

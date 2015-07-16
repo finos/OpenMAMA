@@ -426,11 +426,37 @@ int getProcessInfo(int pid ,memVals *memV,cpuVals *cpuV,int childFlag)
         }
         len = read(fd, buffer, sizeof(buffer)-1);
         close(fd);
+
+        /* If the length returned is -1 a read error has occurred
+         * (most likely the process has gone away).
+         */
+        if (len == -1)
+        {
+            if (cpuV)
+            {
+                cpuV->userTime = 0;
+                cpuV->sysTime = 0;
+            }
+
+            if(memV)
+            {
+                memV->vsize = 0;
+                memV->rss = 0;
+                memV->memPercent = 0;
+            }
+            return 0;
+        }
+
         buffer[len] = '\0';
     }
     /* parse out the status */
     p = buffer;
     p = strchr(p, '(')+1;                       /* skip pid */
+    if (p==NULL)
+    {
+        /* Process has exited since the pid was initially obtained */
+        return 0;
+    }
     {
         char name[64];
         char *q = strrchr(p, ')'); /*process name*/

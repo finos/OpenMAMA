@@ -425,6 +425,7 @@ public class MamdaAtomicBookBuilder
                 mEntry      = null;
                 mPriceLevel = null;
             }
+            System.out.flush();
         }
 
         public AtomicBookBuilder(
@@ -884,6 +885,7 @@ public class MamdaAtomicBookBuilder
 
             if (mQuietModeLevel<1)
                 System.out.println ("");
+            System.out.flush();
         }
 
         /*
@@ -984,6 +986,7 @@ public class MamdaAtomicBookBuilder
                     System.out.println ("");
                 }
             }
+            System.out.flush();
         }
 
 
@@ -1030,6 +1033,7 @@ public class MamdaAtomicBookBuilder
                     System.out.print (val);
                 }
             }
+            System.out.flush();
         }
     }
 }

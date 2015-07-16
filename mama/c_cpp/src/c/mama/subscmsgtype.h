@@ -30,6 +30,9 @@
 extern "C" {
 #endif
 
+/** This enumeration describes the type of subscription messsage.
+ */
+
 typedef enum mamaSubscMsgType
 {
     MAMA_SUBSC_SUBSCRIBE            = 0,
@@ -39,13 +42,23 @@ typedef enum mamaSubscMsgType
     MAMA_SUBSC_REFRESH              = 4,
     MAMA_SUBSC_DDICT_SNAPSHOT       = 5,
     MAMA_SUBSC_WORLDVIEW_RQST       = 6,
-    MAMA_SUBSC_DQ_SUBSCRIBER        = 7,  /* Subscriber knows it lost data itself  */
-    MAMA_SUBSC_DQ_PUBLISHER         = 8,  /* Subscriber knows publisher lost data  */
-    MAMA_SUBSC_DQ_NETWORK           = 9,  /* Subscriber knows network lost data    */
-    MAMA_SUBSC_DQ_UNKNOWN           = 10, /* Subscriber lost data but not know why */
+    MAMA_SUBSC_DQ_SUBSCRIBER        = 7,  /**< Subscriber knows it lost data itself  */
+    MAMA_SUBSC_DQ_PUBLISHER         = 8,  /**< Subscriber knows publisher lost data  */
+    MAMA_SUBSC_DQ_NETWORK           = 9,  /**< Subscriber knows network lost data    */
+    MAMA_SUBSC_DQ_UNKNOWN           = 10, /**< Subscriber lost data but not know why */
     MAMA_SUBSC_FEATURE_SET_RQST     = 11,
-    MAMA_SUBSC_DQ_GROUP_SUBSCRIBER  = 12  /* Subscriber knows it lost data itself  */
+    MAMA_SUBSC_DQ_GROUP_SUBSCRIBER  = 12  /**< Subscriber knows it lost data itself  */
 } mamaSubscMsgType;
+
+/**
+* @brief Return a  string representation for a subscribe message type
+*
+* @param[in] mamaSubscMsgType The MAMA subscribe message type
+*
+* @return The returned string showing the message type.
+*
+**/
+
 
 MAMAExpDLL
 extern const char* MamaSubscMsgTypeStr    (mamaSubscMsgType    msgType);

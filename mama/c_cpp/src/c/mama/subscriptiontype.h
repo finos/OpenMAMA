@@ -31,17 +31,20 @@
 extern "C" {
 #endif
 
+/**
+* Enumeration to describe the type of subscription made
+*/
 typedef enum mamaSubscriptionType
 {
-    MAMA_SUBSC_TYPE_NORMAL                   = 0,
-    MAMA_SUBSC_TYPE_GROUP                    = 1,
-    MAMA_SUBSC_TYPE_BOOK                     = 2,
+    MAMA_SUBSC_TYPE_NORMAL                   = 0, /**< Normal Subscription */
+    MAMA_SUBSC_TYPE_GROUP                    = 1, /**< Group Subscription */
+    MAMA_SUBSC_TYPE_BOOK                     = 2, /**< Book Subscription */
     MAMA_SUBSC_TYPE_BASIC                    = 3, /* No Market data */
-    MAMA_SUBSC_TYPE_DICTIONARY               = 4,
-    MAMA_SUBSC_TYPE_SYMBOL_LIST              = 5,
-    MAMA_SUBSC_TYPE_SYMBOL_LIST_NORMAL       = 6,
-    MAMA_SUBSC_TYPE_SYMBOL_LIST_GROUP        = 7,
-    MAMA_SUBSC_TYPE_SYMBOL_LIST_BOOK         = 8
+    MAMA_SUBSC_TYPE_DICTIONARY               = 4, /**< Dictionary Subscription */
+    MAMA_SUBSC_TYPE_SYMBOL_LIST              = 5, /**< Symbol List Subscription */
+    MAMA_SUBSC_TYPE_SYMBOL_LIST_NORMAL       = 6, /**< Symbol List Subscription */
+    MAMA_SUBSC_TYPE_SYMBOL_LIST_GROUP        = 7, /**< Symbol List Subscription */
+    MAMA_SUBSC_TYPE_SYMBOL_LIST_BOOK         = 8 /**< Symbol List Subscription */
 } mamaSubscriptionType;
 
 MAMAExpDLL extern const char* MamaSubscTypeStr (mamaSubscriptionType subtype);

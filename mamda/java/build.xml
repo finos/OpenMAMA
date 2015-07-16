@@ -1,4 +1,4 @@
-<project name="mamda" default="compile.base" basedir=".">
+<project name="mamda" default="dist" basedir=".">
     <property name="product" value="mamda"></property>
     <property name="version" value="2.2.1.1"></property>
     <property name="release" value="${product}_${version}_jdk${java.version}"></property>
@@ -363,7 +363,7 @@
       <delete dir="${user.dir}/temp/"></delete>
     </target>
       
-    <target name="clean" description="remove all generated files">
+    <target name="clean" depends="cleanUpLocks" description="remove all generated files">
         <delete dir="${build}"></delete>
         <delete dir="${dist}"></delete>
         <delete dir="${noent_dist}"></delete>

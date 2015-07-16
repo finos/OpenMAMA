@@ -252,6 +252,7 @@ public class MamdaBookTicker
                 prettyPrint (delta);
             }
             prettyPrint (book);
+            System.out.flush();
         }
 
         public void onBookComplexDelta (MamdaSubscription          subscription,
@@ -319,6 +320,7 @@ public class MamdaBookTicker
                 System.out.print ("RECAP!!!  (seq# " + seqNum + ")\n");
             }
             prettyPrint (book);
+            System.out.flush();
         }
 
 
@@ -395,6 +397,7 @@ public class MamdaBookTicker
                 System.out.print (action);
                 System.out.print ("  \n");
             }
+            System.out.flush();
         }
 
         public void prettyPrintLevels (final MamdaOrderBook  book)
@@ -530,6 +533,7 @@ public class MamdaBookTicker
                 
             if (mQuietModeLevel<1)
                 System.out.println ("");
+            System.out.flush();
         }
 
         public void prettyPrintEntries (final MamdaOrderBook book)
@@ -625,6 +629,7 @@ public class MamdaBookTicker
                     System.out.println ("");
                 }
             }
+            System.out.flush();
         }
 
         private static final String [] sPadding = new String[128];
@@ -668,6 +673,7 @@ public class MamdaBookTicker
                     System.out.print (val);
                 }
             }
+            System.out.flush();
         }
     }
 }

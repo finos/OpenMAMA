@@ -35,6 +35,7 @@
 #include "../dictrequester.h"
 #include <list>
 #include <fstream>
+#include <stdio.h>
 
 using std::exception;
 using std::endl;
@@ -257,6 +258,7 @@ class StatsTimerCallback : public MamaTimerCallback
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     try
     {
         CommonCommandLineParser     cmdLine (argc, argv);

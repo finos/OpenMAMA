@@ -21,6 +21,7 @@
 
 #include "mama/mama.h"
 #include "string.h"
+#include <stdio.h>
 
 static mamaTransport    gTransport     = NULL;
 static mamaFtMember     gFtMember      = NULL;
@@ -72,6 +73,8 @@ static void MAMACALLTYPE onFtStateChangeCb (mamaFtMember  ftMember,
 
 int main (int argc, const char** argv)
 {
+    setbuf (stdout, NULL);
+
     parseCommandLine (argc, argv);
 
     initializeMama ();
