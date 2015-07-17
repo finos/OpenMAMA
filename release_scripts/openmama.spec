@@ -12,8 +12,8 @@ BuildRequires: libtool autoconf automake ant libuuid-devel flex doxygen qpid-pro
 Requires: libuuid qpid-proton-c libevent ncurses
 
 %if 0%{?fedora}
-BuildRequires: java-1.7.0-openjdk-devel
-Requires: java-1.7.0-openjdk
+BuildRequires: java-1.8.0-openjdk-devel
+Requires: java-1.8.0-openjdk
 %define java_home /usr/lib/jvm/java/
 %endif
 
