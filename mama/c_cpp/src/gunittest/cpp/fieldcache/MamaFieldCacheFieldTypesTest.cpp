@@ -499,6 +499,86 @@ TEST_F(MamaFieldCacheFieldTypesTest, testDateTime)
     ASSERT_DOUBLE_EQ(2500, value.getEpochTimeSeconds());
 }
 
+TEST_F(MamaFieldCacheFieldTypesTest, testBoolVector)
+{
+    MamaFieldCacheField fieldBase;
+    fieldBase.create(1, MAMA_FIELD_TYPE_VECTOR_BOOL, "");
+    MamaFieldCacheFieldBoolVector field;
+
+    mama_bool_t values[5] = { 0, 1, 0, 1, 1 };
+    field.set(fieldBase, values, 5);
+    ASSERT_EQ(0, field.get(fieldBase, 0));
+    ASSERT_EQ(1, field.get(fieldBase, 1));
+    ASSERT_EQ(0, field.get(fieldBase, 2));
+    ASSERT_EQ(1, field.get(fieldBase, 3));
+    ASSERT_EQ(1, field.get(fieldBase, 4));
+
+    const mama_bool_t* result = NULL;
+    mama_size_t size;
+    field.get(fieldBase, result, size);
+    ASSERT_EQ(5, size);
+    ASSERT_EQ(0, result[0]);
+    ASSERT_EQ(1, result[1]);
+    ASSERT_EQ(0, result[2]);
+    ASSERT_EQ(1, result[3]);
+    ASSERT_EQ(1, result[4]);
+    getFieldValue(fieldBase, result, size);
+    ASSERT_EQ(5, size);
+    ASSERT_EQ(0, result[0]);
+    ASSERT_EQ(1, result[1]);
+    ASSERT_EQ(0, result[2]);
+    ASSERT_EQ(1, result[3]);
+    ASSERT_EQ(1, result[4]);
+
+    values[2] = 1;
+    setFieldValue(fieldBase, values, 5);
+    ASSERT_EQ(0, field.get(fieldBase, 0));
+    ASSERT_EQ(1, field.get(fieldBase, 1));
+    ASSERT_EQ(1, field.get(fieldBase, 2));
+    ASSERT_EQ(1, field.get(fieldBase, 3));
+    ASSERT_EQ(1, field.get(fieldBase, 4));
+}
+
+TEST_F(MamaFieldCacheFieldTypesTest, testCharVector)
+{
+    MamaFieldCacheField fieldBase;
+    fieldBase.create(1, MAMA_FIELD_TYPE_VECTOR_CHAR, "");
+    MamaFieldCacheFieldCharVector field;
+
+    char values[5] = { 'E', 'F', 'V', 'H', 'I' };
+    field.set(fieldBase, values, 5);
+    ASSERT_EQ('E', field.get(fieldBase, 0));
+    ASSERT_EQ('F', field.get(fieldBase, 1));
+    ASSERT_EQ('V', field.get(fieldBase, 2));
+    ASSERT_EQ('H', field.get(fieldBase, 3));
+    ASSERT_EQ('I', field.get(fieldBase, 4));
+
+    const char* result = NULL;
+    mama_size_t size;
+    field.get(fieldBase, result, size);
+    ASSERT_EQ(5, size);
+    ASSERT_EQ('E', result[0]);
+    ASSERT_EQ('F', result[1]);
+    ASSERT_EQ('V', result[2]);
+    ASSERT_EQ('H', result[3]);
+    ASSERT_EQ('I', result[4]);
+    getFieldValue(fieldBase, result, size);
+    ASSERT_EQ(5, size);
+    ASSERT_EQ('E', result[0]);
+    ASSERT_EQ('F', result[1]);
+    ASSERT_EQ('V', result[2]);
+    ASSERT_EQ('H', result[3]);
+    ASSERT_EQ('I', result[4]);
+
+    values[2] = 'G';
+    setFieldValue(fieldBase, values, 5);
+    ASSERT_EQ('E', field.get(fieldBase, 0));
+    ASSERT_EQ('F', field.get(fieldBase, 1));
+    ASSERT_EQ('G', field.get(fieldBase, 2));
+    ASSERT_EQ('H', field.get(fieldBase, 3));
+    ASSERT_EQ('I', field.get(fieldBase, 4));
+}
+
 TEST_F(MamaFieldCacheFieldTypesTest, testI8Vector)
 {
     MamaFieldCacheField fieldBase;

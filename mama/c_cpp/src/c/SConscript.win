@@ -50,6 +50,7 @@ dqpublishermanager.c
 inbox.c
 msgtype.c
 msgutils.c
+plugin.c
 senderId.c
 reservedfields.c
 subscription.c
@@ -75,9 +76,7 @@ playback/playbackcapture.c
 playback/playbackFileParser.c
 playback/playbackpublisher.c
 fieldcache/fieldcachefield.c
-fieldcache/fieldcachemapbinary.c
 fieldcache/fieldcachemaparray.c
-fieldcache/fieldcachemapmonitor.c
 fieldcache/fieldcacheimpl.c
 fieldcache/fieldcachemap.c
 fieldcache/fieldcacheiterator.c

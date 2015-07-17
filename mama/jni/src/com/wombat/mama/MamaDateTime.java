@@ -100,8 +100,14 @@ public class MamaDateTime implements Comparable
         return getAsString ();
     }
 
+    public String formatString (String       str,
+                                MamaTimeZone tz)
+    {
+        return getAsFormattedString (str, (tz!=null ? tz.tz():null));
+    }
+
     public int compareTo (Object obj)
-    {  
+    {
         // If comparison is not possible this will throw a ClassCastException
         // which is what the Comparable spec requires.
         MamaDateTime time = (MamaDateTime) obj;
@@ -282,6 +288,9 @@ public class MamaDateTime implements Comparable
     public native double getEpochTimeSecondsWithCheck ();
 
     public native String getAsString ();
+
+    private native String getAsFormattedString (String format,
+                                                String tz);
 
     public native String getTimeAsString ();
 

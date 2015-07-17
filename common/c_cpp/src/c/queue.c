@@ -164,13 +164,26 @@ wombatQueue_destroy (wombatQueue queue)
         result = WOMBAT_QUEUE_SEM_ERR;
     }
 
-    wInterlocked_destroy (&impl->mUnblocking);
-    
     wthread_mutex_destroy( &impl->mLock);
+
+    if (WOMBAT_QUEUE_OK == result)
+    {
+        return wombatQueue_deallocate(queue);
+    }
+    else
+    {
+        return result;
+    }
+}
+
+wombatQueueStatus
+wombatQueue_deallocate (wombatQueue queue)
+{
+    wombatQueueImpl *impl      = (wombatQueueImpl*)queue;
+    wInterlocked_destroy (&impl->mUnblocking);
     free (impl);
     return WOMBAT_QUEUE_OK;
 }
-
 
 wombatQueueStatus
 wombatQueue_setMaxSize (wombatQueue queue, unsigned int value)

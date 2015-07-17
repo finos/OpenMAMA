@@ -715,6 +715,10 @@ typedef struct mamaBridgeImpl_
        used when getting the default queue */
     void*     mCppCallback;
 
+    /*Used in bridge.c*/
+    mama_bool_t  mEntitleDeferred;
+    mama_bool_t  mEntitleReadOnly;
+
     /*Used in mama.c*/
     bridge_open         			bridgeOpen;
     bridge_close        			bridgeClose;
@@ -872,6 +876,22 @@ mamaBridgeImpl_getInternalEventQueue (mamaBridge bridgeImpl, mamaQueue* internal
 MAMAExpDLL
 mama_status
 mamaBridgeImpl_stopInternalEventQueue (mamaBridge bridgeImpl);
+
+MAMAExpDLL
+extern mama_status
+mamaBridgeImpl_setReadOnlyProperty (mamaBridge bridgeImpl, const char* property, const char* value);
+
+MAMAExpDLL
+extern mama_status
+mamaBridgeImpl_setProperty (mamaBridge bridgeImpl, const char* property, const char* value);
+
+MAMAExpDLL
+extern const char*
+mamaBridgeImpl_getProperty (mamaBridge bridgeImpl, const char* property);
+
+MAMAExpDLL
+extern mama_bool_t
+mamaBridgeImpl_areEntitlementsDeferred (mamaBridge bridgeImpl);
 
 #if defined(__cplusplus)
 }

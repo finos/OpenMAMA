@@ -196,6 +196,10 @@ mamaFieldTypeToString (mamaFieldType type)
         return "TIME";
     case MAMA_FIELD_TYPE_PRICE:
         return "PRICE";
+    case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        return "VECTOR_BOOL";
+    case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        return "VECTOR_CHAR";
     case MAMA_FIELD_TYPE_VECTOR_I8:
         return "VECTOR_I8";
     case MAMA_FIELD_TYPE_VECTOR_U8:
@@ -270,6 +274,10 @@ stringToMamaFieldType (const char* str)
         return MAMA_FIELD_TYPE_TIME;
     if (strcmp(str, "PRICE") == 0)
         return MAMA_FIELD_TYPE_PRICE;
+    if (strcmp(str, "VECTOR_BOOL") == 0)
+        return MAMA_FIELD_TYPE_VECTOR_BOOL;
+    if (strcmp(str, "VECTOR_CHAR") == 0)
+        return MAMA_FIELD_TYPE_VECTOR_CHAR;
     if (strcmp(str, "VECTOR_I8") == 0)
         return MAMA_FIELD_TYPE_VECTOR_I8;
     if (strcmp(str, "VECTOR_U8") == 0)

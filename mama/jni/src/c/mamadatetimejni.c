@@ -714,6 +714,59 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getAsString
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
+ * Method:    getAsFormattedString
+ * Signature: ()Ljava/lang/String
+ */
+JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getAsFormattedString
+  (JNIEnv* env, jobject this, jstring str, jstring timeZone)
+{
+    jlong       pDateTime   = 0;
+    jlong       pTimeZone   = 0;
+    const char* c_Str       = NULL;
+    mama_status status      = MAMA_STATUS_OK;
+    char        ret_c       [MAX_DATE_TIME_STR_LEN+1];
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
+    
+    pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+                             "Null parameter, MamaDateTime may have already been destroyed.", NULL) ;
+
+    if (NULL != timeZone)
+    {
+        pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
+        if (0 == pTimeZone)
+        {
+            pTimeZone = createTimeZone (env, this);
+            assert (0!=pTimeZone);
+        }
+        timeZone_set (env, pTimeZone, timeZone);
+    }
+
+    c_Str = (*env)->GetStringUTFChars(env,str,0);
+ 
+    if (!c_Str ||
+        MAMA_STATUS_OK!=(status=mamaDateTime_getAsFormattedStringWithTz(
+                            CAST_JLONG_TO_POINTER(mamaDateTime,pDateTime), 
+                            ret_c, 
+                            MAX_DATE_TIME_STR_LEN,
+                            c_Str,
+                            timeZone
+                            ? CAST_JLONG_TO_POINTER (mamaTimeZone, pTimeZone)
+                            : NULL)))
+    {
+         utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Error calling MamaDateTime.getAsStringWithTz().",
+                status);
+        utils_throwExceptionForMamaStatus (env,status,errorString);
+        return 0;
+    }
+    return (*env)->NewStringUTF (env, ret_c);
+}  
+
+/*
+ * Class:     com_wombat_mama_MamaDateTime
  * Method:    getTimeAsString
  * Signature: ()Ljava/lang/String
  */

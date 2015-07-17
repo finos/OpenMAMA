@@ -260,8 +260,9 @@ if [ $MOCK_BUILD -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try cd ${BUILD_DIR}/SRPMS
     try /usr/bin/mock -r epel-6-i386 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-el6-i386.log 2>&1
     try /usr/bin/mock -r epel-6-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-el6-x64.log 2>&1
-    try /usr/bin/mock -r fedora-19-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f19-x64.log 2>&1
-    try /usr/bin/mock -r fedora-20-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f20-x64.log 2>&1
+    try /usr/bin/mock -r epel-7-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-el7-x64.log 2>&1
+    try /usr/bin/mock -r fedora-21-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f21-x64.log 2>&1
+    try /usr/bin/mock -r fedora-22-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f22-x64.log 2>&1
     next
     RETURN_CODE=$?
 fi
@@ -281,13 +282,13 @@ if [ $PACKAGE_RELEASE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     # Copy in the Source RPM
     try cp ${BUILD_DIR}/SRPMS/openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm ${RELEASE_DIR}
 
-    # These paths are hard coded, since they should always remain there. We may
-    # want to update them periodically, especially with EL7, and newer Fedora
-    # versions.
+    # These paths are hard coded, since they should always remain there. We need
+    # to update these periodically.
     try cp /var/lib/mock/epel-6-i386/result/openmama-${VERSION}-${BUILD_NUMBER}.el6.i686.rpm ${RELEASE_DIR}
     try cp /var/lib/mock/epel-6-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm ${RELEASE_DIR}
-    try cp /var/lib/mock/fedora-19-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc19.x86_64.rpm ${RELEASE_DIR}
-    try cp /var/lib/mock/fedora-20-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc20.x86_64.rpm ${RELEASE_DIR}
+    try cp /var/lib/mock/epel-7-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.el7.*.x86_64.rpm ${RELEASE_DIR}
+    try cp /var/lib/mock/fedora-21-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc21.x86_64.rpm ${RELEASE_DIR}
+    try cp /var/lib/mock/fedora-22-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc22.x86_64.rpm ${RELEASE_DIR}
 
     # Build and tar the binary release
     if [ -d ${BUILD_DIR}/binary ]; then

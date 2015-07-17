@@ -35,13 +35,13 @@
 #include <payloadbridge.h>
 #include <property.h>
 #include <platform.h>
+#include <plugin.h>
 
 #include "fileutils.h"
 #include "reservedfieldsimpl.h"
 #include <mama/statslogger.h>
 #include <mama/stat.h>
 #include <mama/statfields.h>
-#include <statsgeneratorinternal.h>
 #include <statsgeneratorinternal.h>
 #include <mama/statscollector.h>
 #include "transportimpl.h"
@@ -740,6 +740,9 @@ mama_openWithPropertiesCount (const char* path,
 		}
     }
 
+    /* This will initialise all plugins */
+    mama_initPlugins();
+
     prop = properties_Get (gProperties, "mama.catchcallbackexceptions.enable");
     if (prop != NULL && strtobool(prop))
     {
@@ -1253,8 +1256,11 @@ mama_closeCount (unsigned int* count)
                 gImpl.myPayloadLibraries[(uint8_t)payload] = NULL;
             }
         }
-        
+
        gDefaultPayload = NULL;
+
+       /* This will shutdown all plugins */
+       mama_shutdownPlugins();
 
         /* Look for a bridge for each of the middlewares and close them */
         for (middleware = 0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
@@ -1701,6 +1707,8 @@ enableEntitlements (const char **servers)
     const char* altUserId;
     const char* altIp;
     const char* site;
+    mamaMiddleware middleware = 0;
+    int entitlementsRequired = 0; /*boolean*/
 
 
     if (gEntitlementClient != 0)
@@ -1708,6 +1716,30 @@ enableEntitlements (const char **servers)
         oeaClient_destroy (gEntitlementClient);
         gEntitlementClient = 0;
     }
+
+    for (middleware=0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
+    {
+        mamaBridgeImpl* impl = (mamaBridgeImpl*) gImpl.myBridges [middleware];
+        if (impl)
+        {
+            /* Check if entitlements are deferred to bridge */
+            if (mamaBridgeImpl_areEntitlementsDeferred(impl) == 1)
+            {
+                mama_log (MAMA_LOG_LEVEL_WARN,
+                    "Entitlements deferred on %s bridge.",
+                    mamaMiddleware_convertToString (middleware));
+            }
+            else
+            {
+                /* Entitlements are not deferred, continue with entitlement checking */
+                entitlementsRequired = 1;
+            }
+        }
+    }
+
+    /* Entitlements are deferred, do not continue with entitlement checking */
+    if (entitlementsRequired==0)
+        return MAMA_STATUS_OK;
 
     if (servers == NULL)
     {

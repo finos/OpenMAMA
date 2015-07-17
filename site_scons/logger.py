@@ -36,6 +36,13 @@ class Logger:
             if self.opts['verbose'] == True:
                sys.stderr.write('WARNING:: %s' % (stderr))
             self.fd.write('%s\n' % (stderr))
+        # Include stdout logs if there are any. This is especially 
+        # helpful in Windows builds where MSVS CL command-line sends
+        # useful errors/warnings to stdout instead of stderr.
+        if len(stdout) > 0:
+            if self.opts['verbose'] == True:
+               sys.stdout.write('WARNING::stdout: %s' % (stdout))
+            self.fd.write('stdout: %s\n' % (stdout))
         return p.returncode
 
     def log_command(self, s, target, src, env):

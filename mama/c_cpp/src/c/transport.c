@@ -25,6 +25,7 @@
 
 #include "mama/mama.h"
 #include "throttle.h"
+#include "plugin.h"
 #include "list.h"
 #include "transportimpl.h"
 #include "bridge.h"
@@ -876,10 +877,22 @@ mamaTransport_create (mamaTransport transport,
 
     if ((!self->mDisableRefresh) && (!mamaTransportInternal_disableRefreshes(name)))
     {
-        return refreshTransport_create (&self->mRefreshTransport,
-                                    (mamaTransport)self,
-                                    self->mListeners,
-                                    self->mBridgeImpl);
+        status = refreshTransport_create (&self->mRefreshTransport,
+                                          (mamaTransport)self,
+                                          self->mListeners,
+                                          self->mBridgeImpl);
+
+        if (MAMA_STATUS_OK != status)
+            return status;
+    }
+
+    /* Calling plugin hook*/
+    status = mamaPlugin_fireTransportPostCreateHook (transport);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mamaTransport_create(): TransportPostCreateHook failed with a status of %s",
+                   mamaStatus_stringForStatus(status));
     }
 
     return MAMA_STATUS_OK;

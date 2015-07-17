@@ -25,8 +25,8 @@
 #
 ##################################################
 m4_define([product_version_major],     [2])
-m4_define([product_version_minor],     [2])
-m4_define([product_version_release],   [1.1])
+m4_define([product_version_minor],     [3])
+m4_define([product_version_release],   [3])
 m4_define([product_full_version],[product_version_major.product_version_minor.product_version_release])
 
 

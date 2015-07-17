@@ -113,7 +113,7 @@ if env['with_unittest'] == True:
 if ( env['with_docs'] == True and not Media.has_key('mamda/c_cpp/docs') and env['build'] == 'dynamic' and not env.GetOption('clean') ):
    cppdoc = env.Doxygen('doxyconfig-cpp.in')
 
-   env.Command( '$prefix/doc/mamda/cpp/html', cppdoc, 'mkdir $TARGET && cp -rf %s\mamda\c_cpp\doc\cpp\html\* $TARGET' % ( env['TOPLEVEL'] ) )
+   env.Command( '$prefix/doc/mamda', cppdoc, 'mkdir $TARGET && xcopy /q /s /e /y  %s\mamda\c_cpp\doc\* $TARGET' % ( env['TOPLEVEL'] ) )
 
    env.Clean( cppdoc, '%s/mamda/c_cpp/doc/cpp' % (env['TOPLEVEL']) )
 

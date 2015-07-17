@@ -35,9 +35,14 @@ public class MamaPublisher
     /*A long value containing a pointer to the underlying C publisher structure*/
     private long    publisherPointer_i   =   0;
 
-    public void create (MamaTransport transport, String topic)
+	public void create (MamaTransport transport, String topic)
     {
-        _create(transport,topic);
+        _create(transport,topic,null);
+    }
+
+	public void create (MamaTransport transport, String topic, String source)
+    {
+        _create(transport,topic,source);
     }
 
     public void send (MamaMsg msg)
@@ -76,7 +81,7 @@ public class MamaPublisher
         _sendFromInbox(inbox,msg);
     }
 
-    private native void _create (MamaTransport transport, String topic);
+    private native void _create (MamaTransport transport, String topic, String source);
 
     private native void _send (MamaMsg msg);
 

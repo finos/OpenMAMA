@@ -160,6 +160,18 @@ WS                  [ \t]
                                     /* value string */
                                     if ( curKey && curValue )
                                     {
+                                        replaceValue = 
+                                            propertiesImpl_ReplaceEnvironmentVariable(curValue);
+                                        if(replaceValue != NULL)
+                                        {
+                                             /* Delete the original value */
+                                             free(curValue);
+
+                                             /* Copy the replace value into the 
+                                              * current value pointer. */
+                                             curValue = replaceValue;
+                                        }
+
                                         propertiesImpl_AddProperty( properties,
                                             curKey, curValue );
                                         if( gPropertyDebug )

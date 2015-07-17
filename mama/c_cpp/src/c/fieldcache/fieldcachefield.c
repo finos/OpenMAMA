@@ -273,6 +273,22 @@ mamaFieldCacheField_copy(const mamaFieldCacheField field, mamaFieldCacheField co
             mamaFieldCacheField_setDateTime(copy, value);
             break;
         }
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            const mama_bool_t* values = NULL;
+            mama_size_t size;
+            mamaFieldCacheField_getBoolVector(field, &values, &size);
+            mamaFieldCacheField_setBoolVector(copy, values, size);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        {
+            const char* values = NULL;
+            mama_size_t size;
+            mamaFieldCacheField_getCharVector(field, &values, &size);
+            mamaFieldCacheField_setCharVector(copy, values, size);
+            break;
+        }
         case MAMA_FIELD_TYPE_VECTOR_I8:
         {
             const mama_i8_t* values = NULL;
@@ -725,6 +741,40 @@ mama_status mamaFieldCacheField_getDateTime(const mamaFieldCacheField field,
         return MAMA_STATUS_INVALID_ARG;
     }
     *(mamaDateTime*)result = (mamaDateTime)field->mData.data; /* NOT COPYING */
+    return MAMA_STATUS_OK;
+}
+
+mama_status mamaFieldCacheField_getBoolVector(const mamaFieldCacheField field,
+                                            const mama_bool_t** values,
+                                            mama_size_t* size)
+{
+    if (!field || !values || !size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    if (field->mType != MAMA_FIELD_TYPE_VECTOR_BOOL)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+    *values = (mama_bool_t*)field->mData.data; /* NOT COPYING */
+    *size = field->mVectorSize;
+    return MAMA_STATUS_OK;
+}
+
+mama_status mamaFieldCacheField_getCharVector(const mamaFieldCacheField field,
+                                            const char** values,
+                                            mama_size_t* size)
+{
+    if (!field || !values || !size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    if (field->mType != MAMA_FIELD_TYPE_VECTOR_CHAR)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+    *values = (char*)field->mData.data; /* NOT COPYING */
+    *size = field->mVectorSize;
     return MAMA_STATUS_OK;
 }
 
@@ -1221,6 +1271,38 @@ mama_status mamaFieldCacheField_setDateTime(const mamaFieldCacheField field,
     mamaDateTime_copy((mamaDateTime)field->mData.data, value);
 
     return MAMA_STATUS_OK;
+}
+
+mama_status mamaFieldCacheField_setBoolVector(const mamaFieldCacheField field,
+                                            const mama_bool_t* values,
+                                            mama_size_t size)
+{
+    if (!field || !values)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    if (field->mType != MAMA_FIELD_TYPE_VECTOR_BOOL)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+    field->mVectorSize = size;
+    return mamaFieldCacheField_setDataValue(field, values, size * sizeof(mama_bool_t));
+}
+
+mama_status mamaFieldCacheField_setCharVector(const mamaFieldCacheField field,
+                                            const char* values,
+                                            mama_size_t size)
+{
+    if (!field || !values)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    if (field->mType != MAMA_FIELD_TYPE_VECTOR_CHAR)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+    field->mVectorSize = size;
+    return mamaFieldCacheField_setDataValue(field, values, size * sizeof(char));
 }
 
 mama_status mamaFieldCacheField_setI8Vector(const mamaFieldCacheField field,

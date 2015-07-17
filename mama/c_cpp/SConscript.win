@@ -121,14 +121,13 @@ if env['with_testtools'] == True and 'dynamic' in env['build']:
 if (    not Media.has_key('mama/c_cpp/docs')
         and env['build'] == 'dynamic'
         and not env.GetOption('clean')
+        and env['product'] == 'mama'
         and env['with_docs'] == True ):
 
     cdoc = env.Doxygen('doxyconfig-c.in')
     cppdoc = env.Doxygen('doxyconfig-cpp.in')
 
-    env.Command( '$prefix/doc/mama/images', cdoc, 'mkdir $TARGET && cp -rf %s\mama\c_cpp\doc\images\* $TARGET' % ( env['TOPLEVEL'] ) )
-    env.Command( '$prefix/doc/mama/c/html', cdoc, 'mkdir $TARGET && cp -rf %s\mama\c_cpp\doc\c\html\* $TARGET' % ( env['TOPLEVEL'] ) )
-    env.Command( '$prefix/doc/mama/cpp/html', cppdoc, 'mkdir $TARGET && cp -rf %s\mama\c_cpp\doc\cpp\html\* $TARGET' % ( env['TOPLEVEL'] ) )
+    env.Command( '$prefix/doc/mama', '', 'mkdir $TARGET && xcopy /q /s /e /y %s\mama\c_cpp\doc\* $TARGET' % ( env['TOPLEVEL'] ) )
 
     env.Clean( cdoc, '%s/mama/c_cpp/doc/c' % (env['TOPLEVEL']) )
     env.Clean( cppdoc, '%s/mama/c_cpp/doc/cpp' % (env['TOPLEVEL']) )

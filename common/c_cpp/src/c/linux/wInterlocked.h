@@ -131,12 +131,11 @@ WCOMMONINLINE int wInterlocked_read(wInterlockedInt *value)
  *
  * @param[in] newValue The new value to set.
  * @param[in] value Pointer to the value to be set.
- * @return The updated integer.
+ * @return The original integer in value.
  */
 WCOMMONINLINE int wInterlocked_set(int newValue, wInterlockedInt *value)
 {
-    axchg32(value, (uint32_t)newValue);
-    return (int)*value;
+    return axchg32(value, (uint32_t)newValue);
 }
 
 #endif /* _WOMBAT_WINTERLOCKED_H */

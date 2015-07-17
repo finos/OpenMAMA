@@ -183,6 +183,22 @@ mama_status mamaFieldCache_updateCacheFromMsgField(mamaFieldCache fieldCache,
             mamaFieldCacheField_setDateTime(field, fieldCache->mReusableDateTime);
             break;
         }
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            const mama_bool_t* values = NULL;
+            mama_size_t size = 0;
+            mamaMsgField_getVectorBool(messageField, &values, &size);
+            mamaFieldCacheField_setBoolVector(field, values, size);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        {
+            const char* values = NULL;
+            mama_size_t size = 0;
+            mamaMsgField_getVectorChar(messageField, &values, &size);
+            mamaFieldCacheField_setCharVector(field, values, size);
+            break;
+        }
         case MAMA_FIELD_TYPE_VECTOR_I8:
         {
             const mama_i8_t* values = NULL;
@@ -500,6 +516,32 @@ mama_status mamaFieldCache_updateMsgField(mamaFieldCache fieldCache,
             }
             status = useUpdate ? mamaMsg_updateDateTime(message, name, fid, value)
                                : mamaMsg_addDateTime(message, name, fid, value);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            const mama_bool_t* values = NULL;
+            mama_size_t size = 0;
+            mamaFieldCacheField_getBoolVector(field, &values, &size);
+            if (!values)
+            {
+                return MAMA_STATUS_INVALID_ARG;
+            }
+            status = useUpdate ? mamaMsg_updateVectorBool(message, name, fid, values, size)
+                               : mamaMsg_addVectorBool(message, name, fid, values, size);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        {
+            const char* values = NULL;
+            mama_size_t size = 0;
+            mamaFieldCacheField_getCharVector(field, &values, &size);
+            if (!values)
+            {
+                return MAMA_STATUS_INVALID_ARG;
+            }
+            status = useUpdate ? mamaMsg_updateVectorChar(message, name, fid, values, size)
+                               : mamaMsg_addVectorChar(message, name, fid, values, size);
             break;
         }
         case MAMA_FIELD_TYPE_VECTOR_I8:

@@ -125,7 +125,7 @@ TEST_F(MsgVectorBoolTestsC, AddVectorBool)
                                      &mOutSize);
 
     EXPECT_EQ( mStatus, MAMA_STATUS_OK );
- //   EXPECT_EQ( 0, ::memcmp( mIn, mOut, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
+    EXPECT_EQ( 0, ::memcmp( mIn, mOut, (sizeof(mama_bool_t) * VECTOR_SIZE) ) );
     EXPECT_EQ( mOutSize, VECTOR_SIZE );
 }
 

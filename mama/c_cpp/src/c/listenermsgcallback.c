@@ -86,7 +86,8 @@ listenerMsgCallback_create( listenerMsgCallback *result,
     msgCallback* callback = (msgCallback*)calloc( 1, sizeof( msgCallback ) );
 
 #ifdef WITH_ENTITLEMENTS  /* No listener creation without a client. */
-    if( gEntitlementClient == 0 )
+    mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
+    if( gEntitlementClient == 0 && !(mamaBridgeImpl_areEntitlementsDeferred(bridge)))
     {
         return MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
     }
@@ -625,12 +626,22 @@ static void handleNoSubscribers (msgCallback *callback,
 static int
 checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
 {
-
 #ifdef WITH_ENTITLEMENTS 
     int result = 0;
     int32_t value;
     if( ctx->mEntitlementAlreadyVerified )
     {
+        return 1;
+    }
+
+    mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(self->mSubscription);
+
+    if (bridge && (mamaBridgeImpl_areEntitlementsDeferred(bridge)))
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                       "Deferred checking injected entitlement to %s bridge [%p]",
+                        bridge->bridgeGetName(), bridge);
+        ctx->mEntitlementAlreadyVerified = 1;
         return 1;
     }
 

@@ -538,7 +538,17 @@ static void copyMamaMsg (mamaMsg sourceMessage,
             mamaMsg_destroy (internalTarget);
             break;
         }
-        case MAMA_FIELD_TYPE_VECTOR_I8:
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            MAMA_VECTOR_FIELD_COPY (Bool, mama_bool_t);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        {
+            MAMA_VECTOR_FIELD_COPY (Char, char);
+            break;
+        }
+       case MAMA_FIELD_TYPE_VECTOR_I8:
         {
             MAMA_VECTOR_FIELD_COPY (I8, mama_i8_t);
             break;
