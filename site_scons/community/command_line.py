@@ -65,7 +65,7 @@ def get_command_line_opts( host, products, VERSIONS ):
                          #mamda all is a windows only build
                          allowed_values=( [ x for x in products if x != "mamdaall" ] )),
             EnumVariable('target_arch', 'Specifies if the build should target 32 or 64 bit architectures.',
-                          host['arch'], allowed_values=['x86', 'x86_64']),
+                          host['arch'], allowed_values=['i386', 'i586', 'i686', 'x86', 'x86_64']),
             EnumVariable( 'compiler', 'Compiler to use for building OpenMAMA',
                          'default', allowed_values=('default', 'gcc', 'clang', 'clang-analyzer')),
         )
