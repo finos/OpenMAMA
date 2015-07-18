@@ -98,6 +98,7 @@ libmama_sources = \
     mama.c
     mamaStrUtils.c
 	marketdata.c
+    plugin.c
     middleware.c
 	msg.c
 	msgfield.c
@@ -156,8 +157,6 @@ libmama_sources = \
     fieldcache/fieldcachefield.c
     fieldcache/fieldcacheimpl.c
     fieldcache/fieldcachelist.c
-    fieldcache/fieldcachemapbinary.c
-    fieldcache/fieldcachemapmonitor.c
     fieldcache/fieldcachevector.c
 """)
 

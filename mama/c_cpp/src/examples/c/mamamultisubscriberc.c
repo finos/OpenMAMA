@@ -21,6 +21,7 @@
 
 #include "mama/mama.h"
 #include "string.h"
+#include <stdio.h>
 #define MAX_BRIDGES 10
 
 static const char *     gTopic              = "MAMA_TOPIC";
@@ -86,6 +87,7 @@ msgCb (mamaSubscription       subscription,
 
 int main (int argc, const char** argv)
 {
+    setbuf (stdout, NULL);
     gMamaMiddlewares = (const char**)
                        calloc (MAX_BRIDGES, sizeof (char*));
     gMamaBridges     = (mamaBridge*)

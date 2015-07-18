@@ -1226,6 +1226,22 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              printData             ("%s\n", price);
          } 
          break;
+    case MAMA_FIELD_TYPE_VECTOR_BOOL:
+         {
+             const mama_bool_t*  vectorBool;
+             size_t              resultLen;
+             field.getVectorBool (vectorBool, resultLen);
+             displayVectorField  (vectorBool, resultLen, "%d");
+         }
+         break;
+    case MAMA_FIELD_TYPE_VECTOR_CHAR:
+         {
+             const char*         vectorChar;
+             size_t              resultLen;
+             field.getVectorChar (vectorChar, resultLen);
+             displayVectorField  (vectorChar, resultLen, "%c");
+         }
+         break;
     case MAMA_FIELD_TYPE_VECTOR_I8:
          {    
              const int8_t*      vectorI8;
@@ -1610,6 +1626,7 @@ void MamaListen::usage (int exitStatus)
 int main (int argc, const char** argv)
 {
     MamaListen  mMamaListen;
+    setbuf (stdout, NULL);
 
     try
     {

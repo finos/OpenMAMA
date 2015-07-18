@@ -198,6 +198,8 @@ bool MamaFieldCacheField::isVector() const
 {
     switch (getType())
     {
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
         case MAMA_FIELD_TYPE_VECTOR_I8:
         case MAMA_FIELD_TYPE_VECTOR_U8:
         case MAMA_FIELD_TYPE_VECTOR_I16:

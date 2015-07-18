@@ -20,6 +20,9 @@ testtools_source = Split("""
 
 testtools = []
 
+unittest_source = Glob('src/junittests')
+unittest = []
+
 jExamples = Glob('src/com/wombat/mama/examples/*java')
 
 version = env['versions']['mama']['releaseString']
@@ -43,14 +46,20 @@ if env['with_testtools'] == True:
     for t in testtools_source:
         testtools.append( env.Java( 'classes', t ) )
 
+if env['with_unittest'] == True:
+    for t in unittest_source:
+        unittest.append( env.Java( 'classes', t ) )
+        env.Append(JAVACLASSPATH = ('$junit_home/junit.jar'))
+
 env.Depends( mama_classes, common_classes )
 env.Depends( testtools, mama_classes )
+env.Depends( unittest, mama_classes )
 
 # Builds all of the header files which is unnecessary but no reason not to
 # do this
 headers = env.JavaH(target=Dir('src/c/mamajni').abspath,source= [ mama_classes, common_classes ])
 
-env.Depends( headers, [ mama_classes, common_classes, testtools ] )
+env.Depends( headers, [ mama_classes, common_classes, testtools, unittest ] )
 
 jar = env.Jar(target='mamajni.jar', source='classes', JARCHDIR = Dir('classes').abspath  )
 

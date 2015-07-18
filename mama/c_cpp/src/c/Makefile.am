@@ -131,6 +131,7 @@ libmama_la_SOURCES = \
     mamaStrUtils.h \
     mamaStrUtils.c \
 	marketdata.c \
+    plugin.c \
     middleware.c \
 	msg.c \
 	msgfield.c \
@@ -183,8 +184,6 @@ libmama_la_SOURCES = \
     fieldcache/fieldcachelist.c \
     fieldcache/fieldcachemap.c \
     fieldcache/fieldcachemaparray.c \
-    fieldcache/fieldcachemapbinary.c \
-    fieldcache/fieldcachemapmonitor.c \
     fieldcache/fieldcacheiterator.c \
     fieldcache/fieldcachefieldimpl.c \
     fieldcache/fieldcachefield.c \

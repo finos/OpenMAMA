@@ -278,6 +278,18 @@ protected:
 };
 
 /**
+ * MamaFieldCacheFieldBoolVector.
+ * Class used to set and get the value of a mama_bool_t vector <code>MamaFieldCacheField</code>.
+ */
+typedef MamaFieldCacheFieldVectorBasic<mama_bool_t, MAMA_FIELD_TYPE_VECTOR_BOOL>
+    MamaFieldCacheFieldBoolVector;
+/**
+ * MamaFieldCacheFieldCharVector.
+ * Class used to set and get the value of a char vector <code>MamaFieldCacheField</code>.
+ */
+typedef MamaFieldCacheFieldVectorBasic<char, MAMA_FIELD_TYPE_VECTOR_CHAR>
+    MamaFieldCacheFieldCharVector;
+/**
  * MamaFieldCacheFieldI8Vector.
  * Class used to set and get the value of a mama_i8_t vector <code>MamaFieldCacheField</code>.
  */
@@ -535,14 +547,6 @@ void setFieldValue(MamaFieldCacheField& field, const MamaPrice& value);
  */
 void setFieldValue(MamaFieldCacheField& field, const MamaDateTime& value);
 
-/*
-template <class Field, class Value>
-void setFieldValue(MamaFieldCacheField& field, const Value& value)
-{
-    Field setField;
-    setField.set(field, value);
-}
-*/
 
 template <mamaFieldType fieldType>
 class Type
@@ -895,6 +899,18 @@ void setFieldValue(MamaFieldCacheField& field, const T* values, mama_size_t size
 {
     switch(field.getType())
     {
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            MamaFieldCacheFieldBoolVector getField;
+            getField.set(field, (const mama_bool_t*)values, size);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        {
+            MamaFieldCacheFieldCharVector getField;
+            getField.set(field, (const char*)values, size);
+            break;
+        }
         case MAMA_FIELD_TYPE_VECTOR_I8:
         {
             MamaFieldCacheFieldI8Vector getField;
@@ -1007,6 +1023,18 @@ void getFieldValue(const MamaFieldCacheField& field, const T*& values, mama_size
 {
     switch(field.getType())
     {
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            MamaFieldCacheFieldBoolVector getField;
+            getField.get(field, (const mama_bool_t*&)values, size);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        {
+            MamaFieldCacheFieldCharVector getField;
+            getField.get(field, (const char*&)values, size);
+            break;
+        }
         case MAMA_FIELD_TYPE_VECTOR_I8:
         {
             MamaFieldCacheFieldI8Vector getField;

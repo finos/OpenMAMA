@@ -90,6 +90,8 @@ typedef enum mamaFieldType_
     MAMA_FIELD_TYPE_PRICE         =   27,
 
     /** Array type support */
+    MAMA_FIELD_TYPE_VECTOR_BOOL   =   29,
+    MAMA_FIELD_TYPE_VECTOR_CHAR   =   30,
     MAMA_FIELD_TYPE_VECTOR_I8     =   34, 
     MAMA_FIELD_TYPE_VECTOR_U8     =   35, 
     MAMA_FIELD_TYPE_VECTOR_I16    =   36, 

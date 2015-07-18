@@ -268,6 +268,22 @@ mamaDictionary_getDictionaryMessage (
     mamaMsg* msg);
 
 /**
+ * Fill a message with the data dictionary.
+ *
+ * An existing mama message is populated fromt he data dictionary
+ * This allows the caller to create the message on a specifc payload
+ *
+ * @param dictionary The Dictionary
+ * @param msg The address of the mamaMsg where the result is to be written
+ */
+MAMAExpDLL
+extern mama_status
+mamaDictionary_fillDictionaryMessage (
+    mamaDictionary dictionary,
+    mamaMsg* msg);
+
+
+/**
  * Create a new field descriptor and add it to the dictionary.
  * New fields can be added to an existing dictionary obtained
  * from the MAMA infrastructure. This function can also be used

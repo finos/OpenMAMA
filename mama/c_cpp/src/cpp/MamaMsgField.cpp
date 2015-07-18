@@ -242,6 +242,12 @@ namespace Wombat
         mamaTry (mamaMsgField_getDateTime (mField, result.getCValue()));
     }
 
+    void MamaMsgField::getVectorBool (const mama_bool_t*&  result,
+                                      size_t&              resultLen) const
+    {
+        mamaTry (mamaMsgField_getVectorBool (mField, &result, &resultLen));
+    }
+
     void MamaMsgField::getVectorChar (const char*&       result,
                                       size_t&            resultLen) const
     {

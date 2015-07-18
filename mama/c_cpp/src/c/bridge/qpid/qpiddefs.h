@@ -33,9 +33,6 @@
 
 /* Qpid include files */
 #include <proton/version.h>
-#include <proton/driver.h>
-#include <proton/message.h>
-#include <proton/util.h>
 #include <proton/messenger.h>
 
 #include "endpointpool.h"
@@ -74,8 +71,18 @@ typedef enum qpidTransportType_
     QPID_TRANSPORT_TYPE_BROKER
 } qpidTransportType;
 
-#define PN_MESSENGER_ERROR(messenger)                                          \
-    pn_error_text(pn_messenger_error(messenger))
+#define PN_MESSENGER_ERROR(messenger) pn_error_text(pn_messenger_error(messenger))
+
+/* The proton header util.h was removed in version 0.8 */
+#if (PN_VERSION_MAJOR == 0 && PN_VERSION_MINOR <= 7)
+#include <proton/util.h>
+#endif
+#if (PN_VERSION_MAJOR == 0 && PN_VERSION_MINOR <= 8)
+/* The proton header driver.h was removed in version 0.9 */
+#include <proton/driver.h>
+#endif
+
+/* Place other version specific macros here */
 
 /* Keys for application property map */
 #define QPID_KEY_MSGTYPE        "MAMAT"

@@ -63,7 +63,6 @@ namespace Wombat
         void  deactivate  ();
         bool  isActive    () const;
 
-        mamaFtState            getState             () const;
         const char*            getGroupName         () const;
         mama_u32_t             getWeight            () const;
         mama_f64_t             getHeartbeatInterval () const;

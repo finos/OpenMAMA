@@ -499,6 +499,86 @@ TEST_F(MamaFieldCacheFieldTypesTest, testDateTime)
     ASSERT_DOUBLE_EQ(2500, value.getEpochTimeSeconds());
 }
 
+TEST_F(MamaFieldCacheFieldTypesTest, testBoolVector)
+{
+    MamaFieldCacheField fieldBase;
+    fieldBase.create(1, MAMA_FIELD_TYPE_VECTOR_BOOL, "");
+    MamaFieldCacheFieldBoolVector field;
+
+    mama_bool_t values[5] = { 0, 1, 0, 1, 1 };
+    field.set(fieldBase, values, 5);
+    ASSERT_EQ(0, field.get(fieldBase, 0));
+    ASSERT_EQ(1, field.get(fieldBase, 1));
+    ASSERT_EQ(0, field.get(fieldBase, 2));
+    ASSERT_EQ(1, field.get(fieldBase, 3));
+    ASSERT_EQ(1, field.get(fieldBase, 4));
+
+    const mama_bool_t* result = NULL;
+    mama_size_t size;
+    field.get(fieldBase, result, size);
+    ASSERT_EQ(5, size);
+    ASSERT_EQ(0, result[0]);
+    ASSERT_EQ(1, result[1]);
+    ASSERT_EQ(0, result[2]);
+    ASSERT_EQ(1, result[3]);
+    ASSERT_EQ(1, result[4]);
+    getFieldValue(fieldBase, result, size);
+    ASSERT_EQ(5, size);
+    ASSERT_EQ(0, result[0]);
+    ASSERT_EQ(1, result[1]);
+    ASSERT_EQ(0, result[2]);
+    ASSERT_EQ(1, result[3]);
+    ASSERT_EQ(1, result[4]);
+
+    values[2] = 1;
+    setFieldValue(fieldBase, values, 5);
+    ASSERT_EQ(0, field.get(fieldBase, 0));
+    ASSERT_EQ(1, field.get(fieldBase, 1));
+    ASSERT_EQ(1, field.get(fieldBase, 2));
+    ASSERT_EQ(1, field.get(fieldBase, 3));
+    ASSERT_EQ(1, field.get(fieldBase, 4));
+}
+
+TEST_F(MamaFieldCacheFieldTypesTest, testCharVector)
+{
+    MamaFieldCacheField fieldBase;
+    fieldBase.create(1, MAMA_FIELD_TYPE_VECTOR_CHAR, "");
+    MamaFieldCacheFieldCharVector field;
+
+    char values[5] = { 'E', 'F', 'V', 'H', 'I' };
+    field.set(fieldBase, values, 5);
+    ASSERT_EQ('E', field.get(fieldBase, 0));
+    ASSERT_EQ('F', field.get(fieldBase, 1));
+    ASSERT_EQ('V', field.get(fieldBase, 2));
+    ASSERT_EQ('H', field.get(fieldBase, 3));
+    ASSERT_EQ('I', field.get(fieldBase, 4));
+
+    const char* result = NULL;
+    mama_size_t size;
+    field.get(fieldBase, result, size);
+    ASSERT_EQ(5, size);
+    ASSERT_EQ('E', result[0]);
+    ASSERT_EQ('F', result[1]);
+    ASSERT_EQ('V', result[2]);
+    ASSERT_EQ('H', result[3]);
+    ASSERT_EQ('I', result[4]);
+    getFieldValue(fieldBase, result, size);
+    ASSERT_EQ(5, size);
+    ASSERT_EQ('E', result[0]);
+    ASSERT_EQ('F', result[1]);
+    ASSERT_EQ('V', result[2]);
+    ASSERT_EQ('H', result[3]);
+    ASSERT_EQ('I', result[4]);
+
+    values[2] = 'G';
+    setFieldValue(fieldBase, values, 5);
+    ASSERT_EQ('E', field.get(fieldBase, 0));
+    ASSERT_EQ('F', field.get(fieldBase, 1));
+    ASSERT_EQ('G', field.get(fieldBase, 2));
+    ASSERT_EQ('H', field.get(fieldBase, 3));
+    ASSERT_EQ('I', field.get(fieldBase, 4));
+}
+
 TEST_F(MamaFieldCacheFieldTypesTest, testI8Vector)
 {
     MamaFieldCacheField fieldBase;
@@ -537,6 +617,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testI8Vector)
     ASSERT_EQ(2, field.get(fieldBase, 2));
     ASSERT_EQ(3, field.get(fieldBase, 3));
     ASSERT_EQ(4, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testU8Vector)
@@ -577,6 +660,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testU8Vector)
     ASSERT_EQ(2, field.get(fieldBase, 2));
     ASSERT_EQ(3, field.get(fieldBase, 3));
     ASSERT_EQ(4, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testI16Vector)
@@ -617,6 +703,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testI16Vector)
     ASSERT_EQ(2, field.get(fieldBase, 2));
     ASSERT_EQ(3, field.get(fieldBase, 3));
     ASSERT_EQ(4, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testU16Vector)
@@ -657,6 +746,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testU16Vector)
     ASSERT_EQ(2, field.get(fieldBase, 2));
     ASSERT_EQ(3, field.get(fieldBase, 3));
     ASSERT_EQ(4, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testI32Vector)
@@ -697,6 +789,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testI32Vector)
     ASSERT_EQ(2, field.get(fieldBase, 2));
     ASSERT_EQ(3, field.get(fieldBase, 3));
     ASSERT_EQ(4, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testU32Vector)
@@ -737,6 +832,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testU32Vector)
     ASSERT_EQ(2, field.get(fieldBase, 2));
     ASSERT_EQ(3, field.get(fieldBase, 3));
     ASSERT_EQ(4, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testI64Vector)
@@ -777,6 +875,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testI64Vector)
     ASSERT_EQ(2, field.get(fieldBase, 2));
     ASSERT_EQ(3, field.get(fieldBase, 3));
     ASSERT_EQ(4, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testU64Vector)
@@ -817,6 +918,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testU64Vector)
     ASSERT_EQ(2, field.get(fieldBase, 2));
     ASSERT_EQ(3, field.get(fieldBase, 3));
     ASSERT_EQ(4, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testF32Vector)
@@ -858,6 +962,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testF32Vector)
     ASSERT_FLOAT_EQ(2.5, field.get(fieldBase, 2));
     ASSERT_FLOAT_EQ(3, field.get(fieldBase, 3));
     ASSERT_FLOAT_EQ(4.1, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testF64Vector)
@@ -899,6 +1006,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testF64Vector)
     ASSERT_DOUBLE_EQ(2.5, field.get(fieldBase, 2));
     ASSERT_DOUBLE_EQ(3, field.get(fieldBase, 3));
     ASSERT_DOUBLE_EQ(4.1, field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testStringVector)
@@ -940,6 +1050,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testStringVector)
     ASSERT_STREQ("2.5 modified", field.get(fieldBase, 2));
     ASSERT_STREQ("hello", field.get(fieldBase, 3));
     ASSERT_STREQ("4.1", field.get(fieldBase, 4));
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testPriceVector)
@@ -961,7 +1074,6 @@ TEST_F(MamaFieldCacheFieldTypesTest, testPriceVector)
     ASSERT_DOUBLE_EQ(-2, field.get(fieldBase, 2)->getValue());
     ASSERT_DOUBLE_EQ(3, field.get(fieldBase, 3)->getValue());
     ASSERT_DOUBLE_EQ(4.1, field.get(fieldBase, 4)->getValue());
-    ASSERT_FALSE(field.get(fieldBase, 10));
     
     const MamaPrice* result = NULL;
     std::size_t size = 0;
@@ -973,14 +1085,6 @@ TEST_F(MamaFieldCacheFieldTypesTest, testPriceVector)
     ASSERT_DOUBLE_EQ(-2, result[2].getValue());
     ASSERT_DOUBLE_EQ(3, result[3].getValue());
     ASSERT_DOUBLE_EQ(4.1, result[4].getValue());
-//    getFieldValue(fieldBase, result, size);
-//    ASSERT_TRUE(result);
-//    ASSERT_EQ(5, size);
-//    ASSERT_DOUBLE_EQ(0.1, result[0].getValue());
-//    ASSERT_DOUBLE_EQ(1, result[1].getValue());
-//    ASSERT_DOUBLE_EQ(-2, result[2].getValue());
-//    ASSERT_DOUBLE_EQ(3, result[3].getValue());
-//    ASSERT_DOUBLE_EQ(4.1, result[4].getValue());
     
     values[2].setValue(55.5);
     setFieldValue(fieldBase, values, 5);
@@ -992,6 +1096,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testPriceVector)
     ASSERT_DOUBLE_EQ(55.5, result[2].getValue());
     ASSERT_DOUBLE_EQ(3, result[3].getValue());
     ASSERT_DOUBLE_EQ(4.1, result[4].getValue());
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testDateTimeVector)
@@ -1013,7 +1120,6 @@ TEST_F(MamaFieldCacheFieldTypesTest, testDateTimeVector)
     ASSERT_DOUBLE_EQ(3000, field.get(fieldBase, 2)->getEpochTimeSeconds());
     ASSERT_DOUBLE_EQ(4000, field.get(fieldBase, 3)->getEpochTimeSeconds());
     ASSERT_DOUBLE_EQ(5000, field.get(fieldBase, 4)->getEpochTimeSeconds());
-    ASSERT_FALSE(field.get(fieldBase, 10));
     
     const MamaDateTime* result = NULL;
     std::size_t size = 0;
@@ -1025,14 +1131,6 @@ TEST_F(MamaFieldCacheFieldTypesTest, testDateTimeVector)
     ASSERT_DOUBLE_EQ(3000, result[2].getEpochTimeSeconds());
     ASSERT_DOUBLE_EQ(4000, result[3].getEpochTimeSeconds());
     ASSERT_DOUBLE_EQ(5000, result[4].getEpochTimeSeconds());
-//    getFieldValue(fieldBase, result, size);
-//    ASSERT_TRUE(result);
-//    ASSERT_EQ(5, size);
-//    ASSERT_DOUBLE_EQ(1000, result[0].getEpochTimeSeconds());
-//    ASSERT_DOUBLE_EQ(2000, result[1].getEpochTimeSeconds());
-//    ASSERT_DOUBLE_EQ(3000, result[2].getEpochTimeSeconds());
-//    ASSERT_DOUBLE_EQ(4000, result[3].getEpochTimeSeconds());
-//    ASSERT_DOUBLE_EQ(5000, result[4].getEpochTimeSeconds());
     
     values[2].setEpochTimeF64(6000);
     setFieldValue(fieldBase, values, 5);
@@ -1045,6 +1143,9 @@ TEST_F(MamaFieldCacheFieldTypesTest, testDateTimeVector)
     ASSERT_DOUBLE_EQ(6000, result[2].getEpochTimeSeconds());
     ASSERT_DOUBLE_EQ(4000, result[3].getEpochTimeSeconds());
     ASSERT_DOUBLE_EQ(5000, result[4].getEpochTimeSeconds());
+
+    size = 9;
+    ASSERT_THROW (field.get(fieldBase, size), MamaStatus);
 }
 
 TEST_F(MamaFieldCacheFieldTypesTest, testFromString)

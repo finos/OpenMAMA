@@ -35,6 +35,7 @@
 #include <vector>
 #include <stdexcept>
 #include <ncurses.h>
+#include <stdio.h>
 
 #include <signal.h>
 #include <unistd.h>
@@ -135,6 +136,7 @@ private:
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     try
     {
         CommonCommandLineParser     cmdLine (argc, argv);

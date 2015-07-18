@@ -23,6 +23,7 @@
 #include "mama/publisher.h"
 
 #include "bridge.h"
+#include "plugin.h"
 #include "throttle.h"
 #include "transportimpl.h"
 
@@ -244,6 +245,15 @@ mamaPublisher_send (mamaPublisher publisher,
     if (!impl) return MAMA_STATUS_NULL_ARG;
     if (!impl->mMamaPublisherBridgeImpl) return MAMA_STATUS_INVALID_ARG;
     if (!impl->mBridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
+
+    /* Calling plugin hook */
+    status = mamaPlugin_firePublisherPreSendHook (publisher, msg);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mamaPublisher_send(): PublisherPreSendHook failed. Not sending message.");
+        return status;
+    }
 
     status = impl->mBridgeImpl->bridgeMamaPublisherSend
         (impl->mMamaPublisherBridgeImpl,
@@ -590,4 +600,11 @@ mama_status mamaPublisherImpl_clearTransport (mamaPublisher publisher)
     return mamaPublisherImpl_destroy((mamaPublisherImpl *)publisher);
 }
 
+mamaTransport
+mamaPublisherImpl_getTransportImpl (mamaPublisher publisher)
+{
+    mamaPublisherImpl* impl   = (mamaPublisherImpl*)publisher;
 
+    if (!impl) return NULL;
+    return impl->mTport;
+}

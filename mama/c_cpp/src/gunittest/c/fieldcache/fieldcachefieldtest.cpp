@@ -662,6 +662,66 @@ TEST_F(MamaFieldCacheFieldTestC, testSetGetI8Vector)
     DESTROY_FIELD
 }
 
+TEST_F(MamaFieldCacheFieldTestC, testSetGetBoolVector)
+{
+    //TODO: AA: Change u8 test
+    const mama_u8_t* retValue = NULL;
+    mama_size_t retSize;
+    mama_u8_t dataVector[3] = { 1, 2, 3 };
+
+    CREATE_FIELD(1, MAMA_FIELD_TYPE_VECTOR_U8)
+
+    // Adding only 2 fields
+    ASSERT_EQ(MAMA_STATUS_OK, mamaFieldCacheField_setU8Vector(field, dataVector, 2));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaFieldCacheField_getU8Vector(field, &retValue, &retSize));
+    ASSERT_EQ(2, retSize);
+    ASSERT_TRUE(retValue);
+    ASSERT_EQ(1, retValue[0]);
+    ASSERT_EQ(2, retValue[1]);
+
+    dataVector[0] = 10;
+    ASSERT_EQ(MAMA_STATUS_OK, mamaFieldCacheField_setU8Vector(field, dataVector, 3));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaFieldCacheField_getU8Vector(field, &retValue, &retSize));
+
+    ASSERT_EQ(3, retSize);
+    ASSERT_TRUE(retValue);
+    ASSERT_EQ(10, retValue[0]);
+    ASSERT_EQ(2, retValue[1]);
+    ASSERT_EQ(3, retValue[2]);
+
+    DESTROY_FIELD
+}
+
+TEST_F(MamaFieldCacheFieldTestC, testSetGetCharVector)
+{
+    //TODO: AA: Change u8 test
+    const mama_u8_t* retValue = NULL;
+    mama_size_t retSize;
+    mama_u8_t dataVector[3] = { 1, 2, 3 };
+
+    CREATE_FIELD(1, MAMA_FIELD_TYPE_VECTOR_U8)
+
+    // Adding only 2 fields
+    ASSERT_EQ(MAMA_STATUS_OK, mamaFieldCacheField_setU8Vector(field, dataVector, 2));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaFieldCacheField_getU8Vector(field, &retValue, &retSize));
+    ASSERT_EQ(2, retSize);
+    ASSERT_TRUE(retValue);
+    ASSERT_EQ(1, retValue[0]);
+    ASSERT_EQ(2, retValue[1]);
+
+    dataVector[0] = 10;
+    ASSERT_EQ(MAMA_STATUS_OK, mamaFieldCacheField_setU8Vector(field, dataVector, 3));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaFieldCacheField_getU8Vector(field, &retValue, &retSize));
+
+    ASSERT_EQ(3, retSize);
+    ASSERT_TRUE(retValue);
+    ASSERT_EQ(10, retValue[0]);
+    ASSERT_EQ(2, retValue[1]);
+    ASSERT_EQ(3, retValue[2]);
+
+    DESTROY_FIELD
+}
+
 TEST_F(MamaFieldCacheFieldTestC, testSetGetU8Vector)
 {
     const mama_u8_t* retValue = NULL;

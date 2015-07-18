@@ -23,7 +23,6 @@
 #include <string.h>
 
 #include "mamainternal.h"
-#include "InboxImpl.h"
 #include "mamacppinternal.h"
 
 #include "mama/mamacpp.h"

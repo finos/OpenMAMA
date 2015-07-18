@@ -273,6 +273,66 @@ const MamaDateTime& MamaFieldCacheFieldDateTime::get(const MamaFieldCacheField& 
     return mDateTime;
 }
 
+// MAMA_FIELD_TYPE_VECTOR_BOOL
+template <>
+void MamaFieldCacheFieldBoolVector::set(MamaFieldCacheField& field,
+                                        const mama_bool_t* values,
+                                        mama_size_t size)
+{
+    checkType(field);
+    mamaFieldCacheField_setBoolVector(field.getCValue(), values, size);
+}
+template <>
+void MamaFieldCacheFieldBoolVector::get(const MamaFieldCacheField& field,
+                                        const mama_bool_t*& values,
+                                        mama_size_t& size) const
+{
+    checkType(field);
+    mamaFieldCacheField_getBoolVector(field.getCValue(), &values, &size);
+}
+template <>
+const mama_bool_t& MamaFieldCacheFieldBoolVector::get(const MamaFieldCacheField& field,
+                                                      mama_size_t index) const
+{
+    checkType(field);
+    const mama_bool_t* values = NULL;
+    mama_size_t size = 0;
+    mamaFieldCacheField_getBoolVector(field.getCValue(), &values, &size);
+    if (index < size)
+        return values[index];
+    throw std::out_of_range("MamaFieldCacheFieldBoolVector::get");
+}
+
+// MAMA_FIELD_TYPE_VECTOR_CHAR
+template <>
+void MamaFieldCacheFieldCharVector::set(MamaFieldCacheField& field,
+                                        const char* values,
+                                        mama_size_t size)
+{
+    checkType(field);
+    mamaFieldCacheField_setCharVector(field.getCValue(), values, size);
+}
+template <>
+void MamaFieldCacheFieldCharVector::get(const MamaFieldCacheField& field,
+                                        const char*& values,
+                                        mama_size_t& size) const
+{
+    checkType(field);
+    mamaFieldCacheField_getCharVector(field.getCValue(), &values, &size);
+}
+template <>
+const char& MamaFieldCacheFieldCharVector::get(const MamaFieldCacheField& field,
+                                               mama_size_t index) const
+{
+    checkType(field);
+    const char* values = NULL;
+    mama_size_t size = 0;
+    mamaFieldCacheField_getCharVector(field.getCValue(), &values, &size);
+    if (index < size)
+        return values[index];
+    throw std::out_of_range("MamaFieldCacheFieldCharVector::get");
+}
+
 // MAMA_FIELD_TYPE_VECTOR_I8
 template <>
 void MamaFieldCacheFieldI8Vector::set(MamaFieldCacheField& field,
@@ -300,7 +360,7 @@ const mama_i8_t& MamaFieldCacheFieldI8Vector::get(const MamaFieldCacheField& fie
     mamaFieldCacheField_getI8Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldI8Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_U8
@@ -329,7 +389,7 @@ const mama_u8_t& MamaFieldCacheFieldU8Vector::get(const MamaFieldCacheField& fie
     mamaFieldCacheField_getU8Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldU8Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_I16
@@ -359,7 +419,7 @@ const mama_i16_t& MamaFieldCacheFieldI16Vector::get(const MamaFieldCacheField& f
     mamaFieldCacheField_getI16Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldI16Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_U16
@@ -389,7 +449,7 @@ const mama_u16_t& MamaFieldCacheFieldU16Vector::get(const MamaFieldCacheField& f
     mamaFieldCacheField_getU16Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldU16Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_I32
@@ -419,7 +479,7 @@ const mama_i32_t& MamaFieldCacheFieldI32Vector::get(const MamaFieldCacheField& f
     mamaFieldCacheField_getI32Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldI32Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_U32
@@ -449,7 +509,7 @@ const mama_u32_t& MamaFieldCacheFieldU32Vector::get(const MamaFieldCacheField& f
     mamaFieldCacheField_getU32Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldU32Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_I64
@@ -478,7 +538,7 @@ const mama_i64_t& MamaFieldCacheFieldI64Vector::get(const MamaFieldCacheField& f
     mamaFieldCacheField_getI64Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldI64Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_U64
@@ -508,7 +568,7 @@ const mama_u64_t& MamaFieldCacheFieldU64Vector::get(const MamaFieldCacheField& f
     mamaFieldCacheField_getU64Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldU64Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_F32
@@ -538,7 +598,7 @@ const mama_f32_t& MamaFieldCacheFieldF32Vector::get(const MamaFieldCacheField& f
     mamaFieldCacheField_getF32Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldF32Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_F64
@@ -568,7 +628,7 @@ const mama_f64_t& MamaFieldCacheFieldF64Vector::get(const MamaFieldCacheField& f
     mamaFieldCacheField_getF64Vector(field.getCValue(), &values, &size);
     if (index < size)
         return values[index];
-    throw std::out_of_range("MamaFieldCacheFieldF64Vector::get");
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_STRING
@@ -594,10 +654,8 @@ const char* MamaFieldCacheFieldStringVector::get(const MamaFieldCacheField& fiel
     mama_size_t size = 0;
     mamaFieldCacheField_getStringVector(field.getCValue(), &values, &size);
     if (index < size)
-    {
         return values[index];
-    }
-    return NULL;
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_PRICE
@@ -642,7 +700,7 @@ const MamaPrice* MamaFieldCacheFieldPriceVector::get(const MamaFieldCacheField& 
         mamaPrice_copy(mValue.getCValue(), values[index]);
         return &mValue;
     }
-    return NULL;
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 // MAMA_FIELD_TYPE_VECTOR_TIME
@@ -687,7 +745,7 @@ const MamaDateTime* MamaFieldCacheFieldDateTimeVector::get(const MamaFieldCacheF
         mamaDateTime_copy(mValue.getCValue(), values[index]);
         return &mValue;
     }
-    return NULL;
+    throw MamaStatus(MAMA_STATUS_INVALID_ARG);
 }
 
 
@@ -741,7 +799,7 @@ void getFieldValue(const MamaFieldCacheField& field,
 {
 //    MamaFieldCacheFieldPriceVector getField;
 //    getField.get(field, values, size);
-    throw "getFieldValue for MamaPrice vector not implemented";
+    throw MamaStatus(MAMA_STATUS_NOT_IMPLEMENTED);
 }
 
 void getFieldValue(const MamaFieldCacheField& field,
@@ -750,7 +808,7 @@ void getFieldValue(const MamaFieldCacheField& field,
 {
 //    MamaFieldCacheFieldDateTimeVector getField;
 //    getField.get(field, values, size);
-    throw "getFieldValue for MamaDateTime vector not implemented";
+    throw MamaStatus(MAMA_STATUS_NOT_IMPLEMENTED);
 }
 
 

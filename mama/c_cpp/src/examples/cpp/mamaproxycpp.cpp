@@ -40,6 +40,7 @@
 
 #include "wombat/port.h"
 #include <iostream>
+#include <stdio.h>
 
 #include "mama/mama.h"
 #include "mama/mamacpp.h"
@@ -530,6 +531,7 @@ void MamaProxy::shutdownMama ()
 int main (int argc, const char **argv)
 {
     MamaProxy  mMamaProxy;
+    setbuf (stdout, NULL);
     mMamaProxy.parseCommandLine (argc, argv);
     
     try

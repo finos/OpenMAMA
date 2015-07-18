@@ -78,13 +78,15 @@ protected:
     MsgFieldVectorBoolTests()
         : mOut(NULL)
     {
-        mIn[0] = 1;
-        mIn[1] = 2;
+        mIn[0] = 0;
+        mIn[1] = 1;
     }
 
     virtual void SetUp()
     {
         MsgFieldVectorTestsC::SetUp();
+
+        mamaMsg_addVectorBool (mMsg, NULL, 1, mIn, VECTOR_SIZE);
 
         mOut = NULL;
     }
@@ -100,20 +102,31 @@ protected:
  * ****************************************************************************
  */
 
-TEST_F(MsgFieldVectorBoolTests, DISABLED_GetVectorBool)
+TEST_F(MsgFieldVectorBoolTests, GetVectorBool)
 {
-    /* getVectorBool is declared in msgfield.h but not defined */
+    mStatus = mamaMsg_getField (mMsg, NULL, 1, &mField);
+    ASSERT_EQ (mStatus, MAMA_STATUS_OK) << "Failed getting field";
+    mStatus = mamaMsgField_getVectorBool (mField, &mOut, &mSize);
+    ASSERT_EQ (mStatus, MAMA_STATUS_OK) << "Failed getting Vector Bool";
+    EXPECT_EQ (0, mOut[0]);
+    EXPECT_EQ (1, mOut[1]);
+    EXPECT_EQ (VECTOR_SIZE, mSize);
 }
 
 TEST_F(MsgFieldVectorBoolTests, DISABLED_GetVectorBoolNullField)
 {
-    /* getVectorBool is declared in msgfield.h but not defined */
+    mStatus = mamaMsgField_getVectorBool (NULL, &mOut, &mSize);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, mStatus);
 }
 
-TEST_F(MsgFieldVectorBoolTests, DISABLED_GetVectorBoolNullVector)
+TEST_F(MsgFieldVectorBoolTests, GetVectorBoolNullVector)
 {
-    /* getVectorBool is declared in msgfield.h but not defined */
+    mStatus = mamaMsg_getField (mMsg, NULL, 1, &mField);
+    ASSERT_EQ (MAMA_STATUS_OK, mStatus) << "Failed getting field";
+    mStatus = mamaMsgField_getVectorBool (mField, NULL, &mSize);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, mStatus);
 }
+
 
 /*
  * CHAR TEST SUITE
@@ -168,7 +181,7 @@ TEST_F(MsgFieldVectorCharTests, DISABLED_GetVectorCharNullField)
     EXPECT_EQ (mStatus, MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F(MsgFieldVectorCharTests, DISABLED_GetVectorCharNullVector)
+TEST_F(MsgFieldVectorCharTests, GetVectorCharNullVector)
 {
     mamaMsg_getField (mMsg, NULL, 1, &mField);
     mStatus = mamaMsgField_getVectorChar (mField, NULL, &mSize);

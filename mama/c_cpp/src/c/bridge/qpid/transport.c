@@ -1639,7 +1639,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
             case QPID_MSG_SUB_REQUEST:
             {
                 pn_data_t*  data            = pn_message_body (msgNode->mMsg);
-                char*       topic           = NULL;
+                const char* topic           = NULL;
                 const char* replyTo         = NULL;
 
                 /* Move to the content which will contain the topic */

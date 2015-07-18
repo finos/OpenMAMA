@@ -201,6 +201,15 @@ namespace Wombat
             MamaMsg&  result) const;
 
         /**
+         * Get a vector of boolean.
+         * @param result     (out) the vector.
+         * @param resultLen  (out) the size of the vector.
+         */
+        void getVectorBool (
+            const mama_bool_t*&  result,
+            mama_size_t&         resultLen) const;
+
+        /**
          * Get a vector of characters.
          * @param result     (out) the vector.
          * @param resultLen  (out) the size of the vector.

@@ -74,6 +74,16 @@ typedef struct mamaBridgeImpl_* mamaBridge;
 typedef struct mamaPayloadBridgeImpl_* mamaPayloadBridge;
 
 /**
+ * @brief Container for holding a mama plugin object
+ */
+typedef struct mamaPluginImpl_*     mamaPlugin;
+
+/**
+ * @brief Container for holding a mama plugin info
+ */
+typedef void*       mamaPluginInfo;
+
+/**
  * Flexible date/time format
  */
 typedef   mama_u64_t*   mamaDateTime;

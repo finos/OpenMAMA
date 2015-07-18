@@ -183,6 +183,22 @@ mama_status mamaFieldCache_updateCacheFromMsgField(mamaFieldCache fieldCache,
             mamaFieldCacheField_setDateTime(field, fieldCache->mReusableDateTime);
             break;
         }
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            const mama_bool_t* values = NULL;
+            mama_size_t size = 0;
+            mamaMsgField_getVectorBool(messageField, &values, &size);
+            mamaFieldCacheField_setBoolVector(field, values, size);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        {
+            const char* values = NULL;
+            mama_size_t size = 0;
+            mamaMsgField_getVectorChar(messageField, &values, &size);
+            mamaFieldCacheField_setCharVector(field, values, size);
+            break;
+        }
         case MAMA_FIELD_TYPE_VECTOR_I8:
         {
             const mama_i8_t* values = NULL;
@@ -274,20 +290,12 @@ mama_status mamaFieldCache_updateCacheFromMsgField(mamaFieldCache fieldCache,
         case MAMA_FIELD_TYPE_VECTOR_PRICE:
         {
             /* TODO: mamaMsgField does not provide methods to get price vector
-            const mamaPrice* values = NULL;
-            mama_size_t size;
-            mamaMsgField_getVectorPrice(messageField, &values, &size);
-            mamaFieldCacheField_setPriceVector(field, values, size);
              */
             break;
         }
         case MAMA_FIELD_TYPE_VECTOR_TIME:
         {
             /* TODO: mamaMsgField does not provide methods to get time vector
-            const mamaDateTime* values = NULL;
-            mama_size_t size;
-            mamaMsgField_getVectorDateTime(messageField, &values, &size);
-            mamaFieldCacheField_setDateTimeVector(field, values, size);
              */
             break;
         }
@@ -510,6 +518,32 @@ mama_status mamaFieldCache_updateMsgField(mamaFieldCache fieldCache,
                                : mamaMsg_addDateTime(message, name, fid, value);
             break;
         }
+        case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            const mama_bool_t* values = NULL;
+            mama_size_t size = 0;
+            mamaFieldCacheField_getBoolVector(field, &values, &size);
+            if (!values)
+            {
+                return MAMA_STATUS_INVALID_ARG;
+            }
+            status = useUpdate ? mamaMsg_updateVectorBool(message, name, fid, values, size)
+                               : mamaMsg_addVectorBool(message, name, fid, values, size);
+            break;
+        }
+        case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        {
+            const char* values = NULL;
+            mama_size_t size = 0;
+            mamaFieldCacheField_getCharVector(field, &values, &size);
+            if (!values)
+            {
+                return MAMA_STATUS_INVALID_ARG;
+            }
+            status = useUpdate ? mamaMsg_updateVectorChar(message, name, fid, values, size)
+                               : mamaMsg_addVectorChar(message, name, fid, values, size);
+            break;
+        }
         case MAMA_FIELD_TYPE_VECTOR_I8:
         {
             const mama_i8_t* values = NULL;
@@ -662,8 +696,7 @@ mama_status mamaFieldCache_updateMsgField(mamaFieldCache fieldCache,
             {
                 return MAMA_STATUS_INVALID_ARG;
             }
-            status = /*useUpdate ? mamaMsg_updateVectorPrice(message, name, fid, values, size)
-                               : */mamaMsg_addVectorPrice(message, name, fid, values, size);
+            status = mamaMsg_addVectorPrice(message, name, fid, values, size);
             break;
         }
         case MAMA_FIELD_TYPE_VECTOR_TIME:
@@ -675,8 +708,7 @@ mama_status mamaFieldCache_updateMsgField(mamaFieldCache fieldCache,
             {
                 return MAMA_STATUS_INVALID_ARG;
             }
-            status = /*useUpdate ? mamaMsg_updateVectorTime(message, name, fid, values, size)
-                               : */mamaMsg_addVectorDateTime(message, name, fid, values, size);
+            status = mamaMsg_addVectorDateTime(message, name, fid, values, size);
             break;
         }
         default:

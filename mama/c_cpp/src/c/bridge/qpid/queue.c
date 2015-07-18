@@ -137,7 +137,7 @@ qpidBridgeMamaQueue_create (queueBridge* queue,
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "qpidBridgeMamaQueue_create (): "
                   "Failed to create underlying queue.");
-        wombatQueue_destroy (impl->mQueue);
+        wombatQueue_deallocate (impl->mQueue);
         free (impl);
         return MAMA_STATUS_PLATFORM;
     }

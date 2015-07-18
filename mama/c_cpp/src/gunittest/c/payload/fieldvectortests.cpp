@@ -118,19 +118,22 @@ TEST_F(FieldVectorBoolTests, GetVectorBool)
 {
     m_payloadBridge->msgPayloadGetField (m_msg, NULL, 1, &m_field);
     m_status = m_payloadBridge->msgFieldPayloadGetVectorBool(m_field, &m_out, &m_size);
-    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
+    ASSERT_EQ (MAMA_STATUS_OK, m_status);
+    ASSERT_EQ (1, m_out[0]);
+    ASSERT_EQ (0, m_out[1]);
+    ASSERT_EQ ((mama_size_t) VECTOR_SIZE * sizeof(mama_bool_t), m_size);
 }
 
 TEST_F(FieldVectorBoolTests, GetVectorBoolNullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorBool(m_field, NULL, &m_size);
-    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(FieldVectorBoolTests, GetVectorBoolNullSize)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorBool(m_field, &m_out, NULL);
-    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 /**

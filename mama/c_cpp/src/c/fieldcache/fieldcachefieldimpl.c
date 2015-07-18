@@ -25,23 +25,7 @@
 #include <string.h> /* For memcpy */
 
 /* Private functions - not exposed through the API interface */
-/*
-mama_status mamaFieldCacheField_getData(
-        const mamaFieldCacheField field,
-        void** data,
-        mama_u32_t* size)
-{
-    if (!field)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-    
-    *data = field->mData;
-    *size = field->mDataSize;
-    
-    return MAMA_STATUS_OK;
-}
-*/
+
 mama_status mamaFieldCacheField_setDataValue(mamaFieldCacheField field,
                                              const void* data,
                                              mama_size_t size)

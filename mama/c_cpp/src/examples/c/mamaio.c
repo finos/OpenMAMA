@@ -34,6 +34,7 @@
 #include <sys/types.h>
 #include <errno.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "mama/mama.h"
 #include "mama/io.h"
@@ -57,6 +58,7 @@ ioCallback          (mamaIo io, mamaIoType ioType, void *closure);
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
 
     initializeMama ();

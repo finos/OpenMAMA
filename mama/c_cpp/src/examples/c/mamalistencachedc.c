@@ -323,6 +323,7 @@ int main (int argc, const char **argv)
     gSubscriptionList = (mamaSubscription*)calloc (MAX_SUBSCRIPTIONS,
                                                    sizeof (mamaSubscription));
 
+    setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
 
     if (gNumSymbols == 0 && !gPrintVersionAndExit)
@@ -2629,6 +2630,32 @@ void printField(mamaFieldCacheField field)
             printf ("%s\n", priceString);
             break;
         }
+         case MAMA_FIELD_TYPE_VECTOR_BOOL:
+         {
+             const mama_bool_t* result = NULL;
+             mama_size_t size = 0;
+             mama_size_t i =0;
+             mamaFieldCacheField_getBoolVector(field,&result,&size);
+             printf("\n");
+             for (i=0;i<size;i++)
+             {
+                 printf("   %d\n", (int)result[i]);
+             }
+             break;
+         }
+         case MAMA_FIELD_TYPE_VECTOR_CHAR:
+         {
+             const char* result = NULL;
+             mama_size_t size = 0;
+             mama_size_t i =0;
+             mamaFieldCacheField_getCharVector(field,&result,&size);
+             printf("\n");
+             for (i=0;i<size;i++)
+             {
+                 printf("   %c\n", (int)result[i]);
+             }
+             break;
+         }
         case MAMA_FIELD_TYPE_VECTOR_I8:
         {
             const mama_i8_t* result = NULL;

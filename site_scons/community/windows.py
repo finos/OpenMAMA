@@ -64,8 +64,10 @@ class Windows:
             env = Environment(ENV={
                 'JAVA_HOME': '%s' % (optsEnv['java_home']),
                 'PATH': '%s:%s\\bin' % (os.environ['PATH'], optsEnv['java_home']),
-                'MSVC_VERSION' : '%s' %(optsEnv['vsver'])},
+                },
                 tools = tools,
+                MSVC_VERSION = optsEnv['vsver'],
+                MSVS_VERSION = optsEnv['vsver'],
                 TARGET_ARCH = optsEnv['target_arch'])
 
             #ConfigureJNI searches os.env for java_home not env['ENV']['JAVA_HOME'] 
@@ -78,7 +80,7 @@ class Windows:
             env['JAVAH'] = 'javah'
 
         else:
-            env = Environment(ENV={'PATH': '%s' % (os.environ['PATH'])}, MSVC_VERSION = optsEnv['vsver'], tools = tools, TARGET_ARCH = optsEnv['target_arch'])
+            env = Environment(ENV={'PATH': '%s' % (os.environ['PATH'])}, MSVC_VERSION = optsEnv['vsver'], MSVS_VERSION = optsEnv['vsver'], tools = tools, TARGET_ARCH = optsEnv['target_arch'])
 
         env['SPAWN'] = logger.log_output
         env['PRINT_CMD_LINE_FUNC'] = logger.log_command
@@ -196,7 +198,7 @@ class Windows:
     # Configures all of the appropriate environment variables for windows.
     def configure(self, env ):
         env.Append( CPPDEFINES = ['WIN32'] )
-        env.Append( CCFLAGS = ['-EHsc','/GR','/FIwombat\\targetsxs.h'] )
+        env.Append( CCFLAGS = ['/EHsc','/GR','/FIwombat\\targetsxs.h'] )
         env.Append( LINKFLAGS =['/MANIFEST'] )
         env.Append( CCPDBFLAGS = '/Fd${TARGET}.pdb' )
         env.Append( PDB = '${TARGET.base}.pdb')

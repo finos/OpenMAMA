@@ -249,6 +249,7 @@ public class MamdaListen
             }
             System.out.print ("|");
             System.out.print (field.toString()+" \n");
+            System.out.flush();
         }
 
         public void  setDictionary (

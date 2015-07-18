@@ -78,7 +78,12 @@ mamaConflationManager_create (mamaConflationManager mgr)
         return MAMA_STATUS_NOMEM;
 
     if (wombatQueue_create (impl->mMsgQueue, 0, 0, 0) != WOMBAT_QUEUE_OK)
+    {
+        wombatQueue_deallocate(impl->mMsgQueue);
+        impl->mMsgQueue = NULL;
+
         return MAMA_STATUS_CONFLATE_ERROR;
+    }
 
     status = mamaMsg_create (&impl->mMsg);
 

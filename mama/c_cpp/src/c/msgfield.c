@@ -486,6 +486,24 @@ mamaMsgField_getMsg (
 }
 
 mama_status
+mamaMsgField_getVectorBool (
+    const mamaMsgField     msgField,
+    const mama_bool_t**    result,
+    size_t*                size)
+{
+    mamaMsgFieldImpl* impl =
+        (mamaMsgFieldImpl*)(msgField);
+    if (!impl) return MAMA_STATUS_INVALID_ARG;
+
+    if (impl->myPayloadBridge)
+    {
+        return impl->myPayloadBridge->msgFieldPayloadGetVectorBool (
+                                     impl->myPayload, result, size);
+    }
+    return MAMA_STATUS_NULL_ARG;
+}
+
+mama_status
 mamaMsgField_getVectorChar (
     const mamaMsgField     msgField,
     const char**           result,

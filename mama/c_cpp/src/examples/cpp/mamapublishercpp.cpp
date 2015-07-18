@@ -39,6 +39,7 @@
  *---------------------------------------------------------------------------*/
 
 #include <iostream>
+#include <stdio.h>
 
 #include "mama/mama.h"
 #include "mama/mamacpp.h"
@@ -113,6 +114,7 @@ public:
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
     gBridge = Mama::loadBridge (gMiddleware);
 

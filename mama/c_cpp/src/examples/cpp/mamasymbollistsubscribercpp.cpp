@@ -23,6 +23,7 @@
 #include <iostream>
 #include <list>
 #include <string.h>
+#include <stdio.h>
 
 #include <mama/mamacpp.h>
 
@@ -370,6 +371,7 @@ void MamaSymbolListSubscriber::usage (int exitStatus)
 int main (int argc, const char** argv)
 {
     MamaSymbolListSubscriber mMamaSymbolListSubscriber;
+    setbuf (stdout, NULL);
     mMamaSymbolListSubscriber.parseCommandLine (argc, argv);
     
     try

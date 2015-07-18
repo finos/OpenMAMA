@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-
+#include <stdio.h>
 #include <mamda/MamdaOrderBook.h>
 using namespace Wombat;
 
@@ -29,6 +29,7 @@ const char* symbol = "MSFT";
 int main (int argc, const char** argv)
 {
     MamdaOrderBook  book;
+    setbuf (stdout, NULL);
     book.setSymbol (symbol);
 
     // Populate an order book with N price levels ranging from 50.00

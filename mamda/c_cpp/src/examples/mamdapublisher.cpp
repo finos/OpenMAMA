@@ -162,6 +162,7 @@ private:
 
 int main (int argc, const char **argv)
 {
+    setbuf (stdout, NULL);
     try
     {
         MamdaPublisher* mMamdaPublisher = new MamdaPublisher;

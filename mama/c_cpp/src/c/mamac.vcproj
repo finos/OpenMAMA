@@ -398,15 +398,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\fieldcache\fieldcachemapbinary.c"
-				>
-			</File>
-			<File
 				RelativePath=".\fieldcache\fieldcachemap.c"
-				>
-			</File>
-			<File
-				RelativePath=".\fieldcache\fieldcachemapmonitor.c"
 				>
 			</File>
 			<File
@@ -725,14 +717,6 @@
 			</File>
 			<File
 				RelativePath=".\fieldcache\fieldcachelist.h"
-				>
-			</File>
-			<File
-				RelativePath=".\fieldcache\fieldcachemapmonitor.h"
-				>
-			</File>
-			<File
-				RelativePath=".\fieldcache\fieldcachemapbinary.h"
 				>
 			</File>
 			<File
