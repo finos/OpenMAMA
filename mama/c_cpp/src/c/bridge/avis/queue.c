@@ -200,7 +200,8 @@ avisBridgeMamaQueue_enqueueEvent (queueBridge        queue,
 {
     wombatQueueStatus status;
     avisQueueClosure* cl = NULL;
-    
+
+    if (!callback) return MAMA_STATUS_NULL_ARG;
     CHECK_QUEUE(queue);
 
     cl = (avisQueueClosure*)calloc(1, sizeof(avisQueueClosure));
@@ -251,6 +252,7 @@ avisBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
                                         mamaQueueEnqueueCB callback,
                                         void*              closure)
 {
+    if (!callback) return MAMA_STATUS_NULL_ARG;
     CHECK_QUEUE(queue);
 
     avisQueue(queue)->mEnqueueCb      = callback;
@@ -274,6 +276,7 @@ mama_status
 avisBridgeMamaQueue_getNativeHandle (queueBridge queue,
                                      void**      result)
 {
+    if (!result) return MAMA_STATUS_NULL_ARG;
     CHECK_QUEUE(queue);
     *result = avisQueue(queue)->mQueue;
     return MAMA_STATUS_OK;
@@ -283,6 +286,7 @@ mama_status
 avisBridgeMamaQueue_setHighWatermark (queueBridge queue,
                                       size_t      highWatermark)
 {
+    if (!highWatermark) return MAMA_STATUS_NULL_ARG;
     CHECK_QUEUE(queue);
     return MAMA_STATUS_NOT_IMPLEMENTED;
 }
@@ -291,6 +295,7 @@ mama_status
 avisBridgeMamaQueue_setLowWatermark (queueBridge queue,
                                      size_t lowWatermark)
 {
+    if (!lowWatermark) return MAMA_STATUS_NULL_ARG;
     CHECK_QUEUE(queue);
     return MAMA_STATUS_NOT_IMPLEMENTED;
 }
@@ -298,6 +303,7 @@ avisBridgeMamaQueue_setLowWatermark (queueBridge queue,
 mama_status
 avisBridgeMamaQueue_getEventCount (queueBridge queue, size_t* count)
 {
+    if (!count) return MAMA_STATUS_NULL_ARG;
     CHECK_QUEUE(queue);
     *count = 0;
     wombatQueue_getSize (avisQueue(queue)->mQueue, (int*)count);

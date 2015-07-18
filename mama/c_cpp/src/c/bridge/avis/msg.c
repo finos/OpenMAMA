@@ -119,6 +119,7 @@ mama_status
 avisBridgeMamaMsgImpl_setReplyHandle (msgBridge msg, void* result)
 {
     mama_status status = MAMA_STATUS_OK;
+    if (!result) return MAMA_STATUS_NULL_ARG;
 
     CHECK_MSG(msg);
 
@@ -155,6 +156,7 @@ avisBridgeMamaMsg_setSendSubject (msgBridge   msg,
                                   const char* subject)
 {
     mama_status status = MAMA_STATUS_OK;
+    if (!symbol) return MAMA_STATUS_NULL_ARG;
 
     CHECK_MSG(msg);
 
@@ -173,6 +175,7 @@ avisBridgeMamaMsg_setSendSubject (msgBridge   msg,
 mama_status
 avisBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result)
 {
+    if (!result) return MAMA_STATUS_NULL_ARG;
     CHECK_MSG(msg);
     *result = avisMsg(msg)->mAvisMsg;
     return MAMA_STATUS_OK;
@@ -201,6 +204,7 @@ mama_status
 avisBridgeMamaMsg_copyReplyHandle (void* src, void** dest)
 {
     const char* replyAddr = (const char*) src;
+    if (!src || !dest) return MAMA_STATUS_NULL_ARG;
     *dest = (void*) strdup(replyAddr);
     return MAMA_STATUS_OK;
 }

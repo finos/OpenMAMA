@@ -77,8 +77,10 @@ static const char PAYLOAD_IDS[] = {MAMA_PAYLOAD_AVIS,NULL};
 mama_status
 avisBridge_getDefaultPayloadId (char***name, char** id)
 {
-	*name = PAYLOAD_NAMES;
-	*id = PAYLOAD_IDS;
+    if (!name) return MAMA_STATUS_NULL_ARG;
+    if (!id) return MAMA_STATUS_NULL_ARG;
+    *name = PAYLOAD_NAMES;
+    *id = PAYLOAD_IDS;
 
     return MAMA_STATUS_OK;
 }

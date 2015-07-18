@@ -33,6 +33,7 @@ avisBridgeMamaIo_create(ioBridge*  result,
                          mamaIo     parent,
                          void*      closure)
 {
+    if (!result) return MAMA_STATUS_NULL_ARG;
     *result = 0;
     return MAMA_STATUS_NOT_IMPLEMENTED;
 }
@@ -46,6 +47,7 @@ avisBridgeMamaIo_destroy (ioBridge io)
 mama_status
 avisBridgeMamaIo_getDescriptor (ioBridge io, uint32_t *result)
 {
+    if (!result) return MAMA_STATUS_NULL_ARG;
     *result = 0;
     return MAMA_STATUS_NOT_IMPLEMENTED;
 }

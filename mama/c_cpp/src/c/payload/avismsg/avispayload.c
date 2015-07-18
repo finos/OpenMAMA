@@ -2324,6 +2324,7 @@ avismsgFieldPayload_updateDateTime
 {
     CHECK_FIELD(field);
     CHECK_PAYLOAD(msg);
+    CHECK_NULL(value);
     return avisMsg_setDateTime(avisPayload(msg), avisField(field)->mName, 0, value);
 }
 
