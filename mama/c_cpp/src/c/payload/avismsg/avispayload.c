@@ -102,7 +102,7 @@ avismsgPayload_createImpl (mamaPayloadBridge* result, char* identifier)
     mamaPayloadBridgeImpl*       impl    = NULL;
     mama_status             resultStatus = MAMA_STATUS_OK;
 
-    CHECK_NULL (result);
+    CHECK_NULL(result);
 
     impl = (mamaPayloadBridgeImpl*)calloc (1, sizeof (mamaPayloadBridgeImpl));
     if (!impl)
@@ -164,9 +164,9 @@ avismsgPayload_createForTemplate (msgPayload*         msg,
 mama_status
 avismsgPayload_createFromByteBuffer(msgPayload* msg, mamaPayloadBridge bridge, const void* buffer, mama_size_t bufferLength)
 {
-    CHECK_NULL (msg);
-    CHECK_NULL (bridge);
-    CHECK_NULL (buffer);
+    CHECK_NULL(msg);
+    CHECK_NULL(bridge);
+    CHECK_NULL(buffer);
     
     avisPayloadImpl* newPayload = (avisPayloadImpl*)calloc (1, sizeof(avisPayloadImpl));
 
@@ -217,7 +217,7 @@ avismsgPayload_setParent (msgPayload          msg,
                        const mamaMsg       parent)
 {
     avisPayloadImpl* impl = (avisPayloadImpl*) msg;
-    CHECK_NULL (impl);
+    CHECK_NULL(impl);
 
     impl->mParent = parent;
     
@@ -250,7 +250,7 @@ avismsgPayload_unSerialize (const msgPayload    msg,
 	uint8_t *	buffPos = (void*)buffer;
 
     CHECK_PAYLOAD (msg);
-    CHECK_NULL (buffer);
+    CHECK_NULL(buffer);
 
     if (!impl->mAvisMsg)
         impl->mAvisMsg = attributes_create();
@@ -326,8 +326,8 @@ avismsgPayload_serialize     (const msgPayload    msg,
 	avisFieldPayload*	currField	= NULL;
 
     CHECK_PAYLOAD (msg);
-    CHECK_NULL (buffer);
-    CHECK_NULL (bufferLength);
+    CHECK_NULL(buffer);
+    CHECK_NULL(bufferLength);
 
     if (!impl->mIterator)
     {
@@ -445,8 +445,8 @@ avismsgPayload_getByteBuffer     (const msgPayload    msg,
 {
     avisPayloadImpl* impl = (avisPayloadImpl*)msg;
     CHECK_PAYLOAD(msg);
-    CHECK_NULL (buffer);
-    CHECK_NULL (bufferLength);
+    CHECK_NULL(buffer);
+    CHECK_NULL(bufferLength);
 
     *buffer = impl->mAvisMsg;
 
@@ -659,7 +659,7 @@ avismsgPayload_getNativeMsg     (const msgPayload    msg,
                                void**              nativeMsg)
 {
     CHECK_PAYLOAD(msg);
-    CHECK_NULL (nativeMsg);
+    CHECK_NULL(nativeMsg);
     *nativeMsg = msg;
     return MAMA_STATUS_OK;
 }
@@ -832,7 +832,7 @@ avismsgPayload_addString         (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
-    CHECK_NULL (value);
+    CHECK_NULL(value);
     return avisMsg_setString(avisPayload(msg), name, fid, value);
 }
 
@@ -845,7 +845,7 @@ avismsgPayload_addOpaque         (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
-    CHECK_NULL (value);
+    CHECK_NULL(value);
     return avisMsg_setOpaque(avisPayload(msg), name, fid, value, size);
 }
 
@@ -1221,7 +1221,7 @@ avismsgPayload_updateString      (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
-    CHECK_NULL (value);
+    CHECK_NULL(value);
     return avisMsg_setString(avisPayload(msg), name, fid, value);
 }
 
@@ -1234,7 +1234,7 @@ avismsgPayload_updateOpaque      (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
-    CHECK_NULL (value);
+    CHECK_NULL(value);
     return avisMsg_setOpaque(avisPayload(msg), name, fid, value, size);
 }
 
@@ -1266,8 +1266,6 @@ avismsgPayload_updateSubMsg      (msgPayload          msg,
                                 mama_fid_t          fid,
                                 const msgPayload    value)
 {
-    CHECK_PAYLOAD(msg);
-    CHECK_NAME(name,fid);
     return MAMA_STATUS_NOT_IMPLEMENTED;
 }
 
@@ -1480,6 +1478,7 @@ avismsgPayload_getBool           (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(mamaResult);
     return avisMsg_getBool(avisPayload(msg), name, fid, mamaResult);
 }
 
@@ -1491,6 +1490,7 @@ avismsgPayload_getChar           (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getChar(avisPayload(msg), name, fid, result);
 }
 
@@ -1502,6 +1502,7 @@ avismsgPayload_getI8             (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getI8(avisPayload(msg), name, fid, result);
 }
 
@@ -1513,6 +1514,7 @@ avismsgPayload_getU8             (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getU8(avisPayload(msg), name, fid, result);
 }
 
@@ -1524,6 +1526,7 @@ avismsgPayload_getI16            (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getI16(avisPayload(msg), name, fid, result);
 }
 
@@ -1535,6 +1538,7 @@ avismsgPayload_getU16            (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getU16(avisPayload(msg), name, fid, result);
 }
 
@@ -1546,6 +1550,7 @@ avismsgPayload_getI32            (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getI32(avisPayload(msg), name, fid, result);
 }
 
@@ -1557,6 +1562,7 @@ avismsgPayload_getU32            (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getU32(avisPayload(msg), name, fid, result);
 }
 
@@ -1568,6 +1574,7 @@ avismsgPayload_getI64            (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(mamaResult);
     return avisMsg_getI64(avisPayload(msg), name, fid, mamaResult);
 }
 
@@ -1579,6 +1586,7 @@ avismsgPayload_getU64            (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(mamaResult);
     return avisMsg_getU64(avisPayload(msg), name, fid, mamaResult);
 }
 
@@ -1590,6 +1598,7 @@ avismsgPayload_getF32            (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getF32(avisPayload(msg), name, fid, result);
 }
 
@@ -1601,6 +1610,7 @@ avismsgPayload_getF64            (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getF64(avisPayload(msg), name, fid, result);
 }
 
@@ -1612,7 +1622,7 @@ avismsgPayload_getString         (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
-    CHECK_NULL (result);
+    CHECK_NULL(result);
     return avisMsg_getString(avisPayload(msg), name, fid, result);
 }
 
@@ -1625,7 +1635,7 @@ avismsgPayload_getOpaque         (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
-    CHECK_NULL (result);
+    CHECK_NULL(result);
     return avisMsg_getOpaque(avisPayload(msg), name, fid, result, size);
 }
 
@@ -1641,7 +1651,7 @@ avismsgPayload_getField          (const msgPayload    msg,
 	Value* pValue = NULL;
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name, fid);
-    CHECK_NULL (result);
+    CHECK_NULL(result);
 
     if ( (!impl->mAvisField) && (avismsgFieldPayload_create((msgFieldPayload*) &impl->mAvisField) != MAMA_STATUS_OK) ) {
         return MAMA_STATUS_PLATFORM;
@@ -1910,7 +1920,7 @@ avismsgPayloadIter_create        (msgPayloadIter* iter,
     mama_status status = MAMA_STATUS_OK;
 	avisIterator* impl = NULL;
     CHECK_PAYLOAD(msg);
-    CHECK_NULL (iter);
+    CHECK_NULL(iter);
 
     impl = calloc (1, sizeof (avisIterator));
     if (!impl) return (MAMA_STATUS_NOMEM);
@@ -2012,7 +2022,7 @@ avismsgPayloadIter_associate      (msgPayloadIter iter,
     avisIterator* impl = (avisIterator*) iter;
     CHECK_PAYLOAD(msg);
 
-    CHECK_NULL (impl);
+    CHECK_NULL(impl);
 
     attributes_iter_init(impl->mMsgIterator, avisPayload(msg));
     impl->mAvisMsg = avisPayload(msg);
@@ -2023,7 +2033,7 @@ mama_status
 avismsgPayloadIter_destroy       (msgPayloadIter iter)
 {
     avisIterator* impl = (avisIterator*) iter;
-    CHECK_NULL (impl);
+    CHECK_NULL(impl);
 
     if (impl->mMsgIterator)
        attributes_iter_destroy(impl->mMsgIterator);
@@ -2068,6 +2078,7 @@ avismsgFieldPayload_getName      (const msgFieldPayload   field,
                                 const char**            result)
 {
 	uint16_t fid =0;
+    CHECK_NULL(result);
     CHECK_FIELD(field);
 
     fid = atoi(avisField(field)->mName);
@@ -2113,6 +2124,7 @@ avismsgFieldPayload_getFid       (const msgFieldPayload   field,
 {
 	uint16_t fid =0;
     CHECK_FIELD(field);
+    CHECK_NULL(result);
 
     fid = atoi(avisField(field)->mName);
     if (fid==0)
@@ -2170,6 +2182,7 @@ mama_status
 avismsgFieldPayload_getType      (msgFieldPayload         field,
                                 mamaFieldType*          result)
 {
+    CHECK_NULL(result);
     CHECK_FIELD(field);
     if (avisField(field)->mValue == 0)
         return MAMA_STATUS_INVALID_ARG;
@@ -2331,7 +2344,7 @@ avismsgFieldPayload_updateString  (msgFieldPayload         field,
 {
     CHECK_FIELD(field);
     CHECK_PAYLOAD(msg);
-    CHECK_NULL (value);
+    CHECK_NULL(value);
     return avisMsg_setString(avisPayload(msg), avisField(field)->mName, 0, value);
 }
 
@@ -2343,6 +2356,7 @@ avismsgFieldPayload_getBool      (const msgFieldPayload   field,
                                 mama_bool_t*            result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getBool(avisField(field)->mValue, result);
 }
 
@@ -2351,6 +2365,7 @@ avismsgFieldPayload_getChar      (const msgFieldPayload   field,
                                 char*                   result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getChar(avisField(field)->mValue, result);
 }
 
@@ -2359,6 +2374,7 @@ avismsgFieldPayload_getI8        (const msgFieldPayload   field,
                                 mama_i8_t*              result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getI8(avisField(field)->mValue, result);
 }
 
@@ -2367,6 +2383,7 @@ avismsgFieldPayload_getU8        (const msgFieldPayload   field,
                                 mama_u8_t*              result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getU8(avisField(field)->mValue, result);
 }
 
@@ -2375,6 +2392,7 @@ avismsgFieldPayload_getI16       (const msgFieldPayload   field,
                                 mama_i16_t*             result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getI16(avisField(field)->mValue, result);
 }
 
@@ -2383,6 +2401,7 @@ avismsgFieldPayload_getU16       (const msgFieldPayload   field,
                                 mama_u16_t*             result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getU16(avisField(field)->mValue, result);
 }
 
@@ -2391,6 +2410,7 @@ avismsgFieldPayload_getI32       (const msgFieldPayload   field,
                                 mama_i32_t*             result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getI32(avisField(field)->mValue, result);
 }
 
@@ -2399,6 +2419,7 @@ avismsgFieldPayload_getU32       (const msgFieldPayload   field,
                                 mama_u32_t*             result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getU32(avisField(field)->mValue, result);
 }
 
@@ -2407,6 +2428,7 @@ avismsgFieldPayload_getI64       (const msgFieldPayload   field,
                                 mama_i64_t*             result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getI64(avisField(field)->mValue, result);
 }
 
@@ -2415,6 +2437,7 @@ avismsgFieldPayload_getU64       (const msgFieldPayload   field,
                                 mama_u64_t*             result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getU64(avisField(field)->mValue, result);
 }
 
@@ -2423,6 +2446,7 @@ avismsgFieldPayload_getF32       (const msgFieldPayload   field,
                                 mama_f32_t*             result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getF32(avisField(field)->mValue, result);
 }
 
@@ -2431,6 +2455,7 @@ avismsgFieldPayload_getF64       (const msgFieldPayload   field,
                                 mama_f64_t*             result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getF64(avisField(field)->mValue, result);
 }
 
@@ -2439,7 +2464,7 @@ avismsgFieldPayload_getString    (const msgFieldPayload   field,
                                 const char**            result)
 {
     CHECK_FIELD(field);
-    CHECK_NULL (result);
+    CHECK_NULL(result);
     return avisValue_getString(avisField(field)->mValue, result);
 }
 
@@ -2449,8 +2474,8 @@ avismsgFieldPayload_getOpaque    (const msgFieldPayload   field,
                                 mama_size_t*            size)
 {
     CHECK_FIELD(field);
-    CHECK_NULL (result);
-    CHECK_NULL (size);
+    CHECK_NULL(result);
+    CHECK_NULL(size);
     return avisValue_getOpaque(avisField(field)->mValue, result, size);
 }
 

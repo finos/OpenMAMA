@@ -116,7 +116,7 @@ TEST_F(MsgVectorBoolTestsC, AddVectorBool)
                                      mIn,
                                      VECTOR_SIZE);
 
-    EXPECT_EQ(mStatus, MAMA_STATUS_OK);
+    ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorBool (mMsg,
                                      NULL,
