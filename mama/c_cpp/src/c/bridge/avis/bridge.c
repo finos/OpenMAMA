@@ -124,6 +124,9 @@ avisBridge_open (mamaBridge bridgeImpl)
         return MAMA_STATUS_PLATFORM;
     }
 
+    /* Start the io thread */
+    avisBridgeMamaIoImpl_start ();
+
     return MAMA_STATUS_OK;
 }
 
@@ -150,16 +153,19 @@ avisBridge_close (mamaBridge bridgeImpl)
 
     mamaBridgeImpl_getClosure(impl, &avisBridge);
 
-    if (avisBridge)
-    {
-        free (avisBridge);
-    }
-
     mamaQueue_destroyWait(impl->mDefaultEventQueue);
 
     free (impl);
     
     wsocketcleanup();
+
+    /* Stop and destroy the io thread */
+	avisBridgeMamaIoImpl_stop ();
+
+    if (avisBridge)
+    {
+        free (avisBridge);
+    }
     return status;
 }
 
