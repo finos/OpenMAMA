@@ -30,7 +30,7 @@
 #include "avisdefs.h"
 #include "transportbridge.h"
 
-timerHeap gTimerHeap;
+timerHeap gAvisTimerHeap;
 
 /*Responsible for creating the bridge impl structure*/
 void avisBridge_createImpl (mamaBridge* result)
@@ -110,14 +110,14 @@ avisBridge_open (mamaBridge bridgeImpl)
     mama_log (MAMA_LOG_LEVEL_NORMAL,
               "avisBridge_open(): Successfully created Avis queue");
 
-    if (0 != createTimerHeap (&gTimerHeap))
+    if (0 != createTimerHeap (&gAvisTimerHeap))
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL,
                 "avisBridge_open(): Failed to initialize timers.");
         return MAMA_STATUS_PLATFORM;
     }
 
-    if (0 != startDispatchTimerHeap (gTimerHeap))
+    if (0 != startDispatchTimerHeap (gAvisTimerHeap))
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL,
                 "avisBridge_open(): Failed to start timer thread.");
@@ -142,7 +142,7 @@ avisBridge_close (mamaBridge bridgeImpl)
     impl =  (mamaBridgeImpl*)bridgeImpl;
 
 
-    if (0 != destroyHeap (gTimerHeap))
+    if (0 != destroyHeap (gAvisTimerHeap))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_close():"
                 "Failed to destroy Avis timer heap.");
