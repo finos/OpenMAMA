@@ -462,7 +462,7 @@ avisBridgeMamaSubscription_setTopicClosure (subscriptionBridge subscriber,
 mama_status
 avisBridgeMamaSubscription_muteCurrentTopic (subscriptionBridge subscriber)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    return avisBridgeMamaSubscription_mute (subscriber);
 }
 
 int
