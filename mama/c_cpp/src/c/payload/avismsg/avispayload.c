@@ -2046,15 +2046,30 @@ avismsgPayloadIter_next          (msgPayloadIter  iter,
                                 msgFieldPayload field,
                                 msgPayload      msg)
 {
-	avisIterator* impl = (avisIterator*) iter;
-    if (!iter || !msg || !field) return NULL;
+	avisIterator*   impl = (avisIterator*) iter;
+	msgFieldPayload ret = NULL;
 
-    if (!attributes_iter_next(impl->mMsgIterator))
-        return NULL;
+    if (!iter || !msg) return NULL;
+    /* Only advance iterator if not first run */
+    if (impl->mIndex > 0)
+    {
+        impl->mIndex++;
+        if (!attributes_iter_next(impl->mMsgIterator))
+            return NULL;
+    }
 
-    return avismsgPayloadIter_get(iter, impl->mAvisField, msg);
+    ret = avismsgPayloadIter_get(iter, impl->mAvisField, msg);
+    if (NULL != ret)
+    {
+        impl->mIndex++;
+    }
+
+    return ret;
 }
 
+/* This isn't really supported on Avis. HasNext on avis is more like "i've
+ * just moved to next, do I have anything?"
+ */
 mama_bool_t
 avismsgPayloadIter_hasNext       (msgPayloadIter iter,
                                 msgPayload     msg)
@@ -2073,6 +2088,7 @@ avismsgPayloadIter_begin         (msgPayloadIter  iter,
     avisIterator* impl = (avisIterator*) iter;
     if (!impl) return NULL;
 
+    impl->mIndex = 0;
     attributes_iter_init(impl->mMsgIterator, impl->mAvisMsg);
     return avismsgPayloadIter_get(iter, impl->mAvisField, msg);
 }
