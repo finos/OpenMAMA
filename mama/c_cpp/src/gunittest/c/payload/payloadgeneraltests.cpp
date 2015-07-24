@@ -1891,28 +1891,38 @@ TEST_F(PayloadGeneralTests, IterAssociateValid)
 
 TEST_F(PayloadGeneralTests, IterAssociateTwiceValid)
 {
-    msgPayload          testPayload = NULL;
-    msgPayload          testPayload2 = NULL;
-    msgPayloadIter      testIter = NULL;
-    msgFieldPayload     testField = NULL;
-    mama_fid_t          test_fid = 0;
+    msgPayload           testPayload = NULL;
+    msgPayload           testPayload2 = NULL;
+    msgPayloadIter       testIter = NULL;
+    msgFieldPayload      testField = NULL;
+    mama_fid_t           test_fid = 0;
+    std::set<mama_fid_t> pl1_fids;
+    std::set<mama_fid_t> pl2_fids;
 
     result = aBridge->msgPayloadCreate(&testPayload);
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
     // Create 2 payloads
     aBridge->msgPayloadAddString (testPayload, "name2", 102, "Unit");
+    pl1_fids.insert(102);
     aBridge->msgPayloadAddString (testPayload, "name3", 103, "Testing");
+    pl1_fids.insert(103);
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
+    pl1_fids.insert(104);
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
+    pl1_fids.insert(105);
 
     result = aBridge->msgPayloadCreate(&testPayload2);
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload2, "name2", 202, "Repeating");
+    pl2_fids.insert(202);
     aBridge->msgPayloadAddString (testPayload2, "name3", 203, "Things");
+    pl2_fids.insert(203);
     aBridge->msgPayloadAddString (testPayload2, "name4", 204, "Is");
+    pl2_fids.insert(204);
     aBridge->msgPayloadAddString (testPayload2, "name5", 205, "Great");
+    pl2_fids.insert(205);
 
     // Create iterator 
     result = aBridge->msgPayloadIterCreate(&testIter, testPayload);
@@ -1931,7 +1941,7 @@ TEST_F(PayloadGeneralTests, IterAssociateTwiceValid)
     testField = aBridge->msgPayloadIterNext(testIter,testField,testPayload);
 
     result = aBridge->msgFieldPayloadGetFid(testField,NULL,NULL, &test_fid);
-    EXPECT_EQ (103, test_fid);
+    EXPECT_NE (pl1_fids.find(test_fid), pl1_fids.end());
 
     // reuse iterator with new payload
     result = aBridge->msgPayloadIterAssociate(testIter, testPayload2);
@@ -1946,7 +1956,7 @@ TEST_F(PayloadGeneralTests, IterAssociateTwiceValid)
     testField = aBridge->msgPayloadIterNext(testIter,testField,testPayload2); 
 
     result = aBridge->msgFieldPayloadGetFid(testField,NULL,NULL, &test_fid);
-    EXPECT_EQ (203, test_fid);
+    EXPECT_NE (pl2_fids.find(test_fid), pl2_fids.end());
 
     result = aBridge->msgPayloadIterDestroy(testIter);
     EXPECT_EQ (MAMA_STATUS_OK, result);
