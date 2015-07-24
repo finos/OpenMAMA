@@ -306,7 +306,27 @@ avismsgPayload_unSerialize (const msgPayload    msg,
                 avisMsg_setString(impl->mAvisMsg, tempName, 0, impl->mStringBuffer);
                 break;
             case TYPE_OPAQUE:
+            {
+                uint64_t dataSize = 0;
+                /* Pull out the field id length */
+                len=*(int16_t *)(buffPos);
+                buffPos+=sizeof(int16_t);
+                currLen+=sizeof(int16_t);
+                /* Pull out the field id and NULL terminate */
+                memcpy (tempName, buffPos, len);
+                buffPos+=len;
+                currLen+=len;
+                tempName[len]='\0';
+                /* Pull out number of bytes in opaque data */
+                dataSize=*(uint64_t*)(buffPos);
+                buffPos+=sizeof(uint64_t);
+                currLen+=sizeof(uint64_t);
+                /* Use raw data directly */
+                avisMsg_setOpaque(impl->mAvisMsg, tempName, 0, buffPos, dataSize);
+                buffPos+=dataSize;
+                currLen+=dataSize;
                 break;
+            }
         }
     }
 
@@ -428,6 +448,39 @@ avismsgPayload_serialize     (const msgPayload    msg,
                 buffPos+=strlen(currField->mValue->value.str); currLen+=strlen(currField->mValue->value.str);
                 break;
             case TYPE_OPAQUE:
+                len=+ strlen(currField->mName);
+                /* Current length + 1 for type, 2 for name size + length of name
+                 * + 8 bytes for data size + data size */
+                if (impl->mBufferLen < currLen+3+len+8+currField->mValue->value.bytes.item_count)
+                {
+                    void*vp=realloc (impl->mBuffer, impl->mBufferLen+200);
+                    impl->mBuffer = vp;
+                    buffPos=impl->mBuffer;
+					buffPos+=currLen;
+                    impl->mBufferLen+=200;
+                }
+                /* Copy data type */
+                *(int8_t *)(buffPos) = 5;
+                buffPos+=1;
+                currLen+=1;
+                /* Copy field id length */
+                *(int16_t *)(buffPos) = len;
+                buffPos+=2;
+                currLen+=2;
+                /* Copy field id itself */
+                memcpy (buffPos, currField->mName, len);
+                buffPos+=len;
+                currLen+=len;
+                /* Copy number of bytes in data */
+                *(uint64_t *)(buffPos) = (uint64_t)currField->mValue->value.bytes.item_count;
+                buffPos+=sizeof(uint64_t);
+                currLen+=sizeof(uint64_t);
+                /* Copy the opaque data itself */
+                memcpy (buffPos,
+                        currField->mValue->value.bytes.items,
+                        currField->mValue->value.bytes.item_count);
+                buffPos+=currField->mValue->value.bytes.item_count;
+                currLen+=currField->mValue->value.bytes.item_count;
                 break;
 
         }
