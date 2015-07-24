@@ -446,6 +446,7 @@ mama_status
 avisBridgeMamaSubscription_getPlatformError (subscriptionBridge subscriber,
                                              void**             error)
 {
+    if (NULL == error) return MAMA_STATUS_NULL_ARG;
     CHECK_SUBSCRIBER(subscriber);
     *error = &(avisSub(subscriber)->mAvis->error);
     return MAMA_STATUS_OK;

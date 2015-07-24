@@ -251,7 +251,7 @@ avisBridgeMamaTransport_getNumLoadBalanceAttributes (
                                           const char* name,
                                           int*        numLoadBalanceAttributes)
 {
-    if (!numLoadBalanceAttributes) return MAMA_STATUS_NULL_ARG;
+    if (!numLoadBalanceAttributes || !name) return MAMA_STATUS_NULL_ARG;
     *numLoadBalanceAttributes = 0;
     return MAMA_STATUS_OK;
 }
@@ -261,7 +261,7 @@ avisBridgeMamaTransport_getLoadBalanceSharedObjectName (
                                       const char*  name,
                                       const char** loadBalanceSharedObjectName)
 {
-    if (!loadBalanceSharedObjectName) return MAMA_STATUS_NULL_ARG;
+    if (!loadBalanceSharedObjectName || !name) return MAMA_STATUS_NULL_ARG;
     *loadBalanceSharedObjectName = NULL;
     return MAMA_STATUS_OK;
 }
@@ -271,7 +271,7 @@ avisBridgeMamaTransport_getLoadBalanceScheme (
                                     const char*    name,
                                     tportLbScheme* scheme)
 {
-    if (!scheme) return MAMA_STATUS_NULL_ARG;
+    if (!scheme || !name) return MAMA_STATUS_NULL_ARG;
     *scheme = TPORT_LB_SCHEME_STATIC;
     return MAMA_STATUS_OK;
 }
@@ -287,7 +287,7 @@ avisBridgeMamaTransport_create (transportBridge* result,
     mamaBridgeImpl*      bridgeImpl = NULL;
     const char*          url        = NULL; 
 
-    if (!result || !name) return MAMA_STATUS_NULL_ARG;
+    if (!result || !name || !mamaTport) return MAMA_STATUS_NULL_ARG;
     
     transport = (avisTransportBridge*)calloc( 1, sizeof( avisTransportBridge ) );
     if (transport == NULL)

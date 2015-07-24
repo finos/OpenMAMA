@@ -52,7 +52,7 @@
 #define CHECK_NAME(name,fid) \
         do {  \
            if ((fid == 0) && (name == 0)) return MAMA_STATUS_NULL_ARG; \
-           if ((fid == 0) && (strlen(name)== 0)) return MAMA_STATUS_INVALID_ARG; \
+           if ((fid == 0) && (strlen(name) == 0)) return MAMA_STATUS_INVALID_ARG; \
          } while(0)
 
 #define CHECK_ITER(iter) \
@@ -165,8 +165,8 @@ mama_status
 avismsgPayload_createFromByteBuffer(msgPayload* msg, mamaPayloadBridge bridge, const void* buffer, mama_size_t bufferLength)
 {
     CHECK_NULL(msg);
-    CHECK_NULL(bridge);
     CHECK_NULL(buffer);
+    if (0 == bufferLength) return MAMA_STATUS_INVALID_ARG;
     
     avisPayloadImpl* newPayload = (avisPayloadImpl*)calloc (1, sizeof(avisPayloadImpl));
 
@@ -226,12 +226,12 @@ avismsgPayload_setParent (msgPayload          msg,
 
 mama_status
 avismsgPayload_getByteSize       (const msgPayload    msg,
-                                mama_size_t*        size)
+                                  mama_size_t*        size)
 {
+    const void* buffer = NULL;
     CHECK_PAYLOAD(msg);
     CHECK_NULL(size);
-    *size = 0;
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    return avismsgPayload_serialize (msg, &buffer, size);
 }
 
 mama_status
@@ -251,6 +251,7 @@ avismsgPayload_unSerialize (const msgPayload    msg,
 
     CHECK_PAYLOAD (msg);
     CHECK_NULL(buffer);
+    CHECK_NULL(bufferLength);
 
     if (!impl->mAvisMsg)
         impl->mAvisMsg = attributes_create();
@@ -462,6 +463,8 @@ avismsgPayload_setByteBuffer     (const msgPayload    msg,
 {
     avisPayloadImpl* impl = (avisPayloadImpl*)msg;
     CHECK_PAYLOAD(msg);
+    CHECK_NULL(buffer);
+    CHECK_NULL(bufferLength);
 
     impl->mAvisMsg=(Attributes*) buffer;
 
@@ -568,6 +571,11 @@ avismsgPayload_iterateFields (const msgPayload        msg,
     mama_status status = MAMA_STATUS_OK;
 	avisFieldPayload* currField = NULL;
 
+	if (!parent || !cb || !field)
+	{
+		return MAMA_STATUS_NULL_ARG;
+	}
+
     if (!impl->mIterator)
     {
         status = avismsgPayloadIter_create((msgPayloadIter*) &impl->mIterator, msg);
@@ -604,7 +612,9 @@ avismsgPayload_getFieldAsString  (const msgPayload    msg,
                                 mama_size_t         len)
 {
     CHECK_PAYLOAD(msg);
+    CHECK_NULL(buf);
     CHECK_NAME(name, fid);
+    if (0 == len) return MAMA_STATUS_INVALID_ARG;
     return avisMsg_getFieldAsString(avisPayload(msg), name, fid, buf, len);
 }
 
@@ -857,6 +867,7 @@ avismsgPayload_addDateTime       (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(value);
     return avisMsg_setDateTime(avisPayload(msg), name, fid, value);
 }
 
@@ -868,6 +879,7 @@ avismsgPayload_addPrice          (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(value);
     return avisMsg_setPrice(avisPayload(msg), name, fid, value);
 }
 
@@ -1246,6 +1258,7 @@ avismsgPayload_updateDateTime    (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(value);
     return avisMsg_setDateTime(avisPayload(msg), name, fid, value);
 }
 
@@ -1257,6 +1270,7 @@ avismsgPayload_updatePrice       (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(value);
     return avisMsg_setPrice(avisPayload(msg), name, fid, value);
 }
 
@@ -1688,6 +1702,7 @@ avismsgPayload_getDateTime       (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getDateTime(avisPayload(msg), name, fid, result);
 }
 
@@ -1699,6 +1714,7 @@ avismsgPayload_getPrice          (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getPrice(avisPayload(msg), name, fid, result);
 }
 
@@ -1991,7 +2007,7 @@ avismsgPayloadIter_hasNext       (msgPayloadIter iter,
                                 msgPayload     msg)
 {
     avisIterator* impl = (avisIterator*) iter;
-    if (!impl) return false;
+    if (!impl || !msg) return false;
 
     return attributes_iter_has_next(impl->mMsgIterator);
 }
@@ -2485,6 +2501,7 @@ avismsgFieldPayload_getDateTime  (const msgFieldPayload   field,
                                 mamaDateTime            result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getDateTime(avisField(field)->mValue, result);
 }
 
@@ -2493,6 +2510,7 @@ avismsgFieldPayload_getPrice     (const msgFieldPayload   field,
                                 mamaPrice               result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getPrice(avisField(field)->mValue, result);
 }
 
@@ -2642,5 +2660,7 @@ avismsgFieldPayload_getAsString (
     char*         buf,
     mama_size_t   len)
 {
+    CHECK_NULL(buf);
+    CHECK_NULL(len);
     return avisValue_getFieldAsString(avisField(field)->mValue, avisField(field)->mName, 0, buf, len);
 }

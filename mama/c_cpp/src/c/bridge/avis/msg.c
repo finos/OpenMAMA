@@ -55,7 +55,7 @@ mama_status
 avisBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
 {
     avisMsgImpl* impl;
-    if (avisMsg(msg) == NULL) return MAMA_STATUS_NULL_ARG;
+    if (avisMsg(msg) == NULL || parent == NULL) return MAMA_STATUS_NULL_ARG;
     *msg = NULL;
 
     impl = (avisMsgImpl*) calloc(1, sizeof(avisMsgImpl));
@@ -144,6 +144,7 @@ avisBridgeMamaMsg_isFromInbox (msgBridge msg)
 {
     const char* dummy;
 
+    if (NULL == msg) return -1;
     CHECK_MSG(msg);
 
     return (MAMA_STATUS_OK == avismsgPayload_getString(
@@ -213,6 +214,7 @@ mama_status
 avisBridgeMamaMsg_destroyReplyHandle (void* result)
 {
     char* replyAddr = (char*) result;
+    if (NULL == result) return MAMA_STATUS_NULL_ARG;
     free(replyAddr);
     return MAMA_STATUS_OK;
 }

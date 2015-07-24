@@ -952,17 +952,19 @@ avisMsg_getDateTime(
         mama_fid_t     fid,
         mamaDateTime   result)
 {
-	char tempName[64];
-	Value* pValue = NULL;
-	if(fid != 0)
-	{
-		snprintf (tempName, 63, "%d", fid);
-		pValue = attributes_get(attributes, tempName);
-	}
+    char tempName[64];
+    Value* pValue = NULL;
+    if (NULL == result)
+        return MAMA_STATUS_NULL_ARG;
+    if(fid != 0)
+    {
+        snprintf (tempName, 63, "%d", fid);
+        pValue = attributes_get(attributes, tempName);
+    }
     if ((!pValue) && (name))
-		pValue = attributes_get(attributes, name);
+        pValue = attributes_get(attributes, name);
     if (!pValue)
-      return MAMA_STATUS_NOT_FOUND;
+        return MAMA_STATUS_NOT_FOUND;
     return avisValue_getDateTime(pValue, result);
 }
 
@@ -1064,7 +1066,7 @@ mama_status avisValue_getPrice(const Value* pValue, mamaPrice result)
           return MAMA_STATUS_WRONG_FIELD_TYPE;
 
     mamaPrice_setWithHints (result, pValue->value.real64, MAMA_PRICE_HINTS_NONE);
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    return MAMA_STATUS_OK;
 }
 
 
