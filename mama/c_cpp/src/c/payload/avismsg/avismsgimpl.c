@@ -973,11 +973,11 @@ mama_status avisValue_getDateTime(const Value* pValue, mamaDateTime result)
     if (!pValue) return MAMA_STATUS_NULL_ARG;
     switch (pValue->type)
     {
-    	case TYPE_STRING:  mamaDateTime_setFromString (result, pValue->value.str); break;
-    	case TYPE_REAL64:  mamaDateTime_setEpochTimeF64 (result, pValue->value.real64); break;
-    	case TYPE_INT64:  mamaDateTime_setEpochTimeMilliseconds (result, pValue->value.int64); break;
-    	default: return MAMA_STATUS_WRONG_FIELD_TYPE; break;
-}
+        case TYPE_STRING: mamaDateTime_setFromString (result, pValue->value.str); break;
+        case TYPE_REAL64: mamaDateTime_setEpochTimeF64 (result, pValue->value.real64); break;
+        case TYPE_INT64:  *result = pValue->value.int64; break;
+        default: return MAMA_STATUS_WRONG_FIELD_TYPE; break;
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -988,9 +988,7 @@ avisMsg_setDateTime(
         mama_fid_t          fid,
         const mamaDateTime  value)
 {
-	uint64_t tempu64;
-	mamaDateTime_getEpochTimeMicroseconds(value, &tempu64);
-    return avisMsg_setU64(attributes, name, fid, tempu64);
+    return avisMsg_setU64(attributes, name, fid, *value);
 }
 
 mama_status
