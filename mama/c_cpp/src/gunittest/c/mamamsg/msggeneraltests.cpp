@@ -531,18 +531,22 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetDqStrategyContextInValidDq)
 */
 TEST_F (MsgGeneralTestsC, msgGetSendSubjectValid)
 {
-    const char*       subject    = "";
+    const char*       subjectIn  = "subject";
+    const char*       subjectOut = NULL;
     mama_status       status;
    
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
-    status = mamaMsg_getSendSubject(mMsg, &subject);
+
+    mamaMsgImpl_setBridgeImpl (mMsg, mMiddlewareBridge);
+    mamaMsgImpl_setSubscInfo (mMsg, NULL, NULL, subjectIn, 1);
+    status = mamaMsg_getSendSubject(mMsg, &subjectOut);
 
     CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ (status, MAMA_STATUS_OK);
+    EXPECT_STREQ(subjectIn, subjectOut);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetSendSubjectInValidMsg)

@@ -40,11 +40,13 @@ protected:
     virtual void TearDown(void);
 
     mamaPayloadBridge   aBridge;
+    mamaBridge          mMiddlewareBridge;
     mama_status         result;
 };
 
 PayloadGeneralTests::PayloadGeneralTests(void)
     : aBridge (NULL)
+    , mMiddlewareBridge (NULL)
     , result (MAMA_STATUS_OK)
 {
 }
@@ -56,6 +58,7 @@ PayloadGeneralTests::~PayloadGeneralTests(void)
 void PayloadGeneralTests::SetUp(void)
 {
 	mama_loadPayloadBridge (&aBridge,getPayload());
+	mama_loadBridge (&mMiddlewareBridge, getMiddleware());
 }
 
 void PayloadGeneralTests::TearDown(void)
@@ -534,12 +537,23 @@ TEST_F(PayloadGeneralTests, GetNumberFieldsInValidNumFields)
 TEST_F(PayloadGeneralTests, GetSendSubjectValid)
 {
     msgPayload          testPayload = NULL;
+    const char*         subjectOut  = NULL;
+    const char*         subjectIn   = "testsubj";
+    msgBridge           bridgeMsg   = NULL;
+    mamaMsg             parentMsg   = NULL;
 
-    result = aBridge->msgPayloadCreate(&testPayload);
+    //result = aBridge->msgPayloadCreate(&testPayload);
+    mamaMsg_createForPayloadBridge(&parentMsg, aBridge);
+    mamaMsgImpl_getPayload(parentMsg, &testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    result = aBridge->msgPayloadGetSendSubject(testPayload, NULL);
-    EXPECT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, result);
+    mamaMsgImpl_setBridgeImpl (parentMsg, mMiddlewareBridge);
+    mamaMsgImpl_setSubscInfo (parentMsg, NULL, NULL, subjectIn, 1);
+
+    result = aBridge->msgPayloadGetSendSubject(testPayload, &subjectOut);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(result);
+
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 }
 
 
@@ -562,7 +576,10 @@ TEST_F(PayloadGeneralTests, GetSendSubjectInValidSubject)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
 	result = aBridge->msgPayloadGetSendSubject(testPayload, NULL);
-	EXPECT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, result);
+
+    CHECK_NON_IMPLEMENTED_OPTIONAL(result);
+
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
 }
 
 TEST_F(PayloadGeneralTests, ToStringValid)
