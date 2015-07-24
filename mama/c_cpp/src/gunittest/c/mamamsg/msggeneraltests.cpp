@@ -697,8 +697,8 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgGetDateTimeMSecInValidMsg)
 
 TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidName)
 {
-    mama_fid_t           fid          = 0;
-    mama_u64_t*          milliseconds = 0;
+    mama_fid_t           fid          = 102;
+    mama_u64_t           milliseconds = 0;
     mamaDateTime         dateTime     = NULL;
     mamaDateTime         m_out        = NULL;
 
@@ -707,10 +707,11 @@ TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidName)
     mamaDateTime_create(&m_out);
     mamaDateTime_setToNow(dateTime);
     
-    mamaMsg_addDateTime(mMsg, NULL, 102, dateTime);
-    mamaMsg_getDateTime(mMsg, NULL, 102, m_out);
+    mamaMsg_addDateTime(mMsg, NULL, fid, dateTime);
+    mamaMsg_getDateTime(mMsg, NULL, fid, m_out);
 
-    ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, NULL, fid, milliseconds), MAMA_STATUS_INVALID_ARG);
+    /* Invalid name is ok, as long as fid is specified */
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_getDateTimeMSec(mMsg, NULL, fid, &milliseconds));
 }
 
 TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidFid)
