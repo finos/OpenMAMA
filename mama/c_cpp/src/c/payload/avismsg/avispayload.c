@@ -406,14 +406,16 @@ avismsgPayload_serialize     (const msgPayload    msg,
                 {
                     void*vp=realloc (impl->mBuffer, impl->mBufferLen+200);
                     impl->mBuffer = vp;
-                    buffPos=&impl->mBuffer;
+                    buffPos=impl->mBuffer;
 					buffPos+=currLen;
                     impl->mBufferLen+=200;
                 }
                 *(int8_t *)(buffPos) = 2;   buffPos+=1;     currLen+=1;
                 *(int16_t *)(buffPos) = len; buffPos+=2; currLen+=2;
                 memcpy (buffPos, currField->mName, len); buffPos+=len; currLen+=len;
-                *(int64_t *)(buffPos) = currField->mValue->value.int64; buffPos+=sizeof(int64_t); currLen+=sizeof(int64_t);
+                *(int64_t *)(buffPos) = (int64_t)currField->mValue->value.int64;
+                buffPos+=sizeof(int64_t);
+                currLen+=sizeof(int64_t);
                 break;
             case TYPE_REAL64:
                 len=+ strlen(currField->mName);;
@@ -421,7 +423,7 @@ avismsgPayload_serialize     (const msgPayload    msg,
                 {
                     void*vp=realloc (impl->mBuffer, impl->mBufferLen+200);
                     impl->mBuffer = vp;
-                    buffPos=&impl->mBuffer;
+                    buffPos=impl->mBuffer;
 					buffPos+=currLen;
                     impl->mBufferLen+=200;
                 }
@@ -436,11 +438,11 @@ avismsgPayload_serialize     (const msgPayload    msg,
                 {
                     void*vp=realloc (impl->mBuffer, impl->mBufferLen+200);
                     impl->mBuffer = vp;
-                    buffPos=&impl->mBuffer;
+                    buffPos=impl->mBuffer;
 					buffPos+=currLen;
                     impl->mBufferLen+=200;
                 }
-                *(int8_t *)(buffPos) = 4;   buffPos+=1;     currLen+=1;
+                *(int8_t *)(buffPos) = TYPE_STRING;   buffPos+=1;     currLen+=1;
                 *(int16_t *)(buffPos) = len; buffPos+=2; currLen+=2;
                 memcpy (buffPos, currField->mName, len); buffPos+=len; currLen+=len;
                 *(int16_t *)(buffPos) = strlen(currField->mValue->value.str); buffPos+=2; currLen+=2;
@@ -503,7 +505,7 @@ avismsgPayload_getByteBuffer     (const msgPayload    msg,
     CHECK_NULL(bufferLength);
 
     *buffer = impl->mAvisMsg;
-
+    *bufferLength = sizeof(impl->mAvisMsg);
 
     return MAMA_STATUS_OK;
 }
@@ -2034,6 +2036,7 @@ avismsgPayloadIter_get          (msgPayloadIter  iter,
         return NULL;
     }
 
+    /* If this is a special meta field, do not consider during iteration */
     if ((strcmp(SUBJECT_FIELD_NAME, avisField(field)->mName) == 0) ||
         (strcmp(INBOX_FIELD_NAME, avisField(field)->mName)== 0))
             return (avismsgPayloadIter_next(iter,field,msg));
