@@ -979,6 +979,7 @@ qpidmsgPayload_setByteBuffer (const msgPayload    msg,
                               mama_size_t         bufferLength)
 {
     qpidmsgPayloadImpl*  impl       = (qpidmsgPayloadImpl*) msg;
+    mama_status          status     = MAMA_STATUS_OK;
 
     if (   NULL == msg
         || NULL == buffer
@@ -987,10 +988,19 @@ qpidmsgPayload_setByteBuffer (const msgPayload    msg,
         return MAMA_STATUS_NULL_ARG;
     }
 
-    impl->mQpidMsg = (pn_message_t*) buffer;
-    impl->mBody    = pn_message_body (impl->mQpidMsg);
+    if (bufferLength == sizeof(pn_message_t*))
+    {
+        impl->mQpidMsg = (pn_message_t*) buffer;
+        impl->mBody    = pn_message_body (impl->mQpidMsg);
+    }
+    else
+    {
+        status = qpidmsgPayload_unSerialize (msg,
+                                             (const void**)buffer,
+                                             bufferLength);
+    }
 
-    return MAMA_STATUS_OK;
+    return status;
 }
 
 mama_status
@@ -999,13 +1009,22 @@ qpidmsgPayload_createFromByteBuffer (msgPayload*         msg,
                                      const void*         buffer,
                                      mama_size_t         bufferLength)
 {
-    mama_status status = qpidmsgPayloadImpl_createImplementationOnly (msg);
+    mama_status status = MAMA_STATUS_OK;
 
     if (0 == bufferLength)
     {
     	return MAMA_STATUS_INVALID_ARG;
     }
 
+    // If this is a byte handle
+    if (bufferLength == sizeof(pn_message_t*))
+    {
+        status = qpidmsgPayloadImpl_createImplementationOnly (msg);
+    }
+    else
+    {
+        status = qpidmsgPayload_create (msg);
+    }
     if (MAMA_STATUS_OK == status)
     {
         status = qpidmsgPayload_setByteBuffer (*msg,
