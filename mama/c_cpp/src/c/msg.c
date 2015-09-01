@@ -378,6 +378,8 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "TICK42BLP";
         case MAMA_PAYLOAD_FAST:
             return "FAST";
+        case MAMA_PAYLOAD_HMS:
+            return "HMS";
         case MAMA_PAYLOAD_RAI:
             return "rai";
         case MAMA_PAYLOAD_UMS:
