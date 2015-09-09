@@ -290,25 +290,6 @@ TEST_F (MiddlewareMsgTests, getNativeHandleInvalidResult)
                mBridge->bridgeMamaMsgGetNativeHandle(msg,NULL));
 }
 
-TEST_F (MiddlewareMsgTests, duplicateReplyHandle)
-{
-    msgBridge msg        = NULL;
-    mamaMsg   parent     = NULL;
-    void*     result     = NULL;
-    int       destroyMsg = 1;
-
-    ASSERT_EQ(MAMA_STATUS_OK,mamaMsg_create(&parent));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgCreate(&msg,parent));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgDuplicateReplyHandle(msg,&result));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgDestroy(msg,destroyMsg));
-}
-
 TEST_F (MiddlewareMsgTests, duplicateReplyHandleInvalidMsgBridge)
 {
     void* result = NOT_NULL;

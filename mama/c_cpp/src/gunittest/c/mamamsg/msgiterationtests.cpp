@@ -26,8 +26,10 @@
 #include "mama/msg.h"
 #include <gtest/gtest.h>
 #include <cstdlib>
+#include <stdlib.h>
 #include "MainUnitTestC.h"
 #include <iostream>
+#include <map>
 #include "bridge.h"
 #include "mama/types.h"
 
@@ -249,6 +251,7 @@ protected:
     mamaMsgIterator iterator;
     mamaDictionary  dict;
     mamaMsgField    field;
+    std::map<mama_fid_t, uint64_t> values;
 };
 
 MsgNewIteratorTestC::MsgNewIteratorTestC(void)
@@ -271,11 +274,14 @@ void MsgNewIteratorTestC::SetUp(void)
 
     /* add a fields to the message. */
     mamaMsg_create    (&msg);
-    mamaMsg_addU8     (msg, "u8", 101, 8);
-    mamaMsg_addString (msg, "string", 102, "This is an iteration test.");
-    mamaMsg_addU16    (msg, "u16", 103, 16);
-    mamaMsg_addU32    (msg, "u32", 104, 32);
-    mamaMsg_addU64    (msg, "u64", 105, 64);
+    for (mama_fid_t f = 101; f < 106; f++)
+    {
+        char buf[64];
+        sprintf (buf, "field_%u", f);
+        int val = rand();
+        mamaMsg_addU64 (msg, buf, f, val);
+        values.insert(std::pair<mama_fid_t, uint64_t>(f, val));
+    }
 
     /* Build the MAMA Dictionary from our test message. */
     mamaDictionary_create (&dict);
@@ -408,16 +414,15 @@ TEST_F (MsgNewIteratorTestC, IteratorAssociateNullMsg)
 TEST_F (MsgNewIteratorTestC, IteratorBegin)
 {
     mama_fid_t      fid      = 0;
-    mama_u8_t       content  = 0;
+    mama_u64_t      content  = 0;
 
     field = mamaMsgIterator_begin (iterator);
 
     mamaMsgField_getFid (field, &fid);
-    mamaMsgField_getU8  (field, &content);
+    mamaMsgField_getU64 (field, &content);
 
     /* Check the contents of the field: */
-    ASSERT_EQ (101, fid);
-    ASSERT_EQ (8, content);
+    ASSERT_EQ(values.at(fid), content);
 }
 
 /*  Description:     Check that when passed a NULL iterator, begin returns a NULL
@@ -435,45 +440,44 @@ TEST_F (MsgNewIteratorTestC, DISABLED_IteratorBeginNullIter)
 
 /*  Description:     Call begin, check that the first field is returned, then
  *                   call next, and check that the first field is returned again,
- *                   then call next again, and ensure that the second field is
- *                   returned.
- *
- *  Expected Result: First  Check: fid - 101, value - 8
- *                   Second Check: fid - 101, value - 8
- *                   Third  Check: fid - 102, value - "This is an iteration test."
+ *                   then call next again, until all fields are confirmed.
  */
 TEST_F (MsgNewIteratorTestC, IteratorBeginNext)
 {
     mama_fid_t      fid      = 0;
-    mama_u8_t       content  = 0;
-    const char*     strContent;
+    mama_u64_t      content  = 0;
 
     field = mamaMsgIterator_begin (iterator);
 
     mamaMsgField_getFid (field, &fid);
-    mamaMsgField_getU8 (field, &content);
+    mamaMsgField_getU64 (field, &content);
 
-    /* Check the contents of the field: */
-    ASSERT_EQ (101, fid);
-    ASSERT_EQ (8, content);
+    /* Check the contents of the field match legal entry */
+    ASSERT_EQ(values.at(fid), content);
 
     field = mamaMsgIterator_next (iterator);
 
     mamaMsgField_getFid (field, &fid);
-    mamaMsgField_getU8 (field, &content);
 
     /* Ensure we return the first field again: */
-    ASSERT_EQ (101, fid);
-    ASSERT_EQ (8, content);
+    ASSERT_EQ(values[fid], content);
 
-    field = mamaMsgIterator_next (iterator);
+    /* Remove from reference map */
+    values.erase(fid);
 
-    mamaMsgField_getFid      (field, &fid);
-    mamaMsgField_getString   (field, &strContent);
+    /* For the 4 remaining fields, check contents */
+    for (int i = 0; i < 4; i++)
+    {
+        field = mamaMsgIterator_next (iterator);
+        mamaMsgField_getFid (field, &fid);
+        mamaMsgField_getU64 (field, &content);
+        ASSERT_EQ(values[fid], content);
+        /* Remove from reference map */
+        values.erase(fid);
+    }
 
-    /* Ensure we return the first field again: */
-    ASSERT_EQ (102, fid);
-    ASSERT_STREQ ("This is an iteration test.", strContent);
+    /* Gotta catch 'em all */
+    EXPECT_EQ(0, values.size());
 }
 
 /*  Description:     Step into the message, determine if it has a next value, 
@@ -484,24 +488,21 @@ TEST_F (MsgNewIteratorTestC, IteratorBeginNext)
 TEST_F (MsgNewIteratorTestC, IteratorHasNext)
 {
     mama_fid_t      fid      = 0;
-    mama_u8_t       content  = 0;
+    mama_u64_t      content  = 0;
     mama_bool_t     hasNext  = 0;
-    const char*     strContent;
 
     field = mamaMsgIterator_begin (iterator);
 
     mamaMsgField_getFid (field, &fid);
-    mamaMsgField_getU8 (field, &content);
+    mamaMsgField_getU64 (field, &content);
 
     /* Check the contents of the field: */
-    ASSERT_EQ (101, fid);
-    ASSERT_EQ (8, content);
+    ASSERT_EQ(values[fid], content);
 
     field = mamaMsgIterator_next (iterator);
 
     /* Ensure we return the first field again: */
-    ASSERT_EQ (101, fid);
-    ASSERT_EQ (8, content);
+    ASSERT_EQ(values[fid], content);
 
     /* Check if we have a next value: */
     hasNext = mamaMsgIterator_hasNext (iterator);
@@ -510,12 +511,11 @@ TEST_F (MsgNewIteratorTestC, IteratorHasNext)
 
     /* Get the next value */
     field = mamaMsgIterator_next (iterator);
-    mamaMsgField_getFid      (field, &fid);
-    mamaMsgField_getString   (field, &strContent);
+    mamaMsgField_getFid (field, &fid);
+    mamaMsgField_getU64 (field, &content);
 
     /* Ensure we return the first field again: */
-    ASSERT_EQ (102, fid);
-    ASSERT_STREQ ("This is an iteration test.", strContent);
+    ASSERT_EQ(values[fid], content);
 }
 
 /*  Description:     Step to the end of the message, check if it has a next,
@@ -526,23 +526,20 @@ TEST_F (MsgNewIteratorTestC, IteratorHasNext)
 TEST_F (MsgNewIteratorTestC, IteratorHasNoNext)
 {
     mama_fid_t      fid      = 0;
-    mama_u8_t       content  = 0;
-    mama_bool_t     hasNext  = 0;
+    mama_u64_t      content  = 0;
 
     field = mamaMsgIterator_begin (iterator);
 
     mamaMsgField_getFid (field, &fid);
-    mamaMsgField_getU8 (field, &content);
+    mamaMsgField_getU64 (field, &content);
 
     /* Check the contents of the field: */
-    ASSERT_EQ (101, fid);
-    ASSERT_EQ (8, content);
+    ASSERT_EQ(values[fid], content);
 
     field = mamaMsgIterator_next (iterator);
 
     /* Ensure we return the first field again: */
-    ASSERT_EQ (101, fid);
-    ASSERT_EQ (8, content);
+    ASSERT_EQ(values[fid], content);
 
     /* Move to the last message: */
     field = mamaMsgIterator_next (iterator);
@@ -550,10 +547,12 @@ TEST_F (MsgNewIteratorTestC, IteratorHasNoNext)
     field = mamaMsgIterator_next (iterator);
     field = mamaMsgIterator_next (iterator);
 
-    /* Check if we have a next value: */
-    hasNext = mamaMsgIterator_hasNext (iterator);
+    /* Move past last message - should not crash */
+    field = mamaMsgIterator_next (iterator);
+    ASSERT_EQ(NULL, field);
 
-    ASSERT_EQ (0, hasNext);
+    /* Check if we have a next value: */
+    ASSERT_EQ (0, mamaMsgIterator_hasNext (iterator));
 }
 
 /*  Description:     Attempt to check hasNext for a NULL iterator.

@@ -52,7 +52,7 @@
 #define CHECK_NAME(name,fid) \
         do {  \
            if ((fid == 0) && (name == 0)) return MAMA_STATUS_NULL_ARG; \
-           if ((fid == 0) && (strlen(name)== 0)) return MAMA_STATUS_INVALID_ARG; \
+           if ((fid == 0) && (strlen(name) == 0)) return MAMA_STATUS_INVALID_ARG; \
          } while(0)
 
 #define CHECK_ITER(iter) \
@@ -165,8 +165,8 @@ mama_status
 avismsgPayload_createFromByteBuffer(msgPayload* msg, mamaPayloadBridge bridge, const void* buffer, mama_size_t bufferLength)
 {
     CHECK_NULL(msg);
-    CHECK_NULL(bridge);
     CHECK_NULL(buffer);
+    if (0 == bufferLength) return MAMA_STATUS_INVALID_ARG;
     
     avisPayloadImpl* newPayload = (avisPayloadImpl*)calloc (1, sizeof(avisPayloadImpl));
 
@@ -226,12 +226,12 @@ avismsgPayload_setParent (msgPayload          msg,
 
 mama_status
 avismsgPayload_getByteSize       (const msgPayload    msg,
-                                mama_size_t*        size)
+                                  mama_size_t*        size)
 {
+    const void* buffer = NULL;
     CHECK_PAYLOAD(msg);
     CHECK_NULL(size);
-    *size = 0;
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    return avismsgPayload_serialize (msg, &buffer, size);
 }
 
 mama_status
@@ -251,6 +251,7 @@ avismsgPayload_unSerialize (const msgPayload    msg,
 
     CHECK_PAYLOAD (msg);
     CHECK_NULL(buffer);
+    CHECK_NULL(bufferLength);
 
     if (!impl->mAvisMsg)
         impl->mAvisMsg = attributes_create();
@@ -305,7 +306,27 @@ avismsgPayload_unSerialize (const msgPayload    msg,
                 avisMsg_setString(impl->mAvisMsg, tempName, 0, impl->mStringBuffer);
                 break;
             case TYPE_OPAQUE:
+            {
+                uint64_t dataSize = 0;
+                /* Pull out the field id length */
+                len=*(int16_t *)(buffPos);
+                buffPos+=sizeof(int16_t);
+                currLen+=sizeof(int16_t);
+                /* Pull out the field id and NULL terminate */
+                memcpy (tempName, buffPos, len);
+                buffPos+=len;
+                currLen+=len;
+                tempName[len]='\0';
+                /* Pull out number of bytes in opaque data */
+                dataSize=*(uint64_t*)(buffPos);
+                buffPos+=sizeof(uint64_t);
+                currLen+=sizeof(uint64_t);
+                /* Use raw data directly */
+                avisMsg_setOpaque(impl->mAvisMsg, tempName, 0, buffPos, dataSize);
+                buffPos+=dataSize;
+                currLen+=dataSize;
                 break;
+            }
         }
     }
 
@@ -385,14 +406,16 @@ avismsgPayload_serialize     (const msgPayload    msg,
                 {
                     void*vp=realloc (impl->mBuffer, impl->mBufferLen+200);
                     impl->mBuffer = vp;
-                    buffPos=&impl->mBuffer;
+                    buffPos=impl->mBuffer;
 					buffPos+=currLen;
                     impl->mBufferLen+=200;
                 }
                 *(int8_t *)(buffPos) = 2;   buffPos+=1;     currLen+=1;
                 *(int16_t *)(buffPos) = len; buffPos+=2; currLen+=2;
                 memcpy (buffPos, currField->mName, len); buffPos+=len; currLen+=len;
-                *(int64_t *)(buffPos) = currField->mValue->value.int64; buffPos+=sizeof(int64_t); currLen+=sizeof(int64_t);
+                *(int64_t *)(buffPos) = (int64_t)currField->mValue->value.int64;
+                buffPos+=sizeof(int64_t);
+                currLen+=sizeof(int64_t);
                 break;
             case TYPE_REAL64:
                 len=+ strlen(currField->mName);;
@@ -400,7 +423,7 @@ avismsgPayload_serialize     (const msgPayload    msg,
                 {
                     void*vp=realloc (impl->mBuffer, impl->mBufferLen+200);
                     impl->mBuffer = vp;
-                    buffPos=&impl->mBuffer;
+                    buffPos=impl->mBuffer;
 					buffPos+=currLen;
                     impl->mBufferLen+=200;
                 }
@@ -415,11 +438,11 @@ avismsgPayload_serialize     (const msgPayload    msg,
                 {
                     void*vp=realloc (impl->mBuffer, impl->mBufferLen+200);
                     impl->mBuffer = vp;
-                    buffPos=&impl->mBuffer;
+                    buffPos=impl->mBuffer;
 					buffPos+=currLen;
                     impl->mBufferLen+=200;
                 }
-                *(int8_t *)(buffPos) = 4;   buffPos+=1;     currLen+=1;
+                *(int8_t *)(buffPos) = TYPE_STRING;   buffPos+=1;     currLen+=1;
                 *(int16_t *)(buffPos) = len; buffPos+=2; currLen+=2;
                 memcpy (buffPos, currField->mName, len); buffPos+=len; currLen+=len;
                 *(int16_t *)(buffPos) = strlen(currField->mValue->value.str); buffPos+=2; currLen+=2;
@@ -427,6 +450,39 @@ avismsgPayload_serialize     (const msgPayload    msg,
                 buffPos+=strlen(currField->mValue->value.str); currLen+=strlen(currField->mValue->value.str);
                 break;
             case TYPE_OPAQUE:
+                len=+ strlen(currField->mName);
+                /* Current length + 1 for type, 2 for name size + length of name
+                 * + 8 bytes for data size + data size */
+                if (impl->mBufferLen < currLen+3+len+8+currField->mValue->value.bytes.item_count)
+                {
+                    void*vp=realloc (impl->mBuffer, impl->mBufferLen+200);
+                    impl->mBuffer = vp;
+                    buffPos=impl->mBuffer;
+					buffPos+=currLen;
+                    impl->mBufferLen+=200;
+                }
+                /* Copy data type */
+                *(int8_t *)(buffPos) = 5;
+                buffPos+=1;
+                currLen+=1;
+                /* Copy field id length */
+                *(int16_t *)(buffPos) = len;
+                buffPos+=2;
+                currLen+=2;
+                /* Copy field id itself */
+                memcpy (buffPos, currField->mName, len);
+                buffPos+=len;
+                currLen+=len;
+                /* Copy number of bytes in data */
+                *(uint64_t *)(buffPos) = (uint64_t)currField->mValue->value.bytes.item_count;
+                buffPos+=sizeof(uint64_t);
+                currLen+=sizeof(uint64_t);
+                /* Copy the opaque data itself */
+                memcpy (buffPos,
+                        currField->mValue->value.bytes.items,
+                        currField->mValue->value.bytes.item_count);
+                buffPos+=currField->mValue->value.bytes.item_count;
+                currLen+=currField->mValue->value.bytes.item_count;
                 break;
 
         }
@@ -449,7 +505,7 @@ avismsgPayload_getByteBuffer     (const msgPayload    msg,
     CHECK_NULL(bufferLength);
 
     *buffer = impl->mAvisMsg;
-
+    *bufferLength = sizeof(impl->mAvisMsg);
 
     return MAMA_STATUS_OK;
 }
@@ -462,6 +518,8 @@ avismsgPayload_setByteBuffer     (const msgPayload    msg,
 {
     avisPayloadImpl* impl = (avisPayloadImpl*)msg;
     CHECK_PAYLOAD(msg);
+    CHECK_NULL(buffer);
+    CHECK_NULL(bufferLength);
 
     impl->mAvisMsg=(Attributes*) buffer;
 
@@ -568,6 +626,11 @@ avismsgPayload_iterateFields (const msgPayload        msg,
     mama_status status = MAMA_STATUS_OK;
 	avisFieldPayload* currField = NULL;
 
+	if (!parent || !cb || !field)
+	{
+		return MAMA_STATUS_NULL_ARG;
+	}
+
     if (!impl->mIterator)
     {
         status = avismsgPayloadIter_create((msgPayloadIter*) &impl->mIterator, msg);
@@ -604,7 +667,9 @@ avismsgPayload_getFieldAsString  (const msgPayload    msg,
                                 mama_size_t         len)
 {
     CHECK_PAYLOAD(msg);
+    CHECK_NULL(buf);
     CHECK_NAME(name, fid);
+    if (0 == len) return MAMA_STATUS_INVALID_ARG;
     return avisMsg_getFieldAsString(avisPayload(msg), name, fid, buf, len);
 }
 
@@ -857,6 +922,7 @@ avismsgPayload_addDateTime       (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(value);
     return avisMsg_setDateTime(avisPayload(msg), name, fid, value);
 }
 
@@ -868,6 +934,7 @@ avismsgPayload_addPrice          (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(value);
     return avisMsg_setPrice(avisPayload(msg), name, fid, value);
 }
 
@@ -1246,6 +1313,7 @@ avismsgPayload_updateDateTime    (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(value);
     return avisMsg_setDateTime(avisPayload(msg), name, fid, value);
 }
 
@@ -1257,6 +1325,7 @@ avismsgPayload_updatePrice       (msgPayload          msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(value);
     return avisMsg_setPrice(avisPayload(msg), name, fid, value);
 }
 
@@ -1688,6 +1757,7 @@ avismsgPayload_getDateTime       (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getDateTime(avisPayload(msg), name, fid, result);
 }
 
@@ -1699,6 +1769,7 @@ avismsgPayload_getPrice          (const msgPayload    msg,
 {
     CHECK_PAYLOAD(msg);
     CHECK_NAME(name,fid);
+    CHECK_NULL(result);
     return avisMsg_getPrice(avisPayload(msg), name, fid, result);
 }
 
@@ -1965,6 +2036,7 @@ avismsgPayloadIter_get          (msgPayloadIter  iter,
         return NULL;
     }
 
+    /* If this is a special meta field, do not consider during iteration */
     if ((strcmp(SUBJECT_FIELD_NAME, avisField(field)->mName) == 0) ||
         (strcmp(INBOX_FIELD_NAME, avisField(field)->mName)== 0))
             return (avismsgPayloadIter_next(iter,field,msg));
@@ -1977,21 +2049,36 @@ avismsgPayloadIter_next          (msgPayloadIter  iter,
                                 msgFieldPayload field,
                                 msgPayload      msg)
 {
-	avisIterator* impl = (avisIterator*) iter;
-    if (!iter || !msg || !field) return NULL;
+	avisIterator*   impl = (avisIterator*) iter;
+	msgFieldPayload ret = NULL;
 
-    if (!attributes_iter_next(impl->mMsgIterator))
-        return NULL;
+    if (!iter || !msg) return NULL;
+    /* Only advance iterator if not first run */
+    if (impl->mIndex > 0)
+    {
+        impl->mIndex++;
+        if (!attributes_iter_next(impl->mMsgIterator))
+            return NULL;
+    }
 
-    return avismsgPayloadIter_get(iter, impl->mAvisField, msg);
+    ret = avismsgPayloadIter_get(iter, impl->mAvisField, msg);
+    if (NULL != ret)
+    {
+        impl->mIndex++;
+    }
+
+    return ret;
 }
 
+/* This isn't really supported on Avis. HasNext on avis is more like "i've
+ * just moved to next, do I have anything?"
+ */
 mama_bool_t
 avismsgPayloadIter_hasNext       (msgPayloadIter iter,
                                 msgPayload     msg)
 {
     avisIterator* impl = (avisIterator*) iter;
-    if (!impl) return false;
+    if (!impl || !msg) return false;
 
     return attributes_iter_has_next(impl->mMsgIterator);
 }
@@ -2004,6 +2091,7 @@ avismsgPayloadIter_begin         (msgPayloadIter  iter,
     avisIterator* impl = (avisIterator*) iter;
     if (!impl) return NULL;
 
+    impl->mIndex = 0;
     attributes_iter_init(impl->mMsgIterator, impl->mAvisMsg);
     return avismsgPayloadIter_get(iter, impl->mAvisField, msg);
 }
@@ -2324,6 +2412,7 @@ avismsgFieldPayload_updateDateTime
 {
     CHECK_FIELD(field);
     CHECK_PAYLOAD(msg);
+    CHECK_NULL(value);
     return avisMsg_setDateTime(avisPayload(msg), avisField(field)->mName, 0, value);
 }
 
@@ -2484,6 +2573,7 @@ avismsgFieldPayload_getDateTime  (const msgFieldPayload   field,
                                 mamaDateTime            result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getDateTime(avisField(field)->mValue, result);
 }
 
@@ -2492,6 +2582,7 @@ avismsgFieldPayload_getPrice     (const msgFieldPayload   field,
                                 mamaPrice               result)
 {
     CHECK_FIELD(field);
+    CHECK_NULL(result);
     return avisValue_getPrice(avisField(field)->mValue, result);
 }
 
@@ -2641,5 +2732,7 @@ avismsgFieldPayload_getAsString (
     char*         buf,
     mama_size_t   len)
 {
+    CHECK_NULL(buf);
+    CHECK_NULL(len);
     return avisValue_getFieldAsString(avisField(field)->mValue, avisField(field)->mName, 0, buf, len);
 }
