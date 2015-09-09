@@ -24,10 +24,7 @@ else:
     env.Append(LIBS=['qpid-proton', 'mama', 'm', 'wombatcommon', 'uuid', 'event'],
                LIBPATH=libPath, CPPPATH=incPath)
 
-''' Generally we would like to make use of -Werror, but unfortunately it causes
-    proton to choke during the build phase. Leaving the option here should we
-    find the proton issues resolved.'''
-#env.Append(CFLAGS=['-Werror'])
+env.Append(CFLAGS=['-Werror'])
 
 
 conf = Configure(env, config_h='./config.h', log_file='./config.log')
@@ -39,9 +36,9 @@ if not env.GetOption('clean'):
     if not conf.CheckCHeader('proton/parser.h'):
         print '+- could not find parser.h in ${QPID_HOME}/include/proton'
         Exit(1)
-    if conf.CheckCHeader('proton/version.h'):
-        print '+- proton release appears to include ${QPID_HOME}/include/proton/version.h'
-        env.Append(CCFLAGS=['-DHAVE_QPID_PROTON_VERSION_H'])
+    if not conf.CheckCHeader('proton/version.h'):
+        print '+- proton release does not have ${QPID_HOME}/include/proton/version.h - too old!'
+        Exit(1)
 
 env = conf.Finish()
 

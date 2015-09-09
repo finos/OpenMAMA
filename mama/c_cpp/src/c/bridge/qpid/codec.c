@@ -104,8 +104,8 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     /* Ensure position is at the start */
     pn_data_rewind (properties);
 
-    /* Main container for meta data should be a list to allow expansion */
-    pn_data_put_list (properties);
+    /* Container for application properties is a map */
+    pn_data_put_map(properties);
 
     /* Enter into the list for access to its elements */
     pn_data_enter (properties);
@@ -116,8 +116,8 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     {
         return status;
     }
-    pn_data_put_ubyte (properties, type);
-
+    pn_data_put_string (properties,pn_bytes(strlen(QPID_KEY_MSGTYPE),QPID_KEY_MSGTYPE));
+    pn_data_put_ubyte (properties,type);
 
     switch (type)
     {
@@ -129,14 +129,16 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
         {
             return status;
         }
+        pn_data_put_string (properties,pn_bytes(strlen(QPID_KEY_INBOXNAME),QPID_KEY_INBOXNAME));
         pn_data_put_string (properties, pn_bytes (strlen(inboxName),
-                                                  inboxName));
+                                                      inboxName));
 
         status = qpidBridgeMamaMsgImpl_getReplyTo (bridgeMessage, &replyTo);
         if (MAMA_STATUS_OK != status)
         {
             return status;
         }
+        pn_data_put_string (properties,pn_bytes(strlen(QPID_KEY_REPLYTO),QPID_KEY_REPLYTO));
         pn_data_put_string (properties, pn_bytes (strlen(replyTo),
                                                   replyTo));
 
@@ -149,6 +151,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
         {
             return status;
         }
+        pn_data_put_string (properties,pn_bytes(strlen(QPID_KEY_TARGETSUBJECT),QPID_KEY_TARGETSUBJECT));
         pn_data_put_string (properties, pn_bytes (strlen(targetSubject),
                                                   targetSubject));
         break;
@@ -253,13 +256,23 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
     /* Skip over the initial null atom */
     pn_data_next (properties);
 
-    /* Main container should be a list to allow expansion */
-    pn_data_get_list (properties);
+    /* Container for application properties is a map */
+    pn_data_get_map (properties);
     pn_data_enter (properties);
 
-    /* Get the message type out */
-    pn_data_next (properties);
-    type = (qpidMsgType) pn_data_get_ubyte (properties);
+    int found = 0;
+    found = pn_data_lookup (properties,QPID_KEY_MSGTYPE);
+    if (found)
+    {
+        type = (qpidMsgType) pn_data_get_ubyte (properties);
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "qpidBridgeMamaMsgImpl_unpack(): "
+                  "Unable to retrieve message type from message");
+        return MAMA_STATUS_PLATFORM;
+    }
 
     qpidBridgeMamaMsgImpl_setMsgType (bridgeMessage, type);
 
@@ -268,16 +281,38 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
     case QPID_MSG_INBOX_REQUEST:
 
         /* Move onto inbox name and extract / copy */
-        pn_data_next (properties);
-        prop = pn_data_get_string (properties);
+        found = pn_data_lookup (properties,QPID_KEY_INBOXNAME);
+        if (found)
+        {
+            prop = pn_data_get_string (properties);
+        }
+        else
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                      "qpidBridgeMamaMsgImpl_unpack(): "
+                      "Unable to retrieve inbox name");
+            return MAMA_STATUS_PLATFORM;
+        }
+
         status = qpidBridgeMamaMsgImpl_setInboxName (bridgeMessage, prop.start);
         if (MAMA_STATUS_OK != status)
         {
             return status;
         }
-        /* Move onto reply to url and extract / copy */
-        pn_data_next (properties);
-        prop = pn_data_get_string (properties);
+
+        found = pn_data_lookup (properties,QPID_KEY_REPLYTO);
+        if (found)
+        {
+            prop = pn_data_get_string (properties);
+        }
+        else
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                      "qpidBridgeMamaMsgImpl_unpack(): "
+                      "Unable to retrieve reply to url");
+            return MAMA_STATUS_PLATFORM;
+        }
+
         status = qpidBridgeMamaMsgImpl_setReplyTo (bridgeMessage, prop.start);
         if (MAMA_STATUS_OK != status)
         {
@@ -285,9 +320,20 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
         }
         break;
     case QPID_MSG_INBOX_RESPONSE:
-        /* Move onto target subject and extract / copy */
-        pn_data_next (properties);
-        prop = pn_data_get_string (properties);
+
+        found = pn_data_lookup (properties,QPID_KEY_TARGETSUBJECT);
+        if (found)
+        {
+            prop = pn_data_get_string (properties);
+        }
+        else
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                      "qpidBridgeMamaMsgImpl_unpack(): "
+                      "Unable to retrieve target container");
+            return MAMA_STATUS_PLATFORM;
+        }
+
         status = qpidBridgeMamaMsgImpl_setTargetSubject (bridgeMessage,
                                                          prop.start);
         if (MAMA_STATUS_OK != status)
