@@ -19,6 +19,8 @@ property.c
 wMessageStats.c
 libyywrap.c
 fileparser.c
+mempool.c
+memnode.c
 windows/strpcasecmp.c
 windows/strptime.c
 windows/platform.c
