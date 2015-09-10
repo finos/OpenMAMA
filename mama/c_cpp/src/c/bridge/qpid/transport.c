@@ -73,7 +73,7 @@
 #define     DEFAULT_RECV_BLOCK_SIZE         10
 
 /* Non configurable runtime defaults */
-#define     PN_MESSENGER_TIMEOUT            -1
+#define     PN_MESSENGER_TIMEOUT            1
 #define     PARAM_NAME_MAX_LENGTH           1024L
 #define     MIN_SUB_POOL_SIZE               1L
 #define     MAX_SUB_POOL_SIZE               30000L
@@ -522,6 +522,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
         free (impl);
         return MAMA_STATUS_PLATFORM;
     }
+    pn_messenger_set_timeout (impl->mIncoming, PN_MESSENGER_TIMEOUT);
 
     /* Start the admin messenger as it may be required for subscriptions */
     pn_messenger_start (impl->mOutgoing);
