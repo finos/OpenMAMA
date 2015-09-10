@@ -112,13 +112,16 @@ qpidBridgeMamaSubscription_create (subscriptionBridge* subscriber,
                                       &impl->mTopic,
                                       impl->mTransport);
 
-    /* Generate subject URI based on standardized values */
-    qpidBridgeCommon_generateSubjectUri (outgoingAddress,
-                                         impl->mRoot,
-                                         impl->mSource,
-                                         impl->mTopic,
-                                         uuid,
-                                         &impl->mUri);
+    if (NULL != outgoingAddress)
+    {
+        /* Generate subject URI based on standardized values */
+        qpidBridgeCommon_generateSubjectUri (outgoingAddress,
+                                             impl->mRoot,
+                                             impl->mSource,
+                                             impl->mTopic,
+                                             uuid,
+                                             &impl->mUri);
+    }
 
     /* Register the endpoint */
     endpointPool_registerWithoutIdentifier (transport->mSubEndpoints,
@@ -155,15 +158,17 @@ qpidBridgeMamaSubscription_create (subscriptionBridge* subscriber,
         /* Send out the subscription registration of interest message */
         if (NULL != transport->mOutgoingAddress)
         {
+            int ret = 0;
             pn_messenger_put    (transport->mOutgoing, transport->mMsg);
 
-            if (0 != pn_messenger_send (transport->mOutgoing,
-                    QPID_MESSENGER_SEND_TIMEOUT))
+
+            if (0 != (ret = pn_messenger_send (transport->mOutgoing,
+                    QPID_MESSENGER_SEND_TIMEOUT)))
             {
                 const char* qpid_error = PN_MESSENGER_ERROR (transport->mOutgoing);
                 mama_log (MAMA_LOG_LEVEL_SEVERE,
                           "qpidBridgeMamaSubscription_create(): "
-                          "pn_messenger_send Error:[%s]", qpid_error);
+                          "pn_messenger_send Error:[%d:%s]", ret, qpid_error);
                 return MAMA_STATUS_PLATFORM;
             }
         }
