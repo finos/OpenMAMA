@@ -32,16 +32,10 @@
 #include <list.h>
 
 /* Qpid include files */
-#include <proton/message.h>
+#include <proton/version.h>
 #include <proton/messenger.h>
 
 #include "endpointpool.h"
-
-/* If this version of proton has provided a version header file (build system
- * to provide this macro) */
-#ifdef HAVE_QPID_PROTON_VERSION_H
-#include <proton/version.h>
-#endif
 
 #if defined(__cplusplus)
 extern "C" {
@@ -54,9 +48,11 @@ extern "C" {
 
 /* Maximum topic length */
 #define     MAX_SUBJECT_LENGTH              256
+#define     MAX_URI_LENGTH                  1024
 
 /* Default timeout for send working threads */
 #define     QPID_MESSENGER_SEND_TIMEOUT     -1
+#define     QPID_MESSENGER_TIMEOUT          1 /* milliseconds */
 
 /* Message types */
 typedef enum qpidMsgType_
@@ -68,19 +64,14 @@ typedef enum qpidMsgType_
     QPID_MSG_TERMINATE      =               0xff
 } qpidMsgType;
 
-/* If a proton version header has been parsed at this point (version >= 0.5) */
-#ifdef _PROTON_VERSION_H
+/* Message types */
+typedef enum qpidTransportType_
+{
+    QPID_TRANSPORT_TYPE_P2P,
+    QPID_TRANSPORT_TYPE_BROKER
+} qpidTransportType;
 
-#if (PN_VERSION_MAJOR > 0 || PN_VERSION_MINOR > 4)
-#define PN_MESSENGER_SEND(messenger)                                           \
-    pn_messenger_send(messenger, QPID_MESSENGER_SEND_TIMEOUT)
-#define PN_MESSENGER_ERROR(messenger)                                          \
-    pn_error_text(pn_messenger_error(messenger))
-#define PN_MESSENGER_STOP(messenger)                                           \
-    qpidBridgeMamaTransportImpl_stopProtonMessenger (messenger)
-#define PN_MESSENGER_FREE(messenger)                                           \
-    qpidBridgeMamaTransportImpl_freeProtonMessenger (messenger)
-#endif
+#define PN_MESSENGER_ERROR(messenger) pn_error_text(pn_messenger_error(messenger))
 
 /* The proton header util.h was removed in version 0.8 */
 #if (PN_VERSION_MAJOR == 0 && PN_VERSION_MINOR <= 7)
@@ -93,19 +84,11 @@ typedef enum qpidMsgType_
 
 /* Place other version specific macros here */
 
-#else
-
-/* Earliest supported version is 0.4 - header was added in 0.5 */
-#define     PN_VERSION_MAJOR                0
-#define     PN_VERSION_MINOR                4
-
-#define PN_MESSENGER_SEND(messenger) pn_messenger_send(messenger)
-#define PN_MESSENGER_ERROR(messenger) pn_messenger_error(messenger)
-#define PN_MESSENGER_STOP(messenger) /* disabled as it deadlocks in this ver */
-#define PN_MESSENGER_FREE(messenger) /* disabled as it deadlocks in this ver */
-
-#endif /* _PROTON_VERSION_H */
-
+/* Keys for application property map */
+#define QPID_KEY_MSGTYPE        "MAMAT"
+#define QPID_KEY_INBOXNAME      "MAMAI"
+#define QPID_KEY_REPLYTO        "MAMAR"
+#define QPID_KEY_TARGETSUBJECT  "MAMAS"
 
 /*=========================================================================
   =                Typedefs, structs, enums and globals                   =
@@ -120,9 +103,12 @@ typedef struct qpidSubscription_
     mamaSubscription    mMamaSubscription;
     mamaQueue           mMamaQueue;
     void*               mQpidQueue;
-    mamaTransport       mTransport;
-    const char*         mSymbol;
-    char*               mSubjectKey;
+    transportBridge     mTransport;
+    const char*         mSource;
+    const char*         mTopic;
+    const char*         mRoot;
+    const char*         mSubject;
+    const char*         mUri;
     void*               mClosure;
     int                 mIsNotMuted;
     int                 mIsValid;
@@ -145,11 +131,14 @@ typedef struct qpidTransportBridge_
     const char*         mOutgoingAddress;
     const char*         mReplyAddress;
     const char*         mName;
+    const char*         mUuid;
     wthread_t           mQpidDispatchThread;
     int                 mIsDispatching;
     mama_status         mQpidDispatchStatus;
     endpointPool_t      mSubEndpoints;
     endpointPool_t      mPubEndpoints;
+    qpidTransportType   mQpidTransportType;
+    wtable_t            mKnownSources;
 } qpidTransportBridge;
 
 struct qpidMsgNode_

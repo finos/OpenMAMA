@@ -424,24 +424,6 @@ TEST_F (MiddlewareSubscriptionTests, getPlatformErrorInvalidSubBridge)
                status);
 }
 
-TEST_F (MiddlewareSubscriptionTests, isTportDisconnected)
-{
-    int res = NULL;
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
-                                                    tport, queue, callbacks,
-                                                    parent, closure));
-
-    res=mBridge->bridgeMamaSubscriptionIsTportDisconnected(subscriber);
-    ASSERT_TRUE(res != NULL);
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaSubscriptionDestroy(subscriber));
-}
-
 TEST_F (MiddlewareSubscriptionTests, isTportDisconnectedInvalid)
 {
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 

@@ -19,15 +19,33 @@
  * 02110-1301 USA
  */
 
-#ifndef MAMA_BRIDGE_QPID_SUBSCRIPTION_H__
-#define MAMA_BRIDGE_QPID_SUBSCRIPTION_H__
+#ifndef MAMA_BRIDGE_AVIS_IO_H__
+#define MAMA_BRIDGE_AVIS_IO_H__
+
+
+/*=========================================================================
+  =                             Includes                                  =
+  =========================================================================*/
+
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+#include <mama/mama.h>
+
+/*=========================================================================
+  =                  Public implementation functions                      =
+  =========================================================================*/
+
+mama_status
+avisBridgeMamaIoImpl_start (void);
+
+mama_status
+avisBridgeMamaIoImpl_stop  (void);
+
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* MAMA_BRIDGE_QPID_SUBSCRIPTION_H__ */
+#endif /* MAMA_BRIDGE_AVIS_IO_H__ */

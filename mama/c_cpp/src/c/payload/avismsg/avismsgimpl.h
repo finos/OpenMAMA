@@ -55,6 +55,7 @@ typedef struct avisIterator
     AttributesIter*     mMsgIterator;
     Attributes*         mAvisMsg;
     avisFieldPayload*   mAvisField;
+    uint64_t            mIndex;
 } avisIterator;
 
 

@@ -3273,6 +3273,9 @@ qpidmsgPayloadImpl_allocateBufferMemory (void**       buffer,
         }
         else
         {
+            /* set newly added bytes to 0 */
+            memset ((uint8_t*) newbuf + *size, 0, newSize - *size);
+
             *buffer = newbuf;
             *size   = newSize;
             return MAMA_STATUS_OK;

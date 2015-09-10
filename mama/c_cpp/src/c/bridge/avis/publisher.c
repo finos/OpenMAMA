@@ -233,10 +233,9 @@ avisBridgeMamaPublisher_createByIndex (publisherBridge* result,
                                         void*            nativeQueueHandle,
                                         mamaPublisher    parent)
 {
+    if (!result || !tport || !parent) return MAMA_STATUS_NULL_ARG;
     Elvin* avis = getAvis(tport);
     avisPublisherBridge* publisher = NULL;
-
-    if (!result || !tport) return MAMA_STATUS_NULL_ARG;
 
     CHECK_AVIS(avis);
 
@@ -314,6 +313,8 @@ avisBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
 {
     mama_status ret = MAMA_STATUS_OK;
 
+    if (!msg) return MAMA_STATUS_NULL_ARG;
+
     CHECK_PUBLISHER(publisher);
 
     ret = avisBridgeMamaPublisherImpl_prepareMessage (&msg);
@@ -348,6 +349,8 @@ avisBridgeMamaPublisher_sendReplyToInbox (publisherBridge  publisher,
     const char*  replyAddr   = NULL;
     mama_status  status;
     
+    if (!request || !reply) return MAMA_STATUS_NULL_ARG;
+
     CHECK_PUBLISHER(publisher);
 
     mamaMsg_getNativeHandle(request, (void**) &requestMsg);
@@ -402,6 +405,7 @@ avisBridgeMamaPublisher_sendReplyToInbox (publisherBridge  publisher,
 mama_status
 avisBridgeMamaPublisher_destroy (publisherBridge publisher)
 {
+    if (!publisher) return MAMA_STATUS_NULL_ARG;
     free ((char*)avisPublisher(publisher)->mSource);
     free ((char*)avisPublisher(publisher)->mTopic);
     free ((char*)avisPublisher(publisher)->mRoot);
@@ -419,6 +423,8 @@ avisBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge publisher,
 {
     const char* replyAddr = NULL;
     mama_status status;
+
+    if (!inbox || !msg) return MAMA_STATUS_NULL_ARG;
 
     CHECK_PUBLISHER(publisher);
 
@@ -474,6 +480,8 @@ avisBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge publisher,
                                                mamaMsg         reply)
 {
     mama_status status;
+
+    if (!inbox | !reply) return MAMA_STATUS_NULL_ARG;
 
     CHECK_PUBLISHER(publisher);
 
