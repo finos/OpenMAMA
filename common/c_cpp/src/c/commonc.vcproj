@@ -417,6 +417,14 @@
 				>
 			</File>
 			<File
+				RelativePath=".\memnode.c"
+				>
+			</File>
+			<File
+				RelativePath=".\mempool.c"
+				>
+			</File>
+			<File
 				RelativePath=".\windows\network.c"
 				>
 			</File>
