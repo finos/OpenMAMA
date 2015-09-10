@@ -174,14 +174,16 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
                                       &impl->mTopic,
                                       (transportBridge) impl->mTransport);
 
-
-    /* Generate subject URI based on standardized values */
-    qpidBridgeCommon_generateSubjectUri (outgoingAddress,
-                                         impl->mRoot,
-                                         impl->mSource,
-                                         impl->mTopic,
-                                         uuid,
-                                         &impl->mUri);
+    if (NULL != outgoingAddress)
+    {
+        /* Generate subject URI based on standardized values */
+        qpidBridgeCommon_generateSubjectUri (outgoingAddress,
+                                             impl->mRoot,
+                                             impl->mSource,
+                                             impl->mTopic,
+                                             uuid,
+                                             &impl->mUri);
+    }
 
     /* Create a reusable proton message */
     impl->mQpidRawMsg = pn_message ();
