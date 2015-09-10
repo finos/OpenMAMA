@@ -45,7 +45,6 @@ extern "C" {
   =                              Macros                                   =
   =========================================================================*/
 
-#define PN_OK                           0
 #define QPID_FIELDS_PER_MAMA_FIELD      4
 #define QPID_BYTE_BUFFER_SIZE           102400
 #define QPID_FIELD_BUFFER_POOL_SIZE     64

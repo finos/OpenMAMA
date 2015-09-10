@@ -379,6 +379,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
     mama_status             status     = MAMA_STATUS_OK;
     const char*             tportType  = NULL;
     const char*             tmpReply   = NULL;
+    const char*             defOutUrl  = NULL;
 
     if (NULL == result || NULL == name || NULL == parent)
     {
@@ -402,6 +403,37 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
               "qpidBridgeMamaTransport_create(): Initializing Transport %s",
               name);
 
+    /* Set the transport type */
+    tportType =
+        qpidBridgeMamaTransportImpl_getParameter (
+            DEFAULT_TPORT_TYPE,
+            "%s.%s.%s",
+            TPORT_PARAM_PREFIX,
+            name,
+            TPORT_PARAM_TPORT_TYPE);
+
+    if (0 == strcmp (tportType, CONFIG_VALUE_TPORT_TYPE_BROKER))
+    {
+        impl->mQpidTransportType = QPID_TRANSPORT_TYPE_BROKER;
+        defOutUrl = DEFAULT_OUTGOING_URL;
+    }
+    else if (0 == strcmp (tportType, CONFIG_VALUE_TPORT_TYPE_P2P))
+    {
+        impl->mQpidTransportType = QPID_TRANSPORT_TYPE_P2P;
+        defOutUrl = NULL;
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "Could not parse %s.%s.%s=%s. Using [%s].",
+                TPORT_PARAM_PREFIX,
+                name,
+                TPORT_PARAM_TPORT_TYPE,
+                tportType,
+                DEFAULT_TPORT_TYPE);
+        impl->mQpidTransportType = DEFAULT_TPORT_TYPE_VALUE;
+    }
+
     /* Set the incoming address */
     impl->mIncomingAddress = qpidBridgeMamaTransportImpl_getParameter (
             DEFAULT_INCOMING_URL,
@@ -413,7 +445,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
     /* Set the outgoing address */
     impl->mOutgoingAddress =
         qpidBridgeMamaTransportImpl_getParameter (
-            DEFAULT_OUTGOING_URL,
+            defOutUrl,
             "%s.%s.%s",
             TPORT_PARAM_PREFIX,
             name,
@@ -437,35 +469,6 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
             NULL,
             qpidBridgeMamaTransportImpl_getUuid ((transportBridge) impl),
             &impl->mReplyAddress);
-
-    /* Set the transport type */
-    tportType =
-        qpidBridgeMamaTransportImpl_getParameter (
-            DEFAULT_TPORT_TYPE,
-            "%s.%s.%s",
-            TPORT_PARAM_PREFIX,
-            name,
-            TPORT_PARAM_TPORT_TYPE);
-
-    if (0 == strcmp (tportType, CONFIG_VALUE_TPORT_TYPE_BROKER))
-    {
-        impl->mQpidTransportType = QPID_TRANSPORT_TYPE_BROKER;
-    }
-    else if (0 == strcmp (tportType, CONFIG_VALUE_TPORT_TYPE_P2P))
-    {
-        impl->mQpidTransportType = QPID_TRANSPORT_TYPE_P2P;
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                "Could not parse %s.%s.%s=%s. Using [%s].",
-                TPORT_PARAM_PREFIX,
-                name,
-                TPORT_PARAM_TPORT_TYPE,
-                tportType,
-                DEFAULT_TPORT_TYPE);
-        impl->mQpidTransportType = DEFAULT_TPORT_TYPE_VALUE;
-    }
 
     /* Set the message pool size for pool initialization later */
     poolSize =
@@ -1555,8 +1558,6 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 
         pnErr = pn_messenger_recv (impl->mIncoming,
                 impl->mQpidRecvBlockSize);
-
-
         if (PN_TIMEOUT == pnErr)
         {
             continue;
