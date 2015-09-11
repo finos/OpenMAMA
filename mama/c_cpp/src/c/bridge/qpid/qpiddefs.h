@@ -30,6 +30,7 @@
 #include <wombat/wSemaphore.h>
 #include <wombat/wtable.h>
 #include <list.h>
+#include <wombat/mempool.h>
 
 /* Qpid include files */
 #include <proton/version.h>
@@ -125,7 +126,7 @@ typedef struct qpidTransportBridge_
     pn_message_t*       mMsg;
     pn_messenger_t*     mIncoming;
     pn_messenger_t*     mOutgoing;
-    qpidMsgPool*        mQpidMsgPool;
+    memoryPool*         mQpidMsgPool;
     unsigned int        mQpidMsgPoolIncSize;
     const char*         mIncomingAddress;
     const char*         mOutgoingAddress;
@@ -144,21 +145,9 @@ typedef struct qpidTransportBridge_
 struct qpidMsgNode_
 {
   pn_message_t*         mMsg;
-  qpidMsgNode*          mNext;
-  qpidMsgNode*          mPrev;
-  qpidMsgPool*          mMsgPool;
   qpidMsgType           mMsgType;
   qpidSubscription*     mQpidSubscription;
-};
-
-struct qpidMsgPool_
-{
   qpidTransportBridge*  mQpidTransportBridge;
-  qpidMsgNode*          mFreeList;      /* Linked list of free Messages */
-  qpidMsgNode*          mOpenList;      /* Linked list of open Messages */
-  unsigned int          mNumMsgs;       /* Number of buffer in the pool */
-  unsigned int          mNumFree;       /* Number of free buffers */
-  wthread_mutex_t       mLock;
 };
 
 #if defined(__cplusplus)

@@ -101,6 +101,9 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     /* Get the properties from the message */
     properties = pn_message_properties (*protonMessage);
 
+    /* Ensure the properties are cleared first before populating */
+    pn_data_clear (properties);
+
     /* Ensure position is at the start */
     pn_data_rewind (properties);
 
