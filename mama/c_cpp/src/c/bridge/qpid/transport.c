@@ -36,6 +36,7 @@
 #include <transportimpl.h>
 #include <timers.h>
 #include <stdio.h>
+#include <errno.h>
 #include <wombat/queue.h>
 #include <wombat/wUuid.h>
 
@@ -198,58 +199,6 @@ qpidBridgeMamaTransportImpl_getParameter (const char* defaultVal,
                                           ...);
 
 /**
- * This function will create a qpid message pool which is a container for the
- * qpid message node freelist and openlist implementations.
- *
- * @param numMsgs    This is the initial number of message nodes to create in
- *                   the message pool.
- * @param impl       This is the qpid transport bridge this pool is associated
- *                   with.
- *
- * @return qpidMsgPool* referring to the message pool created or NULL on
- *         failure.
- */
-static qpidMsgPool*
-qpidBridgeMamaTransportImpl_createMessagePool (int                   numMsgs,
-                                               qpidTransportBridge*  impl);
-
-/**
- * This will grow the given message pool by the provided number of message nodes
- *
- * @param pool       The qpid message pool to extend.
- * @param numMsgs    This is the number of message nodes to extend the message
- *                   pool by.
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-static mama_status
-qpidBridgeMamaTransportImpl_extendMessagePool (qpidMsgPool* pool, int numMsgs);
-
-/**
- * This will retrieve the next available qpid message from the qpid message
- * pool's freelist.
- *
- * @param pool       The qpid message pool to get a message node from.
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-static qpidMsgNode*
-qpidBridgeMamaTransportImpl_getPoolMsg (qpidMsgPool* pool);
-
-/**
- * Once a pool message has been used, this function can be called to return
- * the message node back to the pool, thereby marking it as available for reuse.
- *
- * @param pool       The qpid message pool to return the node to.
- * @param node       The qpid message node to return to the provided pool.
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-static mama_status
-qpidBridgeMamaTransportImpl_releasePoolMsg (qpidMsgPool* pool,
-                                            qpidMsgNode* node);
-
-/**
  * This function is called on its own thread to run the main recv dispatch
  * for all messages coming off the mIncoming messenger. This function is
  * responsible for routing all incoming messages to their required destination
@@ -259,6 +208,28 @@ qpidBridgeMamaTransportImpl_releasePoolMsg (qpidMsgPool* pool,
  */
 static void*
 qpidBridgeMamaTransportImpl_dispatchThread (void* closure);
+
+/**
+ * This is a callback function which will be triggered while iterating over each
+ * memory pool member to ensure that it's pn_message_t member is free'd
+ *
+ * @param pool       The pool which is being iterated over.
+ * @param node       The node which is being considered during iteration.
+ */
+void
+qpidBridgeMamaTransportImpl_msgNodeFree (memoryPool* pool, memoryNode* node);
+
+/**
+ * This is a callback function which will be triggered while iterating over each
+ * memory pool member to ensure that it's pn_message_t member is free'd
+ *
+ * @param pool       The pool which is being iterated over.
+ * @param node       The node which is being considered during iteration.
+ */
+void
+qpidBridgeMamaTransportImpl_msgNodeInit (memoryPool* pool, memoryNode* node);
+
+
 
 /**
  * This function is a wrapper for pn_messenger_stop as it caused deadlock
@@ -312,33 +283,11 @@ qpidBridgeMamaTransport_destroy (transportBridge transport)
 
     status = qpidBridgeMamaTransportImpl_stop (impl);
 
-    /* Destroy the qpid message pool contents */
-    while (NULL != impl->mQpidMsgPool->mFreeList)
-    {
-        if (NULL != impl->mQpidMsgPool->mFreeList->mMsg)
-        {
-            pn_message_free (impl->mQpidMsgPool->mFreeList->mMsg);
-        }
-        next = impl->mQpidMsgPool->mFreeList->mNext;
-        free (impl->mQpidMsgPool->mFreeList);
-        impl->mQpidMsgPool->mFreeList = next;
-    }
-
-    while (NULL != impl->mQpidMsgPool->mOpenList)
-    {
-        if (NULL != impl->mQpidMsgPool->mOpenList->mMsg)
-        {
-            pn_message_free (impl->mQpidMsgPool->mOpenList->mMsg);
-        }
-        next = impl->mQpidMsgPool->mOpenList->mNext;
-        free (impl->mQpidMsgPool->mOpenList);
-        impl->mQpidMsgPool->mOpenList = next;
-    }
+    // pn_message_free required here
+    memoryPool_destroy (impl->mQpidMsgPool,
+                        qpidBridgeMamaTransportImpl_msgNodeFree);
 
     wthread_mutex_destroy (&impl->mQpidMsgPool->mLock);
-
-    /* Destroy the qpid message pool container */
-    free (impl->mQpidMsgPool);
 
     pn_message_free(impl->mMsg);
 
@@ -501,17 +450,18 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
             TPORT_PARAM_RECV_BLOCK_SIZE);
 
     /* Create the reusable message pool to recycle created messages */
-    impl->mQpidMsgPool = qpidBridgeMamaTransportImpl_createMessagePool (
-                                 poolSize,
-                                 impl);
+    impl->mQpidMsgPool = memoryPool_create (poolSize, sizeof(qpidMsgNode));
     if (NULL == impl->mQpidMsgPool)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "qpidBridgeMamaTransport_create(): "
-                  "Failed to create msgPool. Exiting.");
+                  "Failed to create msgPool (%s). Exiting.", strerror(errno));
         free (impl);
         return MAMA_STATUS_PLATFORM;
     }
+
+    memoryPool_iterate (impl->mQpidMsgPool,
+                        qpidBridgeMamaTransportImpl_msgNodeInit);
 
     /* Create incoming and outgoing messengers */
     impl->mOutgoing = pn_messenger (NULL);
@@ -1026,11 +976,12 @@ mama_status qpidBridgeMamaTransportImpl_stop (qpidTransportBridge* impl)
 void MAMACALLTYPE
 qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure)
 {
-    qpidMsgNode*         node            = (qpidMsgNode*) closure;
+    memoryNode*          node            = (memoryNode*) closure;
+    qpidMsgNode*         msgNode         = NULL;
     mama_status          status          = MAMA_STATUS_OK;
     mamaMsg              tmpMsg          = NULL;
     msgBridge            bridgeMsg       = NULL;
-    qpidMsgPool*         pool            = NULL;
+    memoryPool*          pool            = NULL;
     qpidTransportBridge* impl            = NULL;
     qpidSubscription*    subscription    = NULL;
     const char*          subject         = NULL;
@@ -1042,7 +993,8 @@ qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure)
                   "Called with NULL msgNode (destroyed?)");
         return;
     }
-    pool = node->mMsgPool;
+    msgNode = (qpidMsgNode*) node->mNodeBuffer;
+    pool = node->mPool;
 
     if (NULL == pool)
     {
@@ -1051,7 +1003,7 @@ qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure)
                   "Called with NULL msgPool (destroyed?)");
         return;
     }
-    impl = pool->mQpidTransportBridge;
+    impl = msgNode->mQpidTransportBridge;
 
     if (NULL == impl)
     {
@@ -1063,8 +1015,8 @@ qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure)
     /* Take the transport from the pool, then lookup the subscription */
     /* We need some way of finding the subject key, so we can actually
      * lookup the subscription. */
-    subject = pn_message_get_subject (node->mMsg);
-    subscription = node->mQpidSubscription;
+    subject = pn_message_get_subject (msgNode->mMsg);
+    subscription = msgNode->mQpidSubscription;
 
     /* Can't do anything without a subscriber */
     if (NULL == subscription)
@@ -1118,7 +1070,7 @@ qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure)
     }
 
     /* Unpack this bridge message into a MAMA msg implementation */
-    status = qpidBridgeMsgCodec_unpack (bridgeMsg, tmpMsg, node->mMsg);
+    status = qpidBridgeMsgCodec_unpack (bridgeMsg, tmpMsg, msgNode->mMsg);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -1140,14 +1092,7 @@ qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure)
     }
 
     /* No matter what happened we need to clean up */
-    status = qpidBridgeMamaTransportImpl_releasePoolMsg (pool, node);
-    if (MAMA_STATUS_OK != status)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaTransportImpl_queueCallback(): "
-                  "returnQpidMsg to Pool failed. [%s]",
-                  mamaStatus_stringForStatus (status));
-    }
+    memoryPool_returnNode (pool, node);
 
     return;
 }
@@ -1285,253 +1230,12 @@ const char* qpidBridgeMamaTransportImpl_getParameter (
     return returnVal;
 }
 
-qpidMsgPool *qpidBridgeMamaTransportImpl_createMessagePool (int numMsgs,
-                                             qpidTransportBridge* impl)
-{
-    qpidMsgPool* pool = NULL;
-
-    if (numMsgs < 2)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaTransportImpl_createMessagePool(): "
-                  "Invalid message list size.");
-        return NULL;
-    }
-
-    pool = (qpidMsgPool*) calloc (1, sizeof(qpidMsgPool));
-    if (NULL == pool)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaTransportImpl_createMessagePool(): "
-                  "Unable to alloc QpidMsgPool");
-        return NULL;
-    }
-
-    mama_log (MAMA_LOG_LEVEL_FINEST,
-              "qpidBridgeMamaTransportImpl_createMessagePool(): "
-              "Pool malloc-ed.");
-
-    /* Set pool values */
-    pool->mQpidTransportBridge = impl;
-    pool->mNumMsgs = numMsgs;
-    wthread_mutex_init(&pool->mLock, NULL);
-
-    /* Build the linked list */
-    mama_log (MAMA_LOG_LEVEL_FINEST,
-              "qpidBridgeMamaTransportImpl_createMessagePool(): "
-              "Creating freelist of size %d.", numMsgs);
-
-    /* Extend the message pool */
-    qpidBridgeMamaTransportImpl_extendMessagePool (pool, numMsgs);
-
-    return pool;
-}
-
-/*
- * This method should only get called when creating the initial message pool
- * or when the current free list is exhausted and needs to be extended. It
- * adds a new list of messages to the free list, incrementing the free count
- * as it proceeds. Using it on a non-empty free list *will* create a memory
- * leak. Don't do it.
- */
-static mama_status
-qpidBridgeMamaTransportImpl_extendMessagePool (qpidMsgPool* pool, int numMsgs)
-{
-    qpidMsgNode*    nextNode       = NULL;
-    qpidMsgNode*    currentNode    = NULL;
-    int             i;
-
-    mama_log (MAMA_LOG_LEVEL_FINEST,
-                "qpidBridgeMamaTransportImpl_extendMessagePool(): "
-                "Extending msgPool by %d messages.", numMsgs);
-
-    for (i = 0; i < numMsgs; i++)
-    {
-        nextNode = (qpidMsgNode*) malloc (sizeof (qpidMsgNode));
-        if (NULL == nextNode)
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "qpidBridgeMamaTransportImpl_extendMessagePool(): "
-                      "Unable to alloc qpidMsgNode[%i]", i);
-
-            return MAMA_STATUS_NOMEM;
-        }
-
-        /*
-         * For the first message in the pool, we point the freelist
-         * value to it. We then assign the currentNode to this value.
-         */
-        if (i == 0)
-        {
-            mama_log (MAMA_LOG_LEVEL_FINEST,
-                        "qpidBridgeMamaTransportImpl_extendMessagePool(): "
-                        "First Node alloced.");
-            pool->mFreeList  = nextNode;
-        }
-        /*
-         * currentNode remains through iterations, so we now point the currentNode
-         * to the nextNode which has just been alloc-ed.
-         */
-        else
-        {
-            currentNode->mNext = nextNode;
-        }
-
-        /*
-         * Assign the nextNode to the currentNode, and set the pool.
-         * NULL the next pointer to indicate this acts as the tail node.
-         */
-        currentNode             = nextNode;
-        currentNode->mNext      = NULL;
-        currentNode->mMsgPool   = pool;
-
-        /* Create the message for the current node */
-        currentNode->mMsg = pn_message ();
-
-        /* Increment the free count for the message pool */
-        pool->mNumFree++;
-    }
-
-    mama_log (MAMA_LOG_LEVEL_FINEST,
-               "qpidBridgeMamaTransportImpl_extendMessagePool(): "
-               "Message Pool Extended. NumFree - %u", pool->mNumFree);
-    return MAMA_STATUS_OK;
-}
-
-qpidMsgNode* qpidBridgeMamaTransportImpl_getPoolMsg (qpidMsgPool* pool)
-{
-    qpidMsgNode*    node  = NULL;
-
-    wthread_mutex_lock(&pool->mLock);
-
-    /*
-     * Check if any buffers remain in the freeList, and if not extend the buffer
-     */
-    if (0 == pool->mNumFree)
-    {
-        mama_log  (MAMA_LOG_LEVEL_FINEST,
-                   "qpidBridgeMamaTransportImpl_getPoolMsg(): "
-                   "No buffers left. Extending msg pool.");
-        qpidBridgeMamaTransportImpl_extendMessagePool (
-                    pool,
-                    pool->mQpidTransportBridge->mQpidMsgPoolIncSize);
-    }
-
-    /*
-     * Remove the next available node from the pool free list: get the node
-     * pointer then assign the pool free list pointer to the next available free
-     * node. Reduce the pool free message count by one.
-     */
-    node            = pool->mFreeList;
-    pool->mFreeList = node->mNext;
-    pool->mNumFree--;
-
-    /*
-     * Now a node has been opened, add it to the open list, or create the open
-     * list if this is the first time. Open list uses double linkage.
-     */
-    if (NULL == pool->mOpenList)
-    {
-        pool->mOpenList = node;
-        node->mPrev = NULL;
-        node->mNext = NULL;
-    }
-    else
-    {
-        /* Add to front of the open list */
-        node->mPrev = NULL;
-        node->mNext = pool->mOpenList;
-        node->mNext->mPrev = node;
-        pool->mOpenList = node;
-    }
-
-    wthread_mutex_unlock(&pool->mLock);
-
-    return node;
-}
-
-mama_status qpidBridgeMamaTransportImpl_releasePoolMsg (qpidMsgPool* pool,
-                                                        qpidMsgNode* node)
-{
-    wthread_mutex_lock(&pool->mLock);
-
-    if (pool->mNumFree >= pool->mNumMsgs)
-    {
-        wthread_mutex_unlock(&pool->mLock);
-        return MAMA_STATUS_QUEUE_FULL;
-    }
-
-    /* Now the node is being released, remove it from the open list */
-    if (NULL != pool->mOpenList)
-    {
-        /* If this is the list in the open list, NULL set the open list */
-        if (NULL == node->mNext && NULL == node->mPrev)
-        {
-            pool->mOpenList = NULL;
-        }
-        /* If this is the last in the list */
-        else if (NULL == node->mNext)
-        {
-            node->mPrev->mNext = NULL;
-        }
-        /* If this is the first node in the list */
-        else if (NULL == node->mPrev)
-        {
-            node->mNext->mPrev = NULL;
-            pool->mOpenList = node->mNext;
-        }
-        /* If this is from the middle of the open list */
-        else
-        {
-            node->mNext->mPrev = node->mPrev;
-            node->mPrev->mNext = node->mNext;
-        }
-    }
-
-    /*
-     * Drop the message back into the free list: point the current node's next at
-     * the front of the pool free list, then point the free list to the current
-     * node. Increment the free message count by one.
-     */
-    node->mNext     = pool->mFreeList;
-    pool->mFreeList = node;
-    pool->mNumFree++;
-
-    wthread_mutex_unlock(&pool->mLock);
-    return MAMA_STATUS_OK;
-}
-
-void qpidBridgeMamaTransportImpl_dumpMessagePool (qpidTransportBridge* impl)
-{
-    qpidMsgPool*            pool        = impl->mQpidMsgPool;
-    qpidMsgNode*            freeNode    = pool->mFreeList;
-    qpidMsgNode*            openNode    = pool->mOpenList;
-    int                     i           = 1;
-
-    mama_log (MAMA_LOG_LEVEL_NORMAL, "\tFree Nodes\tOpen Nodes");
-
-    while ( ! (NULL == freeNode && NULL == openNode) )
-    {
-        mama_log (MAMA_LOG_LEVEL_NORMAL, "%d.\t%p\t%p", i, freeNode, openNode);
-
-        if (NULL != freeNode)
-        {
-            freeNode = freeNode->mNext;
-        }
-
-        if (NULL != openNode)
-        {
-            openNode = openNode->mNext;
-        }
-        i++;
-    }
-}
-
 void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 {
     qpidTransportBridge*    impl          = (qpidTransportBridge*)closure;
     qpidMsgNode*            msgNode       = NULL;
     qpidMsgNode*            tmpMsgNode    = NULL;
+    memoryNode*             tmpNode       = NULL;
     const char*             subject       = NULL;
     pn_data_t*              properties    = NULL;
     endpoint_t*             subs          = NULL;
@@ -1539,6 +1243,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
     size_t                  subInc        = 0;
     mama_status             status        = MAMA_STATUS_OK;
     qpidSubscription*       subscription  = NULL;
+    memoryNode*             node          = NULL;
 
     if (NULL == impl->mIncoming)
     {
@@ -1580,16 +1285,22 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 
         while (pn_messenger_incoming (impl->mIncoming) > 0)
         {
-            msgNode = qpidBridgeMamaTransportImpl_getPoolMsg (
-                    impl->mQpidMsgPool);
 
-            if (NULL == msgNode)
+            node = memoryPool_getNode (impl->mQpidMsgPool,
+                                       sizeof(qpidMsgNode));
+            if (NULL == node)
             {
                 mama_log (MAMA_LOG_LEVEL_ERROR,
                           "qpidBridgeMamaTransportImpl_dispatchThread(): "
-                          "Error getting msgNode from msgPool.");
+                          "Error getting msgNode from msgPool (%s).",
+                          strerror(errno));
                 impl->mQpidDispatchStatus = MAMA_STATUS_PLATFORM;
                 return NULL;
+            }
+            msgNode = (qpidMsgNode*)node->mNodeBuffer;
+            if (NULL == msgNode->mMsg)
+            {
+                msgNode->mMsg = pn_message ();
             }
 
             if (pn_messenger_get (impl->mIncoming, msgNode->mMsg))
@@ -1634,8 +1345,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                           "dispatching - exiting dispatch thread");
                 impl->mQpidDispatchStatus = MAMA_STATUS_OK;
 
-                qpidBridgeMamaTransportImpl_releasePoolMsg (impl->mQpidMsgPool,
-                                                            msgNode);
+                memoryPool_returnNode (impl->mQpidMsgPool, node);
                 return NULL;
                 break;
             case QPID_MSG_SUB_REQUEST:
@@ -1662,8 +1372,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                                                      NULL);
                 pn_data_exit (properties);
 
-                qpidBridgeMamaTransportImpl_releasePoolMsg (impl->mQpidMsgPool,
-                                                            msgNode);
+                memoryPool_returnNode (impl->mQpidMsgPool, node);
                 continue;
                 break;
 
@@ -1683,8 +1392,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 
             if (NULL == subject)
             {
-                qpidBridgeMamaTransportImpl_releasePoolMsg (impl->mQpidMsgPool,
-                                                            msgNode);
+                memoryPool_returnNode (impl->mQpidMsgPool, node);
                 continue;
             }
 
@@ -1701,9 +1409,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                           "for symbol %s (%s)",
                           subject,
                           mamaStatus_stringForStatus (status));
-
-                qpidBridgeMamaTransportImpl_releasePoolMsg (impl->mQpidMsgPool,
-                                                            msgNode);
+                memoryPool_returnNode (impl->mQpidMsgPool, node);
                 continue;
             }
 
@@ -1714,8 +1420,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                           "discarding uninteresting message "
                           "for symbol %s", subject);
 
-                qpidBridgeMamaTransportImpl_releasePoolMsg (impl->mQpidMsgPool,
-                                                            msgNode);
+                memoryPool_returnNode (impl->mQpidMsgPool, node);
                 continue;
             }
 
@@ -1740,8 +1445,9 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                 /* If this isn't the last one in the list */
                 else if (subInc != (subCount - 1))
                 {
-                    tmpMsgNode = qpidBridgeMamaTransportImpl_getPoolMsg (
-                            impl->mQpidMsgPool);
+                    tmpNode = memoryPool_getNode (impl->mQpidMsgPool,
+                                                  sizeof(qpidMsgNode));
+                    tmpMsgNode = (qpidMsgNode*) tmpNode;
 
                     /*
                      * Copy the original msg node to a new one. Note that
@@ -1750,6 +1456,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                      */
                     tmpMsgNode->mMsgType = msgNode->mMsgType;
                     tmpMsgNode->mQpidSubscription = subscription;
+                    tmpMsgNode->mQpidTransportBridge = impl;
 
                     pn_data_copy (pn_message_body (tmpMsgNode->mMsg),
                                   pn_message_body (msgNode->mMsg));
@@ -1768,10 +1475,11 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                 else
                 {
                     msgNode->mQpidSubscription = subscription;
+                    msgNode->mQpidTransportBridge = impl;
                     qpidBridgeMamaQueue_enqueueEvent (
                             (queueBridge) subscription->mQpidQueue,
                             qpidBridgeMamaTransportImpl_queueCallback,
-                            msgNode);
+                            node);
                 }
             }
         }
@@ -1780,6 +1488,28 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
     impl->mQpidDispatchStatus = MAMA_STATUS_OK;
     return NULL;
 }
+
+
+void
+qpidBridgeMamaTransportImpl_msgNodeFree (memoryPool* pool, memoryNode* node)
+{
+    qpidMsgNode* msgNode = (qpidMsgNode*) node->mNodeBuffer;
+    if (NULL != msgNode->mMsg)
+    {
+        pn_message_free (msgNode->mMsg);
+    }
+}
+
+void
+qpidBridgeMamaTransportImpl_msgNodeInit (memoryPool* pool, memoryNode* node)
+{
+    qpidMsgNode* msgNode = (qpidMsgNode*) node->mNodeBuffer;
+    if (NULL == msgNode->mMsg)
+    {
+        msgNode->mMsg = pn_message ();
+    }
+}
+
 
 /* These functions depend on methods only introduced in qpid proton 0.5 */
 void qpidBridgeMamaTransportImpl_stopProtonMessenger (pn_messenger_t* messenger)
