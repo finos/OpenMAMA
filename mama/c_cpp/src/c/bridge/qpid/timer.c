@@ -174,6 +174,19 @@ qpidBridgeMamaTimer_destroy (timerBridge timer)
 
     /* Nullify the callback and set destroy flag */
     impl                            = (qpidTimerImpl*) timer;
+
+    /* It is important to set mDestroying prior to calling destroyTimer.
+     * This flag is checked by the common timer callback, during which the
+     * common timer heap's lock is being held.  The call to destroyTimer uses
+     * the common timer heap's lock, so we know that once the heap lock is
+     * released for the destroy action that all future common timer callbacks
+     * will see the mDestroying flag as set.
+     *
+     * If, for example, we were to remove the flag and instead use the
+     * mTimerElement == NULL as a 'destroyed' flag, we wouldn't be able to
+     * NULL the pointer until after it is destroyed.  Then there would be a
+     * short period of time where mTimerElement is not NULL after it is
+     * destroyed. */
     impl->mDestroying               = 1;
     impl->mAction                   = NULL;
 
@@ -210,19 +223,14 @@ qpidBridgeMamaTimer_reset (timerBridge timer)
         return MAMA_STATUS_NULL_ARG;
     }
 
-    /* Destroy the existing timer element */
-    destroyTimer (gQpidTimerHeap, impl->mTimerElement);
-
     /* Calculate next time interval */
     timeout.tv_sec  = (time_t) impl->mInterval;
     timeout.tv_usec = ((impl->mInterval- timeout.tv_sec) * 1000000.0);
 
     /* Create the timer for the next firing */
-    timerResult = createTimer (&impl->mTimerElement,
-                               gQpidTimerHeap,
-                               qpidBridgeMamaTimerImpl_timerCallback,
-                               &timeout,
-                               impl);
+    timerResult = resetTimer (gQpidTimerHeap,
+                               impl->mTimerElement,
+                               &timeout);
     if (0 != timerResult)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,

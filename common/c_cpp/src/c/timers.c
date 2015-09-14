@@ -68,6 +68,9 @@ typedef struct timerHeapImpl_
 } timerHeapImpl;
 
 
+static int _addTimer (timerHeapImpl* heapImpl, timerImpl* ele);
+static void _removeTimer (timerHeapImpl* heapImpl, timerImpl* ele);
+
 int createTimerHeap (timerHeap* heap)
 {
     wthread_mutexattr_t       attr;
@@ -262,6 +265,7 @@ int createTimer (timerElement* timer, timerHeap heap, timerFireCb cb, struct tim
     {
         timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
         int kickPipe = 0;
+        int ret = 0;
         struct timeval now;
         timerImpl* nextTimeOut = NULL;
         timerImpl* ele = calloc (1, sizeof(timerImpl));
@@ -275,32 +279,39 @@ int createTimer (timerElement* timer, timerHeap heap, timerFireCb cb, struct tim
         ele->mClosure = closure;
 
         wthread_mutex_lock (&heapImpl->mLock);
-        nextTimeOut = RB_MIN (orderedTimeRBTree_, &heapImpl->mTimeTree);
-        if (nextTimeOut == NULL)
-            kickPipe = 1;
-        else if (!timercmp(&ele->mTimeout, &nextTimeOut->mTimeout, >))
-            kickPipe = 1;
+        ret = _addTimer (heapImpl, ele);
+        wthread_mutex_unlock (&heapImpl->mLock);
+        if (ret < 0) return ret;
+        *timer = ele;
+    }
+    return 0;
+}
 
-        RB_INSERT (orderedTimeRBTree_, &heapImpl->mTimeTree, ele);
+static int _addTimer (timerHeapImpl* heapImpl, timerImpl* ele)
+{
+    int kickPipe = 0;
+    timerImpl* nextTimeOut =
+        RB_MIN (orderedTimeRBTree_, &heapImpl->mTimeTree);
+    if (nextTimeOut == NULL)
+        kickPipe = 1;
+    else if (!timercmp(&ele->mTimeout, &nextTimeOut->mTimeout, >))
+        kickPipe = 1;
 
-        if (kickPipe)
-        {
+    RB_INSERT (orderedTimeRBTree_, &heapImpl->mTimeTree, ele);
+
+    if (kickPipe)
+    {
 writeagain:
-            if (wwrite (heapImpl->mSockPair[1], "w", 1) < 0)
+        if (wwrite (heapImpl->mSockPair[1], "w", 1) < 0)
+        {
+            if ((errno == EINTR) || (errno == EAGAIN))
+                goto writeagain;
+            else
             {
-                if ((errno == EINTR) || (errno == EAGAIN))
-                    goto writeagain;
-                else
-                {
-                    perror ("write()");
-                    wthread_mutex_unlock (&heapImpl->mLock);
-                    return -1;
-                }
+                perror ("write()");
+                return -1;
             }
         }
-        wthread_mutex_unlock (&heapImpl->mLock);
-
-        *timer = ele;
     }
     return 0;
 }
@@ -315,11 +326,44 @@ int destroyTimer (timerHeap heap, timerElement timer)
         timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
 
         wthread_mutex_lock (&heapImpl->mLock);
-        if (RB_FIND (orderedTimeRBTree_, &heapImpl->mTimeTree, ele))
-            RB_REMOVE (orderedTimeRBTree_, &heapImpl->mTimeTree, ele);
+        _removeTimer (heapImpl, ele);
         wthread_mutex_unlock (&heapImpl->mLock);
         free (ele);
     }
     return 0;
 }
 
+static void _removeTimer (timerHeapImpl* heapImpl, timerImpl* ele)
+{
+    if (RB_FIND (orderedTimeRBTree_, &heapImpl->mTimeTree, ele))
+        RB_REMOVE (orderedTimeRBTree_, &heapImpl->mTimeTree, ele);
+}
+
+int resetTimer (timerHeap heap, timerElement timer, struct timeval* timeout)
+{
+    if ((heap == NULL) || (timer == NULL))
+        return -1;
+
+    {
+        timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
+        timerImpl* ele = (timerImpl*)timer;
+        struct timeval now;
+        int ret;
+
+        // Do this before remove to minimize work in critical section below.
+        gettimeofday (&now, NULL);
+
+        // Hold the heap lock throughout the _removeTimer and _addTimer so that
+        // the reset is atomic.
+        wthread_mutex_lock (&heapImpl->mLock);
+
+        _removeTimer (heap, timer);
+
+        timeradd (&now, timeout, &(ele->mTimeout));
+
+        ret = _addTimer (heapImpl, ele);
+        wthread_mutex_unlock (&heapImpl->mLock);
+        if (ret < 0) return ret;
+    }
+    return 0;
+}
