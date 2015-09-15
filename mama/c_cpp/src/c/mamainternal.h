@@ -138,6 +138,16 @@ mamaInternal_retrievePayloadChar (const char* payloadName,
                                   mamaPayloadBridge payload,
                                   char* payloadChar);
 
+mama_status
+mamaInternal_registerMiddlewareFunctions (LIB_HANDLE  bridgeLib,
+                                          mamaBridge* bridge,
+                                          const char* name);
+
+mama_status
+mamaInternal_registerPayloadFunctions (LIB_HANDLE         bridgeLib,
+                                       mamaPayloadBridge* bridge,
+                                       const char*        name);
+
 #if defined(__cplusplus)
 }
 #endif

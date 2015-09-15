@@ -89,6 +89,16 @@ void qpidBridge_createImpl (mamaBridge* result)
     mamaBridgeImpl_setReadOnlyProperty ((mamaBridge)bridge, "mama.qpid.entitlements.deferred", "false");
 }
 
+mama_status qpidBridge_init (void)
+{
+    mama_status status = MAMA_STATUS_OK;
+    /* The Qpid bridge actually doesn't need to begin any initialisation at this
+     * stage, thus can ignore this function.
+     */
+
+    return status;
+}
+
 mama_status
 qpidBridge_open (mamaBridge bridgeImpl)
 {
@@ -145,10 +155,12 @@ qpidBridge_close (mamaBridge bridgeImpl)
     mamaBridgeImpl*  bridge      = (mamaBridgeImpl*) bridgeImpl;
     wthread_t        timerThread;
 
+#if 0
     if (NULL ==  bridgeImpl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
+#endif
 
     /* Remove the timer heap */
     if (NULL != gQpidTimerHeap)
@@ -173,11 +185,13 @@ qpidBridge_close (mamaBridge bridgeImpl)
     /* Stop and destroy the io thread */
     qpidBridgeMamaIoImpl_stop ();
 
+#if 0
     /* Wait for qpidBridge_start to finish before destroying implementation */
     if (NULL != bridgeImpl)
     {
         free (bridgeImpl);
     }
+#endif
 
     return status;
 }
