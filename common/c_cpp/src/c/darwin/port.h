@@ -191,4 +191,20 @@ const char* getHostName (void);
 } /* extern "c" */
 #endif
 
+#define COMMONDeprecated(MSG)            __attribute__((deprecated(#MSG)))
+#define COMMONExpDeprecatedDLL(MSG)      __attribute__((deprecated(#MSG)))
+#define MAMACPPExpDeprecatedDLL(MSG)     __attribute__((deprecated(#MSG)))
+#define MAMADeprecated(MSG)              __attribute__((deprecated(#MSG)))
+#define MAMAExpDeprecatedBridgeDLL(MSG)  __attribute__((deprecated(#MSG)))
+#define MAMAExpDeprecatedDLL(MSG)        __attribute__((deprecated(#MSG)))
+#define MAMDAExpDeprecatedDLL(MSG)       __attribute__((deprecated(#MSG)))
+#define MAMDAOPTExpDeprecatedDLL(MSG)    __attribute__((deprecated(#MSG)))
+#define WCACHEExpDeprecatedDLL(MSG)      __attribute__((deprecated(#MSG)))
+#define WMWDeprecated(MSG)               __attribute__((deprecated(#MSG)))
+#define WMWExpDeprecatedDLL(MSG)         __attribute__((deprecated(#MSG)))
+
+#define MAMA_TYPE_DEPRECATED(NAME, MSG) \
+__attribute__ ((deprecated(#MSG)))      \
+
+
 #endif /* DARWIN_H__ */

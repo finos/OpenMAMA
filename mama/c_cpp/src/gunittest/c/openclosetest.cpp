@@ -120,6 +120,8 @@ TEST_F (MamaOpenCloseTestC, OpenCloseReopenSameBridge)
     mama_loadBridge (&mBridge, getMiddleware());
     
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 }
 
 /*  Description:     Load a wombat middleware bridge, initialize MAMA, close

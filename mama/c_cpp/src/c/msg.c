@@ -49,6 +49,7 @@
 static const int INCLUDE_FIELD_NAME = (1 << 4);
 static const int INCLUDE_FIELD_ID   = (1 << 2);
 
+MAMAIgnoreDeprecatedOpen
 typedef struct mamaMsgIteratorImpl
 {
     mamaMsgField            mCurrentField;
@@ -56,6 +57,7 @@ typedef struct mamaMsgIteratorImpl
     mamaPayloadBridgeImpl*  mPayloadBridge;
     mamaPayloadType         mPayloadType;
 } mamaMsgIteratorImpl;
+MAMAIgnoreDeprecatedClose
 
 /**
 * The mamaMsg implementation.
@@ -336,6 +338,7 @@ mamaMsgImpl_useBridgePayload (mamaMsg msg, mamaBridgeImpl* bridgeImpl)
     return MAMA_STATUS_OK;
 }
 
+MAMAIgnoreDeprecatedOpen
 mama_status
 mamaMsg_getPayloadType (mamaMsg msg, mamaPayloadType* payloadType)
 {
@@ -350,6 +353,7 @@ mamaMsg_getPayloadType (mamaMsg msg, mamaPayloadType* payloadType)
 
     return MAMA_STATUS_OK;
 }
+MAMAIgnoreDeprecatedClose
 
 mama_status
 mamaMsgImpl_getPayload (const mamaMsg msg, msgPayload* payload)
@@ -363,6 +367,7 @@ mamaMsgImpl_getPayload (const mamaMsg msg, msgPayload* payload)
     return MAMA_STATUS_OK;    
 }
 
+MAMAIgnoreDeprecatedOpen
 const char*
 mamaPayload_convertToString (mamaPayloadType payloadType)
 {
@@ -409,6 +414,7 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "unknown";
     }
 }
+MAMAIgnoreDeprecatedClose
 
 mama_status
 mamaMsg_createFromByteBuffer (
@@ -416,7 +422,9 @@ mamaMsg_createFromByteBuffer (
         const void*    buffer,
         mama_size_t    bufferLength)
 {
+MAMAIgnoreDeprecatedOpen
     mamaMsg_createForPayload (msg, (char) ((const char*)buffer) [0]);
+MAMAIgnoreDeprecatedClose
 
     return (mamaMsg_setNewBuffer (*msg, (void*)buffer, bufferLength));
 }

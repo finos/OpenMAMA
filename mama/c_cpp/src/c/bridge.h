@@ -246,9 +246,6 @@ do                                                                             \
                     implIdentifier ## BridgeMamaMsgImpl_setReplyHandleAndIncrement;    \
     bridgeImpl->bridgeMamaMsgDestroyReplyHandle    =                         \
                     implIdentifier ## BridgeMamaMsg_destroyReplyHandle;        \
-    /* Register the bridge with Mama */                                        \
-    mamaInternal_registerBridge (                                              \
-                    (mamaBridge)bridgeImpl,XSTR(implIdentifier));              \
 }                                                                              \
 while(0)                                                                       \
 
