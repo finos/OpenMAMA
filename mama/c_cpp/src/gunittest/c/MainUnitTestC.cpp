@@ -41,7 +41,7 @@ static string version     ("APPNAMESTR:  Version " VERSIONSTR
 
 static const char*       gMiddleware         = "wmw";
 static const char*       gPayload         = "wmsg";
-
+static char              gPayloadId       = 'W';
 
 const char* getMiddleware (void)
 {
@@ -51,6 +51,11 @@ const char* getMiddleware (void)
 const char* getPayload (void)
 {
 	return gPayload;
+}
+
+const char getPayloadId (void)
+{
+    return gPayloadId;
 }
 
 static void parseCommandLine (int argc, char** argv)
@@ -70,6 +75,11 @@ static void parseCommandLine (int argc, char** argv)
 			gPayload = argv[i+1];
 			i += 2;
 		}
+        else if (strcmp ("-i", argv[i]) == 0)
+        {
+            gPayloadId = argv[i+1][0];
+            i += 2;
+        }
         else
         {
            //unknown arg

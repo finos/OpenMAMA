@@ -40,7 +40,9 @@ struct wombatMsg_;
 
 /**
  Enum to reference the available MAMA message payloads. */
-typedef enum mamaPayloadType_
+MAMATypeDeprecated(mamaPayloadType, 
+        "mamaPayloadType has been deprecated, use dynamic loading instead!")
+typedef enum mamaPayloadType_ 
 {
     MAMA_PAYLOAD_SOLACE     = '1',
     MAMA_PAYLOAD_V5         = '5',
@@ -62,7 +64,8 @@ typedef enum mamaPayloadType_
     MAMA_PAYLOAD_EXEGY      = 'X',
 
 /* Unknown Payload */
-    MAMA_PAYLOAD_UNKNOWN    = 'U'
+    MAMA_PAYLOAD_UNKNOWN    = 'U',
+    MAMA_PAYLOAD_NULL       = '\0'
 } mamaPayloadType;
 
 /**
@@ -71,9 +74,11 @@ typedef enum mamaPayloadType_
  *
  * @param payloadType  The payloadType to convert.
  */
+MAMAIgnoreDeprecatedOpen
 MAMAExpDLL
 extern const char*
 mamaPayload_convertToString (mamaPayloadType payloadType);
+MAMAIgnoreDeprecatedClose
 
 /**
  * Create a mamaMsg.
@@ -87,12 +92,16 @@ mamaMsg_create (mamaMsg* msg);
 /**
  * Create a mamaMsg.
  *
+ * @deprecated This has been deprecated in favor of dynamic loading.
  * @param msg The location of a mamaMsg where to store the result.
  * @param id The identifier of the payload to be used.
  */
-MAMAExpDLL
+MAMAIgnoreDeprecatedOpen
+MAMAExpDeprecatedDLL(
+        "mamaMsg_createForPayload has been deprecated, use dynamic loading instead!")
 extern mama_status
 mamaMsg_createForPayload (mamaMsg* msg, const char id);
+MAMAIgnoreDeprecatedClose
 
 /**
  * Create a mamaMsg.
@@ -177,9 +186,11 @@ mamaMsg_destroy (mamaMsg msg);
  * @param msg The message.
  * @param payloadType The payload type.
  */
+MAMAIgnoreDeprecatedOpen
 MAMAExpDLL
 extern mama_status
 mamaMsg_getPayloadType (mamaMsg msg, mamaPayloadType* payloadType);
+MAMAIgnoreDeprecatedClose
 
 /**
 * Get the size of the underlying message in bytes.

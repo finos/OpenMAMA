@@ -187,6 +187,77 @@ struct wtimespec
 const char* getIpAddress (void);
 const char* getHostName (void);
 
+/* GCC and compatible compilers (except ICC) */
+#if (defined (__GNUC__) && (!defined (__ICC)))
+#  define MAMADeprecated__(MSG)         __attribute__ ((deprecated))
+/* Clang versions have their own feature check: */
+#  if (defined(__clang__))
+#    if (__has_extension(attribute_deprecated_with_message))
+#      undef  MAMADeprecated__
+#      define MAMADeprecated__(MSG)     __attribute__ ((deprecated(#MSG)))
+#    endif
+/* GCC 4.5 and greater also supports message with deprecated */
+#  elif (__GNUC__ >= 4 && __GNUC_MINOR__ >= 5)
+#    undef  MAMADeprecated__
+#    define MAMADeprecated__(MSG)       __attribute__ ((deprecated(#MSG)))
+#  endif
+/* ICC doesn't currently support the deprecated attribute. */
+#else
+#  define MAMADepreacted__(MSG)
+#endif
+
+/* Definitions for each Export type (for Windows compatibility) */
+#define COMMONDeprecated(MSG)            MAMADeprecated__(MSG)
+#define COMMONExpDeprecatedDLL(MSG)      MAMADeprecated__(MSG)
+#define MAMACPPExpDeprecatedDLL(MSG)     MAMADeprecated__(MSG)
+#define MAMADeprecated(MSG)              MAMADeprecated__(MSG)
+#define MAMAExpDeprecatedBridgeDLL(MSG)  MAMADeprecated__(MSG)
+#define MAMAExpDeprecatedDLL(MSG)        MAMADeprecated__(MSG)
+#define MAMDAExpDeprecatedDLL(MSG)       MAMADeprecated__(MSG)
+#define MAMDAOPTExpDeprecatedDLL(MSG)    MAMADeprecated__(MSG)
+#define WCACHEExpDeprecatedDLL(MSG)      MAMADeprecated__(MSG)
+#define WMWDeprecated(MSG)               MAMADeprecated__(MSG)
+#define WMWExpDeprecatedDLL(MSG)         MAMADeprecated__(MSG)
+
+#define MAMATypeDeprecated(NAME, MSG)    MAMADeprecated__(MSG)
+
+/* Special tags to allow for disabling deprecation messages for code between
+ * the MAMAIgnoreDeprecatedOpen and MAMAIgnoreDeprecatedClose tags.
+ */
+/* Clang Compilers */
+#if defined (__clang__)
+#  define MAMAIgnoreDeprecatedOpen           \
+        _Pragma ("clang diagnostic push")    \
+        _Pragma ("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+
+#  define MAMAIgnoreDeprecatedClose         \
+        _Pragma ("clang diagnostic pop")
+
+/* Intel Compiler Collection */
+#elif defined (__ICC)
+#  define MAMAIgnoreDeprecatedOpen
+#  define MAMAIgnoreDeprecatedClose
+
+/* Must be GCC */
+#elif defined (__GNUC__)
+#  if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 6)
+#    define MAMAIgnoreDeprecatedOpen           \
+        _Pragma ("GCC diagnostic push")      \
+        _Pragma ("GCC diagnostic ignored \"-Wdeprecated\"")
+
+#    define MAMAIgnoreDeprecatedClose         \
+        _Pragma ("GCC diagnostic pop")
+#  else
+/* For older versions of GCC, we can't suitably mask the warnings on use of types
+ * therefore we remove the deprecation flag
+ */
+#    undef  MAMATypeDeprecated
+#    define MAMATypeDeprecated(NAME, MSG)
+#    define MAMAIgnoreDeprecatedOpen
+#    define MAMAIgnoreDeprecatedClose
+#  endif
+#endif
+
 #if defined (__cplusplus)
 } /* extern "c" */
 #endif
