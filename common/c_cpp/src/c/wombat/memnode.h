@@ -43,6 +43,7 @@ extern "C" {
  * @return Will return a pointer to the new node on success and NULL on failure,
  *         setting errno appropriately.
  */
+COMMONExpDLL
 memoryNode*
 memoryNode_create        (size_t              size);
 
@@ -58,6 +59,7 @@ memoryNode_create        (size_t              size);
  * @return Will return 0 on success and -1 on failure, setting errno
  *         appropriately.
  */
+COMMONExpDLL
 int
 memoryNode_stretch       (memoryNode*         node,
                           size_t              size);
@@ -68,6 +70,7 @@ memoryNode_stretch       (memoryNode*         node,
  *
  * @param node        The memory node to empty.
  */
+COMMONExpDLL
 void
 memoryNode_empty         (memoryNode*         node);
 
@@ -78,6 +81,7 @@ memoryNode_empty         (memoryNode*         node);
  *
  * @param node        The memory node to empty.
  */
+COMMONExpDLL
 void
 memoryNode_destroy       (memoryNode*         node);
 
@@ -99,6 +103,7 @@ memoryNode_destroy       (memoryNode*         node);
  *
  * @return Will return 0 on success and -1 on failure.
  */
+COMMONExpDLL
 int
 allocateBufferMemory     (void**       buffer,
                           size_t*      size,

@@ -20,11 +20,10 @@
  */
 
 #include <wombat/wSemaphore.h>
+#include <wombat/memdefs.h>
 
 #ifndef WOMBAT_MEMPOOL_H__
 #define WOMBAT_MEMPOOL_H__
-
-#include <wombat/memdefs.h>
 
 /*=========================================================================
   =                             Includes                                  =
@@ -50,6 +49,7 @@ typedef void (*memoryPoolIteratorCb)(memoryPool* pool, memoryNode* node);
  *
  * @return Newly created memory pool.
  */
+COMMONExpDLL
 memoryPool* memoryPool_create       (size_t poolSize, size_t nodeSize);
 
 /**
@@ -61,6 +61,7 @@ memoryPool* memoryPool_create       (size_t poolSize, size_t nodeSize);
  *
  * @return Returns newly created node on success and NULL on failure.
  */
+COMMONExpDLL
 memoryNode* memoryPool_addNode      (memoryPool* pool, size_t nodeSize);
 
 /**
@@ -72,6 +73,7 @@ memoryNode* memoryPool_addNode      (memoryPool* pool, size_t nodeSize);
  *
  * @return Next available memory node of the requested size.
  */
+COMMONExpDLL
 memoryNode* memoryPool_getNode      (memoryPool* pool, size_t nodeSize);
 
 /**
@@ -80,6 +82,7 @@ memoryNode* memoryPool_getNode      (memoryPool* pool, size_t nodeSize);
  * @param pool          The pool to return the node to.
  * @param node          The node to be returned.
  */
+COMMONExpDLL
 void        memoryPool_returnNode   (memoryPool* pool, memoryNode* node);
 
 /**
@@ -88,6 +91,7 @@ void        memoryPool_returnNode   (memoryPool* pool, memoryNode* node);
  * @param pool          The pool to return the node to.
  * @param node          The callback to be triggered
  */
+COMMONExpDLL
 void        memoryPool_iterate      (memoryPool*            pool,
                                      memoryPoolIteratorCb   callback);
 /**
@@ -99,6 +103,7 @@ void        memoryPool_iterate      (memoryPool*            pool,
  * @param callback      This callback will be triggered before each node is
  *                      destroyed to let the caller do any cleanup required.
  */
+COMMONExpDLL
 void        memoryPool_destroy      (memoryPool*            pool,
                                      memoryPoolIteratorCb   callback);
 
