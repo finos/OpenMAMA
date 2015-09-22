@@ -45,6 +45,7 @@
 #include <inttypes.h>
 #include <pwd.h>
 #include <stdlib.h>
+#include <AvailabilityMacros.h>
 
 #include "wConfig.h"
 
@@ -66,6 +67,7 @@ typedef void*       LIB_HANDLE;
 #define LIB_EXTENSION ".dylib"
 
 /* Network conversion function */
+#if MAC_OS_X_VERSION_MAX_ALLOWED <= MAC_OS_X_VERSION_10_9
 #if __BYTE_ORDER == __LITTLE_ENDIAN
 #define htonll(x) \
     ((uint64_t)htonl((uint32_t)((x)>>32)) | (uint64_t)htonl((uint32_t)(x))<<32)
@@ -74,6 +76,7 @@ typedef void*       LIB_HANDLE;
 #else
 #define htonll(x) ((uint64_t)(x))
 #define ntohll(x) ((uint64_t)(x))
+#endif
 #endif
 
 /* For delimiting multiple paths in env variables properties */

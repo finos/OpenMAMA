@@ -1238,7 +1238,7 @@ qpidmsgFieldPayload_getAsString       (const msgFieldPayload   field,
     }
     case MAMA_FIELD_TYPE_VECTOR_STRING:
     {
-        EXPAND_PRINT_VECTOR_MACROS (const char*, String, "%s", const char*);
+        EXPAND_PRINT_VECTOR_MACROS (char*, String, "%s", const char*);
         break;
     }
     case MAMA_FIELD_TYPE_VECTOR_U8:
