@@ -210,19 +210,14 @@ avisBridgeMamaTimer_reset (timerBridge timer)
         return MAMA_STATUS_NULL_ARG;
     }
 
-    /* Destroy the existing timer element */
-    destroyTimer (gAvisTimerHeap, impl->mTimerElement);
-
     /* Calculate next time interval */
     timeout.tv_sec  = (time_t) impl->mInterval;
     timeout.tv_usec = ((impl->mInterval- timeout.tv_sec) * 1000000.0);
 
     /* Create the timer for the next firing */
-    timerResult = createTimer (&impl->mTimerElement,
-                               gAvisTimerHeap,
-                               avisBridgeMamaTimerImpl_timerCallback,
-                               &timeout,
-                               impl);
+    timerResult = resetTimer (gAvisTimerHeap,
+                              impl->mTimerElement,
+                              &timeout);
     if (0 != timerResult)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
