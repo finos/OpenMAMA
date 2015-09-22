@@ -215,7 +215,7 @@ if [ $CLONE_SOURCE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try cd ${SOURCE_DIR}
 
     # Read only clone, depth 1
-    try git clone -q --depth=1 -b ${BRANCH} http://git.openmama.org/OpenMAMA.git
+    try git clone -q --depth=1 -b ${BRANCH} https://github.com/OpenMAMA/OpenMAMA.git
 
     # Remove the .git folder (for packaging)
     try rm -rf OpenMAMA/.git
@@ -230,8 +230,8 @@ if [ $CLONE_DATA -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
         try rm -rf ${DATA_DIR}
     fi
 
-    try git clone -q --depth=1 http://git.openmama.org/OpenMAMA-test-data.git
-    try mv OpenMAMA-test-data ${DATA_DIR}
+    try git clone -q --depth=1 https://github.com/OpenMAMA/OpenMAMA-testdata.git
+    try mv OpenMAMA-testdata ${DATA_DIR}
     try rm -rf ${DATA_DIR}/.git
     next
     RETURN_CODE=$?
