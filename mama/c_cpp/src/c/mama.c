@@ -909,7 +909,6 @@ mama_setupStatsGenerator (void)
 {
 	mama_status result = MAMA_STATUS_OK;
 
-	unsigned int* 	count				= NULL;
 	const char* 	statsIntervalStr 	= NULL;
 	mamaQueue       statsGenQueue       = NULL;
 
@@ -922,8 +921,6 @@ mama_setupStatsGenerator (void)
 		mama_log (MAMA_LOG_LEVEL_ERROR,
 				  "mama_openWithProperties(): "
 				  "Could not create stats generator.");
-		if (count)
-			*count = gImpl.myRefCount;
 
 		return result;
 	}
@@ -958,8 +955,6 @@ mama_setupStatsGenerator (void)
         if (MAMA_STATUS_OK != (result = mamaBridgeImpl_getInternalEventQueue (bridge,
                                                            &statsGenQueue)))
         {
-            if (count)
-                *count = gImpl.myRefCount;
             return result;
         }
     }
@@ -969,8 +964,6 @@ mama_setupStatsGenerator (void)
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_openWithProperties(): "
                   "Could not set queue for stats generator.");
-        if (count)
-            *count = gImpl.myRefCount;
             return result;
     }
 
