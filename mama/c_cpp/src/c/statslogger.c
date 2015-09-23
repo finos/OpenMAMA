@@ -225,9 +225,6 @@ mamaStatsLogger_setReportSize (mamaStatsLogger  logger,
     mamaStatsLoggerImpl* impl = (mamaStatsLoggerImpl*)logger;
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
-    if (0 <= numEvents)
-        return MAMA_STATUS_INVALID_ARG;
-
     impl->mReportSize = numEvents;
 
     return MAMA_STATUS_OK;
