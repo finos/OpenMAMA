@@ -119,11 +119,11 @@ namespace Wombat
     }
 
     MamaPublisher::MamaPublisher (MamaPublisherImpl* impl)
-        : mPimpl (impl) 
+        : mPimpl (impl)
     {
     }
 
-    MamaPublisher::MamaPublisher (void) 
+    MamaPublisher::MamaPublisher (void)
         : mPimpl (new MamaPublisherImpl (this))
     {
     }
@@ -134,6 +134,7 @@ namespace Wombat
                                 const char*        root)
     {
         mPimpl->create (transport, topic, source, root);
+        mTransport = transport;
     }
 
     void MamaPublisher::send (MamaMsg* msg) const
@@ -176,6 +177,11 @@ namespace Wombat
     void MamaPublisher::destroy (void)
     {
         mPimpl->destroy ();
+    }
+
+    MamaTransport* MamaPublisher::getTransport (void) const
+    {
+        return mTransport;
     }
 
     void MamaPublisherImpl::send (MamaMsg *msg) const

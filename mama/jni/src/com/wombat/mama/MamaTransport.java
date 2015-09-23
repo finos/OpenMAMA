@@ -410,6 +410,11 @@ public class MamaTransport
         return transportPointer_i;
     }
 
+    protected void setPointerVal(long pointerVal)
+    {
+        transportPointer_i = pointerVal;
+    }
+
     public void create (MamaBridge bridge)
     {
         myBridge = bridge;

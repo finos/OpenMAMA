@@ -49,13 +49,14 @@ typedef struct sendMsgCallback_
 /******************************************************************************
 * Global/Static variables
 *******************************************************************************/
-static  jfieldID    publisherPointerFieldId_g   =   NULL;
+static jfieldID     publisherPointerFieldId_g       =  NULL;
+static jfieldID     mamaTransportObjectFieldId_g    =  NULL;
 
 extern jfieldID     transportPointerFieldId_g;
 extern jfieldID     messagePointerFieldId_g;
 extern jfieldID     inboxPointerFieldId_g;
 
-static  jmethodID   sendCallbackMethod_g         =   NULL;
+static jmethodID   sendCallbackMethod_g             =  NULL;
 
 
 extern  JavaVM*     javaVM_g;
@@ -73,6 +74,47 @@ static void MAMACALLTYPE sendCompleteCB (mamaPublisher publisher,
 /******************************************************************************
 * Public function implementation
 *******************************************************************************/
+/*
+ * Class:     com_wombat_mama_MamaPublisher
+ * Method:    _getTransport
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1getTransport
+(JNIEnv * env, jobject this)
+{
+    jlong           publisherPointer    = 0;
+    mamaTransport   c_result            = NULL;
+    jobject         result              = NULL;
+    mama_status     status              = MAMA_STATUS_OK;
+    char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+
+    assert(publisherPointerFieldId_g!=NULL);
+    publisherPointer = (*env)->GetLongField(env,this,publisherPointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(publisherPointer,
+        "Null parameter, MamaPublisher may have already been destroyed.");
+
+    if(MAMA_STATUS_OK!=(mamaPublisher_getTransport(
+                    CAST_JLONG_TO_POINTER(mamaPublisher,publisherPointer),
+                    &c_result)))
+    {
+         utils_buildErrorStringForStatus(
+                errorString, UTILS_MAX_ERROR_STRING_LENGTH,
+                "Failed to get mamaTransport from publisher.", status);
+        utils_throwExceptionForMamaStatus(env,status,errorString);
+    }
+
+    /*re-use the existing field object */
+    if (c_result)
+    {
+        result = (*env)->GetObjectField(env,this,
+                                        mamaTransportObjectFieldId_g);
+        assert(NULL!=result);/*throws an exception*/
+
+        (*env)->SetLongField(env, result, transportPointerFieldId_g,
+                             CAST_POINTER_TO_JLONG(c_result));
+    }
+}
+
 /*
  * Class:     com_wombat_mama_MamaPublisher
  * Method:    _create
@@ -443,6 +485,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher_initIDs
     publisherPointerFieldId_g = (*env)->GetFieldID(env,
             class, "publisherPointer_i", UTILS_JAVA_POINTER_TYPE_SIGNATURE);
     if (!publisherPointerFieldId_g) return;/*Exception auto thrown*/
+
+    /*The MamaTransport object.*/
+    mamaTransportObjectFieldId_g = (*env)->GetFieldID(env,
+                              class,"mamaTransport_i",
+                              "Lcom/wombat/mama/MamaTransport;");
+    if(!mamaTransportObjectFieldId_g) return;
 
     /* get our callback class */
     sendCallbackClass = (*env)->FindClass(env,
