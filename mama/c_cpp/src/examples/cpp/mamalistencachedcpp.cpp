@@ -418,16 +418,16 @@ public:
                                           size_t size, 
                                           void* closure)
     {
-        printf ("%s queue high water mark exceeded. Size %u\n",
-                queue->getQueueName(), size); 
+        printf ("%s queue high water mark exceeded. Size %"PRI_MAMA_SIZE_T"\n",
+                queue->getQueueName(), size);
     }
 
     virtual void onLowWatermark (MamaQueue* queue, 
                                  size_t size, 
                                  void *closure)
     {
-        printf ("%s queue low water mark exceeded. Size %u\n",
-                queue->getQueueName(), size); 
+        printf ("%s queue low water mark exceeded. Size %"PRI_MAMA_SIZE_T"\n",
+                queue->getQueueName(), size);
     }
 private:
     QueueMonitorCallback    (const QueueMonitorCallback& copy);
