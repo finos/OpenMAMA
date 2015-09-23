@@ -925,56 +925,54 @@ mama_setupStatsGenerator (void)
 		if (count)
 			*count = gImpl.myRefCount;
 
-		wthread_static_mutex_unlock (&gImpl.myLock);
 		return result;
 	}
-        /* No publishing, therefore no middleware needs to be specified
-           in mama.properties.  Instead, check through loaded bridges */
-        if (!mamaInternal_statsPublishingEnabled())
-        {
-            mamaBridgeImpl* impl = (mamaBridgeImpl*) mamaInternal_findBridge ();
+    
+    /* No publishing, therefore no middleware needs to be specified
+       in mama.properties.  Instead, check through loaded bridges */
+    if (!mamaInternal_statsPublishingEnabled())
+    {
+        mamaBridgeImpl* impl = (mamaBridgeImpl*) mamaInternal_findBridge ();
 
-            if (impl != NULL)
-            {
-                statsGenQueue = impl->mDefaultEventQueue;
-            }
+        if (impl != NULL)
+        {
+            statsGenQueue = impl->mDefaultEventQueue;
         }
-        else
+    }
+    else
+    {
+        /* Stats publishing enabled, therefore use the mama.statslogging.middleware
+           property */
+        mamaBridge bridge;
+
+        const char* statsMiddleware = NULL;
+        statsMiddleware = properties_Get (gProperties, "mama.statslogging.middleware");
+
+        if (!statsMiddleware)
         {
-            /* Stats publishing enabled, therefore use the mama.statslogging.middleware
-               property */
-            mamaBridge bridge;
-
-            const char* statsMiddleware = NULL;
-            statsMiddleware = properties_Get (gProperties, "mama.statslogging.middleware");
-
-            if (!statsMiddleware)
-            {
-                statsMiddleware = "wmw";
-            }
-
-		    mama_loadBridge(&bridge, statsMiddleware);
-
-            if (MAMA_STATUS_OK != (result = mamaBridgeImpl_getInternalEventQueue (bridge,
-                                                               &statsGenQueue)))
-            {
-                if (count)
-                    *count = gImpl.myRefCount;
-                wthread_static_mutex_unlock (&gImpl.myLock);
-                return result;
-            }
+            statsMiddleware = "wmw";
         }
 
-        if (MAMA_STATUS_OK != (result = mamaStatsGenerator_setQueue (gStatsGenerator, statsGenQueue)))
+        mama_loadBridge(&bridge, statsMiddleware);
+
+        if (MAMA_STATUS_OK != (result = mamaBridgeImpl_getInternalEventQueue (bridge,
+                                                           &statsGenQueue)))
         {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_openWithProperties(): "
-                      "Could not set queue for stats generator.");
             if (count)
                 *count = gImpl.myRefCount;
-            wthread_static_mutex_unlock (&gImpl.myLock);
             return result;
         }
+    }
+
+    if (MAMA_STATUS_OK != (result = mamaStatsGenerator_setQueue (gStatsGenerator, statsGenQueue)))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_openWithProperties(): "
+                  "Could not set queue for stats generator.");
+        if (count)
+            *count = gImpl.myRefCount;
+            return result;
+    }
 
 	mamaStatsGenerator_setLogStats (gStatsGenerator, 1);
 
