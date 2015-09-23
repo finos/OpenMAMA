@@ -181,6 +181,21 @@ MAMAExpDLL
 extern mama_status
 mamaPublisher_destroy (mamaPublisher publisher);
 
+/**
+ * @brief Return the <code>mamaTransport</code> for this publisher.
+ *
+ * @param[in] publisher     The mamaPublisher from which to retrieve the transport for.
+ * @param[out] transport    A pointer to hold the transport.
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_NULL_ARG
+ *              MAMA_STATUS_OK
+ */
+MAMAExpDLL
+extern mama_status
+mamaPublisher_getTransport (mamaPublisher   publisher,
+                            mamaTransport*  transport);
+
 #if defined( __cplusplus )
 }
 #endif /* defined( __cplusplus ) */

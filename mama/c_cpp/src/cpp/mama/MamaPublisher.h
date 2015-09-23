@@ -89,10 +89,16 @@ namespace Wombat
 
         virtual void destroy (void);
 
+        /**
+         * Return the MamaTransport for the MamaPublisher.
+         */
+        virtual MamaTransport* getTransport (void) const;
+
     protected:
         MamaPublisher (MamaPublisherImpl*);
-        
+
         MamaPublisherImpl*  mPimpl;
+        MamaTransport*      mTransport;
     };
 
 } // namespace Wombat

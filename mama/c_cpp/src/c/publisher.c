@@ -600,11 +600,14 @@ mama_status mamaPublisherImpl_clearTransport (mamaPublisher publisher)
     return mamaPublisherImpl_destroy((mamaPublisherImpl *)publisher);
 }
 
-mamaTransport
-mamaPublisherImpl_getTransportImpl (mamaPublisher publisher)
+mama_status
+mamaPublisher_getTransport (mamaPublisher   publisher,
+                            mamaTransport*  transport)
 {
     mamaPublisherImpl* impl   = (mamaPublisherImpl*)publisher;
 
-    if (!impl) return NULL;
-    return impl->mTport;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+    *transport = impl->mTport;
+
+    return MAMA_STATUS_OK;
 }

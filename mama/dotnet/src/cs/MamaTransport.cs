@@ -260,6 +260,18 @@ namespace Wombat
 		  GC.KeepAlive(callback);
       }	  
 
+      /// <summary>
+      /// Get the name of the transport.
+      /// </summary>
+      public string getName()
+      {
+		// Get the symbol from the native layer
+		  IntPtr ret = IntPtr.Zero;
+		  CheckResultCode(NativeMethods.mamaTransport_getName(nativeHandle, ref ret));
+
+		  // Convert to an ANSI string
+		  return Marshal.PtrToStringAnsi(ret);
+      }
 
 		#region Implementation details
 
@@ -430,6 +442,9 @@ namespace Wombat
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaTransport_getQuality(IntPtr transport,
                                                               ref MamaQuality qual);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaTransport_getName(IntPtr transport,
+                                                           ref IntPtr ret);
 		}
 
 		// state

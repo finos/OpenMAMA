@@ -180,6 +180,8 @@ struct wtimespec
 
 #define wnanosleep(ts, remain) nanosleep(((struct timespec*)(ts)),(remain))
 
+/* Macro for managing the printing of mama_size_t values. */
+#define PRI_MAMA_SIZE_T "zu"
 
 /* net work utility functions */
 const char* getIpAddress (void);

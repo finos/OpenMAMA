@@ -35,6 +35,9 @@ public class MamaPublisher
     /*A long value containing a pointer to the underlying C publisher structure*/
     private long    publisherPointer_i   =   0;
 
+    /* Reusable MamaTransport object. */
+    private MamaTransport mamaTransport_i = null;
+
 	public void create (MamaTransport transport, String topic)
     {
         _create(transport,topic,null);
@@ -80,6 +83,31 @@ public class MamaPublisher
         checkIsCreated("sendFromInbox()");
         _sendFromInbox(inbox,msg);
     }
+
+    public MamaTransport getTransport ()
+    {
+        /* Calls the native method first. This will
+           reuse the reusable mamaTransport in MamaPublisher
+           Only create the MamaTransport if we actually need to
+        */
+        if (mamaTransport_i == null)
+        {
+            mamaTransport_i = new MamaTransport();
+        }
+
+        mamaTransport_i.setPointerVal(0);
+
+        _getTransport ();
+
+        if (mamaTransport_i.getPointerVal() == 0)
+        {
+            return null;
+        }
+
+        return mamaTransport_i;
+    }
+
+    private native void  _getTransport ();
 
     private native void _create (MamaTransport transport, String topic, String source);
 

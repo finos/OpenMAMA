@@ -184,6 +184,9 @@ const char *index( const char *str, char c );
 #define PRIu64 "I64u"
 #define PRIi64 "I64i"
 
+/* Macro for managing the printing of mama_size_t values. */
+#define PRI_MAMA_SIZE_T "Iu"
+
 #ifndef INT8_MIN
 #define INT8_MIN SCHAR_MIN
 #endif

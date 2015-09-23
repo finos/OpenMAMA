@@ -44,9 +44,6 @@ mamaPublisher_sendFromInboxByIndex (mamaPublisher publisher,
 
 mama_status mamaPublisherImpl_clearTransport (mamaPublisher publisher);
 
-extern mamaTransport
-mamaPublisherImpl_getTransportImpl (mamaPublisher publisher);
-
 #if defined(__cplusplus)
 }
 #endif

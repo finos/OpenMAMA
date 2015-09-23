@@ -39,7 +39,8 @@ namespace Wombat
         /// when using the throttle.
         /// </summary>
         private MamaCallbackStore<MamaSendCompleteCallback, MamaThrottledSendCompleteDelegate> mCallbackStore;
-		private MamaMsg mReusableMsg;
+        private MamaMsg mReusableMsg;
+        private MamaTransport mReusableTransport;
 
         #endregion
 
@@ -424,6 +425,30 @@ namespace Wombat
 			}
 		}
 
+        /// <summary>
+        /// Get the MamaTransport.
+        /// The result contains the reusable MamaTransport object of the
+        /// nativeHandle object. Applications calling this method will receive the same
+        /// reusable object for repeated calls on same nativeHandle object.
+        /// </summary>
+        public MamaTransport getTransport()
+        {
+            EnsurePeerCreated();
+            IntPtr transport = IntPtr.Zero;
+            int code = NativeMethods.mamaPublisher_getTransport(nativeHandle, ref transport);
+            CheckResultCode(code);
+
+            if (mReusableTransport == null)
+            {
+                mReusableTransport = new MamaTransport (transport);
+            }
+            else
+            {
+                mReusableTransport.setNativeHandle(transport);
+            }
+            return mReusableTransport;
+        }
+
 		// Interop API
 		private struct NativeMethods
 		{
@@ -469,10 +494,15 @@ namespace Wombat
 
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaPublisher_destroy(IntPtr publisher);
+
+			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern int mamaPublisher_getTransport(
+				IntPtr publisher,
+				ref IntPtr result);
 		}
 
 		private Hashtable mCallbacks = new Hashtable();
-		
+
 		#endregion Implementation details
 	}
 }

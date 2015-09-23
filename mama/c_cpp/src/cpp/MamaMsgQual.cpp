@@ -50,7 +50,9 @@ namespace Wombat
         {
             delete myStrRep;
         }
-        mamaTry (mamaMsgQual_destroy (myMsgQual));
+
+        if (NULL != myMsgQual)
+            mamaMsgQual_destroy (myMsgQual);
     }
 
     MamaMsgQual& MamaMsgQual::operator= (const MamaMsgQual& rhs)

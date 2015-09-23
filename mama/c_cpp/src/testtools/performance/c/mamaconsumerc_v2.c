@@ -719,28 +719,6 @@ static void configure_malloc_behavior(void)
     mallopt(M_MMAP_MAX, 0);
 }
 
-static void 
-show_new_pagefault_count(const char* logtext,
-                  const char* allowed_maj,
-                  const char* allowed_min)
-{
-    int last_majflt = 0, last_minflt = 0;
-    struct rusage usage;
-
-    getrusage(RUSAGE_SELF, &usage);
-
-    fprintf (gFilep, "%-30.30s: Pagefaults, Major:%ld (Allowed %s), "
-             "Minor:%ld (Allowed %s)\n",
-             logtext,
-             usage.ru_majflt - last_majflt,
-             allowed_maj,
-             usage.ru_minflt - last_minflt,
-             allowed_min);
-
-    last_majflt = usage.ru_majflt;
-    last_minflt = usage.ru_minflt;
-}
-
 
 static void reserve_process_memory(int size)
 {
