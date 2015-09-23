@@ -2063,7 +2063,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
 
     initFunc (impl);
 
-    if (!impl)
+    if (!*impl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadBridge(): Error in [%s] ", initFuncName);
