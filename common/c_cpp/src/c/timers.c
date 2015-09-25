@@ -229,10 +229,21 @@ int destroyHeap (timerHeap heap)
 writeagain:
         if (wwrite (heapImpl->mSockPair[1], "d", 1) < 0)
         {
-            if ((errno == EINTR) || (errno == EAGAIN))
+            /* Unlike the case for writing a 'wake-up' (w) record, the destroy
+             * (d) record MUST be written for the reader to exit their read
+             * loop.  This write is safe to repeat here since we are not
+             * holding the heap lock while trying to write.  So we try the
+             * write again on we encounter EAGAIN or EWOULDBLOCK -- it is
+             * reasonable to assume the reader will eventually read bytes from
+             * the socket, thus allowing the write to succeed.
+             */
+            switch (errno) {
+            case EINTR:
+            case EAGAIN:
+            case EWOULDBLOCK:
                 goto writeagain;
-            else
-            {
+
+            default:
                 perror ("write()");
                 return -1; 
             }    
@@ -302,12 +313,23 @@ static int _addTimer (timerHeapImpl* heapImpl, timerImpl* ele)
     if (kickPipe)
     {
 writeagain:
-        if (wwrite (heapImpl->mSockPair[1], "w", 1) < 0)
+        if (write (heapImpl->mSockPair[1], "w", 1) < 0)
         {
-            if ((errno == EINTR) || (errno == EAGAIN))
+            switch (errno) {
+            case EINTR:
                 goto writeagain;
-            else
-            {
+
+            /* These errnos indicate the pipe is full.  There's no need to
+             * write more if the reader already has something to wake them up.
+             * If we were to try to write more, we must release the heap lock
+             * since the reader needs to take the heap lock to read bytes from
+             * the socket pair.
+             */
+            case EAGAIN:
+            case EWOULDBLOCK:
+                break;
+
+            default:
                 perror ("write()");
                 return -1;
             }
