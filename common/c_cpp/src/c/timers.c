@@ -240,7 +240,9 @@ writeagain:
             switch (errno) {
             case EINTR:
             case EAGAIN:
+#if EWOULDBLOCK != EAGAIN
             case EWOULDBLOCK:
+#endif
                 goto writeagain;
 
             default:
@@ -313,7 +315,7 @@ static int _addTimer (timerHeapImpl* heapImpl, timerImpl* ele)
     if (kickPipe)
     {
 writeagain:
-        if (write (heapImpl->mSockPair[1], "w", 1) < 0)
+        if (wwrite (heapImpl->mSockPair[1], "w", 1) < 0)
         {
             switch (errno) {
             case EINTR:
@@ -326,7 +328,9 @@ writeagain:
              * the socket pair.
              */
             case EAGAIN:
+#if EWOULDBLOCK != EAGAIN
             case EWOULDBLOCK:
+#endif
                 break;
 
             default:
