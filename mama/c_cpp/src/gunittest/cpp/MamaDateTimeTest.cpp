@@ -134,3 +134,18 @@ TEST_F(MamaDateTimeTest, CompareDates)
 	ASSERT_EQ(completeDateSeconds, timeSeconds);
 }
 
+TEST_F(MamaDateTimeTest, SetDateWindowsBug)
+{
+    // Test for Windows bug where setting date used localtime
+    // This was in port.c where the TZ env var was set to "" rather than "UTC"
+    MamaDateTime dt1;
+    dt1.set(2015, 8, 23, 0, 0, 0, 0, MAMA_DATE_TIME_PREC_UNKNOWN, NULL);
+
+    MamaDateTime dt2;
+    dt2.setDate(2015, 8, 23);
+
+    // mama_log(MAMA_LOG_LEVEL_NORMAL, "win bug %04d-%02d-%02d %02d:%02d:%02d", dt1.getYear(), dt1.getMonth(), dt1.getDay(), dt1.getHour(), dt1.getMinute(), dt1.getSecond());
+    // mama_log(MAMA_LOG_LEVEL_NORMAL, "win bug %04d-%02d-%02d %02d:%02d:%02d", dt2.getYear(), dt2.getMonth(), dt2.getDay(), dt2.getHour(), dt2.getMinute(), dt2.getSecond());
+    ASSERT_EQ(dt1.getEpochTimeMicroseconds(), dt2.getEpochTimeMicroseconds());
+}
+
