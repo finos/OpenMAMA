@@ -134,3 +134,16 @@ TEST_F(MamaDateTimeTest, CompareDates)
 	ASSERT_EQ(completeDateSeconds, timeSeconds);
 }
 
+TEST_F(MamaDateTimeTest, SetDateTimezoneCheck)
+{
+    // Test for Windows bug where setting date used localtime
+    // This was in port.c where the TZ env var was set to "" rather than "UTC"
+    MamaDateTime dt1;
+    dt1.set(2015, 8, 23, 0, 0, 0, 0, MAMA_DATE_TIME_PREC_UNKNOWN, NULL);
+
+    MamaDateTime dt2;
+    dt2.setDate(2015, 8, 23);
+
+    ASSERT_EQ(dt1.getEpochTimeMicroseconds(), dt2.getEpochTimeMicroseconds());
+}
+
