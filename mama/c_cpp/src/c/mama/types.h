@@ -19,13 +19,12 @@
  * 02110-1301 USA
  */
 
-#ifndef MamaTypesH__
-#define MamaTypesH__
-
-
 #include "wombat/port.h"
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef MamaTypesH__
+#define MamaTypesH__
 
 #if defined(__cplusplus)
 extern "C" {

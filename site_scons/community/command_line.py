@@ -40,7 +40,7 @@ def get_command_line_opts( host, products, VERSIONS ):
             PathVariable('qpid_home', 'Path to QPID Proton Libraries',
                           'c:\\proton', PathVariable.PathAccept),
             EnumVariable('vsver','Visual Studio Version to use', '10.0',
-                allowed_values=('8.0','9.0','10.0','11.0','12.0')),
+                allowed_values=('8.0','9.0','10.0','11.0','12.0', '14.0')),
             EnumVariable('product', 'Product to be built', 'mamda',
                      allowed_values=( products )),
             EnumVariable('dotnet_version', 'Dotnet Version used to determine framework directory', '2.0',
