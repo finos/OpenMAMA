@@ -23,7 +23,7 @@
 #define MamaInternalH__
 
 #include <property.h>
-#include "mama/types.h"
+#include <mama/types.h>
 
 #if defined(__cplusplus)
 extern "C"
