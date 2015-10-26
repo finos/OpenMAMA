@@ -144,8 +144,6 @@ TEST_F(MamaDateTimeTest, SetDateWindowsBug)
     MamaDateTime dt2;
     dt2.setDate(2015, 8, 23);
 
-    // mama_log(MAMA_LOG_LEVEL_NORMAL, "win bug %04d-%02d-%02d %02d:%02d:%02d", dt1.getYear(), dt1.getMonth(), dt1.getDay(), dt1.getHour(), dt1.getMinute(), dt1.getSecond());
-    // mama_log(MAMA_LOG_LEVEL_NORMAL, "win bug %04d-%02d-%02d %02d:%02d:%02d", dt2.getYear(), dt2.getMonth(), dt2.getDay(), dt2.getHour(), dt2.getMinute(), dt2.getSecond());
     ASSERT_EQ(dt1.getEpochTimeMicroseconds(), dt2.getEpochTimeMicroseconds());
 }
 
