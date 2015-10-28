@@ -26,6 +26,7 @@
 #include "mama/types.h"
 #include "mama/timer.h"
 #include "mama/queue.h"
+#include "mama/transport.h"
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
@@ -40,18 +41,17 @@ protected:
     virtual void SetUp();        
     virtual void TearDown ();    
 public:
-    MamaTimerTestC *m_this;
-    mamaBridge mBridge;
-    
-    int         tCounter;
-    int         numTimers;
-    mamaTimer   tarray[100];
-    mamaTimer   longTimer;
-    mamaTimer   shortTimer;
-    mamaTimer   stopTimer;
-    mamaTimer   timer;
-    mamaQueue   queue;
-    mama_f64_t  interval;
+    mamaBridge    m_bridge;
+    mamaTransport m_transport;
+    int           m_tCounter;
+    int           m_numTimers;
+    mamaTimer     m_timers[100];
+    mamaTimer     m_longTimer;
+    mamaTimer     m_shortTimer;
+    mamaTimer     m_stopTimer;
+    mamaTimer     m_timer;
+    mamaQueue     m_queue;
+    mama_f64_t    m_interval;
 };
 
 MamaTimerTestC::MamaTimerTestC()
@@ -64,53 +64,50 @@ MamaTimerTestC::~MamaTimerTestC()
 
 void MamaTimerTestC::SetUp(void)
 {	
-    interval = 0.01;
-    m_this   = this;
+    m_tCounter = 0;
+    m_interval = 0.01;
 
-    mama_loadBridge (&mBridge, getMiddleware());
-    mama_open (); 
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mama_getDefaultEventQueue (mBridge, &queue));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&m_bridge, getMiddleware()));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_getDefaultEventQueue (m_bridge, &m_queue));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTransport_allocate (&m_transport));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTransport_create (m_transport, NULL, m_bridge));
 }
 
 void MamaTimerTestC::TearDown(void)
 {
-    mama_close ();
-    m_this = NULL;
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTransport_destroy (m_transport));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 }
 
 static void MAMACALLTYPE onTimerTick (mamaTimer timer, void* closure)
 {
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTimer_destroy(timer));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTimer_destroy(timer));
 }
 
 static void MAMACALLTYPE onTimerDestroy (mamaTimer timer, void* closure)
 {
     MamaTimerTestC* fixture = (MamaTimerTestC *)closure;
-    fixture->tCounter++;
-
-    if (fixture->tCounter == fixture->numTimers)
+    if (++fixture->m_tCounter == fixture->m_numTimers)
     {
         ASSERT_EQ (MAMA_STATUS_OK,
-                   mama_stop (fixture->mBridge));
+                   mama_stop (fixture->m_bridge));
     }
 }
 
 static void MAMACALLTYPE onRecursiveTimerDestroy (mamaTimer timer, void* closure)
 {
     MamaTimerTestC* fixture = (MamaTimerTestC *)closure;
-    fixture->tCounter++;
-
-    if (fixture->tCounter == fixture->numTimers)
+    if (++fixture->m_tCounter == fixture->m_numTimers)
     {
         ASSERT_EQ (MAMA_STATUS_OK,
-                   mama_stop(fixture->mBridge));
+                   mama_stop(fixture->m_bridge));
     }
     else
     {
-        mamaTimer_create2 (&timer, fixture->queue, onTimerTick, 
-                           onRecursiveTimerDestroy, fixture->interval, fixture);
+        ASSERT_EQ (MAMA_STATUS_OK,
+                   mamaTimer_create2 (&fixture->m_timer, fixture->m_queue, onTimerTick,
+                                      onRecursiveTimerDestroy, fixture->m_interval, fixture));
     }
 
 }
@@ -123,24 +120,21 @@ static void MAMACALLTYPE onLongTimerTick (mamaTimer timer, void* closure)
 {
 }
 
-static void MAMACALLTYPE onTwoTimerDestroy (mamaTimer timer, void* closure)
-{
-}
-
 static void MAMACALLTYPE onStopTimerTick (mamaTimer timer, void* closure)
 {
-    mamaTimer_destroy(timer);
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTimer_destroy(timer));
 }
 
 static void MAMACALLTYPE onStopTimerDestroy (mamaTimer timer, void* closure)
 {
     MamaTimerTestC* fixture = (MamaTimerTestC *)closure;
 
-    mamaTimer_destroy (fixture->shortTimer);
-    mamaTimer_destroy (fixture->longTimer);
-    
-    mama_stop (fixture->mBridge);
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTimer_destroy (fixture->m_shortTimer));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTimer_destroy (fixture->m_longTimer));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_stop (fixture->m_bridge));
 }
+
 /* ************************************************************************* */
 /* Test Functions */
 /* ************************************************************************* */
@@ -151,19 +145,13 @@ static void MAMACALLTYPE onStopTimerDestroy (mamaTimer timer, void* closure)
  */
 TEST_F (MamaTimerTestC, CreateDestroy)
 {
-
-    MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
-    fixture->tCounter  = 0;
-    fixture->numTimers = 1;
+    m_numTimers = 1;
     
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTimer_create2 (&timer, fixture->queue, onTimerTick, 
-                                  onTimerDestroy, fixture->interval, m_this));
+               mamaTimer_create2 (&m_timer, m_queue, onTimerTick,
+                                  onTimerDestroy, m_interval, this));
     
-    ASSERT_EQ (MAMA_STATUS_OK, mama_start (mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
-
+    ASSERT_EQ (MAMA_STATUS_OK, mama_start (m_bridge));
 }
 
 /*  Description: Create many mamaTimers which destroy themselves when fired.    
@@ -173,21 +161,16 @@ TEST_F (MamaTimerTestC, CreateDestroy)
  */
 TEST_F (MamaTimerTestC, CreateDestroyMany)
 {
-    MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
-    fixture->tCounter  = 0;
-    fixture->numTimers = 100;
+    m_numTimers = 100;  // FIXME: Storage hardcoded to 100!
     
-    for (int x=0; x!=fixture->numTimers; x++)
+    for (int x=0; x!=m_numTimers; x++)
     {
         ASSERT_EQ (MAMA_STATUS_OK,
-                   mamaTimer_create2 (&tarray[x], fixture->queue, onTimerTick, 
-                                      onTimerDestroy,fixture->interval, m_this));
+                   mamaTimer_create2 (&m_timers[x], m_queue, onTimerTick,
+                                      onTimerDestroy, m_interval, this));
     }
 
-    ASSERT_EQ (MAMA_STATUS_OK, mama_start (mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
-
+    ASSERT_EQ (MAMA_STATUS_OK, mama_start (m_bridge));
 }
 
 /*  Description: Create a timer whiich creates another timer when fired.
@@ -197,18 +180,13 @@ TEST_F (MamaTimerTestC, CreateDestroyMany)
  */
 TEST_F (MamaTimerTestC, RecursiveCreateDestroy)
 {
-    MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
-    fixture->tCounter  = 0;
-    fixture->numTimers = 11;
+    m_numTimers = 11;
     
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTimer_create2(&timer, fixture->queue, onTimerTick, 
-                                 onRecursiveTimerDestroy, fixture->interval, m_this));
+               mamaTimer_create2(&m_timer, m_queue, onTimerTick,
+                                 onRecursiveTimerDestroy, m_interval, this));
      
-    ASSERT_EQ (MAMA_STATUS_OK, mama_start(mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
-
+    ASSERT_EQ (MAMA_STATUS_OK, mama_start(m_bridge));
 }
 
 /*  Description: Two timers are created which tick indefinately at different rates,
@@ -218,22 +196,18 @@ TEST_F (MamaTimerTestC, RecursiveCreateDestroy)
  */
 TEST_F (MamaTimerTestC, TwoTimer)
 {
-    MamaTimerTestC* fixture = (MamaTimerTestC *)m_this;
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTimer_create(&m_shortTimer, m_queue, onShortTimerTick,
+                                m_interval, this));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTimer_create(&shortTimer, fixture->queue, onShortTimerTick, 
-                                fixture->interval, m_this));
+               mamaTimer_create (&m_longTimer, m_queue, onLongTimerTick,
+                                 m_interval*2, this));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTimer_create (&longTimer, fixture->queue, onLongTimerTick, 
-                                 ((fixture->interval)*2), m_this));
+               mamaTimer_create2 (&m_stopTimer, m_queue, onStopTimerTick,
+                                  onStopTimerDestroy, m_interval*100, this));
 
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTimer_create2 (&stopTimer, fixture->queue, onStopTimerTick, 
-                                  onStopTimerDestroy, ((fixture->interval)*100), m_this));
-
-    ASSERT_EQ (MAMA_STATUS_OK, mama_start (mBridge));
-    
-    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
+    ASSERT_EQ (MAMA_STATUS_OK, mama_start (m_bridge));
 }
 
