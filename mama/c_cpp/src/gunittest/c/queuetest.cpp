@@ -17,7 +17,6 @@
  * 02110-1301 USA
  */
 
-
 #include <gtest/gtest.h>
 #include "mama/mama.h"
 #include "mama/status.h"
@@ -104,6 +103,11 @@ void MAMACALLTYPE onEvent (mamaQueue queue, void* closure)
         mamaQueue_stopDispatch (queue);
     }
 }
+
+void onEventNop (mamaQueue queue, void* closure)
+{
+}
+
 void MAMACALLTYPE onTimedEvent (mamaQueue queue, void* closure)
 {
 }
@@ -120,7 +124,7 @@ void MAMACALLTYPE onBgEvent (mamaQueue queue, void* closure)
     {
         for (int x=0; x!=10; x++)
         {
-            mamaQueue_stopDispatch (fixture->qArray[x]);
+            mamaQueue_stopDispatch (fixture->m_queues[x]);
         }
     wsem_post (&fixture->m_sem);
     }
@@ -427,4 +431,3 @@ TEST_F (MamaQueueTestC, DispatchManyQueuesWithDispatchers)
         ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy (m_queues[x]));
     }
 }
-
