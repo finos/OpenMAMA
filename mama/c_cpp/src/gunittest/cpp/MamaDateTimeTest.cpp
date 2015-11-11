@@ -134,7 +134,7 @@ TEST_F(MamaDateTimeTest, CompareDates)
 	ASSERT_EQ(completeDateSeconds, timeSeconds);
 }
 
-TEST_F(MamaDateTimeTest, SetDateWindowsBug)
+TEST_F(MamaDateTimeTest, SetDateTimezoneCheck)
 {
     // Test for Windows bug where setting date used localtime
     // This was in port.c where the TZ env var was set to "" rather than "UTC"
