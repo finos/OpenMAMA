@@ -29,6 +29,7 @@ openclosetest.cpp
 payloadmiddlewareidtest.cpp
 publishertest.cpp
 queuetest.cpp
+dictionarytest.cpp
 subscriptiontest.cpp
 timertest.cpp
 transporttest.cpp

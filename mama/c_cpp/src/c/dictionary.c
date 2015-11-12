@@ -1114,9 +1114,10 @@ void populateMessageFromDictionary (mamaDictionaryImpl* impl,
                     ADD_VECTOR_TO_DICT (Price, price_vector);
                     break;
                 default:
+					/* error with unknown type */
                     mama_log (MAMA_LOG_LEVEL_NORMAL, "Could not add type to "
-                              "dict message - not supported. [%s]",
-                              mamaFieldTypeToString (type));
+                              "dict message - not supported. [%s] fid=%d name=%s",
+                              mamaFieldTypeToString (type), fid, name);
                     break;
             }
         }
