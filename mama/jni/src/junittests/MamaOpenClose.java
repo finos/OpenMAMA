@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+package com.wombat.mama.junittests;
+
 import junit.framework.*;
 import com.wombat.mama.*;
 
@@ -53,7 +55,7 @@ public class MamaOpenClose extends TestCase
     public void testOpenClose()
     {
         // Load the bridge
-        Mama.loadBridge("wmw");
+        Mama.loadBridge(Main.GetBridgeName());
         
         // Open mama
         Mama.open();
@@ -65,10 +67,10 @@ public class MamaOpenClose extends TestCase
     public void testOpenCloseWithProperties()
     {
         // Load the bridge
-        Mama.loadBridge("wmw");
+        Mama.loadBridge(Main.GetBridgeName());
 
         // Open mama
-        Mama.open("c:\\devtools\\windows\\alias", "mama.properties");
+        Mama.open("", "mama.properties");
 
         // Close mama
         Mama.close();
@@ -77,7 +79,7 @@ public class MamaOpenClose extends TestCase
     public void testNestedOpenClose()
     {
         // Load the bridge
-        Mama.loadBridge("wmw");
+        Mama.loadBridge(Main.GetBridgeName());
 
         // Open mama
         Mama.open();
@@ -95,7 +97,7 @@ public class MamaOpenClose extends TestCase
     public void testOpenCloseReopenSameBridge()
     {
         // Load the bridge
-        Mama.loadBridge("wmw");
+        Mama.loadBridge(Main.GetBridgeName());
 
         // Open mama
         Mama.open();
