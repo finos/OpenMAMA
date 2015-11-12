@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+package com.wombat.mama.junittests;
+
 import java.nio.*;
 import junit.framework.*;
 import com.wombat.mama.*;
@@ -47,14 +49,14 @@ public class MamaInboxCallbacks extends TestCase
     protected void setUp()
     {
         // Load the bridge
-        mBridge = Mama.loadBridge("wmw");
+        mBridge = Mama.loadBridge(Main.GetBridgeName());
 
         // Open mama
         Mama.open();
 
         // Create the transport        
         mTransportBasic = new MamaTransport();        
-        mTransportBasic.create("sub_wmw_5", mBridge);        
+        mTransportBasic.create(Main.GetTransportName(), mBridge);        
     }
 
     @Override
