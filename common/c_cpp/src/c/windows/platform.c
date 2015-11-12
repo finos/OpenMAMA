@@ -68,7 +68,8 @@ LIB_HANDLE openSharedLib (const char* libName, const char* path)
 
 int closeSharedLib (LIB_HANDLE handle)
 {
-    return FreeLibrary ((HMODULE) handle); 
+    BOOL ret = FreeLibrary ((HMODULE) handle); 
+    return !ret;
 }
 
 void* loadLibFunc (LIB_HANDLE handle, const char* funcName)
