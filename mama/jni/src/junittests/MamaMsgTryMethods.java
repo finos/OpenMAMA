@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+package com.wombat.mama.junittests;
+
 import junit.framework.*;
 import com.wombat.mama.*;
 

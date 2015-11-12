@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+package com.wombat.mama.junittests;
+
 import junit.framework.*;
 import com.wombat.mama.*;
 
@@ -48,7 +50,7 @@ public class MamaDateTimeSetTimeZone extends TestCase
         mDateTime = new MamaDateTime();
 
         // Create a new mama time zone
-        mTimeZone = new MamaTimeZone();
+        mTimeZone = null;            // set to UTC for these tests
     }
 
     @Override
@@ -94,3 +96,4 @@ public class MamaDateTimeSetTimeZone extends TestCase
         assertEquals(time, "03:16:42.000099");
     }
 }
+
