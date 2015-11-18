@@ -98,4 +98,4 @@ do {                                                                            
     }                                                                           \
 } while (0)
 
-#endif /* RegisterFunctionsH__ *
+#endif /* RegisterFunctionsH__ */
