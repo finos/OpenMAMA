@@ -366,7 +366,7 @@ mamaInternal_loadProperties (const char *path,
 
     if( fileProperties == 0 )
     {
-			mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open properties file.\n");
+            mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open properties file.\n");
         return;
     }
 
@@ -739,13 +739,13 @@ mama_openWithPropertiesCount (const char* path,
                               const char* filename,
                               unsigned int* count)
 {
-    mama_status     result			        = MAMA_STATUS_OK;
+    mama_status     result                  = MAMA_STATUS_OK;
     mama_size_t     numBridges              = 0;
     mamaMiddleware  middleware              = 0;
     const char*     appString               = NULL;
-    const char*		prop                     = NULL;
-    char**			payloadName;
-    char*			payloadId;
+    const char*     prop                     = NULL;
+    char**          payloadName;
+    char*           payloadId;
 
     wthread_static_mutex_lock (&gImpl.myLock);
 
@@ -1016,23 +1016,23 @@ mama_statsInit (void)
 mama_status
 mama_setupStatsGenerator (void)
 {
-	mama_status result = MAMA_STATUS_OK;
+    mama_status result = MAMA_STATUS_OK;
 
-	const char* 	statsIntervalStr 	= NULL;
-	mamaQueue       statsGenQueue       = NULL;
+    const char*     statsIntervalStr    = NULL;
+    mamaQueue       statsGenQueue       = NULL;
 
-	statsIntervalStr = properties_Get (gProperties, "mama.statslogging.interval");
+    statsIntervalStr = properties_Get (gProperties, "mama.statslogging.interval");
 
-	if (MAMA_STATUS_OK != (result = mamaStatsGenerator_create(
-	                                &gStatsGenerator,
-	                                statsIntervalStr ? atof (statsIntervalStr) : DEFAULT_STATS_INTERVAL)))
-	{
-		mama_log (MAMA_LOG_LEVEL_ERROR,
-				  "mama_openWithProperties(): "
-				  "Could not create stats generator.");
+    if (MAMA_STATUS_OK != (result = mamaStatsGenerator_create(
+                                    &gStatsGenerator,
+                                    statsIntervalStr ? atof (statsIntervalStr) : DEFAULT_STATS_INTERVAL)))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_openWithProperties(): "
+                  "Could not create stats generator.");
 
-		return result;
-	}
+        return result;
+    }
     
     /* No publishing, therefore no middleware needs to be specified
        in mama.properties.  Instead, check through loaded bridges */
@@ -1076,7 +1076,7 @@ mama_setupStatsGenerator (void)
             return result;
     }
 
-	mamaStatsGenerator_setLogStats (gStatsGenerator, 1);
+    mamaStatsGenerator_setLogStats (gStatsGenerator, 1);
 
     return result;
 }
@@ -2353,15 +2353,15 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
 int
 mamaInternal_generateLbmStats ()
 {
-	return gGenerateLbmStats;
+    return gGenerateLbmStats;
 }
 
 mama_status
 mama_loadBridge (mamaBridge* impl,
                  const char* middlewareName)
 {
-	/* Otherwise this is a dynamic build, load the bridge normally. */
-	return mama_loadBridgeWithPath (impl, middlewareName, NULL);
+    /* Otherwise this is a dynamic build, load the bridge normally. */
+    return mama_loadBridgeWithPath (impl, middlewareName, NULL);
 }
 
 mama_status
@@ -2725,7 +2725,7 @@ MAMAExpDLL
 void
 mama_setWrapperGetVersion(fpWrapperGetVersion value)
 {
-	wrapperGetVersion = value;
+    wrapperGetVersion = value;
 }
 
 /**
@@ -2734,7 +2734,7 @@ mama_setWrapperGetVersion(fpWrapperGetVersion value)
 int
 mamaInternal_getCatchCallbackExceptions (void)
 {
-	return gCatchCallbackExceptions;
+    return gCatchCallbackExceptions;
 }
 
 
@@ -2743,11 +2743,11 @@ const char*
 mama_wrapperGetVersion(mamaBridge bridge)
 {
   if (wrapperGetVersion)
-	  /* use getVersion from wrapper */
-	  return wrapperGetVersion();
+      /* use getVersion from wrapper */
+      return wrapperGetVersion();
   else
-	  /* Use native getVersion */
-	  return mama_getVersion(bridge);
+      /* Use native getVersion */
+      return mama_getVersion(bridge);
 }
 
 void
