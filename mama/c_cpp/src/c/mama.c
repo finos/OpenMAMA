@@ -2083,8 +2083,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
 
         /* Return the existing payload bridge implementation */
         *impl = payloadLib->bridge;
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_unlock;
     }
 
     /* Once we have checked if the payload has already been loaded, check if
@@ -2098,8 +2097,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                   "mama_loadPayloadBridgeInternal (): "
                   "Maximum number of available payload bridges has been loaded. Cannot load [%s].",
                   payloadName);
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_unlock;
     }
 
     snprintf (payloadImplName, 256, "mama%simpl", payloadName);
@@ -2114,8 +2112,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                 "Could not open payload bridge library [%s] [%s]",
                  payloadImplName,
                  getLibError());
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_unlock;
     }
 
     /* Begin by searching for the *Payload_init function */
@@ -2139,10 +2136,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                       "mama_loadPayloadBridgeInternal (): "
                       "Failed to allocate memory for payload bridge [%s]. Cannot load payload.",
                       payloadName);
-            *impl = NULL;
-            closeSharedLib (payloadLibHandle);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return status;
+            goto error_handling_impl;
         }
 
         /* The payload struct was allocated by MAMA, so we must free it */
@@ -2156,11 +2150,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                       "mama_loadPayloadBridgeInternal (): "
                       "Failed to initialise payload bridge [%s]. Cannot load payload.",
                       payloadName);
-            free (*impl);
-            *impl = NULL;
-            closeSharedLib (payloadLibHandle);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return status;
+            goto error_handling_impl_allocated;
         }
 
         /* Once the payload has been successfully allocated and initialised,
@@ -2177,12 +2167,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                       "Failed to register payload functions for [%s] payload bridge from [%s] library.",
                       payloadName,
                       payloadImplName);
-
-            free (*impl);
-            *impl = NULL;
-            closeSharedLib(payloadLibHandle);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return status;
+            goto error_handling_impl_allocated;
         }
 
     } else {
@@ -2201,9 +2186,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                       "Could not find function [%s] in library [%s]",
                       initFuncName,
                       payloadImplName);
-            closeSharedLib (payloadLibHandle);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return status;
+            goto error_handling_close_and_unlock;
         }
 
         status = createFunc (impl, &payloadChar);
@@ -2229,10 +2212,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
             {
                 free (*impl);
             }
-
-            closeSharedLib (payloadLibHandle);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return status;
+            goto error_handling_close_and_unlock;
         }
     }
 
@@ -2249,12 +2229,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                   "mama_loadPayloadBridgeInternal (): "
                   "Cannot determine appropriate payload character. Cannot load [%s] payload bridge.",
                   payloadName);
-
-        free (*impl);
-        *impl = NULL;
-        closeSharedLib(payloadLibHandle);
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_impl_allocated;
     }
 
     /* Allocate the payloadLib struct, and populate with the payloadBridgeImpl
@@ -2269,12 +2244,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                   "mama_loadPayloadBridgeInternal (): "
                   "Failed to allocate memory for [%s] payload library.",
                   payloadName);
-
-        free (*impl);
-        *impl = NULL;
-        closeSharedLib (payloadLibHandle);
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_impl_allocated;
     }
 
     payloadLib->bridge        = *(mamaPayloadBridge*)impl;
@@ -2298,13 +2268,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                   "mama_loadPayloadBridgeInternal (): "
                   "Failed to register payload [%s] with MAMA.",
                   payloadName);
-
-        free (payloadLib);
-        free (*impl);
-        *impl = NULL;
-        closeSharedLib (payloadLibHandle);
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_payloadlib;
     }
 
     if (gImpl.payloads.byChar[payloadChar])
@@ -2315,13 +2279,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                   "Payload bridge using this character [%c] has already been registered. Cannot load payload bridge [%s]",
                   payloadChar,
                   payloadName);
-
-        free (payloadLib);
-        free (*impl);
-        *impl = NULL;
-        closeSharedLib (payloadLibHandle);
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_payloadlib;
     }
 
     /* Add a pointer to the byChar array for rapid access later. */
@@ -2347,6 +2305,18 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     wthread_static_mutex_unlock (&gImpl.myLock);
 
     status = MAMA_STATUS_OK;
+    return status;
+
+error_handling_payloadlib:
+    free (payloadLib);
+error_handling_impl_allocated:
+    free (*impl);
+error_handling_impl:
+    *impl = NULL;
+error_handling_close_and_unlock:
+    closeSharedLib (payloadLibHandle);
+error_handling_unlock:
+    wthread_static_mutex_unlock (&gImpl.myLock);
     return status;
 }
 
