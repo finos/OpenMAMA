@@ -1997,9 +1997,7 @@ enableEntitlements (const char **servers)
 
 #endif
 
-/* NOTE: The registerBridge function is no longer required, and thus should be
- * marked as deprecated.
- */
+MAMADeprecated("mamaInternal_registerBridge has been deprecated, use dynamic loading instead!")
 void
 mamaInternal_registerBridge (mamaBridge     bridge,
                              const char*    middlewareName)
