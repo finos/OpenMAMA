@@ -155,12 +155,6 @@ qpidBridge_close (mamaBridge bridgeImpl)
     mamaBridgeImpl*  bridge      = (mamaBridgeImpl*) bridgeImpl;
     wthread_t        timerThread;
 
-#if 0
-    if (NULL ==  bridgeImpl)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-#endif
 
     /* Remove the timer heap */
     if (NULL != gQpidTimerHeap)
@@ -184,14 +178,6 @@ qpidBridge_close (mamaBridge bridgeImpl)
 
     /* Stop and destroy the io thread */
     qpidBridgeMamaIoImpl_stop ();
-
-#if 0
-    /* Wait for qpidBridge_start to finish before destroying implementation */
-    if (NULL != bridgeImpl)
-    {
-        free (bridgeImpl);
-    }
-#endif
 
     return status;
 }

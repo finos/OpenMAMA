@@ -422,7 +422,7 @@ while(0)                                                                    \
 typedef mama_status
 (*msgPayload_createImpl)      (mamaPayloadBridge* result, char* identifier);
 
-/* New function called when loading/creating a bridge */
+/*Called when loading/creating a bridge */
 typedef mama_status
 (*msgPayload_init)            (char* identifier);
 
