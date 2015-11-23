@@ -32,7 +32,7 @@
 
 
 class MamaDictionaryTestC : public ::testing::Test
-{	
+{
 protected:
     MamaDictionaryTestC();          
     virtual ~MamaDictionaryTestC(); 
@@ -53,7 +53,7 @@ MamaDictionaryTestC::~MamaDictionaryTestC()
 }
 
 void MamaDictionaryTestC::SetUp(void)
-{	
+{
     mama_loadBridge (&mBridge, getMiddleware());
     mama_open (); 
 }
@@ -68,37 +68,36 @@ void MamaDictionaryTestC::TearDown(void)
 /* ************************************************************************* */
 
 /*  Description: Create a mamaDictionary from a file and write to a msg.
- *  ISSUE 85
  *  The dictionary file includes a field type of UNKNOWN, which is logged with name and fid.
  *                   
  *  Expected Result: MAMA_STATUS_OK
  */
 TEST_F (MamaDictionaryTestC, LoadFromFileAndWriteToMsg)
 {
-	mamaDictionary dictionary;
-	mamaMsg msg;
-	char buf[1024];
-	const char* path = getenv("WOMBAT_PATH");
-	size_t dictionarySize;
-	size_t msgSize;
+    mamaDictionary dictionary;
+    mamaMsg msg;
+    char buf[1024];
+    const char* path = getenv("WOMBAT_PATH");
+    size_t dictionarySize;
+    size_t msgSize;
     
     ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_create(&dictionary));
 
-	ASSERT_NE (path, (const char*) NULL);
-	snprintf(buf, sizeof(buf), "%s/dictionary1.txt", path);
+    ASSERT_NE (path, (const char*) NULL);
+    snprintf(buf, sizeof(buf), "%s/dictionary1.txt", path);
     ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_populateFromFile(dictionary, buf));
 
-	ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_getDictionaryMessage(dictionary, &msg));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_getDictionaryMessage(dictionary, &msg));
 
-	ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_getSize(dictionary, &dictionarySize));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_getSize(dictionary, &dictionarySize));
 
-	ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_getNumFields(msg, &msgSize));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_getNumFields(msg, &msgSize));
 
-	/* Expect one less in msg since there is an unknown in the dictionary */
-	ASSERT_EQ (dictionarySize-1, msgSize);
+    /* Expect one less in msg since there is an unknown in the dictionary */
+    ASSERT_EQ (dictionarySize-1, msgSize);
 
-	ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy(msg));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy(msg));
 
-	ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_destroy(dictionary));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_destroy(dictionary));
 }
 
