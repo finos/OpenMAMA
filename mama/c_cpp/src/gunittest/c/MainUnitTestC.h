@@ -22,7 +22,7 @@
 #ifndef MAINUNITTESTC_H_
 #define MAINUNITTESTC_H_
 
-#define NOT_NULL	( (void*)1 )
+#define NOT_NULL ( (void*)1 )
 
 
 #define ALLOW_NON_IMPLEMENTED(status)                                          \
@@ -67,4 +67,6 @@
 const char* getMiddleware (void);
 
 const char* getPayload (void);
+
+const char* getTransport (void);
 #endif /* MAINUNITTESTC_H_ */
