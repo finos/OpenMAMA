@@ -574,9 +574,12 @@ mamaSubscription_setupBasic (
                                   &self->mSubscPublisher,
                                    self->mTransport,
                                    self->mTransportIndex,
+                                   NULL,
+                                   NULL,
                                    self->mSubscSymbol,
                                    self->mSubscSource,
-                                   self->mSubscRoot)))
+                                   self->mSubscRoot,
+                                   NULL)))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, 
                   "Could not create publisher bridge. [%s]",
@@ -983,6 +986,7 @@ mamaSubscription_getSubscRoot (mamaSubscription subscription)
 {
     return self->mSubscRoot;
 }
+
 const char * 
 mamaSubscription_getEntitleSubject (mamaSubscription subscription)
 {
@@ -1292,7 +1296,7 @@ mamaSubscription_getQuality (mamaSubscription subscription,
             break;
     }
 
-	return MAMA_STATUS_OK;
+    return MAMA_STATUS_OK;
 }
 mama_status
 mamaSubscription_requestRecap(mamaSubscription subscription)
@@ -1550,31 +1554,31 @@ mama_status mamaSubscription_deactivate_internal(mamaSubscriptionImpl *impl)
 
 void MAMACALLTYPE mamaSubscription_DestroyThroughQueueCB(mamaQueue Queue, void* closure)
 {
-	mama_status status;
+    mama_status status;
 
-	mamaSubscription psub	= (mamaSubscription) closure;
-	mamaSubscriptionImpl* psubi = (mamaSubscriptionImpl*) closure;
+    mamaSubscription psub    = (mamaSubscription) closure;
+    mamaSubscriptionImpl* psubi = (mamaSubscriptionImpl*) closure;
 
-	status	= mamaSubscription_destroy(psub);
-	if (MAMA_STATUS_OK != status)
-	{
-		mama_log(MAMA_LOG_LEVEL_ERROR, "mamaSubscription_DestroyThroughQueueCB::Failed to destroy a subscription on %s.", psubi->mSubscSymbol);
-		return;
-	}
+    status    = mamaSubscription_destroy(psub);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log(MAMA_LOG_LEVEL_ERROR, "mamaSubscription_DestroyThroughQueueCB::Failed to destroy a subscription on %s.", psubi->mSubscSymbol);
+        return;
+    }
 }
 
 mama_status
 mamaSubscription_destroyEx(mamaSubscription subscription)
 {
-	mama_status status;
+    mama_status status;
 
-	status	= mamaQueue_enqueueEvent(self->mQueue, mamaSubscription_DestroyThroughQueueCB , (void*)subscription);
-	if (MAMA_STATUS_OK != status)
-	{
-		mama_log(MAMA_LOG_LEVEL_ERROR, "mamaSubscription_destroyEx::Failed to enqueue the destruction of a subscription on %s.", self->mSubscSymbol);
-	}
+    status    = mamaQueue_enqueueEvent(self->mQueue, mamaSubscription_DestroyThroughQueueCB , (void*)subscription);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log(MAMA_LOG_LEVEL_ERROR, "mamaSubscription_destroyEx::Failed to enqueue the destruction of a subscription on %s.", self->mSubscSymbol);
+    }
 
-	return status;
+    return status;
 }
 
 int mamaSubscription_isActive(mamaSubscription subscription)
@@ -2197,24 +2201,24 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
         {
             if (gGenerateQueueStats)
             {
-            	mamaStatsCollector queueStatsCollector ;
+                mamaStatsCollector queueStatsCollector ;
                 if (queueStatsCollector = mamaQueueImpl_getStatsCollector (self->mQueue))
-                	mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatNumMessages.mFid);
+                    mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatNumMessages.mFid);
             }
 
             if (gGenerateTransportStats)
             {
-            	mamaStatsCollector tportStatsCollector ;
+                mamaStatsCollector tportStatsCollector ;
                 if (tportStatsCollector = mamaTransport_getStatsCollector (self->mTransport))
-                	 mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatNumMessages.mFid);
+                     mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatNumMessages.mFid);
             }
 
 
-			if (mamaInternal_getGlobalStatsCollector() != NULL)
-			{
-				mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
-												  MamaStatNumMessages.mFid);
-			}
+            if (mamaInternal_getGlobalStatsCollector() != NULL)
+            {
+                mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
+                                                  MamaStatNumMessages.mFid);
+            }
 
             mamaSubscription_forwardMsg (self, msg);
         }

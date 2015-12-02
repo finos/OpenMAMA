@@ -91,9 +91,13 @@ typedef enum
 typedef enum
 {
     MAMA_TRANSPORT_TOPIC_SUBSCRIBED,
-    MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED
+    MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED,
+    MAMA_TRANSPORT_TOPIC_PUBLISH_CREATE,             /* onCreate */
+    MAMA_TRANSPORT_TOPIC_PUBLISH_DESTROY,            /* onDestroy */
+    MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR,              /* onError: default error */
+    MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED, /* onError: not entitled */
+    MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL    /* onError: bad symbol */
 } mamaTransportTopicEvent;
-
 
 /**
  * Enum to represent the different load balancing schemes available.
@@ -137,11 +141,11 @@ typedef void (MAMACALLTYPE *mamaTransportCB)(mamaTransport tport,
                                              void *closure);
 
 /**
- * Invoked when topic is subscribed ot unsubcribed on that transport.
+ * Invoked when topic is subscribed ot unsubcribed or has a publish event on that transport.
  *
  * @param tport The transport associated with the transport topic event
  * @param mamaTransportTopicEvent The transport topic event
- * @param topic The topic being subscribed or unsubscribed to
+ * @param topic The topic being subscribed or unsubscribed to or has a publish event
  * @param platformInfo Info associated with the transport topicevent
  * @param closure The closure argument to pass to the callback whenever
  * it is invoked.
@@ -152,8 +156,6 @@ typedef void (MAMACALLTYPE *mamaTransportCB)(mamaTransport tport,
  *
  * wmw:   provides a pointer to a mamaConnection struct for the event
  */
-
-
 typedef void (MAMACALLTYPE *mamaTransportTopicCB)(mamaTransport tport,
                                                   mamaTransportTopicEvent event,
                                                   const char* topic,
@@ -171,6 +173,13 @@ typedef void (*mamaTransportLbCB)(int         curTransportIndex,
                                   const char* symbol,
                                   int*        nextTransportIndex);
 
+
+/**
+ * Return a text description of the transport topic event.
+ */
+MAMAExpDLL
+extern const char*
+mamaTransportTopicEvent_toString (mamaTransportTopicEvent event);
 
 /**
  * Return a text description of the transport event.
@@ -313,7 +322,7 @@ mamaTransport_getOutboundThrottle (mamaTransport transport,
 MAMAExpDLL
 extern void
 mamaTransport_disableRefresh (mamaTransport transport,
-								uint8_t disable);
+                                uint8_t disable);
 
 /**
  * Set the throttle rate.

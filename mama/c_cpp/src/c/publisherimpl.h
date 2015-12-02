@@ -32,9 +32,12 @@ extern mama_status
 mamaPublisher_createByIndex (mamaPublisher*    result,
                              mamaTransport     tport,
                              int               tportIndex,
+                             mamaQueue         queue,
+                             mamaPublisherCallbacks* cb,
                              const char*       symbol,
                              const char*       source,
-                             const char*       root);
+                             const char*       root,
+                             void*             closure);
 
 extern mama_status
 mamaPublisher_sendFromInboxByIndex (mamaPublisher publisher,

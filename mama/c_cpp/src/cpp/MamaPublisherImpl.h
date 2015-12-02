@@ -39,22 +39,11 @@ namespace Wombat
     class MamaPublisherImpl
     {
     public:
-        MamaPublisherImpl (void)
-            : mParent     (NULL)
-            , mPublisher  (0)
-        {
-        };
+        MamaPublisherImpl (void);
 
-        MamaPublisherImpl (MamaPublisher* publisher)
-            : mParent     (publisher)
-            , mPublisher  (0)
-        {
-        };
+        MamaPublisherImpl (MamaPublisher* publisher);
 
-        virtual ~MamaPublisherImpl (void) 
-        { 
-            destroy (); 
-        }
+        virtual ~MamaPublisherImpl (void);
 
         virtual void destroy (void);
 
@@ -62,6 +51,14 @@ namespace Wombat
                              const char*     topic,
                              const char*     source = NULL,
                              const char*     root   = NULL);
+
+        virtual void createWithCallbacks (MamaTransport*  transport,
+                                          MamaQueue*      queue,
+                                          MamaPublisherCallback* cb,
+                                          void*           closure,
+                                          const char*     topic,
+                                          const char*     source,
+                                          const char*     root);
 
         virtual void send (MamaMsg* msg) const;
 
@@ -84,10 +81,32 @@ namespace Wombat
         virtual void sendReplyToInbox (mamaMsgReply    replyHandle,
                                        MamaMsg*        reply) const;
 
+        virtual mamaPublisherState getState() const;
+
+        virtual const char* stringForState (mamaPublisherState state) const;
+
+        virtual const char* getRoot () const;
+
+        virtual const char* getSource () const;
+
+        virtual const char* getSymbol () const;
+
         MamaPublisher* mParent;
 
-    protected:
+    private:
+        static void MAMACALLTYPE onPublisherCreate (mamaPublisher publisher, 
+                                                    void*         closure);
+        static void MAMACALLTYPE onPublisherDestroy (mamaPublisher publisher, 
+                                                     void*         closure);
+
+        static void MAMACALLTYPE onPublisherError (mamaPublisher publisher,
+                                                   mama_status status,
+                                                   const char* info,
+                                                   void*       closure);
+
         mamaPublisher mPublisher;
+        MamaPublisherCallback* mCallback;
+        void* mClosure;
     };
 
 } // namespace Wombat

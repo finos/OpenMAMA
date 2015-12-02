@@ -49,19 +49,19 @@
 
 typedef struct mamaCmResponderImpl_
 {
-	/* The number of sub transport bridges services by this responder. */
-	int		numberTransportBridges;
+    /* The number of sub transport bridges services by this responder. */
+    int        numberTransportBridges;
 
-	/* Array of publishers, one for each sub transport bridge. */
-    	mamaPublisher    *publishers;
+    /* Array of publishers, one for each sub transport bridge. */
+        mamaPublisher    *publishers;
     
-	/* Array of subscriptions, one for each sub transport bridge. */
-	mamaSubscription *subscriptions;
+    /* Array of subscriptions, one for each sub transport bridge. */
+    mamaSubscription *subscriptions;
 
-	/* The actual transport. */
-	mamaTransport    mTransport;    
+    /* The actual transport. */
+    mamaTransport    mTransport;    
 
-	/* The list of pending commands from all subscriptions. */
+    /* The list of pending commands from all subscriptions. */
     wList            mPendingCommands;
 } mamaCmResponderImpl;
 
@@ -90,231 +90,234 @@ static void commandDestroyCB (wList list, void *element, void *closure)
     command->mDtor(command->mHandle);
 }
 
-/*	Description	:	This function will destroy the cm responder including deleting the arrays of publishers
- *					and subscribers used when received and responding to sync requests.
- *	Arguments	:	responder [I] The responder to destroy.
- *	Returns		:	MAMA_STATUS_NULL_ARG - if the responder isn't valid.
- *					MAMA_STATUS_OK
+/*    Description    :    This function will destroy the cm responder including deleting the arrays of publishers
+ *                    and subscribers used when received and responding to sync requests.
+ *    Arguments    :    responder [I] The responder to destroy.
+ *    Returns        :    MAMA_STATUS_NULL_ARG - if the responder isn't valid.
+ *                    MAMA_STATUS_OK
  */
 mama_status mamaCmResponder_destroy(mamaCmResponder responder)
 {
-	/* Returns */
+    /* Returns */
     mama_status ret = MAMA_STATUS_NULL_ARG;
 
-	/* Cast the responder to an impl. */
+    /* Cast the responder to an impl. */
     mamaCmResponderImpl *impl = (mamaCmResponderImpl *)responder;
-	if(impl != NULL)
-	{		
-		/* Publishers and subscribers are held for each sub transport bridge, each must be freed in
-		 * turn before the corresponding arrays can be deleted.
-		 * Note that these are enumerate separately in case something went wrong during creation and
-		 * one array wasn't created successfully.
-		 */
-		ret = MAMA_STATUS_OK;
+    if(impl != NULL)
+    {        
+        /* Publishers and subscribers are held for each sub transport bridge, each must be freed in
+         * turn before the corresponding arrays can be deleted.
+         * Note that these are enumerate separately in case something went wrong during creation and
+         * one array wasn't created successfully.
+         */
+        ret = MAMA_STATUS_OK;
 
-		/* Free the subscriptions. */
-		if(impl->subscriptions != NULL)
-		{
-			/* Enumerate all subscribers. */
-			mamaSubscription *nextSubscription	= impl->subscriptions;
-			int nextBridgeIndex					= 0;
-			for(; nextBridgeIndex<impl->numberTransportBridges; nextBridgeIndex++, nextSubscription++)
-			{
-				/* Free the subscription. */
-				if(*nextSubscription != NULL)
-				{
-					/* Destroy the subscription, note that the first failure return code will be preserved.
-					 */
-					mama_status sd = mamaSubscription_destroyEx(*nextSubscription);
-					if(ret == MAMA_STATUS_OK)
-					{
-						ret = sd;
-					}
-				}
-			}
+        /* Free the subscriptions. */
+        if(impl->subscriptions != NULL)
+        {
+            /* Enumerate all subscribers. */
+            mamaSubscription *nextSubscription    = impl->subscriptions;
+            int nextBridgeIndex                    = 0;
+            for(; nextBridgeIndex<impl->numberTransportBridges; nextBridgeIndex++, nextSubscription++)
+            {
+                /* Free the subscription. */
+                if(*nextSubscription != NULL)
+                {
+                    /* Destroy the subscription, note that the first failure return code will be preserved.
+                     */
+                    mama_status sd = mamaSubscription_destroyEx(*nextSubscription);
+                    if(ret == MAMA_STATUS_OK)
+                    {
+                        ret = sd;
+                    }
+                }
+            }
 
-			/* Free the array itself. */
-			free(impl->subscriptions);
-			impl->subscriptions = NULL;
-		}
+            /* Free the array itself. */
+            free(impl->subscriptions);
+            impl->subscriptions = NULL;
+        }
 
-		/* Free the publishers. */
-		if(impl->publishers != NULL)
-		{
-			/* Enumerate all publishers. */
-			mamaPublisher *nextPublisher	= impl->publishers;			
-			int nextBridgeIndex				= 0;
-			for(; nextBridgeIndex<impl->numberTransportBridges; nextBridgeIndex++, nextPublisher++)
-			{				
-				/* Free the publisher, note that the first failure return code will be preserved. */
-				if(*nextPublisher != NULL)
-				{
-					mama_status pd = mamaPublisher_destroy(*nextPublisher);
-					if(ret == MAMA_STATUS_OK)
-					{
-						ret = pd;
-					}
-				}
-			}
+        /* Free the publishers. */
+        if(impl->publishers != NULL)
+        {
+            /* Enumerate all publishers. */
+            mamaPublisher *nextPublisher    = impl->publishers;            
+            int nextBridgeIndex                = 0;
+            for(; nextBridgeIndex<impl->numberTransportBridges; nextBridgeIndex++, nextPublisher++)
+            {                
+                /* Free the publisher, note that the first failure return code will be preserved. */
+                if(*nextPublisher != NULL)
+                {
+                    mama_status pd = mamaPublisher_destroy(*nextPublisher);
+                    if(ret == MAMA_STATUS_OK)
+                    {
+                        ret = pd;
+                    }
+                }
+            }
 
-			/* Free the array of publishers. */
-			free(impl->publishers);
+            /* Free the array of publishers. */
+            free(impl->publishers);
             impl->publishers = NULL;
-		}
+        }
 
-		/* Destroy all pending commands. */
-		if(impl->mPendingCommands != NULL)
-		{
-			list_destroy(impl->mPendingCommands, commandDestroyCB, impl);
-		}
+        /* Destroy all pending commands. */
+        if(impl->mPendingCommands != NULL)
+        {
+            list_destroy(impl->mPendingCommands, commandDestroyCB, impl);
+        }
 
-		/* Free the impl itself. */
-		free(impl);
-	}
+        /* Free the impl itself. */
+        free(impl);
+    }
 
-	return ret;
+    return ret;
 }
 
-/*	Description	:	This function will populate the responder impl object by creating the arrays of publishers
- *					and subscribers. Note that one of each of these objects must be created for each of the sub
- *					transport bridges that are contained in the main transport. There will be multiple sub
- *					transports used when load balancing.
- *	Arguments	:	impl [I] The responder to populate.
- *	Returns		:	MAMA_STATUS_NO_BRIDGE_IMPL
- *					MAMA_STATUS_OK
+/*    Description    :    This function will populate the responder impl object by creating the arrays of publishers
+ *                    and subscribers. Note that one of each of these objects must be created for each of the sub
+ *                    transport bridges that are contained in the main transport. There will be multiple sub
+ *                    transports used when load balancing.
+ *    Arguments    :    impl [I] The responder to populate.
+ *    Returns        :    MAMA_STATUS_NO_BRIDGE_IMPL
+ *                    MAMA_STATUS_OK
  */
 static mama_status populateCmResponder(mamaCmResponderImpl *impl)
 {
-	/* Returns */
+    /* Returns */
     mama_status ret = MAMA_STATUS_NO_BRIDGE_IMPL;
     mamaQueue internalQueue = NULL;
 
-	/* Get the default event queue from the bridgeImpl. */
-	mamaBridgeImpl *bridgeImpl = mamaTransportImpl_getBridgeImpl(impl->mTransport);
-	if(bridgeImpl != NULL)
-	{
-		/* The same callbacks will be sent to each subscriber regardless of the bridge
-		 * transport being used.
-		 */
-		mamaMsgCallbacks callbacks;
-		memset(&callbacks, 0, sizeof(callbacks));
-		callbacks.onCreate  = createCB;
-		callbacks.onError   = errorCB;
-		callbacks.onMsg     = msgCB;    
+    /* Get the default event queue from the bridgeImpl. */
+    mamaBridgeImpl *bridgeImpl = mamaTransportImpl_getBridgeImpl(impl->mTransport);
+    if(bridgeImpl != NULL)
+    {
+        /* The same callbacks will be sent to each subscriber regardless of the bridge
+         * transport being used.
+         */
+        mamaMsgCallbacks callbacks;
+        memset(&callbacks, 0, sizeof(callbacks));
+        callbacks.onCreate  = createCB;
+        callbacks.onError   = errorCB;
+        callbacks.onMsg     = msgCB;    
         callbacks.onDestroy = destroyCB;
 
         ret = mamaBridgeImpl_getInternalEventQueue((mamaBridge)bridgeImpl, &internalQueue);
-		if (ret == MAMA_STATUS_OK)
-		{
-			/* Enumerate all the sub transport bridges in the transport. */
-			int nextTransportIndex				= 0;
-			mamaPublisher *nextPublisher		= impl->publishers;
-			mamaSubscription *nextSubscription	= impl->subscriptions;	
-			while((ret == MAMA_STATUS_OK) && (nextTransportIndex < impl->numberTransportBridges))
-			{
-				/* The publisher allows commands to respond to point to point requests
-				 * without creating a new publisher, this must be created using the correct
-				 * transport bridge.
-				 */
-				ret = mamaPublisher_createByIndex(
-					nextPublisher,
-					impl->mTransport,
-					nextTransportIndex,
-					MAMA_CM_PUB_TOPIC,
-					NULL,
-					NULL);
-				if(ret == MAMA_STATUS_OK)
-				{
-					/* Allocate the subscription */
-					ret = mamaSubscription_allocate(nextSubscription);
-					if(ret == MAMA_STATUS_OK)
-					{
-						/* Set the subscription's transport index to ensure that the right transport is used. */
-						mamaSubscription_setTransportIndex(*nextSubscription, nextTransportIndex);
-			      
-						/* Create the subscription */
-						ret = mamaSubscription_createBasic(
-							*nextSubscription, 
-							impl->mTransport, 
-							internalQueue, 
-							&callbacks, 
-							MAMA_CM_TOPIC, 
-							impl);
+        if (ret == MAMA_STATUS_OK)
+        {
+            /* Enumerate all the sub transport bridges in the transport. */
+            int nextTransportIndex                = 0;
+            mamaPublisher *nextPublisher        = impl->publishers;
+            mamaSubscription *nextSubscription    = impl->subscriptions;    
+            while((ret == MAMA_STATUS_OK) && (nextTransportIndex < impl->numberTransportBridges))
+            {
+                /* The publisher allows commands to respond to point to point requests
+                 * without creating a new publisher, this must be created using the correct
+                 * transport bridge.
+                 */
+                ret = mamaPublisher_createByIndex(
+                    nextPublisher,
+                    impl->mTransport,
+                    nextTransportIndex,
+                    NULL,
+                    NULL,
+                    MAMA_CM_PUB_TOPIC,
+                    NULL,
+                    NULL,
+                    NULL);
+                if(ret == MAMA_STATUS_OK)
+                {
+                    /* Allocate the subscription */
+                    ret = mamaSubscription_allocate(nextSubscription);
+                    if(ret == MAMA_STATUS_OK)
+                    {
+                        /* Set the subscription's transport index to ensure that the right transport is used. */
+                        mamaSubscription_setTransportIndex(*nextSubscription, nextTransportIndex);
+                  
+                        /* Create the subscription */
+                        ret = mamaSubscription_createBasic(
+                            *nextSubscription, 
+                            impl->mTransport, 
+                            internalQueue, 
+                            &callbacks, 
+                            MAMA_CM_TOPIC, 
+                            impl);
                         if(ret == MAMA_STATUS_OK)
                         {
                             /* We don't want the CM subs to show up on the stats logger */
                             mamaSubscription_setLogStats(*nextSubscription, 0);
                         }
 
-					}
-				}
+                    }
+                }
 
-				/* Increment the counts for the next iteration */
-				nextTransportIndex ++;
-				nextPublisher ++;
-				nextSubscription ++;
-			}			
-		}    
-	}
+                /* Increment the counts for the next iteration */
+                nextTransportIndex ++;
+                nextPublisher ++;
+                nextSubscription ++;
+            }            
+        }    
+    }
 
-	return ret;
+    return ret;
 }
 
-/*	Description	:	This function will create the cm responder, the responder will listen for management messages from
- *					the currently active feed handlers. This is done by creating a publisher and a subscription for each
- *					sub transport bridge in the main transport.
- *	Arguments	:	responder				[O] To return the new responder.
- *					tport					[I] The main transport.
- *					numberTransportBridges	[I] The number of transport bridges.
- *	Returns		:	MAMA_STATUS_NOMEM
- *					MAMA_STATUS_OK
+/*    Description    :    This function will create the cm responder, the responder will listen for management messages from
+ *                    the currently active feed handlers. This is done by creating a publisher and a subscription for each
+ *                    sub transport bridge in the main transport.
+ *    Arguments    :    responder                [O] To return the new responder.
+ *                    tport                    [I] The main transport.
+ *                    numberTransportBridges    [I] The number of transport bridges.
+ *    Returns        :    MAMA_STATUS_NOMEM
+ *                    MAMA_STATUS_OK
  */
 mama_status mamaCmResponder_create(mamaCmResponder *responder, mamaTransport tport, int numberTransportBridges)
 {
-	/* Returns */
+    /* Returns */
     mama_status ret = MAMA_STATUS_NOMEM;
 
-	/* Allocate the impl structure. */
+    /* Allocate the impl structure. */
     mamaCmResponderImpl *impl = (mamaCmResponderImpl *)calloc (1, sizeof(mamaCmResponderImpl));
-	if(impl != NULL)
-	{		
-		/* Save arguments in the structure. */
-		impl->numberTransportBridges	= numberTransportBridges;
-		impl->mTransport				= tport;
+    if(impl != NULL)
+    {        
+        /* Save arguments in the structure. */
+        impl->numberTransportBridges    = numberTransportBridges;
+        impl->mTransport                = tport;
 
-		/* Create the array of publisher pointers, one for each sub transport bridge. */
-		impl->publishers = (mamaPublisher *)calloc(numberTransportBridges, sizeof(mamaPublisher));
-		if(impl->publishers != NULL)
-		{
-			/* Create the array of basic subscriptions, one for each sub transport bridge. */
-			impl->subscriptions = (mamaSubscription *)calloc(numberTransportBridges, sizeof(mamaSubscription));
-			if(impl->subscriptions != NULL)
-			{		
-				/* Populate the arrays of publishers and subscriptions. */
-				ret = populateCmResponder(impl);
-				if(ret == MAMA_STATUS_OK)
-				{
-					/* Create the list which will contain commands that have not completed execution. */				 
-					impl->mPendingCommands = list_create(sizeof(mamaCommand));
-				}
-			}
-		}
+        /* Create the array of publisher pointers, one for each sub transport bridge. */
+        impl->publishers = (mamaPublisher *)calloc(numberTransportBridges, sizeof(mamaPublisher));
+        if(impl->publishers != NULL)
+        {
+            /* Create the array of basic subscriptions, one for each sub transport bridge. */
+            impl->subscriptions = (mamaSubscription *)calloc(numberTransportBridges, sizeof(mamaSubscription));
+            if(impl->subscriptions != NULL)
+            {        
+                /* Populate the arrays of publishers and subscriptions. */
+                ret = populateCmResponder(impl);
+                if(ret == MAMA_STATUS_OK)
+                {
+                    /* Create the list which will contain commands that have not completed execution. */                 
+                    impl->mPendingCommands = list_create(sizeof(mamaCommand));
+                }
+            }
+        }
 
-		/* If something has gone wrong delete the impl structure. */
-		if(ret != MAMA_STATUS_OK)
-		{
-			/* Destroy the responder. */
-			mamaCmResponder_destroy((mamaCmResponder)impl);
-			impl = NULL;
+        /* If something has gone wrong delete the impl structure. */
+        if(ret != MAMA_STATUS_OK)
+        {
+            /* Destroy the responder. */
+            mamaCmResponder_destroy((mamaCmResponder)impl);
+            impl = NULL;
 
-			/* Write a log message. */
-			mama_log (MAMA_LOG_LEVEL_ERROR, "mamaCmResponder_create(): Could not"
+            /* Write a log message. */
+            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaCmResponder_create(): Could not"
                                          " create subscription.");     
-		}
-	}
+        }
+    }
 
-	/* Write back the impl in the mamaCmResponder pointer. */
-	*responder = (mamaCmResponder)impl;
+    /* Write back the impl in the mamaCmResponder pointer. */
+    *responder = (mamaCmResponder)impl;
     
     return ret;
 }
@@ -355,12 +358,12 @@ msgCB (mamaSubscription subscription, mamaMsg msg, void* closure,
        void* itemClosure)
 {
     mama_u16_t command_id = 0;
-    mamaCmResponderImpl *impl = (mamaCmResponderImpl*)closure;	
+    mamaCmResponderImpl *impl = (mamaCmResponderImpl*)closure;    
     mamaCommand* command = 
         (mamaCommand*)list_allocate_element(impl->mPendingCommands);
 
-	/* Get the transport index in use by the supplied subscription. */
-	int transportIndex = 0;
+    /* Get the transport index in use by the supplied subscription. */
+    int transportIndex = 0;
 
     /*
      * The command ID field tells us what command to execute.
@@ -375,14 +378,14 @@ msgCB (mamaSubscription subscription, mamaMsg msg, void* closure,
     switch (command_id)
     {
     case MAMA_COMMAND_SYNC:
-		{
-			mama_log (MAMA_LOG_LEVEL_FINE, "mamaCmResponder::msgCb(): "
-					  "CM  SYNC Received" );
+        {
+            mama_log (MAMA_LOG_LEVEL_FINE, "mamaCmResponder::msgCb(): "
+                      "CM  SYNC Received" );
             mamaSubscription_getTransportIndex(subscription, &transportIndex);
-			mamaSyncCommand_create (command, msg, impl->mTransport, transportIndex, impl->publishers[transportIndex], endCB, impl);
+            mamaSyncCommand_create (command, msg, impl->mTransport, transportIndex, impl->publishers[transportIndex], endCB, impl);
             list_push_back(impl->mPendingCommands, command);
-			mamaSyncCommand_run (command);
-		}
+            mamaSyncCommand_run (command);
+        }
         break;
     default:
         list_free_element (impl->mPendingCommands, command);

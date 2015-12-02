@@ -39,7 +39,7 @@ namespace Wombat
     class MAMACPPExpDLL MamaTransportTopicEventCallback
     {
     public:
-		virtual ~MamaTransportTopicEventCallback() 
+        virtual ~MamaTransportTopicEventCallback() 
         {
         };
         /**
@@ -56,6 +56,41 @@ namespace Wombat
         virtual void onTopicUnsubscribe (MamaTransport* transport,
                                          const char* topic,
                                          const void* platformInfo)
+        {
+            return;
+        }
+
+        virtual void onTopicPublishCreate (MamaTransport* transport,
+                                           const char* topic,
+                                           const void* platformInfo)
+        {
+            return;
+        }
+
+        virtual void onTopicPublishDestroy (MamaTransport* transport,
+                                            const char* topic,
+                                            const void* platformInfo)
+        {
+            return;
+        }
+
+        virtual void onTopicPublishError (MamaTransport* transport,
+                                          const char* topic,
+                                          const void* platformInfo)
+        {
+            return;
+        }
+
+        virtual void onTopicPublishErrorNotEntitled (MamaTransport* transport,
+                                                     const char* topic,
+                                                     const void* platformInfo)
+        {
+            return;
+        }
+
+        virtual void onTopicPublishErrorBadSymbol (MamaTransport* transport,
+                                                   const char* topic,
+                                                   const void* platformInfo)
         {
             return;
         }
@@ -465,8 +500,8 @@ namespace Wombat
             int  index);
 
         /**
-	     * Disable refreshing of subscriptions on this transport.
-	     */
+         * Disable refreshing of subscriptions on this transport.
+         */
         void disableRefresh (
             bool  disable);
 

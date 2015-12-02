@@ -55,10 +55,10 @@ typedef struct  msgBridge_*         msgBridge;
  * the default queue.
  */
 
-#define MAMA_BRIDGE_DEFAULT_QUEUE_TIMEOUT_PROPERTY 	"mama.defaultqueue.timeout"
+#define MAMA_BRIDGE_DEFAULT_QUEUE_TIMEOUT_PROPERTY     "mama.defaultqueue.timeout"
 
 /* The default timeout value when closing the default queue is 2s. */
-#define MAMA_BRIDGE_DEFAULT_QUEUE_DEFAULT_TIMEOUT 	2000
+#define MAMA_BRIDGE_DEFAULT_QUEUE_DEFAULT_TIMEOUT     2000
 
 /*
  Used in the bridge layer to set all appropriate functions
@@ -80,8 +80,8 @@ do                                                                             \
     bridgeImpl->bridgeStop          =   implIdentifier ## Bridge_stop;         \
     bridgeImpl->bridgeGetVersion    =   implIdentifier ## Bridge_getVersion;   \
     bridgeImpl->bridgeGetName       =   implIdentifier ## Bridge_getName;      \
-    bridgeImpl->bridgeGetDefaultPayloadId = 								   \
-    				implIdentifier ## Bridge_getDefaultPayloadId;              \
+    bridgeImpl->bridgeGetDefaultPayloadId =                                    \
+                    implIdentifier ## Bridge_getDefaultPayloadId;              \
     /*Queue related function pointers*/                                        \
     bridgeImpl->bridgeMamaQueueCreate   =                                      \
                     implIdentifier ## BridgeMamaQueue_create;                  \
@@ -212,6 +212,8 @@ do                                                                             \
                     implIdentifier ## BridgeMamaPublisher_sendReplyToInbox;    \
     bridgeImpl->bridgeMamaPublisherSendReplyToInboxHandle =                          \
                     implIdentifier ## BridgeMamaPublisher_sendReplyToInboxHandle;    \
+    bridgeImpl->bridgeMamaPublisherSetUserCallbacks =                              \
+                    implIdentifier ## BridgeMamaPublisher_setUserCallbacks;        \
     /*inbox related function pointers*/                                        \
     bridgeImpl->bridgeMamaInboxCreate   =                                      \
                     implIdentifier ## BridgeMamaInbox_create;                  \
@@ -605,6 +607,11 @@ typedef mama_status
 (*bridgeMamaPublisher_sendFromInbox)(publisherBridge publisher,
                                      mamaInbox       inbox,
                                      mamaMsg         msg);
+typedef mama_status
+(*bridgeMamaPublisher_setUserCallbacks)(publisherBridge         publisher,
+                                        mamaQueue               queue,
+                                        mamaPublisherCallbacks  cb,
+                                        void*                   closure);
 
 
 /*===================================================================
@@ -720,13 +727,13 @@ typedef struct mamaBridgeImpl_
     mama_bool_t  mEntitleReadOnly;
 
     /*Used in mama.c*/
-    bridge_open         			bridgeOpen;
-    bridge_close        			bridgeClose;
-    bridge_start        			bridgeStart;
-    bridge_stop         			bridgeStop;
-    bridge_getVersion   			bridgeGetVersion;
-    bridge_getName      			bridgeGetName;
-    bridge_getDefaultPayloadId   	bridgeGetDefaultPayloadId;
+    bridge_open                     bridgeOpen;
+    bridge_close                    bridgeClose;
+    bridge_start                    bridgeStart;
+    bridge_stop                     bridgeStop;
+    bridge_getVersion               bridgeGetVersion;
+    bridge_getName                  bridgeGetName;
+    bridge_getDefaultPayloadId       bridgeGetDefaultPayloadId;
 
     /*Queue bridge functions*/
     bridgeMamaQueue_create                  bridgeMamaQueueCreate;
@@ -823,6 +830,7 @@ typedef struct mamaBridgeImpl_
                                 bridgeMamaPublisherSendReplyToInbox;
     bridgeMamaPublisher_sendReplyToInboxHandle
                                 bridgeMamaPublisherSendReplyToInboxHandle;
+    bridgeMamaPublisher_setUserCallbacks    bridgeMamaPublisherSetUserCallbacks;
     /*mamaInbox bridge functions*/
     bridgeMamaInbox_create                  bridgeMamaInboxCreate;
     bridgeMamaInbox_createByIndex           bridgeMamaInboxCreateByIndex;

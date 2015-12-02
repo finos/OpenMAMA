@@ -32,6 +32,8 @@
 #include "mama/statscollector.h"
 #include "mama/statfields.h"
 
+#include "wombat/wInterlocked.h"
+
 #include "list.h"
 
 /* For Stats */
@@ -46,9 +48,28 @@ typedef struct mamaPublisherImpl_
     /*The bridge implementation for the publisher*/
     publisherBridge     mMamaPublisherBridgeImpl;
     /*Outstanding actions for the throttled publishing*/
-    wList           	mPendingActions;
+    wList               mPendingActions;
     /*Used for throttling of sends.*/
-    mamaTransport   	mTport;
+    mamaTransport       mTport;
+
+    /* Publisher State */
+    mamaPublisherState  mState;
+
+    /* Publisher events callbacks */
+    mamaPublisherCallbacks mUserCallbacks;
+
+    /* Queue for publisher events */
+    mamaQueue           mQueue;
+
+    /* Closure for publisher events */
+    void*               mClosure;
+
+    wLock               mCreateDestroyLock;
+
+    /* Store the topic */
+    const char*         mRoot;
+    const char*         mSource;
+    const char*         mSymbol;
 
     void *mTransportHandle;
 } mamaPublisherImpl;
@@ -64,17 +85,37 @@ struct publisherClosure
     void*                       mSendCompleteClosure;
 };
 
+/* Forward declarations */
+static void
+mamaPublisherImpl_setState(mamaPublisherImpl* impl, mamaPublisherState state);
+
+static void
+MAMACALLTYPE mamaPublisher_onPublisherDestroyed(mamaPublisher publisher, void *closure);
+
+static mama_status
+mamaPublisherImpl_destroy(mamaPublisherImpl *impl);
+
+static void
+mamaPublisherImpl_cleanup(mamaPublisherImpl* impl);
+
+/**
+ * Core create method used by all create methods
+ */
 static mama_status
 _createByIndex (mamaPublisher*              result,
                 mamaTransport               tport,
                 int                         tportIndex,
+                mamaQueue                   queue,
+                mamaPublisherCallbacks*     publisherCallbacks,
                 const char*                 symbol,
                 const char*                 source,
-                const char*                 root)
+                const char*                 root,
+                void*                       closure)
 {
     mama_status         status      = MAMA_STATUS_OK;
     mamaPublisherImpl*  impl        = NULL;
     mamaBridgeImpl*     bridgeImpl  = NULL;
+    mamaPublisherCallbacks cb;
 
     if (!result)
     {
@@ -105,11 +146,28 @@ _createByIndex (mamaPublisher*              result,
     impl = (mamaPublisherImpl*)calloc (1, sizeof (mamaPublisherImpl));
     if (!impl) return MAMA_STATUS_NOMEM;
 
-    impl->mPendingActions = list_create (sizeof(struct publisherClosure));
-    if (impl->mPendingActions == NULL) return MAMA_STATUS_NOMEM;
+    /* Save symbol */
+    if (root) impl->mRoot = strdup(root);
+    if (source) impl->mSource = strdup(source);
+    if (symbol) impl->mSymbol = strdup(symbol);
 
     impl->mBridgeImpl = bridgeImpl;
     impl->mTport      = tport;
+
+    if (publisherCallbacks)
+    {
+        impl->mUserCallbacks.onCreate = publisherCallbacks->onCreate;
+        impl->mUserCallbacks.onError = publisherCallbacks->onError;
+        impl->mUserCallbacks.onDestroy = publisherCallbacks->onDestroy;
+    }
+    impl->mQueue      = queue;
+    impl->mClosure    = closure;
+
+    /* Initialise the state. */
+    wInterlocked_initialize(&impl->mState);
+
+    /* Set the initial state of the publisher now that the memory has been allocated. */
+    mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_CREATING);
 
     if (MAMA_STATUS_OK!=(status=(bridgeImpl->bridgeMamaPublisherCreateByIndex (
                                     &impl->mMamaPublisherBridgeImpl,
@@ -121,13 +179,44 @@ _createByIndex (mamaPublisher*              result,
                                     NULL,                   /* nativeQueueHandle */
                                     (mamaPublisher)impl)))) /* topic */
     {
+        if (NULL != impl->mRoot) free((void*) impl->mRoot);
+        if (NULL != impl->mSource) free((void*) impl->mSource);
+        if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
         free (impl);
         return status;
     }
 
+    impl->mPendingActions = list_create (sizeof(struct publisherClosure));
+    if (impl->mPendingActions == NULL) return MAMA_STATUS_NOMEM;
+
+    cb.onCreate = impl->mUserCallbacks.onCreate;
+    cb.onError = impl->mUserCallbacks.onError;
+    cb.onDestroy = mamaPublisher_onPublisherDestroyed;        /* intercept onDestroy */
+    if (MAMA_STATUS_OK!=(status=(bridgeImpl->bridgeMamaPublisherSetUserCallbacks (
+                                   impl->mMamaPublisherBridgeImpl,
+                                   impl->mQueue,
+                                   cb,
+                                   impl->mClosure
+    ))))
+    {
+        free (impl);
+        return status;
+    }
+
+    /* Create the mutex. */
+    impl->mCreateDestroyLock = wlock_create();
+
+    /* Set the state of the publisher now that the bridge's work is done. */
+    mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_LIVE);
+
     mamaTransport_addPublisher(tport, impl, &impl->mTransportHandle);
 
     *result = (mamaPublisher)impl;
+
+    if (impl->mUserCallbacks.onCreate)
+    {
+        (*impl->mUserCallbacks.onCreate)(*result, impl->mClosure);
+    }
 
     return MAMA_STATUS_OK;
 }
@@ -136,16 +225,22 @@ mama_status
 mamaPublisher_createByIndex (mamaPublisher* result,
                              mamaTransport  tport,
                              int            tportIndex,
+                             mamaQueue      queue,
+                             mamaPublisherCallbacks* cb,
                              const char*    symbol,
                              const char*    source,
-                             const char*    root)
+                             const char*    root,
+                             void*          closure)
 {
     return _createByIndex(result,
                           tport,
                           tportIndex,
+                          queue,
+                          cb,
                           symbol,
                           source,
-                          root);
+                          root,
+                          closure);
 }
 
 mama_status
@@ -159,62 +254,34 @@ mamaPublisher_create (mamaPublisher*    result,
     return mamaPublisher_createByIndex (result,
                                         tport,
                                         0,
+                                        NULL,
+                                        NULL,
                                         symbol,
                                         source,
-                                        root);
+                                        root,
+                                        NULL);
 }
 
-static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
+mama_status
+mamaPublisher_createWithCallbacks (
+                      mamaPublisher*    result,
+                      mamaTransport     tport,
+                      mamaQueue         queue,
+                      const char*       symbol,
+                      const char*       source,
+                      const char*       root,
+                      mamaPublisherCallbacks* cb,
+                      void*             closure)
 {
-    /* Returns. */
-    mama_status        status   = MAMA_STATUS_OK;
-
-    mamaTransport_removePublisher(impl->mTport, impl->mTransportHandle);
-
-    if (!impl->mMamaPublisherBridgeImpl)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mamaPublisher_destroy() No publisher impl. Cannot destroy.");
-        status = MAMA_STATUS_INVALID_ARG;
-    }
-
-    if (!impl->mBridgeImpl)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mamaPublisher_destroy() No bridge impl. Cannot destroy.");
-        status = MAMA_STATUS_INVALID_ARG;
-    }
-
-    if (impl->mPendingActions && list_size (impl->mPendingActions))
-    {
-        if (MAMA_STATUS_OK!=(status=mamaTransport_throttleRemoveFromList (
-                                                impl->mTport,
-                                                MAMA_THROTTLE_DEFAULT,
-                                                impl->mPendingActions)))
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaPublisher_destroy():"
-                    " Failed to remove actions for publisher");
-        }
-    }
-
-    list_destroy (impl->mPendingActions, NULL, NULL);
-
-    if (impl->mBridgeImpl &&
-            impl->mMamaPublisherBridgeImpl)
-    {
-        if (MAMA_STATUS_OK!=(status=
-                    impl->mBridgeImpl->bridgeMamaPublisherDestroy
-                    (impl->mMamaPublisherBridgeImpl)))
-        {
-           mama_log (MAMA_LOG_LEVEL_ERROR, "mamaPublisher_destroy(): "
-                     "Could not destroy publisher bridge.");
-        }
-    }
-
-    impl->mBridgeImpl               =   NULL;
-    impl->mMamaPublisherBridgeImpl  =   NULL;
-    impl->mTport                    =   NULL;
-    return status;
+    return mamaPublisher_createByIndex (result,
+                                        tport,
+                                        0,
+                                        queue,
+                                        cb,
+                                        symbol,
+                                        source,
+                                        root,
+                                        closure);
 }
 
 mama_status
@@ -230,7 +297,6 @@ mamaPublisher_destroy (mamaPublisher publisher)
         status = mamaPublisherImpl_destroy(impl);
     }
 
-    free (impl);
     return status;
 }
 
@@ -611,3 +677,262 @@ mamaPublisher_getTransport (mamaPublisher   publisher,
 
     return MAMA_STATUS_OK;
 }
+
+mama_status
+mamaPublisherCallbacks_allocate (mamaPublisherCallbacks** cb)
+{
+    mamaPublisherCallbacks* c = NULL;
+
+    *cb = NULL;
+    c = (mamaPublisherCallbacks*)calloc (1, sizeof (mamaPublisherCallbacks));
+    if (NULL == c) return MAMA_STATUS_NOMEM;
+    *cb = c;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaPublisherCallbacks_deallocate (mamaPublisherCallbacks* cb)
+{
+    if (NULL == cb) return MAMA_STATUS_NULL_ARG;
+    free((void*) cb);
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaPublisher_getUserCallbacks (mamaPublisher publisher,
+                                mamaPublisherCallbacks* cb)
+{
+    mamaPublisherImpl *impl = (mamaPublisherImpl *)publisher;
+    if (NULL == impl ||  NULL == cb)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    cb->onCreate = impl->mUserCallbacks.onCreate;
+    cb->onError = impl->mUserCallbacks.onError;
+    cb->onDestroy = impl->mUserCallbacks.onDestroy;
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaPublisher_getState (mamaPublisher publisher,
+                        mamaPublisherState* state)
+{
+    mama_status ret = MAMA_STATUS_NULL_ARG;
+    if((NULL != publisher) && (NULL != state))
+    {
+        /* Get the impl. */
+        mamaPublisherImpl *impl = (mamaPublisherImpl *)publisher;
+
+        /* Return the state. */
+        *state = wInterlocked_read(&impl->mState);
+        ret = MAMA_STATUS_OK;
+    }
+
+    return ret;
+}
+
+const char*
+mamaPublisher_stringForState (mamaPublisherState state)
+{
+    /* Switch the state and simply return a string representation of the error code. */
+    switch(state)
+    {
+        case MAMA_PUBLISHER_UNKNOWN:                return "MAMA_PUBLISHER_UNKNOWN";
+        case MAMA_PUBLISHER_CREATING:               return "MAMA_PUBLISHER_CREATING";
+        case MAMA_PUBLISHER_LIVE:                   return "MAMA_PUBLISHER_LIVE";
+        case MAMA_PUBLISHER_DESTROYING:             return "MAMA_PUBLISHER_DESTROYING";
+        case MAMA_PUBLISHER_DESTROYED_BRIDGE:       return "MAMA_PUBLISHER_DESTROYED_BRIDGE";
+        case MAMA_PUBLISHER_DESTROYING_WAIT_BRIDGE: return "MAMA_PUBLISHER_DESTROYING_WAIT_BRIDGE";
+        case MAMA_PUBLISHER_DESTROYED:              return "MAMA_PUBLISHER_DESTROYED";
+    }
+
+    return "State not recognised";
+}
+
+mama_status
+mamaPublisher_getRoot (mamaPublisher publisher, const char** root)
+{
+    mamaPublisherImpl* impl = (mamaPublisherImpl*) publisher;
+    if (NULL == impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    *root = impl->mRoot;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaPublisher_getSource (mamaPublisher publisher, const char** source)
+{
+    mamaPublisherImpl* impl = (mamaPublisherImpl*) publisher;
+    if (NULL == impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    *source = impl->mSource;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaPublisher_getSymbol (mamaPublisher publisher, const char** symbol)
+{
+    mamaPublisherImpl* impl = (mamaPublisherImpl*) publisher;
+    if (NULL == impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    *symbol = impl->mSymbol;
+    return MAMA_STATUS_OK;
+}
+
+/* IMPL */
+
+static void mamaPublisherImpl_cleanup(mamaPublisherImpl* impl)
+{
+    impl->mBridgeImpl               =   NULL;
+    impl->mMamaPublisherBridgeImpl  =   NULL;
+    impl->mTport                    =   NULL;
+    impl->mQueue                    =   NULL;
+    impl->mClosure                  =   NULL;
+
+    if (NULL != impl->mRoot) free((void*) impl->mRoot);
+    if (NULL != impl->mSource) free((void*) impl->mSource);
+    if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
+
+    /* Destroy the state. */
+    wInterlocked_destroy(&impl->mState);
+
+    /* Destroy the mutex. */
+    wlock_destroy(impl->mCreateDestroyLock);
+
+    free (impl);
+}
+
+static void MAMACALLTYPE mamaPublisher_onPublisherDestroyed(mamaPublisher publisher, void *closure)
+{
+    mamaPublisherImpl* impl = (mamaPublisherImpl*) publisher;
+
+    wlock_lock(impl->mCreateDestroyLock);
+
+    if(NULL != impl->mUserCallbacks.onDestroy)
+    {
+        (*impl->mUserCallbacks.onDestroy)(publisher, impl->mClosure);
+    }
+
+    switch(wInterlocked_read(&impl->mState))
+    {
+        case MAMA_PUBLISHER_DESTROYING:
+            /* Still in the destroy() call */
+            mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_DESTROYED_BRIDGE);
+            break;
+        case MAMA_PUBLISHER_DESTROYING_WAIT_BRIDGE:
+            /* Not in destroy() finish */
+            mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_DESTROYED);
+            wlock_unlock(impl->mCreateDestroyLock);
+            mamaPublisherImpl_cleanup(impl);
+            return;
+            break;
+        default:
+            /* TODO */
+            break;
+    }
+    wlock_unlock(impl->mCreateDestroyLock);
+}
+
+static void mamaPublisherImpl_setState(mamaPublisherImpl* impl, mamaPublisherState state)
+{
+    /* Set the state using an atomic operation so it will be thread safe. */
+    wInterlocked_set(state, &impl->mState);
+    mama_log(MAMA_LOG_LEVEL_FINEST, "Pubilsher %p is now at state %s.", impl, mamaPublisher_stringForState(state));
+}
+
+static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
+{
+    /* Returns. */
+    mama_status        status   = MAMA_STATUS_OK;
+
+    wlock_lock(impl->mCreateDestroyLock);
+
+    /* Set the state to be deleted to at least show in the log that it has been completely removed. */
+    mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_DESTROYING);
+                
+    mamaTransport_removePublisher(impl->mTport, impl->mTransportHandle);
+
+    if (!impl->mMamaPublisherBridgeImpl)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mamaPublisher_destroy() No publisher impl. Cannot destroy.");
+        status = MAMA_STATUS_INVALID_ARG;
+    }
+
+    if (!impl->mBridgeImpl)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mamaPublisher_destroy() No bridge impl. Cannot destroy.");
+        status = MAMA_STATUS_INVALID_ARG;
+    }
+
+    if (impl->mPendingActions && list_size (impl->mPendingActions))
+    {
+        if (MAMA_STATUS_OK!=(status=mamaTransport_throttleRemoveFromList (
+                                                impl->mTport,
+                                                MAMA_THROTTLE_DEFAULT,
+                                                impl->mPendingActions)))
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaPublisher_destroy():"
+                    " Failed to remove actions for publisher");
+        }
+    }
+
+    list_destroy (impl->mPendingActions, NULL, NULL);
+
+    wlock_unlock(impl->mCreateDestroyLock);
+
+    if (impl->mBridgeImpl &&
+            impl->mMamaPublisherBridgeImpl)
+    {
+        if (MAMA_STATUS_OK!=(status=
+                    impl->mBridgeImpl->bridgeMamaPublisherDestroy
+                    (impl->mMamaPublisherBridgeImpl)))
+        {
+           mama_log (MAMA_LOG_LEVEL_ERROR, "mamaPublisher_destroy(): "
+                     "Could not destroy publisher bridge.");
+        }
+    }
+
+    wlock_lock(impl->mCreateDestroyLock);
+
+    switch(wInterlocked_read(&impl->mState))
+    {
+        case MAMA_PUBLISHER_DESTROYING:
+            /* The bridge has not yet called onDestroy */
+            mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_DESTROYING_WAIT_BRIDGE);
+            break;
+        case MAMA_PUBLISHER_DESTROYED_BRIDGE:
+            /* The bridge has called onDestroy, so finish up */
+            mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_DESTROYED);
+            wlock_unlock(impl->mCreateDestroyLock);
+            mamaPublisherImpl_cleanup(impl);
+            return status;
+            break;
+        default:
+            /* TODO */
+            break;
+    }
+
+    wlock_unlock(impl->mCreateDestroyLock);
+
+    return status;
+}
+
+mamaTransport
+mamaPublisherImpl_getTransportImpl (mamaPublisher publisher)
+{
+    mamaPublisherImpl* impl   = (mamaPublisherImpl*)publisher;
+
+    if (!impl) return NULL;
+    return impl->mTport;
+}
+
