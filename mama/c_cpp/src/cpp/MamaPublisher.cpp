@@ -147,6 +147,7 @@ namespace Wombat
    {
         mCallback = cb;
         mPimpl->createWithCallbacks (transport, queue, cb, closure, topic, source, root);
+        mTransport = transport;
    }
 
    MamaPublisherCallback* MamaPublisher::getCallback() const
