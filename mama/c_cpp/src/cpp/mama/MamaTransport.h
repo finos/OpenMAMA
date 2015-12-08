@@ -60,20 +60,6 @@ namespace Wombat
             return;
         }
 
-        virtual void onTopicPublishCreate (MamaTransport* transport,
-                                           const char* topic,
-                                           const void* platformInfo)
-        {
-            return;
-        }
-
-        virtual void onTopicPublishDestroy (MamaTransport* transport,
-                                            const char* topic,
-                                            const void* platformInfo)
-        {
-            return;
-        }
-
         virtual void onTopicPublishError (MamaTransport* transport,
                                           const char* topic,
                                           const void* platformInfo)

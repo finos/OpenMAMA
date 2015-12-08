@@ -92,8 +92,6 @@ typedef enum
 {
     MAMA_TRANSPORT_TOPIC_SUBSCRIBED,
     MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED,
-    MAMA_TRANSPORT_TOPIC_PUBLISH_CREATE,             /* onCreate */
-    MAMA_TRANSPORT_TOPIC_PUBLISH_DESTROY,            /* onDestroy */
     MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR,              /* onError: default error */
     MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED, /* onError: not entitled */
     MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL    /* onError: bad symbol */

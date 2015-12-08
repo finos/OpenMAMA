@@ -73,12 +73,6 @@ namespace Wombat
             case MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED:
                 transport->mPimpl->myTopicEventCallback->onTopicUnsubscribe (transport, topic, platformInfo);
                 return;
-            case MAMA_TRANSPORT_TOPIC_PUBLISH_CREATE:
-                transport->mPimpl->myTopicEventCallback->onTopicPublishCreate (transport, topic, platformInfo);
-                return;
-            case MAMA_TRANSPORT_TOPIC_PUBLISH_DESTROY:
-                transport->mPimpl->myTopicEventCallback->onTopicPublishDestroy (transport, topic, platformInfo);
-                return;
             case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:
                 transport->mPimpl->myTopicEventCallback->onTopicPublishError (transport, topic, platformInfo);
                 return;
@@ -174,34 +168,6 @@ namespace Wombat
             catch (...)
             {
                 fprintf(stderr, "MAMATransportTopicEventCallback onTopicUnsubscribe, EXCEPTION CAUGHT\n");
-            }
-        }
-
-        void onTopicPublishCreate (MamaTransport* tport,
-                                   const char* topic,
-                                   const void* platformInfo)
-        {
-            try
-            {
-                usercallback->onTopicPublishCreate(tport, topic, platformInfo);
-            }
-            catch (...)
-            {
-                fprintf(stderr, "MAMATransportTopicEventCallback onTopicPublishCreate, EXCEPTION CAUGHT\n");
-            }
-        }
-
-        void onTopicPublishDestroy (MamaTransport* tport,
-                                    const char* topic,
-                                    const void* platformInfo)
-        {
-            try
-            {
-                usercallback->onTopicPublishDestroy(tport, topic, platformInfo);
-            }
-            catch (...)
-            {
-                fprintf(stderr, "MAMATransportTopicEventCallback onTopicPublishDestroy, EXCEPTION CAUGHT\n");
             }
         }
 

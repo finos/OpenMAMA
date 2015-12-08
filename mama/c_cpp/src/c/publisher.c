@@ -816,7 +816,7 @@ static void MAMACALLTYPE mamaPublisher_onPublisherDestroyed(mamaPublisher publis
 
     wlock_lock(impl->mCreateDestroyLock);
 
-    if(NULL != impl->mUserCallbacks.onDestroy)
+    if (NULL != impl->mUserCallbacks.onDestroy)
     {
         (*impl->mUserCallbacks.onDestroy)(publisher, impl->mClosure);
     }

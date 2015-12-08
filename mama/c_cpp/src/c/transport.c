@@ -1689,8 +1689,6 @@ mamaTransportTopicEvent_toString (mamaTransportTopicEvent event)
     {
         case MAMA_TRANSPORT_TOPIC_SUBSCRIBED:                 return "SUBSCRIBED";
         case MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED:               return "UNSUBSCRIBED";
-        case MAMA_TRANSPORT_TOPIC_PUBLISH_CREATE:             return "PUBLISH_CREATE";
-        case MAMA_TRANSPORT_TOPIC_PUBLISH_DESTROY:            return "PUBLISH_DESTROY";
         case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:              return "PUBLISH_ERROR";
         case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED: return "PUBLISH_ERROR_NOT_ENTITLED";
         case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:   return "PUBLISH_ERROR_BAD_SYMBOL";
