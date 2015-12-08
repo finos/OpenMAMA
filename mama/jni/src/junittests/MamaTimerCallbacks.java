@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+package com.wombat.mama.junittests;
+
 import java.nio.*;
 import junit.framework.*;
 import com.wombat.mama.*;
@@ -44,7 +46,7 @@ public class MamaTimerCallbacks extends TestCase
     protected void setUp()
     {
         // Load the bridge
-        mBridge = Mama.loadBridge("wmw");
+        mBridge = Mama.loadBridge(Main.GetBridgeName());
 
         // Open mama
         Mama.open();

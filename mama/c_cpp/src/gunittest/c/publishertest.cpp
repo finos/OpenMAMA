@@ -27,13 +27,14 @@
 #include "mama/timer.h"
 #include "mama/queue.h"
 #include "mama/io.h"
+#include <publisherimpl.h>
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
 
 
 class MamaPublisherTestC : public ::testing::Test
-{	
+{
 protected:
     MamaPublisherTestC();          
     virtual ~MamaPublisherTestC(); 
@@ -55,7 +56,7 @@ MamaPublisherTestC::~MamaPublisherTestC()
 }
 
 void MamaPublisherTestC::SetUp(void)
-{	
+{
     m_this = this;
 
     mama_loadBridge (&mBridge, getMiddleware());
@@ -88,10 +89,40 @@ TEST_F (MamaPublisherTestC, CreateDestroy)
                mamaTransport_allocate (&tport));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTransport_create (tport, "test_tport", mBridge));
+               mamaTransport_create (tport, getTransport(), mBridge));
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_create (&publisher, tport, source, NULL, NULL));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_destroy (publisher));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_destroy (tport));
+}
+
+/*  Description: Create a mamaPublisher and get its transport
+ *
+ *  Expected Result: MAMA_STATUS_OK
+ */
+TEST_F (MamaPublisherTestC, GetTransport)
+{
+    mamaPublisher    publisher = NULL;
+    mamaTransport    tport     = NULL;
+    const char*      symbol    = "SYM";
+    const char*      root      = "ROOT";
+    const char*      source    = "SRC";
+   
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_allocate (&tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_create (tport, getTransport(), mBridge));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_create (&publisher, tport, source, NULL, NULL));
+
+    ASSERT_EQ(tport, mamaPublisherImpl_getTransportImpl (publisher));
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_destroy (publisher));
@@ -126,7 +157,7 @@ TEST_F (MamaPublisherTestC, DISABLED_Send)
                mamaTransport_allocate (&tport));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTransport_create (tport, "test_tport", mBridge));
+               mamaTransport_create (tport, getTransport(), mBridge));
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_create (&publisher, tport, source, NULL, NULL));

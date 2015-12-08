@@ -18,61 +18,46 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 
 package com.wombat.mama.junittests;
 
-import java.nio.*;
-import junit.framework.*;
+import junit.framework.TestCase;
 import com.wombat.mama.*;
 
 /**
  *
- * This class will test the MamaMsg.getStringAsCharBuffer() method.
+ * This class will test the MamaQueueGroup
  */
-public class MamaMsgGetStringAsCharBuffer extends TestCase
+public class MamaQueueGroupTest extends TestCase
 {
-    /* ****************************************************** */
-    /* Protected Member Variables. */
-    /* ****************************************************** */
-
-    // The message under test
-    private MamaMsg mMessage;
-    
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
+    private MamaBridge bridge;
 
     @Override
     protected void setUp()
     {
-        // Allocate the message
-        mMessage = new MamaMsg();
-
-        // Add a string to the message
-        mMessage.addString(null, 1, "This is a test");
+        bridge = Mama.loadBridge(Main.GetBridgeName());
+        Mama.open();
     }
 
     @Override
     protected void tearDown()
     {
-        // Clear the message reference
-        mMessage = null;
+        Mama.close();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
-    public void testGetCharBuffer()
+    public void testMamaQueueGroup()
     {
-        // Get the character buffer from the message
-        // CharBuffer charBuffer = mMessage.getStringAsCharBuffer(null, 1);
-
-        // Verify that the string representation is correct
-        // Assert.assertEquals("This is a test", charBuffer.toString());
+        int num = 4;
+        MamaQueueGroup g = new MamaQueueGroup(num, bridge);
+        
+        assertEquals(num, g.getNumberOfQueues());
     }
 }
+

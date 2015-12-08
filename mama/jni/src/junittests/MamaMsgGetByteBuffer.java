@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+package com.wombat.mama.junittests;
+
 import junit.framework.TestCase;
 import com.wombat.mama.*;
 import com.wombat.common.*;
@@ -52,8 +54,8 @@ public class MamaMsgGetByteBuffer extends TestCase
     @Override
     protected void setUp()
     {
-         // Load the wmw bridge
-        mBridge = Mama.loadBridge("wmw");
+         // Load the bridge
+        mBridge = Mama.loadBridge(Main.GetBridgeName());
         Mama.open();
 
         // Create the message
