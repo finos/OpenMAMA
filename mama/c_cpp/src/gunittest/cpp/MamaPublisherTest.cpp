@@ -252,3 +252,45 @@ TEST_F(MamaPublisherTest, PublishWithCallbacksBadSource)
     ASSERT_EQ(numPublishes, testCallback->getOnErrorCount());
 }
 
+/**
+ * Test publisher with NULL callback.
+ */
+TEST_F(MamaPublisherTest, PublishWithNullCallback)
+{
+    int numPublishes = 10;
+
+    // Allocate a publisher
+    MamaPublisher *publisher = new MamaPublisher();
+
+    // Get the default queue
+    MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
+
+    // Create the publisher
+    publisher->createWithCallbacks(m_transport, queue, NULL, NULL, getSymbol(), getBadSource(), NULL);
+
+    // Process messages until the first message is received
+    Mama::startBackground(m_bridge, this);
+
+    MamaMsg* msg = new MamaMsg();
+    msg->create();
+    msg->addU8("", MamaFieldMsgType.mFid, MAMA_MSG_TYPE_INITIAL);
+    msg->addU8("", MamaFieldMsgStatus.mFid, MAMA_MSG_STATUS_OK);
+    msg->addString("", 11, "TEST STRING");    // MdFeedName
+
+    for (int i = 0; i < numPublishes; ++i)
+    {
+        publisher->send(msg);
+    }
+
+    // Destroy the publisher
+    publisher->destroy();            
+
+    // Make sure destroys are finished
+    sleep(2);
+
+    delete publisher;
+    delete queue;
+
+    Mama::stop(m_bridge);
+}
+
