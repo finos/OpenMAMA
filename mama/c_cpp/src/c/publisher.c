@@ -199,6 +199,10 @@ _createByIndex (mamaPublisher*              result,
                                    impl->mClosure
     ))))
     {
+        if (NULL != impl->mRoot) free((void*) impl->mRoot);
+        if (NULL != impl->mSource) free((void*) impl->mSource);
+        if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
+        list_destroy (impl->mPendingActions, NULL, NULL);
         free (impl);
         return status;
     }
@@ -845,7 +849,15 @@ static void mamaPublisherImpl_setState(mamaPublisherImpl* impl, mamaPublisherSta
 {
     /* Set the state using an atomic operation so it will be thread safe. */
     wInterlocked_set(state, &impl->mState);
-    mama_log(MAMA_LOG_LEVEL_FINEST, "Pubilsher %p is now at state %s.", impl, mamaPublisher_stringForState(state));
+    if (mama_getLogLevel() >= MAMA_LOG_LEVEL_FINEST)
+    {
+        const char* source = "(none)";
+        const char* symbol = "(none)";;
+        mamaPublisher_getSource((mamaPublisher) impl, &source);
+        mamaPublisher_getSymbol((mamaPublisher) impl, &symbol);
+        mama_log(MAMA_LOG_LEVEL_FINEST, "Pubilsher %s.%s is now at state %s.",
+            source, symbol, mamaPublisher_stringForState(state));
+    }
 }
 
 static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
