@@ -68,7 +68,7 @@ protected:
     virtual void SetUp(void);
     virtual void TearDown(void);
 
-	virtual void onStartComplete(MamaStatus status);
+    virtual void onStartComplete(MamaStatus status);
 
 };
 

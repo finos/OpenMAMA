@@ -35,31 +35,31 @@ MamaPublisherTest::~MamaPublisherTest(void)
 
 void MamaPublisherTest::SetUp(void)
 {   
-   	// Save the this pointer in the member variable to get around gtest problems
-   	m_this = this;
+       // Save the this pointer in the member variable to get around gtest problems
+       m_this = this;
 
-   	// Load the bridge
-   	m_bridge = Mama::loadBridge(getMiddleware());
+       // Load the bridge
+       m_bridge = Mama::loadBridge(getMiddleware());
 
-   	// Open mama
-   	Mama::open();
+       // Open mama
+       Mama::open();
 
-   	// Transport
-   	transportName = getTransport();
-	m_transport = new MamaTransport();
-   	m_transport->create(transportName, m_bridge);
+       // Transport
+       transportName = getTransport();
+    m_transport = new MamaTransport();
+       m_transport->create(transportName, m_bridge);
 }
 
 void MamaPublisherTest::TearDown(void)
 {
-   	// Destroy the transport
-   	delete m_transport;
+       // Destroy the transport
+       delete m_transport;
 
-   	// Close mama
-   	Mama::close();
+       // Close mama
+       Mama::close();
 
-   	// Clean the member this pointer
-   	m_this = NULL;   
+       // Clean the member this pointer
+       m_this = NULL;   
 }
 
 void MamaPublisherTest::onStartComplete(MamaStatus status)
@@ -72,45 +72,45 @@ void MamaPublisherTest::onStartComplete(MamaStatus status)
 class TestCallback : public MamaPublisherCallback
 {
 private:
-	int onCreateCount;
-	int onErrorCount;
-	int onDestroyCount;
+    int onCreateCount;
+    int onErrorCount;
+    int onDestroyCount;
 
 public:
 
-	int getOnCreateCount() { return onCreateCount; }
-	int getOnErrorCount() { return onErrorCount; }
-	int getOnDestroyCount() { return onDestroyCount; }
+    int getOnCreateCount() { return onCreateCount; }
+    int getOnErrorCount() { return onErrorCount; }
+    int getOnDestroyCount() { return onDestroyCount; }
     
-   	TestCallback()
-   	{
-		onCreateCount = 0;
-		onErrorCount = 0;
-		onDestroyCount = 0;
-   	}
+       TestCallback()
+       {
+        onCreateCount = 0;
+        onErrorCount = 0;
+        onDestroyCount = 0;
+       }
 
-   	virtual void onCreate (
-       	MamaPublisher*  publisher,
-		void* closure)
-   	{
- 		onCreateCount++;
-   	}
+       virtual void onCreate (
+           MamaPublisher*  publisher,
+        void* closure)
+       {
+         onCreateCount++;
+       }
 
-   	virtual void onError (
-       	MamaPublisher*    publisher,
-       	const MamaStatus& status,
-		const char*       info,
-       	void*             closure)
-   	{
- 		onErrorCount++;
-   	}
+       virtual void onError (
+           MamaPublisher*    publisher,
+           const MamaStatus& status,
+        const char*       info,
+           void*             closure)
+       {
+         onErrorCount++;
+       }
 
-   	virtual void onDestroy (
-       	MamaPublisher*  publisher,
-		void*           closure)
-   	{
- 		onDestroyCount++;
-   	}
+       virtual void onDestroy (
+           MamaPublisher*  publisher,
+        void*           closure)
+       {
+         onDestroyCount++;
+       }
 };
 
 /**
@@ -118,7 +118,7 @@ public:
  */
 TEST_F(MamaPublisherTest, Publish)
 {
-	int numPublishes = 10;
+    int numPublishes = 10;
 
     // Allocate a publisher
     MamaPublisher *publisher = new MamaPublisher();
@@ -127,24 +127,24 @@ TEST_F(MamaPublisherTest, Publish)
     publisher->create(m_transport, getSymbol(), getSource(), NULL);
 
     // Process messages until the first message is received
-	Mama::startBackground(m_bridge, this);
+    Mama::startBackground(m_bridge, this);
 
-	MamaMsg* msg = new MamaMsg();
-	msg->create();
-	msg->addU8("", MamaFieldMsgType.mFid, MAMA_MSG_TYPE_INITIAL);
-	msg->addU8("", MamaFieldMsgStatus.mFid, MAMA_MSG_STATUS_OK);
-	msg->addString("", 11, "TEST STRING");	// MdFeedName
+    MamaMsg* msg = new MamaMsg();
+    msg->create();
+    msg->addU8("", MamaFieldMsgType.mFid, MAMA_MSG_TYPE_INITIAL);
+    msg->addU8("", MamaFieldMsgStatus.mFid, MAMA_MSG_STATUS_OK);
+    msg->addString("", 11, "TEST STRING");    // MdFeedName
 
-	for (int i = 0; i < numPublishes; ++i)
-	{
-		publisher->send(msg);
-	}
+    for (int i = 0; i < numPublishes; ++i)
+    {
+        publisher->send(msg);
+    }
 
     // Destroy the publisher
     publisher->destroy();            
 
-	// Let destroy finish
-	sleep(2);
+    // Let destroy finish
+    sleep(2);
 
     // Delete the publisher
     delete publisher;
@@ -157,7 +157,7 @@ TEST_F(MamaPublisherTest, Publish)
  */
 TEST_F(MamaPublisherTest, PublishWithCallbacks)
 {
-	int numPublishes = 10;
+    int numPublishes = 10;
 
     // Create a callback object
     TestCallback *testCallback = new TestCallback();
@@ -172,34 +172,34 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
     publisher->createWithCallbacks(m_transport, queue, testCallback, NULL, getSymbol(), getSource(), NULL);
 
     // Process messages until the first message is received
-	Mama::startBackground(m_bridge, this);
+    Mama::startBackground(m_bridge, this);
 
-	MamaMsg* msg = new MamaMsg();
-	msg->create();
-	msg->addU8("", MamaFieldMsgType.mFid, MAMA_MSG_TYPE_INITIAL);
-	msg->addU8("", MamaFieldMsgStatus.mFid, MAMA_MSG_STATUS_OK);
-	msg->addString("", 11, "TEST STRING");	// MdFeedName
+    MamaMsg* msg = new MamaMsg();
+    msg->create();
+    msg->addU8("", MamaFieldMsgType.mFid, MAMA_MSG_TYPE_INITIAL);
+    msg->addU8("", MamaFieldMsgStatus.mFid, MAMA_MSG_STATUS_OK);
+    msg->addString("", 11, "TEST STRING");    // MdFeedName
 
-	for (int i = 0; i < numPublishes; ++i)
-	{
-		publisher->send(msg);
-	}
+    for (int i = 0; i < numPublishes; ++i)
+    {
+        publisher->send(msg);
+    }
 
     // Destroy the publisher
     publisher->destroy();            
 
-	// Make sure destroys are finished
-	sleep(2);
+    // Make sure destroys are finished
+    sleep(2);
 
     delete publisher;
-	delete queue;
+    delete queue;
     delete testCallback;
 
     Mama::stop(m_bridge);
 
-	ASSERT_EQ(1, testCallback->getOnCreateCount());
-	ASSERT_EQ(1, testCallback->getOnDestroyCount());
-	ASSERT_EQ(0, testCallback->getOnErrorCount());
+    ASSERT_EQ(1, testCallback->getOnCreateCount());
+    ASSERT_EQ(1, testCallback->getOnDestroyCount());
+    ASSERT_EQ(0, testCallback->getOnErrorCount());
 }
 
 /**
@@ -207,7 +207,7 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
  */
 TEST_F(MamaPublisherTest, PublishWithCallbacksBadSource)
 {
-	int numPublishes = 10;
+    int numPublishes = 10;
 
     // Create a callback object
     TestCallback *testCallback = new TestCallback();
@@ -222,33 +222,33 @@ TEST_F(MamaPublisherTest, PublishWithCallbacksBadSource)
     publisher->createWithCallbacks(m_transport, queue, testCallback, NULL, getSymbol(), getBadSource(), NULL);
 
     // Process messages until the first message is received
-	Mama::startBackground(m_bridge, this);
+    Mama::startBackground(m_bridge, this);
 
-	MamaMsg* msg = new MamaMsg();
-	msg->create();
-	msg->addU8("", MamaFieldMsgType.mFid, MAMA_MSG_TYPE_INITIAL);
-	msg->addU8("", MamaFieldMsgStatus.mFid, MAMA_MSG_STATUS_OK);
-	msg->addString("", 11, "TEST STRING");	// MdFeedName
+    MamaMsg* msg = new MamaMsg();
+    msg->create();
+    msg->addU8("", MamaFieldMsgType.mFid, MAMA_MSG_TYPE_INITIAL);
+    msg->addU8("", MamaFieldMsgStatus.mFid, MAMA_MSG_STATUS_OK);
+    msg->addString("", 11, "TEST STRING");    // MdFeedName
 
-	for (int i = 0; i < numPublishes; ++i)
-	{
-		publisher->send(msg);
-	}
+    for (int i = 0; i < numPublishes; ++i)
+    {
+        publisher->send(msg);
+    }
 
     // Destroy the publisher
     publisher->destroy();            
 
-	// Make sure destroys are finished
-	sleep(2);
+    // Make sure destroys are finished
+    sleep(2);
 
     delete publisher;
-	delete queue;
+    delete queue;
     delete testCallback;
 
     Mama::stop(m_bridge);
 
-	ASSERT_EQ(1, testCallback->getOnCreateCount());
-	ASSERT_EQ(1, testCallback->getOnDestroyCount());
-	ASSERT_EQ(numPublishes, testCallback->getOnErrorCount());
+    ASSERT_EQ(1, testCallback->getOnCreateCount());
+    ASSERT_EQ(1, testCallback->getOnDestroyCount());
+    ASSERT_EQ(numPublishes, testCallback->getOnErrorCount());
 }
 
