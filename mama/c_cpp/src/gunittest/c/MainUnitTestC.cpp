@@ -44,6 +44,7 @@ static const char* gPayload    = "wmsg";
 static const char* gTransport  = "test_tport";
 static const char* gSymbol     = "SYM";
 static const char* gSource     = "SRC";
+static const char* gBadSource  = "BADSRC";
 
 
 const char* getMiddleware (void)
@@ -71,6 +72,11 @@ const char* getSource (void)
     return gSource;
 }
 
+const char* getBadSource (void)
+{
+    return gBadSource;
+}
+
 static void parseCommandLine (int argc, char** argv)
 {
     int i = 1;
@@ -96,6 +102,11 @@ static void parseCommandLine (int argc, char** argv)
         else if (strcmp ("-S", argv[i]) == 0)
         {
             gSource = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-badsource", argv[i]) == 0)
+        {
+            gBadSource = argv[i+1];
             i += 2;
         }
         else if (strcmp ("-s", argv[i]) == 0)

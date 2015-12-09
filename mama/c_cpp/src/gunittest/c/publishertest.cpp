@@ -72,6 +72,53 @@ void MamaPublisherTestC::TearDown(void)
 /* Test Functions */
 /* ************************************************************************* */
 
+/**
+ * Counters for publisher events callbacks
+ */
+int pubOnCreateCount = 0;
+int pubOnErrorCount = 0;
+int pubOnDestroyCount = 0;
+
+/**
+ * Publisher event callbacks
+ */
+void pubOnCreate (mamaPublisher publisher, void* closure)
+{
+    pubOnCreateCount++;
+}
+
+void pubOnDestroy (mamaPublisher publisher, void* closure)
+{
+    pubOnDestroyCount++;
+}
+
+void pubOnError (mamaPublisher publisher,
+                 mama_status   status,
+                 const char*   info,
+                 void*         closure)
+{
+    pubOnErrorCount++;
+}
+
+/**
+ * Publisher event callbacks via transport topic callbacks
+ */
+void transportTopicCb (mamaTransport tport,
+                       mamaTransportTopicEvent event,
+                       const char* topic,
+                       const void* platformInfo,
+                       void *closure)
+{
+    switch (event)
+    {
+        case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:
+        case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED:
+        case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:
+            pubOnErrorCount++;
+            break;
+    }
+}
+
 /*  Description: Create a mamaPublisher then destroy it.  
  *
  *  Expected Result: MAMA_STATUS_OK
@@ -83,6 +130,10 @@ TEST_F (MamaPublisherTestC, CreateDestroy)
     const char*      symbol    = getSymbol();
     const char*      source    = getSource();
    
+    pubOnCreateCount = 0;
+    pubOnErrorCount = 0;
+    pubOnDestroyCount = 0;
+
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_allocate (&tport));
 
@@ -97,6 +148,10 @@ TEST_F (MamaPublisherTestC, CreateDestroy)
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_destroy (tport));
+
+    ASSERT_EQ (0, pubOnCreateCount);
+    ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (0, pubOnDestroyCount);
 }
 
 /*  Description: Create a mamaPublisher and mamaMsg, send the msg using 
@@ -112,6 +167,10 @@ TEST_F (MamaPublisherTestC, Send)
     const char*      source    = getSource();
     mamaMsg          msg       = NULL;
 
+    pubOnCreateCount = 0;
+    pubOnErrorCount = 0;
+    pubOnDestroyCount = 0;
+
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
     ASSERT_EQ (MAMA_STATUS_OK,
@@ -139,6 +198,10 @@ TEST_F (MamaPublisherTestC, Send)
                mamaTransport_destroy (tport));
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
+
+    ASSERT_EQ (0, pubOnCreateCount);
+    ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (0, pubOnDestroyCount);
 }
 
 /*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
@@ -146,61 +209,25 @@ TEST_F (MamaPublisherTestC, Send)
  *
  *  Expected Result: MAMA_STATUS_OK
  */
-int pubOnCreateCount = 0;
-int pubOnErrorCount = 0;
-int pubOnDestroyCount = 0;
-
-void pubOnCreate (mamaPublisher publisher, void* closure)
-{
-	pubOnCreateCount++;
-}
-
-void pubOnDestroy (mamaPublisher publisher, void* closure)
-{
-	pubOnDestroyCount++;
-}
-
-void pubOnError (mamaPublisher publisher,
-                 mama_status   status,
-                 const char*   info,
-                 void*         closure)
-{
-	pubOnErrorCount++;
-}
-
-void transportTopicCb (mamaTransport tport,
-                       mamaTransportTopicEvent event,
-                       const char* topic,
-                       const void* platformInfo,
-                       void *closure)
-{
-	switch (event)
-	{
-		case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:
-		case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED:
-		case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:
-			pubOnErrorCount++;
-			break;
-	}
-}
-
 TEST_F (MamaPublisherTestC, SendWithCallbacks)
 {
-    mamaPublisher    publisher = NULL;
-    mamaTransport    tport     = NULL;
-    const char*      symbol    = getSymbol();
-    const char*      source    = getSource();
-    mamaMsg          msg       = NULL;
-    mamaQueue        queue     = NULL;
-	mamaPublisherCallbacks cb;
+    mamaPublisher    publisher     = NULL;
+    mamaTransport    tport         = NULL;
+    const char*      symbol        = getSymbol();
+    const char*      source        = getSource();
+    mamaMsg          msg           = NULL;
+    mamaQueue        queue         = NULL;
+    mamaPublisherCallbacks cb;
+    int              i             = 0;
+    int              numPublishers = 10;
 
-	pubOnCreateCount = 0;
-	pubOnErrorCount = 0;
-	pubOnDestroyCount = 0;
+    pubOnCreateCount = 0;
+    pubOnErrorCount = 0;
+    pubOnDestroyCount = 0;
 
-	cb.onError = pubOnError;
-	cb.onCreate = pubOnCreate;
-	cb.onDestroy = pubOnDestroy;
+    cb.onError = pubOnError;
+    cb.onCreate = pubOnCreate;
+    cb.onDestroy = pubOnDestroy;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -211,7 +238,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
                mamaMsg_addString (msg, symbol, 101, source));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-			   mama_getDefaultEventQueue (mBridge, &queue));
+               mama_getDefaultEventQueue (mBridge, &queue));
  
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_allocate (&tport));
@@ -219,14 +246,17 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_create (tport, getTransport(), mBridge));
 
-    // ASSERT_EQ (MAMA_STATUS_OK,
-               // mamaTransport_setTransportTopicCallback (tport, transportCb, NULL);
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, &cb, NULL));
 
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mamaPublisher_send (publisher, msg));
+    for (i = 0; i < numPublishers; ++i)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK,
+                   mamaPublisher_send (publisher, msg));
+    }
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_destroy (publisher));
@@ -236,8 +266,214 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 
-	ASSERT_EQ (1, pubOnCreateCount);
-	ASSERT_EQ (0, pubOnErrorCount);
-	ASSERT_EQ (1, pubOnDestroyCount);
+    ASSERT_EQ (1, pubOnCreateCount);
+    ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (1, pubOnDestroyCount);
+}
+
+/*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
+ *               mamaPublisher then destroy both. A non-entitled source is used to generate
+ *               publisher error events.
+ *
+ *  Expected Result: MAMA_STATUS_OK
+ */
+TEST_F (MamaPublisherTestC, SendWithCallbacksBadSource)
+{
+    mamaPublisher    publisher = NULL;
+    mamaTransport    tport     = NULL;
+    const char*      symbol    = getSymbol();
+    const char*      source    = getBadSource();
+    mamaMsg          msg       = NULL;
+    mamaQueue        queue     = NULL;
+    mamaPublisherCallbacks cb;
+    int              i         = 0;
+    int              numErrors = 10;
+
+    pubOnCreateCount = 0;
+    pubOnErrorCount = 0;
+    pubOnDestroyCount = 0;
+
+    cb.onError = pubOnError;
+    cb.onCreate = pubOnCreate;
+    cb.onDestroy = pubOnDestroy;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaMsg_create (&msg));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaMsg_addString (msg, symbol, 101, source));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mama_getDefaultEventQueue (mBridge, &queue));
+ 
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_allocate (&tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_create (tport, getTransport(), mBridge));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, &cb, NULL));
+
+    for (i = 0; i < numErrors; i++)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK,
+                   mamaPublisher_send (publisher, msg));
+    }
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_destroy (publisher));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_destroy (tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
+
+    ASSERT_EQ (1, pubOnCreateCount);
+    ASSERT_EQ (numErrors, pubOnErrorCount);
+    ASSERT_EQ (1, pubOnDestroyCount);
+}
+
+/*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
+ *               mamaPublisher then destroy both. A non-entitled source is used to generate
+ *               publisher error events. But the error callback is not set, so no callbacks 
+ *               should be received.
+ *
+ *  Expected Result: MAMA_STATUS_OK
+ */
+TEST_F (MamaPublisherTestC, SendWithCallbacksNoErrorCallback)
+{
+    mamaPublisher    publisher = NULL;
+    mamaTransport    tport     = NULL;
+    const char*      symbol    = getSymbol();
+    const char*      source    = getBadSource();
+    mamaMsg          msg       = NULL;
+    mamaQueue        queue     = NULL;
+    mamaPublisherCallbacks cb;
+    int              i         = 0;
+    int              numErrors = 10;
+
+    pubOnCreateCount = 0;
+    pubOnErrorCount = 0;
+    pubOnDestroyCount = 0;
+
+	cb.onCreate = pubOnCreate;
+    cb.onError = NULL;				/* No error callback */
+    cb.onDestroy = pubOnDestroy;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaMsg_create (&msg));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaMsg_addString (msg, symbol, 101, source));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mama_getDefaultEventQueue (mBridge, &queue));
+ 
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_allocate (&tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_create (tport, getTransport(), mBridge));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, &cb, NULL));
+
+    for (i = 0; i < numErrors; i++)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK,
+                   mamaPublisher_send (publisher, msg));
+    }
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_destroy (publisher));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_destroy (tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
+
+    ASSERT_EQ (1, pubOnCreateCount);
+    ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (1, pubOnDestroyCount);
+}
+
+/*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
+ *               mamaPublisher then destroy both. A non-entitled source is used to generate
+ *               publisher error events. But the callbacks are not set, so no callbacks 
+ *               should be received.
+ *
+ *  Expected Result: MAMA_STATUS_OK
+ */
+TEST_F (MamaPublisherTestC, SendWithCallbacksNoCallbacks)
+{
+    mamaPublisher    publisher = NULL;
+    mamaTransport    tport     = NULL;
+    const char*      symbol    = getSymbol();
+    const char*      source    = getBadSource();
+    mamaMsg          msg       = NULL;
+    mamaQueue        queue     = NULL;
+    mamaPublisherCallbacks cb;
+    int              i         = 0;
+    int              numErrors = 10;
+
+    pubOnCreateCount = 0;
+    pubOnErrorCount = 0;
+    pubOnDestroyCount = 0;
+
+	cb.onCreate = NULL;
+    cb.onError = NULL;
+    cb.onDestroy = NULL;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaMsg_create (&msg));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaMsg_addString (msg, symbol, 101, source));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mama_getDefaultEventQueue (mBridge, &queue));
+ 
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_allocate (&tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_create (tport, getTransport(), mBridge));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, &cb, NULL));
+
+    for (i = 0; i < numErrors; i++)
+    {
+        ASSERT_EQ (MAMA_STATUS_OK,
+                   mamaPublisher_send (publisher, msg));
+    }
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_destroy (publisher));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_destroy (tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
+
+    ASSERT_EQ (0, pubOnCreateCount);
+    ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (0, pubOnDestroyCount);
 }
 
