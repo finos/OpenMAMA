@@ -34,20 +34,17 @@ namespace Wombat
 		
 		virtual void onCreate (
     		MamaPublisher* publisher,
-    		void* closure) 
-		{}
+    		void* closure) = 0;
 
 		virtual void onDestroy (
     		MamaPublisher* publisher,
-    		void* closure)
-		{}
+    		void* closure) = 0;
 
 		virtual void onError (
     		MamaPublisher* publisher,
             const MamaStatus& status,
     		const char* info,
-    		void* closure)
-		{}
+    		void* closure) = 0;
 	};
 
 } // namespace Wombat

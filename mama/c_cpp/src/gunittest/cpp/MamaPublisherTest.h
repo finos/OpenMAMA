@@ -19,17 +19,16 @@
  * 02110-1301 USA
  */
 
-#ifndef MAMASUBSCRIPTIONTEST_H
-#define MAMASUBSCRIPTIONTEST_H
+#ifndef MAMAPUBLISHERTEST_H
+#define MAMAPUBLISHERTEST_H
 
 /* ************************************************************************* */
 /* Includes */
 /* ************************************************************************* */
 #include "gtest/gtest.h"
+#include "mama/types.h"
 #include "mama/mamacpp.h"
 #include "MainUnitTestCpp.h"
-#include "mama/MamaBasicSubscriptionCallback.h"
-#include "mama/types.h"
 
 /* ************************************************************************* */
 /* Namespaces */
@@ -40,7 +39,7 @@ using namespace Wombat;
 /* Test Fixture */
 /* ************************************************************************* */
 
-class MamaSubscriptionTest : public ::testing::Test
+class MamaPublisherTest : public ::testing::Test, public MamaStartCallback
 {
     // Member variables
 protected:
@@ -48,7 +47,7 @@ protected:
     /* Work around for problem in gtest where the this pointer can't be accessed
      * from a test fixture.
      */
-    MamaSubscriptionTest *m_this;
+    MamaPublisherTest *m_this;
 
     // The mama bridge
     mamaBridge m_bridge;
@@ -62,12 +61,14 @@ protected:
 protected:
 
     // Construction and Destruction
-    MamaSubscriptionTest(void);
-    virtual ~MamaSubscriptionTest(void);
+    MamaPublisherTest(void);
+    virtual ~MamaPublisherTest(void);
 
     // Setup and teardown functions
     virtual void SetUp(void);
     virtual void TearDown(void);
+
+	virtual void onStartComplete(MamaStatus status);
 
 };
 
