@@ -91,7 +91,7 @@ public:
 
        virtual void onCreate (
            MamaPublisher*  publisher,
-        void* closure)
+           void* closure)
        {
          onCreateCount++;
        }
@@ -99,7 +99,7 @@ public:
        virtual void onError (
            MamaPublisher*    publisher,
            const MamaStatus& status,
-        const char*       info,
+           const char*       info,
            void*             closure)
        {
          onErrorCount++;
@@ -107,7 +107,7 @@ public:
 
        virtual void onDestroy (
            MamaPublisher*  publisher,
-        void*           closure)
+           void*           closure)
        {
          onDestroyCount++;
        }
@@ -143,9 +143,6 @@ TEST_F(MamaPublisherTest, Publish)
     // Destroy the publisher
     publisher->destroy();            
 
-    // Let destroy finish
-    sleep(2);
-
     // Delete the publisher
     delete publisher;
 
@@ -158,6 +155,7 @@ TEST_F(MamaPublisherTest, Publish)
 TEST_F(MamaPublisherTest, PublishWithCallbacks)
 {
     int numPublishes = 10;
+	int waits = 0;
 
     // Create a callback object
     TestCallback *testCallback = new TestCallback();
@@ -188,8 +186,13 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
     // Destroy the publisher
     publisher->destroy();            
 
-    // Make sure destroys are finished
-    sleep(2);
+    // Wait for onDestroy
+	while (testCallback->getOnDestroyCount() == 0)
+	{
+		if (waits++ > 10) break;    /* way too long to wait for onDestroy */
+        sleep(1);
+	}
+    ASSERT_EQ(1, testCallback->getOnDestroyCount());
 
     delete publisher;
     delete queue;
@@ -198,7 +201,6 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
     Mama::stop(m_bridge);
 
     ASSERT_EQ(1, testCallback->getOnCreateCount());
-    ASSERT_EQ(1, testCallback->getOnDestroyCount());
     ASSERT_EQ(0, testCallback->getOnErrorCount());
 }
 
@@ -208,6 +210,7 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
 TEST_F(MamaPublisherTest, PublishWithCallbacksBadSource)
 {
     int numPublishes = 10;
+	int waits = 0;
 
     // Create a callback object
     TestCallback *testCallback = new TestCallback();
@@ -238,8 +241,13 @@ TEST_F(MamaPublisherTest, PublishWithCallbacksBadSource)
     // Destroy the publisher
     publisher->destroy();            
 
-    // Make sure destroys are finished
-    sleep(2);
+    // Wait for onDestroy
+	while (testCallback->getOnDestroyCount() == 0)
+	{
+		if (waits++ > 10) break;    /* way too long to wait for onDestroy */
+        sleep(1);
+	}
+    ASSERT_EQ(1, testCallback->getOnDestroyCount());
 
     delete publisher;
     delete queue;
@@ -248,7 +256,6 @@ TEST_F(MamaPublisherTest, PublishWithCallbacksBadSource)
     Mama::stop(m_bridge);
 
     ASSERT_EQ(1, testCallback->getOnCreateCount());
-    ASSERT_EQ(1, testCallback->getOnDestroyCount());
     ASSERT_EQ(numPublishes, testCallback->getOnErrorCount());
 }
 
@@ -284,9 +291,6 @@ TEST_F(MamaPublisherTest, PublishWithNullCallback)
 
     // Destroy the publisher
     publisher->destroy();            
-
-    // Make sure destroys are finished
-    sleep(2);
 
     delete publisher;
     delete queue;

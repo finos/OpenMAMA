@@ -217,7 +217,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
     const char*      source        = getSource();
     mamaMsg          msg           = NULL;
     mamaQueue        queue         = NULL;
-    mamaPublisherCallbacks cb;
+    mamaPublisherCallbacks* cb     = NULL;
     int              i             = 0;
     int              numPublishers = 10;
 
@@ -225,9 +225,10 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
     pubOnErrorCount = 0;
     pubOnDestroyCount = 0;
 
-    cb.onError = pubOnError;
-    cb.onCreate = pubOnCreate;
-    cb.onDestroy = pubOnDestroy;
+	mamaPublisherCallbacks_allocate(&cb);
+    cb->onError = pubOnError;
+    cb->onCreate = pubOnCreate;
+    cb->onDestroy = pubOnDestroy;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -250,7 +251,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
                mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, &cb, NULL));
+               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, cb, NULL));
 
     for (i = 0; i < numPublishers; ++i)
     {
@@ -269,6 +270,8 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
     ASSERT_EQ (1, pubOnCreateCount);
     ASSERT_EQ (0, pubOnErrorCount);
     ASSERT_EQ (1, pubOnDestroyCount);
+
+	mamaPublisherCallbacks_deallocate(cb);
 }
 
 /*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
@@ -285,7 +288,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksBadSource)
     const char*      source    = getBadSource();
     mamaMsg          msg       = NULL;
     mamaQueue        queue     = NULL;
-    mamaPublisherCallbacks cb;
+    mamaPublisherCallbacks* cb = NULL;
     int              i         = 0;
     int              numErrors = 10;
 
@@ -293,9 +296,10 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksBadSource)
     pubOnErrorCount = 0;
     pubOnDestroyCount = 0;
 
-    cb.onError = pubOnError;
-    cb.onCreate = pubOnCreate;
-    cb.onDestroy = pubOnDestroy;
+	mamaPublisherCallbacks_allocate(&cb);
+    cb->onError = pubOnError;
+    cb->onCreate = pubOnCreate;
+    cb->onDestroy = pubOnDestroy;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -318,7 +322,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksBadSource)
                mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, &cb, NULL));
+               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, cb, NULL));
 
     for (i = 0; i < numErrors; i++)
     {
@@ -337,6 +341,8 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksBadSource)
     ASSERT_EQ (1, pubOnCreateCount);
     ASSERT_EQ (numErrors, pubOnErrorCount);
     ASSERT_EQ (1, pubOnDestroyCount);
+
+	mamaPublisherCallbacks_deallocate(cb);
 }
 
 /*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
@@ -354,7 +360,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoErrorCallback)
     const char*      source    = getBadSource();
     mamaMsg          msg       = NULL;
     mamaQueue        queue     = NULL;
-    mamaPublisherCallbacks cb;
+    mamaPublisherCallbacks* cb = NULL;
     int              i         = 0;
     int              numErrors = 10;
 
@@ -362,9 +368,10 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoErrorCallback)
     pubOnErrorCount = 0;
     pubOnDestroyCount = 0;
 
-	cb.onCreate = pubOnCreate;
-    cb.onError = NULL;				/* No error callback */
-    cb.onDestroy = pubOnDestroy;
+	mamaPublisherCallbacks_allocate(&cb);
+    cb->onError = NULL;
+    cb->onCreate = pubOnCreate;    /* No error callback */
+    cb->onDestroy = pubOnDestroy;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -387,7 +394,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoErrorCallback)
                mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, &cb, NULL));
+               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, cb, NULL));
 
     for (i = 0; i < numErrors; i++)
     {
@@ -406,6 +413,8 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoErrorCallback)
     ASSERT_EQ (1, pubOnCreateCount);
     ASSERT_EQ (0, pubOnErrorCount);
     ASSERT_EQ (1, pubOnDestroyCount);
+
+	mamaPublisherCallbacks_deallocate(cb);
 }
 
 /*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
@@ -423,7 +432,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoCallbacks)
     const char*      source    = getBadSource();
     mamaMsg          msg       = NULL;
     mamaQueue        queue     = NULL;
-    mamaPublisherCallbacks cb;
+    mamaPublisherCallbacks* cb = NULL;
     int              i         = 0;
     int              numErrors = 10;
 
@@ -431,9 +440,10 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoCallbacks)
     pubOnErrorCount = 0;
     pubOnDestroyCount = 0;
 
-	cb.onCreate = NULL;
-    cb.onError = NULL;
-    cb.onDestroy = NULL;
+	mamaPublisherCallbacks_allocate(&cb);
+    cb->onError = NULL;
+    cb->onCreate = NULL;
+    cb->onDestroy = NULL;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -456,7 +466,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoCallbacks)
                mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, &cb, NULL));
+               mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, cb, NULL));
 
     for (i = 0; i < numErrors; i++)
     {
@@ -475,5 +485,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoCallbacks)
     ASSERT_EQ (0, pubOnCreateCount);
     ASSERT_EQ (0, pubOnErrorCount);
     ASSERT_EQ (0, pubOnDestroyCount);
+
+	mamaPublisherCallbacks_deallocate(cb);
 }
 

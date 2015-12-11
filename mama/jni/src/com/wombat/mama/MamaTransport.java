@@ -215,6 +215,34 @@ public class MamaTransport
             }
         }
 
+        public void onTopicPublishError(String topic, final Object platformInfo)
+        {
+            /* Call the client topic listener if it has been provided. */
+            if(null != mClientTopicListener)
+            {
+                mClientTopicListener.onTopicPublishError(topic, platformInfo);
+            }
+        }
+
+        public void onTopicPublishErrorNotEntitled(String topic, final Object platformInfo)
+        {
+            /* Call the client topic listener if it has been provided. */
+            if(null != mClientTopicListener)
+            {
+                mClientTopicListener.onTopicPublishErrorNotEntitled(topic, platformInfo);
+            }
+        }
+
+        public void onTopicPublishErrorBadSymbol(String topic, final Object platformInfo)
+        {
+            /* Call the client topic listener if it has been provided. */
+            if(null != mClientTopicListener)
+            {
+                mClientTopicListener.onTopicPublishErrorBadSymbol(topic, platformInfo);
+            }
+        }
+
+
         /* ****************************************************** */
         /* Public Functions. */
         /* ****************************************************** */

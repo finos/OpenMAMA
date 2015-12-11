@@ -91,6 +91,9 @@ static jmethodID    transportTopicListenerOnTopicSubscribeId_g        =   NULL;
 static jmethodID    transportTopicListenerOnTopicUnsubscribeId_g      =   NULL;
 static jmethodID    transportTopicListenerOrigOnTopicSubscribeId_g    =   NULL;
 static jmethodID    transportTopicListenerOrigOnTopicUnsubscribeId_g  =   NULL;
+static jmethodID    transportTopicListenerOnTopicPublishErrorId_g     =   NULL;
+static jmethodID    transportTopicListenerOnTopicPublishErrorNotEntitledId_g =   NULL;
+static jmethodID    transportTopicListenerOnTopicPublishErrorBadSymbolId_g   =   NULL;
 
 /* Pointer field of the bridge */
 extern  jfieldID    bridgePointerFieldId_g;
@@ -682,6 +685,33 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_initIDs
         return;
     }
 
+    transportTopicListenerOnTopicPublishErrorId_g = (*env)->GetMethodID(env,
+                        mamaTransportTopicListenerClass,"onTopicPublishError",
+                        "(Ljava/lang/String;Ljava/lang/Object;)V");
+    if(!transportTopicListenerOnTopicPublishErrorId_g)
+    {   
+        (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
+        return;
+    }
+
+    transportTopicListenerOnTopicPublishErrorNotEntitledId_g = (*env)->GetMethodID(env,
+                        mamaTransportTopicListenerClass,"onTopicPublishErrorNotEntitled",
+                        "(Ljava/lang/String;Ljava/lang/Object;)V");
+    if(!transportTopicListenerOnTopicPublishErrorNotEntitledId_g)
+    {   
+        (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
+        return;
+    }
+
+    transportTopicListenerOnTopicPublishErrorBadSymbolId_g = (*env)->GetMethodID(env,
+                        mamaTransportTopicListenerClass,"onTopicPublishErrorBadSymbol",
+                        "(Ljava/lang/String;Ljava/lang/Object;)V");
+    if(!transportTopicListenerOnTopicPublishErrorBadSymbolId_g)
+    {   
+        (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
+        return;
+    }
+
    (*env)->DeleteLocalRef(env, mamaTransportListenerClass);
    (*env)->DeleteLocalRef(env, mamaTransportListenerClass); 
    (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
@@ -987,7 +1017,8 @@ void MAMACALLTYPE mamaTransportListenerCB( mamaTransport      tport,
     if((NULL != closureImpl) && (NULL != closureImpl->mListenerCallback))
     {
         /* Get the java environment object. */
-        JNIEnv* env = mamaJniUtils_attachNativeThread(javaVM_g);        
+    	JNIEnv* env = utils_getENV(javaVM_g);
+        /* JNIEnv* env = mamaJniUtils_attachNativeThread(javaVM_g);         */
         if(NULL != env)
         {
             /* If the platform info is valid then this will be passed back up to the callback object
@@ -1029,7 +1060,7 @@ void MAMACALLTYPE mamaTransportListenerCB( mamaTransport      tport,
             }             
 
             /* Release the environment pointer. */
-            mamaJniUtils_detachNativeThread(javaVM_g);
+            /* mamaJniUtils_detachNativeThread(javaVM_g); */
         }
     }
 }
@@ -1045,7 +1076,8 @@ void MAMACALLTYPE mamaTransportTopicListenerCB( mamaTransport      tport,
     if((NULL != closureImpl) && (NULL != closureImpl->mTopicCallback))
     {
         /* Get the java environment object. */
-        JNIEnv* env = mamaJniUtils_attachNativeThread(javaVM_g);
+    	JNIEnv* env = utils_getENV(javaVM_g);
+        /* JNIEnv* env = mamaJniUtils_attachNativeThread(javaVM_g); */
         if(NULL != env)
         {
             /* If the platform info is valid then this will be passed back up to the callback object
@@ -1073,10 +1105,19 @@ void MAMACALLTYPE mamaTransportTopicListenerCB( mamaTransport      tport,
                     /* Call the Original callback to maintain backward compatibility */
                     (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOrigOnTopicUnsubscribeId_g, cause, connection);
                     break;
+				case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicPublishErrorId_g, cTopic, connection);
+					break;
+				case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED:
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicPublishErrorNotEntitledId_g, cTopic, connection);
+					break;
+				case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicPublishErrorBadSymbolId_g, cTopic, connection);
+					break;
             }        
 
             /* Release the environment pointer. */
-            mamaJniUtils_detachNativeThread(javaVM_g);
+            /* mamaJniUtils_detachNativeThread(javaVM_g); */
         }
     }
 }

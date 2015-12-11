@@ -22,31 +22,42 @@
 package com.wombat.mama;
 
 /*
-* Wrapper class for the native C publisher structure and related functions
-*/
+ * Wrapper class for the native C publisher structure and related functions
+ */
 public class MamaPublisher
 {
-
     static
     {
         initIDs();
     }
 
-    /*A long value containing a pointer to the underlying C publisher structure*/
-    private long    publisherPointer_i   =   0;
+    /* A long value containing a pointer to the underlying C publisher structure */
+    private long  publisherPointer_i = 0;
 
     /* Reusable MamaTransport object. */
     private MamaTransport mamaTransport_i = null;
 
 	public void create (MamaTransport transport, String topic)
     {
-        _create(transport,topic,null);
+        _create(transport,topic,null,null);
+    }
+
+	public void create (MamaTransport transport, String topic, MamaPublisherCallback cb)
+    {
+        _create(transport,topic,null,cb);
     }
 
 	public void create (MamaTransport transport, String topic, String source)
     {
-        _create(transport,topic,source);
+        _create(transport,topic,source,null);
     }
+
+	public void create (MamaTransport transport, String topic, String source, MamaPublisherCallback cb)
+    {
+        _create(transport,topic,source,cb);
+    }
+
+	public native void destroy();
 
     public void send (MamaMsg msg)
     {
@@ -107,9 +118,19 @@ public class MamaPublisher
         return mamaTransport_i;
     }
 
+	public native String getRoot();
+
+	public native String getSource();
+
+	public native String getSymbol();
+
+	public native short getState();
+
+	public native String stringForState(short state);
+
     private native void  _getTransport ();
 
-    private native void _create (MamaTransport transport, String topic, String source);
+    private native void _create (MamaTransport transport, String topic, String source, MamaPublisherCallback cb);
 
     private native void _send (MamaMsg msg);
 
