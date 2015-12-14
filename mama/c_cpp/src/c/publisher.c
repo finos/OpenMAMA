@@ -115,7 +115,6 @@ _createByIndex (mamaPublisher*              result,
     mama_status         status      = MAMA_STATUS_OK;
     mamaPublisherImpl*  impl        = NULL;
     mamaBridgeImpl*     bridgeImpl  = NULL;
-    mamaPublisherCallbacks cb;
 
     if (!result)
     {
@@ -176,7 +175,6 @@ _createByIndex (mamaPublisher*              result,
                                     symbol,                 /* topic */
                                     source,
                                     root,
-                                    queue, 
                                     (mamaPublisher)impl)))) 
     {
         if (NULL != impl->mRoot) free((void*) impl->mRoot);
@@ -189,23 +187,30 @@ _createByIndex (mamaPublisher*              result,
     impl->mPendingActions = list_create (sizeof(struct publisherClosure));
     if (impl->mPendingActions == NULL) return MAMA_STATUS_NOMEM;
 
-    cb.onCreate = impl->mUserCallbacks.onCreate;
-    cb.onError = impl->mUserCallbacks.onError;
-    cb.onDestroy = mamaPublisher_onPublisherDestroyed;        /* intercept onDestroy */
-    if (MAMA_STATUS_OK!=(status=(bridgeImpl->bridgeMamaPublisherSetUserCallbacks (
+    if (NULL != publisherCallbacks)
+	{
+    	mamaPublisherCallbacks* cb;
+		mamaPublisherCallbacks_allocate(&cb);
+    	cb->onCreate = impl->mUserCallbacks.onCreate;
+    	cb->onError = impl->mUserCallbacks.onError;
+    	cb->onDestroy = mamaPublisher_onPublisherDestroyed;        /* intercept onDestroy */
+    	if (MAMA_STATUS_OK!=(status=(bridgeImpl->bridgeMamaPublisherSetUserCallbacks (
                                    impl->mMamaPublisherBridgeImpl,
                                    impl->mQueue,
                                    cb,
                                    impl->mClosure
     ))))
-    {
-        if (NULL != impl->mRoot) free((void*) impl->mRoot);
-        if (NULL != impl->mSource) free((void*) impl->mSource);
-        if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
-        list_destroy (impl->mPendingActions, NULL, NULL);
-        free (impl);
-        return status;
-    }
+    	{
+        	if (NULL != impl->mRoot) free((void*) impl->mRoot);
+        	if (NULL != impl->mSource) free((void*) impl->mSource);
+        	if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
+			mamaPublisherCallbacks_deallocate(cb);
+        	list_destroy (impl->mPendingActions, NULL, NULL);
+        	free (impl);
+        	return status;
+    	}
+		mamaPublisherCallbacks_deallocate(cb);
+	}
 
     /* Create the mutex. */
     impl->mCreateDestroyLock = wlock_create();

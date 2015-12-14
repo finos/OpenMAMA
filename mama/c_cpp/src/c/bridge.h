@@ -567,7 +567,6 @@ typedef mama_status
                                      const char*        topic,
                                      const char*        source,
                                      const char*        root,
-                                     mamaQueue          queue,
                                      mamaPublisher      parent);
 
 typedef mama_status
@@ -599,7 +598,7 @@ typedef mama_status
 typedef mama_status
 (*bridgeMamaPublisher_setUserCallbacks)(publisherBridge         publisher,
                                         mamaQueue               queue,
-                                        mamaPublisherCallbacks  cb,
+                                        mamaPublisherCallbacks* cb,
                                         void*                   closure);
 
 
