@@ -176,8 +176,8 @@ _createByIndex (mamaPublisher*              result,
                                     symbol,                 /* topic */
                                     source,
                                     root,
-                                    NULL,                   /* nativeQueueHandle */
-                                    (mamaPublisher)impl)))) /* topic */
+                                    queue, 
+                                    (mamaPublisher)impl)))) 
     {
         if (NULL != impl->mRoot) free((void*) impl->mRoot);
         if (NULL != impl->mSource) free((void*) impl->mSource);

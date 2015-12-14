@@ -82,10 +82,10 @@
 	In JNI you must return for the exception to be thrown.
 */
 #define MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(p,errorString,retValue)	\
-	if(!p){utils_throwMamaException(env, errorString);	return retValue; }														
+	if (!p) {utils_throwMamaException(env, errorString);	return retValue; }														
 
 #define MAMA_THROW_NULL_PARAMETER_RETURN_VOID(p,errorString)	\
-	if(!p){utils_throwMamaException(env, errorString);	return; }	
+	if (!p) {utils_throwMamaException(env, errorString);	return; }	
 
 /**
  * This function should be called by all native threads that enter a function

@@ -196,8 +196,6 @@ do                                                                             \
     bridgeImpl->bridgeMamaIoDestroy =                                          \
                     implIdentifier ## BridgeMamaIo_destroy;                    \
     /*Publisher related function pointers*/                                    \
-    bridgeImpl->bridgeMamaPublisherCreate =                                    \
-                    implIdentifier ## BridgeMamaPublisher_create;              \
     bridgeImpl->bridgeMamaPublisherCreateByIndex =                             \
                     implIdentifier ## BridgeMamaPublisher_createByIndex;       \
     bridgeImpl->bridgeMamaPublisherDestroy =                                   \
@@ -569,17 +567,8 @@ typedef mama_status
                                      const char*        topic,
                                      const char*        source,
                                      const char*        root,
-                                     void*              nativeQueueHandle,
+                                     mamaQueue          queue,
                                      mamaPublisher      parent);
-
-typedef mama_status
-(*bridgeMamaPublisher_create)(publisherBridge*  result,
-                              mamaTransport     tport,
-                              const char*       topic,
-                              const char*       source,
-                              const char*       root,
-                              void*             nativeQueueHandle,
-                              mamaPublisher     parent);
 
 typedef mama_status
 (*bridgeMamaPublisher_destroy)(publisherBridge publisher);
@@ -819,7 +808,6 @@ typedef struct mamaBridgeImpl_
     bridgeMamaIo_destroy                    bridgeMamaIoDestroy;
 
     /*mamaPublisher bridge functions*/
-    bridgeMamaPublisher_create              bridgeMamaPublisherCreate;
     bridgeMamaPublisher_createByIndex       bridgeMamaPublisherCreateByIndex;
     bridgeMamaPublisher_destroy             bridgeMamaPublisherDestroy;
     bridgeMamaPublisher_send                bridgeMamaPublisherSend;

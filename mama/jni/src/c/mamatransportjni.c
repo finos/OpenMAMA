@@ -164,7 +164,7 @@ Java_com_wombat_mama_MamaTransport__1create__Ljava_lang_String_2Lcom_wombat_mama
         (*env)->GetLongField(env,bridge,bridgePointerFieldId_g);      
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.");
+        "Null parameter, MamaTransport may have already been destroyed.");
 
     if(name)
     {
@@ -351,7 +351,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_setDescription
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.");
+        "Null parameter, MamaTransport may have already been destroyed.");
 
     if(description)
     {
@@ -399,7 +399,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaTransport_getDescription
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.", NULL);
+        "Null parameter, MamaTransport may have already been destroyed.", NULL);
 
     if (MAMA_STATUS_OK!=(status=mamaTransport_getDescription(
          CAST_JLONG_TO_POINTER(mamaTransport,transportPointer),&c_description)))
@@ -430,7 +430,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_setInvokeQualityForAll
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.");
+        "Null parameter, MamaTransport may have already been destroyed.");
 
     if (MAMA_STATUS_OK!=(status=mamaTransport_setInvokeQualityForAllSubscs (
                          CAST_JLONG_TO_POINTER(mamaTransport,transportPointer),
@@ -462,7 +462,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaTransport_getInvokeQualityFo
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.", 0);
+        "Null parameter, MamaTransport may have already been destroyed.", 0);
 
     if (MAMA_STATUS_OK!=(status=mamaTransport_getInvokeQualityForAllSubscs (
                          CAST_JLONG_TO_POINTER(mamaTransport,transportPointer),
@@ -494,7 +494,7 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaTransport_getQuality
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.", 0);
+        "Null parameter, MamaTransport may have already been destroyed.", 0);
 
     if (MAMA_STATUS_OK!=(status=mamaTransport_getQuality (
                          CAST_JLONG_TO_POINTER(mamaTransport,transportPointer),
@@ -747,26 +747,26 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeAddListener(JNIE
                 /* Create a global reference to the new callback */
                 ret = MAMA_STATUS_NOMEM;
                 closure->mListenerCallback = (*env)->NewGlobalRef(env, listener);
-				if(NULL != closure->mListenerCallback)
-				{
-					/* Install the transport callback. */
+                if(NULL != closure->mListenerCallback)
+                {
+                    /* Install the transport callback. */
                     ret = mamaTransport_setTransportCallback(transport, (mamaTransportCB)mamaTransportListenerCB, closure);
-				}
+                }
             }
         }
     }
 
     /* Throw an exception if something went wrong. */
     if(MAMA_STATUS_OK != ret)
-	{
-		char errorString[UTILS_MAX_ERROR_STRING_LENGTH] = "";
-		utils_buildErrorStringForStatus(
+    {
+        char errorString[UTILS_MAX_ERROR_STRING_LENGTH] = "";
+        utils_buildErrorStringForStatus(
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Failed to add transport listener.",
                 ret);
         utils_throwMamaException(env, errorString);
-	}
+    }
 }
 
 /*
@@ -797,26 +797,26 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeAddTopicListener
                 /* Create a global reference to the new callback */
                 ret = MAMA_STATUS_NOMEM;
                 closure->mTopicCallback = (*env)->NewGlobalRef(env, topicListener);
-				if(NULL != closure->mTopicCallback)
-				{
-					/* Install the transport topic callback. */
-					ret = mamaTransport_setTransportTopicCallback(transport, (mamaTransportTopicCB)mamaTransportTopicListenerCB, (void *)closure);
-				}
+                if(NULL != closure->mTopicCallback)
+                {
+                    /* Install the transport topic callback. */
+                    ret = mamaTransport_setTransportTopicCallback(transport, (mamaTransportTopicCB)mamaTransportTopicListenerCB, (void *)closure);
+                }
             }
         }
     }
 
     /* Throw an exception if something went wrong. */
     if(MAMA_STATUS_OK != ret)
-	{
-		char errorString[UTILS_MAX_ERROR_STRING_LENGTH] = "";
-		utils_buildErrorStringForStatus(
+    {
+        char errorString[UTILS_MAX_ERROR_STRING_LENGTH] = "";
+        utils_buildErrorStringForStatus(
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Failed to add transport topic listener.",
                 ret);
         utils_throwMamaException(env, errorString);
-	}
+    }
 }
 
 /*
@@ -1017,7 +1017,7 @@ void MAMACALLTYPE mamaTransportListenerCB( mamaTransport      tport,
     if((NULL != closureImpl) && (NULL != closureImpl->mListenerCallback))
     {
         /* Get the java environment object. */
-    	JNIEnv* env = utils_getENV(javaVM_g);
+        JNIEnv* env = utils_getENV(javaVM_g);
         /* JNIEnv* env = mamaJniUtils_attachNativeThread(javaVM_g);         */
         if(NULL != env)
         {
@@ -1076,7 +1076,7 @@ void MAMACALLTYPE mamaTransportTopicListenerCB( mamaTransport      tport,
     if((NULL != closureImpl) && (NULL != closureImpl->mTopicCallback))
     {
         /* Get the java environment object. */
-    	JNIEnv* env = utils_getENV(javaVM_g);
+        JNIEnv* env = utils_getENV(javaVM_g);
         /* JNIEnv* env = mamaJniUtils_attachNativeThread(javaVM_g); */
         if(NULL != env)
         {
@@ -1105,15 +1105,15 @@ void MAMACALLTYPE mamaTransportTopicListenerCB( mamaTransport      tport,
                     /* Call the Original callback to maintain backward compatibility */
                     (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOrigOnTopicUnsubscribeId_g, cause, connection);
                     break;
-				case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:
+                case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:
                     (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicPublishErrorId_g, cTopic, connection);
-					break;
-				case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED:
+                    break;
+                case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED:
                     (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicPublishErrorNotEntitledId_g, cTopic, connection);
-					break;
-				case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:
+                    break;
+                case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:
                     (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicPublishErrorBadSymbolId_g, cTopic, connection);
-					break;
+                    break;
             }        
 
             /* Release the environment pointer. */

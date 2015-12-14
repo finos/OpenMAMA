@@ -74,7 +74,7 @@ TEST_F (MiddlewarePublisherTests, DISABLED_createDestroy)
     const char*      symbol            = "SYM";
     const char*      source            = "SOURCE";
     const char*      root              = "ROOT";
-    void*            nativeQueueHandle = NULL;
+    mamaQueue        queue             = NULL;
     mamaPublisher    parent            = NULL;
 
     ASSERT_EQ(MAMA_STATUS_OK,
@@ -87,7 +87,7 @@ TEST_F (MiddlewarePublisherTests, DISABLED_createDestroy)
               mamaPublisher_create(&parent, tport, symbol, source, root));
     
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaPublisherCreate(&publisher, tport, topic, source, root, nativeQueueHandle, parent));
+              mBridge->bridgeMamaPublisherCreateByIndex(&publisher, tport, 0, topic, source, root, queue, parent));
     
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaPublisherDestroy(publisher));
@@ -106,14 +106,14 @@ TEST_F (MiddlewarePublisherTests, createByIndexInvalidResult)
     const char*      topic             = (char*)           NOT_NULL;
     const char*      source            = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaPublisherCreateByIndex(NULL, tport,
                                                          tportIndex,
                                                          topic, source,
-                                                         root, nativeQueueHandle, 
+                                                         root, queue, 
                                                          parent));
 }
 
@@ -124,14 +124,14 @@ TEST_F(MiddlewarePublisherTests, createByIndexInvalidTport)
     const char*      topic             = (char*)           NOT_NULL;
     const char*      source            = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaPublisherCreateByIndex(&result, NULL,
                                                          tportIndex,
                                                          topic, source,
-                                                         root, nativeQueueHandle, 
+                                                         root, queue, 
                                                          parent));
 }
 
@@ -142,14 +142,14 @@ TEST_F(MiddlewarePublisherTests, DISABLED_createByIndexInvalidTopic)
     int              tportIndex        = 0;
     const char*      source            = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaPublisherCreateByIndex(&result, tport,
                                                          tportIndex,
                                                          NULL, source,
-                                                         root, nativeQueueHandle, 
+                                                         root, queue, 
                                                          parent));
 }
 
@@ -160,14 +160,14 @@ TEST_F(MiddlewarePublisherTests, DISABLED_createByIndexInvalidSource)
     int              tportIndex        =                   0;
     const char*      topic             = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaPublisherCreateByIndex(&result, tport,
                                                          tportIndex,
                                                          topic, NULL,
-                                                         root, nativeQueueHandle, 
+                                                         root, queue, 
                                                          parent));
 }
 
@@ -178,14 +178,14 @@ TEST_F(MiddlewarePublisherTests, DISABLED_createByIndexInvalidRoot)
     int              tportIndex        =                   0;
     const char*      topic             = (char*)           NOT_NULL;
     const char*      source            = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaPublisherCreateByIndex(&result, tport,
                                                          tportIndex,
                                                          topic, source,
-                                                         NULL, nativeQueueHandle, 
+                                                         NULL, queue, 
                                                          parent));
 }
 
@@ -197,13 +197,13 @@ TEST_F(MiddlewarePublisherTests, createByIndexInvalidParent)
     const char*      topic             = (char*)           NOT_NULL;
     const char*      source            = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaPublisherCreateByIndex(&result, tport,
                                                          tportIndex,
                                                          topic, source,
-                                                         root, nativeQueueHandle, 
+                                                         root, queue, 
                                                          NULL));
 }
 
@@ -214,13 +214,13 @@ TEST_F (MiddlewarePublisherTests, createInvalidResult)
     const char*      topic             = (char*)           NOT_NULL;
     const char*      source            = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreate(NULL, tport, topic,
+               mBridge->bridgeMamaPublisherCreateByIndex(NULL, tport, 0, topic,
                                                   source, root, 
-                                                  nativeQueueHandle,
+                                                  queue,
                                                   parent));
 }
 
@@ -230,13 +230,13 @@ TEST_F (MiddlewarePublisherTests, createInvalidTport)
     const char*      topic             = (char*)           NOT_NULL;
     const char*      source            = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreate(&result, NULL, topic,
+               mBridge->bridgeMamaPublisherCreateByIndex(&result, NULL, 0, topic,
                                                   source, root, 
-                                                  nativeQueueHandle,
+                                                  queue,
                                                   parent));
 }
 
@@ -253,13 +253,13 @@ TEST_F (MiddlewarePublisherTests, DISABLED_createInvalidTopic)
     mamaTransport    tport             = (mamaTransport)   NOT_NULL;
     const char*      source            = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreate(&result, tport, NULL,
+               mBridge->bridgeMamaPublisherCreateByIndex(&result, tport, 0, NULL,
                                                   source, root, 
-                                                  nativeQueueHandle,
+                                                  queue,
                                                   parent));
 }
 
@@ -269,13 +269,13 @@ TEST_F (MiddlewarePublisherTests, DISABLED_createInvalidSource)
     mamaTransport    tport             = (mamaTransport)   NOT_NULL;
     const char*      topic             = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreate(&result, tport, topic,
+               mBridge->bridgeMamaPublisherCreateByIndex(&result, tport, 0, topic,
                                                   NULL, root, 
-                                                  nativeQueueHandle,
+                                                  queue,
                                                   parent));
 }
 
@@ -285,13 +285,13 @@ TEST_F (MiddlewarePublisherTests, DISABLED_createInvalidRoot)
     mamaTransport    tport             = (mamaTransport)   NOT_NULL;
     const char*      topic             = (char*)           NOT_NULL;
     const char*      source            = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreate(&result, tport, topic,
+               mBridge->bridgeMamaPublisherCreateByIndex(&result, tport, 0, topic,
                                                   source, NULL, 
-                                                  nativeQueueHandle,
+                                                  queue,
                                                   parent));
 }
 
@@ -302,12 +302,12 @@ TEST_F (MiddlewarePublisherTests, createInvalidPublisher)
     const char*      topic             = (char*)           NOT_NULL;
     const char*      source            = (char*)           NOT_NULL;
     const char*      root              = (char*)           NOT_NULL;
-    void*            nativeQueueHandle =                   NOT_NULL;
+    mamaQueue        queue             = (mamaQueue)       NOT_NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreate(&result, tport, topic,
+               mBridge->bridgeMamaPublisherCreateByIndex(&result, tport, 0, topic,
                                                   source, root, 
-                                                  nativeQueueHandle,
+                                                  queue,
                                                   NULL));
 }
 
@@ -326,7 +326,7 @@ TEST_F (MiddlewarePublisherTests, DISABLED_send)
     const char*      symbol            = "SYM";
     const char*      source            = "SOURCE";
     const char*      root              = "ROOT";
-    void*            nativeQueueHandle = NULL;
+    mamaQueue        queue             = NULL;
     mamaPublisher    parent            = NULL;
     mamaMsg          msg               = NULL;
 
@@ -343,9 +343,9 @@ TEST_F (MiddlewarePublisherTests, DISABLED_send)
               mamaPublisher_create(&parent, tport, symbol, source, root));
     
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaPublisherCreate(&publisher, tport, 
+              mBridge->bridgeMamaPublisherCreateByIndex(&publisher, tport, 0,
                                                  topic, source, root, 
-                                                 nativeQueueHandle, parent));
+                                                 queue, parent));
     
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaPublisherSend(publisher, msg));

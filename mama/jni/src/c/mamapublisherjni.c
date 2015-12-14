@@ -49,17 +49,17 @@ typedef struct sendMsgCallback_
 typedef struct pubCallbackClosure
 {
     /* The closure passed by the client. This is stored as a global reference
-       and must be deleted when the subscription is deleted.
+       and must be deleted when the publisher is deleted.
      */
     jobject mUserData;
     
     /* The callback object for the publisher. This is stored as a
-       global reference and must be deleted when the subscription is deleted
+       global reference and must be deleted when the publisher is deleted
      */
     jobject mClientCb;
     
     /* The java publisher object. Stored as a global reference
-       and deleted when the subscription is destroyed.
+       and deleted when the publisher is destroyed.
      */
     jobject  mPublisher;
 } pubCallbackClosure;
@@ -72,6 +72,7 @@ static jfieldID     publisherPointerFieldId_g          = NULL;
 static jfieldID     mamaTransportObjectFieldId_g       = NULL;
 
 extern jfieldID     transportPointerFieldId_g;
+extern jfieldID     queuePointerFieldId_g;
 extern jfieldID     messagePointerFieldId_g;
 extern jfieldID     inboxPointerFieldId_g;
 
@@ -99,9 +100,9 @@ static void publisherOnCreateCb (mamaPublisher publisher, void* closure)
     JNIEnv* env = utils_getENV(javaVM_g);
     pubCallbackClosure* closureImpl = (pubCallbackClosure*) closure;
 
-	/* Need to set this here since the create call has not yet done it */
+    /* Need to set this here since the create call has not yet done it */
     (*env)->SetLongField(env, closureImpl->mPublisher,
-	                     publisherPointerFieldId_g,
+                         publisherPointerFieldId_g,
                          CAST_POINTER_TO_JLONG(publisher));
 
     /* Invoke the onCreate() callback method */
@@ -120,9 +121,10 @@ static void publisherOnDestroyCb (mamaPublisher publisher, void* closure)
                            publisherCallbackMethoOnDestroy_g,
                            closureImpl->mPublisher);
 
-	/* Release the Java objects */
+    /* Release the Java objects */
     (*env)->DeleteGlobalRef(env, closureImpl->mPublisher);
     (*env)->DeleteGlobalRef(env, closureImpl->mClientCb);
+    free((void*) closureImpl);
 }
 
 static void publisherOnErrorCb (mamaPublisher publisher,
@@ -191,24 +193,34 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1getTransport
  * Signature: (Lcom/wombat/mama/MamaTransport;Ljava/lang/String;Ljava/lang/String;)V
  */
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1create
-  (JNIEnv* env, jobject this, jobject transport, jstring topic, jstring source, jobject callback)
+  (JNIEnv* env, jobject this, jobject transport, jobject queue, jstring topic, jstring source, jobject callback)
 {
     mamaPublisher   cPublisher          =   NULL;
     mamaTransport   cTransport          =   NULL;
+    mamaQueue       cQueue              =   NULL;
     const char*     cSource             =   NULL;
     const char*     cTopic              =   NULL;
     jlong           transportPointer    =   0;
+    jlong           queuePointer        =   0;
     mama_status     status              =   MAMA_STATUS_OK;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    /*Get the transport pointer*/
+    /* Get the transport pointer */
     assert(transport!=NULL);
     transportPointer = (*env)->GetLongField(env, transport,
             transportPointerFieldId_g);
     assert(transportPointer!=0);
     cTransport = CAST_JLONG_TO_POINTER(mamaTransport, transportPointer);
 
-    /*Get the char* from the jstring*/
+    /* Get the queue pointer (may be null) */
+    if (NULL != queue)
+    {
+        queuePointer = (*env)->GetLongField(env, queue,
+            queuePointerFieldId_g);
+        cQueue = CAST_JLONG_TO_POINTER(mamaQueue, queuePointer);
+    }
+
+    /* Get the char* from the jstring */
     if (NULL!=topic)
     {
          cTopic = (*env)->GetStringUTFChars(env,topic,0);
@@ -240,12 +252,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1create
         status = mamaPublisher_createWithCallbacks(
                     &cPublisher,
                     cTransport,
-                    NULL,            // queue
+                    cQueue, 
                     cTopic,
                     cSource,
                     NULL,            // root
                     cb,
                     (void*) closureImpl);    // closure
+        mamaPublisherCallbacks_deallocate(cb);
     }
     else
     {
@@ -256,6 +269,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1create
                     cSource,
                     NULL);
     }
+
 
     if (MAMA_STATUS_OK != status)
     {
@@ -570,7 +584,7 @@ static void MAMACALLTYPE sendCompleteCB (mamaPublisher publisher,
         (*env)->DeleteGlobalRef(env,closureData->mClientJavaCallback);
 
     if (closure)
-        (*env)->DeleteGlobalRef(env,closure);
+		free((void*) closureData);
 }
 
 /*
@@ -680,7 +694,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getSymbol
 JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaPublisher_getState
   (JNIEnv* env, jobject this)
 {
-	mamaPublisherState state = MAMA_PUBLISHER_UNKNOWN;
+    mamaPublisherState state = MAMA_PUBLISHER_UNKNOWN;
     mama_status status = MAMA_STATUS_OK;
     jlong publisherPointer = 0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
@@ -733,8 +747,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher_destroy
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     publisherPointer = (*env)->GetLongField(env, this, publisherPointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(publisherPointer,
-        "MamaPublisher.destroy: Null parameter, publisher may have been destroyed.", NULL);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(publisherPointer,
+        "MamaPublisher.destroy: Null parameter, publisher may have been destroyed.");
     
     if (MAMA_STATUS_OK != (status = mamaPublisher_destroy(
                     CAST_JLONG_TO_POINTER(mamaPublisher, publisherPointer))))

@@ -1559,6 +1559,9 @@ ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Lj
             return;/*Exception thrown*/
         }
     }
+{
+fprintf(stderr, "### create %s %p\n", c_symbol, closureImpl);
+}
     sourcePointer = (*env)->GetLongField(env,source,
                                          sourcePointerFieldId_g);
     assert (0 != sourcePointer);

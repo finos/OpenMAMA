@@ -39,22 +39,22 @@ public class MamaPublisher
 
 	public void create (MamaTransport transport, String topic)
     {
-        _create(transport,topic,null,null);
+        _create(transport, null, topic, null, null);
     }
 
-	public void create (MamaTransport transport, String topic, MamaPublisherCallback cb)
+	public void create (MamaTransport transport, MamaQueue queue, String topic, MamaPublisherCallback cb)
     {
-        _create(transport,topic,null,cb);
+        _create(transport, queue, topic, null, cb);
     }
 
 	public void create (MamaTransport transport, String topic, String source)
     {
-        _create(transport,topic,source,null);
+        _create(transport, null, topic, source, null);
     }
 
-	public void create (MamaTransport transport, String topic, String source, MamaPublisherCallback cb)
+	public void create (MamaTransport transport, MamaQueue queue, String topic, String source, MamaPublisherCallback cb)
     {
-        _create(transport,topic,source,cb);
+        _create(transport, queue, topic, source, cb);
     }
 
 	public native void destroy();
@@ -130,7 +130,7 @@ public class MamaPublisher
 
     private native void  _getTransport ();
 
-    private native void _create (MamaTransport transport, String topic, String source, MamaPublisherCallback cb);
+    private native void _create (MamaTransport transport, MamaQueue queue, String topic, String source, MamaPublisherCallback cb);
 
     private native void _send (MamaMsg msg);
 
