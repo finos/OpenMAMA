@@ -217,6 +217,28 @@ extern mama_status
 mamaTransport_setTransportTopicCallback (mamaTransport transport,
                                          mamaTransportTopicCB callback,
                                          void* closure);
+
+/**
+ * Set the transport topic callback and specify a queue.
+ * This is for apps that use publisher event callbacks.
+ * The bridge will retrieve this queue and use it for the publisher event callbacks.
+ * It receives advisories when a client
+ * subscribes or unsubscribes to a topic on the transport
+ */
+MAMAExpDLL
+extern mama_status
+mamaTransport_setTransportTopicCallback2 (mamaTransport transport,
+                                          mamaTransportTopicCB callback,
+                                          mamaQueue queue,
+                                          void* closure);
+
+/**
+ * Get the queue used by bridges for publisher event callbacks.
+ */
+MAMAExpDLL
+extern mama_status
+mamaTransport_getQueue (mamaTransport transport, mamaQueue* queue);
+
 /**
  * Allocate a transport structure. Do not free this memory, use
  * mamaTransport_destroy() instead.

@@ -47,6 +47,8 @@ namespace Wombat
 
         virtual void destroy (void);
 
+        virtual void destroyEx (void);
+
         virtual void create (MamaTransport*  transport,
                              const char*     topic,
                              const char*     source = NULL,

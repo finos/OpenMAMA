@@ -201,6 +201,15 @@ namespace Wombat
        }
     }
 
+    void MamaPublisher::destroyEx (void)
+    {
+       if (mPimpl && !destroyed)
+       {
+           destroyed = true;
+           mPimpl->destroyEx ();
+       }
+    }
+
    mamaPublisherState MamaPublisher::getState() const
    {
         return mPimpl->getState ();
@@ -300,6 +309,15 @@ namespace Wombat
         if (mPublisher)
         {
             mamaTry (mamaPublisher_destroy (mPublisher));
+           /* Don't use this object after this, it is freed in the onDestroy callback sequence */
+        }
+    }
+
+    void MamaPublisherImpl::destroyEx (void)
+    {
+        if (mPublisher)
+        {
+            mamaTry (mamaPublisher_destroyEx (mPublisher));
            /* Don't use this object after this, it is freed in the onDestroy callback sequence */
         }
     }

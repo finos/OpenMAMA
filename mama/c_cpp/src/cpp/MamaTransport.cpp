@@ -36,6 +36,7 @@ namespace Wombat
         const MamaSymbolMap*     getSymbolMap () const;
 
         MamaTransportTopicEventCallback*    myTopicEventCallback;
+        MamaQueue*               myTopicEventQueue;
         MamaTransportCallback*   mCallback;
         const MamaSymbolMap*     mMap;
         bool                     mDeleteCTransport;
@@ -468,6 +469,28 @@ namespace Wombat
         mamaTry (mamaTransport_setTransportTopicCallback (
                     mTransport, transportTopicEventCb, this));
     }
+
+    void MamaTransport::setTransportTopicCallback2 (MamaTransportTopicEventCallback* callback, MamaQueue* queue)
+    {
+        if (mamaInternal_getCatchCallbackExceptions())
+        {
+            mPimpl->myTopicEventCallback = new TransportTopicTestCallback (callback);
+        }
+        else 
+        {
+            mPimpl->myTopicEventCallback = callback;
+            mPimpl->myTopicEventQueue = queue;
+        }
+        mamaTry (mamaTransport_setTransportTopicCallback2 (
+                    mTransport, transportTopicEventCb, queue->getCValue(), this));
+    }
+
+    MamaQueue* MamaTransport::getTopicEventQueue()
+    {
+        if (mPimpl) return mPimpl->myTopicEventQueue;
+        return NULL;
+    }
+
     void MamaTransport::setTransportCallback (MamaTransportCallback* callback)
     {
         if (mamaInternal_getCatchCallbackExceptions ())
@@ -496,6 +519,7 @@ namespace Wombat
 
     MamaTransport::MamaTransportImpl::MamaTransportImpl ()
         : myTopicEventCallback  (NULL)
+        , myTopicEventQueue     (NULL)
         , mCallback             (NULL)
         , mMap              (NULL)
         , mDeleteCTransport (true)

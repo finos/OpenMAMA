@@ -96,9 +96,9 @@ void subCommon_destroyEx(JNIEnv* env, jobject subscription,
             utils_throwMamaException(env,errorString);
         }
 
-		/*It's different here.  DestroyEx in C actually doesn't destroy it right away.  
-		 We need to wait for the callback. */
-	}
+        /*It's different here.  DestroyEx in C actually doesn't destroy it right away.  
+         We need to wait for the callback. */
+    }
 }
 
 
@@ -146,11 +146,13 @@ void subCommon_onErrorCb ( mamaSubscription    subscription,
      env = utils_getENV(javaVM_g);
      if (!env) return;
 
+     jstring jmsg = (*env)->NewStringUTF(env, subject);
      (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                             subCallbackonErrorId,
                             closureImpl->mSubscription,
-                            status,0,(*env)->NewStringUTF(env, subject),
+                            status, 0, jmsg,
                             NULL/*We have no exceptions to propagate!*/);
+     (*env)->DeleteLocalRef(env, jmsg);        /* delete this since this thread is not from the JVM */
     return;
 }
         
@@ -314,7 +316,7 @@ void subCommon_destroyCb(mamaSubscription  subscription,
 
                     if(closureImpl->mSubscription)
                     {
-			            /* Delete the global ref. */
+                        /* Delete the global ref. */
                         (*env)->DeleteGlobalRef(env,closureImpl->mSubscription);                        
                     }
 
@@ -323,5 +325,5 @@ void subCommon_destroyCb(mamaSubscription  subscription,
                 }
             }
         }
-    }	
+    }    
 }

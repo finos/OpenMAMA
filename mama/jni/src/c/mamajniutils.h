@@ -35,6 +35,8 @@
 #define UTILS_FIELD_DESCRIPTOR_CLASS_NAME "com/wombat/mama/MamaFieldDescriptor"
 #define UTILS_FIELD_DESCRIPTOR_CONSTRUCTOR_PROTOTYPE "(ISLjava/lang/String;Ljava/lang/Object;)V"
 
+#define UTILS_QUEUE_CLASS_NAME "com/wombat/mama/MamaQueue"
+
 /*Constants for the MamaTransportListener Java class*/
 #define UTILS_TRANSPORT_LISTENER_CLASS_NAME "com/wombat/mama/MamaTransportListener"
 #define UTILS_TL_ON_RECONNECT_PROTOTYPE "(SLjava/lang/Object;)V"
@@ -79,13 +81,14 @@
 
 /*
     Macros to check if the passed in parameter is NULL and if so throw an exception.
-	In JNI you must return for the exception to be thrown.
+    In JNI you must return for the exception to be thrown.
+  
 */
-#define MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(p,errorString,retValue)	\
-	if (!p) {utils_throwMamaException(env, errorString);	return retValue; }														
+#define MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(p,errorString,retValue)    \
+    if (!p) {utils_throwMamaException(env, errorString);    return retValue; }                                                        
 
-#define MAMA_THROW_NULL_PARAMETER_RETURN_VOID(p,errorString)	\
-	if (!p) {utils_throwMamaException(env, errorString);	return; }	
+#define MAMA_THROW_NULL_PARAMETER_RETURN_VOID(p,errorString)    \
+    if (!p) {utils_throwMamaException(env, errorString);    return; }    
 
 /**
  * This function should be called by all native threads that enter a function

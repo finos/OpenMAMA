@@ -28,13 +28,21 @@ import com.wombat.mama.*;
  *
  * This class will test MamaPublisher 
  */
-public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCallback, MamaThrottleCallback
+public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCallback, MamaThrottleCallback,
+                                                           MamaPublisherCallback,
+                                                           MamaTransportListener
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
     /* ****************************************************** */
     MamaBridge bridge;
     MamaTransport transport;
+
+    int onCreates = 0;
+    int onDestroys = 0;
+    int onErrors = 0;
+
+    boolean connected = false;
     
     /* ****************************************************** */
     /* Protected Functions. */
@@ -45,6 +53,11 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
     {        
         try
         {
+            onCreates = 0;
+            onDestroys = 0;
+            onErrors = 0;
+            connected = false;
+
             // Load the bridge
             bridge = Mama.loadBridge(Main.GetBridgeName());
         
@@ -52,9 +65,19 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
             Mama.open();
 
             transport = new MamaTransport();
+            transport.addTransportListener(this);
+            transport.addTransportTopicListener(new MamaPublisherTransportTopicListener());
             transport.create(Main.GetTransportName(), bridge);        
 
-            Thread.sleep(4000);            // TODO use onCreate() here
+            int waits = 0;
+            while (!connected)
+            {
+                Thread.sleep(1000);
+                if (waits++ > 10)
+                {
+                    Assert.fail("Transport did not connect");
+                }
+            }
 
             Mama.startBackground(bridge, this);
         }
@@ -88,6 +111,94 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
     /* Test Functions. */
     /* ****************************************************** */
 
+    // Transport Listener
+    @Override
+    public void onDisconnect(short cause, final Object platformInfo)
+    {
+    }
+
+    @Override
+    public void onReconnect(short cause, final Object platformInfo)
+    {
+    }
+
+    @Override
+    public void onQuality (short cause, final Object platformInfo)
+    {
+    }
+
+    @Override
+    public void onConnect (short cause, final Object platformInfo)
+    {
+        connected = true;
+    }
+
+    @Override
+    public void onAccept (short cause, final Object platformInfo)
+    {
+    }
+
+    @Override
+    public void onAcceptReconnect (short cause, final Object platformInfo)
+    {
+    }
+
+    @Override
+    public void onPublisherDisconnect (short cause, final Object platformInfo)
+    {
+    }
+
+    @Override
+    public void onNamingServiceConnect (short cause, final Object platformInfo)
+    {
+    }
+
+    @Override
+    public void onNamingServiceDisconnect (short cause, final Object platformInfo)
+    {
+    }
+
+    // Transport Topic Listener
+    class MamaPublisherTransportTopicListener extends MamaTransportTopicListener
+    {
+        @Override
+        public void onTopicPublishError(String topic, final Object platformInfo)
+        {
+            onErrors++;
+        }
+
+        @Override
+        public void onTopicPublishErrorNotEntitled(String topic, final Object platformInfo)
+        {
+            onErrors++;
+        }
+
+        @Override
+        public void onTopicPublishErrorBadSymbol(String topic, final Object platformInfo)
+        {
+            onErrors++;
+        }
+    }
+
+    // Publisher Callbacks
+    @Override
+    public void onCreate(MamaPublisher pub)
+    {
+        onCreates++;
+    }
+
+    @Override
+    public void onDestroy(MamaPublisher pub)
+    {
+        onDestroys++;
+    }
+
+    @Override
+    public void onError(MamaPublisher pub, short status, String info)
+    {
+        onErrors++;
+    }
+
     @Override
     public void onStartComplete(int status)
     {
@@ -113,7 +224,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                 p.create(transport, Main.GetSymbol(), Main.GetSource());
                 p.sendWithThrottle(msg, this);
                 
-                Thread.sleep(250);
+                Thread.sleep(100);
             }
         }
         catch (Exception e)
@@ -136,7 +247,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
             try
             {
                 MamaPublisher p = new MamaPublisher();
-                // p.destroy();
+                p.destroy();
                 Assert.fail("Expected an exception for destroy with no create");
             }
             catch (Exception e)
@@ -152,7 +263,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                 if (Math.random() < 0.50)
                 {
                     // 50% destroy
-                    // p.destroy();
+                    p.destroy();
                 }
                 else
                 {
@@ -160,12 +271,84 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                     p = null;
                 }
                 
-                Thread.sleep(250);
+                Thread.sleep(100);
             }
 
             // Try to make Java run GC to call finalize
             System.gc();
+            Thread.sleep(250);
+        }
+        catch (Exception e)
+        {
+            System.err.println("testPublisherDestroy: " + e.toString());
+            Assert.fail("Unexpected exception");
+        }
+    }
 
+    public void testPublisherCallbacks()
+    {
+        try
+        {
+            MamaMsg msg = new MamaMsg();
+            msg.addU8(MamaReservedFields.MsgType.getName(), MamaReservedFields.MsgType.getId(), MamaMsgType.TYPE_INITIAL);
+            msg.addU8(MamaReservedFields.MsgStatus.getName(), MamaReservedFields.MsgStatus.getId(), MamaMsgStatus.STATUS_OK);
+            msg.addString("MdFeedGroup", 13, "MdFeedGroup Field");
+
+            MamaQueueGroup queueGroup = new MamaQueueGroup(1, bridge);
+
+            int numPublishers = 100;
+
+            for (int i = 0; i < numPublishers; i++)
+            {
+                MamaPublisher p = new MamaPublisher();
+                p.create(transport, queueGroup.getNextQueue(), Main.GetSymbol(), Main.GetSource(), this, null);
+                p.send(msg);
+                p.destroy();
+                
+                Thread.sleep(100);
+            }
+
+            Thread.sleep(1000);
+
+            Assert.assertEquals(onCreates, numPublishers);
+            Assert.assertEquals(onErrors, 0);
+            Assert.assertEquals(onDestroys, numPublishers);
+        }
+        catch (Exception e)
+        {
+            System.err.println("testPublisherDestroy: " + e.toString());
+            Assert.fail("Unexpected exception");
+        }
+    }
+
+    public void testPublisherCallbacksBadSource()
+    {
+        try
+        {
+            MamaMsg msg = new MamaMsg();
+            msg.addU8(MamaReservedFields.MsgType.getName(), MamaReservedFields.MsgType.getId(), MamaMsgType.TYPE_INITIAL);
+            msg.addU8(MamaReservedFields.MsgStatus.getName(), MamaReservedFields.MsgStatus.getId(), MamaMsgStatus.STATUS_OK);
+            msg.addString("MdFeedGroup", 13, "MdFeedGroup Field");
+
+            MamaQueueGroup queueGroup = new MamaQueueGroup(1, bridge);
+
+            int numPublishers = 100;
+
+            for (int i = 0; i < numPublishers; i++)
+            {
+                MamaPublisher p = new MamaPublisher();
+                p.create(transport, queueGroup.getNextQueue(), Main.GetSymbol(), Main.GetBadSource(), this, null);
+                p.send(msg);
+                p.destroy();
+                
+                Thread.sleep(100);
+            }
+
+            Thread.sleep(1000);
+
+            Assert.assertEquals(onCreates, numPublishers);
+            Assert.assertEquals(onErrors, numPublishers);
+            Assert.assertEquals(onDestroys, numPublishers);
         }
         catch (Exception e)
         {

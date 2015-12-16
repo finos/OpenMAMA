@@ -31,6 +31,7 @@ namespace Wombat
     class MamaTransport;
     class MamaConnection;
     class MamaServerConnection;
+    class MamaQueue;
 
     /**
     * TransportTopicEvent callback
@@ -334,8 +335,18 @@ namespace Wombat
         /**
          * Set the transport topic callback
          */
-
         void setTransportTopicCallback (MamaTransportTopicEventCallback* callback);
+
+        /**
+         * Set the transport topic callback with a queue for publisher events
+         */
+        void setTransportTopicCallback2 (MamaTransportTopicEventCallback* callback, MamaQueue* queue);
+
+        /**
+         * Get the queue that the app provided for publisher events.
+         */
+        MamaQueue* getTopicEventQueue();
+
         /**
          * Set the transport callback.
          */

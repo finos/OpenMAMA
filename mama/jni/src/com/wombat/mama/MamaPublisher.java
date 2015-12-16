@@ -37,27 +37,40 @@ public class MamaPublisher
     /* Reusable MamaTransport object. */
     private MamaTransport mamaTransport_i = null;
 
-	public void create (MamaTransport transport, String topic)
+    /* App closure */
+    private Object closure = null;
+
+    public void create (MamaTransport transport, String topic)
     {
         _create(transport, null, topic, null, null);
     }
 
-	public void create (MamaTransport transport, MamaQueue queue, String topic, MamaPublisherCallback cb)
-    {
-        _create(transport, queue, topic, null, cb);
-    }
-
-	public void create (MamaTransport transport, String topic, String source)
+    public void create (MamaTransport transport, String topic, String source)
     {
         _create(transport, null, topic, source, null);
     }
 
-	public void create (MamaTransport transport, MamaQueue queue, String topic, String source, MamaPublisherCallback cb)
+    /* Create with event callbacks */
+    public void create (MamaTransport transport, MamaQueue queue, String topic, MamaPublisherCallback cb, Object closure)
     {
+        this.closure = closure;
+        _create(transport, queue, topic, null, cb);
+    }
+
+    public void create (MamaTransport transport, MamaQueue queue, String topic, String source, MamaPublisherCallback cb, Object closure)
+    {
+        this.closure = closure;
         _create(transport, queue, topic, source, cb);
     }
 
-	public native void destroy();
+    public Object getClosure()
+    {
+        return closure;
+    }
+
+    public native void destroy();
+
+    public native void destroyEx();
 
     public void send (MamaMsg msg)
     {
@@ -71,13 +84,13 @@ public class MamaPublisher
         _sendWithThrottle(msg);
     }
 
-	public void sendWithThrottle (MamaMsg msg, MamaThrottleCallback callback)
-	{
-		 checkIsCreated("sendWithThrottleWithCallback()");
-		 _sendWithThrottleWithCallback(msg, callback);
-	}
+    public void sendWithThrottle (MamaMsg msg, MamaThrottleCallback callback)
+    {
+         checkIsCreated("sendWithThrottleWithCallback()");
+         _sendWithThrottleWithCallback(msg, callback);
+    }
 
-	 public void sendReplyToInbox (MamaMsg request, MamaMsg reply)
+     public void sendReplyToInbox (MamaMsg request, MamaMsg reply)
     {
         checkIsCreated("sendReplyToInbox()");
         _sendReplyToInbox(request,reply);
@@ -118,15 +131,15 @@ public class MamaPublisher
         return mamaTransport_i;
     }
 
-	public native String getRoot();
+    public native String getRoot();
 
-	public native String getSource();
+    public native String getSource();
 
-	public native String getSymbol();
+    public native String getSymbol();
 
-	public native short getState();
+    public native short getState();
 
-	public native String stringForState(short state);
+    public native String stringForState(short state);
 
     private native void  _getTransport ();
 
@@ -136,9 +149,9 @@ public class MamaPublisher
 
     private native void _sendWithThrottle (MamaMsg msg);
 
-	private native void _sendWithThrottleWithCallback(MamaMsg msg, MamaThrottleCallback callback);
+    private native void _sendWithThrottleWithCallback(MamaMsg msg, MamaThrottleCallback callback);
 
-	private native void _sendReplyToInbox (MamaMsg request, MamaMsg reply);
+    private native void _sendReplyToInbox (MamaMsg request, MamaMsg reply);
 
     private native void _sendReplyToInboxWithThrottle (MamaMsg request, MamaMsg reply);
 

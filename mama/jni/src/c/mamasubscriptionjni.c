@@ -887,7 +887,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_createNativeSubscri
     c_callback.onGap            = (wombat_subscriptionGapCB)subscriptionGapCB;
     c_callback.onRecapRequest   = (wombat_subscriptionRecapCB)subscriptionRecapCB;
     c_callback.onDestroy        = (wombat_subscriptionDestroyCB)subscriptionDestroyCB;
-	
+
     if(symbol)
     {
         c_symbol = (*env)->GetStringUTFChars(env,symbol,0);
@@ -1009,7 +1009,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setupNativeSubscrip
     c_callback.onGap            = (wombat_subscriptionGapCB)subscriptionGapCB;
     c_callback.onRecapRequest   = (wombat_subscriptionRecapCB)subscriptionRecapCB;
     c_callback.onDestroy        = (wombat_subscriptionDestroyCB)subscriptionDestroyCB;
-	
+
     if(symbol)
     {
         c_symbol = (*env)->GetStringUTFChars(env,symbol,0);
@@ -1559,9 +1559,6 @@ ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Lj
             return;/*Exception thrown*/
         }
     }
-{
-fprintf(stderr, "### create %s %p\n", c_symbol, closureImpl);
-}
     sourcePointer = (*env)->GetLongField(env,source,
                                          sourcePointerFieldId_g);
     assert (0 != sourcePointer);
@@ -1589,6 +1586,7 @@ fprintf(stderr, "### create %s %p\n", c_symbol, closureImpl);
         free(closureImpl);
         return;
     }/*Exception will have been thrown*/
+
     /*This global will be deleted when the subscription is destroyed*/
     closureImpl->mMessage  = (*env)->NewGlobalRef(env,messageImpl);
 

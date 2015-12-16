@@ -99,6 +99,8 @@ namespace Wombat
 
         virtual void destroy (void);
 
+        virtual void destroyEx (void);
+
         /**
          * Return the MamaTransport for the MamaPublisher.
          */

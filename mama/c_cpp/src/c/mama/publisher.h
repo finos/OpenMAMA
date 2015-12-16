@@ -260,6 +260,15 @@ extern mama_status
 mamaPublisher_destroy (mamaPublisher publisher);
 
 /**
+ * Destroy the publisher after queueing request to publisher's queue/thread
+ *
+ * @param publisher The mamaPublisher to destroy.
+ */
+MAMAExpDLL
+extern mama_status
+mamaPublisher_destroyEx(mamaPublisher publisher);
+
+/**
  * @brief Return the <code>mamaTransport</code> for this publisher.
  *
  * @param[in] publisher     The mamaPublisher from which to retrieve the transport for.

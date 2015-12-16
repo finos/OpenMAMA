@@ -20,9 +20,9 @@
  */
 
 /*
-* Implementation for each of the native methods defined in the
-* MamaPublisher.java source file.
-*/
+ * Implementation for each of the native methods defined in the
+ * MamaPublisher.java source file.
+ */
 
 /******************************************************************************
 * includes
@@ -48,11 +48,6 @@ typedef struct sendMsgCallback_
 
 typedef struct pubCallbackClosure
 {
-    /* The closure passed by the client. This is stored as a global reference
-       and must be deleted when the publisher is deleted.
-     */
-    jobject mUserData;
-    
     /* The callback object for the publisher. This is stored as a
        global reference and must be deleted when the publisher is deleted
      */
@@ -63,7 +58,6 @@ typedef struct pubCallbackClosure
      */
     jobject  mPublisher;
 } pubCallbackClosure;
-
 
 /******************************************************************************
 * Global/Static variables
@@ -121,7 +115,7 @@ static void publisherOnDestroyCb (mamaPublisher publisher, void* closure)
                            publisherCallbackMethoOnDestroy_g,
                            closureImpl->mPublisher);
 
-    /* Release the Java objects */
+    /* Release the Java objects for JVM GC */
     (*env)->DeleteGlobalRef(env, closureImpl->mPublisher);
     (*env)->DeleteGlobalRef(env, closureImpl->mClientCb);
     free((void*) closureImpl);
@@ -136,11 +130,13 @@ static void publisherOnErrorCb (mamaPublisher publisher,
     pubCallbackClosure* closureImpl = (pubCallbackClosure*) closure;
 
     /* Invoke the onError() callback method */
+    jstring jmsg = (*env)->NewStringUTF(env, info);
     (*env)->CallVoidMethod(env, closureImpl->mClientCb,
                            publisherCallbackMethoOnError_g,
                            closureImpl->mPublisher,
                            status,
-                           (*env)->NewStringUTF(env, info));
+                           jmsg);
+     (*env)->DeleteLocalRef(env, jmsg);        /* delete this since this thread is not from the JVM */
 }
         
 /******************************************************************************
@@ -572,8 +568,9 @@ static void MAMACALLTYPE sendCompleteCB (mamaPublisher publisher,
                                          mama_status   status,
                                          void*         closure)
 {
- JNIEnv*              env         = NULL;
+    JNIEnv*              env         = NULL;
     sendMsgCallbackClosure* closureData = (sendMsgCallbackClosure*)closure;
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
 
@@ -584,7 +581,7 @@ static void MAMACALLTYPE sendCompleteCB (mamaPublisher publisher,
         (*env)->DeleteGlobalRef(env,closureData->mClientJavaCallback);
 
     if (closure)
-		free((void*) closureData);
+        free((void*) closureData);
 }
 
 /*
@@ -617,7 +614,9 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getRoot
         return NULL;
     }
 
-    return (*env)->NewStringUTF(env, root);
+    jstring jmsg = (*env)->NewStringUTF(env, root);
+    (*env)->DeleteLocalRef(env, jmsg);
+    return jmsg;
 }
 
 /*
@@ -650,7 +649,9 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getSource
         return NULL;
     }
 
-    return (*env)->NewStringUTF(env, source);
+    jstring jmsg = (*env)->NewStringUTF(env, source);
+    (*env)->DeleteLocalRef(env, jmsg);
+    return jmsg;
 }
 
 /*
@@ -683,7 +684,9 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getSymbol
         return NULL;
     }
 
-    return (*env)->NewStringUTF(env, symbol);
+    jstring jmsg = (*env)->NewStringUTF(env, symbol);
+    (*env)->DeleteLocalRef(env, jmsg);
+    return jmsg;
 }
 
 /*
@@ -731,7 +734,9 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_stringForState
 
     stateString = mamaPublisher_stringForState((mamaPublisherState) state);
 
-    return (*env)->NewStringUTF(env, stateString);
+    jstring jmsg = (*env)->NewStringUTF(env, stateString);
+    (*env)->DeleteLocalRef(env, jmsg);
+    return jmsg;
 }
 
 /*
@@ -757,6 +762,35 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher_destroy
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Could not call destroy for mamaPublisher.",
+                status);
+        utils_throwWombatException(env, errorString);
+        return;
+    }
+}
+
+/*
+ * Class:     com_wombat_mama_MamaPublisher
+ * Method:    destroyEx
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher_destroyEx
+  (JNIEnv* env, jclass this)
+{
+    mama_status status = MAMA_STATUS_OK;
+    jlong publisherPointer = 0;
+    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+
+    publisherPointer = (*env)->GetLongField(env, this, publisherPointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(publisherPointer,
+        "MamaPublisher.destroyEx: Null parameter, publisher may have been destroyed.");
+    
+    if (MAMA_STATUS_OK != (status = mamaPublisher_destroyEx(
+                    CAST_JLONG_TO_POINTER(mamaPublisher, publisherPointer))))
+    {
+        utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Could not call destroyEx for mamaPublisher.",
                 status);
         utils_throwWombatException(env, errorString);
         return;

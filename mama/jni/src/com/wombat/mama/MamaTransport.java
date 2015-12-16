@@ -162,6 +162,8 @@ public class MamaTransport
         // The client topic listener
         private MamaTransportTopicListener mClientTopicListener;
 
+        private MamaQueue mQueue;
+
         /* ****************************************************** */
         /* Construction and Finalization. */
         /* ****************************************************** */
@@ -173,7 +175,10 @@ public class MamaTransport
         {
             // Ensure that the listeners are null
             mClientTopicListener = null;
+            mQueue = null;
         }
+
+        public MamaQueue getQueue() { return mQueue; }
 
         /* ****************************************************** */
         /* Interface Implementations. */
@@ -257,6 +262,12 @@ public class MamaTransport
         {
             /* Save argument in the member variable. */
             mClientTopicListener = clientTopicListener;
+        }
+
+        public void setQueue(MamaQueue queue)
+        {
+            /* Save argument in the member variable. */
+            mQueue = queue;
         }
     }
 
@@ -351,7 +362,7 @@ public class MamaTransport
      *
      * @param listenerEx The listener to add.
      */
-    private native void nativeAddTopicListener(MamaTransportTopicListener topicListener);
+    private native void nativeAddTopicListener(MamaTransportTopicListener topicListener, MamaQueue queue);
 
     /* ****************************************************** */
     /* Public Functions. */
@@ -396,11 +407,28 @@ public class MamaTransport
             mTopicListener = new InternalTopicListener();
 
             // Set it in the native layer
-            nativeAddTopicListener(mTopicListener);
+            nativeAddTopicListener(mTopicListener, null);
         }
 
         /* Set the client's listener inside the re-usable object. */
         mTopicListener.setClientTopicListener(transportTopicListener);
+    }
+
+    public void addTransportTopicListener(MamaTransportTopicListener transportTopicListener, MamaQueue queue)
+    {
+        // If this internal listener hasn't been created then do so now.
+        if(null == mTopicListener)
+        {
+            // Allocate the listener
+            mTopicListener = new InternalTopicListener();
+
+            // Set it in the native layer
+            nativeAddTopicListener(mTopicListener, queue);
+        }
+
+        /* Set the client's listener inside the re-usable object. */
+        mTopicListener.setClientTopicListener(transportTopicListener);
+        mTopicListener.setQueue(queue);
     }
 
     /**

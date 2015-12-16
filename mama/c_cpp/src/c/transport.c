@@ -85,6 +85,7 @@ typedef struct transportImpl_
     mamaTransportCB          mTportCb;
     void*                    mTportClosure;
     mamaTransportTopicCB     mTportTopicCb;
+    mamaQueue                mQueue;
     void*                    mTportTopicClosure;
     wombatThrottle           mThrottle;
     wombatThrottle           mRecapThrottle;
@@ -1759,6 +1760,26 @@ mamaTransport_setTransportTopicCallback (mamaTransport transport,
 {
     self->mTportTopicCb      = callback;
     self->mTportTopicClosure = closure;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaTransport_setTransportTopicCallback2 (mamaTransport transport,
+                                          mamaTransportTopicCB callback,
+                                          mamaQueue queue,
+                                          void* closure)
+{
+    self->mTportTopicCb      = callback;
+    self->mTportTopicClosure = closure;
+    self->mQueue             = queue;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaTransport_getQueue (mamaTransport transport,
+                        mamaQueue* queue)
+{
+    *queue = self->mQueue;
     return MAMA_STATUS_OK;
 }
 
