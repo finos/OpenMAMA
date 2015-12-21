@@ -243,7 +243,8 @@ const char* getHostName (void);
 #  if (__GNUC__ >= 4) && (__GNUC_MINOR__ >= 6)
 #    define MAMAIgnoreDeprecatedOpen           \
         _Pragma ("GCC diagnostic push")      \
-        _Pragma ("GCC diagnostic ignored \"-Wdeprecated\"")
+        _Pragma ("GCC diagnostic ignored \"-Wdeprecated\"") \
+        _Pragma ("GCC diagnostic ignored \"-Wdeprecated-declarations\"") \
 
 #    define MAMAIgnoreDeprecatedClose         \
         _Pragma ("GCC diagnostic pop")
