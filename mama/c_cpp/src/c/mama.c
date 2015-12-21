@@ -172,18 +172,6 @@ typedef struct mamaMiddlewareLib_
     mama_bool_t mamaAllocated;
 } mamaMiddlewareLib;
 
-/**
- * @brief Structure for storing combined mamaPayloadBridge and LIB_HANDLE data.
- */
-typedef struct mamaPayloadLib_
-{
-    mamaPayloadBridge bridge;
-    LIB_HANDLE        library;
-    char              id;
-
-    /* Indcates if the bridge was allocated by MAMA or the bridge */
-    mama_bool_t       mamaAllocated;
-} mamaPayloadLib;
 
 /**
  * @brief Structure for managing the loaded middleware libraries
