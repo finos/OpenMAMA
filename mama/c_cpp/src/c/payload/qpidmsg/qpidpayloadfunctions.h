@@ -65,7 +65,6 @@ MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_init            (char* identifier);
 
-
 /**
  * Returns the type of payload from the current bridge, from the mamaPayloadType
  * enum in msg.h
@@ -74,9 +73,11 @@ qpidmsgPayload_init            (char* identifier);
  *
  * @return mamaPayloadType indicating the type of payload.
 */
+MAMAIgnoreDeprecatedOpen
 MAMAExpBridgeDLL
 mamaPayloadType
 qpidmsgPayload_getType         (void);
+MAMAIgnoreDeprecatedClose
 
 /**
  * Method call to create an instance of the middleware message payload, which is
