@@ -195,18 +195,6 @@ extern mama_status
 mamaTransport_setTransportCallback (mamaTransport   transport,
                                     mamaTransportCB callback,
                                     void*           closure);
-/**
- * Set the transport write queue high and low water mark values. The
- * MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK and
- * MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK events will be delivered though
- * the transport callback when the respective number of items are outstanding on
- * a clients write queue. 
- */
-MAMAExpDLL
-extern mama_status
-mamaTransport_setWriteQueueWatermarks (mamaTransport transport,
-                                       uint32_t      highWater,
-                                       uint32_t      lowWater);
 
 /**
  * Set the transport topic callback. It receives advisories when a client
@@ -219,25 +207,31 @@ mamaTransport_setTransportTopicCallback (mamaTransport transport,
                                          void* closure);
 
 /**
- * Set the transport topic callback and specify a queue.
- * This is for apps that use publisher event callbacks.
- * The bridge will retrieve this queue and use it for the publisher event callbacks.
- * It receives advisories when a client
- * subscribes or unsubscribes to a topic on the transport
+ * Set the queue used by bridges for transport callbacks (transport and topic).
  */
 MAMAExpDLL
 extern mama_status
-mamaTransport_setTransportTopicCallback2 (mamaTransport transport,
-                                          mamaTransportTopicCB callback,
-                                          mamaQueue queue,
-                                          void* closure);
+mamaTransport_setTransportCallbackQueue (mamaTransport transport, mamaQueue queue);
 
 /**
- * Get the queue used by bridges for publisher event callbacks.
+ * Get the queue used by bridges for transport callbacks (transport and topic).
  */
 MAMAExpDLL
 extern mama_status
-mamaTransport_getQueue (mamaTransport transport, mamaQueue* queue);
+mamaTransport_getTransportCallbackQueue (mamaTransport transport, mamaQueue* queue);
+
+/**
+ * Set the transport write queue high and low water mark values. The
+ * MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK and
+ * MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK events will be delivered though
+ * the transport callback when the respective number of items are outstanding on
+ * a clients write queue. 
+ */
+MAMAExpDLL
+extern mama_status
+mamaTransport_setWriteQueueWatermarks (mamaTransport transport,
+                                       uint32_t      highWater,
+                                       uint32_t      lowWater);
 
 /**
  * Allocate a transport structure. Do not free this memory, use

@@ -56,6 +56,9 @@ typedef struct transportListenerClosure
     /* The java connection object is used when processing transport callbacks. */
     jobject mConnection;
 
+    /* Used for transport callbacks (transport and topic) */
+    jobject mQueue;
+
 } transportListenerClosure;
 
 /******************************************************************************
@@ -241,6 +244,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_destroy(JNIEnv* env, j
                     {
                         (*env)->DeleteGlobalRef(env, closure->mTopicCallback);
                         closure->mTopicCallback = NULL;
+                    } 
+    
+                    /* The callback queue. */
+                    if(NULL != closure->mQueue)
+                    {
+                        (*env)->DeleteGlobalRef(env, closure->mQueue);
+                        closure->mQueue = NULL;
                     } 
     
                     /* Delete the connection object reference, this will allow the Java object to be garbage collected. */
@@ -478,6 +488,43 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaTransport_getInvokeQualityFo
     }
 
     return (jboolean)invokeQualityForAllSubscs;
+}
+
+/*
+ * Class:     com_wombat_mama_MamaTransport
+ * Method:    nativeSetTransportCallbackQueue
+ * Signature: (L/com/wombat/MamaQueue;)V
+ */
+JNIEXPORT void Java_com_wombat_mama_MamaTransport_nativeSetTransportCallbackQueue
+  (JNIEnv* env, jobject this, jobject queue)
+{
+    jlong transportPointer = 0;
+    jlong queuePointer = 0;
+    jlong closurePointer = 0;
+    transportListenerClosure *closure = NULL;
+
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queue,  
+        "Null parameter for queue.", 0);
+
+    transportPointer = (*env)->GetLongField(env, this, transportPointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(transportPointer,  
+        "Null parameter, MamaTransport may have already been destroyed.", 0);
+
+    queuePointer = (*env)->GetLongField(env, queue, queuePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,  
+        "Null parameter, MamaQueue may have already been destroyed.", 0);
+
+    /* Create ref to Java object */
+    closurePointer = (*env)->GetLongField(env, this, transportClosureFieldId_g);
+    if (0 != closurePointer)
+	{
+        closure = (transportListenerClosure*) closurePointer;
+        closure->mQueue = (*env)->NewGlobalRef(env, queue);
+	}
+
+    mamaTransport_setTransportCallbackQueue(
+                         CAST_JLONG_TO_POINTER(mamaTransport, transportPointer),
+                         CAST_JLONG_TO_POINTER(mamaQueue, queuePointer));
 }
 
 /*
@@ -791,9 +838,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeAddListener(JNIE
 /*
  * Class:     com_wombat_mama_MamaTransport
  * Method:    nativeAddTopicListener
- * Signature: (Lcom/wombat/mama/MamaTransport.InternalTopicListener;Lcom/wombat/mama/MamaQueue;)V
+ * Signature: (Lcom/wombat/mama/MamaTransport.InternalTopicListener;)V
  */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeAddTopicListener(JNIEnv *env, jobject this, jobject topicListener, jobject queue)
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeAddTopicListener(JNIEnv *env, jobject this, jobject topicListener)
 {
     /* Returns. */
     mama_status ret = MAMA_STATUS_NULL_ARG;
@@ -818,17 +865,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeAddTopicListener
                 closure->mTopicCallback = (*env)->NewGlobalRef(env, topicListener);
                 if(NULL != closure->mTopicCallback)
                 {
-                    /* Install the transport topic callback. */
-                    if (queue != NULL)
-                    {
-            			jlong queuePointer = (*env)->GetLongField(env, queue, queuePointerFieldId_g);
-						mamaQueue queue = (mamaQueue) queuePointer;
-                        ret = mamaTransport_setTransportTopicCallback2(transport, (mamaTransportTopicCB)mamaTransportTopicListenerCB, queue, (void *)closure);
-                    }
-                    else
-                    {
-                        ret = mamaTransport_setTransportTopicCallback(transport, (mamaTransportTopicCB)mamaTransportTopicListenerCB, (void *)closure);
-                    }
+                    ret = mamaTransport_setTransportTopicCallback(transport, (mamaTransportTopicCB)mamaTransportTopicListenerCB, (void *)closure);
                 }
             }
         }

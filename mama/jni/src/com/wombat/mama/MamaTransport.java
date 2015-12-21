@@ -162,8 +162,6 @@ public class MamaTransport
         // The client topic listener
         private MamaTransportTopicListener mClientTopicListener;
 
-        private MamaQueue mQueue;
-
         /* ****************************************************** */
         /* Construction and Finalization. */
         /* ****************************************************** */
@@ -175,10 +173,7 @@ public class MamaTransport
         {
             // Ensure that the listeners are null
             mClientTopicListener = null;
-            mQueue = null;
         }
-
-        public MamaQueue getQueue() { return mQueue; }
 
         /* ****************************************************** */
         /* Interface Implementations. */
@@ -263,12 +258,6 @@ public class MamaTransport
             /* Save argument in the member variable. */
             mClientTopicListener = clientTopicListener;
         }
-
-        public void setQueue(MamaQueue queue)
-        {
-            /* Save argument in the member variable. */
-            mQueue = queue;
-        }
     }
 
     /* ****************************************************** */
@@ -298,6 +287,9 @@ public class MamaTransport
 
     /* The Mama bridge. */
     private MamaBridge myBridge;
+
+    /* Queue for callbacks */
+    private MamaQueue myQueue = null;
     
     /* The re-usable transport listener. */
     InternalTransportListener mListener;
@@ -362,11 +354,36 @@ public class MamaTransport
      *
      * @param listenerEx The listener to add.
      */
-    private native void nativeAddTopicListener(MamaTransportTopicListener topicListener, MamaQueue queue);
+    private native void nativeAddTopicListener(MamaTransportTopicListener topicListener );
+
+    /**
+     * This will pass the MamaQueue to JNi layer so it can be passed to lower layers.
+     * It also creates a global ref.
+     *
+     * @param queue The queue to add.
+     */
+    private native void nativeSetTransportCallbackQueue(MamaQueue queue);
 
     /* ****************************************************** */
     /* Public Functions. */
     /* ****************************************************** */
+
+    /**
+     * Set the callback queue.
+     */
+    public void setTransportCallbackQueue(MamaQueue queue)
+    {
+        myQueue = queue;
+        nativeSetTransportCallbackQueue(queue);
+    }
+
+    /**
+     * Get the callback queue.
+     */
+    MamaQueue getTransportCallbackQueue()
+    {
+        return myQueue;
+    }
 
     /**
      * This function will set the client listener, note that only one
@@ -407,28 +424,11 @@ public class MamaTransport
             mTopicListener = new InternalTopicListener();
 
             // Set it in the native layer
-            nativeAddTopicListener(mTopicListener, null);
+            nativeAddTopicListener(mTopicListener);
         }
 
         /* Set the client's listener inside the re-usable object. */
         mTopicListener.setClientTopicListener(transportTopicListener);
-    }
-
-    public void addTransportTopicListener(MamaTransportTopicListener transportTopicListener, MamaQueue queue)
-    {
-        // If this internal listener hasn't been created then do so now.
-        if(null == mTopicListener)
-        {
-            // Allocate the listener
-            mTopicListener = new InternalTopicListener();
-
-            // Set it in the native layer
-            nativeAddTopicListener(mTopicListener, queue);
-        }
-
-        /* Set the client's listener inside the re-usable object. */
-        mTopicListener.setClientTopicListener(transportTopicListener);
-        mTopicListener.setQueue(queue);
     }
 
     /**

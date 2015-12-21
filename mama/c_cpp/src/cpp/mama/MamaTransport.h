@@ -338,14 +338,14 @@ namespace Wombat
         void setTransportTopicCallback (MamaTransportTopicEventCallback* callback);
 
         /**
-         * Set the transport topic callback with a queue for publisher events
+         * Set the queue that the app provided for transport callbacks.
          */
-        void setTransportTopicCallback2 (MamaTransportTopicEventCallback* callback, MamaQueue* queue);
+        void getTransportCallbackQueue(MamaQueue* queue);
 
         /**
-         * Get the queue that the app provided for publisher events.
+         * Get the queue that the app provided for transport callbacks.
          */
-        MamaQueue* getTopicEventQueue();
+        MamaQueue* getTransportCallbackQueue();
 
         /**
          * Set the transport callback.
@@ -479,6 +479,15 @@ namespace Wombat
          */
         void requestEndConflation () const;
 
+		/**
+		 * Get the queue for the transport callbacks
+		 */
+        MamaQueue* getTransportCallbackQueue() const;
+
+		/**
+		 * Set the queue for the transport callbacks
+		 */
+        void setTransportCallbackQueue(MamaQueue* queue);
 
         // Access to C types for implementation of related classes.
         mamaTransport        getCValue    ();
@@ -507,6 +516,7 @@ namespace Wombat
 
     private:
         mamaTransport       mTransport;
+		MamaQueue*          mQueue;        // used for transport callbacks
     };
 
 } // namespace Wombat

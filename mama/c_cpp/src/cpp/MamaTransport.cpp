@@ -36,7 +36,6 @@ namespace Wombat
         const MamaSymbolMap*     getSymbolMap () const;
 
         MamaTransportTopicEventCallback*    myTopicEventCallback;
-        MamaQueue*               myTopicEventQueue;
         MamaTransportCallback*   mCallback;
         const MamaSymbolMap*     mMap;
         bool                     mDeleteCTransport;
@@ -353,6 +352,7 @@ namespace Wombat
     MamaTransport::MamaTransport (void) 
         : mPimpl     (new MamaTransportImpl)
         , mTransport (NULL)
+		, mQueue     (NULL)
     {
         mamaTry (mamaTransport_allocate (&mTransport));
         mPimpl->mDeleteCTransport = true;
@@ -361,6 +361,7 @@ namespace Wombat
     MamaTransport::MamaTransport (mamaTransport tport) 
         : mPimpl     (new MamaTransportImpl)
         , mTransport (tport)
+		, mQueue     (NULL)
     {
         mPimpl->mDeleteCTransport = false;
     }
@@ -470,25 +471,16 @@ namespace Wombat
                     mTransport, transportTopicEventCb, this));
     }
 
-    void MamaTransport::setTransportTopicCallback2 (MamaTransportTopicEventCallback* callback, MamaQueue* queue)
+    MamaQueue* MamaTransport::getTransportCallbackQueue()
     {
-        if (mamaInternal_getCatchCallbackExceptions())
-        {
-            mPimpl->myTopicEventCallback = new TransportTopicTestCallback (callback);
-        }
-        else 
-        {
-            mPimpl->myTopicEventCallback = callback;
-            mPimpl->myTopicEventQueue = queue;
-        }
-        mamaTry (mamaTransport_setTransportTopicCallback2 (
-                    mTransport, transportTopicEventCb, queue->getCValue(), this));
+		return mQueue;
     }
 
-    MamaQueue* MamaTransport::getTopicEventQueue()
+    void MamaTransport::setTransportCallbackQueue(MamaQueue* queue)
     {
-        if (mPimpl) return mPimpl->myTopicEventQueue;
-        return NULL;
+	    if (NULL == queue) return;
+		mQueue = queue;
+        mamaTry (mamaTransport_setTransportCallbackQueue (mTransport, mQueue->getCValue()));
     }
 
     void MamaTransport::setTransportCallback (MamaTransportCallback* callback)
@@ -519,7 +511,6 @@ namespace Wombat
 
     MamaTransport::MamaTransportImpl::MamaTransportImpl ()
         : myTopicEventCallback  (NULL)
-        , myTopicEventQueue     (NULL)
         , mCallback             (NULL)
         , mMap              (NULL)
         , mDeleteCTransport (true)

@@ -1764,20 +1764,16 @@ mamaTransport_setTransportTopicCallback (mamaTransport transport,
 }
 
 mama_status
-mamaTransport_setTransportTopicCallback2 (mamaTransport transport,
-                                          mamaTransportTopicCB callback,
-                                          mamaQueue queue,
-                                          void* closure)
+mamaTransport_setTransportCallbackQueue (mamaTransport transport,
+                                         mamaQueue queue)
 {
-    self->mTportTopicCb      = callback;
-    self->mTportTopicClosure = closure;
-    self->mQueue             = queue;
+    self->mQueue = queue;
     return MAMA_STATUS_OK;
 }
 
 mama_status
-mamaTransport_getQueue (mamaTransport transport,
-                        mamaQueue* queue)
+mamaTransport_getTransportCallbackQueue (mamaTransport transport,
+                                         mamaQueue* queue)
 {
     *queue = self->mQueue;
     return MAMA_STATUS_OK;
