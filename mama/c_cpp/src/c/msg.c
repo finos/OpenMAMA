@@ -73,6 +73,8 @@ typedef struct mamaMsgImpl_
     /* Set of get/set/update methods to use for a non wmsg payload */
     mamaPayloadBridgeImpl*  mPayloadBridge;
 
+    mamaPayloadLib          mPayloadLib;
+
     mamaMsg*                mLastVectorMsg;
     mama_size_t             mLastVectorMsgLen;
 
@@ -335,6 +337,20 @@ mamaMsgImpl_useBridgePayload (mamaMsg msg, mamaBridgeImpl* bridgeImpl)
       overwritten later on. */
     mamaMsgImpl_setQueue(msg, bridgeImpl->mDefaultEventQueue);
 
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaMsg_getPayloadId (mamaMsg msg, char* id)
+{
+    mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
+
+    if (!impl || !id) return MAMA_STATUS_NULL_ARG;
+
+    mamaPayloadLib lib = impl->mPayloadLib;
+
+    *id = lib.id;
+    
     return MAMA_STATUS_OK;
 }
 
