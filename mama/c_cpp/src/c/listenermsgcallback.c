@@ -86,11 +86,13 @@ listenerMsgCallback_create( listenerMsgCallback *result,
     msgCallback* callback = (msgCallback*)calloc( 1, sizeof( msgCallback ) );
 
 #ifdef WITH_ENTITLEMENTS  /* No listener creation without a client. */
+	{
     mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
     if( gEntitlementClient == 0 && !(mamaBridgeImpl_areEntitlementsDeferred(bridge)))
     {
         return MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
     }
+	}
 #endif  /* WITH_ENTITLEMENTS */
 
     if( callback == NULL )
@@ -642,8 +644,8 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
         return 1;
     }
 
+	{
     mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(self->mSubscription);
-
     if (bridge && (mamaBridgeImpl_areEntitlementsDeferred(bridge)))
     {
         mama_log (MAMA_LOG_LEVEL_FINER,
@@ -652,6 +654,7 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
         ctx->mEntitlementAlreadyVerified = 1;
         return 1;
     }
+	}
 
     if( MAMA_STATUS_OK == mamaMsg_getEntitleCode( msg,
                                                   &value ) )

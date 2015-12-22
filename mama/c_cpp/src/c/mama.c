@@ -1640,7 +1640,7 @@ mdrvImpl_ParseServersProperty()
 
     if (gServerProperty == NULL)
     {
-        memset (gServers, 0, sizeof(gServers));
+        memset ((char*) gServers, 0, sizeof(gServers));
 
         if( properties_Get (gProperties, SERVERS_PROPERTY) == NULL)
         {
@@ -1766,9 +1766,9 @@ enableEntitlements (const char **servers)
     altUserId   = properties_Get (gProperties, "mama.entitlement.altuserid");
     site = properties_Get (gProperties, "mama.entitlement.site");
     altIp = properties_Get (gProperties, "mama.entitlement.effective_ip_address");
-    entitlementCallbacks.onDisconnect = entitlementDisconnectCallback;
-    entitlementCallbacks.onEntitlementsUpdated = entitlementUpdatedCallback;
-    entitlementCallbacks.onSwitchEntitlementsChecking = entitlementCheckingSwitchCallback;
+    entitlementCallbacks.onDisconnect = (oeaDisconnectCallback) entitlementDisconnectCallback;
+    entitlementCallbacks.onEntitlementsUpdated = (oeaEntitlementsUpdatedCallback) entitlementUpdatedCallback;
+    entitlementCallbacks.onSwitchEntitlementsChecking = (oeaSwitchEntitlementsCheckingCallback) entitlementCheckingSwitchCallback;
 
     gEntitlementClient = oeaClient_create(&gEntitlementStatus,
                                 site,
