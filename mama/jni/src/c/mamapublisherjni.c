@@ -596,6 +596,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getRoot
     mama_status status = MAMA_STATUS_OK;
     jlong publisherPointer = 0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+	jstring jmsg;
 
     publisherPointer = (*env)->GetLongField(env, this, publisherPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(publisherPointer,
@@ -614,7 +615,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getRoot
         return NULL;
     }
 
-    jstring jmsg = (*env)->NewStringUTF(env, root);
+    jmsg = (*env)->NewStringUTF(env, root);
     (*env)->DeleteLocalRef(env, jmsg);
     return jmsg;
 }
@@ -631,6 +632,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getSource
     mama_status status = MAMA_STATUS_OK;
     jlong publisherPointer = 0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+	jstring jmsg;
 
     publisherPointer = (*env)->GetLongField(env, this, publisherPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(publisherPointer,
@@ -649,7 +651,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getSource
         return NULL;
     }
 
-    jstring jmsg = (*env)->NewStringUTF(env, source);
+    jmsg = (*env)->NewStringUTF(env, source);
     (*env)->DeleteLocalRef(env, jmsg);
     return jmsg;
 }
@@ -666,6 +668,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getSymbol
     mama_status status = MAMA_STATUS_OK;
     jlong publisherPointer = 0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+	jstring jmsg;
 
     publisherPointer = (*env)->GetLongField(env, this, publisherPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(publisherPointer,
@@ -684,7 +687,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_getSymbol
         return NULL;
     }
 
-    jstring jmsg = (*env)->NewStringUTF(env, symbol);
+    jmsg = (*env)->NewStringUTF(env, symbol);
     (*env)->DeleteLocalRef(env, jmsg);
     return jmsg;
 }
@@ -731,10 +734,11 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPublisher_stringForState
   (JNIEnv* env, jobject this, jshort state)
 {
     const char* stateString = NULL;
+	jstring jmsg;
 
     stateString = mamaPublisher_stringForState((mamaPublisherState) state);
 
-    jstring jmsg = (*env)->NewStringUTF(env, stateString);
+    jmsg = (*env)->NewStringUTF(env, stateString);
     (*env)->DeleteLocalRef(env, jmsg);
     return jmsg;
 }

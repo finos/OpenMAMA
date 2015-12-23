@@ -128,7 +128,65 @@ namespace Wombat
 			GC.KeepAlive(transport);
 		}
 
-		/// <summary>
+        /// <summary>
+        /// Create a mama publisher for the corresponding transport. If the transport
+        /// is a marketdata transport, as opposed to a "basic" transport, the topic
+        /// corresponds to the symbol. For a basic transport, the source and root get 
+        /// ignored.
+        /// </summary>
+        /// <param name="transport">The transport.</param>
+        /// <param name="topic">Symbol on which to publish.</param>
+        /// <param name="source">The source for market data publishers. (e.g. source.symbol)</param>
+        /// <param name="root">The root for market data publishers. Used internally.</param>
+        public void createWithCallbacks(
+            MamaTransport transport,
+            MamaQueue queue,
+            MamaPublisherCallback callback,
+            Object closure,
+            string topic,
+            string source,
+            string root)
+        {
+#if MAMA_WRAPPERS_CHECK_ARGUMENTS
+			if (transport == null)
+			{
+				throw new ArgumentNullException("transport");
+			}
+			if (topic == null)
+			{
+				throw new ArgumentNullException("topic");
+			}
+			if (queue == null)
+			{
+				throw new ArgumentNullException("queue");
+			}
+			if (callback == null)
+			{
+				throw new ArgumentNullException("callback");
+			}
+			if (nativeHandle != IntPtr.Zero)
+			{
+				throw new InvalidOperationException("MamaPublisher already created");
+			}
+#endif // MAMA_WRAPPERS_CHECK_ARGUMENTS
+            mCallback = callback;
+
+            GCHandle handle = GCHandle.Alloc(this);
+
+            int code = NativeMethods.mamaPublisher_createWithCallbacks(
+                ref nativeHandle,
+                transport.NativeHandle,
+                queue.NativeHandle,
+                ref mCallbackDelegates,
+                (IntPtr) handle,
+                topic, source, root);
+            CheckResultCode(code);
+            GC.KeepAlive(transport);
+            GC.KeepAlive(queue);
+            GC.KeepAlive(callback);
+        }
+
+        /// <summary>
 		/// Create a mama publisher for the corresponding transport. If the transport
 		/// is a marketdata transport, as opposed to a "basic" transport, the topic
 		/// corresponds to the symbol. For a basic transport, the source and root get 
@@ -449,18 +507,147 @@ namespace Wombat
             return mReusableTransport;
         }
 
-		// Interop API
+        /// <summary>
+        /// Get the name of the transport.
+        /// </summary>
+        public string getRoot()
+        {
+            // Get the symbol from the native layer
+            IntPtr ret = IntPtr.Zero;
+            CheckResultCode(NativeMethods.mamaPublisher_getRoot(nativeHandle, ref ret));
+
+            // Convert to an ANSI string
+            return Marshal.PtrToStringAnsi(ret);
+        }
+
+        /// <summary>
+        /// Get the name of the transport.
+        /// </summary>
+        public string getSource()
+        {
+            // Get the symbol from the native layer
+            IntPtr ret = IntPtr.Zero;
+            CheckResultCode(NativeMethods.mamaPublisher_getSource(nativeHandle, ref ret));
+
+            // Convert to an ANSI string
+            return Marshal.PtrToStringAnsi(ret);
+        }
+
+        /// <summary>
+        /// Get the name of the transport.
+        /// </summary>
+        public string getSymbol()
+        {
+            // Get the symbol from the native layer
+            IntPtr ret = IntPtr.Zero;
+            CheckResultCode(NativeMethods.mamaPublisher_getSymbol(nativeHandle, ref ret));
+
+            // Convert to an ANSI string
+            return Marshal.PtrToStringAnsi(ret);
+        }
+
+        // =====================================================================================
+        private static void onCreate(IntPtr nativeHandle, IntPtr closure)
+        {
+            // Obtain the handle from the closure
+            GCHandle handle = (GCHandle)closure;
+
+            // Extract the impl from the handle
+            MamaPublisher pub = (MamaPublisher) handle.Target;
+
+            // Use the impl to invoke the error callback
+            if (null != pub)
+            {
+                // Invoke the callback
+                pub.mCallback.onCreate(pub);
+            }
+        }
+
+        private static void onError(IntPtr nativeHandle, short status, string topic, IntPtr closure)
+        {
+            // Obtain the handle from the closure
+            GCHandle handle = (GCHandle)closure;
+
+            // Extract the impl from the handle
+            MamaPublisher pub = (MamaPublisher)handle.Target;
+
+            // Use the impl to invoke the error callback
+            if (null != pub)
+            {
+                // Invoke the callback
+                pub.mCallback.onError(pub, (MamaStatus.mamaStatus) status, topic);
+            }
+        }
+
+        private static void onDestroy(IntPtr nativeHandle, IntPtr closure)
+        {
+            // Obtain the handle from the closure
+            GCHandle handle = (GCHandle)closure;
+
+            // Extract the impl from the handle
+            MamaPublisher pub = (MamaPublisher)handle.Target;
+
+            // Use the impl to invoke the error callback
+            if (null != pub)
+            {
+                // Invoke the callback
+                pub.mCallback.onDestroy(pub);
+            }
+        }
+
+        private static NativeMethods.PublisherCallbacks mCallbackDelegates;
+
+        static MamaPublisher()
+        {
+            // Create the callback delegates structure
+            mCallbackDelegates = new NativeMethods.PublisherCallbacks();
+
+            // Create the individual delegates
+            mCallbackDelegates.mCreate    = new OnPublisherCreateDelegate(MamaPublisher.onCreate);
+            mCallbackDelegates.mDestroy   = new OnPublisherDestroyDelegate(MamaPublisher.onDestroy);
+            mCallbackDelegates.mError     = new OnPublisherErrorDelegate(MamaPublisher.onError);
+        }
+
+        private delegate void OnPublisherCreateDelegate(IntPtr nativeHandle, IntPtr closure);
+
+        private delegate void OnPublisherErrorDelegate(IntPtr nativeHandle, short status, string topic, IntPtr closure);
+
+        private delegate void OnPublisherDestroyDelegate(IntPtr nativeHandle, IntPtr closure);
+        // =====================================================================================
+       
+        // Interop API
 		private struct NativeMethods
 		{
-			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            [StructLayout(LayoutKind.Sequential)]
+            public struct PublisherCallbacks
+            {
+                public OnPublisherCreateDelegate mCreate;
+                public OnPublisherErrorDelegate mError;
+                public OnPublisherDestroyDelegate mDestroy;
+                public IntPtr mReserved;
+            }  
+
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaPublisher_create(
 				ref IntPtr result, 
 				IntPtr tport,
 				[MarshalAs(UnmanagedType.LPStr)] string symbol, 
 				[MarshalAs(UnmanagedType.LPStr)] string source,
 				[MarshalAs(UnmanagedType.LPStr)] string root);
-			
-			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+
+            
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaPublisher_createWithCallbacks(
+                ref IntPtr result,
+                IntPtr tport,
+                IntPtr queue,
+                ref PublisherCallbacks callbacks,
+                IntPtr closure,
+                [MarshalAs(UnmanagedType.LPStr)] string symbol,
+                [MarshalAs(UnmanagedType.LPStr)] string source,
+                [MarshalAs(UnmanagedType.LPStr)] string root);
+
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaPublisher_send(
 				IntPtr publisher, 
 				IntPtr msg);
@@ -499,10 +686,21 @@ namespace Wombat
 			public static extern int mamaPublisher_getTransport(
 				IntPtr publisher,
 				ref IntPtr result);
-		}
+
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaPublisher_getRoot(IntPtr publisher, ref IntPtr ret);
+
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaPublisher_getSource(IntPtr publisher, ref IntPtr ret);
+
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaPublisher_getSymbol(IntPtr publisher, ref IntPtr ret);
+        }
 
 		private Hashtable mCallbacks = new Hashtable();
 
-		#endregion Implementation details
+        private MamaPublisherCallback mCallback = null;
+
+        #endregion Implementation details
 	}
 }

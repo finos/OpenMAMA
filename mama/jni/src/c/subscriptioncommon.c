@@ -136,6 +136,7 @@ void subCommon_onErrorCb ( mamaSubscription    subscription,
 {
      JNIEnv*             env             =   NULL;
      callbackClosure*    closureImpl     =   NULL;
+	jstring jmsg;
      
      closureImpl = (callbackClosure*)closure;
      assert(closureImpl!=NULL);
@@ -146,7 +147,7 @@ void subCommon_onErrorCb ( mamaSubscription    subscription,
      env = utils_getENV(javaVM_g);
      if (!env) return;
 
-     jstring jmsg = (*env)->NewStringUTF(env, subject);
+     jmsg = (*env)->NewStringUTF(env, subject);
      (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                             subCallbackonErrorId,
                             closureImpl->mSubscription,

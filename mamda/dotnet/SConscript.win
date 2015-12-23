@@ -22,22 +22,17 @@ dotnet_version = env['dotnet_version']
 
 if platform.machine() == 'AMD64':
     framework = 'Framework64'
+    odir = 'objdir_64'
 else:
     framework = 'Framework'
-
-framework_dir = posixpath.join( 'c:/windows/Microsoft.NET/',framework )
-
-if dotnet_version == '2.0':
-    framework_dir = posixpath.join( framework_dir, 'v2.0.50727' )
-
-elif dotnet_version == '1.0':
-    framework_dir = posixpath.join( framework_dir, 'v1.1.4322' )
+    odir = 'objdir_32'
+framework_dir = env['dotnet_framework']
 
 env['CSC'] = posixpath.join(framework_dir,'csc.exe')
 AssemblyRefs = []
 AssemblyRefs.append(posixpath.join( framework_dir, 'mscorlib.dll'))
 AssemblyRefs.append(posixpath.join( framework_dir, 'system.dll'))
-AssemblyRefs.append(os.path.join( Dir('#').abspath, 'objdir\\%s\\mama\\dotnet\\MAMA.dll' )% env['build'])
+AssemblyRefs.append(os.path.join( Dir('#').abspath, '%s\\%s\\mama\\dotnet\\MAMA.dll' ) % (odir, env['build']))
 
 env.Append(
     CSCFLAGS        = ['/nostdlib+'],
