@@ -341,7 +341,7 @@ mamaMsgImpl_useBridgePayload (mamaMsg msg, mamaBridgeImpl* bridgeImpl)
 }
 
 mama_status
-mamaMsg_getPayloadId (mamaMsg msg, char* id)
+mamaMsgImpl_getPayloadId (mamaMsg msg, char* id)
 {
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
 

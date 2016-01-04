@@ -193,16 +193,6 @@ mamaMsg_getPayloadType (mamaMsg msg, mamaPayloadType* payloadType);
 MAMAIgnoreDeprecatedClose
 
 /**
- *  Get the identifier of the message payload.
- *
- * @param msg The message.
- * @param id The payload identifier.
- */
-MAMAExpDLL
-extern mama_status
-mamaMsg_getPayloadId (mamaMsg msg, char* id);
-
-/**
 * Get the size of the underlying message in bytes.
 * Only works for tibrvMsg and wombatmsg types.
 *

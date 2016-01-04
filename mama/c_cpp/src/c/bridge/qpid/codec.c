@@ -28,6 +28,7 @@
 #include <msgimpl.h>
 #include "codec.h"
 #include "msg.h"
+#include "msgimpl.h"
 
 
 /*=========================================================================
@@ -58,7 +59,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     }
 
     /* Get the underlying payload type */
-    mamaMsg_getPayloadId (target, &payloadType);
+    mamaMsgImpl_getPayloadId (target, &payloadType);
 
     /* If this is a qpid payload, we don't need to serialize */
     if (MAMA_PAYLOAD_QPID == payloadType)
