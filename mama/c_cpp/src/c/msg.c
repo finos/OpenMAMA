@@ -3228,6 +3228,8 @@ mamaMsg_setNewBuffer (mamaMsg msg, void* buffer,
 
     if (impl->mPayloadBridge)
     {
+        impl->mPayloadLib.id = (char) ((const char*)buffer) [0];
+
         return
         impl->mPayloadBridge->msgPayloadUnSerialize (impl->mPayload,
                                                      buffer,
