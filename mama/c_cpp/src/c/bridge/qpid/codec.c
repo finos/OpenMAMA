@@ -212,7 +212,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
     /* If this looks like another MAMA payload type */
     else if (PN_BINARY == firstAtom.type)
     {
-        char     payloadType     = MAMA_PAYLOAD_UNKNOWN;
+        char payloadType =  '\0';
 
         if (firstAtom.u.as_bytes.size == 0)
         {
