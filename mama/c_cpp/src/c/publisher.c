@@ -46,9 +46,9 @@ typedef struct mamaPublisherImpl_
     /*The bridge implementation for the publisher*/
     publisherBridge     mMamaPublisherBridgeImpl;
     /*Outstanding actions for the throttled publishing*/
-    wList           	mPendingActions;
+    wList               mPendingActions;
     /*Used for throttling of sends.*/
-    mamaTransport   	mTport;
+    mamaTransport       mTport;
 
     void *mTransportHandle;
 } mamaPublisherImpl;
@@ -611,3 +611,13 @@ mamaPublisher_getTransport (mamaPublisher   publisher,
 
     return MAMA_STATUS_OK;
 }
+
+mamaTransport
+mamaPublisherImpl_getTransportImpl (mamaPublisher publisher)
+{
+    mamaPublisherImpl* impl = (mamaPublisherImpl*)publisher;
+
+    if (!impl) return NULL;
+    return impl->mTport;
+}
+

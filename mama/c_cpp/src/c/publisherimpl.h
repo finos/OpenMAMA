@@ -28,6 +28,7 @@
 extern "C" {
 #endif
 
+MAMAExpDLL
 extern mama_status
 mamaPublisher_createByIndex (mamaPublisher*    result,
                              mamaTransport     tport,
@@ -36,13 +37,20 @@ mamaPublisher_createByIndex (mamaPublisher*    result,
                              const char*       source,
                              const char*       root);
 
+MAMAExpDLL
 extern mama_status
 mamaPublisher_sendFromInboxByIndex (mamaPublisher publisher,
                                     int           tportIndex,
                                     mamaInbox     inbox,
                                     mamaMsg       msg);
 
-mama_status mamaPublisherImpl_clearTransport (mamaPublisher publisher);
+MAMAExpDLL
+extern mama_status
+mamaPublisherImpl_clearTransport (mamaPublisher publisher);
+
+MAMAExpDLL
+extern mamaTransport
+mamaPublisherImpl_getTransportImpl (mamaPublisher publisher);
 
 #if defined(__cplusplus)
 }

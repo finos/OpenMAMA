@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+package com.wombat.mama.junittests;
+
 import junit.framework.TestCase;
 import com.wombat.mama.*;
 
@@ -42,8 +44,8 @@ public class MamaMsgVectorFields extends TestCase
     @Override
     protected void setUp()
     {
-         // Load the wmw bridge
-        mBridge = Mama.loadBridge("wmw");
+         // Load the bridge
+        mBridge = Mama.loadBridge(Main.GetBridgeName());
         Mama.open();
 
     }
