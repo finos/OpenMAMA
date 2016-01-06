@@ -1,6 +1,11 @@
 import os
 import posixpath
 import platform
+
+import sys
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 Import('env')
 env = env.Clone()
 versions = env['versions']['mama']
@@ -13,8 +18,6 @@ releaseString = versions['releaseString']
 
 dotnet = Environment( tools = ['default','csharp'] )
 
-dotnet_version = env['dotnet_version']
-
 framework_dir = env['dotnet_framework']
 
 env['CSC'] = posixpath.join(framework_dir,'csc.exe')
@@ -22,7 +25,6 @@ dotnet.Append(
 	CSCFLAGS 		= ['/nostdlib+'],
 	ASSEMBLYREFS 	= [posixpath.join( framework_dir, 'mscorlib.dll' ), posixpath.join( framework_dir, 'system.dll' )],
 )
-
 
 cs = os.path.join( Dir('#').abspath, 'mama\\dotnet\\src\\cs\\MamaVersion.cs' )
 ai = os.path.join( Dir('#').abspath, 'mama\\dotnet\\src\\cs\\AssemblyInfo.cs' )
@@ -93,6 +95,7 @@ src/cs/MamaMsgFieldIterator.cs
 src/cs/MamaPayloadBridge.cs
 src/cs/MamaPrice.cs
 src/cs/MamaPublisher.cs
+src/cs/MamaPublisherCallback.cs
 src/cs/MamaQueue.cs
 src/cs/MamaQueueEnqueueCallback.cs
 src/cs/MamaQueueEventCallback.cs
@@ -117,6 +120,7 @@ src/cs/MamaTimer.cs
 src/cs/MamaTimerCallback.cs
 src/cs/MamaTransport.cs
 src/cs/MamaTransportCallback.cs
+src/cs/MamaTransportTopicCallback.cs
 src/cs/MamaWeightedSource.cs
 src/cs/MamaWrapper.cs
 src/cs/NullableTypes\NullableBool.cs

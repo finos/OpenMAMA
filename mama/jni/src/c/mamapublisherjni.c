@@ -89,7 +89,7 @@ static void MAMACALLTYPE sendCompleteCB (mamaPublisher publisher,
 
 /** Publisher event callback methods
  */
-static void publisherOnCreateCb (mamaPublisher publisher, void* closure)
+static void MAMACALLTYPE publisherOnCreateCb (mamaPublisher publisher, void* closure)
 {
     JNIEnv* env = utils_getENV(javaVM_g);
     pubCallbackClosure* closureImpl = (pubCallbackClosure*) closure;
@@ -105,7 +105,7 @@ static void publisherOnCreateCb (mamaPublisher publisher, void* closure)
                            closureImpl->mPublisher);
 }
 
-static void publisherOnDestroyCb (mamaPublisher publisher, void* closure)
+static void MAMACALLTYPE publisherOnDestroyCb (mamaPublisher publisher, void* closure)
 {
     JNIEnv* env = utils_getENV(javaVM_g);
     pubCallbackClosure* closureImpl = (pubCallbackClosure*) closure;
@@ -121,7 +121,7 @@ static void publisherOnDestroyCb (mamaPublisher publisher, void* closure)
     free((void*) closureImpl);
 }
 
-static void publisherOnErrorCb (mamaPublisher publisher,
+static void MAMACALLTYPE publisherOnErrorCb (mamaPublisher publisher,
                                 mama_status status,
                                 const char*   info,
                                 void* closure)

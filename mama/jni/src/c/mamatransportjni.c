@@ -495,7 +495,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaTransport_getInvokeQualityFo
  * Method:    nativeSetTransportCallbackQueue
  * Signature: (L/com/wombat/MamaQueue;)V
  */
-JNIEXPORT void Java_com_wombat_mama_MamaTransport_nativeSetTransportCallbackQueue
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeSetTransportCallbackQueue
   (JNIEnv* env, jobject this, jobject queue)
 {
     jlong transportPointer = 0;
@@ -503,16 +503,16 @@ JNIEXPORT void Java_com_wombat_mama_MamaTransport_nativeSetTransportCallbackQueu
     jlong closurePointer = 0;
     transportListenerClosure *closure = NULL;
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queue,  
-        "Null parameter for queue.", 0);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queue,  
+        "Null parameter for queue.");
 
     transportPointer = (*env)->GetLongField(env, this, transportPointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(transportPointer,  
-        "Null parameter, MamaTransport may have already been destroyed.", 0);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
+        "Null parameter, MamaTransport may have already been destroyed.");
 
     queuePointer = (*env)->GetLongField(env, queue, queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,  
-        "Null parameter, MamaQueue may have already been destroyed.", 0);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
+        "Null parameter, MamaQueue may have already been destroyed.");
 
     /* Create ref to Java object */
     closurePointer = (*env)->GetLongField(env, this, transportClosureFieldId_g);

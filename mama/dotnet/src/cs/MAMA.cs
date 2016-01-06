@@ -545,7 +545,6 @@ namespace Wombat
             {
                 throw new ArgumentOutOfRangeException("level");
             }
-
 			MamaWrapper.CheckResultCode(NativeMethods.mama_enableLogging(IntPtr.Zero, (int)level));
 		}
 

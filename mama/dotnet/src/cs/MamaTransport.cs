@@ -537,6 +537,7 @@ namespace Wombat
 			public static extern int mamaTransport_setTransportCallback (IntPtr transport,
 				CallbackForwarder.TransportCallbackDelegate callback, 
 				IntPtr closure);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaTransport_setTransportTopicCallback(IntPtr transport,
                 TopicCallbackForwarder.TransportTopicCallbackDelegate callback,
                 IntPtr closure);

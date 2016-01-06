@@ -115,6 +115,7 @@ _createByIndex (mamaPublisher*              result,
     mama_status         status      = MAMA_STATUS_OK;
     mamaPublisherImpl*  impl        = NULL;
     mamaBridgeImpl*     bridgeImpl  = NULL;
+    mamaPublisherCallbacks* cb;
 
     if (!result)
     {
@@ -163,7 +164,7 @@ _createByIndex (mamaPublisher*              result,
     impl->mClosure    = closure;
 
     /* Initialise the state. */
-    wInterlocked_initialize(&impl->mState);
+    wInterlocked_initialize((wInterlockedInt*) &impl->mState);
 
     /* Set the initial state of the publisher now that the memory has been allocated. */
     mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_CREATING);
@@ -187,30 +188,26 @@ _createByIndex (mamaPublisher*              result,
     impl->mPendingActions = list_create (sizeof(struct publisherClosure));
     if (impl->mPendingActions == NULL) return MAMA_STATUS_NOMEM;
 
-    if (NULL != publisherCallbacks)
+    mamaPublisherCallbacks_allocate(&cb);
+    cb->onCreate = publisherCallbacks ? impl->mUserCallbacks.onCreate : NULL;
+    cb->onError = publisherCallbacks ? impl->mUserCallbacks.onError : NULL;
+    cb->onDestroy = mamaPublisher_onPublisherDestroyed;        /* intercept onDestroy always to track state */
+    if (MAMA_STATUS_OK!=(status=(bridgeImpl->bridgeMamaPublisherSetUserCallbacks (
+                                impl->mMamaPublisherBridgeImpl,
+                                impl->mQueue,
+                                cb,
+                                impl->mClosure
+))))
     {
-        mamaPublisherCallbacks* cb;
-        mamaPublisherCallbacks_allocate(&cb);
-        cb->onCreate = impl->mUserCallbacks.onCreate;
-        cb->onError = impl->mUserCallbacks.onError;
-        cb->onDestroy = mamaPublisher_onPublisherDestroyed;        /* intercept onDestroy */
-        if (MAMA_STATUS_OK!=(status=(bridgeImpl->bridgeMamaPublisherSetUserCallbacks (
-                                   impl->mMamaPublisherBridgeImpl,
-                                   impl->mQueue,
-                                   cb,
-                                   impl->mClosure
-    ))))
-        {
-            if (NULL != impl->mRoot) free((void*) impl->mRoot);
-            if (NULL != impl->mSource) free((void*) impl->mSource);
-            if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
-            mamaPublisherCallbacks_deallocate(cb);
-            list_destroy (impl->mPendingActions, NULL, NULL);
-            free (impl);
-            return status;
-        }
+        if (NULL != impl->mRoot) free((void*) impl->mRoot);
+        if (NULL != impl->mSource) free((void*) impl->mSource);
+        if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
         mamaPublisherCallbacks_deallocate(cb);
+        list_destroy (impl->mPendingActions, NULL, NULL);
+        free (impl);
+        return status;
     }
+    mamaPublisherCallbacks_deallocate(cb);
 
     /* Create the mutex. */
     impl->mCreateDestroyLock = wlock_create();
@@ -259,7 +256,6 @@ mamaPublisher_create (mamaPublisher*    result,
                       const char*       source,
                       const char*       root)
 {
-
     return mamaPublisher_createByIndex (result,
                                         tport,
                                         0,
@@ -316,7 +312,7 @@ void MAMACALLTYPE mamaPublisher_DestroyThroughQueueCB(mamaQueue Queue, void* clo
     mamaPublisher publisher = (mamaPublisher) closure;
     mamaPublisherImpl* impl = (mamaPublisherImpl*) publisher;
 
-    status    = mamaPublisher_destroy(publisher);
+    status = mamaPublisher_destroy(publisher);
     if (MAMA_STATUS_OK != status)
     {
         mama_log(MAMA_LOG_LEVEL_ERROR, "mamaSubscription_DestroyThroughQueueCB::Failed to destroy a subscription on %s.", impl->mSymbol);
@@ -327,13 +323,20 @@ void MAMACALLTYPE mamaPublisher_DestroyThroughQueueCB(mamaQueue Queue, void* clo
 mama_status
 mamaPublisher_destroyEx(mamaPublisher publisher)
 {
-    mama_status status;
-    mamaPublisherImpl* impl     = (mamaPublisherImpl*) publisher;
+    mama_status status = MAMA_STATUS_OK;
+    mamaPublisherImpl* impl = (mamaPublisherImpl*) publisher;
 
-    status = mamaQueue_enqueueEvent(impl->mQueue, mamaPublisher_DestroyThroughQueueCB, (void*) publisher);
-    if (MAMA_STATUS_OK != status)
+    if (NULL == impl->mQueue)
     {
-        mama_log(MAMA_LOG_LEVEL_ERROR, "mamaPublisher_destroyEx::Failed to enqueue the destruction of a publisher on %s.", impl->mSymbol);
+        mamaPublisher_DestroyThroughQueueCB(NULL, (void*) publisher);
+    }
+    else
+    {
+        status = mamaQueue_enqueueEvent(impl->mQueue, mamaPublisher_DestroyThroughQueueCB, (void*) publisher);
+        if (MAMA_STATUS_OK != status)
+        {
+            mama_log(MAMA_LOG_LEVEL_ERROR, "mamaPublisher_destroyEx::Failed to enqueue the destruction of a publisher on %s.", impl->mSymbol);
+        }
     }
 
     return status;
@@ -762,10 +765,10 @@ mamaPublisher_getState (mamaPublisher publisher,
     if((NULL != publisher) && (NULL != state))
     {
         /* Get the impl. */
-        mamaPublisherImpl *impl = (mamaPublisherImpl *)publisher;
+        mamaPublisherImpl *impl = (mamaPublisherImpl *) publisher;
 
         /* Return the state. */
-        *state = wInterlocked_read(&impl->mState);
+        *state = (mamaPublisherState) wInterlocked_read((wInterlockedInt*) &impl->mState);
         ret = MAMA_STATUS_OK;
     }
 
@@ -841,7 +844,7 @@ static void mamaPublisherImpl_cleanup(mamaPublisherImpl* impl)
     if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
 
     /* Destroy the state. */
-    wInterlocked_destroy(&impl->mState);
+    wInterlocked_destroy((wInterlockedInt*) &impl->mState);
 
     /* Destroy the mutex. */
     wlock_destroy(impl->mCreateDestroyLock);
@@ -855,12 +858,22 @@ static void MAMACALLTYPE mamaPublisher_onPublisherDestroyed(mamaPublisher publis
 
     wlock_lock(impl->mCreateDestroyLock);
 
+    if (mama_getLogLevel() >= MAMA_LOG_LEVEL_FINEST)
+    {
+        const char* source = "(none)";
+        const char* symbol = "(none)";;
+        mamaPublisher_getSource((mamaPublisher) impl, &source);
+        mamaPublisher_getSymbol((mamaPublisher) impl, &symbol);
+        mama_log(MAMA_LOG_LEVEL_FINEST, "mamaPublisher_onPublisherDestroyed: %p %s.%s is at state %s.",
+            impl, source, symbol, mamaPublisher_stringForState(impl->mState));
+    }
+
     if (NULL != impl->mUserCallbacks.onDestroy)
     {
         (*impl->mUserCallbacks.onDestroy)(publisher, impl->mClosure);
     }
 
-    switch(wInterlocked_read(&impl->mState))
+    switch(wInterlocked_read((wInterlockedInt*) &impl->mState))
     {
         case MAMA_PUBLISHER_DESTROYING:
             /* Still in the destroy() call */
@@ -883,15 +896,15 @@ static void MAMACALLTYPE mamaPublisher_onPublisherDestroyed(mamaPublisher publis
 static void mamaPublisherImpl_setState(mamaPublisherImpl* impl, mamaPublisherState state)
 {
     /* Set the state using an atomic operation so it will be thread safe. */
-    wInterlocked_set(state, &impl->mState);
+    wInterlocked_set(state, (wInterlockedInt*) &impl->mState);
     if (mama_getLogLevel() >= MAMA_LOG_LEVEL_FINEST)
     {
         const char* source = "(none)";
         const char* symbol = "(none)";;
         mamaPublisher_getSource((mamaPublisher) impl, &source);
         mamaPublisher_getSymbol((mamaPublisher) impl, &symbol);
-        mama_log(MAMA_LOG_LEVEL_FINEST, "Pubilsher %s.%s is now at state %s.",
-            source, symbol, mamaPublisher_stringForState(state));
+        mama_log(MAMA_LOG_LEVEL_FINEST, "Publisher %p %s.%s is now at state %s.",
+            impl, source, symbol, mamaPublisher_stringForState(state));
     }
 }
 
@@ -951,7 +964,7 @@ static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
 
     wlock_lock(impl->mCreateDestroyLock);
 
-    switch(wInterlocked_read(&impl->mState))
+    switch(wInterlocked_read((wInterlockedInt*) &impl->mState))
     {
         case MAMA_PUBLISHER_DESTROYING:
             /* The bridge has not yet called onDestroy */

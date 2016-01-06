@@ -49,10 +49,16 @@ class Windows:
             if not optsEnv.has_key('gtest_home'):
                 print 'ERROR: GTest Home must be specified'
                 Exit(1)
-
             elif not posixpath.exists(optsEnv['gtest_home']):
                 print 'ERROR: GTest Home must exist'
                 Exit(1)
+            if optsEnv['product'] == 'mamdaall':
+                if not optsEnv.has_key('nunit_home'):
+                    print 'ERROR: Nunit Home must be specified'
+                    Exit(1)
+                elif not posixpath.exists(optsEnv['nunit_home']):
+                    print 'ERROR: Nunit Home must exist'
+                    Exit(1)
 
         if optsEnv['product'] == 'mamdajni' or optsEnv['product'] == 'mamajni' or optsEnv['product'] == 'mamdaall':
             if not optsEnv.get('java_home'):
@@ -204,7 +210,7 @@ class Windows:
         env.Append( PDB = '${TARGET.base}.pdb')
 
         # Architecture specific setup
-        if env['host']['arch'] == 'x86_64':
+        if env['target_arch'] == 'x86_64':
             env['bit_suffix'] = '_x64'
         else:
             env.Append( CPPDEFINES = ['_USE_32BIT_TIME_T'] )
@@ -232,7 +238,7 @@ class Windows:
 
             if not env.has_key('dotnet_framework'):
                 print 'Calculating dotnet_framework'
-                if env['host']['arch'] == 'x86_64':
+                if env['target_arch'] == 'x86_64':
                     framework = 'Framework64'
                 else:
                     framework = 'Framework'

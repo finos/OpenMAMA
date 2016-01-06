@@ -80,6 +80,7 @@ namespace Wombat
                     mCallbackStore = null;
                 }
             }
+            base.Dispose(true);
 		}
 
         /// <summary>
@@ -177,10 +178,11 @@ namespace Wombat
                 ref nativeHandle,
                 transport.NativeHandle,
                 queue.NativeHandle,
+                topic, source, root,
                 ref mCallbackDelegates,
-                (IntPtr) handle,
-                topic, source, root);
+                (IntPtr)handle);
             CheckResultCode(code);
+
             GC.KeepAlive(transport);
             GC.KeepAlive(queue);
             GC.KeepAlive(callback);
@@ -443,7 +445,7 @@ namespace Wombat
 		public void destroy()
 		{
 			Dispose();
-		}
+        }
 
 		#region Implementation details
 
@@ -587,11 +589,14 @@ namespace Wombat
             // Extract the impl from the handle
             MamaPublisher pub = (MamaPublisher)handle.Target;
 
+            Mama.log(MamaLogLevel.MAMA_LOG_LEVEL_FINE, "DotNet.onDestroy: pub=" + pub);
+
             // Use the impl to invoke the error callback
             if (null != pub)
             {
                 // Invoke the callback
                 pub.mCallback.onDestroy(pub);
+                handle.Free();
             }
         }
 
@@ -635,17 +640,16 @@ namespace Wombat
 				[MarshalAs(UnmanagedType.LPStr)] string source,
 				[MarshalAs(UnmanagedType.LPStr)] string root);
 
-            
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaPublisher_createWithCallbacks(
                 ref IntPtr result,
                 IntPtr tport,
                 IntPtr queue,
-                ref PublisherCallbacks callbacks,
-                IntPtr closure,
                 [MarshalAs(UnmanagedType.LPStr)] string symbol,
                 [MarshalAs(UnmanagedType.LPStr)] string source,
-                [MarshalAs(UnmanagedType.LPStr)] string root);
+                [MarshalAs(UnmanagedType.LPStr)] string root,
+                ref PublisherCallbacks callbacks,
+                IntPtr closure);
 
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaPublisher_send(
