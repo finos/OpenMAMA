@@ -33,13 +33,14 @@ def get_command_line_opts( host, products, VERSIONS ):
     )
 
     if host['os'] == 'Windows':
+        env = Environment()
         opts.AddVariables(
             ListVariable( 'buildtype', 'Windows Build type e.g dynamic', 'all', names = ['dynamic','dynamic-debug','static','static-debug'] ),
             PathVariable('avis_home', 'Path to Avis',
                           'c:\\avis', PathVariable.PathAccept),
             PathVariable('qpid_home', 'Path to QPID Proton Libraries',
                           'c:\\proton', PathVariable.PathAccept),
-            EnumVariable('vsver','Visual Studio Version to use', '10.0',
+            EnumVariable('vsver','Visual Studio Version to use', env['MSVC_VERSION'],
                 allowed_values=('8.0','9.0','10.0','11.0','12.0', '14.0')),
             EnumVariable('product', 'Product to be built', 'mamda',
                      allowed_values=( products )),
