@@ -29,7 +29,14 @@
 #include <signal.h>
 #include <math.h>
 #include <sys/mman.h>   /* Needed for mlockall() */
+
+#ifndef __APPLE__
 #include <malloc.h>
+#else
+#include <malloc/malloc.h>
+#include <sys/sysctl.h>
+#endif
+
 #include <limits.h>
 #include <sys/time.h>   /* needed for getrusage */
 #include <sys/resource.h>    /* needed for getrusage */
@@ -82,6 +89,8 @@
 #define STEP_TARGET     10007
 
 #define SEQ_NUM_FID 10
+
+#define HZ_TO_MHZ  100000
 
 typedef struct {
     char*       mTopic;
@@ -701,6 +710,7 @@ static  int     gSched      =   0;
 static  int     gLock       =   0;
 static  int     gPriority   =   40;
 
+#ifndef __APPLE__
 static void setprio(int prio, int sched)
 {
     struct sched_param param;
@@ -718,7 +728,7 @@ static void configure_malloc_behavior(void)
 
     mallopt(M_MMAP_MAX, 0);
 }
-
+#endif
 
 static void reserve_process_memory(int size)
 {
@@ -876,6 +886,7 @@ int main (int argc, const char** argv)
         gUsecStatInterval = (uint64_t)(1.0 * 1000000);
     }
 
+#ifndef __APPLE__
     /*
      * Real time priorities
      */
@@ -908,6 +919,7 @@ int main (int argc, const char** argv)
         }
         setprio(gPriority,gSched);
     }
+#endif
 
     if (gStatsFile || gCollectStats || gDataStats || gIntervalStats || gCountInitials || gSD || gCB)
     {
@@ -3284,6 +3296,19 @@ static void signalCatcher
 
 static double getClock(void)
 {
+#ifdef __APPLE__
+   int mib[2];
+   unsigned int freq;
+   size_t len;
+
+   mib[0] = CTL_HW;
+   mib[1] = HW_CPU_FREQ;
+   len = sizeof(freq);
+   if(0 == sysctl(mib, 2, &freq, &len, NULL, 0))
+   {
+       return (double)(freq / HZ_TO_MHZ);
+   }
+#else
     FILE *cpuInfo;
     if ((cpuInfo = fopen ("/proc/cpuinfo", "rb"))!=NULL)
     {
@@ -3304,6 +3329,7 @@ static double getClock(void)
         fclose(cpuInfo);
         return atof (freq);
     }
+#endif
     PRINT_ERROR("Could not get CPU Frequency");
     exit (1);
 }
