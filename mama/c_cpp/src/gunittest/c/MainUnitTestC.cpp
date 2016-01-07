@@ -41,6 +41,7 @@ static string version     ("APPNAMESTR:  Version " VERSIONSTR
 
 static const char*       gMiddleware  = "wmw";
 static const char*       gPayload     = "wmsg";
+static const char        gPayloadId   = 'w';
 static const char*       gTransport   = "tport";
 
 
