@@ -19,15 +19,15 @@
  * 02110-1301 USA
  */
 
-#ifndef MamaTimeZoneH__
-#define MamaTimeZoneH__
-
 #include <mama/config.h>
 #include <mama/status.h>
 #include <mama/types.h>
 #include "wombat/port.h"
 
-#include <time.h>
+#ifndef MamaTimeZoneH__
+#define MamaTimeZoneH__
+
+
 
 
 #if defined(__cplusplus)

@@ -152,7 +152,18 @@ int wsem_getvalue (wsem_t*, int* items);
 /* These functions are different on Windows */
 #define bzero( x, y ) ZeroMemory( ((void *)(x)), (y) )
 #define strtok_r(x, y, z) strtok((x),(y))
+
+/* VS 2015 introduces native snprintf */
+#if (_MSC_VER < 1900)
 #define snprintf _snprintf
+#endif
+
+/* VS 2015 defines these names with a leading underscore */
+#if _MSC_VER >= 1900
+#define daylight _daylight
+#define tzname _tzname
+#endif
+
 #define strdup _strdup
 #define strncasecmp _strnicmp
 #define strcasecmp  _stricmp

@@ -21,7 +21,13 @@
 #ifndef _WOMBAT_TARGETSXS_H
 #define _WOMBAT_TARGETSXS_H
 
-#if (_MSC_VER >= 1600 && _MSC_VER < 1700)
+#if (_MSC_VER >= 1900 && _MSC_VER < 2000)
+#define VC14
+#elif (_MSC_VER >= 1800 && _MSC_VER < 1900)
+#define VC12
+#elif (_MSC_VER >= 1700 && _MSC_VER < 1800)
+#define VC11
+#elif (_MSC_VER >= 1600 && _MSC_VER < 1700)
 #define VC10
 #elif (_MSC_VER >= 1600 && _MSC_VER < 1500)
 #define VC9
@@ -43,6 +49,18 @@
 
 #ifdef VC10
 #define _SXS_ASSEMBLY_VERSION "10.0.30319.1"
+#endif
+
+#ifdef VC11
+#define _SXS_ASSEMBLY_VERSION "11.0.50727.1"
+#endif
+
+#ifdef VC12
+#define _SXS_ASSEMBLY_VERSION "12.0.21005.1"
+#endif
+
+#ifdef VC14
+#define _SXS_ASSEMBLY_VERSION "14.0.23026.0"
 #endif
 
 #ifndef __midl
