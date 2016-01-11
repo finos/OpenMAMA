@@ -2207,9 +2207,9 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     /* Return the bridge payload ID, either from properties, or from the bridge
      * itself.
      */
-    status = mamaInternal_retrievePayloadChar (payloadName,
-                                               *impl,
-                                               &payloadChar);
+    status = mamaInternal_getPayloadId (payloadName,
+                                        *impl,
+                                        &payloadChar);
 
     if (MAMA_STATUS_OK != status)
     {
@@ -2908,9 +2908,9 @@ mamaInternal_init (void)
  * @return A mama_status indicating the success or failure of the method.
  */
 mama_status
-mamaInternal_retrievePayloadChar (const char* payloadName,
-                                  mamaPayloadBridge payload,
-                                  char* payloadChar)
+mamaInternal_getPayloadId (const char* payloadName,
+                           mamaPayloadBridge payload,
+                           char* payloadChar)
 {
     mama_status status = MAMA_STATUS_OK;
     char propNameBuf[256];
@@ -2931,7 +2931,7 @@ mamaInternal_retrievePayloadChar (const char* payloadName,
     if (NULL != propertyReturn)
     {
         mama_log (MAMA_LOG_LEVEL_FINE,
-                  "mamaInternal_retrievePayloadChar (): "
+                  "mamaInternal_getPayloadId (): "
                   "Found payload ID char for [%s] in properties - [%c]",
                   payloadName,
                   propertyReturn[0]);

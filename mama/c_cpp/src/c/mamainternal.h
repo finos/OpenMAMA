@@ -149,9 +149,9 @@ mamaInternal_init (void);
  * @return A mama_status indicating the success or failure of the method.
  */
 mama_status
-mamaInternal_retrievePayloadChar (const char* payloadName,
-                                  mamaPayloadBridge payload,
-                                  char* payloadChar);
+mamaInternal_getPayloadId (const char*       payloadName,
+                           mamaPayloadBridge payload,
+                           char*             payloadChar);
 
 
 #if defined(__cplusplus)

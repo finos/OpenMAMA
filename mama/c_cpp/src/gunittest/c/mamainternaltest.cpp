@@ -276,9 +276,9 @@ TEST_F (MamaInternalTestC, getPayloadChar)
     ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&mBridge, getMiddleware ()));
     ASSERT_EQ (MAMA_STATUS_OK, mama_open ());
 
-    EXPECT_EQ (MAMA_STATUS_OK, mamaInternal_retrievePayloadChar (getPayload (),
-                                                                 mPayload,
-                                                                 &payloadChar));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaInternal_getPayloadId (getPayload (),
+                                                          mPayload,
+                                                          &payloadChar));
 
     EXPECT_EQ (getPayloadId (), payloadChar);
 
@@ -297,9 +297,9 @@ TEST_F (MamaInternalTestC, getPayloadCharNullPayloadName)
     ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&mBridge, getMiddleware ()));
     ASSERT_EQ (MAMA_STATUS_OK, mama_open ());
 
-    EXPECT_EQ (MAMA_STATUS_NULL_ARG, mamaInternal_retrievePayloadChar (NULL,
-                                                                       mPayload,
-                                                                       &payloadChar));
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, mamaInternal_getPayloadId (NULL,
+                                                                mPayload,
+                                                                &payloadChar));
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_close ());
 }
@@ -308,9 +308,9 @@ TEST_F (MamaInternalTestC, getPayloadCharNullPayloadBridge)
 {
     char payloadChar = '\0';
 
-    EXPECT_EQ (MAMA_STATUS_NULL_ARG, mamaInternal_retrievePayloadChar (getPayload (),
-                                                                       NULL,
-                                                                       &payloadChar));
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, mamaInternal_getPayloadId (getPayload (),
+                                                                NULL,
+                                                                &payloadChar));
 }
 
 TEST_F (MamaInternalTestC, getPayloadCharNullPayloadChar)
@@ -319,9 +319,9 @@ TEST_F (MamaInternalTestC, getPayloadCharNullPayloadChar)
     ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&mBridge, getMiddleware ()));
     ASSERT_EQ (MAMA_STATUS_OK, mama_open ());
 
-    EXPECT_EQ (MAMA_STATUS_NULL_ARG, mamaInternal_retrievePayloadChar (getPayload (),
-                                                                       mPayload,
-                                                                       NULL));
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, mamaInternal_getPayloadId (getPayload (),
+                                                                mPayload,
+                                                                NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_close ());
 }
@@ -341,9 +341,9 @@ TEST_F (MamaInternalTestC, getPayloadCharFromProperty)
     snprintf (propertyNameBuffer, 256, "mama.payload.%s.payloadId", getPayload ());
     ASSERT_EQ (MAMA_STATUS_OK, mama_setProperty (propertyNameBuffer, "Z"));
 
-    EXPECT_EQ (MAMA_STATUS_OK, mamaInternal_retrievePayloadChar (getPayload (),
-                                                                 mPayload,
-                                                                 &payloadChar));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaInternal_getPayloadId (getPayload (),
+                                                          mPayload,
+                                                          &payloadChar));
 
     EXPECT_EQ ('Z', payloadChar);
 
@@ -362,9 +362,9 @@ TEST_F (MamaInternalTestC, getPayloadCharInvalidProperty)
     snprintf (propertyNameBuffer, 256, "mama.payload.test.payloadId");
     ASSERT_EQ (MAMA_STATUS_OK, mama_setProperty (propertyNameBuffer, "Z"));
 
-    EXPECT_EQ (MAMA_STATUS_OK, mamaInternal_retrievePayloadChar (getPayload (),
-                                                                 mPayload,
-                                                                 &payloadChar));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaInternal_getPayloadId (getPayload (),
+                                                          mPayload,
+                                                          &payloadChar));
 
     EXPECT_NE ('Z', payloadChar);
     EXPECT_EQ (getPayloadId (), payloadChar);
