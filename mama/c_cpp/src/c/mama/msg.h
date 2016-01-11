@@ -36,6 +36,8 @@
 extern "C" {
 #endif
 
+#define MAMA_PAYLOAD_ID_NULL '\0'
+
 struct wombatMsg_;
 
 /**
@@ -65,7 +67,7 @@ typedef enum mamaPayloadType_
 
 /* Unknown Payload */
     MAMA_PAYLOAD_UNKNOWN    = 'U',
-    MAMA_PAYLOAD_NULL       = '\0'
+    MAMA_PAYLOAD_NULL       = MAMA_PAYLOAD_ID_NULL
 } mamaPayloadType;
 
 /**
