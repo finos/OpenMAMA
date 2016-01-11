@@ -2611,7 +2611,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                       middlewareName);
         }
 
-        goto error_handling_impl_allocated;
+        goto error_handling_middlewarelib;
     }
 
     /* Increment the count of loaded middlewares */
@@ -2637,12 +2637,14 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     status = MAMA_STATUS_OK;
     return status;
 
+error_handling_middlewarelib:
+    free (middlewareLib);
 error_handling_impl_allocated:
     free (*impl);
 error_handling_impl:
     *impl = NULL;
 error_handling_close_and_unlock:
-    closeSharedLib (payloadLibHandle);
+    closeSharedLib (middlewareLibHandle);
 error_handling_unlock:
     wthread_static_mutex_unlock (&gImpl.myLock);
     return status;
