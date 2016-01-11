@@ -17,7 +17,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
-*/
+ */
 
 #ifndef MAMA_PAYLOAD_QPIDMSG_QPIDMSGIMPL_H__
 #define MAMA_PAYLOAD_QPIDMSG_QPIDMSGIMPL_H__
@@ -47,7 +47,7 @@ extern "C" {
  * @param identifier A character indicating the type of payload bridge created.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_createImpl      (mamaPayloadBridge* result, char* identifier);
@@ -60,7 +60,7 @@ qpidmsgPayload_createImpl      (mamaPayloadBridge* result, char* identifier);
  * @param identifier A character indicating the type of payload bridge created.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_init            (char* identifier);
@@ -72,7 +72,7 @@ qpidmsgPayload_init            (char* identifier);
  * Requirement: Nice to have.
  *
  * @return mamaPayloadType indicating the type of payload.
-*/
+ */
 MAMAIgnoreDeprecatedOpen
 MAMAExpBridgeDLL
 mamaPayloadType
@@ -87,7 +87,7 @@ MAMAIgnoreDeprecatedClose
  * Requirement: Required
  *
  * @param msg Pointer to the msgPayload object created by the method.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_create           (msgPayload*         msg);
@@ -99,7 +99,7 @@ qpidmsgPayload_create           (msgPayload*         msg);
  * Requirement: Required for certain payload types only.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_createForTemplate (msgPayload*         msg,
@@ -116,7 +116,7 @@ qpidmsgPayload_createForTemplate (msgPayload*         msg,
  * @param copy Pointer to a message
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_copy             (const msgPayload    msg,
@@ -132,7 +132,7 @@ qpidmsgPayload_copy             (const msgPayload    msg,
  * @param msg Message payload to be cleared.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_clear            (msgPayload          msg);
@@ -147,7 +147,7 @@ qpidmsgPayload_clear            (msgPayload          msg);
  * @param msg The message payload to be destroyed.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_destroy          (msgPayload          msg);
@@ -162,7 +162,7 @@ qpidmsgPayload_destroy          (msgPayload          msg);
  * @param parent The parent mamaMsg which is being passed to the payload.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_setParent        (msgPayload          msg,
@@ -177,7 +177,7 @@ qpidmsgPayload_setParent        (msgPayload          msg,
  * @param size The size of the msgPayload (as a mama_size_t).
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getByteSize      (msgPayload          msg,
@@ -193,7 +193,7 @@ qpidmsgPayload_getByteSize      (msgPayload          msg,
  * @param numFields The number of fields (as a mama_size_t).
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getNumFields     (const msgPayload    msg,
@@ -209,7 +209,7 @@ qpidmsgPayload_getNumFields     (const msgPayload    msg,
  * @param subject The string for returning the subject of the msgPayload.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getSendSubject   (const msgPayload    msg,
@@ -224,7 +224,7 @@ qpidmsgPayload_getSendSubject   (const msgPayload    msg,
  * @param msg The msgPayload which we wish to convert to a string.
  *
  * @return char* representation of the msgPayload
-*/
+ */
 MAMAExpBridgeDLL
 const char*
 qpidmsgPayload_toString         (const msgPayload    msg);
@@ -244,7 +244,7 @@ qpidmsgPayload_toString         (const msgPayload    msg);
  * @param closure Arbitrary data passed to the method which is then passed to the cb
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_iterateFields    (const msgPayload    msg,
@@ -266,7 +266,7 @@ qpidmsgPayload_iterateFields    (const msgPayload    msg,
  * @param bufferLength The length in bytes of the serialized message in the buffer.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_serialize        (const msgPayload    msg,
@@ -286,7 +286,7 @@ qpidmsgPayload_serialize        (const msgPayload    msg,
  * @param bufferLength The lenght of the byte buffer.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_unSerialize      (const msgPayload    msg,
@@ -303,7 +303,7 @@ qpidmsgPayload_unSerialize      (const msgPayload    msg,
  * @param bufferLength The length in bytes of the serialized message in the buffer.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getByteBuffer    (const msgPayload    msg,
@@ -324,7 +324,7 @@ qpidmsgPayload_getByteBuffer    (const msgPayload    msg,
  * @param bufferLength The lenght of the byte buffer.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_setByteBuffer    (const msgPayload    msg,
@@ -345,7 +345,7 @@ qpidmsgPayload_setByteBuffer    (const msgPayload    msg,
  * @param bufferLength
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_createFromByteBuffer (msgPayload*         msg,
@@ -368,7 +368,7 @@ qpidmsgPayload_createFromByteBuffer (msgPayload*         msg,
  * @param src The source message payload from which fields are to be copied.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_apply            (msgPayload          dest,
@@ -385,7 +385,7 @@ qpidmsgPayload_apply            (msgPayload          dest,
  *                  cast to a void**.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getNativeMsg     (const msgPayload    msg,
@@ -404,7 +404,7 @@ qpidmsgPayload_getNativeMsg     (const msgPayload    msg,
  * @param len The length of the buffer, as a mama_size_t
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getFieldAsString (const msgPayload    msg,
@@ -431,7 +431,7 @@ qpidmsgPayload_getFieldAsString (const msgPayload    msg,
  * @param value The value to be added to the message payload.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addBool          (msgPayload          msg,
@@ -513,7 +513,7 @@ qpidmsgPayload_addString        (msgPayload          msg,
 
 /**
  * Note: The opaque type is used to pass byte buffers of data where possible.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addOpaque        (msgPayload          msg,
@@ -525,7 +525,7 @@ qpidmsgPayload_addOpaque        (msgPayload          msg,
 /**
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addDateTime      (msgPayload          msg,
@@ -537,7 +537,7 @@ qpidmsgPayload_addDateTime      (msgPayload          msg,
  * Note: mamaPrice is a flexible format (typedef'd to void*) which can contain
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addPrice         (msgPayload          msg,
@@ -548,7 +548,7 @@ qpidmsgPayload_addPrice         (msgPayload          msg,
 /**
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addMsg           (msgPayload          msg,
@@ -577,7 +577,7 @@ qpidmsgPayload_addMsg           (msgPayload          msg,
  * @param size The size of the array to be added to the message.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorBool    (msgPayload          msg,
@@ -673,7 +673,7 @@ qpidmsgPayload_addVectorString  (msgPayload          msg,
 /**
  * Note: The array of messages to be added are of type msgPayload, so each has
  * the same general structure as the message to which it is being added.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorMsg     (msgPayload          msg,
@@ -686,7 +686,7 @@ qpidmsgPayload_addVectorMsg     (msgPayload          msg,
  * Note: addVectorDateTime is not supported by MAMA at present.
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorDateTime (msgPayload          msg,
@@ -700,7 +700,7 @@ qpidmsgPayload_addVectorDateTime (msgPayload          msg,
  * Note: mamaPrice is a flexible format (typedef'd to void*) which can contain
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorPrice   (msgPayload          msg,
@@ -726,7 +726,7 @@ qpidmsgPayload_addVectorPrice   (msgPayload          msg,
  * @param value The value to be added to the message payload.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateBool       (msgPayload          msg,
@@ -808,7 +808,7 @@ qpidmsgPayload_updateString     (msgPayload          msg,
 
 /**
  * Note: The opaque type is used to pass byte buffers of data where possible.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateOpaque     (msgPayload          msg,
@@ -820,7 +820,7 @@ qpidmsgPayload_updateOpaque     (msgPayload          msg,
 /**
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateDateTime   (msgPayload          msg,
@@ -832,7 +832,7 @@ qpidmsgPayload_updateDateTime   (msgPayload          msg,
  * Note: mamaPrice is a flexible format (typedef'd to void*) which can contain
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updatePrice      (msgPayload          msg,
@@ -843,7 +843,7 @@ qpidmsgPayload_updatePrice      (msgPayload          msg,
 /**
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateSubMsg     (msgPayload          msg,
@@ -869,12 +869,12 @@ qpidmsgPayload_updateSubMsg     (msgPayload          msg,
  * @param size The size of the array to be added to the message payload.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 
 /**
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorMsg  (msgPayload          msg,
@@ -982,7 +982,7 @@ qpidmsgPayload_updateVectorF64  (msgPayload          msg,
  * Note: mamaPrice is a flexible format (typedef'd to void*) which can contain
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorPrice (msgPayload          msg,
@@ -998,7 +998,7 @@ qpidmsgPayload_updateVectorPrice (msgPayload          msg,
  *
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorTime (msgPayload          msg,
@@ -1025,7 +1025,7 @@ qpidmsgPayload_updateVectorTime (msgPayload          msg,
  * @param result The object in which the value of the field should be returned.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getBool          (const msgPayload    msg,
@@ -1107,7 +1107,7 @@ qpidmsgPayload_getString        (const msgPayload    msg,
 
 /**
  * Note: The opaque type is used to pass byte buffers of data where possible.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getOpaque        (const msgPayload    msg,
@@ -1119,7 +1119,7 @@ qpidmsgPayload_getOpaque        (const msgPayload    msg,
 /**
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getDateTime      (const msgPayload    msg,
@@ -1131,7 +1131,7 @@ qpidmsgPayload_getDateTime      (const msgPayload    msg,
  * Note: mamaPrice is a flexible format (typedef'd to void*) which can contain
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getPrice         (const msgPayload    msg,
@@ -1142,7 +1142,7 @@ qpidmsgPayload_getPrice         (const msgPayload    msg,
 /**
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getMsg           (const msgPayload    msg,
@@ -1171,7 +1171,7 @@ qpidmsgPayload_getMsg           (const msgPayload    msg,
  * @param size The size of the array returned.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorBool    (const msgPayload    msg,
@@ -1271,7 +1271,7 @@ qpidmsgPayload_getVectorString  (const msgPayload    msg,
  *
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorDateTime (const msgPayload    msg,
@@ -1288,7 +1288,7 @@ qpidmsgPayload_getVectorDateTime (const msgPayload    msg,
  * Note: mamaPrice is a flexible format (typedef'd to void*) which can contain
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorPrice   (const msgPayload    msg,
@@ -1300,7 +1300,7 @@ qpidmsgPayload_getVectorPrice   (const msgPayload    msg,
 /**
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorMsg     (const msgPayload    msg,
@@ -1331,7 +1331,7 @@ qpidmsgPayload_getVectorMsg     (const msgPayload    msg,
  *              call.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getField         (const msgPayload    msg,
@@ -1348,7 +1348,7 @@ qpidmsgPayload_getField         (const msgPayload    msg,
  * @param field Pointer to the msgFieldPayload object returned by the method.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_create      (msgFieldPayload*        field);
@@ -1364,7 +1364,7 @@ qpidmsgFieldPayload_create      (msgFieldPayload*        field);
  * @param field The msgFieldPayload object to be destroyed by the method.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_destroy     (msgFieldPayload         field);
@@ -1379,7 +1379,7 @@ qpidmsgFieldPayload_destroy     (msgFieldPayload         field);
  * @param result mamaFieldType indicating the type of the field stored in the
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getType     (const msgFieldPayload   field,
@@ -1399,7 +1399,7 @@ qpidmsgFieldPayload_getType     (const msgFieldPayload   field,
  * @param result char* indicating the type of the field stored in the msgFieldPayload
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getName     (msgFieldPayload         field,
@@ -1421,7 +1421,7 @@ qpidmsgFieldPayload_getName     (msgFieldPayload         field,
  * @param result unint16_t indicating the type of the field stored in the msgFieldPayload
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getFid      (const msgFieldPayload   field,
@@ -1441,7 +1441,7 @@ qpidmsgFieldPayload_getFid      (const msgFieldPayload   field,
  * @param result Pointer to mamaFieldDescriptor which is returned by the method.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getDescriptor (const msgFieldPayload  field,
@@ -1465,7 +1465,7 @@ qpidmsgFieldPayload_getDescriptor (const msgFieldPayload  field,
  * @param value The value to be added to the message payload.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateBool  (msgFieldPayload         field,
@@ -1562,7 +1562,7 @@ qpidmsgFieldPayload_updateSubMsg (msgFieldPayload         field,
  * @param result A pointer to the value returned by the method.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getBool     (const msgFieldPayload   field,
@@ -1649,7 +1649,7 @@ qpidmsgFieldPayload_getMsg      (const msgFieldPayload   field,
  * @param size The size of the returned array of values.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorBool (const msgFieldPayload   field,
@@ -1727,7 +1727,7 @@ qpidmsgFieldPayload_getVectorString (const msgFieldPayload   field,
  * Note: This is not currently implemented and the prototype expects a
  * mamaDateTime* rather than the mamaDateTime** that you would expect. This
  * may change if this is ever implemented in the MAMA layer
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorDateTime (const msgFieldPayload   field,
@@ -1746,7 +1746,7 @@ qpidmsgFieldPayload_getVectorDateTime (const msgFieldPayload   field,
  * Note: This is not currently implemented and the prototype expects a
  * mamaPrice* rather than the mamaPrice** that you would expect. This
  * may change if this is ever implemented in the MAMA layer
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorPrice (const msgFieldPayload   field,
@@ -1756,7 +1756,7 @@ qpidmsgFieldPayload_getVectorPrice (const msgFieldPayload   field,
 /**
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorMsg   (const msgFieldPayload   field,
@@ -1780,7 +1780,7 @@ qpidmsgFieldPayload_getVectorMsg   (const msgFieldPayload   field,
  * @param len The maximum size of the string returned by the method.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getAsString (const msgFieldPayload   field,
@@ -1803,7 +1803,7 @@ qpidmsgFieldPayload_getAsString (const msgFieldPayload   field,
  * @param msg The message payload which is to be iterated over.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayloadIter_create   (msgPayloadIter*         iter,
@@ -1821,7 +1821,7 @@ qpidmsgPayloadIter_create   (msgPayloadIter*         iter,
  * @param msg The message payload which is being iterated over.
  *
  * @return msgFieldPayload containing the contents of the next field within the message.
-*/
+ */
 MAMAExpBridgeDLL
 msgFieldPayload
 qpidmsgPayloadIter_next     (msgPayloadIter          iter,
@@ -1836,7 +1836,7 @@ qpidmsgPayloadIter_next     (msgPayloadIter          iter,
  * @param msg The message payload which is to be iterated over.
  *
  * @return mama_bool_t indicating if the message has a next field.
-*/
+ */
 MAMAExpBridgeDLL
 mama_bool_t
 qpidmsgPayloadIter_hasNext  (msgPayloadIter          iter,
@@ -1855,7 +1855,7 @@ qpidmsgPayloadIter_hasNext  (msgPayloadIter          iter,
  *
  * @return msgFieldPayload containing the contents of the first field within
  *              the message.
-*/
+ */
 MAMAExpBridgeDLL
 msgFieldPayload
 qpidmsgPayloadIter_begin    (msgPayloadIter          iter,
@@ -1875,7 +1875,7 @@ qpidmsgPayloadIter_begin    (msgPayloadIter          iter,
  *
  * @return msgFieldPayload containing the contents of the last field within
  *              the message.
-*/
+ */
 MAMAExpBridgeDLL
 msgFieldPayload
 qpidmsgPayloadIter_end      (msgPayloadIter          iter,
@@ -1888,7 +1888,7 @@ qpidmsgPayloadIter_end      (msgPayloadIter          iter,
  * @param msg The message payload for which the iterator is to be associated.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayloadIter_associate (msgPayloadIter          iter,
@@ -1901,7 +1901,7 @@ qpidmsgPayloadIter_associate (msgPayloadIter          iter,
  * @param iter The iterator to be destroyed by the method.
  *
  * @return mama_status indicating whether the method succeeded or failed.
-*/
+ */
 MAMAExpBridgeDLL
 mama_status
 qpidmsgPayloadIter_destroy   (msgPayloadIter          iter);
