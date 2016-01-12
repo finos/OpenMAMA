@@ -53,6 +53,19 @@ mama_status
 qpidmsgPayload_createImpl      (mamaPayloadBridge* result, char* identifier);
 
 /**
+ * Called when loading/creating a payload bridge.
+ *
+ * Requirement: Required
+ *
+ * @param identifier A character indicating the type of payload bridge created.
+ *
+ * @return mama_status indicating whether the method succeeded or failed.
+ */
+MAMAExpBridgeDLL
+mama_status
+qpidmsgPayload_init            (char* identifier);
+
+/**
  * Returns the type of payload from the current bridge, from the mamaPayloadType
  * enum in msg.h
  *
@@ -60,8 +73,11 @@ qpidmsgPayload_createImpl      (mamaPayloadBridge* result, char* identifier);
  *
  * @return mamaPayloadType indicating the type of payload.
  */
+MAMAIgnoreDeprecatedOpen
+MAMAExpBridgeDLL
 mamaPayloadType
 qpidmsgPayload_getType         (void);
+MAMAIgnoreDeprecatedClose
 
 /**
  * Method call to create an instance of the middleware message payload, which is
@@ -72,6 +88,7 @@ qpidmsgPayload_getType         (void);
  *
  * @param msg Pointer to the msgPayload object created by the method.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_create           (msgPayload*         msg);
 
@@ -83,6 +100,7 @@ qpidmsgPayload_create           (msgPayload*         msg);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_createForTemplate (msgPayload*         msg,
                                   mamaPayloadBridge   bridge,
@@ -99,6 +117,7 @@ qpidmsgPayload_createForTemplate (msgPayload*         msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_copy             (const msgPayload    msg,
                                  msgPayload*         copy);
@@ -114,6 +133,7 @@ qpidmsgPayload_copy             (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_clear            (msgPayload          msg);
 
@@ -128,6 +148,7 @@ qpidmsgPayload_clear            (msgPayload          msg);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_destroy          (msgPayload          msg);
 
@@ -142,6 +163,7 @@ qpidmsgPayload_destroy          (msgPayload          msg);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_setParent        (msgPayload          msg,
                                  const mamaMsg       parent);
@@ -156,6 +178,7 @@ qpidmsgPayload_setParent        (msgPayload          msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getByteSize      (msgPayload          msg,
                                  mama_size_t*        size);
@@ -171,6 +194,7 @@ qpidmsgPayload_getByteSize      (msgPayload          msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getNumFields     (const msgPayload    msg,
                                  mama_size_t*        numFields);
@@ -186,6 +210,7 @@ qpidmsgPayload_getNumFields     (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getSendSubject   (const msgPayload    msg,
                                  const char**        subject);
@@ -200,6 +225,7 @@ qpidmsgPayload_getSendSubject   (const msgPayload    msg,
  *
  * @return char* representation of the msgPayload
  */
+MAMAExpBridgeDLL
 const char*
 qpidmsgPayload_toString         (const msgPayload    msg);
 
@@ -219,6 +245,7 @@ qpidmsgPayload_toString         (const msgPayload    msg);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_iterateFields    (const msgPayload    msg,
                                  const mamaMsg       parent,
@@ -240,6 +267,7 @@ qpidmsgPayload_iterateFields    (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_serialize        (const msgPayload    msg,
                                  const void**        buffer,
@@ -259,6 +287,7 @@ qpidmsgPayload_serialize        (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_unSerialize      (const msgPayload    msg,
                                  const void**        buffer,
@@ -275,6 +304,7 @@ qpidmsgPayload_unSerialize      (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getByteBuffer    (const msgPayload    msg,
                                  const void**        buffer,
@@ -295,6 +325,7 @@ qpidmsgPayload_getByteBuffer    (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_setByteBuffer    (const msgPayload    msg,
                                  mamaPayloadBridge   bridge,
@@ -315,6 +346,7 @@ qpidmsgPayload_setByteBuffer    (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_createFromByteBuffer (msgPayload*         msg,
                                      mamaPayloadBridge   bridge,
@@ -337,6 +369,7 @@ qpidmsgPayload_createFromByteBuffer (msgPayload*         msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_apply            (msgPayload          dest,
                                  const msgPayload    src);
@@ -353,6 +386,7 @@ qpidmsgPayload_apply            (msgPayload          dest,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getNativeMsg     (const msgPayload    msg,
                                  void**              nativeMsg);
@@ -371,6 +405,7 @@ qpidmsgPayload_getNativeMsg     (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getFieldAsString (const msgPayload    msg,
                                  const char*         name,
@@ -397,66 +432,79 @@ qpidmsgPayload_getFieldAsString (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addBool          (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_bool_t         value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addChar          (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  char                value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addI8            (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i8_t           value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addU8            (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u8_t           value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addI16           (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i16_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addU16           (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u16_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addI32           (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i32_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addU32           (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u32_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addI64           (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i64_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addU64           (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u64_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addF32           (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_f32_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addF64           (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_f64_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addString        (msgPayload          msg,
                                  const char*         name,
@@ -466,6 +514,7 @@ qpidmsgPayload_addString        (msgPayload          msg,
 /**
  * Note: The opaque type is used to pass byte buffers of data where possible.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addOpaque        (msgPayload          msg,
                                  const char*         name,
@@ -477,6 +526,7 @@ qpidmsgPayload_addOpaque        (msgPayload          msg,
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addDateTime      (msgPayload          msg,
                                  const char*         name,
@@ -488,6 +538,7 @@ qpidmsgPayload_addDateTime      (msgPayload          msg,
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addPrice         (msgPayload          msg,
                                  const char*         name,
@@ -498,6 +549,7 @@ qpidmsgPayload_addPrice         (msgPayload          msg,
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addMsg           (msgPayload          msg,
                                  const char*         name,
@@ -526,78 +578,91 @@ qpidmsgPayload_addMsg           (msgPayload          msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorBool    (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_bool_t   value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorChar    (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const char          value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorI8      (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_i8_t     value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorU8      (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_u8_t     value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorI16     (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_i16_t    value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorU16     (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_u16_t    value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorI32     (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_i32_t    value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorU32     (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_u32_t    value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorI64     (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_i64_t    value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorU64     (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_u64_t    value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorF32     (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_f32_t    value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorF64     (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_f64_t    value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorString  (msgPayload          msg,
                                  const char*         name,
@@ -609,6 +674,7 @@ qpidmsgPayload_addVectorString  (msgPayload          msg,
  * Note: The array of messages to be added are of type msgPayload, so each has
  * the same general structure as the message to which it is being added.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorMsg     (msgPayload          msg,
                                  const char*         name,
@@ -621,6 +687,7 @@ qpidmsgPayload_addVectorMsg     (msgPayload          msg,
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorDateTime (msgPayload          msg,
                                   const char*         name,
@@ -634,6 +701,7 @@ qpidmsgPayload_addVectorDateTime (msgPayload          msg,
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_addVectorPrice   (msgPayload          msg,
                                  const char*         name,
@@ -659,66 +727,79 @@ qpidmsgPayload_addVectorPrice   (msgPayload          msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateBool       (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_bool_t         value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateChar       (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  char                value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateI8         (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i8_t           value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateU8         (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u8_t           value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateI16        (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i16_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateU16        (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u16_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateI32        (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i32_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateU32        (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u32_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateI64        (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i64_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateU64        (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u64_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateF32        (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_f32_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateF64        (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_f64_t          value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateString     (msgPayload          msg,
                                  const char*         name,
@@ -728,6 +809,7 @@ qpidmsgPayload_updateString     (msgPayload          msg,
 /**
  * Note: The opaque type is used to pass byte buffers of data where possible.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateOpaque     (msgPayload          msg,
                                  const char*         name,
@@ -739,6 +821,7 @@ qpidmsgPayload_updateOpaque     (msgPayload          msg,
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateDateTime   (msgPayload          msg,
                                  const char*         name,
@@ -750,6 +833,7 @@ qpidmsgPayload_updateDateTime   (msgPayload          msg,
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updatePrice      (msgPayload          msg,
                                  const char*         name,
@@ -760,6 +844,7 @@ qpidmsgPayload_updatePrice      (msgPayload          msg,
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateSubMsg     (msgPayload          msg,
                                  const char*         fname,
@@ -790,84 +875,98 @@ qpidmsgPayload_updateSubMsg     (msgPayload          msg,
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorMsg  (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mamaMsg       value[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorString (msgPayload         msg,
                                    const char*        fname,
                                    mama_fid_t         fid,
                                    const char*        strList[],
                                    mama_size_t        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorBool (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_bool_t   boolList[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorChar (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const char          charList[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorI8   (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_i8_t     i8List[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorU8   (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_u8_t     u8List[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorI16  (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_i16_t    i16List[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorU16  (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_u16_t    u16List[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorI32  (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_i32_t    i32List[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorU32  (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_u32_t    u32List[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorI64  (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_i64_t    i64List[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorU64  (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_u64_t    u64List[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorF32  (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
                                  const mama_f32_t    f32List[],
                                  mama_size_t         size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorF64  (msgPayload          msg,
                                  const char*         fname,
@@ -884,6 +983,7 @@ qpidmsgPayload_updateVectorF64  (msgPayload          msg,
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorPrice (msgPayload          msg,
                                   const char*         fname,
@@ -899,6 +999,7 @@ qpidmsgPayload_updateVectorPrice (msgPayload          msg,
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_updateVectorTime (msgPayload          msg,
                                  const char*         fname,
@@ -925,66 +1026,79 @@ qpidmsgPayload_updateVectorTime (msgPayload          msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getBool          (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_bool_t*        result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getChar          (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  char*               result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getI8            (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i8_t*          result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getU8            (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u8_t*          result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getI16           (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i16_t*         result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getU16           (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u16_t*         result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getI32           (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i32_t*         result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getU32           (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u32_t*         result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getI64           (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_i64_t*         result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getU64           (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_u64_t*         result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getF32           (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_f32_t*         result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getF64           (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  mama_f64_t*         result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getString        (const msgPayload    msg,
                                  const char*         name,
@@ -994,6 +1108,7 @@ qpidmsgPayload_getString        (const msgPayload    msg,
 /**
  * Note: The opaque type is used to pass byte buffers of data where possible.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getOpaque        (const msgPayload    msg,
                                  const char*         name,
@@ -1005,6 +1120,7 @@ qpidmsgPayload_getOpaque        (const msgPayload    msg,
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getDateTime      (const msgPayload    msg,
                                  const char*         name,
@@ -1016,6 +1132,7 @@ qpidmsgPayload_getDateTime      (const msgPayload    msg,
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getPrice         (const msgPayload    msg,
                                  const char*         name,
@@ -1026,6 +1143,7 @@ qpidmsgPayload_getPrice         (const msgPayload    msg,
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getMsg           (const msgPayload    msg,
                                  const char*         name,
@@ -1054,78 +1172,91 @@ qpidmsgPayload_getMsg           (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorBool    (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_bool_t** result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorChar    (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const char**        result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorI8      (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_i8_t**   result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorU8      (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_u8_t**   result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorI16     (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_i16_t**  result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorU16     (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_u16_t**  result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorI32     (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_i32_t**  result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorU32     (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_u32_t**  result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorI64     (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_i64_t**  result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorU64     (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_u64_t**  result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorF32     (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_f32_t**  result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorF64     (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
                                  const mama_f64_t**  result,
                                  mama_size_t*        size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorString  (const msgPayload    msg,
                                  const char*         name,
@@ -1141,6 +1272,7 @@ qpidmsgPayload_getVectorString  (const msgPayload    msg,
  * Note: mamaDateTime is a mama_u64_t value, which encodes both second and
  * millisecond values, along with precision and hints values.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorDateTime (const msgPayload    msg,
                                   const char*         name,
@@ -1157,6 +1289,7 @@ qpidmsgPayload_getVectorDateTime (const msgPayload    msg,
  * both a price value and a hints value. Code working with the price needs to
  * be able to handle both.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorPrice   (const msgPayload    msg,
                                  const char*         name,
@@ -1168,6 +1301,7 @@ qpidmsgPayload_getVectorPrice   (const msgPayload    msg,
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getVectorMsg     (const msgPayload    msg,
                                  const char*         name,
@@ -1198,6 +1332,7 @@ qpidmsgPayload_getVectorMsg     (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayload_getField         (const msgPayload    msg,
                                  const char*         name,
@@ -1214,6 +1349,7 @@ qpidmsgPayload_getField         (const msgPayload    msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_create      (msgFieldPayload*        field);
 
@@ -1229,6 +1365,7 @@ qpidmsgFieldPayload_create      (msgFieldPayload*        field);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_destroy     (msgFieldPayload         field);
 
@@ -1243,6 +1380,7 @@ qpidmsgFieldPayload_destroy     (msgFieldPayload         field);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getType     (const msgFieldPayload   field,
                                  mamaFieldType*          result);
@@ -1262,6 +1400,7 @@ qpidmsgFieldPayload_getType     (const msgFieldPayload   field,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getName     (msgFieldPayload         field,
                                  mamaDictionary          dict,
@@ -1283,6 +1422,7 @@ qpidmsgFieldPayload_getName     (msgFieldPayload         field,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getFid      (const msgFieldPayload   field,
                                  mamaDictionary          dict,
@@ -1302,6 +1442,7 @@ qpidmsgFieldPayload_getFid      (const msgFieldPayload   field,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getDescriptor (const msgFieldPayload  field,
                                    mamaDictionary         dict,
@@ -1325,66 +1466,82 @@ qpidmsgFieldPayload_getDescriptor (const msgFieldPayload  field,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateBool  (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_bool_t             value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateChar  (msgFieldPayload         field,
                                  msgPayload              msg,
                                  char                    value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateI8    (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_i8_t               value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateU8    (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_u8_t               value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateI16   (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_i16_t              value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateU16   (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_u16_t              value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateI32   (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_i32_t              value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateU32   (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_u32_t              value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateI64   (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_i64_t              value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateU64   (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_u64_t              value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateF32   (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_f32_t              value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateF64   (msgFieldPayload         field,
                                  msgPayload              msg,
                                  mama_f64_t              value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateString (msgFieldPayload         field,
                                   msgPayload              msg,
                                   const char*             value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateDateTime (msgFieldPayload         field,
                                     msgPayload              msg,
                                     const mamaDateTime      value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updatePrice (msgFieldPayload         field,
                                  msgPayload              msg,
                                  const mamaPrice         value);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_updateSubMsg (msgFieldPayload         field,
                                   msgPayload              msg,
@@ -1406,55 +1563,72 @@ qpidmsgFieldPayload_updateSubMsg (msgFieldPayload         field,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getBool     (const msgFieldPayload   field,
                                  mama_bool_t*            result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getChar     (const msgFieldPayload   field,
                                  char*                   result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getI8       (const msgFieldPayload   field,
                                  mama_i8_t*              result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getU8       (const msgFieldPayload   field,
                                  mama_u8_t*              result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getI16      (const msgFieldPayload   field,
                                  mama_i16_t*             result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getU16      (const msgFieldPayload   field,
                                  mama_u16_t*            result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getI32      (const msgFieldPayload   field,
                                  mama_i32_t*             result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getU32      (const msgFieldPayload   field,
                                  mama_u32_t*             result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getI64      (const msgFieldPayload   field,
                                  mama_i64_t*             result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getU64      (const msgFieldPayload   field,
                                  mama_u64_t*             result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getF32      (const msgFieldPayload   field,
                                  mama_f32_t*             result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getF64      (const msgFieldPayload   field,
                                  mama_f64_t*             result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getString   (const msgFieldPayload   field,
                                  const char**            result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getOpaque   (const msgFieldPayload   field,
                                  const void**            result,
                                  mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getDateTime (const msgFieldPayload   field,
                                  mamaDateTime            result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getPrice    (const msgFieldPayload   field,
                                  mamaPrice               result);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getMsg      (const msgFieldPayload   field,
                                  msgPayload*             result);
@@ -1476,54 +1650,67 @@ qpidmsgFieldPayload_getMsg      (const msgFieldPayload   field,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorBool (const msgFieldPayload   field,
                                    const mama_bool_t**     result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorChar (const msgFieldPayload   field,
                                    const char**            result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorI8   (const msgFieldPayload   field,
                                    const mama_i8_t**       result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorU8   (const msgFieldPayload   field,
                                    const mama_u8_t**       result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorI16  (const msgFieldPayload   field,
                                    const mama_i16_t**      result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorU16  (const msgFieldPayload   field,
                                    const mama_u16_t**      result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorI32  (const msgFieldPayload   field,
                                    const mama_i32_t**      result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorU32  (const msgFieldPayload   field,
                                    const mama_u32_t**      result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorI64  (const msgFieldPayload   field,
                                    const mama_i64_t**      result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorU64  (const msgFieldPayload   field,
                                    const mama_u64_t**      result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorF32  (const msgFieldPayload   field,
                                    const mama_f32_t**      result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorF64  (const msgFieldPayload   field,
                                    const mama_f64_t**      result,
                                    mama_size_t*            size);
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorString (const msgFieldPayload   field,
                                      const char***           result,
@@ -1541,6 +1728,7 @@ qpidmsgFieldPayload_getVectorString (const msgFieldPayload   field,
  * mamaDateTime* rather than the mamaDateTime** that you would expect. This
  * may change if this is ever implemented in the MAMA layer
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorDateTime (const msgFieldPayload   field,
                                        const mamaDateTime*     result,
@@ -1559,6 +1747,7 @@ qpidmsgFieldPayload_getVectorDateTime (const msgFieldPayload   field,
  * mamaPrice* rather than the mamaPrice** that you would expect. This
  * may change if this is ever implemented in the MAMA layer
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorPrice (const msgFieldPayload   field,
                                     const mamaPrice*        result,
@@ -1568,6 +1757,7 @@ qpidmsgFieldPayload_getVectorPrice (const msgFieldPayload   field,
  * Note: The msg to be added is a msgPayload, so has the same general structure
  * as the message to which it is being added.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorMsg   (const msgFieldPayload   field,
                                     const msgPayload**      result,
@@ -1591,6 +1781,7 @@ qpidmsgFieldPayload_getVectorMsg   (const msgFieldPayload   field,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getAsString (const msgFieldPayload   field,
                                  const msgPayload        msg,
@@ -1613,6 +1804,7 @@ qpidmsgFieldPayload_getAsString (const msgFieldPayload   field,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayloadIter_create   (msgPayloadIter*         iter,
                              msgPayload              msg);
@@ -1630,6 +1822,7 @@ qpidmsgPayloadIter_create   (msgPayloadIter*         iter,
  *
  * @return msgFieldPayload containing the contents of the next field within the message.
  */
+MAMAExpBridgeDLL
 msgFieldPayload
 qpidmsgPayloadIter_next     (msgPayloadIter          iter,
                              msgFieldPayload         field,
@@ -1644,7 +1837,7 @@ qpidmsgPayloadIter_next     (msgPayloadIter          iter,
  *
  * @return mama_bool_t indicating if the message has a next field.
  */
-
+MAMAExpBridgeDLL
 mama_bool_t
 qpidmsgPayloadIter_hasNext  (msgPayloadIter          iter,
                              msgPayload              msg);
@@ -1663,6 +1856,7 @@ qpidmsgPayloadIter_hasNext  (msgPayloadIter          iter,
  * @return msgFieldPayload containing the contents of the first field within
  *              the message.
  */
+MAMAExpBridgeDLL
 msgFieldPayload
 qpidmsgPayloadIter_begin    (msgPayloadIter          iter,
                              msgFieldPayload         field,
@@ -1682,6 +1876,7 @@ qpidmsgPayloadIter_begin    (msgPayloadIter          iter,
  * @return msgFieldPayload containing the contents of the last field within
  *              the message.
  */
+MAMAExpBridgeDLL
 msgFieldPayload
 qpidmsgPayloadIter_end      (msgPayloadIter          iter,
                              msgPayload              msg);
@@ -1694,7 +1889,7 @@ qpidmsgPayloadIter_end      (msgPayloadIter          iter,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayloadIter_associate (msgPayloadIter          iter,
                               msgPayload              msg);
@@ -1707,6 +1902,7 @@ qpidmsgPayloadIter_associate (msgPayloadIter          iter,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
+MAMAExpBridgeDLL
 mama_status
 qpidmsgPayloadIter_destroy   (msgPayloadIter          iter);
 
@@ -1714,4 +1910,5 @@ qpidmsgPayloadIter_destroy   (msgPayloadIter          iter);
 }
 #endif
 
-#endif /* MAMA_PAYLOAD_QPIDMSG_QPIDMSGIMPL_H__ */
+#endif /* MAMA_PAYLOAD_QPIDMSG_QPIDMSGIMPL_H__*/
+MAMAExpBridgeDLL

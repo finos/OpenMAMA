@@ -38,21 +38,25 @@ protected:
         : mMsg           (NULL)
         , mPayloadBridge (NULL)
         , mStatus        (MAMA_STATUS_OK)
-    {}
-
-    virtual ~MsgGeneralTestsC(void) {};
-
-    virtual void SetUp(void) 
     {
         mama_loadPayloadBridge (&mPayloadBridge, getPayload());
         mama_loadBridge (&mMiddlewareBridge, getMiddleware());
+        mama_open();
+    }
+
+    virtual ~MsgGeneralTestsC(void)
+    {
+        mama_close();
+    };
+
+    virtual void SetUp(void) 
+    {
         mamaMsg_create (&mMsg);
     };
 
     virtual void TearDown(void) 
     {
         mamaMsg_destroy(mMsg);
-        mama_close();
     };
     
     mamaMsg            mMsg;
@@ -91,7 +95,7 @@ TEST_F (MsgGeneralTestsC, msgCreateInValid)
     ASSERT_EQ (mamaMsg_create(NULL), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, DISABLED_msgCreateForPayloadValid)
+TEST_F (MsgGeneralTestsC, msgCreateForPayloadValid)
 {
     ASSERT_EQ(mamaMsg_createForPayload(&mMsg,'5'),MAMA_STATUS_OK);
 }
@@ -960,7 +964,7 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgSetNewBufferInValidBuffer)
     ASSERT_EQ (mamaMsg_setNewBuffer(mMsg, 0, size), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, msgSetNewBufferInValidSize)
+TEST_F (MsgGeneralTestsC, DISABLED_msgSetNewBufferInValidSize)
 {
     const void*          buffer       = NULL;
     mama_size_t          size         = 0;

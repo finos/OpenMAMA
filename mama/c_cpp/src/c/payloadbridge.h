@@ -422,8 +422,15 @@ while(0)                                                                    \
 typedef mama_status
 (*msgPayload_createImpl)      (mamaPayloadBridge* result, char* identifier);
 
+/*Called when loading/creating a bridge */
+typedef mama_status
+(*msgPayload_init)            (char* identifier);
+
+MAMAIgnoreDeprecatedOpen
 typedef mamaPayloadType
 (*msgPayload_getType)         (void);
+MAMAIgnoreDeprecatedClose
+
 /*===================================================================
  =              msgPayload bridge function pointers                 =
  ====================================================================*/

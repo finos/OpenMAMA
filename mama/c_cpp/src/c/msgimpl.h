@@ -154,6 +154,10 @@ MAMAExpDLL
 mamaMsgStatus
 mamaMsgImpl_getStatusFromMsg (mamaMsg msg);
 
+MAMAExpDLL
+mama_status
+mamaMsgImpl_getPayloadId (mamaMsg msg, char* id);
+
 
 #if defined(__cplusplus)
 }

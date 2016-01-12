@@ -528,11 +528,21 @@ qpidmsgPayload_createImpl (mamaPayloadBridge* result, char* identifier)
     return MAMA_STATUS_OK;
 }
 
+mama_status
+qpidmsgPayload_init (char* identifier)
+{
+    *identifier = (char)MAMA_PAYLOAD_QPID;
+
+    return MAMA_STATUS_OK;
+}
+
+MAMAIgnoreDeprecatedOpen
 mamaPayloadType
 qpidmsgPayload_getType (void)
 {
     return MAMA_PAYLOAD_QPID;
 }
+MAMAIgnoreDeprecatedClose
 
 mama_status
 qpidmsgPayload_create (msgPayload* msg)

@@ -246,9 +246,6 @@ do                                                                             \
                     implIdentifier ## BridgeMamaMsgImpl_setReplyHandleAndIncrement;    \
     bridgeImpl->bridgeMamaMsgDestroyReplyHandle    =                         \
                     implIdentifier ## BridgeMamaMsg_destroyReplyHandle;        \
-    /* Register the bridge with Mama */                                        \
-    mamaInternal_registerBridge (                                              \
-                    (mamaBridge)bridgeImpl,XSTR(implIdentifier));              \
 }                                                                              \
 while(0)                                                                       \
 
@@ -257,6 +254,9 @@ while(0)                                                                       \
  ====================================================================*/
 /*Called when loading/creating a bridge */
 typedef void (*bridge_createImpl)(mamaBridge* result);
+
+/*Called when loading/creating a bridge */
+typedef mama_status (*bridge_init) (void);
 
 /*Called by mama_open()*/
 typedef mama_status (*bridge_open)(mamaBridge bridgeImpl);

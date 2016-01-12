@@ -111,6 +111,7 @@ libmama_sources = \
     dqpublishermanager.c
     inbox.c
 	quality.c
+	registerfunctions.c
 	reservedfields.c
 	senderId.c
 	servicelevel.c
