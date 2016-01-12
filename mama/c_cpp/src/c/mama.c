@@ -2382,8 +2382,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         /* Return the existing middleware implementation. */
         *impl = middlewareLib->bridge;
 
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_unlock;
     }
 
     /* Once we have checked if the bridge has already been loaded, we want to
@@ -2398,8 +2397,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                   "Maximum number of available middleware bridges has been loaded. Cannot load [%s].",
                   middlewareName);
 
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_unlock;
     }
 
     snprintf (middlewareImplName, 256, "mama%simpl", middlewareName);
@@ -2426,8 +2424,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                 middlewareImplName,
                 getLibError());
         }
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_unlock;
     }
 
     /* Begin by searching for the *Bridge_init function */
@@ -2455,10 +2452,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                       "mama_loadBridge (): "
                       "Failed to allocate memory for middleware bridge [%s]. Cannot load bridge.",
                       middlewareName);
-            *impl = NULL;
-            closeSharedLib (middlewareLibHandle);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return status;
+            goto error_handling_impl;
         }
 
         /* Bridge struct was allocated by MAMA, so we must free it. */
@@ -2472,11 +2466,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                       "mama_loadBridge (): "
                       "Failed to initialise middleware bridge [%s]. Cannot load bridge.",
                       middlewareName);
-            free (*impl);
-            *impl = NULL;
-            closeSharedLib (middlewareLibHandle);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return status;
+            goto error_handling_impl_allocated;
         }
 
         /* Once the middleware has been successfully allocate and initialised,
@@ -2495,11 +2485,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                       middlewareImplName,
                       mamaStatus_stringForStatus (status));
 
-            free (*impl);
-            *impl = NULL;
-            closeSharedLib (middlewareLibHandle);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return status;
+            goto error_handling_impl_allocated;
         }
     } else {
         /* If the init funciton hasn't been found, fall back to old bridge
@@ -2525,9 +2511,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                        initFuncName,
                        middlewareImplName);
 
-            closeSharedLib (middlewareLibHandle);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return status;
+            goto error_handling_close_and_unlock;
         }
 
         createFunc (impl);
@@ -2568,10 +2552,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
             free (*impl);
         }
 
-        *impl = NULL;
-        closeSharedLib (middlewareLibHandle);
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_impl;
     }
 
     /* Allocate the bridgeLib struct, and populate with the bridgeImpl and
@@ -2597,10 +2578,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         }
 
         status = MAMA_STATUS_NOMEM;
-        *impl  = NULL;
-        closeSharedLib (middlewareLibHandle);
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_impl;
     }
 
     middlewareLib->bridge        = *(mamaBridge*)impl;
@@ -2633,11 +2611,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                       middlewareName);
         }
 
-        free (middlewareLib);
-        *impl = NULL;
-        closeSharedLib (middlewareLibHandle);
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        return status;
+        goto error_handling_middlewarelib;
     }
 
     /* Increment the count of loaded middlewares */
@@ -2661,6 +2635,18 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     wthread_static_mutex_unlock (&gImpl.myLock);
 
     status = MAMA_STATUS_OK;
+    return status;
+
+error_handling_middlewarelib:
+    free (middlewareLib);
+error_handling_impl_allocated:
+    free (*impl);
+error_handling_impl:
+    *impl = NULL;
+error_handling_close_and_unlock:
+    closeSharedLib (middlewareLibHandle);
+error_handling_unlock:
+    wthread_static_mutex_unlock (&gImpl.myLock);
     return status;
 }
 
