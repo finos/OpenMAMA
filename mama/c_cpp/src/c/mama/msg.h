@@ -37,6 +37,7 @@ extern "C" {
 #endif
 
 #define MAMA_PAYLOAD_ID_NULL '\0'
+#define MAMA_PAYLOAD_ID_UNKNOWN 'U'
 
 struct wombatMsg_;
 

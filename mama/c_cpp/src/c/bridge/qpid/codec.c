@@ -42,7 +42,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
 {
     pn_data_t*          properties      = NULL;
     pn_data_t*          body            = NULL;
-    char                payloadType     = MAMA_PAYLOAD_UNKNOWN;
+    char                payloadType     = MAMA_PAYLOAD_ID_UNKNOWN;
     const void*         buffer          = NULL;
     mama_size_t         bufferLen       = 0;
     char*               subject         = NULL;
