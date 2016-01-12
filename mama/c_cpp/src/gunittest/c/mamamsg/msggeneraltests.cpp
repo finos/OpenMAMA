@@ -95,7 +95,7 @@ TEST_F (MsgGeneralTestsC, msgCreateInValid)
     ASSERT_EQ (mamaMsg_create(NULL), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, msgCreateForPayloadValid)
+TEST_F (MsgGeneralTestsC, DISABLED_msgCreateForPayloadValid)
 {
     ASSERT_EQ(mamaMsg_createForPayload(&mMsg,'5'),MAMA_STATUS_OK);
 }
