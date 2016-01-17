@@ -197,10 +197,6 @@ int clock_gettime (int type, struct timespec * ts);
 const char* getIpAddress (void);
 const char* getHostName (void);
 
-#if defined (__cplusplus)
-} /* extern "c" */
-#endif
-
 #define COMMONDeprecated(MSG)            __attribute__((deprecated(#MSG)))
 #define COMMONExpDeprecatedDLL(MSG)      __attribute__((deprecated(#MSG)))
 #define MAMACPPExpDeprecatedDLL(MSG)     __attribute__((deprecated(#MSG)))
@@ -213,8 +209,23 @@ const char* getHostName (void);
 #define WMWDeprecated(MSG)               __attribute__((deprecated(#MSG)))
 #define WMWExpDeprecatedDLL(MSG)         __attribute__((deprecated(#MSG)))
 
-#define MAMA_TYPE_DEPRECATED(NAME, MSG) \
-__attribute__ ((deprecated(#MSG)))      \
+#define MAMATypeDeprecated(NAME, MSG)   __attribute__ ((deprecated(#MSG))) 
+
+/* Special tags to allow for disabling deprecation messages for code between
+ * the MAMAIgnoreDeprecatedOpen and MAMAIgnoreDeprecatedClose tags.
+ * 
+ * Only support Clang / LLVM on Mac
+ */
+#  define MAMAIgnoreDeprecatedOpen           \
+        _Pragma ("clang diagnostic push")    \
+        _Pragma ("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+
+#  define MAMAIgnoreDeprecatedClose         \
+        _Pragma ("clang diagnostic pop")
+
+#if defined (__cplusplus)
+} /* extern "c" */
+#endif
 
 
 #endif /* DARWIN_H__ */
