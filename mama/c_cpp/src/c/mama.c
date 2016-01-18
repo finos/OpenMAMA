@@ -2440,7 +2440,8 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     {
         mama_log (MAMA_LOG_LEVEL_FINE,
                   "mama_loadBridge (): "
-                  "Found bridge_init function, loading bridge [%s] with function search.");
+                  "Found bridge_init function, loading bridge [%s] with function search.",
+				  middlewareName);
 
         /* Allocate the bridge structure */
         *impl = calloc (1, sizeof (mamaBridgeImpl));
