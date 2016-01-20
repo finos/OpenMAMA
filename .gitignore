@@ -8,6 +8,7 @@
 *.so
 *.lo
 *.la
+*.pyc
 
 # Temporary Directories #
 #########################
@@ -74,3 +75,12 @@ mama/c_cpp/src/c/bridge/solace/Makefile.am
 mama/c_cpp/src/c/mama/version.h
 mama/c_cpp/src/c/version.c
 mama/c_cpp/stamp-h1
+
+# Scons files
+# #######################################
+objdir/*
+.sconf_temp/*
+.sconsign.dblite/*
+omama.conf
+.sconsign.dblite
+openmama_install*
