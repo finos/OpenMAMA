@@ -2117,7 +2117,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
         /* Allocte the payload structure */
         *impl = calloc (1, sizeof (mamaPayloadBridgeImpl));
 
-        if (NULL == impl)
+        if (NULL == *impl)
         {
             status = MAMA_STATUS_NOMEM;
             mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -2445,7 +2445,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         /* Allocate the bridge structure */
         *impl = calloc (1, sizeof (mamaBridgeImpl));
 
-        if (NULL == impl)
+        if (NULL == *impl)
         {
             status = MAMA_STATUS_NOMEM;
             mama_log (MAMA_LOG_LEVEL_ERROR,
