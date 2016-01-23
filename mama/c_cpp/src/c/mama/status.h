@@ -209,7 +209,7 @@ mamaStatus_stringForStatus (mama_status status);
 
 #define NOMEM_STATUS_CHECK(x) \
     do { \
-        if ((x==NULL))  \
+        if (x==NULL)  \
         {    \
             mama_log (MAMA_LOG_LEVEL_SEVERE, "Could not allocate memory");   \
             return MAMA_STATUS_NOMEM;      \
