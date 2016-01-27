@@ -16,6 +16,10 @@ libPath.append('$prefix/lib')
 examples = Glob('*.cpp')
 examples.append('Makefile.sample')
 
+if env['entitled'] == True:
+        env.Append( 
+        CPPDEFINES = ['WITH_ENTITLEMENTS'])
+
 env.Append( LIBPATH = libPath )
 env.Append( CPPPATH = [ includePath ] )
 env.Append( LIBS = [ 'mamacpp','mama','pthread','dl' ] )

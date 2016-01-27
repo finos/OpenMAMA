@@ -12,6 +12,7 @@ InstMamaInclude = \
 	mama/config.h 
 	mama/datetime.h 
 	mama/dictionary.h 
+	mama/entitlement.h
     mama/error.h 
 	mama/fielddesc.h 
 	mama/inbox.h 
@@ -91,6 +92,7 @@ libmama_sources = \
 	dictionary.c
 	dqstrategy.c
     error.c
+    entitlement.c
 	fielddesc.c
 	imagerequest.c
 	listenermsgcallback.c
@@ -161,15 +163,30 @@ libmama_sources = \
     fieldcache/fieldcachevector.c
 """)
 
+if len(env['entitlements']) > 0:
+    """
+    Populate mama/c_cpp/src/c/entitlementlibraries.c with array of libraries to be made
+    mamdatory to load at runtime.
+    """
+    entitlementLibsFile = os.path.join(Dir('#').abspath,'mama/c_cpp/src/c/entitlementlibraries.c')
+
+    fp = open(entitlementLibsFile, 'w')
+    fp.write("#include <mamainternal.h>\n")
+
+    libstr = "char* loadedBridges [MAX_ENTITLEMENT_BRIDGES] = {{\"{}\"".format(env['entitlements'][0])
+    for lib in env['entitlements'][1:]:
+        libstr = "{0},\"{1}\"".format(libstr,lib)
+    libstr += '};\n'
+    fp.write(libstr)
+    fp.close()
+
+    libmama_sources.append('entitlementlibraries.c')
+
 objects = []
 StaticLibs['libmama'] = []
 
 if env['entitled'] == True:
-    env.Append( 
-        LIBPATH = [ os.path.join(env['entitle_home'],'lib') ],
-        LIBS = ['oeac'],
-        CPPDEFINES = ['WITH_ENTITLEMENTS'],
-    )
+    env.Append(CPPDEFINES = ['WITH_ENTITLEMENTS'])
 
 for s in libmama_sources:
     obj = env.Object(s)
@@ -189,5 +206,6 @@ Alias('install', env.Install('$prefix/include/mama/fieldcache',
 
 env.SConscript('bridge/SConscript', 'env')
 env.SConscript('payload/SConscript', 'env')
+env.SConscript('entitlement/SConscript', 'env')
 
 Clean(lib, 'version.c')

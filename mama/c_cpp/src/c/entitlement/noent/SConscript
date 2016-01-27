@@ -1,0 +1,27 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+target = 'libmamanoentimpl'
+
+includePath = []
+includePath.append('#mama/c_cpp/src/c')
+includePath.append('.')
+
+
+env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
+
+env.Append(LIBS=['mama', ], 
+           CPPPATH=[includePath])
+
+#env.Append(CFLAGS=['-Werror'])
+
+sources = Glob('*.c')
+
+lib = []
+lib.append(env.SharedLibrary(target, sources))
+lib.append(env.StaticLibrary(target, sources))
+
+Alias('install', env.Install('$libdir', lib))
