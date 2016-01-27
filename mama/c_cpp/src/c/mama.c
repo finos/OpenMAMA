@@ -1218,9 +1218,25 @@ mama_closeCount (unsigned int* count)
     if (!--gImpl.myRefCount)
     {
 #ifdef WITH_ENTITLEMENTS
-        for (int bridgeCount=0 ; bridgeCount < gImpl.entitlements.count ; bridgeCount++)
+        for (int bridgeCount=0 ; bridgeCount != gImpl.entitlements.count ; bridgeCount++)
         {
-            mamaEntitlementBridge_destroy(gImpl.entitlements.byIndex[bridgeCount]->bridge);
+            mamaEntitlementLib* entLib = gImpl.entitlements.byIndex[bridgeCount];
+            if (entLib)
+            {
+                /* Remove from indexed list of entitlements libraries. */
+                gImpl.entitlements.byIndex[bridgeCount] = NULL;
+
+                /* Destroy the MAMA-level bridge and underlying implementation struct. */    
+                mamaEntitlementBridge_destroy(entLib->bridge);
+                entLib->bridge = NULL;
+
+                /* Destroy library struct. */
+                if (entLib->library)
+                {
+                    entLib->library = NULL;
+                }
+                free (entLib);
+            }
         }
 #endif /* WITH_ENTITLEMENTS */
 
