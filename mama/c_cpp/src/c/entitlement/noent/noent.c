@@ -71,6 +71,7 @@ noentEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, S
     /* mama level object */
     mamaEntitlementSubscription mamaEntSub = calloc (1, sizeof(mamaEntitlementSubscription));
     mamaEntSub->mImpl =  noentSubHandle;
+    mamaEntSub->mEntitlementBridge = mamaEntBridge;
 
     ctx->mEntitlementBridge = mamaEntBridge;
     ctx->mEntitlementSubscription = mamaEntSub;
