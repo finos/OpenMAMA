@@ -67,7 +67,7 @@ namespace Wombat
 
         #endregion
 
-        protected override void Dispose(bool disposing)
+        protected override void Dispose(bool disposing, bool destroyNativeHandle = true)
         {
             // Dispose managed resources
             if (disposing)
@@ -80,7 +80,7 @@ namespace Wombat
                     mCallbackStore = null;
                 }
             }
-            base.Dispose(true);
+            base.Dispose(true, destroyNativeHandle);
 		}
 
         /// <summary>
@@ -444,7 +444,8 @@ namespace Wombat
 		/// </summary>
 		public void destroy()
 		{
-			Dispose();
+            // Keep the native handle until ondestroy
+			Dispose(true, false);
         }
 
 		#region Implementation details
@@ -598,6 +599,7 @@ namespace Wombat
                 pub.mCallback.onDestroy(pub);
                 handle.Free();
             }
+            pub.NativeHandle = IntPtr.Zero;
         }
 
         private static NativeMethods.PublisherCallbacks mCallbackDelegates;
