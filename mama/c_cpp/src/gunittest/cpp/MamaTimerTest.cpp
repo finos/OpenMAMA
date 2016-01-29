@@ -78,7 +78,7 @@ void MamaTimerTestCPP::SetUp(void)
 
 void MamaTimerTestCPP::TearDown(void)
 {
-
+    Mama::close();
     m_this = NULL;
 }
 

@@ -97,6 +97,7 @@ MiddlewareSubscriptionTests::~MiddlewareSubscriptionTests(void)
 
 void MiddlewareSubscriptionTests::SetUp(void)
 {
+    mama_open();  /* Forces loading of entitlements bridges as necessary */
     mamaTransport_allocate (&tport);
     mamaTransport_create   (tport, tportName, mBridge);
 
@@ -120,6 +121,7 @@ void MiddlewareSubscriptionTests::TearDown(void)
 {
     mamaTransport_destroy (tport);
     mamaSubscription_deallocate(parent);
+    mama_close();
 }
 
 static void onCreate (mamaSubscription subscription,
