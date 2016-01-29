@@ -93,6 +93,7 @@ libmama_sources = \
 	dqstrategy.c
     error.c
     entitlement.c
+    entitlementlibraries.c
 	fielddesc.c
 	imagerequest.c
 	listenermsgcallback.c
@@ -163,24 +164,24 @@ libmama_sources = \
     fieldcache/fieldcachevector.c
 """)
 
+"""
+Populate mama/c_cpp/src/c/entitlementlibraries.c with array of libraries to be made
+mamdatory to load at runtime.
+"""
+entitlementLibsFile = os.path.join(Dir('#').abspath,'mama/c_cpp/src/c/entitlementlibraries.c')
+fp = open(entitlementLibsFile, 'w')
+fp.write("#include <mamainternal.h>\n")
 if len(env['entitlements']) > 0:
-    """
-    Populate mama/c_cpp/src/c/entitlementlibraries.c with array of libraries to be made
-    mamdatory to load at runtime.
-    """
-    entitlementLibsFile = os.path.join(Dir('#').abspath,'mama/c_cpp/src/c/entitlementlibraries.c')
-
-    fp = open(entitlementLibsFile, 'w')
-    fp.write("#include <mamainternal.h>\n")
-
-    libstr = "char* loadedBridges [MAX_ENTITLEMENT_BRIDGES] = {{\"{}\"".format(env['entitlements'][0])
-    for lib in env['entitlements'][1:]:
-        libstr = "{0},\"{1}\"".format(libstr,lib)
+    libstr = "char* loadedBridges [MAX_ENTITLEMENT_BRIDGES] = {{\"{0}\"".format(env['entitlements'][0])
+    if len(env['entitlements']) > 1:
+        for lib in env['entitlements'][1:]:
+            libstr = "{0},\"{1}\"".format(libstr,lib)
     libstr += '};\n'
     fp.write(libstr)
-    fp.close()
+else:
+    fp.write("char* loadedBridges [MAX_ENTITLEMENT_BRIDGES];\n");
 
-    libmama_sources.append('entitlementlibraries.c')
+fp.close()
 
 objects = []
 StaticLibs['libmama'] = []
