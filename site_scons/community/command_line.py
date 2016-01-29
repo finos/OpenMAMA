@@ -47,6 +47,8 @@ def get_command_line_opts( host, products, VERSIONS ):
                      allowed_values=('1.0','2.0', '4.0')),
             PathVariable('dotnet_framework', 'Path to desired dotnet framework', None,
                      PathVariable.PathIsDir),
+            PathVariable('nunit_home', 'Path to Nunit home', None,
+                     PathVariable.PathIsDir),
             PathVariable('libevent_home', 'Path to libevent Libraries',
                           'c:\\libevent', PathVariable.PathAccept),
             EnumVariable('target_arch', 'Specifies if the build should target 32 or 64 bit architectures.',
