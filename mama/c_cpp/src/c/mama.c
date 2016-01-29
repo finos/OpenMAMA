@@ -1238,6 +1238,8 @@ mama_closeCount (unsigned int* count)
                 free (entLib);
             }
         }
+        gImpl.entitlements.count = 0;
+
 #endif /* WITH_ENTITLEMENTS */
 
         wthread_key_delete(last_err_key);
