@@ -928,6 +928,7 @@ mamaTransport_create (mamaTransport transport,
         entBridgeName = loadedBridges[0];
     }
 
+#ifdef WITH_ENTITLEMENTS
     status = mamaInternal_getEntitlementBridgeByName(&self->mEntitlementBridge, entBridgeName);
     if (MAMA_STATUS_OK != status)
     {
@@ -940,6 +941,8 @@ mamaTransport_create (mamaTransport transport,
              "mamaTransport_create(): Entitlement bridge set to %s [%s].",
              entBridgeName,
              self->mName);
+#endif /* WITH_ENTITLEMENTS */
+
     return MAMA_STATUS_OK;
 }
 
