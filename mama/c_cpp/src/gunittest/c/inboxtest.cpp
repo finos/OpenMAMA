@@ -59,11 +59,14 @@ void MamaInboxTestC::SetUp(void)
     m_this = this;
 
     mama_loadBridge (&mBridge, getMiddleware());
+
+    mama_open();
 }
 
 void MamaInboxTestC::TearDown(void)
 {
     m_this = NULL;
+    mama_close();
 }
 
 void MAMACALLTYPE onInboxMsg (mamaMsg msg, void *closure)

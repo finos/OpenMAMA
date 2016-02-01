@@ -59,12 +59,15 @@ void MamaTransportTestC::SetUp(void)
     m_this   = this;
 
     mama_loadBridge (&mBridge, getMiddleware());
+
+    mama_open();
     
 }
 
 void MamaTransportTestC::TearDown(void)
 {
     m_this = NULL;
+    mama_close();
 }
 
 void MAMACALLTYPE tportCB (mamaTransport      tport, 
