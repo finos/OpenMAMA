@@ -909,6 +909,7 @@ mamaTransport_create (mamaTransport transport,
                    mamaStatus_stringForStatus(status));
     }
 
+#ifdef WITH_ENTITLEMENTS
     snprintf (propNameBuf, 256, "mama.transport.%s.entitlementBridge", self->mName);
     propValue = properties_Get (mamaInternal_getProperties (), propNameBuf);
     if (NULL != propValue)
@@ -928,7 +929,6 @@ mamaTransport_create (mamaTransport transport,
         entBridgeName = loadedBridges[0];
     }
 
-#ifdef WITH_ENTITLEMENTS
     status = mamaInternal_getEntitlementBridgeByName(&self->mEntitlementBridge, entBridgeName);
     if (MAMA_STATUS_OK != status)
     {
