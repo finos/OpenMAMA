@@ -1238,6 +1238,11 @@ mama_closeCount (unsigned int* count)
                 free (entLib);
             }
         }
+
+        /* Once the libraries have been unloaded, clear down the wtable. */
+        wtable_clear (gImpl.entitlements.table);
+
+        /* Reset the count of loaded entitlements libraries */
         gImpl.entitlements.count = 0;
 
 #endif /* WITH_ENTITLEMENTS */
