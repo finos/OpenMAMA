@@ -134,7 +134,6 @@ public:
     virtual void onStartComplete (MamaStatus status) = 0;
 };
 
-#ifdef WITH_ENTITLEMENTS
 /**
  * Callback object passed to Mama::registerEntitlmentCallbacks().  The 
  * onSessionDisconnect() method will be invoked when a disconnect request is 
@@ -175,7 +174,6 @@ public:
     virtual void 
     onEntitlementCheckingSwitch (const int isEntitlementsCheckingDisabled) {};
 };
-#endif /*WITH_ENTITLEMENTS*/
 
 /**
  * The <code>Mama</code> class provides methods global initialization
@@ -256,7 +254,6 @@ public:
     static void open (const char*   path,
                       const char*   filename);
 
-#ifdef WITH_ENTITLEMENTS
     /**
      * Registers the callback methods to be called whenever the user receives a
      * disconnect request or after a dynamic entitlements update occurrs
@@ -265,7 +262,6 @@ public:
      *                 entitlement update occurrs
      */
     static void registerEntitlementCallbacks (MamaEntitlementCallback* callback);
-#endif /*WITH_ENTITLEMENTS*/
 
     /**
      * Set a specific property for the API.

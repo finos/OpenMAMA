@@ -225,7 +225,7 @@ class Windows:
             ( oea_major, oea_minor, oea_release ) = env['oea_version'].split('.')
 
             env.Append(
-                CPPDEFINES = ['WITH_ENTITLEMENTS','OEA_MAJVERSION=%s' % ( oea_major ), 'OEA_MINVERSION=%s' % (oea_minor)],
+                CPPDEFINES = ['OEA_MAJVERSION=%s' % ( oea_major ), 'OEA_MINVERSION=%s' % (oea_minor)],
                 CPPPATH = [ posixpath.join( env['oea_home'], 'include/oea') ],
             )
 

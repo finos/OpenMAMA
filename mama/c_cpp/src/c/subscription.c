@@ -487,11 +487,9 @@ mamaSubscription_setupBasic (
         case MAMA_SERVICE_LEVEL_SNAPSHOT:
             if (!self->mRequiresInitial) return MAMA_STATUS_INVALID_ARG;
             subscMsgType = MAMA_SUBSC_SNAPSHOT;
-#ifdef WITH_ENTITLEMENTS
             mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
             if (!(0 == mamaInternal_getEntitlementBridgeCount() || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
                 self->mSubjectContext.mEntitlementBridge->setIsSnapshot(self->mSubjectContext.mEntitlementSubscription, 1);
-#endif
             break;
         case MAMA_SERVICE_LEVEL_CONFLATED:/*fall through*/
         default:
@@ -1196,18 +1194,17 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
         msgUtils_getIssueSymbol (msg, &issueSymbol);
         context->mSymbol = copyString (issueSymbol);
 
-#ifdef WITH_ENTITLEMENTS
         mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-
-        mamaTransport tport;
-        mamaSubscription_getTransport(subscription, &tport);
-
-        mamaEntitlementBridge entBridge;
-        mamaTransportImpl_getEntitlementBridge(tport, &entBridge);
-
         if (!(0 == mamaInternal_getEntitlementBridgeCount() || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
+        {
+
+            mamaTransport tport;
+            mamaSubscription_getTransport(subscription, &tport);
+            mamaEntitlementBridge entBridge;
+            mamaTransportImpl_getEntitlementBridge(tport, &entBridge);
+
             entBridge->createSubscription (entBridge, &(self->mSubjectContext));
-#endif
+        }
 
         wtable_insert (self->mSubjects, (char*)sendSubject, (void*)context);
     }
@@ -1408,13 +1405,11 @@ static void freeCacheCb (
     SubjectContext *ctx = (SubjectContext*)data;
     dqContext_cleanup (&(ctx->mDqContext));
     checkFree (&ctx->mSymbol);
-    #ifdef WITH_ENTITLEMENTS
     if (ctx->mEntitlementSubscription != NULL)
     {
         mamaEntitlementBridge_destroySubscription (ctx->mEntitlementSubscription);
         ctx->mEntitlementSubscription = NULL;
     }
-    #endif
     free (ctx);
     ctx = NULL;
 }
@@ -1459,7 +1454,6 @@ mamaSubscription_cleanup (mamaSubscription subscription)
         wtable_destroy (self->mSubjects);
         self->mSubjects = NULL;
     }
-    #ifdef WITH_ENTITLEMENTS
     else
     {
         if (self->mSubjectContext.mEntitlementSubscription != NULL)
@@ -1469,7 +1463,6 @@ mamaSubscription_cleanup (mamaSubscription subscription)
             self->mSubjectContext.mEntitlementSubscription = NULL;
         }
     }
-    #endif
     
     dqContext_cleanup (&self->mSubjectContext.mDqContext);
     self->mRecapRequest = NULL;
@@ -2069,11 +2062,10 @@ mamaSubscription_processTportMsg( mamaSubscription subscription,
         mamaMsg_freeString (msg, text);
     }
 
-#ifdef WITH_ENTITLEMENTS
     mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
     if (!(0 == mamaInternal_getEntitlementBridgeCount() || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
         mamaMsg_getEntitleCode (msg, &entitleCode);
-#endif
+
     if (entitleCode == 0)
     {
         self->mWcCallbacks.onMsg (
@@ -2123,11 +2115,10 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
         mamaMsg_freeString (msg, text);
     }
 
-#ifdef WITH_ENTITLEMENTS
     mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
     if (!(0 == mamaInternal_getEntitlementBridgeCount() || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
         mamaMsg_getEntitleCode (msg, &entitleCode);
-#endif
+
     if (entitleCode == 0)
     {
         self->mWcCallbacks.onMsg (
@@ -2198,11 +2189,11 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
     else
     {
         int32_t entitleCode = 0;
-#ifdef WITH_ENTITLEMENTS
+
         mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
         if (!(0 == mamaInternal_getEntitlementBridgeCount() || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
             mamaMsg_getEntitleCode (msg, &entitleCode);
-#endif
+
         if (entitleCode == 0)
         {
             if (gGenerateQueueStats)

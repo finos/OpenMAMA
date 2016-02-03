@@ -50,7 +50,7 @@ extern int      gGenerateTransportStats;
 extern int      gGenerateLbmStats;
 extern int      gLogTransportStats;
 extern int      gPublishTransportStats;
-extern char*    loadedBridges[MAX_ENTITLEMENT_BRIDGES];
+extern char*    gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 
 #define self                                ((transportImpl*)(transport))
 #define MAX_TPORT_NAME_LEN                  (256)
@@ -909,39 +909,41 @@ mamaTransport_create (mamaTransport transport,
                    mamaStatus_stringForStatus(status));
     }
 
-#ifdef WITH_ENTITLEMENTS
-    snprintf (propNameBuf, 256, "mama.transport.%s.entitlementBridge", self->mName);
-    propValue = properties_Get (mamaInternal_getProperties (), propNameBuf);
-    if (NULL != propValue)
-    {
-        mama_log(MAMA_LOG_LEVEL_FINE, 
-                 "mamaTransport_create(): got property: %s = %s",
-                 propNameBuf,
-                 propValue);
-        entBridgeName = propValue;
-    }
-    else
-    {
-        mama_log(MAMA_LOG_LEVEL_WARN, 
-                 "mamaTransport_create(): No entitlement bridge specified for transport %s. Defaulting to %s.",
-                 self->mName,
-                 loadedBridges[0]);
-        entBridgeName = loadedBridges[0];
-    }
 
-    status = mamaInternal_getEntitlementBridgeByName(&self->mEntitlementBridge, entBridgeName);
-    if (MAMA_STATUS_OK != status)
+    if (strlen((char*)gEntitlementBridges))   /* If entitlement bridges were built in at compile time. */
     {
-        mama_log(MAMA_LOG_LEVEL_ERROR, 
-                 "mamaTransport_create(): Could not set entitlement bridge for transport %s.",
+        snprintf (propNameBuf, 256, "mama.transport.%s.entitlementBridge", self->mName);
+        propValue = properties_Get (mamaInternal_getProperties (), propNameBuf);
+        if (NULL != propValue)
+        {
+            mama_log(MAMA_LOG_LEVEL_FINE, 
+                     "mamaTransport_create(): got property: %s = %s",
+                     propNameBuf,
+                     propValue);
+            entBridgeName = propValue;
+        }
+        else
+        {
+            mama_log(MAMA_LOG_LEVEL_WARN, 
+                     "mamaTransport_create(): No entitlement bridge specified for transport %s. Defaulting to %s.",
+                     self->mName,
+                     gEntitlementBridges[0]);
+            entBridgeName = gEntitlementBridges[0];
+        }
+
+        status = mamaInternal_getEntitlementBridgeByName(&self->mEntitlementBridge, entBridgeName);
+        if (MAMA_STATUS_OK != status)
+        {
+            mama_log(MAMA_LOG_LEVEL_ERROR, 
+                     "mamaTransport_create(): Could not set entitlement bridge for transport %s.",
+                     self->mName);
+            return MAMA_STATUS_NO_BRIDGE_IMPL;
+        }
+        mama_log(MAMA_LOG_LEVEL_FINE, 
+                 "mamaTransport_create(): Entitlement bridge set to %s [%s].",
+                 entBridgeName,
                  self->mName);
-        return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
-    mama_log(MAMA_LOG_LEVEL_FINE, 
-             "mamaTransport_create(): Entitlement bridge set to %s [%s].",
-             entBridgeName,
-             self->mName);
-#endif /* WITH_ENTITLEMENTS */
 
     return MAMA_STATUS_OK;
 }

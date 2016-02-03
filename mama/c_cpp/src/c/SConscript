@@ -172,22 +172,20 @@ entitlementLibsFile = os.path.join(Dir('#').abspath,'mama/c_cpp/src/c/entitlemen
 fp = open(entitlementLibsFile, 'w')
 fp.write("#include <mamainternal.h>\n")
 if len(env['entitlements']) > 0:
-    libstr = "char* loadedBridges [MAX_ENTITLEMENT_BRIDGES] = {{\"{0}\"".format(env['entitlements'][0])
+    libstr = "char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {{\"{0}\"".format(env['entitlements'][0])
     if len(env['entitlements']) > 1:
         for lib in env['entitlements'][1:]:
             libstr = "{0},\"{1}\"".format(libstr,lib)
     libstr += '};\n'
     fp.write(libstr)
 else:
-    fp.write("char* loadedBridges [MAX_ENTITLEMENT_BRIDGES];\n");
+    fp.write("char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {0};\n");
 
 fp.close()
 
 objects = []
 StaticLibs['libmama'] = []
 
-if env['entitled'] == True:
-    env.Append(CPPDEFINES = ['WITH_ENTITLEMENTS'])
 
 for s in libmama_sources:
     obj = env.Object(s)

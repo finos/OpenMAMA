@@ -61,13 +61,7 @@ extern void initReservedFields (void);
 
 
 mamaEntitlementCallbacks  gEntitlementCallbacks;
-static const char*        gServerProperty     = NULL;
-#ifdef WITH_ENTITLEMENTS
-static const char*        gEntitled = "entitled";
-#else
-static const char*        gEntitled = "not entitled";
-#endif /*WITH_ENTITLEMENTS */
-
+extern char*              gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 /* Sats Configuration*/
 int gLogQueueStats          = 1;
 int gLogTransportStats      = 1;
@@ -120,7 +114,6 @@ static mamaPayloadBridge    gDefaultPayload = NULL;
 
 static wthread_key_t last_err_key;
 
-extern char* loadedBridges [MAX_ENTITLEMENT_BRIDGES];
 
 /**
  * struct mamaApplicationGroup
@@ -841,7 +834,15 @@ mama_openWithPropertiesCount (const char* path,
         mama_log (MAMA_LOG_LEVEL_FINE, "mama.message.allowmodify: true");
     }
 
-    mama_log (MAMA_LOG_LEVEL_FINE, "%s (%s)",mama_version, gEntitled);
+    if (strlen( (char*) gEntitlementBridges))
+    {
+    	mama_log (MAMA_LOG_LEVEL_FINE, "%s (entitled)",mama_version);
+    }
+    else
+    {
+    	mama_log (MAMA_LOG_LEVEL_FINE, "%s (non entitled)",mama_version);
+    }
+
 
     /* Iterate the currently loaded middleware bridges, log their version, and
      * increment the count of open bridges.
@@ -885,28 +886,21 @@ mama_openWithPropertiesCount (const char* path,
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
-#ifndef WITH_ENTITLEMENTS
-    mama_log (MAMA_LOG_LEVEL_WARN,
-                "\n********************************************************************************\n"
-                "Note: This build of the MAMA API is not enforcing entitlement checks.\n"
-                "Please see the Licensing file for details\n"
-                "**********************************************************************************");
-#else
     int bridgeIdx = 0;
-    while (NULL != loadedBridges[bridgeIdx])
+    while (NULL != gEntitlementBridges[bridgeIdx])
     {
         mama_log(MAMA_LOG_LEVEL_FINE,
                  "Trying to load %s entitlement bridge.",
-                 loadedBridges[bridgeIdx]);
+                 gEntitlementBridges[bridgeIdx]);
 
-        result = mama_loadEntitlementBridge(loadedBridges[bridgeIdx]);
+        result = mama_loadEntitlementBridge(gEntitlementBridges[bridgeIdx]);
 
         if (MAMA_STATUS_OK != result)
         {
             mama_log(MAMA_LOG_LEVEL_SEVERE,
                      "mama_openWithProperties(): "
                      "Could not load %s entitlements library.",
-                     loadedBridges[bridgeIdx]);
+                     gEntitlementBridges[bridgeIdx]);
             
             wthread_static_mutex_unlock (&gImpl.myLock);
             mama_close();
@@ -918,7 +912,6 @@ mama_openWithPropertiesCount (const char* path,
         }
         bridgeIdx++;
     }
-#endif /* WITH_ENTITLEMENTS */
 
     mama_statsInit();
 
@@ -1193,8 +1186,16 @@ mama_getVersion (mamaBridge bridgeImpl)
     }
 
     /*Delegate the call to the bridge specific implementation*/
-    snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (%s)",
-             mama_version, impl->bridgeGetVersion (), gEntitled);
+    if (strlen( (char*) gEntitlementBridges))
+    {
+    	snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (entitled)",
+    			mama_version, impl->bridgeGetVersion ());
+    }
+    else
+    {
+    	snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (non entitled)",
+    			mama_version, impl->bridgeGetVersion ());
+    }
 
     return mama_ver_string;
 }
@@ -1205,6 +1206,7 @@ mama_closeCount (unsigned int* count)
     mama_status    result     = MAMA_STATUS_OK;
     mamaMiddleware middleware = 0;
     int payload = 0;
+    int bridgeCount = 0;
 
     wthread_static_mutex_lock (&gImpl.myLock);
     if (gImpl.myRefCount == 0)
@@ -1217,8 +1219,7 @@ mama_closeCount (unsigned int* count)
 
     if (!--gImpl.myRefCount)
     {
-#ifdef WITH_ENTITLEMENTS
-        for (int bridgeCount=0 ; bridgeCount != gImpl.entitlements.count ; bridgeCount++)
+        for (bridgeCount=0 ; bridgeCount != gImpl.entitlements.count ; bridgeCount++)
         {
             mamaEntitlementLib* entLib = gImpl.entitlements.byIndex[bridgeCount];
             if (entLib)
@@ -1244,8 +1245,6 @@ mama_closeCount (unsigned int* count)
 
         /* Reset the count of loaded entitlements libraries */
         gImpl.entitlements.count = 0;
-
-#endif /* WITH_ENTITLEMENTS */
 
         wthread_key_delete(last_err_key);
 

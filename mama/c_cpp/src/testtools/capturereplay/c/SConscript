@@ -11,10 +11,6 @@ includePath.append('$prefix/include')
 libPath = []
 libPath.append('$prefix/lib')
 
-if env['entitled'] == True:
-        env.Append( 
-        CPPDEFINES = ['WITH_ENTITLEMENTS'])
-
 env.Append( LIBPATH = libPath )
 env.Append( CPPPATH = [ includePath ] )
 env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','dl' ] )

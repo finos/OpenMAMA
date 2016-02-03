@@ -48,7 +48,11 @@ noentEntitlementBridge_destroy(mamaEntitlementBridge bridge)
 mama_status
 noentEntitlementBridge_init(entitlementBridge* bridge)
 {
-    mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_init():");
+    mama_log (MAMA_LOG_LEVEL_WARN,
+                "\n********************************************************************************\n"
+                "Note: This build of the MAMA API is not enforcing entitlement checks.\n"
+                "Please see the Licensing file for details\n"
+                "**********************************************************************************");
 
     noentEntitlementBridge* noentBridge = calloc(1, sizeof(noentEntitlementBridge));
 
@@ -108,3 +112,4 @@ noentEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* su
 
     return 0;
 }
+

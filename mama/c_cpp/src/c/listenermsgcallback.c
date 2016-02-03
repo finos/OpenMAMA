@@ -38,10 +38,10 @@
 
 #include "entitlementinternal.h"
 
-
-extern int gGenerateTransportStats;
-extern int gGenerateGlobalStats;
-extern int gGenerateQueueStats;
+extern char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES];
+extern int   gGenerateTransportStats;
+extern int   gGenerateGlobalStats;
+extern int   gGenerateQueueStats;
 
 /* Function prototypes. */
 void listenerMsgCallback_invokeErrorCallback(listenerMsgCallback callback,
@@ -83,16 +83,14 @@ listenerMsgCallback_create( listenerMsgCallback *result,
 {
     msgCallback* callback = (msgCallback*)calloc( 1, sizeof( msgCallback ) );
 
-#ifdef WITH_ENTITLEMENTS  /* No listener creation without a client. */
     mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-    if( mamaInternal_getEntitlementBridgeCount() == 0 && !(mamaBridgeImpl_areEntitlementsDeferred(bridge)))
+    if( NULL == gEntitlementBridges[0] && mamaInternal_getEntitlementBridgeCount() == 0)
     {
         const char* symbol;
         mamaSubscription_getSymbol(subscription, &symbol);
         mama_log(MAMA_LOG_LEVEL_SEVERE, "No entitlement verification method detected, subscription aborted [%s]", symbol);
         return MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
     }
-#endif  /* WITH_ENTITLEMENTS */
 
     if( callback == NULL )
     {
@@ -631,9 +629,7 @@ static void handleNoSubscribers (msgCallback *callback,
 static int
 checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
 {
-#ifndef WITH_ENTITLEMENTS 
-    return 1;
-#endif /* WITH_ENTITLEMENTS */
+    if (NULL == gEntitlementBridges[0])  return 1;  /* No entitlements enabled */
 
     int result = 0;
     int32_t value;
