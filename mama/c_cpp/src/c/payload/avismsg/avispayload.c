@@ -235,9 +235,9 @@ avismsgPayload_getByteSize       (const msgPayload    msg,
 }
 
 mama_status
-avismsgPayload_unSerialize (const msgPayload    msg,
-                           const void*        buffer,
-                           mama_size_t        bufferLength)
+avismsgPayload_unSerialize (const msgPayload   msg,
+                            const void*        buffer,
+                            mama_size_t        bufferLength)
 {
     avisPayloadImpl* impl = (avisPayloadImpl*) msg;
     char tempName[64];

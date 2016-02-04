@@ -476,7 +476,7 @@ typedef mama_status
 
 typedef mama_status
 (*msgPayload_unSerialize)      (const msgPayload    msg,
-                                const void**        buffer,
+                                const void*         buffer,
                                 mama_size_t         bufferLength);
 
 typedef mama_status
