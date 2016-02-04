@@ -4,7 +4,7 @@ import os
 Import('*')
 env = env.Clone()
 
-target = 'libmamaoeaimpl'
+target = 'libmamaentoea'
 
 includePath = []
 includePath.append(os.path.join(env['oea_home'],'include/oea'))

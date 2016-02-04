@@ -19,23 +19,23 @@
  * 02110-1301 USA
  */
 
-#ifndef NoEntH__
-#define NoEntH__
+#ifndef noopH__
+#define noopH__
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
 
-typedef struct noentEntitlementBridge_
+typedef struct noopEntitlementBridge_
 {
-} noentEntitlementBridge;
+} noopEntitlementBridge;
 
 
-typedef struct noentEntitlementSubscriptionHandle_
+typedef struct noopEntitlementSubscriptionHandle_
 {
     int mIsSnapshot;
-} noentEntitlementSubscriptionHandle;
+} noopEntitlementSubscriptionHandle;
 
 /*=========================================================================
   =                   Public implementation prototypes                    =
@@ -48,7 +48,7 @@ typedef struct noentEntitlementSubscriptionHandle_
  * @param ctx Pointer to the SubscriptionContext to be populated.
  */
 mama_status
-noentEntitlementBridge_registerSubjectContext(SubjectContext* ctx);
+noopEntitlementBridge_registerSubjectContext(SubjectContext* ctx);
 
 /**
  * This function will create an entitlementSubscription object and associate
@@ -59,7 +59,7 @@ noentEntitlementBridge_registerSubjectContext(SubjectContext* ctx);
  *            the entitlement subscription object.
  */
 mama_status
-noentEntitlementBridge_createSubscription(mamaEntitlementBridge entBridge, SubjectContext* ctx);
+noopEntitlementBridge_createSubscription(mamaEntitlementBridge entBridge, SubjectContext* ctx);
 
 /**
  * Destroys the entitlement bridge level subscription object.
@@ -67,7 +67,7 @@ noentEntitlementBridge_createSubscription(mamaEntitlementBridge entBridge, Subje
  * @param handle The subscription object to free.
  */
 mama_status
-noentEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle);
+noopEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle);
 
 /**
  * Sets internal flag for snapshot subscriptions.
@@ -76,7 +76,7 @@ noentEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle)
  * @param isSnapshot Value to update object to.
  */
 mama_status
-noentEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot);
+noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot);
 
 /**
  * Checks with entitlements implementation if user is entitled to subscribe to topic.
@@ -86,7 +86,7 @@ noentEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int 
  * @param subject The topic to check.
  */
 int
-noentEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject);
+noopEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject);
 
 /**
  * Destroys the entitlement bridge level object.
@@ -96,7 +96,7 @@ noentEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* su
  * @param bridge The bridge object to destroy.
  */
 mama_status
-noentEntitlementBridge_destroy(mamaEntitlementBridge bridge);
+noopEntitlementBridge_destroy(mamaEntitlementBridge bridge);
 
 /**
  * This will initialize the entitlements bridge level object. Use this function
@@ -107,10 +107,10 @@ noentEntitlementBridge_destroy(mamaEntitlementBridge bridge);
  *               initilized.
  */
 mama_status
-noentEntitlementBridge_init(entitlementBridge* bridge);
+noopEntitlementBridge_init(entitlementBridge* bridge);
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif /* NoEntH__ */
+#endif /* noopH__ */

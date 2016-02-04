@@ -27,25 +27,25 @@
 /* mama public */
 #include "mama/mama.h"
 /* implementation */
-#include "noent.h"
+#include "noop.h"
 
 mama_status
-noentEntitlementBridge_registerSubjectContext(SubjectContext* ctx)
+noopEntitlementBridge_registerSubjectContext(SubjectContext* ctx)
 {
-    mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_registerSubjectContext():");
+    mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_registerSubjectContext():");
     return MAMA_STATUS_OK;
 }
 
 
 mama_status
-noentEntitlementBridge_destroy(mamaEntitlementBridge bridge)
+noopEntitlementBridge_destroy(mamaEntitlementBridge bridge)
 {
-    mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_destroy():");
+    mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_destroy():");
     return MAMA_STATUS_OK;
 }
 
 mama_status
-noentEntitlementBridge_init(entitlementBridge* bridge)
+noopEntitlementBridge_init(entitlementBridge* bridge)
 {
     mama_log (MAMA_LOG_LEVEL_WARN,
                 "\n********************************************************************************\n"
@@ -53,41 +53,41 @@ noentEntitlementBridge_init(entitlementBridge* bridge)
                 "Please see the Licensing file for details\n"
                 "**********************************************************************************");
 
-    noentEntitlementBridge* noentBridge = calloc(1, sizeof(noentEntitlementBridge));
-    if (NULL == noentBridge) return MAMA_STATUS_NOMEM;
+    noopEntitlementBridge* noopBridge = calloc(1, sizeof(noopEntitlementBridge));
+    if (NULL == noopBridge) return MAMA_STATUS_NOMEM;
 
     /* set mamaEntitlemententitlement bridge pointer to bridge implementation struct */
-    *bridge = noentBridge;
+    *bridge = noopBridge;
 
     return MAMA_STATUS_OK;
 }
 
 
 mama_status
-noentEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, SubjectContext* ctx)
+noopEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, SubjectContext* ctx)
 {
     /* Although this is a no-op bridge, some mama functionality assumes that an entitlementSubscription
      * exists as long as an entitlementBridge has been loaded
      */
-    mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_createSubscription():");
+    mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_createSubscription():");
 
     mama_status                         status;
     mamaEntitlementSubscription         mamaEntSub;
-    noentEntitlementSubscriptionHandle* noentSubHandle;
+    noopEntitlementSubscriptionHandle* noopSubHandle;
 
     /* Allocate bridge level entitlement subscription object*/
-    noentSubHandle = calloc (1, sizeof(noentEntitlementSubscriptionHandle));
+    noopSubHandle = calloc (1, sizeof(noopEntitlementSubscriptionHandle));
     if (NULL == mamaEntSub) return MAMA_STATUS_NOMEM;
 
     /* Allocate mama_level entitlement subscription object and set implementation struct pointer. */
     status = mamaEntitlementBridge_createSubscription(&mamaEntSub);
     if (MAMA_STATUS_OK != status)
     {
-        free(noentSubHandle); /* Tidy up allocated but unasigned subscription object. */
+        free(noopSubHandle); /* Tidy up allocated but unasigned subscription object. */
         return status;
     }
 
-    mamaEntSub->mImpl               = noentSubHandle;
+    mamaEntSub->mImpl               = noopSubHandle;
     mamaEntSub->mEntitlementBridge  = mamaEntBridge;
 
     /* Add mama level struct to subscription SubjectContext. */
@@ -98,22 +98,22 @@ noentEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, S
 }
 
 mama_status
-noentEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle)
+noopEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle)
 {
-    mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_destroySubscription():");
+    mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_destroySubscription():");
 
     return MAMA_STATUS_OK;
 }
 
 mama_status
-noentEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot)
+noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot)
 {
-    mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_setIsSnapShot():");
+    mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_setIsSnapShot():");
 }
 
 int
-noentEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject)
+noopEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject)
 {
-    mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_isAllowed(%s)",subject);
+    mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_isAllowed(%s)",subject);
     return 0;
 }

@@ -51,6 +51,7 @@
 #define PROPERTY_FILE "mama.properties"
 #define WOMBAT_PATH_ENV "WOMBAT_PATH"
 #define MAMA_PROPERTY_BRIDGE "mama.bridge.provider"
+#define MAMA_ENTITLEMENT_LIB_FILEPATTERN "mamaent%s"
 #define DEFAULT_STATS_INTERVAL 60
 
 #include "entitlementinternal.h"
@@ -2189,7 +2190,7 @@ mama_loadEntitlementBridgeInternal(const char* name)
         goto error_handling_unlock;
     }
 
-    snprintf (entImplName, 256, "mama%simpl", name);
+    snprintf (entImplName, 256, MAMA_ENTITLEMENT_LIB_FILEPATTERN, name);
 
     entitlementLibHandle = openSharedLib (entImplName, NULL);
 
