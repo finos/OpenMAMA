@@ -73,8 +73,6 @@ typedef struct mamaMsgImpl_
     /* Set of get/set/update methods to use for a non wmsg payload */
     mamaPayloadBridgeImpl*  mPayloadBridge;
 
-    mamaPayloadLib          mPayloadLib;
-
     mamaMsg*                mLastVectorMsg;
     mama_size_t             mLastVectorMsgLen;
 
@@ -347,10 +345,8 @@ mamaMsgImpl_getPayloadId (mamaMsg msg, char* id)
 
     if (!impl || !id) return MAMA_STATUS_NULL_ARG;
 
-    mamaPayloadLib lib = impl->mPayloadLib;
+    *id = impl->mPayloadBridge->payloadLib->id;
 
-    *id = lib.id;
-    
     return MAMA_STATUS_OK;
 }
 
@@ -3232,12 +3228,9 @@ mamaMsg_setNewBuffer (mamaMsg msg, void* buffer,
 
     if (impl->mPayloadBridge)
     {
-        impl->mPayloadLib.id = (char) ((const char*)buffer) [0];
-
-        return
-        impl->mPayloadBridge->msgPayloadUnSerialize (impl->mPayload,
-                                                     buffer,
-                                                     size);
+        return impl->mPayloadBridge->msgPayloadUnSerialize (impl->mPayload,
+                                                            buffer,
+                                                            size);
     }
 
     return MAMA_STATUS_NULL_ARG;
