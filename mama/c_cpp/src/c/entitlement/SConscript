@@ -9,4 +9,5 @@ if len(env['entitlements']) > 0:
         modules.append(lib)
 
 for m in modules:
-   env.SConscript( os.path.join(m,'SConscript'), 'env' )
+    if os.path.isfile( os.path.join(m,'SConscript') ):
+        env.SConscript( os.path.join(m,'SConscript'), 'env' )
