@@ -2244,6 +2244,9 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                             payloadName,
                             (void*)payloadLib);
 
+    // Update the payload bridge to back reference to this library
+    (*impl)->payloadLib = payloadLib;
+
     /* wtable_insert may return 1 for success, 0 for inserting a duplicate key,
      * -1 for failure of allocation. Unfortunately it also returns 0 for no table,
      * which means we have an abiguity. However, we shouldn't be able to reach
