@@ -86,9 +86,6 @@ listenerMsgCallback_create( listenerMsgCallback *result,
     mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
     if( NULL == gEntitlementBridges[0] && mamaInternal_getEntitlementBridgeCount() == 0)
     {
-        const char* symbol;
-        mamaSubscription_getSymbol(subscription, &symbol);
-        mama_log(MAMA_LOG_LEVEL_SEVERE, "No entitlement verification method detected, subscription aborted [%s]", symbol);
         return MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
     }
 
@@ -385,7 +382,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         {
             listenerMsgCallback_invokeErrorCallback(callback, ctx,
                     MAMA_STATUS_NOT_ENTITLED, subscription, userSymbol);
-            break;
+            return;
         }
         case MAMA_MSG_STATUS_TOPIC_CHANGE:
         {

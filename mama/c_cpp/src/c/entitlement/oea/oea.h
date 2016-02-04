@@ -104,7 +104,7 @@ oeaEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int is
  * @param subject The topic to check.
  */
 int
-oeaEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject);
+oeaEntitlementBridge_isAllowed(entitlementSubscriptionHandle handle, char* subject);
 
 /**
  * Destroys the entitlement bridge level object.

@@ -86,7 +86,7 @@ noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int i
  * @param subject The topic to check.
  */
 int
-noopEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject);
+noopEntitlementBridge_isAllowed(entitlementSubscriptionHandle handle, char* subject);
 
 /**
  * Destroys the entitlement bridge level object.

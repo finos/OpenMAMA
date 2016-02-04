@@ -47,7 +47,7 @@ typedef mama_status
 typedef mama_status
 (*entitlementBridge_setIsSnapshot) (mamaEntitlementSubscription handle, int isSnapshot);
 typedef int
-(*entitlementBridge_isAllowed) (mamaEntitlementSubscription* handle, char* subject);
+(*entitlementBridge_isAllowed) (mamaEntitlementSubscription handle, char* subject);
 
 typedef struct mamaEntitlementBridge_
 { 
@@ -60,8 +60,6 @@ typedef struct mamaEntitlementBridge_
     entitlementBridge_destroySubscription       destroySubscription;
     entitlementBridge_setIsSnapshot             setIsSnapshot;
     entitlementBridge_isAllowed                 isAllowed;
-
-    void*   mClosure;
 }mamaEntitlementBridge_;
 
 

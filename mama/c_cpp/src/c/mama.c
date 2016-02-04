@@ -233,10 +233,6 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                                  const char*        payloadName);
 
 mama_status
-mama_loadEntitlementBridge (const char* name);
-
-
-mama_status
 mama_loadEntitlementBridgeInternal  (const char* name);
 
 /*  Description :   This function will free any memory associated with a
@@ -894,7 +890,7 @@ mama_openWithPropertiesCount (const char* path,
                  "Trying to load %s entitlement bridge.",
                  gEntitlementBridges[bridgeIdx]);
 
-        result = mama_loadEntitlementBridge(gEntitlementBridges[bridgeIdx]);
+        result = mama_loadEntitlementBridgeInternal(gEntitlementBridges[bridgeIdx]);
 
         if (MAMA_STATUS_OK != result)
         {
@@ -1235,6 +1231,7 @@ mama_closeCount (unsigned int* count)
                 /* Destroy library struct. */
                 if (entLib->library)
                 {
+                    closeSharedLib (entLib->library);
                     entLib->library = NULL;
                 }
                 free (entLib);
@@ -1398,7 +1395,7 @@ mama_closeCount (unsigned int* count)
 
                 if(payloadLib->library)
                 {
-                    // closeSharedLib (payloadLib->library);
+                    closeSharedLib (payloadLib->library);
                     payloadLib->library = NULL;
                 }
 
@@ -1451,7 +1448,7 @@ mama_closeCount (unsigned int* count)
 
                 if (middlewareLib->library)
                 {
-                    // closeSharedLib (middlewareLib->library);
+                    closeSharedLib (middlewareLib->library);
                     middlewareLib->library = NULL;
                 }
 
@@ -1822,13 +1819,6 @@ mama_loadPayloadBridge (mamaPayloadBridge* impl,
     return mama_loadPayloadBridgeInternal (impl, payloadName);
 }
 
-mama_status
-mama_loadEntitlementBridge (const char* name)
-{
-    return mama_loadEntitlementBridgeInternal (name);
-}
-
-
 
 mama_status
 mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
@@ -2143,14 +2133,15 @@ mama_loadEntitlementBridgeInternal(const char* name)
     {
         return MAMA_STATUS_NULL_ARG;
     }
+
     status = mamaInternal_init ();
 
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadEntitlementBridgeInternal (): "
-                  "Error initialising internal MAMA state. Cannot load entitlements library"
-                  "[%s]", name);
+                  "Error initialising internal MAMA state. Cannot load %s entitlements library"
+                  "[%s]", name, mamaStatus_stringForStatus(status));
         return status;
     }
 
