@@ -112,7 +112,7 @@ noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int i
 }
 
 int
-noopEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject)
+noopEntitlementBridge_isAllowed(entitlementSubscriptionHandle handle, char* subject)
 {
     mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_isAllowed(%s)",subject);
     return 1;
