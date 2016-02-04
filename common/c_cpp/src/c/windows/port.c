@@ -269,7 +269,7 @@ time_t wtimegm (struct tm *tm)
     char *tz;
     
     tz = environment_getVariable("TZ");
-    environment_setVariable("TZ", "");
+    environment_setVariable("TZ", "UTC");
     tzset();
     ret = mktime(tm);
     if (tz)

@@ -79,6 +79,8 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                 }
             }
 
+            Thread.sleep(4000);            // TODO use transport onCreate() here
+
             Mama.startBackground(bridge, this);
         }
         catch (Exception e)
@@ -224,7 +226,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                 p.create(transport, Main.GetSymbol(), Main.GetSource());
                 p.sendWithThrottle(msg, this);
                 
-                Thread.sleep(100);
+                Thread.sleep(250);
             }
         }
         catch (Exception e)
@@ -271,7 +273,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                     p = null;
                 }
                 
-                Thread.sleep(100);
+                Thread.sleep(250);
             }
 
             // Try to make Java run GC to call finalize

@@ -52,6 +52,8 @@ elif env['host']['os'] == 'Darwin':
          'common/c_cpp/src/c/linux/platform.c'),
         ('common/c_cpp/src/c/wSemaphore.c',
          'common/c_cpp/src/c/darwin/wSemaphore.c'),
+        ('common/c_cpp/src/c/clock.c',
+         'common/c_cpp/src/c/darwin/clock.c'),
         ('common/c_cpp/src/c/network.c',
          'common/c_cpp/src/c/linux/network.c'),
         ('common/c_cpp/src/c/environment.c',

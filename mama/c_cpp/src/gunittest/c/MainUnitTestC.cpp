@@ -38,14 +38,13 @@
 static string version     ("APPNAMESTR:  Version " VERSIONSTR
                            "  Date " DATESTR "  Build " BUILDSTR);
 
-
 static const char* gMiddleware = "wmw";
 static const char* gPayload    = "wmsg";
+static char        gPayloadId  = 'W';
 static const char* gTransport  = "test_tport";
 static const char* gSymbol     = "SYM";
 static const char* gSource     = "SRC";
 static const char* gBadSource  = "BADSRC";
-
 
 const char* getMiddleware (void)
 {
@@ -75,6 +74,11 @@ const char* getSource (void)
 const char* getBadSource (void)
 {
     return gBadSource;
+}
+
+const char getPayloadId (void)
+{
+    return gPayloadId;
 }
 
 static void parseCommandLine (int argc, char** argv)
@@ -112,6 +116,14 @@ static void parseCommandLine (int argc, char** argv)
         else if (strcmp ("-s", argv[i]) == 0)
         {
             gSymbol = argv[i+1];
+        else if (strcmp ("-i", argv[i]) == 0)
+        {
+            gPayloadId = argv[i+1][0];
+            i += 2;
+        }
+        else if (strcmp ("-tport", argv[i]) == 0)
+        {
+            gTransport = argv[i+1];
             i += 2;
         }
         else

@@ -27,6 +27,7 @@
 #include "mama/timer.h"
 #include "mama/queue.h"
 #include "mama/io.h"
+#include <publisherimpl.h>
 #include <cstring>
 #include <cstdio>
 #include <cstdlib>
@@ -141,7 +142,37 @@ TEST_F (MamaPublisherTestC, CreateDestroy)
                mamaTransport_create (tport, getTransport(), mBridge));
 
     ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_create (&publisher, tport, source, NULL, NULL));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_destroy (publisher));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_destroy (tport));
+}
+
+/*  Description: Create a mamaPublisher and get its transport
+ *
+ *  Expected Result: MAMA_STATUS_OK
+ */
+TEST_F (MamaPublisherTestC, GetTransport)
+{
+    mamaPublisher    publisher = NULL;
+    mamaTransport    tport     = NULL;
+    const char*      symbol    = "SYM";
+    const char*      root      = "ROOT";
+    const char*      source    = "SRC";
+   
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_allocate (&tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_create (tport, getTransport(), mBridge));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_create (&publisher, tport, symbol, source, NULL));
+
+    ASSERT_EQ(tport, mamaPublisherImpl_getTransportImpl (publisher));
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_destroy (publisher));
@@ -225,7 +256,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
     pubOnErrorCount = 0;
     pubOnDestroyCount = 0;
 
-	mamaPublisherCallbacks_allocate(&cb);
+    mamaPublisherCallbacks_allocate(&cb);
     cb->onError = pubOnError;
     cb->onCreate = pubOnCreate;
     cb->onDestroy = pubOnDestroy;
@@ -271,7 +302,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
     ASSERT_EQ (0, pubOnErrorCount);
     ASSERT_EQ (1, pubOnDestroyCount);
 
-	mamaPublisherCallbacks_deallocate(cb);
+    mamaPublisherCallbacks_deallocate(cb);
 }
 
 /*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
@@ -296,7 +327,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksBadSource)
     pubOnErrorCount = 0;
     pubOnDestroyCount = 0;
 
-	mamaPublisherCallbacks_allocate(&cb);
+    mamaPublisherCallbacks_allocate(&cb);
     cb->onError = pubOnError;
     cb->onCreate = pubOnCreate;
     cb->onDestroy = pubOnDestroy;
@@ -342,7 +373,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksBadSource)
     ASSERT_EQ (numErrors, pubOnErrorCount);
     ASSERT_EQ (1, pubOnDestroyCount);
 
-	mamaPublisherCallbacks_deallocate(cb);
+    mamaPublisherCallbacks_deallocate(cb);
 }
 
 /*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
@@ -368,7 +399,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoErrorCallback)
     pubOnErrorCount = 0;
     pubOnDestroyCount = 0;
 
-	mamaPublisherCallbacks_allocate(&cb);
+    mamaPublisherCallbacks_allocate(&cb);
     cb->onError = NULL;
     cb->onCreate = pubOnCreate;    /* No error callback */
     cb->onDestroy = pubOnDestroy;
@@ -414,7 +445,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoErrorCallback)
     ASSERT_EQ (0, pubOnErrorCount);
     ASSERT_EQ (1, pubOnDestroyCount);
 
-	mamaPublisherCallbacks_deallocate(cb);
+    mamaPublisherCallbacks_deallocate(cb);
 }
 
 /*  Description: Create a mamaPublisher with event callbacks and mamaMsg, send the msg using 
@@ -440,7 +471,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoCallbacks)
     pubOnErrorCount = 0;
     pubOnDestroyCount = 0;
 
-	mamaPublisherCallbacks_allocate(&cb);
+    mamaPublisherCallbacks_allocate(&cb);
     cb->onError = NULL;
     cb->onCreate = NULL;
     cb->onDestroy = NULL;
@@ -486,6 +517,6 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoCallbacks)
     ASSERT_EQ (0, pubOnErrorCount);
     ASSERT_EQ (0, pubOnDestroyCount);
 
-	mamaPublisherCallbacks_deallocate(cb);
+    mamaPublisherCallbacks_deallocate(cb);
 }
 

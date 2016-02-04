@@ -22,8 +22,7 @@
 #ifndef MAINUNITTESTC_H_
 #define MAINUNITTESTC_H_
 
-#define NOT_NULL    ( (void*)1 )
-
+#define NOT_NULL ( (void*)1 )
 
 #define ALLOW_NON_IMPLEMENTED(status)                                          \
  do {                                                                          \
@@ -65,9 +64,12 @@
 #endif /* GTEST_STRICTNESS_SETTINGS */
 
 const char* getMiddleware (void);
+const char* getTransport (void);
 const char* getPayload (void);
+const char  getPayloadId (void);
 const char* getTransport (void);
 const char* getSource (void);
 const char* getBadSource (void);
 const char* getSymbol (void);
+
 #endif /* MAINUNITTESTC_H_ */

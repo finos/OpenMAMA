@@ -60,6 +60,11 @@ class Windows:
                     print 'ERROR: Nunit Home must exist'
                     Exit(1)
 
+        try:
+            subprocess.check_call("flex --version", shell=True, stdout=None, stderr=None)
+        except:
+            print "Could not execute flex - is it in your environment PATH?"
+
         if optsEnv['product'] == 'mamdajni' or optsEnv['product'] == 'mamajni' or optsEnv['product'] == 'mamdaall':
             if not optsEnv.get('java_home'):
                 print 'java_home has not been set, exiting...'

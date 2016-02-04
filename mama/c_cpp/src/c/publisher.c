@@ -990,7 +990,7 @@ static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
 mamaTransport
 mamaPublisherImpl_getTransportImpl (mamaPublisher publisher)
 {
-    mamaPublisherImpl* impl   = (mamaPublisherImpl*)publisher;
+    mamaPublisherImpl* impl = (mamaPublisherImpl*)publisher;
 
     if (!impl) return NULL;
     return impl->mTport;

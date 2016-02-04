@@ -109,6 +109,19 @@ class Linux:
         env.Append( CFLAGS = ['-std=gnu99','-Wmissing-prototypes','-Wstrict-prototypes'] )
         env.Append( CXXFLAGS = ['-Wall','-Wno-long-long'] )
 
+        if env['target_arch'] == 'x86':
+            env.Append(CCFLAGS  = ['-m32'])
+            env.Append(CFLAGS   = ['-m32'])
+            env.Append(LINKFLAGS = ['-m32'])
+
+        if os.environ.has_key('CC'):
+            print 'Setting User defined CC: ' + os.environ['CC']
+            env['CC'] = os.environ['CC']
+
+        if os.environ.has_key('CXX'):
+            print 'Setting User defined CXX: ' + os.environ['CXX']
+            env['CXX'] = os.environ['CXX']
+
         if os.environ.has_key('CCFLAGS'):
             print 'Setting User defined CCFLAGS: ' + os.environ['CCFLAGS']
             env.Append( CCFLAGS = Split( os.environ['CCFLAGS'] ) )

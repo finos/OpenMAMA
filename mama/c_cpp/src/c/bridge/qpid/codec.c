@@ -28,6 +28,7 @@
 #include <msgimpl.h>
 #include "codec.h"
 #include "msg.h"
+#include "msgimpl.h"
 
 
 /*=========================================================================
@@ -41,7 +42,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
 {
     pn_data_t*          properties      = NULL;
     pn_data_t*          body            = NULL;
-    mamaPayloadType     payloadType     = MAMA_PAYLOAD_UNKNOWN;
+    char                payloadType     = MAMA_PAYLOAD_ID_UNKNOWN;
     const void*         buffer          = NULL;
     mama_size_t         bufferLen       = 0;
     char*               subject         = NULL;
@@ -58,7 +59,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     }
 
     /* Get the underlying payload type */
-    mamaMsg_getPayloadType (target, &payloadType);
+    mamaMsgImpl_getPayloadId (target, &payloadType);
 
     /* If this is a qpid payload, we don't need to serialize */
     if (MAMA_PAYLOAD_QPID == payloadType)
@@ -212,7 +213,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
     /* If this looks like another MAMA payload type */
     else if (PN_BINARY == firstAtom.type)
     {
-        mamaPayloadType     payloadType     = MAMA_PAYLOAD_UNKNOWN;
+        char payloadType =  MAMA_PAYLOAD_ID_NULL;
 
         if (firstAtom.u.as_bytes.size == 0)
         {
@@ -223,7 +224,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
         }
 
         /* The payload type is the first character */
-        payloadType = (mamaPayloadType) firstAtom.u.as_bytes.start[0];
+        payloadType = (char) firstAtom.u.as_bytes.start[0];
 
         /* Use byte buffer to populate MAMA message */
         status = mamaMsgImpl_setMsgBuffer (
