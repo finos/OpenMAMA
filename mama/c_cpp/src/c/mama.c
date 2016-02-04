@@ -62,7 +62,7 @@ extern void initReservedFields (void);
 
 
 mamaEntitlementCallbacks  gEntitlementCallbacks;
-extern char*              gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
+extern const char*        gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 /* Sats Configuration*/
 int gLogQueueStats          = 1;
 int gLogTransportStats      = 1;

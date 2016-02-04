@@ -38,10 +38,10 @@
 
 #include "entitlementinternal.h"
 
-extern char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES];
-extern int   gGenerateTransportStats;
-extern int   gGenerateGlobalStats;
-extern int   gGenerateQueueStats;
+extern const char*  gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES];
+extern int          gGenerateTransportStats;
+extern int          gGenerateGlobalStats;
+extern int          gGenerateQueueStats;
 
 /* Function prototypes. */
 void listenerMsgCallback_invokeErrorCallback(listenerMsgCallback callback,

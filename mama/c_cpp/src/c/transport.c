@@ -46,11 +46,11 @@
 #include "wombat/strutils.h"
 #include "mama/entitlement.h"
 
-extern int      gGenerateTransportStats;
-extern int      gGenerateLbmStats;
-extern int      gLogTransportStats;
-extern int      gPublishTransportStats;
-extern char*    gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
+extern int          gGenerateTransportStats;
+extern int          gGenerateLbmStats;
+extern int          gLogTransportStats;
+extern int          gPublishTransportStats;
+extern const char*  gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 
 #define self                                ((transportImpl*)(transport))
 #define MAX_TPORT_NAME_LEN                  (256)
