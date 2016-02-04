@@ -343,7 +343,7 @@ oeaEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int is
 }
 
 int
-oeaEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject)
+oeaEntitlementBridge_isAllowed(entitlementSubscriptionHandle handle, char* subject)
 {
     oeaEntitlementSubscriptionHandle* oeaSubHandle = (oeaEntitlementSubscriptionHandle*) handle;
     oeaSubscription_setSubject (oeaSubHandle->mOeaSubscription, subject);
