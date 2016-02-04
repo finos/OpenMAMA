@@ -333,7 +333,7 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsSubMessage)
 
     status = mamaMsg_addMsg (mMsg, "name2", 103, submsg);
 
-    ALLOW_NON_IMPLEMENTED (status);
+    CHECK_NON_IMPLEMENTED_RECOMMENDED (status);
 
     EXPECT_EQ (MAMA_STATUS_OK, mamaMsg_getNumFields (mMsg, &numFields));
     EXPECT_EQ (addedFields, numFields);

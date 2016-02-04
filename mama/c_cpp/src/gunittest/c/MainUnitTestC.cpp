@@ -23,7 +23,9 @@
 #include <gtest/gtest.h>
 #include <mama/mama.h>
 #include <mama/status.h>
+#include <wombat/port.h>
 #include <string>
+#include <MainUnitTestC.h>
 
 #ifndef WOMBAT_CONFIG_NO_NAMESPACES
  using std::string;
@@ -43,6 +45,7 @@ static const char*       gMiddleware  = "wmw";
 static const char*       gPayload     = "wmsg";
 static char              gPayloadId   = 'W';
 static const char*       gTransport   = "tport";
+static gtest_strictness  gStrictness  = OPTIONAL;
 
 
 const char* getMiddleware (void)
@@ -92,6 +95,28 @@ static void parseCommandLine (int argc, char** argv)
             gTransport = argv[i+1];
             i += 2;
         }
+        else if (strcmp ("--allow-not-implemented", argv[i]) == 0
+                || strcmp ("-n", argv[i]) == 0)
+        {
+            if (strcasecmp ("ALL", argv[i+1]) == 0
+                    || strcasecmp ("MANDATORY", argv[i+1]) == 0)
+            {
+                gStrictness = MANDATORY;
+            }
+            else if (strcasecmp ("RECOMMENDED", argv[i+1]) == 0)
+            {
+                gStrictness = RECOMMENDED;
+            }
+            else if (strcasecmp ("OPTIONAL", argv[i+1]) == 0)
+            {
+                gStrictness = OPTIONAL;
+            }
+            else if (strcasecmp ("NONE", argv[i+1]) == 0)
+            {
+                gStrictness = NONE;
+            }
+            i += 2;
+        }
         else
         {
            //unknown arg
@@ -100,6 +125,9 @@ static void parseCommandLine (int argc, char** argv)
     }
 }
 
+gtest_strictness getStrictness (void) {
+    return gStrictness;
+}
 
 int main(int argc, char **argv)
 {
