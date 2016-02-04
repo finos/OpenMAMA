@@ -23,8 +23,8 @@
 #include <OeaStatus.h>
 #include <OeaSubscription.h>
  
-#ifndef OeaH__
-#define OeaH__
+#ifndef MamaEntOeaH__
+#define MamaEntOeaH__
 
 #if defined(__cplusplus)
 extern "C" {
@@ -131,4 +131,4 @@ oeaEntitlementBridge_init(entitlementBridge* bridge);
 }
 #endif
 
-#endif /* OeaH__ */
+#endif /* MamaEntOeaH__ */

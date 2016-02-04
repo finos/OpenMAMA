@@ -19,8 +19,8 @@
  * 02110-1301 USA
  */
 
-#ifndef noopH__
-#define noopH__
+#ifndef MamaEntNoopH__
+#define MamaEntNoopH__
 
 #if defined(__cplusplus)
 extern "C" {
@@ -113,4 +113,4 @@ noopEntitlementBridge_init(entitlementBridge* bridge);
 }
 #endif
 
-#endif /* noopH__ */
+#endif /* MamaEntNoopH__ */
