@@ -69,15 +69,12 @@ void entitlementCheckingSwitchCallback (oeaClient*,
 mama_status
 oeaEntitlementBridge_registerSubjectContext(SubjectContext* ctx)
 {
-    mama_log(MAMA_LOG_LEVEL_ERROR, "oeaEntitlementBridge_registerSubjectContext():");
-
     oeaSubscription*    oeaSub = (oeaSubscription*) ctx->mEntitlementSubscription->mImpl;
 
     oeaSubscription_addEntitlementCode (oeaSub, ctx->mEntitleCode);
     oeaSubscription_open (oeaSub);
-    int result = oeaSubscription_isOpen (oeaSub);
 
-    if (0 == result)
+    if (0 == oeaSubscription_isOpen (oeaSub))
     {
         mama_log(MAMA_LOG_LEVEL_ERROR,
                  "Could not handle entitlements for new subscription [%s].",
@@ -110,18 +107,17 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
     int             portLow                     = 8000;
     int             portHigh                    = 8001;
     int             size                        = 0;
-    int             entitlementsRequired        = 0; /*boolean*/
-    mamaMiddleware  middleware                  = 0;
     oeaStatus       entitlementStatus           = OEA_STATUS_INVALID;
     oeaCallbacks    entitlementCallbacks;
     const char*     altUserId;
     const char*     altIp;
     const char*     site;
     const char**    entitlementServers;
-
-    oeaEntitlementBridge* oeaBridge = calloc(1, sizeof(oeaEntitlementBridge));
     const char*     appName;
     mama_status     status;
+
+    oeaEntitlementBridge* oeaBridge = calloc(1, sizeof(oeaEntitlementBridge));
+    if  (NULL == oeaBridge) return MAMA_STATUS_NOMEM;
 
     status = mama_getApplicationClassName (&appName);
     if (MAMA_STATUS_OK != status )
@@ -135,12 +131,14 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
     {
         mama_log(MAMA_LOG_LEVEL_SEVERE,
                  "Could not allocate memory for oea entitlements bridge.");
-        return MAMA_STATUS_NOMEM;
+        status = MAMA_STATUS_NOMEM;
+        goto initFreeBridge;
     }
 
     if (NULL == (entitlementServers = oeaEntitlmentBridge_parseServersProperty()))
     {
-        return MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
+        goto initFreeClientAndBridge;
+        status = MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
     }
 
     while (entitlementServers[size] != NULL)
@@ -188,45 +186,57 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
         mama_log(MAMA_LOG_LEVEL_ERROR, 
                  "oeaEntitlementBridge_init: Error creating oea client[%s].",
                  mamaStatus_stringForStatus((mama_status) entitlementStatus));
-        return entitlementStatus;
+        status = (mama_status) entitlementStatus;  /* oea status codes match MAMA so cast is safe. */
+        goto initFreeClientAndBridge;
+
     }
 
     if (oClient != 0)
     {
         if (OEA_STATUS_OK != (entitlementStatus = oeaClient_setCallbacks (oClient, &entitlementCallbacks)))
         {
-            return entitlementStatus;
+            status = (mama_status) entitlementStatus;
+            goto initFreeClientAndBridge;
         }
 
         if (OEA_STATUS_OK != (entitlementStatus = oeaClient_setAlternativeUserId (oClient, altUserId)))
         {
-            return entitlementStatus;
+            status = (mama_status) entitlementStatus;
+            goto initFreeClientAndBridge;
         }
 
         if (OEA_STATUS_OK != (entitlementStatus = oeaClient_setEffectiveIpAddress (oClient, altIp)))
         {
-            return entitlementStatus;
+            status = (mama_status) entitlementStatus;
+            goto initFreeClientAndBridge;
         }
 
         if (OEA_STATUS_OK != (entitlementStatus = oeaClient_setApplicationId (oClient, appName)))
         {
-            return entitlementStatus;
+            status = (mama_status) entitlementStatus;
+            goto initFreeClientAndBridge;
         }
 
         if (OEA_STATUS_OK != (entitlementStatus = oeaClient_downloadEntitlements ((oeaClient*const)oClient)))
         {
-            return entitlementStatus;
+            status = (mama_status) entitlementStatus;
+            goto initFreeClientAndBridge;
         }
     }
 
     /* set client in oeaEntitlementBridge struct */
-    oeaBridge->mOeaClient= oClient;
+    oeaBridge->mOeaClient = oClient;
 
     /* set mamaEntitlemententitlement bridge pointer to bridge implementation struct */
     *bridge = oeaBridge;
 
-
     return MAMA_STATUS_OK;
+
+initFreeClientAndBridge:
+    free(oClient);
+initFreeBridge:
+    free(oeaBridge);
+    return status;
 }
 
 
