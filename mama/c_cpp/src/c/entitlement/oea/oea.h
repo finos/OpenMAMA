@@ -98,7 +98,7 @@ oeaEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int is
 
 /**
  * Checks with entitlements implementation if user is entitled to subscribe to topic.
- * Returns non zero if not entitled.
+ * Returns non zero if entitled.
  *
  * @param handle The entitlement subscription objec tto check against
  * @param subject The topic to check.
