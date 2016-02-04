@@ -278,35 +278,44 @@ oeaEntitlmentBridge_parseServersProperty()
 mama_status
 oeaEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, SubjectContext* ctx)
 {
-    oeaEntitlementBridge*  oeaBridge = (oeaEntitlementBridge*) mamaEntBridge->mImpl;
+    oeaStatus                           status;
+    mama_status                         mamaStatus;
+    oeaEntitlementBridge*               oeaBridge;
+    mamaEntitlementSubscription         mamaEntSub;
+    oeaEntitlementSubscriptionHandle*   oeaSubHandle;
 
-    oeaEntitlementSubscriptionHandle* oeaSubHandle = calloc(1,sizeof(oeaEntitlementSubscriptionHandle));
+    /* Allocate bridge level entitlement subscription object*/
+    oeaSubHandle = calloc(1,sizeof(oeaEntitlementSubscriptionHandle));
+    if (NULL == oeaSubHandle) return MAMA_STATUS_NOMEM;
 
-    oeaStatus status;
+    oeaBridge = (oeaEntitlementBridge*) mamaEntBridge->mImpl;
+
+    /* Initilize bridge level subscription object using oea function.*/
     oeaSubHandle->mOeaSubscription = oeaClient_newSubscription(&status, oeaBridge->mOeaClient);
     if (OEA_STATUS_OK != status)
     {
-        return MAMA_STATUS_NOT_ENTITLED;
+        return (mama_status) status; /* OEA status codes are identical to mama so cast is safe. */
     }
 
-    ctx->mEntitlementBridge = mamaEntBridge;
-
     /* Allocate mama_level entitlement subscription object and set implementation struct pointer. */
-    mamaEntitlementSubscription mamaEntSub;
-    mamaEntitlementBridge_createSubscription(&mamaEntSub);
-
+    mamaStatus = mamaEntitlementBridge_createSubscription(&mamaEntSub);
+    if(MAMA_STATUS_OK != mamaStatus)
+    {
+        free(oeaSubHandle);
+        return mamaStatus;
+    }
     mamaEntSub->mImpl              = oeaSubHandle;
     mamaEntSub->mEntitlementBridge = mamaEntBridge;
 
     /* Add mama level struct to subscription SubjectContext. */
-    ctx->mEntitlementSubscription = mamaEntSub;
     ctx->mEntitlementBridge       = mamaEntBridge;
+    ctx->mEntitlementSubscription = mamaEntSub;
 
     return MAMA_STATUS_OK;
 }
 
 mama_status
-oeaEntitlementBridge_destroySubscription(entitlementSubscriptionHandle* handle)
+oeaEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle)
 {
     oeaEntitlementSubscriptionHandle* oeaSubHandle = (oeaEntitlementSubscriptionHandle*) handle;
     if (NULL != oeaSubHandle->mOeaSubscription)

@@ -37,25 +37,75 @@ typedef struct noentEntitlementSubscriptionHandle_
     int mIsSnapshot;
 } noentEntitlementSubscriptionHandle;
 
+/*=========================================================================
+  =                   Public implementation prototypes                    =
+  =========================================================================*/
 
+/**
+ * This function will populate a subscription context with entitlements
+ * implementation information.
+ *
+ * @param ctx Pointer to the SubscriptionContext to be populated.
+ */
 mama_status
 noentEntitlementBridge_registerSubjectContext(SubjectContext* ctx);
 
+/**
+ * This function will create an entitlementSubscription object and associate
+ * it with an entitlement bridge implementation.
+ *
+ * @param entBridge The entitlement bridge to associate with the subscription.
+ * @param ctx The subscription SubjectContext to be populated with a pointer to
+ *            the entitlement subscription object.
+ */
 mama_status
 noentEntitlementBridge_createSubscription(mamaEntitlementBridge entBridge, SubjectContext* ctx);
 
+/**
+ * Destroys the entitlement bridge level subscription object.
+ *
+ * @param handle The subscription object to free.
+ */
 mama_status
-noentEntitlementBridge_destroySubscription(entitlementSubscriptionHandle* handle);
+noentEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle);
 
+/**
+ * Sets internal flag for snapshot subscriptions.
+ *
+ * @param handle Entitlement subscription object to update.
+ * @param isSnapshot Value to update object to.
+ */
 mama_status
 noentEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot);
 
+/**
+ * Checks with entitlements implementation if user is entitled to subscribe to topic.
+ * Returns non zero if not entitled.
+ *
+ * @param handle The entitlement subscription objec tto check against
+ * @param subject The topic to check.
+ */
 int
 noentEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject);
 
+/**
+ * Destroys the entitlement bridge level object.
+ * This function will be detected and called at the same time that the parent
+ * MAMA level object is destroyed.
+ *
+ * @param bridge The bridge object to destroy.
+ */
 mama_status
 noentEntitlementBridge_destroy(mamaEntitlementBridge bridge);
 
+/**
+ * This will initialize the entitlements bridge level object. Use this function
+ * to create any connections or objects used in the entitlements implementation.
+ *
+ * This will be automatically called when MAMA loads the entitlements bridge.
+ * @param bridge The (preallocated by mama) bridge level object to be
+ *               initilized.
+ */
 mama_status
 noentEntitlementBridge_init(entitlementBridge* bridge);
 

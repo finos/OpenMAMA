@@ -24,6 +24,5 @@ sources = Glob('*.c')
 
 lib = []
 lib.append(env.SharedLibrary(target, sources))
-lib.append(env.StaticLibrary(target, sources))
 
 Alias('install', env.Install('$libdir', lib))

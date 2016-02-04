@@ -44,7 +44,6 @@ noentEntitlementBridge_destroy(mamaEntitlementBridge bridge)
     return MAMA_STATUS_OK;
 }
 
-
 mama_status
 noentEntitlementBridge_init(entitlementBridge* bridge)
 {
@@ -55,6 +54,7 @@ noentEntitlementBridge_init(entitlementBridge* bridge)
                 "**********************************************************************************");
 
     noentEntitlementBridge* noentBridge = calloc(1, sizeof(noentEntitlementBridge));
+    if (NULL == noentBridge) return MAMA_STATUS_NOMEM;
 
     /* set mamaEntitlemententitlement bridge pointer to bridge implementation struct */
     *bridge = noentBridge;
@@ -66,17 +66,31 @@ noentEntitlementBridge_init(entitlementBridge* bridge)
 mama_status
 noentEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, SubjectContext* ctx)
 {
+    /* Although this is a no-op bridge, some mama functionality assumes that an entitlementSubscription
+     * exists as long as an entitlementBridge has been loaded
+     */
     mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_createSubscription():");
 
-    /* implementation object */
+    mama_status                         status;
+    mamaEntitlementSubscription         mamaEntSub;
     noentEntitlementSubscriptionHandle* noentSubHandle;
-    mamaEntitlementBridge_createSubscription(&noentSubHandle);
 
-    /* mama level object */
-    mamaEntitlementSubscription mamaEntSub = calloc (1, sizeof(mamaEntitlementSubscription));
-    mamaEntSub->mImpl =  noentSubHandle;
-    mamaEntSub->mEntitlementBridge = mamaEntBridge;
+    /* Allocate bridge level entitlement subscription object*/
+    noentSubHandle = calloc (1, sizeof(noentEntitlementSubscriptionHandle));
+    if (NULL == mamaEntSub) return MAMA_STATUS_NOMEM;
 
+    /* Allocate mama_level entitlement subscription object and set implementation struct pointer. */
+    status = mamaEntitlementBridge_createSubscription(&mamaEntSub);
+    if (MAMA_STATUS_OK != status)
+    {
+        free(noentSubHandle); /* Tidy up allocated but unasigned subscription object. */
+        return status;
+    }
+
+    mamaEntSub->mImpl               = noentSubHandle;
+    mamaEntSub->mEntitlementBridge  = mamaEntBridge;
+
+    /* Add mama level struct to subscription SubjectContext. */
     ctx->mEntitlementBridge = mamaEntBridge;
     ctx->mEntitlementSubscription = mamaEntSub;
 
@@ -84,7 +98,7 @@ noentEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, S
 }
 
 mama_status
-noentEntitlementBridge_destroySubscription(entitlementSubscriptionHandle* handle)
+noentEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle)
 {
     mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_destroySubscription():");
 
@@ -100,16 +114,6 @@ noentEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int 
 int
 noentEntitlementBridge_isAllowed(entitlementSubscriptionHandle* handle, char* subject)
 {
-    char* src = strtok (subject,".");
-    char* sym = strtok (NULL,".");
-
     mama_log(MAMA_LOG_LEVEL_FINEST, "noentEntitlementBridge_isAllowed(%s)",subject);
-
-    if (strncmp(sym, "failent", strlen("failent")))
-    {
-        return 1;
-    }
-
     return 0;
 }
-

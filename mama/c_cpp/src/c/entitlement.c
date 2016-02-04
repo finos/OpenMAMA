@@ -28,6 +28,8 @@ mama_status
 mamaEntitlementBridge_createSubscription(mamaEntitlementSubscription* subscription)
 {
     mamaEntitlementSubscription sub = malloc(sizeof(mamaEntitlementSubscription_));
+    if (NULL == sub)
+    	return MAMA_STATUS_NOMEM;
     *subscription = sub;
     return MAMA_STATUS_OK;
 }
@@ -46,8 +48,10 @@ mamaEntitlementBridge_destroySubscription(mamaEntitlementSubscription subscripti
 mama_status
 mamaEntitlementBridge_create(mamaEntitlementBridge* bridge)
 {
-    mamaEntitlementBridge impl = 0; 
+    mamaEntitlementBridge impl = 0;
     impl = malloc(sizeof(mamaEntitlementBridge_));
+    if (NULL == impl)
+    	return MAMA_STATUS_NOMEM;
 
     *bridge = impl;
     return MAMA_STATUS_OK;
