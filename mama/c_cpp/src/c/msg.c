@@ -717,6 +717,8 @@ mamaMsg_copy (mamaMsg src, mamaMsg* copy)
 
     if (!source) return MAMA_STATUS_NULL_ARG;
 
+    if (src == *copy) return MAMA_STATUS_INVALID_ARG;
+
     if (source->mPayloadBridge)
     {
         msgPayload payload = NULL;

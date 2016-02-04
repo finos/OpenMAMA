@@ -1025,6 +1025,12 @@ TEST_F(MsgCopyTests, CopyNullMsg)
     ASSERT_EQ (mStatus, MAMA_STATUS_NULL_ARG);
 }
 
+TEST_F(MsgCopyTests, CopySameMsg)
+{
+    mStatus = mamaMsg_copy (mMsg, &mMsg);
+    ASSERT_EQ (mStatus, MAMA_STATUS_INVALID_ARG);
+}
+
 TEST_F(MsgCopyTests, DISABLED_CopyNullCopy)
 {
     /* This cores as we always dereference copy */
