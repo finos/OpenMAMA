@@ -76,6 +76,11 @@ typedef void (MAMACALLTYPE *mamaLogCb2) (MamaLogLevel level, const char *message
 /**
  * @brief Definition of a callback
  */
+typedef void (MAMACALLTYPE *mamaLogCb3)  (const char* prefix, const char *format, va_list ap);
+
+/**
+ * @brief Definition of a callback
+ */
 typedef void (*logSizeCbType) (void);
 
 /**
@@ -129,6 +134,22 @@ MAMAExpDLL
 extern void MAMACALLTYPE
 mama_forceLogDefault (MamaLogLevel level, const char *format, va_list ap);
 
+
+/**
+ * @brief Forced Log Prefix Function
+ *
+ * @details The default function used within the API for the mama_forceLogWithPrefix function
+ * pointer.  If no logfile is available logging it to stderr.
+ *
+ * @param[in] prefix The custom prefix (log level to use as a string)
+ * @param[in] format The format of log message.
+ * @param[in] ap Variable argument list.
+ */
+MAMAExpDLL
+extern void MAMACALLTYPE
+mama_forceLogPrefixDefault (const char* prefix,
+                            const char* format,
+                            va_list ap);
 
 /**
  * The current log level within the API
@@ -320,6 +341,22 @@ mama_setLogCallback2 (mamaLogCb2 callback);
 MAMAExpDLL
 extern mama_status
 mama_setForceLogCallback (mamaLogCb callback);
+
+/**
+ * @brief Set the callback to be used for mama logging. If not set then
+ * mama_ForceLogPrefixDefault will be used.
+ *
+ * @param[in] callback Callback to be set.
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_NULL_ARG
+ *              MAMA_STATUS_PLATFORM
+ *              MAMA_STATUS_OK
+ */
+MAMAExpDLL
+extern mama_status
+mama_setForceLogPrefixCallback (mamaLogCb3 callback);
+
 
 /**
  * @brief Sets the log level for Mama.
