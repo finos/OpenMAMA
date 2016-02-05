@@ -386,6 +386,7 @@ namespace Wombat
 		{
             initGetVersionWrapper();
             MamaWrapper.CheckResultCode (NativeMethods.mama_openWithProperties (path, filename));
+            Interlocked.Increment(ref mMamaopen);
 		}
 
 		/// <summary>
