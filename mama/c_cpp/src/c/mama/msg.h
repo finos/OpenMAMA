@@ -2049,8 +2049,8 @@ mamaMsg_getNumFields(
     mama_size_t*   numFields);
 
 /**
- * Return a const char * representation the message. Must call
- * mamaMsg_freeString() to free memory allocated for string.
+ * Return a const char * representation the message. Memory is owned by the
+ * underlying bridge.
  *
  * @param msg The message.
  * @return A string representation of the message.
@@ -2061,16 +2061,21 @@ mamaMsg_toString(
     const mamaMsg msg);
 
 /**
- * Free the memory allocated by mamaMsg_toString.
+ * Free the memory allocated by mamaMsg_toString [deprecated].
  *
  * @param msg The message.
  * @param msgString The string allocated by mamaMsg_toString
  */
+
+MAMAIgnoreDeprecatedOpen
+MAMAExpDeprecatedDLL(
+        "mamaMsg_freeString has been deprecated - memory now managed by bridge")
 MAMAExpDLL
 extern void
 mamaMsg_freeString(
     const mamaMsg  msg,
     const char*    msgString );
+MAMAIgnoreDeprecatedClose
 
 /**
  * Get the entitle code for this message. The result defaults to 0 (no

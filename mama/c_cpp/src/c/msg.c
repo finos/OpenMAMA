@@ -2655,11 +2655,13 @@ mamaMsg_toString (const mamaMsg msg)
     return NULL;
 }
 
+MAMAIgnoreDeprecatedOpen
 void
 mamaMsg_freeString (const mamaMsg msg,  const char* msgString)
 {
 
 }
+MAMAIgnoreDeprecatedClose
 
 mama_status
 mamaMsg_iterateFields (const mamaMsg            msg,
