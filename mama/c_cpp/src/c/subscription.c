@@ -574,7 +574,7 @@ mamaSubscription_setupBasic (
     setSubscInfo (self, transport, root, source, symbol);
 
     /*Create the publisher - needed for the image request object */
-    if (MAMA_STATUS_OK!=(status=mamaPublisher_createByIndex (
+    if (MAMA_STATUS_OK!=(status=mamaPublisherImpl_createByIndex (
                                   &self->mSubscPublisher,
                                    self->mTransport,
                                    self->mTransportIndex,

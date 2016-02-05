@@ -86,13 +86,11 @@ listenerMsgCallback_create( listenerMsgCallback *result,
     msgCallback* callback = (msgCallback*)calloc( 1, sizeof( msgCallback ) );
 
 #ifdef WITH_ENTITLEMENTS  /* No listener creation without a client. */
-	{
     mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
     if( gEntitlementClient == 0 && !(mamaBridgeImpl_areEntitlementsDeferred(bridge)))
     {
         return MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
     }
-	}
 #endif  /* WITH_ENTITLEMENTS */
 
     if( callback == NULL )
@@ -184,15 +182,7 @@ static void processPointToPointMessage (msgCallback*    callback,
         mamaSubscription_deactivate (self->mSubscription);
     }
 
-    if (!ctx->mDqContext.mDoNotForward)
-    {
-        mamaSubscription_forwardMsg (self->mSubscription, msg);
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "Subscription for %s not forwarded as message seqnum is before seqnum expecting", userSymbol);
-    }
+    mamaSubscription_forwardMsg (self->mSubscription, msg);
 
     /*
        NB!!!  - can't destroy a subscription after an initial!!!!!
@@ -644,8 +634,8 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
         return 1;
     }
 
-	{
     mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(self->mSubscription);
+
     if (bridge && (mamaBridgeImpl_areEntitlementsDeferred(bridge)))
     {
         mama_log (MAMA_LOG_LEVEL_FINER,
@@ -654,7 +644,6 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
         ctx->mEntitlementAlreadyVerified = 1;
         return 1;
     }
-	}
 
     if( MAMA_STATUS_OK == mamaMsg_getEntitleCode( msg,
                                                   &value ) )

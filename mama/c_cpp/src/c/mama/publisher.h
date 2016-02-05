@@ -217,8 +217,8 @@ mamaPublisher_sendFromInboxWithThrottle (mamaPublisher               publisher,
 MAMAExpDLL
 extern mama_status
 mamaPublisher_sendFromInbox (mamaPublisher publisher,
-                             mamaInbox inbox,
-                             mamaMsg msg);
+                             mamaInbox     inbox,
+                             mamaMsg       msg);
 
 /**
  * Send a reply in response to a request to an inbox.
@@ -232,8 +232,8 @@ mamaPublisher_sendFromInbox (mamaPublisher publisher,
 MAMAExpDLL
 extern mama_status
 mamaPublisher_sendReplyToInboxHandle (mamaPublisher publisher,
-                                      mamaMsgReply replyAddress,
-                                      mamaMsg reply);
+                                      mamaMsgReply  replyAddress,
+                                      mamaMsg       reply);
 
 
 /**
@@ -247,8 +247,8 @@ mamaPublisher_sendReplyToInboxHandle (mamaPublisher publisher,
 MAMAExpDLL
 extern mama_status
 mamaPublisher_sendReplyToInbox (mamaPublisher publisher,
-                                mamaMsg request,
-                                mamaMsg reply);
+                                mamaMsg       request,
+                                mamaMsg       reply);
 
 /**
  * Destroy the publisher.
@@ -312,12 +312,12 @@ mamaPublisherCallbacks_deallocate (mamaPublisherCallbacks* cb);
  */
 MAMAExpDLL
 extern mama_status
-mamaPublisher_getUserCallbacks (mamaPublisher publisher,
+mamaPublisher_getUserCallbacks (mamaPublisher           publisher,
                                 mamaPublisherCallbacks* cb);
 
 MAMAExpDLL
 extern mama_status
-mamaPublisher_getState (mamaPublisher publisher,
+mamaPublisher_getState (mamaPublisher       publisher,
                         mamaPublisherState* state);
 
 MAMAExpDLL

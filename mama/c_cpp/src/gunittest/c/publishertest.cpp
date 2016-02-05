@@ -240,7 +240,7 @@ TEST_F (MamaPublisherTestC, Send)
  *
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaPublisherTestC, SendWithCallbacks)
+TEST_F (MamaPublisherTestC, EventSendWithCallbacks)
 {
     mamaPublisher    publisher     = NULL;
     mamaTransport    tport         = NULL;
@@ -311,7 +311,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacks)
  *
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaPublisherTestC, SendWithCallbacksBadSource)
+TEST_F (MamaPublisherTestC, EventSendWithCallbacksBadSource)
 {
     mamaPublisher    publisher = NULL;
     mamaTransport    tport     = NULL;
@@ -383,7 +383,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksBadSource)
  *
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaPublisherTestC, SendWithCallbacksNoErrorCallback)
+TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoErrorCallback)
 {
     mamaPublisher    publisher = NULL;
     mamaTransport    tport     = NULL;
@@ -455,7 +455,7 @@ TEST_F (MamaPublisherTestC, SendWithCallbacksNoErrorCallback)
  *
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaPublisherTestC, SendWithCallbacksNoCallbacks)
+TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoCallbacks)
 {
     mamaPublisher    publisher = NULL;
     mamaTransport    tport     = NULL;

@@ -26,26 +26,26 @@
 
 namespace Wombat 
 {
-	class MAMACPPExpDLL MamaPublisherCallback
-	{
-	public:
-		MamaPublisherCallback () {}
-		virtual ~MamaPublisherCallback () {}
-		
-		virtual void onCreate (
-    		MamaPublisher* publisher,
-    		void* closure) = 0;
+    class MAMACPPExpDLL MamaPublisherCallback
+    {
+    public:
+        MamaPublisherCallback () {}
+        virtual ~MamaPublisherCallback () {}
+        
+        virtual void onCreate (
+            MamaPublisher* publisher,
+            void* closure) = 0;
 
-		virtual void onDestroy (
-    		MamaPublisher* publisher,
-    		void* closure) = 0;
+        virtual void onDestroy (
+            MamaPublisher* publisher,
+            void* closure) = 0;
 
-		virtual void onError (
-    		MamaPublisher* publisher,
+        virtual void onError (
+            MamaPublisher* publisher,
             const MamaStatus& status,
-    		const char* info,
-    		void* closure) = 0;
-	};
+            const char* info,
+            void* closure) = 0;
+    };
 
 } // namespace Wombat
 #endif // MAMA_PUBLISHERCALLBACK_CPP_H__

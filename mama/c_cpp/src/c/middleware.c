@@ -79,13 +79,7 @@ mamaMiddleware_convertFromString (const char*  str)
 
     if (strcasecmp (str, "umdskomodo") == 0)
         return MAMA_MIDDLEWARE_UMDSKOMODO;
-    
-    if (strcasecmp (str, "hms") == 0)
-        return MAMA_MIDDLEWARE_HMS;
-    
-    if (strcasecmp (str, "reflect") == 0)
-        return MAMA_MIDDLEWARE_REFLECT;
-    
+
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
 
@@ -117,7 +111,7 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "ibmwfo";
         case MAMA_MIDDLEWARE_ACTIV:
             return "activ";
-        case MAMA_MIDDLEWARE_TICK42RMDS:
+	case MAMA_MIDDLEWARE_TICK42RMDS:
             return "tick42rmds";
         case MAMA_MIDDLEWARE_UMS:
             return "ums";
@@ -129,10 +123,6 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "lbmkomodo";
         case MAMA_MIDDLEWARE_UMDSKOMODO:
             return "umdskomodo";
-        case MAMA_MIDDLEWARE_HMS:
-            return "hms";        
-        case MAMA_MIDDLEWARE_REFLECT:
-            return "reflect";        
         default:
             return "unknown";
     }

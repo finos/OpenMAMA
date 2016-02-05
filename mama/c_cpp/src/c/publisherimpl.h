@@ -30,22 +30,22 @@ extern "C" {
 
 MAMAExpDLL
 extern mama_status
-mamaPublisher_createByIndex (mamaPublisher*    result,
-                             mamaTransport     tport,
-                             int               tportIndex,
-                             mamaQueue         queue,
-                             mamaPublisherCallbacks* cb,
-                             const char*       symbol,
-                             const char*       source,
-                             const char*       root,
-                             void*             closure);
+mamaPublisherImpl_createByIndex (mamaPublisher*    result,
+                                 mamaTransport     tport,
+                                 int               tportIndex,
+                                 mamaQueue         queue,
+                                 mamaPublisherCallbacks* cb,
+                                 const char*       symbol,
+                                 const char*       source,
+                                 const char*       root,
+                                 void*             closure);
 
 MAMAExpDLL
 extern mama_status
-mamaPublisher_sendFromInboxByIndex (mamaPublisher publisher,
-                                    int           tportIndex,
-                                    mamaInbox     inbox,
-                                    mamaMsg       msg);
+mamaPublisherImpl_sendFromInboxByIndex (mamaPublisher publisher,
+                                        int           tportIndex,
+                                        mamaInbox     inbox,
+                                        mamaMsg       msg);
 
 MAMAExpDLL
 extern mama_status

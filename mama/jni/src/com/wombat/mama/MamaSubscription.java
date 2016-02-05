@@ -81,23 +81,23 @@ public class MamaSubscription
      * @throws Throwable A MamaException will be thrown if the underlying
      *                   subscription could not be de-allocated.
      */
-    // protected void finalize() throws Throwable
-    // {
-        // try 
-        // {
-            // // Only deallocate the subscription if the native pointer is valid
-            // if(subscriptionPointer_i != 0)
-            // {
-                // deallocate();
-            // }
-        // }
-// 
-        // finally
-        // {
-            // // Call the base class finalizer
-            // super.finalize();
-        // }
-    // }
+    protected void finalize() throws Throwable
+    {
+        try 
+        {
+            // Only deallocate the subscription if the native pointer is valid
+            if(subscriptionPointer_i != 0)
+            {
+                deallocate();
+            }
+        }
+
+        finally
+        {
+            // Call the base class finalizer
+            super.finalize();
+        }
+    }
 
     /* ************************************************** */
     /* Public Functions. */

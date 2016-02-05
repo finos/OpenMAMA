@@ -169,6 +169,9 @@ _createByIndex (mamaPublisher*              result,
     /* Set the initial state of the publisher now that the memory has been allocated. */
     mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_CREATING);
 
+    /* Create the mutex. */
+    impl->mCreateDestroyLock = wlock_create();
+
     if (MAMA_STATUS_OK!=(status=(bridgeImpl->bridgeMamaPublisherCreateByIndex (
                                     &impl->mMamaPublisherBridgeImpl,
                                     tport,
@@ -178,9 +181,7 @@ _createByIndex (mamaPublisher*              result,
                                     root,
                                     (mamaPublisher)impl)))) 
     {
-        if (NULL != impl->mRoot) free((void*) impl->mRoot);
-        if (NULL != impl->mSource) free((void*) impl->mSource);
-        if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
+        mamaPublisherImpl_cleanup (impl);
         free (impl);
         return status;
     }
@@ -199,18 +200,13 @@ _createByIndex (mamaPublisher*              result,
                                 impl->mClosure
 ))))
     {
-        if (NULL != impl->mRoot) free((void*) impl->mRoot);
-        if (NULL != impl->mSource) free((void*) impl->mSource);
-        if (NULL != impl->mSymbol) free((void*) impl->mSymbol);
+        mamaPublisherImpl_cleanup (impl);
         mamaPublisherCallbacks_deallocate(cb);
         list_destroy (impl->mPendingActions, NULL, NULL);
         free (impl);
         return status;
     }
     mamaPublisherCallbacks_deallocate(cb);
-
-    /* Create the mutex. */
-    impl->mCreateDestroyLock = wlock_create();
 
     /* Set the state of the publisher now that the bridge's work is done. */
     mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_LIVE);
@@ -228,15 +224,15 @@ _createByIndex (mamaPublisher*              result,
 }
 
 mama_status
-mamaPublisher_createByIndex (mamaPublisher* result,
-                             mamaTransport  tport,
-                             int            tportIndex,
-                             mamaQueue      queue,
-                             mamaPublisherCallbacks* cb,
-                             const char*    symbol,
-                             const char*    source,
-                             const char*    root,
-                             void*          closure)
+mamaPublisherImpl_createByIndex (mamaPublisher* result,
+                                 mamaTransport  tport,
+                                 int            tportIndex,
+                                 mamaQueue      queue,
+                                 mamaPublisherCallbacks* cb,
+                                 const char*    symbol,
+                                 const char*    source,
+                                 const char*    root,
+                                 void*          closure)
 {
     return _createByIndex(result,
                           tport,
@@ -256,15 +252,15 @@ mamaPublisher_create (mamaPublisher*    result,
                       const char*       source,
                       const char*       root)
 {
-    return mamaPublisher_createByIndex (result,
-                                        tport,
-                                        0,
-                                        NULL,
-                                        NULL,
-                                        symbol,
-                                        source,
-                                        root,
-                                        NULL);
+    return mamaPublisherImpl_createByIndex (result,
+                                            tport,
+                                            0,
+                                            NULL,
+                                            NULL,
+                                            symbol,
+                                            source,
+                                            root,
+                                            NULL);
 }
 
 mama_status
@@ -278,15 +274,15 @@ mamaPublisher_createWithCallbacks (
                       mamaPublisherCallbacks* cb,
                       void*             closure)
 {
-    return mamaPublisher_createByIndex (result,
-                                        tport,
-                                        0,
-                                        queue,
-                                        cb,
-                                        symbol,
-                                        source,
-                                        root,
-                                        closure);
+    return mamaPublisherImpl_createByIndex (result,
+                                            tport,
+                                            0,
+                                            queue,
+                                            cb,
+                                            symbol,
+                                            source,
+                                            root,
+                                            closure);
 }
 
 mama_status
@@ -420,10 +416,10 @@ mamaPublisher_sendFromInbox (mamaPublisher  publisher,
 }
 
 mama_status
-mamaPublisher_sendFromInboxByIndex (mamaPublisher  publisher,
-                                    int            tportIndex,
-                                    mamaInbox      inbox,
-                                    mamaMsg        msg)
+mamaPublisherImpl_sendFromInboxByIndex (mamaPublisher  publisher,
+                                        int            tportIndex,
+                                        mamaInbox      inbox,
+                                        mamaMsg        msg)
 {
     mamaPublisherImpl* impl     = (mamaPublisherImpl*)publisher;
     mama_status        status; 
@@ -861,7 +857,7 @@ static void MAMACALLTYPE mamaPublisher_onPublisherDestroyed(mamaPublisher publis
     if (mama_getLogLevel() >= MAMA_LOG_LEVEL_FINEST)
     {
         const char* source = "(none)";
-        const char* symbol = "(none)";;
+        const char* symbol = "(none)";
         mamaPublisher_getSource((mamaPublisher) impl, &source);
         mamaPublisher_getSymbol((mamaPublisher) impl, &symbol);
         mama_log(MAMA_LOG_LEVEL_FINEST, "mamaPublisher_onPublisherDestroyed: %p %s.%s is at state %s.",
@@ -958,7 +954,8 @@ static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
                     (impl->mMamaPublisherBridgeImpl)))
         {
            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaPublisher_destroy(): "
-                     "Could not destroy publisher bridge.");
+                     "Could not destroy publisher bridge - "
+                     mamaStatus_stringForStatus (status));
         }
     }
 
