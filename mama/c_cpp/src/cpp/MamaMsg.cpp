@@ -2039,10 +2039,6 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
 
     const char* MamaMsg::toString () const
     {
-        if (mString != NULL )
-        {
-            mamaMsg_freeString (mMsg, mString);
-        }
         mString = mamaMsg_toString (mMsg);
 
         return mString;
@@ -2373,12 +2369,6 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         {
             mamaTry (mamaMsg_destroy (mMsg));
             mDestroy = false;
-        }
-
-        if (mString)
-        {
-            mamaMsg_freeString (mMsg, mString);
-            mString = NULL;
         }
 
         if (mVectorMsg)

@@ -2056,7 +2056,6 @@ mamaSubscription_processTportMsg( mamaSubscription subscription,
                 userSymbolFormatted, 
                 text, 
                 subscription);
-        mamaMsg_freeString (msg, text);
     }
 
 #ifdef WITH_ENTITLEMENTS
@@ -2110,7 +2109,6 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
                 userSymbolFormatted, 
                 text, 
                 subscription);
-        mamaMsg_freeString (msg, text);
     }
 
 #ifdef WITH_ENTITLEMENTS
@@ -2163,7 +2161,6 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
                 userSymbolFormatted, 
                 text, 
                 subscription);
-        mamaMsg_freeString (msg, text);
     }
 
     if (callback != NULL) /* TYPE is a MARKETDATA type */

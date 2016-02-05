@@ -164,7 +164,6 @@ static void processPointToPointMessage (msgCallback*    callback,
         {
             const char *msgString = mamaMsg_toString( msg );
             mama_log (MAMA_LOG_LEVEL_FINE, "Received Initial: (%s) %s", userSymbol, msgString);
-            mamaMsg_freeString( msg, msgString );
         }
         if (!mamaSubscription_getAcceptMultipleInitials (self->mSubscription))
         {

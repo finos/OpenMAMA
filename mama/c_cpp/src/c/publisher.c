@@ -576,7 +576,6 @@ mamaPublisher_sendFromInboxWithThrottle (mamaPublisher               publisher,
     {
         const char* msgString = mamaMsg_toString (msg);
         mama_log (MAMA_LOG_LEVEL_FINER, "INBOX REQUEST (throttled): %s", msgString);
-        mamaMsg_freeString (msg, msgString);
     }
 
     c2->mPublisher            = publisher;

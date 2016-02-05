@@ -4993,7 +4993,6 @@ namespace Wombat
             string strRet =  Marshal.PtrToStringAnsi(NativeMethods.mamaMsg_toString(nativeHandle));
             string val;
             val = string.Copy(strRet);
-			int code = NativeMethods.mamaMsg_freeString(nativeHandle, strRet);
             return val;
         }
 
@@ -5728,8 +5727,6 @@ namespace Wombat
 				ref int numFields);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr mamaMsg_toString(IntPtr mamaMsg);
-            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_freeString(IntPtr mamaMsg,string msgString );
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_getEntitleCode(IntPtr mamaMsg,
 				ref int code);
