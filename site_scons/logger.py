@@ -1,6 +1,10 @@
 import subprocess,sys,os
 from time import gmtime, strftime,sleep,time
 
+import sys
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 class Logger:
     def __init__(self, opts):
         self.opts = opts

@@ -667,10 +667,10 @@ requestAction (void* request,
               userSymbolFormatted, request, impl->mReplyTimer);
 
     mamaSubscription_getTransportIndex (impl->mSubscription, &tportIndex);
-    mamaPublisher_sendFromInboxByIndex (impl->mPublisher,
-                                        tportIndex,
-                                        impl->mP2PListener,
-                                        impl->mMsg);
+    mamaPublisherImpl_sendFromInboxByIndex (impl->mPublisher,
+                                            tportIndex,
+                                            impl->mP2PListener,
+                                            impl->mMsg);
     wlock_unlock (impl->mLock);
     wombatThrottle_unlock (impl->mThrottle);
 }

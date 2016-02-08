@@ -1,4 +1,4 @@
- /* $Id$
+/* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.
@@ -18,15 +18,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-#ifndef MAINUNITTESTCPP_H_
-#define MAINUNITTESTCPP_H_
 
+package com.wombat.mama;
 
-const char* getMiddleware(void);
-const char* getTransport(void);
-const char* getSource(void);
-const char* getSymbol(void);
-const char* getTopic(void);
-const char* getBadSource(void);
+/** Callback for publisher events.
+ */
+public interface MamaPublisherCallback
+{
+	public void onCreate(MamaPublisher pub);
+	public void onDestroy(MamaPublisher pub);
+	public void onError(MamaPublisher pub, short status, String info);
+}
 
-#endif /* MAINUNITTESTC_H_ */

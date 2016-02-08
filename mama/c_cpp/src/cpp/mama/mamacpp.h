@@ -37,6 +37,7 @@
 #include <mama/MamaSubscriptionCallback.h>
 #include <mama/MamaTransport.h>
 #include <mama/MamaPublisher.h>
+#include <mama/MamaPublisherCallback.h>
 #include <mama/MamaInboxCallback.h>
 #include <mama/MamaInbox.h>
 #include <mama/MamaQueue.h>

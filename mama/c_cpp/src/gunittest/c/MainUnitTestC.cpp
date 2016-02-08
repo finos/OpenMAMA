@@ -40,12 +40,14 @@
 static string version     ("APPNAMESTR:  Version " VERSIONSTR
                            "  Date " DATESTR "  Build " BUILDSTR);
 
-
-static const char*       gMiddleware  = "wmw";
-static const char*       gPayload     = "wmsg";
-static char              gPayloadId   = 'W';
-static const char*       gTransport   = "tport";
+static const char*       gMiddleware = "wmw";
+static const char*       gPayload    = "wmsg";
+static char              gPayloadId  = 'W';
+static const char*       gTransport  = "tport";
 static gtest_strictness  gStrictness  = OPTIONAL;
+static const char*       gSymbol     = "SYM";
+static const char*       gSource     = "SRC";
+static const char*       gBadSource  = "BADSRC";
 
 
 const char* getMiddleware (void)
@@ -61,6 +63,21 @@ const char* getPayload (void)
 const char* getTransport (void)
 {
     return gTransport;
+}
+
+const char* getSymbol (void)
+{
+    return gSymbol;
+}
+
+const char* getSource (void)
+{
+    return gSource;
+}
+
+const char* getBadSource (void)
+{
+    return gBadSource;
 }
 
 const char getPayloadId (void)
@@ -83,6 +100,26 @@ static void parseCommandLine (int argc, char** argv)
         else if (strcmp ("-p", argv[i]) == 0)
         {
             gPayload = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-tport", argv[i]) == 0)
+        {
+            gTransport = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-S", argv[i]) == 0)
+        {
+            gSource = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-badsource", argv[i]) == 0)
+        {
+            gBadSource = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-s", argv[i]) == 0)
+        {
+            gSymbol = argv[i+1];
             i += 2;
         }
         else if (strcmp ("-i", argv[i]) == 0)

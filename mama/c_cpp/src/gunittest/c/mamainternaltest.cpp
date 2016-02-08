@@ -309,7 +309,6 @@ TEST_F (MamaInternalTestC, getPayloadCharFromMessage)
     ASSERT_EQ (MAMA_STATUS_OK, mama_close ());
 }
 
-
 TEST_F (MamaInternalTestC, getPayloadCharNullPayloadName)
 {
     char payloadChar = '\0';

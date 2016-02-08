@@ -128,7 +128,7 @@ MAMAExpDLL
 extern void
 mamaTransportImpl_disconnectNoStale (mamaTransport      transport,
                                      mamaTransportEvent event,
-									 const void*        platformInfo,
+                                     const void*        platformInfo,
                                      const void*        connectionInfo);
 
 MAMAExpDLL
@@ -155,7 +155,7 @@ mamaTransportImpl_resetRefreshForListener (mamaTransport tport, void *handle);
 MAMAExpDLL
 extern mama_status
 mamaTransportImpl_getTopicsAndTypesForSource (mamaTransport tport,
-											  int transportIndex,
+                                              int transportIndex,
                                               const char*   source,
                                               const char*** topics,
                                               mama_i32_t**  types,
@@ -249,9 +249,19 @@ mamaTransport_initStats (mamaTransport transport);
  * @param(in) transport The transport.
  * @param(in) event The transport event that has occured.
  * @param(in) cause Cause of the event.
- * @param(in) Additional bridge specific information that will be passed to all listeners.
+ * @param(in) platformInfo Additional bridge specific information that will be passed to all listeners.
  */
 MAMAExpDLL extern void mamaTransportImpl_invokeTransportCallback(mamaTransport transport, mamaTransportEvent event, short cause, const void *platformInfo);
+
+/**
+ * This function will invoke the transport topic callback with appropriate values.
+ * @param(in) transport The transport.
+ * @param(in) event The transport topic event that has occured.
+ * @param(in) topic The topic for the event.
+ * @param(in) platformInfo Additional bridge specific information that will be passed to all listeners.
+ * @param(in) closure Closure supplied when cb was set.
+ */
+MAMAExpDLL extern void mamaTransportImpl_invokeTransportTopicCallback(mamaTransport transport, mamaTransportTopicEvent event, const char* topic, const void *platformInfo);
 
 mama_status mamaTransport_addPublisher(mamaTransport transport, mamaPublisher publisher, void **result);
 mama_status mamaTransport_removePublisher(mamaTransport transport, void *handle);
@@ -280,7 +290,7 @@ mama_status mamaTransportImpl_allocateInternalTransport(mamaTransport *transport
 /**
  * This function will set the cause and platform info for the transport.
  *
- * @param[in] transport	The transport.
+ * @param[in] transport    The transport.
  * @param[in] cause The cause.
  * @param[in] platformInfo Bridge specific info.
  *
@@ -291,6 +301,7 @@ mamaTransportImpl_setAdvisoryCauseAndPlatformInfo(
         mamaTransport transport, 
         short cause, 
         const void *platformInfo);
+
 /**
  * Disconnect a client with the specified IP Address and port. This information
  * may be retrieved from a mamaConnection object or out of band.

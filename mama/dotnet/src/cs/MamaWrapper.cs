@@ -74,7 +74,7 @@ namespace Wombat
 		/// The actual implementation of Dispose - called by both the Dispose method and the finalizer.
 		/// </summary>
 		/// <param name="disposing">true if the object is being disposed (false if being finalized)</param>
-		protected virtual void Dispose(bool disposing)
+		protected virtual void Dispose(bool disposing, bool destroyNativeHandle = true)
 		{
             MamaStatus.mamaStatus status = MamaStatus.mamaStatus.MAMA_STATUS_OK;
 			if (disposing)
@@ -110,7 +110,10 @@ namespace Wombat
 				}
 				finally
 				{
-					nativeHandle = IntPtr.Zero;
+                    if (destroyNativeHandle)
+                    {
+                        nativeHandle = IntPtr.Zero;
+                    }
 				}
 			}
 		}

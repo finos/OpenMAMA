@@ -35,11 +35,13 @@ public class Main
     private static String transportName = "";
     private static String symbol = "";
     private static String source = "";
+    private static String badsource = "BADSRC";
 
     public static String GetBridgeName() { return bridgeName; }
     public static String GetTransportName() { return transportName; }
     public static String GetSymbol() { return symbol; }
     public static String GetSource() { return source; }
+    public static String GetBadSource() { return badsource; }
 
     public static Test suite()
     {
@@ -88,6 +90,10 @@ public class Main
             {
                 source = ++i < args.length ? args[i++] : "";
             }
+            else if (args[i].equals("-badsource"))
+            {
+                badsource = ++i < args.length ? args[i++] : "";
+            }
             else
             {
                 ok = false;            // error 
@@ -105,6 +111,8 @@ public class Main
 
         // Run the test suite
         junit.textui.TestRunner.run(suite());
+
+        System.exit(0);                                                // TODO temporary - not exiting JVM - daemon thread?
     }
 }
 

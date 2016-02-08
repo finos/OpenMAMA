@@ -49,8 +49,10 @@ namespace NUnitTest
         [SetUp]
         public void Setup()
         {
+            MamaCommon.getCmdLineArgs();
+
             // Load the wmw bridge
-            m_bridge = Mama.loadBridge("lbm");
+            m_bridge = Mama.loadBridge(MamaCommon.middlewareName);
 
             // Create the mama queue
             m_queue = new MamaQueue(m_bridge);
