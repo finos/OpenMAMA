@@ -210,8 +210,6 @@ do                                                                             \
                     implIdentifier ## BridgeMamaPublisher_sendReplyToInbox;    \
     bridgeImpl->bridgeMamaPublisherSendReplyToInboxHandle =                          \
                     implIdentifier ## BridgeMamaPublisher_sendReplyToInboxHandle;    \
-    bridgeImpl->bridgeMamaPublisherSetUserCallbacks =                              \
-                    implIdentifier ## BridgeMamaPublisher_setUserCallbacks;        \
     /*inbox related function pointers*/                                        \
     bridgeImpl->bridgeMamaInboxCreate   =                                      \
                     implIdentifier ## BridgeMamaInbox_create;                  \

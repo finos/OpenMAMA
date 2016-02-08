@@ -1028,8 +1028,6 @@ qpidBridgeMamaIo_destroy (ioBridge io);
  * @param topic             MAMA topic to publish onto
  * @param source            MAMA Source name to publish onto
  * @param root              Root name (e.g. _MD)
- * @param nativeQueueHandle Reference to the qpid queue to use for this
- *                          publisher
  * @param parent            Reference to the parent MAMA publisher
  *
  * @return mama_status indicating whether the method succeeded or failed.
@@ -1043,38 +1041,7 @@ qpidBridgeMamaPublisher_createByIndex (
                                const char*       topic,
                                const char*       source,
                                const char*       root,
-                               void*             nativeQueueHandle,
                                mamaPublisher     parent);
-
-/**
- * This will create a new publisher. This is equivalent to calling
- * qpidBridgeMamaPublisher_createByIndex with a tportIndex value of 0. This
- * will create a new publisher according to the provided transport, topic,
- * source and queue.
- *
- * Requirement:             Required
- *
- * @param result            This is the qpid publisher pointer to populate upon
- *                          creation
- * @param tport             MAMA transport over which this is to be published
- * @param topic             MAMA topic to publish onto
- * @param source            MAMA Source name to publish onto
- * @param root              Root name (e.g. _MD)
- * @param nativeQueueHandle Reference to the qpid queue to use for this
- *                          publisher
- * @param parent            Reference to the parent MAMA publisher
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-MAMAExpDLL
-extern mama_status
-qpidBridgeMamaPublisher_create (publisherBridge*  result,
-                                mamaTransport     tport,
-                                const char*       topic,
-                                const char*       source,
-                                const char*       root,
-                                void*             nativeQueueHandle,
-                                mamaPublisher     parent);
 
 /**
  * This will destroy the qpid publisher and all dependencies created during its

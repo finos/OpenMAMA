@@ -953,7 +953,7 @@ static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
                     (impl->mMamaPublisherBridgeImpl)))
         {
            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaPublisher_destroy(): "
-                     "Could not destroy publisher bridge - "
+                     "Could not destroy publisher bridge - ",
                      mamaStatus_stringForStatus (status));
         }
     }
