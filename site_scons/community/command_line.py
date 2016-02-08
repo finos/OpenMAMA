@@ -24,6 +24,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        BoolVariable('with_unittest','Build with gunit tests',False),
        BoolVariable('with_testtools','Build with test tools',False),
        BoolVariable('with_examples','Build with test tools',True),
+       BoolVariable('debug', 'Build without compiler optimisation.',False),
        BoolVariable('entitled','Whether the build is entitled or unentitled',False),
        PathVariable('gtest_home','Path to Google Test home',None, PathVariable.PathIsDir),
        PathVariable('junit_home','Path to Junit home',None, PathVariable.PathIsDir),
