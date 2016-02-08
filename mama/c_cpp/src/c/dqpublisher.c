@@ -92,6 +92,7 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
 
         mamaMsg_updateU32(modifableMsg, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
                 impl->mSeqNum);
+        impl->mSeqNum++;
 
         switch (mamaMsgType_typeForMsg (modifableMsg))
         {
@@ -101,19 +102,6 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
             case MAMA_MSG_TYPE_NOT_PERMISSIONED :
             case MAMA_MSG_TYPE_NOT_FOUND : 
                 break;
-            case MAMA_MSG_TYPE_INITIAL      :
-            case MAMA_MSG_TYPE_BOOK_INITIAL :
-            case MAMA_MSG_TYPE_RECAP        :
-            case MAMA_MSG_TYPE_BOOK_RECAP   :
-                if(MAMA_STATUS_OK !=
-                        mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus))
-                {
-                    mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus);
-                }
-                break;
-
             default:
                 if(MAMA_STATUS_OK !=
                         mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
@@ -122,7 +110,6 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
                    mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
                            MamaFieldMsgStatus.mFid, impl->mStatus);
                 }
-                impl->mSeqNum++;
                 break;
         }
     }
@@ -134,7 +121,7 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
     }
 
     if (impl->mSendTime)
-        {
+    {
         mamaMsg_getTempCopy (msg, &modifableMsg);
         updateSendTime(impl, modifableMsg);
     }
