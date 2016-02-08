@@ -91,7 +91,7 @@ TEST_F (MamaInboxTestC, CreateDestroy)
 {
     mamaInbox     inbox     = NULL;
     mamaTransport tport     = NULL;
-    char          tportName[] = "test_tport";
+	const char* tportName   = getTransport();
     mamaQueue     queue     = NULL;
 
     ASSERT_EQ (MAMA_STATUS_OK,

@@ -49,10 +49,12 @@ typedef enum gtest_strictness {
 gtest_strictness getStrictness (void);
 
 const char* getMiddleware (void);
-
-const char* getPayload (void);
-
-const char getPayloadId (void);
-
 const char* getTransport (void);
+const char* getPayload (void);
+const char  getPayloadId (void);
+const char* getTransport (void);
+const char* getSource (void);
+const char* getBadSource (void);
+const char* getSymbol (void);
+
 #endif /* MAINUNITTESTC_H_ */

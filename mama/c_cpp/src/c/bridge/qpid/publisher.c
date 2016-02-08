@@ -89,7 +89,6 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
                                        const char*          topic,
                                        const char*          source,
                                        const char*          root,
-                                       void*                nativeQueueHandle,
                                        mamaPublisher        parent)
 {
     qpidPublisherBridge*    impl            = NULL;
@@ -192,25 +191,6 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
     *result = (publisherBridge) impl;
 
     return status;
-}
-
-mama_status
-qpidBridgeMamaPublisher_create (publisherBridge*    result,
-                                mamaTransport       tport,
-                                const char*         topic,
-                                const char*         source,
-                                const char*         root,
-                                void*               nativeQueueHandle,
-                                mamaPublisher       parent)
-{
-    return qpidBridgeMamaPublisher_createByIndex (result,
-                                                  tport,
-                                                  0,
-                                                  topic,
-                                                  source,
-                                                  root,
-                                                  nativeQueueHandle,
-                                                  parent);
 }
 
 mama_status

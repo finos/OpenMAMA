@@ -68,16 +68,26 @@ namespace Wombat
         switch (event)
         {
             case MAMA_TRANSPORT_TOPIC_SUBSCRIBED:
-            transport->mPimpl->myTopicEventCallback->onTopicSubscribe (transport, topic, platformInfo);
-            return;
+                transport->mPimpl->myTopicEventCallback->onTopicSubscribe (transport, topic, platformInfo);
+                return;
             case MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED:
-            transport->mPimpl->myTopicEventCallback->onTopicUnsubscribe (transport, topic, platformInfo);
-            return;
+                transport->mPimpl->myTopicEventCallback->onTopicUnsubscribe (transport, topic, platformInfo);
+                return;
+            case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:
+                transport->mPimpl->myTopicEventCallback->onTopicPublishError (transport, topic, platformInfo);
+                return;
+            case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED:
+                transport->mPimpl->myTopicEventCallback->onTopicPublishErrorNotEntitled (transport, topic, platformInfo);
+                return;
+            case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:
+                transport->mPimpl->myTopicEventCallback->onTopicPublishErrorBadSymbol (transport, topic, platformInfo);
+                return;
             default:
-            return;
+                return;
         }
     }
     }
+
     extern "C"
     {
         void MAMACALLTYPE transportCb (mamaTransport       tport,
@@ -160,6 +170,49 @@ namespace Wombat
                 fprintf(stderr, "MAMATransportTopicEventCallback onTopicUnsubscribe, EXCEPTION CAUGHT\n");
             }
         }
+
+        void onTopicPublishError (MamaTransport* tport,
+                                  const char* topic,
+                                  const void* platformInfo)
+        {
+            try
+            {
+                usercallback->onTopicPublishError(tport, topic, platformInfo);
+            }
+            catch (...)
+            {
+                fprintf(stderr, "MAMATransportTopicEventCallback onTopicPublishError, EXCEPTION CAUGHT\n");
+            }
+        }
+
+        void onTopicPublishErrorNotEntitled (MamaTransport* tport,
+                                             const char* topic,
+                                             const void* platformInfo)
+        {
+            try
+            {
+                usercallback->onTopicPublishErrorNotEntitled(tport, topic, platformInfo);
+            }
+            catch (...)
+            {
+                fprintf(stderr, "MAMATransportTopicEventCallback onTopicPublishErrorNotEntitled, EXCEPTION CAUGHT\n");
+            }
+        }
+
+        void onTopicPublishErrorBadSymbol (MamaTransport* tport,
+                                           const char* topic,
+                                           const void* platformInfo)
+        {
+            try
+            {
+                usercallback->onTopicPublishErrorBadSymbol(tport, topic, platformInfo);
+            }
+            catch (...)
+            {
+                fprintf(stderr, "MAMATransportTopicEventCallback onTopicPublishErrorBadSymbol, EXCEPTION CAUGHT\n");
+            }
+        }
+
     private:
       MamaTransportTopicEventCallback* usercallback;  
 
@@ -174,16 +227,16 @@ namespace Wombat
 
         virtual ~TransportTestCallback () {}
 
-	    void onDisconnect (MamaTransport  *tport, 
+        void onDisconnect (MamaTransport  *tport, 
                              const void*    platformInfo)
         {
             try {
-			    mUserCallback->onDisconnect (tport, platformInfo);
-		    }
-		    catch (...)
-		    {
-			    fprintf (stderr, "MamaTransportCallback onDisconnect EXCEPTION CAUGHT\n");
-		    }
+                mUserCallback->onDisconnect (tport, platformInfo);
+            }
+            catch (...)
+            {
+                fprintf (stderr, "MamaTransportCallback onDisconnect EXCEPTION CAUGHT\n");
+            }
         }
 
         void onReconnect (MamaTransport  *tport, 
@@ -299,6 +352,7 @@ namespace Wombat
     MamaTransport::MamaTransport (void) 
         : mPimpl     (new MamaTransportImpl)
         , mTransport (NULL)
+		, mQueue     (NULL)
     {
         mamaTry (mamaTransport_allocate (&mTransport));
         mPimpl->mDeleteCTransport = true;
@@ -307,6 +361,7 @@ namespace Wombat
     MamaTransport::MamaTransport (mamaTransport tport) 
         : mPimpl     (new MamaTransportImpl)
         , mTransport (tport)
+		, mQueue     (NULL)
     {
         mPimpl->mDeleteCTransport = false;
     }
@@ -315,10 +370,10 @@ namespace Wombat
     {
         if (mPimpl)
         {
-		    if ( mamaInternal_getCatchCallbackExceptions() && mPimpl->mCallback)
-		    {
-			    delete mPimpl->mCallback;
-		    }
+            if ( mamaInternal_getCatchCallbackExceptions() && mPimpl->mCallback)
+            {
+                delete mPimpl->mCallback;
+            }
             if (mPimpl->mDeleteCTransport && NULL != mTransport)
             {
                 mamaTransport_destroy (mTransport);
@@ -347,7 +402,7 @@ namespace Wombat
 
     const char* MamaTransport::getMiddleware () const
     {
-	    return (mamaTransport_getMiddleware (mTransport));
+        return (mamaTransport_getMiddleware (mTransport));
     }
 
     void MamaTransport::disableRefresh (bool disable)
@@ -415,16 +470,29 @@ namespace Wombat
         mamaTry (mamaTransport_setTransportTopicCallback (
                     mTransport, transportTopicEventCb, this));
     }
+
+    MamaQueue* MamaTransport::getTransportCallbackQueue()
+    {
+		return mQueue;
+    }
+
+    void MamaTransport::setTransportCallbackQueue(MamaQueue* queue)
+    {
+	    if (NULL == queue) return;
+		mQueue = queue;
+        mamaTry (mamaTransport_setTransportCallbackQueue (mTransport, mQueue->getCValue()));
+    }
+
     void MamaTransport::setTransportCallback (MamaTransportCallback* callback)
     {
-	    if (mamaInternal_getCatchCallbackExceptions ())
-	    {
-		    mPimpl->mCallback = new TransportTestCallback (callback);
-	    }
-	    else
-	    {
-		    mPimpl->mCallback = callback;
-	    }
+        if (mamaInternal_getCatchCallbackExceptions ())
+        {
+            mPimpl->mCallback = new TransportTestCallback (callback);
+        }
+        else
+        {
+            mPimpl->mCallback = callback;
+        }
         mamaTry (mamaTransport_setTransportCallback (
                      mTransport, transportCb, this));
     }

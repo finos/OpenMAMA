@@ -39,30 +39,57 @@ static string version     ("APPNAMESTR:  Version " VERSIONSTR
                            "  Date " DATESTR "  Build " BUILDSTR);
 
 static const char*  gMiddleware = "wmw";
+static const char*  gTransport = "test_tport";
+static const char*  gSource = "SRC";
+static const char*  gSymbol = "SYM";
+static const char*  gTopic = "MAMA_TOPIC";
+static const char*  gBadSource = "BADSRC";
 
-const char* getMiddleware (void)
-{
-    return gMiddleware;
-}
-                          
+const char* getMiddleware (void) { return gMiddleware; }
+const char* getTransport (void) { return gTransport; }
+const char* getSource (void) { return gSource; }
+const char* getSymbol (void) { return gSymbol; }
+const char* getTopic (void) { return gSymbol; }
+const char* getBadSource (void) { return gBadSource; }
+
 static void parseCommandLine (int argc, char** argv)
 {
     int i = 1;
 
     for (i = 1; i < argc;)
     {
-		if (strcmp ("-m", argv[i]) == 0)
-		{
+        if (strcmp ("-m", argv[i]) == 0)
+        {
             gMiddleware = argv[i+1];
-			i += 2;
-		}
+            i += 2;
+        }
+        else if (strcmp ("-tport", argv[i]) == 0)
+        {
+            gTransport = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-S", argv[i]) == 0)
+        {
+            gSource = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-badsource", argv[i]) == 0)
+        {
+            gBadSource = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-s", argv[i]) == 0)
+        {
+            gSymbol = argv[i+1];
+            i += 2;
+        }
         else
         {
            //unknown arg
             i++;
         }
     }
-    printf("Middleware = %s\n", gMiddleware);
+    printf("Middleware=%s transport=%s\n", gMiddleware, gTransport);
 }
 
 int main(int argc, char **argv)
@@ -71,10 +98,9 @@ int main(int argc, char **argv)
     // command line options can be google test command line options
     // e.g. --gtest_filter, --gtest_repeat, etc
     // see google test framework docs for details
-    printf("Starting...\n");
     ::testing::InitGoogleTest(&argc, argv);
     parseCommandLine(argc, argv);
-    printf("Running tests\n");    
+
     // run all tests
     return RUN_ALL_TESTS();
 

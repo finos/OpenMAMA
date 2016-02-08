@@ -31,6 +31,7 @@ namespace Wombat
     class MamaTransport;
     class MamaConnection;
     class MamaServerConnection;
+    class MamaQueue;
 
     /**
     * TransportTopicEvent callback
@@ -39,7 +40,7 @@ namespace Wombat
     class MAMACPPExpDLL MamaTransportTopicEventCallback
     {
     public:
-		virtual ~MamaTransportTopicEventCallback() 
+        virtual ~MamaTransportTopicEventCallback() 
         {
         };
         /**
@@ -56,6 +57,27 @@ namespace Wombat
         virtual void onTopicUnsubscribe (MamaTransport* transport,
                                          const char* topic,
                                          const void* platformInfo)
+        {
+            return;
+        }
+
+        virtual void onTopicPublishError (MamaTransport* transport,
+                                          const char* topic,
+                                          const void* platformInfo)
+        {
+            return;
+        }
+
+        virtual void onTopicPublishErrorNotEntitled (MamaTransport* transport,
+                                                     const char* topic,
+                                                     const void* platformInfo)
+        {
+            return;
+        }
+
+        virtual void onTopicPublishErrorBadSymbol (MamaTransport* transport,
+                                                   const char* topic,
+                                                   const void* platformInfo)
         {
             return;
         }
@@ -313,8 +335,18 @@ namespace Wombat
         /**
          * Set the transport topic callback
          */
-
         void setTransportTopicCallback (MamaTransportTopicEventCallback* callback);
+
+        /**
+         * Set the queue that the app provided for transport callbacks.
+         */
+        void getTransportCallbackQueue(MamaQueue* queue);
+
+        /**
+         * Get the queue that the app provided for transport callbacks.
+         */
+        MamaQueue* getTransportCallbackQueue();
+
         /**
          * Set the transport callback.
          */
@@ -447,6 +479,15 @@ namespace Wombat
          */
         void requestEndConflation () const;
 
+		/**
+		 * Get the queue for the transport callbacks
+		 */
+        MamaQueue* getTransportCallbackQueue() const;
+
+		/**
+		 * Set the queue for the transport callbacks
+		 */
+        void setTransportCallbackQueue(MamaQueue* queue);
 
         // Access to C types for implementation of related classes.
         mamaTransport        getCValue    ();
@@ -465,8 +506,8 @@ namespace Wombat
             int  index);
 
         /**
-	     * Disable refreshing of subscriptions on this transport.
-	     */
+         * Disable refreshing of subscriptions on this transport.
+         */
         void disableRefresh (
             bool  disable);
 
@@ -475,6 +516,7 @@ namespace Wombat
 
     private:
         mamaTransport       mTransport;
+		MamaQueue*          mQueue;        // used for transport callbacks
     };
 
 } // namespace Wombat

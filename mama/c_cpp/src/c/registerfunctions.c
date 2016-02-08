@@ -114,7 +114,6 @@ mamaInternal_registerMiddlewareFunctions (LIB_HANDLE  bridgeLib,
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (BridgeMamaIo_destroy, bridgeMamaIoDestroy, bridgeMamaIo_destroy);
 
     /* Publisher related function pointers */
-    REGISTER_BRIDGE_FUNCTION (BridgeMamaPublisher_create, bridgeMamaPublisherCreate, bridgeMamaPublisher_create);
     REGISTER_BRIDGE_FUNCTION (BridgeMamaPublisher_createByIndex, bridgeMamaPublisherCreateByIndex, bridgeMamaPublisher_createByIndex);
     REGISTER_BRIDGE_FUNCTION (BridgeMamaPublisher_destroy, bridgeMamaPublisherDestroy, bridgeMamaPublisher_destroy);
     REGISTER_BRIDGE_FUNCTION (BridgeMamaPublisher_send, bridgeMamaPublisherSend, bridgeMamaPublisher_send);
@@ -122,6 +121,7 @@ mamaInternal_registerMiddlewareFunctions (LIB_HANDLE  bridgeLib,
     REGISTER_BRIDGE_FUNCTION (BridgeMamaPublisher_sendFromInboxByIndex, bridgeMamaPublisherSendFromInboxByIndex, bridgeMamaPublisher_sendFromInboxByIndex);
     REGISTER_BRIDGE_FUNCTION (BridgeMamaPublisher_sendReplyToInbox, bridgeMamaPublisherSendReplyToInbox, bridgeMamaPublisher_sendReplyToInbox);
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (BridgeMamaPublisher_sendReplyToInboxHandle, bridgeMamaPublisherSendReplyToInboxHandle, bridgeMamaPublisher_sendReplyToInboxHandle);
+    REGISTER_OPTIONAL_BRIDGE_FUNCTION (BridgeMamaPublisher_setUserCallbacks, bridgeMamaPublisherSetUserCallbacks, bridgeMamaPublisher_setUserCallbacks);
 
     /* Inbox related function pointers */
     REGISTER_BRIDGE_FUNCTION (BridgeMamaInbox_create, bridgeMamaInboxCreate, bridgeMamaInbox_create);

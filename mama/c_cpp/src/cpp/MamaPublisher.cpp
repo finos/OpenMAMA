@@ -32,7 +32,7 @@ namespace Wombat
     class SendCompleteTestCallback : public MamaSendCompleteCallback
     {
     public:
-	    SendCompleteTestCallback(MamaSendCompleteCallback* usercallback) 
+        SendCompleteTestCallback(MamaSendCompleteCallback* usercallback) 
         {
             mcallback = usercallback;
         }
@@ -46,7 +46,7 @@ namespace Wombat
                                      MamaStatus&    status,
                                      void*          closure);
     private:
-	    MamaSendCompleteCallback* mcallback;
+        MamaSendCompleteCallback* mcallback;
     };
 
     void SendCompleteTestCallback::onSendComplete (MamaPublisher&  publisher, 
@@ -54,18 +54,18 @@ namespace Wombat
                                                    MamaStatus&     status,     
                                                    void*           closure)
     {
-	    try 
+        try 
         {
-		    mcallback->onSendComplete (publisher, 
+            mcallback->onSendComplete (publisher, 
                                        msg, 
                                        status, 
                                        closure);
-	    }
-	    catch (...)
-	    {
-		    fprintf (stderr, 
+        }
+        catch (...)
+        {
+            fprintf (stderr, 
                      "MamaSendCompleteCallback onSendComplete EXCEPTION CAUGHT\n");
-	    }
+        }
     }
 
     /* Used to store context data for the sendWithThrotle methods */
@@ -111,20 +111,20 @@ namespace Wombat
 
     MamaPublisher::~MamaPublisher (void) 
     {
-        if (mPimpl)
+        if (mPimpl && !destroyed)
         {
-            delete mPimpl;
-            mPimpl = NULL;
+            destroyed = true;
+            mPimpl->destroy();
         }
     }
 
     MamaPublisher::MamaPublisher (MamaPublisherImpl* impl)
-        : mPimpl (impl)
+        : mPimpl (impl), mCallback(NULL), destroyed(false)
     {
     }
 
     MamaPublisher::MamaPublisher (void)
-        : mPimpl (new MamaPublisherImpl (this))
+        : mPimpl (new MamaPublisherImpl (this)), mCallback(NULL), destroyed(false)
     {
     }
 
@@ -136,6 +136,24 @@ namespace Wombat
         mPimpl->create (transport, topic, source, root);
         mTransport = transport;
     }
+
+    void MamaPublisher::createWithCallbacks (MamaTransport*  transport,
+                                             MamaQueue*      queue,
+                                             MamaPublisherCallback* cb,
+                                             void*           closure,
+                                             const char*     topic,
+                                             const char*     source,
+                                             const char*     root)
+   {
+        mCallback = cb;
+        mPimpl->createWithCallbacks (transport, queue, cb, closure, topic, source, root);
+        mTransport = transport;
+   }
+
+   MamaPublisherCallback* MamaPublisher::getCallback() const
+   {
+       return mCallback;
+   }
 
     void MamaPublisher::send (MamaMsg* msg) const
     {
@@ -176,7 +194,132 @@ namespace Wombat
 
     void MamaPublisher::destroy (void)
     {
-        mPimpl->destroy ();
+       if (mPimpl && !destroyed)
+       {
+           destroyed = true;
+           mPimpl->destroy ();
+       }
+    }
+
+    void MamaPublisher::destroyEx (void)
+    {
+       if (mPimpl && !destroyed)
+       {
+           destroyed = true;
+           mPimpl->destroyEx ();
+       }
+    }
+
+   mamaPublisherState MamaPublisher::getState() const
+   {
+        return mPimpl->getState ();
+   }
+
+   const char* MamaPublisher::stringForState (mamaPublisherState state) const
+   {
+        return mPimpl->stringForState (state);
+   }
+
+   const char* MamaPublisher::getRoot () const
+   {
+        return mPimpl->getRoot ();
+   }
+
+   const char* MamaPublisher::getSource () const
+   {
+        return mPimpl->getSource ();
+   }
+
+   const char* MamaPublisher::getSymbol () const
+   {
+        return mPimpl->getSymbol ();
+   }
+
+   /* ------- IMPL ---------------------------------------------- */
+    MamaPublisherImpl::MamaPublisherImpl (void)
+            : mParent    (NULL)
+            , mPublisher (NULL)
+            , mCallback  (NULL)
+    {
+    }
+
+    MamaPublisherImpl::MamaPublisherImpl (MamaPublisher* publisher)
+           : mParent    (publisher)
+           , mPublisher (NULL)
+            , mCallback  (NULL)
+    {
+    }
+
+    MamaPublisherImpl::~MamaPublisherImpl (void)
+    {
+    }
+
+    void MamaPublisherImpl::create (MamaTransport *transport, 
+                                    const char    *topic, 
+                                    const char    *source, 
+                                    const char    *root)
+    {
+        if (mPublisher)
+        {
+            throw MamaStatus (MAMA_STATUS_INVALID_ARG);
+        }
+
+        mamaTry (mamaPublisher_create (&mPublisher, 
+                                       transport->getCValue(), 
+                                       topic, 
+                                       source,
+                                       root));
+    }
+
+    void MamaPublisherImpl::createWithCallbacks (MamaTransport* transport,
+                                                 MamaQueue*     queue,
+                                                 MamaPublisherCallback* cb,
+                                                 void*          closure,
+                                                 const char*    topic,
+                                                 const char*    source,
+                                                 const char*    root)
+    {
+        if (mPublisher)
+        {
+            throw MamaStatus (MAMA_STATUS_INVALID_ARG);
+        }
+
+        mCallback = cb;
+        mClosure = closure;
+
+        mamaPublisherCallbacks publisherCallbacks =
+        {
+           onPublisherCreate,
+           onPublisherError,
+           onPublisherDestroy
+        };
+
+        mamaTry (mamaPublisher_createWithCallbacks (&mPublisher,
+                                       transport->getCValue(),
+                                       queue->getCValue(),
+                                       topic,
+                                       source,
+                                       root,
+                                       &publisherCallbacks,
+                                       this));
+    }
+
+    void MamaPublisherImpl::destroy (void)
+    {
+        if (mPublisher)
+        {
+            mamaTry (mamaPublisher_destroy (mPublisher));
+           /* Don't use this object after this, it is freed in the onDestroy callback sequence */
+        }
+    }
+
+    void MamaPublisherImpl::destroyEx (void)
+    {
+        if (mPublisher)
+        {
+            mamaTry (mamaPublisher_destroyEx (mPublisher));
+           /* Don't use this object after this, it is freed in the onDestroy callback sequence */
+        }
     }
 
     MamaTransport* MamaPublisher::getTransport (void) const
@@ -273,30 +416,77 @@ namespace Wombat
                                                        reply->getUnderlyingMsg ()));
     }
 
-    void MamaPublisherImpl::create (MamaTransport *transport, 
-                                    const char    *topic, 
-                                    const char    *source, 
-                                    const char    *root)
-    {
-        if (mPublisher)
-        {
-            throw MamaStatus (MAMA_STATUS_INVALID_ARG);
-        }
+   mamaPublisherState MamaPublisherImpl::getState() const
+   {
+       mamaPublisherState state;
+        mamaTry (mamaPublisher_getState (mPublisher, &state));
+       return state;
+   }
 
-        mamaTry (mamaPublisher_create (&mPublisher, 
-                                       transport->getCValue(), 
-                                       topic, 
-                                       source,
-                                       root));
-    }
+   const char* MamaPublisherImpl::stringForState (mamaPublisherState state) const
+   {
+        return mamaPublisher_stringForState (state);
+   }
 
-    void MamaPublisherImpl::destroy (void)
-    {
-        if (mPublisher)
-        {
-            mamaTry (mamaPublisher_destroy (mPublisher));
-            mPublisher = NULL;
-        }
-    }
+   const char* MamaPublisherImpl::getRoot () const
+   {
+       const char* s = NULL;
+        mamaTry (mamaPublisher_getRoot (mPublisher, &s));
+       return s;
+   }
+
+   const char* MamaPublisherImpl::getSource () const
+   {
+       const char* s = NULL;
+       mamaTry (mamaPublisher_getSource (mPublisher, &s));
+       return s;
+   }
+
+   const char* MamaPublisherImpl::getSymbol () const
+   {
+       const char* s = NULL;
+       mamaTry (mamaPublisher_getSymbol (mPublisher, &s));
+       return s;
+   }
+
+   void MAMACALLTYPE MamaPublisherImpl::onPublisherCreate (mamaPublisher publisher,
+                                                            void*         closure)
+   {
+       MamaPublisherImpl* i = (MamaPublisherImpl*) closure;
+       if (NULL != i && NULL != i->mCallback)
+       {
+           i->mCallback->onCreate(i->mParent, i->mClosure);
+       }
+   }
+
+   /* Static method to get 'C' callback */
+    void MAMACALLTYPE MamaPublisherImpl::onPublisherDestroy (mamaPublisher publisher,
+                                                             void*         closure)
+   {
+       MamaPublisherImpl* i = (MamaPublisherImpl*) closure;
+       if (NULL != i && NULL != i->mCallback)
+       {
+           i->mCallback->onDestroy(i->mParent, i->mClosure);
+       }
+       if (NULL != i)
+       {
+           /* All done with impl */
+           delete i;
+       }
+   }
+
+   void MAMACALLTYPE MamaPublisherImpl::onPublisherError (mamaPublisher publisher,
+                                                   mama_status status,
+                                                   const char* info,
+                                                   void*       closure)
+   {
+       MamaPublisherImpl* i = (MamaPublisherImpl*) closure;
+       if (NULL != i && NULL != i->mCallback)
+       {
+           MamaStatus cppstatus(status);
+           i->mCallback->onError(i->mParent, cppstatus, info, i->mClosure);
+       }
+   }
 
 } // namespace Wombat
+

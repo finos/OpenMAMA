@@ -30,8 +30,6 @@
 
 MamaSubscriptionTest::MamaSubscriptionTest(void)
 {
-    //m_bridge    = NULL;
-    //m_transport = NULL;
 }
 
 MamaSubscriptionTest::~MamaSubscriptionTest(void)
@@ -44,8 +42,8 @@ MamaSubscriptionTest::~MamaSubscriptionTest(void)
 
 void MamaSubscriptionTest::SetUp(void)
 {   
-	// Save the this pointer in the member variable to get around gtest problems
-	m_this = this;
+    // Save the this pointer in the member variable to get around gtest problems
+    m_this = this;
 
     // Load the bridge
     m_bridge = Mama::loadBridge(getMiddleware());
@@ -53,18 +51,16 @@ void MamaSubscriptionTest::SetUp(void)
     // Open mama
     Mama::open();
 
-    transportName[0] = '\0';
-    strncat(transportName, "sub_", 5);
-    strncat(transportName, getMiddleware(), 4);
-
-    m_transport.create(transportName, m_bridge);
-
+    // Transport
+    transportName = getTransport();
+	m_transport = new MamaTransport();
+    m_transport->create(transportName, m_bridge);
 }
 
 void MamaSubscriptionTest::TearDown(void)
 {
     // Destroy the transport
-    //delete m_transport;
+    delete m_transport;
 
     // Close mama
     Mama::close();
@@ -167,9 +163,8 @@ public:
           */
          try
          {
-            subscription->createBasic(m_transport, queue, m_testCallback, "MAMA_TOPIC");                  
+            subscription->createBasic(m_transport, queue, m_testCallback, getTopic());                  
          }
-
          catch(MamaStatus mamaStatus)
          {
              // Check for the correct error
@@ -224,7 +219,7 @@ public:
          /* Recreate the subscription using the normal test callback meaning that mama_stop
           * will be called during the next tick.
           */
-         subscription->createBasic(m_transport, queue, m_testCallback, "MAMA_TOPIC");        
+         subscription->createBasic(m_transport, queue, m_testCallback, getTopic());        
      }
 
      virtual void onError (
@@ -381,7 +376,7 @@ public:
           */
          try
          {
-            subscription->create(m_transport, queue, m_testCallback, "CTA_3", "IBM");
+            subscription->create(m_transport, queue, m_testCallback, getSource(), getSymbol());
          }
 
          catch(MamaStatus mamaStatus)
@@ -450,7 +445,7 @@ public:
          /* Recreate the subscription using the normal test callback meaning that mama_stop
           * will be called during the next tick.
           */
-         subscription->create(m_transport, queue, m_testCallback, "CTA_3", "IBM");
+         subscription->create(m_transport, queue, m_testCallback, getSource(), getSymbol());
      }
 
      virtual void onRecapRequest (MamaSubscription*  subscription)
@@ -703,7 +698,7 @@ public:
 
         // Create a publisher
         MamaPublisher publisher;
-        publisher.create(m_transport, "MAMA_INBOUND_TOPIC");
+        publisher.create(m_transport, getTopic());
 
         // Send the inbox request
         publisher.sendFromInbox(inbox, &message);
@@ -763,7 +758,7 @@ public:
 
          // Create a publisher
          MamaPublisher publisher;
-         publisher.create(m_transport, "MAMA_INBOUND_TOPIC");
+         publisher.create(m_transport, getTopic());
 
          // Send the inbox request
          publisher.sendFromInbox(inbox, &message);         
@@ -790,11 +785,9 @@ TEST_F(MamaSubscriptionTest, DISABLED_BasicSubscription)
             MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
 
             // Create the subscription
-            //basicSubscription->createBasic(m_transport, queue, testCallback, "CTA_3.IBM");
-            basicSubscription->createBasic(&m_transport, queue, testCallback, "JGRAY");
-            //printf("subscription created for JGRAY-  start dispatching thread on default queue\n");
+            basicSubscription->createBasic(m_transport, queue, testCallback, getTopic());
+
             // Process messages until the first message is received
-            
             Mama::start(m_bridge);
 
             // Destroy the subscription
@@ -807,6 +800,7 @@ TEST_F(MamaSubscriptionTest, DISABLED_BasicSubscription)
         delete testCallback;
     }
 }
+
 #if 0
 TEST_F(MamaSubscriptionTest, BasicSubscriptionEx)
 {
@@ -920,7 +914,7 @@ TEST_F(MamaSubscriptionTest, Subscription)
             MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
 
             // Create the subscription
-            subscription->create(m_transport, queue, testCallback, "CTA_3", "IBM");
+            subscription->create(m_transport, queue, testCallback, getSource(), "IBM");
 
             // Process messages until the first message is received
             Mama::start(m_bridge);
@@ -953,7 +947,7 @@ TEST_F(MamaSubscriptionTest, Subscription)
             MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
 
             // Create the subscription
-            subscription->create(m_transport, queue, testCallback, "CTA_3", "IBM");
+            subscription->create(m_transport, queue, testCallback, getSource(), "IBM");
 
             // Process messages until the first message is received
             Mama::start(m_bridge);
@@ -986,7 +980,7 @@ TEST_F(MamaSubscriptionTest, Subscription_RecreateOnDestroy)
             MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
 
             // Create the subscription
-            subscription->create(m_transport, queue, testCallback, "CTA_3", "IBM");
+            subscription->create(m_transport, queue, testCallback, getSource(), "IBM");
 
             // Process messages until the first message is received
             Mama::start(m_bridge);
@@ -1019,7 +1013,7 @@ TEST_F(MamaSubscriptionTest, Subscription_RecreateOnMsg)
             MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
 
             // Create the subscription
-            subscription->create(m_transport, queue, testCallback, "CTA_3", "IBM");
+            subscription->create(m_transport, queue, testCallback, getSource(), "IBM");
 
             // Process messages until the first message is received
             Mama::start(m_bridge);

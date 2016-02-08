@@ -230,7 +230,6 @@ avisBridgeMamaPublisher_createByIndex (publisherBridge* result,
                                         const char*      topic,
                                         const char*      source,
                                         const char*      root,
-                                        void*            nativeQueueHandle,
                                         mamaPublisher    parent)
 {
     if (!result || !tport || !parent) return MAMA_STATUS_NULL_ARG;
@@ -258,25 +257,6 @@ avisBridgeMamaPublisher_createByIndex (publisherBridge* result,
     *result = (publisherBridge) publisher;
 
     return MAMA_STATUS_OK;
-}
-
-mama_status
-avisBridgeMamaPublisher_create (publisherBridge* result,
-                                 mamaTransport    tport,
-                                 const char*      topic,
-                                 const char*      source,
-                                 const char*      root,
-                                 void*            nativeQueueHandle,
-                                 mamaPublisher    parent)
-{
-    return avisBridgeMamaPublisher_createByIndex (result,
-                                                  tport,
-                                                  0,
-                                                  topic,
-                                                  source,
-                                                  root,
-                                                  nativeQueueHandle,
-                                                  parent);
 }
 
 /* Build up the RV subject. This should only need to be set once for the
