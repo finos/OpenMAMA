@@ -193,18 +193,22 @@ _createByIndex (mamaPublisher*              result,
     cb->onCreate = publisherCallbacks ? impl->mUserCallbacks.onCreate : NULL;
     cb->onError = publisherCallbacks ? impl->mUserCallbacks.onError : NULL;
     cb->onDestroy = mamaPublisher_onPublisherDestroyed;        /* intercept onDestroy always to track state */
-    if (MAMA_STATUS_OK!=(status=(bridgeImpl->bridgeMamaPublisherSetUserCallbacks (
-                                impl->mMamaPublisherBridgeImpl,
-                                impl->mQueue,
-                                cb,
-                                impl->mClosure
-))))
+
+    if (NULL != bridgeImpl->bridgeMamaPublisherSetUserCallbacks)
     {
-        mamaPublisherImpl_cleanup (impl);
-        mamaPublisherCallbacks_deallocate(cb);
-        list_destroy (impl->mPendingActions, NULL, NULL);
-        free (impl);
-        return status;
+        status = bridgeImpl->bridgeMamaPublisherSetUserCallbacks (
+                impl->mMamaPublisherBridgeImpl,
+                impl->mQueue,
+                cb,
+                impl->mClosure);
+        if (MAMA_STATUS_OK != status)
+        {
+            mamaPublisherImpl_cleanup (impl);
+            mamaPublisherCallbacks_deallocate(cb);
+            list_destroy (impl->mPendingActions, NULL, NULL);
+            free (impl);
+            return status;
+        }
     }
     mamaPublisherCallbacks_deallocate(cb);
 
