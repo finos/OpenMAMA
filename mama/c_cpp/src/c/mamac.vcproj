@@ -510,6 +510,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\plugin.c"
+				>
+			</File>
+			<File
 				RelativePath=".\price.c"
 				>
 			</File>
@@ -531,6 +535,10 @@
 			</File>
 			<File
 				RelativePath=".\refreshtransport.c"
+				>
+			</File>
+			<File
+				RelativePath=".\registerfunctions.c"
 				>
 			</File>
 			<File
@@ -868,6 +876,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\plugin.h"
+				>
+			</File>
+			<File
 				RelativePath=".\mama\price.h"
 				>
 			</File>
@@ -897,6 +909,10 @@
 			</File>
 			<File
 				RelativePath=".\refreshtransport.h"
+				>
+			</File>
+			<File
+				RelativePath=".\registerfunctions.h"
 				>
 			</File>
 			<File
