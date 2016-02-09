@@ -35,7 +35,6 @@ timerHeap gAvisTimerHeap;
 /*Responsible for creating the bridge impl structure*/
 void avisBridge_createImpl (mamaBridge* result)
 {
-    avisBridgeImpl* avisBridge = NULL;
     mamaBridgeImpl* impl = NULL;
     
     if (!result) return;
@@ -49,12 +48,8 @@ void avisBridge_createImpl (mamaBridge* result)
         return;
     }
 
-    avisBridge = (avisBridgeImpl*) calloc(1, sizeof(avisBridgeImpl));
-
     /*Populate the bridge impl structure with the function pointers*/
     INITIALIZE_BRIDGE (impl, avis);
-
-    mamaBridgeImpl_setClosure((mamaBridge) impl, avisBridge);
 
     *result = (mamaBridge)impl;
 }
@@ -135,7 +130,6 @@ avisBridge_close (mamaBridge bridgeImpl)
 {
     mama_status     status = MAMA_STATUS_OK;
     mamaBridgeImpl* impl   = NULL;
-    avisBridgeImpl* avisBridge = NULL;
     
     mama_log (MAMA_LOG_LEVEL_FINEST, "avisBridge_close(): Entering.");
 
@@ -151,8 +145,6 @@ avisBridge_close (mamaBridge bridgeImpl)
 
     wlock_destroy (impl->mLock);
 
-    mamaBridgeImpl_getClosure(impl, &avisBridge);
-
     mamaQueue_destroyWait(impl->mDefaultEventQueue);
 
     free (impl);
@@ -162,10 +154,6 @@ avisBridge_close (mamaBridge bridgeImpl)
     /* Stop and destroy the io thread */
 	avisBridgeMamaIoImpl_stop ();
 
-    if (avisBridge)
-    {
-        free (avisBridge);
-    }
     return status;
 }
 
@@ -174,7 +162,6 @@ mama_status
 avisBridge_start(mamaQueue defaultEventQueue)
 {
     mama_status     status     = MAMA_STATUS_OK;
-    avisBridgeImpl* avisBridge = NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_start(): Start dispatching on default event queue.");
 
@@ -186,7 +173,6 @@ mama_status
 avisBridge_stop(mamaQueue defaultEventQueue)
 {
     mama_status     status     = MAMA_STATUS_OK;
-    avisBridgeImpl* avisBridge = NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_stop(): Stopping bridge.");
 

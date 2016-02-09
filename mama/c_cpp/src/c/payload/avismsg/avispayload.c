@@ -164,11 +164,12 @@ avismsgPayload_createForTemplate (msgPayload*         msg,
 mama_status
 avismsgPayload_createFromByteBuffer(msgPayload* msg, mamaPayloadBridge bridge, const void* buffer, mama_size_t bufferLength)
 {
+    avisPayloadImpl* newPayload = NULL;
     CHECK_NULL(msg);
     CHECK_NULL(buffer);
     if (0 == bufferLength) return MAMA_STATUS_INVALID_ARG;
     
-    avisPayloadImpl* newPayload = (avisPayloadImpl*)calloc (1, sizeof(avisPayloadImpl));
+    newPayload = (avisPayloadImpl*)calloc (1, sizeof(avisPayloadImpl));
 
     if (buffer != NULL)
        newPayload->mAvisMsg=(Attributes*)buffer;
@@ -549,13 +550,15 @@ avismsgPayload_getNumFields      (const msgPayload    msg,
 const char*
 avismsgPayload_toString          (const msgPayload    msg)
 {
-    if (!msg) return NULL;
     avisPayloadImpl* impl = (avisPayloadImpl*)msg;
     mama_status status = MAMA_STATUS_OK;
-	char *strpos =	NULL;
-	bool comma = false;
-	uint16_t curlen = 1;
-	avisFieldPayload* currField = NULL;
+    char *strpos =	NULL;
+    bool comma = false;
+    uint16_t curlen = 1;
+    avisFieldPayload* currField = NULL;
+
+    if (!msg) return NULL;
+
     if (!impl->mIterator)
     {
         status = avismsgPayloadIter_create((msgPayloadIter*) &impl->mIterator, msg);
@@ -620,11 +623,11 @@ avismsgPayload_iterateFields (const msgPayload        msg,
                             mamaMsgIteratorCb       cb,
                             void*                   closure)
 {
-    CHECK_PAYLOAD (msg);
-
     avisPayloadImpl* impl = (avisPayloadImpl*)msg;
     mama_status status = MAMA_STATUS_OK;
-	avisFieldPayload* currField = NULL;
+    avisFieldPayload* currField = NULL;
+
+    CHECK_PAYLOAD (msg);
 
 	if (!parent || !cb || !field)
 	{

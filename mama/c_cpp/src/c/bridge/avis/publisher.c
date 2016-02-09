@@ -232,9 +232,11 @@ avisBridgeMamaPublisher_createByIndex (publisherBridge* result,
                                         const char*      root,
                                         mamaPublisher    parent)
 {
-    if (!result || !tport || !parent) return MAMA_STATUS_NULL_ARG;
-    Elvin* avis = getAvis(tport);
+    Elvin* avis = NULL;
     avisPublisherBridge* publisher = NULL;
+    if (!result || !tport || !parent) return MAMA_STATUS_NULL_ARG;
+
+    avis = getAvis(tport);
 
     CHECK_AVIS(avis);
 
