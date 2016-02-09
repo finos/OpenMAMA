@@ -70,6 +70,7 @@ symbolmapfile.c
 transport.c
 symbollist.c
 symbollistmember.c
+registerfunctions.c
 conflation/connection.c
 conflation/serverconnection.c
 playback/playbackcapture.c
