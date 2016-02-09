@@ -141,9 +141,9 @@ mamaDictionary_destroy (mamaDictionary dictionary)
         for (i = 0; i <= self->mMaxFid; ++i)
         {
             if (self->mDict[i] )
-	        {   
+            {   
                 mamaFieldDescriptor_destroy (self->mDict[i]);
-	        }
+            }
         }
     }
 
@@ -496,18 +496,18 @@ mamaDictionary_getDictionaryMessage (
 }
 
 mama_status
-	mamaDictionary_fillDictionaryMessage (
-	mamaDictionary dictionary,
-	mamaMsg* msg)
+    mamaDictionary_fillDictionaryMessage (
+    mamaDictionary dictionary,
+    mamaMsg* msg)
 {
-	mamaDictionaryImpl* impl = (mamaDictionaryImpl*)dictionary;
+    mamaDictionaryImpl* impl = (mamaDictionaryImpl*)dictionary;
 
-	if (!impl) return MAMA_STATUS_NULL_ARG;
-	if (!msg) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!msg) return MAMA_STATUS_INVALID_ARG;
 
-	populateMessageFromDictionary (impl, *msg);
+    populateMessageFromDictionary (impl, *msg);
 
-	return MAMA_STATUS_OK;
+    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -1114,9 +1114,10 @@ void populateMessageFromDictionary (mamaDictionaryImpl* impl,
                     ADD_VECTOR_TO_DICT (Price, price_vector);
                     break;
                 default:
+                    /* error with unknown type */
                     mama_log (MAMA_LOG_LEVEL_NORMAL, "Could not add type to "
-                              "dict message - not supported. [%s]",
-                              mamaFieldTypeToString (type));
+                              "dict message - not supported. [%s] fid=%u name=%s",
+                              mamaFieldTypeToString (type), fid, name);
                     break;
             }
         }

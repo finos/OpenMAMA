@@ -87,6 +87,7 @@ typedef struct transportImpl_
     mamaTransportCB          mTportCb;
     void*                    mTportClosure;
     mamaTransportTopicCB     mTportTopicCb;
+    mamaQueue                mQueue;
     void*                    mTportTopicClosure;
     wombatThrottle           mThrottle;
     wombatThrottle           mRecapThrottle;
@@ -116,6 +117,8 @@ typedef struct transportImpl_
     mamaQuality              mQuality;
     short                    mCause;
     void*                    mPlatformInfo;
+
+    void*                    mTopicPlatformInfo;
 
     /*Identifier for the middleware being used. Specified upon creation*/
     mamaBridgeImpl*          mBridgeImpl;
@@ -193,6 +196,7 @@ init (transportImpl* transport, int createResponder)
     self->mQuality       = MAMA_QUALITY_OK;
     self->mCause         = 0;
     self->mPlatformInfo  = NULL;
+    self->mTopicPlatformInfo = NULL;
     self->mPreInitialScheme = PRE_INITIAL_SCHEME_ON_GAP;
     self->mDQStratScheme    = DQ_SCHEME_DELIVER_ALL;
     self->mFTStratScheme    = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
@@ -753,7 +757,7 @@ mamaTransport_create (mamaTransport transport,
                 self->mLoadBalanceHandle = openSharedLib (sharedObjectName, NULL);
                 if (self->mLoadBalanceHandle)
                 {
-					void*	vp = NULL;
+                    void*    vp = NULL;
                     mama_log (MAMA_LOG_LEVEL_FINER,
                               "Using Library defined load balancing");
                     vp = loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
@@ -1724,6 +1728,20 @@ mamaTransport_throttleRemoveFromList (mamaTransport transport,
 }
 
 const char*
+mamaTransportTopicEvent_toString (mamaTransportTopicEvent event)
+{
+    switch ( event )
+    {
+        case MAMA_TRANSPORT_TOPIC_SUBSCRIBED:                 return "SUBSCRIBED";
+        case MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED:               return "UNSUBSCRIBED";
+        case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:              return "PUBLISH_ERROR";
+        case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED: return "PUBLISH_ERROR_NOT_ENTITLED";
+        case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:   return "PUBLISH_ERROR_BAD_SYMBOL";
+        default: return "UNKNOWN";
+    }
+}
+
+const char*
 mamaTransportEvent_toString (mamaTransportEvent event)
 {
     switch ( event )
@@ -1786,6 +1804,22 @@ mamaTransport_setTransportTopicCallback (mamaTransport transport,
 {
     self->mTportTopicCb      = callback;
     self->mTportTopicClosure = closure;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaTransport_setTransportCallbackQueue (mamaTransport transport,
+                                         mamaQueue queue)
+{
+    self->mQueue = queue;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaTransport_getTransportCallbackQueue (mamaTransport transport,
+                                         mamaQueue* queue)
+{
+    *queue = self->mQueue;
     return MAMA_STATUS_OK;
 }
 
@@ -2623,6 +2657,38 @@ void mamaTransportImpl_invokeTransportCallback (mamaTransport transport,
              * this point. */
             self->mCause        = 0;
             self->mPlatformInfo = NULL;
+        }
+    }
+}
+
+void mamaTransportImpl_invokeTransportTopicCallback(mamaTransport transport,
+                                                    mamaTransportTopicEvent event,
+                                                    const char* topic,
+                                                    const void *platformInfo)
+{
+    if (!self)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "mamaTransportImpl_invokeTransportTopicCallback (): "
+                "Could not process.");
+    }
+    else
+    {
+        /* Only continue if the callback is valid. */
+        if (self->mTportTopicCb != NULL)
+        {
+            /* Save the platforminfo and the cause in member variables, this
+             * avoids having to pass them around iterators when invoking
+             * callback functions on the listeners.
+             */
+            self->mTopicPlatformInfo = (void*)platformInfo;
+
+            /* Invoke the callback. */
+            self->mTportTopicCb (transport, event, topic, self->mPlatformInfo, self->mTportTopicClosure);
+
+            /* Clear the platforminfo and cause, these should not be used after
+             * this point. */
+            self->mTopicPlatformInfo = NULL;
         }
     }
 }

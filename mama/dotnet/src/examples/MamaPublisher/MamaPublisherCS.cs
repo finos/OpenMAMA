@@ -39,6 +39,7 @@ namespace Wombat
     /// [-tport name]      The transport parameters to be used from
     /// mama.properties.
     /// [-q]               Quiet mode. Suppress output.
+    /// [-pubCb]           Listen to publisher callbacks.
     /// [-c number]        How many messages to publish (default infinite).
     /// </summary>
     class EntryPoint
@@ -60,7 +61,7 @@ namespace Wombat
         }
     }
 
-    class MamaPublisherCS : MamaPublisher, MamaSubscriptionCallback, MamaTimerCallback
+    class MamaPublisherCS : MamaSubscriptionCallback, MamaTimerCallback, MamaPublisherCallback
     {
         public MamaPublisherCS(string[] args)
         {
@@ -76,26 +77,48 @@ namespace Wombat
                 return 0;
             }
 
-            Mama.logToFile(@"mama.log", MamaLogLevel.MAMA_LOG_LEVEL_FINEST);
-            bridge = Mama.loadBridge(middlewareName);
-            Mama.open();
-            MamaTransport transport = new MamaTransport();
-            MamaQueue defaultQueue = Mama.getDefaultEventQueue(bridge);
-            MamaTimer timer = new MamaTimer();
-            MamaSubscription subscription = new MamaSubscription();
-            MamaPublisherCS publisher = this;
+            Mama.logToFile(@"mama.log", MamaLogLevel.MAMA_LOG_LEVEL_NORMAL);
 
-            transport.create(transportName, bridge);
-            timer.create(defaultQueue, publisher, interval, null);
-            subscription.createBasic(transport, defaultQueue, publisher, inboundTopic);
-            publisher.create(transport, outboundTopic);
+            bridge = Mama.loadBridge(middlewareName);
+
+            Mama.open();
+
+            MamaQueue defaultQueue = Mama.getDefaultEventQueue(bridge);
             msg = new MamaMsg();
 
+            MamaTimer timer = new MamaTimer();
+            timer.create(defaultQueue, this, interval, null);
+
+			queueGroup = new MamaQueueGroup(bridge, 1);
+
+            MamaTransport transport = new MamaTransport();
+            transport.create(transportName, bridge);
+
+            MamaSubscription subscription = null;
+            if (nosub == false)
+            {
+                subscription = new MamaSubscription();
+                subscription.createBasic(transport, defaultQueue, this, inboundTopic);
+            }
+
+            publisher = new MamaPublisher();
+			if (pubCb)
+			{
+            	publisher.createWithCallbacks(transport, queueGroup.getNextQueue(), this, null, outboundTopic, null, null);
+			}
+			else
+			{
+            	publisher.create(transport, outboundTopic);
+			}
+
             Mama.start(bridge);
+
             Mama.close();
+
             return 0;
         }
 
+        // Subscription Callbacks
         public void onCreate(MamaSubscription subscription)
         {
             if (!quiet)
@@ -148,13 +171,15 @@ namespace Wombat
         {
         }
 
+        // Timer Callbacks
         public void onTimer(MamaTimer mamaTimer, object closure)
         {
             Publish(null);
-            if (messageCount_ > 0 && --messageCount_ == 0)
+            if (messageCount > 0 && --messageCount <= 0)
             {
+				publisher.destroy();
+				System.Threading.Thread.Sleep(1000);                    // let queued events process
                 Mama.stop(bridge);
-                return;
             }
         }
 
@@ -162,7 +187,30 @@ namespace Wombat
         {
         }
 
-        private int messageNumber_ = 0;
+        // Publisher Callbacks
+        public void onCreate(MamaPublisher publisher)
+        {
+            if (!quiet)
+            {
+                Console.WriteLine("onPublishCreate: " + publisher.getSymbol());
+            }
+        }
+
+        public void onError(MamaPublisher publisher,
+                     MamaStatus.mamaStatus status,
+                     string topic)
+        {
+            Console.WriteLine("onPublishError: " + topic + " " + status.ToString());
+        }
+
+        public void onDestroy(MamaPublisher publisher)
+        {
+            if (!quiet)
+            {
+                Console.WriteLine("onPublishDestroy: " + publisher.getSymbol());
+            }
+        }
+
         private void Publish(MamaMsg request)
         {
             try
@@ -172,8 +220,14 @@ namespace Wombat
                 /* Add some fields. This is not required, but illustrates how to
                 * send data.
                 */
-                msg.addI32("MessageNo", 1, messageNumber_++);
-                msg.addString("PublisherTopic", 2, outboundTopic);
+                mamaMsgType msgType;
+                if (messageNumber == 1) msgType = mamaMsgType.MAMA_MSG_TYPE_INITIAL;
+                else msgType = mamaMsgType.MAMA_MSG_TYPE_UPDATE;
+
+                msg.addI32(MamaReservedFields.MsgType.getName(), (ushort)MamaReservedFields.MsgType.getFid(), (int) msgType);
+                msg.addI32(MamaReservedFields.MsgStatus.getName(), (ushort)MamaReservedFields.MsgStatus.getFid(), (int) mamaMsgStatus.MAMA_MSG_STATUS_OK);
+                msg.addI32(MamaReservedFields.SeqNum.getName(), (ushort)MamaReservedFields.SeqNum.getFid(), (int)messageNumber);
+                msg.addString("MdFeedHost", 12, outboundTopic);
 
                 if (request != null)
                 {
@@ -181,16 +235,17 @@ namespace Wombat
                     {
                         Console.WriteLine("Publishing message to inbox.");
                     }
-                    sendReplyToInbox(request, msg);
+                    publisher.sendReplyToInbox(request, msg);
                 }
                 else
                 {
                     if (!quiet)
                     {
-                        Console.WriteLine("Publishing message to {0}.", outboundTopic);
+                        Console.WriteLine("Publishing message {0} to {1}.", messageNumber, outboundTopic);
                     }
-                    send(msg);
+                    publisher.send(msg);
                 }
+                messageNumber++;
             }
             catch (MamaException e)
             {
@@ -237,6 +292,9 @@ namespace Wombat
                         }
                         inboundTopic = args[++i];
                         break;
+                    case "nosub":
+                        nosub = true;
+                        break;
                     case "c":
                         if ((i + 1) == args.Length)
                         {
@@ -246,7 +304,7 @@ namespace Wombat
                         }
                         try
                         {
-                            messageCount_ = int.Parse(args[++i], NumberStyles.Integer, CultureInfo.InvariantCulture);
+                            messageCount = int.Parse(args[++i], NumberStyles.Integer, CultureInfo.InvariantCulture);
                         }
                         catch // ignore parse error
                         {
@@ -285,6 +343,9 @@ namespace Wombat
                         break;
                     case "q":
                         quiet = true;
+                        break;
+                    case "pubCb":
+                        pubCb = true;
                         break;
                     case "v":
                         if (logLevel == MamaLogLevel.MAMA_LOG_LEVEL_WARN)
@@ -330,17 +391,23 @@ namespace Wombat
         }
 
         private string[] args;
-        private int messageCount_ = 0; // infinite by default
+        private int messageCount = 0; // infinite by default
+        private int messageNumber = 1;
         private string outboundTopic = "MAMA_TOPIC";
         private string inboundTopic = "MAMA_INBOUND_TOPIC";
         private string middlewareName = "wmw";
         private string transportName = "pub"; // tib_rvd
-        private double interval = 0.5;
-        private MamaLogLevel logLevel = MamaLogLevel.MAMA_LOG_LEVEL_WARN;
+        private double interval = 1.0;
         private bool helpNeeded = false;
         private bool quiet = false;
+		private bool pubCb = false;     // pub with callbacks or not ?
+        private bool nosub = false;     // sub or not ?
+
+        private MamaLogLevel logLevel = MamaLogLevel.MAMA_LOG_LEVEL_WARN;
         private MamaBridge bridge;
         private MamaMsg msg;
+		private MamaQueueGroup queueGroup;
+		private MamaPublisher publisher;
 
         private const string usage_ = @"
 This sample application demonstrates how to publish mama messages, and
@@ -355,6 +422,7 @@ It accepts the following command line arguments:
      [-tport name]      The transport parameters to be used from
                         mama.properties. Default is pub.
      [-q]               Quiet mode. Suppress output.
+     [-pubCb]           Listen to publisher callbacks.
      [-c number]        How many messages to publish (default infinite).
 ";
     }

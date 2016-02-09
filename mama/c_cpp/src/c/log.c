@@ -147,11 +147,10 @@ mamaLog_getTime(char *buffer,
     {         
         /* Convert to local time zone */
         struct tm localTime;
-        struct tm timeIn;
+        time_t timeIn;
         memset(&localTime, 0, sizeof(localTime));
-        memset(&timeIn, 0, sizeof(timeIn));        
-        timeIn.tm_sec = timeNow.tv_sec;
-        localtime_r ((const time_t*)&timeIn, &localTime);
+        timeIn = timeNow.tv_sec;
+        localtime_r (&timeIn, &localTime);
         {
             /* Format the time string */
             size_t ft = strftime(buffer, bufferLength, "%Y-%m-%d %H:%M:%S:", &localTime);

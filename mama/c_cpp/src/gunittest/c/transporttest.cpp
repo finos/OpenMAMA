@@ -89,7 +89,7 @@ void MAMACALLTYPE tportCB (mamaTransport      tport,
  */
 TEST_F (MamaTransportTestC, CreateDestroy)
 {
-    char          tportName[] = "test_tport";
+    const char* tportName = getTransport();
     mamaTransport tport     = NULL;
 
     ASSERT_EQ (MAMA_STATUS_OK,
@@ -108,7 +108,7 @@ TEST_F (MamaTransportTestC, CreateDestroy)
  */
 TEST_F (MamaTransportTestC, Callback)
 {
-    char          tportName[] = "test_tport";
+    const char* tportName = getTransport();
     mamaTransport tport     = NULL;
 
     ASSERT_EQ (MAMA_STATUS_OK,
@@ -126,11 +126,11 @@ TEST_F (MamaTransportTestC, Callback)
 
 /*  Description: Create a transport and get it's name.
  *
- *  Expected Result: MAMA_STATUS_OK, testName=tportName="test_tport"
+ *  Expected Result: MAMA_STATUS_OK, testName=tportName=getTransport()
  */
 TEST_F (MamaTransportTestC, getName)
 {
-    char          tportName[] = "test_tport";
+    const char* tportName = getTransport();
     mamaTransport tport     = NULL;
     const char*   testName  = NULL;
 
@@ -156,7 +156,7 @@ TEST_F (MamaTransportTestC, getName)
  */
 TEST_F (MamaTransportTestC, getMiddleware)
 {
-    char          tportName[] = "test_tport";
+    const char* tportName = getTransport();
     mamaTransport tport     = NULL;
 
     ASSERT_EQ (MAMA_STATUS_OK,
@@ -179,7 +179,7 @@ TEST_F (MamaTransportTestC, getMiddleware)
  */
 TEST_F (MamaTransportTestC, Description)
 {
-    char          tportName[] = "test_tport";
+    const char* tportName = getTransport();
     mamaTransport tport     = NULL;
     const char*   desc      = "description";
     const char*   testDesc  = NULL;
@@ -209,7 +209,7 @@ TEST_F (MamaTransportTestC, Description)
  */
 TEST_F (MamaTransportTestC, InvokeQuality)
 {
-    char          tportName[]  = "test_tport";
+    const char* tportName = getTransport();
     mamaTransport tport      = NULL;
     int           invoke     = 1;
     int           testInvoke = NULL;
@@ -238,7 +238,7 @@ TEST_F (MamaTransportTestC, InvokeQuality)
  */
 TEST_F (MamaTransportTestC, GetQuality)
 {
-    char          tportName[]  = "test_tport";
+    const char* tportName = getTransport();
     mamaTransport tport      = NULL;
     mamaQuality   quality    = MAMA_QUALITY_UNKNOWN;
    

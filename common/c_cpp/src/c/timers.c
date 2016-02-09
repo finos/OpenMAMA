@@ -291,11 +291,18 @@ int createTimer (timerElement* timer, timerHeap heap, timerFireCb cb, struct tim
         ele->mCb = cb;
         ele->mClosure = closure;
 
+        // Populate returned timer element before scheduling it
+        *timer = ele;
+
         wthread_mutex_lock (&heapImpl->mLock);
         ret = _addTimer (heapImpl, ele);
         wthread_mutex_unlock (&heapImpl->mLock);
-        if (ret < 0) return ret;
-        *timer = ele;
+        if (ret < 0)
+        {
+            // Something went wrong - blank the return element and return error
+            *timer = NULL;
+            return ret;
+        }
     }
     return 0;
 }

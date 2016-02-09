@@ -160,7 +160,6 @@ static void processPointToPointMessage (msgCallback*    callback,
         {
             const char *msgString = mamaMsg_toString( msg );
             mama_log (MAMA_LOG_LEVEL_FINE, "Received Initial: (%s) %s", userSymbol, msgString);
-            mamaMsg_freeString( msg, msgString );
         }
         if (!mamaSubscription_getAcceptMultipleInitials (self->mSubscription))
         {
@@ -178,15 +177,7 @@ static void processPointToPointMessage (msgCallback*    callback,
         mamaSubscription_deactivate (self->mSubscription);
     }
 
-    if (!ctx->mDqContext.mDoNotForward)
-    {
-        mamaSubscription_forwardMsg (self->mSubscription, msg);
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "Subscription for %s not forwarded as message seqnum is before seqnum expecting", userSymbol);
-    }
+    mamaSubscription_forwardMsg (self->mSubscription, msg);
 
     /*
        NB!!!  - can't destroy a subscription after an initial!!!!!

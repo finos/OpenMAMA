@@ -28,6 +28,7 @@
 #include <mama/status.h>
 
 #include <mamainternal.h>
+#include <msgimpl.h>
 
 #include "MainUnitTestC.h"
 
@@ -285,6 +286,25 @@ TEST_F (MamaInternalTestC, getPayloadChar)
     returnedPayload = mamaInternal_findPayload (payloadChar);
 
     EXPECT_EQ (mPayload, returnedPayload);
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close ());
+}
+
+TEST_F (MamaInternalTestC, getPayloadCharFromMessage)
+{
+    char payloadChar = '\0';
+    mamaMsg msg = NULL;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadPayloadBridge (&mPayload, getPayload ()));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&mBridge, getMiddleware ()));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open ());
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_createForPayload(&msg, getPayloadId ()));
+
+    EXPECT_EQ (MAMA_STATUS_OK, mamaMsgImpl_getPayloadId (msg, &payloadChar));
+
+    EXPECT_EQ (getPayloadId (), payloadChar);
+
+    mamaMsg_destroy(msg);
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_close ());
 }

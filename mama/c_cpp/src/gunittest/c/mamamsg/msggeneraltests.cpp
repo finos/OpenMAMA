@@ -333,7 +333,7 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsSubMessage)
 
     status = mamaMsg_addMsg (mMsg, "name2", 103, submsg);
 
-    ALLOW_NON_IMPLEMENTED (status);
+    CHECK_NON_IMPLEMENTED_RECOMMENDED (status);
 
     EXPECT_EQ (MAMA_STATUS_OK, mamaMsg_getNumFields (mMsg, &numFields));
     EXPECT_EQ (addedFields, numFields);
@@ -1023,6 +1023,12 @@ TEST_F(MsgCopyTests, CopyNullMsg)
 {
     mStatus = mamaMsg_copy (NULL, &mCopy);
     ASSERT_EQ (mStatus, MAMA_STATUS_NULL_ARG);
+}
+
+TEST_F(MsgCopyTests, CopySameMsg)
+{
+    mStatus = mamaMsg_copy (mMsg, &mMsg);
+    ASSERT_EQ (mStatus, MAMA_STATUS_INVALID_ARG);
 }
 
 TEST_F(MsgCopyTests, DISABLED_CopyNullCopy)

@@ -215,7 +215,9 @@ mamaSubscription_getSubscriptionBridge(
  *              MAMA_STATUS_NULL_ARG
  *              MAAM_STATUS_OK
  */              
-mama_status mamaSubscription_getExpectingInitial(
+MAMAExpDLL
+extern mama_status
+mamaSubscription_getExpectingInitial(
     mamaSubscription subscription, 
     int *expectingInitial); 
 

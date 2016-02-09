@@ -31,6 +31,7 @@ InstMamaInclude = \
    mama/MamaMsgFieldIterator.h
    mama/MamaMsgQual.h
    mama/MamaPublisher.h
+   mama/MamaPublisherCallback.h
    mama/MamaPrice.h
    mama/MamaQueue.h
    mama/MamaQueueEnqueueCallback.h

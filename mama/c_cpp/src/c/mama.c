@@ -1926,7 +1926,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
         /* Allocte the payload structure */
         *impl = calloc (1, sizeof (mamaPayloadBridgeImpl));
 
-        if (NULL == impl)
+        if (NULL == *impl)
         {
             status = MAMA_STATUS_NOMEM;
             mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -2052,6 +2052,9 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     status = wtable_insert (gImpl.payloads.table,
                             payloadName,
                             (void*)payloadLib);
+
+    // Update the payload bridge to back reference to this library
+    (*impl)->payloadLib = payloadLib;
 
     /* wtable_insert may return 1 for success, 0 for inserting a duplicate key,
      * -1 for failure of allocation. Unfortunately it also returns 0 for no table,
@@ -2439,12 +2442,13 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     {
         mama_log (MAMA_LOG_LEVEL_FINE,
                   "mama_loadBridge (): "
-                  "Found bridge_init function, loading bridge [%s] with function search.");
+                  "Found bridge_init function, loading bridge [%s] with function search.",
+				  middlewareName);
 
         /* Allocate the bridge structure */
         *impl = calloc (1, sizeof (mamaBridgeImpl));
 
-        if (NULL == impl)
+        if (NULL == *impl)
         {
             status = MAMA_STATUS_NOMEM;
             mama_log (MAMA_LOG_LEVEL_ERROR,

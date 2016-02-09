@@ -327,16 +327,6 @@ avisBridgeMamaPublisher_createByIndex (
                                const char*       topic,
                                const char*       source,
                                const char*       root,
-                               void*             nativeQueueHandle,
-                               mamaPublisher     parent);
-
-extern mama_status
-avisBridgeMamaPublisher_create (publisherBridge*  result,
-                               mamaTransport     tport,
-                               const char*       topic,
-                               const char*       source,
-                               const char*       root,
-                               void*             nativeQueueHandle,
                                mamaPublisher     parent);
 
 extern mama_status

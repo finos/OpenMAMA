@@ -25,50 +25,36 @@
 #define NOT_NULL ( (void*)1 )
 
 
-#define ALLOW_NON_IMPLEMENTED(status)                                          \
+#define ALLOW_NON_IMPLEMENTED(strictness, status)                              \
  do {                                                                          \
-     if (MAMA_STATUS_NOT_IMPLEMENTED == status)                                \
+     if (strictness >= getStrictness()                                         \
+             && MAMA_STATUS_NOT_IMPLEMENTED == status)                         \
      {                                                                         \
          SUCCEED();                                                            \
          return;                                                               \
      }                                                                         \
  } while (0);
 
-#ifndef GTEST_STRICTNESS
-#define GTEST_STRICTNESS 3
-#endif
+#define CHECK_NON_IMPLEMENTED_MANDATORY(status)   ALLOW_NON_IMPLEMENTED(MANDATORY,   status)
+#define CHECK_NON_IMPLEMENTED_RECOMMENDED(status) ALLOW_NON_IMPLEMENTED(RECOMMENDED, status)
+#define CHECK_NON_IMPLEMENTED_OPTIONAL(status)    ALLOW_NON_IMPLEMENTED(OPTIONAL,    status)
 
-#if GTEST_STRICTNESS < 1 || GTEST_STRICTNESS > 4
-#error "Please set an appropriate GTEST_STRICTNESS level (1,2,3 or 4)"
-#endif
+typedef enum gtest_strictness {
+    MANDATORY,
+    RECOMMENDED,
+    OPTIONAL,
+    NONE
+} gtest_strictness;
 
-/* Most lenient. Allows all methods to return non-implemented */
-#if GTEST_STRICTNESS == 1
-#define CHECK_NON_IMPLEMENTED_MANDATORY(status) ALLOW_NON_IMPLEMENTED(status)
-#define CHECK_NON_IMPLEMENTED_RECOMMENDED(status) ALLOW_NON_IMPLEMENTED(status)
-#define CHECK_NON_IMPLEMENTED_OPTIONAL(status) ALLOW_NON_IMPLEMENTED(status)
-
-#elif GTEST_STRICTNESS == 2
-#define CHECK_NON_IMPLEMENTED_MANDATORY(status)
-#define CHECK_NON_IMPLEMENTED_RECOMMENDED(status) ALLOW_NON_IMPLEMENTED(status)
-#define CHECK_NON_IMPLEMENTED_OPTIONAL(status) ALLOW_NON_IMPLEMENTED(status)
-
-#elif GTEST_STRICTNESS == 3
-#define CHECK_NON_IMPLEMENTED_MANDATORY(status)
-#define CHECK_NON_IMPLEMENTED_RECOMMENDED(status)
-#define CHECK_NON_IMPLEMENTED_OPTIONAL(status) ALLOW_NON_IMPLEMENTED(status)
-
-#elif GTEST_STRICTNESS == 4
-#define CHECK_NON_IMPLEMENTED_ALL(status)
-#define CHECK_NON_IMPLEMENTED_OPTIONAL(status)
-#define CHECK_NON_IMPLEMENTED_RECOMMENDED(status)
-#endif /* GTEST_STRICTNESS_SETTINGS */
+gtest_strictness getStrictness (void);
 
 const char* getMiddleware (void);
-
-const char* getPayload (void);
-
-const char getPayloadId (void);
-
 const char* getTransport (void);
+const char* getPayload (void);
+const char  getPayloadId (void);
+const char* getTransport (void);
+const char* getSource (void);
+const char* getBadSource (void);
+const char* getSymbol (void);
+
 #endif /* MAINUNITTESTC_H_ */

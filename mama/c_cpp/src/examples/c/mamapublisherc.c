@@ -29,6 +29,8 @@ static mamaTransport    gTransport      = NULL;
 static mamaTimer        gTimer          = NULL;
 static mamaSubscription gSubscription   = NULL;
 static mamaPublisher    gPublisher      = NULL;
+static mamaQueue        gQueue          = NULL;
+static mamaDispatcher   gDispatcher     = NULL;
 static mamaMsgCallbacks gInboundCb;
 
 static mamaBridge       gMamaBridge         = NULL;
@@ -40,6 +42,8 @@ static const char *     gInBoundTopic   = "MAMA_INBOUND_TOPIC";
 static const char *     gTransportName  = "pub";
 static double           gInterval       = 0.5;
 static int              gQuietLevel     = 0;
+static int              gPubCb          = 0;
+static int              gCount          = 0;
 static const char *     gUsageString[]  =
 {
 " This sample application demonstrates how to publish mama messages, and",
@@ -57,6 +61,7 @@ static const char *     gUsageString[]  =
 "                         Default is wmw.",
 "      [-q]               Quiet mode. Suppress output.",
 "      [-v]               Increase verbosity. Can be passed multiple times",
+"      [-pubCb]           Listen for publisher callbacks",
 NULL
 };
 
@@ -81,6 +86,20 @@ inboundMsgCb        (mamaSubscription subscription,
                      void *closure,
                      void *itemClosure);
 
+static void MAMACALLTYPE
+publisherOnCreateCb (mamaPublisher publisher,
+                     void*         closure);
+
+static void MAMACALLTYPE
+publisherOnDestroyCb (mamaPublisher publisher,
+                      void*         closure);
+
+static void MAMACALLTYPE
+publisherOnErrorCb (mamaPublisher publisher,
+                    mama_status   status,
+                    const char*   info,
+                    void*         closure);
+
 static void publishMessage      (mamaMsg request);
 static void createPublisher     (void);
 static void usage               (int exitStatus);
@@ -99,7 +118,12 @@ int main (int argc, const char **argv)
 
     createPublisher ();
 
-    mama_start(gMamaBridge);
+    mama_start (gMamaBridge);
+
+    mamaDispatcher_destroy (gDispatcher);
+    mamaQueue_destroy (gQueue);
+
+    mama_close();
 
     return 0;
 }
@@ -117,7 +141,6 @@ void initializeMama (void)
     }
 
     status = mama_open ();
-
     if (status != MAMA_STATUS_OK)
     {
         printf ("Error initializing mama: %s\n",
@@ -128,8 +151,23 @@ void initializeMama (void)
     /*Use the default internal event queue for all subscriptions and timers*/
     mama_getDefaultEventQueue (gMamaBridge, &gMamaDefaultQueue);
 
-    status = mamaTransport_allocate (&gTransport);
+    /* Get a queue for the publisher */
+    status = mamaQueue_create (&gQueue, gMamaBridge);
+    if (status != MAMA_STATUS_OK)
+    {
+        printf ("Error allocating queue: %s\n", mamaStatus_stringForStatus (status));
+        exit (status);
+    }
 
+    /* Get a dispatcher for the queue */
+    status = mamaDispatcher_create (&gDispatcher, gQueue);
+    if (status != MAMA_STATUS_OK)
+    {
+        printf ("Error allocating dispatcher: %s\n", mamaStatus_stringForStatus (status));
+        exit (status);
+    }
+
+    status = mamaTransport_allocate (&gTransport);
     if (status != MAMA_STATUS_OK)
     {
         printf ("Error allocating transport: %s\n",
@@ -138,7 +176,6 @@ void initializeMama (void)
     }
 
     status = mamaTransport_create (gTransport, gTransportName, gMamaBridge);
-
     if (status != MAMA_STATUS_OK)
     {
         printf ("Error creating transport: %s\n",
@@ -147,15 +184,74 @@ void initializeMama (void)
     }
 }
 
+static void MAMACALLTYPE publisherOnCreateCb (
+                         mamaPublisher publisher,
+                         void*         closure)
+{
+    if (gQuietLevel < 1)
+    {
+        const char* symbol = "";
+        mamaPublisher_getSymbol (publisher, &symbol);
+        mama_log(MAMA_LOG_LEVEL_NORMAL, "publisherOnCreateCb: %s", symbol);
+    }
+}
+
+static void MAMACALLTYPE publisherOnDestroyCb (
+                         mamaPublisher publisher,
+                         void*         closure)
+{
+    if (gQuietLevel < 1)
+    {
+        const char* symbol = "";
+        mamaPublisher_getSymbol (publisher, &symbol);
+        mama_log(MAMA_LOG_LEVEL_NORMAL, "publisherOnDestroyCb: %s", symbol);
+    }
+}
+
+static void MAMACALLTYPE publisherOnErrorCb (
+                         mamaPublisher publisher,
+                         mama_status   status,
+                         const char*   info,
+                         void*         closure)
+{
+    if (gQuietLevel < 1)
+    {
+        const char* symbol = "";
+        mamaPublisher_getSymbol (publisher, &symbol);
+        mama_log(MAMA_LOG_LEVEL_NORMAL, "publisherOnErrorCb: %s status=%d/%s info=%s",
+            symbol, status, mamaStatus_stringForStatus(status), info);
+    }
+}
+
 static void createPublisher (void)
 {
     mama_status status;
 
-    status = mamaPublisher_create (&gPublisher,
-                                   gTransport,
-                                   gOutBoundTopic,
-                                   NULL,   /* Not needed for basic publishers */
-                                   NULL); /* Not needed for basic publishers */
+    if (gPubCb)
+    {
+        mamaPublisherCallbacks* cb = NULL;
+        mamaPublisherCallbacks_allocate (&cb);
+        cb->onCreate = publisherOnCreateCb;
+        cb->onError = publisherOnErrorCb;
+        cb->onDestroy = publisherOnDestroyCb;
+        status = mamaPublisher_createWithCallbacks (&gPublisher,
+                                                    gTransport,
+                                                    gQueue,
+                                                    gOutBoundTopic,
+                                                    NULL,   /* Not needed for basic publishers */
+                                                    NULL,   /* Not needed for basic publishers */
+                                                    cb,
+                                                    NULL);
+        mamaPublisherCallbacks_deallocate (cb);
+    }
+    else
+    {
+        status = mamaPublisher_create (&gPublisher,
+                                       gTransport,
+                                       gOutBoundTopic,
+                                       NULL,   /* Not needed for basic publishers */
+                                       NULL); /* Not needed for basic publishers */
+    }
 
     if (status != MAMA_STATUS_OK)
     {
@@ -167,32 +263,36 @@ static void createPublisher (void)
 
 static void publishMessage (mamaMsg request)
 {
-    static int msgNumber = 0;
+    static int msgNumber = 1;
     static mamaMsg msg = NULL;
+    mamaMsgType msgType;
     mama_status status;
 
-	if (msg == NULL)
-	{
-		status = mamaMsg_create(&msg);
-	}
-	else
-	{
-		status = mamaMsg_clear(msg);
-	}
+    if (msg == NULL)
+    {
+        status = mamaMsg_create(&msg);
+    }
+    else
+    {
+        status = mamaMsg_clear(msg);
+    }
 
-	if (status != MAMA_STATUS_OK)
-	{
-		printf ("Error creating/clearing msg: %s\n",
-				mamaStatus_stringForStatus (status));
-		exit (status);
-	}
+    if (status != MAMA_STATUS_OK)
+    {
+        printf ("Error creating/clearing msg: %s\n",
+                mamaStatus_stringForStatus (status));
+        exit (status);
+    }
 
 
     /* Add some fields. This is not required, but illustrates how to
      * send data.
      */
+    if (msgNumber == 1) msgType = MAMA_MSG_TYPE_INITIAL;
+    else msgType = MAMA_MSG_TYPE_UPDATE;
+    status = mamaMsg_addI32 (msg, MamaFieldMsgType.mName, MamaFieldMsgType.mFid, msgType);
     status = mamaMsg_addI32 (msg, MamaFieldMsgStatus.mName, MamaFieldMsgStatus.mFid, MAMA_MSG_STATUS_OK);
-	status = mamaMsg_addI32 (msg, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid, msgNumber);
+    status = mamaMsg_addI32 (msg, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid, msgNumber);
     if (status != MAMA_STATUS_OK)
     {
         printf ("Error adding int to msg: %s\n",
@@ -200,8 +300,7 @@ static void publishMessage (mamaMsg request)
         exit (status);
     }
 
-    status = mamaMsg_addString (msg, "PublisherTopic", 10002, gOutBoundTopic);
-
+    status = mamaMsg_addString (msg, "MdFeedHost", 12, gOutBoundTopic);
     if (status != MAMA_STATUS_OK)
     {
         printf ("Error adding string to msg: %s\n",
@@ -213,40 +312,31 @@ static void publishMessage (mamaMsg request)
     {
         if (gQuietLevel < 1)
         {
-            printf ("\nPublishing message %d to inbox .", msgNumber);
+            mama_log (MAMA_LOG_LEVEL_NORMAL, "Publishing message %d to inbox .", msgNumber);
         }
-		status = mamaMsg_addU8 (msg, MamaFieldMsgType.mName, MamaFieldMsgType.mFid, MAMA_MSG_TYPE_RECAP);
+        status = mamaMsg_addU8 (msg, MamaFieldMsgType.mName, MamaFieldMsgType.mFid, MAMA_MSG_TYPE_RECAP);
         status = mamaPublisher_sendReplyToInbox (gPublisher, request, msg);
-
     }
     else
     {
         if (gQuietLevel < 1)
         {
-            printf ("\nPublishing message %d to %s.", msgNumber, gOutBoundTopic);
-			fflush(stdout);
+           mama_log (MAMA_LOG_LEVEL_NORMAL, "Publishing message %d to %s {%s}",
+               msgNumber, gOutBoundTopic, mamaMsg_toString (msg));
         }
         status = mamaPublisher_send (gPublisher, msg);
-        if (gQuietLevel < 1)
-        {
-           const char* subject=NULL;
-           mamaMsg_getSendSubject(msg, &subject);
-           if (subject)
-              printf ("\tsubject=%s", subject);
-           }
-           printf ("\tmsg=%s", mamaMsg_toString (msg));
     }
 
     if (status != MAMA_STATUS_OK)
     {
-
-        printf ("Error sending msg: %s\n",
+        mama_log (MAMA_LOG_LEVEL_ERROR, "Error sending msg: %s\n",
                 mamaStatus_stringForStatus (status));
-        exit (status);
+        if (status != MAMA_STATUS_NOT_ENTITLED)
+        {
+            exit (status);
+        }
     }
-	msgNumber++;
-
-
+    msgNumber++;
 }
 
 static void createInboundSubscription (void)
@@ -341,8 +431,15 @@ static void createIntervalTimer (void)
 static void MAMACALLTYPE
 timerCallback (mamaTimer timer, void *closure)
 {
-    publishMessage (NULL);
+    static int count = 0;
 
+    publishMessage (NULL);
+    if (gCount && ++count >= gCount)
+    {
+        mamaPublisher_destroy (gPublisher);
+        sleep (1);    /* to see all queued events */
+        mama_stop (gMamaBridge);
+    }
 }
 
 void parseCommandLine (int argc, const char **argv)
@@ -371,6 +468,11 @@ void parseCommandLine (int argc, const char **argv)
             gInterval = strtod (argv[i+1], NULL);
             i += 2;
         }
+        else if (strcmp ("-c", argv[i]) == 0)
+        {
+            gCount = strtod (argv[i+1], NULL);
+            i += 2;
+        }
         else if (strcmp ("-tport", argv[i]) == 0)
         {
             gTransportName = argv[i+1];
@@ -379,6 +481,11 @@ void parseCommandLine (int argc, const char **argv)
         else if (strcmp ("-q", argv[i]) == 0)
         {
             gQuietLevel++;
+            i++;
+        }
+        else if (strcmp ("-pubCb", argv[i]) == 0)
+        {
+            gPubCb = 1;
             i++;
         }
         else if (strcmp ("-m", argv[i]) == 0)
@@ -406,11 +513,11 @@ void parseCommandLine (int argc, const char **argv)
             }
             i++;
         }
-		else
-		{
-			printf ("Unknown arg: %s\n",	argv[i]);
-			i++;
-		}
+        else
+        {
+            printf ("Unknown arg: %s\n",    argv[i]);
+            i++;
+        }
     }
 
     if (gQuietLevel < 2)

@@ -41,53 +41,51 @@ import java.util.logging.Level;
  *                         mama.properties.
  *      [-q]               Quiet mode. Suppress output.
  *      [-c number]        How many messages to publish (default infinite).
- *
- *
- *
+ *      [-pubCb]           Listen for publisher callbacks.
  */
-public class MamaPublisherJava
+public class MamaPublisherJava implements MamaPublisherCallback
 {
-    private static String                myOutboundTopic = "MAMA_TOPIC";
-    private static String                myInBoundTopic  = "MAMA_INBOUND_TOPIC";
-    private static String                myMiddleware    = "wmw";
-    private static MamaBridge            myBridge        = null;
-    private static MamaQueue             myQueue         = null;
-    private static String                myTransportName = null;
-    private static MamaMsg               myMsg           = null;
+    private String                myOutboundTopic = "MAMA_TOPIC";
+    private String                myInBoundTopic  = "MAMA_INBOUND_TOPIC";
+    private String                myMiddleware    = "wmw";
+    private MamaBridge            myBridge        = null;
+    private MamaQueue             myQueue         = null;
+    private String                myTransportName = null;
+    private MamaMsg               myMsg           = null;
 
-    private static double                myInterval      = 1.0;
-    private static int                   myQuietLevel    = 0;
+    private double                myInterval      = 1.0;
+    private int                   myQuietLevel    = 0;
+    private boolean               myPubCb         = false;
 
-    private static MamaTransport         myTransport     = null;
-    private static MamaTimer             myTimer         = null;
-    private static MamaBasicSubscription mySubscription  = null;
-    private static MamaPublisher         myPublisher     = null;
-    private static long                  myCount         = 0;
-    private static long                  myMsgNumber     = 0;
+    private MamaTransport         myTransport     = null;
+    private MamaTimer             myTimer         = null;
+    private MamaBasicSubscription mySubscription  = null;
+    private MamaPublisher         myPublisher     = null;
+    private MamaQueueGroup        myQueueGroup    = null;
+    private long                  myCount         = 0;
+    private long                  myMsgNumber     = 1;
 
-    private static MamaTransportTopicListener      myTopicListener           = null;
-    private static final Logger     logger              =
-                                    Logger.getLogger( "com.wombat.mama" );
-    private static Level            myLogLevel;
+    private MamaTransportTopicListener myTopicListener = null;
+    private Level            myLogLevel;
 
     /**
      * Initialize Mama and create a basic transport.
      */
-    private static void initializeMama( )
+    private void initializeMama( )
     {
         try
         {
             myBridge = Mama.loadBridge (myMiddleware);
             Mama.open();
             myQueue = Mama.getDefaultQueue (myBridge);
-            myTransport = new MamaTransport ();
+            myQueueGroup = new MamaQueueGroup (1, myBridge);
+            myMsg = new MamaMsg();
 
             /* Add transport and transport topic listeners */
+            myTransport = new MamaTransport ();
             myTopicListener = new MamaTransportTopicListener ();
             myTransport.addTransportTopicListener( myTopicListener );
-
             myTransport.create (myTransportName, myBridge);
-            myMsg = new MamaMsg();
         }
         catch( WombatException e )
         {
@@ -98,12 +96,24 @@ public class MamaPublisherJava
     }
 
 
-    private static void createPublisher(  )
+    private void createPublisher(  )
     {
         try
         {
             myPublisher = new MamaPublisher();
-            myPublisher.create( myTransport, myOutboundTopic );
+            if (myPubCb)
+            {
+                myPublisher.create (myTransport,
+                                    myQueueGroup.getNextQueue(),
+                                    myOutboundTopic,
+                                    null,
+                                    this,
+                                    null);
+            }
+            else
+            {
+                myPublisher.create( myTransport, myOutboundTopic );
+            }
         }
         catch( WombatException e  )
         {
@@ -113,7 +123,7 @@ public class MamaPublisherJava
         }
     }
 
-    private static void publishMessage( MamaMsg request )
+    private void publishMessage( MamaMsg request )
     {
         try
         {
@@ -122,13 +132,20 @@ public class MamaPublisherJava
             /* Add some fields. This is not required, but illustrates how to
             * send data.
             */
-            myMsg.addU32( "MessageNo", 10001, myMsgNumber++ );
-            myMsg.addString( "PublisherTopic", 10002, myOutboundTopic );
+            short msgType;
+            if (myMsgNumber == 1) msgType = MamaMsgType.TYPE_INITIAL;
+            else msgType = MamaMsgType.TYPE_UPDATE;
+
+            myMsg.addI32 (MamaReservedFields.MsgType.getName(), MamaReservedFields.MsgType.getId(), msgType);
+            myMsg.addI32 (MamaReservedFields.MsgStatus.getName(), MamaReservedFields.MsgStatus.getId(), MamaMsgStatus.STATUS_OK);
+            myMsg.addI32 (MamaReservedFields.SeqNum.getName(), MamaReservedFields.SeqNum.getId(), (int) myMsgNumber);
+            myMsg.addString ("MdFeedHost", 12, myOutboundTopic);
+
             if( request != null )
             {
                 if( myQuietLevel < 1 )
                 {
-                    System.out.println( "Publishing message to inbox.\n" );
+                    System.out.println( "Publishing message to inbox" );
                 }
                 myPublisher.sendReplyToInbox( request, myMsg );
             }
@@ -136,12 +153,12 @@ public class MamaPublisherJava
             {
                 if( myQuietLevel < 1 )
                 {
-                    System.out.println( "Publishing message to " +
-                                        myOutboundTopic + "\n" );
+                    System.out.println( "Publishing message " + myMsgNumber + " to " + 
+                                        myOutboundTopic );
                 }
                 myPublisher.send( myMsg );
             }
-
+            myMsgNumber++;
         }
         catch( WombatException e )
         {
@@ -152,7 +169,7 @@ public class MamaPublisherJava
 
     }
 
-    private static void createInboundSubscription( )
+    private void createInboundSubscription( )
     {
 
         try
@@ -174,7 +191,7 @@ public class MamaPublisherJava
 
     }
 
-    private static void createIntervalTimer( )
+    private void createIntervalTimer( )
     {
         try
         {
@@ -189,7 +206,28 @@ public class MamaPublisherJava
         }
     }
 
-    private static void parseCommandLine( String [] args )
+    public void onCreate(MamaPublisher pub)
+    {
+        if( myQuietLevel < 1 )
+        {
+            System.out.println("onPublishCreate: " + pub.getSymbol());
+        }
+    }
+
+    public void onDestroy(MamaPublisher pub)
+    {
+        if( myQuietLevel < 1 )
+        {
+            System.out.println("onPublishDestroy: " + pub.getSymbol());
+        }
+    }
+
+    public void onError(MamaPublisher pub, short status, String info)
+    {
+        System.err.println("onPublishError: " + pub.getSymbol() + " " + status + " " + info);
+    }
+
+    private void parseCommandLine( String [] args )
     {
         for ( int i = 0; i < args.length; )
         {
@@ -225,6 +263,11 @@ public class MamaPublisherJava
                 myQuietLevel++;
                 i++;
             }
+            else if( "-pubCb".equals( arg ) )
+            {
+                myPubCb = true;
+                i++;
+            }
             else if ( "-m".equals( arg ))
             {
                 myMiddleware = args[i+1];
@@ -254,6 +297,13 @@ public class MamaPublisherJava
 
     public static void main( String [] args ) throws InterruptedException
     {
+        MamaPublisherJava m = new MamaPublisherJava();
+        m.run(args);
+        System.exit(0);
+    }
+
+    public void run(String[] args)
+    {
         parseCommandLine( args );
 
         initializeMama();
@@ -271,7 +321,7 @@ public class MamaPublisherJava
         Mama.close();
     }
 
-    private static class SubscriptionCallback implements MamaBasicSubscriptionCallback
+    private class SubscriptionCallback implements MamaBasicSubscriptionCallback
     {
         public void onCreate(
             MamaBasicSubscription  subscription )
@@ -279,7 +329,7 @@ public class MamaPublisherJava
             mySubscription = subscription;
             if( myQuietLevel < 2 )
             {
-                System.out.println( "Created inbound subscription.\n" );
+                System.out.println( "Created inbound subscription" );
             }
         }
 
@@ -299,7 +349,7 @@ public class MamaPublisherJava
             if( !msg.isFromInbox() )
             {
                 System.out.println ("Symbol=[" + subscription.getSymbol() + "] : " +
-                                    "Inbound msg not from inbox. No reply sent.\n" );
+                                    "Inbound msg not from inbox. No reply sent" );
                 return;
             }
 
@@ -314,11 +364,26 @@ public class MamaPublisherJava
 
 
 
-    private static class TimerCallback implements MamaTimerCallback
+    private class TimerCallback implements MamaTimerCallback
     {
         public void onTimer (MamaTimer timer)
         {
-            publishMessage( null );
+            try
+            {
+                publishMessage( null );
+                if (myCount > 0 && --myCount <= 0)
+                {
+                    myPublisher.destroy();
+                    Thread.sleep(1000);            // let queued events finish
+                    Mama.stop(myBridge);
+                }
+            }
+            catch( Exception e )
+            {
+                   e.printStackTrace( );
+                   System.err.println( "Exception occurred in timer cb: " + e );
+                   System.exit(1);
+            }
         }
 
         public void onDestroy (MamaTimer timer)

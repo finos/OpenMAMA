@@ -913,7 +913,7 @@ qpidmsgPayload_serialize (const msgPayload  msg,
 
 mama_status
 qpidmsgPayload_unSerialize (const msgPayload    msg,
-                            const void**        buffer,
+                            const void*         buffer,
                             mama_size_t         bufferLength)
 {
     qpidmsgPayloadImpl*  impl       = (qpidmsgPayloadImpl*) msg;
