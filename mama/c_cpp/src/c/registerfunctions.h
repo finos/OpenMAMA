@@ -35,6 +35,11 @@ mamaInternal_registerPayloadFunctions (LIB_HANDLE         bridgeLib,
                                        mamaPayloadBridge* bridge,
                                        const char*        name);
 
+mama_status
+mamaInternal_registerEntitlementFunctions (LIB_HANDLE               bridgeLib,
+                                           mamaEntitlementBridge*    bridge,
+                                           const char*              name);
+
 
 /**
  * @brief Mechanism for registering required bridge functions.

@@ -44,11 +44,13 @@
 #include "statsgeneratorinternal.h"
 #include "mama/statscollector.h"
 #include "wombat/strutils.h"
+#include "mama/entitlement.h"
 
-extern int gGenerateTransportStats;
-extern int gGenerateLbmStats;
-extern int gLogTransportStats;
-extern int gPublishTransportStats;
+extern int          gGenerateTransportStats;
+extern int          gGenerateLbmStats;
+extern int          gLogTransportStats;
+extern int          gPublishTransportStats;
+extern const char*  gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 
 #define self                                ((transportImpl*)(transport))
 #define MAX_TPORT_NAME_LEN                  (256)
@@ -180,6 +182,7 @@ typedef struct transportImpl_
     preInitialScheme         mPreInitialScheme;
     mama_bool_t             mPreRecapCacheEnabled;
     void*                   mClosure;
+    mamaEntitlementBridge   mEntitlementBridge;
 } transportImpl;
 
 static mama_status
@@ -621,15 +624,20 @@ mamaTransport_create (mamaTransport transport,
     int           numTransports;
     int           isLoadBalanced;
     char          loadBalanceName[MAX_TPORT_NAME_LEN];
-    const char*   bridgeName = NULL;
+    const char*   bridgeName       = NULL;
     const char*   sharedObjectName = NULL;
-    mamaQueue     defaultQueue = NULL;
+    mamaQueue     defaultQueue     = NULL;
     tportLbScheme scheme;
     mama_status   status;
-    const char*   middleware = NULL;
-     const char*     throttleInt  =   NULL;
+    const char*   middleware  = NULL;
+    const char*   throttleInt = NULL;
+    char          propNameBuf[256];
+    const char*   entBridgeName;
+    const char*   propValue;
+
     if (!transport) return MAMA_STATUS_NULL_ARG;
     if (!bridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
+
     mama_log(MAMA_LOG_LEVEL_FINER, "Entering mamaTransport_create for transport (%p) with name %s", transport, name);
 
     self->mBridgeImpl = (mamaBridgeImpl*)bridgeImpl;
@@ -903,6 +911,42 @@ mamaTransport_create (mamaTransport transport,
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mamaTransport_create(): TransportPostCreateHook failed with a status of %s",
                    mamaStatus_stringForStatus(status));
+    }
+
+
+    if (strlen((char*)gEntitlementBridges))   /* If entitlement bridges were built in at compile time. */
+    {
+        snprintf (propNameBuf, 256, "mama.transport.%s.entitlementBridge", self->mName);
+        propValue = properties_Get (mamaInternal_getProperties (), propNameBuf);
+        if (NULL != propValue)
+        {
+            mama_log(MAMA_LOG_LEVEL_FINE, 
+                     "mamaTransport_create(): got property: %s = %s",
+                     propNameBuf,
+                     propValue);
+            entBridgeName = propValue;
+        }
+        else
+        {
+            mama_log(MAMA_LOG_LEVEL_WARN, 
+                     "mamaTransport_create(): No entitlement bridge specified for transport %s. Defaulting to %s.",
+                     self->mName,
+                     gEntitlementBridges[0]);
+            entBridgeName = gEntitlementBridges[0];
+        }
+
+        status = mamaInternal_getEntitlementBridgeByName(&self->mEntitlementBridge, entBridgeName);
+        if (MAMA_STATUS_OK != status)
+        {
+            mama_log(MAMA_LOG_LEVEL_ERROR, 
+                     "mamaTransport_create(): Could not set entitlement bridge for transport %s.",
+                     self->mName);
+            return MAMA_STATUS_NO_BRIDGE_IMPL;
+        }
+        mama_log(MAMA_LOG_LEVEL_FINE, 
+                 "mamaTransport_create(): Entitlement bridge set to %s [%s].",
+                 entBridgeName,
+                 self->mName);
     }
 
     return MAMA_STATUS_OK;
@@ -2773,4 +2817,14 @@ mama_status mamaTransportImpl_allocateInternalTransport(mamaTransport *transport
         }
     }
     return ret;
+}
+
+mama_status mamaTransportImpl_getEntitlementBridge(mamaTransport transport, mamaEntitlementBridge* entBridge)
+{
+    if (NULL != self->mEntitlementBridge)
+    {
+        *entBridge = self->mEntitlementBridge;
+        return MAMA_STATUS_OK;
+    }
+    return MAMA_STATUS_NOT_FOUND;
 }

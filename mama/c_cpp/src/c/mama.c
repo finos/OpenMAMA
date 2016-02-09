@@ -51,53 +51,18 @@
 #define PROPERTY_FILE "mama.properties"
 #define WOMBAT_PATH_ENV "WOMBAT_PATH"
 #define MAMA_PROPERTY_BRIDGE "mama.bridge.provider"
+#define MAMA_ENTITLEMENT_LIB_FILEPATTERN "mamaent%s"
 #define DEFAULT_STATS_INTERVAL 60
 
-#ifdef WITH_ENTITLEMENTS
-#include <OeaClient.h>
-#include <OeaStatus.h>
-#define SERVERS_PROPERTY "entitlement.servers"
-#define MAX_ENTITLEMENT_SERVERS 32
+#include "entitlementinternal.h"
 #define MAX_USER_NAME_STR_LEN 64
 #define MAX_HOST_NAME_STR_LEN 64
 
 extern void initReservedFields (void);
 
 
-#if (OEA_MAJVERSION == 2 && OEA_MINVERSION >= 11) || OEA_MAJVERSION > 2
-
-void MAMACALLTYPE entitlementDisconnectCallback (oeaClient*,
-                                    const OEA_DISCONNECT_REASON,
-                                    const char * const,
-                                    const char * const,
-                                    const char * const);
-void MAMACALLTYPE entitlementUpdatedCallback (oeaClient*,
-                                 int openSubscriptionForbidden);
-void MAMACALLTYPE entitlementCheckingSwitchCallback (oeaClient*,
-                                        int isEntitlementsCheckingDisabled);
-#else
-
-void entitlementDisconnectCallback (oeaClient*,
-                                    const OEA_DISCONNECT_REASON,
-                                    const char * const,
-                                    const char * const,
-                                    const char * const);
-void entitlementUpdatedCallback (oeaClient*,
-                                 int openSubscriptionForbidden);
-void entitlementCheckingSwitchCallback (oeaClient*,
-                                        int isEntitlementsCheckingDisabled);
-#endif
-oeaClient *               gEntitlementClient = 0;
-oeaStatus                 gEntitlementStatus;
 mamaEntitlementCallbacks  gEntitlementCallbacks;
-static const char*        gServerProperty     = NULL;
-static const char*        gServers[MAX_ENTITLEMENT_SERVERS];
-static mama_status enableEntitlements (const char **servers);
-static const char*        gEntitled = "entitled";
-#else
-static const char*        gEntitled = "not entitled";
-#endif /*WITH_ENTITLEMENTS */
-
+extern const char*        gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 /* Sats Configuration*/
 int gLogQueueStats          = 1;
 int gLogTransportStats      = 1;
@@ -149,6 +114,7 @@ wproperty_t             gProperties      = 0;
 static mamaPayloadBridge    gDefaultPayload = NULL;
 
 static wthread_key_t last_err_key;
+
 
 /**
  * struct mamaApplicationGroup
@@ -204,6 +170,21 @@ typedef struct mamaPayloads_
 } mamaPayloads;
 
 /**
+ * @brief Structure for managing loaded entitlement libraries
+ */
+typedef struct mamaEntitlements_
+{
+    /* wtable of loaded entitlement libraries, keyed by name */
+    wtable_t            table;
+
+    /* Array of loaded entitlement libraries, indexed by order loaded */
+    mamaEntitlementLib* byIndex[MAMA_MAX_ENTITLEMENTS];
+
+    /* Count of number of currently loaded entitlement libraries */
+    mama_i32_t          count;
+} mamaEntitlements;
+
+/**
  * This structure contains data needed to control starting and stopping of
  * mama.
  */
@@ -214,6 +195,9 @@ typedef struct mamaImpl_
 
     /* Struct containing loaded payload bridges */
     mamaPayloads           payloads;
+
+    /* Struct containing loaded entitlement bridges */
+    mamaEntitlements       entitlements;
 
     unsigned int           myRefCount;
 
@@ -229,6 +213,7 @@ static char mama_ver_string[256];
 static mamaImpl gImpl = {
                             { NULL, {0}, 0 },         /* middlewares */
                             { NULL, {0}, 0 },         /* payloads */
+                            { NULL, {0}, 0 },         /* entitlements */
                             0,                        /* myRefCount */
                             0,                        /* init */
                             WSTATIC_MUTEX_INITIALIZER /* myLock */
@@ -246,6 +231,9 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
 mama_status
 mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                                  const char*        payloadName);
+
+mama_status
+mama_loadEntitlementBridgeInternal  (const char* name);
 
 /*  Description :   This function will free any memory associated with a
  *                  mamaApplicationContext object but will not free the
@@ -843,7 +831,15 @@ mama_openWithPropertiesCount (const char* path,
         mama_log (MAMA_LOG_LEVEL_FINE, "mama.message.allowmodify: true");
     }
 
-    mama_log (MAMA_LOG_LEVEL_FINE, "%s (%s)",mama_version, gEntitled);
+    if (strlen( (char*) gEntitlementBridges))
+    {
+    	mama_log (MAMA_LOG_LEVEL_FINE, "%s (entitled)",mama_version);
+    }
+    else
+    {
+    	mama_log (MAMA_LOG_LEVEL_FINE, "%s (non entitled)",mama_version);
+    }
+
 
     /* Iterate the currently loaded middleware bridges, log their version, and
      * increment the count of open bridges.
@@ -887,28 +883,32 @@ mama_openWithPropertiesCount (const char* path,
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
-#ifndef WITH_ENTITLEMENTS
-    mama_log (MAMA_LOG_LEVEL_WARN,
-                "\n********************************************************************************\n"
-                "Note: This build of the MAMA API is not enforcing entitlement checks.\n"
-                "Please see the Licensing file for details\n"
-                "**********************************************************************************");
-#else
-    result = enableEntitlements (NULL);
-    if (result != MAMA_STATUS_OK)
+    int bridgeIdx = 0;
+    while (NULL != gEntitlementBridges[bridgeIdx])
     {
-        mama_log (MAMA_LOG_LEVEL_SEVERE,
-                  "mama_openWithProperties(): "
-                  "Error connecting to Entitlements Server");
-        wthread_static_mutex_unlock (&gImpl.myLock);
-        mama_close();
-        
-        if (count)
-            *count = gImpl.myRefCount;
+        mama_log(MAMA_LOG_LEVEL_FINE,
+                 "Trying to load %s entitlement bridge.",
+                 gEntitlementBridges[bridgeIdx]);
 
-        return result;
+        result = mama_loadEntitlementBridgeInternal(gEntitlementBridges[bridgeIdx]);
+
+        if (MAMA_STATUS_OK != result)
+        {
+            mama_log(MAMA_LOG_LEVEL_SEVERE,
+                     "mama_openWithProperties(): "
+                     "Could not load %s entitlements library.",
+                     gEntitlementBridges[bridgeIdx]);
+            
+            wthread_static_mutex_unlock (&gImpl.myLock);
+            mama_close();
+            
+            if (count)
+                *count = gImpl.myRefCount;
+
+            return result;
+        }
+        bridgeIdx++;
     }
-#endif /* WITH_ENTITLEMENTS */
 
     mama_statsInit();
 
@@ -1183,8 +1183,16 @@ mama_getVersion (mamaBridge bridgeImpl)
     }
 
     /*Delegate the call to the bridge specific implementation*/
-    snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (%s)",
-             mama_version, impl->bridgeGetVersion (), gEntitled);
+    if (strlen( (char*) gEntitlementBridges))
+    {
+    	snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (entitled)",
+    			mama_version, impl->bridgeGetVersion ());
+    }
+    else
+    {
+    	snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (non entitled)",
+    			mama_version, impl->bridgeGetVersion ());
+    }
 
     return mama_ver_string;
 }
@@ -1195,6 +1203,7 @@ mama_closeCount (unsigned int* count)
     mama_status    result     = MAMA_STATUS_OK;
     mamaMiddleware middleware = 0;
     int payload = 0;
+    int bridgeCount = 0;
 
     wthread_static_mutex_lock (&gImpl.myLock);
     if (gImpl.myRefCount == 0)
@@ -1207,13 +1216,33 @@ mama_closeCount (unsigned int* count)
 
     if (!--gImpl.myRefCount)
     {
-#ifdef WITH_ENTITLEMENTS
-        if( gEntitlementClient != 0 )
+        for (bridgeCount=0 ; bridgeCount != gImpl.entitlements.count ; bridgeCount++)
         {
-            oeaClient_destroy( gEntitlementClient );
-            gEntitlementClient = 0;
+            mamaEntitlementLib* entLib = gImpl.entitlements.byIndex[bridgeCount];
+            if (entLib)
+            {
+                /* Remove from indexed list of entitlements libraries. */
+                gImpl.entitlements.byIndex[bridgeCount] = NULL;
+
+                /* Destroy the MAMA-level bridge and underlying implementation struct. */    
+                mamaEntitlementBridge_destroy(entLib->bridge);
+                entLib->bridge = NULL;
+
+                /* Destroy library struct. */
+                if (entLib->library)
+                {
+                    closeSharedLib (entLib->library);
+                    entLib->library = NULL;
+                }
+                free (entLib);
+            }
         }
-#endif /* WITH_ENTITLEMENTS */
+
+        /* Once the libraries have been unloaded, clear down the wtable. */
+        wtable_clear (gImpl.entitlements.table);
+
+        /* Reset the count of loaded entitlements libraries */
+        gImpl.entitlements.count = 0;
 
         wthread_key_delete(last_err_key);
 
@@ -1366,7 +1395,7 @@ mama_closeCount (unsigned int* count)
 
                 if(payloadLib->library)
                 {
-                    // closeSharedLib (payloadLib->library);
+                    closeSharedLib (payloadLib->library);
                     payloadLib->library = NULL;
                 }
 
@@ -1419,7 +1448,7 @@ mama_closeCount (unsigned int* count)
 
                 if (middlewareLib->library)
                 {
-                    // closeSharedLib (middlewareLib->library);
+                    closeSharedLib (middlewareLib->library);
                     middlewareLib->library = NULL;
                 }
 
@@ -1726,8 +1755,6 @@ mama_getIpAddress (const char** ipAddress)
     return MAMA_STATUS_OK;
 }
 
-#ifdef WITH_ENTITLEMENTS
-
 mama_status
 mama_registerEntitlementCallbacks (const mamaEntitlementCallbacks* entitlementCallbacks)
 {
@@ -1735,13 +1762,12 @@ mama_registerEntitlementCallbacks (const mamaEntitlementCallbacks* entitlementCa
     gEntitlementCallbacks = *entitlementCallbacks;
     return MAMA_STATUS_OK;
 }
-
-#if (OEA_MAJVERSION == 2 && OEA_MINVERSION >= 11) || OEA_MAJVERSION > 2
-void MAMACALLTYPE entitlementDisconnectCallback (oeaClient*                  client,
-                                    const OEA_DISCONNECT_REASON reason,
-                                    const char * const          userId,
-                                    const char * const          host,
-                                    const char * const          appName)
+ 
+void MAMACALLTYPE mamaImpl_entitlementDisconnectCallback (
+                            const sessionDisconnectReason  reason,
+                            const char * const             userId,
+                            const char * const             host,
+                            const char * const             appName)
 {
     if (gEntitlementCallbacks.onSessionDisconnect != NULL)
     {
@@ -1749,8 +1775,7 @@ void MAMACALLTYPE entitlementDisconnectCallback (oeaClient*                  cli
     }
 }
 
-void MAMACALLTYPE entitlementUpdatedCallback (oeaClient* client,
-                                 int openSubscriptionForbidden)
+void MAMACALLTYPE mamaImpl_entitlementUpdatedCallback ()
 {
     if (gEntitlementCallbacks.onEntitlementUpdate != NULL)
     {
@@ -1758,8 +1783,8 @@ void MAMACALLTYPE entitlementUpdatedCallback (oeaClient* client,
     }
 }
 
-void MAMACALLTYPE entitlementCheckingSwitchCallback (oeaClient* client,
-                                        int isEntitlementsCheckingDisabled)
+void MAMACALLTYPE mamaImpl_entitlementCheckingSwitchCallback (
+                            int isEntitlementsCheckingDisabled)
 {
     if (gEntitlementCallbacks.onEntitlementCheckingSwitch != NULL)
     {
@@ -1767,223 +1792,6 @@ void MAMACALLTYPE entitlementCheckingSwitchCallback (oeaClient* client,
     }
 }
 
-#else
-
-void entitlementDisconnectCallback (oeaClient*                  client,
-                                    const OEA_DISCONNECT_REASON reason,
-                                    const char * const          userId,
-                                    const char * const          host,
-                                    const char * const          appName)
-{
-    if (gEntitlementCallbacks.onSessionDisconnect != NULL)
-    {
-        gEntitlementCallbacks.onSessionDisconnect (reason, userId, host, appName);
-    }
-}
-
-void entitlementUpdatedCallback (oeaClient* client,
-                                 int openSubscriptionForbidden)
-{
-    if (gEntitlementCallbacks.onEntitlementUpdate != NULL)
-    {
-        gEntitlementCallbacks.onEntitlementUpdate();
-    }
-}
-
-void entitlementCheckingSwitchCallback (oeaClient* client,
-                                        int isEntitlementsCheckingDisabled)
-{
-    if (gEntitlementCallbacks.onEntitlementCheckingSwitch != NULL)
-    {
-        gEntitlementCallbacks.onEntitlementCheckingSwitch(isEntitlementsCheckingDisabled);
-    }
-}
-
-#endif
-
-
-const char **
-mdrvImpl_ParseServersProperty()
-{
-    char *ptr;
-    int idx = 0;
-
-    if (gServerProperty == NULL)
-    {
-        memset (gServers, 0, sizeof(gServers));
-
-        if( properties_Get (gProperties, SERVERS_PROPERTY) == NULL)
-        {
-            if (gMamaLogLevel)
-            {
-                mama_log( MAMA_LOG_LEVEL_WARN,
-                          "Failed to open properties file "
-                          "or no entitlement.servers property." );
-            }
-            return NULL;
-        }
-
-        gServerProperty = strdup (properties_Get (gProperties,
-                                                  SERVERS_PROPERTY));
-
-        if (gMamaLogLevel)
-        {
-            mama_log (MAMA_LOG_LEVEL_NORMAL,
-                      "entitlement.servers=%s",
-                      gServerProperty == NULL ? "NULL" : gServerProperty);
-        }
-
-        while( idx < MAX_ENTITLEMENT_SERVERS - 1 )
-        {
-            gServers[idx] = strtok_r (idx == 0 ? (char *)gServerProperty : NULL
-                                      , ",",
-                                      &ptr);
-
-
-            if (gServers[idx++] == NULL) /* last server parsed */
-            {
-                break;
-            }
-
-            if (gMamaLogLevel)
-            {
-                mama_log (MAMA_LOG_LEVEL_NORMAL,
-                          "Parsed entitlement server: %s",
-                          gServers[idx-1]);
-            }
-        }
-    }
-    return gServers;
-}
-
-static mama_status
-enableEntitlements (const char **servers)
-{
-    int size = 0;
-    const char* portLowStr = NULL;
-    const char* portHighStr = NULL;
-    int portLow = 8000;
-    int portHigh = 8001;
-    oeaCallbacks entitlementCallbacks;
-    const char* altUserId;
-    const char* altIp;
-    const char* site;
-    mamaMiddleware middleware = 0;
-    int entitlementsRequired = 0; /*boolean*/
-
-
-    if (gEntitlementClient != 0)
-    {
-        oeaClient_destroy (gEntitlementClient);
-        gEntitlementClient = 0;
-    }
-
-    for (middleware=0; middleware != MAMA_MIDDLEWARE_MAX; ++middleware)
-    {
-        mamaBridgeImpl* impl = (mamaBridgeImpl*) gImpl.myBridges [middleware];
-        if (impl)
-        {
-            /* Check if entitlements are deferred to bridge */
-            if (mamaBridgeImpl_areEntitlementsDeferred(impl) == 1)
-            {
-                mama_log (MAMA_LOG_LEVEL_WARN,
-                    "Entitlements deferred on %s bridge.",
-                    mamaMiddleware_convertToString (middleware));
-            }
-            else
-            {
-                /* Entitlements are not deferred, continue with entitlement checking */
-                entitlementsRequired = 1;
-            }
-        }
-    }
-
-    /* Entitlements are deferred, do not continue with entitlement checking */
-    if (entitlementsRequired==0)
-        return MAMA_STATUS_OK;
-
-    if (servers == NULL)
-    {
-        if (NULL == (servers = mdrvImpl_ParseServersProperty()))
-        {
-            return MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
-        }
-    }
-
-    while (servers[size] != NULL)
-    {
-        size = size + 1;
-    }
-
-    mama_log (MAMA_LOG_LEVEL_NORMAL,
-              "Attempting to connect to entitlement server");
-
-    portLowStr  = properties_Get (gProperties, "mama.entitlement.portlow");
-    portHighStr = properties_Get (gProperties, "mama.entitlement.porthigh");
-
-    /*properties_Get returns NULL if property does not exist, in which case
-      we just use defaults*/
-    if (portLowStr != NULL)
-    {
-        portLow  = (int)atof(portLowStr);
-    }
-
-    if (portHighStr != NULL)
-    {
-        portHigh = (int)atof(portHighStr);
-    }
-
-    altUserId   = properties_Get (gProperties, "mama.entitlement.altuserid");
-    site = properties_Get (gProperties, "mama.entitlement.site");
-    altIp = properties_Get (gProperties, "mama.entitlement.effective_ip_address");
-    entitlementCallbacks.onDisconnect = entitlementDisconnectCallback;
-    entitlementCallbacks.onEntitlementsUpdated = entitlementUpdatedCallback;
-    entitlementCallbacks.onSwitchEntitlementsChecking = entitlementCheckingSwitchCallback;
-
-    gEntitlementClient = oeaClient_create(&gEntitlementStatus,
-                                site,
-                                portLow,
-                                portHigh,
-                                servers,
-                                size);
-
-    if (gEntitlementStatus != OEA_STATUS_OK)
-    {
-        return gEntitlementStatus + MAMA_STATUS_BASE;
-    }
-
-    if (gEntitlementClient != 0)
-    {
-        if (OEA_STATUS_OK != (gEntitlementStatus = oeaClient_setCallbacks (gEntitlementClient, &entitlementCallbacks)))
-        {
-            return gEntitlementStatus + MAMA_STATUS_BASE;
-        }
-
-        if (OEA_STATUS_OK != (gEntitlementStatus = oeaClient_setAlternativeUserId (gEntitlementClient, altUserId)))
-        {
-            return gEntitlementStatus + MAMA_STATUS_BASE;
-        }
-
-        if (OEA_STATUS_OK != (gEntitlementStatus = oeaClient_setEffectiveIpAddress (gEntitlementClient, altIp)))
-        {
-            return gEntitlementStatus + MAMA_STATUS_BASE;
-        }
-
-        if (OEA_STATUS_OK != (gEntitlementStatus = oeaClient_setApplicationId (gEntitlementClient, appContext.myApplicationName)))
-        {
-            return gEntitlementStatus + MAMA_STATUS_BASE;
-        }
-
-        if (OEA_STATUS_OK != (gEntitlementStatus = oeaClient_downloadEntitlements ((oeaClient*const)gEntitlementClient)))
-        {
-            return gEntitlementStatus + MAMA_STATUS_BASE;
-        }
-    }
-
-    return MAMA_STATUS_OK;
-}
-
-#endif
 
 MAMADeprecated("mamaInternal_registerBridge has been deprecated, use dynamic loading instead!")
 void
@@ -2010,6 +1818,7 @@ mama_loadPayloadBridge (mamaPayloadBridge* impl,
 {
     return mama_loadPayloadBridgeInternal (impl, payloadName);
 }
+
 
 mama_status
 mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
@@ -2310,6 +2119,196 @@ error_handling_unlock:
     wthread_static_mutex_unlock (&gImpl.myLock);
     return status;
 }
+
+mama_status
+mama_loadEntitlementBridgeInternal(const char* name)
+{
+    mama_status         status                  = MAMA_STATUS_NOT_FOUND;
+    mamaEntitlementLib* entitlementLib          = NULL;
+    LIB_HANDLE          entitlementLibHandle    = NULL;
+    char                initFuncName[256];
+    char                entImplName[256];
+    void*               vp                      = NULL;
+    entitlementBridge_init initFunc             = NULL;
+    mamaEntitlementBridge  entBridge            = 0;
+
+    if (!name)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    status = mamaInternal_init ();
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadEntitlementBridgeInternal (): "
+                  "Error initialising internal MAMA state. Cannot load %s entitlements library"
+                  "[%s]", name, mamaStatus_stringForStatus(status));
+        return status;
+    }
+
+    /* Lock here as we don't want anything else being added to the table
+     * until either we've returned the appropriate bridge, or loaded and added
+     * the new one.
+     */
+    wthread_static_mutex_lock (&gImpl.myLock);
+
+    entitlementLib = (mamaEntitlementLib*) wtable_lookup (gImpl.entitlements.table,
+                                                         name);
+
+    if (entitlementLib && entitlementLib->bridge)
+    {
+        status = MAMA_STATUS_OK;
+        mama_log (MAMA_LOG_LEVEL_NORMAL,
+                  "mama_loadEntitlementBridgeInternal (): "
+                  "Entitlement bridge [%s] already loaded. Returning previously loaded bridge.",
+                  name);
+
+        /* Return the existing payload bridge implementation */
+        entBridge = entitlementLib->bridge;
+        goto error_handling_unlock;
+    }
+
+    /* Once we have checked if the bridge has already been loaded, check if
+     * we've already loaded the maximum number of bridges allowed,
+     * MAMA_MAX_ENTITLEMENTS. If we have, report an error and return.
+     */
+    if (gImpl.entitlements.count >= MAMA_MAX_ENTITLEMENTS)
+    {
+        status = MAMA_STATUS_NO_BRIDGE_IMPL;
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadEntitlementBridgeInternal (): "
+                  "Maximum number of available bridges has been loaded. Cannot load [%s].",
+                  name);
+        goto error_handling_unlock;
+    }
+
+    snprintf (entImplName, 256, MAMA_ENTITLEMENT_LIB_FILEPATTERN, name);
+
+    entitlementLibHandle = openSharedLib (entImplName, NULL);
+
+    if (!entitlementLibHandle)
+    {
+        status = MAMA_STATUS_NO_BRIDGE_IMPL;
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "mama_loadPayloadBridge(): "
+                "Could not open entitlement bridge library [%s] [%s]",
+                 name,
+                 getLibError());
+        goto error_handling_unlock;
+    }
+
+    snprintf (initFuncName, 256, "%sEntitlementBridge_init",  name);
+
+    /* Begin by searching for the *_init function */
+    vp          = loadLibFunc (entitlementLibHandle, initFuncName);
+    initFunc    = *(entitlementBridge_init*) &vp;
+
+    if (!initFunc)
+    {
+        status = MAMA_STATUS_NOT_IMPLEMENTED;
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadEntitlementBridgeInternal (): "
+                  "Could not find function [%s] in library [%s]",
+                  initFuncName,
+                  name);
+        goto error_handling_close_and_unlock;
+    }
+
+    entBridge   = (mamaEntitlementBridge) calloc (1, sizeof(mamaEntitlementBridge_));
+
+    if (NULL == entBridge)
+    {
+        status = MAMA_STATUS_NOMEM;
+        mama_log(MAMA_LOG_LEVEL_ERROR, 
+                "mama_loadEntitlementBridgeInternal (): "
+                 "Could not allocate memory for %s entitlement bridge.",
+                 name);
+        goto error_handling_bridge_allocated;
+    }
+
+
+    status = initFunc(&entBridge->mImpl);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadEntitlementBridgeInternal (): "
+                  "Failed to initialise entitlement bridge [%s]. Cannot load.",
+                  name);
+        goto error_handling_bridge_allocated;
+    }
+
+    /* Once the payload has been successfully allocated and initialised,
+     * we can use the function search to register various payload functions
+     */
+
+    status = mamaInternal_registerEntitlementFunctions (entitlementLibHandle,
+                                                        &entBridge,
+                                                        name);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadEntitlementBridgeInternal (): "
+                  "Failed to register functions for [%s] entitlement bridge.",
+                  name);
+        goto error_handling_close_and_unlock;
+    }
+
+    entitlementLib = calloc(1, sizeof(mamaEntitlementLib));
+    if (NULL == entitlementLib)
+    {
+        status = MAMA_STATUS_NOMEM;
+        mama_log(MAMA_LOG_LEVEL_ERROR, 
+                 "mama_loadEntitlementBridgeInternal (): "
+                 "Could not allocate entitlementLib %s.",
+                 name);
+        goto error_handling_unlock;
+    }
+
+    entitlementLib->bridge        = entBridge; 
+    entitlementLib->library       = entitlementLibHandle;
+
+    int insertCheck = wtable_insert (gImpl.entitlements.table,
+                            name,
+                            (void*)entitlementLib);
+
+    if (WTABLE_INSERT_SUCCESS != insertCheck)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadBridge (): "
+                  "Could not insert %s into entitlements table [%d].",
+                  name,
+                  insertCheck);
+    }
+    else
+    {
+
+        gImpl.entitlements.count++;
+
+        gImpl.entitlements.byIndex[gImpl.entitlements.count - 1] = entitlementLib;
+
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadEntitlementBridgeInternal (): "
+                  "Successfully loaded %s entitlement bridge from library [%s]",
+                  name,
+                  entImplName);
+    }
+
+    wthread_static_mutex_unlock (&gImpl.myLock);
+    return status;
+
+error_handling_bridge_allocated:
+    free(entBridge);
+error_handling_close_and_unlock:
+    closeSharedLib (entitlementLibHandle);
+error_handling_unlock:
+    wthread_static_mutex_unlock (&gImpl.myLock);
+    return status;
+
+}
+
 
 int
 mamaInternal_generateLbmStats ()
@@ -2835,8 +2834,9 @@ mamaInternal_init (void)
     mama_status status = MAMA_STATUS_OK;
 
     enum mamaInternalTableSize {
-        MIDDLEWARE_TABLE_SIZE = 5,
-        PAYLOAD_TABLE_SIZE    = 15
+        MIDDLEWARE_TABLE_SIZE  = 5,
+        PAYLOAD_TABLE_SIZE     = 15,
+        ENTITLEMENT_TABLE_SIZE = 5,
     };
 
     /* Lock the gImpl to ensure we don't clobber something else trying to
@@ -2862,6 +2862,17 @@ mamaInternal_init (void)
         status = mamaInternal_initialiseTable (&gImpl.payloads.table,
                                                "Payloads",
                                                PAYLOAD_TABLE_SIZE);
+
+        if (MAMA_STATUS_OK != status)
+        {
+            wthread_static_mutex_unlock (&gImpl.myLock);
+            return status;
+        }
+
+        /* Initialize the entitlements wtable */
+        status = mamaInternal_initialiseTable (&gImpl.entitlements.table,
+                                               "Entitlements",
+                                               ENTITLEMENT_TABLE_SIZE);
 
         if (MAMA_STATUS_OK != status)
         {
@@ -2937,4 +2948,43 @@ mamaInternal_getPayloadId (const char* payloadName,
     return status;
 }
 
+/**
+ * @brief Return count of entitlementBridges loaded.
+ * @return Integer number of loaded bridges.
+ */
+mama_i32_t
+mamaInternal_getEntitlementBridgeCount ()
+{
+    return gImpl.entitlements.count;
+}
 
+/**
+ * @brief Find loaded entitlement bridge by name.
+ *
+ * @param[in] name The name of the entitlement bridge to be found.
+ * @param[out] entBridge The loaded entitlement bridge (if found).
+ *
+ * @return MAMA_STATUS_OK if successful.
+ */
+mama_status
+mamaInternal_getEntitlementBridgeByName(mamaEntitlementBridge* entBridge, const char* name)
+{
+    mamaEntitlementLib* entitlementLib;
+    entitlementLib = (mamaEntitlementLib*) wtable_lookup (gImpl.entitlements.table,
+                                                         name);
+
+    if (entitlementLib && entitlementLib->bridge)
+    {
+        /* Return the existing entitlement bridge implementation */
+        *entBridge = entitlementLib->bridge;
+        return MAMA_STATUS_OK;
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_SEVERE,
+                  "mamaInternal_getEntitlementBridgeByName (): "
+                  "Could not find loaded entitlement library [%s].",
+                  name);
+        return MAMA_STATUS_NOT_FOUND;
+    }
+}

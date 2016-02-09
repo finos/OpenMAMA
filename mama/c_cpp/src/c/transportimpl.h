@@ -29,6 +29,7 @@
 #include "bridge.h"
 #include "throttle.h"
 #include "list.h"
+#include "mama/entitlement.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -317,6 +318,10 @@ mamaTransportImpl_forceClientDisconnect (mamaTransport   transport,
 
 extern mama_bool_t
 mamaTransportImpl_preRecapCacheEnabled (mamaTransport transport);
+
+
+mama_status 
+mamaTransportImpl_getEntitlementBridge(mamaTransport tport, mamaEntitlementBridge* entBridge);
 
 #if defined(__cplusplus)
 }

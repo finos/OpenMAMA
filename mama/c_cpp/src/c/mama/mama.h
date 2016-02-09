@@ -50,6 +50,7 @@
 #include <mama/subscriptiontype.h>
 #include <mama/quality.h>
 #include <mama/ft.h>
+#include <mama/entitlement.h>
 
 #if defined(__cplusplus)
 extern "C"
@@ -138,6 +139,7 @@ extern "C"
     MAMAExpDLL
     extern mama_status
     mama_loadPayloadBridge (mamaPayloadBridge*  bridge,  const char* payloadName);
+
 
     /** Load the bridge specified by middleware string using the path specified by the user.
      * If the bridge has already been loaded then the existing bridge instance
@@ -353,8 +355,8 @@ extern "C"
     /**
      * Start Mama in the background, with extended parameters.
      *
-     * This method performs the same functionality as mama_startBackground accept it 
-     * provides the facility to pass in a closure. The C++ wrapper layer uses this 
+     * This method performs the same functionality as mama_startBackground accept it
+     * provides the facility to pass in a closure. The C++ wrapper layer uses this
      * version of the function, and stores the MamaStartCallback object in the closure.
      *
      * @param[in] bridgeImpl The bridge specific structure.
@@ -400,7 +402,6 @@ extern "C"
     mama_status
     mama_setApplicationClassName (const char* className);
 
-#ifdef WITH_ENTITLEMENTS
     /**
      Entitlement disconnect status codes
      */
@@ -470,7 +471,6 @@ extern "C"
     MAMAExpDLL
     mama_status
     mama_registerEntitlementCallbacks (const mamaEntitlementCallbacks* entitlementCallbacks);
-#endif /*WITH_ENTITLEMENTS*/
 
     /**
      mama_getApplicationName - gets the mama application name

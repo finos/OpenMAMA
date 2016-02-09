@@ -24,7 +24,9 @@ def get_command_line_opts( host, products, VERSIONS ):
        BoolVariable('with_unittest','Build with gunit tests',False),
        BoolVariable('with_testtools','Build with test tools',False),
        BoolVariable('with_examples','Build with test tools',True),
-       BoolVariable('entitled','Whether the build is entitled or unentitled',False),
+       PathVariable('oea_home','Path to oea entitlements home',None, PathVariable.PathIsDir),
+       ListVariable('entitlements', 'List of entitlements libraries to enforce e.g. \'oea\' (NOTE: 1st in list the default entitlements library to use.)', '',
+                     names = ['oea','noop'] ),
        PathVariable('gtest_home','Path to Google Test home',None, PathVariable.PathIsDir),
        PathVariable('junit_home','Path to Junit home',None, PathVariable.PathIsDir),
        ListVariable('middleware','Middleware(s) to be compiled in', 'avis', names = ['avis', 'qpid'] ),
@@ -61,7 +63,7 @@ def get_command_line_opts( host, products, VERSIONS ):
     if host['os'] == 'Linux':
         opts.AddVariables(
             PathVariable('avis_home','Path to Avis', '/usr/local/', PathVariable.PathIsDir),
-            PathVariable('qpid_home','Path to QPID Proton Libraries', 
+            PathVariable('qpid_home','Path to QPID Proton Libraries',
                 '/usr/local/', PathVariable.PathIsDir),
             PathVariable('cache_dir','Path to object cache', None, PathVariable.PathIsDir),
             EnumVariable('product', 'Product to be built', 'mamda',

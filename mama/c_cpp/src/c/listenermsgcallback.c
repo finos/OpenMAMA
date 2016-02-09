@@ -33,17 +33,15 @@
 #include "mama/statfields.h"
 #include "msgimpl.h"
 #include "queueimpl.h"
+#include "mama/types.h"
 #include "mama/statscollector.h"
 
-#ifdef WITH_ENTITLEMENTS
-#include <OeaClient.h>
-extern oeaClient *   gEntitlementClient;
-#endif /* WITH_ENTITLEMENTS */
+#include "entitlementinternal.h"
 
-
-extern int gGenerateTransportStats;
-extern int gGenerateGlobalStats;
-extern int gGenerateQueueStats;
+extern const char*  gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES];
+extern int          gGenerateTransportStats;
+extern int          gGenerateGlobalStats;
+extern int          gGenerateQueueStats;
 
 /* Function prototypes. */
 void listenerMsgCallback_invokeErrorCallback(listenerMsgCallback callback,
@@ -85,13 +83,11 @@ listenerMsgCallback_create( listenerMsgCallback *result,
 {
     msgCallback* callback = (msgCallback*)calloc( 1, sizeof( msgCallback ) );
 
-#ifdef WITH_ENTITLEMENTS  /* No listener creation without a client. */
     mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-    if( gEntitlementClient == 0 && !(mamaBridgeImpl_areEntitlementsDeferred(bridge)))
+    if( NULL == gEntitlementBridges[0] && mamaInternal_getEntitlementBridgeCount() == 0)
     {
         return MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
     }
-#endif  /* WITH_ENTITLEMENTS */
 
     if( callback == NULL )
     {
@@ -375,13 +371,9 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         }
         case MAMA_MSG_STATUS_NOT_ENTITLED:
         {
-#ifdef WITH_ENTITLEMENTS 
             listenerMsgCallback_invokeErrorCallback(callback, ctx,
                     MAMA_STATUS_NOT_ENTITLED, subscription, userSymbol);
             return;
-#else
-            break;
-#endif
         }
         case MAMA_MSG_STATUS_TOPIC_CHANGE:
         {
@@ -625,7 +617,8 @@ static void handleNoSubscribers (msgCallback *callback,
 static int
 checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
 {
-#ifdef WITH_ENTITLEMENTS 
+    if (NULL == gEntitlementBridges[0])  return 1;  /* No entitlements enabled */
+
     int result = 0;
     int32_t value;
     if( ctx->mEntitlementAlreadyVerified )
@@ -660,16 +653,13 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
             return 1;
         }
         ctx->mEntitleCode = value;
-        if (ctx->mOeaSubscription != NULL)
+        if (ctx->mEntitlementBridge != NULL)
         {
-            oeaSubscription_addEntitlementCode (ctx->mOeaSubscription, ctx->mEntitleCode);
-            oeaSubscription_open (ctx->mOeaSubscription);
-            result = oeaSubscription_isOpen (ctx->mOeaSubscription);
-
-            if (!result)
+            mama_status status = ctx->mEntitlementBridge->registerSubjectContext(ctx);
+            if (MAMA_STATUS_OK != status)
             {
                 const char* userSymbol  = NULL;
-                void*       closure = NULL;
+                void*       closure     = NULL;
                 mamaMsgCallbacks *cbs =
                     mamaSubscription_getUserCallbacks (self->mSubscription);
 
@@ -701,9 +691,6 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
     }
 
     return result;
-#else 
-    return 1;
-#endif /* WITH_ENTITLEMENTS */
 }
 
 void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, mamaMsgStatus status,
