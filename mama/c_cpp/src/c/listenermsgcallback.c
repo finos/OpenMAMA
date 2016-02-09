@@ -617,16 +617,18 @@ static void handleNoSubscribers (msgCallback *callback,
 static int
 checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
 {
+    int             result = 0;
+    int32_t         value  = 0;
+    mamaBridgeImpl* bridge = NULL;
+
     if (NULL == gEntitlementBridges[0])  return 1;  /* No entitlements enabled */
 
-    int result = 0;
-    int32_t value;
     if( ctx->mEntitlementAlreadyVerified )
     {
         return 1;
     }
 
-    mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(self->mSubscription);
+    bridge = mamaSubscription_getBridgeImpl(self->mSubscription);
 
     if (bridge && (mamaBridgeImpl_areEntitlementsDeferred(bridge)))
     {

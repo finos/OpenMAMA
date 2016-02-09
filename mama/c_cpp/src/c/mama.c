@@ -719,7 +719,8 @@ mama_openWithPropertiesCount (const char* path,
     mama_size_t     numBridges              = 0;
     mamaMiddleware  middleware              = 0;
     const char*     appString               = NULL;
-    const char*     prop                     = NULL;
+    const char*     prop                    = NULL;
+    int             bridgeIdx               = 0;
     char**          payloadName;
     char*           payloadId;
 
@@ -883,7 +884,6 @@ mama_openWithPropertiesCount (const char* path,
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
-    int bridgeIdx = 0;
     while (NULL != gEntitlementBridges[bridgeIdx])
     {
         mama_log(MAMA_LOG_LEVEL_FINE,
@@ -2131,6 +2131,7 @@ mama_loadEntitlementBridgeInternal(const char* name)
     void*               vp                      = NULL;
     entitlementBridge_init initFunc             = NULL;
     mamaEntitlementBridge  entBridge            = 0;
+    int                    insertCheck          = 0;
 
     if (!name)
     {
@@ -2270,10 +2271,9 @@ mama_loadEntitlementBridgeInternal(const char* name)
     entitlementLib->bridge        = entBridge; 
     entitlementLib->library       = entitlementLibHandle;
 
-    int insertCheck = wtable_insert (gImpl.entitlements.table,
-                            name,
-                            (void*)entitlementLib);
-
+    insertCheck = wtable_insert (gImpl.entitlements.table,
+                                 name,
+                                 (void*)entitlementLib);
     if (WTABLE_INSERT_SUCCESS != insertCheck)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,

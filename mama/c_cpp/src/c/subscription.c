@@ -1206,8 +1206,8 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
             {
 
                 mamaTransport tport;
-                mamaSubscription_getTransport(subscription, &tport);
                 mamaEntitlementBridge entBridge;
+                mamaSubscription_getTransport(subscription, &tport);
                 mamaTransportImpl_getEntitlementBridge(tport, &entBridge);
 
                 entBridge->createSubscription (entBridge, &(self->mSubjectContext));
@@ -2432,9 +2432,11 @@ mamaSubscription_setTransportIndex (
 static int
 isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subscription, mamaTransport transport)
 {
-    int                 result = 0;
-    char                subject[WOMBAT_SUBJECT_MAX];
-    mamaBridgeImpl*     bridge = NULL;
+    int                   result = 0;
+    char                  subject[WOMBAT_SUBJECT_MAX];
+    mamaBridgeImpl*       bridge = NULL;
+    mamaEntitlementBridge entBridge = NULL;
+    entitlementSubscriptionHandle handle = NULL;
 
     snprintf (subject, WOMBAT_SUBJECT_MAX, "%s.%s", source, symbol);
 
@@ -2445,10 +2447,9 @@ isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subs
         return 1;
     }
 
-    mamaEntitlementBridge entBridge = NULL;
     mamaTransportImpl_getEntitlementBridge(transport, &entBridge);
 
-    entitlementSubscriptionHandle handle= self->mSubjectContext.mEntitlementSubscription->mImpl;
+    handle = self->mSubjectContext.mEntitlementSubscription->mImpl;
     result = entBridge->isAllowed(handle, subject);
     return result;
 }
