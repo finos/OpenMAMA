@@ -416,12 +416,13 @@ mamaSubscription_setupBasic (
     const char*              symbol,
     void*                    closure)
 {
-    const char*       root                      = WOMBAT_SUBSCRIPTION_ROOT_NORMAL;
-    mamaSubscMsgType  subscMsgType              = MAMA_SUBSC_SUBSCRIBE;
-    int               acceptMultipleInitials    = 0;
-    int               checkSeqNumGaps           = 1;
-    mama_status       status                    = MAMA_STATUS_OK;
-    mama_status       entitlementStatus         = MAMA_STATUS_OK;
+    const char*             root                    = WOMBAT_SUBSCRIPTION_ROOT_NORMAL;
+    mamaSubscMsgType        subscMsgType            = MAMA_SUBSC_SUBSCRIBE;
+    int                     acceptMultipleInitials  = 0;
+    int                     checkSeqNumGaps         = 1;
+    mama_status             status                  = MAMA_STATUS_OK;
+    mamaEntitlementBridge   mamaEntBridge           = NULL;
+    mama_status             entitlementStatus       = MAMA_STATUS_OK;
 
     if (!self)      return MAMA_STATUS_NULL_ARG;
     if (!transport) return MAMA_STATUS_INVALID_ARG;
@@ -453,7 +454,6 @@ mamaSubscription_setupBasic (
         }
         else
         {
-            mamaEntitlementBridge mamaEntBridge = NULL;
             mama_status status = mamaTransportImpl_getEntitlementBridge(transport, &mamaEntBridge);
         }
 
