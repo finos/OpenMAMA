@@ -1,29 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 9.00
-# Visual Studio 2005
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamac", "mama\c_cpp\src\c\mamac.vcproj", "{7F64D11F-C002-4271-BDEC-A82C614403EF}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamacpp", "mama\c_cpp\src\cpp\mamacpp.vcproj", "{66CB8ABC-8EA3-4FF6-B715-D878B37CCCB3}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "c", "c", "{F02CD330-5AFF-424D-B58C-5E875224AADB}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamalistenc", "mama\c_cpp\src\examples\c\openmamalistenc.vcproj", "{77CDA662-CA86-4713-A549-4F1422BD44DA}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaftmemberc", "mama\c_cpp\src\examples\c\openmamaftmemberc.vcproj", "{15708F06-E1C1-4D4C-AB5B-9C85AFCECDE6}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamainboxc", "mama\c_cpp\src\examples\c\openmamainboxc.vcproj", "{4C43471F-49C4-4096-94DE-06A831ABA2EB}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaioc", "mama\c_cpp\src\examples\c\openmamaiorc.vcproj", "{FE6A91CD-EFA6-4B00-8BCC-4456D4455F0C}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamamultisubscriberc", "mama\c_cpp\src\examples\c\openmamamultisubscriberc.vcproj", "{CF76DFB9-CF9C-4A12-8533-AE913CFF4CCD}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaproxyc", "mama\c_cpp\src\examples\c\openmamaproxyc.vcproj", "{83DCB92B-074C-4CC0-871F-3D51E6EC184D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamapublisherc", "mama\c_cpp\src\examples\c\openmamapublisherc.vcproj", "{1EA37392-E4EC-45E3-B541-6979B43CCFB0}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamasubscriberc", "mama\c_cpp\src\examples\c\openmamasubscriberc.vcproj", "{23FA8E8F-0A50-487C-96F1-95478E784757}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamasymbollistsubscriberc", "mama\c_cpp\src\examples\c\openmamasymbollistsubscriberc.vcproj", "{C03AD13F-ADF1-4DE4-94E4-B705E06FDBE8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "avis bridge", "avis bridge", "{F815FA9F-FAD2-47ED-B8A5-0BE55595E5E9}"
 EndProject
@@ -38,45 +16,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testtools", "testtools", "{F8FEA557-6D30-4A95-82AD-A7679B0CEDDA}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unittests", "unittests", "{B6DAAC0C-A281-476C-A773-13A311AB8FAB}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaftmembercpp", "mama\c_cpp\src\examples\cpp\openmamaftmembercpp.vcproj", "{AB5B600F-A155-4CFF-B073-E84A6482D81B}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamainboxcpp", "mama\c_cpp\src\examples\cpp\openmamainboxcpp.vcproj", "{85078467-A46E-4AA9-8DD7-5F0DD09D3EF3}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {7F64D11F-C002-4271-BDEC-A82C614403EF}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaiocpp", "mama\c_cpp\src\examples\cpp\openmamaiocpp.vcproj", "{A952F624-157E-42EB-BB37-0BD17D1083F1}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {7F64D11F-C002-4271-BDEC-A82C614403EF}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamalistencpp", "mama\c_cpp\src\examples\cpp\openmamalistencpp.vcproj", "{E5C9631A-E289-442E-8081-9E7F08F0BD53}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamamsgpublishercpp", "mama\c_cpp\src\examples\cpp\openmamamsgpublishercpp.vcproj", "{D22001DD-4D10-496B-A92D-BED4FC4C2992}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {7F64D11F-C002-4271-BDEC-A82C614403EF}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaproxycpp", "mama\c_cpp\src\examples\cpp\openmamaproxycpp.vcproj", "{CE0EF7A1-9BAC-4235-B527-36B16368543E}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {7F64D11F-C002-4271-BDEC-A82C614403EF}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamapublishercpp", "mama\c_cpp\src\examples\cpp\openmamapublishercpp.vcproj", "{6662750D-83B5-496B-AB93-4EBB214636B4}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {7F64D11F-C002-4271-BDEC-A82C614403EF}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamasubscribercpp", "mama\c_cpp\src\examples\cpp\openmamasubscribercpp.vcproj", "{F02B3DD1-29D1-438E-8B66-2983F8135C78}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {7F64D11F-C002-4271-BDEC-A82C614403EF}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamasymbollistsubscribercpp", "mama\c_cpp\src\examples\cpp\openmamasymbollistsubscribercpp.vcproj", "{26969B61-F959-4E18-A880-A3BD6E860BDB}"
-	ProjectSection(ProjectDependencies) = postProject
-		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {7F64D11F-C002-4271-BDEC-A82C614403EF}
-	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "c", "c", "{488DBD60-D365-413D-898A-0E6A4A535EC8}"
 EndProject
@@ -96,31 +35,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "c", "c", "{70A13FB6-C71A-4E
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cpp", "cpp", "{A4C13271-CFE9-4BC3-BC5D-3010B7E45EA6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamachurnc", "mama\c_cpp\src\testtools\load\c\mamachurnc.vcproj", "{4F3835D3-38BE-4D10-B7EA-C0B848619BC9}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamachurncpp", "mama\c_cpp\src\testtools\load\cpp\mamachurncpp.vcproj", "{6D07A5EA-C6F3-4E22-B691-C52A049D564F}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaconsumerc", "mama\c_cpp\src\testtools\performance\c\mamaconsumerc.vcproj", "{C613CFE1-92C7-4FDB-9D23-490C48823C0A}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamapingpong_replycpp", "mama\c_cpp\src\testtools\performance\cpp\mamapingpong_replycpp.vcproj", "{F277E1ED-3479-4320-B1BF-68C0AFED9180}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mamda", "mamda", "{8B23C15C-9572-4E07-BE8B-B46F1083F729}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamajni", "mama\jni\src\c\mamajni.vcproj", "{7C0C9F5F-8C56-4234-B3FA-883A4237095E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdacpp", "mamda\c_cpp\src\cpp\mamdacpp.vcproj", "{ECF5D76C-3A30-448C-9893-FB490DFABA55}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "testtools", "testtools", "{6CCCAAE7-7472-4C6F-BF78-414625CF29C2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{EE98F7B8-1AEA-40FF-B569-58154AFFD8D4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unittests", "unittests", "{E5866005-E9FE-4227-9185-CA4FFF8976BE}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdabook", "mamda\c_cpp\src\cpp\orderbooks\mamdabook.vcproj", "{6EB441CB-B065-43E0-ABA4-6CACE76B5722}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaoptions", "mamda\c_cpp\src\cpp\options\mamdaoptions.vcproj", "{12E1DAF4-2EC8-42BD-8E87-27CF15C49E3C}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdanews", "mamda\c_cpp\src\cpp\news\mamdanews.vcproj", "{A6F5201F-F69D-4042-8652-13AF056DDCE3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mamda", "mamda", "{CA15116B-2CDC-41D5-9E67-681FF40B4D8C}"
 EndProject
@@ -134,23 +55,91 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mamda", "mamda", "{99FC0A8C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "orderbooks", "orderbooks", "{D7AD7D67-31B4-4836-994B-1DE925830590}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bookselftest", "mamda\c_cpp\src\testtools\bookselftest.vcproj", "{C91AC7E1-D281-414F-9AE7-8B2084A674E1}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quoteselftest", "mamda\c_cpp\src\testtools\quoteselftest.vcproj", "{4D5A82D0-538B-4934-A060-03837BBD952D}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tradeselftest", "mamda\c_cpp\src\testtools\tradeselftest.vcproj", "{330F501E-9101-4E7E-AFC3-9572AE3D5A45}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "c", "c", "{9B58E89E-8063-4AE5-96AD-7B882D48F3F8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainUnitTestC", "mama\c_cpp\src\gunittest\c\MainUnitTestC.vcproj", "{87B57314-591C-4D86-BDAE-B94DA9225D31}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cpp", "cpp", "{275B80B1-762B-47EB-839C-BDB1491C2258}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainUnitTestCpp", "mama\c_cpp\src\gunittest\cpp\MainUnitTestCpp.vcproj", "{551E3E65-114E-4CBC-ABE3-D0ACCDD59976}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "orderbooks", "orderbooks", "{36A8032D-A486-48EE-AEDA-8F851858BEF3}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "mamda", "mamda", "{44239D51-837F-4815-89EF-8CDBFD8F70A6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{5D8720C1-EFDA-43F4-835E-7032F5C13C39}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{4049A887-810A-4095-9EC6-936D0F3EBB3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{5F8BA97F-2B3A-4DB8-B12C-601B08AD1089}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{34321A46-A7F4-42C5-A743-B1EBE3FA69EE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "qpid bridge", "qpid bridge", "{C84FEC0E-91BC-4E89-A566-44AC850A24AD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamac", "mama\c_cpp\src\c\mamac.vcxproj", "{7F64D11F-C002-4271-BDEC-A82C614403EF}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamacpp", "mama\c_cpp\src\cpp\mamacpp.vcxproj", "{66CB8ABC-8EA3-4FF6-B715-D878B37CCCB3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamalistenc", "mama\c_cpp\src\examples\c\openmamalistenc.vcxproj", "{77CDA662-CA86-4713-A549-4F1422BD44DA}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaftmemberc", "mama\c_cpp\src\examples\c\openmamaftmemberc.vcxproj", "{15708F06-E1C1-4D4C-AB5B-9C85AFCECDE6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamainboxc", "mama\c_cpp\src\examples\c\openmamainboxc.vcxproj", "{4C43471F-49C4-4096-94DE-06A831ABA2EB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaioc", "mama\c_cpp\src\examples\c\openmamaiorc.vcxproj", "{FE6A91CD-EFA6-4B00-8BCC-4456D4455F0C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamamultisubscriberc", "mama\c_cpp\src\examples\c\openmamamultisubscriberc.vcxproj", "{CF76DFB9-CF9C-4A12-8533-AE913CFF4CCD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaproxyc", "mama\c_cpp\src\examples\c\openmamaproxyc.vcxproj", "{83DCB92B-074C-4CC0-871F-3D51E6EC184D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamapublisherc", "mama\c_cpp\src\examples\c\openmamapublisherc.vcxproj", "{1EA37392-E4EC-45E3-B541-6979B43CCFB0}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamasubscriberc", "mama\c_cpp\src\examples\c\openmamasubscriberc.vcxproj", "{23FA8E8F-0A50-487C-96F1-95478E784757}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamasymbollistsubscriberc", "mama\c_cpp\src\examples\c\openmamasymbollistsubscriberc.vcxproj", "{C03AD13F-ADF1-4DE4-94E4-B705E06FDBE8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaftmembercpp", "mama\c_cpp\src\examples\cpp\openmamaftmembercpp.vcxproj", "{AB5B600F-A155-4CFF-B073-E84A6482D81B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamainboxcpp", "mama\c_cpp\src\examples\cpp\openmamainboxcpp.vcxproj", "{85078467-A46E-4AA9-8DD7-5F0DD09D3EF3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaiocpp", "mama\c_cpp\src\examples\cpp\openmamaiocpp.vcxproj", "{A952F624-157E-42EB-BB37-0BD17D1083F1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamalistencpp", "mama\c_cpp\src\examples\cpp\openmamalistencpp.vcxproj", "{E5C9631A-E289-442E-8081-9E7F08F0BD53}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamamsgpublishercpp", "mama\c_cpp\src\examples\cpp\openmamamsgpublishercpp.vcxproj", "{D22001DD-4D10-496B-A92D-BED4FC4C2992}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaproxycpp", "mama\c_cpp\src\examples\cpp\openmamaproxycpp.vcxproj", "{CE0EF7A1-9BAC-4235-B527-36B16368543E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamapublishercpp", "mama\c_cpp\src\examples\cpp\openmamapublishercpp.vcxproj", "{6662750D-83B5-496B-AB93-4EBB214636B4}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamasubscribercpp", "mama\c_cpp\src\examples\cpp\openmamasubscribercpp.vcxproj", "{F02B3DD1-29D1-438E-8B66-2983F8135C78}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamasymbollistsubscribercpp", "mama\c_cpp\src\examples\cpp\openmamasymbollistsubscribercpp.vcxproj", "{26969B61-F959-4E18-A880-A3BD6E860BDB}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamachurnc", "mama\c_cpp\src\testtools\load\c\mamachurnc.vcxproj", "{4F3835D3-38BE-4D10-B7EA-C0B848619BC9}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamachurncpp", "mama\c_cpp\src\testtools\load\cpp\mamachurncpp.vcxproj", "{6D07A5EA-C6F3-4E22-B691-C52A049D564F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamaconsumerc", "mama\c_cpp\src\testtools\performance\c\mamaconsumerc.vcxproj", "{C613CFE1-92C7-4FDB-9D23-490C48823C0A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamapingpong_replycpp", "mama\c_cpp\src\testtools\performance\cpp\mamapingpong_replycpp.vcxproj", "{F277E1ED-3479-4320-B1BF-68C0AFED9180}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamajni", "mama\jni\src\c\mamajni.vcxproj", "{7C0C9F5F-8C56-4234-B3FA-883A4237095E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdacpp", "mamda\c_cpp\src\cpp\mamdacpp.vcxproj", "{ECF5D76C-3A30-448C-9893-FB490DFABA55}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdabook", "mamda\c_cpp\src\cpp\orderbooks\mamdabook.vcxproj", "{6EB441CB-B065-43E0-ABA4-6CACE76B5722}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaoptions", "mamda\c_cpp\src\cpp\options\mamdaoptions.vcxproj", "{12E1DAF4-2EC8-42BD-8E87-27CF15C49E3C}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdanews", "mamda\c_cpp\src\cpp\news\mamdanews.vcxproj", "{A6F5201F-F69D-4042-8652-13AF056DDCE3}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "bookselftest", "mamda\c_cpp\src\testtools\bookselftest.vcxproj", "{C91AC7E1-D281-414F-9AE7-8B2084A674E1}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "quoteselftest", "mamda\c_cpp\src\testtools\quoteselftest.vcxproj", "{4D5A82D0-538B-4934-A060-03837BBD952D}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "tradeselftest", "mamda\c_cpp\src\testtools\tradeselftest.vcxproj", "{330F501E-9101-4E7E-AFC3-9572AE3D5A45}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainUnitTestC", "mama\c_cpp\src\gunittest\c\MainUnitTestC.vcxproj", "{87B57314-591C-4D86-BDAE-B94DA9225D31}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MainUnitTestCpp", "mama\c_cpp\src\gunittest\cpp\MainUnitTestCpp.vcxproj", "{551E3E65-114E-4CBC-ABE3-D0ACCDD59976}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mamadotnet", "mama\dotnet\src\cs\mamadotnet.csproj", "{B4483E45-D484-49D0-8477-18CC80CC9766}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -161,8 +150,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mamadotnet", "mama\dotnet\s
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mamdadotnet", "mamda\dotnet\src\cs\mamdadotnet.csproj", "{2B6B0518-89A5-40F2-B2C2-9EC3D8B11F3B}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{5D8720C1-EFDA-43F4-835E-7032F5C13C39}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMamaFtMemberCS", "mama\dotnet\src\examples\MamaFtMember\OpenMamaFtMemberCS.csproj", "{B3AC8869-55A8-4210-BE46-6540BDBBFCFC}"
 EndProject
@@ -182,8 +169,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMamaSymbolListSubscribe
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MamaChurnCS", "mama\dotnet\src\testtools\load\MamaChurn\MamaChurnCS.csproj", "{23794CD2-5385-473E-921A-037B15601756}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{4049A887-810A-4095-9EC6-936D0F3EBB3B}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMamdaBookChurn", "mamda\dotnet\src\examples\MamdaBookChurn\OpenMamdaBookChurn.csproj", "{BBDAAD52-3A9E-4D7F-B4A4-0F0CF6CF68BF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMamdaBookTicker", "mamda\dotnet\src\examples\MamdaBookTicker\OpenMamdaBookTicker.csproj", "{D6B29938-E8BB-4240-959E-DD07789E5514}"
@@ -200,11 +185,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMamdaOptionChainExample
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMamdaOptionChainViewExample", "mamda\dotnet\src\examples\MamdaOptionChainViewExample\OpenMamdaOptionChainViewExample.csproj", "{5EF786C7-6639-41DA-BA01-221A1F337DCE}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{5F8BA97F-2B3A-4DB8-B12C-601B08AD1089}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTest", "mama\dotnet\src\nunittest\NUnitTest.csproj", "{768FB27E-908C-40B5-8284-CC177004C7F4}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{34321A46-A7F4-42C5-A743-B1EBE3FA69EE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NUnitTest", "mamda\dotnet\src\NUnittest\NUnitTest.csproj", "{6DD4316D-C2B9-434C-B2F5-9BB4031B84B7}"
 EndProject
@@ -220,61 +201,59 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMamdaSecStatusTicker", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenMamdaTradeTicker", "mamda\dotnet\src\examples\MamdaTradeTicker\OpenMamdaTradeTicker.csproj", "{34199B73-4402-4A5C-A11D-788F7DF34097}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaauctionticker", "mamda\c_cpp\src\examples\openmamdaauctionticker.vcproj", "{5D9798AC-6E9A-4E91-90E9-65B89387426B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaauctionticker", "mamda\c_cpp\src\examples\openmamdaauctionticker.vcxproj", "{5D9798AC-6E9A-4E91-90E9-65B89387426B}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdacomboticker", "mamda\c_cpp\src\examples\openmamdacomboticker.vcproj", "{AF84C8DB-F0A7-4B97-BF79-D78D09926A28}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdacomboticker", "mamda\c_cpp\src\examples\openmamdacomboticker.vcxproj", "{AF84C8DB-F0A7-4B97-BF79-D78D09926A28}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdafundamentallisten", "mamda\c_cpp\src\examples\openmamdafundamentallisten.vcproj", "{1E6D41F9-1E9E-428F-AE9B-66806D867A73}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdafundamentallisten", "mamda\c_cpp\src\examples\openmamdafundamentallisten.vcxproj", "{1E6D41F9-1E9E-428F-AE9B-66806D867A73}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdalisten", "mamda\c_cpp\src\examples\openmamdalisten.vcproj", "{B76980E1-2165-4FE5-AC22-1B467A64EA46}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdalisten", "mamda\c_cpp\src\examples\openmamdalisten.vcxproj", "{B76980E1-2165-4FE5-AC22-1B467A64EA46}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdamultipartticker", "mamda\c_cpp\src\examples\openmamdamultipartticker.vcproj", "{BB920D9E-E3DF-4A12-ABC9-B80586D52939}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdamultipartticker", "mamda\c_cpp\src\examples\openmamdamultipartticker.vcxproj", "{BB920D9E-E3DF-4A12-ABC9-B80586D52939}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdamultisecurityticker", "mamda\c_cpp\src\examples\openmamdamultisecurityticker.vcproj", "{0E9A92A9-A489-4E35-8E65-D6E6E2D84785}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdamultisecurityticker", "mamda\c_cpp\src\examples\openmamdamultisecurityticker.vcxproj", "{0E9A92A9-A489-4E35-8E65-D6E6E2D84785}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdapublisher", "mamda\c_cpp\src\examples\openmamdapublisher.vcproj", "{F91CB36E-8E8E-468F-8EFF-0F01F4AA83B1}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdapublisher", "mamda\c_cpp\src\examples\openmamdapublisher.vcxproj", "{F91CB36E-8E8E-468F-8EFF-0F01F4AA83B1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaquoteticker", "mamda\c_cpp\src\examples\openmamdaquoteticker.vcproj", "{C721D6D7-9639-4704-B03A-646AE2F20BD6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaquoteticker", "mamda\c_cpp\src\examples\openmamdaquoteticker.vcxproj", "{C721D6D7-9639-4704-B03A-646AE2F20BD6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdasecstatuslisten", "mamda\c_cpp\src\examples\openmamdasecstatuslisten.vcproj", "{95F11497-C48C-41C1-885F-2238A7440694}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdasecstatuslisten", "mamda\c_cpp\src\examples\openmamdasecstatuslisten.vcxproj", "{95F11497-C48C-41C1-885F-2238A7440694}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdatradeticker", "mamda\c_cpp\src\examples\openmamdatradeticker.vcproj", "{7146D65F-1F62-4998-899F-F5B7BF3CCC7F}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdatradeticker", "mamda\c_cpp\src\examples\openmamdatradeticker.vcxproj", "{7146D65F-1F62-4998-899F-F5B7BF3CCC7F}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdanewsticker", "mamda\c_cpp\src\examples\news\openmamdanewsticker.vcproj", "{18533296-1F6C-4588-8432-51A9A6E755F6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdanewsticker", "mamda\c_cpp\src\examples\news\openmamdanewsticker.vcxproj", "{18533296-1F6C-4588-8432-51A9A6E755F6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaoptionchainer", "mamda\c_cpp\src\examples\openmamdaoptionchainer.vcproj", "{846D1B38-E46B-4BE4-A7EB-A7DDEEB344FC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaoptionchainer", "mamda\c_cpp\src\examples\openmamdaoptionchainer.vcxproj", "{846D1B38-E46B-4BE4-A7EB-A7DDEEB344FC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaoptionview", "mamda\c_cpp\src\examples\openmamdaoptionview.vcproj", "{293DCD27-DE5E-4F1D-9689-7E82D75EC427}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamdaoptionview", "mamda\c_cpp\src\examples\openmamdaoptionview.vcxproj", "{293DCD27-DE5E-4F1D-9689-7E82D75EC427}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdaatomicbookbuilder", "mamda\c_cpp\src\examples\orderbooks\openmamdaatomicbookbuilder.vcproj", "{B5CBA8C2-496E-44D2-B797-23B71216C7B0}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdaatomicbookbuilder", "mamda\c_cpp\src\examples\orderbooks\openmamdaatomicbookbuilder.vcxproj", "{B5CBA8C2-496E-44D2-B797-23B71216C7B0}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdaatomicbookticker", "mamda\c_cpp\src\examples\orderbooks\openmamdaatomicbookticker.vcproj", "{79245718-94C7-4FFC-8528-E8CA8CE08D38}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdaatomicbookticker", "mamda\c_cpp\src\examples\orderbooks\openmamdaatomicbookticker.vcxproj", "{79245718-94C7-4FFC-8528-E8CA8CE08D38}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdabookpublisher", "mamda\c_cpp\src\examples\orderbooks\openmamdabookpublisher.vcproj", "{486D57E2-68C9-4E16-8ADE-00E667D051B6}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdabookpublisher", "mamda\c_cpp\src\examples\orderbooks\openmamdabookpublisher.vcxproj", "{486D57E2-68C9-4E16-8ADE-00E667D051B6}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdabookticker", "mamda\c_cpp\src\examples\orderbooks\openmamdabookticker.vcproj", "{BA23A724-7B8D-44DD-A210-4F53110E26F2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdabookticker", "mamda\c_cpp\src\examples\orderbooks\openmamdabookticker.vcxproj", "{BA23A724-7B8D-44DD-A210-4F53110E26F2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdalistenerBookPublisher", "mamda\c_cpp\src\examples\orderbooks\openmamdalistenerBookPublisher.vcproj", "{54FCF8E4-7A3E-4C76-B65A-7360EA701D4C}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "openmamdalistenerBookPublisher", "mamda\c_cpp\src\examples\orderbooks\openmamdalistenerBookPublisher.vcxproj", "{54FCF8E4-7A3E-4C76-B65A-7360EA701D4C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "qpid bridge", "qpid bridge", "{C84FEC0E-91BC-4E89-A566-44AC850A24AD}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qpid", "mama\c_cpp\src\c\bridge\qpid\qpid.vcxproj", "{C31761B3-B992-4F70-9E16-CBE00189EBFC}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qpid", "mama\c_cpp\src\c\bridge\qpid\qpid.vcproj", "{C31761B3-B992-4F70-9E16-CBE00189EBFC}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qpidmsg", "mama\c_cpp\src\c\payload\qpidmsg\qpidmsg.vcxproj", "{5EBEA257-3507-45E6-92A0-E4597B8C0260}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qpidmsg", "mama\c_cpp\src\c\payload\qpidmsg\qpidmsg.vcproj", "{5EBEA257-3507-45E6-92A0-E4597B8C0260}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "avis", "mama\c_cpp\src\c\bridge\avis\avis.vcxproj", "{E8BD565D-E1C8-40FF-8849-C54F9F572CE8}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "avis", "mama\c_cpp\src\c\bridge\avis\avis.vcproj", "{E8BD565D-E1C8-40FF-8849-C54F9F572CE8}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "avismsg", "mama\c_cpp\src\c\payload\avismsg\avismsg.vcxproj", "{D56DD500-DDE6-495B-BBC8-95E721751904}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "avismsg", "mama\c_cpp\src\c\payload\avismsg\avismsg.vcproj", "{D56DD500-DDE6-495B-BBC8-95E721751904}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonc", "common\c_cpp\src\c\commonc.vcxproj", "{45F0CC89-C5CD-4AF6-9911-DDF0557F788A}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonc", "common\c_cpp\src\c\commonc.vcproj", "{45F0CC89-C5CD-4AF6-9911-DDF0557F788A}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commoncpp", "common\c_cpp\src\cpp\commoncpp.vcxproj", "{B58FB672-1BBC-4889-BBDD-9DE5012140E2}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commoncpp", "common\c_cpp\src\cpp\commoncpp.vcproj", "{B58FB672-1BBC-4889-BBDD-9DE5012140E2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "capturec", "mama\c_cpp\src\testtools\capturereplay\c\capturec.vcxproj", "{23AAC519-29F2-4AED-A2F2-2E22A47C4451}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "capturec", "mama\c_cpp\src\testtools\capturereplay\c\capturec.vcproj", "{23AAC519-29F2-4AED-A2F2-2E22A47C4451}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "captureconvert", "mama\c_cpp\src\testtools\capturereplay\c\captureconvert.vcxproj", "{C490299D-18E7-4833-BE4F-E1A5B529B67E}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "captureconvert", "mama\c_cpp\src\testtools\capturereplay\c\captureconvert.vcproj", "{C490299D-18E7-4833-BE4F-E1A5B529B67E}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "capturereplayc", "mama\c_cpp\src\testtools\capturereplay\c\capturereplayc.vcproj", "{576070A7-A30B-4EDA-ACB2-A2B878EA6E98}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "capturereplayc", "mama\c_cpp\src\testtools\capturereplay\c\capturereplayc.vcxproj", "{576070A7-A30B-4EDA-ACB2-A2B878EA6E98}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1579,16 +1558,19 @@ Global
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{66CB8ABC-8EA3-4FF6-B715-D878B37CCCB3} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
 		{3AD83464-DC7F-415B-937C-471E3C9F60CF} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
-		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
 		{F8FEA557-6D30-4A95-82AD-A7679B0CEDDA} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
 		{B6DAAC0C-A281-476C-A773-13A311AB8FAB} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
+		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
+		{66CB8ABC-8EA3-4FF6-B715-D878B37CCCB3} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
 		{7C0C9F5F-8C56-4234-B3FA-883A4237095E} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
 		{B4483E45-D484-49D0-8477-18CC80CC9766} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
+		{E8BD565D-E1C8-40FF-8849-C54F9F572CE8} = {F815FA9F-FAD2-47ED-B8A5-0BE55595E5E9}
+		{D56DD500-DDE6-495B-BBC8-95E721751904} = {F815FA9F-FAD2-47ED-B8A5-0BE55595E5E9}
 		{F02CD330-5AFF-424D-B58C-5E875224AADB} = {3AD83464-DC7F-415B-937C-471E3C9F60CF}
 		{B9251F5D-0D8E-4BCF-A736-D87E29531FBC} = {3AD83464-DC7F-415B-937C-471E3C9F60CF}
 		{5D8720C1-EFDA-43F4-835E-7032F5C13C39} = {3AD83464-DC7F-415B-937C-471E3C9F60CF}
+		{77CDA662-CA86-4713-A549-4F1422BD44DA} = {F02CD330-5AFF-424D-B58C-5E875224AADB}
 		{15708F06-E1C1-4D4C-AB5B-9C85AFCECDE6} = {F02CD330-5AFF-424D-B58C-5E875224AADB}
 		{4C43471F-49C4-4096-94DE-06A831ABA2EB} = {F02CD330-5AFF-424D-B58C-5E875224AADB}
 		{FE6A91CD-EFA6-4B00-8BCC-4456D4455F0C} = {F02CD330-5AFF-424D-B58C-5E875224AADB}
@@ -1597,9 +1579,8 @@ Global
 		{1EA37392-E4EC-45E3-B541-6979B43CCFB0} = {F02CD330-5AFF-424D-B58C-5E875224AADB}
 		{23FA8E8F-0A50-487C-96F1-95478E784757} = {F02CD330-5AFF-424D-B58C-5E875224AADB}
 		{C03AD13F-ADF1-4DE4-94E4-B705E06FDBE8} = {F02CD330-5AFF-424D-B58C-5E875224AADB}
-		{77CDA662-CA86-4713-A549-4F1422BD44DA} = {F02CD330-5AFF-424D-B58C-5E875224AADB}
-		{E8BD565D-E1C8-40FF-8849-C54F9F572CE8} = {F815FA9F-FAD2-47ED-B8A5-0BE55595E5E9}
-		{D56DD500-DDE6-495B-BBC8-95E721751904} = {F815FA9F-FAD2-47ED-B8A5-0BE55595E5E9}
+		{45F0CC89-C5CD-4AF6-9911-DDF0557F788A} = {F7FDF0C8-7EB4-4342-AA2A-9970B2AAA8F9}
+		{B58FB672-1BBC-4889-BBDD-9DE5012140E2} = {F7FDF0C8-7EB4-4342-AA2A-9970B2AAA8F9}
 		{AB5B600F-A155-4CFF-B073-E84A6482D81B} = {B9251F5D-0D8E-4BCF-A736-D87E29531FBC}
 		{85078467-A46E-4AA9-8DD7-5F0DD09D3EF3} = {B9251F5D-0D8E-4BCF-A736-D87E29531FBC}
 		{A952F624-157E-42EB-BB37-0BD17D1083F1} = {B9251F5D-0D8E-4BCF-A736-D87E29531FBC}
@@ -1609,8 +1590,6 @@ Global
 		{6662750D-83B5-496B-AB93-4EBB214636B4} = {B9251F5D-0D8E-4BCF-A736-D87E29531FBC}
 		{F02B3DD1-29D1-438E-8B66-2983F8135C78} = {B9251F5D-0D8E-4BCF-A736-D87E29531FBC}
 		{26969B61-F959-4E18-A880-A3BD6E860BDB} = {B9251F5D-0D8E-4BCF-A736-D87E29531FBC}
-		{45F0CC89-C5CD-4AF6-9911-DDF0557F788A} = {F7FDF0C8-7EB4-4342-AA2A-9970B2AAA8F9}
-		{B58FB672-1BBC-4889-BBDD-9DE5012140E2} = {F7FDF0C8-7EB4-4342-AA2A-9970B2AAA8F9}
 		{3E7E1659-492C-4069-92E1-C0B9D8F9D0DD} = {F8FEA557-6D30-4A95-82AD-A7679B0CEDDA}
 		{7E0A191D-279E-4DF5-AC7B-45775D67369D} = {F8FEA557-6D30-4A95-82AD-A7679B0CEDDA}
 		{A91D3C28-1CFC-41FA-93EB-508E80C3EA76} = {F8FEA557-6D30-4A95-82AD-A7679B0CEDDA}
@@ -1630,10 +1609,10 @@ Global
 		{576070A7-A30B-4EDA-ACB2-A2B878EA6E98} = {6E8B0517-0104-40BD-848E-E654B85BEA83}
 		{C613CFE1-92C7-4FDB-9D23-490C48823C0A} = {70A13FB6-C71A-4E9D-9408-BBB45FC04508}
 		{F277E1ED-3479-4320-B1BF-68C0AFED9180} = {A4C13271-CFE9-4BC3-BC5D-3010B7E45EA6}
-		{ECF5D76C-3A30-448C-9893-FB490DFABA55} = {8B23C15C-9572-4E07-BE8B-B46F1083F729}
 		{6CCCAAE7-7472-4C6F-BF78-414625CF29C2} = {8B23C15C-9572-4E07-BE8B-B46F1083F729}
 		{EE98F7B8-1AEA-40FF-B569-58154AFFD8D4} = {8B23C15C-9572-4E07-BE8B-B46F1083F729}
 		{E5866005-E9FE-4227-9185-CA4FFF8976BE} = {8B23C15C-9572-4E07-BE8B-B46F1083F729}
+		{ECF5D76C-3A30-448C-9893-FB490DFABA55} = {8B23C15C-9572-4E07-BE8B-B46F1083F729}
 		{6EB441CB-B065-43E0-ABA4-6CACE76B5722} = {8B23C15C-9572-4E07-BE8B-B46F1083F729}
 		{12E1DAF4-2EC8-42BD-8E87-27CF15C49E3C} = {8B23C15C-9572-4E07-BE8B-B46F1083F729}
 		{A6F5201F-F69D-4042-8652-13AF056DDCE3} = {8B23C15C-9572-4E07-BE8B-B46F1083F729}
