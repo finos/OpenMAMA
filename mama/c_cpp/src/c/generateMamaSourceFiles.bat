@@ -25,4 +25,10 @@ echo #endif >> %BUILD_DIR%\mama\version.h
 echo /* This file was automatically generated */ > %BUILD_DIR%\version.c
 echo const char* mama_version = "mama %VERSION_MAJOR%.%VERSION_MINOR%.%VERSION_RELEASE%"; >> %BUILD_DIR%\version.c
 
+echo "generating %BUILD_DIR%/entitlementlibraries.c"  
+
+echo /* This file was automatically generated */ > %BUILD_DIR%\entitlementlibraries.c
+echo #include ^<mamainternal.h^> >> %BUILD_DIR%\entitlementlibraries.c
+echo const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {0}; >> %BUILD_DIR%\entitlementlibraries.c
+
 echo "complete" 

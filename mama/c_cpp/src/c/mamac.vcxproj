@@ -75,7 +75,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
-      <Command>$(ProjectDir)\generateMamaVersion.bat $(ProjectDir)</Command>
+      <Command>$(ProjectDir)\generateMamaSourceFiles.bat $(ProjectDir)</Command>
     </PreBuildEvent>
     <ClCompile>
       <AdditionalOptions>/D "_CRTDBG_MAP_ALLOC" /FI "stdlib.h" /FI "crtdbg.h"  %(AdditionalOptions)</AdditionalOptions>
@@ -104,7 +104,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
-      <Command>$(ProjectDir)\generateMamaVersion.bat $(ProjectDir)</Command>
+      <Command>$(ProjectDir)\generateMamaSourceFiles.bat $(ProjectDir)</Command>
     </PreBuildEvent>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -135,7 +135,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
-      <Command>$(ProjectDir)\generateMamaVersion.bat $(ProjectDir)</Command>
+      <Command>$(ProjectDir)\generateMamaSourceFiles.bat $(ProjectDir)</Command>
     </PreBuildEvent>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -164,7 +164,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
-      <Command>$(ProjectDir)\generateMamaVersion.bat $(ProjectDir)</Command>
+      <Command>$(ProjectDir)\generateMamaSourceFiles.bat $(ProjectDir)</Command>
     </PreBuildEvent>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -216,6 +216,8 @@
     <ClCompile Include="dqpublishermanager.c" />
     <ClCompile Include="dqstrategy.c" />
     <ClCompile Include="error.c" />
+    <ClCompile Include="entitlement.c" />
+    <ClCompile Include="entitlementlibraries.c" />
     <ClCompile Include="fielddesc.c" />
     <ClCompile Include="fileutils.c" />
     <ClCompile Include="ft.c" />
@@ -295,6 +297,7 @@
     <ClInclude Include="mama\datetime.h" />
     <ClInclude Include="datetimeimpl.h" />
     <ClInclude Include="mama\dictionary.h" />
+    <ClInclude Include="mama\entitlement.h" />
     <ClInclude Include="dictionaryimpl.h" />
     <ClInclude Include="mama\dqpublisher.h" />
     <ClInclude Include="mama\dqpublishermanager.h" />
