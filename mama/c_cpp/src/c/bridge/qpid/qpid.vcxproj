@@ -142,6 +142,7 @@
     <ClCompile Include="io.c" />
     <ClCompile Include="msg.c" />
     <ClCompile Include="publisher.c" />
+    <ClCompile Include="qpidcommon.c" />
     <ClCompile Include="queue.c" />
     <ClCompile Include="subscription.c" />
     <ClCompile Include="timer.c" />
@@ -155,6 +156,7 @@
     <ClInclude Include="msg.h" />
     <ClInclude Include="publisher.h" />
     <ClInclude Include="qpidbridgefunctions.h" />
+    <ClInclude Include="qpidcommon.h" />
     <ClInclude Include="qpiddefs.h" />
     <ClInclude Include="subscription.h" />
     <ClInclude Include="transport.h" />
