@@ -97,7 +97,7 @@
     </ClCompile>
     <Link>
       <AdditionalDependencies>gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(GTEST_HOME)\msvc\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(GTEST_HOME)\msvc\gtest\$(Configuration)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
