@@ -22,7 +22,6 @@
 
 #include <gtest/gtest.h>
 #include "MainUnitTestC.h"
-#include "wombat/wConfig.h"
 #include "mama/types.h"
 #include "mama/timer.h"
 #include "mama/queue.h"
