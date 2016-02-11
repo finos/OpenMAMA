@@ -96,7 +96,6 @@ openmama_install*
 # #######################################
 obj/
 bin/
-app.config
 *.user
 x64/
 Debug/
