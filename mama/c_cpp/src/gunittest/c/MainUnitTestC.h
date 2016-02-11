@@ -35,14 +35,14 @@
      }                                                                         \
  } while (0);
 
-#define CHECK_NON_IMPLEMENTED_MANDATORY(status)   ALLOW_NON_IMPLEMENTED(MANDATORY,   status)
-#define CHECK_NON_IMPLEMENTED_RECOMMENDED(status) ALLOW_NON_IMPLEMENTED(RECOMMENDED, status)
-#define CHECK_NON_IMPLEMENTED_OPTIONAL(status)    ALLOW_NON_IMPLEMENTED(OPTIONAL,    status)
+#define CHECK_NON_IMPLEMENTED_MANDATORY(status)   ALLOW_NON_IMPLEMENTED(MANDATORY,    status)
+#define CHECK_NON_IMPLEMENTED_RECOMMENDED(status) ALLOW_NON_IMPLEMENTED(RECOMMENDED,  status)
+#define CHECK_NON_IMPLEMENTED_OPTIONAL(status)    ALLOW_NON_IMPLEMENTED(DISCRETIONAL, status)
 
 typedef enum gtest_strictness {
     MANDATORY,
     RECOMMENDED,
-    OPTIONAL,
+    DISCRETIONAL,
     NONE
 } gtest_strictness;
 

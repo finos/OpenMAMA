@@ -2070,7 +2070,6 @@ mamaMsg_toString(
 MAMAIgnoreDeprecatedOpen
 MAMAExpDeprecatedDLL(
         "mamaMsg_freeString has been deprecated - memory now managed by bridge")
-MAMAExpDLL
 extern void
 mamaMsg_freeString(
     const mamaMsg  msg,

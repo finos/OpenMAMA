@@ -25,7 +25,7 @@
 #include <mama/status.h>
 #include <wombat/port.h>
 #include <string>
-#include <MainUnitTestC.h>
+#include "MainUnitTestC.h"
 
 #ifndef WOMBAT_CONFIG_NO_NAMESPACES
  using std::string;
@@ -44,7 +44,7 @@ static const char*       gMiddleware = "wmw";
 static const char*       gPayload    = "wmsg";
 static char              gPayloadId  = 'W';
 static const char*       gTransport  = "tport";
-static gtest_strictness  gStrictness  = OPTIONAL;
+static gtest_strictness  gStrictness  = DISCRETIONAL;
 static const char*       gSymbol     = "SYM";
 static const char*       gSource     = "SRC";
 static const char*       gBadSource  = "BADSRC";
@@ -144,9 +144,9 @@ static void parseCommandLine (int argc, char** argv)
             {
                 gStrictness = RECOMMENDED;
             }
-            else if (strcasecmp ("OPTIONAL", argv[i+1]) == 0)
+            else if (strcasecmp ("DISCRETIONAL", argv[i+1]) == 0)
             {
-                gStrictness = OPTIONAL;
+                gStrictness = DISCRETIONAL;
             }
             else if (strcasecmp ("NONE", argv[i+1]) == 0)
             {
