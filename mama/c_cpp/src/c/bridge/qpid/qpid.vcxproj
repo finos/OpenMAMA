@@ -78,7 +78,7 @@
     <Link>
       <AdditionalDependencies>wsock32.lib;qpid-protond.lib;libevent.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)libmama$(ProjectName)implmdd.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(PROTON_HOME)\$(Platform)\$(Configuration);$(EVENT_HOME)\WIN32-Prj\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PROTON_HOME)\$(Configuration);$(EVENT_HOME)\WIN32-Prj\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>/NODEFAULTLIB:LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -107,7 +107,7 @@
     <Link>
       <AdditionalDependencies>wsock32.lib;qpid-proton.lib;libevent.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)libmama$(ProjectName)implmd.dll</OutputFile>
-      <AdditionalLibraryDirectories>$(PROTON_HOME)\$(Platform)\$(Configuration);$(EVENT_HOME)\WIN32-Prj\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(PROTON_HOME)\$(Configuration);$(EVENT_HOME)\WIN32-Prj\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
