@@ -97,11 +97,11 @@ MAMAExpDLL
 extern mamaStatsCollector
 mamaInternal_getGlobalStatsCollector (void);
 
-MAMAExpBridgeDLL
+MAMAExpDLL
 extern int
 mamaInternal_generateLbmStats (void);
 
-MAMAExpBridgeDLL
+MAMAExpDLL
 mamaBridge
 mamaInternal_findBridge (void);
 

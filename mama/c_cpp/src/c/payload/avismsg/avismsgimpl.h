@@ -619,6 +619,7 @@ mama_status avisValue_getMsg(const Value* pValue, mamaMsg* result);
 
 mama_status avisValue_getFieldAsString(const Value* pValue, const char* name, mama_fid_t fid, char* buf, size_t len);
 
+MAMAExpBridgeDLL
 mama_status
 avismsgPayload_setAttributes (msgPayload  msg,
                               Attributes* attributes);

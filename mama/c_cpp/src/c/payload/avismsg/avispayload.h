@@ -38,30 +38,43 @@ MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_createImpl        (mamaPayloadBridge* result, char* identifier);
 
+MAMAExpBridgeDLL
 extern mamaPayloadType
 avismsgPayload_getType           (void);
 
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_create            (msgPayload*         msg);
 
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_createForTemplate (msgPayload*         msg,
                                 mamaPayloadBridge       bridge,
                                 mama_u32_t          templateId);
+
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_copy              (const msgPayload    msg,
                                 msgPayload*         copy);
+
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_clear             (msgPayload          msg);
+
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_destroy           (msgPayload          msg);
+
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_setParent         (msgPayload          msg,
                                const mamaMsg       parent);
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_getByteSize       (const msgPayload    msg,
                                 mama_size_t*        size);
 
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_getNumFields      (const msgPayload    msg,
                                 mama_size_t*        numFields);
@@ -95,7 +108,7 @@ avismsgPayload_unSerialize (const msgPayload    payload,
                            const void*        buffer,
                            mama_size_t        bufferLength);
 
-
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_getByteBuffer     (const msgPayload    msg,
                                 const void**        buffer,
@@ -360,6 +373,8 @@ avismsgPayload_updateF64
                                 const char*         name,
                                 mama_fid_t          fid,
                                 mama_f64_t          value);
+
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_updateString      (msgPayload          msg,
                                 const char*         name,
@@ -542,6 +557,8 @@ avismsgPayload_getF64            (const msgPayload    msg,
                                 const char*         name,
                                 mama_fid_t          fid,
                                 mama_f64_t*         result);
+
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_getString         (const msgPayload    msg,
                                 const char*         name,
@@ -689,6 +706,8 @@ avismsgPayloadIter_end           (msgPayloadIter      iter,
 extern mama_status
 avismsgPayloadIter_associate     (msgPayloadIter      iter,
                                 msgPayload          msg);
+
+MAMAExpBridgeDLL
 extern mama_status
 avismsgPayloadIter_destroy       (msgPayloadIter      iter);
 
@@ -813,6 +832,8 @@ avismsgFieldPayload_getF32       (const msgFieldPayload   field,
 extern mama_status
 avismsgFieldPayload_getF64       (const msgFieldPayload   field,
                                 mama_f64_t*             result);
+
+MAMAExpBridgeDLL
 extern mama_status
 avismsgFieldPayload_getString    (const msgFieldPayload   field,
                                 const char**            result);

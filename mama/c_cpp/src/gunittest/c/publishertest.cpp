@@ -22,7 +22,6 @@
 
 #include <gtest/gtest.h>
 #include "MainUnitTestC.h"
-#include "wombat/wConfig.h"
 #include "mama/types.h"
 #include "mama/timer.h"
 #include "mama/queue.h"
@@ -262,9 +261,9 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacks)
     pubOnDestroyCount = 0;
 
     mamaPublisherCallbacks_allocate(&cb);
-    cb->onError = pubOnError;
-    cb->onCreate = pubOnCreate;
-    cb->onDestroy = pubOnDestroy;
+    cb->onError = (mama_publisherOnErrorCb) pubOnError;
+    cb->onCreate = (mama_publisherOnCreateCb) pubOnCreate;
+    cb->onDestroy = (mama_publisherOnDestroyCb) pubOnDestroy;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -284,7 +283,7 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacks)
                mamaTransport_create (tport, getTransport(), mBridge));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
+               mamaTransport_setTransportTopicCallback (tport, (mamaTransportTopicCB) transportTopicCb, NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, cb, NULL));
@@ -333,9 +332,9 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksBadSource)
     pubOnDestroyCount = 0;
 
     mamaPublisherCallbacks_allocate(&cb);
-    cb->onError = pubOnError;
-    cb->onCreate = pubOnCreate;
-    cb->onDestroy = pubOnDestroy;
+    cb->onError = (mama_publisherOnErrorCb) pubOnError;
+    cb->onCreate = (mama_publisherOnCreateCb) pubOnCreate;
+    cb->onDestroy = (mama_publisherOnDestroyCb) pubOnDestroy;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -355,7 +354,7 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksBadSource)
                mamaTransport_create (tport, getTransport(), mBridge));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
+               mamaTransport_setTransportTopicCallback (tport, (mamaTransportTopicCB) transportTopicCb, NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, cb, NULL));
@@ -406,8 +405,8 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoErrorCallback)
 
     mamaPublisherCallbacks_allocate(&cb);
     cb->onError = NULL;
-    cb->onCreate = pubOnCreate;    /* No error callback */
-    cb->onDestroy = pubOnDestroy;
+    cb->onCreate = (mama_publisherOnCreateCb) pubOnCreate;    /* No error callback */
+    cb->onDestroy = (mama_publisherOnDestroyCb) pubOnDestroy;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -427,7 +426,7 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoErrorCallback)
                mamaTransport_create (tport, getTransport(), mBridge));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
+               mamaTransport_setTransportTopicCallback (tport, (mamaTransportTopicCB) transportTopicCb, NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, cb, NULL));
@@ -499,7 +498,7 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoCallbacks)
                mamaTransport_create (tport, getTransport(), mBridge));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaTransport_setTransportTopicCallback (tport, transportTopicCb, NULL));
+		mamaTransport_setTransportTopicCallback (tport, (mamaTransportTopicCB) transportTopicCb, NULL));
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaPublisher_createWithCallbacks (&publisher, tport, queue, symbol, source, NULL, cb, NULL));
