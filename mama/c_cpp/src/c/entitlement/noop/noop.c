@@ -53,7 +53,7 @@ noopEntitlementBridge_init(entitlementBridge* bridge)
                 "Please see the Licensing file for details\n"
                 "**********************************************************************************");
 
-    noopEntitlementBridge* noopBridge = calloc(1, sizeof(noopEntitlementBridge));
+    noopEntitlementBridge* noopBridge = (noopEntitlementBridge*) calloc(1, sizeof(noopEntitlementBridge));
     if (NULL == noopBridge) return MAMA_STATUS_NOMEM;
 
     /* set mamaEntitlemententitlement bridge pointer to bridge implementation struct */
@@ -76,7 +76,7 @@ noopEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, Su
     noopEntitlementSubscriptionHandle* noopSubHandle;
 
     /* Allocate bridge level entitlement subscription object*/
-    noopSubHandle = calloc (1, sizeof(noopEntitlementSubscriptionHandle));
+    noopSubHandle = (noopEntitlementSubscriptionHandle*) calloc (1, sizeof(noopEntitlementSubscriptionHandle));
     if (NULL == mamaEntSub) return MAMA_STATUS_NOMEM;
 
     /* Allocate mama_level entitlement subscription object and set implementation struct pointer. */
@@ -109,6 +109,7 @@ mama_status
 noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot)
 {
     mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_setIsSnapShot():");
+	return MAMA_STATUS_OK;
 }
 
 int
