@@ -30,7 +30,7 @@ extern "C"
 typedef struct mamaEntitlementBridge_* mamaEntitlementBridge;
 typedef struct mamaEntitlementSubscription_* mamaEntitlementSubscription;
 
-mama_status
+MAMAExpDLL extern mama_status  /* Available externally as it is used in entitlement bridges. */
 mamaEntitlementBridge_createSubscription (mamaEntitlementSubscription* subscription);
 
 mama_status
