@@ -114,6 +114,8 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy $(ProjectDir)..\..\..\examples\examples.manifest $(TargetDir)\MamaChurn.exe.manifest</PostBuildEvent>
+    <PostBuildEvent>copy $(ProjectDir)..\..\..\examples\examples.manifest $(TargetDir)\MamaChurn.exe.manifest
+copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\$(ConfigurationName)
+copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\x64\$(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
 </Project>

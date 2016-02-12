@@ -103,6 +103,8 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy $(ProjectDir)..\examples.manifest $(TargetDir)\MamaIo.exe.manifest</PostBuildEvent>
+    <PostBuildEvent>copy $(ProjectDir)..\examples.manifest $(TargetDir)\MamaIo.exe.manifest
+copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\$(ConfigurationName)
+copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\x64\$(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
 </Project>

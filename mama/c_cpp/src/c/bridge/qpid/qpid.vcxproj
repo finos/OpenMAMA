@@ -81,6 +81,9 @@
       <AdditionalLibraryDirectories>$(PROTON_HOME)\$(Configuration);$(EVENT_HOME)\WIN32-Prj\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <IgnoreSpecificDefaultLibraries>/NODEFAULTLIB:LIBCMTD;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(PROTON_HOME)\$(Configuration)\qpid-protond.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Midl>
@@ -97,6 +100,9 @@
       <AdditionalLibraryDirectories>$(PROTON_HOME)\$(Platform)\$(Configuration);$(EVENT_HOME)\WIN32-Prj\$(Platform)\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(PROTON_HOME)\$(Platform)\$(Configuration)\qpid-protond.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -109,6 +115,9 @@
       <OutputFile>$(OutDir)libmama$(ProjectName)implmd.dll</OutputFile>
       <AdditionalLibraryDirectories>$(PROTON_HOME)\$(Configuration);$(EVENT_HOME)\WIN32-Prj\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(PROTON_HOME)\$(Configuration)\qpid-proton.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Midl>
@@ -126,6 +135,9 @@
       <TargetMachine>MachineX64</TargetMachine>
       <IgnoreSpecificDefaultLibraries>/NODEFAULTLIB:LIBCMT;%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
+    <PostBuildEvent>
+      <Command>copy $(PROTON_HOME)\$(Platform)\$(Configuration)\qpid-proton.dll $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\..\..\common\c_cpp\src\c\commonc.vcxproj">

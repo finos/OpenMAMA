@@ -109,6 +109,9 @@
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST "$(SolutionDir)\x64\$(ConfigurationName)" mkdir "$(SolutionDir)\x64\$(ConfigurationName)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
@@ -140,6 +143,9 @@
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST "$(SolutionDir)\x64\$(ConfigurationName)" mkdir "$(SolutionDir)\x64\$(ConfigurationName)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
@@ -169,6 +175,9 @@
       </EnableCOMDATFolding>
       <TargetMachine>MachineX86</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST "$(SolutionDir)\x64\$(ConfigurationName)" mkdir "$(SolutionDir)\x64\$(ConfigurationName)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
@@ -196,6 +205,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>IF NOT EXIST "$(SolutionDir)\x64\$(ConfigurationName)" mkdir "$(SolutionDir)\x64\$(ConfigurationName)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\common\c_cpp\src\c\commonc.vcxproj">

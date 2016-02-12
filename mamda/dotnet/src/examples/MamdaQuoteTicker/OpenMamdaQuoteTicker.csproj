@@ -112,7 +112,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\$(ConfigurationName)
+copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\x64\$(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>
 </Project>
