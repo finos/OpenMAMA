@@ -72,8 +72,8 @@ noopEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, Su
     mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_createSubscription():");
 
     mama_status                         status;
-    mamaEntitlementSubscription         mamaEntSub;
-    noopEntitlementSubscriptionHandle* noopSubHandle;
+    mamaEntitlementSubscription         mamaEntSub    = NULL;
+    noopEntitlementSubscriptionHandle*  noopSubHandle = NULL;
 
     /* Allocate bridge level entitlement subscription object*/
     noopSubHandle = (noopEntitlementSubscriptionHandle*) calloc (1, sizeof(noopEntitlementSubscriptionHandle));
