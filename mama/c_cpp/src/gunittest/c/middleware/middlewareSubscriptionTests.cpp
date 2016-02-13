@@ -92,7 +92,6 @@ MiddlewareSubscriptionTests::MiddlewareSubscriptionTests(void)
 
 MiddlewareSubscriptionTests::~MiddlewareSubscriptionTests(void)
 {
-    mamaQueue_destroy (queue);
 }
 
 void MiddlewareSubscriptionTests::SetUp(void)
@@ -121,6 +120,7 @@ void MiddlewareSubscriptionTests::TearDown(void)
 {
     mamaTransport_destroy (tport);
     mamaSubscription_deallocate(parent);
+    mamaQueue_destroy (queue);
     mama_close();
 }
 
