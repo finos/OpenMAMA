@@ -76,8 +76,6 @@ protected:
     MamaTimer mtarray[1000];
     
     mamaBridge m_bridge;
-    MamaTransport m_transport;
-    char transportName[10];
     
 	// Member functions
 protected:
