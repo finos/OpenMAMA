@@ -238,6 +238,32 @@ void mamaSubscriptionImpl_setState(mamaSubscriptionImpl *impl, mamaSubscriptionS
  */
 void mamaSubscriptionImpl_invokeDestroyedCallback(mamaSubscriptionImpl *impl);
 
+const char *
+mamaSubscription_getEntitleSubject (mamaSubscription subscription);
+
+int
+mamaSubscription_getRespondToNextRefresh (mamaSubscription subscription);
+
+mama_status
+mamaSubscription_setRespondToNextRefresh (mamaSubscription subscription,
+                                          const int value);
+
+void MAMACALLTYPE mamaSubscription_DestroyThroughQueueCB(mamaQueue Queue, void* closure);
+
+void
+mamaSubscription_resetRefreshForListener (mamaSubscription subscription);
+
+void mamaSubscription_setIsThrottled (mamaSubscription  subscription,
+                                      int               isThrottled);
+
+mamaMsgCallbacks *
+mamaSubscription_getWombatMsgCallbacks (mamaSubscription subscription);
+
+void
+mamaSubscription_setAcceptMultipleInitials (mamaSubscription subscription,
+                                            int              accept);
+
+void mamaSubscriptionImpl_clearTransport(mamaSubscription subscription);
 
 /* Forward declarations */
 static int

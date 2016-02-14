@@ -29,35 +29,24 @@
 #include "avisbridgefunctions.h"
 #include "avisdefs.h"
 #include "transportbridge.h"
+#include "io.h"
 
 timerHeap gAvisTimerHeap;
 
-/*Responsible for creating the bridge impl structure*/
-void avisBridge_createImpl (mamaBridge* result)
+mama_status avisBridge_init (void)
 {
-    mamaBridgeImpl* impl = NULL;
-    
-    if (!result) return;
-    *result = NULL;
+    mama_status status = MAMA_STATUS_OK;
+    /* The bridge actually doesn't need to begin any initialisation at this
+     * stage, thus can ignore this function.
+     */
 
-    impl = (mamaBridgeImpl*)calloc (1, sizeof (mamaBridgeImpl));
-    if (!impl)
-    {
-        mama_log (MAMA_LOG_LEVEL_SEVERE, "avisBridge_createImpl(): "
-                "Could not allocate mem for impl.");
-        return;
-    }
-
-    /*Populate the bridge impl structure with the function pointers*/
-    INITIALIZE_BRIDGE (impl, avis);
-
-    *result = (mamaBridge)impl;
+    return status;
 }
 
 const char*
 avisBridge_getVersion (void)
 {
-        return (const char*) "Unable to get version number";
+    return (const char*) "Unable to get version number";
 }
 
 const char*
@@ -74,8 +63,8 @@ avisBridge_getDefaultPayloadId (char***name, char** id)
 {
     if (!name) return MAMA_STATUS_NULL_ARG;
     if (!id) return MAMA_STATUS_NULL_ARG;
-    *name = PAYLOAD_NAMES;
-    *id = PAYLOAD_IDS;
+    *name = (char**)PAYLOAD_NAMES;
+    *id = (char*)PAYLOAD_IDS;
 
     return MAMA_STATUS_OK;
 }

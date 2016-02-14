@@ -34,6 +34,7 @@
 #include "msgimpl.h"
 #include "avisdefs.h"
 #include "sub.h"
+#include "../../payload/avismsg/avispayload.h"
 
 typedef struct avisPublisherBridge
 {
@@ -86,10 +87,10 @@ static
 mama_status
 avisBridgeMamaPublisherImpl_prepareMessage (mamaMsg* msg)
 {
-    mama_status     ret     = MAMA_STATUS_OK;
-    mamaPayloadType payload = MAMA_PAYLOAD_UNKNOWN;
+    mama_status ret       = MAMA_STATUS_OK;
+    char        payloadId = MAMA_PAYLOAD_UNKNOWN;
 
-    ret = mamaMsg_getPayloadType (*msg, &payload);
+    ret = mamaMsgImpl_getPayloadId (*msg, &payloadId);
 
     if (MAMA_STATUS_OK != ret)
     {
@@ -100,7 +101,9 @@ avisBridgeMamaPublisherImpl_prepareMessage (mamaMsg* msg)
         return ret;
     }
 
-    if (MAMA_PAYLOAD_AVIS == payload)
+    // TODO: Should replace this with a more run-time way to get the payload ID
+    //       from name
+    if (MAMA_PAYLOAD_ID_AVIS == payloadId)
     {
         /* Avis message, just perform a copy and detach so that it
          * can be enqueued on the avis dispatch thread. */
@@ -167,14 +170,15 @@ avisBridgeMamaPublisherImpl_prepareMessage (mamaMsg* msg)
                 buf = (const void*)attributes_clone ((Attributes*)buf);
 
                 mamaMsg_create (&encMsg);
-                mamaMsgImpl_setMsgBuffer (encMsg, buf, bufSize, MAMA_PAYLOAD_AVIS);
+                mamaMsgImpl_setMsgBuffer (encMsg, buf, bufSize, MAMA_PAYLOAD_ID_AVIS);
                 mamaMsgImpl_setMessageOwner (encMsg, 1);
             }
         }
 
         if (!encMsg)
         {
-            ret = mamaMsg_createForPayload (&encMsg, MAMA_PAYLOAD_AVIS);
+            mamaPayloadBridge bridge = mamaInternal_findPayload (MAMA_PAYLOAD_ID_AVIS);
+            ret = mamaMsg_createForPayloadBridge(&encMsg, bridge);
 
             if (MAMA_STATUS_OK != ret)
             {
@@ -490,125 +494,4 @@ avisBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge publisher,
     return avisBridgeMamaPublisherImpl_sendMessage (publisher, reply);
 }
 
-/* Send reply to inbox. */
-mama_status
-avisBridgeMamaPublisher_sendReplyFromInboxToInbox (publisherBridge  publisher,
-                                                   mamaInbox        inbox,
-                                                   mamaMsg          request,
-                                                   mamaMsg          reply)
-{
-    msgPayload   requestMsg = NULL;
-    mamaMsgReply replyHandle = NULL;
-    const char*  fromAddr   = NULL;
-    const char*  replyAddr  = NULL;
-    mama_status  status;
-    
-    CHECK_PUBLISHER(publisher);
 
-    mamaMsg_getNativeHandle(request, (void**) &requestMsg);
-
-    if (!requestMsg) return MAMA_STATUS_NULL_ARG;
-
-    status = avisBridgeMamaPublisherImpl_prepareMessage (&reply);
-
-    if (MAMA_STATUS_OK != status)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
-                  "avisBridgeMamaPublisher_sendFromInboxToInbox(): "
-                  "Could not prepare message. [%d]", status);
-
-        return status;
-    }
-
-    status = mamaMsg_getReplyHandle (request, &replyHandle);
-
-    if (replyHandle)
-    {
-        replyAddr = ((mamaMsgReplyImpl*)replyHandle)->replyHandle;
-    }
-
-    if ((status != MAMA_STATUS_OK) || (fromAddr == NULL) || (*fromAddr == '\0'))
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
-                  "avisBridgeMamaPublisher_sendReplyFromInboxToInbox(): "
-                  "No reply address in message. [%d]", status);
-
-        mamaMsg_destroyReplyHandle (replyHandle);
-        mamaMsg_destroy (reply);
-
-        return MAMA_STATUS_INVALID_ARG;
-    }
-
-    status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, fromAddr);
-
-    mamaMsg_destroyReplyHandle (replyHandle);
-
-    if (status != MAMA_STATUS_OK)
-    {
-        mamaMsg_destroy (reply);
-
-        return status;
-    }
-
-    // get reply address from inbox
-    replyAddr = avisInboxImpl_getReplySubject(mamaInboxImpl_getInboxBridge(inbox));
-
-    // set reply address in msg
-    status = mamaMsg_updateString(reply, INBOX_FIELD_NAME, 0, replyAddr);
-
-    if (status != MAMA_STATUS_OK)
-    {
-        mamaMsg_destroy (reply);
-
-        return status;
-    }
-
-    return avisBridgeMamaPublisherImpl_sendMessage (publisher, reply);
-}
-
-mama_status
-avisBridgeMamaPublisher_sendReplyFromInboxToInboxHandle (publisherBridge publisher,
-                                                         mamaInbox       inbox,
-                                                         void*           replyAddress,
-                                                         mamaMsg         reply)
-{
-    const char* fromAddr = NULL;
-    mama_status status;
-
-    CHECK_PUBLISHER(publisher);
-
-    status = avisBridgeMamaPublisherImpl_prepareMessage (&reply);
-
-    if (MAMA_STATUS_OK != status)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
-                  "avisBridgeMamaPublisher_sendFromInboxToInbox(): "
-                  "Could not prepare message. [%d]", status);
-
-        return status;
-    }
-
-    // get reply address from inbox
-    fromAddr = avisInboxImpl_getReplySubject(mamaInboxImpl_getInboxBridge(inbox));
-
-    // set reply address in msg
-    status = mamaMsg_updateString(reply, INBOX_FIELD_NAME, 0, fromAddr);
-
-    if (status != MAMA_STATUS_OK)
-    {
-        mamaMsg_destroy (reply);
-
-        return status;
-    }
-
-    status = mamaMsg_updateString(reply, SUBJECT_FIELD_NAME, 0, (const char*) replyAddress);
-
-    if (status != MAMA_STATUS_OK)
-    {
-        mamaMsg_destroy (reply);
-
-        return status;
-    }
-
-    return avisBridgeMamaPublisherImpl_sendMessage (publisher, reply);
-}

@@ -96,37 +96,21 @@ avismsgPayload_destroyImpl (mamaPayloadBridge mamaPayloadBridge)
     return ret;
 }
 
-extern mama_status
-avismsgPayload_createImpl (mamaPayloadBridge* result, char* identifier)
+mama_status
+avismsgPayload_init (char* identifier)
 {
-    mamaPayloadBridgeImpl*       impl    = NULL;
-    mama_status             resultStatus = MAMA_STATUS_OK;
+    *identifier = (char)MAMA_PAYLOAD_ID_AVIS;
 
-    CHECK_NULL(result);
-
-    impl = (mamaPayloadBridgeImpl*)calloc (1, sizeof (mamaPayloadBridgeImpl));
-    if (!impl)
-    {
-        mama_log (MAMA_LOG_LEVEL_SEVERE, "avismsgPayload_createImpl(): "
-                  "Could not allocate memory for payload impl.");
-        return MAMA_STATUS_NULL_ARG;
-    }
-
-    INITIALIZE_PAYLOAD_BRIDGE (impl, avismsg);
-
-    impl->mClosure = impl;
-
-    *result     = (mamaPayloadBridge)impl;
-    *identifier = MAMA_PAYLOAD_AVIS;
-
-    return resultStatus;
+    return MAMA_STATUS_OK;
 }
 
+MAMAIgnoreDeprecatedOpen
 mamaPayloadType
 avismsgPayload_getType ()
 {
     return MAMA_PAYLOAD_AVIS;
 }
+MAMAIgnoreDeprecatedClose
 
 /******************************************************************************
 * general functions

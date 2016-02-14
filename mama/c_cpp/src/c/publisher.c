@@ -98,6 +98,8 @@ mamaPublisherImpl_destroy(mamaPublisherImpl *impl);
 static void
 mamaPublisherImpl_cleanup(mamaPublisherImpl* impl);
 
+void MAMACALLTYPE mamaPublisher_DestroyThroughQueueCB(mamaQueue Queue, void* closure);
+
 /**
  * Core create method used by all create methods
  */

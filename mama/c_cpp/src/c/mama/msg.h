@@ -36,8 +36,26 @@
 extern "C" {
 #endif
 
-#define MAMA_PAYLOAD_ID_NULL '\0'
-#define MAMA_PAYLOAD_ID_UNKNOWN 'U'
+#define MAMA_PAYLOAD_ID_NULL            '\0'
+#define MAMA_PAYLOAD_ID_UNKNOWN         'U'
+#define MAMA_PAYLOAD_ID_SOLACE          '1'
+#define MAMA_PAYLOAD_ID_V5              '5'
+#define MAMA_PAYLOAD_ID_AVIS            'A'
+#define MAMA_PAYLOAD_ID_TICK42BLP       'B'
+#define MAMA_PAYLOAD_ID_FAST            'F'
+#define MAMA_PAYLOAD_ID_HMS             'H'
+#define MAMA_PAYLOAD_ID_RAI             'I'
+#define MAMA_PAYLOAD_ID_KWANTUM         'K'
+#define MAMA_PAYLOAD_ID_UMS             'L'
+#define MAMA_PAYLOAD_ID_INRUSH          'N'
+#define MAMA_PAYLOAD_ID_TICK42RMDS      'P'
+#define MAMA_PAYLOAD_ID_QPID            'Q'
+#define MAMA_PAYLOAD_ID_TIBRV           'R'
+#define MAMA_PAYLOAD_ID_IBMWFO          'S'
+#define MAMA_PAYLOAD_ID_ACTIV           'T'
+#define MAMA_PAYLOAD_ID_VULCAN          'V'
+#define MAMA_PAYLOAD_ID_WOMBAT_MSG      'W'
+#define MAMA_PAYLOAD_ID_EXEGY           'X'
 
 struct wombatMsg_;
 

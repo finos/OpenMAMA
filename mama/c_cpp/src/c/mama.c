@@ -219,6 +219,13 @@ static mamaImpl gImpl = {
                             WSTATIC_MUTEX_INITIALIZER /* myLock */
                         };
 
+/*
+ * Function pointer type for calling getVersion in the wrapper
+ */
+typedef const char* (MAMACALLTYPE *fpWrapperGetVersion)(void);
+
+static fpWrapperGetVersion wrapperGetVersion = NULL;
+
 /* ************************************************************************* */
 /* Private Function Prototypes. */
 /* ************************************************************************* */
@@ -234,6 +241,16 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
 
 mama_status
 mama_loadEntitlementBridgeInternal  (const char* name);
+
+void MAMACALLTYPE mamaImpl_entitlementDisconnectCallback (
+                            const sessionDisconnectReason  reason,
+                            const char * const             userId,
+                            const char * const             host,
+                            const char * const             appName);
+
+MAMAExpDLL
+void
+mama_setWrapperGetVersion(fpWrapperGetVersion value);
 
 /*  Description :   This function will free any memory associated with a
  *                  mamaApplicationContext object but will not free the
@@ -2660,13 +2677,6 @@ mama_loadBridgeWithPath (mamaBridge* impl,
 {
     return mama_loadBridgeWithPathInternal(impl, middlewareName, path);
 }
-
-/*
- * Function pointer type for calling getVersion in the wrapper
- */
-typedef const char* (MAMACALLTYPE *fpWrapperGetVersion)(void);
-
-static fpWrapperGetVersion wrapperGetVersion = NULL;
 
 MAMAExpDLL
 void

@@ -153,6 +153,7 @@ namespace Wombat
         /**
          * The orderChange callback for the C API 
          */
+        /*
         static mama_status MAMACALLTYPE
         orderChangeHandler (mamaSymbolList list, void *closure)
         {
@@ -162,6 +163,7 @@ namespace Wombat
 
             return MAMA_STATUS_OK;
         }
+        */
     }
 
 
@@ -177,6 +179,7 @@ namespace Wombat
         mamaSymbolList_setClosure             (myList, myPimpl);
         mamaSymbolList_setAddSymbolHandler    (myList, addMemberHandler);
         mamaSymbolList_setRemoveSymbolHandler (myList, removeMemberHandler);
+        // TODO: See why this is disabled
         //mamaSymbolList_setOrderChangeHandler  (myList, orderChangeHandler);
     }
 
