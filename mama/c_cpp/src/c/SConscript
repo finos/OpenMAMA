@@ -188,7 +188,10 @@ StaticLibs['libmama'] = []
 
 
 for s in libmama_sources:
-    obj = env.Object(s)
+    if s == "msg.c":
+        obj = env.Object(s, CFLAGS="-Wno-deprecated-declarations")
+    else:
+        obj = env.Object(s)
     StaticLibs['libmama'].append(obj)
     objects.append(obj)
 
