@@ -240,7 +240,7 @@ const char* getHostName (void);
 
 /* Must be GCC */
 #elif defined (__GNUC__)
-#  if ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 2)) || __GNUC__ > 4
+#  if ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 6)) || __GNUC__ > 4
 #    define MAMAIgnoreDeprecatedOpen           \
         _Pragma ("GCC diagnostic push")      \
         _Pragma ("GCC diagnostic ignored \"-Wdeprecated\"") \
