@@ -165,7 +165,7 @@ TEST_F (MiddlewareTimerTests, DISABLED_createInvalidInterval)
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaTimerCreate(&result, nativeQueueHandle,
                                               action, onTimerDestroyed,
-                                              NULL, parent, closure));
+                                              0, parent, closure));
 }
 
 TEST_F (MiddlewareTimerTests, createInvalidParent)
@@ -284,7 +284,7 @@ TEST_F (MiddlewareTimerTests, DISABLED_setIntervalInvalidInterval)
     timerBridge timer = (timerBridge) NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaTimerSetInterval(timer,NULL));
+               mBridge->bridgeMamaTimerSetInterval(timer, 0));
 }
 
 TEST_F (MiddlewareTimerTests, getInterval)

@@ -58,6 +58,7 @@ typedef struct pubCache_
     mamaDQPublisher         pub;
     mamaMsg                 cachedMsg;
     mamaPlaybackFileParser  fileParser;
+    int                     index;
 } pubCache;
 
 static mamaBridge               gPubBridge              = NULL;
@@ -437,7 +438,7 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
               "Received new request: %s", 
               symbol);
 
-    mamaDQPublisherManager_createPublisher (manager, symbol, (void*)index, &gSubscriptionList[index].pub);
+    mamaDQPublisherManager_createPublisher (manager, symbol, (void*)&gSubscriptionList[index], &gSubscriptionList[index].pub);
     mamaPlaybackFileParser_allocate (&gSubscriptionList[index].fileParser);
     mamaPlaybackFileParser_openFile(gSubscriptionList[index].fileParser, (char*)gFilename);
     mamaMsg_create(&gSubscriptionList[index].cachedMsg);
@@ -515,7 +516,7 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
     {
     case MAMA_SUBSC_SUBSCRIBE:
     case MAMA_SUBSC_SNAPSHOT:
-        index = (int) publishTopicInfo->cache;
+        index = ((pubCache*) publishTopicInfo->cache)->index;
 
         if (subType == MAMA_SUBSC_TYPE_BOOK) 
         {
@@ -538,7 +539,7 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
     case MAMA_SUBSC_DQ_NETWORK:
     case MAMA_SUBSC_DQ_UNKNOWN:
     case MAMA_SUBSC_DQ_GROUP_SUBSCRIBER:
-        index = (int) publishTopicInfo->cache;
+        index = (int) ((pubCache*)publishTopicInfo->cache)->index;
         mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
                           NULL,
                           MamaFieldMsgType.mFid, 

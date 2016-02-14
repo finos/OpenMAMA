@@ -27,7 +27,6 @@ iotest.cpp
 mamainternaltest.cpp
 msgutils.cpp
 openclosetest.cpp
-payloadmiddlewareidtest.cpp
 publishertest.cpp
 queuetest.cpp
 dictionarytest.cpp

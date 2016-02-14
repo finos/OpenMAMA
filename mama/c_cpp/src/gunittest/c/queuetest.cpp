@@ -48,7 +48,7 @@ class MamaQueueTestC : public ::testing::Test
 
 MamaQueueTestC::MamaQueueTestC()
 {
-    mBridge;
+    mBridge = NULL;
     m_this = this;
 
     m_highWaterMarkOccurance = 0;
@@ -70,10 +70,6 @@ void MamaQueueTestC::SetUp()
 void MamaQueueTestC::TearDown()
 {
     mama_close();
-}
-
-static void MAMACALLTYPE startCallback (mama_status status)
-{
 }
 
 void highWaterMarkCallback (mamaQueue queue, size_t size, void* closure)

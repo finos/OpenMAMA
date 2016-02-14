@@ -119,6 +119,8 @@ void transportTopicCb (mamaTransport tport,
         case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:
             pubOnErrorCount++;
             break;
+        default:
+            break;
     }
 }
 
@@ -130,7 +132,6 @@ TEST_F (MamaPublisherTestC, CreateDestroy)
 {
     mamaPublisher    publisher = NULL;
     mamaTransport    tport     = NULL;
-    const char*      symbol    = getSymbol();
     const char*      source    = getSource();
    
     pubOnCreateCount = 0;
@@ -162,7 +163,6 @@ TEST_F (MamaPublisherTestC, GetTransport)
     mamaPublisher    publisher = NULL;
     mamaTransport    tport     = NULL;
     const char*      symbol    = "SYM";
-    const char*      root      = "ROOT";
     const char*      source    = "SRC";
    
     ASSERT_EQ (MAMA_STATUS_OK,

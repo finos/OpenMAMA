@@ -95,7 +95,7 @@ TEST_F(MamaPriceTest, SetPrecisionInt)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";
@@ -119,7 +119,7 @@ TEST_F(MamaPriceTest, SetPrecisionDiv2)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";
@@ -143,7 +143,7 @@ TEST_F(MamaPriceTest, SetPrecisionDiv4)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";
@@ -167,7 +167,7 @@ TEST_F(MamaPriceTest, SetPrecisionDiv8)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";
@@ -191,7 +191,7 @@ TEST_F(MamaPriceTest, SetPrecisionDiv16)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";
@@ -215,7 +215,7 @@ TEST_F(MamaPriceTest, SetPrecisionDiv32)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";
@@ -239,7 +239,7 @@ TEST_F(MamaPriceTest, SetPrecisionDiv64)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";
@@ -263,7 +263,7 @@ TEST_F(MamaPriceTest, SetPrecisionDiv128)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";
@@ -286,7 +286,7 @@ TEST_F(MamaPriceTest, SetPrecisionDiv256)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";
@@ -310,7 +310,7 @@ TEST_F(MamaPriceTest, SetPrecisionDiv512)
 
     // Format the double value as a string using an integer flag
     char doubleString[20] = "";
-    sprintf(doubleString, WMPRICE_LARGE_INT64_FORMAT_SPECIFIER, (int64_t)doubleValue);
+    sprintf(doubleString, "%lld", (long long int)doubleValue);
 
     // Get the value as a string
     char stringValue[20] = "";

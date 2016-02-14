@@ -42,7 +42,6 @@ static const char*  gMiddleware = "wmw";
 static const char*  gTransport = "test_tport";
 static const char*  gSource = "SRC";
 static const char*  gSymbol = "SYM";
-static const char*  gTopic = "MAMA_TOPIC";
 static const char*  gBadSource = "BADSRC";
 
 const char* getMiddleware (void) { return gMiddleware; }
