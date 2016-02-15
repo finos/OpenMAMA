@@ -715,14 +715,16 @@ mama_openWithPropertiesCount (const char* path,
                               const char* filename,
                               unsigned int* count)
 {
-    mama_status     result                  = MAMA_STATUS_OK;
-    mama_size_t     numBridges              = 0;
-    mamaMiddleware  middleware              = 0;
-    const char*     appString               = NULL;
-    const char*     prop                    = NULL;
-    int             bridgeIdx               = 0;
-    char**          payloadName;
-    char*           payloadId;
+    mama_status         result                  = MAMA_STATUS_OK;
+    mama_size_t         numBridges              = 0;
+    mamaMiddleware      middleware              = 0;
+    const char*         appString               = NULL;
+    const char*         prop                    = NULL;
+    int                 bridgeIdx               = 0;
+    mamaPayloadBridge   payloadImpl             = NULL;
+    char**              payloadName;
+    char*               payloadId;
+    mamaPayloadLib*     payloadLib;
 
     wthread_static_mutex_lock (&gImpl.myLock);
 
@@ -786,6 +788,35 @@ mama_openWithPropertiesCount (const char* path,
 
     initReservedFields();
     mama_loginit();
+
+    /* Check mama.properteis for default payload bridge to use when calling mamaMsg_create. 
+     * The payload bridge will be loaded before any middleware or payload bridges.
+     */
+    if (!gDefaultPayload)
+    {
+        prop = properties_Get (gProperties, "mama.payload.default");
+        if (prop != NULL)
+        {
+            mama_log(MAMA_LOG_LEVEL_FINE, 
+                     "mama.payload.default=%s detected, setting default payload.",
+                     prop);
+
+            result = mama_loadPayloadBridge (&payloadImpl, prop);
+            if (MAMA_STATUS_OK != result)
+            {
+                mama_log(MAMA_LOG_LEVEL_ERROR, 
+                         "Could not load defauult payload [%s].",
+                         prop);
+            }
+
+            payloadLib = (mamaPayloadLib*)wtable_lookup (gImpl.payloads.table,
+                                                         prop);
+            if (NULL != payloadLib)
+            {
+                mama_setDefaultPayload(payloadLib->id);
+            }
+        }
+    }
 
     /* Iterate the loaded middleware bridges, check for their default payloads,
      * and make sure they have been loaded.
