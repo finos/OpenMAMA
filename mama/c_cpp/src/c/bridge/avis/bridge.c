@@ -56,7 +56,7 @@ avisBridge_getName (void)
 }
 
 static const char* PAYLOAD_NAMES[] = {"avismsg",NULL};
-static const char PAYLOAD_IDS[] = {MAMA_PAYLOAD_AVIS,NULL};
+static const char PAYLOAD_IDS[] = {MAMA_PAYLOAD_AVIS, '\0'};
 
 mama_status
 avisBridge_getDefaultPayloadId (char***name, char** id)
