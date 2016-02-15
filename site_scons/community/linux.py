@@ -104,11 +104,12 @@ class Linux:
     #
     # Configures all the necessary environment variables for Linux
     def configure(self, env ):
-        env.Append( CPPDEFINES = ['HAVE_CONFIG_H','_GNU_SOURCE'] )
+        env.Append( CPPDEFINES = ['_GNU_SOURCE'] )
+        #env.Append( CCFLAGS = ['-g','-O2','-pedantic-errors', '-Werror'] )
         env.Append( CCFLAGS = ['-g','-O2','-pedantic-errors'] )
+        #env.Append( CFLAGS = ['-std=gnu99','-Wmissing-prototypes', '-Wstrict-prototypes', '-Werror'] )
         env.Append( CFLAGS = ['-std=gnu99','-Wmissing-prototypes', '-Wstrict-prototypes'] )
         env.Append( CXXFLAGS = ['-Wall','-Wno-long-long'] )
-        #env.Append( CXXFLAGS = ['-Wall','-Wno-long-long', '-Werror'] )
 
         if env['target_arch'] == 'x86':
             env.Append(CCFLAGS  = ['-m32'])

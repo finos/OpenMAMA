@@ -8,7 +8,7 @@ versions = env['versions']['mama']
 modules = []
 modules.append('src/cpp')
 
-conf = Configure(env, config_h='./config.h', log_file='./config.log')
+conf = Configure(env, config_h='./config.h', log_file='./config.mamda.log')
 
 h = os.path.join( Dir('#').abspath, 'mamda/c_cpp/src/cpp/version.h' )
 c = os.path.join( Dir('#').abspath, 'mamda/c_cpp/src/cpp/version.c' )
@@ -40,7 +40,7 @@ const char* mamda_version = "mamda %s";
 verC.close()
 
 if not env.GetOption('clean'):
-    if not conf.CheckLib('libncurses'):
+    if not conf.CheckLib('ncurses'):
         print '+- Warning: ncurses not found...'
 
 env = conf.Finish()

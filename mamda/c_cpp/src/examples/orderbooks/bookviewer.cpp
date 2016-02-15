@@ -148,7 +148,6 @@ int main (int argc, const char **argv)
         MamaSource*                 source        = cmdLine.getSource();
         MamaQueueGroup              queues (cmdLine.getNumThreads(), bridge);
         DictRequester               dictRequester (bridge);
-        bool                        processEntries = true;
 
         // We might as well enforce strict checking of order book updates
         // (at the expense of some performance).
@@ -172,8 +171,6 @@ int main (int argc, const char **argv)
                 source->getTransport()->setSymbolMap (aMap);
             }
         }
-
-        int subscCount = 0;
 
         for (vector<const char*>::const_iterator i = symbolList.begin ();
              i != symbolList.end ();
