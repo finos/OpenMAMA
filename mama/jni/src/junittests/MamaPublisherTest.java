@@ -28,7 +28,6 @@ import com.wombat.mama.*;
  *
  * This class will test MamaPublisher 
  */
-public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCallback, MamaThrottleCallback
 public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCallback, MamaThrottleCallback,
                                                            MamaPublisherCallback,
                                                            MamaTransportListener
