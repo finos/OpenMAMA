@@ -254,7 +254,7 @@ while(0)                                                                       \
 typedef void (*bridge_createImpl)(mamaBridge* result);
 
 /*Called when loading/creating a bridge */
-typedef mama_status (*bridge_init) (void);
+typedef mama_status (*bridge_init) (mamaBridge bridgeImpl);
 
 /*Called by mama_open()*/
 typedef mama_status (*bridge_open)(mamaBridge bridgeImpl);
@@ -710,7 +710,6 @@ typedef struct mamaBridgeImpl_
 
     /*Used in bridge.c*/
     mama_bool_t  mEntitleDeferred;
-    mama_bool_t  mEntitleReadOnly;
 
     /*Used in mama.c*/
     bridge_open                     bridgeOpen;
@@ -885,6 +884,14 @@ mamaBridgeImpl_getProperty (mamaBridge bridgeImpl, const char* property);
 MAMAExpDLL
 extern mama_bool_t
 mamaBridgeImpl_areEntitlementsDeferred (mamaBridge bridgeImpl);
+
+MAMAExpDLL
+const char*
+mamaBridgeImpl_getMetaProperty (mamaBridge bridgeImpl, const char* property);
+
+MAMAExpDLL
+extern void
+mamaBridgeImpl_populateBridgeMetaData (mamaBridge bridgeImpl);
 
 #if defined(__cplusplus)
 }

@@ -556,3 +556,71 @@ int strtobool(const char* s)
       return 0;
   }
 }
+
+COMMONExpDLL
+int strToVersionInfo(const char* s, versionInfo* version)
+{
+    const char* delim     = ".";
+    char*       token     = NULL;
+    int         i         = 0;
+    int         j         = 0;
+    int         retVal    = 0;
+    char        copy[VERSION_INFO_STR_MAX];
+
+    /* Zero set version so all versions are guaranteed NULL */
+    memset (version, 0, sizeof(versionInfo));
+
+    if (strlenEx(s) == 0 || strlenEx(s) > VERSION_INFO_STR_MAX)
+    {
+        return retVal;
+    }
+
+    /* Operate on copy of input as we want to get destructive */
+    strcpy (copy, s);
+
+
+    /* Only iterate 3 times for major / minor / release while tokens exist */
+    token = strtok((char*)copy, delim);
+    for (i = 0; i < 3; i++)
+    {
+        /* There are no more tokens - break out */
+        if (NULL == token)
+        {
+            break;
+        }
+
+        switch (i)
+        {
+        case 0:
+            version->mMajor = atoi (token);
+            break;
+        case 1:
+            version->mMinor = atoi (token);
+            break;
+        case 2:
+            {
+                /* Need extra parsing here to prune out leading numbers */
+                for (j = 0; j < strlenEx(token); j++)
+                {
+                    /* If this is not an ascii number, extra starts here */
+                    if (token[j] < 48 || token[j] > 57)
+                    {
+                        /* From this point on is the extra string - grab it */
+                        strncpy (version->mExtra, token + j, sizeof(version->mExtra));
+                        version->mExtra[VERSION_INFO_EXTRA_MAX] = '\0';
+
+                        /* Chop the string where the numbers stop */
+                        token[j] = '\0';
+                        break;
+                    }
+                }
+
+                version->mRelease = atoi (token);
+                retVal = 1;
+                break;
+            }
+        }
+        token = strtok(NULL, delim);
+    }
+    return retVal;
+}

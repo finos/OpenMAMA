@@ -63,7 +63,7 @@ qpidmsgPayload_createImpl      (mamaPayloadBridge* result, char* identifier);
  */
 MAMAExpBridgeDLL
 mama_status
-qpidmsgPayload_init            (char* identifier);
+qpidmsgPayload_init            (mamaPayloadBridge bridge, char* identifier);
 
 /**
  * Returns the type of payload from the current bridge, from the mamaPayloadType

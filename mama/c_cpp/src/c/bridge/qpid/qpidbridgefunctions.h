@@ -70,7 +70,7 @@ qpidBridge_createImpl (mamaBridge* result);
  */
 MAMAExpDLL
 extern mama_status
-qpidBridge_init (void);
+qpidBridge_init (mamaBridge bridgeImpl);
 
 /**
  * This function is responsible for initializing all underlying structures

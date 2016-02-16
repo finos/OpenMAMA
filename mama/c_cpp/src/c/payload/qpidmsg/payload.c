@@ -39,6 +39,7 @@
 #include "qpidpayloadfunctions.h"
 #include "payload.h"
 #include "field.h"
+#include "../../mamainternal.h"
 
 /*=========================================================================
   =                              Macros                                   =
@@ -529,9 +530,12 @@ qpidmsgPayload_createImpl (mamaPayloadBridge* result, char* identifier)
 }
 
 mama_status
-qpidmsgPayload_init (char* identifier)
+qpidmsgPayload_init (mamaPayloadBridge bridge, char* identifier)
 {
     *identifier = (char)MAMA_PAYLOAD_QPID;
+
+    /* Will set the bridge's compile time MAMA version */
+    MAMA_SET_BRIDGE_COMPILE_TIME_VERSION("qpidmsg");
 
     return MAMA_STATUS_OK;
 }

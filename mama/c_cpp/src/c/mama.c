@@ -27,6 +27,7 @@
 #include "wombat/environment.h"
 #include "wombat/strutils.h"
 #include "wombat/wInterlocked.h"
+#include "bridge.h"
 
 #include <mama/mama.h>
 #include <mama/error.h>
@@ -133,9 +134,6 @@ typedef struct mamaMiddlewareLib_
 {
     mamaBridge  bridge;
     LIB_HANDLE  library;
-
-    /* Indicates if the bridge struct was allocated by MAMA or the bridge */
-    mama_bool_t mamaAllocated;
 } mamaMiddlewareLib;
 
 
@@ -205,6 +203,12 @@ typedef struct mamaImpl_
     wInterlockedInt        init;
 
     wthread_static_mutex_t myLock;
+
+    /* Internal properties */
+    wproperty_t            internalProperties;
+
+    /* Version Information */
+    versionInfo            version;
 } mamaImpl;
 
 static mamaApplicationContext  appContext;
@@ -216,7 +220,8 @@ static mamaImpl gImpl = {
                             { NULL, {0}, 0 },         /* entitlements */
                             0,                        /* myRefCount */
                             0,                        /* init */
-                            WSTATIC_MUTEX_INITIALIZER /* myLock */
+                            WSTATIC_MUTEX_INITIALIZER,/* myLock */
+                            NULL
                         };
 
 /*
@@ -1481,16 +1486,7 @@ mama_closeCount (unsigned int* count)
                                   middlewareLib->bridge->bridgeGetName ());
                     }
 
-                    /* If mamaAllocated has been set for the bridge library, we
-                     * own the memory and thus must free it. If not, it was
-                     * allocated by the bridge, and it should have been freed in
-                     * the call to close.
-                     */
-                    if (middlewareLib->mamaAllocated)
-                    {
-                        free (middlewareLib->bridge);
-                    }
-
+                    free (middlewareLib->bridge);
                     middlewareLib->bridge = NULL;
                 }
 
@@ -1512,6 +1508,13 @@ mama_closeCount (unsigned int* count)
 
         /* Reset the count of loaded middlewares */
         gImpl.middlewares.count = 0;
+
+        /* Destroy any internal properties */
+        if (gImpl.internalProperties)
+        {
+            properties_Free (gImpl.internalProperties);
+            gImpl.internalProperties = NULL;
+        }
 
         /* The properties must not be closed down until after the bridges have been destroyed. */
         if (gProperties != 0)
@@ -1878,9 +1881,10 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     LIB_HANDLE              payloadLibHandle = NULL;
 
     char                    payloadChar     = MAMA_PAYLOAD_NULL;
-
+    versionInfo             bridgeMamaVersion;
     char                    payloadImplName [256];
     char                    initFuncName    [256];
+    char                    payloadVersion  [MAX_INTERNAL_PROP_LEN];
     msgPayload_init         initFunc        = NULL;
     msgPayload_createImpl   createFunc      = NULL;
     void*                   vp              = NULL;
@@ -1888,8 +1892,6 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     /* Indicates if the payload bridge struct was allocated by MAMA or
      * by the bridge 
      */
-    mama_bool_t             mamaAllocated   = 0;
-
     if (!impl || !payloadName)
     {
         return MAMA_STATUS_NULL_ARG;
@@ -1966,100 +1968,104 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     vp       = loadLibFunc (payloadLibHandle, initFuncName);
     initFunc = *(msgPayload_init*) &vp;
 
-    /* If the init function has been found, use allocate and initialise the
-     * bridge, and use function search to populate.
-     */
-    if (NULL != initFunc)
+    if (NULL == initFunc)
     {
-        /* Allocte the payload structure */
-        *impl = calloc (1, sizeof (mamaPayloadBridgeImpl));
-
-        if (NULL == *impl)
-        {
-            status = MAMA_STATUS_NOMEM;
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadPayloadBridgeInternal (): "
-                      "Failed to allocate memory for payload bridge [%s]. Cannot load payload.",
-                      payloadName);
-            goto error_handling_impl;
-        }
-
-        /* The payload struct was allocated by MAMA, so we must free it */
-        mamaAllocated = 1;
-
-        status = initFunc (&payloadChar);
-
-        if (MAMA_STATUS_OK != status)
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadPayloadBridgeInternal (): "
-                      "Failed to initialise payload bridge [%s]. Cannot load payload.",
-                      payloadName);
-            goto error_handling_impl_allocated;
-        }
-
-        /* Once the payload has been successfully allocated and initialised,
-         * we can use the function search to register various payload functions
-         */
-        status = mamaInternal_registerPayloadFunctions (payloadLibHandle,
-                                                        impl,
-                                                        payloadName);
-
-        if (MAMA_STATUS_OK != status)
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadPayloadBridgeInternal (): "
-                      "Failed to register payload functions for [%s] payload bridge from [%s] library.",
-                      payloadName,
-                      payloadImplName);
-            goto error_handling_impl_allocated;
-        }
-
-    } else {
-
-        snprintf (initFuncName, 256, "%sPayload_createImpl",  payloadName);
-
-        /* Gives a warning - casting from void* to payload_createImpl func */
-        vp       = loadLibFunc (payloadLibHandle, initFuncName);
-        createFunc = *(msgPayload_createImpl*) &vp;
-
-        if (!createFunc)
-        {
-            status = MAMA_STATUS_NO_BRIDGE_IMPL;
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadPayloadBridgeInternal (): "
-                      "Could not find function [%s] in library [%s]",
-                      initFuncName,
-                      payloadImplName);
-            goto error_handling_close_and_unlock;
-        }
-
-        status = createFunc (impl, &payloadChar);
-
-        /* The payload createImpl function can return a status, as well as the impl
-         * structure. Unfortunately, the status can potentially be OK, even if the
-         * impl hasn't been correctly populated. In that case, we check for both,
-         * and if it's set to OK, set it to the more sensible NO_BRIDGE_IMPL instead
-         */
-       if (!(*impl) || MAMA_STATUS_OK != status)
-       {
-           status = MAMA_STATUS_OK == status ?
-                       MAMA_STATUS_NO_BRIDGE_IMPL : status;
-
-           mama_log (MAMA_LOG_LEVEL_ERROR,
-                     "mama_loadPayloadBridge(): "
-                     "Failed to load %s payload bridge from library [%s] ",
-                     payloadName,
-                     payloadImplName);
-
-           /* If the impl has been populated free it. */
-           if (*impl)
-            {
-                free (*impl);
-            }
-            goto error_handling_close_and_unlock;
-        }
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadPayloadBridgeInternal (): "
+                  "Failed to initialise payload bridge [%s]. "
+                  "Cannot find function %s in implementation library.",
+                  payloadName,
+                  payloadImplName);
+        goto error_handling_impl;
     }
+
+    /* Allocate and initialise the bridge, using function search to populate. */
+    *impl = calloc (1, sizeof (mamaPayloadBridgeImpl));
+
+    if (NULL == *impl)
+    {
+        status = MAMA_STATUS_NOMEM;
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadPayloadBridgeInternal (): "
+                  "Failed to allocate memory for payload bridge [%s]. Cannot load payload.",
+                  payloadName);
+        goto error_handling_impl;
+    }
+
+    /* Once the payload has been successfully allocated and initialised,
+     * we can use the function search to register various payload functions
+     */
+    status = mamaInternal_registerPayloadFunctions (payloadLibHandle,
+                                                    impl,
+                                                    payloadName);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadPayloadBridgeInternal (): "
+                  "Failed to register payload functions for [%s] payload bridge from [%s] library.",
+                  payloadName,
+                  payloadImplName);
+        goto error_handling_impl_allocated;
+    }
+
+    status = initFunc (*impl, &payloadChar);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadPayloadBridgeInternal (): "
+                  "Failed to initialise payload bridge [%s]. Cannot load payload.",
+                  payloadName);
+        goto error_handling_impl_allocated;
+    }
+
+    /* Build payload bridge compile time version property string */
+    snprintf (payloadVersion,
+              sizeof(payloadVersion),
+              MAMA_PROP_BRIDGE_COMPILE_TIME_VER,
+              payloadName);
+
+    /* Verify interface compatibility */
+    if(!strToVersionInfo(
+            mamaInternal_getMetaProperty (payloadVersion),
+            &bridgeMamaVersion))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadBridge (): "
+                  "Failed to initialise middleware bridge [%s]. "
+                  "Cannot determine bridge's MAMA version.",
+                  payloadName);
+        goto error_handling_impl_allocated;
+    }
+
+    /* Fail to load if the major and minor versions don't match. Only do this
+     * check in OpenMAMA until versions are consolidated. */
+    if ((2 == gImpl.version.mMajor) &&
+            (gImpl.version.mMajor != bridgeMamaVersion.mMajor ||
+             gImpl.version.mMinor != bridgeMamaVersion.mMinor))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadPayloadBridgeInternal (): "
+                  "Failed to initialise payload bridge [%s]. "
+                  "MAMA Runtime Version v%d.%d.x not compatible with bridge's compile version v%d.%d.x",
+                  payloadName,
+                  gImpl.version.mMajor,
+                  gImpl.version.mMinor,
+                  bridgeMamaVersion.mMajor,
+                  bridgeMamaVersion.mMinor);
+        goto error_handling_impl_allocated;
+    }
+
+    mama_log (MAMA_LOG_LEVEL_FINE,
+              "mama_loadPayloadBridgeInternal(): "
+              "Loaded payload bridge [%s] compiled against MAMA v%d.%d.%d %s",
+              payloadName,
+              bridgeMamaVersion.mMajor,
+              bridgeMamaVersion.mMinor,
+              bridgeMamaVersion.mRelease,
+              bridgeMamaVersion.mExtra ? bridgeMamaVersion.mExtra : "");
+
 
     /* Return the bridge payload ID, either from properties, or from the bridge
      * itself.
@@ -2095,7 +2101,6 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     payloadLib->bridge        = *(mamaPayloadBridge*)impl;
     payloadLib->library       = payloadLibHandle;
     payloadLib->id            = payloadChar;
-    payloadLib->mamaAllocated = mamaAllocated;
 
     status = wtable_insert (gImpl.payloads.table,
                             payloadName,
@@ -2288,10 +2293,6 @@ mama_loadEntitlementBridgeInternal(const char* name)
         goto error_handling_bridge_allocated;
     }
 
-    /* Once the payload has been successfully allocated and initialised,
-     * we can use the function search to register various payload functions
-     */
-
     status = mamaInternal_registerEntitlementFunctions (entitlementLibHandle,
                                                         &entBridge,
                                                         name);
@@ -2384,12 +2385,10 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
 
     char                middlewareImplName  [256];
     char                initFuncName        [256];
+    versionInfo         bridgeMamaVersion;
     bridge_init         initFunc        = NULL;
     bridge_createImpl   createFunc      = NULL;
     void*               vp              = NULL;
-
-    /* Indicates if the bridge was allocated by MAMA or by the bridge */
-    mama_bool_t         mamaAllocated   = 0;
 
     if (!impl || !middlewareName)
     {
@@ -2483,98 +2482,108 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     vp = loadLibFunc (middlewareLibHandle, initFuncName);
     initFunc = *(bridge_init*)&vp;
 
-    /* If the init function has been found, use allocate and initialise the
-     * bridge, and use function search to populate.
-     */
-    if (NULL != initFunc)
+    if (NULL == initFunc)
     {
-        mama_log (MAMA_LOG_LEVEL_FINE,
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadBridge (): "
-                  "Found bridge_init function, loading bridge [%s] with function search.",
-				  middlewareName);
-
-        /* Allocate the bridge structure */
-        *impl = calloc (1, sizeof (mamaBridgeImpl));
-
-        if (NULL == *impl)
-        {
-            status = MAMA_STATUS_NOMEM;
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadBridge (): "
-                      "Failed to allocate memory for middleware bridge [%s]. Cannot load bridge.",
-                      middlewareName);
-            goto error_handling_impl;
-        }
-
-        /* Bridge struct was allocated by MAMA, so we must free it. */
-        mamaAllocated = 1;
-
-        status = initFunc ();
-
-        if (MAMA_STATUS_OK != status)
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadBridge (): "
-                      "Failed to initialise middleware bridge [%s]. Cannot load bridge.",
-                      middlewareName);
-            goto error_handling_impl_allocated;
-        }
-
-        /* Once the middleware has been successfully allocate and initialised,
-         * we can use the function search to register various middleware functions.
-         */
-        status = mamaInternal_registerMiddlewareFunctions (middlewareLibHandle,
-                                                           impl,
-                                                           middlewareName);
-
-        if (MAMA_STATUS_OK != status)
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadBridge(): "
-                      "Failed to register middleware functions for [%s] from [%s] library:[%s]",
-                      middlewareName,
-                      middlewareImplName,
-                      mamaStatus_stringForStatus (status));
-
-            goto error_handling_impl_allocated;
-        }
-    } else {
-        /* If the init funciton hasn't been found, fall back to old bridge
-         * initialisation mechanism.
-         */
-        mama_log (MAMA_LOG_LEVEL_FINE,
-                  "mama_loadBridge (): "
-                  "No bridge_init function found for [%s]. Falling back on bridge_createImpl.",
-                  middlewareName);
-
-        snprintf (initFuncName, 256, "%sBridge_createImpl",  middlewareName);
-
-        /* Gives a warning - casting from void* to bridge_createImpl func */
-        vp        = loadLibFunc (middlewareLibHandle, initFuncName);
-        createFunc  = *(bridge_createImpl*) &vp;
-
-        if (!createFunc)
-        {
-            status = MAMA_STATUS_NO_BRIDGE_IMPL;
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadBridge(): "
-                      "Could not find function [%s] in library [%s]",
-                       initFuncName,
-                       middlewareImplName);
-
-            goto error_handling_close_and_unlock;
-        }
-
-        createFunc (impl);
-
-        if (!(*impl))
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadBridge(): Error in [%s] ", initFuncName);
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            return MAMA_STATUS_NO_BRIDGE_IMPL;
-        }
+                  "Failed to initialise middleware bridge [%s]. "
+                  "Cannot find function %s in implementation library.",
+                  middlewareName,
+                  initFuncName);
+        goto error_handling_impl;
     }
+
+    /* Construct the bridge in MAMA */
+    mama_log (MAMA_LOG_LEVEL_FINE,
+              "mama_loadBridge (): "
+              "Found bridge_init function, loading bridge [%s] with function search.",
+              middlewareName);
+
+    /* Allocate the bridge structure */
+    *impl = calloc (1, sizeof (mamaBridgeImpl));
+
+    if (NULL == *impl)
+    {
+        status = MAMA_STATUS_NOMEM;
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadBridge (): "
+                  "Failed to allocate memory for middleware bridge [%s]. Cannot load bridge.",
+                  middlewareName);
+        goto error_handling_impl;
+    }
+
+    /* Once the middleware has been successfully allocate and initialised,
+     * we can use the function search to register various middleware functions.
+     */
+    status = mamaInternal_registerMiddlewareFunctions (middlewareLibHandle,
+                                                       impl,
+                                                       middlewareName);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadBridge(): "
+                  "Failed to register middleware functions for [%s] from [%s] library:[%s]",
+                  middlewareName,
+                  middlewareImplName,
+                  mamaStatus_stringForStatus (status));
+
+        goto error_handling_impl_allocated;
+    }
+
+    status = initFunc (*impl);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadBridge (): "
+                  "Failed to initialise middleware bridge [%s]. Cannot load bridge.",
+                  middlewareName);
+        goto error_handling_impl_allocated;
+    }
+
+    /* Populate bridge meta data based on bridge's init properties */
+    mamaBridgeImpl_populateBridgeMetaData (*impl);
+
+    /* Verify interface compatibility */
+    if(!strToVersionInfo(
+            mamaBridgeImpl_getMetaProperty (*impl, MAMA_PROP_BARE_COMPILE_TIME_VER),
+            &bridgeMamaVersion))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadBridge (): "
+                  "Failed to initialise middleware bridge [%s]. "
+                  "Cannot determine bridge's MAMA version.",
+                  middlewareName);
+        goto error_handling_impl_allocated;
+    }
+
+    /* Fail to load if the major and minor versions don't match. Only do this
+     * check in OpenMAMA until versions are consolidated. */
+    if ((2 == gImpl.version.mMajor) &&
+            (gImpl.version.mMajor != bridgeMamaVersion.mMajor ||
+             gImpl.version.mMinor != bridgeMamaVersion.mMinor))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadBridge (): "
+                  "Failed to initialise middleware bridge [%s]. "
+                  "MAMA Runtime Version v%d.%d.x not compatible with bridge's compile version v%d.%d.x",
+                  middlewareName,
+                  gImpl.version.mMajor,
+                  gImpl.version.mMinor,
+                  bridgeMamaVersion.mMajor,
+                  bridgeMamaVersion.mMinor);
+        goto error_handling_impl_allocated;
+    }
+
+    mama_log (MAMA_LOG_LEVEL_FINE,
+              "mama_loadBridge(): "
+              "Loaded middleware bridge [%s] compiled against MAMA v%d.%d.%d %s",
+              middlewareName,
+              bridgeMamaVersion.mMajor,
+              bridgeMamaVersion.mMinor,
+              bridgeMamaVersion.mRelease,
+              bridgeMamaVersion.mExtra ? bridgeMamaVersion.mExtra : "");
 
     mama_log (MAMA_LOG_LEVEL_NORMAL,
              "mama_loadBridge(): "
@@ -2634,7 +2643,6 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
 
     middlewareLib->bridge        = *(mamaBridge*)impl;
     middlewareLib->library       = middlewareLibHandle;
-    middlewareLib->mamaAllocated = mamaAllocated;
 
     status = wtable_insert (gImpl.middlewares.table,
                             middlewareName,
@@ -2820,16 +2828,6 @@ mama_removeStatsCollector (mamaStatsCollector statsCollector)
     return status;
 }
 
-/**
- * @brief Helper function for initialization of internal wtables used by
- * OpenMAMA core.
- *
- * @param table Pointer to the wtable to be initialised.
- * @param name Name to be attached to the table
- * @param size Size of the table to be initialised.
- *
- * @return mama_status indicating the success or failure of the initialisation.
- */
 mama_status
 mamaInternal_initialiseTable (wtable_t* table,
                               const char* name,
@@ -2858,21 +2856,11 @@ mamaInternal_initialiseTable (wtable_t* table,
     return status;
 }
 
-/**
- * @brief Initialise core MAMA data structures.
- *
- * mamaInternal_init should be triggered once, and initialises the various data
- * structures used by MAMA internally. This includes:
- *     - Loading properties.
- *     - Initialising the bridges wtable structure.
- *
- * @return A mama_status indicating the success or failure of the initialisation.
- *
- */
 mama_status
 mamaInternal_init (void)
 {
-    mama_status status = MAMA_STATUS_OK;
+    mama_status status             = MAMA_STATUS_OK;
+    const char* mamaRuntimeVersion = mama_version + 5;
 
     enum mamaInternalTableSize {
         MIDDLEWARE_TABLE_SIZE  = 5,
@@ -2884,6 +2872,22 @@ mamaInternal_init (void)
      * access at the same time. 
      */
     wthread_static_mutex_lock (&gImpl.myLock);
+
+    /* Create meta properties and populate MAMA's own meta properties.
+     * Note that mama_version is always prefixed by 'mama ', hence the
+     * '5' character offset. Other meta properties may also be set here. */
+    if (NULL == gImpl.internalProperties)
+    {
+        gImpl.internalProperties = properties_Create ();
+        status = mamaInternal_setMetaProperty(MAMA_PROP_MAMA_RUNTIME_VER,
+                mamaRuntimeVersion);
+        if (MAMA_STATUS_OK != status)
+        {
+            wthread_static_mutex_unlock (&gImpl.myLock);
+            return status;
+        }
+    }
+
 
     /* Check if we've initialised before - 1 means yes, 0 means no. */
     if (0 == wInterlocked_read (&gImpl.init))
@@ -2921,6 +2925,9 @@ mamaInternal_init (void)
             return status;
         }
 
+        /* Update MAMA version information structure once here */
+        strToVersionInfo(mamaRuntimeVersion, &gImpl.version);
+
         /* Increment the init variable to indicate that initialization has been
          * successfully performed
          */
@@ -2931,24 +2938,6 @@ mamaInternal_init (void)
     return status;
 }
 
-/**
- * @brief Return payload character for the passed payload.
- *
- * Method checks various mechanisms for the payload character associated with
- * the named payload. Firstly, it will check the global properties object for
- * a property matching the pattern mama.payload.<name>.payloadId=
- *
- * If no character is set in properties, the method will then check with the
- * payload bridge itself, via the <name>Payload_getPayloadType method.
- *
- * The response is then stored in the payloadChar parameter.
- *
- * @param[in] payloadName The name of the payload for which the char is required.
- * @param[in] payload The payloadBridge struct  for which the char is required
- * @param[out] payloadChar The character into which the response is passed.
- *
- * @return A mama_status indicating the success or failure of the method.
- */
 mama_status
 mamaInternal_getPayloadId (const char* payloadName,
                            mamaPayloadBridge payload,
@@ -2989,24 +2978,12 @@ mamaInternal_getPayloadId (const char* payloadName,
     return status;
 }
 
-/**
- * @brief Return count of entitlementBridges loaded.
- * @return Integer number of loaded bridges.
- */
 mama_i32_t
 mamaInternal_getEntitlementBridgeCount ()
 {
     return gImpl.entitlements.count;
 }
 
-/**
- * @brief Find loaded entitlement bridge by name.
- *
- * @param[in] name The name of the entitlement bridge to be found.
- * @param[out] entBridge The loaded entitlement bridge (if found).
- *
- * @return MAMA_STATUS_OK if successful.
- */
 mama_status
 mamaInternal_getEntitlementBridgeByName(mamaEntitlementBridge* entBridge, const char* name)
 {
@@ -3027,5 +3004,41 @@ mamaInternal_getEntitlementBridgeByName(mamaEntitlementBridge* entBridge, const 
                   "Could not find loaded entitlement library [%s].",
                   name);
         return MAMA_STATUS_NOT_FOUND;
+    }
+}
+
+const char*
+mamaInternal_getMetaProperty (const char* name)
+{
+    return properties_Get (gImpl.internalProperties, name);
+}
+
+mama_status
+mamaInternal_setMetaProperty (const char* name, const char* value)
+{
+    const char* existingValue = NULL;
+    /* If this internal property has been set, don't let it be overwritten */
+    if (NULL != (existingValue = mamaInternal_getMetaProperty (name)))
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mamaInternal_setMetaProperty (): "
+                  "Can't set meta property %s=%s - it is already set to [%s].",
+                  name, value, existingValue);
+        return MAMA_STATUS_INVALID_ARG;
+    }
+    if (properties_setProperty(gImpl.internalProperties, name, value))
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "mamaInternal_setMetaProperty (): "
+                  "Successfully set meta property %s=%s.", name, value);
+        return MAMA_STATUS_OK;
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mamaInternal_setMetaProperty (): "
+                  "Can't set meta property %p %s=%s - out of memory?",
+                  gImpl.internalProperties, name, value, existingValue);
+        return MAMA_STATUS_NOMEM;
     }
 }

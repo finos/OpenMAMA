@@ -424,7 +424,7 @@ typedef mama_status
 
 /*Called when loading/creating a bridge */
 typedef mama_status
-(*msgPayload_init)            (char* identifier);
+(*msgPayload_init)            (mamaPayloadBridge bridge, char* identifier);
 
 MAMAIgnoreDeprecatedOpen
 typedef mamaPayloadType

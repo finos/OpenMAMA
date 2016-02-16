@@ -20,11 +20,20 @@
  */
 
 #include <mama/mama.h>
+#include "mamainternal.h"
 #include <wombat/strutils.h>
 #include "bridge.h"
 
-#define MAX_PROP_STRING                   1000
-#define PROP_NAME_ENTITLEMENTS_DEFERRED   "entitlements.deferred"
+void
+mamaBridgeImpl_getNormalizedPropertyName (mamaBridgeImpl*   impl,
+                                          char*             propertyName,
+                                          size_t            propertyLen,
+                                          const char*       property);
+
+mama_status
+mamaBridgeImpl_setMetaProperty (mamaBridge      bridgeImpl,
+                                const char*     property,
+                                const char*     value);
 
 int mamaBridgeImpl_getDefaultQueueTimeout(void)
 {
@@ -148,56 +157,77 @@ mamaBridgeImpl_stopInternalEventQueue (mamaBridge bridgeImpl)
     return MAMA_STATUS_OK;
 }
 
+/* All properties are write-once */
 mama_status
 mamaBridgeImpl_setReadOnlyProperty (mamaBridge bridgeImpl, const char* property, const char* value)
 {
-    mamaBridgeImpl_setProperty(bridgeImpl, property, value);
-    bridgeImpl->mEntitleReadOnly = 1;
-    return MAMA_STATUS_OK;
+    return mamaBridgeImpl_setMetaProperty(bridgeImpl, property, value);
+}
+
+/*
+ * Expects a bridge implementation, a pointer to a char buffer to populate with
+ * the result, a size of this buffer and the property to normalize.
+ */
+void
+mamaBridgeImpl_getNormalizedPropertyName (mamaBridgeImpl*   impl,
+                                          char*             propertyName,
+                                          size_t            propertyLen,
+                                          const char*       property)
+{
+    char prefix[MAX_INTERNAL_PROP_LEN];
+
+    /*
+     * For bridge properties, accept both 'mama.bridgename.propname' and simply
+     * 'propname'
+     */
+    snprintf (prefix, sizeof(prefix), "mama.%s.", impl->bridgeGetName());
+
+    /* If the prefix is equal to the first characters of value */
+    if (strlenEx(property) > strlenEx(prefix) &&
+            0 == strncmp (prefix, property, strlen(prefix)))
+    {
+        /* Move past prefix */
+        property += strlenEx(prefix);
+    }
+
+    /* Build full property string for bridge specific internal property */
+    snprintf (propertyName,
+              propertyLen,
+              "mama.%s.%s",
+              impl->bridgeGetName(),
+              property);
+
+    return;
 }
 
 mama_status
-mamaBridgeImpl_setProperty (mamaBridge bridgeImpl, const char* property, const char* value)
+mamaBridgeImpl_setMetaProperty (mamaBridge      bridgeImpl,
+                            const char*     property,
+                            const char*     value)
 {
-    char propString[MAX_PROP_STRING];
-
     mamaBridgeImpl* impl = (mamaBridgeImpl*)bridgeImpl;
+    char            propString[MAX_INTERNAL_PROP_LEN];
 
-    /* Check for mama.middleware.entitlements_deferred first */
-    snprintf(propString, MAX_PROP_STRING,
-        "mama.%s.%s",
-        impl->bridgeGetName(),
-        PROP_NAME_ENTITLEMENTS_DEFERRED);
+    mamaBridgeImpl_getNormalizedPropertyName (impl,
+                                              propString,
+                                              sizeof(propString),
+                                              property);
 
-    if(0 == strcmp(property, propString))
-    {
-        if (1 == bridgeImpl->mEntitleReadOnly)
-        {
-            mama_log (MAMA_LOG_LEVEL_WARN, "mamaBridgeImpl_setProperty(): "
-                      "Bridge is read only, property can not be set.");
-            return MAMA_STATUS_INVALID_ARG;
-        }
-        else
-        {
-            if (strtobool(value))
-                bridgeImpl->mEntitleDeferred = 1;
-            else
-                bridgeImpl->mEntitleDeferred = 0;
-        }
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_WARN, "mamaBridgeImpl_setProperty(): "
-            "Unknown property string [%s] entered.", property);
-        return MAMA_STATUS_INVALID_ARG;
-    }
-    return MAMA_STATUS_OK;
+    return mamaInternal_setMetaProperty (propString, value);
 }
 
 const char*
-mamaBridgeImpl_getProperty (mamaBridge bridgeImpl, const char* property)
+mamaBridgeImpl_getMetaProperty (mamaBridge bridgeImpl, const char* property)
 {
-    return NULL;
+    mamaBridgeImpl* impl = (mamaBridgeImpl*)bridgeImpl;
+    char            propString[MAX_INTERNAL_PROP_LEN];
+
+    mamaBridgeImpl_getNormalizedPropertyName (impl,
+                                              propString,
+                                              sizeof(propString),
+                                              property);
+
+    return mamaInternal_getMetaProperty (propString);
 }
 
 mama_bool_t
@@ -209,3 +239,16 @@ mamaBridgeImpl_areEntitlementsDeferred (mamaBridge bridgeImpl)
     }
     return 0;
 }
+
+/* This must be called immediately after bridge init function called */
+void
+mamaBridgeImpl_populateBridgeMetaData (mamaBridge bridgeImpl)
+{
+    mamaBridgeImpl* impl = (mamaBridgeImpl*)bridgeImpl;
+
+    /* Populate bridge member for fast access later */
+    impl->mEntitleDeferred = strtobool (
+            mamaBridgeImpl_getMetaProperty (bridgeImpl, "entitlements.deferred"));
+
+}
+

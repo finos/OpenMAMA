@@ -135,6 +135,13 @@ typedef struct mamaStatsCollectorImpl_*         mamaStatsCollector;
 typedef struct mamaStatsGeneratorImpl_*         mamaStatsGenerator;
 typedef struct mamaMsgReplyImpl_*               mamaMsgReply;
 
+typedef struct mamaVersion {
+    int     mMajor;
+    int     mMinor;
+    int     mRelease;
+    char*   mExtra;
+} mamaVersion;
+
 #if defined(__cplusplus)
 }
 #endif

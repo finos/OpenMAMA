@@ -28,6 +28,8 @@
 #include "mama/status.h"
 #include "entitlementinternal.h"
 #include "mama/mama.h"
+#include "wombat/strutils.h"
+#include <mama/version.h>
 
 #if defined(__cplusplus)
 extern "C"
@@ -38,6 +40,45 @@ extern "C"
 #define MAMA_MAX_MIDDLEWARES    CHAR_MAX
 #define MAMA_MAX_ENTITLEMENTS   CHAR_MAX
 #define MAX_ENTITLEMENT_BRIDGES CHAR_MAX
+
+/* Maximum internal property length */
+#define MAX_INTERNAL_PROP_LEN   1024
+
+/* These are the bare parameters which may be reused in other properties */
+#define MAMA_PROP_BARE_ENT_DEFERRED        "entitlements.deferred"
+#define MAMA_PROP_BARE_COMPILE_TIME_VER    "compile_version"
+
+/* These properties will be set by MAMA */
+#define MAMA_PROP_MAMA_RUNTIME_VER         "mama.runtime_version"
+
+/* %s = Bridge Name - these properties may be populated by bridge */
+#define MAMA_PROP_BRIDGE_ENT_DEFERRED      "mama.%s."MAMA_PROP_BARE_ENT_DEFERRED
+#define MAMA_PROP_BRIDGE_COMPILE_TIME_VER  "mama.%s."MAMA_PROP_BARE_COMPILE_TIME_VER
+
+#define MAMA_SET_BRIDGE_COMPILE_TIME_VERSION(bridgeName)                       \
+do                                                                             \
+{                                                                              \
+    char valString[MAX_INTERNAL_PROP_LEN];                                     \
+    char propString[MAX_INTERNAL_PROP_LEN];                                    \
+                                                                               \
+    /* Advise MAMA which version of MAMA the bridge was compiled against */    \
+    snprintf (propString,                                                      \
+              sizeof(propString),                                              \
+              MAMA_PROP_BRIDGE_COMPILE_TIME_VER,                               \
+              bridgeName);                                                     \
+    /* Advise MAMA which version of MAMA the bridge was compiled against */    \
+    snprintf (valString,                                                       \
+              sizeof(valString),                                               \
+              "%d.%d.%d",                                                      \
+              MAMA_VERSION_MAJOR,                                              \
+              MAMA_VERSION_MINOR,                                              \
+              MAMA_VERSION_RELEASE);                                           \
+    mamaInternal_setMetaProperty (                                             \
+              propString,                                                      \
+              valString);                                                      \
+}                                                                              \
+while(0)
+
 /**
  * @brief Structure for storing combined mamaPayloadBridge and LIB_HANDLE data.
  */
@@ -176,11 +217,21 @@ mama_i32_t
 mamaInternal_getEntitlementBridgeCount (void);
 
 /**
- * @brief Search for a loaded entitlement library by name.
+ * @brief Find loaded entitlement bridge by name.
+ *
+ * @param[in] name The name of the entitlement bridge to be found.
+ * @param[out] entBridge The loaded entitlement bridge (if found).
+ *
  * @return MAMA_STATUS_OK if successful.
  */
  mama_status
 mamaInternal_getEntitlementBridgeByName(mamaEntitlementBridge* entBridge, const char* name);
+
+const char*
+mamaInternal_getMetaProperty (const char* name);
+
+mama_status
+mamaInternal_setMetaProperty (const char* name, const char* value);
 
 /* ************************************************************************* */
 /* Callbacks. */
