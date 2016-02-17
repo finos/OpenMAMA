@@ -227,9 +227,11 @@ mamaInternal_getEntitlementBridgeCount (void);
  mama_status
 mamaInternal_getEntitlementBridgeByName(mamaEntitlementBridge* entBridge, const char* name);
 
+MAMAExpDLL
 const char*
 mamaInternal_getMetaProperty (const char* name);
 
+MAMAExpDLL
 mama_status
 mamaInternal_setMetaProperty (const char* name, const char* value);
 
