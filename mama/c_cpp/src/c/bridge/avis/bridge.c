@@ -132,12 +132,13 @@ avisBridge_close (mamaBridge bridgeImpl)
         status = MAMA_STATUS_PLATFORM;
     }
 
-    wlock_destroy (impl->mLock);
+    if (NULL != impl->mLock)
+    {
+        wlock_destroy (impl->mLock);
+    }
 
     mamaQueue_destroyWait(impl->mDefaultEventQueue);
 
-    free (impl);
-    
     wsocketcleanup();
 
     /* Stop and destroy the io thread */

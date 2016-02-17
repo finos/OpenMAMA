@@ -106,7 +106,7 @@ class Linux:
     def configure(self, env ):
         env.Append( CPPDEFINES = ['_GNU_SOURCE'] )
         env.Append( CCFLAGS = ['-g','-O2','-pedantic-errors'] )
-        env.Append( CFLAGS = ['-std=gnu99','-Wmissing-prototypes', '-Wstrict-prototypes'] )
+        env.Append( CFLAGS = ['-std=gnu99','-Wmissing-prototypes','-Wstrict-prototypes'] )
         env.Append( CXXFLAGS = ['-Wall','-Wno-long-long'] )
 
         if env['target_arch'] == 'x86':

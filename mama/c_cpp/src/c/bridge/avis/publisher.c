@@ -44,6 +44,7 @@ typedef struct avisPublisherBridge
     const char*    mSource;
     const char*    mRoot;
     char*          mSubject;
+    char           mNativePayloadId;
 } avisPublisherBridge;
 
 #define avisPublisher(publisher) ((avisPublisherBridge*) publisher)
@@ -85,10 +86,11 @@ avisBridgeMamaPublisherImpl_buildSendSubject (avisPublisherBridge* impl);
 
 static
 mama_status
-avisBridgeMamaPublisherImpl_prepareMessage (mamaMsg* msg)
+avisBridgeMamaPublisherImpl_prepareMessage (avisPublisherBridge* impl,
+                                            mamaMsg*             msg)
 {
     mama_status ret       = MAMA_STATUS_OK;
-    char        payloadId = MAMA_PAYLOAD_UNKNOWN;
+    char        payloadId = MAMA_PAYLOAD_ID_UNKNOWN;
 
     ret = mamaMsgImpl_getPayloadId (*msg, &payloadId);
 
@@ -101,9 +103,8 @@ avisBridgeMamaPublisherImpl_prepareMessage (mamaMsg* msg)
         return ret;
     }
 
-    // TODO: Should replace this with a more run-time way to get the payload ID
-    //       from name
-    if (MAMA_PAYLOAD_ID_AVIS == payloadId)
+    // If this ID is an avis native payload
+    if (impl->mNativePayloadId == payloadId)
     {
         /* Avis message, just perform a copy and detach so that it
          * can be enqueued on the avis dispatch thread. */
@@ -170,14 +171,14 @@ avisBridgeMamaPublisherImpl_prepareMessage (mamaMsg* msg)
                 buf = (const void*)attributes_clone ((Attributes*)buf);
 
                 mamaMsg_create (&encMsg);
-                mamaMsgImpl_setMsgBuffer (encMsg, buf, bufSize, MAMA_PAYLOAD_ID_AVIS);
+                mamaMsgImpl_setMsgBuffer (encMsg, buf, bufSize, impl->mNativePayloadId);
                 mamaMsgImpl_setMessageOwner (encMsg, 1);
             }
         }
 
         if (!encMsg)
         {
-            mamaPayloadBridge bridge = mamaInternal_findPayload (MAMA_PAYLOAD_ID_AVIS);
+            mamaPayloadBridge bridge = mamaInternal_findPayload (impl->mNativePayloadId);
             ret = mamaMsg_createForPayloadBridge(&encMsg, bridge);
 
             if (MAMA_STATUS_OK != ret)
@@ -236,8 +237,10 @@ avisBridgeMamaPublisher_createByIndex (publisherBridge* result,
                                         const char*      root,
                                         mamaPublisher    parent)
 {
-    Elvin* avis = NULL;
-    avisPublisherBridge* publisher = NULL;
+    Elvin*               avis                = NULL;
+    avisPublisherBridge* publisher           = NULL;
+    mamaPayloadBridge    nativePayloadBridge = NULL;
+
     if (!result || !tport || !parent) return MAMA_STATUS_NULL_ARG;
 
     avis = getAvis(tport);
@@ -257,6 +260,12 @@ avisBridgeMamaPublisher_createByIndex (publisherBridge* result,
         publisher->mSource = strdup(source);
     if (root != NULL)
         publisher->mRoot = strdup (root);
+
+    /* Only reliable way to get payload ID for a payload bridge name */
+    mama_loadPayloadBridge(&nativePayloadBridge, MAMA_PAYLOAD_NAME_AVIS);
+    mamaInternal_getPayloadId (MAMA_PAYLOAD_NAME_AVIS,
+                               nativePayloadBridge,
+                               &publisher->mNativePayloadId);
 
     avisBridgeMamaPublisherImpl_buildSendSubject (publisher);
 
@@ -303,7 +312,8 @@ avisBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
 
     CHECK_PUBLISHER(publisher);
 
-    ret = avisBridgeMamaPublisherImpl_prepareMessage (&msg);
+    ret = avisBridgeMamaPublisherImpl_prepareMessage (avisPublisher(publisher),
+                                                      &msg);
 
     if (MAMA_STATUS_OK != ret)
     {
@@ -343,7 +353,8 @@ avisBridgeMamaPublisher_sendReplyToInbox (publisherBridge  publisher,
 
     if (!requestMsg) return MAMA_STATUS_NULL_ARG;
 
-    status = avisBridgeMamaPublisherImpl_prepareMessage (&reply);
+    status = avisBridgeMamaPublisherImpl_prepareMessage (avisPublisher(publisher),
+                                                         &reply);
 
     if (MAMA_STATUS_OK != status)
     {
@@ -414,7 +425,8 @@ avisBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge publisher,
 
     CHECK_PUBLISHER(publisher);
 
-    status = avisBridgeMamaPublisherImpl_prepareMessage (&msg);
+    status = avisBridgeMamaPublisherImpl_prepareMessage (avisPublisher(publisher),
+                                                         &msg);
 
     if (MAMA_STATUS_OK != status)
     {
@@ -471,7 +483,8 @@ avisBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge publisher,
 
     CHECK_PUBLISHER(publisher);
 
-    status = avisBridgeMamaPublisherImpl_prepareMessage (&reply);
+    status = avisBridgeMamaPublisherImpl_prepareMessage (avisPublisher(publisher),
+                                                         &reply);
 
     if (MAMA_STATUS_OK != status)
     {

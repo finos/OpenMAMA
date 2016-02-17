@@ -29,6 +29,8 @@
 extern "C" {
 #endif
 
+#define     MAMA_PAYLOAD_ID_AVIS        'A'
+#define     MAMA_PAYLOAD_NAME_AVIS      "avismsg"
 
 MAMAExpBridgeDLL
 extern mama_status

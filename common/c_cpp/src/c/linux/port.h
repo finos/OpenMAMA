@@ -197,7 +197,7 @@ const char* getHostName (void);
 #      define MAMADeprecated__(MSG)     __attribute__ ((deprecated(#MSG)))
 #    endif
 /* GCC 4.5 and greater also supports message with deprecated */
-#  elif (__GNUC__ >= 4 && __GNUC_MINOR__ >= 5) || __GNUC__ > 4
+#  elif (__GNUC__ >= 4 && __GNUC_MINOR__ >= 5) || __GNUC__ >= 5
 #    undef  MAMADeprecated__
 #    define MAMADeprecated__(MSG)       __attribute__ ((deprecated(#MSG)))
 #  endif
@@ -240,7 +240,7 @@ const char* getHostName (void);
 
 /* Must be GCC */
 #elif defined (__GNUC__)
-#  if ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 6)) || __GNUC__ > 4
+#  if ((__GNUC__ == 4) && (__GNUC_MINOR__ >= 6)) || __GNUC__ >= 5
 #    define MAMAIgnoreDeprecatedOpen           \
         _Pragma ("GCC diagnostic push")      \
         _Pragma ("GCC diagnostic ignored \"-Wdeprecated\"") \
