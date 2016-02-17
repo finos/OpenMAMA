@@ -2013,7 +2013,10 @@ avismsgPayloadIter_get          (msgPayloadIter  iter,
     /* If this is a special meta field, do not consider during iteration */
     if ((strcmp(SUBJECT_FIELD_NAME, avisField(field)->mName) == 0) ||
         (strcmp(INBOX_FIELD_NAME, avisField(field)->mName)== 0))
-            return (avismsgPayloadIter_next(iter,field,msg));
+    {
+        impl->mIndex++;
+        return (avismsgPayloadIter_next(iter,field,msg));
+    }
 
     return field;
 }
