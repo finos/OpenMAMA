@@ -33,12 +33,9 @@ extern "C" {
 #define     MAMA_PAYLOAD_NAME_AVIS      "avismsg"
 
 MAMAExpBridgeDLL
-extern mama_status
-avismsgPayload_destroyImpl       (mamaPayloadBridge mamaPayloadBridge);
-
-MAMAExpBridgeDLL
 mama_status
-avismsgPayload_init              (char* identifier);
+avismsgPayload_init               (mamaPayloadBridge bridge,
+                                   char*             identifier);
 
 MAMAIgnoreDeprecatedOpen
 MAMAExpBridgeDLL

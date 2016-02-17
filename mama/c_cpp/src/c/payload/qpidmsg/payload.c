@@ -504,32 +504,6 @@ qpidmsgPayloadImpl_findField                (qpidmsgPayloadImpl*      impl,
   =========================================================================*/
 
 mama_status
-qpidmsgPayload_createImpl (mamaPayloadBridge* result, char* identifier)
-{
-    mamaPayloadBridgeImpl* impl = NULL;
-
-    impl = (mamaPayloadBridgeImpl*) calloc (1, sizeof (mamaPayloadBridgeImpl));
-
-    if (NULL == impl)
-    {
-        mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidmsgPayload_createImpl(): "
-                  "Could not allocate memory for payload impl.");
-        return MAMA_STATUS_NOMEM;
-    }
-
-    /* Use closure to store global data for payload bridge if required */
-    impl->mClosure = NULL;
-
-    /* Initialize the virtual function table (see payloadbridge.h) */
-    INITIALIZE_PAYLOAD_BRIDGE (impl, qpidmsg);
-
-    *result     = (mamaPayloadBridge)impl;
-    *identifier = (char)MAMA_PAYLOAD_QPID;
-
-    return MAMA_STATUS_OK;
-}
-
-mama_status
 qpidmsgPayload_init (mamaPayloadBridge bridge, char* identifier)
 {
     *identifier = (char)MAMA_PAYLOAD_QPID;

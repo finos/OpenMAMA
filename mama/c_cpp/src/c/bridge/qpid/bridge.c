@@ -63,34 +63,6 @@ static char         PAYLOAD_IDS[]           =   { MAMA_PAYLOAD_QPID, '\0' };
   =               Public interface implementation functions               =
   =========================================================================*/
 
-void qpidBridge_createImpl (mamaBridge* result)
-{
-    mamaBridgeImpl* bridge = NULL;
-
-    if (NULL == result)
-    {
-        return;
-    }
-
-    /* Create the wrapping MAMA bridge */
-    bridge = (mamaBridgeImpl*) calloc (1, sizeof (mamaBridgeImpl));
-    if (NULL == bridge)
-    {
-        mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidBridge_createImpl(): "
-                "Could not allocate memory for MAMA bridge implementation.");
-        *result = NULL;
-        return;
-    }
-
-    /* Populate the bridge impl structure with the function pointers */
-    INITIALIZE_BRIDGE (bridge, qpid);
-
-    /* Return the newly created bridge */
-    *result = (mamaBridge) bridge;
-
-    mamaBridgeImpl_setReadOnlyProperty ((mamaBridge)bridge, "mama.qpid.entitlements.deferred", "false");
-}
-
 mama_status qpidBridge_init (mamaBridge bridgeImpl)
 {
     mama_status status         = MAMA_STATUS_OK;

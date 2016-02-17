@@ -79,27 +79,14 @@ avismsgPayloadIter_get          (msgPayloadIter  iter,
 /******************************************************************************
 * bridge functions
 *******************************************************************************/
-extern mama_status
-avismsgPayload_destroyImpl (mamaPayloadBridge mamaPayloadBridge)
-{
-    /* Returns. */
-    mama_status ret = MAMA_STATUS_NULL_ARG;
-    if(NULL != mamaPayloadBridge)
-    {
-        /* Get the impl. */
-        mamaPayloadBridgeImpl *impl = (mamaPayloadBridgeImpl *)mamaPayloadBridge;
-
-        /* Free the impl. */
-        free(impl);
-    }
-
-    return ret;
-}
 
 mama_status
-avismsgPayload_init (char* identifier)
+avismsgPayload_init (mamaPayloadBridge bridge, char* identifier)
 {
     *identifier = (char)MAMA_PAYLOAD_ID_AVIS;
+
+    /* Will set the bridge's compile time MAMA version */
+    MAMA_SET_BRIDGE_COMPILE_TIME_VERSION(MAMA_PAYLOAD_NAME_AVIS);
 
     return MAMA_STATUS_OK;
 }

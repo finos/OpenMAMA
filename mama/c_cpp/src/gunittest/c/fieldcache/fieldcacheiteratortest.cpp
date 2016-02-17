@@ -96,8 +96,8 @@ TEST_F(MamaFieldCacheIteratorTestC, iteratorBegin)
     mamaFieldCacheField_getFid(field, &fid);
     ASSERT_EQ(10, fid);
     
-    mamaMsg_destroy(message);
     mamaFieldCacheIterator_destroy(iterator);
+    mamaMsg_destroy(message);
 
     ret = mamaFieldCache_destroy(fieldCache);
     ASSERT_EQ(MAMA_STATUS_OK, ret);
@@ -152,9 +152,9 @@ TEST_F(MamaFieldCacheIteratorTestC, iteratorNext)
     
     current = mamaFieldCacheIterator_next(iterator);
     ASSERT_FALSE(current);
-    
-    mamaMsg_destroy(message);
+
     mamaFieldCacheIterator_destroy(iterator);
+    mamaMsg_destroy(message);
 
     ret = mamaFieldCache_destroy(fieldCache);
 }
@@ -186,9 +186,9 @@ TEST_F(MamaFieldCacheIteratorTestC, iteratorLoop)
         counter++;
     }
     ASSERT_EQ(5, counter);
-   
-    mamaMsg_destroy(message);
+
     mamaFieldCacheIterator_destroy(iterator);
+    mamaMsg_destroy(message);
 
     ret = mamaFieldCache_destroy(fieldCache);
 }

@@ -1886,7 +1886,6 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     char                    initFuncName    [256];
     char                    payloadVersion  [MAX_INTERNAL_PROP_LEN];
     msgPayload_init         initFunc        = NULL;
-    msgPayload_createImpl   createFunc      = NULL;
     void*                   vp              = NULL;
 
     /* Indicates if the payload bridge struct was allocated by MAMA or
@@ -2214,7 +2213,7 @@ mama_loadEntitlementBridgeInternal(const char* name)
     if (entitlementLib && entitlementLib->bridge)
     {
         status = MAMA_STATUS_OK;
-        mama_log (MAMA_LOG_LEVEL_NORMAL,
+        mama_log (MAMA_LOG_LEVEL_FINE,
                   "mama_loadEntitlementBridgeInternal (): "
                   "Entitlement bridge [%s] already loaded. Returning previously loaded bridge.",
                   name);
@@ -2338,7 +2337,7 @@ mama_loadEntitlementBridgeInternal(const char* name)
 
         gImpl.entitlements.byIndex[gImpl.entitlements.count - 1] = entitlementLib;
 
-        mama_log (MAMA_LOG_LEVEL_ERROR,
+        mama_log (MAMA_LOG_LEVEL_FINE,
                   "mama_loadEntitlementBridgeInternal (): "
                   "Successfully loaded %s entitlement bridge from library [%s]",
                   name,
@@ -2387,7 +2386,6 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     char                initFuncName        [256];
     versionInfo         bridgeMamaVersion;
     bridge_init         initFunc        = NULL;
-    bridge_createImpl   createFunc      = NULL;
     void*               vp              = NULL;
 
     if (!impl || !middlewareName)
