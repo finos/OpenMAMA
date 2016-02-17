@@ -192,8 +192,8 @@ for s in libmama_sources:
     if s == "msg.c":
         # Our deprecated warnings don't work for msg.c in GCC versions before
         # 4.6 so turning off deprecated warnings for this particular file
-        static_obj = env.Object(s, CFLAGS="-Wno-deprecated-declarations")
-        shared_obj = env.SharedObject(s, CFLAGS="-Wno-deprecated-declarations")
+        static_obj = env.Object(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
+        shared_obj = env.SharedObject(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
     else:
         static_obj = env.Object(s)
         shared_obj = env.SharedObject(s)
