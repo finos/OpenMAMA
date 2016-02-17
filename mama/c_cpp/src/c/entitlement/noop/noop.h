@@ -47,6 +47,7 @@ typedef struct noopEntitlementSubscriptionHandle_
  *
  * @param ctx Pointer to the SubscriptionContext to be populated.
  */
+MAMAExpDLL
 mama_status
 noopEntitlementBridge_registerSubjectContext(SubjectContext* ctx);
 
@@ -58,6 +59,7 @@ noopEntitlementBridge_registerSubjectContext(SubjectContext* ctx);
  * @param ctx The subscription SubjectContext to be populated with a pointer to
  *            the entitlement subscription object.
  */
+MAMAExpDLL
 mama_status
 noopEntitlementBridge_createSubscription(mamaEntitlementBridge entBridge, SubjectContext* ctx);
 
@@ -66,6 +68,7 @@ noopEntitlementBridge_createSubscription(mamaEntitlementBridge entBridge, Subjec
  *
  * @param handle The subscription object to free.
  */
+MAMAExpDLL
 mama_status
 noopEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle);
 
@@ -75,6 +78,7 @@ noopEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle);
  * @param handle Entitlement subscription object to update.
  * @param isSnapshot Value to update object to.
  */
+MAMAExpDLL
 mama_status
 noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot);
 
@@ -85,6 +89,7 @@ noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int i
  * @param handle The entitlement subscription objec tto check against
  * @param subject The topic to check.
  */
+MAMAExpDLL
 int
 noopEntitlementBridge_isAllowed(entitlementSubscriptionHandle handle, char* subject);
 
@@ -95,6 +100,7 @@ noopEntitlementBridge_isAllowed(entitlementSubscriptionHandle handle, char* subj
  *
  * @param bridge The bridge object to destroy.
  */
+MAMAExpDLL
 mama_status
 noopEntitlementBridge_destroy(mamaEntitlementBridge bridge);
 
@@ -106,6 +112,7 @@ noopEntitlementBridge_destroy(mamaEntitlementBridge bridge);
  * @param bridge The (preallocated by mama) bridge level object to be
  *               initilized.
  */
+MAMAExpDLL
 mama_status
 noopEntitlementBridge_init(entitlementBridge* bridge);
 
