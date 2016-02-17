@@ -41,7 +41,7 @@ public:
         : mMsgVectorSize (0)
     {
         mMsgVector = new MamaMsg*[mMsgVectorSize];
-        for (int i=0; i<mMsgVectorSize;i++)
+        for (mama_size_t i=0; i<mMsgVectorSize;i++)
         {
             mMsgVector[i] = NULL;
         }

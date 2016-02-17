@@ -199,9 +199,6 @@ public:
                         MamaMsg&                       msg, 
                         const char*                    topic)
     {
-        static int i = 0;
-        void* closure;
-
         if (gMuteTopic)
         {
             const char* topic = msg.getString ("PublisherTopic", 10002);
@@ -214,15 +211,9 @@ public:
             }
         }
 
-        if ((closure = subscription->getTopicClosure()) == NULL)
-        {
-            subscription->setTopicClosure ((void*)(++i));
-        }
-
         if (gQuietLevel < 2)
         {
-            printf ("Recieved WildCard msg on %s with closure %p  msg.\n",
-                topic, closure);
+            printf ("Recieved WildCard msg on %s.\n", topic);
         }
 
         DisplayIterator it;

@@ -29,18 +29,22 @@
 extern "C" {
 #endif
 
+#define     MAMA_PAYLOAD_ID_AVIS        'A'
+#define     MAMA_PAYLOAD_NAME_AVIS      "avismsg"
 
 MAMAExpBridgeDLL
 extern mama_status
 avismsgPayload_destroyImpl       (mamaPayloadBridge mamaPayloadBridge);
 
 MAMAExpBridgeDLL
-extern mama_status
-avismsgPayload_createImpl        (mamaPayloadBridge* result, char* identifier);
+mama_status
+avismsgPayload_init              (char* identifier);
 
+MAMAIgnoreDeprecatedOpen
 MAMAExpBridgeDLL
 extern mamaPayloadType
 avismsgPayload_getType           (void);
+MAMAIgnoreDeprecatedClose
 
 MAMAExpBridgeDLL
 extern mama_status

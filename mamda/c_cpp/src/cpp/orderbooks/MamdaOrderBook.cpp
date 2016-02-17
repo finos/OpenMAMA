@@ -1403,8 +1403,8 @@ namespace Wombat
         , mCheckVisibility          (false)
         , mNeedsReevaluation        (false)
         , mHasPartId                (false)
-        , mHasBookContributors      (false)
         , mGenerateDeltas           (false)
+        , mHasBookContributors      (false)
         , mBookContributorsModified (false)
         , mPublishSimpleDelta       (NULL)
         , mPublishComplexDelta      (NULL)
@@ -2303,7 +2303,7 @@ namespace Wombat
             
             if (mGenerateDeltas)
             {
-                addDelta(NULL, level, NULL, 
+                addDelta(NULL, level, 0,
                          MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD, 
                          MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UNKNOWN);
             }
@@ -2337,7 +2337,7 @@ namespace Wombat
             plAction = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD;
             if (mGenerateDeltas)
             {
-                addDelta(NULL, level, NULL, 
+                addDelta(NULL, level, 0,
                          MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD, 
                          MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UNKNOWN);
             }   

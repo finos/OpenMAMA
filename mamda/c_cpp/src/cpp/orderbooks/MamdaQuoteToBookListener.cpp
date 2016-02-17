@@ -606,21 +606,21 @@ void MamdaQuoteToBookListener::onMsg (MamdaSubscription*  subscription,
 MamdaQuoteToBookListenerImpl::MamdaQuoteToBookListenerImpl(
     MamdaQuoteToBookListener&  listener,
     MamdaOrderBook*          fullBook)
-    : mListener             (listener)
-    , mFullBook             (fullBook)    
+    : mFullBookLock         (MamdaLock::SHARED, "Quote2BookListener(fullBook)")
+    , mFullBook             (fullBook)
+    , mLocalFullBook        (false)
+    , mListener             (listener)
     , mSubscription         (NULL)
     , mCurrentDeltaCount    (0)
     , mEventSeqNum          (0)
     , mGapBegin             (0)
     , mGapEnd               (0)
     , mUpdateStaleBook      (false)
-    , mLocalFullBook        (false)
     , mClearStaleBook       (true)
     , mIsTransientMsg       (false)
     , mUpdateInconsistentBook (false)
     , mResolvePossiblyDuplicate (false)
     , mQuoteSizeMultiplier  (1)
-    , mFullBookLock         (MamdaLock::SHARED, "Quote2BookListener(fullBook)")
     , mQuoteCache           (mRegularCache)
 {
     if (!mFullBook)
@@ -1122,6 +1122,9 @@ void MamdaQuoteToBookListenerImpl::setQuality (
             invokeClearHandlers (sub, NULL);
             releaseLock();
         }
+        break;
+    default:
+        break;
     }
 }
 

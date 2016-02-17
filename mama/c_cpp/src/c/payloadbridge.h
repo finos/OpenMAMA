@@ -1497,7 +1497,7 @@ typedef struct mamaPayloadBridgeImpl_
 
     void*                               closure;
 
-    // Back reference to parent library itself
+    /* Back reference to parent library itself */
     mamaPayloadLib*                     payloadLib;
 
 } mamaPayloadBridgeImpl;

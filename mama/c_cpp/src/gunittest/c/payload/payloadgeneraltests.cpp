@@ -331,14 +331,6 @@ TEST_F(PayloadGeneralTests, CreateForTemplateValid)
    EXPECT_EQ (MAMA_STATUS_OK, result);
 }
 
-TEST_F(PayloadGeneralTests, GetTypeValid)
-{
-   mamaPayloadType     result;
-
-   result = aBridge->msgPayloadGetType();
-   EXPECT_NE(result, MAMA_PAYLOAD_UNKNOWN);
-}
-
 TEST_F(PayloadGeneralTests, CopyValid)
 {
     msgPayload          testPayload = NULL;
@@ -539,7 +531,6 @@ TEST_F(PayloadGeneralTests, GetSendSubjectValid)
     msgPayload          testPayload = NULL;
     const char*         subjectOut  = NULL;
     const char*         subjectIn   = "testsubj";
-    msgBridge           bridgeMsg   = NULL;
     mamaMsg             parentMsg   = NULL;
 
     //result = aBridge->msgPayloadCreate(&testPayload);
@@ -838,7 +829,7 @@ TEST_F(PayloadGeneralTests, UnSerializeInValidBufferLength)
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    result = aBridge->msgPayloadUnSerialize(testPayload, &testBuffer, NULL);
+    result = aBridge->msgPayloadUnSerialize(testPayload, &testBuffer, 0);
 	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
 }
 
@@ -1124,7 +1115,7 @@ TEST_F(PayloadGeneralTests, ApplyValid)
 	result = aBridge->msgPayloadApply(testDestPayload, testSrcPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    aBridge->msgPayloadAddString (testSrcPayload, "name", NULL, "Unit");
+    aBridge->msgPayloadAddString (testSrcPayload, "name", 0, "Unit");
 
 	result = aBridge->msgPayloadApply(testDestPayload, testSrcPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);

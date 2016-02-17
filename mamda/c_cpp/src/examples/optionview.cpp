@@ -771,18 +771,14 @@ void OptionChainDisplay::printContract (const MamdaOptionContract*  contract)
 
     const MamdaTradeRecap& tradeRecap     = contract->getTradeInfo ();
     const MamdaQuoteRecap& quoteRecap     = contract->getQuoteInfo ();
-    const MamdaFundamentals& fundamentals = contract->getFundamentalsInfo ();
     const char*       symbol       = contract->getSymbol ();
     const char*       exchange     = contract->getExchange ();
     const char*       expireDate   = contract->getExpireDateStr ();
     double            strikePrice  = contract->getStrikePrice ();
-    long              openInterest = contract->getOpenInterest ();
     const MamaPrice&  lastPrice    = tradeRecap.getLastPrice ();
     mama_quantity_t   accVolume    = tradeRecap.getAccVolume ();
     const MamaPrice&  bidPrice     = quoteRecap.getBidPrice ();
     const MamaPrice&  askPrice     = quoteRecap.getAskPrice ();
-    double            histVola     = fundamentals.getHistoricalVolatility ();
-    double            riskFreeRate = fundamentals.getRiskFreeRate ();
 
     printf ("    %c%c%c%c%c%c%c %6g (%-6s %5s) | %6g | %6g | %6g | %6d\n",
             expireDate[0], expireDate[1], expireDate[2], expireDate[3], 
@@ -792,5 +788,5 @@ void OptionChainDisplay::printContract (const MamdaOptionContract*  contract)
             lastPrice.getValue(),
             bidPrice.getValue(),
             askPrice.getValue(),
-            accVolume);
+            (int)accVolume);
 }

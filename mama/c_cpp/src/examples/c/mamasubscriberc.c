@@ -279,12 +279,13 @@ wildCardMsgCb (mamaSubscription       subscription,
     }
     if (itemClosure == NULL)
     {
-        mamaSubscription_setItemClosure (subscription, (void*)(++i));
+        mamaSubscription_setItemClosure (subscription, (void*)strdup(topic));
     }
     if (gQuietLevel < 2)
     {
-        printf ("Received Wild Card Message with topic %s closure=%d\n", topic,
-            (int)itemClosure);
+        printf ("Received Wild Card Message with topic %s closure=%s\n",
+                topic,
+                (char*)itemClosure);
     }
     displayMsg (msg);
 }

@@ -95,16 +95,6 @@ TEST_F (MsgGeneralTestsC, msgCreateInValid)
     ASSERT_EQ (mamaMsg_create(NULL), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, DISABLED_msgCreateForPayloadValid)
-{
-    ASSERT_EQ(mamaMsg_createForPayload(&mMsg,'5'),MAMA_STATUS_OK);
-}
-
-TEST_F (MsgGeneralTestsC, DISABLED_msgCreateForPayloadInValid)
-{
-   ASSERT_EQ (mamaMsg_createForPayload(NULL,'W'), MAMA_STATUS_NULL_ARG);
-}
-
 TEST_F (MsgGeneralTestsC, msgCreateForPayloadBridgeValid)
 {
     ASSERT_EQ (mamaMsg_createForPayloadBridge(&mMsg, mPayloadBridge), MAMA_STATUS_OK);
@@ -343,21 +333,16 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsSubMessage)
 
 TEST_F (MsgGeneralTestsC, msgGetPayloadTypeValid)
 {
-    mamaPayloadType  payloadType = MAMA_PAYLOAD_UNKNOWN;
+    char  payloadType = MAMA_PAYLOAD_ID_UNKNOWN;
     
-    ASSERT_EQ (mamaMsg_getPayloadType(mMsg, &payloadType), MAMA_STATUS_OK);
+    ASSERT_EQ (mamaMsgImpl_getPayloadId(mMsg, &payloadType), MAMA_STATUS_OK);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetPayloadTypeInValidMsg)
 {
-    mamaPayloadType  payloadType = MAMA_PAYLOAD_UNKNOWN;
+    char  payloadType = MAMA_PAYLOAD_ID_UNKNOWN;
 
-    ASSERT_EQ (mamaMsg_getPayloadType(NULL, &payloadType), MAMA_STATUS_NULL_ARG);
-}
-
-TEST_F (MsgGeneralTestsC, DISABLED_msgGetPayloadTypeInValidPayloadType)
-{
-    ASSERT_EQ (mamaMsg_getPayloadType(mMsg, NULL), MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (mamaMsgImpl_getPayloadId(NULL, &payloadType), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgImplSetMessageOwnerValid)

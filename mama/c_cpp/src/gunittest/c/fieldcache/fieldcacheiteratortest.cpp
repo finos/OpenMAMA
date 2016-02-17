@@ -75,6 +75,7 @@ TEST_F(MamaFieldCacheIteratorTestC, iteratorBegin)
 {
     mamaFieldCache fieldCache = NULL;
     mama_status ret = mamaFieldCache_create(&fieldCache);
+    ASSERT_EQ(MAMA_STATUS_OK, ret);
     
     mamaMsg message;
     mamaMsg_create(&message);
@@ -99,12 +100,14 @@ TEST_F(MamaFieldCacheIteratorTestC, iteratorBegin)
     mamaFieldCacheIterator_destroy(iterator);
 
     ret = mamaFieldCache_destroy(fieldCache);
+    ASSERT_EQ(MAMA_STATUS_OK, ret);
 }
 
 TEST_F(MamaFieldCacheIteratorTestC, iteratorNext)
 {
     mamaFieldCache fieldCache = NULL;
     mama_status ret = mamaFieldCache_create(&fieldCache);
+    ASSERT_EQ(MAMA_STATUS_OK, ret);
     
     mamaMsg message;
     mamaMsg_create(&message);
@@ -160,7 +163,8 @@ TEST_F(MamaFieldCacheIteratorTestC, iteratorLoop)
 {
     mamaFieldCache fieldCache = NULL;
     mama_status ret = mamaFieldCache_create(&fieldCache);
-    
+    ASSERT_EQ(MAMA_STATUS_OK, ret);
+
     mamaMsg message;
     mamaMsg_create(&message);
     mamaMsg_addBool(message, "test_bool", 10, 1);

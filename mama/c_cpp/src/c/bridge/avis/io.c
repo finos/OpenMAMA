@@ -189,7 +189,7 @@ avisBridgeMamaIo_getDescriptor  (ioBridge    io,
   =========================================================================*/
 
 mama_status
-avisBridgeMamaIoImpl_start ()
+avisBridgeMamaIoImpl_start (void)
 {
     int threadResult                        = 0;
     gAvisIoContainer.mEventsRegistered      = 0;
@@ -211,7 +211,7 @@ avisBridgeMamaIoImpl_start ()
 }
 
 mama_status
-avisBridgeMamaIoImpl_stop ()
+avisBridgeMamaIoImpl_stop (void)
 {
     gAvisIoContainer.mActive = 0;
 

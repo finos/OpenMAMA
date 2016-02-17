@@ -188,7 +188,7 @@ avisBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
     const char* replyAddr;
     mama_status status = MAMA_STATUS_OK;
 
-    CHECK_MSG(msg);
+    if (NULL == msg || NULL == result) return MAMA_STATUS_NULL_ARG;
 
     if (MAMA_STATUS_OK != (status = avismsgPayload_getString(
         avisMsg(msg)->mAvisMsg, INBOX_FIELD_NAME, 0, &replyAddr)))

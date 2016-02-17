@@ -39,6 +39,10 @@ MAMAExpDLL
 extern void
 avisBridge_createImpl (mamaBridge* result);
 
+MAMAExpDLL
+extern mama_status
+avisBridge_init (void);
+
 extern const char*
 avisBridge_getVersion (void);
 

@@ -298,7 +298,7 @@ TEST_F (MamaInternalTestC, getPayloadCharFromMessage)
     ASSERT_EQ (MAMA_STATUS_OK, mama_loadPayloadBridge (&mPayload, getPayload ()));
     ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&mBridge, getMiddleware ()));
     ASSERT_EQ (MAMA_STATUS_OK, mama_open ());
-    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_createForPayload(&msg, getPayloadId ()));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_createForPayloadBridge(&msg, mamaInternal_findPayload(getPayloadId())));
 
     EXPECT_EQ (MAMA_STATUS_OK, mamaMsgImpl_getPayloadId (msg, &payloadChar));
 

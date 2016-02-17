@@ -362,7 +362,7 @@ TEST_F (MiddlewareSubscriptionTests, isValid)
                                                     parent, closure));
     
     res = mBridge->bridgeMamaSubscriptionIsValid(subscriber);
-    ASSERT_TRUE(res != NULL);
+    ASSERT_TRUE(res != 0);
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_destroy(parent));

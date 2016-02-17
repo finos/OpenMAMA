@@ -238,9 +238,9 @@ namespace Wombat
         MamdaOrderImbalanceListener&  listener)
         : mListener                             (listener)
         , mHandler                              (NULL)
+        , mUsePosDupAndOutOfSeqHandlers         (false)
         , mTransientCache                       (NULL)
         , mOrderImbalanceCache                  (mRegularCache)
-        , mUsePosDupAndOutOfSeqHandlers         (false)
         , mMsgQualFieldState                    (NOT_MODIFIED)
     {
         clearCache (mRegularCache);
@@ -1272,8 +1272,6 @@ namespace Wombat
         const MamaMsg&      msg,
         mama_i32_t          msgType)
     {
-         const char* securityStatus = NULL;
-
         // Ensure that the field handling is set up (once for all
         // MamdaQuoteListener instances).
         if (!mUpdatersComplete)

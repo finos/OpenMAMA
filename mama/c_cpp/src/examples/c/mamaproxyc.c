@@ -55,10 +55,11 @@ NULL
 
 typedef struct pubCache_
 {
-    const char * symbol;
+    const char*      symbol;
     mamaDQPublisher  pub;
     mamaMsg          cachedMsg;
     mamaSubscription sub;
+    int              index;
 }pubCache;
 
 
@@ -222,16 +223,17 @@ static void subscribeToSymbols ()
 
     for (i = 0; i < gNumSymbols; i++)
     {
+        gSubscriptionList[i].index = i;
         mamaSubscription_allocate (&gSubscriptionList[i].sub);
         mamaSubscription_create (gSubscriptionList[i].sub,
                                  gSubDefaultQueue,
                                  &callbacks,
                                  gSubscriptionSource,
                                  gSymbolList[i],
-                                 (void*)i);
+                                 (void*)&gSubscriptionList[i]);
 
-		gSubscriptionList[i].symbol = gSymbolList[i];
-		mamaMsg_create(&gSubscriptionList[i].cachedMsg);
+        gSubscriptionList[i].symbol = gSymbolList[i];
+        mamaMsg_create(&gSubscriptionList[i].cachedMsg);
     }
 }
 
@@ -353,7 +355,7 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
         return;
     }
 
-    mamaDQPublisherManager_createPublisher (manager, symbol, (void*)i, &gSubscriptionList[i].pub);
+    mamaDQPublisherManager_createPublisher (manager, symbol, &gSubscriptionList[i], &gSubscriptionList[i].pub);
 
     printf ("Received new request: %s\n", symbol);
 
@@ -410,8 +412,9 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
                                 mamaMsg                msg)
 {
 
-    recapInfo *info = NULL;
-    mamaQueue queue;
+    recapInfo* info = NULL;
+    pubCache*  cache = NULL;
+    mamaQueue  queue;
 
     printf ("Received request: %s\n", publishTopicInfo->symbol);
 
@@ -421,9 +424,10 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
         case MAMA_SUBSC_SNAPSHOT:
             mamaMsg_detach (msg);
             info = (recapInfo*) calloc (1, sizeof(recapInfo));
-            info->index =(int)publishTopicInfo->cache;
+            cache = publishTopicInfo->cache;
+            info->index = cache->index;
             info->msg = msg;
-            mamaSubscription_getQueue(gSubscriptionList[info->index].sub, &queue);
+            mamaSubscription_getQueue(cache->sub, &queue);
             mamaQueue_enqueueEvent  (queue,
                              sendRecap,
                              info);
@@ -434,8 +438,9 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
         case MAMA_SUBSC_DQ_UNKNOWN:
         case MAMA_SUBSC_DQ_GROUP_SUBSCRIBER:
             info = (recapInfo*) calloc (1, sizeof(recapInfo));
-            info->index =(int)publishTopicInfo->cache;
-            mamaSubscription_getQueue(gSubscriptionList[info->index].sub, &queue);
+            cache = publishTopicInfo->cache;
+            info->index = cache->index;
+            mamaSubscription_getQueue(cache->sub, &queue);
             mamaQueue_enqueueEvent  (queue,
                              sendRecap,
                              info);
@@ -635,15 +640,16 @@ subscriptionOnMsg  (mamaSubscription subscription,
                     void *closure,
                     void *itemClosure)
 {
+    pubCache* cache = (pubCache*) closure;
     switch (mamaMsgType_typeForMsg (msg))
     {
     case MAMA_MSG_TYPE_DELETE:
     case MAMA_MSG_TYPE_EXPIRE:
         mamaSubscription_destroy (subscription);
         mamaSubscription_deallocate (subscription);
-        if (gSubscriptionList[(size_t)closure].pub)
-            mamaDQPublisher_send(gSubscriptionList[(size_t)closure].pub, msg);
-        gSubscriptionList[(size_t)closure].sub = NULL;
+        if (cache->pub)
+            mamaDQPublisher_send(cache->pub, msg);
+        cache->sub = NULL;
         return;
     default:
         break;
@@ -656,20 +662,20 @@ subscriptionOnMsg  (mamaSubscription subscription,
     case MAMA_MSG_STATUS_TIMEOUT:
         mamaSubscription_destroy (subscription);
         mamaSubscription_deallocate (subscription);
-        if (gSubscriptionList[(size_t)closure].pub)
-            mamaDQPublisher_send(gSubscriptionList[(size_t)closure].pub, msg);
-        gSubscriptionList[(size_t)closure].sub = NULL;
+        if (cache->pub)
+            mamaDQPublisher_send(cache->pub, msg);
+        cache->sub = NULL;
         return;
     default:
         break;
     }
 
-    mamaMsg_applyMsg(gSubscriptionList[(size_t)closure].cachedMsg, msg);
+    mamaMsg_applyMsg(cache->cachedMsg, msg);
 
-    if (gSubscriptionList[(size_t)closure].pub)
+    if (cache->pub)
     {
-        mamaDQPublisher_setStatus(gSubscriptionList[(size_t)closure].pub, mamaMsgStatus_statusForMsg (msg));
-         mamaDQPublisher_send(gSubscriptionList[(size_t)closure].pub, msg);
+        mamaDQPublisher_setStatus(cache->pub, mamaMsgStatus_statusForMsg (msg));
+        mamaDQPublisher_send(cache->pub, msg);
     }
 
     fflush(stdout);

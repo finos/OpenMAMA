@@ -1771,7 +1771,7 @@ displayCb (const mamaMsg       msg,
                 const mamaMsgField  field,
                 void*               closure)
 {
-    displayField (field, msg, (int)closure);
+    displayField (field, msg, *((int*)closure));
 }
 
 void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
@@ -1808,7 +1808,7 @@ void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
     */
     if (gNewIterators == 0)
     {
-        mamaMsg_iterateFields (msg, displayCb, gDictionary, (void*)indentLevel);
+        mamaMsg_iterateFields (msg, displayCb, gDictionary, (void*)&indentLevel);
     }
     else
     {

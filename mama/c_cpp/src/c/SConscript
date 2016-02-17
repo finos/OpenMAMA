@@ -183,18 +183,28 @@ else:
 
 fp.close()
 
-objects = []
+static_objects = []
+shared_objects = []
 StaticLibs['libmama'] = []
 
 
 for s in libmama_sources:
-    obj = env.Object(s)
-    StaticLibs['libmama'].append(obj)
-    objects.append(obj)
+    if s == "msg.c":
+        # Our deprecated warnings don't work for msg.c in GCC versions before
+        # 4.6 so turning off deprecated warnings for this particular file
+        static_obj = env.Object(s, CFLAGS="-Wno-deprecated-declarations")
+        shared_obj = env.SharedObject(s, CFLAGS="-Wno-deprecated-declarations")
+    else:
+        static_obj = env.Object(s)
+        shared_obj = env.SharedObject(s)
+
+    StaticLibs['libmama'].append(static_obj)
+    static_objects.append(static_obj)
+    shared_objects.append(shared_obj)
 
 lib = []
-lib.append(env.SharedLibrary('.libs/libmama', libmama_sources))
-lib.append(env.StaticLibrary('.libs/libmama', [objects, StaticLibs['libwombatcommon'] ]))
+lib.append(env.SharedLibrary('.libs/libmama', shared_objects))
+lib.append(env.StaticLibrary('.libs/libmama', [StaticLibs['libmama'], StaticLibs['libwombatcommon'] ]))
 
 Alias('install', env.Install('$libdir', lib))
 Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))

@@ -939,8 +939,8 @@ MamaProxy::MamaProxy():
     mFilename           (NULL),
     sendSync            (false),
     mQuietness          (0),
-    mMamaLogLevel       (MAMA_LOG_LEVEL_WARN),
+    mSubscriptionList   (),
     managerCallback     (NULL),
+    mMamaLogLevel       (MAMA_LOG_LEVEL_WARN),
     syncTimer           (NULL)
 {}
-

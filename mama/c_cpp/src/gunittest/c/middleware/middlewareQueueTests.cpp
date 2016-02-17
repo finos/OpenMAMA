@@ -296,7 +296,7 @@ TEST_F (MiddlewareQueueTests, DISABLED_timedDispatchInvalidTimeout)
     queueBridge queue = (queueBridge) NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaQueueTimedDispatch(queue,NULL));
+               mBridge->bridgeMamaQueueTimedDispatch(queue, 0));
 }
 
 TEST_F (MiddlewareQueueTests, dispatchEventInvalid)
@@ -444,8 +444,7 @@ TEST_F (MiddlewareQueueTests, setHighWatermark)
     size_t      highWatermark   = 10;
     queueBridge queue           = NULL;
     mamaQueue   parent          = NULL;
-    void*       closure         = NOT_NULL;
-    
+
     mamaQueue_create(&parent,mBridge);
     mBridge->bridgeMamaQueueCreate(&queue, parent);
 
@@ -468,7 +467,7 @@ TEST_F (MiddlewareQueueTests, setHighWatermarkInvalidWatermark)
     queueBridge queue = (queueBridge) NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaQueueSetHighWatermark(queue,NULL));
+               mBridge->bridgeMamaQueueSetHighWatermark(queue, 0));
 }
 
 TEST_F (MiddlewareQueueTests, setLowWatermark)
@@ -476,13 +475,12 @@ TEST_F (MiddlewareQueueTests, setLowWatermark)
     size_t      lowWatermark = 2;
     queueBridge queue        = NULL;
     mamaQueue   parent       = NULL;
-    void*       closure      = NOT_NULL;
-    
+
     mamaQueue_create(&parent,mBridge);
     mBridge->bridgeMamaQueueCreate(&queue, parent);
 
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaQueueSetLowWatermark(queue,lowWatermark));
+              mBridge->bridgeMamaQueueSetLowWatermark(queue, lowWatermark));
 }
 
 TEST_F (MiddlewareQueueTests, setLowWatermarkInvalidQueueBridge)
@@ -498,6 +496,6 @@ TEST_F (MiddlewareQueueTests, setLowWatermarkInvalidWatermark)
     queueBridge queue = (queueBridge) NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaQueueSetLowWatermark(queue,NULL));
+               mBridge->bridgeMamaQueueSetLowWatermark(queue, 0));
 }
 

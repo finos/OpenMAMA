@@ -41,7 +41,6 @@
 
 #include "wombat/wincompat.h"
 
-
 #define MAX_SUBJECT 256
 
 #define NOFID 0

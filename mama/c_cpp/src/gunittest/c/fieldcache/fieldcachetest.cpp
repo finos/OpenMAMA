@@ -102,16 +102,17 @@ TEST_F(MamaFieldCacheTestC, setGetTrackModified)
 {
     mamaFieldCache fieldCache = NULL;
     mama_status ret = mamaFieldCache_create(&fieldCache);
-    
+    ASSERT_EQ(MAMA_STATUS_OK, ret);
+
     mama_bool_t trackModified;
     mamaFieldCache_setTrackModified(fieldCache, 1);
     mamaFieldCache_getTrackModified(fieldCache, &trackModified);
     ASSERT_TRUE(trackModified);
-    
+
     mamaFieldCache_setTrackModified(fieldCache, 0);
     mamaFieldCache_getTrackModified(fieldCache, &trackModified);
     ASSERT_FALSE(trackModified);
-    
+
     ret = mamaFieldCache_destroy(fieldCache);
 }
 

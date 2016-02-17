@@ -414,7 +414,7 @@ protected:
          mamaDateTime_create(&mUpdate);
          mamaDateTime_setToNow(mUpdate);
 
-         memset (mStr, NULL, 64);
+         memset (mStr, 0, 64);
          mamaDateTime_getAsString(mIn, mStr, 64);
     }
 

@@ -113,7 +113,7 @@ TEST_F (MiddlewareGeneralTests, getName)
 TEST_F (MiddlewareGeneralTests, getDefaultPayloadId)
 {
     char** names = {NULL};
-    char*  id    = "id";
+    char*  id    = NULL;
     
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge-> bridgeGetDefaultPayloadId(&names,&id));
@@ -121,7 +121,7 @@ TEST_F (MiddlewareGeneralTests, getDefaultPayloadId)
 
 TEST_F (MiddlewareGeneralTests, getDefaultPayloadIdInvalidName)
 {
-    char* id = "id";
+    char* id = NULL;
     
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge-> bridgeGetDefaultPayloadId(NULL,&id));

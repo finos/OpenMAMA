@@ -579,7 +579,7 @@ protected:
         : m_in (NULL)
         , in_size (0)
         , m_out(NULL)
-        , out_size (NULL)
+        , out_size (0)
     {}
 
     ~FieldMsgTests()

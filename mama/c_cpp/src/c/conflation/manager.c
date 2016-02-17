@@ -52,6 +52,11 @@ mamaMsg
 mamaConflationManagerImpl_getMsg (mamaConflationManager mgr);
 
 mama_status
+mamaConflationManagerImpl_processData (mamaConflationManager mgr,
+                                       mamaMsg               msg,
+                                       const char*           topic);
+
+mama_status
 mamaConflationManager_allocate (mamaConflationManager* mgr)
 {
     mamaConflationMgr *impl = 

@@ -239,7 +239,6 @@ TEST_F(PayloadAtomicTestsC, addU8Valid)
 TEST_F(PayloadAtomicTestsC, addU8InValidFID)
 {
     mama_u8_t        initialValue = (mama_u8_t)2;
-    mama_u8_t        returnedValue = (mama_u8_t)3;
     mama_status res;
     
     /* Adding the U8 to payload. */
@@ -252,7 +251,6 @@ TEST_F(PayloadAtomicTestsC, addU8InValidFID)
 TEST_F(PayloadAtomicTestsC, addU8InValidName)
 {
     mama_u8_t        initialValue =  (mama_u8_t)2;
-    mama_u8_t        returnedValue = (mama_u8_t)3;
     mama_status res;
 
     /* Adding the U8 to the payload */

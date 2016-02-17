@@ -3595,8 +3595,7 @@ namespace Wombat
                     break;
                 default: 
                     char tradeId[64];
-                    mama_size_t length;
-                    field.getAsString (tradeId, length);
+                    field.getAsString (tradeId, sizeof(tradeId));
                     impl.mTradeCache.mTradeId           = tradeId;
                     impl.mTradeCache.mTradeIdFieldState = MODIFIED;
 		        break;
@@ -3618,8 +3617,7 @@ namespace Wombat
                     break;
                 default: 
                     char origTradeId[64];
-                    mama_size_t length;
-                    field.getAsString (origTradeId, length);
+                    field.getAsString (origTradeId, sizeof(origTradeId));
                     impl.mTradeCache.mOrigTradeId           = origTradeId;
                     impl.mTradeCache.mOrigTradeIdFieldState = MODIFIED;
                     break;
