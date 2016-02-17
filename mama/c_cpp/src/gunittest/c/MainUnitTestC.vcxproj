@@ -185,7 +185,6 @@
     <ClCompile Include="iotest.cpp" />
     <ClCompile Include="MainUnitTestC.cpp" />
     <ClCompile Include="openclosetest.cpp" />
-    <ClCompile Include="payloadmiddlewareidtest.cpp" />
     <ClCompile Include="publishertest.cpp" />
     <ClCompile Include="queuetest.cpp" />
     <ClCompile Include="subscriptiontest.cpp" />

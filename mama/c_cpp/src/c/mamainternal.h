@@ -105,6 +105,7 @@ MAMAExpDLL
 mamaBridge
 mamaInternal_findBridge (void);
 
+MAMAExpDLL
 mamaPayloadBridge
 mamaInternal_findPayload (char id);
 
@@ -161,6 +162,7 @@ mamaInternal_init (void);
  *
  * @return A mama_status indicating the success or failure of the method.
  */
+MAMAExpDLL
 mama_status
 mamaInternal_getPayloadId (const char*       payloadName,
                            mamaPayloadBridge payload,
