@@ -1333,7 +1333,7 @@ namespace Wombat
         MamdaOrderBookPriceLevel*         level,
         MamdaOrderBookPriceLevel::Action  plAction)
     {
-        if ((!mProcessEntries && !mBookMsgFields.mBookType ==1) ||     mBookMsgFields.mBookType==2 )
+        if ((!mProcessEntries && (!mBookMsgFields.mBookType) == 1) || mBookMsgFields.mBookType == 2 )
         {
             return;
         }
@@ -1517,7 +1517,7 @@ namespace Wombat
         if (1 != mBookMsgFields.mBookType)
             level->setNumEntries ((mama_u32_t)plNumEntries);
 
-        if ((!mProcessEntries && !mBookMsgFields.mBookType ==1) || mBookMsgFields.mBookType==2)
+        if ((!mProcessEntries && (!mBookMsgFields.mBookType) == 1) || mBookMsgFields.mBookType == 2)
         {
             // No entry delta; just this price level delta.
             addDelta (NULL, level, plSizeChange, plAction,

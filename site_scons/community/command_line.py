@@ -24,7 +24,9 @@ def get_command_line_opts( host, products, VERSIONS ):
        BoolVariable('with_unittest','Build with gunit tests',False),
        BoolVariable('with_testtools','Build with test tools',False),
        BoolVariable('with_examples','Build with test tools',True),
-       BoolVariable('entitled','Whether the build is entitled or unentitled',False),
+       PathVariable('oea_home','Path to oea entitlements home',None, PathVariable.PathIsDir),
+       ListVariable('entitlements', 'List of entitlements libraries to enforce e.g. \'oea\' (NOTE: 1st in list the default entitlements library to use.)', 'noop',
+                     names = ['oea','noop'] ),
        PathVariable('gtest_home','Path to Google Test home',None, PathVariable.PathIsDir),
        PathVariable('junit_home','Path to Junit home',None, PathVariable.PathIsDir),
        ListVariable('middleware','Middleware(s) to be compiled in', 'avis', names = ['avis', 'qpid'] ),
@@ -33,19 +35,22 @@ def get_command_line_opts( host, products, VERSIONS ):
     )
 
     if host['os'] == 'Windows':
+        env = Environment()
         opts.AddVariables(
             ListVariable( 'buildtype', 'Windows Build type e.g dynamic', 'all', names = ['dynamic','dynamic-debug','static','static-debug'] ),
             PathVariable('avis_home', 'Path to Avis',
                           'c:\\avis', PathVariable.PathAccept),
             PathVariable('qpid_home', 'Path to QPID Proton Libraries',
                           'c:\\proton', PathVariable.PathAccept),
-            EnumVariable('vsver','Visual Studio Version to use', '10.0',
-                allowed_values=('8.0','9.0','10.0','11.0','12.0')),
+            EnumVariable('vsver','Visual Studio Version to use', env['MSVC_VERSION'],
+                allowed_values=('8.0','9.0','10.0','11.0','12.0', '14.0')),
             EnumVariable('product', 'Product to be built', 'mamda',
                      allowed_values=( products )),
             EnumVariable('dotnet_version', 'Dotnet Version used to determine framework directory', '2.0',
                      allowed_values=('1.0','2.0', '4.0')),
             PathVariable('dotnet_framework', 'Path to desired dotnet framework', None,
+                     PathVariable.PathIsDir),
+            PathVariable('nunit_home', 'Path to Nunit home', None,
                      PathVariable.PathIsDir),
             PathVariable('libevent_home', 'Path to libevent Libraries',
                           'c:\\libevent', PathVariable.PathAccept),
@@ -58,7 +63,7 @@ def get_command_line_opts( host, products, VERSIONS ):
     if host['os'] == 'Linux':
         opts.AddVariables(
             PathVariable('avis_home','Path to Avis', '/usr/local/', PathVariable.PathIsDir),
-            PathVariable('qpid_home','Path to QPID Proton Libraries', 
+            PathVariable('qpid_home','Path to QPID Proton Libraries',
                 '/usr/local/', PathVariable.PathIsDir),
             PathVariable('cache_dir','Path to object cache', None, PathVariable.PathIsDir),
             EnumVariable('product', 'Product to be built', 'mamda',

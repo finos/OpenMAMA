@@ -38,21 +38,25 @@ protected:
         : mMsg           (NULL)
         , mPayloadBridge (NULL)
         , mStatus        (MAMA_STATUS_OK)
-    {}
-
-    virtual ~MsgGeneralTestsC(void) {};
-
-    virtual void SetUp(void) 
     {
         mama_loadPayloadBridge (&mPayloadBridge, getPayload());
         mama_loadBridge (&mMiddlewareBridge, getMiddleware());
+        mama_open();
+    }
+
+    virtual ~MsgGeneralTestsC(void)
+    {
+        mama_close();
+    };
+
+    virtual void SetUp(void) 
+    {
         mamaMsg_create (&mMsg);
     };
 
     virtual void TearDown(void) 
     {
         mamaMsg_destroy(mMsg);
-        mama_close();
     };
     
     mamaMsg            mMsg;
@@ -89,16 +93,6 @@ TEST_F (MsgGeneralTestsC, msgCreateValid)
 TEST_F (MsgGeneralTestsC, msgCreateInValid)
 {
     ASSERT_EQ (mamaMsg_create(NULL), MAMA_STATUS_NULL_ARG);
-}
-
-TEST_F (MsgGeneralTestsC, DISABLED_msgCreateForPayloadValid)
-{
-    ASSERT_EQ(mamaMsg_createForPayload(&mMsg,'5'),MAMA_STATUS_OK);
-}
-
-TEST_F (MsgGeneralTestsC, DISABLED_msgCreateForPayloadInValid)
-{
-   ASSERT_EQ (mamaMsg_createForPayload(NULL,'W'), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgCreateForPayloadBridgeValid)
@@ -329,7 +323,7 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsSubMessage)
 
     status = mamaMsg_addMsg (mMsg, "name2", 103, submsg);
 
-    ALLOW_NON_IMPLEMENTED (status);
+    CHECK_NON_IMPLEMENTED_RECOMMENDED (status);
 
     EXPECT_EQ (MAMA_STATUS_OK, mamaMsg_getNumFields (mMsg, &numFields));
     EXPECT_EQ (addedFields, numFields);
@@ -339,21 +333,16 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsSubMessage)
 
 TEST_F (MsgGeneralTestsC, msgGetPayloadTypeValid)
 {
-    mamaPayloadType  payloadType = MAMA_PAYLOAD_UNKNOWN;
+    char  payloadType = MAMA_PAYLOAD_ID_UNKNOWN;
     
-    ASSERT_EQ (mamaMsg_getPayloadType(mMsg, &payloadType), MAMA_STATUS_OK);
+    ASSERT_EQ (mamaMsgImpl_getPayloadId(mMsg, &payloadType), MAMA_STATUS_OK);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetPayloadTypeInValidMsg)
 {
-    mamaPayloadType  payloadType = MAMA_PAYLOAD_UNKNOWN;
+    char  payloadType = MAMA_PAYLOAD_ID_UNKNOWN;
 
-    ASSERT_EQ (mamaMsg_getPayloadType(NULL, &payloadType), MAMA_STATUS_NULL_ARG);
-}
-
-TEST_F (MsgGeneralTestsC, DISABLED_msgGetPayloadTypeInValidPayloadType)
-{
-    ASSERT_EQ (mamaMsg_getPayloadType(mMsg, NULL), MAMA_STATUS_NULL_ARG);
+    ASSERT_EQ (mamaMsgImpl_getPayloadId(NULL, &payloadType), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgImplSetMessageOwnerValid)
@@ -960,7 +949,7 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgSetNewBufferInValidBuffer)
     ASSERT_EQ (mamaMsg_setNewBuffer(mMsg, 0, size), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, msgSetNewBufferInValidSize)
+TEST_F (MsgGeneralTestsC, DISABLED_msgSetNewBufferInValidSize)
 {
     const void*          buffer       = NULL;
     mama_size_t          size         = 0;
@@ -1019,6 +1008,12 @@ TEST_F(MsgCopyTests, CopyNullMsg)
 {
     mStatus = mamaMsg_copy (NULL, &mCopy);
     ASSERT_EQ (mStatus, MAMA_STATUS_NULL_ARG);
+}
+
+TEST_F(MsgCopyTests, CopySameMsg)
+{
+    mStatus = mamaMsg_copy (mMsg, &mMsg);
+    ASSERT_EQ (mStatus, MAMA_STATUS_INVALID_ARG);
 }
 
 TEST_F(MsgCopyTests, DISABLED_CopyNullCopy)

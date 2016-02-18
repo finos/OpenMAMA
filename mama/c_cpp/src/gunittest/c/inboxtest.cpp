@@ -59,11 +59,14 @@ void MamaInboxTestC::SetUp(void)
     m_this = this;
 
     mama_loadBridge (&mBridge, getMiddleware());
+
+    mama_open();
 }
 
 void MamaInboxTestC::TearDown(void)
 {
     m_this = NULL;
+    mama_close();
 }
 
 void MAMACALLTYPE onInboxMsg (mamaMsg msg, void *closure)
@@ -91,7 +94,7 @@ TEST_F (MamaInboxTestC, CreateDestroy)
 {
     mamaInbox     inbox     = NULL;
     mamaTransport tport     = NULL;
-    char          tportName[] = "test_tport";
+	const char* tportName   = getTransport();
     mamaQueue     queue     = NULL;
 
     ASSERT_EQ (MAMA_STATUS_OK,

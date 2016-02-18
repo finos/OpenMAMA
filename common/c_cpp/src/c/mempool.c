@@ -76,6 +76,7 @@ memoryNode*
 memoryPool_addNode (memoryPool* pool, size_t nodeSize)
 {
     memoryNode* newNode = memoryNode_create (nodeSize);
+    memoryNode** tracker = NULL;
 
     if (NULL == newNode)
     {
@@ -95,7 +96,7 @@ memoryPool_addNode (memoryPool* pool, size_t nodeSize)
         }
     }
 
-    memoryNode** tracker = (memoryNode**)pool->mAllocatedNodes.mNodeBuffer;
+    tracker = (memoryNode**)pool->mAllocatedNodes.mNodeBuffer;
 
     /* Update tracker array with newly created node */
     tracker[pool->mNumNodesTotal] = newNode;
@@ -170,8 +171,9 @@ memoryPool_iterate (memoryPool* pool, memoryPoolIteratorCb callback)
 {
     size_t      i = 0;
     memoryNode* node = NULL;
+    memoryNode** tracker = NULL;
     wthread_mutex_lock(&pool->mLock);
-    memoryNode** tracker = (memoryNode**)pool->mAllocatedNodes.mNodeBuffer;
+    tracker = (memoryNode**)pool->mAllocatedNodes.mNodeBuffer;
     for (i = 0; i < pool->mNumNodesTotal; i++)
     {
         node = tracker[pool->mNumNodesTotal];
@@ -191,8 +193,9 @@ memoryPool_destroy (memoryPool* pool, memoryPoolIteratorCb callback)
 {
     size_t      i = 0;
     memoryNode* node = NULL;
+    memoryNode** tracker = NULL;
     wthread_mutex_lock(&pool->mLock);
-    memoryNode** tracker = (memoryNode**)pool->mAllocatedNodes.mNodeBuffer;
+    tracker = (memoryNode**)pool->mAllocatedNodes.mNodeBuffer;
     for (i = 0; i < pool->mNumNodesTotal; i++)
     {
         node = tracker[pool->mNumNodesTotal];

@@ -973,7 +973,7 @@ protected:
     MsgFieldVectorSubMsgTests()
         : mOut(NULL)
     {
-        memset (mIn, NULL, VECTOR_SIZE * sizeof(mamaMsg));
+        memset (mIn, 0, VECTOR_SIZE * sizeof(mamaMsg));
     }
 
     virtual void SetUp()

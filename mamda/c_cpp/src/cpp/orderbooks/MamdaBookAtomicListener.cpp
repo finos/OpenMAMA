@@ -819,7 +819,6 @@ namespace Wombat
                      * build up a book to fire callbacks appropriately
                      */
                     mOrderBook.clear();
-                    const MamaMsg* entryMsg;
 
                     for (size_t i = 0; i < msgEntriesNum; i++)
                     {
@@ -1007,7 +1006,7 @@ namespace Wombat
         // below loop at least once for flattened messages scenario
         int16_t maxLevelFields = MamdaOrderBookFields::PRICE_LEVEL_LENGTH
                                     ? MamdaOrderBookFields::PRICE_LEVEL_LENGTH : 1;
-        if (numLevelFieldInMsg < maxLevelFields)
+        if (numLevelFieldInMsg < (uint32_t) maxLevelFields)
         {
             maxLevelFields = numLevelFieldInMsg;
         }

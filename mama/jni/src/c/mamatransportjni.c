@@ -56,6 +56,9 @@ typedef struct transportListenerClosure
     /* The java connection object is used when processing transport callbacks. */
     jobject mConnection;
 
+    /* Used for transport callbacks (transport and topic) */
+    jobject mQueue;
+
 } transportListenerClosure;
 
 /******************************************************************************
@@ -74,6 +77,7 @@ jmethodID           connectionConstructorId_g           =   NULL;
 jmethodID           connectionDefaultConstructorId_g    =   NULL;
 jclass              connectionClass_g                   =   NULL;
 extern jfieldID     connectionPointerFieldId_g;
+extern jfieldID     queuePointerFieldId_g;
 
 /*Method ids for the MamaTransportListener interface callback*/
 static jmethodID    transportListenerOnReconnectId_g    =   NULL;
@@ -91,6 +95,9 @@ static jmethodID    transportTopicListenerOnTopicSubscribeId_g        =   NULL;
 static jmethodID    transportTopicListenerOnTopicUnsubscribeId_g      =   NULL;
 static jmethodID    transportTopicListenerOrigOnTopicSubscribeId_g    =   NULL;
 static jmethodID    transportTopicListenerOrigOnTopicUnsubscribeId_g  =   NULL;
+static jmethodID    transportTopicListenerOnTopicPublishErrorId_g     =   NULL;
+static jmethodID    transportTopicListenerOnTopicPublishErrorNotEntitledId_g =   NULL;
+static jmethodID    transportTopicListenerOnTopicPublishErrorBadSymbolId_g   =   NULL;
 
 /* Pointer field of the bridge */
 extern  jfieldID    bridgePointerFieldId_g;
@@ -161,7 +168,7 @@ Java_com_wombat_mama_MamaTransport__1create__Ljava_lang_String_2Lcom_wombat_mama
         (*env)->GetLongField(env,bridge,bridgePointerFieldId_g);      
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.");
+        "Null parameter, MamaTransport may have already been destroyed.");
 
     if(name)
     {
@@ -237,6 +244,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_destroy(JNIEnv* env, j
                     {
                         (*env)->DeleteGlobalRef(env, closure->mTopicCallback);
                         closure->mTopicCallback = NULL;
+                    } 
+    
+                    /* The callback queue. */
+                    if(NULL != closure->mQueue)
+                    {
+                        (*env)->DeleteGlobalRef(env, closure->mQueue);
+                        closure->mQueue = NULL;
                     } 
     
                     /* Delete the connection object reference, this will allow the Java object to be garbage collected. */
@@ -348,7 +362,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_setDescription
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.");
+        "Null parameter, MamaTransport may have already been destroyed.");
 
     if(description)
     {
@@ -396,7 +410,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaTransport_getDescription
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.", NULL);
+        "Null parameter, MamaTransport may have already been destroyed.", NULL);
 
     if (MAMA_STATUS_OK!=(status=mamaTransport_getDescription(
          CAST_JLONG_TO_POINTER(mamaTransport,transportPointer),&c_description)))
@@ -427,7 +441,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_setInvokeQualityForAll
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.");
+        "Null parameter, MamaTransport may have already been destroyed.");
 
     if (MAMA_STATUS_OK!=(status=mamaTransport_setInvokeQualityForAllSubscs (
                          CAST_JLONG_TO_POINTER(mamaTransport,transportPointer),
@@ -459,7 +473,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaTransport_getInvokeQualityFo
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.", 0);
+        "Null parameter, MamaTransport may have already been destroyed.", 0);
 
     if (MAMA_STATUS_OK!=(status=mamaTransport_getInvokeQualityForAllSubscs (
                          CAST_JLONG_TO_POINTER(mamaTransport,transportPointer),
@@ -478,6 +492,43 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaTransport_getInvokeQualityFo
 
 /*
  * Class:     com_wombat_mama_MamaTransport
+ * Method:    nativeSetTransportCallbackQueue
+ * Signature: (L/com/wombat/MamaQueue;)V
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeSetTransportCallbackQueue
+  (JNIEnv* env, jobject this, jobject queue)
+{
+    jlong transportPointer = 0;
+    jlong queuePointer = 0;
+    jlong closurePointer = 0;
+    transportListenerClosure *closure = NULL;
+
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queue,  
+        "Null parameter for queue.");
+
+    transportPointer = (*env)->GetLongField(env, this, transportPointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
+        "Null parameter, MamaTransport may have already been destroyed.");
+
+    queuePointer = (*env)->GetLongField(env, queue, queuePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
+        "Null parameter, MamaQueue may have already been destroyed.");
+
+    /* Create ref to Java object */
+    closurePointer = (*env)->GetLongField(env, this, transportClosureFieldId_g);
+    if (0 != closurePointer)
+	{
+        closure = (transportListenerClosure*) closurePointer;
+        closure->mQueue = (*env)->NewGlobalRef(env, queue);
+	}
+
+    mamaTransport_setTransportCallbackQueue(
+                         CAST_JLONG_TO_POINTER(mamaTransport, transportPointer),
+                         CAST_JLONG_TO_POINTER(mamaQueue, queuePointer));
+}
+
+/*
+ * Class:     com_wombat_mama_MamaTransport
  * Method:    getQuality
  * Signature: ()S
  */
@@ -491,7 +542,7 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaTransport_getQuality
 
     transportPointer = (*env)->GetLongField(env,this,transportPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(transportPointer,  
-		"Null parameter, MamaTransport may have already been destroyed.", 0);
+        "Null parameter, MamaTransport may have already been destroyed.", 0);
 
     if (MAMA_STATUS_OK!=(status=mamaTransport_getQuality (
                          CAST_JLONG_TO_POINTER(mamaTransport,transportPointer),
@@ -516,8 +567,9 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaTransport_getQuality
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_initIDs
   (JNIEnv* env, jclass class)
 {
-    jclass mamaTransportListenerClass   = NULL;
+    jclass mamaTransportListenerClass        = NULL;
     jclass mamaTransportTopicListenerClass   = NULL;
+    jclass mamaQueueClass                    = NULL;
     
     /* Get the Transport related method and field Id's */
     transportPointerFieldId_g = (*env)->GetFieldID(env,
@@ -530,6 +582,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_initIDs
              UTILS_JAVA_POINTER_TYPE_SIGNATURE);
     if(!transportClosureFieldId_g) return;
 
+    /* MamaConnection */
     connectionClass_g = (*env)->FindClass(env,
                                           "com/wombat/mama/MamaConnection");
     if (!connectionClass_g) return;
@@ -552,9 +605,25 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_initIDs
     connectionPointerFieldId_g = (*env)->GetFieldID (env, connectionClass_g,
                                                      "connectionPointer_i", 
                                                      UTILS_JAVA_POINTER_TYPE_SIGNATURE);
+    if (connectionPointerFieldId_g == NULL)
+    {
+        return;
+    }
+
+   /* MamaQueue */
+   mamaQueueClass = (*env)->FindClass(env,
+                   UTILS_QUEUE_CLASS_NAME);
+   if(!mamaQueueClass) return;
+
+    queuePointerFieldId_g = (*env)->GetFieldID (env, mamaQueueClass,
+                                                     "queuePointer_i", 
+                                                     UTILS_JAVA_POINTER_TYPE_SIGNATURE);
+    if (queuePointerFieldId_g == NULL)
+    {
+        return;
+    }
 
     /* Get the transport listener method and field Id's */
-
    mamaTransportListenerClass = (*env)->FindClass(env,
                              UTILS_TRANSPORT_LISTENER_CLASS_NAME);
    if(!mamaTransportListenerClass) return;
@@ -682,9 +751,36 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_initIDs
         return;
     }
 
+    transportTopicListenerOnTopicPublishErrorId_g = (*env)->GetMethodID(env,
+                        mamaTransportTopicListenerClass,"onTopicPublishError",
+                        "(Ljava/lang/String;Ljava/lang/Object;)V");
+    if(!transportTopicListenerOnTopicPublishErrorId_g)
+    {   
+        (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
+        return;
+    }
+
+    transportTopicListenerOnTopicPublishErrorNotEntitledId_g = (*env)->GetMethodID(env,
+                        mamaTransportTopicListenerClass,"onTopicPublishErrorNotEntitled",
+                        "(Ljava/lang/String;Ljava/lang/Object;)V");
+    if(!transportTopicListenerOnTopicPublishErrorNotEntitledId_g)
+    {   
+        (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
+        return;
+    }
+
+    transportTopicListenerOnTopicPublishErrorBadSymbolId_g = (*env)->GetMethodID(env,
+                        mamaTransportTopicListenerClass,"onTopicPublishErrorBadSymbol",
+                        "(Ljava/lang/String;Ljava/lang/Object;)V");
+    if(!transportTopicListenerOnTopicPublishErrorBadSymbolId_g)
+    {   
+        (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
+        return;
+    }
+
    (*env)->DeleteLocalRef(env, mamaTransportListenerClass);
-   (*env)->DeleteLocalRef(env, mamaTransportListenerClass); 
    (*env)->DeleteLocalRef(env, mamaTransportTopicListenerClass);
+   (*env)->DeleteLocalRef(env, mamaQueueClass);
     
     return;
 }
@@ -717,26 +813,26 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeAddListener(JNIE
                 /* Create a global reference to the new callback */
                 ret = MAMA_STATUS_NOMEM;
                 closure->mListenerCallback = (*env)->NewGlobalRef(env, listener);
-				if(NULL != closure->mListenerCallback)
-				{
-					/* Install the transport callback. */
+                if(NULL != closure->mListenerCallback)
+                {
+                    /* Install the transport callback. */
                     ret = mamaTransport_setTransportCallback(transport, (mamaTransportCB)mamaTransportListenerCB, closure);
-				}
+                }
             }
         }
     }
 
     /* Throw an exception if something went wrong. */
     if(MAMA_STATUS_OK != ret)
-	{
-		char errorString[UTILS_MAX_ERROR_STRING_LENGTH] = "";
-		utils_buildErrorStringForStatus(
+    {
+        char errorString[UTILS_MAX_ERROR_STRING_LENGTH] = "";
+        utils_buildErrorStringForStatus(
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Failed to add transport listener.",
                 ret);
         utils_throwMamaException(env, errorString);
-	}
+    }
 }
 
 /*
@@ -767,26 +863,25 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaTransport_nativeAddTopicListener
                 /* Create a global reference to the new callback */
                 ret = MAMA_STATUS_NOMEM;
                 closure->mTopicCallback = (*env)->NewGlobalRef(env, topicListener);
-				if(NULL != closure->mTopicCallback)
-				{
-					/* Install the transport topic callback. */
-					ret = mamaTransport_setTransportTopicCallback(transport, (mamaTransportTopicCB)mamaTransportTopicListenerCB, (void *)closure);
-				}
+                if(NULL != closure->mTopicCallback)
+                {
+                    ret = mamaTransport_setTransportTopicCallback(transport, (mamaTransportTopicCB)mamaTransportTopicListenerCB, (void *)closure);
+                }
             }
         }
     }
 
     /* Throw an exception if something went wrong. */
     if(MAMA_STATUS_OK != ret)
-	{
-		char errorString[UTILS_MAX_ERROR_STRING_LENGTH] = "";
-		utils_buildErrorStringForStatus(
+    {
+        char errorString[UTILS_MAX_ERROR_STRING_LENGTH] = "";
+        utils_buildErrorStringForStatus(
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Failed to add transport topic listener.",
                 ret);
         utils_throwMamaException(env, errorString);
-	}
+    }
 }
 
 /*
@@ -987,7 +1082,8 @@ void MAMACALLTYPE mamaTransportListenerCB( mamaTransport      tport,
     if((NULL != closureImpl) && (NULL != closureImpl->mListenerCallback))
     {
         /* Get the java environment object. */
-        JNIEnv* env = mamaJniUtils_attachNativeThread(javaVM_g);        
+        JNIEnv* env = utils_getENV(javaVM_g);
+        /* JNIEnv* env = mamaJniUtils_attachNativeThread(javaVM_g);         */
         if(NULL != env)
         {
             /* If the platform info is valid then this will be passed back up to the callback object
@@ -1029,7 +1125,7 @@ void MAMACALLTYPE mamaTransportListenerCB( mamaTransport      tport,
             }             
 
             /* Release the environment pointer. */
-            mamaJniUtils_detachNativeThread(javaVM_g);
+            /* mamaJniUtils_detachNativeThread(javaVM_g); */
         }
     }
 }
@@ -1044,8 +1140,9 @@ void MAMACALLTYPE mamaTransportTopicListenerCB( mamaTransport      tport,
     transportListenerClosure *closureImpl = (transportListenerClosure *)closure;
     if((NULL != closureImpl) && (NULL != closureImpl->mTopicCallback))
     {
-        /* Get the java environment object. */
-        JNIEnv* env = mamaJniUtils_attachNativeThread(javaVM_g);
+        /* Get the java environment object, this attaches the thread, with publisher events this may be called often 
+         * enough to make keeping the thread attached worthwhile */
+        JNIEnv* env = utils_getENV(javaVM_g);
         if(NULL != env)
         {
             /* If the platform info is valid then this will be passed back up to the callback object
@@ -1073,10 +1170,17 @@ void MAMACALLTYPE mamaTransportTopicListenerCB( mamaTransport      tport,
                     /* Call the Original callback to maintain backward compatibility */
                     (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOrigOnTopicUnsubscribeId_g, cause, connection);
                     break;
+                case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicPublishErrorId_g, cTopic, connection);
+                    break;
+                case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED:
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicPublishErrorNotEntitledId_g, cTopic, connection);
+                    break;
+                case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:
+                    (*env)->CallVoidMethod( env, closureImpl->mTopicCallback, transportTopicListenerOnTopicPublishErrorBadSymbolId_g, cTopic, connection);
+                    break;
             }        
-
-            /* Release the environment pointer. */
-            mamaJniUtils_detachNativeThread(javaVM_g);
+            (*env)->DeleteLocalRef(env, cTopic);        /* delete this since this thread is not from the JVM */
         }
     }
 }

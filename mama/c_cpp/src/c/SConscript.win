@@ -70,6 +70,7 @@ symbolmapfile.c
 transport.c
 symbollist.c
 symbollistmember.c
+registerfunctions.c
 conflation/connection.c
 conflation/serverconnection.c
 playback/playbackcapture.c
@@ -91,10 +92,10 @@ headers = Glob("mama/*.h")
 playbackHeaders = Glob("mama/playback/*.h")
 fieldcacheHeaders = Glob("mama/fieldcache/*.h")
 
-if env['entitled'] == True:
-    EntLIB = posixpath.join( env['entitle_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix']))
-    EntDLL = posixpath.join( env['entitle_home'], 'bin/%s/liboeac%s.dll' % ( env['build'],env['suffix']))
-    env.Append( LIBS = posixpath.join( env['entitle_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix'])) )
+if 'oea' in env['entitlements']:
+    EntLIB = posixpath.join( env['oea_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix']))
+    EntDLL = posixpath.join( env['oea_home'], 'bin/%s/liboeac%s.dll' % ( env['build'],env['suffix']))
+    env.Append( LIBS = posixpath.join( env['oea_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix'])) )
     if 'dynamic' in env['build']:
         Alias('install', env.Install('$bindir',EntDLL))
     Alias('install', env.Install('$libdir',EntLIB))

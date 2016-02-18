@@ -44,7 +44,9 @@ namespace NUnitTest
         [SetUp]
         public void Setup()
         {
-			mBridge = Mama.loadBridge ("lbm");
+            MamaCommon.getCmdLineArgs();
+
+			mBridge = Mama.loadBridge (MamaCommon.middlewareName);
 			Mama.open ();
 			
             // Create the message

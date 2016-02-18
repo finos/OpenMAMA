@@ -85,19 +85,20 @@ MiddlewareSubscriptionTests::MiddlewareSubscriptionTests(void)
       queue (NULL),
       closure (NULL)
 {
-    mama_loadBridge (&mBridge, getMiddleware());
 
-    mamaQueue_create(&queue, mBridge);
 }
 
 MiddlewareSubscriptionTests::~MiddlewareSubscriptionTests(void)
 {
-    mamaQueue_destroy (queue);
 }
 
 void MiddlewareSubscriptionTests::SetUp(void)
 {
+    mama_loadBridge (&mBridge, getMiddleware());
+    mamaQueue_create (&queue, mBridge);
+    mama_open ();  /* Forces loading of entitlements bridges as necessary */
     mamaTransport_allocate (&tport);
+
     mamaTransport_create   (tport, tportName, mBridge);
 
     mamaSource_create(&source);
@@ -118,8 +119,10 @@ void MiddlewareSubscriptionTests::SetUp(void)
 
 void MiddlewareSubscriptionTests::TearDown(void)
 {
-    mamaTransport_destroy (tport);
     mamaSubscription_deallocate(parent);
+    mamaQueue_destroy (queue);
+    mamaTransport_destroy (tport);
+    mama_close();
 }
 
 static void onCreate (mamaSubscription subscription,
@@ -359,8 +362,10 @@ TEST_F (MiddlewareSubscriptionTests, isValid)
                                                     parent, closure));
     
     res = mBridge->bridgeMamaSubscriptionIsValid(subscriber);
-    ASSERT_TRUE(res != NULL);
+    ASSERT_TRUE(res != 0);
 
+    ASSERT_EQ(MAMA_STATUS_OK,
+              mamaSubscription_destroy(parent));
 }
 
 TEST_F (MiddlewareSubscriptionTests, isValidInvalid)

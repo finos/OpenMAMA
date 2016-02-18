@@ -1771,7 +1771,7 @@ displayCb (const mamaMsg       msg,
                 const mamaMsgField  field,
                 void*               closure)
 {
-    displayField (field, msg, (int)closure);
+    displayField (field, msg, *((int*)closure));
 }
 
 void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
@@ -1808,7 +1808,7 @@ void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
     */
     if (gNewIterators == 0)
     {
-        mamaMsg_iterateFields (msg, displayCb, gDictionary, (void*)indentLevel);
+        mamaMsg_iterateFields (msg, displayCb, gDictionary, (void*)&indentLevel);
     }
     else
     {
@@ -1924,7 +1924,7 @@ highWaterMarkCallback (mamaQueue     queue,
     }
 
     printf ("%s high water mark exceeded. Num events "
-            "on queue: %"PRI_MAMA_SIZE_T"\n",
+            "on queue: %" PRI_MAMA_SIZE_T "\n",
             queueName == NULL ? "" : queueName, size);
 }
 
@@ -1950,7 +1950,7 @@ lowWaterMarkCallback  (mamaQueue     queue,
     }
 
     printf ("%s low water mark exceeded. Num events "
-            "on queue: %"PRI_MAMA_SIZE_T"\n",
+            "on queue: %" PRI_MAMA_SIZE_T "\n",
             queueName == NULL ? "" : queueName, size);
 }
 
@@ -2473,7 +2473,7 @@ mama_status printAllCacheFields(mamaFieldCache fieldCache)
     mama_size_t size = 0;
 
     mamaFieldCache_getSize(fieldCache, &size);
-    printf("Cache size: %"PRI_MAMA_SIZE_T"\n", size);
+    printf("Cache size: %" PRI_MAMA_SIZE_T "\n", size);
     
     ret = mamaFieldCacheIterator_create(&cacheIterator, fieldCache);
     while (mamaFieldCacheIterator_hasNext(cacheIterator))

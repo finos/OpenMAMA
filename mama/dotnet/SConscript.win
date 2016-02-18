@@ -3,6 +3,11 @@
 import os
 import posixpath
 import platform
+
+import sys
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 from custom_builders import install_dotnet_library
 from custom_builders import build_ndoc
 Import('env')
@@ -15,23 +20,17 @@ buildNum = versions['build']
 winrelease = versions['winrelease']
 releaseString = versions['releaseString']
 
+env.SConscript('src/nunittest/SConscript.win','env')
+
 env.AddMethod(install_dotnet_library, "InstallDotNetLibrary")
 env.AddMethod(build_ndoc, "BuildNDoc")
 
-dotnet_version = env['dotnet_version']
-
-if platform.machine() == 'AMD64':
-    framework = 'Framework64'
+if env['target_arch'] == 'x86_64':
+    odir = 'objdir_64'
 else:
-    framework = 'Framework'
+    odir = 'objdir_32'
 
-framework_dir = posixpath.join( 'c:/windows/Microsoft.NET/',framework )
-
-if dotnet_version == '2.0':
-    framework_dir = posixpath.join( framework_dir, 'v2.0.50727' )
-
-elif dotnet_version == '1.0':
-    framework_dir = posixpath.join( framework_dir, 'v1.1.4322' )
+framework_dir = env['dotnet_framework']
 
 env['CSC'] = posixpath.join(framework_dir,'csc.exe')
 AssemblyRefs = []
@@ -113,6 +112,7 @@ src/cs/MamaMsgFieldIterator.cs
 src/cs/MamaPayloadBridge.cs
 src/cs/MamaPrice.cs
 src/cs/MamaPublisher.cs
+src/cs/MamaPublisherCallback.cs
 src/cs/MamaQueue.cs
 src/cs/MamaQueueEnqueueCallback.cs
 src/cs/MamaQueueEventCallback.cs
@@ -137,6 +137,7 @@ src/cs/MamaTimer.cs
 src/cs/MamaTimerCallback.cs
 src/cs/MamaTransport.cs
 src/cs/MamaTransportCallback.cs
+src/cs/MamaTransportTopicCallback.cs
 src/cs/MamaWeightedSource.cs
 src/cs/MamaWrapper.cs
 src/cs/NullableTypes\NullableBool.cs
@@ -152,7 +153,6 @@ src\examples\MamaFtMember\MamaFtMemberCS.cs""")
 examples['MamaFtMemberCS'] = {}
 examples['MamaFtMemberCS']['sources'] = mamaftmember_sources
 examples['MamaFtMemberCS']['project'] = 'src\examples\MamaFtMember\OpenMamaFtMemberCS.csproj'
-
 
 mamainbox_sources = Split("""
 src\examples\MamaInbox\AssemblyInfo.cs
@@ -210,7 +210,6 @@ examples['MamaSymbolListSubscriberCS']['project'] = 'src\examples\MamaSymbolList
 
 target = "MAMA"
 doc_dir = "%s/doc/mama/dotnet/" % (env['prefix'])
-
 lib = None
 
 if 'dynamic' in env['build']:
@@ -220,8 +219,8 @@ if 'dynamic' in env['build']:
     elif env['TARGET_ARCH'] == 'x86_64':
         env.Append( CSCFLAGS = ['/platform:x64'])
 
-    lib, doc_xml = env.InstallDotNetLibrary( target, sources)
-
+    lib, doc_xml = env.InstallDotNetLibrary(target, sources)
+    
     if env['with_examples'] == True:
         for key in examples:
             exe = env.CLIProgram( key + '.exe', examples[key]['sources'],
@@ -231,12 +230,10 @@ if 'dynamic' in env['build']:
             Alias('install', env.Install('$prefix/examples/mama/cs/%s' % key, examples[key]['sources']))
             Alias('install', env.Install('$prefix/examples/mama/cs/%s' % key, examples[key]['project']))
 
-
     if env['with_testtools'] == True:
         env.Log("C# testtool MamdaBookSelfTest included in examples")
 
-
-if env['with_docs'] == True:
-    doc = env.BuildNDoc(lib, doc_xml, doc_dir)
+# if env['with_docs'] == True:
+#    doc = env.BuildNDoc(lib, doc_xml, doc_dir)
 
 Clean(lib, [ cs, ai,])

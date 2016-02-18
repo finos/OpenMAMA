@@ -33,7 +33,6 @@ namespace Wombat
 
     static char defaultPlAction             = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD;
     static char defaultPlSide               = MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID;
-    static char defaultEntryAction          = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE;
 
     static mama_u32_t  defaultNumEntries    = 1;
     static int  defaultNumAttachedEntries   = 1;
@@ -93,7 +92,7 @@ namespace Wombat
         {
             for (size_t i = 0; i < mMsgVectorSize; i++)
             {
-                printf("\n mMsgVector[%d] = %s \n", i, mMsgVector[i]->toString());
+                printf("\n mMsgVector[%llu] = %s \n", (unsigned long long)i, mMsgVector[i]->toString());
             }
 
         }
@@ -324,7 +323,7 @@ namespace Wombat
                                                mEntries->mMsgVector,
                                                entryCount);
                         }
-                        if (defaultNumAttachedEntries != entryCount)
+                        if ((size_t)defaultNumAttachedEntries != entryCount)
                             plMsg.addI16 (NULL,
                                          MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
                                          (mama_i16_t) entryCount);
@@ -376,7 +375,7 @@ namespace Wombat
 
             }
             
-            if (defaultNumAttachedEntries != entryCount)
+            if ((size_t)defaultNumAttachedEntries != entryCount)
                 plMsg.addI16 (NULL,
                              MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
                              (mama_i16_t) entryCount);

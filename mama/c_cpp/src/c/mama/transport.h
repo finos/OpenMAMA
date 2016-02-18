@@ -91,9 +91,11 @@ typedef enum
 typedef enum
 {
     MAMA_TRANSPORT_TOPIC_SUBSCRIBED,
-    MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED
+    MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED,
+    MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR,              /* onError: default error */
+    MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED, /* onError: not entitled */
+    MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL    /* onError: bad symbol */
 } mamaTransportTopicEvent;
-
 
 /**
  * Enum to represent the different load balancing schemes available.
@@ -137,11 +139,11 @@ typedef void (MAMACALLTYPE *mamaTransportCB)(mamaTransport tport,
                                              void *closure);
 
 /**
- * Invoked when topic is subscribed ot unsubcribed on that transport.
+ * Invoked when topic is subscribed ot unsubcribed or has a publish event on that transport.
  *
  * @param tport The transport associated with the transport topic event
  * @param mamaTransportTopicEvent The transport topic event
- * @param topic The topic being subscribed or unsubscribed to
+ * @param topic The topic being subscribed or unsubscribed to or has a publish event
  * @param platformInfo Info associated with the transport topicevent
  * @param closure The closure argument to pass to the callback whenever
  * it is invoked.
@@ -152,8 +154,6 @@ typedef void (MAMACALLTYPE *mamaTransportCB)(mamaTransport tport,
  *
  * wmw:   provides a pointer to a mamaConnection struct for the event
  */
-
-
 typedef void (MAMACALLTYPE *mamaTransportTopicCB)(mamaTransport tport,
                                                   mamaTransportTopicEvent event,
                                                   const char* topic,
@@ -173,6 +173,13 @@ typedef void (*mamaTransportLbCB)(int         curTransportIndex,
 
 
 /**
+ * Return a text description of the transport topic event.
+ */
+MAMAExpDLL
+extern const char*
+mamaTransportTopicEvent_toString (mamaTransportTopicEvent event);
+
+/**
  * Return a text description of the transport event.
  */
 MAMAExpDLL
@@ -188,6 +195,31 @@ extern mama_status
 mamaTransport_setTransportCallback (mamaTransport   transport,
                                     mamaTransportCB callback,
                                     void*           closure);
+
+/**
+ * Set the transport topic callback. It receives advisories when a client
+ * subscribes or unsubscribes to a topic on the transport
+ */
+MAMAExpDLL
+extern mama_status
+mamaTransport_setTransportTopicCallback (mamaTransport transport,
+                                         mamaTransportTopicCB callback,
+                                         void* closure);
+
+/**
+ * Set the queue used by bridges for transport callbacks (transport and topic).
+ */
+MAMAExpDLL
+extern mama_status
+mamaTransport_setTransportCallbackQueue (mamaTransport transport, mamaQueue queue);
+
+/**
+ * Get the queue used by bridges for transport callbacks (transport and topic).
+ */
+MAMAExpDLL
+extern mama_status
+mamaTransport_getTransportCallbackQueue (mamaTransport transport, mamaQueue* queue);
+
 /**
  * Set the transport write queue high and low water mark values. The
  * MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK and
@@ -201,15 +233,6 @@ mamaTransport_setWriteQueueWatermarks (mamaTransport transport,
                                        uint32_t      highWater,
                                        uint32_t      lowWater);
 
-/**
- * Set the transport topic callback. It receives advisories when a client
- * subscribes or unsubscribes to a topic on the transport
- */
-MAMAExpDLL
-extern mama_status
-mamaTransport_setTransportTopicCallback (mamaTransport transport,
-                                         mamaTransportTopicCB callback,
-                                         void* closure);
 /**
  * Allocate a transport structure. Do not free this memory, use
  * mamaTransport_destroy() instead.
@@ -313,7 +336,7 @@ mamaTransport_getOutboundThrottle (mamaTransport transport,
 MAMAExpDLL
 extern void
 mamaTransport_disableRefresh (mamaTransport transport,
-								uint8_t disable);
+                                uint8_t disable);
 
 /**
  * Set the throttle rate.

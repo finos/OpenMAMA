@@ -287,8 +287,6 @@ qpidBridgeMamaTransport_destroy (transportBridge transport)
     memoryPool_destroy (impl->mQpidMsgPool,
                         qpidBridgeMamaTransportImpl_msgNodeFree);
 
-    wthread_mutex_destroy (&impl->mQpidMsgPool->mLock);
-
     pn_message_free(impl->mMsg);
 
     /* Macro wrapped as these caused deadlock prior to v0.5 of qpid proton */

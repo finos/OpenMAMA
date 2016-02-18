@@ -118,6 +118,8 @@ static void msgOnField (const mamaMsg	   msg,
             ASSERT_EQ (64, buffer);
             break;
         }
+        default:
+            break;
     }
     
     ASSERT_EQ ((void*)2, closure);
@@ -230,6 +232,8 @@ TEST_F (MsgIterateTestC, CreateIterator)
                 ASSERT_EQ (64, buffer);
                 break;
             }
+            default:
+                break;
         }
     }
 

@@ -49,10 +49,26 @@ class Windows:
             if not optsEnv.has_key('gtest_home'):
                 print 'ERROR: GTest Home must be specified'
                 Exit(1)
-
             elif not posixpath.exists(optsEnv['gtest_home']):
                 print 'ERROR: GTest Home must exist'
                 Exit(1)
+            if optsEnv['product'] == 'mamdaall':
+                if not optsEnv.has_key('nunit_home'):
+                    print 'ERROR: Nunit Home must be specified'
+                    Exit(1)
+                elif not posixpath.exists(optsEnv['nunit_home']):
+                    print 'ERROR: Nunit Home must exist'
+                    Exit(1)
+
+        try:
+            subprocess.check_call("flex --version", shell=True, stdout=None, stderr=None)
+        except:
+            print "Could not execute flex - is it in your environment PATH?"
+
+        try:
+            subprocess.check_call("flex --version", shell=True, stdout=None, stderr=None)
+        except:
+            print "Could not execute flex - is it in your environment PATH?"
 
         if optsEnv['product'] == 'mamdajni' or optsEnv['product'] == 'mamajni' or optsEnv['product'] == 'mamdaall':
             if not optsEnv.get('java_home'):
@@ -204,7 +220,7 @@ class Windows:
         env.Append( PDB = '${TARGET.base}.pdb')
 
         # Architecture specific setup
-        if env['host']['arch'] == 'x86_64':
+        if env['target_arch'] == 'x86_64':
             env['bit_suffix'] = '_x64'
         else:
             env.Append( CPPDEFINES = ['_USE_32BIT_TIME_T'] )
@@ -216,12 +232,12 @@ class Windows:
             env.Append( CCFLAGS = [ '/Zi' ])
 
         # Entitlement setup
-        if env['entitled'] == True:
+        if 'oea' in env['entitlements']:
             ( oea_major, oea_minor, oea_release ) = env['oea_version'].split('.')
 
             env.Append(
-                CPPDEFINES = ['WITH_ENTITLEMENTS','OEA_MAJVERSION=%s' % ( oea_major ), 'OEA_MINVERSION=%s' % (oea_minor)],
-                CPPPATH = [ posixpath.join( env['entitle_home'], 'include/oea') ],
+                CPPDEFINES = ['OEA_MAJVERSION=%s' % ( oea_major ), 'OEA_MINVERSION=%s' % (oea_minor)],
+                CPPPATH = [ posixpath.join( env['oea_home'], 'include/oea') ],
             )
 
         # Expat Setup
@@ -232,7 +248,7 @@ class Windows:
 
             if not env.has_key('dotnet_framework'):
                 print 'Calculating dotnet_framework'
-                if env['host']['arch'] == 'x86_64':
+                if env['target_arch'] == 'x86_64':
                     framework = 'Framework64'
                 else:
                     framework = 'Framework'

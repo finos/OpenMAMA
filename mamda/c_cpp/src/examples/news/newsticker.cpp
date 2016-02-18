@@ -305,7 +305,7 @@ int main (int argc, const char **argv)
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: newsticker -m middleware [-S source] -s symbol ";
-                 "[-s symbol ...] \n";
+    std::cerr << "Usage: newsticker -m middleware [-S source] -s symbol "
+              << "[-s symbol ...] \n";
     exit(exitStatus);
 }

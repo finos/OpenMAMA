@@ -79,54 +79,25 @@ avismsgPayloadIter_get          (msgPayloadIter  iter,
 /******************************************************************************
 * bridge functions
 *******************************************************************************/
-extern mama_status
-avismsgPayload_destroyImpl (mamaPayloadBridge mamaPayloadBridge)
+
+mama_status
+avismsgPayload_init (mamaPayloadBridge bridge, char* identifier)
 {
-    /* Returns. */
-    mama_status ret = MAMA_STATUS_NULL_ARG;
-    if(NULL != mamaPayloadBridge)
-    {
-        /* Get the impl. */
-        mamaPayloadBridgeImpl *impl = (mamaPayloadBridgeImpl *)mamaPayloadBridge;
+    *identifier = (char)MAMA_PAYLOAD_ID_AVIS;
 
-        /* Free the impl. */
-        free(impl);
-    }
+    /* Will set the bridge's compile time MAMA version */
+    MAMA_SET_BRIDGE_COMPILE_TIME_VERSION(MAMA_PAYLOAD_NAME_AVIS);
 
-    return ret;
+    return MAMA_STATUS_OK;
 }
 
-extern mama_status
-avismsgPayload_createImpl (mamaPayloadBridge* result, char* identifier)
-{
-    mamaPayloadBridgeImpl*       impl    = NULL;
-    mama_status             resultStatus = MAMA_STATUS_OK;
-
-    CHECK_NULL(result);
-
-    impl = (mamaPayloadBridgeImpl*)calloc (1, sizeof (mamaPayloadBridgeImpl));
-    if (!impl)
-    {
-        mama_log (MAMA_LOG_LEVEL_SEVERE, "avismsgPayload_createImpl(): "
-                  "Could not allocate memory for payload impl.");
-        return MAMA_STATUS_NULL_ARG;
-    }
-
-    INITIALIZE_PAYLOAD_BRIDGE (impl, avismsg);
-
-    impl->mClosure = impl;
-
-    *result     = (mamaPayloadBridge)impl;
-    *identifier = MAMA_PAYLOAD_AVIS;
-
-    return resultStatus;
-}
-
+MAMAIgnoreDeprecatedOpen
 mamaPayloadType
 avismsgPayload_getType ()
 {
     return MAMA_PAYLOAD_AVIS;
 }
+MAMAIgnoreDeprecatedClose
 
 /******************************************************************************
 * general functions
@@ -164,11 +135,12 @@ avismsgPayload_createForTemplate (msgPayload*         msg,
 mama_status
 avismsgPayload_createFromByteBuffer(msgPayload* msg, mamaPayloadBridge bridge, const void* buffer, mama_size_t bufferLength)
 {
+    avisPayloadImpl* newPayload = NULL;
     CHECK_NULL(msg);
     CHECK_NULL(buffer);
     if (0 == bufferLength) return MAMA_STATUS_INVALID_ARG;
     
-    avisPayloadImpl* newPayload = (avisPayloadImpl*)calloc (1, sizeof(avisPayloadImpl));
+    newPayload = (avisPayloadImpl*)calloc (1, sizeof(avisPayloadImpl));
 
     if (buffer != NULL)
        newPayload->mAvisMsg=(Attributes*)buffer;
@@ -235,9 +207,9 @@ avismsgPayload_getByteSize       (const msgPayload    msg,
 }
 
 mama_status
-avismsgPayload_unSerialize (const msgPayload    msg,
-                           const void*        buffer,
-                           mama_size_t        bufferLength)
+avismsgPayload_unSerialize (const msgPayload   msg,
+                            const void*        buffer,
+                            mama_size_t        bufferLength)
 {
     avisPayloadImpl* impl = (avisPayloadImpl*) msg;
     char tempName[64];
@@ -549,13 +521,15 @@ avismsgPayload_getNumFields      (const msgPayload    msg,
 const char*
 avismsgPayload_toString          (const msgPayload    msg)
 {
-    if (!msg) return NULL;
     avisPayloadImpl* impl = (avisPayloadImpl*)msg;
     mama_status status = MAMA_STATUS_OK;
-	char *strpos =	NULL;
-	bool comma = false;
-	uint16_t curlen = 1;
-	avisFieldPayload* currField = NULL;
+    char *strpos =	NULL;
+    bool comma = false;
+    uint16_t curlen = 1;
+    avisFieldPayload* currField = NULL;
+
+    if (!msg) return NULL;
+
     if (!impl->mIterator)
     {
         status = avismsgPayloadIter_create((msgPayloadIter*) &impl->mIterator, msg);
@@ -620,11 +594,11 @@ avismsgPayload_iterateFields (const msgPayload        msg,
                             mamaMsgIteratorCb       cb,
                             void*                   closure)
 {
-    CHECK_PAYLOAD (msg);
-
     avisPayloadImpl* impl = (avisPayloadImpl*)msg;
     mama_status status = MAMA_STATUS_OK;
-	avisFieldPayload* currField = NULL;
+    avisFieldPayload* currField = NULL;
+
+    CHECK_PAYLOAD (msg);
 
 	if (!parent || !cb || !field)
 	{
@@ -2039,7 +2013,10 @@ avismsgPayloadIter_get          (msgPayloadIter  iter,
     /* If this is a special meta field, do not consider during iteration */
     if ((strcmp(SUBJECT_FIELD_NAME, avisField(field)->mName) == 0) ||
         (strcmp(INBOX_FIELD_NAME, avisField(field)->mName)== 0))
-            return (avismsgPayloadIter_next(iter,field,msg));
+    {
+        impl->mIndex++;
+        return (avismsgPayloadIter_next(iter,field,msg));
+    }
 
     return field;
 }

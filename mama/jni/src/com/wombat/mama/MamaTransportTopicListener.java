@@ -59,6 +59,60 @@ public class MamaTransportTopicListener
         return;
     }
 
+    /**
+     * Invoked when a topic has a publish error
+     *
+     * @param topic The topic of the error
+     * @param platformInfo Info associated with the error
+     *
+     * The topic and platformInfo are supplied only by some middlewares.
+     * The information provided by platformInfo is middleware specific.
+     * The following middlewares are supported:
+     *
+     * tibrv: provides the String object version of the tibrv advisory message
+     * Wombat Middleware
+     */
+    public void onTopicPublishError(String topic, final Object platformInfo)
+    {
+        return;
+    }
+
+    /**
+     * Invoked when a topic has a publish entitlements error
+     *
+     * @param topic The topic of the entitlements error
+     * @param platformInfo Info associated with the entitlements error
+     *
+     * The topic and platformInfo are supplied only by some middlewares.
+     * The information provided by platformInfo is middleware specific.
+     * The following middlewares are supported:
+     *
+     * tibrv: provides the String object version of the tibrv advisory message
+     * Wombat Middleware
+     */
+    public void onTopicPublishErrorNotEntitled(String topic, final Object platformInfo)
+    {
+        return;
+    }
+
+    /**
+     * Invoked when a topic has a publish bad symbol  error
+     *
+     * @param topic The topic of the bad symbol  error
+     * @param platformInfo Info associated with the bad symbol  error
+     *
+     * The topic and platformInfo are supplied only by some middlewares.
+     * The information provided by platformInfo is middleware specific.
+     * The following middlewares are supported:
+     *
+     * tibrv: provides the String object version of the tibrv advisory message
+     * Wombat Middleware
+     */
+    public void onTopicPublishErrorBadSymbol(String topic, final Object platformInfo)
+    {
+        return;
+    }
+
     /*  Original callbacks for backward compatibility  */
     /**
      * Invoked when a topic is subscribed to

@@ -180,6 +180,14 @@ struct wtimespec
     long tv_nsec;
 };
 
+/* Add fake clock_gettime function */
+#define CLOCK_REALTIME              0
+#define CLOCK_MONOTONIC             1
+#define CLOCK_PROCESS_CPUTIME_ID    2
+#define GETTIME_SUCCESS             0
+#define GETTIME_FAIL                1
+int clock_gettime (int type, struct timespec * ts);
+
 #define wnanosleep(ts, remain)      nanosleep(((struct timespec*)(ts)),(remain))
 
 /* Macro for managing the printing of mama_size_t values. */
@@ -189,8 +197,35 @@ struct wtimespec
 const char* getIpAddress (void);
 const char* getHostName (void);
 
+#define COMMONDeprecated(MSG)            __attribute__((deprecated(#MSG)))
+#define COMMONExpDeprecatedDLL(MSG)      __attribute__((deprecated(#MSG)))
+#define MAMACPPExpDeprecatedDLL(MSG)     __attribute__((deprecated(#MSG)))
+#define MAMADeprecated(MSG)              __attribute__((deprecated(#MSG)))
+#define MAMAExpDeprecatedBridgeDLL(MSG)  __attribute__((deprecated(#MSG)))
+#define MAMAExpDeprecatedDLL(MSG)        __attribute__((deprecated(#MSG)))
+#define MAMDAExpDeprecatedDLL(MSG)       __attribute__((deprecated(#MSG)))
+#define MAMDAOPTExpDeprecatedDLL(MSG)    __attribute__((deprecated(#MSG)))
+#define WCACHEExpDeprecatedDLL(MSG)      __attribute__((deprecated(#MSG)))
+#define WMWDeprecated(MSG)               __attribute__((deprecated(#MSG)))
+#define WMWExpDeprecatedDLL(MSG)         __attribute__((deprecated(#MSG)))
+
+#define MAMATypeDeprecated(NAME, MSG)   __attribute__ ((deprecated(#MSG))) 
+
+/* Special tags to allow for disabling deprecation messages for code between
+ * the MAMAIgnoreDeprecatedOpen and MAMAIgnoreDeprecatedClose tags.
+ * 
+ * Only support Clang / LLVM on Mac
+ */
+#  define MAMAIgnoreDeprecatedOpen           \
+        _Pragma ("clang diagnostic push")    \
+        _Pragma ("clang diagnostic ignored \"-Wdeprecated-declarations\"")
+
+#  define MAMAIgnoreDeprecatedClose         \
+        _Pragma ("clang diagnostic pop")
+
 #if defined (__cplusplus)
 } /* extern "c" */
 #endif
+
 
 #endif /* DARWIN_H__ */

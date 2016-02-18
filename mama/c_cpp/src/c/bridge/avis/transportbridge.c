@@ -282,7 +282,6 @@ avisBridgeMamaTransport_create (transportBridge* result,
                                 mamaTransport    mamaTport )
 {
     mama_status          status;
-    avisBridgeImpl*      avisBridge = NULL;
     avisTransportBridge* transport  = NULL;
     mamaBridgeImpl*      bridgeImpl = NULL;
     const char*          url        = NULL; 
@@ -302,16 +301,6 @@ avisBridgeMamaTransport_create (transportBridge* result,
             "avisBridgeMamaTransport_create(): Could not get bridge");
         free(transport);
         return MAMA_STATUS_PLATFORM;
-    }
-    
-    status = mamaBridgeImpl_getClosure((mamaBridge) bridgeImpl, 
-                                       (void**) &avisBridge);
-    if (MAMA_STATUS_OK != status)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
-          "avisBridgeMamaTransport_create(): Could not get Avis bridge object");
-        free(transport);
-        return status;
     }
 
     /* create the Elvin object */
@@ -356,7 +345,6 @@ avisBridgeMamaTransport_destroy (transportBridge transport)
 {
     mama_status status;
     avisTransportBridge* transportBridge = (avisTransportBridge*) transport;
-    avisBridgeImpl*      avisBridge      = NULL;
     mamaBridgeImpl*      bridgeImpl      = NULL;
 
     if (!transport) return MAMA_STATUS_NULL_ARG;
@@ -369,16 +357,6 @@ avisBridgeMamaTransport_destroy (transportBridge transport)
             "avisBridgeMamaTransport_destroy(): Could not get bridge");
         free(transport);
         return MAMA_STATUS_PLATFORM;
-    }
-    
-    status = mamaBridgeImpl_getClosure((mamaBridge) bridgeImpl, 
-                                       (void**) &avisBridge);
-    if (MAMA_STATUS_OK != status)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
-          "avisBridgeMamaTransport_destroy(): Could not get Avis bridge object");
-        free(transport);
-        return status;
     }
 
     if (1 == wInterlocked_read (&transportBridge->mDispatching))

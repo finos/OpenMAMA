@@ -44,11 +44,13 @@
 #include "statsgeneratorinternal.h"
 #include "mama/statscollector.h"
 #include "wombat/strutils.h"
+#include "mama/entitlement.h"
 
-extern int gGenerateTransportStats;
-extern int gGenerateLbmStats;
-extern int gLogTransportStats;
-extern int gPublishTransportStats;
+extern int          gGenerateTransportStats;
+extern int          gGenerateLbmStats;
+extern int          gLogTransportStats;
+extern int          gPublishTransportStats;
+extern const char*  gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 
 #define self                                ((transportImpl*)(transport))
 #define MAX_TPORT_NAME_LEN                  (256)
@@ -85,6 +87,7 @@ typedef struct transportImpl_
     mamaTransportCB          mTportCb;
     void*                    mTportClosure;
     mamaTransportTopicCB     mTportTopicCb;
+    mamaQueue                mQueue;
     void*                    mTportTopicClosure;
     wombatThrottle           mThrottle;
     wombatThrottle           mRecapThrottle;
@@ -114,6 +117,8 @@ typedef struct transportImpl_
     mamaQuality              mQuality;
     short                    mCause;
     void*                    mPlatformInfo;
+
+    void*                    mTopicPlatformInfo;
 
     /*Identifier for the middleware being used. Specified upon creation*/
     mamaBridgeImpl*          mBridgeImpl;
@@ -177,6 +182,7 @@ typedef struct transportImpl_
     preInitialScheme         mPreInitialScheme;
     mama_bool_t             mPreRecapCacheEnabled;
     void*                   mClosure;
+    mamaEntitlementBridge   mEntitlementBridge;
 } transportImpl;
 
 static mama_status
@@ -190,6 +196,7 @@ init (transportImpl* transport, int createResponder)
     self->mQuality       = MAMA_QUALITY_OK;
     self->mCause         = 0;
     self->mPlatformInfo  = NULL;
+    self->mTopicPlatformInfo = NULL;
     self->mPreInitialScheme = PRE_INITIAL_SCHEME_ON_GAP;
     self->mDQStratScheme    = DQ_SCHEME_DELIVER_ALL;
     self->mFTStratScheme    = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
@@ -617,15 +624,20 @@ mamaTransport_create (mamaTransport transport,
     int           numTransports;
     int           isLoadBalanced;
     char          loadBalanceName[MAX_TPORT_NAME_LEN];
-    const char*   bridgeName = NULL;
+    const char*   bridgeName       = NULL;
     const char*   sharedObjectName = NULL;
-    mamaQueue     defaultQueue = NULL;
+    mamaQueue     defaultQueue     = NULL;
     tportLbScheme scheme;
     mama_status   status;
-    const char*   middleware = NULL;
-     const char*     throttleInt  =   NULL;
+    const char*   middleware  = NULL;
+    const char*   throttleInt = NULL;
+    char          propNameBuf[256];
+    const char*   entBridgeName;
+    const char*   propValue;
+
     if (!transport) return MAMA_STATUS_NULL_ARG;
     if (!bridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
+
     mama_log(MAMA_LOG_LEVEL_FINER, "Entering mamaTransport_create for transport (%p) with name %s", transport, name);
 
     self->mBridgeImpl = (mamaBridgeImpl*)bridgeImpl;
@@ -745,7 +757,7 @@ mamaTransport_create (mamaTransport transport,
                 self->mLoadBalanceHandle = openSharedLib (sharedObjectName, NULL);
                 if (self->mLoadBalanceHandle)
                 {
-					void*	vp = NULL;
+                    void*    vp = NULL;
                     mama_log (MAMA_LOG_LEVEL_FINER,
                               "Using Library defined load balancing");
                     vp = loadLibFunc ((LIB_HANDLE)self->mLoadBalanceHandle,
@@ -899,6 +911,42 @@ mamaTransport_create (mamaTransport transport,
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mamaTransport_create(): TransportPostCreateHook failed with a status of %s",
                    mamaStatus_stringForStatus(status));
+    }
+
+
+    if (strlen((char*)gEntitlementBridges))   /* If entitlement bridges were built in at compile time. */
+    {
+        snprintf (propNameBuf, 256, "mama.transport.%s.entitlementBridge", self->mName);
+        propValue = properties_Get (mamaInternal_getProperties (), propNameBuf);
+        if (NULL != propValue)
+        {
+            mama_log(MAMA_LOG_LEVEL_FINE, 
+                     "mamaTransport_create(): got property: %s = %s",
+                     propNameBuf,
+                     propValue);
+            entBridgeName = propValue;
+        }
+        else
+        {
+            mama_log(MAMA_LOG_LEVEL_WARN, 
+                     "mamaTransport_create(): No entitlement bridge specified for transport %s. Defaulting to %s.",
+                     self->mName,
+                     gEntitlementBridges[0]);
+            entBridgeName = gEntitlementBridges[0];
+        }
+
+        status = mamaInternal_getEntitlementBridgeByName(&self->mEntitlementBridge, entBridgeName);
+        if (MAMA_STATUS_OK != status)
+        {
+            mama_log(MAMA_LOG_LEVEL_ERROR, 
+                     "mamaTransport_create(): Could not set entitlement bridge for transport %s.",
+                     self->mName);
+            return MAMA_STATUS_NO_BRIDGE_IMPL;
+        }
+        mama_log(MAMA_LOG_LEVEL_FINE, 
+                 "mamaTransport_create(): Entitlement bridge set to %s [%s].",
+                 entBridgeName,
+                 self->mName);
     }
 
     return MAMA_STATUS_OK;
@@ -1680,6 +1728,20 @@ mamaTransport_throttleRemoveFromList (mamaTransport transport,
 }
 
 const char*
+mamaTransportTopicEvent_toString (mamaTransportTopicEvent event)
+{
+    switch ( event )
+    {
+        case MAMA_TRANSPORT_TOPIC_SUBSCRIBED:                 return "SUBSCRIBED";
+        case MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED:               return "UNSUBSCRIBED";
+        case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:              return "PUBLISH_ERROR";
+        case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED: return "PUBLISH_ERROR_NOT_ENTITLED";
+        case MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:   return "PUBLISH_ERROR_BAD_SYMBOL";
+        default: return "UNKNOWN";
+    }
+}
+
+const char*
 mamaTransportEvent_toString (mamaTransportEvent event)
 {
     switch ( event )
@@ -1742,6 +1804,22 @@ mamaTransport_setTransportTopicCallback (mamaTransport transport,
 {
     self->mTportTopicCb      = callback;
     self->mTportTopicClosure = closure;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaTransport_setTransportCallbackQueue (mamaTransport transport,
+                                         mamaQueue queue)
+{
+    self->mQueue = queue;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaTransport_getTransportCallbackQueue (mamaTransport transport,
+                                         mamaQueue* queue)
+{
+    *queue = self->mQueue;
     return MAMA_STATUS_OK;
 }
 
@@ -2583,6 +2661,38 @@ void mamaTransportImpl_invokeTransportCallback (mamaTransport transport,
     }
 }
 
+void mamaTransportImpl_invokeTransportTopicCallback(mamaTransport transport,
+                                                    mamaTransportTopicEvent event,
+                                                    const char* topic,
+                                                    const void *platformInfo)
+{
+    if (!self)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "mamaTransportImpl_invokeTransportTopicCallback (): "
+                "Could not process.");
+    }
+    else
+    {
+        /* Only continue if the callback is valid. */
+        if (self->mTportTopicCb != NULL)
+        {
+            /* Save the platforminfo and the cause in member variables, this
+             * avoids having to pass them around iterators when invoking
+             * callback functions on the listeners.
+             */
+            self->mTopicPlatformInfo = (void*)platformInfo;
+
+            /* Invoke the callback. */
+            self->mTportTopicCb (transport, event, topic, self->mPlatformInfo, self->mTportTopicClosure);
+
+            /* Clear the platforminfo and cause, these should not be used after
+             * this point. */
+            self->mTopicPlatformInfo = NULL;
+        }
+    }
+}
+
 mama_status
 mamaTransport_setClosure (mamaTransport transport, void* closure)
 {
@@ -2707,4 +2817,14 @@ mama_status mamaTransportImpl_allocateInternalTransport(mamaTransport *transport
         }
     }
     return ret;
+}
+
+mama_status mamaTransportImpl_getEntitlementBridge(mamaTransport transport, mamaEntitlementBridge* entBridge)
+{
+    if (NULL != self->mEntitlementBridge)
+    {
+        *entBridge = self->mEntitlementBridge;
+        return MAMA_STATUS_OK;
+    }
+    return MAMA_STATUS_NOT_FOUND;
 }

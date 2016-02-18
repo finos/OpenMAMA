@@ -1,0 +1,85 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+import posixpath
+import platform
+
+import sys
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
+from custom_builders import install_dotnet_library
+from custom_builders import build_ndoc
+Import('env')
+env = env.Clone()
+versions = env['versions']['mama']
+major = versions['major']
+minor = versions['minor']
+release = versions['release']
+buildNum = versions['build']
+winrelease = versions['winrelease']
+releaseString = versions['releaseString']
+
+env.AddMethod(install_dotnet_library, "InstallDotNetLibrary")
+env.AddMethod(build_ndoc, "BuildNDoc")
+
+if env['target_arch'] == 'x86_64':
+    odir = 'objdir_64'
+else:
+    odir = 'objdir_32'
+
+framework_dir = env['dotnet_framework']
+
+env['CSC'] = posixpath.join(framework_dir,'csc.exe')
+AssemblyRefs = []
+AssemblyRefs.append(posixpath.join( framework_dir, 'mscorlib.dll'))
+AssemblyRefs.append(posixpath.join( framework_dir, 'system.dll'))
+
+env.Append(
+    CSCFLAGS        = ['/nostdlib+'],
+    ASSEMBLYREFS    = AssemblyRefs
+)
+
+build = env['build']
+
+sources = Split("""
+Properties/AssemblyInfo.cs
+MamaCommon.cs
+MamaPublisherTest.cs
+MamaBaseLogTest.cs
+MamaDisableLoggingTest.cs
+MamaEnableLoggingTest.cs
+MamaEnqueueEventTest.cs
+MamaGetLogLevelTest.cs
+MamaLogCallbackTest.cs
+MamaLogMessageTest.cs
+MamaLogTest.cs
+MamaLogToFileTest.cs
+MamaMsgVectorMsgTest.cs
+MamaMsgVectorPriceTest.cs
+MamaMsgVectorStringTest.cs
+MamaSetLogCallbackTest.cs
+MamaSetLogFilePolicyTest.cs
+MamaSetLogLevelTest.cs
+MamaSetLogSizeTest.cs
+""")
+
+if 'dynamic' in env['build']:
+
+    if env['TARGET_ARCH'] == 'x86':
+        env.Append( CSCFLAGS = ['/platform:x86'])
+    elif env['TARGET_ARCH'] == 'x86_64':
+        env.Append( CSCFLAGS = ['/platform:x64'])
+    
+    if env['with_unittest'] == True:
+        nunit_home = env['nunit_home']
+        AssemblyRefs.append(posixpath.join(nunit_home, 'bin\\framework\\nunit.framework.dll'))
+        AssemblyRefs.append(os.path.join( Dir('#').abspath, '%s\\%s\\mama\\dotnet\\MAMA.dll' ) % (odir, env['build']))
+        env.Append(
+            ASSEMBLYREFS = AssemblyRefs
+        )
+        target = "DOTNET_UNITTESTS"
+        lib = None
+        lib, doc_xml2 = env.InstallDotNetLibrary(target, sources)
+
+# Clean(lib)

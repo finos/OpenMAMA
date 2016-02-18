@@ -23,5 +23,10 @@
 
 
 const char* getMiddleware(void);
+const char* getTransport(void);
+const char* getSource(void);
+const char* getSymbol(void);
+const char* getTopic(void);
+const char* getBadSource(void);
 
 #endif /* MAINUNITTESTC_H_ */

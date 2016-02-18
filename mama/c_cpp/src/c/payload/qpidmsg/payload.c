@@ -39,6 +39,7 @@
 #include "qpidpayloadfunctions.h"
 #include "payload.h"
 #include "field.h"
+#include "../../mamainternal.h"
 
 /*=========================================================================
   =                              Macros                                   =
@@ -503,36 +504,23 @@ qpidmsgPayloadImpl_findField                (qpidmsgPayloadImpl*      impl,
   =========================================================================*/
 
 mama_status
-qpidmsgPayload_createImpl (mamaPayloadBridge* result, char* identifier)
+qpidmsgPayload_init (mamaPayloadBridge bridge, char* identifier)
 {
-    mamaPayloadBridgeImpl* impl = NULL;
-
-    impl = (mamaPayloadBridgeImpl*) calloc (1, sizeof (mamaPayloadBridgeImpl));
-
-    if (NULL == impl)
-    {
-        mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidmsgPayload_createImpl(): "
-                  "Could not allocate memory for payload impl.");
-        return MAMA_STATUS_NOMEM;
-    }
-
-    /* Use closure to store global data for payload bridge if required */
-    impl->mClosure = NULL;
-
-    /* Initialize the virtual function table (see payloadbridge.h) */
-    INITIALIZE_PAYLOAD_BRIDGE (impl, qpidmsg);
-
-    *result     = (mamaPayloadBridge)impl;
     *identifier = (char)MAMA_PAYLOAD_QPID;
+
+    /* Will set the bridge's compile time MAMA version */
+    MAMA_SET_BRIDGE_COMPILE_TIME_VERSION("qpidmsg");
 
     return MAMA_STATUS_OK;
 }
 
+MAMAIgnoreDeprecatedOpen
 mamaPayloadType
 qpidmsgPayload_getType (void)
 {
     return MAMA_PAYLOAD_QPID;
 }
+MAMAIgnoreDeprecatedClose
 
 mama_status
 qpidmsgPayload_create (msgPayload* msg)
@@ -903,7 +891,7 @@ qpidmsgPayload_serialize (const msgPayload  msg,
 
 mama_status
 qpidmsgPayload_unSerialize (const msgPayload    msg,
-                            const void**        buffer,
+                            const void*         buffer,
                             mama_size_t         bufferLength)
 {
     qpidmsgPayloadImpl*  impl       = (qpidmsgPayloadImpl*) msg;

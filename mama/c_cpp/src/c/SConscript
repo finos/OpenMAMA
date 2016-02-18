@@ -12,6 +12,7 @@ InstMamaInclude = \
 	mama/config.h 
 	mama/datetime.h 
 	mama/dictionary.h 
+	mama/entitlement.h
     mama/error.h 
 	mama/fielddesc.h 
 	mama/inbox.h 
@@ -91,6 +92,8 @@ libmama_sources = \
 	dictionary.c
 	dqstrategy.c
     error.c
+    entitlement.c
+    entitlementlibraries.c
 	fielddesc.c
 	imagerequest.c
 	listenermsgcallback.c
@@ -111,6 +114,7 @@ libmama_sources = \
     dqpublishermanager.c
     inbox.c
 	quality.c
+	registerfunctions.c
 	reservedfields.c
 	senderId.c
 	servicelevel.c
@@ -160,24 +164,47 @@ libmama_sources = \
     fieldcache/fieldcachevector.c
 """)
 
-objects = []
+"""
+Populate mama/c_cpp/src/c/entitlementlibraries.c with array of libraries to be made
+mamdatory to load at runtime.
+"""
+entitlementLibsFile = os.path.join(Dir('#').abspath,'mama/c_cpp/src/c/entitlementlibraries.c')
+fp = open(entitlementLibsFile, 'w')
+fp.write("#include <mamainternal.h>\n")
+if len(env['entitlements']) > 0:
+    libstr = "const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {{\"{0}\"".format(env['entitlements'][0])
+    if len(env['entitlements']) > 1:
+        for lib in env['entitlements'][1:]:
+            libstr = "{0},\"{1}\"".format(libstr,lib)
+    libstr += '};\n'
+    fp.write(libstr)
+else:
+    fp.write("const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {0};\n");
+
+fp.close()
+
+static_objects = []
+shared_objects = []
 StaticLibs['libmama'] = []
 
-if env['entitled'] == True:
-    env.Append( 
-        LIBPATH = [ os.path.join(env['entitle_home'],'lib') ],
-        LIBS = ['oeac'],
-        CPPDEFINES = ['WITH_ENTITLEMENTS'],
-    )
 
 for s in libmama_sources:
-    obj = env.Object(s)
-    StaticLibs['libmama'].append(obj)
-    objects.append(obj)
+    if s == "msg.c":
+        # Our deprecated warnings don't work for msg.c in GCC versions before
+        # 4.6 so turning off deprecated warnings for this particular file
+        static_obj = env.Object(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
+        shared_obj = env.SharedObject(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
+    else:
+        static_obj = env.Object(s)
+        shared_obj = env.SharedObject(s)
+
+    StaticLibs['libmama'].append(static_obj)
+    static_objects.append(static_obj)
+    shared_objects.append(shared_obj)
 
 lib = []
-lib.append(env.SharedLibrary('.libs/libmama', libmama_sources))
-lib.append(env.StaticLibrary('.libs/libmama', [objects, StaticLibs['libwombatcommon'] ]))
+lib.append(env.SharedLibrary('.libs/libmama', shared_objects))
+lib.append(env.StaticLibrary('.libs/libmama', [StaticLibs['libmama'], StaticLibs['libwombatcommon'] ]))
 
 Alias('install', env.Install('$libdir', lib))
 Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))
@@ -188,5 +215,6 @@ Alias('install', env.Install('$prefix/include/mama/fieldcache',
 
 env.SConscript('bridge/SConscript', 'env')
 env.SConscript('payload/SConscript', 'env')
+env.SConscript('entitlement/SConscript', 'env')
 
 Clean(lib, 'version.c')

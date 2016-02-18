@@ -20,6 +20,7 @@
  */
 
 #include "mama/mama.h"
+#include <mamainternal.h>
 #include "mama/mamacpp.h"
 #include "mama/log.h"
 #include "MsgFieldImpl.h"
@@ -86,7 +87,8 @@ namespace Wombat
 
     void MamaMsg::createForPayload (const char id)
     {
-        mamaMsg_createForPayload (&mMsg, id);
+        mamaTry (mamaMsg_createForPayloadBridge (&mMsg,
+                                                 mamaInternal_findPayload(id)));
     }
 
     void MamaMsg::createForPayloadBridge (mamaPayloadBridge payloadBridge)
@@ -171,13 +173,15 @@ namespace Wombat
         return mMsg;
     }
 
+    MAMAIgnoreDeprecatedOpen
     mamaPayloadType MamaMsg::getPayloadType (void) const
     {
-        mamaPayloadType result;    
+        mamaPayloadType result;
         mamaTry (mamaMsg_getPayloadType (mMsg, &result));
 
         return result;
     }
+    MAMAIgnoreDeprecatedClose
         
     void*  MamaMsg::getNativeMsg (void)
     {
@@ -2039,10 +2043,6 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
 
     const char* MamaMsg::toString () const
     {
-        if (mString != NULL )
-        {
-            mamaMsg_freeString (mMsg, mString);
-        }
         mString = mamaMsg_toString (mMsg);
 
         return mString;
@@ -2373,12 +2373,6 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         {
             mamaTry (mamaMsg_destroy (mMsg));
             mDestroy = false;
-        }
-
-        if (mString)
-        {
-            mamaMsg_freeString (mMsg, mString);
-            mString = NULL;
         }
 
         if (mVectorMsg)

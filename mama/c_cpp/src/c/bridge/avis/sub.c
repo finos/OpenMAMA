@@ -195,7 +195,7 @@ avis_queue_callback (mamaQueue queue,
     /*Set the buffer and the reply handle on the bridge message structure*/
     if (MAMA_STATUS_OK!=(status=mamaMsgImpl_setMsgBuffer (tmpMsg,
                                 data,
-                                0, MAMA_PAYLOAD_AVIS)))
+                                sizeof(data), MAMA_PAYLOAD_AVIS)))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "avis_callback(): mamaMsgImpl_setMsgBuffer() failed. [%d]",
@@ -282,6 +282,7 @@ avis_callback(
     bool            secure,
     void*           subscriber)
 {
+    avisCallbackContext* ctx = NULL;
     /* cant do anything without a subscriber */
     if (!avisSub(subscriber)) {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avis_callback(): called with NULL subscriber!");
@@ -291,7 +292,7 @@ avis_callback(
     /*Make sure that the subscription is processing messages*/
     if ((!avisSub(subscriber)->mIsNotMuted) || (!avisSub(subscriber)->mIsValid)) return;
 
-    avisCallbackContext* ctx = (avisCallbackContext*) malloc (sizeof (avisCallbackContext));
+    ctx = (avisCallbackContext*) malloc (sizeof (avisCallbackContext));
     ctx->attributes = attributes_clone (attributes);
     ctx->subscriber = subscriber;
 
