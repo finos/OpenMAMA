@@ -77,7 +77,7 @@ noopEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, Su
 
     /* Allocate bridge level entitlement subscription object*/
     noopSubHandle = (noopEntitlementSubscriptionHandle*) calloc (1, sizeof(noopEntitlementSubscriptionHandle));
-    if (NULL == mamaEntSub) return MAMA_STATUS_NOMEM;
+    if (NULL == noopSubHandle) return MAMA_STATUS_NOMEM;
 
     /* Allocate mama_level entitlement subscription object and set implementation struct pointer. */
     status = mamaEntitlementBridge_createSubscription(&mamaEntSub);
