@@ -52,8 +52,8 @@ extern "C"
 #define MAMA_PROP_MAMA_RUNTIME_VER         "mama.runtime_version"
 
 /* %s = Bridge Name - these properties may be populated by bridge */
-#define MAMA_PROP_BRIDGE_ENT_DEFERRED      "mama.%s."MAMA_PROP_BARE_ENT_DEFERRED
-#define MAMA_PROP_BRIDGE_COMPILE_TIME_VER  "mama.%s."MAMA_PROP_BARE_COMPILE_TIME_VER
+#define MAMA_PROP_BRIDGE_ENT_DEFERRED      "mama.%s." MAMA_PROP_BARE_ENT_DEFERRED
+#define MAMA_PROP_BRIDGE_COMPILE_TIME_VER  "mama.%s." MAMA_PROP_BARE_COMPILE_TIME_VER
 
 #define MAMA_SET_BRIDGE_COMPILE_TIME_VERSION(bridgeName)                       \
 do                                                                             \
