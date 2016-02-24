@@ -25,7 +25,7 @@ verH.write("""
 
 #define MAMA_VERSION_MAJOR %s
 #define MAMA_VERSION_MINOR %s
-#define MAMA_VERSION_RELEASE %s
+#define MAMA_VERSION_RELEASE "%s"
 #define MAMA_VERSION "mama %s"
 extern const char* mama_version;
 #endif

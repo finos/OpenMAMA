@@ -69,7 +69,7 @@ do                                                                             \
     /* Advise MAMA which version of MAMA the bridge was compiled against */    \
     snprintf (valString,                                                       \
               sizeof(valString),                                               \
-              "%d.%d.%d",                                                      \
+              "%d.%d.%s",                                                      \
               MAMA_VERSION_MAJOR,                                              \
               MAMA_VERSION_MINOR,                                              \
               MAMA_VERSION_RELEASE);                                           \
