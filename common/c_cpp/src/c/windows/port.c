@@ -263,11 +263,19 @@ wthread_key_create(wthread_key_t* key, void* val)
     return 0;
 }
 
+/* Used since the timezone setting below needs to be atomic if multiple threads are using this.
+ * This can occur if mamaDateTime_setDate() is called from multiple threads.
+ */
+static wthread_static_mutex_t envLock = WSTATIC_MUTEX_INITIALIZER;
+
 time_t wtimegm (struct tm *tm) 
 {
     time_t ret;
     char *tz;
     
+    /* Used since the timezone setting needs to be atomic */
+    wthread_static_mutex_lock(&envLock);
+
     tz = environment_getVariable("TZ");
     environment_setVariable("TZ", "UTC");
     tzset();
@@ -277,6 +285,9 @@ time_t wtimegm (struct tm *tm)
     else
         environment_deleteVariable("TZ");
     tzset();
+
+    wthread_static_mutex_unlock(&envLock);
+
     return ret;
 }
 
