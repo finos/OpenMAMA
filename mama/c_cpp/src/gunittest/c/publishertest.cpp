@@ -524,3 +524,36 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoCallbacks)
     mamaPublisherCallbacks_deallocate(cb);
 }
 
+/*  Description:  Get the transport from the mamaPublisher and make sure its the same transport
+ *                that was used to create the publisher.
+ *
+ *  Expected Result: MAMA_STATUS_OK
+ */
+TEST_F (MamaPublisherTestC, GetTransport)
+{
+    mamaPublisher    publisher  = NULL;
+    mamaTransport    tport      = NULL;
+    const char*      source     = "SRC";
+    mamaTransport    aTransport = NULL;
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_allocate (&tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_create (tport, "test_tport", mBridge));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_create (&publisher, tport, source, NULL, NULL));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_getTransport (publisher, &aTransport));
+
+    ASSERT_EQ (tport, aTransport);
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaPublisher_destroy (publisher));
+
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaTransport_destroy (tport));
+}
+
