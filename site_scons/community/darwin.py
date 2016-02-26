@@ -113,7 +113,7 @@ class Darwin:
         #env.Append( CPPDEFINES = ['HAVE_CONFIG_H'] )
         env.Append( CCFLAGS = ['-fcolor-diagnostics','-arch','x86_64',minversion,'-isysroot',sysroot,'-g','-O2','-pedantic-errors'])
         env.Append( CFLAGS = ['-std=gnu99','-Wmissing-prototypes','-Wstrict-prototypes','-Wno-int-conversion'])
-        env.Append( CXXFLAGS = ['-Wall','-Wno-long-long','-stdlib=libc++','-std=gnu++11'] )
+        env.Append( CXXFLAGS = ['-Wall','-Wno-long-long','-stdlib=libc++'] )
         env.Append( CPPPATH = ['/usr/include','/usr/local/include'] )
         env.Append( LIBPATH = ['/usr/local/lib'] )
         env.Append( LINKFLAGS = ['-stdlib=libc++','-arch','x86_64',minversion,'-isysroot',sysroot] )
