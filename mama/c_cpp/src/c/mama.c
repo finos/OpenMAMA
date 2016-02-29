@@ -1461,6 +1461,9 @@ mama_closeCount (unsigned int* count)
         /* Once the libraries have been unloaded, clear down the wtable. */
         wtable_clear (gImpl.payloads.table);
 
+        /* This will shutdown all plugins */
+        mama_shutdownPlugins();
+
         /* Reset the count of loaded payloads */
         gImpl.payloads.count = 0;
 
