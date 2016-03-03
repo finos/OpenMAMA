@@ -608,6 +608,7 @@ static void readSymbolsFromFile (void)
             {
                 gSubscriptionList[symbolIndex].symbol = (char*)calloc (temp-source+1,
                                                        sizeof (char));
+                gSubscriptionList[symbolIndex].index = symbolIndex;
                 strncpy (gSubscriptionList[symbolIndex].symbol, source, temp-source);
                 symbolIndex++;
 
