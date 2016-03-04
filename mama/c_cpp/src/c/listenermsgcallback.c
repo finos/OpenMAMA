@@ -613,6 +613,7 @@ isEntitled( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
 {
     int32_t         value  = 0;
     mamaBridgeImpl* bridge = NULL;
+    mama_status     status = MAMA_STATUS_NOT_ENTITLED;
 
     if( ctx->mEntitlementAlreadyVerified )
     {
@@ -646,7 +647,7 @@ isEntitled( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
             return 1;
         }
         ctx->mEntitleCode = value;
-        mama_status status = ctx->mEntitlementBridge->registerSubjectContext(ctx);
+        status = ctx->mEntitlementBridge->registerSubjectContext(ctx);
         if (MAMA_STATUS_OK != status)
         {
             const char* userSymbol  = NULL;
