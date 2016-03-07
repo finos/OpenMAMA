@@ -341,9 +341,15 @@ static void initializeMama ()
     mama_getDefaultEventQueue (gPubBridge, &gPubDefaultQueue);
 
     mamaTransport_allocate (&gPubTransport);
-    mamaTransport_create (gPubTransport,
-                          gPubTransportName,
-                          gPubBridge);
+    status = mamaTransport_create (gPubTransport,
+                                   gPubTransportName,
+                                   gPubBridge);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "Failed to create transport. Exiting");
+        exit (1);
+    }
 
 }
 
