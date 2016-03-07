@@ -302,7 +302,7 @@ if [ $PACKAGE_RELEASE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try cp -r ${BUILD_DIR}/BUILD/openmama-${VERSION}/data/* ${BINARY_DIR}/data/
     try cp -r ${BUILD_DIR}/BUILD/openmama-${VERSION}/openmama_install*/* ${BINARY_DIR}/
     try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/data/profiles/profile.openmama ${BINARY_DIR}/config/
-    try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/README ${BINARY_DIR}/
+    try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/README.md ${BINARY_DIR}/README
     try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/COPYING ${BINARY_DIR}/
     try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/mama/c_cpp/src/examples/mama.properties ${BINARY_DIR}/config/
 
