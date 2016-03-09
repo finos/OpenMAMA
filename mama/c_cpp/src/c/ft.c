@@ -873,9 +873,10 @@ multicastFt_setup (
     {
         ftService = multicastFt_getProperty (propertyName,
                 "mama.native.transport.%s.service", transportName);
-        if (ftService != NULL)
-            service = atol (ftService);
     }
+
+    if (ftService != NULL)
+        service = atol (ftService);
 
     ftTtl = multicastFt_getProperty (propertyName,
             "mama.multicast.transport.%s.ttl", transportName);
@@ -883,20 +884,25 @@ multicastFt_setup (
     {
         ftTtl = multicastFt_getProperty (propertyName,
                 "mama.native.transport.%s.ttl", transportName);
-        if (ftTtl != NULL)
-            ttl = (unsigned char)atol (ftTtl);
     }
+
+    if (ftTtl != NULL)
+        ttl = (unsigned char)atol (ftTtl);
 
     iorecvstr = multicastFt_getProperty (propertyName,
             "mama.multicast.transport.%s.iowindow", transportName);
-    if (iorecvstr != NULL)
+    if (iorecvstr == NULL)
     {
-        iorecv=atoi (iorecvstr);
+        iorecvstr = multicastFt_getProperty (propertyName,
+                "mama.native.transport.%s.iowindow", transportName);
     }
 
+    if (iorecvstr != NULL)
+        iorecv = atoi (iorecvstr);
+
     mama_log (MAMA_LOG_LEVEL_NORMAL,
-              "MAMA multicast FT: INTERFACE %s NETWORK %s SERVICE %d TTL %d",
-              ftInterface,ftNetwork,service,ttl);
+              "MAMA multicast FT: INTERFACE %s NETWORK %s SERVICE %d TTL %d IOWINDOW %d",
+              ftInterface,ftNetwork,service,ttl,iorecv);
 
     /* if interface name is set */
     if (ftInterface!=NULL && ftInterface[0]!='\0')
