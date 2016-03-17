@@ -247,12 +247,6 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
 mama_status
 mama_loadEntitlementBridgeInternal  (const char* name);
 
-void MAMACALLTYPE mamaImpl_entitlementDisconnectCallback (
-                            const sessionDisconnectReason  reason,
-                            const char * const             userId,
-                            const char * const             host,
-                            const char * const             appName);
-
 MAMAExpDLL
 void
 mama_setWrapperGetVersion(fpWrapperGetVersion value);
