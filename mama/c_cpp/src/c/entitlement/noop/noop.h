@@ -27,16 +27,6 @@ extern "C" {
 #endif
 
 
-typedef struct noopEntitlementBridge_
-{
-} noopEntitlementBridge;
-
-
-typedef struct noopEntitlementSubscriptionHandle_
-{
-    int mIsSnapshot;
-} noopEntitlementSubscriptionHandle;
-
 /*=========================================================================
   =                   Public implementation prototypes                    =
   =========================================================================*/
@@ -80,7 +70,7 @@ noopEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle);
  */
 MAMAExpDLL
 mama_status
-noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot);
+noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle handle, int isSnapshot);
 
 /**
  * Checks with entitlements implementation if user is entitled to subscribe to topic.

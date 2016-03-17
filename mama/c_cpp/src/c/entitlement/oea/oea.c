@@ -30,16 +30,12 @@
 #include "mama/entitlement.h"
 #include "subscriptionimpl.h"
 #include "oea.h"
-#include "subscriptionimpl.h"
 #include "mamainternal.h"
 
 const char **
 oeaEntitlmentBridge_parseServersProperty(void);
 
-
- const char*     gServers[OEA_MAX_ENTITLEMENT_SERVERS];
-
-#if (OEA_MAJVERSION == 2 && OEA_MINVERSION >= 11) || OEA_MAJVERSION > 2
+const char*     gEntOeaServers[OEA_MAX_ENTITLEMENT_SERVERS];
 
 void MAMACALLTYPE entitlementDisconnectCallback (oeaClient*     client,
                                     const OEA_DISCONNECT_REASON reason,
@@ -51,30 +47,15 @@ void MAMACALLTYPE entitlementUpdatedCallback (oeaClient* client,
 void MAMACALLTYPE entitlementCheckingSwitchCallback (oeaClient* client,
                                         int isEntitlementsCheckingDisabled);
 
-#else
-
-void entitlementDisconnectCallback (oeaClient* client,
-                                    const OEA_DISCONNECT_REASON reason,
-                                    const char * const          userId,
-                                    const char * const          host,
-                                    const char * const          appName);
-void entitlementUpdatedCallback (oeaClient*,
-                                 int openSubscriptionForbidden);
-void entitlementCheckingSwitchCallback (oeaClient*,
-                                        int isEntitlementsCheckingDisabled);
-
-#endif
-
-
 mama_status
 oeaEntitlementBridge_registerSubjectContext(SubjectContext* ctx)
 {
-    oeaSubscription*    oeaSub = (oeaSubscription*) ctx->mEntitlementSubscription->mImpl;
+	oeaEntitlementSubscriptionHandle* oeaSubHandle = (oeaEntitlementSubscriptionHandle*)ctx->mEntitlementSubscription->mImpl;
 
-    oeaSubscription_addEntitlementCode (oeaSub, ctx->mEntitleCode);
-    oeaSubscription_open (oeaSub);
+    oeaSubscription_addEntitlementCode (oeaSubHandle->mOeaSubscription, ctx->mEntitleCode);
+    oeaSubscription_open (oeaSubHandle->mOeaSubscription);
 
-    if (0 == oeaSubscription_isOpen (oeaSub))
+    if (0 == oeaSubscription_isOpen (oeaSubHandle->mOeaSubscription))
     {
         mama_log(MAMA_LOG_LEVEL_ERROR,
                  "Could not handle entitlements for new subscription [%s].",
@@ -248,7 +229,7 @@ oeaEntitlmentBridge_parseServersProperty()
     const char*     serverProperty = mama_getProperty(OEA_SERVER_PROPERTY);
 
 
-    memset (gServers, 0, sizeof(gServers));
+    memset (gEntOeaServers, 0, sizeof(gEntOeaServers));
 
     if (NULL == serverProperty)
     {
@@ -264,12 +245,12 @@ oeaEntitlmentBridge_parseServersProperty()
 
     while( idx < OEA_MAX_ENTITLEMENT_SERVERS - 1 )
     {
-        gServers[idx] = strtok_r (idx == 0 ? (char *)serverProperty : NULL
+        gEntOeaServers[idx] = strtok_r (idx == 0 ? (char *)serverProperty : NULL
                                   , ",",
                                   &ptr);
 
 
-        if (gServers[idx++] == NULL) /* last server parsed */
+        if (gEntOeaServers[idx++] == NULL) /* last server parsed */
         {
             break;
         }
@@ -278,10 +259,10 @@ oeaEntitlmentBridge_parseServersProperty()
         {
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "Parsed entitlement server: %s",
-                      gServers[idx-1]);
+                      gEntOeaServers[idx-1]);
         }
     }
-    return gServers;
+    return gEntOeaServers;
 }
 
 
@@ -336,7 +317,7 @@ oeaEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle)
 }
 
 mama_status
-oeaEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot)
+oeaEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle handle, int isSnapshot)
 {
     oeaEntitlementSubscriptionHandle* oeaSubHandle = (oeaEntitlementSubscriptionHandle*) handle;
     oeaSubscription_setIsSnapshot(oeaSubHandle->mOeaSubscription, isSnapshot);
@@ -351,7 +332,7 @@ oeaEntitlementBridge_isAllowed(entitlementSubscriptionHandle handle, char* subje
 
 }
 
-void
+void MAMACALLTYPE
 entitlementDisconnectCallback (oeaClient*                   client,
                                const OEA_DISCONNECT_REASON  reason,
                                const char * const           userId,
@@ -361,14 +342,14 @@ entitlementDisconnectCallback (oeaClient*                   client,
     mamaImpl_entitlementDisconnectCallback(reason, userId, host, appName);
 }
 
-void
+void MAMACALLTYPE
 entitlementUpdatedCallback (oeaClient* client,
                             int openSubscriptionForbidden)
 {
     mamaImpl_entitlementUpdatedCallback();
 }
 
-void
+void MAMACALLTYPE
 entitlementCheckingSwitchCallback (oeaClient*   client,
                                    int isEntitlementsCheckingDisabled)
 {

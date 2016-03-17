@@ -517,7 +517,7 @@ mamaSubscription_setupBasic (
             {
                 mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
                 if (!(mamaBridgeImpl_areEntitlementsDeferred(bridge)))
-                    self->mSubjectContext.mEntitlementBridge->setIsSnapshot(self->mSubjectContext.mEntitlementSubscription, 1);
+                    self->mSubjectContext.mEntitlementBridge->setIsSnapshot(self->mSubjectContext.mEntitlementSubscription->mImpl, 1);
             }
             break;
         case MAMA_SERVICE_LEVEL_CONFLATED:/*fall through*/
