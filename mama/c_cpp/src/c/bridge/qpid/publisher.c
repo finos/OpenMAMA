@@ -201,14 +201,20 @@ qpidBridgeMamaPublisher_destroy (publisherBridge publisher)
     qpidPublisherBridge* impl = (qpidPublisherBridge*) publisher;
 
     /* Take a copy of the callbacks - we'll need those */
-    mamaPublisherCallbacks callbacks = impl->mCallbacks;
-    mamaPublisher          parent    = impl->mParent;
-    void*                  closure   = impl->mCallbackClosure;
+    mamaPublisherCallbacks callbacks;
+    mamaPublisher          parent  = NULL;
+    void*                  closure = NULL;
 
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
+
+    /* Take a copy of the callbacks - we'll need those */
+    callbacks = impl->mCallbacks;
+    parent    = impl->mParent;
+    closure   = impl->mCallbackClosure;
+
     if (NULL != impl->mQpidRawMsg)
     {
         pn_message_free (impl->mQpidRawMsg);
