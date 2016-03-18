@@ -202,6 +202,8 @@ qpidBridgeMamaPublisher_destroy (publisherBridge publisher)
 
     /* Take a copy of the callbacks - we'll need those */
     mamaPublisherCallbacks callbacks = impl->mCallbacks;
+    mamaPublisher          parent    = impl->mParent;
+    void*                  closure   = impl->mCallbackClosure;
 
     if (NULL == impl)
     {
