@@ -207,7 +207,7 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
 /**
  * Test publisher with callbacks and errors
  */
-TEST_F(MamaPublisherTest, PublishWithCallbacksBadSource)
+TEST_F(MamaPublisherTest, DISABLED_PublishWithCallbacksBadSource)
 {
     int numPublishes = 10;
 	int waits = 0;

@@ -55,6 +55,9 @@ typedef struct qpidPublisherBridge
     const char*             mUri;
     pn_message_t*           mQpidRawMsg;
     msgBridge               mMamaBridgeMsg;
+    mamaPublisher           mParent;
+    mamaPublisherCallbacks  mCallbacks;
+    void*                   mCallbackClosure;
 } qpidPublisherBridge;
 
 /*=========================================================================
@@ -97,9 +100,7 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
     const char*             outgoingAddress = NULL;
     const char*             uuid            = NULL;
 
-    if (NULL == result
-            || NULL == tport
-            || NULL == parent)
+    if (NULL == result || NULL == tport || NULL == parent)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -124,6 +125,7 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
 
     /* Initialize the publisher members */
     impl->mTransport = transport;
+    impl->mParent    = parent;
 
     /* Create an underlying bridge message with no parent to be used in sends */
     status = qpidBridgeMamaMsgImpl_createMsgOnly (&impl->mMamaBridgeMsg);
@@ -196,8 +198,11 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
 mama_status
 qpidBridgeMamaPublisher_destroy (publisherBridge publisher)
 {
-
     qpidPublisherBridge* impl = (qpidPublisherBridge*) publisher;
+
+    /* Take a copy of the callbacks - we'll need those */
+    mamaPublisherCallbacks callbacks = impl->mCallbacks;
+
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
@@ -232,6 +237,11 @@ qpidBridgeMamaPublisher_destroy (publisherBridge publisher)
     }
 
     free (impl);
+
+    if (NULL != callbacks.onDestroy)
+    {
+        (*callbacks.onDestroy)(impl->mParent, impl->mCallbackClosure);
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -597,6 +607,25 @@ qpidBridgeMamaPublisher_sendFromInbox (publisherBridge  publisher,
                                                          0,
                                                          inbox,
                                                          msg);
+}
+
+mama_status
+qpidBridgeMamaPublisher_setUserCallbacks (publisherBridge         publisher,
+                                          mamaQueue               queue,
+                                          mamaPublisherCallbacks* cb,
+                                          void*                   closure)
+{
+    qpidPublisherBridge*    impl        = (qpidPublisherBridge*) publisher;
+
+    if (NULL == impl || NULL == cb)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    /* Take a copy of the callbacks */
+    impl->mCallbacks = *cb;
+    impl->mCallbackClosure = closure;
+
+    return MAMA_STATUS_OK;
 }
 
 /*=========================================================================

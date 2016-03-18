@@ -315,7 +315,7 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacks)
  *
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaPublisherTestC, EventSendWithCallbacksBadSource)
+TEST_F (MamaPublisherTestC, DISABLED_EventSendWithCallbacksBadSource)
 {
     mamaPublisher    publisher = NULL;
     mamaTransport    tport     = NULL;
