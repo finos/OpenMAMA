@@ -244,12 +244,13 @@ qpidBridgeMamaPublisher_destroy (publisherBridge publisher)
         qpidBridgeMamaMsg_destroy (impl->mMamaBridgeMsg, 0);
     }
 
-    free (impl);
-
     if (NULL != callbacks.onDestroy)
     {
-        (*callbacks.onDestroy)(impl->mParent, impl->mCallbackClosure);
+        (*callbacks.onDestroy)(parent, closure);
     }
+
+    free (impl);
+
     return MAMA_STATUS_OK;
 }
 
