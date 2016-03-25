@@ -72,8 +72,6 @@ public:
 
     void prettyPrint (const MamdaOrderBookBasicDelta&  delta)
     {
-        char timeStr[32];
-        MamdaOrderBookEntry* entry = delta.getEntry();
         
         MamdaOrderBookPriceLevel*        level  = delta.getPriceLevel ();
         mama_quantity_t                  size   = delta.getPlDeltaSize ();
@@ -107,9 +105,9 @@ public:
         if (mShowMarketOrders)
         {
             printf ("    MARKET ORDERS ---------------------------------------------------------------\n");
-            const MamdaOrderBookPriceLevel* marketOrders = NULL;
+            const MamdaOrderBookPriceLevel* marketOrders = book.getBidMarketOrders();
 
-            if (marketOrders = book.getBidMarketOrders())
+            if (marketOrders)
             {
                 marketOrders->getTime().getAsFormattedString (timeStr, 32, "%T%;");
                 printf ("   %12s %4d %7g  MARKET  %c  ",
@@ -123,7 +121,8 @@ public:
                 printf ("                                         ");
             }
             printf ("|");
-            if (marketOrders = book.getAskMarketOrders())
+            marketOrders = book.getAskMarketOrders();
+            if (marketOrders)
             {
                 marketOrders->getTime().getAsFormattedString (timeStr, 32, "%T%;");
                 printf ("  %c  MARKET  %-7g %-6d %-12s   ",
@@ -490,8 +489,6 @@ int main (int argc, const char **argv)
 
         const vector<const char*>&
                          symbolList          = cmdLine.getSymbolList ();
-        double           throttleRate        = cmdLine.getThrottleRate ();
-        int              snapshotInterval    = cmdLine.getOptInt    ("snapshot");
         int              precision           = cmdLine.getPrecision ();
         bool             processEntries      = cmdLine.getOptBool   ('e');
         bool             strictChecking      = !cmdLine.getOptBool  ('C');

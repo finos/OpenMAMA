@@ -383,6 +383,17 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
         }
     case MAMA_MSG_TYPE_RECAP        :
     case MAMA_MSG_TYPE_BOOK_RECAP   :
+    /* For late joins or middlewares that support a publish cache, it is possible that you will get old updates
+       in this case take no action */
+        if (DQ_SCHEME_INGORE_DUPS==mamaTransportImpl_getDqStrategyScheme(tport))
+        {
+            if ((seqNum <= ctxSeqNum) && ((ctxDqState != DQ_STATE_WAITING_FOR_RECAP) ||
+                                          (ctxDqState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
+            {
+                ctx->mDoNotForward = 1;
+                return MAMA_STATUS_OK;
+            }
+        }
 
         if (mamaTransportImpl_preRecapCacheEnabled (tport))
         {

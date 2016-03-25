@@ -364,8 +364,8 @@ TEST_F (MamaDateTimeTestC, TestSetToNow)
 
 TEST_F (MamaDateTimeTestC, TestSetToMidnightToday)
 {
-    mamaDateTime t, nullTime = NULL;
-    mamaTimeZone z, nullTimeZone = NULL;
+    mamaDateTime t = NULL, nullTime = NULL;
+    mamaTimeZone z = NULL, nullTimeZone = NULL;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
 
@@ -751,7 +751,7 @@ TEST_F (MamaDateTimeTestC, TestGetEpochTimeWithTz)
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS,
                           expectedPrecision;
 
-    mamaTimeZone tz  = mamaTimeZone_utc(), nullTz = NULL;;
+    mamaTimeZone tz  = mamaTimeZone_utc();
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setToNow(t) );
@@ -949,7 +949,7 @@ TEST_F (MamaDateTimeTestC, TestGetWithHints)
     mamaDateTimePrecision actualPrecision = MAMA_DATE_TIME_PREC_MICROSECONDS, expectedPrecision;
 
     mama_u32_t actualSecs      = 43219,  expectedSecs,
-               actualMilliSecs = 123,    expectedMilliSecs,
+               actualMilliSecs = 123,
                actualMicroSecs = (actualMilliSecs * 1000) + 456, expectedMicroSecs;
 
     mamaDateTimeHints actualHints = MAMA_DATE_TIME_HAS_DATE, expectedHints;
@@ -1064,8 +1064,6 @@ TEST_F (MamaDateTimeTestC, TestGetStructTmWithTz)
     int sec = 21, min = 3, hour = 10, mday = 4, mon = 6, year = 113, wday = 4, yday = 184;
 
     std::string szTime = "2013-07-04 10:03:21.123";
-
-    mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromString(t, szTime.c_str()) );

@@ -30,6 +30,7 @@ namespace Wombat
     class MamaInbox;
     class MamaPublisherImpl;
     class MamaSendCompleteCallback;
+    class MamaPublisherCallback;
 
     /**
      * The publisher class publishes messages to basic or market data
@@ -57,6 +58,15 @@ namespace Wombat
          */
         virtual void create (
             MamaTransport*  transport,
+            const char*     topic,
+            const char*     source = NULL,
+            const char*     root   = NULL);
+
+        virtual void createWithCallbacks (
+            MamaTransport*  transport,
+            MamaQueue*      queue,
+            MamaPublisherCallback* cb,
+            void*           closure,
             const char*     topic,
             const char*     source = NULL,
             const char*     root   = NULL);
@@ -89,10 +99,33 @@ namespace Wombat
 
         virtual void destroy (void);
 
+        virtual void destroyEx (void);
+
+        /**
+         * Return the MamaTransport for the MamaPublisher.
+         */
+        virtual MamaTransport* getTransport (void) const;
+
+        virtual mamaPublisherState getState() const;
+
+        virtual const char* stringForState(mamaPublisherState state) const;
+
+        virtual const char* getRoot () const;
+
+        virtual const char* getSource () const;
+
+        virtual const char* getSymbol () const;
+
+        virtual MamaPublisherCallback* getCallback() const;
+
     protected:
-        MamaPublisher (MamaPublisherImpl*);
-        
-        MamaPublisherImpl*  mPimpl;
+        MamaTransport*      mTransport;
+
+    private:
+        MamaPublisher (MamaPublisherImpl* impl);
+        MamaPublisherImpl*      mPimpl;
+        MamaPublisherCallback* mCallback;
+        bool destroyed;
     };
 
 } // namespace Wombat

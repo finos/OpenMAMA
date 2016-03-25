@@ -52,11 +52,6 @@ typedef struct avisTransportBridge
     wInterlockedInt      mDispatching;
 } avisTransportBridge;
 
-typedef struct avisBridgeImpl
-{
-} avisBridgeImpl;
-#define avisBridge(bridgeImpl) ((avisBridgeImpl*) bridgeImpl)
-
 void log_avis_error(MamaLogLevel logLevel, Elvin* avis);
 void closeListener(Elvin* avis, CloseReason reason, const char* message, void* closure);
 

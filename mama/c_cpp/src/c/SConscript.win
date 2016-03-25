@@ -20,6 +20,8 @@ bridge.c
 dictionary.c
 dqstrategy.c
 datetime.c
+entitlement.c
+entitlementlibraries.c
 timezone.c
 io.c
 fielddesc.c
@@ -70,6 +72,7 @@ symbolmapfile.c
 transport.c
 symbollist.c
 symbollistmember.c
+registerfunctions.c
 conflation/connection.c
 conflation/serverconnection.c
 playback/playbackcapture.c
@@ -87,14 +90,33 @@ fieldcache/fieldcachelist.c
 fieldcache/fieldcacherecord.c
 """)
 
+"""
+Populate mama/c_cpp/src/c/entitlementlibraries.c with array of libraries to be made
+mamdatory to load at runtime.
+"""
+entitlementLibsFile = os.path.join(Dir('#').abspath,'mama/c_cpp/src/c/entitlementlibraries.c')
+fp = open(entitlementLibsFile, 'w')
+fp.write("#include <mamainternal.h>\n")
+if len(env['entitlements']) > 0:
+    libstr = "const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {{\"{0}\"".format(env['entitlements'][0])
+    if len(env['entitlements']) > 1:
+        for lib in env['entitlements'][1:]:
+            libstr = "{0},\"{1}\"".format(libstr,lib)
+    libstr += '};\n'
+    fp.write(libstr)
+else:
+    fp.write("const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {0};\n");
+
+fp.close()
+
 headers = Glob("mama/*.h")
 playbackHeaders = Glob("mama/playback/*.h")
 fieldcacheHeaders = Glob("mama/fieldcache/*.h")
 
-if env['entitled'] == True:
-    EntLIB = posixpath.join( env['entitle_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix']))
-    EntDLL = posixpath.join( env['entitle_home'], 'bin/%s/liboeac%s.dll' % ( env['build'],env['suffix']))
-    env.Append( LIBS = posixpath.join( env['entitle_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix'])) )
+if 'oea' in env['entitlements']:
+    EntLIB = posixpath.join( env['oea_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix']))
+    EntDLL = posixpath.join( env['oea_home'], 'bin/%s/liboeac%s.dll' % ( env['build'],env['suffix']))
+    env.Append( LIBS = posixpath.join( env['oea_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix'])) )
     if 'dynamic' in env['build']:
         Alias('install', env.Install('$bindir',EntDLL))
     Alias('install', env.Install('$libdir',EntLIB))

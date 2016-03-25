@@ -123,10 +123,6 @@ static void MAMACALLTYPE onLongTimerTick (mamaTimer timer, void* closure)
 {
 }
 
-static void MAMACALLTYPE onTwoTimerDestroy (mamaTimer timer, void* closure)
-{
-}
-
 static void MAMACALLTYPE onStopTimerTick (mamaTimer timer, void* closure)
 {
     mamaTimer_destroy(timer);

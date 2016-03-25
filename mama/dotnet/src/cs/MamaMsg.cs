@@ -30,6 +30,7 @@ namespace Wombat
     /// <summary>
     /// Definition of payload types.
     /// </summary>
+    [Obsolete ("mamaPayloadType enum has been deprecated.")]
     public enum mamaPayloadType
     {
         /// <summary>
@@ -517,13 +518,27 @@ namespace Wombat
         }
 
 		/// <summary>
+		/// NOTE: This function has been deprecated in line with the
+		/// deprecation of the mamaPayloadType enum.
 		/// Create a msg using the payload specified.
         /// <param>The payload ID to create the message for</param>
 		/// </summary>
+        [Obsolete("MamaMsg(MamaPayloadType PayloadId) has been deprecated, "
+                 +"use MamaMsg(char payloadId) instead.")]
 		public MamaMsg (mamaPayloadType payloadId) 
 		{
 	        int code = NativeMethods.mamaMsg_createForPayload(ref nativeHandle, payloadId);
 			CheckResultCode(code);
+        }
+
+        /// <summary>
+        /// Create a msg using the payload specified.
+        /// <param>Char identifying the payload to create the msg for</param>
+        /// </summary>
+        public MamaMsg (char payloadId)
+        {
+            int code = NativeMethods.mamaMsg_createForPayload(ref nativeHandle, payloadId);
+		    CheckResultCode(code);
         }
 
         /// <summary>
@@ -4978,7 +4993,6 @@ namespace Wombat
             string strRet =  Marshal.PtrToStringAnsi(NativeMethods.mamaMsg_toString(nativeHandle));
             string val;
             val = string.Copy(strRet);
-			int code = NativeMethods.mamaMsg_freeString(nativeHandle, strRet);
             return val;
         }
 
@@ -5143,6 +5157,8 @@ namespace Wombat
 			public static extern int mamaMsg_create(ref IntPtr mamaMsg);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_createForPayload(ref IntPtr mamaMsg, mamaPayloadType id);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern int mamaMsg_createForPayload(ref IntPtr mamaMsg, char id);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaMsg_createForPayloadBridge(ref IntPtr mamaMsg, IntPtr mamaPayloadBridge);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
@@ -5711,8 +5727,6 @@ namespace Wombat
 				ref int numFields);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr mamaMsg_toString(IntPtr mamaMsg);
-            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_freeString(IntPtr mamaMsg,string msgString );
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_getEntitleCode(IntPtr mamaMsg,
 				ref int code);

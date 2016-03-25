@@ -29,56 +29,44 @@
 #include "avisbridgefunctions.h"
 #include "avisdefs.h"
 #include "transportbridge.h"
+#include "io.h"
 
-timerHeap gTimerHeap;
+#define AVIS_BRIDGE_NAME "avis"
 
-/*Responsible for creating the bridge impl structure*/
-void avisBridge_createImpl (mamaBridge* result)
+timerHeap gAvisTimerHeap;
+
+mama_status avisBridge_init (mamaBridge bridgeImpl)
 {
-    avisBridgeImpl* avisBridge = NULL;
-    mamaBridgeImpl* impl = NULL;
-    
-    if (!result) return;
-    *result = NULL;
+    mama_status status = MAMA_STATUS_OK;
 
-    impl = (mamaBridgeImpl*)calloc (1, sizeof (mamaBridgeImpl));
-    if (!impl)
-    {
-        mama_log (MAMA_LOG_LEVEL_SEVERE, "avisBridge_createImpl(): "
-                "Could not allocate mem for impl.");
-        return;
-    }
+    /* Will set the bridge's compile time MAMA version */
+    MAMA_SET_BRIDGE_COMPILE_TIME_VERSION(AVIS_BRIDGE_NAME);
 
-    avisBridge = (avisBridgeImpl*) calloc(1, sizeof(avisBridgeImpl));
-
-    /*Populate the bridge impl structure with the function pointers*/
-    INITIALIZE_BRIDGE (impl, avis);
-
-    mamaBridgeImpl_setClosure((mamaBridge) impl, avisBridge);
-
-    *result = (mamaBridge)impl;
+    return status;
 }
 
 const char*
 avisBridge_getVersion (void)
 {
-        return (const char*) "Unable to get version number";
+    return (const char*) "Unable to get version number";
 }
 
 const char*
 avisBridge_getName (void)
 {
-    return "avis";
+    return AVIS_BRIDGE_NAME;
 }
 
 static const char* PAYLOAD_NAMES[] = {"avismsg",NULL};
-static const char PAYLOAD_IDS[] = {MAMA_PAYLOAD_AVIS,NULL};
+static const char PAYLOAD_IDS[] = {MAMA_PAYLOAD_AVIS, '\0'};
 
 mama_status
 avisBridge_getDefaultPayloadId (char***name, char** id)
 {
-	*name = PAYLOAD_NAMES;
-	*id = PAYLOAD_IDS;
+    if (!name) return MAMA_STATUS_NULL_ARG;
+    if (!id) return MAMA_STATUS_NULL_ARG;
+    *name = (char**)PAYLOAD_NAMES;
+    *id = (char*)PAYLOAD_IDS;
 
     return MAMA_STATUS_OK;
 }
@@ -108,19 +96,22 @@ avisBridge_open (mamaBridge bridgeImpl)
     mama_log (MAMA_LOG_LEVEL_NORMAL,
               "avisBridge_open(): Successfully created Avis queue");
 
-    if (0 != createTimerHeap (&gTimerHeap))
+    if (0 != createTimerHeap (&gAvisTimerHeap))
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL,
                 "avisBridge_open(): Failed to initialize timers.");
         return MAMA_STATUS_PLATFORM;
     }
 
-    if (0 != startDispatchTimerHeap (gTimerHeap))
+    if (0 != startDispatchTimerHeap (gAvisTimerHeap))
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL,
                 "avisBridge_open(): Failed to start timer thread.");
         return MAMA_STATUS_PLATFORM;
     }
+
+    /* Start the io thread */
+    avisBridgeMamaIoImpl_start ();
 
     return MAMA_STATUS_OK;
 }
@@ -130,34 +121,31 @@ avisBridge_close (mamaBridge bridgeImpl)
 {
     mama_status     status = MAMA_STATUS_OK;
     mamaBridgeImpl* impl   = NULL;
-    avisBridgeImpl* avisBridge = NULL;
     
     mama_log (MAMA_LOG_LEVEL_FINEST, "avisBridge_close(): Entering.");
 
     impl =  (mamaBridgeImpl*)bridgeImpl;
 
 
-    if (0 != destroyHeap (gTimerHeap))
+    if (0 != destroyHeap (gAvisTimerHeap))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "avisBridge_close():"
                 "Failed to destroy Avis timer heap.");
         status = MAMA_STATUS_PLATFORM;
     }
 
-    wlock_destroy (impl->mLock);
-
-    mamaBridgeImpl_getClosure(impl, &avisBridge);
-
-    if (avisBridge)
+    if (NULL != impl->mLock)
     {
-        free (avisBridge);
+        wlock_destroy (impl->mLock);
     }
 
     mamaQueue_destroyWait(impl->mDefaultEventQueue);
 
-    free (impl);
-    
     wsocketcleanup();
+
+    /* Stop and destroy the io thread */
+	avisBridgeMamaIoImpl_stop ();
+
     return status;
 }
 
@@ -166,7 +154,6 @@ mama_status
 avisBridge_start(mamaQueue defaultEventQueue)
 {
     mama_status     status     = MAMA_STATUS_OK;
-    avisBridgeImpl* avisBridge = NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_start(): Start dispatching on default event queue.");
 
@@ -178,7 +165,6 @@ mama_status
 avisBridge_stop(mamaQueue defaultEventQueue)
 {
     mama_status     status     = MAMA_STATUS_OK;
-    avisBridgeImpl* avisBridge = NULL;
 
     mama_log (MAMA_LOG_LEVEL_FINER, "avisBridge_stop(): Stopping bridge.");
 

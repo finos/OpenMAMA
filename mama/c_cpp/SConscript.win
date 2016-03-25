@@ -103,8 +103,8 @@ elif build == 'static-debug':
         LIBS        = ['libwombatcommonmtd'],
     )
 
-if env['entitled'] == True:
-    Alias( 'install', env.Install('$bindir', posixpath.join( env['entitle_home'], 'pdb/liboeac%s.pdb' % ( env['suffix'])) ) )
+if 'oea' in env['entitlements']:
+    Alias( 'install', env.Install('$bindir', posixpath.join( env['oea_home'], 'pdb/liboeac%s.pdb' % ( env['suffix'])) ) )
 
 env.SConscript('src/c/SConscript.win','env')
 env.SConscript('src/cpp/SConscript.win','env')

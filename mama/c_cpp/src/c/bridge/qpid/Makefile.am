@@ -54,6 +54,7 @@ libmamaqpidimpl_la_SOURCES = \
 	timer.c \
 	inbox.c \
 	codec.c \
+	qpidcommon.c \
 	endpointpool.c
  
 

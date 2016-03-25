@@ -36,17 +36,23 @@
 extern "C" {
 #endif
 
+#define MAMA_PAYLOAD_ID_NULL '\0'
+#define MAMA_PAYLOAD_ID_UNKNOWN 'U'
+
 struct wombatMsg_;
 
 /**
  Enum to reference the available MAMA message payloads. */
-typedef enum mamaPayloadType_
+MAMATypeDeprecated(mamaPayloadType, 
+        "mamaPayloadType has been deprecated, use dynamic loading instead!")
+typedef enum mamaPayloadType_ 
 {
     MAMA_PAYLOAD_SOLACE     = '1',
     MAMA_PAYLOAD_V5         = '5',
     MAMA_PAYLOAD_AVIS       = 'A',
     MAMA_PAYLOAD_TICK42BLP  = 'B',
     MAMA_PAYLOAD_FAST       = 'F',
+    MAMA_PAYLOAD_HMS        = 'H',
     MAMA_PAYLOAD_RAI        = 'I',
     MAMA_PAYLOAD_KWANTUM    = 'K',
     MAMA_PAYLOAD_UMS        = 'L',
@@ -61,7 +67,8 @@ typedef enum mamaPayloadType_
     MAMA_PAYLOAD_EXEGY      = 'X',
 
 /* Unknown Payload */
-    MAMA_PAYLOAD_UNKNOWN    = 'U'
+    MAMA_PAYLOAD_UNKNOWN    = 'U',
+    MAMA_PAYLOAD_NULL       = MAMA_PAYLOAD_ID_NULL
 } mamaPayloadType;
 
 /**
@@ -70,9 +77,11 @@ typedef enum mamaPayloadType_
  *
  * @param payloadType  The payloadType to convert.
  */
+MAMAIgnoreDeprecatedOpen
 MAMAExpDLL
 extern const char*
 mamaPayload_convertToString (mamaPayloadType payloadType);
+MAMAIgnoreDeprecatedClose
 
 /**
  * Create a mamaMsg.
@@ -86,12 +95,16 @@ mamaMsg_create (mamaMsg* msg);
 /**
  * Create a mamaMsg.
  *
+ * @deprecated This has been deprecated in favor of dynamic loading.
  * @param msg The location of a mamaMsg where to store the result.
  * @param id The identifier of the payload to be used.
  */
-MAMAExpDLL
+MAMAIgnoreDeprecatedOpen
+MAMAExpDeprecatedDLL(
+        "mamaMsg_createForPayload has been deprecated, use dynamic loading instead!")
 extern mama_status
 mamaMsg_createForPayload (mamaMsg* msg, const char id);
+MAMAIgnoreDeprecatedClose
 
 /**
  * Create a mamaMsg.
@@ -176,9 +189,11 @@ mamaMsg_destroy (mamaMsg msg);
  * @param msg The message.
  * @param payloadType The payload type.
  */
+MAMAIgnoreDeprecatedOpen
 MAMAExpDLL
 extern mama_status
 mamaMsg_getPayloadType (mamaMsg msg, mamaPayloadType* payloadType);
+MAMAIgnoreDeprecatedClose
 
 /**
 * Get the size of the underlying message in bytes.
@@ -2034,8 +2049,8 @@ mamaMsg_getNumFields(
     mama_size_t*   numFields);
 
 /**
- * Return a const char * representation the message. Must call
- * mamaMsg_freeString() to free memory allocated for string.
+ * Return a const char * representation the message. Memory is owned by the
+ * underlying bridge.
  *
  * @param msg The message.
  * @return A string representation of the message.
@@ -2046,16 +2061,20 @@ mamaMsg_toString(
     const mamaMsg msg);
 
 /**
- * Free the memory allocated by mamaMsg_toString.
+ * Free the memory allocated by mamaMsg_toString [deprecated].
  *
  * @param msg The message.
  * @param msgString The string allocated by mamaMsg_toString
  */
-MAMAExpDLL
+
+MAMAIgnoreDeprecatedOpen
+MAMAExpDeprecatedDLL(
+        "mamaMsg_freeString has been deprecated - memory now managed by bridge")
 extern void
 mamaMsg_freeString(
     const mamaMsg  msg,
     const char*    msgString );
+MAMAIgnoreDeprecatedClose
 
 /**
  * Get the entitle code for this message. The result defaults to 0 (no

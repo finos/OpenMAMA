@@ -39,6 +39,7 @@
 #include "qpidpayloadfunctions.h"
 #include "payload.h"
 #include "field.h"
+#include "../../mamainternal.h"
 
 /*=========================================================================
   =                              Macros                                   =
@@ -503,36 +504,23 @@ qpidmsgPayloadImpl_findField                (qpidmsgPayloadImpl*      impl,
   =========================================================================*/
 
 mama_status
-qpidmsgPayload_createImpl (mamaPayloadBridge* result, char* identifier)
+qpidmsgPayload_init (mamaPayloadBridge bridge, char* identifier)
 {
-    mamaPayloadBridgeImpl* impl = NULL;
-
-    impl = (mamaPayloadBridgeImpl*) calloc (1, sizeof (mamaPayloadBridgeImpl));
-
-    if (NULL == impl)
-    {
-        mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidmsgPayload_createImpl(): "
-                  "Could not allocate memory for payload impl.");
-        return MAMA_STATUS_NOMEM;
-    }
-
-    /* Use closure to store global data for payload bridge if required */
-    impl->mClosure = NULL;
-
-    /* Initialize the virtual function table (see payloadbridge.h) */
-    INITIALIZE_PAYLOAD_BRIDGE (impl, qpidmsg);
-
-    *result     = (mamaPayloadBridge)impl;
     *identifier = (char)MAMA_PAYLOAD_QPID;
+
+    /* Will set the bridge's compile time MAMA version */
+    MAMA_SET_BRIDGE_COMPILE_TIME_VERSION("qpidmsg");
 
     return MAMA_STATUS_OK;
 }
 
+MAMAIgnoreDeprecatedOpen
 mamaPayloadType
 qpidmsgPayload_getType (void)
 {
     return MAMA_PAYLOAD_QPID;
 }
+MAMAIgnoreDeprecatedClose
 
 mama_status
 qpidmsgPayload_create (msgPayload* msg)
@@ -903,7 +891,7 @@ qpidmsgPayload_serialize (const msgPayload  msg,
 
 mama_status
 qpidmsgPayload_unSerialize (const msgPayload    msg,
-                            const void**        buffer,
+                            const void*         buffer,
                             mama_size_t         bufferLength)
 {
     qpidmsgPayloadImpl*  impl       = (qpidmsgPayloadImpl*) msg;
@@ -979,6 +967,7 @@ qpidmsgPayload_setByteBuffer (const msgPayload    msg,
                               mama_size_t         bufferLength)
 {
     qpidmsgPayloadImpl*  impl       = (qpidmsgPayloadImpl*) msg;
+    mama_status          status     = MAMA_STATUS_OK;
 
     if (   NULL == msg
         || NULL == buffer
@@ -987,10 +976,19 @@ qpidmsgPayload_setByteBuffer (const msgPayload    msg,
         return MAMA_STATUS_NULL_ARG;
     }
 
-    impl->mQpidMsg = (pn_message_t*) buffer;
-    impl->mBody    = pn_message_body (impl->mQpidMsg);
+    if (bufferLength == sizeof(pn_message_t*))
+    {
+        impl->mQpidMsg = (pn_message_t*) buffer;
+        impl->mBody    = pn_message_body (impl->mQpidMsg);
+    }
+    else
+    {
+        status = qpidmsgPayload_unSerialize (msg,
+                                             (const void**)buffer,
+                                             bufferLength);
+    }
 
-    return MAMA_STATUS_OK;
+    return status;
 }
 
 mama_status
@@ -999,13 +997,22 @@ qpidmsgPayload_createFromByteBuffer (msgPayload*         msg,
                                      const void*         buffer,
                                      mama_size_t         bufferLength)
 {
-    mama_status status = qpidmsgPayloadImpl_createImplementationOnly (msg);
+    mama_status status = MAMA_STATUS_OK;
 
     if (0 == bufferLength)
     {
     	return MAMA_STATUS_INVALID_ARG;
     }
 
+    // If this is a byte handle
+    if (bufferLength == sizeof(pn_message_t*))
+    {
+        status = qpidmsgPayloadImpl_createImplementationOnly (msg);
+    }
+    else
+    {
+        status = qpidmsgPayload_create (msg);
+    }
     if (MAMA_STATUS_OK == status)
     {
         status = qpidmsgPayload_setByteBuffer (*msg,
@@ -3273,6 +3280,9 @@ qpidmsgPayloadImpl_allocateBufferMemory (void**       buffer,
         }
         else
         {
+            /* set newly added bytes to 0 */
+            memset ((uint8_t*) newbuf + *size, 0, newSize - *size);
+
             *buffer = newbuf;
             *size   = newSize;
             return MAMA_STATUS_OK;
@@ -3780,7 +3790,7 @@ qpidmsgPayloadImpl_addFieldToPayload (msgPayload                 msg,
         ADD_VECTOR_FIELD_VALUE_TO_MESSAGE(F64, mama_f64_t);
         break;
     case MAMA_FIELD_TYPE_VECTOR_STRING:
-        ADD_VECTOR_FIELD_VALUE_TO_MESSAGE(String, const char*);
+        ADD_VECTOR_FIELD_VALUE_TO_MESSAGE(String, char*);
         break;
     case MAMA_FIELD_TYPE_VECTOR_MSG:
     {

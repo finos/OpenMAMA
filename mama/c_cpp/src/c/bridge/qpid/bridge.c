@@ -25,7 +25,9 @@
   =========================================================================*/
 
 #include <mama/mama.h>
+#include <mama/version.h>
 #include <timers.h>
+#include <wombat/strutils.h>
 #include "io.h"
 #include "qpidbridgefunctions.h"
 
@@ -61,32 +63,40 @@ static char         PAYLOAD_IDS[]           =   { MAMA_PAYLOAD_QPID, '\0' };
   =               Public interface implementation functions               =
   =========================================================================*/
 
-void qpidBridge_createImpl (mamaBridge* result)
+mama_status qpidBridge_init (mamaBridge bridgeImpl)
 {
-    mamaBridgeImpl* bridge = NULL;
+    mama_status status         = MAMA_STATUS_OK;
+    const char* runtimeVersion = NULL;
 
-    if (NULL == result)
+    /* Reusable buffer to populate with property values */
+    char propString[MAX_INTERNAL_PROP_LEN];
+    versionInfo rtVer;
+
+    /* Will set the bridge's compile time MAMA version */
+    MAMA_SET_BRIDGE_COMPILE_TIME_VERSION(QPID_BRIDGE_NAME);
+
+    /* Ensure that the qpid bridge is defined as not deferring entitlements */
+    status = mamaBridgeImpl_setReadOnlyProperty (bridgeImpl,
+                                                 MAMA_PROP_BARE_ENT_DEFERRED,
+                                                 "false");
+
+    /* Get the runtime version of MAMA and parse into version struct */
+    runtimeVersion = mamaInternal_getMetaProperty (MAMA_PROP_MAMA_RUNTIME_VER);
+    strToVersionInfo (runtimeVersion, &rtVer);
+
+    /* NB checks are runtime only - assume build system will prevent accidental
+     * compilation against incompatible versions. This is a demonstration t
+     * show how you could do runtime version checking. */
+    if (1 == rtVer.mMajor)
     {
-        return;
+        mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidBridge_init(): "
+                  "This version of the bridge (%s) cannot be used with MAMA %s.",
+                  QPID_BRIDGE_VERSION,
+                  runtimeVersion);
+        return MAMA_STATUS_NOT_IMPLEMENTED;
     }
 
-    /* Create the wrapping MAMA bridge */
-    bridge = (mamaBridgeImpl*) calloc (1, sizeof (mamaBridgeImpl));
-    if (NULL == bridge)
-    {
-        mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidBridge_createImpl(): "
-                "Could not allocate memory for MAMA bridge implementation.");
-        *result = NULL;
-        return;
-    }
-
-    /* Populate the bridge impl structure with the function pointers */
-    INITIALIZE_BRIDGE (bridge, qpid);
-
-    /* Return the newly created bridge */
-    *result = (mamaBridge) bridge;
-
-    mamaBridgeImpl_setReadOnlyProperty ((mamaBridge)bridge, "mama.qpid.entitlements.deferred", "false");
+    return status;
 }
 
 mama_status
@@ -145,10 +155,6 @@ qpidBridge_close (mamaBridge bridgeImpl)
     mamaBridgeImpl*  bridge      = (mamaBridgeImpl*) bridgeImpl;
     wthread_t        timerThread;
 
-    if (NULL ==  bridgeImpl)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
 
     /* Remove the timer heap */
     if (NULL != gQpidTimerHeap)
@@ -172,12 +178,6 @@ qpidBridge_close (mamaBridge bridgeImpl)
 
     /* Stop and destroy the io thread */
     qpidBridgeMamaIoImpl_stop ();
-
-    /* Wait for qpidBridge_start to finish before destroying implementation */
-    if (NULL != bridgeImpl)
-    {
-        free (bridgeImpl);
-    }
 
     return status;
 }

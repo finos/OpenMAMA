@@ -39,6 +39,12 @@ mamaPlayback_addTransport (mamaPlaybackPublisher mamaPlayback,
                            char* key,
                            mamaTransport transport);
 
+mama_bool_t
+mamaPlayback_findOrCreatePublisher (mamaPlaybackPublisher mamaPlayback,
+                                    char* keyName,
+                                    mamaPublisher* publisher,
+                                    const char delim);
+
 static void freeTransportCb (wtable_t table,void *data,
                              const char* key, void *closure )
 {

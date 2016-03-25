@@ -1,0 +1,13 @@
+import os
+Import('env')
+env = env.Clone()
+
+modules = []
+
+if len(env['entitlements']) > 0:
+    for lib in env['entitlements']:
+        modules.append(lib)
+
+for m in modules:
+    if os.path.isfile( os.path.join(m,'SConscript') ):
+        env.SConscript( os.path.join(m,'SConscript'), 'env' )

@@ -53,10 +53,12 @@ MiddlewareInboxTests::~MiddlewareInboxTests(void)
 void MiddlewareInboxTests::SetUp(void)
 {
 	mama_loadBridge (&mBridge,getMiddleware());
+	mama_open();
 }
 
 void MiddlewareInboxTests::TearDown(void)
 {
+	mama_close();
 }
 
 void onMsg(mamaMsg msg, void *closure)

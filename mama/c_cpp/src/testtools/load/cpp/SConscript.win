@@ -25,8 +25,8 @@ if 'static' in env['build']:
 		libpath.append( os.path.join( lbm_home, 'lib' ) )
 		libs.append('lbm_static')
 		libs.append('libmamalbmimpl%s' % ( env['suffix'] ))
-	if env['entitled'] == True:
-		libs.append( posixpath.join( env['entitle_home'], 'lib/%s/liboeac%s' % ( env['build'],env['suffix'])) )
+	if 'oea' in env['entitlements']:
+		libs.append( posixpath.join( env['oea_home'], 'lib/%s/liboeac%s' % ( env['build'],env['suffix'])) )
 
 env.Append( 
 	LIBS 		= libs,

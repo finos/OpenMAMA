@@ -129,8 +129,11 @@ namespace Wombat
         /**
          * Create a mamaMsg.
          *
+         * @deprecated This has been deprecated in favor of dynamic loading.
          * @param id The identifier of the payload to be used.
          */
+        MAMADeprecated(
+                "createForPayload has been deprecated, use dynamic loading instead!")
         void createForPayload (const char id);
 
         /**
@@ -2889,7 +2892,9 @@ namespace Wombat
          *
          * @return payloadType The payload type.
          */   
+        MAMAIgnoreDeprecatedOpen
         mamaPayloadType getPayloadType (void) const;
+        MAMAIgnoreDeprecatedClose
         
        /**
          * Get the native message structure for the underlying message

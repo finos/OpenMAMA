@@ -22,28 +22,55 @@
 package com.wombat.mama;
 
 /*
-* Wrapper class for the native C publisher structure and related functions
-*/
+ * Wrapper class for the native C publisher structure and related functions
+ */
 public class MamaPublisher
 {
-
     static
     {
         initIDs();
     }
 
-    /*A long value containing a pointer to the underlying C publisher structure*/
-    private long    publisherPointer_i   =   0;
+    /* A long value containing a pointer to the underlying C publisher structure */
+    private long  publisherPointer_i = 0;
 
-	public void create (MamaTransport transport, String topic)
+    /* Reusable MamaTransport object. */
+    private MamaTransport mamaTransport_i = null;
+
+    /* App closure */
+    private Object closure = null;
+
+    public void create (MamaTransport transport, String topic)
     {
-        _create(transport,topic,null);
+        _create(transport, null, topic, null, null);
     }
 
-	public void create (MamaTransport transport, String topic, String source)
+    public void create (MamaTransport transport, String topic, String source)
     {
-        _create(transport,topic,source);
+        _create(transport, null, topic, source, null);
     }
+
+    /* Create with event callbacks */
+    public void create (MamaTransport transport, MamaQueue queue, String topic, MamaPublisherCallback cb, Object closure)
+    {
+        this.closure = closure;
+        _create(transport, queue, topic, null, cb);
+    }
+
+    public void create (MamaTransport transport, MamaQueue queue, String topic, String source, MamaPublisherCallback cb, Object closure)
+    {
+        this.closure = closure;
+        _create(transport, queue, topic, source, cb);
+    }
+
+    public Object getClosure()
+    {
+        return closure;
+    }
+
+    public native void destroy();
+
+    public native void destroyEx();
 
     public void send (MamaMsg msg)
     {
@@ -57,13 +84,13 @@ public class MamaPublisher
         _sendWithThrottle(msg);
     }
 
-	public void sendWithThrottle (MamaMsg msg, MamaThrottleCallback callback)
-	{
-		 checkIsCreated("sendWithThrottleWithCallback()");
-		 _sendWithThrottleWithCallback(msg, callback);
-	}
+    public void sendWithThrottle (MamaMsg msg, MamaThrottleCallback callback)
+    {
+         checkIsCreated("sendWithThrottleWithCallback()");
+         _sendWithThrottleWithCallback(msg, callback);
+    }
 
-	 public void sendReplyToInbox (MamaMsg request, MamaMsg reply)
+     public void sendReplyToInbox (MamaMsg request, MamaMsg reply)
     {
         checkIsCreated("sendReplyToInbox()");
         _sendReplyToInbox(request,reply);
@@ -81,15 +108,50 @@ public class MamaPublisher
         _sendFromInbox(inbox,msg);
     }
 
-    private native void _create (MamaTransport transport, String topic, String source);
+    public MamaTransport getTransport ()
+    {
+        /* Calls the native method first. This will
+           reuse the reusable mamaTransport in MamaPublisher
+           Only create the MamaTransport if we actually need to
+        */
+        if (mamaTransport_i == null)
+        {
+            mamaTransport_i = new MamaTransport();
+        }
+
+        mamaTransport_i.setPointerVal(0);
+
+        _getTransport ();
+
+        if (mamaTransport_i.getPointerVal() == 0)
+        {
+            return null;
+        }
+
+        return mamaTransport_i;
+    }
+
+    public native String getRoot();
+
+    public native String getSource();
+
+    public native String getSymbol();
+
+    public native short getState();
+
+    public native String stringForState(short state);
+
+    private native void  _getTransport ();
+
+    private native void _create (MamaTransport transport, MamaQueue queue, String topic, String source, MamaPublisherCallback cb);
 
     private native void _send (MamaMsg msg);
 
     private native void _sendWithThrottle (MamaMsg msg);
 
-	private native void _sendWithThrottleWithCallback(MamaMsg msg, MamaThrottleCallback callback);
+    private native void _sendWithThrottleWithCallback(MamaMsg msg, MamaThrottleCallback callback);
 
-	private native void _sendReplyToInbox (MamaMsg request, MamaMsg reply);
+    private native void _sendReplyToInbox (MamaMsg request, MamaMsg reply);
 
     private native void _sendReplyToInboxWithThrottle (MamaMsg request, MamaMsg reply);
 

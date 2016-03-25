@@ -10,7 +10,7 @@ libpath = []
 libpath.append('$gtest_home/lib')
 
 env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=['gtest', 'gtest_main'
-           ])
+           ], CCFLAGS=['-Wno-sign-compare'])
 
 env.SConscript('c/SConscript', 'env')
 env.SConscript('cpp/SConscript', 'env')

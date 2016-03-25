@@ -215,6 +215,34 @@ public class MamaTransport
             }
         }
 
+        public void onTopicPublishError(String topic, final Object platformInfo)
+        {
+            /* Call the client topic listener if it has been provided. */
+            if(null != mClientTopicListener)
+            {
+                mClientTopicListener.onTopicPublishError(topic, platformInfo);
+            }
+        }
+
+        public void onTopicPublishErrorNotEntitled(String topic, final Object platformInfo)
+        {
+            /* Call the client topic listener if it has been provided. */
+            if(null != mClientTopicListener)
+            {
+                mClientTopicListener.onTopicPublishErrorNotEntitled(topic, platformInfo);
+            }
+        }
+
+        public void onTopicPublishErrorBadSymbol(String topic, final Object platformInfo)
+        {
+            /* Call the client topic listener if it has been provided. */
+            if(null != mClientTopicListener)
+            {
+                mClientTopicListener.onTopicPublishErrorBadSymbol(topic, platformInfo);
+            }
+        }
+
+
         /* ****************************************************** */
         /* Public Functions. */
         /* ****************************************************** */
@@ -259,6 +287,9 @@ public class MamaTransport
 
     /* The Mama bridge. */
     private MamaBridge myBridge;
+
+    /* Queue for callbacks */
+    private MamaQueue myQueue = null;
     
     /* The re-usable transport listener. */
     InternalTransportListener mListener;
@@ -323,11 +354,36 @@ public class MamaTransport
      *
      * @param listenerEx The listener to add.
      */
-    private native void nativeAddTopicListener(MamaTransportTopicListener topicListener);
+    private native void nativeAddTopicListener(MamaTransportTopicListener topicListener );
+
+    /**
+     * This will pass the MamaQueue to JNi layer so it can be passed to lower layers.
+     * It also creates a global ref.
+     *
+     * @param queue The queue to add.
+     */
+    private native void nativeSetTransportCallbackQueue(MamaQueue queue);
 
     /* ****************************************************** */
     /* Public Functions. */
     /* ****************************************************** */
+
+    /**
+     * Set the callback queue.
+     */
+    public void setTransportCallbackQueue(MamaQueue queue)
+    {
+        myQueue = queue;
+        nativeSetTransportCallbackQueue(queue);
+    }
+
+    /**
+     * Get the callback queue.
+     */
+    MamaQueue getTransportCallbackQueue()
+    {
+        return myQueue;
+    }
 
     /**
      * This function will set the client listener, note that only one
@@ -408,6 +464,11 @@ public class MamaTransport
     public long getPointerVal()
     {
         return transportPointer_i;
+    }
+
+    protected void setPointerVal(long pointerVal)
+    {
+        transportPointer_i = pointerVal;
     }
 
     public void create (MamaBridge bridge)

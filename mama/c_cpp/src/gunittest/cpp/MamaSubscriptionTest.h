@@ -42,34 +42,33 @@ using namespace Wombat;
 
 class MamaSubscriptionTest : public ::testing::Test
 {
-	// Member variables
+    // Member variables
 protected:
  
-	/* Work around for problem in gtest where the this pointer can't be accessed
-	 * from a test fixture.
-	 */
-	MamaSubscriptionTest *m_this;
+    /* Work around for problem in gtest where the this pointer can't be accessed
+     * from a test fixture.
+     */
+    MamaSubscriptionTest *m_this;
 
     // The mama bridge
     mamaBridge m_bridge;
     MamaQueue* m_defaultQueue;
 
     // The mama transport
-    MamaTransport m_transport;
-    char transportName[10];
+    MamaTransport* m_transport;
+    const char* transportName;
 
-	// Member functions
+    // Member functions
 protected:
 
-	// Construction and Destruction
-	MamaSubscriptionTest(void);
-	virtual ~MamaSubscriptionTest(void);
+    // Construction and Destruction
+    MamaSubscriptionTest(void);
+    virtual ~MamaSubscriptionTest(void);
 
-	// Setup and teardown functions
-	virtual void SetUp(void);
-	virtual void TearDown(void);
+    // Setup and teardown functions
+    virtual void SetUp(void);
+    virtual void TearDown(void);
 
 };
-//typedef MamaSubscriptionTest * PMamaSubscriptionTest;
 
 #endif

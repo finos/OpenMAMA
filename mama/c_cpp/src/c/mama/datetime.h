@@ -19,9 +19,6 @@
  * 02110-1301 USA
  */
 
-#ifndef MamaDateTimeH__
-#define MamaDateTimeH__
-
 #include <mama/config.h>
 #include <mama/status.h>
 #include <mama/types.h>
@@ -29,6 +26,9 @@
 #include "wombat/port.h"
 
 #include <time.h>
+#ifndef MamaDateTimeH__
+#define MamaDateTimeH__
+
 
 
 #if defined(__cplusplus)
