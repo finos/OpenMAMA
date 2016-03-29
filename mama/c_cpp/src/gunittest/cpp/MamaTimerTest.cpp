@@ -68,17 +68,11 @@ void MamaTimerTestCPP::SetUp(void)
 
     m_defaultQueue = Mama::getDefaultEventQueue(m_bridge);
 
-
-    transportName[0] = '\0';
-    strncat(transportName, "sub_", 5);
-    strncat(transportName, getMiddleware(), 4);
-
-    m_transport.create(transportName, m_bridge); 
 }
 
 void MamaTimerTestCPP::TearDown(void)
 {
-
+    Mama::close();
     m_this = NULL;
 }
 

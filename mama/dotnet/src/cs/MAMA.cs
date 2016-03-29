@@ -386,6 +386,7 @@ namespace Wombat
 		{
             initGetVersionWrapper();
             MamaWrapper.CheckResultCode (NativeMethods.mama_openWithProperties (path, filename));
+            Interlocked.Increment(ref mMamaopen);
 		}
 
 		/// <summary>
@@ -545,7 +546,6 @@ namespace Wombat
             {
                 throw new ArgumentOutOfRangeException("level");
             }
-
 			MamaWrapper.CheckResultCode(NativeMethods.mama_enableLogging(IntPtr.Zero, (int)level));
 		}
 

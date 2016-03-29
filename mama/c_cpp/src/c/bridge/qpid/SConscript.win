@@ -11,8 +11,6 @@ env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H'] )
 libPath = []
 libPath.append('$libdir')
 
-libPath.append('$libevent_home')
-
 incPath = []
 incPath.append('$libevent_home/WIN32-Code')
 incPath.append('$libevent_home')
@@ -25,14 +23,22 @@ libs = []
 libs.append('libwombatcommon%s.lib' % ( env['suffix'] ))
 libs.append('libmamac%s.lib' % ( env['suffix'] ))
 
-if 'debug' in env['build']:
-  libPath.append('%s/Debug' %(env['qpid_home']) )
-  libs.append('qpid-protond')
+if env['target_arch'] == 'x86_64':
+  archPath = "x64"
 else:
-  libPath.append('%s/Release' %(env['qpid_home']) )
-  libs.append('qpid-proton')
+  archPath = ""
 
-libs.append('libevent_core')
+libs.append('libevent')
+
+if 'debug' in env['build']:
+  libs.append('qpid-protond')
+  buildType = "Debug"
+else:
+  libs.append('qpid-proton')
+  buildType = "Release"
+
+libPath.append('%s/%s/%s' % (env['qpid_home'], archPath, buildType))
+libPath.append('%s/WIN32-Prj/%s/%s' % (env['libevent_home'], archPath, buildType))
 
 env['CCFLAGS'].append(['/TP', '/WX-'])
 env['CPPPATH'] = incPath

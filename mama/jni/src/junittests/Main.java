@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+package com.wombat.mama.junittests;
+
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import com.wombat.mama.*;
@@ -29,12 +31,17 @@ import com.wombat.mama.*;
  */
 public class Main
 {
-    private static MamaBridge m_bridge;
+    private static String bridgeName = "";
+    private static String transportName = "";
+    private static String symbol = "";
+    private static String source = "";
+    private static String badsource = "BADSRC";
 
-    public static MamaBridge GetBridge()
-    {
-        return m_bridge;
-    }
+    public static String GetBridgeName() { return bridgeName; }
+    public static String GetTransportName() { return transportName; }
+    public static String GetSymbol() { return symbol; }
+    public static String GetSource() { return source; }
+    public static String GetBadSource() { return badsource; }
 
     public static Test suite()
     {
@@ -53,7 +60,7 @@ public class Main
         suite.addTestSuite(MamaPriceGetRoundedPrice.class);
         suite.addTestSuite(MamaSetLogCallback.class);
         suite.addTestSuite(MamaTimerCallbacks.class);
-		suite.addTestSuite(MamaPublisherTest.class);
+        suite.addTestSuite(MamaPublisherTest.class);
 
         return suite;
     }
@@ -63,18 +70,49 @@ public class Main
      */
     public static void main(String[] args)
     {
-        // Open mama to satisfy all link references
-        m_bridge = Mama.loadBridge("wmw");
+        // Get cmd line args
+        boolean ok = true;
+        for (int i = 0; i < args.length; )
+        {
+            if (args[i].equalsIgnoreCase("-m"))
+            {
+                bridgeName = ++i < args.length ? args[i++] : "";
+            }
+            else if (args[i].equalsIgnoreCase("-tport"))
+            {
+                transportName = ++i < args.length ? args[i++] : "";
+            }
+            else if (args[i].equals("-s"))
+            {
+                symbol = ++i < args.length ? args[i++] : "";
+            }
+            else if (args[i].equals("-S"))
+            {
+                source = ++i < args.length ? args[i++] : "";
+            }
+            else if (args[i].equals("-badsource"))
+            {
+                badsource = ++i < args.length ? args[i++] : "";
+            }
+            else
+            {
+                ok = false;            // error 
+                break;
+            }
+        }
+        if (!ok || bridgeName.isEmpty() || transportName.isEmpty())
+        {
+            System.err.println("Usage: Main -m bridgeName -tport transportName");
+            System.exit(1);
+        }
 
-        /*Always the first API method called. Initialized internal API
-         * state*/
-        Mama.open ();
+        // Each test will load/unload Mama as needed
+        java.util.logging.Level level = Mama.getLogLevel();            // force load of the shared libs
 
         // Run the test suite
         junit.textui.TestRunner.run(suite());
 
-        // Close mama
-        Mama.close();
+        System.exit(0);                                                // TODO temporary - not exiting JVM - daemon thread?
     }
-
 }
+

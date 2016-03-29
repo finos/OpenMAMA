@@ -25,6 +25,7 @@
 /* *************************************************** */
 /* Includes. */
 /* *************************************************** */
+#include "mama/log.h"
 #include "mama/marketdata.h"
 #include "mama/msg.h"
 #include "mama/quality.h"

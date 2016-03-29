@@ -20,10 +20,7 @@ env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 
 env.Append(LIBS=['mama', 'qpid-proton', 'm'], LIBPATH=libPath,
            CPPPATH=[includePath])
-''' Generally we would like to make use of -Werror, but unfortunately it causes
-    proton to choke during the build phase. Leaving the option here should we
-    find the proton issues resolved.'''
-#env.Append(CFLAGS=['-Werror'])
+env.Append(CFLAGS=['-Werror'])
 
 sources = Glob('*.c')
 

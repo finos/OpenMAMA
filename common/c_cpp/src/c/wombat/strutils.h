@@ -28,6 +28,9 @@
 extern "C" {
 #endif
 
+#define VERSION_INFO_STR_MAX    64
+#define VERSION_INFO_EXTRA_MAX  16
+
 
 typedef unsigned long int       w_u32_t;
 typedef long int                w_i32_t;
@@ -35,6 +38,13 @@ typedef float                   w_f32_t;
 typedef double                  w_f64_t;
 typedef unsigned long long int  w_u64_t;
 typedef long long int           w_i64_t;
+
+typedef struct versionInfo {
+    int mMajor;
+    int mMinor;
+    int mRelease;
+    char mExtra[VERSION_INFO_EXTRA_MAX];
+} versionInfo;
 
 COMMONExpDLL
 int wmFastCopyAndShiftStr (
@@ -134,6 +144,18 @@ int strcatAlloc(char** s, const char* ct);
  */
 COMMONExpDLL 
 int strtobool(const char* s);
+
+/**
+ * Convert string (e.g. "2.3.3rc1") to versionInfo struct and return:
+ * {
+ *   int mMajor   = 2;
+ *   int mMinor   = 3;
+ *   int mRelease = 3;
+ *   int mExtra   = "rc1";
+ * }
+ */
+COMMONExpDLL
+int strToVersionInfo(const char* s, versionInfo* version);
 
 #if defined(__cplusplus)
 }

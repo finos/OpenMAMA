@@ -148,7 +148,8 @@ namespace Wombat
 
     MamaSource::~MamaSource ()
     {
-        mamaTry (mamaSource_destroy (mySource));
+        if (NULL != mySource)
+            mamaSource_destroy (mySource);
 
         if (mySubs)
         {

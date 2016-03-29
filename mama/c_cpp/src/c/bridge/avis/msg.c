@@ -55,7 +55,7 @@ mama_status
 avisBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
 {
     avisMsgImpl* impl;
-    if (avisMsg(msg) == NULL) return MAMA_STATUS_NULL_ARG;
+    if (avisMsg(msg) == NULL || parent == NULL) return MAMA_STATUS_NULL_ARG;
     *msg = NULL;
 
     impl = (avisMsgImpl*) calloc(1, sizeof(avisMsgImpl));
@@ -119,6 +119,7 @@ mama_status
 avisBridgeMamaMsgImpl_setReplyHandle (msgBridge msg, void* result)
 {
     mama_status status = MAMA_STATUS_OK;
+    if (!result) return MAMA_STATUS_NULL_ARG;
 
     CHECK_MSG(msg);
 
@@ -143,6 +144,7 @@ avisBridgeMamaMsg_isFromInbox (msgBridge msg)
 {
     const char* dummy;
 
+    if (NULL == msg) return -1;
     CHECK_MSG(msg);
 
     return (MAMA_STATUS_OK == avismsgPayload_getString(
@@ -155,6 +157,7 @@ avisBridgeMamaMsg_setSendSubject (msgBridge   msg,
                                   const char* subject)
 {
     mama_status status = MAMA_STATUS_OK;
+    if (!symbol) return MAMA_STATUS_NULL_ARG;
 
     CHECK_MSG(msg);
 
@@ -173,6 +176,7 @@ avisBridgeMamaMsg_setSendSubject (msgBridge   msg,
 mama_status
 avisBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result)
 {
+    if (!result) return MAMA_STATUS_NULL_ARG;
     CHECK_MSG(msg);
     *result = avisMsg(msg)->mAvisMsg;
     return MAMA_STATUS_OK;
@@ -184,7 +188,7 @@ avisBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
     const char* replyAddr;
     mama_status status = MAMA_STATUS_OK;
 
-    CHECK_MSG(msg);
+    if (NULL == msg || NULL == result) return MAMA_STATUS_NULL_ARG;
 
     if (MAMA_STATUS_OK != (status = avismsgPayload_getString(
         avisMsg(msg)->mAvisMsg, INBOX_FIELD_NAME, 0, &replyAddr)))
@@ -201,6 +205,7 @@ mama_status
 avisBridgeMamaMsg_copyReplyHandle (void* src, void** dest)
 {
     const char* replyAddr = (const char*) src;
+    if (!src || !dest) return MAMA_STATUS_NULL_ARG;
     *dest = (void*) strdup(replyAddr);
     return MAMA_STATUS_OK;
 }
@@ -209,6 +214,7 @@ mama_status
 avisBridgeMamaMsg_destroyReplyHandle (void* result)
 {
     char* replyAddr = (char*) result;
+    if (NULL == result) return MAMA_STATUS_NULL_ARG;
     free(replyAddr);
     return MAMA_STATUS_OK;
 }

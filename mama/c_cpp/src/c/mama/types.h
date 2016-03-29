@@ -19,13 +19,12 @@
  * 02110-1301 USA
  */
 
-#ifndef MamaTypesH__
-#define MamaTypesH__
-
-
 #include "wombat/port.h"
 #include <stdlib.h>
 #include <string.h>
+
+#ifndef MamaTypesH__
+#define MamaTypesH__
 
 #if defined(__cplusplus)
 extern "C" {
@@ -135,6 +134,13 @@ typedef struct mamaStatImpl_*                   mamaStat;
 typedef struct mamaStatsCollectorImpl_*         mamaStatsCollector;
 typedef struct mamaStatsGeneratorImpl_*         mamaStatsGenerator;
 typedef struct mamaMsgReplyImpl_*               mamaMsgReply;
+
+typedef struct mamaVersion {
+    int     mMajor;
+    int     mMinor;
+    int     mRelease;
+    char*   mExtra;
+} mamaVersion;
 
 #if defined(__cplusplus)
 }

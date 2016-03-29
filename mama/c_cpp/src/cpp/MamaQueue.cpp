@@ -152,20 +152,23 @@ namespace Wombat
     struct MamaQueue::MamaQueueImpl 
     {
     public:
-        MamaQueueImpl           (void)
-            : mClosure          (NULL)
-            , mEnqueueCallback  (NULL)
-        	, mUserClosure      (NULL)
-        	, mOwner      		(false)
+        MamaQueueImpl (void)
+            : mClosure                  (NULL)
+            , mEnqueueCallback          (NULL)
+            , mUserClosure              (NULL)
+            , mOwner                    (false)
+            , mMonitorCallback          (NULL)
+            , mMonitorCallbackClosure   (NULL)
         {
         }
 
-		bool					  mOwner;
         void*                     mClosure;
         MamaQueueEnqueueCallback* mEnqueueCallback;
+        void*                     mUserClosure;
+        bool                      mOwner;
         MamaQueueMonitorCallback* mMonitorCallback;
         void*                     mMonitorCallbackClosure;
-        void*                     mUserClosure;
+
     };
 
 

@@ -40,7 +40,7 @@
 mamaPrice CreateTestPrice(const double value, const mama_price_hints_t hints)
 {
    mamaPrice price = NULL;
-   mama_status status = mamaPrice_create (&price);
+   mamaPrice_create (&price);
 
    mama_price_t* p1 = (mama_price_t*)price;
 
@@ -689,8 +689,7 @@ TEST_F (MamaPriceTestC, testCompareMamaPrice)
    mama_price_hints_t hints = MAMA_PRICE_IMPL_HINT_PREC_10; 
 
    mamaPrice price1    = CreateTestPrice(x,hints),
-             price2    = CreateTestPrice(y,hints),
-             nullPrice = NULL;
+             price2    = CreateTestPrice(y,hints);
 
    // TOTO -= Bug in compare method. App crashes when NULL Prices are passed in
    // EXPECT_EQ ( r0, mamaPrice_compare(nullPrice, nullPrice) );
@@ -879,8 +878,7 @@ TEST_F (MamaPriceTestC, testGetPrecisionMamaPrice)
 
    mama_price_hints_t hints = MAMA_PRICE_IMPL_HINT_PREC_10; 
 
-   mamaPricePrecision precision1 = MAMA_PRICE_PREC_DIV_8,
-                      precision2;
+   mamaPricePrecision precision2;
 
    mamaPrice price     = CreateTestPrice(x,hints),
              nullPrice = NULL;
@@ -898,8 +896,7 @@ TEST_F (MamaPriceTestC, testGetPrecisionMamaPrice)
 TEST_F (MamaPriceTestC, testGetIsValidPriceMamaPrice)
 {
 
-   double x = 100,
-          y = 12.3;
+   double x = 100;
 
    mama_price_hints_t hints = MAMA_PRICE_IMPL_HINT_PREC_10; 
 

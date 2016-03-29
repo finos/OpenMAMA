@@ -152,7 +152,18 @@ int wsem_getvalue (wsem_t*, int* items);
 /* These functions are different on Windows */
 #define bzero( x, y ) ZeroMemory( ((void *)(x)), (y) )
 #define strtok_r(x, y, z) strtok((x),(y))
+
+/* VS 2015 introduces native snprintf */
+#if (_MSC_VER < 1900)
 #define snprintf _snprintf
+#endif
+
+/* VS 2015 defines these names with a leading underscore */
+#if _MSC_VER >= 1900
+#define daylight _daylight
+#define tzname _tzname
+#endif
+
 #define strdup _strdup
 #define strncasecmp _strnicmp
 #define strcasecmp  _stricmp
@@ -183,6 +194,9 @@ const char *index( const char *str, char c );
 #define PRId64 "I64d"
 #define PRIu64 "I64u"
 #define PRIi64 "I64i"
+
+/* Macro for managing the printing of mama_size_t values. */
+#define PRI_MAMA_SIZE_T "Iu"
 
 #ifndef INT8_MIN
 #define INT8_MIN SCHAR_MIN

@@ -69,7 +69,7 @@ mamaStatus_stringForStatus (mama_status status)
     case MAMA_STATUS_EXPIRED: return "MAMA_STATUS_EXPIRED";
     case MAMA_STATUS_BANDWIDTH_EXCEEDED: return "MAMA_STATUS_BANDWIDTH_EXCEEDED";
 
-#ifdef WITH_ENTITLEMENTS
+    /* Entitlement statuses */
     case MAMA_ENTITLE_STATUS_NOMEM : return "ENTITLE_STATUS_NOMEM";
     case MAMA_ENTITLE_STATUS_BAD_PARAM : return "ENTITLE_STATUS_BAD_PARAM";
     case MAMA_ENTITLE_STATUS_BAD_DATA : return "ENTITLE_STATUS_BAD_DATA";
@@ -82,7 +82,6 @@ mamaStatus_stringForStatus (mama_status status)
     case MAMA_ENTITLE_HTTP_ERRHOST : return "ENTITLE_HTTP_ERRHOST";
     /* Can't create socket */
     case MAMA_ENTITLE_HTTP_ERRSOCK : return "ENTITLE_HTTP_ERRSOCK";
-
     /* Can't connect to host */
     case MAMA_ENTITLE_HTTP_ERRCONN : return "ENTITLE_HTTP_ERRCONN";
     /* Write error on socket while writing header */
@@ -120,7 +119,6 @@ mamaStatus_stringForStatus (mama_status status)
     case MAMA_ENTITLE_NO_USER : return "ENTITLE_NO_USER";
     case MAMA_ENTITLE_NO_SERVERS_SPECIFIED : return "ENTITLE_NO_SERVERS_SPECIFIED";
     case MAMA_ENTITLE_SITE_NOT_FOUND : return "ENTITLE_SITE_NOT_FOUND";
-#endif
     }
     return "unknown";
 }

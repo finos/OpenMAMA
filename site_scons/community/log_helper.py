@@ -14,7 +14,6 @@ def log_api_config( env ):
     env['Logger'].log_line()
 
     env.LogDefaultValue( 'Version Info' , env['versions']['mama']['releaseString'] )
-    env.LogConfig( 'Entitled', env['entitled'], False )
     env.LogConfig( 'With Examples', env['with_examples'], True )
     env.LogConfig( 'With UnitTests', env['with_unittest'], False )
     env.LogConfig( 'With Test Tools', env['with_testtools'], False )

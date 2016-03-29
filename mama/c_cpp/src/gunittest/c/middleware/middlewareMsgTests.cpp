@@ -218,22 +218,22 @@ TEST_F (MiddlewareMsgTests, getPlatformErrorInvalidError)
 
 TEST_F (MiddlewareMsgTests,setSendSubject )
 {
-    msgBridge msg        = NULL;
-    mamaMsg   parent     = NULL;
-    char*     symbol     = "SYM";
-    char*     subject    = "SUBJECT";
-    int       destroyMsg = 1;
+    msgBridge   msg        = NULL;
+    mamaMsg     parent     = NULL;
+    const char* symbol     = "SYM";
+    const char* subject    = "SUBJECT";
+    int         destroyMsg = 1;
 
-    ASSERT_EQ(MAMA_STATUS_OK,mamaMsg_create(&parent));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgCreate(&msg,parent));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaMsg_create(&parent));
 
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgSetSendSubject(msg,symbol,subject));
+              mBridge->bridgeMamaMsgCreate(&msg, parent));
 
     ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgDestroy(msg,destroyMsg));
+              mBridge->bridgeMamaMsgSetSendSubject(msg, symbol, subject));
+
+    ASSERT_EQ(MAMA_STATUS_OK,
+              mBridge->bridgeMamaMsgDestroy(msg, destroyMsg));
 
 }
 
@@ -290,25 +290,6 @@ TEST_F (MiddlewareMsgTests, getNativeHandleInvalidResult)
                mBridge->bridgeMamaMsgGetNativeHandle(msg,NULL));
 }
 
-TEST_F (MiddlewareMsgTests, duplicateReplyHandle)
-{
-    msgBridge msg        = NULL;
-    mamaMsg   parent     = NULL;
-    void*     result     = NULL;
-    int       destroyMsg = 1;
-
-    ASSERT_EQ(MAMA_STATUS_OK,mamaMsg_create(&parent));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgCreate(&msg,parent));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgDuplicateReplyHandle(msg,&result));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgDestroy(msg,destroyMsg));
-}
-
 TEST_F (MiddlewareMsgTests, duplicateReplyHandleInvalidMsgBridge)
 {
     void* result = NOT_NULL;
@@ -319,7 +300,7 @@ TEST_F (MiddlewareMsgTests, duplicateReplyHandleInvalidMsgBridge)
 
 TEST_F (MiddlewareMsgTests, duplicateReplyHandleInvalidResult)
 {
-    msgBridge msg;
+    msgBridge msg = (msgBridge) NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaMsgDuplicateReplyHandle(msg,NULL));

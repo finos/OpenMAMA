@@ -473,8 +473,8 @@ namespace Wombat
                (mTime       == rhs.mTime)       &&
                (mOrderType  == rhs.mOrderType)  &&
                ((!mEntries && !rhs.mEntries) ||  /* no entries or */
-                ( mEntries &&  rhs.mEntries) &&  /* entries and entries equal */
-                (*mEntries == *rhs.mEntries));
+                (( mEntries &&  rhs.mEntries) &&  /* entries and entries equal */
+                 (*mEntries == *rhs.mEntries)));
                                 /* invokes MamdaOrderBookEntry::operator==() */
     }
 

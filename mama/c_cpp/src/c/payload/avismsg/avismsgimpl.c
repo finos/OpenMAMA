@@ -952,17 +952,19 @@ avisMsg_getDateTime(
         mama_fid_t     fid,
         mamaDateTime   result)
 {
-	char tempName[64];
-	Value* pValue = NULL;
-	if(fid != 0)
-	{
-		snprintf (tempName, 63, "%d", fid);
-		pValue = attributes_get(attributes, tempName);
-	}
+    char tempName[64];
+    Value* pValue = NULL;
+    if (NULL == result)
+        return MAMA_STATUS_NULL_ARG;
+    if(fid != 0)
+    {
+        snprintf (tempName, 63, "%d", fid);
+        pValue = attributes_get(attributes, tempName);
+    }
     if ((!pValue) && (name))
-		pValue = attributes_get(attributes, name);
+        pValue = attributes_get(attributes, name);
     if (!pValue)
-      return MAMA_STATUS_NOT_FOUND;
+        return MAMA_STATUS_NOT_FOUND;
     return avisValue_getDateTime(pValue, result);
 }
 
@@ -971,11 +973,11 @@ mama_status avisValue_getDateTime(const Value* pValue, mamaDateTime result)
     if (!pValue) return MAMA_STATUS_NULL_ARG;
     switch (pValue->type)
     {
-    	case TYPE_STRING:  mamaDateTime_setFromString (result, pValue->value.str); break;
-    	case TYPE_REAL64:  mamaDateTime_setEpochTimeF64 (result, pValue->value.real64); break;
-    	case TYPE_INT64:  mamaDateTime_setEpochTimeMilliseconds (result, pValue->value.int64); break;
-    	default: return MAMA_STATUS_WRONG_FIELD_TYPE; break;
-}
+        case TYPE_STRING: mamaDateTime_setFromString (result, pValue->value.str); break;
+        case TYPE_REAL64: mamaDateTime_setEpochTimeF64 (result, pValue->value.real64); break;
+        case TYPE_INT64:  *result = pValue->value.int64; break;
+        default: return MAMA_STATUS_WRONG_FIELD_TYPE; break;
+    }
     return MAMA_STATUS_OK;
 }
 
@@ -986,9 +988,7 @@ avisMsg_setDateTime(
         mama_fid_t          fid,
         const mamaDateTime  value)
 {
-	uint64_t tempu64;
-	mamaDateTime_getEpochTimeMicroseconds(value, &tempu64);
-    return avisMsg_setU64(attributes, name, fid, tempu64);
+    return avisMsg_setU64(attributes, name, fid, *value);
 }
 
 mama_status
@@ -1064,7 +1064,7 @@ mama_status avisValue_getPrice(const Value* pValue, mamaPrice result)
           return MAMA_STATUS_WRONG_FIELD_TYPE;
 
     mamaPrice_setWithHints (result, pValue->value.real64, MAMA_PRICE_HINTS_NONE);
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    return MAMA_STATUS_OK;
 }
 
 

@@ -48,15 +48,8 @@
 #include "wombat/wInterlocked.h"
 #include "queueimpl.h"
 #include "property.h"
-
-#ifdef WITH_ENTITLEMENTS
-
-#include <OeaClient.h>
-#include <OeaSubscription.h>
-extern oeaClient *   gEntitlementClient;
-
-#endif /* WITH_ENTITLEMENTS */
-
+#include <mama/entitlement.h>
+#include "entitlementinternal.h"
 extern int gGenerateGlobalStats;
 extern int gGenerateQueueStats;
 extern int gGenerateTransportStats;
@@ -245,13 +238,40 @@ void mamaSubscriptionImpl_setState(mamaSubscriptionImpl *impl, mamaSubscriptionS
  */
 void mamaSubscriptionImpl_invokeDestroyedCallback(mamaSubscriptionImpl *impl);
 
+const char *
+mamaSubscription_getEntitleSubject (mamaSubscription subscription);
+
+int
+mamaSubscription_getRespondToNextRefresh (mamaSubscription subscription);
+
+mama_status
+mamaSubscription_setRespondToNextRefresh (mamaSubscription subscription,
+                                          const int value);
+
+void MAMACALLTYPE mamaSubscription_DestroyThroughQueueCB(mamaQueue Queue, void* closure);
+
+void
+mamaSubscription_resetRefreshForListener (mamaSubscription subscription);
+
+void mamaSubscription_setIsThrottled (mamaSubscription  subscription,
+                                      int               isThrottled);
+
+mamaMsgCallbacks *
+mamaSubscription_getWombatMsgCallbacks (mamaSubscription subscription);
+
+void
+mamaSubscription_setAcceptMultipleInitials (mamaSubscription subscription,
+                                            int              accept);
+
+void mamaSubscriptionImpl_clearTransport(mamaSubscription subscription);
 
 /* Forward declarations */
 static int
 isEntitledToSymbol (
     const char* source,
     const char* symbol,
-    mamaSubscription subscription);
+    mamaSubscription subscription,
+    mamaTransport transport);
 
 static void
 mamaSubscription_initialize (
@@ -422,14 +442,13 @@ mamaSubscription_setupBasic (
     const char*              symbol,
     void*                    closure)
 {
-    const char*       root                      = WOMBAT_SUBSCRIPTION_ROOT_NORMAL;
-    mamaSubscMsgType  subscMsgType              = MAMA_SUBSC_SUBSCRIBE;
-    int               acceptMultipleInitials    = 0;
-    int               checkSeqNumGaps           = 1;
-    mama_status       status                    = MAMA_STATUS_OK;
-#ifdef WITH_ENTITLEMENTS
-    oeaStatus         entitlementStatus         = OEA_STATUS_OK;
-#endif
+    const char*             root                    = WOMBAT_SUBSCRIPTION_ROOT_NORMAL;
+    mamaSubscMsgType        subscMsgType            = MAMA_SUBSC_SUBSCRIBE;
+    int                     acceptMultipleInitials  = 0;
+    int                     checkSeqNumGaps         = 1;
+    mama_status             status                  = MAMA_STATUS_OK;
+    mamaEntitlementBridge   mamaEntBridge           = NULL;
+    mama_status             entitlementStatus       = MAMA_STATUS_OK;
 
     if (!self)      return MAMA_STATUS_NULL_ARG;
     if (!transport) return MAMA_STATUS_INVALID_ARG;
@@ -451,20 +470,32 @@ mamaSubscription_setupBasic (
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
-#ifdef WITH_ENTITLEMENTS
-    mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-    if (gEntitlementClient == 0 || mamaBridgeImpl_areEntitlementsDeferred(bridge))
     {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                    "Entitlements checking at subscription creation deferred to %s bridge [%p]",
-                    bridge->bridgeGetName(), bridge);
-    }
-    else
-        self->mSubjectContext.mOeaSubscription = oeaClient_newSubscription (&entitlementStatus, gEntitlementClient);
-#endif
+        mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
+        if (mamaBridgeImpl_areEntitlementsDeferred(bridge))
+        {
+            mama_log (MAMA_LOG_LEVEL_FINER,
+                        "Entitlements checking at subscription creation deferred to %s bridge [%p]",
+                        bridge->bridgeGetName(), bridge);
+        }
+        else
+        {
+            mama_status status = mamaTransportImpl_getEntitlementBridge(transport, &mamaEntBridge);
+        }
 
-    /*Up from entitlement check based on string compare on symbol*/
-    if (!isEntitledToSymbol (source, symbol, self))
+        if (NULL != mamaEntBridge)
+        {
+            mamaEntBridge->createSubscription(mamaEntBridge, &self->mSubjectContext);
+        }
+        else
+        {
+            mama_log(MAMA_LOG_LEVEL_ERROR,
+                     "mamaSubscription_setupBasic(): Could not find entitlement bridge!");
+            return MAMA_STATUS_NO_BRIDGE_IMPL;
+        }
+    }
+
+    if (!isEntitledToSymbol (source, symbol, self, transport))
     {
         setSubscInfo (self, transport, root, source, symbol);
         return MAMA_STATUS_NOT_ENTITLED;
@@ -483,11 +514,11 @@ mamaSubscription_setupBasic (
         case MAMA_SERVICE_LEVEL_SNAPSHOT:
             if (!self->mRequiresInitial) return MAMA_STATUS_INVALID_ARG;
             subscMsgType = MAMA_SUBSC_SNAPSHOT;
-#ifdef WITH_ENTITLEMENTS
-            mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-            if (!(gEntitlementClient == 0 || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
-                oeaSubscription_setIsSnapshot (self->mSubjectContext.mOeaSubscription, 1);
-#endif
+            {
+                mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
+                if (!(mamaBridgeImpl_areEntitlementsDeferred(bridge)))
+                    self->mSubjectContext.mEntitlementBridge->setIsSnapshot(self->mSubjectContext.mEntitlementSubscription->mImpl, 1);
+            }
             break;
         case MAMA_SERVICE_LEVEL_CONFLATED:/*fall through*/
         default:
@@ -570,13 +601,16 @@ mamaSubscription_setupBasic (
     setSubscInfo (self, transport, root, source, symbol);
 
     /*Create the publisher - needed for the image request object */
-    if (MAMA_STATUS_OK!=(status=mamaPublisher_createByIndex (
+    if (MAMA_STATUS_OK!=(status=mamaPublisherImpl_createByIndex (
                                   &self->mSubscPublisher,
                                    self->mTransport,
                                    self->mTransportIndex,
+                                   NULL,
+                                   NULL,
                                    self->mSubscSymbol,
                                    self->mSubscSource,
-                                   self->mSubscRoot)))
+                                   self->mSubscRoot,
+                                   NULL)))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, 
                   "Could not create publisher bridge. [%s]",
@@ -983,6 +1017,7 @@ mamaSubscription_getSubscRoot (mamaSubscription subscription)
 {
     return self->mSubscRoot;
 }
+
 const char * 
 mamaSubscription_getEntitleSubject (mamaSubscription subscription)
 {
@@ -1137,9 +1172,7 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
     SubjectContext   *context           = NULL;
     const char*      issueSymbol        = NULL;
     mama_status      status             = MAMA_STATUS_OK;
-    #ifdef WITH_ENTITLEMENTS
-    oeaStatus        entitlementStatus  = OEA_STATUS_OK;
-    #endif
+    mama_status      entitlementStatus  = MAMA_STATUS_OK;
 
     if (!self->mSubjects) /* no group or wildcard */
     {
@@ -1193,11 +1226,19 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
         dqContext_initializeContext (&context->mDqContext, self->mPreInitialCacheSize, recap);
         msgUtils_getIssueSymbol (msg, &issueSymbol);
         context->mSymbol = copyString (issueSymbol);
-        #ifdef WITH_ENTITLEMENTS
-        mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-        if (!(gEntitlementClient == 0 || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
-            context->mOeaSubscription = oeaClient_newSubscription (&entitlementStatus, gEntitlementClient);
-        #endif 
+        {
+            mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
+            if (!(mamaBridgeImpl_areEntitlementsDeferred(bridge)))
+            {
+
+                mamaTransport tport;
+                mamaEntitlementBridge entBridge;
+                mamaSubscription_getTransport(subscription, &tport);
+                mamaTransportImpl_getEntitlementBridge(tport, &entBridge);
+
+                entBridge->createSubscription (entBridge, &(self->mSubjectContext));
+            }
+        }
 
         wtable_insert (self->mSubjects, (char*)sendSubject, (void*)context);
     }
@@ -1292,7 +1333,7 @@ mamaSubscription_getQuality (mamaSubscription subscription,
             break;
     }
 
-	return MAMA_STATUS_OK;
+    return MAMA_STATUS_OK;
 }
 mama_status
 mamaSubscription_requestRecap(mamaSubscription subscription)
@@ -1398,13 +1439,11 @@ static void freeCacheCb (
     SubjectContext *ctx = (SubjectContext*)data;
     dqContext_cleanup (&(ctx->mDqContext));
     checkFree (&ctx->mSymbol);
-    #ifdef WITH_ENTITLEMENTS
-    if (ctx->mOeaSubscription != NULL)
+    if (ctx->mEntitlementSubscription != NULL)
     {
-        oeaSubscription_destroy (ctx->mOeaSubscription);
-        ctx->mOeaSubscription = NULL;
+        mamaEntitlementBridge_destroySubscription (ctx->mEntitlementSubscription);
+        ctx->mEntitlementSubscription = NULL;
     }
-    #endif
     free (ctx);
     ctx = NULL;
 }
@@ -1449,17 +1488,15 @@ mamaSubscription_cleanup (mamaSubscription subscription)
         wtable_destroy (self->mSubjects);
         self->mSubjects = NULL;
     }
-    #ifdef WITH_ENTITLEMENTS
     else
     {
-        if (self->mSubjectContext.mOeaSubscription != NULL)
+        if (self->mSubjectContext.mEntitlementSubscription != NULL)
         {
             /* Destroy will also close a subscription if it is open */
-            oeaSubscription_destroy (self->mSubjectContext.mOeaSubscription);
-            self->mSubjectContext.mOeaSubscription = NULL;
+            mamaEntitlementBridge_destroySubscription (self->mSubjectContext.mEntitlementSubscription);
+            self->mSubjectContext.mEntitlementSubscription = NULL;
         }
     }
-    #endif
     
     dqContext_cleanup (&self->mSubjectContext.mDqContext);
     self->mRecapRequest = NULL;
@@ -1550,31 +1587,31 @@ mama_status mamaSubscription_deactivate_internal(mamaSubscriptionImpl *impl)
 
 void MAMACALLTYPE mamaSubscription_DestroyThroughQueueCB(mamaQueue Queue, void* closure)
 {
-	mama_status status;
+    mama_status status;
 
-	mamaSubscription psub	= (mamaSubscription) closure;
-	mamaSubscriptionImpl* psubi = (mamaSubscriptionImpl*) closure;
+    mamaSubscription psub    = (mamaSubscription) closure;
+    mamaSubscriptionImpl* psubi = (mamaSubscriptionImpl*) closure;
 
-	status	= mamaSubscription_destroy(psub);
-	if (MAMA_STATUS_OK != status)
-	{
-		mama_log(MAMA_LOG_LEVEL_ERROR, "mamaSubscription_DestroyThroughQueueCB::Failed to destroy a subscription on %s.", psubi->mSubscSymbol);
-		return;
-	}
+    status    = mamaSubscription_destroy(psub);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log(MAMA_LOG_LEVEL_ERROR, "mamaSubscription_DestroyThroughQueueCB::Failed to destroy a subscription on %s.", psubi->mSubscSymbol);
+        return;
+    }
 }
 
 mama_status
 mamaSubscription_destroyEx(mamaSubscription subscription)
 {
-	mama_status status;
+    mama_status status;
 
-	status	= mamaQueue_enqueueEvent(self->mQueue, mamaSubscription_DestroyThroughQueueCB , (void*)subscription);
-	if (MAMA_STATUS_OK != status)
-	{
-		mama_log(MAMA_LOG_LEVEL_ERROR, "mamaSubscription_destroyEx::Failed to enqueue the destruction of a subscription on %s.", self->mSubscSymbol);
-	}
+    status    = mamaQueue_enqueueEvent(self->mQueue, mamaSubscription_DestroyThroughQueueCB , (void*)subscription);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log(MAMA_LOG_LEVEL_ERROR, "mamaSubscription_destroyEx::Failed to enqueue the destruction of a subscription on %s.", self->mSubscSymbol);
+    }
 
-	return status;
+    return status;
 }
 
 int mamaSubscription_isActive(mamaSubscription subscription)
@@ -2044,7 +2081,8 @@ mamaSubscription_processTportMsg( mamaSubscription subscription,
                                   mamaMsg msg,
                                   void* topicClosure)
 {
-    int32_t entitleCode = 0;
+    mamaBridgeImpl* bridge  = NULL;
+    int             allowed = 0;
 
     if ( (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST) ||
             (mamaSubscription_checkDebugLevel (subscription,
@@ -2056,37 +2094,31 @@ mamaSubscription_processTportMsg( mamaSubscription subscription,
                 userSymbolFormatted, 
                 text, 
                 subscription);
-        mamaMsg_freeString (msg, text);
     }
 
-#ifdef WITH_ENTITLEMENTS
-    mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-    if (!(gEntitlementClient == 0 || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
-        mamaMsg_getEntitleCode (msg, &entitleCode);
-#endif
-    if (entitleCode == 0)
+    bridge = mamaSubscription_getBridgeImpl(subscription);
+
+    if (!mamaBridgeImpl_areEntitlementsDeferred(bridge)) 
     {
-        self->mWcCallbacks.onMsg (
-                subscription, 
-                msg, 
-                NULL,
-                self->mClosure, 
-                topicClosure);
+        allowed = self->mSubjectContext.mEntitlementBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription, 
+                                                            self->mSubjectContext.mSymbol);
+        if (!allowed)
+        {
+            self->mWcCallbacks.onError (self,
+                    MAMA_STATUS_NOT_ENTITLED,
+                    NULL,
+                    self->mUserSymbol,
+                    self->mClosure);
+            return MAMA_STATUS_NOT_ENTITLED;
+        }
     }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER, "mamaSubscription_processMsg(): "
-                "Not Entitled code: %d subsc (%p) %s",
-                entitleCode, subscription, self->mUserSymbol);
 
-        mama_setLastError (MAMA_ERROR_NOT_ENTITLED);
-
-        self->mWcCallbacks.onError (self,
-                MAMA_STATUS_NOT_ENTITLED,
-                NULL,
-                self->mUserSymbol,
-                self->mClosure);
-    }
+    self->mWcCallbacks.onMsg (
+           subscription, 
+           msg, 
+           NULL,
+           self->mClosure, 
+           topicClosure);
 
     /*Do not access subscription here as it mey have been deleted/destroyed*/
     return MAMA_STATUS_OK;
@@ -2098,7 +2130,8 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
                                      const char* topic,
                                      void* topicClosure)
 {
-    int32_t entitleCode = 0;
+    mamaBridgeImpl* bridge  = NULL;
+    int             allowed = 0;
 
     if ( (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST) ||
             (mamaSubscription_checkDebugLevel (subscription,
@@ -2110,37 +2143,31 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
                 userSymbolFormatted, 
                 text, 
                 subscription);
-        mamaMsg_freeString (msg, text);
     }
 
-#ifdef WITH_ENTITLEMENTS
-    mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-    if (!(gEntitlementClient == 0 || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
-        mamaMsg_getEntitleCode (msg, &entitleCode);
-#endif
-    if (entitleCode == 0)
+    bridge = mamaSubscription_getBridgeImpl(subscription);
+
+    if (!mamaBridgeImpl_areEntitlementsDeferred(bridge))
     {
-        self->mWcCallbacks.onMsg (
-                subscription, 
-                msg, 
-                topic,
-                self->mClosure, 
-                topicClosure);
+        allowed = self->mSubjectContext.mEntitlementBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription, 
+                                                            self->mSubjectContext.mSymbol);
+        if (!allowed)
+        {
+            self->mWcCallbacks.onError (self,
+                    MAMA_STATUS_NOT_ENTITLED,
+                    NULL,
+                    self->mUserSymbol,
+                    self->mClosure);
+            return MAMA_STATUS_NOT_ENTITLED;
+        }
     }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER, "mamaSubscription_processMsg(): "
-                "Not Entitled code: %d subsc (%p) %s",
-                entitleCode, subscription, self->mUserSymbol);
 
-        mama_setLastError (MAMA_ERROR_NOT_ENTITLED);
-
-        self->mWcCallbacks.onError (self,
-                MAMA_STATUS_NOT_ENTITLED,
-                NULL,
-                self->mUserSymbol,
-                self->mClosure);
-    }
+    self->mWcCallbacks.onMsg (
+           subscription, 
+           msg, 
+           NULL,
+           self->mClosure, 
+           topicClosure);
 
     /*Do not access subscription here as it mey have been deleted/destroyed*/
     return MAMA_STATUS_OK;
@@ -2149,8 +2176,10 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
 mama_status
 mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
 {
-    const listenerMsgCallback callback = self->mCallback;
-
+    const listenerMsgCallback   callback  = self->mCallback;
+    mamaBridgeImpl*             bridge    = NULL;
+    mamaEntitlementBridge       entBridge = NULL;
+    int                         allowed   = 0;
     self->mCurSubjectContext = mamaSubscription_getSubjectContext (self, msg);
 
     if ( (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST) ||
@@ -2163,7 +2192,6 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
                 userSymbolFormatted, 
                 text, 
                 subscription);
-        mamaMsg_freeString (msg, text);
     }
 
     if (callback != NULL) /* TYPE is a MARKETDATA type */
@@ -2187,55 +2215,60 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
     }
     else
     {
-        int32_t entitleCode = 0;
-#ifdef WITH_ENTITLEMENTS
-        mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-        if (!(gEntitlementClient == 0 || mamaBridgeImpl_areEntitlementsDeferred(bridge)))
-            mamaMsg_getEntitleCode (msg, &entitleCode);
-#endif
-        if (entitleCode == 0)
+        bridge = mamaSubscription_getBridgeImpl(subscription);
+
+        if (!mamaBridgeImpl_areEntitlementsDeferred(bridge)) 
         {
-            if (gGenerateQueueStats)
+            entBridge = self->mSubjectContext.mEntitlementBridge;
+
+            if (NULL != entBridge) /* entitlementBridge will not be set for dict subscription, skip check. */
             {
-            	mamaStatsCollector queueStatsCollector ;
-                if (queueStatsCollector = mamaQueueImpl_getStatsCollector (self->mQueue))
-                	mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatNumMessages.mFid);
+                allowed = entBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription, 
+                                                                    self->mSubjectContext.mSymbol);
+                if (!allowed)
+                {
+                    mama_log (MAMA_LOG_LEVEL_FINER, "mamaSubscription_processMsg(): "
+                              "Not Entitled code: subsc (%p) %s",
+                              subscription, self->mUserSymbol);
+
+                    mama_setLastError (MAMA_ERROR_NOT_ENTITLED);
+
+                    self->mUserCallbacks.onError (self,
+                            MAMA_STATUS_NOT_ENTITLED,
+                            NULL,
+                            self->mUserSymbol,
+                            self->mClosure);
+                    return MAMA_STATUS_NOT_ENTITLED;
+                }
             }
-
-            if (gGenerateTransportStats)
-            {
-            	mamaStatsCollector tportStatsCollector ;
-                if (tportStatsCollector = mamaTransport_getStatsCollector (self->mTransport))
-                	 mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatNumMessages.mFid);
-            }
-
-
-			if (mamaInternal_getGlobalStatsCollector() != NULL)
-			{
-				mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
-												  MamaStatNumMessages.mFid);
-			}
-
-            mamaSubscription_forwardMsg (self, msg);
         }
-        else
+
+        if (gGenerateQueueStats)
         {
-            mama_log (MAMA_LOG_LEVEL_FINER, "mamaSubscription_processMsg(): "
-                      "Not Entitled code: %d subsc (%p) %s",
-                      entitleCode, subscription, self->mUserSymbol);
-                      
-            mama_setLastError (MAMA_ERROR_NOT_ENTITLED);
-            
-            self->mUserCallbacks.onError (self,
-                    MAMA_STATUS_NOT_ENTITLED,
-                    NULL,
-                    self->mUserSymbol,
-                    self->mClosure);
+            mamaStatsCollector queueStatsCollector ;
+            if (queueStatsCollector = mamaQueueImpl_getStatsCollector (self->mQueue))
+                mamaStatsCollector_incrementStat (queueStatsCollector, MamaStatNumMessages.mFid);
         }
+
+        if (gGenerateTransportStats)
+        {
+            mamaStatsCollector tportStatsCollector ;
+            if (tportStatsCollector = mamaTransport_getStatsCollector (self->mTransport))
+                 mamaStatsCollector_incrementStat (tportStatsCollector, MamaStatNumMessages.mFid);
+        }
+
+
+        if (mamaInternal_getGlobalStatsCollector() != NULL)
+        {
+            mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
+                                              MamaStatNumMessages.mFid);
+        }
+
+        mamaSubscription_forwardMsg (self, msg);
+
+        /*Do not access subscription here as it mey have been deleted/destroyed*/
+        return MAMA_STATUS_OK;
     }
-
-    /*Do not access subscription here as it mey have been deleted/destroyed*/
-    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -2422,28 +2455,33 @@ mamaSubscription_setTransportIndex (
 
 
 static int
-isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subscription)
+isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subscription, mamaTransport transport)
 {
-#ifdef WITH_ENTITLEMENTS 
-    int result = 0;
-    char subject[WOMBAT_SUBJECT_MAX];
+    int                   result = 0;
+    char                  subject[WOMBAT_SUBJECT_MAX];
+    mamaBridgeImpl*       bridge = NULL;
+    mamaEntitlementBridge entBridge = NULL;
+    entitlementSubscriptionHandle handle = NULL;
 
     snprintf (subject, WOMBAT_SUBJECT_MAX, "%s.%s", source, symbol);
 
-    mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
+    bridge = mamaSubscription_getBridgeImpl(subscription);
 
-    if (gEntitlementClient == 0 || mamaBridgeImpl_areEntitlementsDeferred(bridge)) /* Not enforcing entitlements. */
+    if (mamaBridgeImpl_areEntitlementsDeferred(bridge)) /* deferring entitlements. */
     {
         return 1;
     }
 
-    oeaSubscription_setSubject (self->mSubjectContext.mOeaSubscription, subject);
-    result = oeaSubscription_isAllowed (self->mSubjectContext.mOeaSubscription); 
-    
+    mamaTransportImpl_getEntitlementBridge(transport, &entBridge);
+
+    if (NULL != self->mSubjectContext.mEntitlementSubscription)
+    {
+        handle = self->mSubjectContext.mEntitlementSubscription->mImpl;
+    }
+
+    result = entBridge->isAllowed(handle, subject);
+
     return result;
-#else 
-    return 1;
-#endif /* WITH_ENTITLEMENTS */
 }
 
 char* copyString (const char*  str)

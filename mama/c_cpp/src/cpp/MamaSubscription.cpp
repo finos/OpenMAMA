@@ -195,7 +195,7 @@ namespace Wombat
         void InvokeCreate (void)
         {
             // Only invoke the callback if it is supplied
-            if (NULL != mCallback)
+            if (NULL != mCallback && !mFreed)
             {
                 // Invoke the callback funtcion
                 mCallback->onCreate (mSubscription);
@@ -205,7 +205,7 @@ namespace Wombat
         void InvokeDestroy (void)
         {
             // Only invoke the callback if it is supplied
-            if (NULL != mCallback)
+            if (NULL != mCallback && !mFreed)
             {
                 // Invoke the onDestroy            
                 mCallback->onDestroy (mSubscription);
@@ -216,7 +216,7 @@ namespace Wombat
                           const char   *topic)
         {
             // Only invoke the callback if it is supplied
-            if (NULL != mCallback)
+            if (NULL != mCallback && !mFreed)
             {
                 // Convert to a C++ status
                 MamaStatus cppStatus (status);
@@ -231,7 +231,7 @@ namespace Wombat
         void InvokeGap (void)
         {
             // Only invoke the callback if it is supplied
-            if (NULL != mCallback)
+            if (NULL != mCallback && !mFreed)
             {
                 // Invoke the callback funtcion
                 mCallback->onGap (mSubscription);
@@ -241,7 +241,7 @@ namespace Wombat
         void InvokeMsg (mamaMsg msg)
         {
             // Only invoke the callback if it is supplied
-            if (NULL != mCallback)
+            if (NULL != mCallback && !mFreed)
             {
                 // Convert the C message to a C++ message            
                 mResuableMsg.createFromMsg (msg);
@@ -257,7 +257,7 @@ namespace Wombat
                             const void   *platformInfo)
         {
             // Only invoke the callback if it is supplied
-            if (NULL != mCallback)
+            if (NULL != mCallback && !mFreed)
             {
                 // Invoke the callback
                 mCallback->onQuality (mSubscription, 
@@ -271,7 +271,7 @@ namespace Wombat
         void InvokeRecapRequest (void)
         {
             // Only invoke the callback if it is supplied
-            if (NULL != mCallback)
+            if (NULL != mCallback && !mFreed)
             {
                 // Invoke the callback
                 mCallback->onRecapRequest (mSubscription);

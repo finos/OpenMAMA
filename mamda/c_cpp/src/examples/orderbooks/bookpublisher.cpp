@@ -270,7 +270,6 @@ int main (int argc, const char **argv)
         const char* partId      = cmdLine.getOptString("p");          
         const char* pubSource   = cmdLine.getOptString("SP");
         const char* dictFile    = cmdLine.getOptString("use_dict_file");
-        MamaSource* source      = cmdLine.getSource();
         mBookPublisher->mPublishRecaps = cmdLine.getPublishRecaps();
         
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);
@@ -411,6 +410,8 @@ void BookPublisher::processOrder ()
                                     mBookTime, NULL);
                 break;
             }
+            default:
+                break;
         }
     }
     else
@@ -447,6 +448,8 @@ void BookPublisher::processOrder ()
                 break;
             case PLUPDATE:
                 mBook->updateLevel(*level);
+                break;
+            default:
                 break;
         }
     }
@@ -531,9 +534,6 @@ void BookPublisher::onNewRequest (
     short                    msgType,
     MamaMsg&                 msg)
 {
-
-    MamaMsg*     request = NULL;
-    
     if (publishingSymbol(symbol))  
     {
         mPublisher = mPublisherManager->createPublisher(symbol, this);
@@ -542,7 +542,6 @@ void BookPublisher::onNewRequest (
         {        
             cout << "Received New request: " <<  symbol << endl;
         }
-        bool publish = false;
         switch (msgType)
         {
             case MAMA_SUBSC_SUBSCRIBE:
@@ -573,7 +572,6 @@ void BookPublisher::onRequest (
     short                    msgType,
     MamaMsg&                 msg)
 {  
-    MamaMsg*     request = NULL;
     const char*  symbol  = publishTopicInfo.mSymbol;
     bool         publish = false;
     if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)

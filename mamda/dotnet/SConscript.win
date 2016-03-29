@@ -3,6 +3,11 @@
 import os
 import posixpath
 import platform
+
+import sys
+reload(sys)  
+sys.setdefaultencoding('utf8')
+
 from custom_builders import install_dotnet_library
 from custom_builders import build_ndoc
 Import('env')
@@ -18,26 +23,18 @@ releaseString = versions['releaseString']
 env.AddMethod(install_dotnet_library, "InstallDotNetLibrary")
 env.AddMethod(build_ndoc, "BuildNDoc")
 
-dotnet_version = env['dotnet_version']
-
-if platform.machine() == 'AMD64':
-    framework = 'Framework64'
+if env['target_arch'] == 'x86_64':
+    odir = 'objdir_64'
 else:
-    framework = 'Framework'
+    odir = 'objdir_32'
 
-framework_dir = posixpath.join( 'c:/windows/Microsoft.NET/',framework )
-
-if dotnet_version == '2.0':
-    framework_dir = posixpath.join( framework_dir, 'v2.0.50727' )
-
-elif dotnet_version == '1.0':
-    framework_dir = posixpath.join( framework_dir, 'v1.1.4322' )
+framework_dir = env['dotnet_framework']
 
 env['CSC'] = posixpath.join(framework_dir,'csc.exe')
 AssemblyRefs = []
 AssemblyRefs.append(posixpath.join( framework_dir, 'mscorlib.dll'))
 AssemblyRefs.append(posixpath.join( framework_dir, 'system.dll'))
-AssemblyRefs.append(os.path.join( Dir('#').abspath, 'objdir\\%s\\mama\\dotnet\\MAMA.dll' )% env['build'])
+AssemblyRefs.append(os.path.join( Dir('#').abspath, '%s\\%s\\mama\\dotnet\\MAMA.dll' ) % (odir, env['build']))
 
 env.Append(
     CSCFLAGS        = ['/nostdlib+'],
@@ -290,9 +287,9 @@ target = "MAMDA"
 if 'dynamic' in env['build']:
     lib, doc_xml = env.InstallDotNetLibrary(target, sources)
 
-if env['with_docs'] == True:
-    doc_dir = "%s/doc/mamda/dotnet/" % (env['prefix'])
-    doc = env.BuildNDoc(lib, doc_xml, doc_dir)
+    #if env['with_docs'] == True:
+    #    doc_dir = "%s/doc/mamda/dotnet/" % (env['prefix'])
+    #    doc = env.BuildNDoc(lib, doc_xml, doc_dir)
 
     if env['with_examples'] == True:
         for key in examples:
@@ -303,6 +300,5 @@ if env['with_docs'] == True:
 
     if env['with_testtools'] == True:
         env.Log("C# testtool MamdaBookSelfTest included in examples")
-
 
 Clean(lib, cs)

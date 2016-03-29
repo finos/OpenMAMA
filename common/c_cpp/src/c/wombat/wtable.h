@@ -31,6 +31,8 @@ extern "C" {
 
 typedef void* wtable_t;
 
+/* Indicate the success of wTable functions. */
+#define WTABLE_INSERT_SUCCESS   1
 
 /**
  * Callback typedef function for wtable_for_each() and

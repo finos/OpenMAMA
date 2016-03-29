@@ -258,10 +258,69 @@ namespace Wombat
 		  int code = NativeMethods.mamaTransport_setTransportCallback(nativeHandle, mCallback, nativeHandle);
 		  CheckResultCode(code);
 		  GC.KeepAlive(callback);
-      }	  
+      }
 
+      /// <summary>
+      /// Set the transport topic callback. It receives advisories when
+      /// subjects sub or unsub, or when publisher events occur.
+      /// Passing NULL removes the callback.
+      /// </summary>
+      /// <param name="callback"></param>
+      public void setTransportTopicCallback(MamaTransportTopicCallback callback)
+      {
+          EnsurePeerCreated();
+          if (callback == null)
+          {
+              mTopicCallbackForwarder = null;
+              mTopicCallback = null;
+          }
+          else
+          {
+              mTopicCallbackForwarder = new TopicCallbackForwarder(this, callback);
+              mTopicCallback = new TopicCallbackForwarder.TransportTopicCallbackDelegate(mTopicCallbackForwarder.OnTransportTopicCallback);
+          }
+          int code = NativeMethods.mamaTransport_setTransportTopicCallback(nativeHandle, mTopicCallback, nativeHandle);
+          CheckResultCode(code);
+          GC.KeepAlive(callback);
+      }
 
-		#region Implementation details
+      /// <summary>
+      /// Get the name of the transport.
+      /// </summary>
+      public string getName()
+      {
+		// Get the symbol from the native layer
+		  IntPtr ret = IntPtr.Zero;
+		  CheckResultCode(NativeMethods.mamaTransport_getName(nativeHandle, ref ret));
+
+		  // Convert to an ANSI string
+		  return Marshal.PtrToStringAnsi(ret);
+      }
+
+        /// <summary>
+        /// Set a queue for transport callbacks (transport and topic).
+        /// If this is not set the default queue will be used.
+        /// </summary>
+      public void setTransportCallbackQueue(MamaQueue queue)
+      {
+          int code = NativeMethods.mamaTransport_setTransportCallbackQueue(nativeHandle, queue.NativeHandle);
+          CheckResultCode(code);
+          GC.KeepAlive(queue);
+      }
+
+      /// <summary>
+      /// Set a queue for transport callbacks (transport and topic).
+      /// If this is not set the default queue will be used.
+      /// </summary>
+      public MamaQueue getTransportCallbackQueue()
+      {
+          IntPtr queuePtr = IntPtr.Zero;
+          int code = NativeMethods.mamaTransport_getTransportCallbackQueue(nativeHandle, ref queuePtr);
+          CheckResultCode(code);
+          return new MamaQueue(queuePtr);
+      }
+
+      #region Implementation details
 
 		// Interop bridge
 		private sealed class CallbackForwarder
@@ -341,7 +400,68 @@ namespace Wombat
 			}
 		}
 
-		// Interop bridge for symbol map
+        // Interop bridge
+        private sealed class TopicCallbackForwarder
+        {
+            private enum mamaTransportTopicEvent : int
+            {
+                // enums need to be ordered as in transport.c 
+                MAMA_TRANSPORT_TOPIC_SUBSCRIBED = 0,
+                MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED = 1,
+                MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR = 2,
+                MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED = 3,
+                MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL = 4
+            }
+
+            private MamaTransportTopicCallback mCallback;
+            private MamaTransport mTarget;
+
+            public delegate void TransportTopicCallbackDelegate(
+                IntPtr transport,
+                int transportEvent,
+                string topic,
+                IntPtr opaque,
+                IntPtr closure);
+
+            public void OnTransportTopicCallback(
+                IntPtr transport,
+                int transportEvent,
+                string topic,
+                IntPtr opaque,
+                IntPtr closure)
+            {
+                if (mCallback != null)
+                {
+                    switch ((mamaTransportTopicEvent) transportEvent)
+                    {
+                        case mamaTransportTopicEvent.MAMA_TRANSPORT_TOPIC_SUBSCRIBED:
+                            mCallback.onTopicSubscribe(mTarget, topic, opaque);
+                            break;
+                        case mamaTransportTopicEvent.MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED:
+                            mCallback.onTopicUnsubscribe(mTarget, topic, opaque);
+                            break;
+                        case mamaTransportTopicEvent.MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR:
+                            mCallback.onTopicPublishError(mTarget, topic, opaque);
+                            break;
+                        case mamaTransportTopicEvent.MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_NOT_ENTITLED:
+                            mCallback.onTopicPublishErrorNotEntitled(mTarget, topic, opaque);
+                            break;
+                        case mamaTransportTopicEvent.MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR_BAD_SYMBOL:
+                            mCallback.onTopicPublishErrorBadSymbol(mTarget, topic, opaque);
+                            break;
+                        default: break;
+                    }
+                }
+            }
+
+            public TopicCallbackForwarder(MamaTransport target, MamaTransportTopicCallback callback)
+            {
+                this.mTarget = target;
+                this.mCallback = callback;
+            }
+        }
+        
+        // Interop bridge for symbol map
 		private sealed class CallbackForwarderSymbolMap
 		{
 			public delegate int SymbolMapFuncCallback(IntPtr closure, IntPtr result, string symbol, int maxLen);
@@ -418,6 +538,10 @@ namespace Wombat
 				CallbackForwarder.TransportCallbackDelegate callback, 
 				IntPtr closure);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaTransport_setTransportTopicCallback(IntPtr transport,
+                TopicCallbackForwarder.TransportTopicCallbackDelegate callback,
+                IntPtr closure);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern void mamaTransport_setSymbolMapFunc(IntPtr transport,
 				CallbackForwarderSymbolMap.SymbolMapFuncCallback callback,
 				IntPtr closure);
@@ -428,15 +552,23 @@ namespace Wombat
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaTransport_getNativeTransport (IntPtr nativeHandle, int index, ref IntPtr val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-            public static extern int mamaTransport_getQuality(IntPtr transport,
-                                                              ref MamaQuality qual);
-		}
+            public static extern int mamaTransport_getQuality(IntPtr transport, ref MamaQuality qual);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaTransport_getName(IntPtr transport, ref IntPtr ret);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaTransport_getTransportCallbackQueue(IntPtr nativeHandle, ref IntPtr val);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaTransport_setTransportCallbackQueue(IntPtr nativeHandle, IntPtr val);
+        }
 
 		// state
 		private CallbackForwarder mCallbackForwarder;
 		private CallbackForwarder.TransportCallbackDelegate mCallback;
 
-		private CallbackForwarderSymbolMap mCallbackForwarderSymbolMap;
+        private TopicCallbackForwarder mTopicCallbackForwarder;
+        private TopicCallbackForwarder.TransportTopicCallbackDelegate mTopicCallback;
+
+        private CallbackForwarderSymbolMap mCallbackForwarderSymbolMap;
 		private CallbackForwarderSymbolMap.SymbolMapFuncCallback mShimCallbackSymbolMap;
 
 		#endregion // Implementation details

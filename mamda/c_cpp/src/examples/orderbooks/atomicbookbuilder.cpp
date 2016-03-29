@@ -140,9 +140,9 @@ private:
         if (mShowMarketOrders)
         {
             printf ("    MARKET ORDERS ---------------------------------------------------------------\n");
-            const MamdaOrderBookPriceLevel* marketOrders = NULL;
+            const MamdaOrderBookPriceLevel* marketOrders = book.getBidMarketOrders();
 
-            if (marketOrders = book.getBidMarketOrders())
+            if (marketOrders)
             {
                 marketOrders->getTime().getAsFormattedString (timeStr, 32, "%T%;");
                 printf ("   %12s %4d %7g  MARKET  %c  ",
@@ -158,7 +158,8 @@ private:
 
             printf ("|");
 
-            if (marketOrders = book.getAskMarketOrders())
+            marketOrders = book.getAskMarketOrders();
+            if (marketOrders)
             {
                 marketOrders->getTime().getAsFormattedString (timeStr, 32, "%T%;");
                 printf ("  %c  MARKET  %-7g %-6d %-12s   ",
@@ -594,11 +595,11 @@ private:
 public:
     AtomicBookBuilder (
             const char* symbol) 
-    : mSymbol           (strdup(symbol))
+    : mShowEntries      (false)
+    , mShowMarketOrders (false)
     , mEntryPtr         (NULL)
     , mLevelPtr         (NULL)
-    , mShowEntries      (false)
-    , mShowMarketOrders (false)
+    , mSymbol           (strdup(symbol))
     {
         mOrderBook.setSymbol  (mSymbol);
         mOrderBook.setQuality (MAMA_QUALITY_OK);

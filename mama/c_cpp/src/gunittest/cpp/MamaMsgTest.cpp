@@ -48,7 +48,7 @@ TEST_F (MamaMsgTestCPP, CreateTest)
     msg = new MamaMsg;
     msg->create();
     
-    ASSERT_TRUE(&msg != NULL);
+    ASSERT_TRUE(msg != NULL);
 
     delete msg;
 }

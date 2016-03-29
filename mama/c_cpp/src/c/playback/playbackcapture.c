@@ -253,7 +253,7 @@ mama_status mamaCapture_saveMamaMsg (mamaPlaybackCapture* mamaCapture,
         strcat (captureBuffer, temp);
         strcat (captureBuffer, delim);
         memset (bufferLength, '\0', LENGTH);
-        sprintf (bufferLength, "%u", bufferSize);
+        sprintf (bufferLength, "%" PRI_MAMA_SIZE_T "", bufferSize);
         strcat (captureBuffer, bufferLength);
         fwrite (captureBuffer, 1, strlen(captureBuffer), myPlaybackFile);
         fputc  ((char)29,myPlaybackFile);

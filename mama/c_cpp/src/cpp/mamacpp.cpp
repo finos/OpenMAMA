@@ -75,7 +75,6 @@ namespace Wombat
         MamaReservedFields::initReservedFields();
     }
 
-    #ifdef WITH_ENTITLEMENTS 
     static MamaEntitlementCallback* gMamaEntitlementCallback = NULL;
 
     extern "C"
@@ -122,7 +121,6 @@ namespace Wombat
             };
         mamaTry (mama_registerEntitlementCallbacks (&entitlementCallback));
     }
-    #endif //WITH_ENTITLEMENTS
 
     extern "C"
     {

@@ -41,7 +41,6 @@
 
 #include "wombat/wincompat.h"
 
-
 #define MAX_SUBJECT 256
 
 #define NOFID 0
@@ -49,6 +48,7 @@
 static const int INCLUDE_FIELD_NAME = (1 << 4);
 static const int INCLUDE_FIELD_ID   = (1 << 2);
 
+MAMAIgnoreDeprecatedOpen
 typedef struct mamaMsgIteratorImpl
 {
     mamaMsgField            mCurrentField;
@@ -56,6 +56,7 @@ typedef struct mamaMsgIteratorImpl
     mamaPayloadBridgeImpl*  mPayloadBridge;
     mamaPayloadType         mPayloadType;
 } mamaMsgIteratorImpl;
+MAMAIgnoreDeprecatedClose
 
 /**
 * The mamaMsg implementation.
@@ -337,6 +338,19 @@ mamaMsgImpl_useBridgePayload (mamaMsg msg, mamaBridgeImpl* bridgeImpl)
 }
 
 mama_status
+mamaMsgImpl_getPayloadId (mamaMsg msg, char* id)
+{
+    mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
+
+    if (!impl || !id) return MAMA_STATUS_NULL_ARG;
+
+    *id = impl->mPayloadBridge->payloadLib->id;
+
+    return MAMA_STATUS_OK;
+}
+
+MAMAIgnoreDeprecatedOpen
+mama_status
 mamaMsg_getPayloadType (mamaMsg msg, mamaPayloadType* payloadType)
 {
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
@@ -350,6 +364,7 @@ mamaMsg_getPayloadType (mamaMsg msg, mamaPayloadType* payloadType)
 
     return MAMA_STATUS_OK;
 }
+MAMAIgnoreDeprecatedClose
 
 mama_status
 mamaMsgImpl_getPayload (const mamaMsg msg, msgPayload* payload)
@@ -363,6 +378,7 @@ mamaMsgImpl_getPayload (const mamaMsg msg, msgPayload* payload)
     return MAMA_STATUS_OK;    
 }
 
+MAMAIgnoreDeprecatedOpen
 const char*
 mamaPayload_convertToString (mamaPayloadType payloadType)
 {
@@ -378,6 +394,8 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "TICK42BLP";
         case MAMA_PAYLOAD_FAST:
             return "FAST";
+        case MAMA_PAYLOAD_HMS:
+            return "HMS";
         case MAMA_PAYLOAD_RAI:
             return "rai";
         case MAMA_PAYLOAD_UMS:
@@ -407,6 +425,7 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "unknown";
     }
 }
+MAMAIgnoreDeprecatedClose
 
 mama_status
 mamaMsg_createFromByteBuffer (
@@ -414,7 +433,9 @@ mamaMsg_createFromByteBuffer (
         const void*    buffer,
         mama_size_t    bufferLength)
 {
+MAMAIgnoreDeprecatedOpen
     mamaMsg_createForPayload (msg, (char) ((const char*)buffer) [0]);
+MAMAIgnoreDeprecatedClose
 
     return (mamaMsg_setNewBuffer (*msg, (void*)buffer, bufferLength));
 }
@@ -690,6 +711,8 @@ mamaMsg_copy (mamaMsg src, mamaMsg* copy)
     mama_status  status = MAMA_STATUS_OK;
 
     if (!source) return MAMA_STATUS_NULL_ARG;
+
+    if (src == *copy) return MAMA_STATUS_INVALID_ARG;
 
     if (source->mPayloadBridge)
     {
@@ -2629,11 +2652,13 @@ mamaMsg_toString (const mamaMsg msg)
     return NULL;
 }
 
+MAMAIgnoreDeprecatedOpen
 void
 mamaMsg_freeString (const mamaMsg msg,  const char* msgString)
 {
 
 }
+MAMAIgnoreDeprecatedClose
 
 mama_status
 mamaMsg_iterateFields (const mamaMsg            msg,
@@ -3202,10 +3227,9 @@ mamaMsg_setNewBuffer (mamaMsg msg, void* buffer,
 
     if (impl->mPayloadBridge)
     {
-        return
-        impl->mPayloadBridge->msgPayloadUnSerialize (impl->mPayload,
-                                                     buffer,
-                                                     size);
+        return impl->mPayloadBridge->msgPayloadUnSerialize (impl->mPayload,
+                                                            buffer,
+                                                            size);
     }
 
     return MAMA_STATUS_NULL_ARG;

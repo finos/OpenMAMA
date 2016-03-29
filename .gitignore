@@ -8,6 +8,7 @@
 *.so
 *.lo
 *.la
+*.pyc
 
 # Temporary Directories #
 #########################
@@ -59,6 +60,7 @@ common/c_cpp/etc/
 common/c_cpp/libtool
 common/c_cpp/src/c/properties.c
 common/c_cpp/src/c/version.h
+common/c_cpp/src/c/lex.yy.c
 common/c_cpp/stamp-h1
 mama/c_cpp/aclocal.m4
 mama/c_cpp/autom4te.cache/
@@ -74,3 +76,31 @@ mama/c_cpp/src/c/bridge/solace/Makefile.am
 mama/c_cpp/src/c/mama/version.h
 mama/c_cpp/src/c/version.c
 mama/c_cpp/stamp-h1
+mama/dotnet/src/cs/mama.xml
+mama/jni/src/c/mamajni/com_wombat_mama_*
+mama/c_cpp/src/c/entitlementlibraries.c
+mamda/c_cpp/src/cpp/version.c
+mamda/c_cpp/src/cpp/version.h
+mamda/dotnet/src/cs/mamda.xml
+
+# Scons files
+# #######################################
+objdir/*
+.sconf_temp/*
+.sconsign.dblite/*
+omama.conf
+.sconsign.dblite
+openmama_install*
+
+# Visual Studio Directories
+# #######################################
+obj/
+bin/
+*.user
+x64/
+Debug/
+Release/
+.vs/
+*.opensdf
+*.sdf
+*.suo

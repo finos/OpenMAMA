@@ -1,7 +1,7 @@
 /* $Id$
  *
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
+ * Copyright (C) 2011 NYSE Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,58 +19,131 @@
  * 02110-1301 USA
  */
 
+
+/*=========================================================================
+  =                             Includes                                  =
+  =========================================================================*/
+
 #include <mama/mama.h>
+#include <wombat/queue.h>
 #include <bridge.h>
 #include "queueimpl.h"
 #include "avisbridgefunctions.h"
-#include <wombat/queue.h>
 
-#include <avis/elvin.h>
+
+/*=========================================================================
+  =                Typedefs, structs, enums and globals                   =
+  =========================================================================*/
 
 typedef struct avisQueueBridge {
     mamaQueue          mParent;
     wombatQueue        mQueue;
-    mamaQueueEnqueueCB mEnqueueCb;
+    uint8_t            mHighWaterFired;
+    size_t             mHighWatermark;
+    size_t             mLowWatermark;
+    uint8_t            mIsDispatching;
+    mamaQueueEnqueueCB mEnqueueCallback;
     void*              mEnqueueClosure;
-    uint8_t            mIsNative;
+    wthread_mutex_t    mDispatchLock;
 } avisQueueBridge;
 
-typedef struct avisQueueClosure {
-    avisQueueBridge* mImpl;
-    mamaQueueEventCB mCb;
-    void*            mUserClosure;
-} avisQueueClosure;
 
-#define avisQueue(queue) ((avisQueueBridge*) queue)
-#define CHECK_QUEUE(queue) \
-        do {  \
-           if (avisQueue(queue) == 0) return MAMA_STATUS_NULL_ARG; \
-           if (avisQueue(queue)->mQueue == NULL) return MAMA_STATUS_NULL_ARG; \
-         } while(0)
+/*=========================================================================
+  =                              Macros                                   =
+  =========================================================================*/
 
+#define     CHECK_QUEUE(IMPL)                                                  \
+    do {                                                                       \
+        if (IMPL == NULL)              return MAMA_STATUS_NULL_ARG;            \
+        if (IMPL->mQueue == NULL)      return MAMA_STATUS_NULL_ARG;            \
+    } while(0)
+
+/* Timeout is in milliseconds */
+#define     AVIS_QUEUE_DISPATCH_TIMEOUT     500
+#define     AVIS_QUEUE_MAX_SIZE             WOMBAT_QUEUE_MAX_SIZE
+#define     AVIS_QUEUE_CHUNK_SIZE           WOMBAT_QUEUE_CHUNK_SIZE
+#define     AVIS_QUEUE_INITIAL_SIZE         WOMBAT_QUEUE_CHUNK_SIZE
+
+
+/*=========================================================================
+  =                  Private implementation prototypes                    =
+  =========================================================================*/
+
+/**
+ * This funcion is called to check the current queue size against configured
+ * watermarks to determine whether or not it should call the watermark callback
+ * functions. If it determines that it should, it invokes the relevant callback
+ * itself.
+ *
+ * @param impl The avis queue bridge implementation to check.
+ */
+static void
+avisBridgeMamaQueueImpl_checkWatermarks (avisQueueBridge* impl);
+
+
+/*=========================================================================
+  =               Public interface implementation functions               =
+  =========================================================================*/
 
 mama_status
 avisBridgeMamaQueue_create (queueBridge* queue,
                             mamaQueue    parent)
 {
-    avisQueueBridge* avisQueue = NULL;
+    /* Null initialize the queue to be created */
+    avisQueueBridge*    impl                = NULL;
+    wombatQueueStatus   underlyingStatus    = WOMBAT_QUEUE_OK;
 
-    if (queue == NULL)
+    if (queue == NULL || parent == NULL)
+    {
         return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Null initialize the queueBridge */
     *queue = NULL;
 
-    avisQueue = (avisQueueBridge*)calloc (1, sizeof (avisQueueBridge));
-    if (avisQueue == NULL)
+    /* Allocate memory for the avis queue implementation */
+    impl = (avisQueueBridge*) calloc (1, sizeof (avisQueueBridge));
+    if (NULL == impl)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "avisBridgeMamaQueue_create (): "
+                  "Failed to allocate memory for queue.");
         return MAMA_STATUS_NOMEM;
+    }
 
-    avisQueue->mParent         = parent;
-    avisQueue->mEnqueueCb      = NULL;
-    avisQueue->mEnqueueClosure = NULL;
+    /* Initialize the dispatch lock */
+    wthread_mutex_init (&impl->mDispatchLock, NULL);
 
-    wombatQueue_allocate (&avisQueue->mQueue);
-    wombatQueue_create (avisQueue->mQueue, 0, 0, 0);
+    /* Back-reference the parent for future use in the implementation struct */
+    impl->mParent = parent;
 
-    *queue = (queueBridge) avisQueue;
+    /* Allocate and create the wombat queue */
+    underlyingStatus = wombatQueue_allocate (&impl->mQueue);
+    if (WOMBAT_QUEUE_OK != underlyingStatus)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "avisBridgeMamaQueue_create (): "
+                  "Failed to allocate memory for underlying queue.");
+        free (impl);
+        return MAMA_STATUS_NOMEM;
+    }
+
+    underlyingStatus = wombatQueue_create (impl->mQueue,
+                                           AVIS_QUEUE_MAX_SIZE,
+                                           AVIS_QUEUE_INITIAL_SIZE,
+                                           AVIS_QUEUE_CHUNK_SIZE);
+    if (WOMBAT_QUEUE_OK != underlyingStatus)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "avisBridgeMamaQueue_create (): "
+                  "Failed to create underlying queue.");
+        wombatQueue_deallocate (impl->mQueue);
+        free (impl);
+        return MAMA_STATUS_PLATFORM;
+    }
+
+    /* Populate the queueBridge pointer with the implementation for return */
+    *queue = (queueBridge) impl;
 
     return MAMA_STATUS_OK;
 }
@@ -80,23 +153,33 @@ avisBridgeMamaQueue_create_usingNative (queueBridge* queue,
                                         mamaQueue    parent,
                                         void*        nativeQueue)
 {
-    avisQueueBridge* avisQueue = NULL;
-    
-    if (queue == NULL)
+    avisQueueBridge* impl = NULL;
+    if (NULL == queue || NULL == parent || NULL == nativeQueue)
+    {
         return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Null initialize the queueBridge to be returned */
     *queue = NULL;
 
-    avisQueue = (avisQueueBridge*)calloc (1, sizeof (avisQueueBridge));
-    if (avisQueue == NULL)
+    /* Allocate memory for the avis bridge implementation */
+    impl = (avisQueueBridge*) calloc (1, sizeof (avisQueueBridge));
+    if (NULL == impl)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "avisBridgeMamaQueue_create_usingNative (): "
+                  "Failed to allocate memory for queue.");
         return MAMA_STATUS_NOMEM;
+    }
 
-    avisQueue->mParent         = parent;
-    avisQueue->mEnqueueCb      = NULL;
-    avisQueue->mEnqueueClosure = NULL;
-    avisQueue->mQueue          = (wombatQueue)nativeQueue;
-    avisQueue->mIsNative       = 1;
+    /* Back-reference the parent for future use in the implementation struct */
+    impl->mParent = parent;
 
-    *queue = (queueBridge) avisQueue;
+    /* Wombat queue has already been created, so simply reference it here */
+    impl->mQueue = (wombatQueue) nativeQueue;
+
+    /* Populate the queueBridge pointer with the implementation for return */
+    *queue = (queueBridge) impl;
 
     return MAMA_STATUS_OK;
 }
@@ -104,35 +187,98 @@ avisBridgeMamaQueue_create_usingNative (queueBridge* queue,
 mama_status
 avisBridgeMamaQueue_destroy (queueBridge queue)
 {
-    CHECK_QUEUE(queue);
-    if (!avisQueue(queue)->mIsNative)
-        wombatQueue_destroy (avisQueue(queue)->mQueue);
-    free(avisQueue(queue));
+    wombatQueueStatus   status  = WOMBAT_QUEUE_OK;
+    avisQueueBridge*    impl    = (avisQueueBridge*) queue;
+
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
+
+    /* Destroy the underlying wombatQueue - can be called from any thread*/
+    wthread_mutex_lock              (&impl->mDispatchLock);
+    status = wombatQueue_destroy    (impl->mQueue);
+    wthread_mutex_unlock            (&impl->mDispatchLock);
+
+    /* Free the avisQueueImpl container struct */
+    free (impl);
+
+    if (WOMBAT_QUEUE_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_WARN,
+                  "avisBridgeMamaQueue_destroy (): "
+                  "Failed to destroy wombat queue (%d).",
+                  status);
+        return MAMA_STATUS_PLATFORM;
+    }
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+avisBridgeMamaQueue_getEventCount (queueBridge queue, size_t* count)
+{
+    avisQueueBridge* impl       = (avisQueueBridge*) queue;
+    int              countInt   = 0;
+
+    if (NULL == count)
+        return MAMA_STATUS_NULL_ARG;
+
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
+
+    /* Initialize count to zero */
+    *count = 0;
+
+    /* Get the wombatQueue size */
+    wombatQueue_getSize (impl->mQueue, &countInt);
+    *count = (size_t)countInt;
+
     return MAMA_STATUS_OK;
 }
 
 mama_status
 avisBridgeMamaQueue_dispatch (queueBridge queue)
 {
-    wombatQueueStatus status;
+    wombatQueueStatus   status;
+    avisQueueBridge*    impl = (avisQueueBridge*) queue;
 
-    CHECK_QUEUE(queue);
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
 
+    /* Lock for dispatching */
+    wthread_mutex_lock (&impl->mDispatchLock);
+
+    impl->mIsDispatching = 1;
+
+    /*
+     * Continually dispatch as long as the calling application wants dispatching
+     * to be done and no errors are encountered
+     */
     do
     {
-        /* 500 is .5 seconds */
-        status = wombatQueue_timedDispatch (avisQueue(queue)->mQueue,
-                     NULL, NULL, 500);
-    }
-    while ((status == WOMBAT_QUEUE_OK ||
-            status == WOMBAT_QUEUE_TIMEOUT) &&
-            mamaQueueImpl_isDispatching (avisQueue(queue)->mParent));
+        /* Check the watermarks to see if thresholds have been breached */
+        avisBridgeMamaQueueImpl_checkWatermarks (impl);
 
-    if (status != WOMBAT_QUEUE_OK && status != WOMBAT_QUEUE_TIMEOUT)
+        /*
+         * Perform a dispatch with a timeout to allow the dispatching process
+         * to be interrupted by the calling application between iterations
+         */
+        status = wombatQueue_timedDispatch (impl->mQueue,
+                                            NULL,
+                                            NULL,
+                                            AVIS_QUEUE_DISPATCH_TIMEOUT);
+    }
+    while ( (WOMBAT_QUEUE_OK == status || WOMBAT_QUEUE_TIMEOUT == status)
+            && impl->mIsDispatching);
+
+    /* Unlock the dispatch lock */
+    wthread_mutex_unlock (&impl->mDispatchLock);
+
+    /* Timeout is encountered after each dispatch and so is expected here */
+    if (WOMBAT_QUEUE_OK != status && WOMBAT_QUEUE_TIMEOUT != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "Failed to dispatch Avis Middleware queue. %d",
-                  "mamaQueue_dispatch ():",
+                  "avisBridgeMamaQueue_dispatch (): "
+                  "Failed to dispatch Avis Middleware queue (%d). ",
                   status);
         return MAMA_STATUS_PLATFORM;
     }
@@ -143,54 +289,61 @@ avisBridgeMamaQueue_dispatch (queueBridge queue)
 mama_status
 avisBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout)
 {
-    wombatQueueStatus status;
-    
-    CHECK_QUEUE(queue);
+    wombatQueueStatus   status;
+    avisQueueBridge*    impl        = (avisQueueBridge*) queue;
 
-    status = wombatQueue_timedDispatch (avisQueue(queue)->mQueue,
-                     NULL, NULL, timeout);
-    if (status == WOMBAT_QUEUE_TIMEOUT) return MAMA_STATUS_TIMEOUT;
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
 
-    if (status != WOMBAT_QUEUE_OK)
+    /* Check the watermarks to see if thresholds have been breached */
+    avisBridgeMamaQueueImpl_checkWatermarks (impl);
+
+    /* Attempt to dispatch the queue with a timeout once */
+    status = wombatQueue_timedDispatch (impl->mQueue,
+                                        NULL,
+                                        NULL,
+                                        timeout);
+
+    /* If dispatch failed, report here */
+    if (WOMBAT_QUEUE_OK != status && WOMBAT_QUEUE_TIMEOUT != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "Failed to dispatch Avis Middleware queue. %d",
-                  "mamaQueue_dispatch ():",
+                  "avisBridgeMamaQueue_timedDispatch (): "
+                  "Failed to dispatch Avis Middleware queue (%d).",
                   status);
         return MAMA_STATUS_PLATFORM;
     }
 
     return MAMA_STATUS_OK;
+
 }
 
 mama_status
 avisBridgeMamaQueue_dispatchEvent (queueBridge queue)
 {
-    wombatQueueStatus status;
+    wombatQueueStatus   status;
+    avisQueueBridge*    impl = (avisQueueBridge*) queue;
 
-    CHECK_QUEUE(queue);
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
 
-    status = wombatQueue_dispatch (avisQueue(queue)->mQueue,
-                     NULL, NULL);
+    /* Check the watermarks to see if thresholds have been breached */
+    avisBridgeMamaQueueImpl_checkWatermarks (impl);
 
-    if (status != WOMBAT_QUEUE_OK)
+    /* Attempt to dispatch the queue with a timeout once */
+    status = wombatQueue_dispatch (impl->mQueue, NULL, NULL);
+
+    /* If dispatch failed, report here */
+    if (WOMBAT_QUEUE_OK != status && WOMBAT_QUEUE_TIMEOUT != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "Failed to dispatch Avis Middleware queue. %d",
-                  "mamaQueue_dispatch ():",
+                  "avisBridgeMamaQueue_dispatchEvent (): "
+                  "Failed to dispatch Avis Middleware queue (%d).",
                   status);
         return MAMA_STATUS_PLATFORM;
     }
 
     return MAMA_STATUS_OK;
-}
-
-static void MAMACALLTYPE queueCb (void *ignored, void* closure)
-{
-    avisQueueClosure* cl = (avisQueueClosure*)closure;
-    if (NULL ==cl) return;
-    cl->mCb (cl->mImpl->mParent, cl->mUserClosure);
-    free (cl);
 }
 
 mama_status
@@ -198,28 +351,35 @@ avisBridgeMamaQueue_enqueueEvent (queueBridge        queue,
                                   mamaQueueEventCB   callback,
                                   void*              closure)
 {
-    wombatQueueStatus status;
-    avisQueueClosure* cl = NULL;
-    
-    CHECK_QUEUE(queue);
+    wombatQueueStatus   status;
+    avisQueueBridge*    impl = (avisQueueBridge*) queue;
 
-    cl = (avisQueueClosure*)calloc(1, sizeof(avisQueueClosure));
-    if (NULL == cl) return MAMA_STATUS_NOMEM;
+    if (NULL == callback)
+        return MAMA_STATUS_NULL_ARG;
 
-    cl->mImpl = avisQueue(queue);
-    cl->mCb    = callback;
-    cl->mUserClosure = closure;
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
 
-    status = wombatQueue_enqueue (avisQueue(queue)->mQueue,
-                queueCb, NULL, cl);
+    /* Call the underlying wombatQueue_enqueue method */
+    status = wombatQueue_enqueue (impl->mQueue,
+                                  (wombatQueueCb) callback,
+                                  impl->mParent,
+                                  closure);
 
-    if (status != WOMBAT_QUEUE_OK)
-        return MAMA_STATUS_PLATFORM;
-
-    if (avisQueue(queue)->mEnqueueCb)
+    /* Call the enqueue callback if provided */
+    if (NULL != impl->mEnqueueCallback)
     {
-        avisQueue(queue)->mEnqueueCb (avisQueue(queue)->mParent, 
-                                      avisQueue(queue)->mEnqueueClosure);
+        impl->mEnqueueCallback (impl->mParent, impl->mEnqueueClosure);
+    }
+
+    /* If dispatch failed, report here */
+    if (WOMBAT_QUEUE_OK != status)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "avisBridgeMamaQueue_enqueueEvent (): "
+                  "Failed to enqueueEvent (%d). Callback: %p; Closure: %p",
+                  status, callback, closure);
+        return MAMA_STATUS_PLATFORM;
     }
 
     return MAMA_STATUS_OK;
@@ -228,20 +388,13 @@ avisBridgeMamaQueue_enqueueEvent (queueBridge        queue,
 mama_status
 avisBridgeMamaQueue_stopDispatch (queueBridge queue)
 {
-    wombatQueueStatus status;
-    CHECK_QUEUE(queue);
+    avisQueueBridge* impl = (avisQueueBridge*) queue;
 
-    if (queue == NULL)
-        return MAMA_STATUS_NULL_ARG;
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
 
-    status = wombatQueue_unblock (avisQueue(queue)->mQueue);
-    if (status != WOMBAT_QUEUE_OK)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  " Failed to stop dispatching Avis Middleware queue.",
-                  "wmwMamaQueue_stopDispatch ():");
-        return MAMA_STATUS_PLATFORM;
-    }
+    /* Tell this implementation to stop dispatching */
+    impl->mIsDispatching = 0;
 
     return MAMA_STATUS_OK;
 }
@@ -251,10 +404,18 @@ avisBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
                                         mamaQueueEnqueueCB callback,
                                         void*              closure)
 {
-    CHECK_QUEUE(queue);
+    avisQueueBridge* impl   = (avisQueueBridge*) queue;
 
-    avisQueue(queue)->mEnqueueCb      = callback;
-    avisQueue(queue)->mEnqueueClosure = closure;
+    if (NULL == callback)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
+
+    /* Set the enqueue callback and closure */
+    impl->mEnqueueCallback  = callback;
+    impl->mEnqueueClosure   = closure;
 
     return MAMA_STATUS_OK;
 }
@@ -262,20 +423,35 @@ avisBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
 mama_status
 avisBridgeMamaQueue_removeEnqueueCallback (queueBridge queue)
 {
-    CHECK_QUEUE(queue);
+    avisQueueBridge* impl = (avisQueueBridge*) queue;
 
-    avisQueue(queue)->mEnqueueCb      = NULL;
-    avisQueue(queue)->mEnqueueClosure = NULL;
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
+
+    /* Set the enqueue callback to NULL */
+    impl->mEnqueueCallback  = NULL;
+    impl->mEnqueueClosure   = NULL;
 
     return MAMA_STATUS_OK;
 }
 
 mama_status
 avisBridgeMamaQueue_getNativeHandle (queueBridge queue,
-                                     void**      result)
+                                     void**      nativeHandle)
 {
-    CHECK_QUEUE(queue);
-    *result = avisQueue(queue)->mQueue;
+    avisQueueBridge* impl = (avisQueueBridge*) queue;
+
+    if (NULL == nativeHandle)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
+
+    /* Return the handle to the native queue */
+    *nativeHandle = queue;
+
     return MAMA_STATUS_OK;
 }
 
@@ -283,23 +459,64 @@ mama_status
 avisBridgeMamaQueue_setHighWatermark (queueBridge queue,
                                       size_t      highWatermark)
 {
-    CHECK_QUEUE(queue);
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
+    avisQueueBridge* impl = (avisQueueBridge*) queue;
 
-mama_status
-avisBridgeMamaQueue_setLowWatermark (queueBridge queue,
-                                     size_t lowWatermark)
-{
-    CHECK_QUEUE(queue);
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
+    if (0 == highWatermark)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
 
-mama_status
-avisBridgeMamaQueue_getEventCount (queueBridge queue, size_t* count)
-{
-    CHECK_QUEUE(queue);
-    *count = 0;
-    wombatQueue_getSize (avisQueue(queue)->mQueue, (int*)count);
+    /* Set the high water mark */
+    impl->mHighWatermark = highWatermark;
+
     return MAMA_STATUS_OK;
 }
+
+mama_status
+avisBridgeMamaQueue_setLowWatermark (queueBridge    queue,
+                                     size_t         lowWatermark)
+{
+    avisQueueBridge* impl = (avisQueueBridge*) queue;
+
+    if (0 == lowWatermark)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    /* Perform null checks and return if null arguments provided */
+    CHECK_QUEUE(impl);
+
+    /* Set the low water mark */
+    impl->mLowWatermark = lowWatermark;
+
+    return MAMA_STATUS_OK;
+}
+
+
+/*=========================================================================
+  =                  Private implementation functions                     =
+  =========================================================================*/
+
+void
+avisBridgeMamaQueueImpl_checkWatermarks (avisQueueBridge* impl)
+{
+    size_t              eventCount      =  0;
+
+    /* Get the current size of the wombat impl */
+    avisBridgeMamaQueue_getEventCount      ((queueBridge) impl, &eventCount);
+
+    /* If the high watermark had been fired but the event count is now down */
+    if (0 != impl->mHighWaterFired && eventCount == impl->mLowWatermark)
+    {
+        impl->mHighWaterFired = 0;
+        mamaQueueImpl_lowWatermarkExceeded (impl->mParent, eventCount);
+    }
+    /* If the high watermark is not currently fired and now above threshold */
+    else if (0 == impl->mHighWaterFired && eventCount >= impl->mHighWatermark)
+    {
+        impl->mHighWaterFired = 1;
+        mamaQueueImpl_highWatermarkExceeded (impl->mParent, eventCount);
+    }
+}
+

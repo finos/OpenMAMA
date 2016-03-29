@@ -1,0 +1,335 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{ECF5D76C-3A30-448C-9893-FB490DFABA55}</ProjectGuid>
+    <RootNamespace>mamdacpp</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command>$(ProjectDir)\generateMamdaVersion.bat $(ProjectDir)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\cpp;$(SOLUTIONDIR)\mama\c_cpp\src\c;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MAMDA_DLL;MAMDA;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)libmamdamdd.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Command>$(ProjectDir)\generateMamdaVersion.bat $(ProjectDir)</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\cpp;$(SOLUTIONDIR)\mama\c_cpp\src\c;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MAMDA_DLL;MAMDA;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)libmamdamdd.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <PreBuildEvent>
+      <Command>$(ProjectDir)\generateMamdaVersion.bat $(ProjectDir)</Command>
+    </PreBuildEvent>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\cpp;$(SOLUTIONDIR)\mama\c_cpp\src\c;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MAMDA_DLL;MAMDA;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)libmamdamd.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <PreBuildEvent>
+      <Command>$(ProjectDir)\generateMamdaVersion.bat $(ProjectDir)</Command>
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\cpp;$(SOLUTIONDIR)\mama\c_cpp\src\c;$(SOLUTIONDIR)\mamda\c_cpp\src\cpp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MAMDA_DLL;MAMDA;_HAS_ITERATOR_DEBUGGING=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <Link>
+      <OutputFile>$(OutDir)libmamdamd.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\mama\c_cpp\src\cpp\mamacpp.vcxproj">
+      <Project>{66cb8abc-8ea3-4ff6-b715-d878b37cccb3}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\mama\c_cpp\src\c\mamac.vcxproj">
+      <Project>{7f64d11f-c002-4271-bdec-a82c614403ef}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="MamdaAuctionFields.cpp" />
+    <ClCompile Include="MamdaAuctionListener.cpp" />
+    <ClCompile Include="MamdaBasicSubscription.cpp" />
+    <ClCompile Include="MamdaCheckerType.cpp" />
+    <ClCompile Include="MamdaCommonFields.cpp" />
+    <ClCompile Include="MamdaConcreteBasicEvent.cpp" />
+    <ClCompile Include="MamdaCurrencyFields.cpp" />
+    <ClCompile Include="MamdaFieldState.cpp" />
+    <ClCompile Include="MamdaFundamentalFields.cpp" />
+    <ClCompile Include="MamdaFundamentalListener.cpp" />
+    <ClCompile Include="MamdaLockWin32.cpp" />
+    <ClCompile Include="MamdaMultiParticipantManager.cpp" />
+    <ClCompile Include="MamdaMultiSecurityManager.cpp" />
+    <ClCompile Include="MamdaOrderImbalanceFields.cpp" />
+    <ClCompile Include="MamdaOrderImbalanceSide.cpp" />
+    <ClCompile Include="MamdaOrderImbalanceType.cpp" />
+    <ClCompile Include="MamdaPubStatusFields.cpp" />
+    <ClCompile Include="MamdaPubStatusListener.cpp" />
+    <ClCompile Include="MamdaQuery.cpp" />
+    <ClCompile Include="MamdaQuoteChecker.cpp" />
+    <ClCompile Include="MamdaQuoteFields.cpp" />
+    <ClCompile Include="MamdaQuoteListener.cpp" />
+    <ClCompile Include="MamdaSecStatusFields.cpp" />
+    <ClCompile Include="MamdaSecStatusListener.cpp" />
+    <ClCompile Include="MamdaSecStatusSymbolSourceAdapter.cpp" />
+    <ClCompile Include="MamdaSecurityStatus.cpp" />
+    <ClCompile Include="MamdaSecurityStatusQual.cpp" />
+    <ClCompile Include="MamdaSubscription.cpp" />
+    <ClCompile Include="MamdaTradeChecker.cpp" />
+    <ClCompile Include="MamdaTradeDirection.cpp" />
+    <ClCompile Include="MamdaTradeExecVenue.cpp" />
+    <ClCompile Include="MamdaTradeFields.cpp" />
+    <ClCompile Include="MamdaTradeListener.cpp" />
+    <ClCompile Include="MamdaTradeSide.cpp" />
+    <ClCompile Include="MamdaUncrossPriceInd.cpp" />
+    <ClCompile Include="MamdaUtils.cpp" />
+    <ClCompile Include="MamdaVersion.cpp" />
+    <ClCompile Include="version.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mamda\MamdaAuctionFields.h" />
+    <ClInclude Include="mamda\MamdaAuctionHandler.h" />
+    <ClInclude Include="mamda\MamdaAuctionListener.h" />
+    <ClInclude Include="mamda\MamdaAuctionRecap.h" />
+    <ClInclude Include="mamda\MamdaAuctionUpdate.h" />
+    <ClInclude Include="mamda\MamdaBasicEvent.h" />
+    <ClInclude Include="mamda\MamdaBasicRecap.h" />
+    <ClInclude Include="mamda\MamdaBasicSubscription.h" />
+    <ClInclude Include="mamda\MamdaCheckerHandler.h" />
+    <ClInclude Include="mamda\MamdaCheckerType.h" />
+    <ClInclude Include="mamda\MamdaCommonFields.h" />
+    <ClInclude Include="mamda\MamdaConcreteBasicEvent.h" />
+    <ClInclude Include="mamda\MamdaConfig.h" />
+    <ClInclude Include="mamda\MamdaCurrencyFields.h" />
+    <ClInclude Include="mamda\MamdaCurrencyHandler.h" />
+    <ClInclude Include="mamda\MamdaCurrencyListener.h" />
+    <ClInclude Include="mamda\MamdaCurrencyRecap.h" />
+    <ClInclude Include="mamda\MamdaCurrencyUpdate.h" />
+    <ClInclude Include="mamda\MamdaDataException.h" />
+    <ClInclude Include="mamda\MamdaErrorListener.h" />
+    <ClInclude Include="mamda\MamdaFields.h" />
+    <ClInclude Include="mamda\MamdaFieldState.h" />
+    <ClInclude Include="mamda\MamdaFundamentalFields.h" />
+    <ClInclude Include="mamda\MamdaFundamentalHandler.h" />
+    <ClInclude Include="mamda\MamdaFundamentalListener.h" />
+    <ClInclude Include="mamda\MamdaFundamentals.h" />
+    <ClInclude Include="mamda\MamdaLock.h" />
+    <ClInclude Include="mamda\MamdaMsgListener.h" />
+    <ClInclude Include="mamda\MamdaMultiParticipantHandler.h" />
+    <ClInclude Include="mamda\MamdaMultiParticipantManager.h" />
+    <ClInclude Include="mamda\MamdaMultiSecurityHandler.h" />
+    <ClInclude Include="mamda\MamdaMultiSecurityManager.h" />
+    <ClInclude Include="mamda\MamdaOptionalConfig.h" />
+    <ClInclude Include="mamda\MamdaOrderImbalanceFields.h" />
+    <ClInclude Include="mamda\MamdaOrderImbalanceHandler.h" />
+    <ClInclude Include="mamda\MamdaOrderImbalanceListener.h" />
+    <ClInclude Include="mamda\MamdaOrderImbalanceRecap.h" />
+    <ClInclude Include="mamda\MamdaOrderImbalanceSide.h" />
+    <ClInclude Include="mamda\MamdaOrderImbalanceType.h" />
+    <ClInclude Include="mamda\MamdaOrderImbalanceUpdate.h" />
+    <ClInclude Include="mamda\MamdaPubStatus.h" />
+    <ClInclude Include="mamda\MamdaPubStatusFields.h" />
+    <ClInclude Include="mamda\MamdaPubStatusHandler.h" />
+    <ClInclude Include="mamda\MamdaPubStatusListener.h" />
+    <ClInclude Include="mamda\MamdaQualityListener.h" />
+    <ClInclude Include="mamda\MamdaQuery.h" />
+    <ClInclude Include="mamda\MamdaQuoteChecker.h" />
+    <ClInclude Include="mamda\MamdaQuoteClosing.h" />
+    <ClInclude Include="mamda\MamdaQuoteFields.h" />
+    <ClInclude Include="mamda\MamdaQuoteGap.h" />
+    <ClInclude Include="mamda\MamdaQuoteHandler.h" />
+    <ClInclude Include="mamda\MamdaQuoteListener.h" />
+    <ClInclude Include="mamda\MamdaQuoteOutOfSequence.h" />
+    <ClInclude Include="mamda\MamdaQuotePossiblyDuplicate.h" />
+    <ClInclude Include="mamda\MamdaQuoteRecap.h" />
+    <ClInclude Include="mamda\MamdaQuoteUpdate.h" />
+    <ClInclude Include="mamda\MamdaSecStatus.h" />
+    <ClInclude Include="mamda\MamdaSecStatusFields.h" />
+    <ClInclude Include="mamda\MamdaSecStatusHandler.h" />
+    <ClInclude Include="mamda\MamdaSecStatusListener.h" />
+    <ClInclude Include="mamda\MamdaSecStatusRecap.h" />
+    <ClInclude Include="mamda\MamdaSecStatusSymbolSourceAdapter.h" />
+    <ClInclude Include="mamda\MamdaSecurityStatus.h" />
+    <ClInclude Include="mamda\MamdaSecurityStatusQual.h" />
+    <ClInclude Include="mamda\MamdaSubscription.h" />
+    <ClInclude Include="mamda\MamdaSymbolListFields.h" />
+    <ClInclude Include="mamda\MamdaSymbolListHandler.h" />
+    <ClInclude Include="mamda\MamdaSymbolListListener.h" />
+    <ClInclude Include="mamda\MamdaSymbolListRecap.h" />
+    <ClInclude Include="mamda\MamdaSymbolListSymbolSourceAdapter.h" />
+    <ClInclude Include="mamda\MamdaSymbolListUpdate.h" />
+    <ClInclude Include="mamda\MamdaSymbolSource.h" />
+    <ClInclude Include="mamda\MamdaSymbolSourceAnnounce.h" />
+    <ClInclude Include="mamda\MamdaSymbolSourceEvent.h" />
+    <ClInclude Include="mamda\MamdaSymbolSourceFile.h" />
+    <ClInclude Include="mamda\MamdaSymbolSourceHandler.h" />
+    <ClInclude Include="mamda\MamdaSymbolSourceSymbolList.h" />
+    <ClInclude Include="mamda\MamdaSymbolStore.h" />
+    <ClInclude Include="mamda\MamdaSymbolStoreHandler.h" />
+    <ClInclude Include="mamda\MamdaSymbolStoreSaveHandler.h" />
+    <ClInclude Include="mamda\MamdaTradeCancelOrError.h" />
+    <ClInclude Include="mamda\MamdaTradeChecker.h" />
+    <ClInclude Include="mamda\MamdaTradeClosing.h" />
+    <ClInclude Include="mamda\MamdaTradeCorrection.h" />
+    <ClInclude Include="mamda\MamdaTradeDirection.h" />
+    <ClInclude Include="mamda\MamdaTradeExecVenue.h" />
+    <ClInclude Include="mamda\MamdaTradeFields.h" />
+    <ClInclude Include="mamda\MamdaTradeGap.h" />
+    <ClInclude Include="mamda\MamdaTradeHandler.h" />
+    <ClInclude Include="mamda\MamdaTradeListener.h" />
+    <ClInclude Include="mamda\MamdaTradeOutOfSequence.h" />
+    <ClInclude Include="mamda\MamdaTradePossiblyDuplicate.h" />
+    <ClInclude Include="mamda\MamdaTradeRecap.h" />
+    <ClInclude Include="mamda\MamdaTradeReport.h" />
+    <ClInclude Include="mamda\MamdaTradeSide.h" />
+    <ClInclude Include="mamda\MamdaUncrossPriceInd.h" />
+    <ClInclude Include="MamdaUtils.h" />
+    <ClInclude Include="mamda\MamdaVersion.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
