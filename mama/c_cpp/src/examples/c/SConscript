@@ -31,3 +31,5 @@ for b in bins:
 
 Alias('install',env.Install('$bindir',binary))
 Alias('install',env.Install('$prefix/examples/mama/c',examples))
+
+env.SConscript('plugin/SConscript','env')
