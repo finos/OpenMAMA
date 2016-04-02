@@ -1348,9 +1348,10 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                 break;
             case QPID_MSG_SUB_REQUEST:
             {
-                pn_data_t*  data            = pn_message_body (msgNode->mMsg);
-                const char* topic           = NULL;
-                const char* replyTo         = NULL;
+                pn_data_t*    data            = pn_message_body (msgNode->mMsg);
+                const char*   topic           = NULL;
+                const char*   replyTo         = NULL;
+                pn_data_t*    properties      = NULL;
 
                 /* Move to the content which will contain the topic */
                 pn_data_next (data);
@@ -1363,12 +1364,25 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                           "for subject %s, to be published to %s",
                           topic,
                           replyTo);
-
-                endpointPool_registerWithIdentifier (impl->mPubEndpoints,
-                                                     topic,
-                                                     replyTo,
-                                                     NULL);
-                pn_data_exit (properties);
+                // TODO: Try and recycle existing endpoint
+                qpidP2pEndpoint* endpoint =
+                        (qpidP2pEndpoint*)calloc (1, sizeof(qpidP2pEndpoint));
+                if (NULL == endpoint)
+                {
+                    mama_log (MAMA_LOG_LEVEL_ERROR,
+                              "qpidBridgeMamaTransportImpl_dispatchThread(): "
+                              "Failed to allocate endpoint for URL: %s",
+                              replyTo);
+                }
+                else
+                {
+                    strncpy (endpoint->mUrl, replyTo, sizeof(endpoint->mUrl));
+                    endpoint->mUrl[sizeof(endpoint->mUrl) - 1] = '\0';
+                    endpointPool_registerWithIdentifier (impl->mPubEndpoints,
+                                                         topic,
+                                                         replyTo,
+                                                         endpoint);
+                }
 
                 memoryPool_returnNode (impl->mQpidMsgPool, node);
                 continue;
