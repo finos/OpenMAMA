@@ -83,6 +83,8 @@ public class MamaStatus
     public static final short MAMA_STATUS_NO_BRIDGE_IMPL              = 26;
     /** Invalid queue */
     public static final short MAMA_STATUS_INVALID_QUEUE               = 27;
+    /** Message Type DELETE  */
+    public static final short MAMA_STATUS_DELETE                      = 29;
     /** Not permissioned for the subject */
     public static final short MAMA_STATUS_NOT_PERMISSIONED            = 4001;
     /** Subscription is in an invalid state. */
@@ -91,7 +93,12 @@ public class MamaStatus
     public static final short MAMA_STATUS_QUEUE_OPEN_OBJECTS          = 5002;
     /** The function isn't supported for this type of subscription. */
     public static final short MAMA_STATUS_SUBSCRIPTION_INVALID_TYPE   = 5003;
-
+    /** A symbol has no subscribers. */
+    public static final short MAMA_STATUS_NO_SUBSCRIBERS              = 5006;
+    /** The symbol has expired. */
+    public static final short MAMA_STATUS_EXPIRED                     = 5007;
+    /** The application's bandwidth limit has been exceeded. */
+    public static final short MAMA_STATUS_BANDWIDTH_EXCEEDED          = 5008;
     /**
      * Return a text description of the message's status.
      *
