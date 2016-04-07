@@ -17,20 +17,12 @@ libPath.append('$libdir')
 
 libs = []
 libs.append('libmamac%s.lib' % ( env['suffix'] ))
-
-if env['target_arch'] == 'x86_64':
-  archPath = "x64"
-else:
-  archPath = ""
-
 if 'debug' in env['build']:
+  libPath.append('%s/Debug' %(env['qpid_home']) )
   libs.append('qpid-protond')
-  buildType = "Debug"
 else:
+  libPath.append('%s/Release' %(env['qpid_home']) )
   libs.append('qpid-proton')
-  buildType = "Release"
-
-libPath.append('%s/%s/%s' % (env['qpid_home'], archPath, buildType))
 
 env['CCFLAGS'].append(['/TP', '/WX-'])
 env.Append(LIBS=libs, LIBPATH=libPath, CPPPATH=[includePath])
