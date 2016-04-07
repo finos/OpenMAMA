@@ -481,18 +481,19 @@ mamaSubscription_setupBasic (
         else
         {
             mama_status status = mamaTransportImpl_getEntitlementBridge(transport, &mamaEntBridge);
+            if (NULL != mamaEntBridge)
+            {
+                mamaEntBridge->createSubscription(mamaEntBridge, &self->mSubjectContext);
+            }
+            else
+            {
+                mama_log(MAMA_LOG_LEVEL_ERROR,
+                         "mamaSubscription_setupBasic(): Could not find entitlement bridge!");
+                return MAMA_STATUS_NO_BRIDGE_IMPL;
+            }
         }
 
-        if (NULL != mamaEntBridge)
-        {
-            mamaEntBridge->createSubscription(mamaEntBridge, &self->mSubjectContext);
-        }
-        else
-        {
-            mama_log(MAMA_LOG_LEVEL_ERROR,
-                     "mamaSubscription_setupBasic(): Could not find entitlement bridge!");
-            return MAMA_STATUS_NO_BRIDGE_IMPL;
-        }
+
     }
 
     if (!isEntitledToSymbol (source, symbol, self, transport))
