@@ -242,13 +242,13 @@ static void
 qpidBridgeMamaTransportImpl_stopProtonMessenger (pn_messenger_t* messenger);
 
 /**
- * This function is a wrapper for pn_messenger_stop as it caused deadlock
- * until qpid proton 0.5.
+ * This is a callback function to clean up any created endpoints.
  *
- * @param messenger  The messenger to free.
+ * @param endpoint   The endpoint to release resources for
  */
-static void
-qpidBridgeMamaTransportImpl_freeProtonMessenger (pn_messenger_t* messenger);
+void
+destroyQpidEndpoint (endpoint_t endpoint);
+
 
 /*=========================================================================
   =               Public interface implementation functions               =
@@ -290,11 +290,11 @@ qpidBridgeMamaTransport_destroy (transportBridge transport)
     pn_message_free(impl->mMsg);
 
     /* Macro wrapped as these caused deadlock prior to v0.5 of qpid proton */
-    qpidBridgeMamaTransportImpl_freeProtonMessenger (impl->mIncoming);
-    qpidBridgeMamaTransportImpl_freeProtonMessenger (impl->mOutgoing);
+    pn_messenger_free (impl->mIncoming);
+    pn_messenger_free (impl->mOutgoing);
 
     endpointPool_destroy (impl->mSubEndpoints);
-    endpointPool_destroy (impl->mPubEndpoints);
+    endpointPool_destroyWithCallback (impl->mPubEndpoints, destroyQpidEndpoint);
 
     /* Free the strdup-ed keys still held by the wtable */
     wtable_free_all_xdata (impl->mKnownSources);
@@ -1317,7 +1317,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 
             /* Move to the first element inside */
             pn_data_next     (properties); /* Move past first NULL byte */
-            pn_data_get_map(properties);
+            pn_data_get_map  (properties);
             pn_data_enter    (properties); /* Enter into meta map */
 
             int found = 0;
@@ -1352,6 +1352,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                 const char*   topic           = NULL;
                 const char*   replyTo         = NULL;
                 pn_data_t*    properties      = NULL;
+                qpidP2pEndpoint* endpoint     = NULL;
 
                 /* Move to the content which will contain the topic */
                 pn_data_next (data);
@@ -1364,9 +1365,28 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                           "for subject %s, to be published to %s",
                           topic,
                           replyTo);
-                // TODO: Try and recycle existing endpoint
-                qpidP2pEndpoint* endpoint =
-                        (qpidP2pEndpoint*)calloc (1, sizeof(qpidP2pEndpoint));
+
+                /* Try and recycle existing endpoint */
+                endpointPool_getEndpointByIdentifiers (impl->mPubEndpoints,
+                                                       topic,
+                                                       replyTo,
+                                                       (endpoint_t*)&endpoint);
+                /* If an endpoint for this URI does not already exist */
+                if (NULL == endpoint)
+                {
+                    mama_log (MAMA_LOG_LEVEL_FINER,
+                              "qpidBridgeMamaTransportImpl_dispatchThread(): "
+                              "Endpoint does not exist - creating one.");
+                    endpoint = (qpidP2pEndpoint*)calloc (1, sizeof(qpidP2pEndpoint));
+                }
+                else
+                {
+                    mama_log (MAMA_LOG_LEVEL_FINER,
+                              "qpidBridgeMamaTransportImpl_dispatchThread(): "
+                              "Endpoint does exist - reconnection detected.");
+                    endpoint->mErrorCount = 0;
+                    endpoint->mMsgCount = 0;
+                }
                 if (NULL == endpoint)
                 {
                     mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -1535,7 +1555,10 @@ void qpidBridgeMamaTransportImpl_stopProtonMessenger (pn_messenger_t* messenger)
     pn_messenger_stop (messenger);
 }
 
-void qpidBridgeMamaTransportImpl_freeProtonMessenger (pn_messenger_t* messenger)
+void destroyQpidEndpoint (endpoint_t endpoint)
 {
-    pn_messenger_free (messenger);
+    if (NULL != endpoint)
+    {
+        free (endpoint);
+    }
 }

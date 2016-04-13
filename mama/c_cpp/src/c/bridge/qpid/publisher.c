@@ -714,7 +714,8 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
             endpoint->mErrorCount++;
             mama_log (MAMA_LOG_LEVEL_FINER,
                       "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
-                      "Link down while sending on topic %s to %s [%d] (attempt %d of %d).",
+                      "Link last seen as down while sending on topic %s to %s "
+                      "[%d] (attempt %d of %d to re-establish).",
                       impl->mSubject,
                       url,
                       (int)pnLinkState,
@@ -735,6 +736,10 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
                 free (endpoint);
                 linkReady = 0;
             }
+        }
+        else
+        {
+            endpoint->mErrorCount = 0;
         }
     }
 
@@ -759,7 +764,6 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
             if (NULL != endpoint)
             {
                 endpoint->mMsgCount++;
-                endpoint->mErrorCount = 0;
             }
             mama_log (MAMA_LOG_LEVEL_FINEST,
                       "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
