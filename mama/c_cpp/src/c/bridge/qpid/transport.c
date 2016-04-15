@@ -74,7 +74,7 @@
 #define     DEFAULT_RECV_BLOCK_SIZE         10
 
 /* Non configurable runtime defaults */
-#define     PN_MESSENGER_TIMEOUT            1
+#define     PN_MESSENGER_TIMEOUT            100
 #define     PARAM_NAME_MAX_LENGTH           1024L
 #define     MIN_SUB_POOL_SIZE               1L
 #define     MAX_SUB_POOL_SIZE               30000L
@@ -1366,42 +1366,46 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                           topic,
                           replyTo);
 
-                /* Try and recycle existing endpoint */
-                endpointPool_getEndpointByIdentifiers (impl->mPubEndpoints,
-                                                       topic,
-                                                       replyTo,
-                                                       (endpoint_t*)&endpoint);
-                /* If an endpoint for this URI does not already exist */
-                if (NULL == endpoint)
+                if (QPID_TRANSPORT_TYPE_P2P ==
+                        qpidBridgeMamaTransportImpl_getType ((transportBridge) impl))
                 {
-                    mama_log (MAMA_LOG_LEVEL_FINER,
-                              "qpidBridgeMamaTransportImpl_dispatchThread(): "
-                              "Endpoint does not exist - creating one.");
-                    endpoint = (qpidP2pEndpoint*)calloc (1, sizeof(qpidP2pEndpoint));
-                }
-                else
-                {
-                    mama_log (MAMA_LOG_LEVEL_FINER,
-                              "qpidBridgeMamaTransportImpl_dispatchThread(): "
-                              "Endpoint does exist - reconnection detected.");
-                    endpoint->mErrorCount = 0;
-                    endpoint->mMsgCount = 0;
-                }
-                if (NULL == endpoint)
-                {
-                    mama_log (MAMA_LOG_LEVEL_ERROR,
-                              "qpidBridgeMamaTransportImpl_dispatchThread(): "
-                              "Failed to allocate endpoint for URL: %s",
-                              replyTo);
-                }
-                else
-                {
-                    strncpy (endpoint->mUrl, replyTo, sizeof(endpoint->mUrl));
-                    endpoint->mUrl[sizeof(endpoint->mUrl) - 1] = '\0';
-                    endpointPool_registerWithIdentifier (impl->mPubEndpoints,
-                                                         topic,
-                                                         replyTo,
-                                                         endpoint);
+                    /* Try and recycle existing endpoint */
+                    endpointPool_getEndpointByIdentifiers (impl->mPubEndpoints,
+                                                           topic,
+                                                           replyTo,
+                                                           (endpoint_t*)&endpoint);
+                    /* If an endpoint for this URI does not already exist */
+                    if (NULL == endpoint)
+                    {
+                        mama_log (MAMA_LOG_LEVEL_FINER,
+                                  "qpidBridgeMamaTransportImpl_dispatchThread(): "
+                                  "Endpoint does not exist - creating one.");
+                        endpoint = (qpidP2pEndpoint*)calloc (1, sizeof(qpidP2pEndpoint));
+                    }
+                    else
+                    {
+                        mama_log (MAMA_LOG_LEVEL_FINER,
+                                  "qpidBridgeMamaTransportImpl_dispatchThread(): "
+                                  "Endpoint does exist - reconnection detected.");
+                        endpoint->mErrorCount = 0;
+                        endpoint->mMsgCount = 0;
+                    }
+                    if (NULL == endpoint)
+                    {
+                        mama_log (MAMA_LOG_LEVEL_ERROR,
+                                  "qpidBridgeMamaTransportImpl_dispatchThread(): "
+                                  "Failed to allocate endpoint for URL: %s",
+                                  replyTo);
+                    }
+                    else
+                    {
+                        strncpy (endpoint->mUrl, replyTo, sizeof(endpoint->mUrl));
+                        endpoint->mUrl[sizeof(endpoint->mUrl) - 1] = '\0';
+                        endpointPool_registerWithIdentifier (impl->mPubEndpoints,
+                                                             topic,
+                                                             replyTo,
+                                                             endpoint);
+                    }
                 }
 
                 memoryPool_returnNode (impl->mQpidMsgPool, node);
