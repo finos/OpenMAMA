@@ -1351,7 +1351,6 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                 pn_data_t*    data            = pn_message_body (msgNode->mMsg);
                 const char*   topic           = NULL;
                 const char*   replyTo         = NULL;
-                pn_data_t*    properties      = NULL;
                 qpidP2pEndpoint* endpoint     = NULL;
 
                 /* Move to the content which will contain the topic */
