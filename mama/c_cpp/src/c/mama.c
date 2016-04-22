@@ -2537,6 +2537,9 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         goto error_handling_impl_allocated;
     }
 
+    /* Create the bridge lock */
+    (*impl)->mLock = wlock_create();
+
     /* Populate bridge meta data based on bridge's init properties */
     mamaBridgeImpl_populateBridgeMetaData (*impl);
 
