@@ -1929,7 +1929,73 @@ qpidmsgPayload_addVectorDateTime (msgPayload          msg,
                                   const mamaDateTime  value[],
                                   mama_size_t         size)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    mama_size_t             i         = 0;
+    qpidmsgPayloadImpl*     impl      = (qpidmsgPayloadImpl*) msg;
+    pn_timestamp_t          stamp     = 0;
+    mama_u32_t              seconds   = 0;
+    mama_u32_t              micros    = 0;
+    mamaDateTimeHints       hints     = 0;
+    mamaDateTimePrecision   precision = MAMA_DATE_TIME_PREC_UNKNOWN;
+
+    if (NULL == impl || 0 == size || NULL == value
+            || (NULL == name && 0 == fid))
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    qpidmsgPayloadImpl_moveDataToInsertLocation (impl->mBody, impl);
+
+    pn_data_put_list (impl->mBody);
+    pn_data_enter    (impl->mBody);
+
+    /* strlen +1 to encode NULL terminator */
+    if(NULL == name)
+    {
+        pn_data_put_string (impl->mBody, pn_bytes (1, "\0"));
+    }
+    else
+    {
+        pn_data_put_string (impl->mBody,
+                            pn_bytes (strlen (name) + 1, (char*) name));
+    }
+
+    pn_data_put_ushort (impl->mBody, fid);
+
+    /* Create an array of lists */
+    pn_data_put_array  (impl->mBody, 0, PN_TIMESTAMP);
+    pn_data_enter      (impl->mBody);
+
+    for (i=0; i != size; i++)
+    {
+        mamaDateTime_getWithHints (value[i],
+                                   &seconds,
+                                   &micros,
+                                   &precision,
+                                   &hints);
+        /*
+         * The timestamp is simply 64 bits of data. Place seconds in leftmost and
+         * microseconds in rightmost 32 bits of format. Expected to be faster than
+         * multiplication.
+         */
+        stamp = micros | ((mama_u64_t) seconds << 32);
+
+        /* add the price value */
+        pn_data_put_timestamp (impl->mBody, stamp);
+
+        /* add the hints value */
+        pn_data_put_ubyte     (impl->mBody, (mama_u8_t) hints);
+
+        /* add the precision value */
+        pn_data_put_ubyte     (impl->mBody, (mama_u8_t) precision);
+
+    }
+
+    pn_data_exit (impl->mBody);
+    pn_data_exit (impl->mBody);
+
+    /* Revert to the previous iterator state if applicable */
+    qpidmsgPayloadImpl_resetToIteratorState (impl);
+    return MAMA_STATUS_OK;
 }
 
 /*
@@ -1943,7 +2009,57 @@ qpidmsgPayload_addVectorPrice (msgPayload      msg,
                                const mamaPrice value[],
                                mama_size_t     size)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    mama_size_t             i           = 0;
+    qpidmsgPayloadImpl*     impl        = (qpidmsgPayloadImpl*) msg;
+    double                  priceValue  = 0;
+    mamaPriceHints          priceHints  = 0;
+
+    if (NULL == impl || 0 == size || NULL == value
+            || (NULL == name && 0 == fid))
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    qpidmsgPayloadImpl_moveDataToInsertLocation (impl->mBody, impl);
+
+    pn_data_put_list (impl->mBody);
+    pn_data_enter    (impl->mBody);
+
+    /* strlen +1 to encode NULL terminator */
+    if(NULL == name)
+    {
+        pn_data_put_string (impl->mBody, pn_bytes (1, "\0"));
+    }
+    else
+    {
+        pn_data_put_string (impl->mBody,
+                            pn_bytes (strlen (name) + 1, (char*) name));
+    }
+
+    pn_data_put_ushort (impl->mBody, fid);
+
+    /* Create an array of lists */
+    pn_data_put_array  (impl->mBody, 0, PN_DOUBLE);
+    pn_data_enter      (impl->mBody);
+
+    for (i=0; i != size; i++)
+    {
+        mamaPrice_getValue (value[i], &priceValue);
+        mamaPrice_getHints (value[i], &priceHints);
+
+        /* add the price value */
+        pn_data_put_double  (impl->mBody, priceValue);
+
+        /* add the hints value */
+        pn_data_put_ubyte   (impl->mBody, (mama_u8_t)priceHints);
+    }
+
+    pn_data_exit (impl->mBody);
+    pn_data_exit (impl->mBody);
+
+    /* Revert to the previous iterator state if applicable */
+    qpidmsgPayloadImpl_resetToIteratorState (impl);
+    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -2536,10 +2652,62 @@ mama_status
 qpidmsgPayload_updateVectorPrice (msgPayload          msg,
                                   const char*         name,
                                   mama_fid_t          fid,
-                                  const mamaPrice*    value[],
+                                  const mamaPrice     value[],
                                   mama_size_t         size)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    qpidmsgPayloadImpl*     impl        = (qpidmsgPayloadImpl*) msg;
+    mama_status             status      = MAMA_STATUS_OK;
+    mama_size_t             i           = 0;
+    double                  priceValue  = 0;
+    mamaPriceHints          priceHints  = 0;
+
+    if (NULL == impl || NULL == value || 0 == size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    if (NULL == name && 0 == fid)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Find field - takes us directly to the content */
+    status = qpidmsgPayloadImpl_findField (impl, name, fid);
+
+    /* Create if this does not exist */
+    if (MAMA_STATUS_NOT_FOUND == status)
+    {
+        return qpidmsgPayload_addVectorPrice (msg, name, fid, value, size);
+    }
+    else if (MAMA_STATUS_OK != status)
+    {
+        return status;
+    }
+
+    /* Store value */
+    pn_data_put_array (impl->mBody, 0, PN_DOUBLE);
+    pn_data_enter     (impl->mBody);
+
+    for (i=0; i != size; i++)
+    {
+        mamaPrice_getValue (value[i], &priceValue);
+        mamaPrice_getHints (value[i], &priceHints);
+
+        /* add the price value */
+        pn_data_put_double  (impl->mBody, priceValue);
+
+        /* add the hints value */
+        pn_data_put_ubyte   (impl->mBody, (mama_u8_t)priceHints);
+
+    }
+
+    /* exit array */
+    pn_data_exit (impl->mBody);
+
+    /* Revert to the previous iterator state if applicable */
+    qpidmsgPayloadImpl_resetToIteratorState (impl);
+
+    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -2549,7 +2717,74 @@ qpidmsgPayload_updateVectorTime (msgPayload          msg,
                                  const mamaDateTime  value[],
                                  mama_size_t         size)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    qpidmsgPayloadImpl*     impl        = (qpidmsgPayloadImpl*) msg;
+    mama_status             status      = MAMA_STATUS_OK;
+    mama_size_t             i           = 0;
+    pn_timestamp_t          stamp       = 0;
+    mama_u32_t              seconds     = 0;
+    mama_u32_t              micros      = 0;
+    mamaDateTimeHints       hints       = 0;
+    mamaDateTimePrecision   precision   = MAMA_DATE_TIME_PREC_UNKNOWN;
+
+    if (NULL == impl || NULL == value || 0 == size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    if (NULL == name && 0 == fid)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Find field - takes us directly to the content */
+    status = qpidmsgPayloadImpl_findField (impl, name, fid);
+
+    /* Create if this does not exist */
+    if (MAMA_STATUS_NOT_FOUND == status)
+    {
+        return qpidmsgPayload_addVectorDateTime (msg, name, fid, value, size);
+    }
+    else if (MAMA_STATUS_OK != status)
+    {
+        return status;
+    }
+
+    /* Store value */
+    pn_data_put_array (impl->mBody, 0, PN_LIST);
+    pn_data_enter     (impl->mBody);
+
+    for (i=0; i != size; i++)
+    {
+        mamaDateTime_getWithHints (value[i],
+                                   &seconds,
+                                   &micros,
+                                   &precision,
+                                   &hints);
+        /*
+         * The timestamp is simply 64 bits of data. Place seconds in leftmost and
+         * microseconds in rightmost 32 bits of format. Expected to be faster than
+         * multiplication.
+         */
+        stamp = micros | ((mama_u64_t) seconds << 32);
+
+        /* add the price value */
+        pn_data_put_timestamp (impl->mBody, stamp);
+
+        /* add the hints value */
+        pn_data_put_ubyte     (impl->mBody, (mama_u8_t) hints);
+
+        /* add the precision value */
+        pn_data_put_ubyte     (impl->mBody, (mama_u8_t) precision);
+
+    }
+
+    /* exit array */
+    pn_data_exit (impl->mBody);
+
+    /* Revert to the previous iterator state if applicable */
+    qpidmsgPayloadImpl_resetToIteratorState (impl);
+
+    return MAMA_STATUS_OK;
 }
 
 
@@ -3085,23 +3320,194 @@ qpidmsgPayload_getVectorString (const msgPayload    msg,
 }
 
 mama_status
-qpidmsgPayload_getVectorDateTime (const msgPayload    msg,
-                                  const char*         name,
-                                  mama_fid_t          fid,
-                                  const mamaDateTime* result,
-                                  mama_size_t*        size)
+qpidmsgPayload_getVectorDateTime (const msgPayload     msg,
+                                  const char*          name,
+                                  mama_fid_t           fid,
+                                  const mamaDateTime** result,
+                                  mama_size_t*         size)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    mama_size_t          i         = 0;
+    qpidmsgPayloadImpl*  impl      = (qpidmsgPayloadImpl*) msg;
+    mama_status          status    = MAMA_STATUS_OK;
+    pn_timestamp_t       stamp     = 0;
+    mama_u8_t            hints     = 0;
+    mama_u8_t            precision = 0;
+    mama_u32_t           micros    = 0;
+    mama_u32_t           seconds   = 0;
+
+    if (NULL == impl || NULL == result || NULL == size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Find field */
+    status = qpidmsgPayloadImpl_findField (impl, name, fid);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        return status;
+    }
+
+    /* Move onto value[] */
+    pn_data_next (impl->mBody);
+
+    /* get size of array (stamp, precision and hints) */
+    *size  = pn_data_get_array (impl->mBody) / 3;
+
+    /* allocate space for resulting array*/
+    qpidmsgPayloadImpl_allocateBufferMemory ((void**) &impl->mField->mDataVectorDateTime,
+                                             &impl->mField->mDataVectorDateTimeCount,
+                                             (*size) * sizeof (mamaDateTime));
+
+    if (impl->mField->mDataVectorDateTimeCount > impl->mField->mDataMaxVectorDateTimeCount)
+    {
+        impl->mField->mDataMaxVectorDateTimeCount = impl->mField->mDataVectorDateTimeCount;
+    }
+
+    /* enter array */
+    pn_data_enter (impl->mBody);
+
+    for (; i != *size; ++i)
+    {
+        /* Step into the field */
+        pn_data_next (impl->mBody);
+
+        /* Pull out the 64 bit time stamp */
+        stamp = pn_data_get_atom (impl->mBody).u.as_timestamp;
+
+        /* Step into the next field */
+        pn_data_next (impl->mBody);
+
+        /* Extract the hints */
+        hints = pn_data_get_atom (impl->mBody).u.as_ubyte;
+
+        /* Step into the next field */
+        pn_data_next (impl->mBody);
+
+        /* Extract the precision */
+        precision = pn_data_get_atom (impl->mBody).u.as_ubyte;
+
+        /* Perform casts / bitwise operators to extract timestamps */
+        micros  = (mama_u32_t) stamp;
+        seconds   = (mama_u32_t) (stamp >> 32);
+
+        if (NULL == impl->mField->mDataVectorDateTime[i])
+        {
+            mamaDateTime_create(&impl->mField->mDataVectorDateTime[i]);
+        }
+        else
+        {
+            mamaDateTime_clear(impl->mField->mDataVectorDateTime[i]);
+        }
+
+        mamaDateTime_setWithHints (impl->mField->mDataVectorDateTime[i],
+                                   seconds,
+                                   micros,
+                                   (mamaDateTimePrecision) precision,
+                                   hints);
+    }
+    /* exit array */
+    pn_data_exit (impl->mBody);
+
+    /* exit field */
+    pn_data_exit (impl->mBody);
+
+    *result = impl->mField->mDataVectorDateTime;
+
+    /* Revert to the previous iterator state if applicable */
+    qpidmsgPayloadImpl_resetToIteratorState (impl);
+
+    return MAMA_STATUS_OK;
 }
 
 mama_status
 qpidmsgPayload_getVectorPrice (const msgPayload    msg,
                                const char*         name,
                                mama_fid_t          fid,
-                               const mamaPrice*    result,
+                               const mamaPrice**   result,
                                mama_size_t*        size)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    mama_size_t          i          = 0;
+    qpidmsgPayloadImpl*  impl       = (qpidmsgPayloadImpl*) msg;
+    mama_status          status     = MAMA_STATUS_OK;
+    double               priceValue = 0;
+    mamaPriceHints       priceHints = 0;
+    pn_atom_t            pnValue;
+    pn_atom_t            pnHints;
+
+    if (NULL == impl || NULL == result || NULL == size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Find field */
+    status = qpidmsgPayloadImpl_findField (impl, name, fid);
+
+    if (MAMA_STATUS_OK != status)
+    {
+        return status;
+    }
+
+    /* Move onto value[] */
+    pn_data_next (impl->mBody);
+
+    /* get size of array (price and hints = 2) */
+    *size  = pn_data_get_array (impl->mBody) / 2;
+
+    /* allocate space for resulting array*/
+    qpidmsgPayloadImpl_allocateBufferMemory ((void**) &impl->mField->mDataVectorPrice,
+                                             &impl->mField->mDataVectorPriceCount,
+                                             (*size) * sizeof (mamaPrice));
+
+    if (impl->mField->mDataVectorPriceCount > impl->mField->mDataMaxVectorPriceCount)
+    {
+        impl->mField->mDataMaxVectorPriceCount = impl->mField->mDataVectorPriceCount;
+    }
+
+    /* enter array */
+    pn_data_enter (impl->mBody);
+
+    for (; i != *size; ++i)
+    {
+        /* Move onto value and extract */
+        pn_data_next (impl->mBody);
+
+        /* Value will be the first atom */
+        pnValue = pn_data_get_atom (impl->mBody);
+
+        /* then comes the hints */
+        pn_data_next (impl->mBody);
+        pnHints = pn_data_get_atom (impl->mBody);
+
+        /* Map proton types to primitives */
+        priceValue = pnValue.u.as_double;
+        priceHints = pnHints.u.as_ubyte;
+
+        if (NULL == impl->mField->mDataVectorPrice[i])
+        {
+            mamaPrice_create(&impl->mField->mDataVectorPrice[i]);
+        }
+        else
+        {
+            mamaPrice_clear(impl->mField->mDataVectorPrice[i]);
+        }
+
+        /* Update the provided price object */
+        mamaPrice_setValue (impl->mField->mDataVectorPrice[i], priceValue);
+        mamaPrice_setHints (impl->mField->mDataVectorPrice[i], priceHints);
+    }
+    /* exit array */
+    pn_data_exit (impl->mBody);
+
+    /* exit field */
+    pn_data_exit (impl->mBody);
+
+    *result = impl->mField->mDataVectorPrice;
+
+    /* Revert to the previous iterator state if applicable */
+    qpidmsgPayloadImpl_resetToIteratorState (impl);
+
+    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -3259,6 +3665,9 @@ qpidmsgPayloadImpl_allocateBufferMemory (void**       buffer,
         }
         else
         {
+            /* set newly added bytes to 0 */
+            memset ((uint8_t*) newbuf + *size, 0, newSize - *size);
+
             *buffer = newbuf;
             *size   = newSize;
             return MAMA_STATUS_OK;
@@ -3384,7 +3793,7 @@ qpidmsgPayloadImpl_getFieldFromBuffer (pn_data_t*               buffer,
                 pn_data_exit (buffer);
             }
         }
-        /* If this is a scalar vector */
+        /* If this is a scalar, date time or price vector */
         else
         {
             target->mDataArrayCount  = element_count;
@@ -3394,7 +3803,7 @@ qpidmsgPayloadImpl_getFieldFromBuffer (pn_data_t*               buffer,
             /* If there are elements inside and we know how to interpret */
             if (element_count > 0)
             {
-                mama_size_t i               = 0;
+                mama_size_t i = 0;
                 pn_type_t   secondary_type;
 
                 /* Move onto the first, then second element to inspect */
@@ -3411,13 +3820,10 @@ qpidmsgPayloadImpl_getFieldFromBuffer (pn_data_t*               buffer,
                 if (content_type == PN_DOUBLE && secondary_type == PN_UBYTE)
                 {
                     target->mMamaType = MAMA_FIELD_TYPE_VECTOR_PRICE;
-                    /* Twice as many atoms required for a price */
-                    element_count *= 2;
                 }
 
                 qpidmsgFieldPayloadImpl_setDataArraySize (target,
                                                           element_count);
-
 
                 for (; i < target->mDataArrayCount; i++)
                 {
@@ -3868,7 +4274,7 @@ qpidmsgPayloadImpl_addFieldToPayload (msgPayload                 msg,
         const mamaDateTime* result  = NULL;
         mama_size_t         size    = 0;
 
-        qpidmsgPayload_getVectorDateTime (field, name, fid, result, &size);
+        qpidmsgPayload_getVectorDateTime (field, name, fid, &result, &size);
         return qpidmsgPayload_addVectorDateTime (msg,
                                                  name,
                                                  fid,
@@ -3881,7 +4287,7 @@ qpidmsgPayloadImpl_addFieldToPayload (msgPayload                 msg,
         const mamaPrice* result = NULL;
         mama_size_t      size   = 0;
 
-        qpidmsgPayload_getVectorPrice (field, name, fid, result, &size);
+        qpidmsgPayload_getVectorPrice (field, name, fid, &result, &size);
         return qpidmsgPayload_addVectorPrice (msg,
                                               name,
                                               fid,

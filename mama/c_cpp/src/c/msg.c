@@ -2282,7 +2282,7 @@ mamaMsg_updateVectorPrice (
     const mamaMsg         msg,
     const char*           name,
     mama_fid_t            fid,
-    const mamaPrice*      value[],
+    const mamaPrice       value[],
     mama_size_t           numElements)
 {
     mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
@@ -3051,7 +3051,7 @@ mamaMsg_getVectorDateTime (
     const mamaMsg         msg,
     const char*           name,
     mama_fid_t            fid,
-    const mamaDateTime*   result,
+    const mamaDateTime**  result,
     mama_size_t*          resultLen)
 {
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
@@ -3075,7 +3075,7 @@ mamaMsg_getVectorPrice (
     const mamaMsg         msg,
     const char*           name,
     mama_fid_t            fid,
-    const mamaPrice*      result,
+    const mamaPrice**     result,
     mama_size_t*          resultLen)
 {
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
