@@ -2752,7 +2752,6 @@ qpidmsgPayload_updateVectorTime (msgPayload          msg,
     /* Store value */
     pn_data_put_array (impl->mBody, 0, PN_LIST);
     pn_data_enter     (impl->mBody);
-
     for (i=0; i != size; i++)
     {
         mamaDateTime_getWithHints (value[i],
