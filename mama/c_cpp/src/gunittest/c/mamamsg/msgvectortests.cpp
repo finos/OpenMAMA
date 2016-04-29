@@ -31,10 +31,6 @@ using std::endl;
 #define  VECTOR_SIZE                ( 10U )
 #define  VECTOR_UPDATE_SIZE         ( 20U )
 
-#define MAMA_DATE_TIME_GET_VECTOR_CAST (const mamaDateTime*)
-#define MAMA_PRICE_GET_VECTOR_CAST     (const mamaPrice*)
-#define MAMA_PRICE_UPDATE_VECTOR_CAST  (const mamaPrice**)
-
 class MsgVectorTestsC : public ::testing::Test
 {
 protected:
@@ -3563,7 +3559,7 @@ TEST_F(MsgVectorDateTimeTestsC, AddVectorDateTime)
     mStatus = mamaMsg_getVectorDateTime (mMsg,
                                          NULL,
                                          1,
-                                         MAMA_DATE_TIME_GET_VECTOR_CAST(&mOut),
+                                         &mOut,
                                          &mOutSize);
     ASSERT_EQ( mStatus, MAMA_STATUS_OK );
     EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3619,7 +3615,7 @@ TEST_F(MsgVectorDateTimeTestsC, UpdateVectorDateTime)
         mStatus = mamaMsg_getVectorDateTime (mMsg,
                                              NULL,
                                              1,
-                                             MAMA_DATE_TIME_GET_VECTOR_CAST(&mOut),
+                                             &mOut,
                                              &mOutSize);
         EXPECT_EQ( mStatus, MAMA_STATUS_OK );
         EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3636,7 +3632,7 @@ TEST_F(MsgVectorDateTimeTestsC, UpdateVectorDateTime)
     mStatus = mamaMsg_getVectorDateTime (mMsg,
                                          NULL,
                                          1,
-                                         MAMA_DATE_TIME_GET_VECTOR_CAST(&mOut),
+                                         &mOut,
                                          &mOutSize);
 
     EXPECT_EQ( mStatus, MAMA_STATUS_OK );
@@ -3691,7 +3687,7 @@ TEST_F(MsgVectorDateTimeTestsC, GetVectorDateTime)
         mStatus = mamaMsg_getVectorDateTime (mMsg,
                                              NULL,
                                              1,
-                                             MAMA_DATE_TIME_GET_VECTOR_CAST(&mOut),
+                                             &mOut,
                                              &mOutSize);
         ASSERT_EQ( mStatus, MAMA_STATUS_OK );
         EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3751,7 +3747,7 @@ TEST_F(MsgVectorDateTimeTestsC, GetVectorDateTimeNullAdd)
     mStatus = mamaMsg_getVectorDateTime (mMsg,
                                          NULL,
                                          1,
-                                         MAMA_DATE_TIME_GET_VECTOR_CAST(&mOut),
+                                         &mOut,
                                          NULL);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
@@ -3769,7 +3765,7 @@ TEST_F(MsgVectorDateTimeTestsC, GetVectorDateTimeNullMsg)
     mStatus = mamaMsg_getVectorDateTime (NULL,
                                          NULL,
                                          1,
-                                         MAMA_DATE_TIME_GET_VECTOR_CAST(&mOut),
+                                         &mOut,
                                          &mOutSize);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
@@ -3848,7 +3844,7 @@ TEST_F(MsgVectorPriceTestsC, AddVectorPrice)
     mStatus = mamaMsg_getVectorPrice (mMsg,
                                       NULL,
                                       1,
-                                      MAMA_PRICE_GET_VECTOR_CAST(&mOut),
+                                      &mOut,
                                       &mOutSize);
     ASSERT_EQ( mStatus, MAMA_STATUS_OK );
     EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3904,7 +3900,7 @@ TEST_F(MsgVectorPriceTestsC, UpdateVectorPrice)
         mStatus = mamaMsg_getVectorPrice (mMsg,
                                           NULL,
                                           1,
-                                          MAMA_PRICE_GET_VECTOR_CAST(&mOut),
+                                          &mOut,
                                           &mOutSize);
         ASSERT_EQ( mStatus, MAMA_STATUS_OK );
         EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3913,14 +3909,14 @@ TEST_F(MsgVectorPriceTestsC, UpdateVectorPrice)
     mStatus = mamaMsg_updateVectorPrice (mMsg,
                                          NULL,
                                          1,
-                                         MAMA_PRICE_UPDATE_VECTOR_CAST(mUpdate),
+                                         mUpdate,
                                          VECTOR_UPDATE_SIZE);
     EXPECT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorPrice (mMsg,
                                       NULL,
                                       1,
-                                      (const mamaPrice*) &mOut,
+                                      &mOut,
                                       &mOutSize);
     EXPECT_EQ( mStatus, MAMA_STATUS_OK );
     EXPECT_EQ( mOutSize, VECTOR_UPDATE_SIZE );
@@ -3951,7 +3947,7 @@ TEST_F(MsgVectorPriceTestsC, UpdateVectorPriceNullMsg)
     mStatus = mamaMsg_updateVectorPrice (NULL,
                                          NULL,
                                          1,
-                                         MAMA_PRICE_UPDATE_VECTOR_CAST(mUpdate),
+                                         mUpdate,
                                          VECTOR_UPDATE_SIZE);
     CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
@@ -3974,7 +3970,7 @@ TEST_F(MsgVectorPriceTestsC, GetVectorPrice)
         mStatus = mamaMsg_getVectorPrice (mMsg,
                                           NULL,
                                           1,
-                                          MAMA_PRICE_GET_VECTOR_CAST(&mOut),
+                                          &mOut,
                                           &mOutSize);
         ASSERT_EQ( mStatus, MAMA_STATUS_OK );
         EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3992,14 +3988,14 @@ TEST_F(MsgVectorPriceTestsC, GetVectorPrice)
     mStatus = mamaMsg_updateVectorPrice (mMsg,
                                          NULL,
                                          1,
-                                         MAMA_PRICE_UPDATE_VECTOR_CAST(mUpdate),
+                                         mUpdate,
                                          VECTOR_UPDATE_SIZE);
     EXPECT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorPrice (mMsg,
                                       NULL,
                                       1,
-                                      MAMA_PRICE_GET_VECTOR_CAST(&mOut),
+                                      &mOut,
                                       &mOutSize);
 
     EXPECT_EQ( mStatus, MAMA_STATUS_OK );
@@ -4032,7 +4028,7 @@ TEST_F(MsgVectorPriceTestsC, GetVectorPriceNullAdd)
     mStatus = mamaMsg_getVectorPrice (mMsg,
                                       NULL,
                                       1,
-                                      MAMA_PRICE_GET_VECTOR_CAST(&mOut),
+                                      &mOut,
                                       NULL);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
@@ -4050,7 +4046,7 @@ TEST_F(MsgVectorPriceTestsC, GetVectorPriceNullMsg)
     mStatus = mamaMsg_getVectorPrice (NULL,
                                       NULL,
                                       1,
-                                      MAMA_PRICE_GET_VECTOR_CAST(&mOut),
+                                      &mOut,
                                       &mOutSize);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
