@@ -1623,9 +1623,14 @@ namespace Wombat
                 // uniqueId is for the entry manager
                 char uniqueId[64];  /* catenate the price to the symbol */
                 char* uniqueIdPtr = uniqueId;
+
+                size_t places = (size_t) level->getMamaPrice ().getPrecision ();
+                if (places < MAMA_PRICE_PREC_10 || places > MAMA_PRICE_PREC_100000000)
+                    places = (size_t) MAMA_PRICE_PREC_100000000;
+
                 wmFastCopyAndShiftStr (&uniqueIdPtr, &lenAvail, id);
                 wmFastPrintAndShiftF64 (&uniqueIdPtr, &lenAvail,
-                                        level->getPrice(), 4); 
+                                        level->getPrice(), places);
                 uniqueIdPtr[0] = (char)level->getSide();
                 uniqueIdPtr[1] = '\0';
 
