@@ -158,7 +158,7 @@ TEST_F (MamaPublisherTestC, CreateDestroy)
  *
  *  Expected Result: MAMA_STATUS_OK
  */
-TEST_F (MamaPublisherTestC, GetTransport)
+TEST_F (MamaPublisherTestC, GetTransportImpl)
 {
     mamaPublisher    publisher = NULL;
     mamaTransport    tport     = NULL;
