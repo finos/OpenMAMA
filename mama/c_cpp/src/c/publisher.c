@@ -207,7 +207,7 @@ _createByIndex (mamaPublisher*              result,
             mamaPublisherCallbacks_deallocate(cb);
             list_destroy (impl->mPendingActions, NULL, NULL);
             mamaPublisherImpl_cleanup (impl);
-			return status;
+            return status;
         }
     }
     mamaPublisherCallbacks_deallocate(cb);
