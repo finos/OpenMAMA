@@ -184,7 +184,6 @@ _createByIndex (mamaPublisher*              result,
                                     (mamaPublisher)impl)))) 
     {
         mamaPublisherImpl_cleanup (impl);
-        free (impl);
         return status;
     }
 
@@ -205,11 +204,10 @@ _createByIndex (mamaPublisher*              result,
                 impl->mClosure);
         if (MAMA_STATUS_OK != status)
         {
-            mamaPublisherImpl_cleanup (impl);
             mamaPublisherCallbacks_deallocate(cb);
             list_destroy (impl->mPendingActions, NULL, NULL);
-            free (impl);
-            return status;
+            mamaPublisherImpl_cleanup (impl);
+			return status;
         }
     }
     mamaPublisherCallbacks_deallocate(cb);
