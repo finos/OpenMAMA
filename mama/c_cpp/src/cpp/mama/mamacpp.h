@@ -507,6 +507,12 @@ private:
      * Utility class. No instances.
      */
     Mama (void) {}
+
+    /**
+     * vector of MamaQueue pointers to be tidied up at Mama::close()
+     */
+    static std::vector<MamaQueue*> defaultQueueWrappers;
+
 };
 
 } /* namespace Wombat */

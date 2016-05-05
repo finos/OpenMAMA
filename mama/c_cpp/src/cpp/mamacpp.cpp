@@ -37,6 +37,7 @@ namespace Wombat
     /******************************************************************************
      * Mama Implementation
      */
+    std::vector<MamaQueue*> Mama::defaultQueueWrappers;
 
     const char* Mama::getVersion (mamaBridge bridgeImpl)
     {
@@ -153,6 +154,18 @@ namespace Wombat
     void Mama::close ()
     {
         // Close mama
+        for (std::vector<MamaQueue*>::iterator iter = Mama::defaultQueueWrappers.begin(); iter != Mama::defaultQueueWrappers.end(); ++iter)
+        {
+            MamaQueue* defaultQueue = *iter;
+
+            defaultQueue->setCValue(NULL);  // middleware  bridge's respobsibility to clean up the c-queue
+
+            delete(defaultQueue);           //delete CPP wrapper
+
+        }
+
+        Mama::defaultQueueWrappers.clear();
+
         mamaTry (mama_close ());
     }
 
@@ -284,6 +297,7 @@ namespace Wombat
             {
                 defaultQueue = new MamaQueue(defaultQueueC);
                 mamaQueue_setClosure(defaultQueueC, (void*) defaultQueue);
+                Mama::defaultQueueWrappers.push_back(defaultQueue);
             }
             return defaultQueue;
         }
