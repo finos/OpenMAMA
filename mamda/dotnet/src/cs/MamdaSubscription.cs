@@ -256,8 +256,7 @@ namespace Wombat
 		{
 			if (mSubscription != null)
 			{
-				mSubscription.deallocate();
-				mSubscription = null;
+				mSubscription.destroyEx();
 			}
 		}
 
@@ -486,6 +485,8 @@ namespace Wombat
 			public void onDestroy (
 				MamaSubscription subscription)
 			{
+				subscription.deallocate ();
+				mSubscription = null;
 			}
 		}
 

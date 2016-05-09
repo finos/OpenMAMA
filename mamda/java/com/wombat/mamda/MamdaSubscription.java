@@ -266,8 +266,7 @@ public class MamdaSubscription
     {
         if( mSubscription != null )
         {
-            mSubscription.destroy();
-            mSubscription = null;
+            mSubscription.destroyEx();
         }
         mValid = false;
     }  
@@ -608,7 +607,8 @@ public class MamdaSubscription
 
         public void onDestroy (MamaSubscription subscription)            
         {
-            // Do nothing
+            subscription.deallocate ();
+            mSubscription = null;
         }
     }
 }
