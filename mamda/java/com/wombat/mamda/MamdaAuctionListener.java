@@ -67,7 +67,7 @@ public class MamdaAuctionListener implements MamdaMsgListener,
     public MamaString       mSymbol                = new MamaString();
 
     public MamaPrice            mUncrossPrice      = new MamaPrice();
-    public MamaLong             mUncrossVolume     = new MamaLong();
+    public MamaDouble           mUncrossVolume     = new MamaDouble();
     public MamdaUncrossPriceInd mUncrossPriceInd   = new MamdaUncrossPriceInd();
         
     public MamdaFieldState  mSrcTimeFieldState     = new MamdaFieldState();
@@ -85,9 +85,6 @@ public class MamdaAuctionListener implements MamdaMsgListener,
     public MamdaFieldState  mUncrossVolumeFieldState   = new MamdaFieldState();
     public MamdaFieldState  mUncrossPriceIndFieldState = new MamdaFieldState();
 
-    public MamaPrice        tmpPrice        = new MamaPrice();
-    public MamaDouble       tmpDouble       = new MamaDouble();
-   
     /**
      * clearCache - clears all cached data by resetting to 
      * default values.
@@ -106,7 +103,7 @@ public class MamdaAuctionListener implements MamdaMsgListener,
         mSymbol.setValue      (null);  mSymbolFieldState.setState      (MamdaFieldState.NOT_INITIALISED);
       
         mUncrossPrice.clear     ();
-        mUncrossVolume.setValue (0);
+        mUncrossVolume.setValue (0.0);
         mUncrossPriceInd.set    (MamdaUncrossPriceInd.UNCROSS_NONE);
       
         mUncrossPriceFieldState.setState    (MamdaFieldState.NOT_INITIALISED);
@@ -232,9 +229,9 @@ public class MamdaAuctionListener implements MamdaMsgListener,
      * getUncrossVolume
      * @return mUncrossVolume
      */
-    public long getUncrossVolume()
+    public MamaDouble getUncrossVolume()
     {
-        return mUncrossVolume.getValue();
+        return mUncrossVolume;
     }
 
     /**
@@ -670,7 +667,7 @@ public class MamdaAuctionListener implements MamdaMsgListener,
         public void onUpdate (MamdaAuctionListener listener,
                               MamaMsgField         field)
         {
-            listener.mUncrossVolume.setValue (field.getI64());
+            listener.mUncrossVolume.setValue (field.getF64());
             listener.mUncrossVolumeFieldState.setState (MamdaFieldState.MODIFIED);
         }
 
