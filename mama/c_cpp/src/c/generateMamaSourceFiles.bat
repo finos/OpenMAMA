@@ -1,7 +1,7 @@
 set BUILD_DIR=%1
 set VERSION_MAJOR=2
-set VERSION_MINOR=3
-set VERSION_RELEASE=3
+set VERSION_MINOR=4
+set VERSION_RELEASE=0
 set RC_VERSION_NUMERICAL=1
 set RC_VERSION_STRING=1
 set MAMACDLL=libmamacmdd.dll
@@ -29,6 +29,6 @@ echo "generating %BUILD_DIR%/entitlementlibraries.c"
 
 echo /* This file was automatically generated */ > %BUILD_DIR%\entitlementlibraries.c
 echo #include ^<mamainternal.h^> >> %BUILD_DIR%\entitlementlibraries.c
-echo const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {0}; >> %BUILD_DIR%\entitlementlibraries.c
+echo const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {"noop"}; >> %BUILD_DIR%\entitlementlibraries.c
 
 echo "complete" 

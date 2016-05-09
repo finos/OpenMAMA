@@ -70,7 +70,7 @@ qpidBridge_createImpl (mamaBridge* result);
  */
 MAMAExpDLL
 extern mama_status
-qpidBridge_init (void);
+qpidBridge_init (mamaBridge bridgeImpl);
 
 /**
  * This function is responsible for initializing all underlying structures
@@ -1152,6 +1152,31 @@ extern mama_status
 qpidBridgeMamaPublisher_sendFromInbox (publisherBridge publisher,
                                        mamaInbox       inbox,
                                        mamaMsg         msg);
+
+/**
+ * This method informs the middleware bridge implementation of the callbacks
+ * to use when various situations are encountered as defined by
+ * mamaPublisherCallbacks.
+ *
+ * In qpid, this won't wire error callbacks yet because trackers have not yet
+ * been written for error conditions. That will tie in with github issue
+ * https://github.com/OpenMAMA/OpenMAMA/issues/65.
+ *
+ * Requirement:      Optional
+ *
+ * @param publisher  This is the qpid publisher implementation to use
+ * @param queue      The publisher queue
+ * @param cb         The callbacks to trigger
+ * @param closure    The closure to send back to any callbacks triggered
+ *
+ * @return mama_status indicating whether the method succeeded or failed.
+ */
+MAMAExpDLL
+extern mama_status
+qpidBridgeMamaPublisher_setUserCallbacks (publisherBridge         publisher,
+                                          mamaQueue               queue,
+                                          mamaPublisherCallbacks* cb,
+                                          void*                   closure);
 
 
 /*=========================================================================

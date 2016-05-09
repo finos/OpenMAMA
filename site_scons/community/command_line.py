@@ -27,6 +27,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        PathVariable('oea_home','Path to oea entitlements home',None, PathVariable.PathIsDir),
        ListVariable('entitlements', 'List of entitlements libraries to enforce e.g. \'oea\' (NOTE: 1st in list the default entitlements library to use.)', 'noop',
                      names = ['oea','noop'] ),
+       BoolVariable('debug', 'Build without compiler optimisation.',False),
        PathVariable('gtest_home','Path to Google Test home',None, PathVariable.PathIsDir),
        PathVariable('junit_home','Path to Junit home',None, PathVariable.PathIsDir),
        ListVariable('middleware','Middleware(s) to be compiled in', 'avis', names = ['avis', 'qpid'] ),

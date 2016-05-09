@@ -73,7 +73,7 @@ static void handleNoSubscribers (msgCallback*       callback,
                                  SubjectContext*    ctx,
                                  const char*        userSymbol);
 
-static int checkEntitlement     (msgCallback*       callback,
+static mama_bool_t isEntitled   (msgCallback*       callback,
                                  mamaMsg            msg,
                                  SubjectContext*    ctx);
 
@@ -82,12 +82,6 @@ listenerMsgCallback_create( listenerMsgCallback *result,
                             mamaSubscription subscription )
 {
     msgCallback* callback = (msgCallback*)calloc( 1, sizeof( msgCallback ) );
-
-    mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
-    if( NULL == gEntitlementBridges[0] && mamaInternal_getEntitlementBridgeCount() == 0)
-    {
-        return MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
-    }
 
     if( callback == NULL )
     {
@@ -264,7 +258,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     }
 
    /* Only check entitlements for initials and/or recaps. */
-    if(!checkEntitlement (self, msg, ctx))
+    if(!isEntitled (self, msg, ctx))
         return;
 
     if (gGenerateQueueStats)
@@ -614,14 +608,12 @@ static void handleNoSubscribers (msgCallback *callback,
  */
 
 
-static int
-checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
+static mama_bool_t
+isEntitled( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
 {
-    int             result = 0;
     int32_t         value  = 0;
     mamaBridgeImpl* bridge = NULL;
-
-    if (NULL == gEntitlementBridges[0])  return 1;  /* No entitlements enabled */
+    mama_status     status = MAMA_STATUS_NOT_ENTITLED;
 
     if( ctx->mEntitlementAlreadyVerified )
     {
@@ -655,29 +647,27 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
             return 1;
         }
         ctx->mEntitleCode = value;
-        if (ctx->mEntitlementBridge != NULL)
+        status = ctx->mEntitlementBridge->registerSubjectContext(ctx);
+        if (MAMA_STATUS_OK != status)
         {
-            mama_status status = ctx->mEntitlementBridge->registerSubjectContext(ctx);
-            if (MAMA_STATUS_OK != status)
-            {
-                const char* userSymbol  = NULL;
-                void*       closure     = NULL;
-                mamaMsgCallbacks *cbs =
-                    mamaSubscription_getUserCallbacks (self->mSubscription);
+            const char* userSymbol  = NULL;
+            void*       closure     = NULL;
+            mamaMsgCallbacks *cbs =
+                mamaSubscription_getUserCallbacks (self->mSubscription);
 
-                mamaSubscription_getSymbol  (self->mSubscription, &userSymbol),
-                mamaSubscription_getClosure (self->mSubscription, &closure);
+            mamaSubscription_getSymbol  (self->mSubscription, &userSymbol),
+            mamaSubscription_getClosure (self->mSubscription, &closure);
 
-                mama_setLastError (MAMA_ERROR_NOT_ENTITLED);
+            mama_setLastError (MAMA_ERROR_NOT_ENTITLED);
 
-                mamaSubscription_deactivate (self->mSubscription);
+            mamaSubscription_deactivate (self->mSubscription);
 
-                cbs->onError (self->mSubscription,
-                              MAMA_STATUS_NOT_ENTITLED,
-                              NULL,
-                              userSymbol,
-                              closure);
-            }
+            cbs->onError (self->mSubscription,
+                          MAMA_STATUS_NOT_ENTITLED,
+                          NULL,
+                          userSymbol,
+                          closure);
+            return 0;
         }
     }
     else
@@ -687,12 +677,8 @@ checkEntitlement( msgCallback *callback, mamaMsg msg, SubjectContext* ctx )
         return 1;
     }
 
-    if( result )
-    {
-        ctx->mEntitlementAlreadyVerified = 1;
-    }
-
-    return result;
+    ctx->mEntitlementAlreadyVerified = 1;
+    return 1;
 }
 
 void listenerMsgCallbackImpl_logUnknownStatus(SubjectContext *ctx, mamaMsgStatus status,

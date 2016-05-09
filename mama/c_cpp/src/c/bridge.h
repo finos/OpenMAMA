@@ -60,193 +60,6 @@ typedef struct  msgBridge_*         msgBridge;
 /* The default timeout value when closing the default queue is 2s. */
 #define MAMA_BRIDGE_DEFAULT_QUEUE_DEFAULT_TIMEOUT     2000
 
-/*
- Used in the bridge layer to set all appropriate functions
- on the mamaBridgeImpl structure
-
- @param implIdentifer The identifier for the middleware rv, lbm, wmw or avis
- @param bridgeImpl    Pointer to the mamaBridgeImpl structure
- */
-#define INITIALIZE_BRIDGE(bridgeImpl, implIdentifier)                          \
-do                                                                             \
-{                                                                              \
-    bridgeImpl->mClosure            =   NULL;                                  \
-    bridgeImpl->mNativeMsgBridge    =   NULL;                                  \
-    bridgeImpl->mLock               =   wlock_create();                        \
-    /*mama.c function pointers*/                                               \
-    bridgeImpl->bridgeOpen          =   implIdentifier ## Bridge_open;         \
-    bridgeImpl->bridgeClose         =   implIdentifier ## Bridge_close;        \
-    bridgeImpl->bridgeStart         =   implIdentifier ## Bridge_start;        \
-    bridgeImpl->bridgeStop          =   implIdentifier ## Bridge_stop;         \
-    bridgeImpl->bridgeGetVersion    =   implIdentifier ## Bridge_getVersion;   \
-    bridgeImpl->bridgeGetName       =   implIdentifier ## Bridge_getName;      \
-    bridgeImpl->bridgeGetDefaultPayloadId =                                    \
-                    implIdentifier ## Bridge_getDefaultPayloadId;              \
-    /*Queue related function pointers*/                                        \
-    bridgeImpl->bridgeMamaQueueCreate   =                                      \
-                    implIdentifier ## BridgeMamaQueue_create;                  \
-    bridgeImpl->bridgeMamaQueueCreateUsingNative   =                           \
-                    implIdentifier ## BridgeMamaQueue_create_usingNative;      \
-    bridgeImpl->bridgeMamaQueueDestroy  =                                      \
-                    implIdentifier ## BridgeMamaQueue_destroy;                 \
-    bridgeImpl->bridgeMamaQueueGetEventCount    =                              \
-                    implIdentifier ## BridgeMamaQueue_getEventCount;           \
-    bridgeImpl->bridgeMamaQueueDispatch =                                      \
-                    implIdentifier ## BridgeMamaQueue_dispatch;                \
-    bridgeImpl->bridgeMamaQueueTimedDispatch    =                              \
-                    implIdentifier ## BridgeMamaQueue_timedDispatch;           \
-    bridgeImpl->bridgeMamaQueueDispatchEvent    =                              \
-                    implIdentifier ## BridgeMamaQueue_dispatchEvent;           \
-    bridgeImpl->bridgeMamaQueueEnqueueEvent    =                               \
-                    implIdentifier ## BridgeMamaQueue_enqueueEvent;            \
-    bridgeImpl->bridgeMamaQueueStopDispatch     =                              \
-                    implIdentifier ## BridgeMamaQueue_stopDispatch;            \
-    bridgeImpl->bridgeMamaQueueSetEnqueueCallback   =                          \
-                    implIdentifier ## BridgeMamaQueue_setEnqueueCallback;      \
-    bridgeImpl->bridgeMamaQueueRemoveEnqueueCallback    =                      \
-                    implIdentifier ## BridgeMamaQueue_removeEnqueueCallback;   \
-    bridgeImpl->bridgeMamaQueueGetNativeHandle  =                              \
-                    implIdentifier ## BridgeMamaQueue_getNativeHandle;         \
-    bridgeImpl->bridgeMamaQueueSetLowWatermark =                               \
-                    implIdentifier ## BridgeMamaQueue_setLowWatermark;         \
-    bridgeImpl->bridgeMamaQueueSetHighWatermark =                              \
-                    implIdentifier ## BridgeMamaQueue_setHighWatermark;        \
-    /*Transport related function pointers*/                                    \
-    bridgeImpl->bridgeMamaTransportIsValid  =                                  \
-                    implIdentifier ## BridgeMamaTransport_isValid;             \
-    bridgeImpl->bridgeMamaTransportDestroy  =                                  \
-                    implIdentifier ## BridgeMamaTransport_destroy;             \
-    bridgeImpl->bridgeMamaTransportCreate   =                                  \
-                    implIdentifier ## BridgeMamaTransport_create;              \
-    bridgeImpl->bridgeMamaTransportForceClientDisconnect   =                   \
-                    implIdentifier ## BridgeMamaTransport_forceClientDisconnect;\
-    bridgeImpl->bridgeMamaTransportFindConnection   =                          \
-                    implIdentifier ## BridgeMamaTransport_findConnection;      \
-    bridgeImpl->bridgeMamaTransportGetAllConnections    =                      \
-                    implIdentifier ## BridgeMamaTransport_getAllConnections;   \
-    bridgeImpl->bridgeMamaTransportGetAllConnectionsForTopic    =              \
-                    implIdentifier ## BridgeMamaTransport_getAllConnectionsForTopic; \
-    bridgeImpl->bridgeMamaTransportFreeAllConnections   =                      \
-                    implIdentifier ## BridgeMamaTransport_freeAllConnections;  \
-    bridgeImpl->bridgeMamaTransportGetAllServerConnections    =                \
-                implIdentifier ## BridgeMamaTransport_getAllServerConnections; \
-    bridgeImpl->bridgeMamaTransportFreeAllServerConnections   =                \
-                implIdentifier ## BridgeMamaTransport_freeAllServerConnections;\
-    bridgeImpl->bridgeMamaTransportGetNumLoadBalanceAttributes =               \
-            implIdentifier ## BridgeMamaTransport_getNumLoadBalanceAttributes; \
-    bridgeImpl->bridgeMamaTransportGetLoadBalanceScheme  =                     \
-                    implIdentifier ## BridgeMamaTransport_getLoadBalanceScheme;\
-    bridgeImpl->bridgeMamaTransportGetLoadBalanceSharedObjectName  =           \
-        implIdentifier ## BridgeMamaTransport_getLoadBalanceSharedObjectName;  \
-    bridgeImpl->bridgeMamaTransportSendMsgToConnection =                       \
-                implIdentifier ## BridgeMamaTransport_sendMsgToConnection;     \
-    bridgeImpl->bridgeMamaTransportIsConnectionIntercepted =                   \
-                implIdentifier ## BridgeMamaTransport_isConnectionIntercepted; \
-    bridgeImpl->bridgeMamaTransportInstallConnectConflateMgr =                 \
-            implIdentifier ## BridgeMamaTransport_installConnectConflateMgr;   \
-    bridgeImpl->bridgeMamaTransportUninstallConnectConflateMgr =               \
-            implIdentifier ## BridgeMamaTransport_uninstallConnectConflateMgr; \
-    bridgeImpl->bridgeMamaTransportStartConnectionConflation =                 \
-            implIdentifier ## BridgeMamaTransport_startConnectionConflation;   \
-    bridgeImpl->bridgeMamaTransportRequestConflation =                         \
-            implIdentifier ## BridgeMamaTransport_requestConflation;           \
-    bridgeImpl->bridgeMamaTransportRequestEndConflation =                      \
-            implIdentifier ## BridgeMamaTransport_requestEndConflation;        \
-    bridgeImpl->bridgeMamaTransportGetNativeTransport   =                      \
-            implIdentifier ## BridgeMamaTransport_getNativeTransport;          \
-    bridgeImpl->bridgeMamaTransportGetNativeTransportNamingCtx =               \
-            implIdentifier ## BridgeMamaTransport_getNativeTransportNamingCtx; \
-    /*Subscription related function pointers*/                                 \
-    bridgeImpl->bridgeMamaSubscriptionCreate    =                              \
-                    implIdentifier ## BridgeMamaSubscription_create;           \
-    bridgeImpl->bridgeMamaSubscriptionCreateWildCard    =                      \
-                    implIdentifier ## BridgeMamaSubscription_createWildCard;   \
-    bridgeImpl->bridgeMamaSubscriptionMute  =                                  \
-                    implIdentifier ## BridgeMamaSubscription_mute;             \
-    bridgeImpl->bridgeMamaSubscriptionDestroy   =                              \
-                    implIdentifier ## BridgeMamaSubscription_destroy;          \
-    bridgeImpl->bridgeMamaSubscriptionIsValid   =                              \
-                    implIdentifier ## BridgeMamaSubscription_isValid;          \
-    bridgeImpl->bridgeMamaSubscriptionHasWildcards  =                          \
-                    implIdentifier ## BridgeMamaSubscription_hasWildcards;     \
-    bridgeImpl->bridgeMamaSubscriptionGetPlatformError  =                      \
-                    implIdentifier ## BridgeMamaSubscription_getPlatformError; \
-    bridgeImpl->bridgeMamaSubscriptionSetTopicClosure  =                       \
-                    implIdentifier ## BridgeMamaSubscription_setTopicClosure;  \
-    bridgeImpl->bridgeMamaSubscriptionMuteCurrentTopic  =                      \
-                    implIdentifier ## BridgeMamaSubscription_muteCurrentTopic; \
-    bridgeImpl->bridgeMamaSubscriptionIsTportDisconnected  =                   \
-                    implIdentifier ## BridgeMamaSubscription_isTportDisconnected;\
-    /*Timer related function pointers*/                                        \
-    bridgeImpl->bridgeMamaTimerCreate   =                                      \
-                    implIdentifier ## BridgeMamaTimer_create;                  \
-    bridgeImpl->bridgeMamaTimerDestroy  =                                      \
-                    implIdentifier ## BridgeMamaTimer_destroy;                 \
-    bridgeImpl->bridgeMamaTimerReset    =                                      \
-                    implIdentifier ## BridgeMamaTimer_reset;                   \
-    bridgeImpl->bridgeMamaTimerSetInterval  =                                  \
-                    implIdentifier ## BridgeMamaTimer_setInterval;             \
-    bridgeImpl->bridgeMamaTimerGetInterval  =                                  \
-                    implIdentifier ## BridgeMamaTimer_getInterval;             \
-    /*IO related function pointers*/                                           \
-    bridgeImpl->bridgeMamaIoCreate  =                                          \
-                    implIdentifier ## BridgeMamaIo_create;                     \
-    bridgeImpl->bridgeMamaIoGetDescriptor   =                                  \
-                    implIdentifier ## BridgeMamaIo_getDescriptor;              \
-    bridgeImpl->bridgeMamaIoDestroy =                                          \
-                    implIdentifier ## BridgeMamaIo_destroy;                    \
-    /*Publisher related function pointers*/                                    \
-    bridgeImpl->bridgeMamaPublisherCreateByIndex =                             \
-                    implIdentifier ## BridgeMamaPublisher_createByIndex;       \
-    bridgeImpl->bridgeMamaPublisherDestroy =                                   \
-                    implIdentifier ## BridgeMamaPublisher_destroy;             \
-    bridgeImpl->bridgeMamaPublisherSend =                                      \
-                    implIdentifier ## BridgeMamaPublisher_send;                \
-    bridgeImpl->bridgeMamaPublisherSendFromInbox    =                          \
-                    implIdentifier ## BridgeMamaPublisher_sendFromInbox;       \
-    bridgeImpl->bridgeMamaPublisherSendFromInboxByIndex    =                   \
-                    implIdentifier ## BridgeMamaPublisher_sendFromInboxByIndex;\
-    bridgeImpl->bridgeMamaPublisherSendReplyToInbox =                          \
-                    implIdentifier ## BridgeMamaPublisher_sendReplyToInbox;    \
-    bridgeImpl->bridgeMamaPublisherSendReplyToInboxHandle =                          \
-                    implIdentifier ## BridgeMamaPublisher_sendReplyToInboxHandle;    \
-    /*inbox related function pointers*/                                        \
-    bridgeImpl->bridgeMamaInboxCreate   =                                      \
-                    implIdentifier ## BridgeMamaInbox_create;                  \
-    bridgeImpl->bridgeMamaInboxCreateByIndex =                                 \
-                    implIdentifier ## BridgeMamaInbox_createByIndex;           \
-    bridgeImpl->bridgeMamaInboxDestroy  =                                      \
-                    implIdentifier ## BridgeMamaInbox_destroy;                 \
-    /*msg related function pointers*/                                          \
-    bridgeImpl->bridgeMamaMsgCreate     =                                      \
-                    implIdentifier  ## BridgeMamaMsg_create;                   \
-    bridgeImpl->bridgeMamaMsgDestroy    =                                      \
-                    implIdentifier ## BridgeMamaMsg_destroy;                   \
-    bridgeImpl->bridgeMamaMsgDestroyMiddlewareMsg    =                         \
-                    implIdentifier ## BridgeMamaMsg_destroyMiddlewareMsg;      \
-    bridgeImpl->bridgeMamaMsgDetach     =                                      \
-                    implIdentifier ## BridgeMamaMsg_detach;                    \
-    bridgeImpl->bridgeMamaMsgIsFromInbox        =                              \
-                    implIdentifier ## BridgeMamaMsg_isFromInbox;               \
-    bridgeImpl->bridgeMamaMsgGetPlatformError   =                              \
-                    implIdentifier ## BridgeMamaMsg_getPlatformError;          \
-    bridgeImpl->bridgeMamaMsgSetSendSubject   =                                \
-                    implIdentifier ## BridgeMamaMsg_setSendSubject;            \
-    bridgeImpl->bridgeMamaMsgGetNativeHandle   =                               \
-                    implIdentifier ## BridgeMamaMsg_getNativeHandle;           \
-    bridgeImpl->bridgeMamaMsgDuplicateReplyHandle    =                         \
-                    implIdentifier ## BridgeMamaMsg_duplicateReplyHandle;      \
-    bridgeImpl->bridgeMamaMsgCopyReplyHandle    =                               \
-                    implIdentifier ## BridgeMamaMsg_copyReplyHandle;            \
-    bridgeImpl->bridgeMamaMsgSetReplyHandle    =                               \
-                    implIdentifier ## BridgeMamaMsgImpl_setReplyHandle;        \
-   bridgeImpl->bridgeMamaMsgSetReplyHandleAndIncrement    =                    \
-                    implIdentifier ## BridgeMamaMsgImpl_setReplyHandleAndIncrement;    \
-    bridgeImpl->bridgeMamaMsgDestroyReplyHandle    =                         \
-                    implIdentifier ## BridgeMamaMsg_destroyReplyHandle;        \
-}                                                                              \
-while(0)                                                                       \
-
 /*===================================================================
  =                      Used in mama.c                              =
  ====================================================================*/
@@ -254,7 +67,7 @@ while(0)                                                                       \
 typedef void (*bridge_createImpl)(mamaBridge* result);
 
 /*Called when loading/creating a bridge */
-typedef mama_status (*bridge_init) (void);
+typedef mama_status (*bridge_init) (mamaBridge bridgeImpl);
 
 /*Called by mama_open()*/
 typedef mama_status (*bridge_open)(mamaBridge bridgeImpl);
@@ -710,7 +523,6 @@ typedef struct mamaBridgeImpl_
 
     /*Used in bridge.c*/
     mama_bool_t  mEntitleDeferred;
-    mama_bool_t  mEntitleReadOnly;
 
     /*Used in mama.c*/
     bridge_open                     bridgeOpen;
@@ -885,6 +697,14 @@ mamaBridgeImpl_getProperty (mamaBridge bridgeImpl, const char* property);
 MAMAExpDLL
 extern mama_bool_t
 mamaBridgeImpl_areEntitlementsDeferred (mamaBridge bridgeImpl);
+
+MAMAExpDLL
+const char*
+mamaBridgeImpl_getMetaProperty (mamaBridge bridgeImpl, const char* property);
+
+MAMAExpDLL
+extern void
+mamaBridgeImpl_populateBridgeMetaData (mamaBridge bridgeImpl);
 
 #if defined(__cplusplus)
 }

@@ -31,14 +31,16 @@
 #include "transportbridge.h"
 #include "io.h"
 
+#define AVIS_BRIDGE_NAME "avis"
+
 timerHeap gAvisTimerHeap;
 
-mama_status avisBridge_init (void)
+mama_status avisBridge_init (mamaBridge bridgeImpl)
 {
     mama_status status = MAMA_STATUS_OK;
-    /* The bridge actually doesn't need to begin any initialisation at this
-     * stage, thus can ignore this function.
-     */
+
+    /* Will set the bridge's compile time MAMA version */
+    MAMA_SET_BRIDGE_COMPILE_TIME_VERSION(AVIS_BRIDGE_NAME);
 
     return status;
 }
@@ -52,7 +54,7 @@ avisBridge_getVersion (void)
 const char*
 avisBridge_getName (void)
 {
-    return "avis";
+    return AVIS_BRIDGE_NAME;
 }
 
 static const char* PAYLOAD_NAMES[] = {"avismsg",NULL};

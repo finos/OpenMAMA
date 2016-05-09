@@ -94,7 +94,7 @@ oeaEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle);
  * @param isSnapshot Value to update object to.
  */
 mama_status
-oeaEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot);
+oeaEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle handle, int isSnapshot);
 
 /**
  * Checks with entitlements implementation if user is entitled to subscribe to topic.

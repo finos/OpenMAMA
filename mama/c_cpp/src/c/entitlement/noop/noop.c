@@ -48,16 +48,13 @@ mama_status
 noopEntitlementBridge_init(entitlementBridge* bridge)
 {
     mama_log (MAMA_LOG_LEVEL_WARN,
-                "\n********************************************************************************\n"
-                "Note: This build of the MAMA API is not enforcing entitlement checks.\n"
-                "Please see the Licensing file for details\n"
-                "**********************************************************************************");
-
-    noopEntitlementBridge* noopBridge = (noopEntitlementBridge*) calloc(1, sizeof(noopEntitlementBridge));
-    if (NULL == noopBridge) return MAMA_STATUS_NOMEM;
+              "\n********************************************************************************\n"
+              "Note: This build of the MAMA API is not enforcing entitlement checks.\n"
+              "Please see the Licensing file for details\n"
+              "**********************************************************************************");
 
     /* set mamaEntitlemententitlement bridge pointer to bridge implementation struct */
-    *bridge = noopBridge;
+    *bridge = NULL;
 
     return MAMA_STATUS_OK;
 }
@@ -73,21 +70,15 @@ noopEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, Su
 
     mama_status                         status;
     mamaEntitlementSubscription         mamaEntSub    = NULL;
-    noopEntitlementSubscriptionHandle*  noopSubHandle = NULL;
-
-    /* Allocate bridge level entitlement subscription object*/
-    noopSubHandle = (noopEntitlementSubscriptionHandle*) calloc (1, sizeof(noopEntitlementSubscriptionHandle));
-    if (NULL == mamaEntSub) return MAMA_STATUS_NOMEM;
 
     /* Allocate mama_level entitlement subscription object and set implementation struct pointer. */
     status = mamaEntitlementBridge_createSubscription(&mamaEntSub);
     if (MAMA_STATUS_OK != status)
     {
-        free(noopSubHandle); /* Tidy up allocated but unasigned subscription object. */
         return status;
     }
 
-    mamaEntSub->mImpl               = noopSubHandle;
+    mamaEntSub->mImpl               = NULL;
     mamaEntSub->mEntitlementBridge  = mamaEntBridge;
 
     /* Add mama level struct to subscription SubjectContext. */
@@ -101,12 +92,11 @@ mama_status
 noopEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle)
 {
     mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_destroySubscription():");
-
     return MAMA_STATUS_OK;
 }
 
 mama_status
-noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle* handle, int isSnapshot)
+noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle handle, int isSnapshot)
 {
     mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_setIsSnapShot():");
 	return MAMA_STATUS_OK;

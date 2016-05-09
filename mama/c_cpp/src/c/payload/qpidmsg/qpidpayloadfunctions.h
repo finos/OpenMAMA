@@ -35,24 +35,6 @@ extern "C" {
   =========================================================================*/
 
 /**
- * Called when loading/creating a payload bridge. Creates the mamaPayloadBridge
- * object. Uses the INITIALIZE_PAYLOAD_BRIDGE macro to assign pointers for
- * appropriate method calls to the bridge object, returning both the object and
- * the type via the method parameters. Can also make use of the objects closure
- * element to pass arbitrary data back if necessary.
- *
- * Requirement: Required
- *
- * @param result A pointer to the payload bridge object created by the call.
- * @param identifier A character indicating the type of payload bridge created.
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-MAMAExpBridgeDLL
-mama_status
-qpidmsgPayload_createImpl      (mamaPayloadBridge* result, char* identifier);
-
-/**
  * Called when loading/creating a payload bridge.
  *
  * Requirement: Required
@@ -63,7 +45,7 @@ qpidmsgPayload_createImpl      (mamaPayloadBridge* result, char* identifier);
  */
 MAMAExpBridgeDLL
 mama_status
-qpidmsgPayload_init            (char* identifier);
+qpidmsgPayload_init            (mamaPayloadBridge bridge, char* identifier);
 
 /**
  * Returns the type of payload from the current bridge, from the mamaPayloadType
