@@ -474,6 +474,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
         return MAMA_STATUS_PLATFORM;
     }
     pn_messenger_set_timeout (impl->mIncoming, PN_MESSENGER_TIMEOUT);
+    pn_messenger_set_timeout (impl->mOutgoing, PN_MESSENGER_TIMEOUT);
 
     /* Start the admin messenger as it may be required for subscriptions */
     pn_messenger_start (impl->mOutgoing);

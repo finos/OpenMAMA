@@ -182,8 +182,6 @@ extern "C"
      */
 
     /**
-     * mama_status mama_open (void)
-     *
      * Initialize MAMA.
      *
      * MAMA employs a reference count to track multiple
@@ -195,6 +193,23 @@ extern "C"
     MAMAExpDLL
     extern mama_status
     mama_open (void);
+
+    /**
+     * Initialize MAMA.
+     *
+     * MAMA employs a reference count to track multiple
+     * calls to mama_open() and mama_close(). The count is incremented every time
+     * mama_open() is called and decremented when mama_close() is called. The
+     * resources are not actually released until the count reaches zero.
+     *
+     * @param[out] count The reference count for the MAMA library after opening 
+     * once. This will be non-zero and will match the amount of times a
+     * mama_open() variant has been called.
+     *
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_openCount (unsigned int* count);
 
     /**
      * Initialize MAMA.
@@ -212,6 +227,11 @@ extern "C"
      * If null is passed as the filename the API will look for the default
      * filename of mama.properties.
      *
+     * MAMA employs a reference count to track multiple
+     * calls to mama_open() and mama_close(). The count is incremented every time
+     * mama_open() is called and decremented when mama_close() is called. The
+     * resources are not actually released until the count reaches zero.
+     *
      * @param path Fully qualified path to the directory containing the properties
      * file
      * @param filename The name of the file containing MAMA properties.
@@ -222,6 +242,42 @@ extern "C"
     extern mama_status
     mama_openWithProperties (const char*    path,
                              const char*    filename);
+
+    /**
+     * Initialize MAMA.
+     *
+     * Allows users of the API to override the default behavior of mama_open()
+     * where a file mama.properties is required to be located in the directory
+     * specified by \$WOMBAT_PATH.
+     *
+     * The properties file must have the same structure as a standard
+     * mama.properties file.
+     *
+     * If null is passed as the path the API will look for the properties file on
+     * the \$WOMBAT_PATH.
+     *
+     * If null is passed as the filename the API will look for the default
+     * filename of mama.properties.
+     *
+     * MAMA employs a reference count to track multiple
+     * calls to mama_open() and mama_close(). The count is incremented every time
+     * mama_open() is called and decremented when mama_close() is called. The
+     * resources are not actually released until the count reaches zero.
+     *
+     * @param path Fully qualified path to the directory containing the properties
+     * file
+     * @param filename The name of the file containing MAMA properties.
+     * @param[out] count The reference count for the MAMA library after opening 
+     * once. This will be non-zero and will match the amount of times a
+     * mama_open() variant has been called.
+     *
+     * @return mama_status Whether the call was successful or not.
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_openWithPropertiesCount (const char*    path,
+                                  const char*    filename,
+                                  unsigned int*  count);
 
     /**
      * Set a specific property for the API.
@@ -287,12 +343,29 @@ extern "C"
     mama_getProperty (const char* name);
 
     /**
-     * Close MAMA and free all associated resource.
+     * Close MAMA and free all associated resources if no more references exist
+     * (e.g.if open has been called 3 times then it will require 3 calls to 
+     * close in order for all resources to be freed).
      *
+     * @return mama_status Whether the call was successful or not.
      */
     MAMAExpDLL
     extern mama_status
     mama_close (void);
+
+    /**
+     * Close MAMA and free all associated resources if no more references exist
+     * (e.g.if open has been called 3 times then it will require 3 calls to 
+     * close in order for all resources to be freed).
+     *
+     * @param[out] count The reference count for the MAMA library after closing 
+     * once.  If this is zero then MAMA and all resources will have been freed.
+     *
+     * @return mama_status Whether the call was successful or not.
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_closeCount (unsigned int* count);
 
     /**
     * Return the version information for the library.

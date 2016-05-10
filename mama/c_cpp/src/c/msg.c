@@ -467,6 +467,19 @@ mamaMsgImpl_setPayload (mamaMsg msg, msgPayload payload, short owner)
         /* Do not destroy the list. We can reuse the memory! */
     }
 
+  if (impl->mPayload && impl->mPayloadBridge && impl->mMessageOwner)
+    {
+        if (MAMA_STATUS_OK != impl->mPayloadBridge->msgPayloadDestroy (impl->mPayload))
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaMsgImpl_setPayload(): "
+                     "Could not destroy message payload.");
+        }
+
+        /*set mMessageOwner to zero now the payload has been destroyed to prevent
+          us destroying the underlying message again in the bridge specific function*/
+        impl->mMessageOwner = 0;
+    }
+
     impl->mPayload      = payload;
     impl->mMessageOwner = owner; 
     impl->mPayloadBridge->msgPayloadSetParent (impl->mPayload, msg);
