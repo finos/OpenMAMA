@@ -65,7 +65,7 @@ static void MAMACALLTYPE startCallback (mama_status status,
     ASSERT_EQ (0, wsem_post (sem));
 }
 
-void onEventStop (mamaQueue queue, void* closure)
+void MAMACALLTYPE onEventStop (mamaQueue queue, void* closure)
 {
     mamaBridge bridge = (mamaBridge)closure;
     mama_stop (bridge);

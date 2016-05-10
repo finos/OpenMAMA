@@ -99,7 +99,7 @@ void MAMACALLTYPE onEvent (mamaQueue queue, void* closure)
     }
 }
 
-void onEventNop (mamaQueue queue, void* closure)
+void MAMACALLTYPE onEventNop (mamaQueue queue, void* closure)
 {
 }
 
