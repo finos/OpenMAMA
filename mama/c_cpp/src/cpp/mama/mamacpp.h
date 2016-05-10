@@ -511,7 +511,7 @@ private:
     /**
      * vector of MamaQueue pointers to be tidied up at Mama::close()
      */
-    static std::vector<MamaQueue*> defaultQueueWrappers;
+    static std::vector<MamaQueue*> mDefaultQueueWrappers;
 
 };
 
