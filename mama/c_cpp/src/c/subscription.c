@@ -2531,14 +2531,17 @@ isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subs
 
 char* copyString (const char*  str)
 {
+    size_t len;
+    char* result;
+
     if (!str)
     {
         str = "";
     }
 
     /* Windows does not like strdup */
-    size_t len = strlen (str) + 1;
-    char* result = (char*)calloc (len, sizeof (char));
+    len = strlen (str) + 1;
+    result = (char*)calloc (len, sizeof (char));
     strncpy (result, str, len);
     return result;
 }
