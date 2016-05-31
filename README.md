@@ -1,5 +1,7 @@
 OpenMAMA Client Library
 ================================================================================
+
+[![Join the chat at https://gitter.im/OpenMAMA/OpenMAMA](https://badges.gitter.im/OpenMAMA/OpenMAMA.svg)](https://gitter.im/OpenMAMA/OpenMAMA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 OpenMAMA is a lightweight wrapper that provides a common API interface to different middleware and messaging solutions across a variety of platforms and languages.
 
 OpenMAMDA is a framework that adds Market Data functionality, such as order book handling on top of MAMA.
