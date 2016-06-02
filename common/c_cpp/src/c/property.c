@@ -21,6 +21,7 @@
 
 #include "wombat/port.h"
 
+#include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -31,6 +32,7 @@
 #include "propertyinternal.h"
 #include "lookup2.h"
 #include "wombat/wtable.h"
+#include "wombat/strutils.h"
 
 #define KEY_BLOCK_SIZE 64
 
@@ -300,21 +302,7 @@ properties_Merge( wproperty_t to, wproperty_t from )
 int
 properties_GetPropertyValueAsBoolean(const char* propertyValue)
 {
-  if (
-      (strcmp(propertyValue,"1")==0) ||
-      (strcmp(propertyValue,"y")==0) ||
-      (strcmp(propertyValue,"Y")==0) ||
-      (strcmp(propertyValue,"yes")==0) ||
-      (strcmp(propertyValue,"YES")==0) ||
-      (strcmp(propertyValue,"true")==0) ||
-      (strcmp(propertyValue,"TRUE")==0) ||
-      (strcmp(propertyValue,"t")==0) ||
-      (strcmp(propertyValue,"T")==0)
-    )
-  {
-    return 1;
-  }
-  return 0;
+    return strtobool(propertyValue);
 }
 
 /**
@@ -337,6 +325,39 @@ properties_Get( wproperty_t handle, const char* name )
     if( gPropertyDebug )fprintf( stderr, "Get property: %s\n", rval );
 
     return rval;
+}
+
+const char*
+properties_GetPropertyValueUsingFormatString (wproperty_t handle,
+                                              const char* defaultVal,
+                                              const char* format,
+                                              ...)
+{
+    char        paramName[PROPERTY_NAME_MAX_LENGTH];
+    const char* returnVal = NULL;
+
+    /* Create list for storing the propertys passed in */
+    va_list     arguments;
+
+    /* Populate list with arguments passed in */
+    va_start (arguments, format);
+
+    /* Create the complete transport property string */
+    vsnprintf (paramName, PROPERTY_NAME_MAX_LENGTH, format, arguments);
+
+    /* Get the property out for analysis */
+    returnVal = properties_Get (handle, paramName);
+
+    /* Properties will return NULL if property is not specified in configs */
+    if (returnVal == NULL)
+    {
+        returnVal = defaultVal;
+    }
+
+    /* Clean up the list */
+    va_end(arguments);
+
+    return returnVal;
 }
 
 int
