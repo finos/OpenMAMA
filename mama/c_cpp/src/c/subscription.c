@@ -1740,6 +1740,10 @@ mamaSubscription_setSymbol (
 {
     if (!subscription) return MAMA_STATUS_NULL_ARG;
     checkFree (&self->mUserSymbol);
+    if (!symbol)
+    {
+        symbol = "";
+    }
     self->mUserSymbol = strdup(symbol);
     return MAMA_STATUS_OK;
 }
@@ -2527,6 +2531,11 @@ isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subs
 
 char* copyString (const char*  str)
 {
+    if (!str)
+    {
+        str = "";
+    }
+
     /* Windows does not like strdup */
     size_t len = strlen (str) + 1;
     char* result = (char*)calloc (len, sizeof (char));
