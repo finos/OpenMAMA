@@ -887,6 +887,35 @@ mama_openWithPropertiesCount (const char* path,
     	mama_log (MAMA_LOG_LEVEL_FINE, "%s (non entitled)",mama_version);
     }
 
+    /* Load all specified Entitlements Bridges. This is done before payloads/middlewares
+     * as an entitlementsBridge is necessary for transport_create().
+     */
+    while (NULL != gEntitlementBridges[bridgeIdx])
+    {
+        mama_log(MAMA_LOG_LEVEL_FINE,
+                 "Trying to load %s entitlement bridge.",
+                 gEntitlementBridges[bridgeIdx]);
+
+        result = mama_loadEntitlementBridgeInternal(gEntitlementBridges[bridgeIdx]);
+
+        if (MAMA_STATUS_OK != result)
+        {
+            mama_log(MAMA_LOG_LEVEL_SEVERE,
+                     "mama_openWithProperties(): "
+                     "Could not load %s entitlements library.",
+                     gEntitlementBridges[bridgeIdx]);
+
+            wthread_static_mutex_unlock (&gImpl.myLock);
+            mama_close();
+
+            if (count)
+                *count = gImpl.myRefCount;
+
+            return result;
+        }
+        bridgeIdx++;
+    }
+
 
     /* Iterate the currently loaded middleware bridges, log their version, and
      * increment the count of open bridges.
@@ -934,31 +963,6 @@ mama_openWithPropertiesCount (const char* path,
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
-    while (NULL != gEntitlementBridges[bridgeIdx])
-    {
-        mama_log(MAMA_LOG_LEVEL_FINE,
-                 "Trying to load %s entitlement bridge.",
-                 gEntitlementBridges[bridgeIdx]);
-
-        result = mama_loadEntitlementBridgeInternal(gEntitlementBridges[bridgeIdx]);
-
-        if (MAMA_STATUS_OK != result)
-        {
-            mama_log(MAMA_LOG_LEVEL_SEVERE,
-                     "mama_openWithProperties(): "
-                     "Could not load %s entitlements library.",
-                     gEntitlementBridges[bridgeIdx]);
-            
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            mama_close();
-            
-            if (count)
-                *count = gImpl.myRefCount;
-
-            return result;
-        }
-        bridgeIdx++;
-    }
 
     mama_statsInit();
 
