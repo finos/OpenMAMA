@@ -565,7 +565,7 @@ public class MamdaSubscription
                  */
                 MamdaErrorListener listener =
                     (MamdaErrorListener)listeners.elementAt(i);
-                short errorCode = MamdaErrorCode.codeForMamaMsgStatus (wombatStatus);
+                short errorCode = MamdaErrorCode.codeForMamaStatus (wombatStatus);
                 listener.onError (
                     mSubscription,
                     MamdaErrorSeverity.severityForErrorCode (errorCode),
