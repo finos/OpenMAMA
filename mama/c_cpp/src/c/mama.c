@@ -909,7 +909,7 @@ mama_openWithPropertiesCount (const char* path,
                     if (!gImpl.payloads.byChar[payloadId[i]])
                     {
                         mamaPayloadBridge payloadImpl = NULL;
-                        mama_loadPayloadBridge (&payloadImpl, *payloadName);
+                        mama_loadPayloadBridge (&payloadImpl, payloadName[i]);
                     }
                     i++;
                 }
