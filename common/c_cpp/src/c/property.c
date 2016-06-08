@@ -336,7 +336,7 @@ properties_GetPropertyValueUsingFormatString (wproperty_t handle,
     char        paramName[PROPERTY_NAME_MAX_LENGTH];
     const char* returnVal = NULL;
 
-    /* Create list for storing the propertys passed in */
+    /* Create list for storing the properties passed in */
     va_list     arguments;
 
     /* Populate list with arguments passed in */
