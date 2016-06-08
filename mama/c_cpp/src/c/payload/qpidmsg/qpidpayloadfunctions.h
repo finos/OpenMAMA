@@ -970,7 +970,7 @@ mama_status
 qpidmsgPayload_updateVectorPrice (msgPayload          msg,
                                   const char*         fname,
                                   mama_fid_t          fid,
-                                  const mamaPrice*    priceList[],
+                                  const mamaPrice     priceList[],
                                   mama_size_t         size);
 
 /**
@@ -1256,11 +1256,11 @@ qpidmsgPayload_getVectorString  (const msgPayload    msg,
  */
 MAMAExpBridgeDLL
 mama_status
-qpidmsgPayload_getVectorDateTime (const msgPayload    msg,
-                                  const char*         name,
-                                  mama_fid_t          fid,
-                                  const mamaDateTime* result,
-                                  mama_size_t*        size);
+qpidmsgPayload_getVectorDateTime (const msgPayload     msg,
+                                  const char*          name,
+                                  mama_fid_t           fid,
+                                  const mamaDateTime** result,
+                                  mama_size_t*         size);
 
 /**
  * Note: getVectorPrice() is not currently supported by MAMA, so implementation
@@ -1276,7 +1276,7 @@ mama_status
 qpidmsgPayload_getVectorPrice   (const msgPayload    msg,
                                  const char*         name,
                                  mama_fid_t          fid,
-                                 const mamaPrice*    result,
+                                 const mamaPrice**   result,
                                  mama_size_t*        size);
 
 /**
@@ -1713,7 +1713,7 @@ qpidmsgFieldPayload_getVectorString (const msgFieldPayload   field,
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorDateTime (const msgFieldPayload   field,
-                                       const mamaDateTime*     result,
+                                       const mamaDateTime**    result,
                                        mama_size_t*            size);
 
 /**
@@ -1732,7 +1732,7 @@ qpidmsgFieldPayload_getVectorDateTime (const msgFieldPayload   field,
 MAMAExpBridgeDLL
 mama_status
 qpidmsgFieldPayload_getVectorPrice (const msgFieldPayload   field,
-                                    const mamaPrice*        result,
+                                    const mamaPrice**       result,
                                     mama_size_t*            size);
 
 /**
