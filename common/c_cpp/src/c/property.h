@@ -28,7 +28,9 @@
 extern "C" {
 #endif
 
-#define INVALID_PROPERTIES NULL
+#define     INVALID_PROPERTIES              NULL
+#define     PROPERTY_NAME_MAX_LENGTH        1024L
+
 typedef void* wproperty_t;
 
 typedef void( *propertiesCallback) (const char* name, const char* value,
@@ -107,6 +109,13 @@ properties_FreeEx2( wproperty_t handle );
 COMMONExpDLL
 int 
 properties_GetPropertyValueAsBoolean( const char* propertyValue );
+
+COMMONExpDLL
+const char*
+properties_GetPropertyValueUsingFormatString (wproperty_t handle,
+                                              const char* defaultVal,
+                                              const char* format,
+                                              ...);
 
 /**
  * Will escape the chars with a \ found to match in chars array. Returns a 

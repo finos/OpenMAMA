@@ -69,7 +69,7 @@ namespace Wombat
             cache.mEventSeqNum   = 0;
 
 			cache.mUncrossPrice.clear();
-			cache.mUncrossVolume = 0;
+			cache.mUncrossVolume = 0.0;
 			cache.mUncrossPriceIndStr = null;
 
             
@@ -141,9 +141,9 @@ namespace Wombat
 			return mAuctionCache.mUncrossPrice;
 		}
 
-		public long getUncrossVolume()
+		public double getUncrossVolume()
 		{
-			return (long) mAuctionCache.mUncrossVolume;
+			return mAuctionCache.mUncrossVolume;
 		}
 
         public long getUncrossPriceInd()

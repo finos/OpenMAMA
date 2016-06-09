@@ -214,7 +214,6 @@ public:
     static const char* getVersion (mamaBridge bridgeImpl);
 
     /**
-     *
      * Initialize MAMA. 
      *
      * MAMA employs a reference count to track multiple
@@ -222,16 +221,29 @@ public:
      * Mama::open() is called and decremented when Mama::close() is called. The
      * resources are not actually released until the count reaches zero. 
      *
-     * If entitlements are enabled for the library, the available entitlement
-     * server names are read from the entitlement.servers property in the
-     * mama.properties file located in the \$WOMBAT_PATH directory.
-     *
      * This function is thread safe.
      */
     static void open ();
 
     /**
+     * Initialize MAMA. 
+     *
+     * MAMA employs a reference count to track multiple
+     * calls to Mama::open() and Mama::close(). The count is incremented every time
+     * Mama::open() is called and decremented when Mama::close() is called. The
+     * resources are not actually released until the count reaches zero. 
+     *
+     * This function is thread safe.
+     *
+     * @return The reference count for the MAMA library after opening 
+     * once. This will be non-zero and will match the amount of times a
+     * Mama::open() variant has been called.
+     */
+    static unsigned int openCount ();
+
+    /**
      * Initialize MAMA.
+     *
      * Allows users of the API to override the default behaviour of Mama.open()
      * where a file mama.properties is required to be located in the directory
      * specified by \$WOMBAT_PATH.
@@ -245,6 +257,46 @@ public:
      *
      * If null is passed as the filename the API will look for the default
      * filename of mama.properties.
+     *
+     * MAMA employs a reference count to track multiple
+     * calls to Mama::open() and Mama::close(). The count is incremented every time
+     * Mama::open() is called and decremented when Mama::close() is called. The
+     * resources are not actually released until the count reaches zero. 
+     *
+     * @param[in] path Fully qualified path to the directory containing the
+     * properties
+     * file
+     *
+     * @param[in] filename The name of the file containing MAMA properties.
+     *
+     * @return The reference count for the MAMA library after opening 
+     * once. This will be non-zero and will match the amount of times a
+     * Mama::open() variant has been called.
+     */
+    static unsigned int openCount (const char*   path,
+                                   const char*   filename);
+
+    /**
+     * Initialize MAMA.
+     *
+     * Allows users of the API to override the default behaviour of Mama.open()
+     * where a file mama.properties is required to be located in the directory
+     * specified by \$WOMBAT_PATH.
+     *
+     * The properties file must have the same structure as a standard
+     * mama.properties file.
+     *
+     * If null is passed as the path the API will look for the properties file
+     * on
+     * the \$WOMBAT_PATH.
+     *
+     * If null is passed as the filename the API will look for the default
+     * filename of mama.properties.
+     *
+     * MAMA employs a reference count to track multiple
+     * calls to Mama::open() and Mama::close(). The count is incremented every time
+     * Mama::open() is called and decremented when Mama::close() is called. The
+     * resources are not actually released until the count reaches zero. 
      *
      * @param[in] path Fully qualified path to the directory containing the
      * properties
@@ -294,16 +346,25 @@ public:
     static const char * getProperty (const char* name);
 
     /**
-     * Close MAMA and free all associated resource.
-     *
-     * MAMA employs a reference count to track multiple
-     * calls to Mama::open() and Mama::close(). The count is incremented every time
-     * Mama::open() is called and decremented when Mama::close() is called. The
-     * resources are not actually released until the count reaches zero. 
+     * Close MAMA and free all associated resources if no more references exist
+     * (e.g.if open has been called 3 times then it will require 3 calls to 
+     * close in order for all resources to be freed).
      *
      * This function is thread safe.
      */
     static void close ();
+
+    /**
+     * Close MAMA and free all associated resources if no more references exist
+     * (e.g.if open has been called 3 times then it will require 3 calls to 
+     * close in order for all resources to be freed).
+     *
+     * This function is thread safe.
+     *
+     * @return The reference count for the MAMA library after closing once.  If
+     * this is zero then MAMA and all resources will have been freed.
+     */
+    static unsigned int closeCount ();
 
     /**
      * Start processing messages on the internal queue. This starts Mama's

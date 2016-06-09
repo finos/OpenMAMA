@@ -104,7 +104,6 @@ TEST_F(MamaOpenCloseTest, OpenCloseReopenSameBridge)
     {
         Mama::open();    
     }
-
     catch(MamaStatus status)
     {
         return;
@@ -165,4 +164,7 @@ TEST_F(MamaOpenCloseTest, StartStopDifferentThreads)
 
     // Close mama
     Mama::close();
+
+    // Cleanup
+    delete startBackgroundCB;
 }

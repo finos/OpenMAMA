@@ -150,6 +150,20 @@ typedef struct qpidmsgFieldPayloadImpl_
     /* Biggest number of elements in vector */
     mama_size_t     mDataMaxVectorCount;
 
+    /* Data buffer used for vectors of date times */
+    mamaDateTime*   mDataVectorDateTime;
+    /* Number of elements in vector */
+    mama_size_t     mDataVectorDateTimeCount;
+    /* Biggest number of elements in vector */
+    mama_size_t     mDataMaxVectorDateTimeCount;
+
+    /* Data buffer used for vectors of prices */
+    mamaPrice*      mDataVectorPrice;
+    /* Number of elements in vector */
+    mama_size_t     mDataVectorPriceCount;
+    /* Biggest number of elements in vector */
+    mama_size_t     mDataMaxVectorPriceCount;
+
     /* Name of the field */
     pn_bytes_t      mName;
 

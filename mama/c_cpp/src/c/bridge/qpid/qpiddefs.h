@@ -54,6 +54,7 @@ extern "C" {
 /* Default timeout for send working threads */
 #define     QPID_MESSENGER_SEND_TIMEOUT     -1
 #define     QPID_MESSENGER_TIMEOUT          1 /* milliseconds */
+#define     QPID_PUBLISHER_RETRIES          3
 
 /* Message types */
 typedef enum qpidMsgType_
@@ -149,6 +150,13 @@ struct qpidMsgNode_
   qpidSubscription*     mQpidSubscription;
   qpidTransportBridge*  mQpidTransportBridge;
 };
+
+typedef struct qpidP2pEndpoint_
+{
+    char                  mUrl[MAX_URI_LENGTH];
+    size_t                mMsgCount;
+    size_t                mErrorCount;
+} qpidP2pEndpoint;
 
 #if defined(__cplusplus)
 }

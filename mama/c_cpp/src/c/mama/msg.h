@@ -1411,7 +1411,7 @@ mamaMsg_updateVectorPrice (
     mamaMsg               msg,
     const char*           fname,
     mama_fid_t            fid,
-    const mamaPrice*      priceList[],
+    const mamaPrice       priceList[],
     mama_size_t           numElements);
 
 /**
@@ -1993,7 +1993,7 @@ mamaMsg_getVectorDateTime (
     const mamaMsg         msg,
     const char*           name,
     mama_fid_t            fid,
-    const mamaDateTime*   result,
+    const mamaDateTime**  result,
     mama_size_t*          resultLen);
 
 /**
@@ -2012,7 +2012,7 @@ mamaMsg_getVectorPrice (
     const mamaMsg         msg,
     const char*           name,
     mama_fid_t            fid,
-    const mamaPrice*      result,
+    const mamaPrice**     result,
     mama_size_t*          resultLen);
 
 /**

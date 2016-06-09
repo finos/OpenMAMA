@@ -467,6 +467,19 @@ mamaMsgImpl_setPayload (mamaMsg msg, msgPayload payload, short owner)
         /* Do not destroy the list. We can reuse the memory! */
     }
 
+  if (impl->mPayload && impl->mPayloadBridge && impl->mMessageOwner)
+    {
+        if (MAMA_STATUS_OK != impl->mPayloadBridge->msgPayloadDestroy (impl->mPayload))
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaMsgImpl_setPayload(): "
+                     "Could not destroy message payload.");
+        }
+
+        /*set mMessageOwner to zero now the payload has been destroyed to prevent
+          us destroying the underlying message again in the bridge specific function*/
+        impl->mMessageOwner = 0;
+    }
+
     impl->mPayload      = payload;
     impl->mMessageOwner = owner; 
     impl->mPayloadBridge->msgPayloadSetParent (impl->mPayload, msg);
@@ -2258,6 +2271,46 @@ mamaMsg_updatePrice(
 }
 
 mama_status
+mamaMsg_updateVectorTime (
+    const mamaMsg         msg,
+    const char*           name,
+    mama_fid_t            fid,
+    const mamaDateTime    value[],
+    mama_size_t           numElements)
+{
+    mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
+
+    if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
+    CHECK_MODIFY (impl->mMessageOwner);
+
+    return impl->mPayloadBridge->msgPayloadUpdateVectorTime (impl->mPayload,
+                                                             name,
+                                                             fid,
+                                                             value,
+                                                             numElements);
+}
+
+mama_status
+mamaMsg_updateVectorPrice (
+    const mamaMsg         msg,
+    const char*           name,
+    mama_fid_t            fid,
+    const mamaPrice       value[],
+    mama_size_t           numElements)
+{
+    mamaMsgImpl*    impl    = (mamaMsgImpl*)msg;
+
+    if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
+    CHECK_MODIFY (impl->mMessageOwner);
+
+    return impl->mPayloadBridge->msgPayloadUpdateVectorPrice (impl->mPayload,
+                                                              name,
+                                                              fid,
+                                                              value,
+                                                              numElements);
+}
+
+mama_status
 mamaMsg_updateVectorMsg (
     mamaMsg               msg,
     const char*           name,
@@ -3011,7 +3064,7 @@ mamaMsg_getVectorDateTime (
     const mamaMsg         msg,
     const char*           name,
     mama_fid_t            fid,
-    const mamaDateTime*   result,
+    const mamaDateTime**  result,
     mama_size_t*          resultLen)
 {
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
@@ -3035,7 +3088,7 @@ mamaMsg_getVectorPrice (
     const mamaMsg         msg,
     const char*           name,
     mama_fid_t            fid,
-    const mamaPrice*      result,
+    const mamaPrice**     result,
     mama_size_t*          resultLen)
 {
     mamaMsgImpl*    impl     = (mamaMsgImpl*)msg;
