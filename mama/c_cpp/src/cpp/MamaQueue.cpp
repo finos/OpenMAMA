@@ -525,10 +525,7 @@ namespace Wombat
 
     void MamaQueue::setCValue (mamaQueue cQueue)
     {
-        if (!mQueue) 
-        {
-            mQueue = cQueue;
-        }
+        mQueue = cQueue;
     }
 
     void MamaQueue::setClosure (void* closure)
