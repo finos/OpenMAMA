@@ -218,8 +218,8 @@ qpidBridgeMamaIoImpl_stop ()
     /* Alert the semaphore so the dispatch loop can exit */
     wsem_post (&gQpidIoContainer.mResumeDispatching);
 
-    /* Tell the event loop to exit */
-    event_base_loopexit (gQpidIoContainer.mEventBase, NULL);
+    /* Flush until event base is empty */
+    while (0 == event_base_loop(gQpidIoContainer.mEventBase, EVLOOP_ONCE));
 
     /* Join with the dispatch thread - it should exit shortly */
     wthread_join (gQpidIoContainer.mDispatchThread, NULL);
