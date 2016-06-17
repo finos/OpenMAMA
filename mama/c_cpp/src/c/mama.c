@@ -1532,6 +1532,9 @@ mama_closeCount (unsigned int* count)
         /* Destroy logging */
         mama_logDestroy();
 
+        /* Clean up any timezone related threads which may have been started */
+        mamaTimeZone_cleanUp ();
+
         /* Free application context details. */
         mama_freeAppContext(&appContext);
 
