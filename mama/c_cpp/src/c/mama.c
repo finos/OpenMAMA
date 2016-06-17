@@ -1196,24 +1196,7 @@ mama_setPropertiesFromFile (const char *path,
     mama_log (MAMA_LOG_LEVEL_NORMAL,
               "Attempting to load additional MAMA properties from %s", path ? path : "");
 
-    fileProperties = properties_Load (path, filename);
-
-    if( fileProperties == 0 )
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open additional properties file.\n");
-        return MAMA_STATUS_IO_ERROR;
-    }
-
-    /* We've got file properties, so we need to merge 'em into
-     * anything we've already gotten */
-    properties_Merge( fileProperties, gProperties );
-
-    /* Free the file properties, note that FreeEx2 is called to ensure that the data
-     * isn't freed as the pointers have been copied over to gProperties.
-     */
-    properties_FreeEx2(gProperties);
-    
-    gProperties = fileProperties;
+    mamaInternal_loadProperties (path, filename);
 
     return MAMA_STATUS_OK;
 }
