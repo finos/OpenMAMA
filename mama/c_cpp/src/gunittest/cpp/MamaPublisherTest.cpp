@@ -146,6 +146,7 @@ TEST_F(MamaPublisherTest, Publish)
 
     // Delete the publisher
     delete publisher;
+    delete msg;
 
     Mama::stop(m_bridge);
 }
@@ -199,6 +200,7 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
 
     delete publisher;
     delete queue;
+    delete msg;
 
     Mama::stop(m_bridge);
 
@@ -256,6 +258,7 @@ TEST_F(MamaPublisherTest, DISABLED_PublishWithCallbacksBadSource)
     delete publisher;
     delete queue;
     delete testCallback;
+    delete msg;
 
     Mama::stop(m_bridge);
 
@@ -299,6 +302,7 @@ TEST_F(MamaPublisherTest, PublishWithNullCallback)
 
     delete publisher;
     delete queue;
+    delete msg;
 
     Mama::stop(m_bridge);
 }
