@@ -1498,6 +1498,17 @@ mama_closeCount (unsigned int* count)
                                   middlewareLib->bridge->bridgeGetName ());
                     }
 
+                    if (middlewareLib->bridge->mLock)
+                    {
+                        wlock_destroy(middlewareLib->bridge->mLock);
+                    }
+
+                    /* If there was a background thread, clean it up */
+                    if (middlewareLib->bridge->mStartBackgroundThread)
+                    {
+                        wthread_join (middlewareLib->bridge->mStartBackgroundThread, NULL);
+                    }
+
                     free (middlewareLib->bridge);
                     middlewareLib->bridge = NULL;
                 }
@@ -1636,7 +1647,7 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
                             void*        closure)
 {
     struct startBackgroundClosure*  closureData;
-    wthread_t       t = 0;
+    mamaBridgeImpl* impl = (mamaBridgeImpl*)bridgeImpl;
 
     if (!bridgeImpl)
     {
@@ -1666,10 +1677,10 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
 
     closureData->mStopCallback   = callback;
     closureData->mStopCallbackEx = exCallback;
-    closureData->mBridgeImpl    = bridgeImpl;
+    closureData->mBridgeImpl     = bridgeImpl;
     closureData->mClosure        = closure;
 
-    if (0 != wthread_create(&t, NULL, mamaStartThread, (void*) closureData))
+    if (0 != wthread_create(&impl->mStartBackgroundThread, NULL, mamaStartThread, (void*) closureData))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "Could not start background MAMA "
                   "thread.");
