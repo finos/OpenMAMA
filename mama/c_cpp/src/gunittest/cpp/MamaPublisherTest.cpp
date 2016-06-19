@@ -188,7 +188,7 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
     sleep(1);
 
     // Destroy the publisher
-    publisher->destroy();            
+    publisher->destroy();
 
     // Wait for onDestroy
 	while (testCallback->getOnDestroyCount() == 0)
@@ -199,7 +199,6 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
     ASSERT_EQ(1, testCallback->getOnDestroyCount());
 
     delete publisher;
-    delete queue;
     delete msg;
 
     Mama::stop(m_bridge);
@@ -256,7 +255,6 @@ TEST_F(MamaPublisherTest, DISABLED_PublishWithCallbacksBadSource)
     ASSERT_EQ(1, testCallback->getOnDestroyCount());
 
     delete publisher;
-    delete queue;
     delete testCallback;
     delete msg;
 
@@ -298,10 +296,9 @@ TEST_F(MamaPublisherTest, PublishWithNullCallback)
     sleep (1);
 
     // Destroy the publisher
-    publisher->destroy();            
+    publisher->destroy();
 
     delete publisher;
-    delete queue;
     delete msg;
 
     Mama::stop(m_bridge);

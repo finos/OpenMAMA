@@ -52,11 +52,13 @@ MiddlewareIoTests::~MiddlewareIoTests(void)
 
 void MiddlewareIoTests::SetUp(void)
 {
-	mama_loadBridge (&mBridge,getMiddleware());
+    mama_loadBridge (&mBridge,getMiddleware());
+    mama_open();
 }
 
 void MiddlewareIoTests::TearDown(void)
 {
+    mama_close();
 }
 
 void onIo(mamaIo io, mamaIoType ioType, void* closure)
@@ -77,14 +79,17 @@ TEST_F (MiddlewareIoTests, create)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaQueue_create(&queue, mBridge));
-                  
+
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaIo_create(&parent, queue, descriptor, onIo, ioType, closure));
-    
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaIoCreate(&io,queue, descriptor,
                                           onIo, ioType, parent, closure));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
+
+    ASSERT_EQ(MAMA_STATUS_OK, mamaIo_destroy(parent));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(queue));
 }
 
 TEST_F (MiddlewareIoTests, createInvalidResult)
@@ -111,6 +116,7 @@ TEST_F (MiddlewareIoTests, createInvalidDescriptor)
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaIoCreate(&io,queue, 0,
                                           onIo, ioType, parent, closure));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
 }
 /* THIS WAS COMMENTED OUT BECAUSE mamaIoType CANNOT BE CAST AS NULL.
 TEST_F (MiddlewareIoTests, createInvalidType)
@@ -137,6 +143,7 @@ TEST_F (MiddlewareIoTests, createInvalidParent)
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaIoCreate(&io,queue, descriptor,
                                           onIo, ioType, NULL, closure));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
 }
 
 TEST_F (MiddlewareIoTests, createInvalidQueue)
@@ -150,6 +157,7 @@ TEST_F (MiddlewareIoTests, createInvalidQueue)
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaIoCreate(&io,NULL, descriptor,
                                           onIo, ioType, parent, closure));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
 }
 
 TEST_F (MiddlewareIoTests, createInvalidCb)
@@ -164,6 +172,7 @@ TEST_F (MiddlewareIoTests, createInvalidCb)
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaIoCreate(&io,queue, descriptor,
                                           NULL, ioType, parent, closure));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
 }
 
 
@@ -179,19 +188,24 @@ TEST_F (MiddlewareIoTests, getDescriptor)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaQueue_create(&queue, mBridge));
-                  
+
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaIo_create(&parent, queue, descriptor, onIo, ioType, closure));
-    
+
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaIoCreate(&io,queue, descriptor,
                                           onIo, ioType, parent, closure));
-   
+
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaIoGetDescriptor(io,&result));
 
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
+
+    ASSERT_EQ(MAMA_STATUS_OK, mamaIo_destroy(parent));
+
     ASSERT_EQ (descriptor, result);
-    
+
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(queue));
 }
 
 TEST_F (MiddlewareIoTests, getDescriptorInvalidIoBridge)
@@ -218,19 +232,20 @@ TEST_F (MiddlewareIoTests, createDestroy)
     void*      closure           = NULL;
     mamaQueue  queue             = NULL;
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaQueue_create(&queue, mBridge));
-                  
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_create(&queue, mBridge));
+
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaIo_create(&parent, queue, descriptor, onIo, ioType, closure));
-    
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaIoCreate(&io,queue, descriptor,
                                           onIo, ioType, parent, closure));
 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaIoDestroy(io));
+    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
+
+    ASSERT_EQ(MAMA_STATUS_OK, mamaIo_destroy(parent));
+
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(queue));
 
 }
 
