@@ -86,7 +86,6 @@ private:
 
 DateTimeRangeTests::DateTimeRangeTests() : ::testing::Test()
 {
-   MakeTestData();
 }
 
 DateTimeRangeTests::~DateTimeRangeTests()
@@ -180,11 +179,13 @@ DateTimeRangeTests::DestroyTestData()
 void
 DateTimeRangeTests::SetUp(void)
 {
+    MakeTestData();
 }
 
 void
 DateTimeRangeTests::TearDown(void)
 {
+    DestroyTestData();
 }
 
 
