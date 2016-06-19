@@ -187,6 +187,7 @@ namespace Wombat
                 defaultQueue->setCValue(NULL);  // middleware  bridge's respobsibility to clean up the c-queue
                 delete(defaultQueue);           //delete CPP wrapper
             }
+            Mama::mDefaultQueueWrappers.clear();
         }
 
         return refCount;
