@@ -2166,7 +2166,7 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
     self->mWcCallbacks.onMsg (
            subscription, 
            msg, 
-           NULL,
+           topic,
            self->mClosure, 
            topicClosure);
 
