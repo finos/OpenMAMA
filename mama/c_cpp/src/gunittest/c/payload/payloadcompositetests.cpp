@@ -58,6 +58,7 @@ protected:
         //ForkedTest::SetUp();
 
         mama_loadPayloadBridge(&m_payloadBridge, m_payload.c_str());
+        mama_open();
         m_status = m_payloadBridge->msgPayloadCreate(&m_msg);
         ASSERT_EQ (MAMA_STATUS_OK, m_status);
     }
@@ -67,6 +68,7 @@ protected:
     {
         m_status = m_payloadBridge->msgPayloadDestroy(m_msg);
         EXPECT_EQ (MAMA_STATUS_OK, m_status);
+        mama_close();
 
         //ForkedTest::TearDown();
     }
@@ -602,8 +604,9 @@ protected:
     virtual void TearDown()
     {
         // Cores
-        // m_payloadBridge->msgPayloadDestroy(m_in);
-        
+        m_payloadBridge->msgPayloadDestroy(m_in);
+        m_payloadBridge->msgPayloadDestroy(m_update);
+
         PayloadCompositeTests::TearDown();
     }
 };

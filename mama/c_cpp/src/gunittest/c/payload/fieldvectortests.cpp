@@ -1126,6 +1126,10 @@ protected:
     virtual void TearDown()
     {
         FieldVectorTests::TearDown();
+        for( uint32_t ii(0) ; ii < VECTOR_SIZE ; ++ii )
+        {
+            mamaMsg_destroy ( m_in[ii] );
+        }
     }
 };
 

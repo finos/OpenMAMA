@@ -320,10 +320,7 @@ TEST_F(FieldDateTimeTests, GetDateTimeValid)
     ret = aBridge->msgFieldPayloadGetDateTime(field, m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
 
-
-
-
-
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldDateTimeTests, GetDateTimeInvalidType)
@@ -605,6 +602,7 @@ TEST_F(FieldMsgTests, GetMsgValid)
     ASSERT_EQ (MAMA_STATUS_OK, ret);
 
     aBridge->msgPayloadDestroy(m_in);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldMsgTests, GetMsgInvalidType)
