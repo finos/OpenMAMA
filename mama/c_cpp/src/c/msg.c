@@ -174,6 +174,11 @@ mamaMsg_destroy (mamaMsg msg)
         mamaMsg_destroy (impl->mCopy);
         impl->mCopy = NULL;
     }
+    /* Destroy reusable datetime if allocated */
+    if (impl->mCurrentDateTime)
+    {
+        mamaDateTime_destroy(impl->mCurrentDateTime);
+    }
 
     impl->mDqStrategyContext = NULL;
 
@@ -506,6 +511,11 @@ mamaMsg_createForPayloadBridge (mamaMsg* msg, mamaPayloadBridge payloadBridge)
     msgPayload payload;
     mama_status status = MAMA_STATUS_OK;
 
+    if (!msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
     if (MAMA_STATUS_OK !=
        (status = payloadBridge->msgPayloadCreate (&payload)))
     {
@@ -807,6 +817,11 @@ mamaMsg_create (mamaMsg* msg)
     mama_status       status  = MAMA_STATUS_OK;
     mamaPayloadBridge bridge  = mamaInternal_getDefaultPayload ();
     msgPayload        payload = NULL;
+
+    if (!msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
 
     if (bridge)
     {
