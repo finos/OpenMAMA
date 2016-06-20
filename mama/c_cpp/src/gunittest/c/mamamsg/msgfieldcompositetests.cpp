@@ -451,10 +451,10 @@ TEST_F (FieldDateTimeTestsC, updateDateTimeInValidValue)
 TEST_F (FieldDateTimeTestsC, getDateTimeValid)
 {
     mamaDateTime_create(&mOut);
-
     ASSERT_EQ (mamaMsg_addDateTime(mMsg, "Gary", 10101, mIn), MAMA_STATUS_OK);
     ASSERT_EQ (mamaMsg_getField(mMsg, "Gary", 10101, &mField), MAMA_STATUS_OK);
     ASSERT_EQ (mamaMsgField_getDateTime(mField, mOut), MAMA_STATUS_OK);
+    mamaDateTime_destroy(mOut);
 }
 
 TEST_F (FieldDateTimeTestsC, getDateTimeInValidField)

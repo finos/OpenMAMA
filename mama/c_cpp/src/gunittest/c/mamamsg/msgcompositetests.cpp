@@ -252,6 +252,7 @@ TEST_F(MsgOpaqueTests, getOpaqueInValidMessage)
         {
             mamaDateTime_destroy(m_in);
             mamaDateTime_destroy(m_update);
+            mamaDateTime_destroy(m_out);
 
             MsgCompositeTestsC::TearDown();
         }
@@ -353,6 +354,7 @@ protected:
     {
         mamaPrice_destroy(m_in);
         mamaPrice_destroy(m_update);
+        mamaPrice_destroy(m_out);
 
         MsgCompositeTestsC::TearDown();
     }
@@ -437,8 +439,8 @@ protected:
 
     ~MsgSubMsgTestsC()
     {
-        //mamaMsg_destroy(m_in);
-        //mamaMsg_destroy(m_update);
+        mamaMsg_destroy(m_in);
+        mamaMsg_destroy(m_update);
     }
 };
 /* addMsg tests */
