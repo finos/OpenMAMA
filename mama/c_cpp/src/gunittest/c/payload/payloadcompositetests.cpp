@@ -347,7 +347,7 @@ protected:
         mamaDateTime_create(&m_in);
         mamaDateTime_create(&m_update);
         mamaDateTime_create(&m_out);
-        
+
         mamaDateTime_setTime (m_in, 12, 35, 40, 30);
         mamaDateTime_setTime (m_update, 13, 59, 1, 35);
     }
@@ -356,6 +356,7 @@ protected:
     {
         mamaDateTime_destroy(m_in);
         mamaDateTime_destroy(m_update);
+        mamaDateTime_destroy(m_out);
         
         PayloadCompositeTests::TearDown();
     }
@@ -475,7 +476,7 @@ protected:
         mamaPrice_create(&m_in);
         mamaPrice_create(&m_update);
         mamaPrice_create(&m_out);
-        
+
         mamaPrice_setValue(m_in, 1.0f);
         mamaPrice_setValue(m_update, 2.0f);
     }
@@ -484,7 +485,8 @@ protected:
     {
         mamaPrice_destroy(m_in);
         mamaPrice_destroy(m_update);
-        
+        mamaPrice_destroy(m_out);
+
         PayloadCompositeTests::TearDown();
     }
 };

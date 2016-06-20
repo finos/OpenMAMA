@@ -100,6 +100,7 @@ TEST_F(FieldStringTests, UpdateStringValid)
 
     ret = aBridge->msgFieldPayloadUpdateString(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldStringTests, UpdateStringInvalidType)
@@ -117,6 +118,8 @@ TEST_F(FieldStringTests, UpdateStringInvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateString(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldStringTests, UpdateStringInValid)
@@ -135,6 +138,8 @@ TEST_F(FieldStringTests, UpdateStringInValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateString(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldStringTests, GetStringValid)
@@ -152,6 +157,8 @@ TEST_F(FieldStringTests, GetStringValid)
 
     ret = aBridge->msgFieldPayloadGetString(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldStringTests, GetStringInvalidType)
@@ -169,6 +176,7 @@ TEST_F(FieldStringTests, GetStringInvalidType)
 
     ret = aBridge->msgFieldPayloadGetString(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldStringTests, GetStringInValid)
@@ -186,6 +194,7 @@ TEST_F(FieldStringTests, GetStringInValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetString(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -218,8 +227,9 @@ protected:
 
     ~FieldDateTimeTests()
     {
-        free (m_in);
-        free (m_update);
+        mamaDateTime_destroy (m_in);
+        mamaDateTime_destroy (m_update);
+        mamaDateTime_destroy (m_out);
     }
 
 };
@@ -239,6 +249,7 @@ TEST_F(FieldDateTimeTests, UpdateDateTimeValid)
 
     ret = aBridge->msgFieldPayloadUpdateDateTime(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldDateTimeTests, UpdateDateTimeInvalidType)
@@ -256,6 +267,7 @@ TEST_F(FieldDateTimeTests, UpdateDateTimeInvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateDateTime(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldDateTimeTests, UpdateDateTimeInValid)
@@ -274,6 +286,7 @@ TEST_F(FieldDateTimeTests, UpdateDateTimeInValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateDateTime(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldDateTimeTests, GetDateTimeValid)
@@ -338,6 +351,7 @@ TEST_F(FieldDateTimeTests, GetDateTimeInvalidType)
 
     ret = aBridge->msgFieldPayloadGetDateTime(field, m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldDateTimeTests, GetDateTimeInValid)
@@ -392,6 +406,7 @@ TEST_F(FieldOpaqueTests, GetOpaqueValid)
 
     ret = aBridge->msgFieldPayloadGetOpaque(field, &m_out, &out_size);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldOpaqueTests, GetOpaqueInvalidType)
@@ -409,6 +424,8 @@ TEST_F(FieldOpaqueTests, GetOpaqueInvalidType)
 
     ret = aBridge->msgFieldPayloadGetOpaque(field, &m_out, &out_size);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldOpaqueTests, GetOpaqueInValid)
@@ -426,6 +443,7 @@ TEST_F(FieldOpaqueTests, GetOpaqueInValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetOpaque(field, &m_out, &out_size);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -454,6 +472,9 @@ protected:
 
     ~FieldPriceTests()
     {
+        mamaPrice_destroy(m_in);
+        mamaPrice_destroy(m_update);
+        mamaPrice_destroy(m_out);
     }
 
 };
@@ -473,6 +494,7 @@ TEST_F(FieldPriceTests, UpdatePriceValid)
 
     ret = aBridge->msgFieldPayloadUpdatePrice(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldPriceTests, UpdatePriceInvalidType)
@@ -490,6 +512,7 @@ TEST_F(FieldPriceTests, UpdatePriceInvalidType)
 
     ret = aBridge->msgFieldPayloadUpdatePrice(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldPriceTests, UpdatePriceInValid)
@@ -508,6 +531,7 @@ TEST_F(FieldPriceTests, UpdatePriceInValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdatePrice(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldPriceTests, GetPriceValid)
@@ -532,6 +556,7 @@ TEST_F(FieldPriceTests, GetPriceValid)
     EXPECT_EQ (MAMA_STATUS_OK, ret);
     ret = aBridge->msgFieldPayloadGetPrice(field, m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldPriceTests, GetPriceInvalidType)
@@ -549,6 +574,7 @@ TEST_F(FieldPriceTests, GetPriceInvalidType)
 
     ret = aBridge->msgFieldPayloadGetPrice(field, m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldPriceTests, GetPriceInValid)
@@ -623,6 +649,7 @@ TEST_F(FieldMsgTests, GetMsgInvalidType)
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
 
     aBridge->msgPayloadDestroy(m_in);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldMsgTests, GetMsgInValid)
@@ -642,6 +669,8 @@ TEST_F(FieldMsgTests, GetMsgInValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetMsg(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+
+    aBridge->msgFieldPayloadDestroy(field);
 
     aBridge->msgPayloadDestroy(m_in);
 }
