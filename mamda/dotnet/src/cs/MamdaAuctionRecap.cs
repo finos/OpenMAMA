@@ -45,7 +45,7 @@ namespace Wombat
 		/// Get the uncross Volume.
 		/// </summary>
 		/// <returns>Indicative Volume or the volume turned over in the auction</returns>
-		long getUncrossVolume();
+		double getUncrossVolume();
 
         /// <summary>
         /// Get the field state

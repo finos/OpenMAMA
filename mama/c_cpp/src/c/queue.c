@@ -66,7 +66,7 @@ typedef struct mamaQueueImpl_
 {
     /*Reuseable message for all received on this queue*/
     mamaMsg                     mMsg;
-    int                         mIsDispatching;
+    wInterlockedInt             mIsDispatching;
     /*Hold onto the bridge impl for later use*/
     mamaBridgeImpl*             mBridgeImpl;
     /*The bridge specific queue implementation*/
@@ -103,16 +103,14 @@ typedef struct mamaQueueImpl_
 } mamaQueueImpl;
 
 /*Main structure for the mamaDispatcher*/
-typedef struct mamaDisptacherImpl_
+typedef struct mamaDispatcherImpl_
 {
     /*The queue on which this dispatcher is dispatching*/
-    mamaQueue      mQueue;
+    mamaQueue       mQueue;
     /*The thread on which this dispatcher is dispathcing.*/
-    wthread_t      mThread;
+    wthread_t       mThread;
     /*Whether the dispatcher is dispatching*/
-    int            mIsDispatching;
-    /*Destroy has been called*/
-    int            mDestroy;
+    wInterlockedInt mIsDispatching;
 } mamaDispatcherImpl;
 
 static wInterlockedInt gQueueNumber = 0;
@@ -232,7 +230,8 @@ mamaQueue_create (mamaQueue* queue,
     wInterlocked_initialize(&impl->mNumberOpenObjects);
     wInterlocked_set(0, &impl->mNumberOpenObjects);
 
-
+    wInterlocked_initialize(&impl->mIsDispatching);
+    wInterlocked_set(0, &impl->mIsDispatching);
 
 	/* Call the bridge impl specific queue create function*/
 	if (MAMA_STATUS_OK!=(status=impl->mBridgeImpl->bridgeMamaQueueCreate
@@ -560,6 +559,7 @@ mamaQueue_destroyWait(mamaQueue queue)
         {
             /* Dispatch messages for 10 ms. */
             ret = mamaQueue_timedDispatch(queue, 10);
+
             if(MAMA_STATUS_OK == ret)
             {
                 /* Attempt to destroy the queue again. */
@@ -598,6 +598,8 @@ mamaQueue_destroyTimedWait(mamaQueue queue,
             {
                 /* Dispatch messages for 10 ms. */
                 ret = mamaQueue_timedDispatch(queue, 10);
+
+                /* Should this not react to MAMA_STATUS_TIMEOUT too? */
                 if(MAMA_STATUS_OK == ret)
                 {
                     /* Add 10ms to the count. */
@@ -649,7 +651,6 @@ mamaQueue_destroy (mamaQueue queue)
 
     mama_log (MAMA_LOG_LEVEL_FINEST, "Entering mamaQueue_destroy for queue 0x%X.", queue);
 
-    impl->mIsDispatching = 0;
     if (!queue)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "mamaQueue_destroy(): NULL queue.");
@@ -660,8 +661,19 @@ mamaQueue_destroy (mamaQueue queue)
     status = MAMA_STATUS_QUEUE_OPEN_OBJECTS;
 
     /* Only continue if the object count is 0. */
-    if(0 == wInterlocked_read(&impl->mNumberOpenObjects))
+    if (0 == wInterlocked_read(&impl->mNumberOpenObjects))
     {
+        wInterlocked_set (0, &impl->mIsDispatching);
+
+        if (impl->mDispatcher)
+        {
+            /* Try to ensure that the dispatcher does not restart the queue
+             * dispatching after we've stopped and destroy it. */
+            mamaDispatcherImpl* dispatcherImpl = (mamaDispatcherImpl*)impl->mDispatcher;
+            wInterlocked_set (0, &dispatcherImpl->mIsDispatching);
+            dispatcherImpl->mQueue = NULL;
+        }
+
         if (impl->mMamaQueueBridgeImpl)
         {
             if (MAMA_STATUS_OK!=(status=impl->mBridgeImpl->bridgeMamaQueueDestroy (
@@ -671,13 +683,6 @@ mamaQueue_destroy (mamaQueue queue)
                       "mamaQueue_destroy(): Could not destroy queue bridge.");
                      /*We should continue and free up the rest of the structure.*/
             }
-        }
-
-        if (impl->mDispatcher)
-        {
-            /* We don't want the dispatcher to access a destroyed queue */
-            ((mamaDispatcherImpl*)(impl->mDispatcher))->mIsDispatching = 0;
-            ((mamaDispatcherImpl*)(impl->mDispatcher))->mQueue = NULL;
         }
 
         /*Destroy the cached mamaMsg - no longer needed*/
@@ -758,6 +763,7 @@ mamaQueue_destroy (mamaQueue queue)
 
         /* Destroy the counter lock */
         wInterlocked_destroy(&impl->mNumberOpenObjects);
+        wInterlocked_destroy(&impl->mIsDispatching);
 
         /* Destroy the queue counter lock */
         wInterlocked_destroy(&gQueueNumber);
@@ -799,15 +805,17 @@ mamaQueue_getEventCount (mamaQueue queue,
 mama_status
 mamaQueue_dispatch (mamaQueue queue)
 {
-    mamaQueueImpl* impl = (mamaQueueImpl*)queue;
+    mamaQueueImpl* impl   = (mamaQueueImpl*)queue;
+    mama_status    status = MAMA_STATUS_OK;
+
     if (!impl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mamaQueue_dispatch(): NULL queue.");
         return MAMA_STATUS_NULL_ARG;
     }
-    impl->mIsDispatching = 1;
 
+    wInterlocked_set (1, &impl->mIsDispatching);
     return impl->mBridgeImpl->bridgeMamaQueueDispatch
                                 (impl->mMamaQueueBridgeImpl);
 }
@@ -816,7 +824,7 @@ mama_status
 mamaQueue_timedDispatch (mamaQueue queue,
                          uint64_t  timeout)
 {
-    mamaQueueImpl* impl = (mamaQueueImpl*)queue;
+    mamaQueueImpl* impl   = (mamaQueueImpl*)queue;
 
     if (!impl)
     {
@@ -825,6 +833,7 @@ mamaQueue_timedDispatch (mamaQueue queue,
         return MAMA_STATUS_NULL_ARG;
     }
 
+    wInterlocked_set (1, &impl->mIsDispatching);
     return impl->mBridgeImpl->bridgeMamaQueueTimedDispatch
                             (impl->mMamaQueueBridgeImpl, timeout);
 }
@@ -856,8 +865,8 @@ mamaQueue_stopDispatch (mamaQueue queue)
                   "mamaQueue_stopDispatch(): NULL queue.");
         return MAMA_STATUS_NULL_ARG;
     }
-    impl->mIsDispatching = 0;
 
+    wInterlocked_set (0, &impl->mIsDispatching);
     return impl->mBridgeImpl->bridgeMamaQueueStopDispatch
                             (impl->mMamaQueueBridgeImpl);
 }
@@ -1275,16 +1284,10 @@ static void
 {
     mamaDispatcherImpl* impl = (mamaDispatcherImpl*)closure;
 
-    impl->mIsDispatching = 1;
-
-    while (impl->mIsDispatching && !impl->mDestroy &&
-           MAMA_STATUS_OK == mamaQueue_dispatch (impl->mQueue))
-        ;
-
-    impl->mIsDispatching = 0;
-
-    if (impl->mQueue)
-        impl->mQueue->mDispatcher = NULL;
+    wInterlocked_set (1, &impl->mIsDispatching);
+    while (wInterlocked_read (&impl->mIsDispatching) &&
+           MAMA_STATUS_OK == mamaQueue_dispatch (impl->mQueue));
+    wInterlocked_set (0, &impl->mIsDispatching);
 
     return NULL;
 }
@@ -1323,8 +1326,10 @@ mamaDispatcher_create (mamaDispatcher *result,
         return MAMA_STATUS_NOMEM;
     }
 
+    wInterlocked_initialize(&impl->mIsDispatching);
+    wInterlocked_set(0, &impl->mIsDispatching);
+
     impl->mQueue = queue;
-    impl->mDestroy = 0;
     if (wthread_create(&impl->mThread, NULL, dispatchThreadProc, impl))
     {
         free (impl);
@@ -1347,16 +1352,15 @@ mamaDispatcher_destroy (mamaDispatcher dispatcher)
     if (!impl)
         return MAMA_STATUS_NULL_ARG;
 
-    if( impl->mQueue && impl->mIsDispatching )
+    if (impl->mQueue)
     {
-        impl->mIsDispatching = 0;
         mamaQueue_stopDispatch (impl->mQueue);
     }
 
-    impl->mDestroy = 1;
-
     /* Wait for the thread to return. */
+    wInterlocked_set(0, &impl->mIsDispatching);
     wthread_join (impl->mThread, NULL);
+    wInterlocked_destroy (&impl->mIsDispatching);
 
     /* Destroy the thread handle. */
     wthread_destroy(impl->mThread);
@@ -1370,7 +1374,8 @@ mamaDispatcher_destroy (mamaDispatcher dispatcher)
 int
 mamaQueueImpl_isDispatching (mamaQueue queue)
 {
-    return ((mamaQueueImpl*)queue)->mIsDispatching;
+    mamaQueueImpl* impl = (mamaQueueImpl*)queue;
+    return wInterlocked_read (&impl->mIsDispatching);
 }
 
 int MAMACALLTYPE

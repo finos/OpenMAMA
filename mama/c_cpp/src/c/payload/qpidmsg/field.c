@@ -209,9 +209,11 @@ qpidmsgFieldPayload_create (msgFieldPayload* field)
 mama_status
 qpidmsgFieldPayload_destroy (msgFieldPayload field)
 {
-    mama_size_t              i       = 0;
-    qpidmsgFieldPayloadImpl* impl    = (qpidmsgFieldPayloadImpl*) field;
-    qpidmsgPayloadImpl*      payload = NULL;
+    mama_size_t              i        = 0;
+    qpidmsgFieldPayloadImpl* impl     = (qpidmsgFieldPayloadImpl*) field;
+    qpidmsgPayloadImpl*      payload  = NULL;
+    mamaDateTime             dateTime = NULL;
+    mamaPrice                price    = NULL;
 
     if (NULL == field)
     {
@@ -235,11 +237,32 @@ qpidmsgFieldPayload_destroy (msgFieldPayload field)
         qpidmsgPayload_destroy(payload);
     }
 
+    for (i = 0; i < impl->mDataMaxVectorDateTimeCount / sizeof(mamaDateTime); i++)
+    {
+        mamaDateTime_destroy (impl->mDataVectorDateTime[i]);
+    }
+
+    for (i = 0; i < impl->mDataMaxVectorPriceCount / sizeof(mamaPrice); i++)
+    {
+        mamaPrice_destroy (impl->mDataVectorPrice[i]);
+    }
+
     /* Free the ** map */
     if (NULL != impl->mDataVector)
     {
         free (impl->mDataVector);
     }
+    /* Free the ** map */
+    if (NULL != impl->mDataVectorDateTime)
+    {
+        free (impl->mDataVectorDateTime);
+    }
+    /* Free the ** map */
+    if (NULL != impl->mDataVectorPrice)
+    {
+        free (impl->mDataVectorPrice);
+    }
+
 
     /* Free the temporary buffers allocated */
     free (impl);
@@ -1051,10 +1074,74 @@ qpidmsgFieldPayload_getVectorString (const msgFieldPayload   field,
  */
 mama_status
 qpidmsgFieldPayload_getVectorDateTime (const msgFieldPayload   field,
-                                       const mamaDateTime*     result,
+                                       const mamaDateTime**    result,
                                        mama_size_t*            size)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    qpidmsgFieldPayloadImpl* impl       = (qpidmsgFieldPayloadImpl*) field;
+    mama_size_t              i          = 0;
+    mama_size_t              index      = 0;
+    pn_timestamp_t           stamp      = 0;
+    mama_u8_t                hints      = 0;
+    mama_u8_t                precision  = 0;
+    mama_u32_t               micros     = 0;
+    mama_u32_t               seconds    = 0;
+
+    if (   NULL == impl
+        || NULL == result
+        || NULL == size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    *size   = impl->mDataArrayCount / 3;
+
+    /* allocate space for resulting array*/
+    qpidmsgPayloadImpl_allocateBufferMemory ((void**)&impl->mDataVectorDateTime,
+                                             &impl->mDataVectorDateTimeCount,
+                                             *size * sizeof (mamaDateTime));
+
+    if (impl->mDataVectorDateTimeCount > impl->mDataMaxVectorDateTimeCount)
+    {
+        impl->mDataMaxVectorDateTimeCount = impl->mDataVectorDateTimeCount;
+    }
+
+    for (i = 0; i < impl->mDataArrayCount; )
+    {
+
+        /* Pull out the 64 bit time stamp */
+        stamp = impl->mDataArray[i++].u.as_timestamp;
+
+        /* Extract the hints */
+        hints = impl->mDataArray[i++].u.as_ubyte;
+
+        /* Extract the precision */
+        precision = impl->mDataArray[i++].u.as_ubyte;
+
+        index = (i / 3) - 1;
+
+        /* Perform casts / bitwise operators to extract timestamps */
+        micros  = (mama_u32_t) stamp;
+        seconds = (mama_u32_t) (stamp >> 32);
+
+        if (NULL == impl->mDataVectorDateTime[index])
+        {
+            mamaDateTime_create(&impl->mDataVectorDateTime[index]);
+        }
+        else
+        {
+            mamaDateTime_clear(impl->mDataVectorDateTime[index]);
+        }
+
+        mamaDateTime_setWithHints (impl->mDataVectorDateTime[index],
+                                   seconds,
+                                   micros,
+                                   (mamaDateTimePrecision) precision,
+                                   hints);
+    }
+
+    *result = impl->mDataVectorDateTime;
+
+    return MAMA_STATUS_OK;
 }
 
 /*
@@ -1063,10 +1150,62 @@ qpidmsgFieldPayload_getVectorDateTime (const msgFieldPayload   field,
  */
 mama_status
 qpidmsgFieldPayload_getVectorPrice    (const msgFieldPayload   field,
-                                       const mamaPrice*        result,
+                                       const mamaPrice**       result,
                                        mama_size_t*            size)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    qpidmsgFieldPayloadImpl* impl       = (qpidmsgFieldPayloadImpl*) field;
+    mama_size_t              i          = 0;
+    mama_size_t              index      = 0;
+    double                   price      = 0;
+    uint8_t                  hints      = 0;
+
+    if (   NULL == impl
+        || NULL == result
+        || NULL == size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    *size   = impl->mDataArrayCount / 2;
+
+    /* allocate space for resulting array*/
+    qpidmsgPayloadImpl_allocateBufferMemory ((void**)&impl->mDataVectorPrice,
+                                             &impl->mDataVectorPriceCount,
+                                             *size * sizeof (mamaPrice));
+
+    if (impl->mDataVectorPriceCount > impl->mDataMaxVectorPriceCount)
+    {
+        impl->mDataMaxVectorPriceCount = impl->mDataVectorPriceCount;
+    }
+
+    for (i = 0; i < impl->mDataArrayCount; )
+    {
+
+        /* Pull out the price */
+        price = impl->mDataArray[i++].u.as_double;
+
+        /* Extract the hints */
+        hints = impl->mDataArray[i++].u.as_ubyte;
+
+        index = (i / 2) - 1;
+
+        if (NULL == impl->mDataVectorPrice[index])
+        {
+            mamaPrice_create(&impl->mDataVectorPrice[index]);
+        }
+        else
+        {
+            mamaPrice_clear(impl->mDataVectorPrice[index]);
+        }
+
+        mamaPrice_setWithHints (impl->mDataVectorPrice[index],
+                                price,
+                                (mamaPriceHints) hints);
+    }
+
+    *result = impl->mDataVectorPrice;
+
+    return MAMA_STATUS_OK;
 }
 
 
