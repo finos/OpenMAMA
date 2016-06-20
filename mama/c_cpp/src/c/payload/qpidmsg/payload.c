@@ -3517,7 +3517,6 @@ qpidmsgPayload_getVectorMsg (const msgPayload    msg,
                              mama_size_t*        size)
 {
     qpidmsgPayloadImpl*  impl   = (qpidmsgPayloadImpl*) msg;
-    const msgPayload*    temp   = NULL;
     mama_size_t          i      = 0;
 
     mama_status status = MAMA_STATUS_OK;
@@ -3541,18 +3540,14 @@ qpidmsgPayload_getVectorMsg (const msgPayload    msg,
      /* get size of array */
      *size  = pn_data_get_array (impl->mBody);
 
-     /* allocate space for resulting array*/
-     qpidmsgPayloadImpl_allocateBufferMemory (
-             &impl->mBuffer,
-             &impl->mBufferSize,
-             *size * sizeof (qpidmsgPayloadImpl**));
+     qpidmsgFieldPayloadImpl_setDataVectorSize (impl->mField, *size);
 
-     temp = (msgPayload*) impl->mBuffer;
+     impl->mField->mMamaType = MAMA_FIELD_TYPE_VECTOR_MSG;
 
      /* enter array */
      pn_data_enter (impl->mBody);
 
-     for (; i != *size; ++i)
+     for (; i != impl->mField->mDataVectorCount; ++i)
      {
          /* go to next list element */
          pn_data_next (impl->mBody);
@@ -3561,18 +3556,18 @@ qpidmsgPayload_getVectorMsg (const msgPayload    msg,
          pn_data_get_list (impl->mBody);
          pn_data_enter    (impl->mBody);
 
-         status = qpidmsgPayload_create ((msgPayload*) &(temp[i]));
+         status = qpidmsgPayload_create ((msgPayload*) &(impl->mField->mDataVector[i]));
          if (MAMA_STATUS_OK != status)
          {
              mama_log (MAMA_LOG_LEVEL_ERROR, 
                        "qpidmsgPayload_getVectorMsg(): "
-                       "Failed to crete temp message.");
+                       "Failed to create temp message.");
              return status;
          }
 
          /* parse the payload to populate the message */
          qpidmsgPayloadImpl_getMessageFromBuffer (impl->mBody,
-	             (qpidmsgPayloadImpl*) temp[i]);
+	             (qpidmsgPayloadImpl*) impl->mField->mDataVector[i]);
 
          pn_data_exit (impl->mBody);
      }
@@ -3582,7 +3577,7 @@ qpidmsgPayload_getVectorMsg (const msgPayload    msg,
      /* exit field */
      pn_data_exit (impl->mBody);
 
-     *result = temp;
+     *result = impl->mField->mDataVector;
 
      /* Revert to the previous iterator state if applicable */
      qpidmsgPayloadImpl_resetToIteratorState (impl);
