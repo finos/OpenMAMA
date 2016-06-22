@@ -1094,8 +1094,7 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBridge)
     mama_size_t         testBufferLength = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-    result = aBridge->msgPayloadCreate(&testPayloadNew);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 101, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 101, "Testing");
@@ -1119,8 +1118,7 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBuffer)
     mama_size_t         testBufferLength = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-    result = aBridge->msgPayloadCreate(&testPayloadNew);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 101, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 101, "Testing");
@@ -1144,8 +1142,7 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBufferLength)
     mama_size_t         testBufferLength = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-    result = aBridge->msgPayloadCreate(&testPayloadNew);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 101, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 101, "Testing");
