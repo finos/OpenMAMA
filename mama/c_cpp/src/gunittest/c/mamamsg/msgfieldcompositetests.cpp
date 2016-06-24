@@ -77,7 +77,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetAsStringValid)
     char              buffer[5];
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -91,7 +90,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetAsStringInValidMsgField)
     size_t            len        = 0;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -104,7 +102,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetAsStringInValidBuffer)
     size_t            len        = 0;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -117,7 +114,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetAsStringInValidLen)
     char*             buffer     = NULL;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -138,7 +134,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetDescriptorValid)
                     &original));
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, name, fid, "test");
 
     /* iterate through the msg's fields to populate dictionary */
@@ -152,7 +147,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetDescriptorInValidMsgField)
     mamaFieldDescriptor*  result     = NULL;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -164,7 +158,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetDescriptorInValidResult)
     mamaMsgField          mMsgField  = NULL;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -177,7 +170,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetFidValid)
     uint16_t         result     = 0;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -190,7 +182,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetFidInValidMsgField)
     uint16_t*         result     = 0;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -203,7 +194,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetFidInValidResult)
     uint16_t*         result     = 0;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -216,7 +206,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetNameValid)
     const char*       result     = "";
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -229,7 +218,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetNameInValidMsgField)
     const char*       result     = "";
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -241,7 +229,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetNameInValidResult)
     mamaMsgField      mMsgField  = NULL;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -254,7 +241,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetTypeValid)
     mamaFieldType     result;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -267,7 +253,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetTypeInValidMsgField)
     mamaFieldType*    result     = NULL;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -279,7 +264,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetTypeInValidResult)
     mamaMsgField      mMsgField  = NULL;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -292,7 +276,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetTypeNameValid)
     const char*       result     = "";
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -305,7 +288,6 @@ TEST_F (MsgFieldCompositeTestsC, msgFieldGetTypeNameInValidMsgField)
     const char*       result     = "";
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 
@@ -317,7 +299,6 @@ TEST_F (MsgFieldCompositeTestsC, DISABLED_msgFieldGetTypeNameInValidResult)
     mamaMsgField      mMsgField  = NULL;
 
     //Create & add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addString( mMsg, "name", 1, "test");
     mamaMsg_getField (mMsg, "name", 1, &mMsgField);
 

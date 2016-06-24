@@ -100,7 +100,7 @@ TEST_F (MsgGeneralTestsC, msgCreateInValid)
 TEST_F (MsgGeneralTestsC, msgCreateForPayloadBridgeValid)
 {
     mamaMsg createMsg = NULL;
-    ASSERT_EQ (mamaMsg_createForPayloadBridge(&mMsg, mPayloadBridge), MAMA_STATUS_OK);
+    ASSERT_EQ (mamaMsg_createForPayloadBridge(&createMsg, mPayloadBridge), MAMA_STATUS_OK);
     mamaMsg_destroy(createMsg);
 }
 
