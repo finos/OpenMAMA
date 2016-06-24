@@ -978,8 +978,10 @@ qpidmsgPayload_setByteBuffer (const msgPayload    msg,
 
     if (bufferLength == sizeof(pn_message_t*))
     {
-        impl->mQpidMsg = (pn_message_t*) buffer;
-        impl->mBody    = pn_message_body (impl->mQpidMsg);
+        pn_message_t* qMsg = (pn_message_t*) buffer;
+
+        /* NB: will delete contents of impl->mBody */
+        pn_data_copy (impl->mBody, pn_message_body (qMsg));
     }
     else
     {
