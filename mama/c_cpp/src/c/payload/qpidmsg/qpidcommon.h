@@ -219,6 +219,9 @@ typedef struct qpidmsgPayloadImpl_
     /* Parent MAMA message */
     mamaMsg                     mParent;
 
+    /* Child payload for use with getMsg */
+    struct qpidmsgPayloadImpl_*   mChildMsg;
+
 } qpidmsgPayloadImpl;
 
 
