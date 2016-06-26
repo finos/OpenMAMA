@@ -369,22 +369,6 @@ do                                                                             \
   =========================================================================*/
 
 /**
- * When creating a payload message from a "byte buffer" (the pn_message_t
- * pointer), it is not desirable to create a proton message as in the payload's
- * create function because this message will be unnecessarily created, then
- * wither freed and deleted or else overwritten and leaked. This function
- * exists to allow the caller to create everything within a qpid message
- * payload implementation except the underlying proton message pointer.
- *
- * @param msg     The qpidmsgPayloadImpl to populate with the newly created
- *                implementation
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-static mama_status
-qpidmsgPayloadImpl_createImplementationOnly (msgPayload*              msg);
-
-/**
  * Some function calls expect a MAMA message whereas others expect the payload.
  * This function exists to translate a payload message into an encapsulating
  * mamaMsg where this is required.
@@ -533,7 +517,19 @@ qpidmsgPayload_create (msgPayload* msg)
         return MAMA_STATUS_NULL_ARG;
     }
 
-    status = qpidmsgPayloadImpl_createImplementationOnly (msg);
+    impl = (qpidmsgPayloadImpl*) calloc (1, sizeof (qpidmsgPayloadImpl));
+
+    impl->mBuffer                 = NULL; /* Created when first used */
+    impl->mBufferSize             = 0;
+    impl->mNestedMsgBuffer        = NULL;
+    impl->mNestedMsgBufferSize    = 0;
+    impl->mNestedMsgBufferCount   = 0;
+    impl->mInsertMode             = QPID_INSERT_MODE_MAIN_LIST;
+    impl->mDataIteratorOffset     = -1;
+
+    *msg = impl;
+
+    qpidmsgFieldPayload_create ((msgFieldPayload*)(&impl->mField));
 
     if (MAMA_STATUS_OK == status)
     {
@@ -983,14 +979,10 @@ qpidmsgPayload_setByteBuffer (const msgPayload    msg,
 
     if (bufferLength == sizeof(pn_message_t*))
     {
-        /*pn_message_t* qMsg = (pn_message_t*) buffer;*/
+        pn_message_t* qMsg = (pn_message_t*) buffer;
 
         /* NB: will delete contents of impl->mBody */
-        /*pn_data_copy (impl->mBody, pn_message_body (qMsg));*/
-
-        impl->mQpidMsg = (pn_message_t*) buffer;
-        impl->mBody    = pn_message_body (impl->mQpidMsg);
-
+        pn_data_copy (impl->mBody, pn_message_body (qMsg));
     }
     else
     {
@@ -1012,18 +1004,10 @@ qpidmsgPayload_createFromByteBuffer (msgPayload*         msg,
 
     if (0 == bufferLength)
     {
-    	return MAMA_STATUS_INVALID_ARG;
+        return MAMA_STATUS_INVALID_ARG;
     }
 
-    // If this is a byte handle
-    if (bufferLength == sizeof(pn_message_t*))
-    {
-        status = qpidmsgPayloadImpl_createImplementationOnly (msg);
-    }
-    else
-    {
-        status = qpidmsgPayload_create (msg);
-    }
+    status = qpidmsgPayload_create (msg);
     if (MAMA_STATUS_OK == status)
     {
         status = qpidmsgPayload_setByteBuffer (*msg,
@@ -4487,32 +4471,4 @@ qpidmsgPayloadImpl_findField (qpidmsgPayloadImpl* impl,
     }
 
     return MAMA_STATUS_NOT_FOUND;
-}
-
-mama_status
-qpidmsgPayloadImpl_createImplementationOnly (msgPayload* msg)
-{
-    qpidmsgPayloadImpl* impl = NULL;
-
-    if (NULL == msg)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-
-    impl = (qpidmsgPayloadImpl*) calloc (1, sizeof (qpidmsgPayloadImpl));
-    NOMEM_STATUS_CHECK (impl);
-
-    impl->mBuffer                 = NULL; /* Created when first used */
-    impl->mBufferSize             = 0;
-    impl->mNestedMsgBuffer        = NULL;
-    impl->mNestedMsgBufferSize    = 0;
-    impl->mNestedMsgBufferCount   = 0;
-    impl->mInsertMode             = QPID_INSERT_MODE_MAIN_LIST;
-    impl->mDataIteratorOffset     = -1;
-
-    *msg = impl;
-
-    qpidmsgFieldPayload_create ((msgFieldPayload*)(&impl->mField));
-
-    return MAMA_STATUS_OK;
 }

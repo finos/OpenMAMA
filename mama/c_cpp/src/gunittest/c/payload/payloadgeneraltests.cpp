@@ -952,6 +952,7 @@ TEST_F(PayloadGeneralTests, SetByteBufferValid)
     msgPayload          testPayload = NULL;
     const char*         testBuffer = NULL;
     mama_size_t         testBufferLength = 100;
+    msgPayload          testPayloadNew = NULL;
 
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
@@ -964,13 +965,14 @@ TEST_F(PayloadGeneralTests, SetByteBufferValid)
 	result = aBridge->msgPayloadGetByteBuffer(testPayload, (const void**)&testBuffer, &testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayload, aBridge, (const void*)testBuffer, testBufferLength);
+	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, aBridge, (const void*)testBuffer, testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    result = aBridge->msgPayloadSetByteBuffer(testPayload, aBridge, (const void*)testBuffer, testBufferLength);
+    result = aBridge->msgPayloadSetByteBuffer(testPayloadNew, aBridge, (const void*)testBuffer, testBufferLength);
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadDestroy(testPayload);
+    aBridge->msgPayloadDestroy(testPayloadNew);
 }
 
 TEST_F(PayloadGeneralTests, SetByteBufferInValidPayload)
@@ -1061,7 +1063,7 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferValid)
 	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, aBridge, testBuffer, testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    //aBridge->msgPayloadDestroy(testPayloadNew);
+    aBridge->msgPayloadDestroy(testPayloadNew);
     aBridge->msgPayloadDestroy(testPayload);
 
 }
@@ -1106,6 +1108,7 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBridge)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadDestroy(testPayload);
+    aBridge->msgPayloadDestroy(testPayloadNew);
 }
 
 TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBuffer)
@@ -1130,6 +1133,7 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBuffer)
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
 
     aBridge->msgPayloadDestroy(testPayload);
+    aBridge->msgPayloadDestroy(testPayloadNew);
 }
 
 TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBufferLength)
