@@ -660,10 +660,15 @@ qpidmsgPayload_destroy (msgPayload msg)
     }
 
     /* Release the underlying payload object */
-    if(NULL != impl->mQpidMsg)
+    if (NULL != impl->mQpidMsg)
     {
         pn_message_free (impl->mQpidMsg);
         impl->mQpidMsg = NULL;
+    }
+
+    if (NULL != impl->mChildMsg)
+    {
+        qpidmsgPayload_destroy ((msgPayload)impl->mChildMsg);
     }
 
     /* Finally, release the payload implementation object */
@@ -3093,7 +3098,6 @@ qpidmsgPayload_getMsg (const msgPayload    msg,
 {
     qpidmsgPayloadImpl*  impl       = (qpidmsgPayloadImpl*) msg;
     mama_status          status     = MAMA_STATUS_OK;
-    msgPayload           childMsg   = NULL;
 
     if (NULL == impl)
     {
@@ -3108,7 +3112,14 @@ qpidmsgPayload_getMsg (const msgPayload    msg,
         return status;
     }
 
-    status = qpidmsgPayload_create (&childMsg);
+    if (NULL == impl->mChildMsg)
+    {
+        status = qpidmsgPayload_create ((msgPayload*)&impl->mChildMsg);
+    }
+    else
+    {
+        status = qpidmsgPayload_clear ((msgPayload)impl->mChildMsg);
+    }
 
     if (MAMA_STATUS_OK != status)
     {
@@ -3124,7 +3135,7 @@ qpidmsgPayload_getMsg (const msgPayload    msg,
     pn_data_enter    (impl->mBody);
 
     status = qpidmsgPayloadImpl_getMessageFromBuffer (impl->mBody,
-		             (qpidmsgPayloadImpl*) childMsg);
+		             (qpidmsgPayloadImpl*) impl->mChildMsg);
 
     if (MAMA_STATUS_OK != status)
     {
@@ -3134,7 +3145,7 @@ qpidmsgPayload_getMsg (const msgPayload    msg,
         return status;
     }
 
-    *result = childMsg;
+    *result = impl->mChildMsg;
 
     /* Revert to the previous iterator state if applicable */
     qpidmsgPayloadImpl_resetToIteratorState (impl);
