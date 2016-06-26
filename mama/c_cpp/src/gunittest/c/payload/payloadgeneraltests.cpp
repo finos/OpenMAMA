@@ -303,8 +303,6 @@ TEST_F(PayloadGeneralTests, SerializeRoundtrip)
         ret = aBridge->msgPayloadGetNumFields (testPayloadInSub, &numFieldsInSub);
         EXPECT_EQ (MAMA_STATUS_OK, ret);
         EXPECT_EQ (2, numFieldsInSub);
-
-        EXPECT_EQ (MAMA_STATUS_OK, aBridge->msgPayloadDestroy (testPayloadInSub));
     }
 
     EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (dt));

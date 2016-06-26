@@ -353,7 +353,7 @@ TEST_F (MsgGeneralTestsC, msgGetPayloadTypeInValidMsg)
 TEST_F (MsgGeneralTestsC, msgImplSetMessageOwnerValid)
 {
     const char*  testString = "test"; 
-    short        owner      = (short) NULL;
+    short        owner      = 1;
 
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, testString);

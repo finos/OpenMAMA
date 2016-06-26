@@ -433,15 +433,24 @@ protected:
 
     MsgSubMsgTestsC() : m_out(NULL)
     {
-        mamaMsg_create(&m_in);
-        mamaMsg_create(&m_update);
     }
 
     ~MsgSubMsgTestsC()
     {
+    }
+    virtual void SetUp(void)
+    {
+        MsgCompositeTestsC::SetUp();
+        ASSERT_EQ(MAMA_STATUS_OK, mamaMsg_create(&m_in));
+        ASSERT_EQ(MAMA_STATUS_OK, mamaMsg_create(&m_update));
+    };
+
+    virtual void TearDown(void)
+    {
         mamaMsg_destroy(m_in);
         mamaMsg_destroy(m_update);
-    }
+        MsgCompositeTestsC::TearDown();
+    };
 };
 /* addMsg tests */
 TEST_F(MsgSubMsgTestsC, addSubMsgValid)
