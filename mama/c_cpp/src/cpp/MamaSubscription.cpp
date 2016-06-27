@@ -826,6 +826,23 @@ namespace Wombat
         return timeout;
     }
 
+    void MamaSubscription::setRecapTimeout (double timeout)
+    {
+        if (NULL != mSubscription)
+        {
+            mamaTry (mamaSubscription_setRecapTimeout (mSubscription,
+                                                       timeout));
+        }
+    }
+
+    double MamaSubscription::getRecapTimeout (void)
+    {
+        double timeout = 0.0;
+        mamaTry (mamaSubscription_getRecapTimeout (mSubscription,
+                                              &timeout));
+        return timeout;
+    }
+
     void MamaSubscription::setRecoverGaps (bool recover)
     {
         mamaTry (mamaSubscription_setRecoverGaps (mSubscription, 

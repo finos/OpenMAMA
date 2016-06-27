@@ -294,7 +294,7 @@ namespace Wombat
 
         /**
          * Set the timeout for this subscription. The timeout is used for
-         * requesting initial values, and recaps.
+         * requesting initial values.
          *
          * @param timeout The timeout in seconds.
          */
@@ -304,6 +304,20 @@ namespace Wombat
          * Return the timeout.
          */
         virtual double getTimeout (void);
+
+        /**
+         * Set the timeout for this subscription. The timeout is used for
+         * requesting recaps.
+         *
+         * @param timeout The timeout in seconds.
+         */
+        virtual void setRecapTimeout (double timeout);
+
+        /**
+        /**
+         * Return the recap timeout.
+         */
+        virtual double getRecapTimeout (void);
 
         /**
          * Attempt to recover from sequence number gaps by requesting a
