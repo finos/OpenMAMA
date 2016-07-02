@@ -19,6 +19,8 @@ if env['PLATFORM'] == "win32":
     env.Append(LIBS=libs, CPPPATH=[includePath])
     env.InstallLibrary(sources, target)
 else:
+    lib = []
+    lib.append(env.SharedLibrary(target, sources))
     env.Append(LIBS=['mama', ], CPPPATH=[includePath])
     env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
     env.Append(CFLAGS=['-Werror'])
