@@ -2243,13 +2243,9 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         void*        buffer,
         mama_size_t  size)
     {
-        int result = 0;
-        if (MAMA_STATUS_OK != (mamaTry (mamaMsg_setNewBuffer (
-                            mMsg, buffer, size))))
-        {
-            return result;
-        }
-        return result != 0;
+        mamaTry (mamaMsg_setNewBuffer (mMsg, buffer, size));
+        // Exception not being thrown = success
+        return true;
     }
 
     void* MamaMsg::getNativeHandle () const

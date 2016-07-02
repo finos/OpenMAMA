@@ -112,6 +112,7 @@ TEST_F(MamaDateTimeTest, CompareDates)
 
 	// Set the date from this string
 	//ASSERT_EQ(mamaDateTime_setFromString(m_cDateTime, completeDateTime), MAMA_STATUS_OK);
+    delete m_DateTime;
     m_DateTime = new MamaDateTime(completeDateTime);    
 
 	// Get the number of seconds

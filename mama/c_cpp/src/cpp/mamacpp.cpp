@@ -37,6 +37,7 @@ namespace Wombat
     /******************************************************************************
      * Mama Implementation
      */
+    std::vector<MamaQueue*> Mama::mDefaultQueueWrappers;
 
     const char* Mama::getVersion (mamaBridge bridgeImpl)
     {
@@ -57,22 +58,36 @@ namespace Wombat
         return (bridge);
     }
 
-
-    void Mama::open()
+    void Mama::open ()
     {
-        // Open MAMA
-        mamaTry (mama_open ());
+        openCount (NULL, NULL);
+    }
 
-        MamaReservedFields::initReservedFields();
+    unsigned int Mama::openCount ()
+    {
+        return openCount (NULL, NULL);
     }
 
     void Mama::open (const char* path,
                      const char* filename)
     {
-        // Open MAMA
-        mamaTry (mama_openWithProperties (path, filename));
+        openCount (path, filename);
+    }
 
-        MamaReservedFields::initReservedFields();
+    unsigned int Mama::openCount (const char* path,
+                                  const char* filename)
+    {
+        unsigned int refCount = 0;
+
+        // Open MAMA
+        mamaTry (mama_openWithPropertiesCount (path, filename, &refCount));
+        
+        if (1 == refCount)
+        {
+            MamaReservedFields::initReservedFields ();
+        }
+
+        return refCount;
     }
 
     static MamaEntitlementCallback* gMamaEntitlementCallback = NULL;
@@ -152,8 +167,22 @@ namespace Wombat
 
     void Mama::close ()
     {
+        closeCount ();
+    }
+
+    unsigned int Mama::closeCount ()
+    {
+        unsigned int refCount = 0;
+
         // Close mama
-        mamaTry (mama_close ());
+        mamaTry (mama_closeCount (&refCount));
+
+        if (0 == refCount)
+        {
+            MamaReservedFields::uninitReservedFields();
+        }
+
+        return refCount;
     }
 
     void Mama::start (mamaBridge bridgeImpl)
@@ -284,6 +313,7 @@ namespace Wombat
             {
                 defaultQueue = new MamaQueue(defaultQueueC);
                 mamaQueue_setClosure(defaultQueueC, (void*) defaultQueue);
+                Mama::mDefaultQueueWrappers.push_back(defaultQueue);
             }
             return defaultQueue;
         }

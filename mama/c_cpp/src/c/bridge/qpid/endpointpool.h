@@ -43,6 +43,8 @@ typedef void* endpoint_t;
 extern "C" {
 #endif
 
+typedef void (*endpointDestroyCb)(endpoint_t endpoint);
+
 /*=========================================================================
   =                  Public implementation functions                      =
   =========================================================================*/
@@ -73,6 +75,21 @@ endpointPool_create                     (endpointPool_t*    endpoints,
 mama_status
 endpointPool_destroy                    (endpointPool_t     endpoints);
 
+/**
+ * This function is responsible for destroying the endpoint pool implementation
+ * provided and releasing all memory associated with the pool itself as well as
+ * its underlying dependencies. Includes callback to clean up cascading
+ * dependencies.
+ *
+ * @param endpoints The endpoint pool to be destroyed.
+ * @param callback  The callback to trigger to clean up the endpoint itself (or
+ *                  NULL if not applicable).
+ *
+ * @return mama_status indicating whether the method succeeded or failed.
+ */
+mama_status
+endpointPool_destroyWithCallback        (endpointPool_t     endpoints,
+                                         endpointDestroyCb  callback);
 /**
  * This will register a supplied endpoint in the pool according to the unique
  * identifier and topic provided. The combination of topic and identifier
@@ -168,7 +185,7 @@ endpointPool_getName                    (endpointPool_t     endpoints,
  * this pool)
  *
  * @param endpoints  The endpoint pool to query.
- * @param name       The topic to match on.
+ * @param topic      The topic to match on.
  * @param content    The opaque content to look for.
  *
  * @return mama_status indicating whether the method succeeded or failed.
@@ -178,6 +195,22 @@ endpointPool_isRegistedByContent        (endpointPool_t     endpoints,
                                          const char*        topic,
                                          void*              content);
 
+/**
+ * This will find a list of endpoints in the pool according to the provided
+ * topic and identifier.
+ *
+ * @param endpoints  The endpoint pool to query.
+ * @param topic      The topic to match on.
+ * @param identifier The identifier to match on.
+ * @param endpoint   The matching endpoint to return.
+ *
+ * @return mama_status indicating whether the method succeeded or failed.
+ */
+mama_status
+endpointPool_getEndpointByIdentifiers   (endpointPool_t     endpoints,
+                                         const char*        topic,
+                                         const char*        identifier,
+                                         endpoint_t*        endpoint);
 
 #if defined(__cplusplus)
 }

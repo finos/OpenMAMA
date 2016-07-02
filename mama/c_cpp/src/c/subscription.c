@@ -2166,7 +2166,7 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
     self->mWcCallbacks.onMsg (
            subscription, 
            msg, 
-           NULL,
+           topic,
            self->mClosure, 
            topicClosure);
 
@@ -2268,8 +2268,8 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
         mamaSubscription_forwardMsg (self, msg);
 
         /*Do not access subscription here as it mey have been deleted/destroyed*/
-        return MAMA_STATUS_OK;
     }
+    return MAMA_STATUS_OK;
 }
 
 mama_status

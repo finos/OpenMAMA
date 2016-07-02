@@ -491,7 +491,7 @@ typedef mama_status
 (*msgPayload_updateVectorPrice)(msgPayload          msg,
                                 const char*         fname,
                                 mama_fid_t          fid,
-                                const mamaPrice*    priceList[],
+                                const mamaPrice     priceList[],
                                 mama_size_t         size);
 typedef mama_status
 (*msgPayload_updateVectorTime) (msgPayload          msg,
@@ -667,13 +667,13 @@ typedef mama_status
 (*msgPayload_getVectorDateTime)(const msgPayload    msg,
                                 const char*         name,
                                 mama_fid_t          fid,
-                                const mamaDateTime* result,
+                                const mamaDateTime** result,
                                 mama_size_t*        size);
 typedef mama_status
 (*msgPayload_getVectorPrice)   (const msgPayload    msg,
                                 const char*         name,
                                 mama_fid_t          fid,
-                                const mamaPrice*    result,
+                                const mamaPrice**   result,
                                 mama_size_t*        size);
 typedef mama_status
 (*msgPayload_getVectorMsg)     (const msgPayload    msg,

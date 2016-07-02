@@ -726,7 +726,7 @@ mamaInternal_getAllowMsgModify (void)
     return gAllowMsgModify;
 }
 
-static mama_status
+mama_status
 mama_openWithPropertiesCount (const char* path,
                               const char* filename,
                               unsigned int* count)
@@ -781,8 +781,7 @@ mama_openWithPropertiesCount (const char* path,
 
     if (0 != gImpl.myRefCount)
     {
-        if (MAMA_STATUS_OK == result)
-            gImpl.myRefCount++;
+        gImpl.myRefCount++;
         
         if (count)
             *count = gImpl.myRefCount;
@@ -888,6 +887,35 @@ mama_openWithPropertiesCount (const char* path,
     	mama_log (MAMA_LOG_LEVEL_FINE, "%s (non entitled)",mama_version);
     }
 
+    /* Load all specified Entitlements Bridges. This is done before payloads/middlewares
+     * as an entitlementsBridge is necessary for transport_create().
+     */
+    while (NULL != gEntitlementBridges[bridgeIdx])
+    {
+        mama_log(MAMA_LOG_LEVEL_FINE,
+                 "Trying to load %s entitlement bridge.",
+                 gEntitlementBridges[bridgeIdx]);
+
+        result = mama_loadEntitlementBridgeInternal(gEntitlementBridges[bridgeIdx]);
+
+        if (MAMA_STATUS_OK != result)
+        {
+            mama_log(MAMA_LOG_LEVEL_SEVERE,
+                     "mama_openWithProperties(): "
+                     "Could not load %s entitlements library.",
+                     gEntitlementBridges[bridgeIdx]);
+
+            wthread_static_mutex_unlock (&gImpl.myLock);
+            mama_close();
+
+            if (count)
+                *count = gImpl.myRefCount;
+
+            return result;
+        }
+        bridgeIdx++;
+    }
+
 
     /* Iterate the currently loaded middleware bridges, log their version, and
      * increment the count of open bridges.
@@ -909,6 +937,8 @@ mama_openWithPropertiesCount (const char* path,
 
     if (0 == numBridges)
     {
+        cleanupReservedFields();
+
         mama_log (MAMA_LOG_LEVEL_SEVERE,
                   "mama_openWithProperties(): "
                   "At least one bridge must be specified");
@@ -921,6 +951,8 @@ mama_openWithPropertiesCount (const char* path,
 
     if (!gDefaultPayload)
     {
+        cleanupReservedFields();
+
         mama_log (MAMA_LOG_LEVEL_SEVERE,
                   "mama_openWithProperties(): "
                   "At least one payload must be specified");
@@ -931,31 +963,6 @@ mama_openWithPropertiesCount (const char* path,
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
 
-    while (NULL != gEntitlementBridges[bridgeIdx])
-    {
-        mama_log(MAMA_LOG_LEVEL_FINE,
-                 "Trying to load %s entitlement bridge.",
-                 gEntitlementBridges[bridgeIdx]);
-
-        result = mama_loadEntitlementBridgeInternal(gEntitlementBridges[bridgeIdx]);
-
-        if (MAMA_STATUS_OK != result)
-        {
-            mama_log(MAMA_LOG_LEVEL_SEVERE,
-                     "mama_openWithProperties(): "
-                     "Could not load %s entitlements library.",
-                     gEntitlementBridges[bridgeIdx]);
-            
-            wthread_static_mutex_unlock (&gImpl.myLock);
-            mama_close();
-            
-            if (count)
-                *count = gImpl.myRefCount;
-
-            return result;
-        }
-        bridgeIdx++;
-    }
 
     mama_statsInit();
 
@@ -1125,6 +1132,14 @@ mama_open ()
 }
 
 mama_status
+mama_openCount (unsigned int* count)
+{
+    /*Passing NULL as path and filename will result in the
+     default behaviour - mama.properties on $WOMBAT_PATH*/
+    return mama_openWithPropertiesCount (NULL, NULL, count);
+}
+
+mama_status
 mama_openWithProperties (const char* path,
                          const char* filename)
 {
@@ -1244,7 +1259,7 @@ mama_getVersion (mamaBridge bridgeImpl)
     return mama_ver_string;
 }
 
-static mama_status
+mama_status
 mama_closeCount (unsigned int* count)
 {
     mama_status    result     = MAMA_STATUS_OK;
@@ -2536,6 +2551,9 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                   middlewareName);
         goto error_handling_impl_allocated;
     }
+
+    /* Create the bridge lock */
+    (*impl)->mLock = wlock_create();
 
     /* Populate bridge meta data based on bridge's init properties */
     mamaBridgeImpl_populateBridgeMetaData (*impl);

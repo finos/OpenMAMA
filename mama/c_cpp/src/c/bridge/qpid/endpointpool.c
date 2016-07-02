@@ -187,7 +187,7 @@ endpointPool_create (endpointPool_t* endpoints, const char* name)
 }
 
 mama_status
-endpointPool_destroy (endpointPool_t endpoints)
+endpointPool_destroyWithCallback (endpointPool_t endpoints, endpointDestroyCb callback)
 {
     endpointPoolImpl* impl = (endpointPoolImpl*) endpoints;
 
@@ -199,10 +199,10 @@ endpointPool_destroy (endpointPool_t endpoints)
     /* Destroy the main wtable and all its contents */
     if (NULL != impl->mContainer)
     {
-        /* Destroy each sub table in this container */
+        /* Destroy each sub table in this container (topic) */
         wtable_for_each (impl->mContainer,
                          endpointPoolImpl_destroySubTable,
-                         NULL);
+                         (void*) callback);
         /* Free the strdup-ed keys still held by the wtable */
         wtable_free_all_xdata (impl->mContainer);
         /* Finally, destroy the wtable */
@@ -225,6 +225,12 @@ endpointPool_destroy (endpointPool_t endpoints)
     free (impl);
 
     return MAMA_STATUS_OK;
+}
+
+mama_status
+endpointPool_destroy (endpointPool_t endpoints)
+{
+    return endpointPool_destroyWithCallback (endpoints, NULL);
 }
 
 mama_status endpointPool_registerWithIdentifier (endpointPool_t     endpoints,
@@ -439,6 +445,32 @@ endpointPool_isRegistedByContent (endpointPool_t    endpoints,
     return 1;
 }
 
+mama_status
+endpointPool_getEndpointByIdentifiers   (endpointPool_t     endpoints,
+                                         const char*        topic,
+                                         const char*        identifier,
+                                         endpoint_t*        endpoint)
+{
+    endpointPoolImpl*       impl             = (endpointPoolImpl*) endpoints;
+    wtable_t                registeredTable  = NULL;
+    endpoint_t              existingEndpoint = NULL;
+
+    /* Get the wtable representing the endpoints associated with this topic */
+    registeredTable = wtable_lookup (impl->mContainer, topic);
+
+    if (registeredTable == NULL)
+    {
+        return MAMA_STATUS_NOT_FOUND;
+    }
+
+    existingEndpoint = wtable_lookup (registeredTable, identifier);
+    if (existingEndpoint == NULL)
+    {
+        return MAMA_STATUS_NOT_FOUND;
+    }
+    *endpoint = existingEndpoint;
+    return MAMA_STATUS_OK;
+}
 
 /*=========================================================================
   =                  Private implementation functions                     =
@@ -533,7 +565,15 @@ endpointPoolImpl_destroySubTable (wtable_t     table,
                                   const        char* key,
                                   void*        closure)
 {
-    /* Free all wtable strdup-ed keys */
+    if (NULL != closure)
+    {
+        /* Destroy each sub table in this container (topic) */
+        wtable_for_each ((wtable_t)data,
+                         endpointPoolImpl_destroySubTable,
+                         closure);
+    }
+
+    /* Free all wtable strdup-ed keys but not the data */
     wtable_free_all_xdata ((wtable_t)data);
 
     /* Destroy the table itself */
