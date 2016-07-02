@@ -78,6 +78,7 @@ namespace Wombat
         void*                          mClosure;
         bool                           mRequireInitial;
         double                         mTimeout;
+        double                         mRecapTimeout;
         int                            mRetries;
         vector<MamdaMsgListener*>      mMsgListeners;
         vector<MamdaErrorListener*>    mErrorListeners;
@@ -114,6 +115,7 @@ namespace Wombat
         result->setServiceLevel   (getServiceLevel(), getServiceLevelOpt());
         result->setRequireInitial (getRequireInitial());
         result->setTimeout        (getTimeout());
+        result->setRecapTimeout   (getRecapTimeout());
         result->setRetries        (getRetries());
 
         return result;
@@ -227,6 +229,11 @@ namespace Wombat
         mImpl.mTimeout = timeout;
     }
 
+    void MamdaSubscription::setRecapTimeout (double  timeout)
+    {
+        mImpl.mRecapTimeout = timeout;
+    }
+
     void MamdaSubscription::setRetries (int retries)
     {
         mImpl.mRetries = retries;
@@ -301,6 +308,7 @@ namespace Wombat
         mImpl.mMamaSubscription->setRequiresInitial  (mImpl.mRequireInitial);
         mImpl.mMamaSubscription->setRetries          (mImpl.mRetries);
         mImpl.mMamaSubscription->setTimeout          (mImpl.mTimeout);
+        mImpl.mMamaSubscription->setRecapTimeout     (mImpl.mRecapTimeout);
 
         mImpl.mMamaSubscription->create (mImpl.mQueue,
                                          &mImpl,
@@ -395,6 +403,16 @@ namespace Wombat
         return mImpl.mTimeout;
     }
 
+    double MamdaSubscription::getRecapTimeout() const
+    {
+        if (-1 == mImpl.mRecapTimeout)
+        {
+            // If this hasn't been explicitly set, set it to mTimeout
+            mImpl.mRecapTimeout = mImpl.mTimeout;
+        }
+        return mImpl.mRecapTimeout;
+    }
+
     int MamdaSubscription::getRetries() const
     {
         return mImpl.mRetries;
@@ -424,6 +442,7 @@ namespace Wombat
         , mClosure            (NULL)
         , mRequireInitial     (true)
         , mTimeout            (10.0)
+        , mRecapTimeout       (-1)  // Special value used to indicate that mTimeout should be used.
         , mRetries            (MAMA_DEFAULT_RETRIES)
         , mLatestMsg          (NULL)
         , mMamaSubscription   (NULL)

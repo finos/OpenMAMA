@@ -463,7 +463,7 @@ dqStrategy_sendRecapRequest (dqStrategyImpl* strategy, mamaMsg srcMsg, mamaDqCon
         mamaSubscription_getSubscSymbol (self->mSubscription,&symbol);
     }
 
-    mamaSubscription_getTimeout (self->mSubscription, &timeout);
+    mamaSubscription_getRecapTimeout (self->mSubscription, &timeout);
     mamaSubscription_getRetries (self->mSubscription, &retries);
 
     /* Send a request to the publisher to resend. */
