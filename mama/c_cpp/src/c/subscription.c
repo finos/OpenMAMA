@@ -3259,7 +3259,9 @@ void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl)
 
     /* Destroy the state. */
     wInterlocked_destroy(&impl->mState);
-                    
+
+    mamaEntitlementBridge_destroySubscription (impl->mSubjectContext.mEntitlementSubscription);
+
     /* Free the subscription impl. */
     free(impl);
 }

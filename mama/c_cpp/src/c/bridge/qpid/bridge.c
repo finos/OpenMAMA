@@ -202,7 +202,7 @@ qpidBridge_stop (mamaQueue defaultEventQueue)
     if (NULL == defaultEventQueue)
     {
       mama_log (MAMA_LOG_LEVEL_FINER,
-                "qpidBridge_start(): defaultEventQueue is NULL");
+                "qpidBridge_stop(): defaultEventQueue is NULL");
       return MAMA_STATUS_NULL_ARG;
     }
 

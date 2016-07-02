@@ -198,18 +198,19 @@ memoryPool_destroy (memoryPool* pool, memoryPoolIteratorCb callback)
     tracker = (memoryNode**)pool->mAllocatedNodes.mNodeBuffer;
     for (i = 0; i < pool->mNumNodesTotal; i++)
     {
-        node = tracker[pool->mNumNodesTotal];
+        node = tracker[i];
         if (NULL != node)
         {
             if (NULL != callback)
             {
                 callback (pool, node);
             }
-            memoryNode_empty(node);
+            memoryNode_destroy(node);
         }
     }
     wthread_mutex_unlock(&pool->mLock);
     wthread_mutex_destroy(&pool->mLock);
+    memoryNode_empty(&pool->mAllocatedNodes);
     free (pool);
 }
 

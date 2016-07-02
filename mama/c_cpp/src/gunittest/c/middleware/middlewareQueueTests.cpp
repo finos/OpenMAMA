@@ -52,11 +52,13 @@ MiddlewareQueueTests::~MiddlewareQueueTests(void)
 
 void MiddlewareQueueTests::SetUp(void)
 {
-	mama_loadBridge (&mBridge,getMiddleware());
+    mama_loadBridge (&mBridge,getMiddleware());
+    mama_open();
 }
 
 void MiddlewareQueueTests::TearDown(void)
 {
+    mama_close();
 }
 
 static void onEvent(mamaQueue queue, void* closure)
@@ -76,9 +78,11 @@ TEST_F (MiddlewareQueueTests, create)
     mamaQueue   parent = NULL;
 
     mamaQueue_create(&parent,mBridge);
-    
+
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaQueueCreate(&queue, parent));
+    mBridge->bridgeMamaQueueDestroy(queue);
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(parent));
 }
 
 TEST_F (MiddlewareQueueTests, createInvalidQueueBridge)
@@ -138,8 +142,8 @@ TEST_F (MiddlewareQueueTests, destroy)
     mamaQueue_create(&parent,mBridge);
     mBridge->bridgeMamaQueueCreate(&queue, parent);
 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaQueueDestroy(queue));
+    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeMamaQueueDestroy(queue));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(parent));
 }
 
 TEST_F (MiddlewareQueueTests, destroyInvalid)
@@ -159,6 +163,8 @@ TEST_F (MiddlewareQueueTests, getEventCount)
     
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaQueueGetEventCount(queue,&count));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaQueueDestroy(queue));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(parent));
 }
 
 TEST_F (MiddlewareQueueTests, getEventCountInvalidQueueBridge)
@@ -193,6 +199,7 @@ TEST_F (MiddlewareQueueTests, DISABLED_dispatch)
     
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaQueueDispatch(queue));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaQueueDestroy(queue));
 }
 
 TEST_F (MiddlewareQueueTests, DISABLED_dispatchMany)
@@ -218,6 +225,7 @@ TEST_F (MiddlewareQueueTests, DISABLED_dispatchMany)
         ASSERT_EQ(MAMA_STATUS_OK, 
                   mBridge->bridgeMamaQueueDispatch(queue));
     }
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaQueueDestroy(queue));
 }
 
 TEST_F (MiddlewareQueueTests, DISABLED_dispatchManyQueues)
@@ -247,6 +255,7 @@ TEST_F (MiddlewareQueueTests, DISABLED_dispatchManyQueues)
             ASSERT_EQ(MAMA_STATUS_OK, 
                       mBridge->bridgeMamaQueueDispatch(queue[counter]));
         }
+        ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaQueueDestroy(queue[counter]));
 
     }
 
@@ -278,6 +287,8 @@ TEST_F (MiddlewareQueueTests, timedDispatch)
 
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaQueueTimedDispatch(queue,timeout));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaQueueDestroy(queue));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(parent));
 }
 
 TEST_F (MiddlewareQueueTests, timedDispatchInvalidQueueBridge)
@@ -310,7 +321,7 @@ TEST_F (MiddlewareQueueTests, enqueueEvent)
     queueBridge queue   = NULL;
     mamaQueue   parent  = NULL;
     void*       closure = NOT_NULL;
-    
+
     mamaQueue_create(&parent,mBridge);
     mBridge->bridgeMamaQueueCreate(&queue, parent);
    
@@ -318,6 +329,8 @@ TEST_F (MiddlewareQueueTests, enqueueEvent)
                mBridge->bridgeMamaQueueEnqueueEvent(queue,
                                                     onEvent,
                                                     closure));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaQueueDestroy(queue));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(parent));
 }
 
 TEST_F (MiddlewareQueueTests, enqueueEventInvalidQueueBridge)
@@ -451,6 +464,8 @@ TEST_F (MiddlewareQueueTests, setHighWatermark)
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaQueueSetHighWatermark(queue,
                                                        highWatermark));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaQueueDestroy(queue));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(parent));
 }
 
 TEST_F (MiddlewareQueueTests, setHighWatermarkInvalidQueueBridge)
@@ -481,6 +496,8 @@ TEST_F (MiddlewareQueueTests, setLowWatermark)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaQueueSetLowWatermark(queue, lowWatermark));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaQueueDestroy(queue));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy(parent));
 }
 
 TEST_F (MiddlewareQueueTests, setLowWatermarkInvalidQueueBridge)

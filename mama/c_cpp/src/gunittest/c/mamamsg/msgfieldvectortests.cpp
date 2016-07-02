@@ -56,12 +56,14 @@ protected:
     {
         mama_loadPayloadBridge (&mPayloadBridge, getPayload());
         mamaMsg_create (&mMsg);
-        mamaMsgField_create (&mField);
+        //mamaMsgField_create (&mField);
     };
 
     virtual void TearDown(void) 
     {
         mamaMsg_destroy(mMsg);
+        //mamaMsgField_destroy(mField);
+        //mama_close();
     };
 };
 
@@ -991,6 +993,10 @@ protected:
     virtual void TearDown()
     {
         MsgFieldVectorTestsC::TearDown();
+        for (uint32_t i = 0 ; i < VECTOR_SIZE ; i++)
+        {
+            mamaMsg_destroy (mIn[i]);
+        }
     }
 };
 

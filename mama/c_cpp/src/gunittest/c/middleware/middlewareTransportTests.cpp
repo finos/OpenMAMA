@@ -52,25 +52,26 @@ MiddlewareTransportTests::MiddlewareTransportTests(void)
       parentName ("test_tport"),
       parentTport (NULL)
 {
+}
 
+MiddlewareTransportTests::~MiddlewareTransportTests(void)
+{
+}
+
+void MiddlewareTransportTests::SetUp(void)
+{
     mama_loadBridge (&mBridge, getMiddleware());
+    mama_open();
     mamaTransport_allocate (&parentTport);
 
     mamaTransport_create (parentTport, parentName, mBridge);
     mamaTransport_getNativeTransport (parentTport, 0, (void**)&tport);
 }
 
-MiddlewareTransportTests::~MiddlewareTransportTests(void)
-{
-    mamaTransport_destroy (parentTport);
-}
-
-void MiddlewareTransportTests::SetUp(void)
-{
-}
-
 void MiddlewareTransportTests::TearDown(void)
 {
+    mamaTransport_destroy (parentTport);
+    mama_close();
 }
 
 

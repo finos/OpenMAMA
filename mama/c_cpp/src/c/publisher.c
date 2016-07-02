@@ -867,7 +867,7 @@ static void MAMACALLTYPE mamaPublisher_onPublisherDestroyed(mamaPublisher publis
             impl, source, symbol, mamaPublisher_stringForState(impl->mState));
     }
 
-    if (NULL != impl->mUserCallbacks.onDestroy)
+    if (NULL != *impl->mUserCallbacks.onDestroy)
     {
         (*impl->mUserCallbacks.onDestroy)(publisher, impl->mClosure);
     }

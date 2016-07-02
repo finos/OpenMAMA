@@ -174,6 +174,11 @@ mamaMsg_destroy (mamaMsg msg)
         mamaMsg_destroy (impl->mCopy);
         impl->mCopy = NULL;
     }
+    /* Destroy reusable datetime if allocated */
+    if (impl->mCurrentDateTime)
+    {
+        mamaDateTime_destroy(impl->mCurrentDateTime);
+    }
 
     impl->mDqStrategyContext = NULL;
 
@@ -242,18 +247,22 @@ mamaMsg_detach (mamaMsg msg)
                   "Could not detach bridge message.");
         return status;
     }
-    /* Copy the payload */
-    if (MAMA_STATUS_OK != (status =
-       (msg->mPayloadBridge->msgPayloadCopy (impl->mPayload,
-                                             &payload))))
+
+    /* If we don't own the payload yet, detach it */
+    if (0 == impl->mMessageOwner)
     {
-        mama_log(MAMA_LOG_LEVEL_ERROR,
-                 "mamaMsg_detach() Failed. "
-                 "Could not copy native payload [%d]", status);
-        return status;
+        if (MAMA_STATUS_OK != (status =
+           (msg->mPayloadBridge->msgPayloadCopy (impl->mPayload,
+                                                 &payload))))
+        {
+            mama_log(MAMA_LOG_LEVEL_ERROR,
+                     "mamaMsg_detach() Failed. "
+                     "Could not copy native payload [%d]", status);
+            return status;
+        }
+        msg->mPayload = payload;
     }
 
-    msg->mPayload = payload;
     msg->mPayloadBridge->msgPayloadSetParent (impl->mPayload, msg);
     
     /*If this is a dqStrategy cache message*/
@@ -505,6 +514,11 @@ mamaMsg_createForPayloadBridge (mamaMsg* msg, mamaPayloadBridge payloadBridge)
 {
     msgPayload payload;
     mama_status status = MAMA_STATUS_OK;
+
+    if (!msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
 
     if (MAMA_STATUS_OK !=
        (status = payloadBridge->msgPayloadCreate (&payload)))
@@ -807,6 +821,11 @@ mamaMsg_create (mamaMsg* msg)
     mama_status       status  = MAMA_STATUS_OK;
     mamaPayloadBridge bridge  = mamaInternal_getDefaultPayload ();
     msgPayload        payload = NULL;
+
+    if (!msg)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
 
     if (bridge)
     {

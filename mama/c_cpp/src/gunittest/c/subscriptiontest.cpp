@@ -191,5 +191,7 @@ TEST_F (MamaSubscriptionTest, SubscriptionCreateDestroy)
 
         /* Deallocate subscription memory */
         ASSERT_EQ (MAMA_STATUS_OK, mamaSubscription_deallocate (subscription));
+
+        ASSERT_EQ (MAMA_STATUS_OK, mamaSource_destroy (testSource));
     }
 }

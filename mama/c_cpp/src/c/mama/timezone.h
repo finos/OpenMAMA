@@ -114,6 +114,15 @@ MAMAExpDLL
 extern void
 mamaTimeZone_setScanningInterval (mama_f64_t  seconds);
 
+/**
+ * If you used any timezone functions, you'll need to call this function to
+ * clean up any memory they will have allocated, but hung onto to avoid constant
+ * re-allocation of resources on the critical path.
+ */
+MAMAExpDLL
+extern void
+mamaTimeZone_cleanUp (void);
+
 
 #if defined(__cplusplus)
 }

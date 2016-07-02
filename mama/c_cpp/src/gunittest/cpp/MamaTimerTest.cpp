@@ -44,7 +44,7 @@ MamaTimerTestCPP::MamaTimerTestCPP(void)
     m_numberForCallbacks        = 0;
     m_numberForTimers           = 1000;
     m_numberRecursiveCallbacks  = 0;
-    m_timerInterval             = 0.0001;    
+    m_timerInterval             = 0.1;
 }
 
 MamaTimerTestCPP::~MamaTimerTestCPP(void)
@@ -144,14 +144,12 @@ void MamaTimerTestCPP::OnForRecursiveTick::onDestroy(MamaTimer* timer, void * cl
 
 void MamaTimerTestCPP::OnForTwoTimerTick::onTimer(MamaTimer* timer)
 {
-    //printf("on timer tick\n");
+    timer->destroy();
 
 }
 
 void MamaTimerTestCPP::OnForTwoTimerTick::onDestroy(MamaTimer* timer, void * closure)
 {
-    // Cast the closure to a test fixture
-    //printf("in TwoTick onDestroy\n");
 }
 
 /* ************************************************************************* */
@@ -208,12 +206,9 @@ TEST_F(MamaTimerTestCPP, TwoTimer)
     mtarray[1].create(m_defaultQueue, timerCb, m_timerInterval*2, m_this); //use same callback
 
     //this timer calls stop destroy on tick and Mama::stop on destroy
-    mtarray[2].create(m_defaultQueue, stopperCb, 3, m_this); //3 secs
+    mtarray[2].create(m_defaultQueue, stopperCb, m_timerInterval*3, m_this);
 
     Mama::start(m_bridge);
-    
-    mtarray[0].destroy();
-    mtarray[1].destroy();
 
     // Cleanup
     delete timerCb;

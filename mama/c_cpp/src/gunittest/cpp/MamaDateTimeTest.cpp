@@ -30,6 +30,7 @@
 /* Includes */
 /* ************************************************************************* */
 #include "MamaDateTimeTest.h"
+#include <mama/mamacpp.h>
 
 /* ************************************************************************* */
 /* Construction and Destruction */
@@ -53,6 +54,9 @@ void MamaDateTimeTest::SetUp(void)
 {
 	// Create the date time
 	//ASSERT_EQ(mamaDateTime_create(&m_DateTime), MAMA_STATUS_OK);
+    Mama::loadBridge(getMiddleware());
+    Mama::open();
+
     m_DateTime = new MamaDateTime();
 }
 
@@ -60,6 +64,7 @@ void MamaDateTimeTest::TearDown(void)
 {
 	// Destroy the date time
 	//ASSERT_EQ(mamaDateTime_destroy(m_DateTime), MAMA_STATUS_OK);
+    Mama::close();
     delete m_DateTime;
 }
 

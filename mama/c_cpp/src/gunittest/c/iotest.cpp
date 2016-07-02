@@ -95,6 +95,8 @@ TEST_F (MamaIoTestC, CreateDestroy)
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaIo_destroy (io));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaQueue_destroy (queue));
 }
 
 /*  Description:  Create a mamaIo, get it's descriptor then destory it.
@@ -121,6 +123,8 @@ TEST_F (MamaIoTestC, getDescriptor)
     
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaIo_destroy (io));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaQueue_destroy (queue));
 
     ASSERT_EQ (descriptor, testDescriptor);
 }

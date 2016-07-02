@@ -52,11 +52,13 @@ MiddlewareGeneralTests::~MiddlewareGeneralTests(void)
 
 void MiddlewareGeneralTests::SetUp(void)
 {
-	mama_loadBridge (&mBridge,getMiddleware());
+    mama_loadBridge (&mBridge,getMiddleware());
+    mama_open ();
 }
 
 void MiddlewareGeneralTests::TearDown(void)
 {
+    mama_close ();
 }
 
 
