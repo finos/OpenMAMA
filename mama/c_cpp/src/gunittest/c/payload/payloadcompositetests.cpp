@@ -58,6 +58,7 @@ protected:
         //ForkedTest::SetUp();
 
         mama_loadPayloadBridge(&m_payloadBridge, m_payload.c_str());
+        mama_open();
         m_status = m_payloadBridge->msgPayloadCreate(&m_msg);
         ASSERT_EQ (MAMA_STATUS_OK, m_status);
     }
@@ -67,6 +68,7 @@ protected:
     {
         m_status = m_payloadBridge->msgPayloadDestroy(m_msg);
         EXPECT_EQ (MAMA_STATUS_OK, m_status);
+        mama_close();
 
         //ForkedTest::TearDown();
     }
@@ -345,7 +347,7 @@ protected:
         mamaDateTime_create(&m_in);
         mamaDateTime_create(&m_update);
         mamaDateTime_create(&m_out);
-        
+
         mamaDateTime_setTime (m_in, 12, 35, 40, 30);
         mamaDateTime_setTime (m_update, 13, 59, 1, 35);
     }
@@ -354,6 +356,7 @@ protected:
     {
         mamaDateTime_destroy(m_in);
         mamaDateTime_destroy(m_update);
+        mamaDateTime_destroy(m_out);
         
         PayloadCompositeTests::TearDown();
     }
@@ -473,7 +476,7 @@ protected:
         mamaPrice_create(&m_in);
         mamaPrice_create(&m_update);
         mamaPrice_create(&m_out);
-        
+
         mamaPrice_setValue(m_in, 1.0f);
         mamaPrice_setValue(m_update, 2.0f);
     }
@@ -482,7 +485,8 @@ protected:
     {
         mamaPrice_destroy(m_in);
         mamaPrice_destroy(m_update);
-        
+        mamaPrice_destroy(m_out);
+
         PayloadCompositeTests::TearDown();
     }
 };
@@ -602,8 +606,9 @@ protected:
     virtual void TearDown()
     {
         // Cores
-        // m_payloadBridge->msgPayloadDestroy(m_in);
-        
+        m_payloadBridge->msgPayloadDestroy(m_in);
+        m_payloadBridge->msgPayloadDestroy(m_update);
+
         PayloadCompositeTests::TearDown();
     }
 };

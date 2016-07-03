@@ -511,6 +511,9 @@ typedef struct mamaBridgeImpl_
     void*     mClosure;
     wLock     mLock;
 
+    /* Track background thread for join if startBackground is used */
+    wthread_t mStartBackgroundThread;
+
     /* The set of methods used to access/populate a message in native format */
     mamaPayloadBridge mNativeMsgBridge;
 

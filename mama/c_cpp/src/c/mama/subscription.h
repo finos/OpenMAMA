@@ -940,6 +940,22 @@ mamaSubscription_getTimeout(
     double *timeout);
 
 /**
+ * @brief Retrieve the recap timeout.
+ *
+ * @param[in] subscription The subscription.
+ * @param[out] timeout A pointer to a double to hold the value.
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_NULL_ARG
+ *              MAMA_STATUS_OK
+ */
+MAMAExpDLL
+extern mama_status
+mamaSubscription_getRecapTimeout(
+    mamaSubscription subscription,
+    double *timeout);
+
+/**
  * @brief Return the <code>mamaTransport</code> for this subscription.
  *
  * @param[in] subscription  The subscription.
@@ -1260,7 +1276,7 @@ mamaSubscription_setSymbol (
 
 /**
  * @brief Set the timeout for this subscription. The timeout is used for
- * requesting recaps.
+ * requesting initials.
  *
  * @param[in] subscription The subscription.
  * @param[in] timeout The timeout in seconds.
@@ -1272,6 +1288,23 @@ mamaSubscription_setSymbol (
 MAMAExpDLL
 extern mama_status
 mamaSubscription_setTimeout (
+    mamaSubscription subscription,
+    double timeout);
+
+/**
+ * @brief Set the timeout for this subscription. The timeout is used for
+ * requesting recaps.
+ *
+ * @param[in] subscription The subscription.
+ * @param[in] timeout The timeout in seconds.
+ *
+ * @return mama_status return code can be one of:
+ *              MAMA_STATUS_NULL_ARG
+ *              MAMA_STATUS_OK
+ */
+MAMAExpDLL
+extern mama_status
+mamaSubscription_setRecapTimeout (
     mamaSubscription subscription,
     double timeout);
 

@@ -237,6 +237,8 @@ TEST_F (MsgIterateTestC, CreateIterator)
         }
     }
 
+    mamaMsgIterator_destroy (iterator);
+
     /* destroy the message. */
     mamaMsg_destroy (msg);
 }

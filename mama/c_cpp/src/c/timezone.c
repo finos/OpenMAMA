@@ -79,6 +79,10 @@ static long       getNextId(void) { return ++sInstanceId; }
 /* Used to check whether the instance scanning thread has been started. */
 static int sThreadStarted = 0;
 
+/* Thread instance to track and accompanying semaphore */
+static wthread_t sThread = 0;
+static wsem_t    sTzSem;
+
 /* Mutex used in the check() method. */
 static wthread_static_mutex_t sCheck_mutex  = WSTATIC_MUTEX_INITIALIZER;
 
@@ -365,6 +369,18 @@ mamaTimeZone_setScanningInterval (mama_f64_t  seconds)
     sScanningThreadInterval = seconds;
 }
 
+void
+mamaTimeZone_cleanUp ()
+{
+    if (sThreadStarted)
+    {
+        sThreadStarted = 0;
+        wsem_post (&sTzSem);
+        wthread_join (sThread, NULL);
+        wsem_destroy (&sTzSem);
+    }
+}
+
 /* Utility file scoped method used to start the single instance
  * monitoring thread.
  *
@@ -375,12 +391,11 @@ static void startThread(void)
 {
     /* start the thread scanning the vector of TimeZones. */
     int                 status = 0;
-    static wthread_t    timeThread;
 
     /* Start the thread scanning the vector of TimeZones. */
      sThreadStarted = 1;
 
-    if ((status = wthread_create(&timeThread, NULL, updateTimeZones, NULL) != 0))
+    if ((status = wthread_create(&sThread, NULL, updateTimeZones, NULL) != 0))
     {
         printf ("TZ debug: failed to successfully create thread: "
                 "%d\n", status);
@@ -400,36 +415,14 @@ checkTzIter (wList list, void* element, void* closure)
 
 static void* updateTimeZones (void* ptr)
 {
-
-    struct wtimespec delay;
-    struct wtimespec initialDelay;
     wList           timeZones;
+    /* Interval is in milliseconds */
+    unsigned int    checkInterval = 60000;
 
-    initialDelay.tv_sec = 10;
-    initialDelay.tv_nsec = 0;
-    wnanosleep (&initialDelay, NULL);
-
-
-    /* It makes sense for this thread to continue running for the life
-     * of the process. No need to check for stop condition. */
-    while (1)
+    wsem_init (&sTzSem, 0, 0);
+    /* Until interrupted */
+    do
     {
-        delay.tv_sec  = sScanningThreadInterval;
-        delay.tv_nsec = 100;
-
-        /* If the scanning thread interval is not set, then sleep for
-         * a min and go again. This allows this to be turned off and
-         * turned back on using a wadmin command. */
-        if (!sScanningThreadInterval)
-        {
-            delay.tv_sec = 60;
-            delay.tv_nsec = 100;
-            wnanosleep(&delay,NULL);
-
-            continue;
-        }
-        wnanosleep(&delay,NULL);
-
         /* Lock access to the list of timezones while we recheck. */
         wthread_static_mutex_lock (&sVector_mutex);
 
@@ -438,7 +431,13 @@ static void* updateTimeZones (void* ptr)
         list_for_each (timeZones, checkTzIter, NULL);
 
         wthread_static_mutex_unlock (&sVector_mutex);
-    }
+
+        if (sScanningThreadInterval)
+        {
+            checkInterval = sScanningThreadInterval * 1000;
+        }
+
+    } while (0 != wsem_timedwait (&sTzSem, checkInterval) && sThreadStarted);
 
     /* The return value is not applicable. */
     return NULL;

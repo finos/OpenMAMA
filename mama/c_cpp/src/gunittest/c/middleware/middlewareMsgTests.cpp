@@ -73,8 +73,9 @@ TEST_F (MiddlewareMsgTests, create)
 
     mamaMsg_create(&parent);
 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaMsgCreate(&msg,parent));
+    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeMamaMsgCreate(&msg,parent));
+    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeMamaMsgDestroy(msg, 1));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy(parent));
 }
 
 TEST_F (MiddlewareMsgTests, createInvalidMsgBridge)
@@ -100,11 +101,10 @@ TEST_F (MiddlewareMsgTests, isFromInbox)
 
     mamaMsg_create(&parent);
 
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mBridge->bridgeMamaMsgCreate(&msg,parent));
-    
-    ASSERT_EQ (0, 
-               mBridge->bridgeMamaMsgIsFromInbox(msg));
+    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeMamaMsgCreate(&msg,parent));
+    ASSERT_EQ (0, mBridge->bridgeMamaMsgIsFromInbox(msg));
+    ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeMamaMsgDestroy(msg, 1));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy(parent));
 
 }
 
@@ -128,6 +128,7 @@ TEST_F (MiddlewareMsgTests, destroy)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaMsgDestroy(msg,destroyMsg));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy(parent));
 }
 
 TEST_F (MiddlewareMsgTests, destroyInvalidMsgBridge)
@@ -161,6 +162,7 @@ TEST_F (MiddlewareMsgTests, detach)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaMsgDestroy(msg,destroyMsg));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy(parent));
 }
 
 TEST_F (MiddlewareMsgTests, detachInvalid)
@@ -179,18 +181,23 @@ TEST_F (MiddlewareMsgTests, getPlatformError)
 
     ASSERT_EQ(MAMA_STATUS_OK,mamaMsg_create(&parent));
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgCreate(&msg,parent));
-    
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaMsgCreate(&msg, parent));
 
     status = mBridge->bridgeMamaMsgGetPlatformError(msg, &error);
+
+    if (MAMA_STATUS_NOT_IMPLEMENTED == status)
+    {
+        mBridge->bridgeMamaMsgDestroy (msg, destroyMsg);
+        mamaMsg_destroy (parent);
+    }
 
     CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
     ASSERT_EQ(MAMA_STATUS_OK, status);
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaMsgDestroy(msg,destroyMsg));
+
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaMsgDestroy(msg, destroyMsg));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy(parent));
 
 }
 
@@ -235,6 +242,8 @@ TEST_F (MiddlewareMsgTests,setSendSubject )
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaMsgDestroy(msg, destroyMsg));
 
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy(parent));
+
 }
 
 TEST_F (MiddlewareMsgTests, setSendSubjectInvalidMsgBridge)
@@ -272,6 +281,7 @@ TEST_F (MiddlewareMsgTests, getNativeHandle)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaMsgDestroy(msg,destroyMsg));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy(parent));
 }
 
 TEST_F (MiddlewareMsgTests, getNativeHandleInvalidMsgBridge)

@@ -31,6 +31,7 @@
 #include "property.h"
 #include "propertyinternal.h"
 #include "lookup2.h"
+#include "wombat/memnode.h"
 #include "wombat/wtable.h"
 #include "wombat/strutils.h"
 
@@ -41,8 +42,6 @@ int gPropertyDebug = 0;
 typedef struct
 {
     wtable_t     mTable;
-    const char** mKeys;
-    int          mNumKeys;
 } propertiesImpl_;
 
 extern int
@@ -275,6 +274,13 @@ properties_AddString( wproperty_t handle, const char* propString )
 static void
 properties_copy( wtable_t from, void* data, const char* key, void* to )
 {
+    /* First of all, check the destination doesn't already have this key, and
+     * if it does, free it, because if you don't, new entry will cause leak. */
+    void* staleData = wtable_lookup ((wtable_t) to, key);
+    if (staleData)
+    {
+        free (staleData);
+    }
     wtable_insert( (wtable_t) to, key, data );
 }
 
@@ -292,8 +298,7 @@ properties_Merge( wproperty_t to, wproperty_t from )
         return;
     }
 
-    wtable_for_each( iFrom->mTable, properties_copy,
-		     iTo->mTable );
+    wtable_for_each( iFrom->mTable, properties_copy, iTo->mTable );
 }
 
 /**
@@ -367,6 +372,7 @@ properties_setProperty (wproperty_t handle,
 {
     const char* name_c  =   NULL;
     const char* value_c =   NULL;
+    int ret = 0;
 
     propertiesImpl_ *this = (propertiesImpl_ *)handle;
     if (!this||!name||!value) return 0;
@@ -381,8 +387,9 @@ properties_setProperty (wproperty_t handle,
         value_c = strdup(value);
     }
 
-    return propertiesImpl_AddProperty ((propertiesImpl)this,
-                                        name_c, value_c);
+    ret = propertiesImpl_AddProperty ((propertiesImpl)this, name_c, value_c);
+    free ((void*)name_c);
+    return ret;
 }
 
 struct propCallbackContainer
@@ -426,46 +433,27 @@ properties_Free( wproperty_t handle )
 
    if( gPropertyDebug )fprintf( stderr, "properties_Free\n" );
 
-	propertiesImpl_destroy((propertiesImpl)this);
+   propertiesImpl_destroy((propertiesImpl)this);
 
+   /* This should destroy *all* keys *and* values in wtable */
    wtable_free_all (this->mTable);
 
    wtable_destroy( this->mTable );
 
-   free( (void* )this->mKeys );
    free( this );
 }
 
 /**
- * Free the resources associated with the properties.
- * This is a work around for fixing wmw-830
- * This ensures the memory leak does not happen by freeing
- * the mKeys strdup-ed in properties_setProperty
+ * Now points to properties_Free - was originally a workaround to free mKeys
+ * strdup-ed in properties_setProperty, but really, those strings simply
+ * should be freed or not strdup'd *inside* that function at all because the
+ * wtable will strdup the key anyway and destroying the wtable will in turn
+ * destroy that key
  */
 void
 properties_FreeEx( wproperty_t handle )
 {
-   propertiesImpl_ *this = (propertiesImpl_ *)handle;
-   int             i     = 0;
-
-   if( gPropertyDebug )fprintf( stderr, "properties_FreeEx\n" );
-
-   propertiesImpl_destroy((propertiesImpl)this);
-
-   wtable_free_all (this->mTable);
-
-   for( i = 0; i < this->mNumKeys; i++ )
-   {
-       if( this->mKeys != NULL && this->mKeys[i] != NULL )
-       {
-           free( (void*)this->mKeys[i] );
-       }
-   }
-
-   wtable_destroy( this->mTable );
-
-   free( (void* )this->mKeys );
-   free( this );
+    properties_Free (handle);
 }
 
 
@@ -497,12 +485,6 @@ void properties_FreeEx2( wproperty_t handle )
 
        /* Free the table itself */
        wtable_destroy( this->mTable );
-
-       /* Free the keys */
-       if(this->mKeys != NULL)
-       {
-            free( (void* )this->mKeys );
-       }
 
        /* Free the impl */
        free( this );
@@ -562,43 +544,6 @@ properties_AddEscapes (const char* src, const char chars[], int num)
     return retStr;
 }
 
-static int
-propertiesImpl_AddKey( propertiesImpl_ *this, const char* name )
-{
-    int blocks = (this->mNumKeys / KEY_BLOCK_SIZE) + 1;
-
-    if( 0 == (this->mNumKeys % KEY_BLOCK_SIZE) )
-    {
-        int allocSize = blocks * KEY_BLOCK_SIZE;
-
-        if( blocks == 1 )
-        {
-            this->mKeys = (const char**)calloc( allocSize,
-                                                sizeof( const char* ) );
-        }
-        else
-        {
-            void* reallocBlock = 
-                realloc((void* )this->mKeys, (allocSize * sizeof(const char*)));
-            
-            if(NULL != reallocBlock)
-            {
-                this->mKeys = (const char**)reallocBlock;
-            }
-            else
-            {
-                free((void* )this->mKeys);
-                this->mKeys = NULL;
-                return 0;
-            }
-        }
-    }
-
-    this->mKeys[ this->mNumKeys++ ] = name;
-
-    return 1;
-}
-
 int
 propertiesImpl_AddProperty( propertiesImpl properties,
                             const char* name,
@@ -611,11 +556,7 @@ propertiesImpl_AddProperty( propertiesImpl properties,
     if( NULL == this )
         return 0;
 
-    if ( NULL == (data = wtable_lookup(this->mTable, (char*)name)))
-    {
-        if( !propertiesImpl_AddKey( this, name ))
-            return 0;
-    }
+    data = wtable_lookup(this->mTable, (char*)name);
 
     if (-1 == (ret = wtable_insert( this->mTable, (char* )name, (caddr_t)value)))
     {
@@ -629,11 +570,11 @@ propertiesImpl_AddProperty( propertiesImpl properties,
         {
             free(data);
         }
-    
-		if(gPropertyDebug)
+
+        if(gPropertyDebug)
         {
-			fprintf(stderr, "\nAddProperty KEY: %s, VALUE: %s\n", name, value);
-		}
+            fprintf(stderr, "\nAddProperty KEY: %s, VALUE: %s\n", name, value);
+        }
     }
 
     return 1;

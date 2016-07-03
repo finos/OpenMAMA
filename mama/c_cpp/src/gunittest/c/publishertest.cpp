@@ -232,6 +232,8 @@ TEST_F (MamaPublisherTestC, Send)
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_destroy (tport));
 
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (msg));
+
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 
     ASSERT_EQ (0, pubOnCreateCount);
@@ -299,6 +301,8 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacks)
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_destroy (tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (msg));
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 
@@ -443,6 +447,8 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoErrorCallback)
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_destroy (tport));
 
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (msg));
+
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 
     ASSERT_EQ (1, pubOnCreateCount);
@@ -514,6 +520,8 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoCallbacks)
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_destroy (tport));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (msg));
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 

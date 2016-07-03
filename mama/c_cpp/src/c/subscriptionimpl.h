@@ -43,6 +43,11 @@ extern "C" {
 /* The default timeout when requesting initial and recap images. */
 #define MAMA_SUBSCRIPTION_DEFAULT_TIMEOUT 10.0
 
+/* The default timeout when requesting recap images.
+ * Defaults to special value used to indicate that subscription
+ * timeout should be used instead. */
+#define MAMA_SUBSCRIPTION_DEFAULT_RECAP_TIMEOUT -1
+
 /* *************************************************** */
 /* Enumerations. */
 /* *************************************************** */

@@ -107,6 +107,7 @@ typedef struct mamaSubscriptionImpl_
     imageRequest            mRecapRequest;
     int                     mRespondToNextRefresh; /* boolean */
     double                  mTimeout;
+    double                  mRecapTimeout;
     int                     mRetries;
     int                     mAcceptMultipleInitials;
     int                     mRecoverGaps; /* boolean */
@@ -383,6 +384,7 @@ mamaSubscription_allocate (
     impl->mRecapRequest           = NULL;
     impl->mRespondToNextRefresh   = 1;
     impl->mTimeout                = MAMA_SUBSCRIPTION_DEFAULT_TIMEOUT;
+    impl->mRecapTimeout           = MAMA_SUBSCRIPTION_DEFAULT_RECAP_TIMEOUT;
     impl->mRetries                = MAMA_SUBSCRIPTION_DEFAULT_RETRIES;
     impl->mAcceptMultipleInitials = 0;
     impl->mRecoverGaps            = 1;
@@ -1919,6 +1921,38 @@ mamaSubscription_getTimeout (mamaSubscription subscription, double *val)
 }
 
 mama_status
+mamaSubscription_setRecapTimeout ( mamaSubscription subscription,
+                                   double timeout)
+{
+    if (!self) return MAMA_STATUS_NULL_ARG;
+    if ( self->mType == MAMA_SUBSC_TYPE_BASIC)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+    self->mRecapTimeout = timeout;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaSubscription_getRecapTimeout (mamaSubscription subscription, double *val)
+{
+    if (!self) return MAMA_STATUS_NULL_ARG;
+    if ( self->mType == MAMA_SUBSC_TYPE_BASIC)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+
+    /* If mamaSubscription_setRecap hasn't been called, default to mTimeout. */
+    if (MAMA_SUBSCRIPTION_DEFAULT_RECAP_TIMEOUT == self->mRecapTimeout)
+    {
+        self->mRecapTimeout = self->mTimeout;
+    }
+
+    *val = self->mRecapTimeout;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
 mamaSubscription_setRetries ( mamaSubscription subscription, 
                              int retries)
 {
@@ -3225,7 +3259,9 @@ void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl)
 
     /* Destroy the state. */
     wInterlocked_destroy(&impl->mState);
-                    
+
+    mamaEntitlementBridge_destroySubscription (impl->mSubjectContext.mEntitlementSubscription);
+
     /* Free the subscription impl. */
     free(impl);
 }

@@ -1196,24 +1196,7 @@ mama_setPropertiesFromFile (const char *path,
     mama_log (MAMA_LOG_LEVEL_NORMAL,
               "Attempting to load additional MAMA properties from %s", path ? path : "");
 
-    fileProperties = properties_Load (path, filename);
-
-    if( fileProperties == 0 )
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open additional properties file.\n");
-        return MAMA_STATUS_IO_ERROR;
-    }
-
-    /* We've got file properties, so we need to merge 'em into
-     * anything we've already gotten */
-    properties_Merge( fileProperties, gProperties );
-
-    /* Free the file properties, note that FreeEx2 is called to ensure that the data
-     * isn't freed as the pointers have been copied over to gProperties.
-     */
-    properties_FreeEx2(gProperties);
-    
-    gProperties = fileProperties;
+    mamaInternal_loadProperties (path, filename);
 
     return MAMA_STATUS_OK;
 }
@@ -1498,6 +1481,17 @@ mama_closeCount (unsigned int* count)
                                   middlewareLib->bridge->bridgeGetName ());
                     }
 
+                    if (middlewareLib->bridge->mLock)
+                    {
+                        wlock_destroy(middlewareLib->bridge->mLock);
+                    }
+
+                    /* If there was a background thread, clean it up */
+                    if (middlewareLib->bridge->mStartBackgroundThread)
+                    {
+                        wthread_join (middlewareLib->bridge->mStartBackgroundThread, NULL);
+                    }
+
                     free (middlewareLib->bridge);
                     middlewareLib->bridge = NULL;
                 }
@@ -1537,6 +1531,9 @@ mama_closeCount (unsigned int* count)
 
         /* Destroy logging */
         mama_logDestroy();
+
+        /* Clean up any timezone related threads which may have been started */
+        mamaTimeZone_cleanUp ();
 
         /* Free application context details. */
         mama_freeAppContext(&appContext);
@@ -1636,7 +1633,7 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
                             void*        closure)
 {
     struct startBackgroundClosure*  closureData;
-    wthread_t       t = 0;
+    mamaBridgeImpl* impl = (mamaBridgeImpl*)bridgeImpl;
 
     if (!bridgeImpl)
     {
@@ -1666,10 +1663,10 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
 
     closureData->mStopCallback   = callback;
     closureData->mStopCallbackEx = exCallback;
-    closureData->mBridgeImpl    = bridgeImpl;
+    closureData->mBridgeImpl     = bridgeImpl;
     closureData->mClosure        = closure;
 
-    if (0 != wthread_create(&t, NULL, mamaStartThread, (void*) closureData))
+    if (0 != wthread_create(&impl->mStartBackgroundThread, NULL, mamaStartThread, (void*) closureData))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "Could not start background MAMA "
                   "thread.");

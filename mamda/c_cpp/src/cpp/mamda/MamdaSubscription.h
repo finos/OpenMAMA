@@ -134,10 +134,16 @@ namespace Wombat
         void setRequireInitial (bool  require);
 
         /**
-         * Set the subscription timeout (in seconds).  Do this before
+         * Set the subscription initial timeout (in seconds).  Do this before
          * calling activate().
          */
         void setTimeout (double  timeout);
+        
+        /**
+         * Set the subscription recap timeout (in seconds).  Do this before
+         * calling activate().
+         */
+        void setRecapTimeout (double  timeout);
         
         /**
          * Set the subscription retries.  Do this before
@@ -265,6 +271,11 @@ namespace Wombat
          * Return the timeout (seconds).
          */
         double getTimeout() const;
+
+        /**
+         * Return the recap timeout (seconds).
+         */
+        double getRecapTimeout() const;
 
         /**
          * Return the retries.

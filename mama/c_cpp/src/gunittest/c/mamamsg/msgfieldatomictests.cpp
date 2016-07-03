@@ -41,7 +41,6 @@ protected:
     {
         mama_loadPayloadBridge (&mPayloadBridge, getPayload());
         mamaMsg_create (&mMsg);
-        mamaMsgField_create (&mMsgField);
     };
 
     virtual void TearDown(void) 
@@ -132,6 +131,11 @@ protected:
         MsgFieldAtomicTestsC::SetUp();
 
         mamaMsg_addChar( mMsg, "name", 1, mUpdate);
+    }
+
+    virtual void TearDown()
+    {
+        MsgFieldAtomicTestsC::TearDown();
     }
 };
 
@@ -629,6 +633,11 @@ protected:
         MsgFieldAtomicTestsC::SetUp();
         mamaMsg_addF32( mMsg, "name", 1, mUpdate );
     }
+
+    virtual void TearDown()
+    {
+        MsgFieldAtomicTestsC::TearDown();
+    }
 };
 
 TEST_F (MsgFieldF32Tests, updateF32Valid)
@@ -683,6 +692,11 @@ protected:
     {
         MsgFieldAtomicTestsC::SetUp();
         mamaMsg_addF64( mMsg, "name", 1, mUpdate );
+    }
+
+    virtual void TearDown()
+    {
+        MsgFieldAtomicTestsC::TearDown();
     }
 };
 
