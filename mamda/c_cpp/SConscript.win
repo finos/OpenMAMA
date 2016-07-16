@@ -107,9 +107,6 @@ if env['with_examples'] == True and 'dynamic' in env['build']:
 if env['with_testtools'] == True and 'dynamic' in env['build']:
     env.SConscript('src/testtools/SConscript.win','env')
 
-if env['with_unittest'] == True:
-    env.SConscript('src/gunittest/SConscript.win','env')
-
 if ( env['with_docs'] == True and not Media.has_key('mamda/c_cpp/docs') and env['build'] == 'dynamic' and not env.GetOption('clean') ):
    cppdoc = env.Doxygen('doxyconfig-cpp.in')
 

@@ -49,6 +49,7 @@ typedef mamaFieldCacheListImpl* mamaFieldCacheList;
  * @param list (out) The list to create.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheList_create(mamaFieldCacheList* list);
 
@@ -62,6 +63,7 @@ mamaFieldCacheList_create(mamaFieldCacheList* list);
  * @param list (in) The list to destroy.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheList_destroy(mamaFieldCacheList list);
 
@@ -73,6 +75,7 @@ mamaFieldCacheList_destroy(mamaFieldCacheList list);
  * @param list (in) The list to free.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheList_free(mamaFieldCacheList list);
 
@@ -83,6 +86,7 @@ mamaFieldCacheList_free(mamaFieldCacheList list);
  * @param list (in) The list to clear.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheList_clear(mamaFieldCacheList list);
 
@@ -93,6 +97,7 @@ mamaFieldCacheList_clear(mamaFieldCacheList list);
  * @param item (in) The item to add.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheList_add(mamaFieldCacheList list, void* item);
 
@@ -104,6 +109,7 @@ mamaFieldCacheList_add(mamaFieldCacheList list, void* item);
  * @param item (in) The item to set.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheList_set(mamaFieldCacheList list, mama_size_t index, void* item);
 
@@ -115,6 +121,7 @@ mamaFieldCacheList_set(mamaFieldCacheList list, mama_size_t index, void* item);
  * @param item (out) The item in the list.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheList_get(mamaFieldCacheList list, mama_size_t index, void** item);
 
@@ -125,6 +132,7 @@ mamaFieldCacheList_get(mamaFieldCacheList list, mama_size_t index, void** item);
  * @param size (out) The size of the list.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheList_getSize(mamaFieldCacheList list, mama_size_t* size);
 

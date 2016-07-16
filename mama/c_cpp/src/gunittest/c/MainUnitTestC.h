@@ -24,6 +24,13 @@
 
 #define NOT_NULL ( (void*)1 )
 
+#ifdef max
+#undef max
+#endif
+
+#ifdef min
+#undef min
+#endif
 
 #define ALLOW_NON_IMPLEMENTED(strictness, status)                              \
  do {                                                                          \

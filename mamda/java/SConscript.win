@@ -94,9 +94,10 @@ Alias('install', env.Install('$libdir', mamda_base))
 Alias('install', env.Install('$libdir', mamda_orderbook))
 Alias('install', env.Install('$libdir', mamda_options))
 
-Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', baseExamples))
-Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', orderbookExamples))
-Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', optionsExamples))
+if 'inc_example_src' in env and env['inc_example_src']:
+    Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', baseExamples))
+    Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', orderbookExamples))
+    Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', optionsExamples))
 
 
 Clean(lock_classes, symboliclinks)
