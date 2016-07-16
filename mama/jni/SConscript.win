@@ -56,28 +56,27 @@ jar = env.Jar(target='mamajni.jar', source='classes', JARCHDIR = Dir('classes').
 
 Jars['mamajni.jar'] = jar
 
-Alias('install', env.InstallAs('$libdir/mamajni_%s.jar' % version, jar))
-Alias('install', env.InstallAs('$libdir/mamajni.jar', jar))
-Alias('install', env.Install('$prefix/examples/mamajni', jExamples))
-
-
 if 'dynamic' in env['build']:
+    Alias('install', env.InstallAs('$libdir/mamajni_%s.jar' % version, jar))
+    Alias('install', env.InstallAs('$libdir/mamajni.jar', jar))
+    if 'inc_example_src' in env and env['inc_example_src']:
+        Alias('install', env.Install('$prefix/examples/mamajni', jExamples))
     env.Append( CPPDEFINES = ['MAMA_DLL'] )
     env.Append( LINKFLAGS = ['/MAP'] )
     env.Append( LIBS = ['ws2_32.lib', 'advapi32.lib', 'kernel32.lib'] )
-if float(env['vsver']) == 7:
-    env.Append( LIBS = ['secur32.lib'])
+    if float(env['vsver']) == 7:
+        env.Append( LIBS = ['secur32.lib'])
 
-env.SConscript('src/c/SConscript.win', 'env')
+    env.SConscript('src/c/SConscript.win', 'env')
 
-if env['with_docs'] == True and not env.GetOption('clean'):
-    overview = posixpath.join( Dir('#mama/jni/doc').abspath, 'overview-jni.html' )
-    env.Append(
-        PROJECT_DOC_TITLE       = "MAMA (Middleware Agnostic Messaging API) JNI specification,  v%s" % (version),
-        PROJECT_OVERVIEW        = overview,
-        PROJECT_WINDOW_TITLE    = "MAMA JNI %s" % (version),
-        PROJECT_BOTTOM          = "Copyright 2011 NYSE Technologies",
-        PROJECT_HEADER          = "<img src='./resources/nyse_technologies.png' alt='NYSE Technologies' /><br/><b>MAMA JNI</b><br><font size='-1'>version %s</font>" % (version),
-    )
+    if env['with_docs'] == True and not env.GetOption('clean'):
+        overview = posixpath.join( Dir('#mama/jni/doc').abspath, 'overview-jni.html' )
+        env.Append(
+            PROJECT_DOC_TITLE       = "MAMA (Middleware Agnostic Messaging API) JNI specification,  v%s" % (version),
+            PROJECT_OVERVIEW        = overview,
+            PROJECT_WINDOW_TITLE    = "MAMA JNI %s" % (version),
+            PROJECT_BOTTOM          = "Copyright 2011 NYSE Technologies",
+            PROJECT_HEADER          = "<img src='./resources/nyse_technologies.png' alt='NYSE Technologies' /><br/><b>MAMA JNI</b><br><font size='-1'>version %s</font>" % (version),
+        )
 
-    env.JavaDocBuilder( '$prefix/doc/mama/jni/html','#mama/jni/src' )
+        env.JavaDocBuilder( '$prefix/doc/mama/jni/html','#mama/jni/src' )

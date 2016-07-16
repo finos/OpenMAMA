@@ -96,7 +96,7 @@ typedef struct mamaPayloadLib_
 /*
  * @brief Structure for storing combined mamaEntitlementBridge and LIB_HANDLE data.
  */
- typedef struct mamaEntitlementLib_
+typedef struct mamaEntitlementLib_
 {
     mamaEntitlementBridge bridge;
     LIB_HANDLE            library;
@@ -127,6 +127,7 @@ mamaInternal_registerBridge (mamaBridge     bridge,
 /**
  * getVersion for use when mama is wrapped
  */
+MAMAExpDLL
 const char*
 mama_wrapperGetVersion(mamaBridge     bridge);
 
@@ -150,9 +151,11 @@ MAMAExpDLL
 mamaPayloadBridge
 mamaInternal_findPayload (char id);
 
+MAMAExpDLL
 mamaPayloadBridge
 mamaInternal_getDefaultPayload (void);
 
+MAMAExpDLL
 mama_bool_t
 mamaInternal_getAllowMsgModify (void);
 
@@ -166,6 +169,7 @@ mamaInternal_getAllowMsgModify (void);
  *
  * @return mama_status indicating the success or failure of the initialisation.
  */
+MAMAExpDLL
 mama_status
 mamaInternal_initialiseTable (wtable_t*   table,
                               const char* name,
@@ -182,6 +186,7 @@ mamaInternal_initialiseTable (wtable_t*   table,
  * @return A mama_status indicating the success or failure of the initialisation.
  *
  */
+MAMAExpDLL
 mama_status
 mamaInternal_init (void);
 
@@ -213,6 +218,7 @@ mamaInternal_getPayloadId (const char*       payloadName,
  * @brief Return count of entitlementBridges loaded.
  * @return Integer number of loaded bridges.
  */
+MAMAExpDLL
 mama_i32_t
 mamaInternal_getEntitlementBridgeCount (void);
 
@@ -224,7 +230,8 @@ mamaInternal_getEntitlementBridgeCount (void);
  *
  * @return MAMA_STATUS_OK if successful.
  */
- mama_status
+MAMAExpDLL
+mama_status
 mamaInternal_getEntitlementBridgeByName(mamaEntitlementBridge* entBridge, const char* name);
 
 MAMAExpDLL

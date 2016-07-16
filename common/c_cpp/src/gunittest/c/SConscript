@@ -16,11 +16,15 @@ incpath.append('#mama/c_cpp/src/c')
 
 libpath = []
 libpath.append('$libdir')
+libs = []
+if env['PLATFORM'] == "win32":
+    libs.append('libmamac%s' % ( env['suffix'] ))
+    libs.append('libwombatcommon%s' % ( env['suffix'] ))
+else:
+    libs = ['dl', 'wombatcommon', 'mama', 'pthread']
+    env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 
-env.Append(LIBPATH=libpath, LIBS=['dl', 'wombatcommon', 'mama', 'pthread'],
-           CPPPATH=incpath)
-
-env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
+env.Append(LIBPATH=libpath, LIBS=libs, CPPPATH=incpath)
 
 sources = Split("""
 queuetest.cpp

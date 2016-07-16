@@ -84,16 +84,20 @@ typedef enum
 
 extern const mamaFieldCacheMapType gMamaFieldCacheMapType;
 
+MAMAExpDLL
 mama_status
 mamaFieldCacheMap_create(mamaFieldCacheMap* map);
 
+MAMAExpDLL
 mama_status
 mamaFieldCacheMap_destroy(mamaFieldCacheMap map);
 
+MAMAExpDLL
 mama_status
 mamaFieldCacheMap_add(mamaFieldCacheMap map,
                       mamaFieldCacheField field);
 
+MAMAExpDLL
 mama_status
 mamaFieldCacheMap_find(mamaFieldCacheMap map,
                        mama_fid_t fid,
@@ -101,6 +105,7 @@ mamaFieldCacheMap_find(mamaFieldCacheMap map,
                        const char* name,
                        mamaFieldCacheField* field);
 
+MAMAExpDLL
 mama_status
 mamaFieldCacheMap_clear(mamaFieldCacheMap map);
 

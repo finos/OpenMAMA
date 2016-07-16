@@ -45,5 +45,5 @@ env.SConscript('src/c/SConscript.win','env')
 if env.get('with_enterprise',None) == True:
     env.SConscript('src/enterprise/SConscript.win', 'env')
 
-if env['with_unittest'] == True:
-    env.SConscript('src/gunittest/SConscript.win', 'env')
+if env['with_unittest'] == True and 'dynamic' in env['build']:
+    env.SConscript('src/gunittest/SConscript', 'env')

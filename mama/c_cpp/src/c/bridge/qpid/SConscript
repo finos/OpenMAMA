@@ -10,9 +10,12 @@ libPath = []
 libPath.append('$libdir')
 libPath.append(os.path.join(env['qpid_home'], 'lib'))
 libPath.append(os.path.join(env['qpid_home'], 'lib64'))
+libPath.append(os.path.join(env['libevent_home'], 'lib'))
+libPath.append(os.path.join(env['libevent_home'], 'lib64'))
 
 incPath = []
 incPath.append('$qpid_home/include')
+incPath.append('$libevent_home/include')
 incPath.append('#mama/c_cpp/src/c')
 
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']

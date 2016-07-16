@@ -1,15 +1,25 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 Import('env')
+import os
 env = env.Clone()
 
 incpath = []
 incpath.append('$gtest_home/include')
 
 libpath = []
-libpath.append('$gtest_home/lib')
+libs = []
 
-env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=['gtest', 'gtest_main'
-           ])
+if env['PLATFORM'] == "win32":
+    libpath.append(os.path.join(env['gtest_home'], 'msvc', env['win_arch_path'], env['win_type_path']))
+    if 'debug' in env['build']:
+        libs = ['gtestd', 'gtest_maind']
+    else:
+        libs = ['gtest', 'gtest_main']
+else:
+    libpath.append('$gtest_home/lib')
+    libs = ['gtest', 'gtest_main']
+
+env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=libs)
 
 env.SConscript('c/SConscript', 'env')

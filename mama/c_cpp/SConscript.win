@@ -114,7 +114,7 @@ env.SConscript('src/c/entitlement/SConscript','env')
 env.SConscript('src/examples/SConscript.win','env')
 
 if env['with_unittest'] == True and 'dynamic' in env['build']:
-    env.SConscript( 'src/gunittest/SConscript.win','env' )
+    env.SConscript( 'src/gunittest/SConscript','env' )
 
 if env['with_testtools'] == True and 'dynamic' in env['build']:
     env.SConscript( 'src/testtools/SConscript.win','env' )

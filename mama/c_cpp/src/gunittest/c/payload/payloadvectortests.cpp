@@ -3190,15 +3190,15 @@ protected:
         for( uint32_t ii(0) ; ii < VECTOR_SIZE ; ++ii )
         {
             char buffer[20];
-            ::snprintf(buffer, 20, "InitialString%u", ii);
-            m_in[ii] = ::strndup( buffer, 20 );
+            snprintf(buffer, 20, "InitialString%u", ii);
+            m_in[ii] = strdup(buffer);
         }
 
         for( uint32_t ii(0) ; ii < VECTOR_UPDATE_SIZE ; ++ii )
         {
             char buffer[20];
-            ::snprintf(buffer, 20, "UpdateString%u", ii);
-            m_update[ii] = ::strndup( buffer, 20 );
+            snprintf(buffer, 20, "UpdateString%u", ii);
+            m_update[ii] = strdup(buffer);
         }
     }
 
