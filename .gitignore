@@ -104,3 +104,4 @@ Release/
 *.opensdf
 *.sdf
 *.suo
+packages.config

@@ -20,7 +20,7 @@
  */
 
 #include <avis/elvin.h>
-#include <avis/avis_client_config.h>
+#include <avis_client_config.h> // TBD or <avis/avis_client_config.h>?
 
 #include "wombat/port.h"
 
