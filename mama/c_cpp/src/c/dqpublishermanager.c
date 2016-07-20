@@ -564,7 +564,10 @@ mama_status mamaDQPublisherManager_getPublisher (
         mamaDQPublisher* pub)
 {
     mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
-    mamaPublishTopic* topic           = NULL;
+    mamaPublishTopic*           topic = NULL;
+
+    if (!impl || !pub)
+         return MAMA_STATUS_INVALID_ARG;
 
     topic = (mamaPublishTopic*) wtable_lookup (impl->mPublisherMap, (char*)symbol);
 
