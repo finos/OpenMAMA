@@ -190,8 +190,9 @@ struct MamaDQPublisherManagerImpl
     
     MamaDQPublisher* createPublisher (const char *symbol, void * cache);
     void destroyPublisher (const char *symbol);
-    
-      
+
+    MamaDQPublisher* getPublisher (const char* symbol);
+
     void setInfo(mamaPublishTopic* info){mReuseableInfo.set(info);}
 
     MamaMsg 				mReuseableMsg;
@@ -316,6 +317,11 @@ void MamaDQPublisherManager::destroyPublisher (const char *symbol)
 	mImpl->destroyPublisher (symbol);
 }
 
+MamaDQPublisher* MamaDQPublisherManager::getPublisher (const char* symbol)
+{
+    return mImpl->getPublisher (symbol);
+}
+
 void MamaDQPublisherManager::destroy (void)
 {
     mImpl->destroy ();
@@ -378,6 +384,15 @@ void MamaDQPublisherManagerImpl::destroyPublisher (const char *symbol)
 {	
 	MamaDQPublisher* aDQPublisher = removePublisher(symbol);
 	aDQPublisher->destroy();
+}
+
+MamaDQPublisher* MamaDQPublisherManagerImpl::getPublisher (const char* symbol)
+{
+        mamaDQPublisher aDQPublisher;
+        mamaDQPublisherManager_getPublisher(mDQPublisherManager, symbol, &aDQPublisher);
+        if (!aDQPublisher)
+            return (NULL);
+        return (MamaDQPublisher*)mamaDQPublisher_getClosure(aDQPublisher);
 }
 
 void MamaDQPublisherManagerImpl::create (MamaTransport *transport, 

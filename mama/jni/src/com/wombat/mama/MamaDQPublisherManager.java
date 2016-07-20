@@ -317,4 +317,23 @@ public class MamaDQPublisherManager
         return null;
     }
 
+    /**
+     * Accessor for the internal ArrayList that contains all the current publishers
+     *
+     * @param symbol The symbol for the which you want to get the publisher
+     *
+     * @return The MamaDQPublisher associated with the given symbol
+     */
+    public static MamaDQPublisher getPublisher(String symbol)
+    {
+        Iterator it = myTopics.iterator();
+        while(it.hasNext())
+        {
+            MamaPublishTopic myTopic = (MamaPublishTopic) it.next();
+            if (myTopic.getSymbol().equals(symbol))
+                return myTopic.getPublisher();
+        }
+        return null;
+    }
+
 }
