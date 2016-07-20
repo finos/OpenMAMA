@@ -73,7 +73,9 @@ public:
       
     virtual MamaDQPublisher* createPublisher (const char *symbol, void * cache);
     virtual void destroyPublisher (const char *symbol);
-      
+
+    virtual MamaDQPublisher* getPublisher (const char* symbol);
+
     virtual void destroy (void);
 
     virtual void setStatus (mamaMsgStatus  status);
