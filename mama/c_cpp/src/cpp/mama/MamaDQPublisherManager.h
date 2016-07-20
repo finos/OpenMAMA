@@ -74,7 +74,7 @@ public:
     virtual MamaDQPublisher* createPublisher (const char *symbol, void * cache);
     virtual void destroyPublisher (const char *symbol);
 
-    virtual MamaDQPublisher* getPublisher (const char* symbol);
+    virtual const MamaDQPublisher* getPublisher (const char* symbol) const;
 
     virtual void destroy (void);
 
