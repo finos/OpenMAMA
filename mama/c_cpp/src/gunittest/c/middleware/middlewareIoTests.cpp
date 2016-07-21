@@ -61,7 +61,7 @@ void MiddlewareIoTests::TearDown(void)
     mama_close();
 }
 
-void onIo(mamaIo io, mamaIoType ioType, void* closure)
+void MAMACALLTYPE onIo(mamaIo io, mamaIoType ioType, void* closure)
 {
 }
 

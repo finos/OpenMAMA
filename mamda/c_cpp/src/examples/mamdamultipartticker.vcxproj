@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>mamdalisten</ProjectName>
-    <ProjectGuid>{B76980E1-2165-4FE5-AC22-1B467A64EA46}</ProjectGuid>
-    <RootNamespace>mamdalisten</RootNamespace>
+    <ProjectName>mamdamultipartticker</ProjectName>
+    <ProjectGuid>{BB920D9E-E3DF-4A12-ABC9-B80586D52939}</ProjectGuid>
+    <RootNamespace>multipart</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -178,12 +178,12 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="openmamdaexamplecommon.vcxproj">
+    <ProjectReference Include="mamdaexamplecommon.vcxproj">
       <Project>{f91cb36e-8e8e-468f-8eff-0f01f4aa83b1}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="mamdalisten.cpp" />
+    <ClCompile Include="multipartticker.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

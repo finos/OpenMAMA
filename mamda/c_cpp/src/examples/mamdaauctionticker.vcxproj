@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>mamdafundamentallisten</ProjectName>
-    <ProjectGuid>{1E6D41F9-1E9E-428F-AE9B-66806D867A73}</ProjectGuid>
-    <RootNamespace>fundamentallisten</RootNamespace>
+    <ProjectName>mamdaauctionticker</ProjectName>
+    <ProjectGuid>{5D9798AC-6E9A-4E91-90E9-65B89387426B}</ProjectGuid>
+    <RootNamespace>auctionticker</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -178,12 +178,12 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="openmamdaexamplecommon.vcxproj">
+    <ProjectReference Include="mamdaexamplecommon.vcxproj">
       <Project>{f91cb36e-8e8e-468f-8eff-0f01f4aa83b1}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="fundamentallisten.cpp" />
+    <ClCompile Include="auctionticker.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

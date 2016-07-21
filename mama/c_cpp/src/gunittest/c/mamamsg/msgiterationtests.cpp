@@ -66,7 +66,7 @@ void MsgIterateTestC::TearDown(void)
     mama_close();
 }
 
-static void msgOnField (const mamaMsg	   msg,
+static void MAMACALLTYPE msgOnField (const mamaMsg	   msg,
                         const mamaMsgField field,
                         void*              closure)
 {

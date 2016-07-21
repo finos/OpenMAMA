@@ -58,7 +58,7 @@ protected:
     mamaDictionary    mDict;
 };
 
-static void msgOnField (const mamaMsg	   msg,
+static void MAMACALLTYPE msgOnField (const mamaMsg	   msg,
                         const mamaMsgField field,
                         void*              closure)
 {

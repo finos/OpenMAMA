@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>mamdasecstatuslisten</ProjectName>
-    <ProjectGuid>{95F11497-C48C-41C1-885F-2238A7440694}</ProjectGuid>
-    <RootNamespace>secstatuslisten</RootNamespace>
+    <ProjectName>mamdaquoteticker</ProjectName>
+    <ProjectGuid>{C721D6D7-9639-4704-B03A-646AE2F20BD6}</ProjectGuid>
+    <RootNamespace>quoteticker</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -178,12 +178,12 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="openmamdaexamplecommon.vcxproj">
+    <ProjectReference Include="mamdaexamplecommon.vcxproj">
       <Project>{f91cb36e-8e8e-468f-8eff-0f01f4aa83b1}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="secstatuslisten.cpp" />
+    <ClCompile Include="quoteticker.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

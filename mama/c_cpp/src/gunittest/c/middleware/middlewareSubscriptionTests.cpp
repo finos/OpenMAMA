@@ -29,29 +29,29 @@
 using std::cout;
 using std::endl;
 
-static void onCreate (mamaSubscription subscription, void* closure);
+static void MAMACALLTYPE onCreate (mamaSubscription subscription, void* closure);
 
-static void onError(mamaSubscription subscription,
+static void MAMACALLTYPE onError(mamaSubscription subscription,
                     mama_status      status,
                     void*            platformError,
                     const char*      subject,
                     void*            closure);
 
-static void onQuality(mamaSubscription subsc,
+static void MAMACALLTYPE onQuality(mamaSubscription subsc,
                       mamaQuality      quality,
                       const char*      symbol,
                       short            cause,
                       const void*      platformInfo,
                       void*            closure);
 
-static void onMsg(mamaSubscription subscription,
+static void MAMACALLTYPE onMsg(mamaSubscription subscription,
                   mamaMsg          msg,
                   void*            closure,
                   void*            itemClosure);
 
-static void onGap(mamaSubscription subsc, void* closure);
-static void onRecapRequest(mamaSubscription subsc, void* closure);
-static void onDestroy(mamaSubscription subsc, void* closure);
+static void MAMACALLTYPE onGap(mamaSubscription subsc, void* closure);
+static void MAMACALLTYPE onRecapRequest(mamaSubscription subsc, void* closure);
+static void MAMACALLTYPE onDestroy(mamaSubscription subsc, void* closure);
 
 class MiddlewareSubscriptionTests : public ::testing::Test
 {
@@ -126,12 +126,12 @@ void MiddlewareSubscriptionTests::TearDown(void)
     mama_close();
 }
 
-static void onCreate (mamaSubscription subscription,
+static void MAMACALLTYPE onCreate (mamaSubscription subscription,
                       void* closure)
 {
 }
 
-static void onError(mamaSubscription subscription,
+static void MAMACALLTYPE onError(mamaSubscription subscription,
                     mama_status      status,
                     void*            platformError,
                     const char*      subject,
@@ -139,7 +139,7 @@ static void onError(mamaSubscription subscription,
 {
 }
 
-static void onQuality(mamaSubscription subsc,
+static void MAMACALLTYPE onQuality(mamaSubscription subsc,
                       mamaQuality      quality,
                       const char*      symbol,
                       short            cause,
@@ -148,22 +148,22 @@ static void onQuality(mamaSubscription subsc,
 {
 }
 
-static void onMsg(mamaSubscription subscription,
+static void MAMACALLTYPE onMsg(mamaSubscription subscription,
                   mamaMsg          msg,
                   void*            closure,
                   void*            itemClosure)
 {
 }
 
-static void onGap(mamaSubscription subsc, void* closure)
+static void MAMACALLTYPE onGap(mamaSubscription subsc, void* closure)
 {
 }
 
-static void onRecapRequest(mamaSubscription subsc, void* closure)
+static void MAMACALLTYPE onRecapRequest(mamaSubscription subsc, void* closure)
 {
 }
 
-static void onDestroy(mamaSubscription subsc, void* closure)
+static void MAMACALLTYPE onDestroy(mamaSubscription subsc, void* closure)
 {
 }
 

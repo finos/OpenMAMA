@@ -67,7 +67,7 @@ void PayloadGeneralTests::TearDown(void)
     mama_close ();
 }
 
-void dummyIteratorCallback (const mamaMsg       msg,
+void MAMACALLTYPE dummyIteratorCallback (const mamaMsg       msg,
                             const mamaMsgField  field,
                             void*               closure)
 {

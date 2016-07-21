@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectName>mamdatradeticker</ProjectName>
-    <ProjectGuid>{7146D65F-1F62-4998-899F-F5B7BF3CCC7F}</ProjectGuid>
-    <RootNamespace>tradeticker</RootNamespace>
+    <ProjectName>mamdamultisecurityticker</ProjectName>
+    <ProjectGuid>{0E9A92A9-A489-4E35-8E65-D6E6E2D84785}</ProjectGuid>
+    <RootNamespace>multisecurityticker</RootNamespace>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -178,12 +178,12 @@
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
       <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
     </ProjectReference>
-    <ProjectReference Include="openmamdaexamplecommon.vcxproj">
+    <ProjectReference Include="mamdaexamplecommon.vcxproj">
       <Project>{f91cb36e-8e8e-468f-8eff-0f01f4aa83b1}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="tradeticker.cpp" />
+    <ClCompile Include="multisecurityticker.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
