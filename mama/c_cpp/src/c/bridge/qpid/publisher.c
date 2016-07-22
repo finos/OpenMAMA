@@ -363,17 +363,16 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
 /* Send reply to inbox. */
 mama_status
 qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
-                                          void*             request,
+                                          mamaMsg           request,
                                           mamaMsg           reply)
 {
     qpidPublisherBridge*    impl            = (qpidPublisherBridge*) publisher;
-    mamaMsg                 requestMsg      = (mamaMsg) request;
     const char*             inboxSubject    = NULL;
     const char*             replyTo         = NULL;
     msgBridge               bridgeMsg       = NULL;
     mama_status             status          = MAMA_STATUS_OK;
 
-    if (NULL == publisher || NULL == request || NULL == reply)
+    if (NULL == publisher || NULL == request|| NULL == reply)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -387,7 +386,7 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
                                             impl->mSubject);
 
     /* Get the incoming bridge message from the mamaMsg */
-    status = mamaMsgImpl_getBridgeMsg (requestMsg, &bridgeMsg);
+    status = mamaMsgImpl_getBridgeMsg (request, &bridgeMsg);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
