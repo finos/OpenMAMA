@@ -260,10 +260,6 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qpid", "mama\c_cpp\src\c\br
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "qpidmsg", "mama\c_cpp\src\c\payload\qpidmsg\qpidmsg.vcxproj", "{5EBEA257-3507-45E6-92A0-E4597B8C0260}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "avis", "mama\c_cpp\src\c\bridge\avis\avis.vcxproj", "{E8BD565D-E1C8-40FF-8849-C54F9F572CE8}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "avismsg", "mama\c_cpp\src\c\payload\avismsg\avismsg.vcxproj", "{D56DD500-DDE6-495B-BBC8-95E721751904}"
-EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commonc", "common\c_cpp\src\c\commonc.vcxproj", "{45F0CC89-C5CD-4AF6-9911-DDF0557F788A}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "commoncpp", "common\c_cpp\src\cpp\commoncpp.vcxproj", "{B58FB672-1BBC-4889-BBDD-9DE5012140E2}"
@@ -275,8 +271,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "capturereplayc", "mama\c_cpp\src\testtools\capturereplay\c\capturereplayc.vcxproj", "{576070A7-A30B-4EDA-ACB2-A2B878EA6E98}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "bridges", "bridges", "{3A4A304A-8A96-44F6-8930-14DEE67E8D64}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "avis", "avis", "{F7B2BB45-488C-4453-B1B9-150F57F699E9}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "qpid", "qpid", "{1B31C23D-7B65-485B-81D1-2E36F6DFBFE1}"
 EndProject
