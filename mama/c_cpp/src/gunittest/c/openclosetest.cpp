@@ -146,7 +146,7 @@ TEST_F (MamaOpenCloseTestC, DISABLED_OpenCloseReopenNewBridge)
  
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 
-    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, "avis"));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, "qpid"));
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 

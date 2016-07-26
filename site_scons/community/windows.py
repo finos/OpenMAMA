@@ -30,11 +30,6 @@ class Windows:
         if optsEnv['product'] == 'mamdaall':
             tools.append( 'csharp' )
 
-        if 'avis' in optsEnv['middleware']:
-            if not optsEnv.has_key('avis_home'):
-                print 'ERROR: Avis home must be specified'
-                Exit(1)
-         
         if 'qpid' in optsEnv['middleware']:
             if not optsEnv.has_key('qpid_home'):
                 print 'ERROR: Qpid home must be specified'

@@ -47,7 +47,7 @@ public class BasicSubJava
     private static MamaBasicSubscription    mySubscription  = null;
     private static MamaBridge               myBridge        = null;
     private static MamaQueue                myDefaultQueue  = null;
-    private static String                   myMiddleware    = "avis";
+    private static String                   myMiddleware    = "qpiD";
     private static String                   myTopic         = "MAMA_TOPIC";
     private static String                   myTransportName = null;
     private static int                      myQuietLevel = 0;

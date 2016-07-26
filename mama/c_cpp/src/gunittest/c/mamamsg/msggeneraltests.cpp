@@ -77,7 +77,7 @@ TEST_F (MsgGeneralTestsC, payloadConvertToString)
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_TIBRV), "TIBRV");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_FAST), "FAST");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_V5), "V5");
-    ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_AVIS), "AVIS");
+    ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_QPID), "QPID");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_TICK42BLP), "TICK42BLP");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_RAI), "rai");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_EXEGY), "EXEGY");
