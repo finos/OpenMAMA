@@ -27,10 +27,6 @@ PACKAGE_VERSION = @PACKAGE_VERSION@
 SUBDIRS =
 
 
-if WITH_AVIS
-SUBDIRS += avismsg
-endif
-
 if WITH_PROTON
 SUBDIRS += qpidmsg
 endif

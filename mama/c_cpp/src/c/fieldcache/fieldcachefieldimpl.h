@@ -96,6 +96,7 @@ typedef struct mamaFieldCacheFieldImpl_
 /* Copy size byte starting at pointer data to field to the internal field data.
  * New memory is allocated with malloc and old one is freed with free (if needed).
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheField_setDataValue(
     mamaFieldCacheField field,
@@ -106,6 +107,7 @@ mamaFieldCacheField_setDataValue(
  * Returns a pointer to the old data pointer so that old data can be destroyed
  * and freed.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheField_setDataPointer(mamaFieldCacheField field,
                                    void* data,
@@ -113,11 +115,13 @@ mamaFieldCacheField_setDataPointer(mamaFieldCacheField field,
 
 /* Price vector type requires a special function to be destroyed and freed.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheField_destroyPriceVector(mamaFieldCacheVector priceVector);
 
 /* DateTime vector type requires a special function to be destroyed and freed.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheField_destroyDateTimeVector(mamaFieldCacheVector dateTimeVector);
 

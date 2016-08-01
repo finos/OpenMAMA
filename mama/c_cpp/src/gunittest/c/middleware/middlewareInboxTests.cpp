@@ -61,15 +61,15 @@ void MiddlewareInboxTests::TearDown(void)
 	mama_close();
 }
 
-void onMsg(mamaMsg msg, void *closure)
+void MAMACALLTYPE onMsg(mamaMsg msg, void *closure)
 {
 }
 
-void onError(mama_status status, void *closure)
+void MAMACALLTYPE onError(mama_status status, void *closure)
 {
 }
 
-void onInboxDestroy(mamaInbox inbox, void *closure)
+void MAMACALLTYPE onInboxDestroy(mamaInbox inbox, void *closure)
 {
 }
 

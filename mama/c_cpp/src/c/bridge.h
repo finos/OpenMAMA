@@ -389,7 +389,7 @@ typedef mama_status
 
 typedef mama_status
 (*bridgeMamaPublisher_sendReplyToInbox)(publisherBridge publisher,
-                                        void *         request,
+                                        mamaMsg         request,
                                         mamaMsg         reply);
 
 typedef mama_status

@@ -244,7 +244,7 @@ const char *index( const char *str, char c );
 #define wthread_cond_destroy( h )           (CloseHandle( *(h) ))
 
 COMMONExpDLL DWORD 
-wthread_cond_wait( HANDLE *event, LPCRITICAL_SECTION *cs );
+wthread_cond_wait( HANDLE *event, LPCRITICAL_SECTION cs );
 
 #define wthread_exit ExitThread
 

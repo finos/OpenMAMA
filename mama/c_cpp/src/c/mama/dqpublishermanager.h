@@ -190,6 +190,13 @@ mamaDQPublisherManager_sendNoSubscribers (
         const char *symbol);
 
 MAMAExpDLL
+extern mama_status
+mamaDQPublisherManager_getPublisher (
+        mamaDQPublisherManager manager,
+        const char *symbol,
+        mamaDQPublisher* pub);
+
+MAMAExpDLL
 extern void 
 mamaDQPublisherManager_enableSendTime (
         mamaDQPublisherManager manager, 

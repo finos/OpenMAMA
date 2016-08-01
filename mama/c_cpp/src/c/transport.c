@@ -638,6 +638,8 @@ mamaTransport_create (mamaTransport transport,
     if (!transport) return MAMA_STATUS_NULL_ARG;
     if (!bridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
 
+    self->mListeners = NULL;
+
     mama_log(MAMA_LOG_LEVEL_FINER, "Entering mamaTransport_create for transport (%p) with name %s", transport, name);
 
     self->mBridgeImpl = (mamaBridgeImpl*)bridgeImpl;
@@ -2755,7 +2757,12 @@ void mamaTransportImpl_clearTransportWithListeners (transportImpl *impl)
     /* Otherwise iterate the local list of subscriptions. */
     else
     {
-        list_for_each (impl->mListeners, mamaTransportImpl_clearTransportCallback, NULL);
+        if (impl->mListeners != NULL)
+        {
+            list_for_each (impl->mListeners,
+                           mamaTransportImpl_clearTransportCallback,
+                           NULL);
+        }
     }
 }
 

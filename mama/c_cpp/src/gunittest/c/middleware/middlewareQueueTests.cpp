@@ -61,10 +61,10 @@ void MiddlewareQueueTests::TearDown(void)
     mama_close();
 }
 
-static void onEvent(mamaQueue queue, void* closure)
+static void MAMACALLTYPE onEvent(mamaQueue queue, void* closure)
 {
 }
-static void onEnqueue(mamaQueue queue, void* closure)
+static void MAMACALLTYPE onEnqueue(mamaQueue queue, void* closure)
 {
 }
 

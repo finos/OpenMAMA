@@ -314,7 +314,6 @@ namespace Wombat
         virtual void setRecapTimeout (double timeout);
 
         /**
-        /**
          * Return the recap timeout.
          */
         virtual double getRecapTimeout (void);

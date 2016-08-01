@@ -1089,7 +1089,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg);
 MAMAExpDLL
 extern mama_status
 qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge publisher,
-                                          void*           request,
+                                          mamaMsg         request,
                                           mamaMsg         reply);
 
 /**

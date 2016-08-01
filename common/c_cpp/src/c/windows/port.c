@@ -128,7 +128,7 @@ void wthread_mutexattr_settype (int* attr, int param)
 {
 }
 
-DWORD wthread_cond_wait( HANDLE *event, LPCRITICAL_SECTION *cs )
+DWORD wthread_cond_wait( HANDLE *event, LPCRITICAL_SECTION cs )
 {
     DWORD rval;
 

@@ -46,7 +46,7 @@ public class BasicInboxJava
     private static MamaTransport         myTransport     = null;
     private static MamaInbox             myInbox         = null;
     private static MamaPublisher         myPublisher     = null;
-    private static String                myMiddleware    = "avis";
+    private static String                myMiddleware    = "qpid";
     private static MamaBridge            myBridge        = null;
 
     private static String                myTopic         = "MAMA_INBOUND_TOPIC";

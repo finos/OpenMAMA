@@ -30,7 +30,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        BoolVariable('debug', 'Build without compiler optimisation.',False),
        PathVariable('gtest_home','Path to Google Test home',None, PathVariable.PathIsDir),
        PathVariable('junit_home','Path to Junit home',None, PathVariable.PathIsDir),
-       ListVariable('middleware','Middleware(s) to be compiled in', 'avis', names = ['avis', 'qpid'] ),
+       ListVariable('middleware','Middleware(s) to be compiled in', 'qpid', names = ['qpid'] ),
        ('jobs', 'Number of scons threads to spawn, if n is passed the number of availabe cores is calculated and used', '1'),
 
     )
@@ -39,8 +39,6 @@ def get_command_line_opts( host, products, VERSIONS ):
         env = Environment()
         opts.AddVariables(
             ListVariable( 'buildtype', 'Windows Build type e.g dynamic', 'all', names = ['dynamic','dynamic-debug','static','static-debug'] ),
-            PathVariable('avis_home', 'Path to Avis',
-                          'c:\\avis', PathVariable.PathAccept),
             PathVariable('qpid_home', 'Path to QPID Proton Libraries',
                           'c:\\proton', PathVariable.PathAccept),
             EnumVariable('vsver','Visual Studio Version to use', env['MSVC_VERSION'],
@@ -63,13 +61,14 @@ def get_command_line_opts( host, products, VERSIONS ):
 
     if host['os'] == 'Linux':
         opts.AddVariables(
-            PathVariable('avis_home','Path to Avis', '/usr/local/', PathVariable.PathIsDir),
             PathVariable('qpid_home','Path to QPID Proton Libraries',
                 '/usr/local/', PathVariable.PathIsDir),
             PathVariable('cache_dir','Path to object cache', None, PathVariable.PathIsDir),
             EnumVariable('product', 'Product to be built', 'mamda',
                          #mamda all is a windows only build
                          allowed_values=( [ x for x in products if x != "mamdaall" ] )),
+            PathVariable('libevent_home', 'Path to libevent Libraries',
+                          '/usr/', PathVariable.PathAccept),
             EnumVariable('target_arch', 'Specifies if the build should target 32 or 64 bit architectures.',
                           host['arch'], allowed_values=['i386', 'i586', 'i686', 'x86', 'x86_64']),
             EnumVariable( 'compiler', 'Compiler to use for building OpenMAMA',
@@ -78,7 +77,6 @@ def get_command_line_opts( host, products, VERSIONS ):
 
     if host['os'] == 'Darwin':
         opts.AddVariables(
-            PathVariable('avis_home','Path to Avis', '/usr/local/', PathVariable.PathIsDir),
             PathVariable('qpid_home','Path to QPID Proton Libraries',
                 '/usr/local/', PathVariable.PathIsDir),
             PathVariable('cache_dir','Path to object cache', None, PathVariable.PathIsDir),

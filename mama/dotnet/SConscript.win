@@ -219,7 +219,7 @@ if 'dynamic' in env['build']:
     elif env['TARGET_ARCH'] == 'x86_64':
         env.Append( CSCFLAGS = ['/platform:x64'])
 
-    lib, doc_xml = env.InstallDotNetLibrary(target, sources)
+    (lib, doc_xml) = env.InstallDotNetLibrary(target, sources)
     
     if env['with_examples'] == True:
         for key in examples:
@@ -227,13 +227,14 @@ if 'dynamic' in env['build']:
                                     ASSEMBLYREFS = [ AssemblyRefs, lib ],
                                     WINEXE = 0)
             Alias('install', env.Install('$bindir',exe ) )
-            Alias('install', env.Install('$prefix/examples/mama/cs/%s' % key, examples[key]['sources']))
-            Alias('install', env.Install('$prefix/examples/mama/cs/%s' % key, examples[key]['project']))
+            if 'inc_example_src' in env and env['inc_example_src']:
+                Alias('install', env.Install('$prefix/examples/mama/cs/%s' % key, examples[key]['sources']))
+                Alias('install', env.Install('$prefix/examples/mama/cs/%s' % key, examples[key]['project']))
 
     if env['with_testtools'] == True:
         env.Log("C# testtool MamdaBookSelfTest included in examples")
 
-# if env['with_docs'] == True:
-#    doc = env.BuildNDoc(lib, doc_xml, doc_dir)
+    # if env['with_docs'] == True:
+    #    doc = env.BuildNDoc(lib, doc_xml, doc_dir)
 
-Clean(lib, [ cs, ai,])
+    Clean(lib, [ cs, ai,])

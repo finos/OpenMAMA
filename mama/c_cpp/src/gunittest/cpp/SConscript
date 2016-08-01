@@ -14,8 +14,12 @@ incpath.append('#mama/c_cpp/src/cpp')
 libpath = []
 libpath.append('$libdir')
 
-env.Append(LIBPATH=libpath, LIBS=['mama', 'mamacpp', 'wombatcommon',
-           'dl'], CPPPATH=incpath)
+if env['PLATFORM'] == "win32":
+    env.Append(LIBS=['libmamacpp%s' % env['suffix']])
+else:
+    env.Append(LIBS=['mamacpp'])
+
+env.Append(LIBPATH=libpath, CPPPATH=incpath)
 
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 

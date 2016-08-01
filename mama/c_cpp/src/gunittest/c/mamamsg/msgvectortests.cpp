@@ -2991,15 +2991,15 @@ protected:
         for( uint32_t ii(0) ; ii < VECTOR_SIZE ; ++ii )
         {
             char buffer[20];
-            ::snprintf(buffer, 20, "InitialString%u", ii);
-            mIn[ii] = ::strndup( buffer, 20 );
+            snprintf(buffer, 20, "InitialString%u", ii);
+            mIn[ii] = strdup(buffer);
         }
 
         for( uint32_t ii(0) ; ii < VECTOR_UPDATE_SIZE ; ++ii )
         {
             char buffer[20];
-            ::snprintf(buffer, 20, "UpdateString%u", ii);
-            mUpdate[ii] = ::strndup( buffer, 20 );
+            snprintf(buffer, 20, "UpdateString%u", ii);
+            mUpdate[ii] = strdup(buffer);
         }
     }
 
