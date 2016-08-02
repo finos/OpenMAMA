@@ -330,6 +330,12 @@ mamaInternal_loadProperties (const char *path,
                              const char *filename)
 {
     wproperty_t fileProperties;
+    int usingDefaults = 0;
+
+    if (!path && !filename)
+    {
+        usingDefaults = 1;
+    }
 
     if( gProperties == 0 )
     {
@@ -356,22 +362,27 @@ mamaInternal_loadProperties (const char *path,
 
     fileProperties = properties_Load (path, filename);
 
-    if( fileProperties == 0 )
+    /* Fail if loading properties failed and we have no properties so far or
+     * non-defaults were specified */
+    if( fileProperties == 0 && (!usingDefaults || 0 == properties_Count(gProperties)))
     {
-            mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open properties file.\n");
+        mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open properties file.\n");
         return;
     }
 
-    /* We've got file properties, so we need to merge 'em into
-     * anything we've already gotten */
-    properties_Merge( fileProperties, gProperties );
+    if (NULL != fileProperties)
+    {
+        /* We've got file properties, so we need to merge 'em into
+         * anything we've already gotten */
+        properties_Merge(fileProperties, gProperties);
 
-    /* Free the file properties, note that FreeEx2 is called to ensure that the data
-     * isn't freed as the pointers have been copied over to gProperties.
-     */
-    properties_FreeEx2(gProperties);
-    
-   gProperties =  fileProperties;
+        /* Free the file properties, note that FreeEx2 is called to ensure that the data
+         * isn't freed as the pointers have been copied over to gProperties.
+         */
+        properties_FreeEx2(gProperties);
+
+        gProperties = fileProperties;
+    }
 }
 
 static int mamaInternal_statsPublishingEnabled (void)
@@ -1178,23 +1189,10 @@ mama_setPropertiesFromFile (const char *path,
 {
     wproperty_t fileProperties;
 
-    if (!gProperties)
+    if (!path || !filename)
     {
-       mamaInternal_loadProperties( NULL, NULL );
-    }
-
-    if( !path )
-    {
-        path = environment_getVariable(WOMBAT_PATH_ENV);
-        mama_log (MAMA_LOG_LEVEL_NORMAL, "Using path specified in %s",
-            WOMBAT_PATH_ENV);
-    }
-
-    if( !filename )
         return MAMA_STATUS_NULL_ARG;
-
-    mama_log (MAMA_LOG_LEVEL_NORMAL,
-              "Attempting to load additional MAMA properties from %s", path ? path : "");
+    }
 
     mamaInternal_loadProperties (path, filename);
 

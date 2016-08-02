@@ -181,6 +181,8 @@ static mamaMsg				gCachedMsg			= NULL;
 static int                  gFlat               = 0;
 static mamaMsg              gFlatMsg            = NULL;
 
+static clockid_t            gClockType          = CLOCK_PROCESS_CPUTIME_ID;
+
 /* DJD condition variable for shutdown */
 pthread_cond_t              pendingShutdown     = PTHREAD_COND_INITIALIZER;
 pthread_mutex_t             pendingShutdownLock = PTHREAD_MUTEX_INITIALIZER;
@@ -217,6 +219,7 @@ static const char *         gUsageString[]      =
 "      [-randomLow X]       Lower rate for random range. Default is 100000 msgs/sec.",
 "      [-rdtsc]             Use the CPU Time Stamp Counter for calculation of transport latency.",
 "      [-rr]                Set scheduler as round robin.",
+"      [-rt]                Use CLOCK_REALTIME rather than CLOCK_PROCESS_CPUTIME_ID for stamping and throttling.",
 "      [-s topic]           The topic on which to send messages. Default is \"MAMA_TOPIC\".",
 "      [-S namespace]       Symbol name space for the data.",
 "      [-sleep nanosecs]    Nanoseconds to sleep between publishing messages to throttle message rate.",
@@ -645,14 +648,14 @@ int main (int argc, const char **argv)
 
     printf ("%21s Starting to publish\n", nowString);
 
-    clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
+    clock_gettime(gClockType, &ts);
     srand(ts.tv_nsec);
 
     if(gRdtsc)
         end = rdtsc();
     else
     {
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
+        clock_gettime(gClockType, &ts);
         end = TS2NANO(&ts);
     }
 
@@ -683,7 +686,7 @@ int main (int argc, const char **argv)
                 randNum = rdtsc();
             else
             {
-                clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
+                clock_gettime(gClockType, &ts);
                 randNum = TS2NANO(&ts);
             }
             randVal = randNum % randValCounts;
@@ -757,7 +760,7 @@ int main (int argc, const char **argv)
                 randNum = start = rdtsc();
             else
             {
-                clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
+                clock_gettime(gClockType, &ts);
                 randNum = start = TS2NANO(&ts);
             }
             randVal = randNum % randValCounts;
@@ -786,7 +789,7 @@ int main (int argc, const char **argv)
                 end = rdtsc();
             else
             {
-                clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
+                clock_gettime(gClockType, &ts);
                 end = TS2NANO(&ts);
             }
 
@@ -922,7 +925,7 @@ int main (int argc, const char **argv)
                 randNum = rdtsc();
             else
             {
-                clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &ts);
+                clock_gettime(gClockType, &ts);
                 randNum = TS2NANO(&ts);
             }
             randVal = randNum % randValCounts;
@@ -1686,6 +1689,11 @@ static void parseCommandLine
             gSched = SCHED_FIFO;
             i++;
         }
+        else if (strcmp (argv[i], "-rt") == 0)
+        {
+            gClockType = CLOCK_REALTIME;
+            i++;
+        }
         else if (strcmp (argv[i], "-rr") == 0)
         {
             gSched = SCHED_RR;
@@ -2120,12 +2128,12 @@ static void nanoSleep
     }
     else
     {
-        clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &st);
+        clock_gettime(gClockType, &st);
 
         start = TS2NANO(&st);
         while (1)
         {
-            clock_gettime(CLOCK_PROCESS_CPUTIME_ID, &et);
+            clock_gettime(gClockType, &et);
             if (TS2NANO(&et) - start >= nsec)
             {
                 return;
