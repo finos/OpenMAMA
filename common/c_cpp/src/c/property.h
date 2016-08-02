@@ -22,7 +22,8 @@
 #ifndef PROPERTY_H__
 #define PROPERTY_H__
  
-#include "wombat/wConfig.h"
+#include <wombat/wConfig.h>
+#include <wombat/port.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -125,6 +126,12 @@ COMMONExpDLL
 char* 
 properties_AddEscapes (const char* src, const char chars[], int num);
 
+/**
+* Returns the number of properties that have been processed so far
+*/
+COMMONExpDLL
+uint32_t
+properties_Count (wproperty_t handle);
 
 #if defined(__cplusplus)
 }
