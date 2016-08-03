@@ -310,6 +310,8 @@ struct wtimespec
 
 COMMONExpDLL int wnanosleep (struct wtimespec* ts, struct timnespec* remain);
 
+COMMONExpDLL char* strptime(const char *buf, const char *fmt, struct tm *tm);
+
 #if defined(__cplusplus)
 } /* extern "C" */
 #endif

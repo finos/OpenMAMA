@@ -52,6 +52,8 @@ static char sccsid[] = "@(#)strptime.c	1.0 (Powerdog) 94/03/27";
 #include <locale.h>
 #include <string.h>
 
+#include <wombat/port.h>
+
 #define asizeof(a)	((int)(sizeof (a) / sizeof ((a)[0])))
 
 struct mydtconv {
