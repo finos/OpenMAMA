@@ -187,6 +187,9 @@ const char *index( const char *str, char c );
         ( *(_result) = *gmtime( (_clock) ), \
                 (_result) )
 
+#define CPU_SET(i,affinity) \
+    *affinity |= 1 << i
+
 /*
  inttypes.h doesn't exist on windows.
  emulate some definitions here.
@@ -253,13 +256,13 @@ wthread_cond_wait( HANDLE *event, LPCRITICAL_SECTION cs );
 
 #define CPU_AFFINITY_SET DWORD
 
-COMMONExpDLL int wthread_create( wthread_t *h, void *atts, void *(*startProc)( void * ), void *arg );             
+COMMONExpDLL int wthread_create( wthread_t *h, const void *atts, void *(*startProc)( void * ), void *arg );
 COMMONExpDLL void wthread_destroy(wthread_t thread);
 COMMONExpDLL int wthread_join (wthread_t t, void **value_ptr);
 COMMONExpDLL void wthread_testcancel( wthread_t h );
 COMMONExpDLL void wthread_cancel( wthread_t h );
 COMMONExpDLL struct tm* localtime_r (const time_t* t, struct tm* result);
-COMMONExpDLL int wthread_set_affinity_mask( wthread_t h, CPU_AFFINITY_SET* dwThreadAffinityMask);
+COMMONExpDLL int wthread_set_affinity_mask( wthread_t h, size_t dummy, CPU_AFFINITY_SET* dwThreadAffinityMask);
 
 typedef int   wthread_attr_t;
 COMMONExpDLL    void wthread_attr_init (int* attr);

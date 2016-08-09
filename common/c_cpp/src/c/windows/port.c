@@ -40,11 +40,18 @@ typedef struct
 
 
 
-int wthread_set_affinity_mask( wthread_t h, 
+int wthread_set_affinity_mask( wthread_t h, size_t dummy,
                                CPU_AFFINITY_SET* dwThreadAffinityMask)
 {
-    return (int) SetThreadAffinityMask( ((threadContext*) h)->mThread, 
-                                        (DWORD_PTR) dwThreadAffinityMask );
+    if (SetThreadAffinityMask( ((threadContext*) h)->mThread,
+                                (DWORD_PTR) dwThreadAffinityMask ) )
+    {
+        return 0;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
 

@@ -27,6 +27,7 @@
 #include "wombat/environment.h"
 #include "wombat/strutils.h"
 #include "wombat/wInterlocked.h"
+#include "wombat/thread.h"
 #include "bridge.h"
 
 #include <mama/mama.h>
@@ -52,6 +53,7 @@
 #define PROPERTY_FILE "mama.properties"
 #define WOMBAT_PATH_ENV "WOMBAT_PATH"
 #define MAMA_PROPERTY_BRIDGE "mama.bridge.provider"
+#define MAMA_PROPERTY_THREAD_AFFINITY "mama.thread_affinity."
 #define MAMA_ENTITLEMENT_LIB_FILEPATTERN "mamaent%s"
 #define DEFAULT_STATS_INTERVAL 60
 
@@ -246,6 +248,9 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
 
 mama_status
 mama_loadEntitlementBridgeInternal  (const char* name);
+
+static void
+threadPropertiesCb (const char* name, const char* value, void* closure);
 
 mama_bool_t
 mama_areVersionsCompatibleInternal (versionInfo mamaVer, versionInfo bridgeVer);
@@ -983,12 +988,71 @@ mama_openWithPropertiesCount (const char* path,
 
     mama_statsInit();
 
+    /* Gather global named thread properties. */
+    properties_ForEach (mamaInternal_getProperties(), threadPropertiesCb, NULL);
 
     gImpl.myRefCount++;
     if (count)
         *count = gImpl.myRefCount;
     wthread_static_mutex_unlock (&gImpl.myLock);
     return result;
+}
+
+static void
+threadPropertiesCb (const char* name, const char* value, void* closure)
+{
+    wombatThreadStatus status;
+
+    if (strncmp (name, MAMA_PROPERTY_THREAD_AFFINITY,
+                 strlen (MAMA_PROPERTY_THREAD_AFFINITY)) == 0)
+    {
+        const char*      threadName = name + strlen(MAMA_PROPERTY_THREAD_AFFINITY);
+        CPU_AFFINITY_SET affinity;
+        int              i;
+        char*            delimiter;
+        char*            str = (char*) value;
+
+        for (i = 0; i < sizeof(CPU_AFFINITY_SET); i++)
+        {
+            /* Clear the affinity set. */
+            ((char*) (&affinity))[i] = 0x00;
+        }
+
+        for(;;)
+        {
+            i = strtoul(str, &delimiter, 10);
+
+            if (i < 8 * sizeof(CPU_AFFINITY_SET))
+            {
+                CPU_SET(i, &affinity);
+            }
+            if (*delimiter != ',')
+            {
+                if (*delimiter != '\0') return;
+                break;
+            }
+            str = ++delimiter;
+        }
+
+        status = wombatThread_setAffinity (threadName, &affinity);
+
+        if (status != WOMBAT_THREAD_OK)
+        {
+            mama_log(MAMA_LOG_LEVEL_NORMAL,
+                "threadPropertiesCb: "
+                " Unable to set affinity for thread '%s' to value '%s'\n",
+                threadName,
+                value);
+        }
+        else
+        {
+            mama_log(MAMA_LOG_LEVEL_NORMAL,
+                "threadPropertiesCb: "
+                "Set affinity for thread '%s' to value '%s'\n",
+                threadName,
+                value);
+        }
+    }
 }
 
 mama_status
@@ -1305,12 +1369,15 @@ mama_closeCount (unsigned int* count)
          */
         for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
         {
+            char threadname[256];
             mamaMiddlewareLib* middlewareLib =
                         (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
 
             if (middlewareLib && middlewareLib->bridge)
             {
                 mamaBridgeImpl_stopInternalEventQueue (middlewareLib->bridge);
+                snprintf (threadname, 256, "mama_%s_default", middlewareLib->bridge->bridgeGetName());
+                wombatThread_destroy (threadname);
             }
         }
 
@@ -1638,6 +1705,8 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
 {
     struct startBackgroundClosure*  closureData;
     mamaBridgeImpl* impl = (mamaBridgeImpl*)bridgeImpl;
+    wombatThread    thread;
+    char            threadname[256];
 
     if (!bridgeImpl)
     {
@@ -1670,7 +1739,14 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
     closureData->mBridgeImpl     = bridgeImpl;
     closureData->mClosure        = closure;
 
-    if (0 != wthread_create(&impl->mStartBackgroundThread, NULL, mamaStartThread, (void*) closureData))
+    snprintf (threadname, 256, "mama_%s_default", bridgeImpl->bridgeGetName());
+
+    if (WOMBAT_THREAD_OK !=
+        wombatThread_create(threadname,
+                            &thread,
+                            NULL,
+                            mamaStartThread,
+                            (void*) closureData))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "Could not start background MAMA "
                   "thread.");
