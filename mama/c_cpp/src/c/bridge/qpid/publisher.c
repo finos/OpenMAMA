@@ -267,6 +267,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     size_t                  targetInc     = 0;
     char*                   url           = NULL;
     qpidMsgType             type          = QPID_MSG_PUB_SUB;
+    int                     err           = 0;
 
     if (NULL == impl)
     {
@@ -343,13 +344,14 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     }
 
     /* Note the messages don't actually get published until here */
-    if (pn_messenger_send(impl->mTransport->mOutgoing,
-            QPID_MESSENGER_SEND_TIMEOUT))
+    err = pn_messenger_send (impl->mTransport->mOutgoing,
+                             QPID_MESSENGER_SEND_TIMEOUT);
+    if (err && err != PN_TIMEOUT)
     {
         qpidError = PN_MESSENGER_ERROR (impl->mTransport->mOutgoing);
         mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidBridgeMamaPublisher_send(): "
-                  "Qpid Error:[%s]",
-                  qpidError);
+                  "Qpid Error:[%s][%d]",
+                  qpidError, err);
 
         return MAMA_STATUS_PLATFORM;
     }
