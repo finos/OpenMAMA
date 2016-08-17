@@ -1301,9 +1301,10 @@ mama_status
 mamaDispatcher_create (mamaDispatcher *result,
                        mamaQueue      queue)
 {
-    mamaQueueImpl*      qImpl   = (mamaQueueImpl*)queue;
-    mamaDispatcherImpl* impl    = NULL;
-    wombatThread        thread  = NULL;
+    mamaQueueImpl*      qImpl        = (mamaQueueImpl*)queue;
+    mamaDispatcherImpl* impl         = NULL;
+    wombatThread        thread       = NULL;
+    wombatThreadStatus  threadStatus = WOMBAT_THREAD_OK;
 
     if (!queue)
     {
@@ -1339,12 +1340,22 @@ mamaDispatcher_create (mamaDispatcher *result,
     impl->mDestroy = 0;
 
     snprintf (impl->mThreadName, 256, "%s%s", MAMAQUEUE_THREAD_PREFIX, qImpl->mQueueName);
-    if (WOMBAT_THREAD_OK !=
-        wombatThread_create(impl->mThreadName,
+    threadStatus = wombatThread_create(impl->mThreadName,
                             &thread,
                             NULL,
                             dispatchThreadProc,
-                            impl))
+                            impl);
+
+    if (threadStatus == WOMBAT_THREAD_PROPERTY)
+    {
+        /* Failed to set the thread affinity, but the thread has been created
+         * so log an error but carry on. */
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mamaDispatcher_create(): Could not apply "
+                                        "thread affinity to %s",
+                                        impl->mThreadName);
+
+    }
+    else if (threadStatus != WOMBAT_THREAD_OK)
     {
         free (impl);
         mama_log (MAMA_LOG_LEVEL_ERROR, "mamaDispatcher_create(): Could not "

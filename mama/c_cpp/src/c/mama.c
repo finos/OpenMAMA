@@ -826,6 +826,39 @@ mama_openWithPropertiesCount (const char* path,
     initReservedFields();
     mama_loginit();
 
+    /* Gather global named thread properties. */
+    properties_ForEach (mamaInternal_getProperties(), threadPropertiesCb, NULL);
+
+    /* Load all specified Entitlements Bridges. This is done before payloads/middlewares
+     * as an entitlementsBridge is necessary for transport_create().
+     */
+    while (NULL != gEntitlementBridges[bridgeIdx])
+    {
+        mama_log(MAMA_LOG_LEVEL_FINE,
+                 "Trying to load %s entitlement bridge.",
+                 gEntitlementBridges[bridgeIdx]);
+
+        result = mama_loadEntitlementBridgeInternal(gEntitlementBridges[bridgeIdx]);
+
+        if (MAMA_STATUS_OK != result)
+        {
+            mama_log(MAMA_LOG_LEVEL_SEVERE,
+                     "mama_openWithProperties(): "
+                     "Could not load %s entitlements library.",
+                     gEntitlementBridges[bridgeIdx]);
+
+            wthread_static_mutex_unlock (&gImpl.myLock);
+            mama_close();
+
+            if (count)
+                *count = gImpl.myRefCount;
+
+            return result;
+        }
+        bridgeIdx++;
+    }
+
+
     /* Check mama.properteis for default payload bridge to use when calling mamaMsg_create. 
      * The payload bridge will be loaded before any middleware or payload bridges.
      */
@@ -988,9 +1021,6 @@ mama_openWithPropertiesCount (const char* path,
 
     mama_statsInit();
 
-    /* Gather global named thread properties. */
-    properties_ForEach (mamaInternal_getProperties(), threadPropertiesCb, NULL);
-
     gImpl.myRefCount++;
     if (count)
         *count = gImpl.myRefCount;
@@ -1040,7 +1070,7 @@ threadPropertiesCb (const char* name, const char* value, void* closure)
         {
             mama_log(MAMA_LOG_LEVEL_NORMAL,
                 "threadPropertiesCb: "
-                " Unable to set affinity for thread '%s' to value '%s'\n",
+                " Unable to set affinity for thread '%s' to value '%s'",
                 threadName,
                 value);
         }
@@ -1048,7 +1078,7 @@ threadPropertiesCb (const char* name, const char* value, void* closure)
         {
             mama_log(MAMA_LOG_LEVEL_NORMAL,
                 "threadPropertiesCb: "
-                "Set affinity for thread '%s' to value '%s'\n",
+                "Set affinity for thread '%s' to value '%s'",
                 threadName,
                 value);
         }
@@ -1704,9 +1734,9 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
                             void*        closure)
 {
     struct startBackgroundClosure*  closureData;
-    mamaBridgeImpl* impl = (mamaBridgeImpl*)bridgeImpl;
-    wombatThread    thread;
-    char            threadname[256];
+    wombatThread        thread;
+    wombatThreadStatus  threadStatus = WOMBAT_THREAD_OK;
+    char                threadname[256];
 
     if (!bridgeImpl)
     {
@@ -1741,15 +1771,24 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
 
     snprintf (threadname, 256, "mama_%s_default", bridgeImpl->bridgeGetName());
 
-    if (WOMBAT_THREAD_OK !=
-        wombatThread_create(threadname,
+    threadStatus = wombatThread_create(threadname,
                             &thread,
                             NULL,
                             mamaStartThread,
-                            (void*) closureData))
+                            (void*) closureData);
+
+    if (threadStatus == WOMBAT_THREAD_PROPERTY)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "Could not start background MAMA "
-                  "thread.");
+        /* Failed to set the thread affinity, but the thread has been created
+         * so log an error but carry on. */
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mama_startBackgroundHelper(): Could not "
+                  "apply thread affinity to "
+                  "background MAMA thread.");
+    }
+    else if (threadStatus != WOMBAT_THREAD_OK)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mama_startBackgroundHelper(): Could not "
+                  "start background MAMA thread.");
         return MAMA_STATUS_SYSTEM_ERROR;
     }
 
