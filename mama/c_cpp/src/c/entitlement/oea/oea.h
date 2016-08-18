@@ -38,6 +38,10 @@ extern "C" {
 #define OEA_SITE_PROPERTY       "mama.entitlement.site"
 #define OEA_IP_ADDR_PROPERTY    "mama.entitlement.effective_ip_address"
 
+#define OEA_WRITE_TIMEOUT       "mama.entitlement.oea.write_timeout"
+#define OEA_READ_TIMEOUT        "mama.entitlement.oea.read_timeout"
+#define OEA_CONNECTION_TIMEOUT  "mama.entitlement.oea.connection_timeout"
+
 #define OEA_MAX_ENTITLEMENT_SERVERS 32
 
 

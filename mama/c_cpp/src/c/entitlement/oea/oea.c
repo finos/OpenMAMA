@@ -85,6 +85,7 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
 {
     const char*     portLowStr                  = NULL;
     const char*     portHighStr                 = NULL;
+    const char*     socketTimeoutStr            = NULL;
     int             portLow                     = 8000;
     int             portHigh                    = 8001;
     int             size                        = 0;
@@ -145,7 +146,27 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
     entitlementCallbacks.onEntitlementsUpdated        = entitlementUpdatedCallback;
     entitlementCallbacks.onSwitchEntitlementsChecking = entitlementCheckingSwitchCallback;
 
-    
+#if (OEA_MAJVERSION == 3 && OEA_MINVERSION >= 8)
+    /* Socket related tcp timeouts - only available in 3.8+ */
+    socketTimeoutStr = mama_getProperty (OEA_WRITE_TIMEOUT);
+    if (socketTimeoutStr != NULL)
+    {
+        oea_setSocketWriteTimeout (strtoul(socketTimeoutStr, NULL, 10));
+    }
+
+    socketTimeoutStr = mama_getProperty (OEA_READ_TIMEOUT);
+    if (socketTimeoutStr != NULL)
+    {
+        oea_setSocketReadTimeout (strtoul(socketTimeoutStr, NULL, 10));
+    }
+
+    socketTimeoutStr = mama_getProperty (OEA_CONNECTION_TIMEOUT);
+    if (socketTimeoutStr != NULL)
+    {
+        oea_setSocketConnectionTimeout (strtoul(socketTimeoutStr, NULL, 10));
+    }
+#endif
+
     oClient = oeaClient_create(&entitlementStatus,
                                 site,
                                 portLow,
