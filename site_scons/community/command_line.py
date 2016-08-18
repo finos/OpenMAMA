@@ -87,6 +87,8 @@ def get_command_line_opts( host, products, VERSIONS ):
                          'default', allowed_values=('default', 'clang', 'clang-analyzer')),
             EnumVariable('osx_version', 'OS X Version to target build at', 'current',
                          allowed_values=('current','10.8','10.9','10.10','10.11')),
+            PathVariable('libevent_home', 'Path to libevent Libraries',
+                          '/usr/', PathVariable.PathAccept),
             )
 
     return opts

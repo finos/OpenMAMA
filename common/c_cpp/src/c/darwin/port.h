@@ -186,6 +186,7 @@ struct wtimespec
 #define CLOCK_PROCESS_CPUTIME_ID    2
 #define GETTIME_SUCCESS             0
 #define GETTIME_FAIL                1
+typedef int clockid_t;
 int clock_gettime (int type, struct timespec * ts);
 
 #define wnanosleep(ts, remain)      nanosleep(((struct timespec*)(ts)),(remain))
