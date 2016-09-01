@@ -109,8 +109,8 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
 
     if (NULL == (entitlementServers = oeaEntitlmentBridge_parseServersProperty()))
     {
-        goto initFreeClientAndBridge;
         status = MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
+        goto initFreeBridge;
     }
 
     while (entitlementServers[size] != NULL)
