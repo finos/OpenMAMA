@@ -1352,13 +1352,15 @@ mamaDispatcher_destroy (mamaDispatcher dispatcher)
     if (!impl)
         return MAMA_STATUS_NULL_ARG;
 
+    /* Set dispatching atomic so dispatcher thread is ready to exit */
+    wInterlocked_set(0, &impl->mIsDispatching);
+
     if (impl->mQueue)
     {
         mamaQueue_stopDispatch (impl->mQueue);
     }
 
     /* Wait for the thread to return. */
-    wInterlocked_set(0, &impl->mIsDispatching);
     wthread_join (impl->mThread, NULL);
     wInterlocked_destroy (&impl->mIsDispatching);
 
