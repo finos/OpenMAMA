@@ -117,11 +117,8 @@ void MAMACALLTYPE onBgEvent (mamaQueue queue, void* closure)
 
     if (fixture->m_numEvents == ++fixture->m_numDispatches[index])
     {
-        for (int x=0; x!=10; x++)
-        {
-            mamaQueue_stopDispatch (fixture->m_queues[x]);
-        }
-    wsem_post (&fixture->m_sem);
+        mamaQueue_stopDispatch (fixture->m_queues[index]);
+        wsem_post (&fixture->m_sem);
     }
 }
 
@@ -417,12 +414,19 @@ TEST_F (MamaQueueTestC, DispatchManyQueuesWithDispatchers)
 
     for (int x = 0; x!=m_numQueues; x++)
     {
-        ASSERT_EQ(0, wsem_wait (&m_sem));
+        /* Generous 10 second timeout */
+        ASSERT_EQ(0, wsem_timedwait (&m_sem, 10000));
     }
 
     for (int x = 0; x!=m_numQueues; x++)
     {
         ASSERT_EQ(MAMA_STATUS_OK, mamaDispatcher_destroy (m_dispatcher[x]));
         ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy (m_queues[x]));
+    }
+
+    // Check we received the correct number of events for each queue
+    for (int x = 0; x!=m_numQueues; x++)
+    {
+        ASSERT_EQ(m_numEvents, m_numDispatches[x]);
     }
 }
