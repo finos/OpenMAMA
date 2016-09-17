@@ -49,7 +49,7 @@ public class BasicPubJava
 {
     private static String                myOutboundTopic = "MAMA_TOPIC";
     private static String                myInBoundTopic  = "MAMA_INBOUND_TOPIC";
-    private static String                myMiddleware    = "avis";
+    private static String                myMiddleware    = "qpid";
     private static MamaBridge            myBridge        = null;
     private static MamaQueue             myQueue         = null;
     private static String                myTransportName = null;

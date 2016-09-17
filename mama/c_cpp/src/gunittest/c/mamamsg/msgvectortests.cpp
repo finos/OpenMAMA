@@ -2991,15 +2991,15 @@ protected:
         for( uint32_t ii(0) ; ii < VECTOR_SIZE ; ++ii )
         {
             char buffer[20];
-            ::snprintf(buffer, 20, "InitialString%u", ii);
-            mIn[ii] = ::strndup( buffer, 20 );
+            snprintf(buffer, 20, "InitialString%u", ii);
+            mIn[ii] = strdup(buffer);
         }
 
         for( uint32_t ii(0) ; ii < VECTOR_UPDATE_SIZE ; ++ii )
         {
             char buffer[20];
-            ::snprintf(buffer, 20, "UpdateString%u", ii);
-            mUpdate[ii] = ::strndup( buffer, 20 );
+            snprintf(buffer, 20, "UpdateString%u", ii);
+            mUpdate[ii] = strdup(buffer);
         }
     }
 
@@ -3546,20 +3546,20 @@ protected:
 // AddVectorDateTime test fixtures
 // *******************************
 
-TEST_F(MsgVectorDateTimeTestsC, DISABLED_AddVectorDateTime)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(MsgVectorDateTimeTestsC, AddVectorDateTime)
 {
     mStatus = mamaMsg_addVectorDateTime (mMsg,
                                          NULL,
                                          1,
                                          mIn,
                                          VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorDateTime (mMsg,
                                          NULL,
                                          1,
-                                         (mama_u64_t* const*) &mOut,
+                                         &mOut,
                                          &mOutSize);
     ASSERT_EQ( mStatus, MAMA_STATUS_OK );
     EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3575,14 +3575,14 @@ TEST_F(MsgVectorDateTimeTestsC, DISABLED_AddVectorDateTime)
     }
 }
 
-TEST_F(MsgVectorDateTimeTestsC, DISABLED_AddVectorDateTimeNullAdd)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(MsgVectorDateTimeTestsC, AddVectorDateTimeNullAdd)
 {
     mStatus = mamaMsg_addVectorDateTime (mMsg,
                                          NULL,
                                          1,
                                          NULL,
                                          VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
 
@@ -3593,20 +3593,21 @@ TEST_F(MsgVectorDateTimeTestsC, AddVectorDateTimeNullMsg)
                                          1,
                                          mIn,
                                          VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
 
 // UpdateVectorDateTime test fixtures
 // **********************************
 
-TEST_F(MsgVectorDateTimeTestsC, DISABLED_UpdateVectorDateTime)
-// Disabled as mamaMsg_updateVectorTime is not implemented.
+TEST_F(MsgVectorDateTimeTestsC, UpdateVectorDateTime)
 {
     mStatus = mamaMsg_addVectorDateTime (mMsg,
                                          NULL,
                                          1,
                                          mIn,
                                          VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_OK);
 
     if (MAMA_STATUS_OK == mStatus)
@@ -3614,14 +3615,13 @@ TEST_F(MsgVectorDateTimeTestsC, DISABLED_UpdateVectorDateTime)
         mStatus = mamaMsg_getVectorDateTime (mMsg,
                                              NULL,
                                              1,
-                                             (mama_u64_t* const*) &mOut,
+                                             &mOut,
                                              &mOutSize);
         EXPECT_EQ( mStatus, MAMA_STATUS_OK );
         EXPECT_EQ( mOutSize, VECTOR_SIZE );
     }
 
 
-    /*
     mStatus = mamaMsg_updateVectorTime (mMsg,
                                         NULL,
                                         1,
@@ -3632,7 +3632,7 @@ TEST_F(MsgVectorDateTimeTestsC, DISABLED_UpdateVectorDateTime)
     mStatus = mamaMsg_getVectorDateTime (mMsg,
                                          NULL,
                                          1,
-                                         (mama_u64_t* const*) &mOut,
+                                         &mOut,
                                          &mOutSize);
 
     EXPECT_EQ( mStatus, MAMA_STATUS_OK );
@@ -3646,45 +3646,40 @@ TEST_F(MsgVectorDateTimeTestsC, DISABLED_UpdateVectorDateTime)
             EXPECT_EQ(1, eq);
         }
     }
-    */
 }
 
-TEST_F(MsgVectorDateTimeTestsC, DISABLED_UpdateVectorDateTimeNullAdd)
-// Disabled as mamaMsg_updateVectorTime is not implemented.
+TEST_F(MsgVectorDateTimeTestsC, UpdateVectorDateTimeNullAdd)
 {
-    /*
     mStatus = mamaMsg_updateVectorTime (mMsg,
                                         NULL,
                                         1,
                                         NULL,
                                         VECTOR_UPDATE_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
-    */
 }
 
-TEST_F(MsgVectorDateTimeTestsC, DISABLED_UpdateVectorDateTimeNullMsg)
-// Disabled as mamaMsg_updateVectorTime is not implemented.
+TEST_F(MsgVectorDateTimeTestsC, UpdateVectorDateTimeNullMsg)
 {
-    /*
     mStatus = mamaMsg_updateVectorTime (NULL,
                                         NULL,
                                         1,
                                         mUpdate,
                                         VECTOR_UPDATE_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
-    */
 }
 
 // GetVectorDateTime test fixtures
 // *******************************
-TEST_F(MsgVectorDateTimeTestsC, DISABLED_GetVectorDateTime)
-// Disabled as mamaMsg_addVectorTime is not implemented.
+TEST_F(MsgVectorDateTimeTestsC, GetVectorDateTime)
 {
     mStatus = mamaMsg_addVectorDateTime (mMsg,
                                          NULL,
                                          1,
                                          mIn,
                                          VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
     if (MAMA_STATUS_OK == mStatus)
@@ -3692,7 +3687,7 @@ TEST_F(MsgVectorDateTimeTestsC, DISABLED_GetVectorDateTime)
         mStatus = mamaMsg_getVectorDateTime (mMsg,
                                              NULL,
                                              1,
-                                             (mama_u64_t* const*) &mOut,
+                                             &mOut,
                                              &mOutSize);
         ASSERT_EQ( mStatus, MAMA_STATUS_OK );
         EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3732,14 +3727,14 @@ TEST_F(MsgVectorDateTimeTestsC, DISABLED_GetVectorDateTime)
     */
 }
 
-TEST_F(MsgVectorDateTimeTestsC, DISABLED_GetVectorDateTimeNullAdd)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(MsgVectorDateTimeTestsC, GetVectorDateTimeNullAdd)
 {
     mStatus = mamaMsg_addVectorDateTime (mMsg,
                                          NULL,
                                          1,
                                          mIn,
                                          VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorDateTime (mMsg,
@@ -3752,25 +3747,25 @@ TEST_F(MsgVectorDateTimeTestsC, DISABLED_GetVectorDateTimeNullAdd)
     mStatus = mamaMsg_getVectorDateTime (mMsg,
                                          NULL,
                                          1,
-                                         (mama_u64_t* const*) &mOut,
+                                         &mOut,
                                          NULL);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F(MsgVectorDateTimeTestsC, DISABLED_GetVectorDateTimeNullMsg)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(MsgVectorDateTimeTestsC, GetVectorDateTimeNullMsg)
 {
     mStatus = mamaMsg_addVectorDateTime (mMsg,
                                          NULL,
                                          1,
                                          mIn,
                                          VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorDateTime (NULL,
                                          NULL,
                                          1,
-                                         (mama_u64_t* const*) &mOut,
+                                         &mOut,
                                          &mOutSize);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
@@ -3836,20 +3831,20 @@ protected:
 // AddVectorPrice test fixtures
 // ****************************
 
-TEST_F(MsgVectorPriceTestsC, DISABLED_AddVectorPrice)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(MsgVectorPriceTestsC, AddVectorPrice)
 {
     mStatus = mamaMsg_addVectorPrice (mMsg,
                                       NULL,
                                       1,
                                       mIn,
                                       VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorPrice (mMsg,
                                       NULL,
                                       1,
-                                      (const mamaPrice*) &mOut,
+                                      &mOut,
                                       &mOutSize);
     ASSERT_EQ( mStatus, MAMA_STATUS_OK );
     EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3865,14 +3860,14 @@ TEST_F(MsgVectorPriceTestsC, DISABLED_AddVectorPrice)
     }
 }
 
-TEST_F(MsgVectorPriceTestsC, DISABLED_AddVectorPriceNullAdd)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(MsgVectorPriceTestsC, AddVectorPriceNullAdd)
 {
     mStatus = mamaMsg_addVectorPrice (mMsg,
                                       NULL,
                                       1,
                                       NULL,
                                       VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
 
@@ -3883,20 +3878,21 @@ TEST_F(MsgVectorPriceTestsC, AddVectorPriceNullMsg)
                                       1,
                                       mIn,
                                       VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
 
 // UpdateVectorPrice test fixtures
 // *******************************
 
-TEST_F(MsgVectorPriceTestsC, DISABLED_UpdateVectorPrice)
-// Disabled as  mamaMsg_updateVectorPrice is not implemented.
+TEST_F(MsgVectorPriceTestsC, UpdateVectorPrice)
 {
     mStatus = mamaMsg_addVectorPrice (mMsg,
                                       NULL,
                                       1,
                                       mIn,
                                       VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
     if (MAMA_STATUS_OK == mStatus)
@@ -3904,24 +3900,23 @@ TEST_F(MsgVectorPriceTestsC, DISABLED_UpdateVectorPrice)
         mStatus = mamaMsg_getVectorPrice (mMsg,
                                           NULL,
                                           1,
-                                          (const mamaPrice*) &mOut,
+                                          &mOut,
                                           &mOutSize);
         ASSERT_EQ( mStatus, MAMA_STATUS_OK );
         EXPECT_EQ( mOutSize, VECTOR_SIZE );
     }
 
-    /*
     mStatus = mamaMsg_updateVectorPrice (mMsg,
                                          NULL,
                                          1,
-                                         (void* const**) &mUpdate,
+                                         mUpdate,
                                          VECTOR_UPDATE_SIZE);
     EXPECT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorPrice (mMsg,
                                       NULL,
                                       1,
-                                      (const mamaPrice*) &mOut,
+                                      &mOut,
                                       &mOutSize);
     EXPECT_EQ( mStatus, MAMA_STATUS_OK );
     EXPECT_EQ( mOutSize, VECTOR_UPDATE_SIZE );
@@ -3934,45 +3929,40 @@ TEST_F(MsgVectorPriceTestsC, DISABLED_UpdateVectorPrice)
             EXPECT_EQ(1, eq);
         }
     }
-    */
 }
 
-TEST_F(MsgVectorPriceTestsC, DISABLED_UpdateVectorPriceNullAdd)
-// Disabeld as mamaMsg_updateVectorPrice is not implemented.
+TEST_F(MsgVectorPriceTestsC, UpdateVectorPriceNullAdd)
 {
-    /*
     mStatus = mamaMsg_updateVectorPrice (mMsg,
                                          NULL,
                                          1,
                                          NULL,
                                          VECTOR_UPDATE_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
-    */
 }
 
-TEST_F(MsgVectorPriceTestsC, DISABLED_UpdateVectorPriceNullMsg)
-// Disabled as mamaMsg_updateVectorPrice is not implemented.
+TEST_F(MsgVectorPriceTestsC, UpdateVectorPriceNullMsg)
 {
-    /*
     mStatus = mamaMsg_updateVectorPrice (NULL,
                                          NULL,
                                          1,
-                                         (void* const**) mUpdate,
+                                         mUpdate,
                                          VECTOR_UPDATE_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
-    */
 }
 
 // GetVectorPrice test fixtures
 // *******************************
-TEST_F(MsgVectorPriceTestsC, DISABLED_GetVectorPrice)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(MsgVectorPriceTestsC, GetVectorPrice)
 {
     mStatus = mamaMsg_addVectorPrice (mMsg,
                                       NULL,
                                       1,
                                       mIn,
                                       VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
     if (MAMA_STATUS_OK == mStatus)
@@ -3980,7 +3970,7 @@ TEST_F(MsgVectorPriceTestsC, DISABLED_GetVectorPrice)
         mStatus = mamaMsg_getVectorPrice (mMsg,
                                           NULL,
                                           1,
-                                          (const mamaPrice*) &mOut,
+                                          &mOut,
                                           &mOutSize);
         ASSERT_EQ( mStatus, MAMA_STATUS_OK );
         EXPECT_EQ( mOutSize, VECTOR_SIZE );
@@ -3995,18 +3985,17 @@ TEST_F(MsgVectorPriceTestsC, DISABLED_GetVectorPrice)
         }
     }
 
-    /*
     mStatus = mamaMsg_updateVectorPrice (mMsg,
                                          NULL,
                                          1,
-                                         (void* const**) mUpdate,
+                                         mUpdate,
                                          VECTOR_UPDATE_SIZE);
     EXPECT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorPrice (mMsg,
                                       NULL,
                                       1,
-                                      (const mamaPrice*) &mOut,
+                                      &mOut,
                                       &mOutSize);
 
     EXPECT_EQ( mStatus, MAMA_STATUS_OK );
@@ -4015,19 +4004,18 @@ TEST_F(MsgVectorPriceTestsC, DISABLED_GetVectorPrice)
     {
         int eq = mamaPrice_equal( mUpdate[ii],
                                   mOut[ii] );
-        EXPECT_EQ(0, eq);
+        EXPECT_EQ(1, eq);
     }
-    */
 }
 
-TEST_F(MsgVectorPriceTestsC, DISABLED_GetVectorPriceNullAdd)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(MsgVectorPriceTestsC, GetVectorPriceNullAdd)
 {
     mStatus = mamaMsg_addVectorPrice (mMsg,
                                       NULL,
                                       1,
                                       mIn,
                                       VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     ASSERT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorPrice (mMsg,
@@ -4040,25 +4028,25 @@ TEST_F(MsgVectorPriceTestsC, DISABLED_GetVectorPriceNullAdd)
     mStatus = mamaMsg_getVectorPrice (mMsg,
                                       NULL,
                                       1,
-                                      (const mamaPrice*) &mOut,
+                                      &mOut,
                                       NULL);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F(MsgVectorPriceTestsC, DISABLED_GetVectorPriceNullMsg)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(MsgVectorPriceTestsC, GetVectorPriceNullMsg)
 {
     mStatus = mamaMsg_addVectorPrice (mMsg,
                                       NULL,
                                       1,
                                       mIn,
                                       VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(mStatus);
     EXPECT_EQ(mStatus, MAMA_STATUS_OK);
 
     mStatus = mamaMsg_getVectorPrice (NULL,
                                       NULL,
                                       1,
-                                      (const mamaPrice*) &mOut,
+                                      &mOut,
                                       &mOutSize);
     EXPECT_EQ(mStatus, MAMA_STATUS_NULL_ARG);
 }

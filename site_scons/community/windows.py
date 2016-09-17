@@ -30,11 +30,6 @@ class Windows:
         if optsEnv['product'] == 'mamdaall':
             tools.append( 'csharp' )
 
-        if 'avis' in optsEnv['middleware']:
-            if not optsEnv.has_key('avis_home'):
-                print 'ERROR: Avis home must be specified'
-                Exit(1)
-         
         if 'qpid' in optsEnv['middleware']:
             if not optsEnv.has_key('qpid_home'):
                 print 'ERROR: Qpid home must be specified'
@@ -183,8 +178,20 @@ class Windows:
             if 'static-debug' in env['buildtype']:
                 builds.append( static_debug )
 
+        example_src_handled = False
         for env in builds:
             print 'Building: %s' % (env['build'])
+
+            if env['build'].startswith('dynamic') and not example_src_handled:
+                example_src_handled = True
+                env['inc_example_src'] = True
+
+            if 'debug' in env['build']:
+                env['win_type_path'] = 'Debug'
+            else:
+                env['win_type_path'] = 'Release'
+
+            env['lib_dep_prefix'] = os.path.join(env['win_arch_path'], env['win_type_path'])
 
             env['bindir'] = '$prefix/bin/$build'
             env['libdir'] = '$prefix/lib/$build'
@@ -222,9 +229,11 @@ class Windows:
         # Architecture specific setup
         if env['target_arch'] == 'x86_64':
             env['bit_suffix'] = '_x64'
+            env['win_arch_path'] = 'x64'
         else:
             env.Append( CPPDEFINES = ['_USE_32BIT_TIME_T'] )
             env['bit_suffix'] = ''
+            env['win_arch_path'] = ''
 
         if env['vsver'] > 7:
             env.Append( CCFLAGS = [ '/Z7','/MP' ])

@@ -85,7 +85,7 @@ mama_status qpidBridge_init (mamaBridge bridgeImpl)
     strToVersionInfo (runtimeVersion, &rtVer);
 
     /* NB checks are runtime only - assume build system will prevent accidental
-     * compilation against incompatible versions. This is a demonstration t
+     * compilation against incompatible versions. This is a demonstration to
      * show how you could do runtime version checking. */
     if (1 == rtVer.mMajor)
     {
@@ -202,7 +202,7 @@ qpidBridge_stop (mamaQueue defaultEventQueue)
     if (NULL == defaultEventQueue)
     {
       mama_log (MAMA_LOG_LEVEL_FINER,
-                "qpidBridge_start(): defaultEventQueue is NULL");
+                "qpidBridge_stop(): defaultEventQueue is NULL");
       return MAMA_STATUS_NULL_ARG;
     }
 

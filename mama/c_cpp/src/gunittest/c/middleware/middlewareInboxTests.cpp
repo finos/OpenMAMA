@@ -61,15 +61,15 @@ void MiddlewareInboxTests::TearDown(void)
 	mama_close();
 }
 
-void onMsg(mamaMsg msg, void *closure)
+void MAMACALLTYPE onMsg(mamaMsg msg, void *closure)
 {
 }
 
-void onError(mama_status status, void *closure)
+void MAMACALLTYPE onError(mama_status status, void *closure)
 {
 }
 
-void onInboxDestroy(mamaInbox inbox, void *closure)
+void MAMACALLTYPE onInboxDestroy(mamaInbox inbox, void *closure)
 {
 }
 
@@ -114,6 +114,7 @@ TEST_F (MiddlewareInboxTests, create)
     ASSERT_EQ (MAMA_STATUS_OK, mBridge->bridgeMamaInboxDestroy(bridge));
     ASSERT_EQ (MAMA_STATUS_OK, mamaInbox_destroy(parent));
     ASSERT_EQ (MAMA_STATUS_OK, mamaTransport_destroy(transport));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaQueue_destroy(queue));
 }
 
 TEST_F (MiddlewareInboxTests, createInvalidBridge)
@@ -329,6 +330,10 @@ TEST_F (MiddlewareInboxTests, CreateDestroy)
 
     ASSERT_EQ (MAMA_STATUS_OK, 
                mBridge->bridgeMamaInboxDestroy(bridge));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaInbox_destroy(parent));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mamaQueue_destroy(queue));
 
     mamaTransport_destroy (transport);
 }

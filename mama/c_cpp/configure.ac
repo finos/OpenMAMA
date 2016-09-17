@@ -24,9 +24,9 @@
 # VERSION INFO
 #
 ##################################################
-m4_define([product_version_major],     [2])
-m4_define([product_version_minor],     [4])
-m4_define([product_version_release],   [1])
+m4_define([product_version_major],     [6])
+m4_define([product_version_minor],     [1])
+m4_define([product_version_release],   [0])
 m4_define([product_full_version],[product_version_major.product_version_minor.product_version_release])
 
 
@@ -174,40 +174,8 @@ then
 fi
 
 ##################################################
-# AVIS: --with-avis
-# Whether or not to link in the Avis middleware
-##################################################
-# Whether to build and where to find the Avis Elvin API headers and
-# libraries (usually /usr/local):
-AVIS_HOME=[${AVIS_HOME}]
-AC_ARG_WITH(
-    avis,
-    [AC_HELP_STRING([--with-avis=DIR],
-                    [Location of Avis API include/library files in DIR])],
-    [
-     if test -d "$withval"; then
-         AVIS_HOME="$withval"
-     fi
-     AC_CHECK_FILES(
-         [$AVIS_HOME/include/avis/avis_client_config.h],
-         [
-          CPPFLAGS="$CPPFLAGS -I$AVIS_HOME/include"
-          LDFLAGS="$LDFLAGS -L$AVIS_HOME/lib"
-          with_avis=true
-          mama_platform=avis
-          mama_payload=avis
-          mwbridge=true
-          payloadbridge=true
-         ],
-         [
-            AC_MSG_ERROR([Valid Avis installation not found!  You may need to copy avis_client_config.h from platforms/gnu_auotmake to $AVIS_HOME/include/avis)])
-         ])
-    ])
-AM_CONDITIONAL(WITH_AVIS, test x$with_avis = "xtrue")
-
-##################################################
 # QPID: --with-proton
-# Whether or not to link in the Avis middleware
+# Whether or not to link in the qpid middleware
 ##################################################
 # Whether to build and where to find the Qpid proton API headers and libraries
 # (usually /usr/local):
@@ -400,10 +368,8 @@ AC_OUTPUT([Makefile \
     src/Makefile \
     src/c/Makefile \
     src/c/bridge/Makefile \
-    src/c/bridge/avis/Makefile \
     src/c/bridge/qpid/Makefile \
     src/c/payload/Makefile \
-    src/c/payload/avismsg/Makefile \
     src/c/payload/qpidmsg/Makefile \
     src/cpp/Makefile \
     src/examples/Makefile \

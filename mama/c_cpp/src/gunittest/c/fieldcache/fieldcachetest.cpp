@@ -237,8 +237,7 @@ TEST_F(MamaFieldCacheTestC, applyMsgNew)
     ret = mamaFieldCache_applyMessage(fieldCache, message, NULL);
     
 //    mamaMsg_clear(message);
-    mamaMsg_destroy (message);
-    
+
     ASSERT_EQ(MAMA_STATUS_OK, ret);
     ret = mamaFieldCache_getSize(fieldCache, &size);
     ASSERT_EQ(4, size);
@@ -297,6 +296,8 @@ TEST_F(MamaFieldCacheTestC, applyMsgNew)
     ASSERT_EQ(MAMA_STATUS_NULL_ARG, ret);
     ret = mamaFieldCache_applyMessage(fieldCache, NULL, NULL);
     ASSERT_EQ(MAMA_STATUS_NULL_ARG, ret);
+
+    mamaMsg_destroy (message);
 }
 
 TEST_F(MamaFieldCacheTestC, applyMsgUpdate)
@@ -454,9 +455,9 @@ TEST_F(MamaFieldCacheTestC, applyMsgUsingNames)
     mamaFieldCacheField_getName(field, &name);
     ASSERT_STREQ("test_string", name);
 
-    mamaMsg_destroy (message);
-
     ret = mamaFieldCache_destroy(fieldCache);
+
+    mamaMsg_destroy (message);
 }
 
 TEST_F(MamaFieldCacheTestC, getFullMsg1)
@@ -468,26 +469,31 @@ TEST_F(MamaFieldCacheTestC, getFullMsg1)
     mamaFieldCacheField_create(&field, 10, MAMA_FIELD_TYPE_BOOL, NULL);
     mamaFieldCacheField_setBool(field, 1);
     mamaFieldCache_applyField(fieldCache, field);
+    mamaFieldCacheField_destroy(field);
 
     /* This field must never be published */
     mamaFieldCacheField_create(&field, 25, MAMA_FIELD_TYPE_F64, NULL);
     mamaFieldCacheField_setF64(field, 3.1);
     mamaFieldCacheField_setPublish(field, 0);
     mamaFieldCache_applyField(fieldCache, field);
+    mamaFieldCacheField_destroy(field);
 
     mamaFieldCacheField_create(&field, 66, MAMA_FIELD_TYPE_I32, NULL);
     mamaFieldCacheField_setI32(field, -100);
     mamaFieldCache_applyField(fieldCache, field);
+    mamaFieldCacheField_destroy(field);
 
     // Creating a string field without a value. Even if this field is added to the
     // cache, it will not be added to the message because we cannot add a NULL
     // string to a mama message
     mamaFieldCacheField_create(&field, 110, MAMA_FIELD_TYPE_STRING, NULL);
     mamaFieldCache_applyField(fieldCache, field);
+    mamaFieldCacheField_destroy(field);
 
     mamaFieldCacheField_create(&field, 90, MAMA_FIELD_TYPE_STRING, NULL);
     mamaFieldCacheField_setString(field, "hello world", 0);
     mamaFieldCache_applyField(fieldCache, field);
+    mamaFieldCacheField_destroy(field);
 
     mamaMsg message;
     mamaMsg_create(&message);
@@ -526,27 +532,32 @@ TEST_F(MamaFieldCacheTestC, getFullMsg2)
     mamaFieldCacheField_setBool(field, 1);
 //    mamaFieldCacheField_setModified(field, 0); // Set this field to unmodified
     mamaFieldCache_applyField(fieldCache, field);
-    
+    mamaFieldCacheField_destroy(field);
+
     /* This field must never be published */
     mamaFieldCacheField_create(&field, 25, MAMA_FIELD_TYPE_F64, NULL);
     mamaFieldCacheField_setF64(field, 3.1);
     mamaFieldCacheField_setPublish(field, 0);
     mamaFieldCache_applyField(fieldCache, field);
-    
+    mamaFieldCacheField_destroy(field);
+
     mamaFieldCacheField_create(&field, 66, MAMA_FIELD_TYPE_I32, NULL);
     mamaFieldCacheField_setI32(field, -100);
     mamaFieldCache_applyField(fieldCache, field);
-    
+    mamaFieldCacheField_destroy(field);
+
     // Creating a string field without a value. Even if this field is added to the
     // cache, it will not be added to the message because we cannot add a NULL
     // string to a mama message
     mamaFieldCacheField_create(&field, 110, MAMA_FIELD_TYPE_STRING, NULL);
     mamaFieldCache_applyField(fieldCache, field);
-    
+    mamaFieldCacheField_destroy(field);
+
     mamaFieldCacheField_create(&field, 90, MAMA_FIELD_TYPE_STRING, NULL);
     mamaFieldCacheField_setString(field, "hello world", 0);
     mamaFieldCache_applyField(fieldCache, field);
-    
+    mamaFieldCacheField_destroy(field);
+
     mamaMsg message;
     mamaMsg_create(&message);
 
@@ -1088,4 +1099,5 @@ TEST_F(MamaFieldCacheTestC, applyRecordUpdate)
     ret = mamaFieldCache_destroy(fieldCache);
     mamaFieldCacheRecord_destroy(record20);
     mamaFieldCacheRecord_destroy(record10);
+    mamaMsg_destroy(msg);
 }

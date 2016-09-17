@@ -107,6 +107,7 @@ typedef struct mamaSubscriptionImpl_
     imageRequest            mRecapRequest;
     int                     mRespondToNextRefresh; /* boolean */
     double                  mTimeout;
+    double                  mRecapTimeout;
     int                     mRetries;
     int                     mAcceptMultipleInitials;
     int                     mRecoverGaps; /* boolean */
@@ -383,6 +384,7 @@ mamaSubscription_allocate (
     impl->mRecapRequest           = NULL;
     impl->mRespondToNextRefresh   = 1;
     impl->mTimeout                = MAMA_SUBSCRIPTION_DEFAULT_TIMEOUT;
+    impl->mRecapTimeout           = MAMA_SUBSCRIPTION_DEFAULT_RECAP_TIMEOUT;
     impl->mRetries                = MAMA_SUBSCRIPTION_DEFAULT_RETRIES;
     impl->mAcceptMultipleInitials = 0;
     impl->mRecoverGaps            = 1;
@@ -1919,6 +1921,38 @@ mamaSubscription_getTimeout (mamaSubscription subscription, double *val)
 }
 
 mama_status
+mamaSubscription_setRecapTimeout ( mamaSubscription subscription,
+                                   double timeout)
+{
+    if (!self) return MAMA_STATUS_NULL_ARG;
+    if ( self->mType == MAMA_SUBSC_TYPE_BASIC)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+    self->mRecapTimeout = timeout;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaSubscription_getRecapTimeout (mamaSubscription subscription, double *val)
+{
+    if (!self) return MAMA_STATUS_NULL_ARG;
+    if ( self->mType == MAMA_SUBSC_TYPE_BASIC)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+
+    /* If mamaSubscription_setRecap hasn't been called, default to mTimeout. */
+    if (MAMA_SUBSCRIPTION_DEFAULT_RECAP_TIMEOUT == self->mRecapTimeout)
+    {
+        self->mRecapTimeout = self->mTimeout;
+    }
+
+    *val = self->mRecapTimeout;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
 mamaSubscription_setRetries ( mamaSubscription subscription, 
                              int retries)
 {
@@ -2131,8 +2165,9 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
                                      const char* topic,
                                      void* topicClosure)
 {
-    mamaBridgeImpl* bridge  = NULL;
-    int             allowed = 0;
+    mamaBridgeImpl*         bridge      = NULL;
+    mamaEntitlementBridge   entBridge   = NULL;
+    int                     allowed     = 0;
 
     if ( (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST) ||
             (mamaSubscription_checkDebugLevel (subscription,
@@ -2140,7 +2175,7 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
     {
         const char* text = mamaMsg_toString(msg);
         mama_forceLog (MAMA_LOG_LEVEL_FINEST, 
-                "mamaSubscription_processMsg(): %s%s msg = %s subsc (%p)",
+                "mamaSubscription_processWildCardMsg(): %s%s msg = %s subsc (%p)",
                 userSymbolFormatted, 
                 text, 
                 subscription);
@@ -2150,27 +2185,32 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
 
     if (!mamaBridgeImpl_areEntitlementsDeferred(bridge))
     {
-        allowed = self->mSubjectContext.mEntitlementBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription, 
-                                                            self->mSubjectContext.mSymbol);
-        if (!allowed)
+        entBridge = self->mSubjectContext.mEntitlementBridge;
+
+        if (NULL != entBridge)
         {
-            self->mWcCallbacks.onError (self,
-                    MAMA_STATUS_NOT_ENTITLED,
-                    NULL,
-                    self->mUserSymbol,
-                    self->mClosure);
-            return MAMA_STATUS_NOT_ENTITLED;
+            allowed = entBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription, 
+                                                                self->mSubjectContext.mSymbol);
+            if (!allowed)
+            {
+                self->mWcCallbacks.onError (self,
+                        MAMA_STATUS_NOT_ENTITLED,
+                        NULL,
+                        self->mUserSymbol,
+                        self->mClosure);
+                return MAMA_STATUS_NOT_ENTITLED;
+            }
         }
     }
 
     self->mWcCallbacks.onMsg (
            subscription, 
            msg, 
-           NULL,
+           topic,
            self->mClosure, 
            topicClosure);
 
-    /*Do not access subscription here as it mey have been deleted/destroyed*/
+    /* Do not access subscription here as it may have been deleted/destroyed */
     return MAMA_STATUS_OK;
 }
     
@@ -2268,8 +2308,8 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
         mamaSubscription_forwardMsg (self, msg);
 
         /*Do not access subscription here as it mey have been deleted/destroyed*/
-        return MAMA_STATUS_OK;
     }
+    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -3225,7 +3265,9 @@ void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl)
 
     /* Destroy the state. */
     wInterlocked_destroy(&impl->mState);
-                    
+
+    mamaEntitlementBridge_destroySubscription (impl->mSubjectContext.mEntitlementSubscription);
+
     /* Free the subscription impl. */
     free(impl);
 }

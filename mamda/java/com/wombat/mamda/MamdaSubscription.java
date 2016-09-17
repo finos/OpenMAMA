@@ -266,8 +266,7 @@ public class MamdaSubscription
     {
         if( mSubscription != null )
         {
-            mSubscription.destroy();
-            mSubscription = null;
+            mSubscription.destroyEx();
         }
         mValid = false;
     }  
@@ -566,7 +565,7 @@ public class MamdaSubscription
                  */
                 MamdaErrorListener listener =
                     (MamdaErrorListener)listeners.elementAt(i);
-                short errorCode = MamdaErrorCode.codeForMamaMsgStatus (wombatStatus);
+                short errorCode = MamdaErrorCode.codeForMamaStatus (wombatStatus);
                 listener.onError (
                     mSubscription,
                     MamdaErrorSeverity.severityForErrorCode (errorCode),
@@ -608,7 +607,8 @@ public class MamdaSubscription
 
         public void onDestroy (MamaSubscription subscription)            
         {
-            // Do nothing
+            subscription.deallocate ();
+            mSubscription = null;
         }
     }
 }

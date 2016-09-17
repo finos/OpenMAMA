@@ -57,15 +57,17 @@ PayloadGeneralTests::~PayloadGeneralTests(void)
 
 void PayloadGeneralTests::SetUp(void)
 {
-	mama_loadPayloadBridge (&aBridge,getPayload());
-	mama_loadBridge (&mMiddlewareBridge, getMiddleware());
+    mama_loadPayloadBridge (&aBridge,getPayload());
+    mama_loadBridge (&mMiddlewareBridge, getMiddleware());
+    mama_open ();
 }
 
 void PayloadGeneralTests::TearDown(void)
 {
+    mama_close ();
 }
 
-void dummyIteratorCallback (const mamaMsg       msg,
+void MAMACALLTYPE dummyIteratorCallback (const mamaMsg       msg,
                             const mamaMsgField  field,
                             void*               closure)
 {
@@ -83,6 +85,7 @@ TEST_F(PayloadGeneralTests, CreateValid)
    result = aBridge->msgPayloadCreate(&testPayload);
 
    EXPECT_EQ (MAMA_STATUS_OK, result);
+   aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, CreateInValid)
@@ -300,8 +303,6 @@ TEST_F(PayloadGeneralTests, SerializeRoundtrip)
         ret = aBridge->msgPayloadGetNumFields (testPayloadInSub, &numFieldsInSub);
         EXPECT_EQ (MAMA_STATUS_OK, ret);
         EXPECT_EQ (2, numFieldsInSub);
-
-        EXPECT_EQ (MAMA_STATUS_OK, aBridge->msgPayloadDestroy (testPayloadInSub));
     }
 
     EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (dt));
@@ -349,6 +350,8 @@ TEST_F(PayloadGeneralTests, CopyValid)
 
     result = aBridge->msgPayloadCopy(testPayload, &copyPayload);
     EXPECT_EQ (MAMA_STATUS_OK, result);
+    aBridge->msgPayloadDestroy(testPayload);
+    aBridge->msgPayloadDestroy(copyPayload);
 }
 
 TEST_F(PayloadGeneralTests, CopyInValidPayload)
@@ -377,6 +380,8 @@ TEST_F(PayloadGeneralTests, CopyInValidCopy)
 
    result = aBridge->msgPayloadCopy(testPayload, &copyPayload);
    EXPECT_EQ (MAMA_STATUS_OK, result);
+   aBridge->msgPayloadDestroy(testPayload);
+   aBridge->msgPayloadDestroy(copyPayload);
 }
 
 TEST_F(PayloadGeneralTests, ClearValid)
@@ -388,6 +393,8 @@ TEST_F(PayloadGeneralTests, ClearValid)
 
    result = aBridge->msgPayloadClear(testPayload);
    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+   aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, ClearInValid)
@@ -416,6 +423,8 @@ TEST_F(PayloadGeneralTests, DestroyInValid)
 
    result = aBridge->msgPayloadDestroy(NULL);
    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+   aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, SetParentValid)
@@ -428,6 +437,8 @@ TEST_F(PayloadGeneralTests, SetParentValid)
 
    result = aBridge->msgPayloadSetParent(testPayload, testParent);
    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+   aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, SetParentInValidPayload)
@@ -460,6 +471,8 @@ TEST_F(PayloadGeneralTests, GetByteSizeValid)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
     result = aBridge->msgPayloadGetByteSize(testPayload, &testSize);
+
+    result = aBridge->msgPayloadDestroy(testPayload);
 
     CHECK_NON_IMPLEMENTED_OPTIONAL(result);
 
@@ -505,6 +518,7 @@ TEST_F(PayloadGeneralTests, GetNumberFieldsValid)
 	result = aBridge->msgPayloadGetNumFields(testPayload, &numFields);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 	EXPECT_EQ ((mama_size_t)9, numFields);
+	aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetNumberFieldsInValidPayload)
@@ -522,8 +536,9 @@ TEST_F(PayloadGeneralTests, GetNumberFieldsInValidNumFields)
 	aBridge->msgPayloadCreate(&testPayload);
 	aBridge->msgPayloadAddChar(testPayload, NULL, 1, 'a');
 
-	result = aBridge->msgPayloadGetNumFields(testPayload, NULL);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadGetNumFields(testPayload, NULL);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetSendSubjectValid)
@@ -542,9 +557,11 @@ TEST_F(PayloadGeneralTests, GetSendSubjectValid)
     mamaMsgImpl_setSubscInfo (parentMsg, NULL, NULL, subjectIn, 1);
 
     result = aBridge->msgPayloadGetSendSubject(testPayload, &subjectOut);
+    mamaMsg_destroy(parentMsg);
     CHECK_NON_IMPLEMENTED_OPTIONAL(result);
 
     EXPECT_EQ (MAMA_STATUS_OK, result);
+
 }
 
 
@@ -566,7 +583,8 @@ TEST_F(PayloadGeneralTests, GetSendSubjectInValidSubject)
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadGetSendSubject(testPayload, NULL);
+    result = aBridge->msgPayloadGetSendSubject(testPayload, NULL);
+    aBridge->msgPayloadDestroy(testPayload);
 
     CHECK_NON_IMPLEMENTED_OPTIONAL(result);
 
@@ -582,7 +600,8 @@ TEST_F(PayloadGeneralTests, ToStringValid)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     char_result = aBridge->msgPayloadToString(testPayload);
-	EXPECT_STREQ (char_result, "{}");
+    EXPECT_STREQ (char_result, "{}");
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, ToStringValidConsistent)
@@ -606,9 +625,12 @@ TEST_F(PayloadGeneralTests, ToStringValidConsistent)
 	result = aBridge->msgPayloadAddChar(testPayload2, NULL, 2, 'b');
 	result = aBridge->msgPayloadAddChar(testPayload2, NULL, 3, 'c');
 
-	char_result2 = aBridge->msgPayloadToString(testPayload2);
+    char_result2 = aBridge->msgPayloadToString(testPayload2);
 
-	EXPECT_STREQ (char_result, char_result2);
+    EXPECT_STREQ (char_result, char_result2);
+
+    aBridge->msgPayloadDestroy(testPayload);
+    aBridge->msgPayloadDestroy(testPayload2);
 }
 
 TEST_F(PayloadGeneralTests, ToStringInValid)
@@ -621,6 +643,7 @@ TEST_F(PayloadGeneralTests, ToStringInValid)
 
 	char_result = aBridge->msgPayloadToString(NULL);
 	EXPECT_STREQ (char_result, NULL);
+	aBridge->msgPayloadDestroy(testPayload);
 }
 
 /*
@@ -647,6 +670,8 @@ TEST_F(PayloadGeneralTests, IterateFieldsValid)
 			NULL);
 
 	EXPECT_EQ (MAMA_STATUS_OK, result);
+    aBridge->msgPayloadDestroy(testPayload);
+    aBridge->msgFieldPayloadDestroy(testMamaField);
 }
 
 /* TODO: This test should return NULL, but  needs to have the parent msg, 
@@ -676,8 +701,9 @@ TEST_F(PayloadGeneralTests, IterateFieldsInValidParent)
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadIterateFields(testPayload, NULL, testMamaField, testMamaMsgIteratorCb, &testClosure);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadIterateFields(testPayload, NULL, testMamaField, testMamaMsgIteratorCb, &testClosure);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 /* TODO: This test should return NULL, but  needs to have the parent msg and 
@@ -693,8 +719,9 @@ TEST_F(PayloadGeneralTests, IterateFieldsInValidMamaField)
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadIterateFields(testPayload, testMamaMsg, NULL, testMamaMsgIteratorCb, &testClosure);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadIterateFields(testPayload, testMamaMsg, NULL, testMamaMsgIteratorCb, &testClosure);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 /* TODO: This test should return NULL, but  needs to have the parent msg and 
@@ -708,10 +735,11 @@ TEST_F(PayloadGeneralTests, IterateFieldsInValidCallBack)
     void*               testClosure;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadIterateFields(testPayload, testMamaMsg, testMamaField, NULL, &testClosure);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadIterateFields(testPayload, testMamaMsg, testMamaField, NULL, &testClosure);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, SerializeValid)
@@ -721,15 +749,16 @@ TEST_F(PayloadGeneralTests, SerializeValid)
     mama_size_t         testBufferLength = 10;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 102, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 103, "Testing");
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
-	result = aBridge->msgPayloadSerialize(testPayload, (const void**)&testBuffer, &testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    result = aBridge->msgPayloadSerialize(testPayload, (const void**)&testBuffer, &testBufferLength);
+    aBridge->msgPayloadDestroy(testPayload);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 }
 
 TEST_F(PayloadGeneralTests, SerializeInValidPayLoad)
@@ -739,10 +768,11 @@ TEST_F(PayloadGeneralTests, SerializeInValidPayLoad)
     mama_size_t         testBufferLength = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadSerialize(NULL, (const void**)&testBuffer, &testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadSerialize(NULL, (const void**)&testBuffer, &testBufferLength);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, SerializeInValidBuffer)
@@ -751,15 +781,16 @@ TEST_F(PayloadGeneralTests, SerializeInValidBuffer)
     mama_size_t         testBufferLength = 10;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 101, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 101, "Testing");
     aBridge->msgPayloadAddString (testPayload, "name4", 101, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 101, "Fun");
 
-	result = aBridge->msgPayloadSerialize(testPayload, NULL, &testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadSerialize(testPayload, NULL, &testBufferLength);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, SerializeInValidBufferLength)
@@ -768,15 +799,16 @@ TEST_F(PayloadGeneralTests, SerializeInValidBufferLength)
     char*               testBuffer;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 101, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 101, "Testing");
     aBridge->msgPayloadAddString (testPayload, "name4", 101, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 101, "Fun");
 
-	result = aBridge->msgPayloadSerialize(testPayload, (const void**)&testBuffer, NULL);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadSerialize(testPayload, (const void**)&testBuffer, NULL);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, UnSerializeValid)
@@ -786,14 +818,15 @@ TEST_F(PayloadGeneralTests, UnSerializeValid)
     mama_size_t         testBufferLength = 50;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	ASSERT_EQ (MAMA_STATUS_OK, result);
+    ASSERT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 102, "Unit");
     result = aBridge->msgPayloadSerialize(testPayload, (const void**)&testBuffer, &testBufferLength);
-	ASSERT_EQ (MAMA_STATUS_OK, result);
+    ASSERT_EQ (MAMA_STATUS_OK, result);
 
     result = aBridge->msgPayloadUnSerialize(testPayload, (const void**)testBuffer, testBufferLength);
-	ASSERT_EQ (MAMA_STATUS_OK, result);
+    ASSERT_EQ (MAMA_STATUS_OK, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, UnSerializeInValidPayload)
@@ -803,10 +836,11 @@ TEST_F(PayloadGeneralTests, UnSerializeInValidPayload)
     mama_size_t         testBufferLength = 10;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     result = aBridge->msgPayloadUnSerialize(NULL, &testBuffer, testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, UnSerializeInValidBuffer)
@@ -815,10 +849,11 @@ TEST_F(PayloadGeneralTests, UnSerializeInValidBuffer)
     mama_size_t         testBufferLength = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     result = aBridge->msgPayloadUnSerialize(testPayload, NULL, testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, UnSerializeInValidBufferLength)
@@ -830,7 +865,8 @@ TEST_F(PayloadGeneralTests, UnSerializeInValidBufferLength)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     result = aBridge->msgPayloadUnSerialize(testPayload, &testBuffer, 0);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetByteBufferValid)
@@ -851,8 +887,9 @@ TEST_F(PayloadGeneralTests, GetByteBufferValid)
     aBridge->msgPayloadAddString (testPayload, "name4", 101, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 101, "Fun");
 
-	result = aBridge->msgPayloadGetByteBuffer(testPayload, (const void**)&testBuffer, &testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    result = aBridge->msgPayloadGetByteBuffer(testPayload, (const void**)&testBuffer, &testBufferLength);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetByteBufferInValidPayload)
@@ -869,8 +906,9 @@ TEST_F(PayloadGeneralTests, GetByteBufferInValidPayload)
     aBridge->msgPayloadAddString (testPayload, "name4", 101, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 101, "Fun");
 
-	result = aBridge->msgPayloadGetByteBuffer(NULL, (const void**)&testBuffer, &testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadGetByteBuffer(NULL, (const void**)&testBuffer, &testBufferLength);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetByteBufferInValidBuffer)
@@ -886,8 +924,9 @@ TEST_F(PayloadGeneralTests, GetByteBufferInValidBuffer)
     aBridge->msgPayloadAddString (testPayload, "name4", 101, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 101, "Fun");
 
-	result = aBridge->msgPayloadGetByteBuffer(testPayload, NULL, &testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadGetByteBuffer(testPayload, NULL, &testBufferLength);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetByteBufferInValidBufferLength)
@@ -903,8 +942,9 @@ TEST_F(PayloadGeneralTests, GetByteBufferInValidBufferLength)
     aBridge->msgPayloadAddString (testPayload, "name4", 101, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 101, "Fun");
 
-	result = aBridge->msgPayloadGetByteBuffer(testPayload, (const void**)&testBuffer, NULL);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadGetByteBuffer(testPayload, (const void**)&testBuffer, NULL);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, SetByteBufferValid)
@@ -912,6 +952,7 @@ TEST_F(PayloadGeneralTests, SetByteBufferValid)
     msgPayload          testPayload = NULL;
     const char*         testBuffer = NULL;
     mama_size_t         testBufferLength = 100;
+    msgPayload          testPayloadNew = NULL;
 
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
@@ -924,11 +965,14 @@ TEST_F(PayloadGeneralTests, SetByteBufferValid)
 	result = aBridge->msgPayloadGetByteBuffer(testPayload, (const void**)&testBuffer, &testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayload, aBridge, (const void*)testBuffer, testBufferLength);
+	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, aBridge, (const void*)testBuffer, testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    result = aBridge->msgPayloadSetByteBuffer(testPayload, aBridge, (const void*)testBuffer, testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    result = aBridge->msgPayloadSetByteBuffer(testPayloadNew, aBridge, (const void*)testBuffer, testBufferLength);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
+    aBridge->msgPayloadDestroy(testPayloadNew);
 }
 
 TEST_F(PayloadGeneralTests, SetByteBufferInValidPayload)
@@ -941,7 +985,8 @@ TEST_F(PayloadGeneralTests, SetByteBufferInValidPayload)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     result = aBridge->msgPayloadSetByteBuffer(NULL, aBridge, (const void*)testBuffer, testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, SetByteBufferInValidBridge)
@@ -959,7 +1004,9 @@ TEST_F(PayloadGeneralTests, SetByteBufferInValidBridge)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
     result = aBridge->msgPayloadSetByteBuffer(testPayload, NULL, (const void*)testBuffer, testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, SetByteBufferInValidBuffer)
@@ -972,6 +1019,7 @@ TEST_F(PayloadGeneralTests, SetByteBufferInValidBuffer)
 
     result = aBridge->msgPayloadSetByteBuffer(testPayload, aBridge, NULL, testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+	aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, SetByteBufferInValidBufferLength)
@@ -989,6 +1037,7 @@ TEST_F(PayloadGeneralTests, SetByteBufferInValidBufferLength)
 
     result = aBridge->msgPayloadSetByteBuffer(testPayload, aBridge, (const void*)testBuffer, 0);
 	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+	aBridge->msgPayloadDestroy(testPayload);
 }
 
 /* TODO: Check the values in the created payload.
@@ -997,11 +1046,10 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferValid)
 {
     msgPayload          testPayload = NULL;
     msgPayload          testPayloadNew = NULL;
-    char*               testBuffer;
+    const void*         testBuffer = NULL;
     mama_size_t         testBufferLength = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-    result = aBridge->msgPayloadCreate(&testPayloadNew);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 101, "Unit");
@@ -1009,11 +1057,15 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferValid)
     aBridge->msgPayloadAddString (testPayload, "name4", 101, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 101, "Fun");
 
-	result = aBridge->msgPayloadGetByteBuffer(testPayload, (const void**)&testBuffer, &testBufferLength);
+	result = aBridge->msgPayloadGetByteBuffer(testPayload, &testBuffer, &testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, aBridge, (const void*)testBuffer, testBufferLength);
+	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, aBridge, testBuffer, testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    aBridge->msgPayloadDestroy(testPayloadNew);
+    aBridge->msgPayloadDestroy(testPayload);
+
 }
 
 TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidPayLoad)
@@ -1030,6 +1082,8 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidPayLoad)
 
 	result = aBridge->msgPayloadCreateFromByteBuffer(NULL, aBridge, (const void*)testBuffer, testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBridge)
@@ -1040,8 +1094,7 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBridge)
     mama_size_t         testBufferLength = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-    result = aBridge->msgPayloadCreate(&testPayloadNew);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 101, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 101, "Testing");
@@ -1053,6 +1106,9 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBridge)
 
 	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, NULL, (const void*)testBuffer, testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
+    aBridge->msgPayloadDestroy(testPayloadNew);
 }
 
 TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBuffer)
@@ -1063,8 +1119,7 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBuffer)
     mama_size_t         testBufferLength = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-    result = aBridge->msgPayloadCreate(&testPayloadNew);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 101, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 101, "Testing");
@@ -1074,8 +1129,11 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBuffer)
 	result = aBridge->msgPayloadGetByteBuffer(testPayload, (const void**)&testBuffer, &testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, aBridge, NULL, testBufferLength);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, aBridge, NULL, testBufferLength);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
+    aBridge->msgPayloadDestroy(testPayloadNew);
 }
 
 TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBufferLength)
@@ -1086,8 +1144,7 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBufferLength)
     mama_size_t         testBufferLength = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-    result = aBridge->msgPayloadCreate(&testPayloadNew);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadAddString (testPayload, "name2", 101, "Unit");
     aBridge->msgPayloadAddString (testPayload, "name3", 101, "Testing");
@@ -1097,8 +1154,10 @@ TEST_F(PayloadGeneralTests, CreateFromByteBufferInValidBufferLength)
 	result = aBridge->msgPayloadGetByteBuffer(testPayload, (const void**)&testBuffer, &testBufferLength);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
-	result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, aBridge, (const void*)testBuffer, 0);
-	EXPECT_EQ (MAMA_STATUS_INVALID_ARG, result);
+    result = aBridge->msgPayloadCreateFromByteBuffer(&testPayloadNew, aBridge, (const void*)testBuffer, 0);
+    EXPECT_EQ (MAMA_STATUS_INVALID_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, ApplyValid)
@@ -1122,8 +1181,11 @@ TEST_F(PayloadGeneralTests, ApplyValid)
 
     aBridge->msgPayloadAddString (testSrcPayload, NULL, 101, "Testing");
 
-	result = aBridge->msgPayloadApply(testDestPayload, testSrcPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    result = aBridge->msgPayloadApply(testDestPayload, testSrcPayload);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    aBridge->msgPayloadDestroy(testSrcPayload);
+    aBridge->msgPayloadDestroy(testDestPayload);
 }
 
 TEST_F(PayloadGeneralTests, ApplyInValidDestPayload)
@@ -1143,6 +1205,8 @@ TEST_F(PayloadGeneralTests, ApplyInValidDestPayload)
 
     result = aBridge->msgPayloadApply(NULL, testSrcPayload);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testSrcPayload);
 }
 
 TEST_F(PayloadGeneralTests, ApplyInValidSrcPayload)
@@ -1162,6 +1226,8 @@ TEST_F(PayloadGeneralTests, ApplyInValidSrcPayload)
 
     result = aBridge->msgPayloadApply(testDestPayload, NULL);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testDestPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetNativeMsgValid)
@@ -1173,7 +1239,9 @@ TEST_F(PayloadGeneralTests, GetNativeMsgValid)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
     
     result = aBridge->msgPayloadGetNativeMsg(testPayload, (void**)&testNativeMsg);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetNativeMsgInValidMsg)
@@ -1185,7 +1253,9 @@ TEST_F(PayloadGeneralTests, GetNativeMsgInValidMsg)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
     
     result = aBridge->msgPayloadGetNativeMsg(NULL, (void**)&testNativeMsg);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetNativeMsgInValidNativeMsg)
@@ -1196,7 +1266,9 @@ TEST_F(PayloadGeneralTests, GetNativeMsgInValidNativeMsg)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
     
     result = aBridge->msgPayloadGetNativeMsg(testPayload, NULL);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldAsStringValid)
@@ -1216,7 +1288,9 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringValid)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
     
     result = aBridge->msgPayloadGetFieldAsString(testPayload, &testName, testFid, testBuf, testLen);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldAsStringInValidPayload)
@@ -1231,7 +1305,9 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidPayload)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
     
     result = aBridge->msgPayloadGetFieldAsString(NULL, &testName, testFid, &testBuf, testLen);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldAsStringInValidName)
@@ -1250,7 +1326,9 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidName)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
     
     result = aBridge->msgPayloadGetFieldAsString(testPayload, NULL, testFid, testBuf, testLen);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldAsStringInValidFid)
@@ -1292,7 +1370,8 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBuffer)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
     
     result = aBridge->msgPayloadGetFieldAsString(testPayload, &testName, testFid, NULL, testLen);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBufferLength)
@@ -1311,7 +1390,9 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBufferLength)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
     result = aBridge->msgPayloadGetFieldAsString(testPayload, &testName, testFid, testBuf, 0);
-	EXPECT_EQ (MAMA_STATUS_INVALID_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_INVALID_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldValid)
@@ -1329,11 +1410,10 @@ TEST_F(PayloadGeneralTests, GetFieldValid)
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
-    result = aBridge->msgFieldPayloadCreate(&testResult);
+    result = aBridge->msgPayloadGetField(testPayload, &testName, testFid, &testResult);
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    result = aBridge->msgPayloadGetField(testPayload, &testName, testFid, &testResult);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldInValidPayload)
@@ -1344,13 +1424,12 @@ TEST_F(PayloadGeneralTests, GetFieldInValidPayload)
     msgFieldPayload     testResult = NULL;
 
     result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
-    
-    result = aBridge->msgFieldPayloadCreate(&testResult);
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
     result = aBridge->msgPayloadGetField(NULL, &testName, testFid, &testResult);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldInValidName)
@@ -1367,11 +1446,10 @@ TEST_F(PayloadGeneralTests, GetFieldInValidName)
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
-    result = aBridge->msgFieldPayloadCreate(&testResult);
+    result = aBridge->msgPayloadGetField(testPayload, NULL, testFid, &testResult);
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    result = aBridge->msgPayloadGetField(testPayload, NULL, testFid, &testResult);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, GetFieldInValidFid)
@@ -1403,8 +1481,6 @@ TEST_F(PayloadGeneralTests, GetFieldInValidResult)
     msgPayload          testPayload = NULL;
     char                testName;
     mama_fid_t          testFid = 105;
-    msgFieldPayload     testField = NULL;
-    //mama_bool_t         value = 1;
 
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
@@ -1414,14 +1490,9 @@ TEST_F(PayloadGeneralTests, GetFieldInValidResult)
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
-    result = aBridge->msgFieldPayloadCreate(&testField);
-    EXPECT_EQ (MAMA_STATUS_OK, result);
-
-    //result = aBridge->msgFieldPayloadUpdateBool(testField, testPayload, value);
-	//EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
-
     result = aBridge->msgPayloadGetField(testPayload, &testName, testFid, NULL);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 /* ************************************************************************* */
@@ -1442,7 +1513,10 @@ TEST_F(PayloadGeneralTests, IterCreateValid)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
     result = aBridge->msgPayloadIterCreate(&testIter, testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterCreateInValidtestIter)
@@ -1459,6 +1533,8 @@ TEST_F(PayloadGeneralTests, IterCreateInValidtestIter)
 
     result = aBridge->msgPayloadIterCreate(NULL, testPayload);
 	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterCreateInValidPayload)
@@ -1481,6 +1557,8 @@ TEST_F(PayloadGeneralTests, IterDestroyValid)
 
     result = aBridge->msgPayloadIterDestroy(testIter);
     EXPECT_EQ (MAMA_STATUS_OK, result);
+
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterDestroyInValidIter)
@@ -1551,6 +1629,9 @@ TEST_F(PayloadGeneralTests, IterNextValid)
 
     if (NULL == aBridge->msgPayloadIterNext(testIter, testField, testPayload))
         FAIL();
+
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterNextValidConsistent)
@@ -1626,6 +1707,9 @@ TEST_F(PayloadGeneralTests, IterNextValidConsistent)
                                                           testField,
                                                           testPayload)))
         FAIL();
+
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterNextInValidIter)
@@ -1641,6 +1725,9 @@ TEST_F(PayloadGeneralTests, IterNextInValidIter)
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
     output = aBridge->msgPayloadIterNext(NULL, testField, testPayload);
+
+    aBridge->msgFieldPayloadDestroy(testField);
+    aBridge->msgPayloadDestroy(testPayload);
     if (output != NULL)
         FAIL();
 }
@@ -1663,6 +1750,9 @@ TEST_F(PayloadGeneralTests, IterNextInValidField)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     output = aBridge->msgPayloadIterNext(testIter, NULL, testPayload);
+
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgPayloadDestroy(testPayload);
     if (output == NULL)
         FAIL();
 }
@@ -1689,6 +1779,10 @@ TEST_F(PayloadGeneralTests, IterNextInValidPayload)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     output = aBridge->msgPayloadIterNext(testIter, testField, NULL);
+
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgFieldPayloadDestroy(testField);
+    aBridge->msgPayloadDestroy(testPayload);
     if (output != NULL)
         FAIL();
 }
@@ -1714,10 +1808,13 @@ TEST_F(PayloadGeneralTests, IterBeginValid)
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
     result = aBridge->msgPayloadIterCreate(&testIter, testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
     if (NULL == aBridge->msgPayloadIterBegin(testIter, testField, testPayload))
         FAIL();
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgFieldPayloadDestroy(testField);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterBeginInValidIter)
@@ -1742,6 +1839,9 @@ TEST_F(PayloadGeneralTests, IterBeginInValidIter)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     output = aBridge->msgPayloadIterBegin(NULL, testField, testPayload);
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgFieldPayloadDestroy(testField);
+    aBridge->msgPayloadDestroy(testPayload);
     if (output != NULL)
         FAIL();
 }
@@ -1768,6 +1868,9 @@ TEST_F(PayloadGeneralTests, IterBeginInValidField)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     output = aBridge->msgPayloadIterBegin(testIter, NULL, testPayload);
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgFieldPayloadDestroy(testField);
+    aBridge->msgPayloadDestroy(testPayload);
     if (output == NULL)
         FAIL();
 }
@@ -1794,6 +1897,10 @@ TEST_F(PayloadGeneralTests, IterBeginInValidPayload)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     output = aBridge->msgPayloadIterBegin(testIter, testField, NULL);
+
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgFieldPayloadDestroy(testField);
+    aBridge->msgPayloadDestroy(testPayload);
     if (output != NULL)
         FAIL();
 }
@@ -1816,7 +1923,9 @@ TEST_F(PayloadGeneralTests, IterHasNextValid)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     output = aBridge->msgPayloadIterHasNext(testIter, testPayload);
-	EXPECT_EQ (true, output);
+    EXPECT_EQ (true, output);
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterHasNextInValidIter)
@@ -1833,7 +1942,8 @@ TEST_F(PayloadGeneralTests, IterHasNextInValidIter)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
     output = aBridge->msgPayloadIterHasNext(NULL, testPayload);
-	EXPECT_EQ (false, output);
+    EXPECT_EQ (false, output);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterHasNextInValidPayload)
@@ -1854,7 +1964,9 @@ TEST_F(PayloadGeneralTests, IterHasNextInValidPayload)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     output = aBridge->msgPayloadIterHasNext(testIter, NULL);
-	EXPECT_EQ (0, output);
+    EXPECT_EQ (0, output);
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterAssociateValid)
@@ -1877,7 +1989,9 @@ TEST_F(PayloadGeneralTests, IterAssociateValid)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     result = aBridge->msgPayloadIterAssociate(testIter, testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterAssociateTwiceValid)
@@ -1976,7 +2090,9 @@ TEST_F(PayloadGeneralTests, IterAssociateInValidIter)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     result = aBridge->msgPayloadIterAssociate(NULL, testPayload);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 
 TEST_F(PayloadGeneralTests, IterAssociateInValidPayload)
@@ -1993,9 +2109,12 @@ TEST_F(PayloadGeneralTests, IterAssociateInValidPayload)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
     result = aBridge->msgPayloadIterCreate(&testIter, testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
+    EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    result = aBridge->msgPayloadIterAssociate(&testIter, NULL);
-	EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+    result = aBridge->msgPayloadIterAssociate(testIter, NULL);
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
+
+    aBridge->msgPayloadIterDestroy(testIter);
+    aBridge->msgPayloadDestroy(testPayload);
 }
 

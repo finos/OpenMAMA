@@ -90,6 +90,7 @@ TEST_F(FieldBoolTests, UpdateBoolValid)
 
     ret = aBridge->msgFieldPayloadUpdateBool(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldBoolTests, UpdateBoolInvalidType)
@@ -107,6 +108,7 @@ TEST_F(FieldBoolTests, UpdateBoolInvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateBool(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldBoolTests, UpdateBoolInValid)
@@ -145,6 +147,7 @@ TEST_F(FieldBoolTests, GetBoolValid)
 
     ret = aBridge->msgFieldPayloadGetBool(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldBoolTests, GetBoolInvalidType)
@@ -162,6 +165,7 @@ TEST_F(FieldBoolTests, GetBoolInvalidType)
 
     ret = aBridge->msgFieldPayloadGetBool(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldBoolTests, GetBoolInValid)
@@ -179,6 +183,7 @@ TEST_F(FieldBoolTests, GetBoolInValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetBool(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -215,6 +220,7 @@ TEST_F(FieldCharTests, UpdateCharValid)
 
     ret = aBridge->msgFieldPayloadUpdateChar(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldCharTests, UpdateCharInvalidType)
@@ -232,6 +238,7 @@ TEST_F(FieldCharTests, UpdateCharInvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateChar(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldCharTests, UpdateCharInValid)
@@ -250,6 +257,7 @@ TEST_F(FieldCharTests, UpdateCharInValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateChar(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldCharTests, GetCharValid)
@@ -267,6 +275,7 @@ TEST_F(FieldCharTests, GetCharValid)
 
     ret = aBridge->msgFieldPayloadGetChar(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldCharTests, GetCharInvalidType)
@@ -284,6 +293,7 @@ TEST_F(FieldCharTests, GetCharInvalidType)
 
     ret = aBridge->msgFieldPayloadGetChar(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldCharTests, GetCharInValid)
@@ -301,6 +311,7 @@ TEST_F(FieldCharTests, GetCharInValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetChar(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -337,6 +348,7 @@ TEST_F(FieldI8Tests, UpdateI8Valid)
 
     ret = aBridge->msgFieldPayloadUpdateI8(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI8Tests, UpdateI8InvalidType)
@@ -354,6 +366,7 @@ TEST_F(FieldI8Tests, UpdateI8InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateI8(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI8Tests, UpdateI8InValid)
@@ -372,6 +385,7 @@ TEST_F(FieldI8Tests, UpdateI8InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateI8(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldI8Tests, GetI8Valid)
@@ -389,6 +403,7 @@ TEST_F(FieldI8Tests, GetI8Valid)
 
     ret = aBridge->msgFieldPayloadGetI8(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI8Tests, GetI8InvalidType)
@@ -406,6 +421,7 @@ TEST_F(FieldI8Tests, GetI8InvalidType)
 
     ret = aBridge->msgFieldPayloadGetI8(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI8Tests, GetI8InValid)
@@ -423,6 +439,7 @@ TEST_F(FieldI8Tests, GetI8InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetI8(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -459,6 +476,7 @@ TEST_F(FieldU8Tests, UpdateU8Valid)
 
     ret = aBridge->msgFieldPayloadUpdateU8(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU8Tests, UpdateU8InvalidType)
@@ -476,6 +494,7 @@ TEST_F(FieldU8Tests, UpdateU8InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateU8(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU8Tests, UpdateU8InValid)
@@ -494,6 +513,7 @@ TEST_F(FieldU8Tests, UpdateU8InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateU8(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldU8Tests, GetU8Valid)
@@ -511,6 +531,7 @@ TEST_F(FieldU8Tests, GetU8Valid)
 
     ret = aBridge->msgFieldPayloadGetU8(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU8Tests, GetU8InvalidType)
@@ -528,6 +549,7 @@ TEST_F(FieldU8Tests, GetU8InvalidType)
 
     ret = aBridge->msgFieldPayloadGetU8(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU8Tests, GetU8InValid)
@@ -545,6 +567,7 @@ TEST_F(FieldU8Tests, GetU8InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetU8(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -581,6 +604,7 @@ TEST_F(FieldI16Tests, UpdateI16Valid)
 
     ret = aBridge->msgFieldPayloadUpdateI16(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI16Tests, UpdateI16InvalidType)
@@ -598,6 +622,7 @@ TEST_F(FieldI16Tests, UpdateI16InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateI16(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI16Tests, UpdateI16InValid)
@@ -616,6 +641,7 @@ TEST_F(FieldI16Tests, UpdateI16InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateI16(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldI16Tests, GetI16Valid)
@@ -633,6 +659,7 @@ TEST_F(FieldI16Tests, GetI16Valid)
 
     ret = aBridge->msgFieldPayloadGetI16(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI16Tests, GetI16InvalidType)
@@ -650,6 +677,7 @@ TEST_F(FieldI16Tests, GetI16InvalidType)
 
     ret = aBridge->msgFieldPayloadGetI16(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI16Tests, GetI16InValid)
@@ -667,6 +695,7 @@ TEST_F(FieldI16Tests, GetI16InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetI16(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -703,6 +732,7 @@ TEST_F(FieldU16Tests, UpdateU16Valid)
 
     ret = aBridge->msgFieldPayloadUpdateU16(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU16Tests, UpdateU16InvalidType)
@@ -720,6 +750,7 @@ TEST_F(FieldU16Tests, UpdateU16InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateU16(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU16Tests, UpdateU16InValid)
@@ -738,6 +769,7 @@ TEST_F(FieldU16Tests, UpdateU16InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateU16(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldU16Tests, GetU16Valid)
@@ -755,6 +787,7 @@ TEST_F(FieldU16Tests, GetU16Valid)
 
     ret = aBridge->msgFieldPayloadGetU16(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU16Tests, GetU16InvalidType)
@@ -772,6 +805,7 @@ TEST_F(FieldU16Tests, GetU16InvalidType)
 
     ret = aBridge->msgFieldPayloadGetU16(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU16Tests, GetU16InValid)
@@ -789,6 +823,7 @@ TEST_F(FieldU16Tests, GetU16InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetU16(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -825,6 +860,7 @@ TEST_F(FieldI32Tests, UpdateI32Valid)
 
     ret = aBridge->msgFieldPayloadUpdateI32(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI32Tests, UpdateI32InvalidType)
@@ -842,6 +878,7 @@ TEST_F(FieldI32Tests, UpdateI32InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateI32(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI32Tests, UpdateI32InValid)
@@ -860,6 +897,7 @@ TEST_F(FieldI32Tests, UpdateI32InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateI32(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldI32Tests, GetI32Valid)
@@ -877,6 +915,7 @@ TEST_F(FieldI32Tests, GetI32Valid)
 
     ret = aBridge->msgFieldPayloadGetI32(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI32Tests, GetI32InvalidType)
@@ -894,6 +933,7 @@ TEST_F(FieldI32Tests, GetI32InvalidType)
 
     ret = aBridge->msgFieldPayloadGetI32(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI32Tests, GetI32InValid)
@@ -911,6 +951,7 @@ TEST_F(FieldI32Tests, GetI32InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetI32(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -947,6 +988,7 @@ TEST_F(FieldU32Tests, UpdateU32Valid)
 
     ret = aBridge->msgFieldPayloadUpdateU32(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU32Tests, UpdateU32InvalidType)
@@ -964,6 +1006,7 @@ TEST_F(FieldU32Tests, UpdateU32InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateU32(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU32Tests, UpdateU32InValid)
@@ -982,6 +1025,7 @@ TEST_F(FieldU32Tests, UpdateU32InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateU32(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldU32Tests, GetU32Valid)
@@ -999,6 +1043,7 @@ TEST_F(FieldU32Tests, GetU32Valid)
 
     ret = aBridge->msgFieldPayloadGetU32(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU32Tests, GetU32InvalidType)
@@ -1016,6 +1061,7 @@ TEST_F(FieldU32Tests, GetU32InvalidType)
 
     ret = aBridge->msgFieldPayloadGetU32(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU32Tests, GetU32InValid)
@@ -1033,6 +1079,7 @@ TEST_F(FieldU32Tests, GetU32InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetU32(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -1069,6 +1116,7 @@ TEST_F(FieldI64Tests, UpdateI64Valid)
 
     ret = aBridge->msgFieldPayloadUpdateI64(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI64Tests, UpdateI64InvalidType)
@@ -1086,6 +1134,7 @@ TEST_F(FieldI64Tests, UpdateI64InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateI64(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI64Tests, UpdateI64InValid)
@@ -1104,6 +1153,7 @@ TEST_F(FieldI64Tests, UpdateI64InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateI64(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldI64Tests, GetI64Valid)
@@ -1121,6 +1171,7 @@ TEST_F(FieldI64Tests, GetI64Valid)
 
     ret = aBridge->msgFieldPayloadGetI64(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI64Tests, GetI64InvalidType)
@@ -1138,6 +1189,7 @@ TEST_F(FieldI64Tests, GetI64InvalidType)
 
     ret = aBridge->msgFieldPayloadGetI64(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldI64Tests, GetI64InValid)
@@ -1155,6 +1207,7 @@ TEST_F(FieldI64Tests, GetI64InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetI64(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -1191,6 +1244,7 @@ TEST_F(FieldU64Tests, UpdateU64Valid)
 
     ret = aBridge->msgFieldPayloadUpdateU64(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU64Tests, UpdateU64InvalidType)
@@ -1208,6 +1262,7 @@ TEST_F(FieldU64Tests, UpdateU64InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateU64(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU64Tests, UpdateU64InValid)
@@ -1226,6 +1281,7 @@ TEST_F(FieldU64Tests, UpdateU64InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateU64(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldU64Tests, GetU64Valid)
@@ -1243,6 +1299,7 @@ TEST_F(FieldU64Tests, GetU64Valid)
 
     ret = aBridge->msgFieldPayloadGetU64(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU64Tests, GetU64InvalidType)
@@ -1260,6 +1317,7 @@ TEST_F(FieldU64Tests, GetU64InvalidType)
 
     ret = aBridge->msgFieldPayloadGetU64(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldU64Tests, GetU64InValid)
@@ -1277,6 +1335,7 @@ TEST_F(FieldU64Tests, GetU64InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetU64(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 /**********************************************************************
  * F32 Tests
@@ -1312,6 +1371,7 @@ TEST_F(FieldF32Tests, UpdateF32Valid)
 
     ret = aBridge->msgFieldPayloadUpdateF32(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldF32Tests, UpdateF32InvalidType)
@@ -1329,6 +1389,7 @@ TEST_F(FieldF32Tests, UpdateF32InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateF32(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldF32Tests, UpdateF32InValid)
@@ -1347,6 +1408,7 @@ TEST_F(FieldF32Tests, UpdateF32InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateF32(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldF32Tests, GetF32Valid)
@@ -1364,6 +1426,7 @@ TEST_F(FieldF32Tests, GetF32Valid)
 
     ret = aBridge->msgFieldPayloadGetF32(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldF32Tests, GetF32InvalidType)
@@ -1381,6 +1444,7 @@ TEST_F(FieldF32Tests, GetF32InvalidType)
 
     ret = aBridge->msgFieldPayloadGetF32(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldF32Tests, GetF32InValid)
@@ -1398,6 +1462,7 @@ TEST_F(FieldF32Tests, GetF32InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetF32(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 /**********************************************************************
@@ -1434,6 +1499,7 @@ TEST_F(FieldF64Tests, UpdateF64Valid)
 
     ret = aBridge->msgFieldPayloadUpdateF64(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldF64Tests, UpdateF64InvalidType)
@@ -1451,6 +1517,7 @@ TEST_F(FieldF64Tests, UpdateF64InvalidType)
 
     ret = aBridge->msgFieldPayloadUpdateF64(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldF64Tests, UpdateF64InValid)
@@ -1469,6 +1536,7 @@ TEST_F(FieldF64Tests, UpdateF64InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadUpdateF64(field, msg, m_update);
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }
 
 TEST_F(FieldF64Tests, GetF64Valid)
@@ -1486,6 +1554,7 @@ TEST_F(FieldF64Tests, GetF64Valid)
 
     ret = aBridge->msgFieldPayloadGetF64(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldF64Tests, GetF64InvalidType)
@@ -1503,6 +1572,7 @@ TEST_F(FieldF64Tests, GetF64InvalidType)
 
     ret = aBridge->msgFieldPayloadGetF64(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_WRONG_FIELD_TYPE, ret);
+    aBridge->msgPayloadDestroy(msg);
 }
 
 TEST_F(FieldF64Tests, GetF64InValid)
@@ -1520,4 +1590,5 @@ TEST_F(FieldF64Tests, GetF64InValid)
     /*Null Underlying field*/
     ret = aBridge->msgFieldPayloadGetF64(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG, ret);
+    aBridge->msgFieldPayloadDestroy(field);
 }

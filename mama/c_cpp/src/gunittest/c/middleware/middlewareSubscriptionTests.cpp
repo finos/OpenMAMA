@@ -29,29 +29,29 @@
 using std::cout;
 using std::endl;
 
-static void onCreate (mamaSubscription subscription, void* closure);
+static void MAMACALLTYPE onCreate (mamaSubscription subscription, void* closure);
 
-static void onError(mamaSubscription subscription,
+static void MAMACALLTYPE onError(mamaSubscription subscription,
                     mama_status      status,
                     void*            platformError,
                     const char*      subject,
                     void*            closure);
 
-static void onQuality(mamaSubscription subsc,
+static void MAMACALLTYPE onQuality(mamaSubscription subsc,
                       mamaQuality      quality,
                       const char*      symbol,
                       short            cause,
                       const void*      platformInfo,
                       void*            closure);
 
-static void onMsg(mamaSubscription subscription,
+static void MAMACALLTYPE onMsg(mamaSubscription subscription,
                   mamaMsg          msg,
                   void*            closure,
                   void*            itemClosure);
 
-static void onGap(mamaSubscription subsc, void* closure);
-static void onRecapRequest(mamaSubscription subsc, void* closure);
-static void onDestroy(mamaSubscription subsc, void* closure);
+static void MAMACALLTYPE onGap(mamaSubscription subsc, void* closure);
+static void MAMACALLTYPE onRecapRequest(mamaSubscription subsc, void* closure);
+static void MAMACALLTYPE onDestroy(mamaSubscription subsc, void* closure);
 
 class MiddlewareSubscriptionTests : public ::testing::Test
 {
@@ -121,16 +121,17 @@ void MiddlewareSubscriptionTests::TearDown(void)
 {
     mamaSubscription_deallocate(parent);
     mamaQueue_destroy (queue);
+    mamaSource_destroy(source);
     mamaTransport_destroy (tport);
     mama_close();
 }
 
-static void onCreate (mamaSubscription subscription,
+static void MAMACALLTYPE onCreate (mamaSubscription subscription,
                       void* closure)
 {
 }
 
-static void onError(mamaSubscription subscription,
+static void MAMACALLTYPE onError(mamaSubscription subscription,
                     mama_status      status,
                     void*            platformError,
                     const char*      subject,
@@ -138,7 +139,7 @@ static void onError(mamaSubscription subscription,
 {
 }
 
-static void onQuality(mamaSubscription subsc,
+static void MAMACALLTYPE onQuality(mamaSubscription subsc,
                       mamaQuality      quality,
                       const char*      symbol,
                       short            cause,
@@ -147,22 +148,22 @@ static void onQuality(mamaSubscription subsc,
 {
 }
 
-static void onMsg(mamaSubscription subscription,
+static void MAMACALLTYPE onMsg(mamaSubscription subscription,
                   mamaMsg          msg,
                   void*            closure,
                   void*            itemClosure)
 {
 }
 
-static void onGap(mamaSubscription subsc, void* closure)
+static void MAMACALLTYPE onGap(mamaSubscription subsc, void* closure)
 {
 }
 
-static void onRecapRequest(mamaSubscription subsc, void* closure)
+static void MAMACALLTYPE onRecapRequest(mamaSubscription subsc, void* closure)
 {
 }
 
-static void onDestroy(mamaSubscription subsc, void* closure)
+static void MAMACALLTYPE onDestroy(mamaSubscription subsc, void* closure)
 {
 }
 
@@ -217,6 +218,7 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidSourceName)
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, NULL, symbol,
                                                     tport, queue, callbacks,
                                                     parent, closure));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaSubscriptionDestroy(subscriber));
 }
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidSymbol)
@@ -225,6 +227,7 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidSymbol)
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, NULL,
                                                     tport, queue, callbacks,
                                                     parent, closure));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaSubscriptionDestroy(subscriber));
 }
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidQueue)
@@ -233,6 +236,7 @@ TEST_F (MiddlewareSubscriptionTests, createInvalidQueue)
               mBridge->bridgeMamaSubscriptionCreate(&subscriber, sourceName, symbol,
                                                     tport, NULL, callbacks,
                                                     parent, closure));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaSubscriptionDestroy(subscriber));
 }
 
 TEST_F (MiddlewareSubscriptionTests, createInvalidParent)
@@ -336,6 +340,7 @@ TEST_F (MiddlewareSubscriptionTests, mute)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionDestroy(subscriber));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaSubscription_destroy(parent));
 }
 
 TEST_F (MiddlewareSubscriptionTests, muteInvalid)
@@ -364,8 +369,8 @@ TEST_F (MiddlewareSubscriptionTests, isValid)
     res = mBridge->bridgeMamaSubscriptionIsValid(subscriber);
     ASSERT_TRUE(res != 0);
 
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaSubscription_destroy(parent));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaSubscription_destroy(parent));
+    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaSubscriptionDestroy(subscriber));
 }
 
 TEST_F (MiddlewareSubscriptionTests, isValidInvalid)
@@ -403,6 +408,7 @@ TEST_F (MiddlewareSubscriptionTests, getPlatformError)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionDestroy(subscriber));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaSubscription_destroy(parent));
 
     CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
@@ -451,6 +457,7 @@ TEST_F (MiddlewareSubscriptionTests, setTopicClosure)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionDestroy(subscriber));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaSubscription_destroy(parent));
 
     CHECK_NON_IMPLEMENTED_OPTIONAL(status);
 
@@ -486,6 +493,7 @@ TEST_F (MiddlewareSubscriptionTests, muteCurrentTopic)
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mBridge->bridgeMamaSubscriptionDestroy(subscriber));
+    ASSERT_EQ(MAMA_STATUS_OK, mamaSubscription_destroy(parent));
 }
 
 TEST_F (MiddlewareSubscriptionTests, muteCurrentTopicInvalid)

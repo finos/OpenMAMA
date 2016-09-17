@@ -291,10 +291,10 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
 
         /* For late joins or middlewares that support a publish cache, it is possible that you will get old updates
            in this case take no action */
-        if (DQ_SCHEME_INGORE_DUPS==mamaTransportImpl_getDqStrategyScheme(tport))
+        if (DQ_SCHEME_INGORE_DUPS == mamaTransportImpl_getDqStrategyScheme(tport))
         {
-            if ((seqNum <= ctxSeqNum) && ((ctxDqState != DQ_STATE_WAITING_FOR_RECAP) ||
-                                          (ctxDqState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
+            if ((seqNum <= ctxSeqNum) && ((ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP) &&
+                                          (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
             {
                 ctx->mDoNotForward = 1;
                 return MAMA_STATUS_OK;
@@ -385,13 +385,37 @@ dqStrategy_checkSeqNum (dqStrategy      strategy,
     case MAMA_MSG_TYPE_BOOK_RECAP   :
     /* For late joins or middlewares that support a publish cache, it is possible that you will get old updates
        in this case take no action */
-        if (DQ_SCHEME_INGORE_DUPS==mamaTransportImpl_getDqStrategyScheme(tport))
+        if (DQ_SCHEME_INGORE_DUPS == mamaTransportImpl_getDqStrategyScheme(tport))
         {
-            if ((seqNum <= ctxSeqNum) && ((ctxDqState != DQ_STATE_WAITING_FOR_RECAP) ||
-                                          (ctxDqState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
+            if (MAMA_MSG_TYPE_RECAP == msgType)
             {
-                ctx->mDoNotForward = 1;
-                return MAMA_STATUS_OK;
+                /* Feed-handlers maintain sequence number for a Record FT Recap. */
+                if ((seqNum <= ctxSeqNum) && ((ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP) &&
+                                              (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
+                {
+                    ctx->mDoNotForward = 1;
+                    return MAMA_STATUS_OK;
+                }
+            }
+            else if (MAMA_MSG_TYPE_BOOK_RECAP == msgType)
+            {
+                if (0 == seqNum && ctxSeqNum > 0)
+                {
+                    /* Special case of an FT Order Book Recap where a SeqNum of 0 is used. */
+                    if (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)
+                    {
+                        ctx->mDoNotForward = 1;
+                        return MAMA_STATUS_OK;
+                    }
+                }
+                /* Solicited Recap from Feed-Handler or
+                 * solicited / unsolicited Recap from mid-tier. */
+                else if ((seqNum <= ctxSeqNum) && ((ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP) &&
+                                                   (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
+                {
+                    ctx->mDoNotForward = 1;
+                    return MAMA_STATUS_OK;
+                }
             }
         }
 
@@ -439,7 +463,7 @@ dqStrategy_sendRecapRequest (dqStrategyImpl* strategy, mamaMsg srcMsg, mamaDqCon
         mamaSubscription_getSubscSymbol (self->mSubscription,&symbol);
     }
 
-    mamaSubscription_getTimeout (self->mSubscription, &timeout);
+    mamaSubscription_getRecapTimeout (self->mSubscription, &timeout);
     mamaSubscription_getRetries (self->mSubscription, &retries);
 
     /* Send a request to the publisher to resend. */

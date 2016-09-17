@@ -65,7 +65,7 @@ void CommonQueueTestC::TearDown(void)
 extern "C" {
 #endif
 
-static void  onEvent(wombatQueue queue, void* closure)
+static void  MAMACALLTYPE onEvent(wombatQueue queue, void* closure)
 {
 }
 

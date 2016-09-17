@@ -40,6 +40,7 @@ protected:
 
     virtual void SetUp(void);
     virtual void TearDown(void);
+    mamaBridge mBridge;
 };
 
 MamaDateTimeTestC::MamaDateTimeTestC(void)
@@ -53,11 +54,14 @@ MamaDateTimeTestC::~MamaDateTimeTestC(void)
 void
 MamaDateTimeTestC::SetUp(void)
 {
+    mama_loadBridge (&mBridge, getMiddleware());
+    mama_open();
 }
 
 void
 MamaDateTimeTestC::TearDown(void)
 {
+    mama_close();
 }
 
 // Test Create function will valid and NULL parameters
@@ -1416,6 +1420,8 @@ TEST_F (MamaDateTimeTestC, NullArguments)
     /* NULL for both */
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mamaDateTime_getEpochTimeSecondsWithCheck (NULL, NULL));
+
+    mamaDateTime_destroy (m_DateTime);
 }
 
 /*  Description:     Get the number of seconds since epoch from:
@@ -1473,4 +1479,5 @@ TEST_F (MamaDateTimeTestC, CompareDates)
     
     /* These must be the same */
     ASSERT_EQ (completeDateSeconds, timeSeconds);
+    ASSERT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (m_cDateTime));
 }

@@ -17,12 +17,13 @@
  * 02110-1301 USA
  */
 
-
 #include <gtest/gtest.h>
 #include "mama/mama.h"
 #include "mama/status.h"
 #include "MainUnitTestC.h"
 #include "mama/queue.h"
+#include "mama/transport.h"
+#include "wombat/wSemaphore.h"
 
 class MamaQueueTestC : public ::testing::Test
 {
@@ -32,25 +33,23 @@ class MamaQueueTestC : public ::testing::Test
         virtual void SetUp();
         virtual void TearDown();
     public:
-        mamaBridge      mBridge;
-        MamaQueueTestC* m_this;
+        mamaBridge      m_bridge;
+        mamaTransport   m_transport;
         int             m_numQueues;
-        int             m_queueCounter;
         int             m_numEvents;
         int             m_eventCounter;
-        int             m_numDispatches;
         int             m_highWaterMarkOccurance;
         int             m_lowWaterMarkOccurance;
+        int             m_numDispatches[10];
         uint64_t        m_timeout;
-        mamaDispatcher  dispatcher[10];
-        mamaQueue       qArray[10];
+        mamaDispatcher  m_dispatcher[10];
+        mamaQueue       m_queues[10];
+        wsem_t          m_sem;
 };
 
 MamaQueueTestC::MamaQueueTestC()
 {
-    mBridge = NULL;
-    m_this = this;
-
+    m_bridge = NULL;
     m_highWaterMarkOccurance = 0;
     m_lowWaterMarkOccurance  = 0;
     m_timeout                = 5000;
@@ -58,18 +57,24 @@ MamaQueueTestC::MamaQueueTestC()
 
 MamaQueueTestC::~MamaQueueTestC()
 {
-    m_this = NULL;
 }
 
 void MamaQueueTestC::SetUp()
 {
-    mama_loadBridge (&mBridge, getMiddleware());
-    mama_open();
+    ASSERT_EQ(0, wsem_init (&m_sem, 0, 0));
+    m_eventCounter = 0;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&m_bridge, getMiddleware()));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTransport_allocate (&m_transport));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTransport_create (m_transport, NULL, m_bridge));
 }
 
 void MamaQueueTestC::TearDown()
 {
-    mama_close();
+    ASSERT_EQ (MAMA_STATUS_OK, mamaTransport_destroy (m_transport));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
+    ASSERT_EQ (0, wsem_destroy (&m_sem));
 }
 
 void highWaterMarkCallback (mamaQueue queue, size_t size, void* closure)
@@ -93,6 +98,11 @@ void MAMACALLTYPE onEvent (mamaQueue queue, void* closure)
         mamaQueue_stopDispatch (queue);
     }
 }
+
+void MAMACALLTYPE onEventNop (mamaQueue queue, void* closure)
+{
+}
+
 void MAMACALLTYPE onTimedEvent (mamaQueue queue, void* closure)
 {
 }
@@ -100,14 +110,15 @@ void MAMACALLTYPE onTimedEvent (mamaQueue queue, void* closure)
 void MAMACALLTYPE onBgEvent (mamaQueue queue, void* closure)
 {
     MamaQueueTestC* fixture = (MamaQueueTestC *)closure;
-    fixture->m_numDispatches++;
-    
-    if (fixture->m_numDispatches == 1000)
+
+    void* pIndex = 0;
+    mamaQueue_getClosure (queue, &pIndex);
+    size_t index = (size_t)pIndex;
+
+    if (fixture->m_numEvents == ++fixture->m_numDispatches[index])
     {
-        for (int x=0; x!=10; x++)
-        {
-            mamaQueue_stopDispatch (fixture->qArray[x]);
-        }
+        mamaQueue_stopDispatch (fixture->m_queues[index]);
+        wsem_post (&fixture->m_sem);
     }
 }
 
@@ -136,7 +147,7 @@ TEST_F (MamaQueueTestC, GetDefaultQueue)
     mamaQueue defaultQueue;
 
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mama_getDefaultEventQueue (mBridge, &defaultQueue));
+               mama_getDefaultEventQueue (m_bridge, &defaultQueue));
 }
 
 /*  Description:   Create a mamaQueue then destroy it.
@@ -148,7 +159,7 @@ TEST_F (MamaQueueTestC, CreateNonDefaultQueue)
     mamaQueue queue;
 
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mamaQueue_create (&queue, mBridge));
+               mamaQueue_create (&queue, m_bridge));
 
     ASSERT_EQ (MAMA_STATUS_OK, 
                mamaQueue_destroy (queue));
@@ -163,11 +174,14 @@ TEST_F (MamaQueueTestC, Enqueue)
     mamaQueue defaultQueue = NULL;
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mama_getDefaultEventQueue (mBridge, &defaultQueue));
+               mama_getDefaultEventQueue (m_bridge, &defaultQueue));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_enqueueEvent (defaultQueue, onEvent, m_this));
+               mamaQueue_enqueueEvent (defaultQueue, onEventNop, this));
     
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaQueue_dispatchEvent (defaultQueue));
+
 }
 
 /*  Description:   Set the enqueue callback associated with the default queue
@@ -180,17 +194,19 @@ TEST_F (MamaQueueTestC, setEnqueueCallback)
     mamaQueue defaultQueue = NULL;
 
     m_numEvents    = 1;
-    m_eventCounter = 0;
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mama_getDefaultEventQueue (mBridge, &defaultQueue));
+               mama_getDefaultEventQueue (m_bridge, &defaultQueue));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_setEnqueueCallback (defaultQueue, onEnqueue, m_this));
+               mamaQueue_setEnqueueCallback (defaultQueue, onEnqueue, this));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_enqueueEvent (defaultQueue, onEvent, m_this));
+               mamaQueue_enqueueEvent (defaultQueue, onEventNop, this));
     
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaQueue_dispatchEvent (defaultQueue));
+
 }
 
 /*  Description:   Set the enqueue callback assiciated with the 
@@ -202,24 +218,22 @@ TEST_F (MamaQueueTestC, RemoveEnqueueCallback)
 {
     mamaQueue defaultQueue = NULL;
 
-    m_numEvents    = 1;
-    m_eventCounter = 0;
+    m_numEvents = 1;
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mama_getDefaultEventQueue (mBridge, &defaultQueue));
+               mama_getDefaultEventQueue (m_bridge, &defaultQueue));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_setEnqueueCallback (defaultQueue, onEnqueue, m_this));
+               mamaQueue_setEnqueueCallback (defaultQueue, onEnqueue, this));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_enqueueEvent (defaultQueue, onEvent, m_this));
+               mamaQueue_enqueueEvent (defaultQueue, onEventNop, this));
     
+    ASSERT_EQ (MAMA_STATUS_OK,
+               mamaQueue_dispatchEvent (defaultQueue));
+
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaQueue_removeEnqueueCallback (defaultQueue));
-
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_enqueueEvent (defaultQueue, onEvent, m_this));
-    
 }
 
 /*  Description:   Enqueue an event on the default queue then dispatch it. 
@@ -231,13 +245,12 @@ TEST_F (MamaQueueTestC, EnqueueDispatch)
     mamaQueue defaultQueue = NULL;
 
     m_numEvents    = 1;
-    m_eventCounter = 0;
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mama_getDefaultEventQueue (mBridge, &defaultQueue));
+               mama_getDefaultEventQueue (m_bridge, &defaultQueue));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_enqueueEvent (defaultQueue, onEvent, m_this));
+               mamaQueue_enqueueEvent (defaultQueue, onEventNop, this));
     
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaQueue_dispatchEvent (defaultQueue));
@@ -254,13 +267,12 @@ TEST_F (MamaQueueTestC, EnqueueDispatchNonDefault)
     mamaQueue queue = NULL;
     
     m_numEvents    = 1;
-    m_eventCounter = 0;
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_create (&queue, mBridge));
+               mamaQueue_create (&queue, m_bridge));
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_enqueueEvent (queue, onEvent, m_this));
+               mamaQueue_enqueueEvent (queue, onEvent, this));
     
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaQueue_dispatch (queue));
@@ -281,15 +293,14 @@ TEST_F (MamaQueueTestC, EnqueueDispatchMany)
     mamaQueue queue = NULL;
     
     m_numEvents    = 10;
-    m_eventCounter = 0;
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_create (&queue, mBridge));
+               mamaQueue_create (&queue, m_bridge));
 
-    for (int x=0; x<=m_numEvents; x++)
+    for (int x=0; x<m_numEvents; x++)
     {
         ASSERT_EQ (MAMA_STATUS_OK,
-                   mamaQueue_enqueueEvent (queue, onEvent, m_this));
+                   mamaQueue_enqueueEvent (queue, onEvent, this));
     }
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaQueue_dispatch (queue));
@@ -309,15 +320,14 @@ TEST_F (MamaQueueTestC, TimedDispatch)
     mamaQueue queue = NULL;
     
     m_numEvents    = 1000;
-    m_eventCounter = 0;
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_create (&queue, mBridge));
+               mamaQueue_create (&queue, m_bridge));
 
-    for (int x=0; x<=m_numEvents; x++)
+    for (int x=0; x<m_numEvents; x++)
     {
         ASSERT_EQ (MAMA_STATUS_OK,
-                   mamaQueue_enqueueEvent (queue, onTimedEvent, m_this));
+                   mamaQueue_enqueueEvent (queue, onEventNop, this));
     }
 
     ASSERT_EQ (MAMA_STATUS_OK,
@@ -338,17 +348,16 @@ TEST_F (MamaQueueTestC, MonitorWatermarks)
 {
     mamaQueue queue   = NULL;
     m_numEvents       = 20;
-    m_eventCounter    = 0;
 
     ASSERT_EQ (MAMA_STATUS_OK,
-               mamaQueue_create (&queue, mBridge));
+               mamaQueue_create (&queue, m_bridge));
     
     mamaQueueMonitorCallbacks queueCallbacks;
     queueCallbacks.onQueueHighWatermarkExceeded = onHighWatermark;
     queueCallbacks.onQueueLowWatermark          = onLowWatermark;
     
     ASSERT_EQ (MAMA_STATUS_OK, 
-               mamaQueue_setQueueMonitorCallbacks (queue, &queueCallbacks, m_this));
+               mamaQueue_setQueueMonitorCallbacks (queue, &queueCallbacks, this));
 
     ASSERT_EQ (MAMA_STATUS_OK, 
                mamaQueue_setHighWatermark (queue, 10));
@@ -356,10 +365,10 @@ TEST_F (MamaQueueTestC, MonitorWatermarks)
     ASSERT_EQ (MAMA_STATUS_OK, 
                mamaQueue_setLowWatermark (queue, 5));
 
-    for (int x=0; x<=m_numEvents; x++)
+    for (int x=0; x<m_numEvents; x++)
     {
         ASSERT_EQ (MAMA_STATUS_OK,
-                   mamaQueue_enqueueEvent (queue, onEvent, m_this));
+                   mamaQueue_enqueueEvent (queue, onEvent, this));
     }
 
     ASSERT_EQ (MAMA_STATUS_OK,
@@ -378,37 +387,46 @@ TEST_F (MamaQueueTestC, MonitorWatermarks)
  */
 TEST_F (MamaQueueTestC, DispatchManyQueuesWithDispatchers)
 {
-    m_numQueues     = 10;
+    m_numQueues     = 10;  // FIXME: Storage is hardcoded to 10!
     m_numEvents     = 100;
-    m_eventCounter  = 0;
-    m_numDispatches = 0;
 
-    for (m_queueCounter = 0; m_queueCounter!=m_numQueues; m_queueCounter++)
+    for (int x = 0; x!=m_numQueues; x++)
     {
-        ASSERT_EQ (MAMA_STATUS_OK,
-                   mamaQueue_create (&qArray[m_queueCounter], mBridge));
+        m_numDispatches[x] = 0;
 
-        for (int x=0; x!=m_numEvents; x++)
+        ASSERT_EQ (MAMA_STATUS_OK,
+                   mamaQueue_create (&m_queues[x], m_bridge));
+
+        mamaQueue_setClosure (m_queues[x], (void*)(size_t)x);
+
+        for (int y=0; y!=m_numEvents; y++)
         {
             ASSERT_EQ (MAMA_STATUS_OK,
-                       mamaQueue_enqueueEvent (qArray[m_queueCounter], onBgEvent, m_this));
+                       mamaQueue_enqueueEvent (m_queues[x], onBgEvent, this));
         }
     }
 
-    for (m_queueCounter = 0; m_queueCounter!=m_numQueues; m_queueCounter++)
+    for (int x = 0; x!=m_numQueues; x++)
     {
         ASSERT_EQ (MAMA_STATUS_OK,
-                   mamaDispatcher_create (&dispatcher[m_queueCounter], qArray[m_queueCounter]));
+                   mamaDispatcher_create (&m_dispatcher[x], m_queues[x]));
     }
 
-    for (int x=0; x!=10; x++)
+    for (int x = 0; x!=m_numQueues; x++)
     {
-        mamaDispatcher_destroy (dispatcher[x]);
-    }
-    for (m_queueCounter = 0; m_queueCounter!=m_numQueues; m_queueCounter++)
-    {
-        mamaQueue_destroy (qArray[m_queueCounter]);
+        /* Generous 10 second timeout */
+        ASSERT_EQ(0, wsem_timedwait (&m_sem, 10000));
     }
 
+    for (int x = 0; x!=m_numQueues; x++)
+    {
+        ASSERT_EQ(MAMA_STATUS_OK, mamaDispatcher_destroy (m_dispatcher[x]));
+        ASSERT_EQ(MAMA_STATUS_OK, mamaQueue_destroy (m_queues[x]));
+    }
+
+    // Check we received the correct number of events for each queue
+    for (int x = 0; x!=m_numQueues; x++)
+    {
+        ASSERT_EQ(m_numEvents, m_numDispatches[x]);
+    }
 }
-

@@ -75,7 +75,7 @@ JNIEnv* utils_getENV(JavaVM* jvm)
     /*env will still be NULL if the current thread was not attached to the JVM*/
     if(!env)
     {
-        if (0!= (*jvm)->AttachCurrentThread(jvm,(void**)&env,NULL))
+        if (0!= (*jvm)->AttachCurrentThreadAsDaemon(jvm,(void**)&env,NULL))
         {
             /*We can't throw an exception as we need a JNIEnv**/
             mama_log (MAMA_LOG_LEVEL_NORMAL, "Could not attach current thread.");

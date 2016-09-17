@@ -23,11 +23,11 @@
  *               opening and closing middleware bridges.
  */
 
+#include "MainUnitTestC.h"
 #include <gtest/gtest.h>
 #include "mama/mama.h"
 #include "mama/status.h"
-#include "MainUnitTestC.h"
-
+#include "wombat/wSemaphore.h"
 
 class MamaOpenCloseTestC : public ::testing::Test
 {
@@ -38,7 +38,6 @@ protected:
 
     virtual void SetUp(void);
     virtual void TearDown(void);
-    
 
 };
 
@@ -58,10 +57,19 @@ void MamaOpenCloseTestC::TearDown(void)
 {
 }
 
-static void MAMACALLTYPE startCallback (mama_status status)
+static void MAMACALLTYPE startCallback (mama_status status,
+                                        mamaBridge  bridge,
+                                        void*       closure)
 {
+    wsem_t* sem = (wsem_t*)closure;
+    ASSERT_EQ (0, wsem_post (sem));
 }
 
+void MAMACALLTYPE onEventStop (mamaQueue queue, void* closure)
+{
+    mamaBridge bridge = (mamaBridge)closure;
+    mama_stop (bridge);
+}
 
 /* ************************************************************************* */
 /* Tests */
@@ -73,8 +81,8 @@ static void MAMACALLTYPE startCallback (mama_status status)
  */
 TEST_F (MamaOpenCloseTestC, OpenClose)
 {
-    mamaBridge mBridge;
-    mama_loadBridge (&mBridge, getMiddleware());
+    mamaBridge bridge;
+    mama_loadBridge (&bridge, getMiddleware());
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -89,8 +97,8 @@ TEST_F (MamaOpenCloseTestC, OpenClose)
  */
 TEST_F (MamaOpenCloseTestC, NestedOpenClose)
 {
-    mamaBridge mBridge;
-    mama_loadBridge (&mBridge, getMiddleware());
+    mamaBridge bridge;
+    mama_loadBridge (&bridge, getMiddleware());
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -109,15 +117,15 @@ TEST_F (MamaOpenCloseTestC, NestedOpenClose)
  */
 TEST_F (MamaOpenCloseTestC, OpenCloseReopenSameBridge)
 {
-    mamaBridge mBridge;
-    mama_loadBridge (&mBridge, getMiddleware());
+    mamaBridge bridge;
+    mama_loadBridge (&bridge, getMiddleware());
 
     ASSERT_EQ (MAMA_STATUS_OK,  mama_open());
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
     
     /* bridge must be loaded again after close */
-    mama_loadBridge (&mBridge, getMiddleware());
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, getMiddleware()));
     
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -131,18 +139,18 @@ TEST_F (MamaOpenCloseTestC, OpenCloseReopenSameBridge)
  */
 TEST_F (MamaOpenCloseTestC, DISABLED_OpenCloseReopenNewBridge)
 {
-    mamaBridge mBridge;
-    ASSERT_EQ (MAMA_STATUS_OK,  mama_loadBridge (&mBridge, getMiddleware()));
+    mamaBridge bridge;
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, getMiddleware()));
 
-    ASSERT_EQ (MAMA_STATUS_OK,  mama_open());
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
  
-    ASSERT_EQ (MAMA_STATUS_OK,  mama_close());
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 
-    ASSERT_EQ (MAMA_STATUS_OK,  mama_loadBridge (&mBridge, "avis"));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, "qpid"));
 
-    ASSERT_EQ (MAMA_STATUS_OK,  mama_open());
+    ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
-    ASSERT_EQ (MAMA_STATUS_OK,  mama_close());
+    ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 }
 
 /*  Description:     Load the middleware bridge, initialize MAMA, begin
@@ -153,18 +161,19 @@ TEST_F (MamaOpenCloseTestC, DISABLED_OpenCloseReopenNewBridge)
  */
 TEST_F (MamaOpenCloseTestC, StartStopDifferentThreads)
 {
-    mamaBridge mBridge;
-    mama_loadBridge (&mBridge, getMiddleware());
+    mamaBridge bridge;
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, getMiddleware()));
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
     /* Start mama in the background so it uses a different thread */
-    ASSERT_EQ (MAMA_STATUS_OK, mama_startBackground (mBridge, startCallback));
-
-    /* Sleep to allow the other thread to complete startup */
-    sleep(2);
-
-    ASSERT_EQ (MAMA_STATUS_OK, mama_stop (mBridge));
+    wsem_t sem;
+    mamaQueue defaultQueue;
+    ASSERT_EQ (0, wsem_init (&sem, 0, 0));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_getDefaultEventQueue (bridge, &defaultQueue));
+    ASSERT_EQ (MAMA_STATUS_OK, mamaQueue_enqueueEvent (defaultQueue, onEventStop, bridge));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_startBackgroundEx (bridge, startCallback, &sem));
+    ASSERT_EQ (0, wsem_wait (&sem));
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 }

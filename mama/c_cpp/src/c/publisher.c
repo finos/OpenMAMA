@@ -184,7 +184,6 @@ _createByIndex (mamaPublisher*              result,
                                     (mamaPublisher)impl)))) 
     {
         mamaPublisherImpl_cleanup (impl);
-        free (impl);
         return status;
     }
 
@@ -205,10 +204,9 @@ _createByIndex (mamaPublisher*              result,
                 impl->mClosure);
         if (MAMA_STATUS_OK != status)
         {
-            mamaPublisherImpl_cleanup (impl);
             mamaPublisherCallbacks_deallocate(cb);
             list_destroy (impl->mPendingActions, NULL, NULL);
-            free (impl);
+            mamaPublisherImpl_cleanup (impl);
             return status;
         }
     }
@@ -869,7 +867,7 @@ static void MAMACALLTYPE mamaPublisher_onPublisherDestroyed(mamaPublisher publis
             impl, source, symbol, mamaPublisher_stringForState(impl->mState));
     }
 
-    if (NULL != impl->mUserCallbacks.onDestroy)
+    if (NULL != *impl->mUserCallbacks.onDestroy)
     {
         (*impl->mUserCallbacks.onDestroy)(publisher, impl->mClosure);
     }

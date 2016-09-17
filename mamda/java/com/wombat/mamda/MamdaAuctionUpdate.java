@@ -43,7 +43,7 @@ public interface MamdaAuctionUpdate extends MamdaBasicEvent
      *
      * @return Ask price.   The indicative volume, or the volume turned over in the auction 
      */    
-    long  getUncrossVolume();
+    MamaDouble  getUncrossVolume();
 
     /**
      * Get the uncross price Ind.

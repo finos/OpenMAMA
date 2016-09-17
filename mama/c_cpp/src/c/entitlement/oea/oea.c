@@ -107,19 +107,10 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
         return status;
     }
 
-    oeaClient* oClient = malloc(sizeof(oeaEntitlementBridge));
-    if (NULL == oClient)
-    {
-        mama_log(MAMA_LOG_LEVEL_SEVERE,
-                 "Could not allocate memory for oea entitlements bridge.");
-        status = MAMA_STATUS_NOMEM;
-        goto initFreeBridge;
-    }
-
     if (NULL == (entitlementServers = oeaEntitlmentBridge_parseServersProperty()))
     {
-        goto initFreeClientAndBridge;
         status = MAMA_ENTITLE_NO_SERVERS_SPECIFIED;
+        goto initFreeBridge;
     }
 
     while (entitlementServers[size] != NULL)
@@ -168,7 +159,7 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
                  "oeaEntitlementBridge_init: Error creating oea client[%s].",
                  mamaStatus_stringForStatus((mama_status) entitlementStatus));
         status = (mama_status) entitlementStatus;  /* oea status codes match MAMA so cast is safe. */
-        goto initFreeClientAndBridge;
+        goto initFreeBridge;
 
     }
 
@@ -214,7 +205,7 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
     return MAMA_STATUS_OK;
 
 initFreeClientAndBridge:
-    free(oClient);
+    oeaClient_destroy(oClient);
 initFreeBridge:
     free(oeaBridge);
     return status;

@@ -55,32 +55,42 @@ typedef mamaFieldCacheMapIteratorArrayImpl* mamaFieldCacheMapIteratorArray;
 
 
 /* Map */
+MAMAExpDLL
 mama_status mamaFieldCacheMapArray_create(mamaFieldCacheMap* map);
 
+MAMAExpDLL
 mama_status mamaFieldCacheMapArray_destroy(mamaFieldCacheMap map);
 
+MAMAExpDLL
 mama_status mamaFieldCacheMapArray_add(mamaFieldCacheMap map,
                                        mamaFieldCacheField field);
 
+MAMAExpDLL
 mama_status mamaFieldCacheMapArray_find(mamaFieldCacheMap map,
                                         mama_fid_t fid,
                                         mamaFieldType type,
                                         const char* name,
                                         mamaFieldCacheField* field);
 
+MAMAExpDLL
 mama_status mamaFieldCacheMapArray_clear(mamaFieldCacheMap map);
 
 
 /* Iterator */
+MAMAExpDLL
 mama_status mamaFieldCacheMapIteratorArray_create(mamaFieldCacheIterator* iterator,
                                                   mamaFieldCacheMap map);
 
+MAMAExpDLL
 mama_status mamaFieldCacheMapIteratorArray_destroy(mamaFieldCacheIterator iterator);
 
+MAMAExpDLL
 mamaFieldCacheField mamaFieldCacheMapIteratorArray_next(mamaFieldCacheIterator iterator);
 
+MAMAExpDLL
 mama_bool_t mamaFieldCacheMapIteratorArray_hasNext(mamaFieldCacheIterator iterator);
 
+MAMAExpDLL
 mamaFieldCacheField mamaFieldCacheMapIteratorArray_begin(mamaFieldCacheIterator iterator);
 
 #if defined( __cplusplus )

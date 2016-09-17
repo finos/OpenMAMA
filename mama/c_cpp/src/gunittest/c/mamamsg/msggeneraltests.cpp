@@ -77,7 +77,7 @@ TEST_F (MsgGeneralTestsC, payloadConvertToString)
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_TIBRV), "TIBRV");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_FAST), "FAST");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_V5), "V5");
-    ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_AVIS), "AVIS");
+    ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_QPID), "QPID");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_TICK42BLP), "TICK42BLP");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_RAI), "rai");
     ASSERT_STREQ (mamaPayload_convertToString (MAMA_PAYLOAD_EXEGY), "EXEGY");
@@ -87,7 +87,9 @@ TEST_F (MsgGeneralTestsC, payloadConvertToString)
 
 TEST_F (MsgGeneralTestsC, msgCreateValid)
 {
-    ASSERT_EQ (mamaMsg_create(&mMsg), MAMA_STATUS_OK);
+    mamaMsg createMsg = NULL;
+    ASSERT_EQ (mamaMsg_create(&createMsg), MAMA_STATUS_OK);
+    mamaMsg_destroy(createMsg);
 }
 
 TEST_F (MsgGeneralTestsC, msgCreateInValid)
@@ -97,7 +99,9 @@ TEST_F (MsgGeneralTestsC, msgCreateInValid)
 
 TEST_F (MsgGeneralTestsC, msgCreateForPayloadBridgeValid)
 {
-    ASSERT_EQ (mamaMsg_createForPayloadBridge(&mMsg, mPayloadBridge), MAMA_STATUS_OK);
+    mamaMsg createMsg = NULL;
+    ASSERT_EQ (mamaMsg_createForPayloadBridge(&createMsg, mPayloadBridge), MAMA_STATUS_OK);
+    mamaMsg_destroy(createMsg);
 }
 
 TEST_F (MsgGeneralTestsC, msgCreateForPayloadBridgeInValid)
@@ -219,6 +223,7 @@ TEST_F (MsgGeneralTestsC, msgCreateFromByteBufferValid)
 
     //create mamaMsg using byteBuffer
     ASSERT_EQ (mamaMsg_createFromByteBuffer(&newMsg, buffer, bufferLength), MAMA_STATUS_OK);
+    mamaMsg_destroy (newMsg);
 }
 
 TEST_F (MsgGeneralTestsC, DISABLED_msgCreateFromByteBufferInValidMsg)
@@ -348,7 +353,7 @@ TEST_F (MsgGeneralTestsC, msgGetPayloadTypeInValidMsg)
 TEST_F (MsgGeneralTestsC, msgImplSetMessageOwnerValid)
 {
     const char*  testString = "test"; 
-    short        owner      = (short) NULL;
+    short        owner      = 1;
 
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, testString);
@@ -662,6 +667,8 @@ TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecValid)
     mamaMsg_addDateTime(mMsg, name, fid, dateTime);
 
     ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, name, fid, &milliseconds), MAMA_STATUS_OK);
+
+    mamaDateTime_destroy(dateTime);
 }
 
 TEST_F (MsgGeneralTestsC, DISABLED_msgGetDateTimeMSecInValidMsg)
@@ -677,11 +684,14 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgGetDateTimeMSecInValidMsg)
     mamaDateTime_create(&dateTime);
     mamaDateTime_create(&m_out);
     mamaDateTime_setToNow(dateTime);
-    
+
     mamaMsg_addDateTime(mMsg, NULL, 102, dateTime);
     mamaMsg_getDateTime(mMsg, NULL, 102, m_out);
 
     ASSERT_EQ (mamaMsg_getDateTimeMSec(NULL, name, fid, milliseconds), MAMA_STATUS_NULL_ARG); 
+
+    mamaDateTime_destroy(dateTime);
+    mamaDateTime_destroy(m_out);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidName)
@@ -701,6 +711,9 @@ TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidName)
 
     /* Invalid name is ok, as long as fid is specified */
     ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_getDateTimeMSec(mMsg, NULL, fid, &milliseconds));
+
+    mamaDateTime_destroy(dateTime);
+    mamaDateTime_destroy(m_out);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidFid)
@@ -714,11 +727,14 @@ TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidFid)
     mamaDateTime_create(&dateTime);
     mamaDateTime_create(&m_out);
     mamaDateTime_setToNow(dateTime);
-    
+
     mamaMsg_addDateTime(mMsg, NULL, 102, dateTime);
     mamaMsg_getDateTime(mMsg, NULL, 102, m_out);
-    
+
     ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, name, 0, milliseconds), MAMA_STATUS_INVALID_ARG);
+
+    mamaDateTime_destroy(dateTime);
+    mamaDateTime_destroy(m_out);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidMilliseconds)
@@ -732,11 +748,14 @@ TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidMilliseconds)
     mamaDateTime_create(&dateTime);
     mamaDateTime_create(&m_out);
     mamaDateTime_setToNow(dateTime);
-    
+
     mamaMsg_addDateTime(mMsg, NULL, 102, dateTime);
     mamaMsg_getDateTime(mMsg, NULL, 102, m_out);
-    
+
     ASSERT_EQ (mamaMsg_getDateTimeMSec(mMsg, name, fid, 0), MAMA_STATUS_INVALID_ARG);
+
+    mamaDateTime_destroy(dateTime);
+    mamaDateTime_destroy(m_out);
 }
 
 
@@ -745,7 +764,6 @@ TEST_F (MsgGeneralTestsC, msgGetEntitleCodeValid)
     mama_i32_t             entitleCode  = 100;
 
     //add fields to msg
-    mamaMsg_create (&mMsg);
     mamaMsg_addI32 (mMsg, ENTITLE_FIELD_NAME, ENTITLE_FIELD_ID, entitleCode);
 
     ASSERT_EQ (mamaMsg_getEntitleCode(mMsg, &entitleCode), MAMA_STATUS_OK);
@@ -996,12 +1014,14 @@ TEST_F(MsgCopyTests, Copy)
     mStatus = mamaMsg_create (&mCopy);
     mStatus = mamaMsg_copy (mMsg, &mCopy);
     ASSERT_EQ (mStatus, MAMA_STATUS_OK);
+    mamaMsg_destroy (mCopy);
 }
 
 TEST_F(MsgCopyTests, CopyNoCreate)
 {
     mStatus = mamaMsg_copy (mMsg, &mCopy);
     ASSERT_EQ (mStatus, MAMA_STATUS_OK);
+    mamaMsg_destroy (mCopy);
 }
 
 TEST_F(MsgCopyTests, CopyNullMsg)
@@ -1106,19 +1126,20 @@ protected:
     MsgApplyMsgTests()
         : mApplyMsg (NULL)
     {
-        mamaMsg_create (&mApplyMsg);
-        mamaMsg_addU8 (mApplyMsg, NULL, 1, 255);
     }
     ~MsgApplyMsgTests() {};
 
     virtual void SetUp (void)
     {
         MsgGeneralTestsC::SetUp();
+        mamaMsg_create (&mApplyMsg);
+        mamaMsg_addU8 (mApplyMsg, NULL, 1, 255);
     }
 
     virtual void TearDown (void)
     {
         MsgGeneralTestsC::TearDown();
+        mamaMsg_destroy (mApplyMsg);
     }
 };
 

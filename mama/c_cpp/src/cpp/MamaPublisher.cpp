@@ -198,6 +198,10 @@ namespace Wombat
        {
            destroyed = true;
            mPimpl->destroy ();
+           if (!mCallback)
+           {
+               delete mPimpl;
+           }
        }
     }
 
@@ -300,7 +304,7 @@ namespace Wombat
                                        topic,
                                        source,
                                        root,
-                                       &publisherCallbacks,
+                                       mCallback ? &publisherCallbacks : NULL,
                                        this));
     }
 

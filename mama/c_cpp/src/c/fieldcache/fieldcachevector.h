@@ -48,6 +48,7 @@ typedef mamaFieldCacheVectorImpl* mamaFieldCacheVector;
  * @param vector (out) The vector to create.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheVector_create(mamaFieldCacheVector* vector);
 
@@ -61,6 +62,7 @@ mamaFieldCacheVector_create(mamaFieldCacheVector* vector);
  * @param vector (in) The vector to destroy.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheVector_destroy(mamaFieldCacheVector vector);
 
@@ -72,6 +74,7 @@ mamaFieldCacheVector_destroy(mamaFieldCacheVector vector);
  * @param vector (in) The vector to free.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheVector_free(mamaFieldCacheVector vector);
 
@@ -82,6 +85,7 @@ mamaFieldCacheVector_free(mamaFieldCacheVector vector);
  * @param vector (in) The vector to clear.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheVector_clear(mamaFieldCacheVector vector);
 
@@ -93,6 +97,7 @@ mamaFieldCacheVector_clear(mamaFieldCacheVector vector);
  * @param item (in) The item to set.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheVector_set(mamaFieldCacheVector vector, mama_size_t index, void* item);
 
@@ -104,6 +109,7 @@ mamaFieldCacheVector_set(mamaFieldCacheVector vector, mama_size_t index, void* i
  * @param item (out) The item in the vector.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheVector_get(mamaFieldCacheVector vector, mama_size_t index, void** item);
 
@@ -114,6 +120,7 @@ mamaFieldCacheVector_get(mamaFieldCacheVector vector, mama_size_t index, void** 
  * @param size (out) The size of the vector.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheVector_getSize(mamaFieldCacheVector vector, mama_size_t* size);
 
@@ -124,6 +131,7 @@ mamaFieldCacheVector_getSize(mamaFieldCacheVector vector, mama_size_t* size);
  * @param newAllocSize (in) The new size.
  * @return Result of the operation.
  */
+MAMAExpDLL
 mama_status
 mamaFieldCacheVector_grow(mamaFieldCacheVector vector, mama_size_t newAllocSize);
 

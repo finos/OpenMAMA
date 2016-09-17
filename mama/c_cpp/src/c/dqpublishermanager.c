@@ -557,3 +557,23 @@ mama_status mamaDQPublisherManager_sendNoSubscribers (
 
     return MAMA_STATUS_OK;
 }
+
+mama_status mamaDQPublisherManager_getPublisher (
+        mamaDQPublisherManager manager,
+        const char *symbol,
+        mamaDQPublisher* pub)
+{
+    mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
+    mamaPublishTopic*           topic = NULL;
+
+    if (!impl || !pub)
+         return MAMA_STATUS_INVALID_ARG;
+
+    topic = (mamaPublishTopic*) wtable_lookup (impl->mPublisherMap, (char*)symbol);
+
+    if (!topic)
+         return MAMA_STATUS_NOT_FOUND;
+
+    *pub = topic->pub;
+    return MAMA_STATUS_OK;
+}

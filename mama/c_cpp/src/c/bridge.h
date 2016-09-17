@@ -389,7 +389,7 @@ typedef mama_status
 
 typedef mama_status
 (*bridgeMamaPublisher_sendReplyToInbox)(publisherBridge publisher,
-                                        void *         request,
+                                        mamaMsg         request,
                                         mamaMsg         reply);
 
 typedef mama_status
@@ -510,6 +510,9 @@ typedef struct mamaBridgeImpl_
     /*Associate arbitrary data with a bridge impl. Needed for the C++ wrapper*/
     void*     mClosure;
     wLock     mLock;
+
+    /* Track background thread for join if startBackground is used */
+    wthread_t mStartBackgroundThread;
 
     /* The set of methods used to access/populate a message in native format */
     mamaPayloadBridge mNativeMsgBridge;

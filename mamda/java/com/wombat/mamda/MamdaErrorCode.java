@@ -22,6 +22,7 @@
 package com.wombat.mamda;
 
 import com.wombat.mama.MamaMsgStatus;
+import com.wombat.mama.MamaStatus;
 
 /**
  * MamdaErrorCode defines MAMDA error codes.
@@ -108,7 +109,7 @@ public class MamdaErrorCode
         }
     }
 
-    public static short codeForMamaMsgStatus (short wombatStatus)
+    @Deprecated public static short codeForMamaMsgStatus (short wombatStatus)
     {
         switch (wombatStatus)
         {
@@ -129,6 +130,27 @@ public class MamdaErrorCode
         case MamaMsgStatus.STATUS_BANDWIDTH_EXCEEDED:   return MAMDA_ERROR_BANDWIDTH_EXCEEDED;
         case MamaMsgStatus.STATUS_EXCEPTION:            return MAMDA_ERROR_EXCEPTION;
         case MamaMsgStatus.STATUS_DELETE:               return MAMDA_ERROR_DELETE;
+        }
+
+        return -1;
+    }
+
+    public static short codeForMamaStatus (short wombatStatus)
+    {
+        switch (wombatStatus)
+        {
+
+        case MamaStatus.MAMA_STATUS_OK:                 return MAMDA_NO_ERROR;
+        case MamaStatus.MAMA_STATUS_NO_SUBSCRIBERS:     return MAMDA_ERROR_NO_SUBSCRIBERS;
+        case MamaStatus.MAMA_STATUS_BAD_SYMBOL:         return MAMDA_ERROR_BAD_SYMBOL;
+        case MamaStatus.MAMA_STATUS_EXPIRED:            return MAMDA_ERROR_EXPIRED;
+        case MamaStatus.MAMA_STATUS_TIMEOUT:            return MAMDA_ERROR_TIMEOUT;
+        case MamaStatus.MAMA_STATUS_PLATFORM:           return MAMDA_ERROR_PLATFORM_STATUS;
+        case MamaStatus.MAMA_STATUS_NOT_ENTITLED:       return MAMDA_ERROR_NOT_ENTITLED;
+        case MamaStatus.MAMA_STATUS_NOT_FOUND:          return MAMDA_ERROR_NOT_FOUND;
+        case MamaStatus.MAMA_STATUS_NOT_PERMISSIONED:   return MAMDA_ERROR_NOT_PERMISSIONED;
+        case MamaStatus.MAMA_STATUS_BANDWIDTH_EXCEEDED: return MAMDA_ERROR_BANDWIDTH_EXCEEDED;
+        case MamaStatus.MAMA_STATUS_DELETE:             return MAMDA_ERROR_DELETE;
         }
 
         return -1;

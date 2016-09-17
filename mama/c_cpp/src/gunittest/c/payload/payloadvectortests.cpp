@@ -3190,15 +3190,15 @@ protected:
         for( uint32_t ii(0) ; ii < VECTOR_SIZE ; ++ii )
         {
             char buffer[20];
-            ::snprintf(buffer, 20, "InitialString%u", ii);
-            m_in[ii] = ::strndup( buffer, 20 );
+            snprintf(buffer, 20, "InitialString%u", ii);
+            m_in[ii] = strdup(buffer);
         }
 
         for( uint32_t ii(0) ; ii < VECTOR_UPDATE_SIZE ; ++ii )
         {
             char buffer[20];
-            ::snprintf(buffer, 20, "UpdateString%u", ii);
-            m_update[ii] = ::strndup( buffer, 20 );
+            snprintf(buffer, 20, "UpdateString%u", ii);
+            m_update[ii] = strdup(buffer);
         }
     }
 
@@ -3831,15 +3831,15 @@ protected:
 // AddVectorDateTime test fixtures
 // *******************************
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTime)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, AddVectorDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    ASSERT_EQ (MAMA_STATUS_OK , m_status);
-    EXPECT_EQ (VECTOR_SIZE , m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
+    ASSERT_EQ( m_status, MAMA_STATUS_OK );
+    EXPECT_EQ( m_outSize, VECTOR_SIZE );
 
     for( unsigned int ii(0) ; ii < VECTOR_SIZE ; ++ii )
     {
@@ -3852,44 +3852,44 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTime)
     }
 }
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeNullDateTime)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeNullDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, NULL, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeNullMsg)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeNullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(NULL, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeAfterInit)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeAfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 2, m_in, VECTOR_SIZE);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeInvalidName)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 0, m_in, VECTOR_SIZE);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeInvalidFid)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 0, m_in, VECTOR_SIZE);
@@ -3899,9 +3899,10 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_AddVectorDateTimeInvalidFid)
 // UpdateVectorDateTime test fixtures
 // **********************************
 // Disabled as mamaMsg_addVectorDateTime is not implemented.
-TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTime)
+TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
@@ -3948,10 +3949,10 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTime)
     */
 }
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullUpdate)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
@@ -3978,10 +3979,10 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullUpdate)
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullMessage)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
@@ -4011,14 +4012,14 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_UpdateVectorDateTimeNullMessage)
 
 // GetVectorDateTime test fixtures
 // *******************************
-TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTime)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, GetVectorDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorDateTime
-    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
@@ -4041,7 +4042,7 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTime)
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorDateTime
-    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 
@@ -4061,25 +4062,23 @@ TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTime)
     }
 }
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTimeNullResult)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, GetVectorDateTimeNullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    // TODO Check prototype for GetVectorDateTime
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, NULL, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
-TEST_F(PayloadVectorDateTimeTests, DISABLED_GetVectorDateTimeNullSize)
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
+TEST_F(PayloadVectorDateTimeTests, GetVectorDateTimeNullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    // TODO Check prototype for GetVectorDateTime
-    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, m_out, NULL);
+    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, NULL);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
@@ -4145,14 +4144,14 @@ protected:
 // AddVectorPrice test fixtures
 // ****************************
 
-TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPrice)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, AddVectorPrice)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorPrice
-    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK , m_status);
 
     EXPECT_EQ (VECTOR_SIZE , m_outSize);
@@ -4172,44 +4171,44 @@ TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPrice)
     }
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceNullPrice)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, AddVectorPriceNullPrice)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, NULL, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceNullMsg)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, AddVectorPriceNullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(NULL, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceAfterInit)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, AddVectorPriceAfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 2, m_in, VECTOR_SIZE);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceInvalidName)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, AddVectorPriceInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 0, m_in, VECTOR_SIZE);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceInvalidFid)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, AddVectorPriceInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 0, m_in, VECTOR_SIZE);
@@ -4219,13 +4218,13 @@ TEST_F(PayloadVectorPriceTests, DISABLED_AddVectorPriceInvalidFid)
 // UpdateVectorPrice test fixtures
 // *******************************
 // wmsgPayload_updateVectorPrice not implemented
-TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPrice)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, UpdateVectorPrice)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
@@ -4244,11 +4243,10 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPrice)
     }
 
     // TODO Interface inconsistent
-    m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(m_msg, NULL, 1, (void* const**) m_update, VECTOR_UPDATE_SIZE);
+    m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    /*
-    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ (VECTOR_UPDATE_SIZE, m_outSize);
 
@@ -4265,17 +4263,16 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPrice)
     {
         FAIL();
     }
-    */
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullUpdate)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, UpdateVectorPriceNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorPrice
-    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
@@ -4297,14 +4294,14 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullUpdate)
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullMessage)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, UpdateVectorPriceNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorPrice
-    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
@@ -4323,20 +4320,20 @@ TEST_F(PayloadVectorPriceTests, DISABLED_UpdateVectorPriceNullMessage)
         FAIL();
     }
 
-    m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(NULL, NULL, 1, (void* const**) m_update, VECTOR_UPDATE_SIZE);
+    m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 // GetVectorPrice test fixtures
 // ****************************
-TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPrice)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, GetVectorPrice)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     // TODO Check prototype for GetVectorPrice
-    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
 
@@ -4356,10 +4353,10 @@ TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPrice)
     }
 
     // TODO Interface Inconsistent
-    m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(m_msg, NULL, 1, (void* const**) m_update, VECTOR_UPDATE_SIZE);
+    m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
 
@@ -4379,33 +4376,33 @@ TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPrice)
     }
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPriceNullResult)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, GetVectorPriceNullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, NULL, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPriceNullSize)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, GetVectorPriceNullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, (void* const*) &m_out, NULL);
+    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, NULL);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
-TEST_F(PayloadVectorPriceTests, DISABLED_GetVectorPriceNotFound)
-// Disabled as mamaMsg_addVectorPrice is not implemented.
+TEST_F(PayloadVectorPriceTests, GetVectorPriceNotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 2, (void* const*) &m_out, &m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 2, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
 

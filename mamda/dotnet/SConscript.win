@@ -280,7 +280,7 @@ if 'dynamic-debug' == env['build']:
 elif 'dynamic' == env['build']:
     env.Append( CSCFLAGS = ['/optimize','/define:TRACE'] )
 elif 'static' in env['build']:
-    env.Log("MAMDA is not built statically")
+    env.Log("MAMDA.NET is not built statically")
 
 target = "MAMDA"
 
@@ -301,4 +301,4 @@ if 'dynamic' in env['build']:
     if env['with_testtools'] == True:
         env.Log("C# testtool MamdaBookSelfTest included in examples")
 
-Clean(lib, cs)
+    Clean(lib, cs)

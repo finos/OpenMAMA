@@ -40,6 +40,7 @@
 #include "publisher.h"
 #include "endpointpool.h"
 #include "qpidcommon.h"
+#include <proton/connection.h>
 
 /*=========================================================================
  =                Typedefs, structs, enums and globals                   =
@@ -76,9 +77,10 @@ typedef struct qpidPublisherBridge
  * @return mama_status indicating whether the method succeeded or failed.
  */
 static void
-qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg               msg,
-                                                  const char*           url,
-                                                  qpidPublisherBridge*  impl);
+qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
+                                                  const char*          url,
+                                                  qpidPublisherBridge* impl,
+                                                  qpidP2pEndpoint*     endpoint);
 
 
 /*=========================================================================
@@ -265,6 +267,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     size_t                  targetInc     = 0;
     char*                   url           = NULL;
     qpidMsgType             type          = QPID_MSG_PUB_SUB;
+    int                     err           = 0;
 
     if (NULL == impl)
     {
@@ -292,14 +295,15 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
         qpidBridgePublisherImpl_enqueueMessageForAddress (
                 msg,
                 (char*) impl->mUri,
-                impl);
+                impl,
+                NULL);
         break;
     case QPID_MSG_INBOX_RESPONSE:
         /* The url should already be set for inbox responses as the replyTo */
         qpidBridgeMamaMsgImpl_getDestination (impl->mMamaBridgeMsg, &url);
 
         /* Send out this message to the URL already provided */
-        qpidBridgePublisherImpl_enqueueMessageForAddress (msg, url, impl);
+        qpidBridgePublisherImpl_enqueueMessageForAddress (msg, url, impl, NULL);
         break;
     default:
         /* Use the publisher's default send subject */
@@ -328,26 +332,26 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
             /* Push the message out to the send queue for each interested party */
             for (targetInc = 0; targetInc < targetCount; targetInc++)
             {
-                url = (char*) targets[targetInc];
-                qpidBridgePublisherImpl_enqueueMessageForAddress (msg, url, impl);
+                qpidP2pEndpoint* endpoint = (qpidP2pEndpoint*) targets[targetInc];
+                qpidBridgePublisherImpl_enqueueMessageForAddress (msg, endpoint->mUrl, impl, endpoint);
             }
         }
         else
         {
-            qpidBridgePublisherImpl_enqueueMessageForAddress (msg, impl->mUri,
-                    impl);
+            qpidBridgePublisherImpl_enqueueMessageForAddress (msg, impl->mUri, impl, NULL);
         }
         break;
     }
 
     /* Note the messages don't actually get published until here */
-    if (pn_messenger_send(impl->mTransport->mOutgoing,
-            QPID_MESSENGER_SEND_TIMEOUT))
+    err = pn_messenger_send (impl->mTransport->mOutgoing,
+                             QPID_MESSENGER_SEND_TIMEOUT);
+    if (err && err != PN_TIMEOUT)
     {
         qpidError = PN_MESSENGER_ERROR (impl->mTransport->mOutgoing);
         mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidBridgeMamaPublisher_send(): "
-                  "Qpid Error:[%s]",
-                  qpidError);
+                  "Qpid Error:[%s][%d]",
+                  qpidError, err);
 
         return MAMA_STATUS_PLATFORM;
     }
@@ -361,17 +365,16 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
 /* Send reply to inbox. */
 mama_status
 qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
-                                          void*             request,
+                                          mamaMsg           request,
                                           mamaMsg           reply)
 {
     qpidPublisherBridge*    impl            = (qpidPublisherBridge*) publisher;
-    mamaMsg                 requestMsg      = (mamaMsg) request;
     const char*             inboxSubject    = NULL;
     const char*             replyTo         = NULL;
     msgBridge               bridgeMsg       = NULL;
     mama_status             status          = MAMA_STATUS_OK;
 
-    if (NULL == publisher || NULL == request || NULL == reply)
+    if (NULL == publisher || NULL == request|| NULL == reply)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -385,7 +388,7 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
                                             impl->mSubject);
 
     /* Get the incoming bridge message from the mamaMsg */
-    status = mamaMsgImpl_getBridgeMsg (requestMsg, &bridgeMsg);
+    status = mamaMsgImpl_getBridgeMsg (request, &bridgeMsg);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -668,17 +671,21 @@ qpidBridgePublisherImpl_setMessageType (pn_message_t* message, qpidMsgType type)
  =========================================================================*/
 
 void
-qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg               msg,
-                                                  const char*           url,
-                                                  qpidPublisherBridge*  impl)
+qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
+                                                  const char*          url,
+                                                  qpidPublisherBridge* impl,
+                                                  qpidP2pEndpoint*     endpoint)
 {
     const char*     qpidError   = NULL;
     pn_message_t*   pnMsg       = NULL;
+    pn_link_t*      pnLink      = NULL;
+    pn_state_t      pnLinkState = PN_STATE_ERR;
+    mama_bool_t     linkReady   = 1;
 
     if (NULL == impl || NULL == url)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgePublisherImpl_sendMessageToAddress(): "
+                  "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
                   "Null closure or url received.");
         return;
     }
@@ -694,15 +701,76 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg               msg,
                              msg,
                              &pnMsg);
 
-    /* Enqueue the message in the messenger send queue */
-    if (pn_messenger_put (impl->mTransport->mOutgoing, pnMsg))
+    /* This will ensure link checking only happens for pub / sub and only after
+     * the first message has already been enqueued for send */
+    if (NULL != endpoint && endpoint->mMsgCount > 0)
     {
-        qpidError = PN_MESSENGER_ERROR (impl->mTransport->mOutgoing);
-        mama_log (MAMA_LOG_LEVEL_SEVERE,
-                  "qpidBridgePublisherImpl_sendMessageToAddress(): "
-                  "Qpid Error:[%s]",
-                  qpidError);
-        return;
+        pnLink = pn_messenger_get_link (impl->mTransport->mOutgoing, url, 1);
+        if (NULL != pnLink)
+        {
+            pnLinkState = pn_link_state (pnLink);
+        }
+        if (NULL == pnLink || (pnLinkState & PN_REMOTE_UNINIT))
+        {
+            endpoint->mErrorCount++;
+            mama_log (MAMA_LOG_LEVEL_FINER,
+                      "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
+                      "Link last seen as down while sending on topic %s to %s "
+                      "[%d] (attempt %d of %d to re-establish).",
+                      impl->mSubject,
+                      url,
+                      (int)pnLinkState,
+                      endpoint->mErrorCount,
+                      QPID_PUBLISHER_RETRIES);
+            if (endpoint->mErrorCount >= QPID_PUBLISHER_RETRIES)
+            {
+                mama_log (MAMA_LOG_LEVEL_FINE,
+                          "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
+                          "Not publishing message for %s to %s: link is down [%d].",
+                          impl->mSubject,
+                          url,
+                          (int)pnLinkState);
+
+                endpointPool_unregister (impl->mTransport->mPubEndpoints,
+                                         impl->mSubject,
+                                         url);
+                free (endpoint);
+                linkReady = 0;
+            }
+        }
+        else
+        {
+            endpoint->mErrorCount = 0;
+        }
     }
 
+    /* Enqueue the message in the messenger send queue if link is up */
+    if (linkReady)
+    {
+        if (pn_messenger_put (impl->mTransport->mOutgoing, pnMsg))
+        {
+            qpidError = PN_MESSENGER_ERROR (impl->mTransport->mOutgoing);
+            mama_log (MAMA_LOG_LEVEL_SEVERE,
+                      "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
+                      "Qpid Error:[%s]",
+                      qpidError);
+            if (NULL != endpoint)
+            {
+                endpoint->mErrorCount++;
+            }
+            return;
+        }
+        else
+        {
+            if (NULL != endpoint)
+            {
+                endpoint->mMsgCount++;
+            }
+            mama_log (MAMA_LOG_LEVEL_FINEST,
+                      "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
+                      "Publishing message for %s to %s.",
+                      impl->mSubject,
+                      url);
+        }
+    }
 }

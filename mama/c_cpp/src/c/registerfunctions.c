@@ -252,7 +252,7 @@ mamaInternal_registerPayloadFunctions (LIB_HANDLE         bridgeLib,
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (Payload_updateVectorF32, msgPayloadUpdateVectorF32, msgPayload_updateVectorF32);
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (Payload_updateVectorF64, msgPayloadUpdateVectorF64, msgPayload_updateVectorF64);
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (Payload_updateVectorPrice, msgPayloadUpdateVectorPrice, msgPayload_updateVectorPrice);
-    REGISTER_OPTIONAL_BRIDGE_FUNCTION (Payload_updateVectorPrice, msgPayloadUpdateVectorTime, msgPayload_updateVectorTime);
+    REGISTER_OPTIONAL_BRIDGE_FUNCTION (Payload_updateVectorTime, msgPayloadUpdateVectorTime, msgPayload_updateVectorTime);
 
     /* Get methods */
     REGISTER_BRIDGE_FUNCTION (Payload_getBool, msgPayloadGetBool, msgPayload_getBool);

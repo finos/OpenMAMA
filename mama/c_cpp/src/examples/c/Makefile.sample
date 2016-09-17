@@ -1,9 +1,9 @@
 #==============================================================================
 # To build MAMA examples set the following:
 #   API_HOME: Path to API installation
-#   API_PLATFORM: tibrv/lbm/avis
+#   API_PLATFORM: tibrv/lbm/qpid
 #   tibrv_HOME: Path to TIBRV installation (TIBRV only)
-#   avis_HOME: Path to AVIS/ELVIN installation (AVIS only)
+#   qpid_HOME: Path to QPID installation (QPID only)
 #   lbm_HOME: Path to LBM installation (LBM only - usually same as API home)
 #   wmw_HOME: Path to WMW installation (WMW only)
 #=============================================================================

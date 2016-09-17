@@ -1,7 +1,7 @@
 set BUILD_DIR=%1
-set VERSION_MAJOR=2
-set VERSION_MINOR=4
-set VERSION_RELEASE=1
+set VERSION_MAJOR=6
+set VERSION_MINOR=1
+set VERSION_RELEASE=0
 
 echo "generating version files.."  
 

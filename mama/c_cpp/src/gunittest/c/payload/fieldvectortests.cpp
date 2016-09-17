@@ -27,6 +27,8 @@
 #include "MainUnitTestC.h"
 
 #define VECTOR_SIZE 2
+#define MAMA_DATE_TIME_GET_VECTOR_CAST (const mamaDateTime*)
+#define MAMA_PRICE_GET_VECTOR_CAST     (const mamaPrice*)
 
 using namespace ::testing;
 
@@ -960,20 +962,30 @@ protected:
 
 TEST_F(FieldVectorDateTimeTests, GetVectorDateTime)
 {
-    m_status = m_payloadBridge->msgFieldPayloadGetVectorDateTime(m_field, m_out, &m_size);
-    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
+    size_t i = 0;
+    m_status = m_payloadBridge->msgPayloadGetField(m_msg, NULL, 1, &m_field);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
+    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    m_status = m_payloadBridge->msgFieldPayloadGetVectorDateTime(m_field, MAMA_DATE_TIME_GET_VECTOR_CAST(&m_out), &m_size);
+    for (i = 0; i < VECTOR_SIZE; i++)
+    {
+        ASSERT_EQ (1, mamaDateTime_equal (m_out[i], m_in[i]));
+    }
+    ASSERT_EQ(m_status, MAMA_STATUS_OK);
 }
 
 TEST_F(FieldVectorDateTimeTests, GetVectorDateTimeNullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorDateTime(m_field, NULL, &m_size);
-    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
+    ASSERT_EQ (m_status, MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F(FieldVectorDateTimeTests, GetVectorDateTimeNullSize)
 {
-    m_status = m_payloadBridge->msgFieldPayloadGetVectorDateTime(m_field, m_out, NULL);
-    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
+    m_status = m_payloadBridge->msgFieldPayloadGetVectorDateTime(m_field, MAMA_DATE_TIME_GET_VECTOR_CAST(&m_out), NULL);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
+    ASSERT_EQ (m_status, MAMA_STATUS_NULL_ARG);
 }
 
 /**
@@ -1038,20 +1050,30 @@ protected:
 
 TEST_F(FieldVectorPriceTests, GetVectorPrice)
 {
-    m_status = m_payloadBridge->msgFieldPayloadGetVectorPrice(m_field, m_out, &m_size);
-    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
+    size_t i = 0;
+    m_status = m_payloadBridge->msgPayloadGetField(m_msg, NULL, 1, &m_field);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
+    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    m_status = m_payloadBridge->msgFieldPayloadGetVectorPrice(m_field, MAMA_PRICE_GET_VECTOR_CAST(&m_out), &m_size);
+    ASSERT_EQ(m_status, MAMA_STATUS_OK);
+    for (i = 0; i < VECTOR_SIZE; i++)
+    {
+        ASSERT_EQ (1, mamaPrice_equal (m_out[i], m_in[i]));
+    }
 }
 
 TEST_F(FieldVectorPriceTests, GetVectorPriceNullOut)
 {
     m_status = m_payloadBridge->msgFieldPayloadGetVectorPrice(m_field, NULL, &m_size);
-    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
+    ASSERT_EQ (m_status, MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F(FieldVectorPriceTests, GetVectorPriceNullSize)
 {
-    m_status = m_payloadBridge->msgFieldPayloadGetVectorPrice(m_field, m_out, NULL);
-    ASSERT_EQ (MAMA_STATUS_NOT_IMPLEMENTED, m_status);
+    m_status = m_payloadBridge->msgFieldPayloadGetVectorPrice(m_field, MAMA_PRICE_GET_VECTOR_CAST(&m_out), NULL);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
+    ASSERT_EQ (m_status, MAMA_STATUS_NULL_ARG);
 }
 
 /**
@@ -1104,6 +1126,10 @@ protected:
     virtual void TearDown()
     {
         FieldVectorTests::TearDown();
+        for( uint32_t ii(0) ; ii < VECTOR_SIZE ; ++ii )
+        {
+            mamaMsg_destroy ( m_in[ii] );
+        }
     }
 };
 

@@ -1,6 +1,6 @@
 <project name="mamda" default="dist" basedir=".">
     <property name="product" value="mamda"></property>
-    <property name="version" value="2.4.0"></property>
+    <property name="version" value="6.1.0"></property>
     <property name="release" value="${product}_${version}_jdk${java.version}"></property>
     <property name="build" location="${user.dir}/classes"></property>
     <property name="dist" location="${user.dir}/${product}"></property>
@@ -18,6 +18,7 @@
      </condition>
      <condition property="isJava4">
      <or>
+       <equals arg1="${ant.java.version}" arg2="1.5"></equals>
        <equals arg1="${ant.java.version}" arg2="1.4"></equals>
        <equals arg1="${ant.java.version}" arg2="1.3"></equals>
        <equals arg1="${ant.java.version}" arg2="1.2"></equals>
@@ -142,13 +143,13 @@
 <!--     depends="init, source.defs" -->    
     
     <target name="compile.locks" description="Compile the Mamda Locks classes">
-        <javac source="1.4" destdir="${build}_orderbook" debug="true">
+        <javac source="1.5" destdir="${build}_orderbook" debug="true">
           <src path="${user.dir}/temp/"></src>
       </javac>
     </target>
     
     <target name="compile.base" depends="init, copyJava4File, copyJava5File, source.defs, compile.locks, cleanUpLocks" description="Compile the base MAMDA src">
-          <javac source="1.4" srcdir="${top}" destdir="${build}" debug="true">
+          <javac source="1.5" srcdir="${top}" destdir="${build}" debug="true">
             <patternset refid="src.base"></patternset>
             <classpath>
               <fileset dir="${mama.dir}/lib">
@@ -163,7 +164,7 @@
     </target>
     
     <target name="compile.options" depends="compile.base" description="Compile the MAMDA option chain classes">
-        <javac source="1.4" srcdir="${top}" destdir="${build}_options" debug="true">
+        <javac source="1.5" srcdir="${top}" destdir="${build}_options" debug="true">
             <patternset refid="src.options"></patternset>
             <classpath>
                 <fileset dir="${build}_options"></fileset>
@@ -179,7 +180,7 @@
     </target>
 
     <target name="compile.orderbook" depends=" compile.locks, compile.base" description="Compile the MAMDA order book classes">
-        <javac source="1.4" srcdir="${top}" destdir="${build}_orderbook" debug="true">
+        <javac source="1.5" srcdir="${top}" destdir="${build}_orderbook" debug="true">
             <patternset refid="src.orderbook"></patternset>
             <classpath>
                 <fileset dir="${mama.dir}/lib">
@@ -194,7 +195,7 @@
     </target>     
      
      <target name="compile.utils" depends="compile.base,junitdirs" description="Compile the utils classes" if="withUnitTests">
-        <javac source="1.4" srcdir="${top}" destdir="${build}_utils" debug="true">
+        <javac source="1.5" srcdir="${top}" destdir="${build}_utils" debug="true">
             <patternset refid="src.utils"></patternset>
             <classpath>
                 <fileset dir="${mama.dir}/lib">
@@ -209,7 +210,7 @@
     </target>        
     
      <target name="compile.junittests" depends="compile.orderbook,compile.locks,dist.orderbook,compile.utils,junitdirs" description="Compile the MAMDA junittests" if="withUnitTests">
-        <javac source="1.4" srcdir="${top}" destdir="${build}_junittests" debug="true">
+        <javac source="1.5" srcdir="${top}" destdir="${build}_junittests" debug="true">
             <patternset refid="src.junittests"></patternset>                    
             <classpath>
             <fileset dir="../../../thirdparty/junit">
@@ -236,7 +237,7 @@
     <target name="javadoc" depends="init, source.defs" description="build a jar and put it int the dist directory">
         <mkdir dir="${dist}/doc/java"></mkdir>
 
-        <javadoc access="public" source="1.4" destdir="${dist}/doc/java" Overview="overview.html" doctitle="MAMDA (Middleware Agnostic Market Data API) specification, v${version}" Header="&lt;b&gt;MAMDA&lt;/b&gt;&lt;br&gt;&lt;font size='-1'&gt;version ${version}&lt;/font&gt;" Bottom="Copyright 2007 Wombat Financial Software, Inc." Windowtitle="MAMDA ${version}">
+        <javadoc access="public" source="1.5" destdir="${dist}/doc/java" Overview="overview.html" doctitle="MAMDA (Middleware Agnostic Market Data API) specification, v${version}" Header="&lt;b&gt;MAMDA&lt;/b&gt;&lt;br&gt;&lt;font size='-1'&gt;version ${version}&lt;/font&gt;" Bottom="Copyright 2007 Wombat Financial Software, Inc." Windowtitle="MAMDA ${version}">
             <fileset dir="${top}">
                 <patternset refid="src.base"></patternset>
             </fileset>

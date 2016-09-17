@@ -142,6 +142,7 @@ public class MamaMsgStatus
         case STATUS_TOPIC_CHANGE:       return "TOPIC_CHANGE";
         case STATUS_BANDWIDTH_EXCEEDED: return "BANDWIDTH_EXCEEDED";
         case STATUS_DUPLICATE:          return "DUPLICATE";
+        case STATUS_DELETE:             return "DELETE";
         case STATUS_EXCEPTION:          return "EXCEPTION PROCESSING MSG";
         default: return "UNKNOWN";
         }

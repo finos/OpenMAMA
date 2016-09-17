@@ -22,13 +22,16 @@
 #ifndef PROPERTY_H__
 #define PROPERTY_H__
  
-#include "wombat/wConfig.h"
+#include <wombat/wConfig.h>
+#include <wombat/port.h>
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#define INVALID_PROPERTIES NULL
+#define     INVALID_PROPERTIES              NULL
+#define     PROPERTY_NAME_MAX_LENGTH        1024L
+
 typedef void* wproperty_t;
 
 typedef void( *propertiesCallback) (const char* name, const char* value,
@@ -108,6 +111,13 @@ COMMONExpDLL
 int 
 properties_GetPropertyValueAsBoolean( const char* propertyValue );
 
+COMMONExpDLL
+const char*
+properties_GetPropertyValueUsingFormatString (wproperty_t handle,
+                                              const char* defaultVal,
+                                              const char* format,
+                                              ...);
+
 /**
  * Will escape the chars with a \ found to match in chars array. Returns a 
  * malloc'd string which will need freed by the caller
@@ -116,6 +126,12 @@ COMMONExpDLL
 char* 
 properties_AddEscapes (const char* src, const char chars[], int num);
 
+/**
+* Returns the number of properties that have been processed so far
+*/
+COMMONExpDLL
+uint32_t
+properties_Count (wproperty_t handle);
 
 #if defined(__cplusplus)
 }

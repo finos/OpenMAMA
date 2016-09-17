@@ -51,7 +51,6 @@ using std::cout;
 using std::endl;
 
 static int           gCount         = 0;
-static const char *  gSource        = "";
 static const char *  gOutBoundTopic = "MAMA_TOPIC";
 static const char *  gInBoundTopic  = "MAMA_INBOUND_TOPIC";
 static const char *  gTransportName = "pub";
@@ -185,7 +184,7 @@ void MamaPublisherSample::run()
                                              this,
                                              NULL,
                                              gOutBoundTopic,
-                                             gSource,
+                                             NULL,
                                              NULL);
         }
         else
@@ -348,11 +347,6 @@ void parseCommandLine (int argc, const char **argv)
         if (strcmp ("-s", argv[i]) == 0)
         {
             gOutBoundTopic = argv[i+1];
-            i += 2;
-        }
-        else if (strcmp ("-S", argv[i]) == 0)
-        {
-            gSource = argv[i+1];
             i += 2;
         }
         else if (strcmp ("-l", argv[i]) == 0)
