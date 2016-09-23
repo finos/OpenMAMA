@@ -48,6 +48,7 @@ nobase_include_HEADERS  = \
 	mama/io.h \
 	mama/log.h \
 	mama/mama.h \
+	mama/mamautils.h \
 	mama/marketdata.h \
     mama/middleware.h \
 	mama/msg.h \
@@ -130,6 +131,7 @@ libmama_la_SOURCES = \
     mama.c \
     mamaStrUtils.h \
     mamaStrUtils.c \
+    mamautils.c \
 	marketdata.c \
     plugin.c \
     middleware.c \
