@@ -33,13 +33,13 @@ extern "C" {
  */
 typedef enum mamaFtState_
 {
-    MAMA_FT_STATE_STANDBY  = 0, /**< The mamaFtMember is currently not 
-                                     the highest weighted member in the 
+    MAMA_FT_STATE_STANDBY  = 0, /**< The mamaFtMember is currently not
+                                     the highest weighted member in the
                                      group */
-    MAMA_FT_STATE_ACTIVE   = 1, /**< The mamaFtMember is currently the 
-                                     highest weighted member in the 
+    MAMA_FT_STATE_ACTIVE   = 1, /**< The mamaFtMember is currently the
+                                     highest weighted member in the
                                      group */
-    MAMA_FT_STATE_UNKNOWN  = 99 /**< The mamaFtMember has yet to 
+    MAMA_FT_STATE_UNKNOWN  = 99 /**< The mamaFtMember has yet to
                                      establish its state */
 } mamaFtState;
 
@@ -51,7 +51,7 @@ typedef enum mamaFtType_
     MAMA_FT_TYPE_MULTICAST = 1, /**< MAMA creates sockets directly for
                                      sending and receiving heartbeats.
                                      The middleware is not used */
-    MAMA_FT_TYPE_BRIDGE    = 2, /**< Use the middleware and MAMA 
+    MAMA_FT_TYPE_BRIDGE    = 2, /**< Use the middleware and MAMA
                                      subscriptions for sending and
                                      receiving heartbeats */
     MAMA_FT_TYPE_MAX       = 3 /**< Used internally */
@@ -61,16 +61,16 @@ typedef void* mamaFtMember;
 
 
 /**
- * @brief Callback function type for MAMA fault tolerant state change 
+ * @brief Callback function type for MAMA fault tolerant state change
  *        events.
- * 
- * @param[in] ftMember  The mamaFtMember to which the callback event 
+ *
+ * @param[in] ftMember  The mamaFtMember to which the callback event
  *                      applies
- * @param[in] groupName The group name of the mamaFtMember for which the 
+ * @param[in] groupName The group name of the mamaFtMember for which the
  *                      fault tolerant event applies
- * @param[in] mamaFtState The new fault tolerant state for the group 
+ * @param[in] mamaFtState The new fault tolerant state for the group
  *                        member
- * @param[in] closure The closure passed to the mamaFtMember when 
+ * @param[in] closure The closure passed to the mamaFtMember when
  *                    mamaFtMember_setup() is called
  */
 typedef void (
@@ -85,7 +85,7 @@ MAMACALLTYPE
  * typically followed by mamaFtMember_setup() and
  * mamaFtMember_activate().
  *
- * @param[out] member A pointer to a mamaFtMember.  When the function is 
+ * @param[out] member A pointer to a mamaFtMember.  When the function is
  *                    called successfully the ftMember will be a pointer
  *                    to a block of allocated memory.
  *
@@ -104,25 +104,25 @@ mamaFtMember_create (
  * tolerance monitoring, use mamaFtMember_activate().
  *
  * @param[in] member The mamaFtMember to be initialized
- * @param[in] fttype The type of fault tolerance to be used for the 
+ * @param[in] fttype The type of fault tolerance to be used for the
  *            member
- * @param[in] eventQueue The queue on which the mamaFtMember sends and 
+ * @param[in] eventQueue The queue on which the mamaFtMember sends and
  *            receives heartbeats
  * @param[in] transport The mamaTransport used for sending and receiving
  *            heartbeats
  * @param[in] groupName The group name for the mamaFtMember
- * @param[in] weight The initial weight of the mamaFtMember 
- * @param[in] heartbeatInterval The time in seconds between sending 
+ * @param[in] weight The initial weight of the mamaFtMember
+ * @param[in] heartbeatInterval The time in seconds between sending
  *            heartbeats
  * @param[in] timeoutInterval The time in seconds that a mamaFtMember in
- *            state MAMA_FT_STATE_STANBY or MAMA_FT_STATE_UNKNOWN will 
- *            wait to receive a heartbeat before changing state to 
+ *            state MAMA_FT_STATE_STANBY or MAMA_FT_STATE_UNKNOWN will
+ *            wait to receive a heartbeat before changing state to
  *            MAMA_FT_STATE_ACTIVE
- * @param[in] closure The closure will be passed to subsequent callback 
+ * @param[in] closure The closure will be passed to subsequent callback
  *            invocations for thie mamaFtMember
  *
- * @return mama_status MAMA_STATUS_OK will be returned on success, 
- *         otherwise a mama_status code indicating failure will be 
+ * @return mama_status MAMA_STATUS_OK will be returned on success,
+ *         otherwise a mama_status code indicating failure will be
  *         returned
  */
 MAMAExpDLL
@@ -141,9 +141,9 @@ mamaFtMember_setup (
 
 /**
  * @brief Destroy a MAMA fault tolerance group member.
- * 
- * @param[in] member The mamaFtMember.  When the function returns, memory 
- *                   previously allocated for the member will have been 
+ *
+ * @param[in] member The mamaFtMember.  When the function returns, memory
+ *                   previously allocated for the member will have been
  *                   freed
  *
  * @return mama_status return code can be one of:
@@ -156,14 +156,14 @@ mamaFtMember_destroy (
     mamaFtMember    member);
 
 /**
- * @brief Activate the MAMA fault tolerance group member.  The member 
- *        will begin to send and receive heartbeats.  If the member is 
+ * @brief Activate the MAMA fault tolerance group member.  The member
+ *        will begin to send and receive heartbeats.  If the member is
  *        already active, this function call will deactivate it
  *
  * @param[in] member The mamaFtMember
  *
- * @return mama_status MAMA_STATUS_OK will be returned on success, 
- *         otherwuse a mama_status code indicating failure will be 
+ * @return mama_status MAMA_STATUS_OK will be returned on success,
+ *         otherwuse a mama_status code indicating failure will be
  *         returned
  */
 MAMAExpDLL
@@ -172,9 +172,9 @@ mamaFtMember_activate (
     mamaFtMember    member);
 
 /**
- * @brief Deactivate the MAMA fault tolerance group member.  The member 
+ * @brief Deactivate the MAMA fault tolerance group member.  The member
  *        will stop sending and listening for heartbeats.
- * 
+ *
  * @param[in] member the mamaFtMember
  *
  * @return mama_status return code can be one of:
@@ -192,7 +192,7 @@ mamaFtMember_deactivate (
  * determine the actual state of the member.
  *
  * @param[in] member The mamaFtMember
- * @param[out] result This will be set to 1 if the member is currently 
+ * @param[out] result This will be set to 1 if the member is currently
  *             active, 0 if it is not
  *
  * @return mama_status return code can be one of:
@@ -209,7 +209,7 @@ mamaFtMember_isActive (
  * @brief Get the name of the group to which this MAMA FT member belongs.
  *
  * @param[in] member The mamaFtMember
- * @param[out] result When the function is called successfully, this 
+ * @param[out] result When the function is called successfully, this
  *             will point to the member's group name
  *
  * @result mama_status return code can be on of:
@@ -240,10 +240,10 @@ mamaFtMember_getWeight (
     mama_u32_t*         result);
 
 /**
- * @brief Get the fault tolerance heartbeat interval of the MAMA FT 
+ * @brief Get the fault tolerance heartbeat interval of the MAMA FT
  *        member.
  * @param[in] member The mamaFtMember
- * @param[out] result When the function is called successfully, this will 
+ * @param[out] result When the function is called successfully, this will
  *             store the value of the member's heartbeat interval
  *
  * @return mama_status return code can be one of:
@@ -319,16 +319,16 @@ mamaFtMember_setWeight (
     mama_u32_t    value);
 
 /**
- * @brief Set the instance ID of the MAMA FT member.  The instance ID 
+ * @brief Set the instance ID of the MAMA FT member.  The instance ID
  *        is used to uniquely identify members of a fault tolerant group.
  *
- * @details Most applications should allow the MAMA API to automatically 
+ * @details Most applications should allow the MAMA API to automatically
  *        set the instance ID and this function would not be called.  If
  *        not set explicitly before activation, then the instance ID is
  *        automatically set according to the following format:
  *    {group-name}.{hex-ip-addr}.{hex-pid}.
  * For example, if the group name is "FOO", the IP address is
- *        192.168.187.9, and the PId is 10777, the default instance ID 
+ *        192.168.187.9, and the PId is 10777, the default instance ID
  *        would be:
  *    FOO.c0a8bb9.2a19
  *
@@ -351,8 +351,8 @@ mamaFtMember_setInstanceId (
  *
  * @param[in] state The state to convert.
  *
- * @return const char* A string representation of the state.  This will 
- *         be either "standby", "active", "unknown", or "error" in the 
+ * @return const char* A string representation of the state.  This will
+ *         be either "standby", "active", "unknown", or "error" in the
  *         case where the current state is unrecognised
  */
 MAMAExpDLL

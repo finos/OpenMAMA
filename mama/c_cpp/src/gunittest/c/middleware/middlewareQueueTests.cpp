@@ -183,9 +183,9 @@ TEST_F (MiddlewareQueueTests, getEventCountInvalidCount)
                mBridge->bridgeMamaQueueGetEventCount(queue,NULL));
 }
 
-/* TODO: Fix these.
- * Disabling dispatch tests, because the standard queue implementation has
- * dispatch as a blocking call.
+/* TODO: Re-visit at some point.
+ * Disabling dispatch tests, because the standard queue implementation (for lbm at least)
+ * has dispatch as a blocking call.
  */
 TEST_F (MiddlewareQueueTests, DISABLED_dispatch)
 {
@@ -361,8 +361,8 @@ TEST_F (MiddlewareQueueTests, stopDispatchInvalid)
                mBridge->bridgeMamaQueueStopDispatch(NULL));
 }
 
-/* TODO: As with dispatch tests, dispatch is a blocking call, so this test
- * doesn't really make any sense.
+/* TODO: Re-visit at some point.
+ * As with dispatch tests, dispatch is a blocking call for some bridges.
  */
 TEST_F (MiddlewareQueueTests, DISABLED_setEnqueueCallback)
 {
@@ -403,8 +403,8 @@ TEST_F (MiddlewareQueueTests, setEnqueueCallbackInvalidCallback)
                                                           NULL,closure));
 }
 
-/* TODO: As with dispatch tests, dispatch is a blocking call, so this test
- * doesn't really make any sense.
+/* TODO: Re-visit at some point.
+ * As with dispatch tests, dispatch is a blocking call for some bridges.
  */
 TEST_F (MiddlewareQueueTests, DISABLED_removeEnqueueCallback)
 {

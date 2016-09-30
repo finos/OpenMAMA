@@ -75,7 +75,7 @@ public:
     void setDictionaryComplete           (bool complete);
     void subscribeToSymbols              ();
     void start                           ();
-    int  getQuietness                    (); 
+    int  getQuietness                    ();
     void addSubject                      (string symbol);
     void createSymbolListSubscription    ();
 
@@ -90,7 +90,7 @@ private:
     MamaSource*              mDictSource;
     const char*              mDictTransportName;
     MamaTransport*           mDictTransport;
-    bool                     mDictionaryComplete; 
+    bool                     mDictionaryComplete;
     int                      mQuietness;
     bool					 mBuildDataDict;
     const char*              mSourceName;
@@ -132,7 +132,7 @@ public:
 
     virtual void onRecapRequest             (MamaSubscription*  subscription);
 
-    string gettoken                         (string&            instring,  
+    string gettoken                         (string&            instring,
                                              string             delimiter);
 
 private:
@@ -175,7 +175,7 @@ private:
 class DictionaryCallback : public MamaDictionaryCallback
 {
 public:
-    DictionaryCallback (MamaSymbolListSubscriber* mamaSymbolListSubscriber, 
+    DictionaryCallback (MamaSymbolListSubscriber* mamaSymbolListSubscriber,
                         mamaBridge bridgeImpl)
     {
         mMamaSymbolListSubscriber = mamaSymbolListSubscriber;
@@ -217,8 +217,8 @@ void SymbolListSubscriptionCallback::onCreate (MamaSubscription* subscription)
     printf ("Created symbol list subscription");
 }
 
-void SymbolListSubscriptionCallback::onError (MamaSubscription* subscription, 
-                                              const MamaStatus& status, 
+void SymbolListSubscriptionCallback::onError (MamaSubscription* subscription,
+                                              const MamaStatus& status,
                                               const char*       subject)
 {
     fprintf (stderr,
@@ -227,7 +227,7 @@ void SymbolListSubscriptionCallback::onError (MamaSubscription* subscription,
     flush (cout);
 }
 
-void SymbolListSubscriptionCallback::onMsg (MamaSubscription* subscription, 
+void SymbolListSubscriptionCallback::onMsg (MamaSubscription* subscription,
                                             MamaMsg&          msg)
 {
     const char* newSymbols = NULL;
@@ -236,7 +236,7 @@ void SymbolListSubscriptionCallback::onMsg (MamaSubscription* subscription,
     {
         case MAMA_MSG_TYPE_INITIAL:
             printf("Received initial for symbol list subscription.  Updating list of symbols to subscribe to.\n");
-            newSymbols = msg.getString(MamaFieldSymbolList.mName, 
+            newSymbols = msg.getString(MamaFieldSymbolList.mName,
                                        MamaFieldSymbolList.mFid);
             if (strlen(newSymbols) > 0)
             {
@@ -256,7 +256,7 @@ void SymbolListSubscriptionCallback::onMsg (MamaSubscription* subscription,
     }
 }
 
-string SymbolListSubscriptionCallback::gettoken (string& inString, 
+string SymbolListSubscriptionCallback::gettoken (string& inString,
                                                  string delimiter)
 {
     string outString;
@@ -310,8 +310,8 @@ SubscriptionCallback::SubscriptionCallback (MamaSymbolListSubscriber* mamaSymbol
 void SubscriptionCallback::onCreate (MamaSubscription*  subscription)
 {}
 
-void SubscriptionCallback::onError (MamaSubscription*  subscription, 
-                                    const MamaStatus&  status, 
+void SubscriptionCallback::onError (MamaSubscription*  subscription,
+                                    const MamaStatus&  status,
                                     const char*        subject)
 {
     fprintf (stderr,
@@ -320,18 +320,18 @@ void SubscriptionCallback::onError (MamaSubscription*  subscription,
     flush (cout);
 }
 
-void SubscriptionCallback::onMsg (MamaSubscription*  subscription, 
+void SubscriptionCallback::onMsg (MamaSubscription*  subscription,
                                   MamaMsg&     msg)
 {
     if (mMamaSymbolListSubscriber->getQuietness() < 1)
     {
-        printf ("Received message of type %s for %s.\n", 
+        printf ("Received message of type %s for %s.\n",
                 msg.getMsgTypeName(),
                 subscription->getSymbol());
-    }   
+    }
 }
 
-void SubscriptionCallback::onQuality (MamaSubscription*  subscription, mamaQuality        quality, 
+void SubscriptionCallback::onQuality (MamaSubscription*  subscription, mamaQuality        quality,
                                       const char*        symbol,
                                       short              cause,
                                       const void*        platformInfo)
@@ -373,13 +373,13 @@ int main (int argc, const char** argv)
     MamaSymbolListSubscriber mMamaSymbolListSubscriber;
     setbuf (stdout, NULL);
     mMamaSymbolListSubscriber.parseCommandLine (argc, argv);
-    
+
     try
     {
         mMamaSymbolListSubscriber.initializeMama ();
         mMamaSymbolListSubscriber.buildDataDictionary ();
         mMamaSymbolListSubscriber.createSymbolListSubscription ();
-        
+
         printf ("Type CTRL-C to exit.\n");
         mMamaSymbolListSubscriber.start ();
     }
@@ -411,7 +411,7 @@ MamaSymbolListSubscriber::MamaSymbolListSubscriber ():
     mQueueGroup                        (NULL),
     mMamaLogLevel                      (MAMA_LOG_LEVEL_WARN)
 {}
-  
+
 MamaSymbolListSubscriber::~MamaSymbolListSubscriber ()
 {
     if (mSubscriptionCallback)
@@ -439,7 +439,7 @@ MamaSymbolListSubscriber::~MamaSymbolListSubscriber ()
         delete mDictSource;
         mDictSource = NULL;
     }
-} 
+}
 
 void MamaSymbolListSubscriber::start ()
 {
@@ -491,7 +491,7 @@ void MamaSymbolListSubscriber::initializeMama ()
     {
         mDictTransport = mTransport;
     }
-    
+
     mDictSource = new MamaSource (mDictSourceName,
                                   mDictTransport,
                                   mDictSourceName);

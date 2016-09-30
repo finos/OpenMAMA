@@ -169,7 +169,7 @@ namespace Wombat
                     MamaStatus.mamaStatus status = (MamaStatus.mamaStatus)nativeStatus;
 
                     // Invoke the callback
-                    mCallback.onError(mInbox, status);                    
+                    mCallback.onError(mInbox, status);
                 }
             }
 
@@ -220,7 +220,7 @@ namespace Wombat
         /// Native reference to the closure.
         /// </param>
         private delegate void OnInboxErrorDelegate(int nativeStatus, IntPtr closure);
-        
+
         /// <summary>
         /// Allows the native layer to invoke the message callback.
         /// </summary>
@@ -269,11 +269,11 @@ namespace Wombat
         /* ************************************************************** */
         #region Construction and Finalization
 
-        /// <summary>        
+        /// <summary>
 		/// Construct an inbox.
 		/// </summary>
 		public MamaInbox() : base()
-		{            			
+		{
 		}
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Wombat
         /// The native inbox handle.
         /// </param>
 		internal MamaInbox(IntPtr nativeHandle) : base(nativeHandle)
-		{   
+		{
         }
 
         #endregion
@@ -313,7 +313,7 @@ namespace Wombat
             // Use the impl to invoke the destroy callback, (if this has been supplied)
             impl.InvokeDestroy();
 
-            /* The timer has now been destroyed and the impl is no longer required, free the handle to 
+            /* The timer has now been destroyed and the impl is no longer required, free the handle to
              * allow the garbage collector to clean it up.
              */
             handle.Free();
@@ -391,7 +391,7 @@ namespace Wombat
         /// Optional mamaQueue. Will use default queue if null.
         /// </param>
 		/// <param name="callback">
-        /// A callback interface invoked in response to a p2p message being received or when an error is 
+        /// A callback interface invoked in response to a p2p message being received or when an error is
         /// encountered during p2p messaging.
         /// </param>
 		/// <param name="closure">
@@ -431,7 +431,7 @@ namespace Wombat
                 queue.NativeHandle,
                 mMsgDelegate,
                 mErrorDelegate,
-                mDestroyDelegate,                
+                mDestroyDelegate,
                 impl));
 
             // Save the native timer in the member variable
@@ -448,7 +448,7 @@ namespace Wombat
         /// Optional mamaQueue. Will use default queue if null.
         /// </param>
 		/// <param name="callback">
-        /// A callback interface invoked in response to a p2p message being received or when an error is 
+        /// A callback interface invoked in response to a p2p message being received or when an error is
         /// encountered during p2p messaging.
         /// </param>
 		public void create(MamaTransport transport, MamaQueue queue, MamaInboxCallback callback)
@@ -465,15 +465,15 @@ namespace Wombat
         /// The mamaTransport being used.
         /// </param>
 		/// <param name="callback">
-        /// A callback interface invoked in response to a p2p message being received or hen an error is 
+        /// A callback interface invoked in response to a p2p message being received or hen an error is
         /// encountered during p2p messaging.
-        /// </param>		
+        /// </param>
         /// <param name="closure">
         /// User supplied data.
         /// </param>
 		public void create(MamaTransport transport, MamaInboxCallback callback, object closure)
 		{
-            throw new NotSupportedException("This function is no longer supported, use an overload that takes a MamaQueue object.");			
+            throw new NotSupportedException("This function is no longer supported, use an overload that takes a MamaQueue object.");
 		}
 
 		/// <summary>

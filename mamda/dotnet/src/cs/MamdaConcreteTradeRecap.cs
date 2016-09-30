@@ -53,7 +53,7 @@ namespace Wombat
             mOnExAccVolume     = 0;
             mNetChange         = new MamaPrice();
             mPctChange         = 0.0;
-            mTradeDirection    = null;          
+            mTradeDirection    = null;
             mSide              = null;
             mOpenPrice         = new MamaPrice();
             mHighPrice         = new MamaPrice();
@@ -92,7 +92,7 @@ namespace Wombat
             mTradeExecVenue    = null;
             mOffExTradePrice   = new MamaPrice();
             mOnExTradePrice    = new MamaPrice();
-            
+
             mTradeCount        = 0;
             mTradeUnits        = null;
             mLastSeqNum        = 0;
@@ -153,7 +153,7 @@ namespace Wombat
             mOnExAccVolume     = 0;
             mNetChange.clear();
             mPctChange         = 0.0;
-            mTradeDirection    = null;           
+            mTradeDirection    = null;
             mSide              = null;
             mOpenPrice.clear();
             mHighPrice.clear();
@@ -274,7 +274,7 @@ namespace Wombat
         {
             this.mAccVolume = accVolume;
         }
-        
+
         public long getOffExAccVolume()
         {
             return (long) mOffExAccVolume;
@@ -293,7 +293,7 @@ namespace Wombat
         {
             this.mOffExAccVolume = offExAccVolume;
         }
-        
+
         public long getOnExAccVolume()
         {
             return (long) mOnExAccVolume;
@@ -312,7 +312,7 @@ namespace Wombat
         {
             this.mOnExAccVolume = onExAccVolume;
         }
-        
+
         public DateTime getActivityTime()
         {
             return mActTime;
@@ -407,7 +407,7 @@ namespace Wombat
         {
             this.mBlockVolume = blockVolume;
         }
-        
+
         public MamaPrice getClosePrice()
         {
             return mClosePrice;
@@ -616,22 +616,22 @@ namespace Wombat
                 mHighPrice.clear();
         }
 
-        public string getLastPartId() 
+        public string getLastPartId()
         {
             return mLastPartId;
         }
 
-        public string getTradeId() 
+        public string getTradeId()
         {
             return mTradeId;
         }
 
-        public string getCorrTradeId() 
+        public string getCorrTradeId()
         {
             return mCorrTradeId;
         }
 
-        public string getOrigTradeId() 
+        public string getOrigTradeId()
         {
             return mOrigTradeId;
         }
@@ -702,7 +702,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setLastTime(DateTime lastTime) 
+        public void setLastTime(DateTime lastTime)
         {
             this.mLastTime = lastTime;
         }
@@ -717,7 +717,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setTradeDate(DateTime tradeDate) 
+        public void setTradeDate(DateTime tradeDate)
         {
             this.mTradeDate = tradeDate;
         }
@@ -759,7 +759,7 @@ namespace Wombat
         {
             this.mIrregVolume = irregVolume;
         }
-        
+
         public string getIrregPartId()
         {
             return mIrregPartId;
@@ -906,13 +906,13 @@ namespace Wombat
 
         public void setOrigPrice(MamaPrice origPrice)
         {
-            if (origPrice != null) 
+            if (origPrice != null)
                 mOrigPrice.copy(origPrice);
             else
                 mOrigPrice.clear();
         }
 
-        public string getOrigQualStr() 
+        public string getOrigQualStr()
         {
             return mOrigQualStr;
         }
@@ -1006,7 +1006,7 @@ namespace Wombat
         {
             this.mOrigVolume = origVolume;
         }
-        
+
         public double getPctChange()
         {
             return mPctChange;
@@ -1065,7 +1065,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setPrevClosePrice(MamaPrice prevClosePrice) 
+        public void setPrevClosePrice(MamaPrice prevClosePrice)
         {
             if (prevClosePrice != null)
                 mPrevClosePrice.copy(prevClosePrice);
@@ -1083,7 +1083,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setSellersSaleDays(long sellersSaleDays) 
+        public void setSellersSaleDays(long sellersSaleDays)
         {
             this.mSellersSaleDays = sellersSaleDays;
         }
@@ -1152,12 +1152,12 @@ namespace Wombat
         {
             return mStdDevSumSquares;
         }
-        
+
         public MamdaFieldState getStdDevSumSquaresFieldState()
         {
 			return MamdaFieldState.MODIFIED;
         }
-        
+
         public void setStdDevSumSquares(double stdDevSumSquares)
         {
             this.mStdDevSumSquares = stdDevSumSquares;
@@ -1206,11 +1206,11 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setSettleDate(DateTime settleDate) 
+        public void setSettleDate(DateTime settleDate)
         {
             this.mSettleDate = settleDate;
         }
-		
+
 		/// <summary>
 		/// getShortSaleCircuitBreaker Returns the ShortSaleCircuitBreaker
 		/// </summary>
@@ -1234,9 +1234,9 @@ namespace Wombat
 		/// </summary>
 		/// <param name="shortSaleCircuitBreaker"></param>
         public void setShortSaleCircuitBreaker(char shortSaleCircuitBreaker)
-        {  
+        {
             mShortSaleCircuitBreaker = shortSaleCircuitBreaker;
-        }       
+        }
 
         public double getTotalValue()
         {
@@ -1298,7 +1298,7 @@ namespace Wombat
             this.mTradeCondStr = tradeCondStr;
         }
 
-        public long getTradeCount() 
+        public long getTradeCount()
         {
             return mTradeCount;
         }
@@ -1308,12 +1308,12 @@ namespace Wombat
           return MamdaFieldState.MODIFIED;
         }
 
-        public void setTradeCount(long tradeCount) 
+        public void setTradeCount(long tradeCount)
         {
             this.mTradeCount = tradeCount;
         }
 
-        public string getTradeUnits() 
+        public string getTradeUnits()
         {
             return mTradeUnits;
         }
@@ -1323,12 +1323,12 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setTradeUnits(string tradeUnits) 
+        public void setTradeUnits(string tradeUnits)
         {
             this.mTradeUnits = tradeUnits;
         }
 
-        public long getLastSeqNum() 
+        public long getLastSeqNum()
         {
             return mLastSeqNum;
         }
@@ -1338,12 +1338,12 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setLastSeqNum(long lastSeqNum) 
+        public void setLastSeqNum(long lastSeqNum)
         {
             this.mLastSeqNum = lastSeqNum;
         }
 
-        public long getHighSeqNum() 
+        public long getHighSeqNum()
         {
             return mHighSeqNum;
         }
@@ -1353,12 +1353,12 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setHighSeqNum(long highSeqNum) 
+        public void setHighSeqNum(long highSeqNum)
         {
             this.mHighSeqNum = highSeqNum;
         }
 
-        public long getLowSeqNum() 
+        public long getLowSeqNum()
         {
             return mLowSeqNum;
         }
@@ -1368,12 +1368,12 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setLowSeqNum(long lowSeqNum) 
+        public void setLowSeqNum(long lowSeqNum)
         {
             this.mLowSeqNum = lowSeqNum;
         }
 
-        public long getTotalVolumeSeqNum() 
+        public long getTotalVolumeSeqNum()
         {
             return mTotalVolumeSeqNum;
         }
@@ -1383,7 +1383,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setTotalVolumeSeqNum(long totalVolumeSeqNum) 
+        public void setTotalVolumeSeqNum(long totalVolumeSeqNum)
         {
             this.mTotalVolumeSeqNum = totalVolumeSeqNum;
         }
@@ -1429,7 +1429,7 @@ namespace Wombat
         }
 
         public void setSide(string tradeSide)
-        {           
+        {
             mSide = tradeSide;
         }
 
@@ -1443,7 +1443,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setTradePartId(string tradePartId) 
+        public void setTradePartId(string tradePartId)
         {
 			this.mTradePartId = tradePartId;
         }
@@ -1458,7 +1458,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setTradePrice(MamaPrice tradePrice) 
+        public void setTradePrice(MamaPrice tradePrice)
         {
             if (tradePrice != null)
                 mTradePrice.copy(tradePrice);
@@ -1510,12 +1510,12 @@ namespace Wombat
         {
             this.mTradeVolume = tradeVolume;
         }
-        
+
         public void setTradeVolume(double tradeVolume)
         {
             this.mTradeVolume = tradeVolume;
         }
-        
+
         public double getVwap()
         {
             return mVwap;
@@ -1606,7 +1606,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setOffExchangeTradePrice(MamaPrice offExTradePrice) 
+        public void setOffExchangeTradePrice(MamaPrice offExTradePrice)
         {
             if (offExTradePrice != null)
                 mOffExTradePrice.copy(offExTradePrice);
@@ -1624,7 +1624,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
         }
 
-        public void setOnExchangeTradePrice(MamaPrice onExTradePrice) 
+        public void setOnExchangeTradePrice(MamaPrice onExTradePrice)
         {
             if (onExTradePrice != null)
                 mOnExTradePrice.copy(onExTradePrice);
@@ -1703,7 +1703,7 @@ namespace Wombat
         private string          mTradeExecVenue		= null;
         private MamaPrice       mOffExTradePrice	= null;
         private MamaPrice       mOnExTradePrice		= null;
-        
+
         private long            mTradeCount			= 0;
         private string          mTradeUnits			= null;
         private long            mLastSeqNum			= 0;
@@ -1711,7 +1711,7 @@ namespace Wombat
         private long            mLowSeqNum			= 0;
         private long            mTotalVolumeSeqNum	= 0;
         private string          mCurrencyCode		= null;
-        
+
         private long            mOrigSeqNum			= 0;
         private MamaPrice       mOrigPrice			= null;
         private double          mOrigVolume			= 0;
@@ -1737,4 +1737,3 @@ namespace Wombat
         #endregion Implementation details
     }
 }
-

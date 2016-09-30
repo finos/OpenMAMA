@@ -4,20 +4,20 @@
 #
 # Copyright (c) 1999-2004 Wombat Consulting, Inc., of Incline Village, NV.
 # All rights reserved.
-# 
+#
 # This software and documentation constitute an unpublished work and
 # contain valuable trade secrets and proprietary information belonging
 # to Wombat.  None of this material may be copied, duplicated or
-# disclosed without the express written permission of Wombat.  
-# 
+# disclosed without the express written permission of Wombat.
+#
 # WOMBAT EXPRESSLY DISCLAIMS ANY AND ALL WARRANTIES CONCERNING THIS
 # SOFTWARE AND DOCUMENTATION, INCLUDING ANY WARRANTIES OF
 # MERCHANTABILITY AND/OR FITNESS FOR ANY PARTICULAR PURPOSE, AND
 # WARRANTIES OF PERFORMANCE, AND ANY WARRANTY THAT MIGHT OTHERWISE ARISE
 # FROM COURSE OF DEALING OR USAGE OF TRADE. NO WARRANTY IS EITHER
 # EXPRESS OR IMPLIED WITH RESPECT TO THE USE OF THE SOFTWARE OR
-# DOCUMENTATION.  
-# 
+# DOCUMENTATION.
+#
 # Under no circumstances shall Wombat be liable for incidental, special,
 # indirect, direct or consequential damages or loss of profits,
 # interruption of business, or related expenses which may arise from use
@@ -64,13 +64,13 @@ CPPFLAGS     = \
     -I$($(API_PLATFORM)_HOME)/include
 LDFLAGS      = -rdynamic \
     -L$(API_HOME)/lib \
-    -L$($(API_PLATFORM)_HOME)/lib 
+    -L$($(API_PLATFORM)_HOME)/lib
 
 
 MAMA_LIBS    = $(BDYNAMIC) -lmama \
                $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -lpthread -lm \
-               $($(API_PLATFORM)_libs) 
-MAMACPP_LIBS = $(BSTATIC) -lmamacpp $(BDYNAMIC) $(MAMA_LIBS) 
+               $($(API_PLATFORM)_libs)
+MAMACPP_LIBS = $(BSTATIC) -lmamacpp $(BDYNAMIC) $(MAMA_LIBS)
 
 # Targets:
 all: basicpubc basicsubc basicinboxc basicftmemberc \

@@ -43,10 +43,10 @@ void subCommon_destroy(JNIEnv* env, jobject subscription,
     void*       closure         =   NULL;
     jlong       pointerValue    =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     pointerValue =
         (*env)->GetLongField(env,subscription,subscriptionPointerFieldId);
-        
+
     mamaSubscription_getClosure(
             CAST_JLONG_TO_POINTER(mamaSubscription,pointerValue),&closure);
 
@@ -76,10 +76,10 @@ void subCommon_destroyEx(JNIEnv* env, jobject subscription,
     void*       closure         =   NULL;
     jlong       pointerValue    =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     pointerValue =
         (*env)->GetLongField(env,subscription,subscriptionPointerFieldId);
-        
+
     mamaSubscription_getClosure(
             CAST_JLONG_TO_POINTER(mamaSubscription,pointerValue),&closure);
 
@@ -96,7 +96,7 @@ void subCommon_destroyEx(JNIEnv* env, jobject subscription,
             utils_throwMamaException(env,errorString);
         }
 
-        /*It's different here.  DestroyEx in C actually doesn't destroy it right away.  
+        /*It's different here.  DestroyEx in C actually doesn't destroy it right away.
          We need to wait for the callback. */
     }
 }
@@ -110,15 +110,15 @@ void subCommon_createCb ( mamaSubscription    subscription,
     JNIEnv*             env                      =   NULL;
     jobject             messageImpl              =   NULL;
     callbackClosure*    closureImpl              =   NULL;
-    
+
     closureImpl = (callbackClosure*)closure;
     assert(closureImpl!=NULL);
     assert(closureImpl->mClientCB!=NULL);
     assert(closureImpl->mSubscription!=NULL);
-    
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
-    
+
     /*Invoke the onCreate() callback method!!*/
     (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                            subCallbackonCreateId,
@@ -126,7 +126,7 @@ void subCommon_createCb ( mamaSubscription    subscription,
     return;
 }
 
-                                                                                                                       
+
 void subCommon_onErrorCb ( mamaSubscription    subscription,
                            mama_status         status,
                            void*               platformError,
@@ -137,12 +137,12 @@ void subCommon_onErrorCb ( mamaSubscription    subscription,
      JNIEnv*             env             =   NULL;
      callbackClosure*    closureImpl     =   NULL;
 	jstring jmsg;
-     
+
      closureImpl = (callbackClosure*)closure;
      assert(closureImpl!=NULL);
      assert(closureImpl->mClientCB!=NULL);
      assert(closureImpl->mSubscription!=NULL);
-     
+
      /*Get the env for the current thread*/
      env = utils_getENV(javaVM_g);
      if (!env) return;
@@ -156,7 +156,7 @@ void subCommon_onErrorCb ( mamaSubscription    subscription,
      (*env)->DeleteLocalRef(env, jmsg);        /* delete this since this thread is not from the JVM */
     return;
 }
-        
+
 void subCommon_qualityCb ( mamaSubscription subscription,
                            mamaQuality      quality,
                            const char*      symbol,
@@ -167,16 +167,16 @@ void subCommon_qualityCb ( mamaSubscription subscription,
 {
      JNIEnv*             env             =   NULL;
      callbackClosure*    closureImpl     =   NULL;
-     
+
      closureImpl = (callbackClosure*)closure;
      assert(closureImpl!=NULL);
      assert(closureImpl->mClientCB!=NULL);
      assert(closureImpl->mSubscription!=NULL);
-     
+
      /*Get the env for the current thread*/
      env = utils_getENV(javaVM_g);
      if (!env) return;
-     
+
      (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                             subCallbackonQualityId,
                             closureImpl->mSubscription,
@@ -199,22 +199,22 @@ void subCommon_onMsgCb ( mamaSubscription    subscription,
     assert(closureImpl->mClientCB!=NULL);
     assert(closureImpl->mMessage!=NULL);
     assert(closureImpl->mSubscription!=NULL);
-    
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
     if (!env) return;/*Can't throw exception without JNIEnv!!*/
-    
+
     (*env)->SetLongField(env, closureImpl->mMessage,
                          messagePointerFieldId,
                          CAST_POINTER_TO_JLONG(msg));
-    
+
     /*invoke the callback*/
     (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                            subCallbackonMsgId,
                            closureImpl->mSubscription,
                            closureImpl->mMessage);
 
-    /* 
+    /*
        Need to check if any exceptions were propagated here.
        If we don't the exceptions could actually fill the stack!!
     */
@@ -230,15 +230,15 @@ void subCommon_gapCb (mamaSubscription    subscription,
 {
     JNIEnv*             env                      =   NULL;
     callbackClosure*    closureImpl              =   NULL;
-    
+
     closureImpl = (callbackClosure*)closure;
     assert(closureImpl!=NULL);
     assert(closureImpl->mClientCB!=NULL);
     assert(closureImpl->mSubscription!=NULL);
-    
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
-    
+
     /*Invoke the onGap() callback method!!*/
     (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                            subCallbackonRecapId,
@@ -253,15 +253,15 @@ void subCommon_recapCb (mamaSubscription    subscription,
 {
     JNIEnv*             env                      =   NULL;
     callbackClosure*    closureImpl              =   NULL;
-    
+
     closureImpl = (callbackClosure*)closure;
     assert(closureImpl!=NULL);
     assert(closureImpl->mClientCB!=NULL);
     assert(closureImpl->mSubscription!=NULL);
-    
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
-    
+
     /*Invoke the onRecap() callback method!!*/
     (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                            subCallbackonRecapId,
@@ -269,9 +269,9 @@ void subCommon_recapCb (mamaSubscription    subscription,
     return;
 }
 
-void subCommon_destroyCb(mamaSubscription  subscription, 
-                                      void*             closure, 
-                                      jfieldID          subscriptionPointerFieldId, 
+void subCommon_destroyCb(mamaSubscription  subscription,
+                                      void*             closure,
+                                      jfieldID          subscriptionPointerFieldId,
                                       jmethodID         subCallbackonDestroyId)
 {
     /*Get the env for the current thread*/
@@ -282,14 +282,14 @@ void subCommon_destroyCb(mamaSubscription  subscription,
         callbackClosure *closureImpl = (callbackClosure*)closure;
         if(NULL != closureImpl)
         {
-            /* Verify that the structure members are valid. */            
+            /* Verify that the structure members are valid. */
             assert(closureImpl->mClientCB!=NULL);
             assert(closureImpl->mSubscription!=NULL);
 
             (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                                    subCallbackonDestroyId,
                                    closureImpl->mSubscription);
-                    
+
             {
                 /* The closure must only be destroyed if the subscription has been destroyed
                  * and not de-activated.
@@ -301,24 +301,24 @@ void subCommon_destroyCb(mamaSubscription  subscription,
                     /* Free the references to each of the objects. */
                     if(closureImpl->mUserData)
                     {
-                        (*env)->DeleteGlobalRef(env,closureImpl->mUserData);                        
+                        (*env)->DeleteGlobalRef(env,closureImpl->mUserData);
                     }
 
                     if(closureImpl->mClientCB)
                     {
-                        (*env)->DeleteGlobalRef(env,closureImpl->mClientCB);                        
+                        (*env)->DeleteGlobalRef(env,closureImpl->mClientCB);
                     }
 
                     if(closureImpl->mMessage)
                     {
                         (*env)->SetLongField(env, closureImpl->mMessage, messagePointerFieldId_g, 0);
-                        (*env)->DeleteGlobalRef(env,closureImpl->mMessage);                        
+                        (*env)->DeleteGlobalRef(env,closureImpl->mMessage);
                     }
 
                     if(closureImpl->mSubscription)
                     {
                         /* Delete the global ref. */
-                        (*env)->DeleteGlobalRef(env,closureImpl->mSubscription);                        
+                        (*env)->DeleteGlobalRef(env,closureImpl->mSubscription);
                     }
 
                     /* Free the impl itself. */
@@ -326,5 +326,5 @@ void subCommon_destroyCb(mamaSubscription  subscription,
                 }
             }
         }
-    }    
+    }
 }

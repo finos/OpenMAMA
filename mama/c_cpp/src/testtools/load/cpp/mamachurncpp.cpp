@@ -51,8 +51,8 @@ static int gSymbolCount;
 static tArrayItem gSymbolArray[MAX_SYMBOLS];
 
 static int              gThreads = 0;
-static MamaQueue*       gQueues;             
-static MamaDispatcher*  gDispatchers;        
+static MamaQueue*       gQueues;
+static MamaDispatcher*  gDispatchers;
 
 /* Stats counters */
 static int gCreateMsgCount    = 0;
@@ -188,11 +188,11 @@ void SubscriptionCallbacks::onMsg (MamaSubscription* subscription,
         case MAMA_MSG_TYPE_INITIAL:
           gInitialMsgCount++;
         break;
-        
+
         case  MAMA_MSG_TYPE_RECAP:
           gRecapMsgCount++;
         break;
-        
+
         default:
           gOtherMsgCount++;
         break;
@@ -203,7 +203,7 @@ void SubscriptionCallbacks::onMsg (MamaSubscription* subscription,
         symbol = subscription->getSymbol();
         printf("%s Type: %s Status %s \n",
         NULL==symbol ? "" : symbol,
-        msg.getMsgTypeName(), 
+        msg.getMsgTypeName(),
         msg.getMsgStatusString());
     }
 }
@@ -228,7 +228,7 @@ static void createSubscription (int index)
 {
     SubscriptionCallbacks* callbacks = new SubscriptionCallbacks();
     tArrayItem* item = &gSymbolArray[index];
-  
+
     if (!item->queue)
     {
         item->queue = (gQueues ==
@@ -285,7 +285,7 @@ void ChurnCallback::onTimer (MamaTimer* timer)
     gChurned+=churnCount;
 }
 
-static void create_source (const char* sourceName, 
+static void create_source (const char* sourceName,
                            const char* transportName)
 {
     char id[256];
@@ -330,12 +330,12 @@ static void AddSymbol (const char* symbol)
         die("Too many symbols. Max=%d",MAX_SYMBOLS);
 }
 
-static void parseCommandLine (int           argc, 
+static void parseCommandLine (int           argc,
                               const char**  argv,
-                              int*          numToChurn, 
-                              const char**  symbolfile, 
+                              int*          numToChurn,
+                              const char**  symbolfile,
                               const char**  sourceName,
-                              const char**  transportName, 
+                              const char**  transportName,
                               int*          lifetime)
 {
     int i;
@@ -499,7 +499,7 @@ static void cleanup(void)
         if (gVerbosity >= CHURN_LOG_LEVEL_FINEST)
             printf("life timer destroyed\n");
     }
-  
+
     if (NULL != gChurnTimer)
     {
         gChurnTimer->destroy();
@@ -528,7 +528,7 @@ static void cleanup(void)
 
     if ((gThreads > 0) && (NULL != gQueues) && (NULL != gDispatchers))
     {
-        for (int i = 0; i<gThreads; ++i) 
+        for (int i = 0; i<gThreads; ++i)
         {
             gQueues[i].destroy();
             gDispatchers[i].destroy();
@@ -575,12 +575,12 @@ int main (int argc, const char **argv)
     const char* transportName = NULL;
     int         lifetimeSecs  = 0;
 
-    parseCommandLine (argc, 
+    parseCommandLine (argc,
                       argv,
-                      &numToChurn, 
-                      &symbolfile, 
-                      &sourceName, 
-                      &transportName, 
+                      &numToChurn,
+                      &symbolfile,
+                      &sourceName,
+                      &transportName,
                       &lifetimeSecs);
 
     if (NULL!=symbolfile)
@@ -646,10 +646,10 @@ int main (int argc, const char **argv)
     if (lifetimeSecs>0)
     {
         if (gVerbosity >= CHURN_LOG_LEVEL_FINEST)
-        {  
+        {
             printf("Starting life timer, program will stop in %d seconds%s\n",lifetimeSecs,1==lifetimeSecs?"":"s");
         }
-        
+
         gLifeTimer = new MamaTimer();
         LifetimeCallback* lifetimeCallback = new LifetimeCallback();
         gLifeTimer->create (gDefaultQueue, lifetimeCallback, lifetimeSecs, NULL);

@@ -25,7 +25,7 @@
 #include <mama/sourceman.h>
 #include <mama/types.h>
 
-namespace Wombat 
+namespace Wombat
 {
 
     class MamaSource;
@@ -80,14 +80,14 @@ namespace Wombat
         iterator                  end          ();
         const_iterator            end          () const;
 
-        mamaSourceManager         getCValue    ()       
-        { 
-            return myManager; 
+        mamaSourceManager         getCValue    ()
+        {
+            return myManager;
         }
 
-        const mamaSourceManager   getCValue    () const 
-        { 
-            return myManager; 
+        const mamaSourceManager   getCValue    () const
+        {
+            return myManager;
         }
 
     private:

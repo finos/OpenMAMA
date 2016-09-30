@@ -29,17 +29,17 @@ namespace Wombat
 	public enum mamaSourceState
 	{
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		MAMA_SOURCE_STATE_OFF     = 0,
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		MAMA_SOURCE_STATE_OK      = 1,
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		MAMA_SOURCE_STATE_UNKNOWN = 99
 	}

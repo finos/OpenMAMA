@@ -93,10 +93,10 @@ extern mama_status mamaPlayback_publishMsg (mamaPlaybackPublisher mamaPlayback,
  * @param:  mamaPlaybackPublisher
  * @param:  delim
  * @param:  mamaDateTime
- * @desc :  publishes from the playback file specified . 
+ * @desc :  publishes from the playback file specified .
  *          The file should be in binary format [header:128 bytes]:[msglength]
- *          mamaMsg. Each mamaMsg is terminated by a newline. 
- *          Reading of file is done sequentially based on the sum of header 
+ *          mamaMsg. Each mamaMsg is terminated by a newline.
+ *          Reading of file is done sequentially based on the sum of header
  *          length and msglength.
  * @return: mama_bool_t
  */
@@ -107,7 +107,7 @@ extern mama_bool_t mamaPlayback_publishFromFile (mamaPlaybackPublisher mamaPlayb
 /**
  * Method:  mamaplayback_allocate
  * @param:  mamaPlaybackPublisher - pointer to mamaPlaybackPublisher
- * @desc :  Creates the hash tables that are used for holding 
+ * @desc :  Creates the hash tables that are used for holding
  *          previously allocated publishers and transports.
  * @return: status
  */
@@ -136,7 +136,7 @@ extern mama_status mamaPlayback_deallocate (mamaPlaybackPublisher mamaPlayback);
  */
 
 MAMAExpDLL
-extern mama_bool_t 
+extern mama_bool_t
 amaPlayback_findOrCreatePublisher (mamaPlaybackPublisher mamaPlayback,
                                    char* KeyName,
                                    mamaPublisher* publisher,
@@ -164,7 +164,7 @@ mamaPlayback_setTransportSleep (mamaPlaybackPublisher mamaPlayback,
                                 const int tportSleep);
 
 MAMAExpDLL
-extern mama_bool_t 
+extern mama_bool_t
 mamaPlayback_findOrCreateTransport (mamaPlaybackPublisher mamaPlayback,
                                     char* transportName,
                                     mamaTransport* transport);
@@ -206,7 +206,7 @@ extern mama_status mamaPlayback_getTransportName (mamaPlaybackPublisher mamaPlay
  * @param:  fileName
  * @desc :  opens the playback file.
  * @return: status
- */ 
+ */
 MAMAExpDLL
 extern mama_status mamaPlayback_openFile (mamaPlaybackPublisher mamaPlayback,
                                      const char* fileName);
@@ -256,7 +256,7 @@ extern mama_status mamaPlayback_createPublisher (mamaPlaybackPublisher mamaPlayb
 
 /**
  * Method: mamaplayback_createTransport
- * @desc : Creates a mamaTransport 
+ * @desc : Creates a mamaTransport
  * @param: mamaPlaybackPublisher
  * @param: mamaTransport
  * @param: transportName
@@ -270,9 +270,9 @@ extern mama_status mamaPlayback_createTransport (mamaPlaybackPublisher mamaPlayb
  * Method:  printReport
  * @param:  mamaTimer
  * @param:  closure
- * @desc :  Prints report for publishing rates. 
+ * @desc :  Prints report for publishing rates.
  *          The interval for report printing
- *          is 1sec, but can be changed to any value > 1 sec 
+ *          is 1sec, but can be changed to any value > 1 sec
  *          through command parameters at application start.
  *
  */
@@ -296,7 +296,7 @@ extern void  mamaPlayback_printConnections (mamaPlaybackPublisher mamaPlayback);
  * @return mama_status
  */
 MAMAExpDLL
-extern mama_status mamaPlayback_setBridge (mamaPlaybackPublisher mamaPlayback, 
+extern mama_status mamaPlayback_setBridge (mamaPlaybackPublisher mamaPlayback,
                                            mamaBridge bridge);
 
 #if defined(__cplusplus)
@@ -304,5 +304,3 @@ extern mama_status mamaPlayback_setBridge (mamaPlaybackPublisher mamaPlayback,
 #endif
 
 #endif
-
-

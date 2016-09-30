@@ -54,15 +54,15 @@ public class MamaInboxCallbacks extends TestCase
         // Open mama
         Mama.open();
 
-        // Create the transport        
-        mTransportBasic = new MamaTransport();        
-        mTransportBasic.create(Main.GetTransportName(), mBridge);        
+        // Create the transport
+        mTransportBasic = new MamaTransport();
+        mTransportBasic.create(Main.GetTransportName(), mBridge);
     }
 
     @Override
     protected void tearDown()
     {
-        // Destroy the transport        
+        // Destroy the transport
         mTransportBasic.destroy();
         mTransportBasic = null;
 
@@ -152,7 +152,7 @@ public class MamaInboxCallbacks extends TestCase
             mTransport = transport;
             mTestCallback = new TestInboxCallback(bridge);
          }
-         
+
          public void onMsg(MamaInbox inbox, MamaMsg msg)
          {
              // Destroy the inbox
@@ -199,7 +199,7 @@ public class MamaInboxCallbacks extends TestCase
         inbox.create(mTransportBasic, queue, testCallback);
 
         // Create a message
-        MamaMsg message = new MamaMsg();        
+        MamaMsg message = new MamaMsg();
         message.addI32("field", 1, 222);
 
         // Create a publisher
@@ -255,7 +255,7 @@ public class MamaInboxCallbacks extends TestCase
     {
         // Create a callback object
         TestInboxCallback_RecreateOnMsg testCallback = new TestInboxCallback_RecreateOnMsg(mBridge, mTransportBasic);
-        
+
         // Allocate a timer
         MamaInbox inbox = new MamaInbox();
 

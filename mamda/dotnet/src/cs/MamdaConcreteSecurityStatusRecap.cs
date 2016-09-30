@@ -41,9 +41,9 @@ namespace Wombat
 			mSrcTime                     = DateTime.MinValue;
             mReason                      = null;
 		}
-    
+
 		/// <summary>
-		/// Returns the security status 
+		/// Returns the security status
 		/// <see cref="MamdaSecurityStatusUpdate.getSecurityStatus()"/>
 		/// </summary>
 		/// <returns></returns>
@@ -71,7 +71,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// Returns the security	
+		/// Returns the security
 		/// <see cref="MamdaSecurityStatusUpdate.getSecurityStatus()"/>
 		/// </summary>
 		/// <returns></returns>
@@ -90,7 +90,7 @@ namespace Wombat
 
 		/// <summary>
 		/// <see cref="MamdaSecurityStatusUpdate.getSecurityStatus()"/>
-		/// </summary> 
+		/// </summary>
 		/// <param name="secQualifier"></param>
 		public void setSecurityStatusQualifier(long secQualifier)
 		{
@@ -213,7 +213,7 @@ namespace Wombat
 			if (securityStatusOrigStr != null)
 				mSecurityStatusOrigStr = securityStatusOrigStr;
 		}
-        
+
 		/// <summary>
 		/// Set the security status string
 		/// <see cref="MamdaSecurityStatusUpdate.getSecurityStatusQualifier()"/>
@@ -232,7 +232,7 @@ namespace Wombat
 		/// <returns></returns>
 		public string getSecurityStatusQualifierStr()
 		{
-        
+
 			return mSecurityStatusQualifierStr;
 		}
 
@@ -255,7 +255,7 @@ namespace Wombat
 			if (securityStatusQualifierStr != null)
 				mSecurityStatusQualifierStr = securityStatusQualifierStr;
 		}
-        
+
         ///< summary>
         /// Returns the security status reason
         /// <see cref="MamdaSecurityStatusRecap.getReason()"/>
@@ -304,10 +304,10 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="actTime"></param>
-		public void setActivityTime(DateTime actTime) 
+		public void setActivityTime(DateTime actTime)
 		{
 			if (actTime != DateTime.MinValue)
 				mActTime = actTime;
@@ -316,7 +316,7 @@ namespace Wombat
 		public void setSrcTime(DateTime srcTime)
 		{
 			if (srcTime != DateTime.MinValue)
-				mSrcTime = srcTime;  
+				mSrcTime = srcTime;
 		}
 
 		public DateTime getSrcTime()

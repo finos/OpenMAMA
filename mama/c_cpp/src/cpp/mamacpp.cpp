@@ -143,7 +143,7 @@ namespace Wombat
         void MAMACALLTYPE bridgeMessageCCB (mamaBridge bridgeImpl, const char* message)
         {
             mamaBridgeImpl* impl = (mamaBridgeImpl*)bridgeImpl;
-            MamaBridgeCallback* callback = static_cast<MamaBridgeCallback*>(impl->mCppCallback); 
+            MamaBridgeCallback* callback = static_cast<MamaBridgeCallback*>(impl->mCppCallback);
 
             callback->onBridgeInfo (bridgeImpl, message);
         }
@@ -224,7 +224,7 @@ namespace Wombat
 
     static MamaLogFileCallback* gMamaLogFileCallback = NULL;
 
-    extern "C" 
+    extern "C"
     {
         void logSizeExceededCb ()
         {
@@ -313,7 +313,7 @@ namespace Wombat
         MamaQueue* defaultQueue = NULL;
         mamaQueue  defaultQueueC;
 
-        if (MAMA_STATUS_OK == 
+        if (MAMA_STATUS_OK ==
             mama_getDefaultEventQueue (bridgeImpl, &defaultQueueC))
         {
             mamaQueue_getClosure (defaultQueueC, (void**)(&defaultQueue));

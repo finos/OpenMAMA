@@ -33,8 +33,8 @@ namespace Wombat
 	/// socket an waits for a connection. Upon accepting a connection it creates a
 	/// mamaIoHandler to read from the socket and connects back to the client on port
 	/// 107 (telnet). It echos the users input. Type "quit" to exit.
-	/// 
-	/// It accepts the following command line arguments: 
+	///
+	/// It accepts the following command line arguments:
 	///      [-m[iddleware] name]   The middleware to use. Defaults to wmw
 	///      [-p[ort] number]       The TCP/IP port on which to listen. Defaults to 9998
 	///      [-q]                   Quiet mode. Suppress output.
@@ -119,7 +119,7 @@ namespace Wombat
 			acceptor.Bind(new IPEndPoint(IPAddress.Any, port));
 
 			Console.WriteLine("Waiting for a connection on port {0}", port);
-			
+
 			acceptor.Listen(1);
 			client = acceptor.Accept();
 
@@ -206,7 +206,7 @@ namespace Wombat
 			public WriteIoCallback(MamaIoCS example) : base(example)
 			{
 			}
-            
+
 			// called too many times, debug output disabled
 			public override void onIo(MamaIo io, mamaIoType ioType)
 			{
@@ -333,7 +333,7 @@ socket an waits for a connection. Upon accepting a connection it creates a
 mamaIoHandler to read from the socket and connects back to the client on port
 107 (telnet). It echos the users input. Type ""quit"" to exit.
 
-It accepts the following command line arguments: 
+It accepts the following command line arguments:
      [-p[ort] number]   The TCP/IP port on which to listen. Defaults to 9998
      [-q]               Quiet mode. Suppress output.
 ";

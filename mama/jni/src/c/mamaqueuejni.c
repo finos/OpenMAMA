@@ -42,7 +42,7 @@
 typedef struct monitorCallbackClosure_
 {
     /*The Java MamaQueueMonitorCallback instance.
-     Stored as a global reference. Destroyed when queue is destroyed*/ 
+     Stored as a global reference. Destroyed when queue is destroyed*/
     jobject mClientJavaCallback;
 
     /*Global reference to the Java MamaQueue instance.
@@ -95,7 +95,7 @@ extern  jfieldID    bridgePointerFieldId_g;
 static void MAMACALLTYPE highWaterMarkCallback (mamaQueue     queue,
                                                 size_t        size,
                                                 void*         closure);
-                                                                                                
+
 /*Callback for event queue low watermark monitoring.*/
 static void MAMACALLTYPE lowWaterMarkCallback (mamaQueue     queue,
                                                size_t        size,
@@ -155,10 +155,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_destroy(JNIEnv* env, jobje
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer, 
-    "MamaQueue.destroy(): Null parameter, MamaQueue may have already been destroyed."); 
-    
-   
+        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
+    "MamaQueue.destroy(): Null parameter, MamaQueue may have already been destroyed.");
+
+
     if(MAMA_STATUS_OK!=(status=mamaQueue_destroy(
                                CAST_JLONG_TO_POINTER(mamaQueue,queuePointer))))
     {
@@ -169,7 +169,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_destroy(JNIEnv* env, jobje
                 status);
         utils_throwMamaException(env,errorString);
     }
-    
+
     mamaQueuePerformCleanup(env, this);
 
     return;
@@ -188,10 +188,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_destroyWait(JNIEnv* env, j
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer, 
-    "MamaQueue.destroyWait(): Null parameter, MamaQueue may have already been destroyed."); 
-    
-   
+        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
+    "MamaQueue.destroyWait(): Null parameter, MamaQueue may have already been destroyed.");
+
+
     if(MAMA_STATUS_OK!=(status=mamaQueue_destroyWait(
                                CAST_JLONG_TO_POINTER(mamaQueue,queuePointer))))
     {
@@ -202,7 +202,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_destroyWait(JNIEnv* env, j
                 status);
         utils_throwMamaException(env,errorString);
     }
-    
+
     mamaQueuePerformCleanup(env, this);
 
     return;
@@ -221,10 +221,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_destroyTimedWait(JNIEnv* e
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer, 
-    "MamaQueue.destroyTimedWait(): Null parameter, MamaQueue may have already been destroyed."); 
-    
-   
+        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
+    "MamaQueue.destroyTimedWait(): Null parameter, MamaQueue may have already been destroyed.");
+
+
     if(MAMA_STATUS_OK!=(status=mamaQueue_destroyTimedWait(
                                CAST_JLONG_TO_POINTER(mamaQueue,queuePointer), timeout)))
     {
@@ -235,7 +235,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_destroyTimedWait(JNIEnv* e
                 status);
         utils_throwMamaException(env,errorString);
     }
-    
+
     mamaQueuePerformCleanup(env, this);
 
     return;
@@ -254,7 +254,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_dispatch
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.");
 
     if(MAMA_STATUS_OK!=(status=mamaQueue_dispatch(
@@ -283,7 +283,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_stopDispatch
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.");
 
     if(MAMA_STATUS_OK!=(status=mamaQueue_stopDispatch(
@@ -313,7 +313,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_enqueueEvent
     char                    errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
         "Null parameter, MamaQueue may have already been destroyed.");
 
     closureData = (enqueueEventClosure*) calloc (1, sizeof (enqueueEventClosure));
@@ -361,7 +361,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_setQueueMonitorCallback
     mamaQueueMonitorCallbacks queueCallbacks;
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.");
 
     closureData = (monitorCallbackClosure*) calloc (1, sizeof
@@ -395,8 +395,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_setQueueMonitorCallback
     }
 
     /*Set the pointer for the C queue in the Java queue object*/
-    (*env)->SetLongField(env, 
-                         this, 
+    (*env)->SetLongField(env,
+                         this,
                          monitorClosureFieldId_g,
                          CAST_POINTER_TO_JLONG(closureData));
 
@@ -416,7 +416,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_setHighWatermark
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.");
 
     if(MAMA_STATUS_OK!=(status=mamaQueue_setHighWatermark(
@@ -448,7 +448,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaQueue_getHighwatermark
     size_t          highWatermark   = 0;
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.", 0);
 
     if(MAMA_STATUS_OK!=(status=mamaQueue_getHighWatermark(
@@ -479,7 +479,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_setLowWatermark
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.");
 
     if(MAMA_STATUS_OK!=(status=mamaQueue_setLowWatermark(
@@ -506,11 +506,11 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaQueue_getLowWatermark
 {
     mama_status     status          = MAMA_STATUS_OK;
     jlong           queuePointer    = 0;
-    size_t          lowWatermark    = 0; 
+    size_t          lowWatermark    = 0;
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.", 0);
 
     if(MAMA_STATUS_OK!=(status=mamaQueue_getLowWatermark(
@@ -541,7 +541,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_setQueueName
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.");
 
     if (name)
@@ -566,7 +566,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_setQueueName
 
     return;
 }
-                                                                                                
+
 /*
  * Class:     com_wombat_mama_MamaQueue
  * Method:    getQueueName
@@ -582,7 +582,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaQueue_getQueueName
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.", NULL);
 
     if(MAMA_STATUS_OK!=(status=mamaQueue_getQueueName(
@@ -659,7 +659,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaQueue_getEventCount
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     queuePointer = (*env)->GetLongField(env,this,queuePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(queuePointer,
 		"Null parameter, MamaQueue may have already been destroyed.", 0);
 
     if(MAMA_STATUS_OK!=(status=mamaQueue_getEventCount(
@@ -673,7 +673,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaQueue_getEventCount
                 status);
         utils_throwMamaException(env,errorString);
     }
-    
+
     return (jlong)eventCount;
 }
 
@@ -688,10 +688,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_create
     mamaQueue       queue   =   NULL;
     mama_status     status  =   MAMA_STATUS_OK;
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    jlong  bridgeFieldPointer = 
-        (*env)->GetLongField(env,bridge,bridgePointerFieldId_g);             
-    assert(0!=bridgeFieldPointer); 
-    
+    jlong  bridgeFieldPointer =
+        (*env)->GetLongField(env,bridge,bridgePointerFieldId_g);
+    assert(0!=bridgeFieldPointer);
+
     if(MAMA_STATUS_OK!=(status=mamaQueue_create(
                 &queue, CAST_JLONG_TO_POINTER(mamaBridge,bridgeFieldPointer))))
     {
@@ -707,7 +707,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_create
     /*Set the pointer for the C queue in the Java queue object*/
     (*env)->SetLongField(env, this, queuePointerFieldId_g,
                                    CAST_POINTER_TO_JLONG(queue));
-     
+
     return;
 }
 
@@ -740,7 +740,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_initIDs
 {
     jclass   queueMonitorCallbackClass  =   NULL;
     jclass   ququeEventCallbackClass    =   NULL;
-    
+
     int i=0;
     queuePointerFieldId_g = (*env)->GetFieldID(env,
                                 class,"queuePointer_i",
@@ -751,16 +751,16 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_initIDs
     queuePointerMsg_g = (*env)->GetFieldID(env,
                                 class,"reuseableMsg",
                                 "Lcom/wombat/mama/MamaMsg;");
-    
-/*Get a reference to the subscription Callback class*/
+
+    /*Get a reference to the subscription Callback class*/
     queueMonitorCallbackClass = (*env)->FindClass(env,
             "com/wombat/mama/MamaQueueMonitorCallback");
-    
+
     if (!queueMonitorCallbackClass) return;/*Exception auto thrown*/
     /*MamaQueueMonitorCallback.onHighWatermarkExceeded()*/
     queueCallbackonHigh_g = (*env)->GetMethodID(env, queueMonitorCallbackClass,
             "onHighWatermarkExceeded", "(Lcom/wombat/mama/MamaQueue;J)V" );
-    
+
     if (!queueCallbackonHigh_g)
     {
         (*env)->DeleteLocalRef(env, queueMonitorCallbackClass);
@@ -769,7 +769,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_initIDs
     /*MamaQueueMonitorCallback.onLowWatermark()*/
     queueCallbackonLow_g = (*env)->GetMethodID(env, queueMonitorCallbackClass,
             "onLowWatermark", "(Lcom/wombat/mama/MamaQueue;J)V" );
-    
+
     if (!queueCallbackonLow_g)
     {
         (*env)->DeleteLocalRef(env, queueMonitorCallbackClass);
@@ -778,7 +778,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_initIDs
 
     ququeEventCallbackClass = (*env)->FindClass(env,
             "com/wombat/mama/MamaQueueEventCallback");
-    
+
     /*MamaQueueEnqueueCallback.onEventEnqueue()*/
     queueEventCallback_g = (*env)->GetMethodID(env, ququeEventCallbackClass,
             "onEvent", "(Lcom/wombat/mama/MamaQueue;Ljava/lang/Object;)V");
@@ -788,9 +788,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaQueue_initIDs
         (*env)->DeleteLocalRef(env, ququeEventCallbackClass);
         return;/*Exception auto thrown*/
     }
-    
+
     queueConstructorId_g = (*env)->GetMethodID(env, class,
-                             "<init>", "()V" );           
+                             "<init>", "()V" );
     return;
 }
 
@@ -799,15 +799,15 @@ void MAMACALLTYPE highWaterMarkCallback (mamaQueue     queue,
                                          void*         closure)
 {
     JNIEnv*                 env             =   NULL;
-    monitorCallbackClosure* closureData     = 
+    monitorCallbackClosure* closureData     =
         (monitorCallbackClosure*)closure;
 
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
 
     if (!env) return; /*Details logged in utils_getENV()*/
-    
-    if (!closureData) 
+
+    if (!closureData)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "highWaterMarkCallback(): NULL "
                                        "Closure!!");
@@ -829,7 +829,7 @@ void MAMACALLTYPE highWaterMarkCallback (mamaQueue     queue,
     }
 
     /*Call the onHighWatermarkExceeded Java callback*/
-    (*env)->CallVoidMethod(env, 
+    (*env)->CallVoidMethod(env,
                            closureData->mClientJavaCallback,
                            queueCallbackonHigh_g,
                            closureData->mJavaQueue,
@@ -837,21 +837,21 @@ void MAMACALLTYPE highWaterMarkCallback (mamaQueue     queue,
 
     return;
 }
-                                                                                                
+
 void MAMACALLTYPE lowWaterMarkCallback (mamaQueue     queue,
                                         size_t        size,
                                         void*         closure)
 {
     JNIEnv*                 env             =   NULL;
-    monitorCallbackClosure* closureData     = 
+    monitorCallbackClosure* closureData     =
         (monitorCallbackClosure*)closure;
 
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
 
     if (!env) return; /*Details logged in utils_getENV()*/
-    
-    if (!closureData) 
+
+    if (!closureData)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "lowWaterMarkCallback(): NULL "
                                        "Closure");
@@ -873,7 +873,7 @@ void MAMACALLTYPE lowWaterMarkCallback (mamaQueue     queue,
     }
 
     /*Call the onHighWatermarkExceeded Java callback*/
-    (*env)->CallVoidMethod(env, 
+    (*env)->CallVoidMethod(env,
                            closureData->mClientJavaCallback,
                            queueCallbackonLow_g,
                            closureData->mJavaQueue,
@@ -892,8 +892,8 @@ void MAMACALLTYPE queueEventCallBack (mamaQueue     queue,
     env = utils_getENV(javaVM_g);
 
     if (!env) return; /*Details logged in utils_getENV()*/
-    
-    if (!closureData) 
+
+    if (!closureData)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL,
                   "enqueueEventCallBack(): NULL Closure");
@@ -914,7 +914,7 @@ void MAMACALLTYPE queueEventCallBack (mamaQueue     queue,
         return;
     }
     /*Call the onHighWatermarkExceeded Java callback*/
-    (*env)->CallVoidMethod(env, 
+    (*env)->CallVoidMethod(env,
                            closureData->mClientJavaCallback,
                            queueEventCallback_g,
                            closureData->mJavaQueue,
@@ -926,6 +926,6 @@ void MAMACALLTYPE queueEventCallBack (mamaQueue     queue,
     (*env)->DeleteGlobalRef(env,closureData->mClientClosure);
 
     free (closureData);
-      
+
     return;
 }

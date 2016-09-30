@@ -103,21 +103,21 @@ public class MamaListen
 
     private static String           mySymbolNamespace   = null;
 
-    private static final SubscriptionCallback   
+    private static final SubscriptionCallback
         callback            = new SubscriptionCallback();
 
-    private static final Logger     logger              = 
+    private static final Logger     logger              =
                                     Logger.getLogger( "com.wombat.mama" );
     private static Level            myLogLevel;
     private static boolean          myGroupSubscription = false;
-    private static MamaSource       mySource            = null;   
+    private static MamaSource       mySource            = null;
     private static MamaSource       myDictSource        = null;
     /* Contains the amount of time that the example program will run for, if set to 0 then it
      * will run indefinitely.
      */
     private static int myShutdownTime = 0;
 
-    private static boolean newIterators = false; 
+    private static boolean newIterators = false;
     public static void main (final String[] args)
     {
         parseCommandLine (args);
@@ -133,7 +133,7 @@ public class MamaListen
             if (dictFile != null)
             {
                 System.out.println("Dictionary file specified, building dictionary from " + dictFile);
-                try 
+                try
                 {
                     dictionary= new MamaDictionary();
                     dictionary.populateFromFile(dictFile);
@@ -148,20 +148,20 @@ public class MamaListen
             }
             dumpDataDictionary ();
             subscribeToSubjects ();
-            
+
             System.out.println( "Type CTRL-C to exit." );
-            
-            // Create the shutdown timer, note that it will be destroyed in the callback            
+
+            // Create the shutdown timer, note that it will be destroyed in the callback
             if(myShutdownTime > 0)
             {
 				// Create a new callback object
                 ShutdownTimerCallback timerCallback = new ShutdownTimerCallback(myBridge, queueGroup);
-				
+
 				// Create the timer
 				MamaTimer shutdownTimer = new MamaTimer();
                 shutdownTimer.create(myDefaultQueue, timerCallback, (double)myShutdownTime);
             }
-                        
+
             Mama.start (myBridge);
         }
         catch (Exception e)
@@ -185,17 +185,17 @@ public class MamaListen
     {
         /* Check if queue monitoring has been enabled*/
         if (myHighWatermark>0 || myLowWatermark>0)
-        {            
+        {
             for (int i=0;i<numThreads;i++)
             {
 
                 MamaQueue queue = queueGroup.getNextQueue();
 
                 queue.setQueueName("QUEUE-"+i);
-                
-                
-                
-                queue.setQueueMonitorCallback (new MamaQueueMonitorCallback () 
+
+
+
+                queue.setQueueMonitorCallback (new MamaQueueMonitorCallback ()
                 {
                         public void onHighWatermarkExceeded (MamaQueue queue,
                             long      size)
@@ -243,7 +243,7 @@ public class MamaListen
 
         queueGroup = new MamaQueueGroup (numThreads, myBridge);
 
-        try 
+        try
         {
             setQueueMonitor (queueGroup, numThreads);
         }
@@ -257,9 +257,9 @@ public class MamaListen
         for (Iterator iterator = subjectList.iterator(); iterator.hasNext();)
         {
             final String symbol = (String) iterator.next();
-            
+
             MamaSubscription subscription = new MamaSubscription ();
-           
+
             /*Properties common to all subscription types*/
             subscription.setTimeout (timeout);
             subscription.setRetries (retryAttempts);
@@ -377,7 +377,7 @@ public class MamaListen
                     t.printStackTrace();
                 }
             }
-            
+
             /* Destroy all the queues. */
             if((queueGroup != null) && (numThreads > 0))
             {
@@ -405,7 +405,7 @@ public class MamaListen
         try
         {
             myBridge = Mama.loadBridge (myMiddleware);
-            /*Always the first API method called after loadBridge. 
+            /*Always the first API method called after loadBridge.
               Initialized internal API state*/
             Mama.open ();
             myDefaultQueue = Mama.getDefaultQueue (myBridge);
@@ -416,7 +416,7 @@ public class MamaListen
             System.out.println ("Failed to initialize MAMA");
             System.exit (1);
         }
-        
+
         transport = new MamaTransport ();
 
 	if (myDictTportName != null)
@@ -510,7 +510,7 @@ public class MamaListen
         if (myRecapThrottleRate != -1)
         {
             transport.setOutboundThrottle (
-                    MamaThrottleInstance.RECAP_THROTTLE, 
+                    MamaThrottleInstance.RECAP_THROTTLE,
                     myRecapThrottleRate);
         }
     }
@@ -571,7 +571,7 @@ public class MamaListen
             final int spaces = width - whatLength;
 
             for (int i = 0; i < spaces; i++) sb.append (" ");
-            
+
             System.out.print (sb.toString());
         }
         System.out.flush();
@@ -679,9 +679,9 @@ public class MamaListen
             else if (args[i].equals ("-q"))
             {
                 myLogLevel = myLogLevel == null
-                            ? Level.WARNING : myLogLevel == Level.WARNING   
+                            ? Level.WARNING : myLogLevel == Level.WARNING
                             ? Level.SEVERE  : Level.OFF;
-                
+
                 Mama.enableLogging (myLogLevel);
                 quietness++;
                 i++;
@@ -699,7 +699,7 @@ public class MamaListen
             else if (args[i].equals ("-v"))
             {
                 myLogLevel = myLogLevel == null
-                            ? Level.FINE    : myLogLevel == Level.FINE    
+                            ? Level.FINE    : myLogLevel == Level.FINE
                             ? Level.FINER   : Level.FINEST;
 
                 Mama.enableLogging (myLogLevel);
@@ -723,13 +723,13 @@ public class MamaListen
 
         }
     }
-    
+
     /* Class for processing the shutdown timer callback. */
     private static class ShutdownTimerCallback implements MamaTimerCallback
     {
 		// The main bridge
 		private MamaBridge m_bridge;
-		
+
         // The queue group
         private MamaQueueGroup m_queueGroup;
 
@@ -739,12 +739,12 @@ public class MamaListen
 			m_bridge = bridge;
             m_queueGroup = queueGroup;
 		}
-		
+
 		public void onTimer(MamaTimer timer)
 		{
 			// Destroy the timer
 			timer.destroy();
-		
+
             // Stop all the queues
             if(numThreads > 0)
             {
@@ -789,12 +789,12 @@ public class MamaListen
                         return;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 ex.printStackTrace ();
                 System.exit (0);
             }
-            
+
             if (quietness < 1)
             {
                 System.out.println (subscription.getSymbol () +
@@ -802,7 +802,7 @@ public class MamaListen
                     " Status: " + MamaMsgStatus.stringForStatus (msg));
             }
 
-            
+
             if (fieldList.size() == 0)
             {
                 displayAllFields (msg);
@@ -1194,7 +1194,7 @@ public class MamaListen
 
             }
         }
-            
+
         /*Invoked once the subscrption request has been dispatched from the
          * throttle queue.*/
         public void onCreate (MamaSubscription subscription)
@@ -1205,8 +1205,8 @@ public class MamaListen
         /*Invoked if any errors are encountered during subscription processing*/
         public void onError(MamaSubscription subscription,
                             short            mamaStatus,
-                            int              tibrvStatus, 
-                            String           subject, 
+                            int              tibrvStatus,
+                            String           subject,
                             Exception        e)
         {
             System.err.println ("Symbol=[" + subscription.getSymbol() + "] : " +
@@ -1219,18 +1219,18 @@ public class MamaListen
         public void onQuality (MamaSubscription subscription, short quality,
                                short cause, final Object platformInfo)
         {
-            System.err.println( subscription.getSymbol () + 
+            System.err.println( subscription.getSymbol () +
                                 ": quality is now " +
                                 MamaQuality.toString (quality) +
                                 ", cause " + cause +
                                 ", platformInfo: " + platformInfo);
         }
-        
+
         public void onGap (MamaSubscription subscription)
         {
             System.err.println (subscription.getSymbol () + ": gap detected ");
         }
-        
+
         public void onRecapRequest (MamaSubscription subscription)
         {
             System.err.println (subscription.getSymbol () + ": recap requested ");

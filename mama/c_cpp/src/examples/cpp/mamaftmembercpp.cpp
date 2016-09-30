@@ -42,7 +42,7 @@ class FtMemberDemo : public MamaFtMemberCallback
 {
 public:
     FtMemberDemo          ();
-    virtual ~FtMemberDemo () 
+    virtual ~FtMemberDemo ()
     {
     }
 
@@ -56,8 +56,8 @@ public:
     void init                     ();
     void printState               (const char*  context);
     void parseCommandLine         (int            argc,
-                                   const char*    argv[]);   
-       
+                                   const char*    argv[]);
+
 private:
     void usage      (int exitStatus);
     MamaFtMember*   mFtMember;
@@ -97,7 +97,7 @@ FtMemberDemo::FtMemberDemo ()
     , mTransport   (NULL)
     , mWeight      (50)
     , mGroup       (NULL)
-    , mBridgeImpl  (NULL) 
+    , mBridgeImpl  (NULL)
     , mTportName   ("ft")
     , mFtType      (MAMA_FT_TYPE_MULTICAST)
     , mMiddleware  ("wmw")
@@ -107,9 +107,9 @@ FtMemberDemo::FtMemberDemo ()
 void FtMemberDemo::init ()
 {
     mBridgeImpl = Mama::loadBridge (mMiddleware);
-    
+
     Mama::open();
-     
+
     mTransport = MamaTransportMap::findOrCreate (mTportName, mBridgeImpl);
 
     if (!mGroup)
@@ -123,7 +123,7 @@ void FtMemberDemo::init ()
         case MAMA_FT_TYPE_MULTICAST:
             mFtMember = new MamaMulticastFtMember ();
         break;
-        
+
         case MAMA_FT_TYPE_BRIDGE:
             mFtMember = new MamaBridgeFtMember ();
         break;
@@ -132,21 +132,21 @@ void FtMemberDemo::init ()
             usage(1);
         break;
     }
-    
-    
+
+
     mDefaultQueue = Mama::getDefaultEventQueue (mBridgeImpl);
     mTimer.create (mDefaultQueue, this, 2.0);  // two seconds
 
-    mFtMember->setup (mDefaultQueue, 
-                      this, 
-                      mTransport, 
-                      mGroup, 
-                      mWeight, 
-                      1.0, 
+    mFtMember->setup (mDefaultQueue,
+                      this,
+                      mTransport,
+                      mGroup,
+                      mWeight,
+                      1.0,
                       6.0);
 
     mFtMember->activate ();
-    
+
     Mama::start (mBridgeImpl);
 }
 
@@ -222,13 +222,13 @@ void FtMemberDemo::parseCommandLine (int argc, const char* argv[])
         }
         else if (strcmp (argv[i], "-version") == 0)
         {
-            mama_log (MAMA_LOG_LEVEL_NORMAL, Mama::getVersion (mBridgeImpl)); 
+            mama_log (MAMA_LOG_LEVEL_NORMAL, Mama::getVersion (mBridgeImpl));
             exit (0);
         }
         else if (strcmp ("-m", argv[i]) == 0)
         {
             mMiddleware = argv[i+1];
-            i += 2;               
+            i += 2;
         }
         else if (strcmp (argv[i], "-b") == 0)
         {
@@ -239,7 +239,7 @@ void FtMemberDemo::parseCommandLine (int argc, const char* argv[])
         {
             usage(1);
         }
-    } 
+    }
 }
 
 void FtMemberDemo::usage (int exitStatus)

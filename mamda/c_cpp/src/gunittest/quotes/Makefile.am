@@ -40,11 +40,11 @@ LDFLAGS  += -L${blddir}/../../cpp -L${blddir}/../../cpp/orderbooks \
         -L${blddir}/../../../../../mama/c_cpp/src/cpp
 
 
-LIBS = -lmamdabook -lmamda -lrt 
+LIBS = -lmamdabook -lmamda -lrt
 LIBS += -lmama -lwombatcommon -lmamacpp -lgtest
 
 LDADD = -lgtest_main
-common_files = ../common/MainUnitTest.cpp ../common/MamdaUnitTestUtils.cpp 
+common_files = ../common/MainUnitTest.cpp ../common/MamdaUnitTestUtils.cpp
 
 
 dist_UnitTestMamdaQuote_SOURCES = MamdaQuoteCallBackTests.cpp \

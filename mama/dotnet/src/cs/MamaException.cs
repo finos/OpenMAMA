@@ -25,7 +25,7 @@ using System.Runtime.Serialization;
 namespace Wombat
 {
 	/// <summary>
-	/// Provides a MAMA API-specific exception which captures the 
+	/// Provides a MAMA API-specific exception which captures the
 	/// status code of the last MAMA API call and a textual
 	/// description of the error.
 	/// </summary>
@@ -36,7 +36,7 @@ namespace Wombat
 		/// Automatically populates the textual description of the error.
 		/// </summary>
 		/// <param name="status">the MAMA status code</param>
-		public MamaException(MamaStatus.mamaStatus status) : 
+		public MamaException(MamaStatus.mamaStatus status) :
 			this(status, MamaStatus.stringForStatus(status))
 		{
 		}
@@ -47,7 +47,7 @@ namespace Wombat
 		/// </summary>
 		/// <param name="status">the MAMA status code</param>
 		/// <param name="message">the custom error message</param>
-		public MamaException(MamaStatus.mamaStatus status, string message) : 
+		public MamaException(MamaStatus.mamaStatus status, string message) :
 			base(message != null ? message : String.Empty)
 		{
             this.mStatus = status;
@@ -68,7 +68,7 @@ namespace Wombat
 
 		protected MamaException(
 			SerializationInfo info,
-			StreamingContext context) : 
+			StreamingContext context) :
 				base(info, context)
 		{
             mStatus = (MamaStatus.mamaStatus)info.GetInt32(statusKey);

@@ -43,15 +43,15 @@ static mamaQueue        gMamaDefaultQueue   = NULL;
 static const char *     gUsageString[] =
 {
 "This sample application demonstrates how to subscribe and process",
-"mamaMsg's from a basic subscription.",    
+"mamaMsg's from a basic subscription.",
 "",
 " It accepts the following command line arguments:",
 "      [-s topic]         The topic to which to subscribe. Default value",
 "                         is \"MAMA_TOPIC\".",
 "      [-tport name]      The transport parameters to be used from",
 "                         mama.properties. Default is sub",
-"      [-m middleware]    The middleware to use [wmw/lbm/tibrv]. Default", 
-"                         is wmw.", 
+"      [-m middleware]    The middleware to use [wmw/lbm/tibrv]. Default",
+"                         is wmw.",
 "      [-q]               Quiet mode. Suppress output.",
 "      [-v]               Increase verbosity. Can be passed multiple times",
 NULL
@@ -80,14 +80,14 @@ errorCb (mamaSubscription       subscription,
          void*                  closure);
 
 static void MAMACALLTYPE
-msgCb (mamaSubscription       subscription, 
-       mamaMsg                msg, 
+msgCb (mamaSubscription       subscription,
+       mamaMsg                msg,
        void *                 closure,
        void *                 itemClosure);
 
 static void MAMACALLTYPE
-wildCardMsgCb (mamaSubscription       subscription, 
-               mamaMsg                msg, 
+wildCardMsgCb (mamaSubscription       subscription,
+               mamaMsg                msg,
                const char*            topic,
                void *                 closure,
                void *                 itemClosure);
@@ -100,7 +100,7 @@ int main (int argc, const char** argv)
     parseCommandLine (argc, argv);
 
     initializeMama ();
-   
+
     if (gWildcard || gTport)
         createWildCardSubscriber ();
     else
@@ -114,20 +114,20 @@ int main (int argc, const char** argv)
 void initializeMama (void)
 {
     mama_status status;
-   
+
     status = mama_loadBridge (&gMamaBridge, gMiddleware);
     if (status != MAMA_STATUS_OK)
     {
-        printf ("Error loading bridge: %s\n", 
+        printf ("Error loading bridge: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
-    
+
     status = mama_open ();
-    
+
     if (status != MAMA_STATUS_OK)
     {
-        printf ("Error initializing mama: %s\n", 
+        printf ("Error initializing mama: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
@@ -138,16 +138,16 @@ void initializeMama (void)
 
     if (status != MAMA_STATUS_OK)
     {
-        printf ("Error allocating transport: %s\n", 
+        printf ("Error allocating transport: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
-    
+
     status = mamaTransport_create (gTransport, gTransportName, gMamaBridge);
 
     if (status != MAMA_STATUS_OK)
     {
-        printf ("Error creating transport: %s\n", 
+        printf ("Error creating transport: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
@@ -167,11 +167,11 @@ static void createWildCardSubscriber (void)
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_allocate (&gSubscription)))
     {
-        printf ("Error allocating subscription: %s\n", 
+        printf ("Error allocating subscription: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
-    
+
     mamaSubscription_setDebugLevel (gSubscription, gSubscLogLevel);
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_createBasicWildCard (gSubscription,
@@ -182,7 +182,7 @@ static void createWildCardSubscriber (void)
                                            symbol,
                                            NULL)))
     {
-        printf ("Error creating subscription: %s\n", 
+        printf ("Error creating subscription: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
@@ -202,11 +202,11 @@ static void createSubscriber (void)
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_allocate (&gSubscription)))
     {
-        printf ("Error allocating subscription: %s\n", 
+        printf ("Error allocating subscription: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
-    
+
     mamaSubscription_setDebugLevel (gSubscription, gSubscLogLevel);
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_createBasic (gSubscription,
@@ -216,7 +216,7 @@ static void createSubscriber (void)
                                            gTopic,
                                            NULL)))
     {
-        printf ("Error creating subscription: %s\n", 
+        printf ("Error creating subscription: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
@@ -238,14 +238,14 @@ errorCb (mamaSubscription   subscription,
          const char*        subject,
          void*              closure)
 {
-    printf ("mamasubscriberc: Error creating subscription: %s\n", 
+    printf ("mamasubscriberc: Error creating subscription: %s\n",
             mamaStatus_stringForStatus (status));
     exit (status);
 }
 
 static void MAMACALLTYPE
-msgCb (mamaSubscription  subscription, 
-       mamaMsg           msg, 
+msgCb (mamaSubscription  subscription,
+       mamaMsg           msg,
        void*             closure,
        void*             itemClosure)
 {
@@ -257,14 +257,14 @@ msgCb (mamaSubscription  subscription,
 }
 
 static void MAMACALLTYPE
-wildCardMsgCb (mamaSubscription       subscription, 
-               mamaMsg                msg, 
+wildCardMsgCb (mamaSubscription       subscription,
+               mamaMsg                msg,
                const char*            topic,
                void *                 closure,
                void *                 itemClosure)
 {
     static int i = 0;
-    
+
     if (gMuteTopic)
     {
         const char* topic = NULL;
@@ -379,34 +379,34 @@ void parseCommandLine (int argc, const char** argv)
         else if (strcmp ("-m", argv[i]) == 0)
         {
             gMiddleware = (argv[i+1]);
-            i += 2;               
+            i += 2;
         }
         else if (strcmp ("-w", argv[i]) == 0)
         {
-            if (gTport) 
+            if (gTport)
             {
                 printf ("A subscription can only be wildcard or "
                         "tport not both\n");
                 exit(1);
             }
             gWildcard = 1;
-            i += 1;               
+            i += 1;
         }
         else if (strcmp ("-mute", argv[i]) == 0)
         {
             gMuteTopic = argv[i+1];
-            i += 2;               
+            i += 2;
         }
         else if (strcmp ("-t", argv[i]) == 0)
         {
-            if (gWildcard) 
+            if (gWildcard)
             {
                 printf ("A subscription can only be wildcard or "
                         "tport not both\n");
                 exit(1);
             }
             gTport = 1;
-            i += 1;               
+            i += 1;
         }
         else if (strcmp(argv[i], "-V") == 0)
         {

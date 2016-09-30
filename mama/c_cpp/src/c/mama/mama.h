@@ -648,14 +648,14 @@ extern "C"
     mama_setBridgeInfoCallback (mamaBridge         bridgeImpl,
                                 bridgeInfoCallback callback);
     /**
-     * Add a user stats collector 
+     * Add a user stats collector
      */
     MAMAExpDLL
     extern mama_status
     mama_addStatsCollector (mamaStatsCollector  statsCollector);
 
     /**
-     * Remove a user stats collector 
+     * Remove a user stats collector
      */
     MAMAExpDLL
     extern mama_status

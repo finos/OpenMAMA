@@ -26,7 +26,7 @@
 #include "mama/MamaMsgField.h"
 #include "mama/types.h"
 
-namespace Wombat 
+namespace Wombat
 {
     class MamaFieldDescriptor;
     class MamaDateTime;
@@ -38,17 +38,17 @@ namespace Wombat
     /**
     * Iterator class for mamaMsg
     *
-    * Once an iterator has been created it can be set to the beginning of a 
+    * Once an iterator has been created it can be set to the beginning of a
     * mamaMsg and used to iterate over the MamaMsgFields.
     *
-    * An iterator can only be used with one message at a time, and only one 
+    * An iterator can only be used with one message at a time, and only one
     * iterator can be on one message at a time
     *
     * Only forward iterating is supported
     *
     * The dictionary to be used with the fields can be set in the iterator
     */
-     
+
     class MAMACPPExpDLL MamaMsgIterator
     {
     public:
@@ -79,15 +79,15 @@ namespace Wombat
      * Field identifiers must be greater than 0. A field identifier of 0 indicates
      * that there is no unique FID and multiple fields with the same name
      * may have FID == 0.
-     * 
+     *
      * Field lookup proceeds in the following manner similar to TIBRV.
      * - If the fid supplied is non-zero, search for a field with the
      *   specified fid and return the field if it exists (the name is not
      *   validated).  Otherwise throw a STATUS_NOT_FOUND exception.
      * - If the fid supplied is 0, return the first field encountered with
-     *   the supplied name or throw a STATUS_NOT_FOUND exception if no such 
+     *   the supplied name or throw a STATUS_NOT_FOUND exception if no such
      *   field exists.
-     * 
+     *
      * Get methods for numeric values may result in loss of information
      * through either rounding or truncation when a larger data type is
      * accessed as a smaller one. The result may be the same as the result
@@ -99,7 +99,7 @@ namespace Wombat
      * <code>RuntimeException</code>.
      *
      * Since some message implementations may not natively support all data
-     * types, the behaviour may vary substantially. In creating and accessing 
+     * types, the behaviour may vary substantially. In creating and accessing
      * messages the API's
      * assume that the underlying values are stored in the smallest
      * possible fields, and accesses them accordingly. For this reason the
@@ -111,7 +111,7 @@ namespace Wombat
      */
     class MAMACPPExpDLL MamaMsg
     {
-    public: 
+    public:
         ~MamaMsg ();
 
         MamaMsg (void);
@@ -153,7 +153,7 @@ namespace Wombat
         * rv: The bufferLength parameter is not required.
         *
         *
-        * Note: wombatmsg format is not currently supported on tibrv 
+        * Note: wombatmsg format is not currently supported on tibrv
         * transports. At the moment a buffer containing the wire format for
         * each of these transports is expected to be passed to the function.
         *
@@ -184,7 +184,7 @@ namespace Wombat
          */
         MamaMsg* getTempCopy();
         void applyMsg (const MamaMsg&  msg);
-        
+
         /**
          * Clear the message.  All fields are removed.
          */
@@ -207,7 +207,7 @@ namespace Wombat
         * @return The number of bytes in the message
         */
         size_t getByteSize (void) const;
-        
+
         /**
          * Get a boolean field.
          * @param name The name
@@ -215,9 +215,9 @@ namespace Wombat
          * @return  The integer value.
          */
         bool getBoolean (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
-        
+
         /**
          * Get a boolean field.
          * @param fieldDesc  The field descriptor
@@ -225,7 +225,7 @@ namespace Wombat
          */
         bool getBoolean (
             const MamaFieldDescriptor* fieldDesc) const;
-        
+
         /**
          * Get a char field.
          * @param name The name
@@ -233,9 +233,9 @@ namespace Wombat
          * @return  The integer value.
          */
         char getChar (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
-        
+
         /**
          * Get a char field.
          * @param fieldDesc  The field descriptor
@@ -251,9 +251,9 @@ namespace Wombat
          * @return  The integer value.
          */
         mama_i8_t getI8 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
-        
+
         /**
          * Get a I8 field.
          * @param fieldDesc  The field descriptor
@@ -261,7 +261,7 @@ namespace Wombat
          */
         mama_i8_t getI8 (
             const MamaFieldDescriptor* fieldDesc) const;
-        
+
         /**
          * Get a U8 field.
          * @param name The name
@@ -269,9 +269,9 @@ namespace Wombat
          * @return  The integer value.
          */
         mama_u8_t getU8 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
-        
+
         /**
          * Get a U8 field.
          * @param fieldDesc  The field descriptor
@@ -279,7 +279,7 @@ namespace Wombat
          */
         mama_u8_t getU8 (
             const MamaFieldDescriptor* fieldDesc) const;
-        
+
         /**
          * Get an I16 field.
          * @param name The name
@@ -287,9 +287,9 @@ namespace Wombat
          * @return  The integer value.
          */
         mama_i16_t getI16 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
-        
+
         /**
          * Get an I16 field.
          * @param fieldDesc  The field descriptor
@@ -297,7 +297,7 @@ namespace Wombat
          */
         mama_i16_t getI16 (
             const MamaFieldDescriptor* fieldDesc) const;
-        
+
         /**
          * Get a U16 field.
          * @param name The name
@@ -305,9 +305,9 @@ namespace Wombat
          * @return  The integer value.
          */
         mama_u16_t getU16 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
-        
+
         /**
          * Get an U16 field.
          * @param fieldDesc  The field descriptor
@@ -315,7 +315,7 @@ namespace Wombat
          */
         mama_u16_t getU16 (
             const MamaFieldDescriptor* fieldDesc) const;
-        
+
         /**
          * Get an I32 field.
          * @param name The name
@@ -323,7 +323,7 @@ namespace Wombat
          * @return  The integer value.
          */
         mama_i32_t getI32 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
 
         /**
@@ -341,7 +341,7 @@ namespace Wombat
          * @return  The integer value.
          */
         mama_u32_t getU32 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
 
         /**
@@ -360,7 +360,7 @@ namespace Wombat
          * @return The field value as a long.
          */
         mama_i64_t getI64 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
 
         /**
@@ -378,7 +378,7 @@ namespace Wombat
          * @return  The integer value.
          */
         mama_u64_t getU64 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
 
         /**
@@ -397,7 +397,7 @@ namespace Wombat
          * @return The double value.
          */
         mama_f32_t getF32 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
 
         /**
@@ -416,7 +416,7 @@ namespace Wombat
          * @return The double value.
          */
         mama_f64_t getF64 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid) const;
 
         /**
@@ -436,7 +436,7 @@ namespace Wombat
          * does not need to be explicitly freed.
          */
         const char* getString (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid) const;
 
         /**
@@ -448,7 +448,7 @@ namespace Wombat
          */
         const char* getString (
             const MamaFieldDescriptor* fieldDesc) const;
-        
+
         /**
          * Get an opaque field.
          * @param name The field name.
@@ -457,7 +457,7 @@ namespace Wombat
          * @return  the string value.
          */
         const void* getOpaque (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             size_t&           size) const;
 
@@ -804,7 +804,7 @@ namespace Wombat
         const MamaMsg** getVectorMsg (
             const MamaFieldDescriptor* fieldDesc,
             size_t&                    resultLen) const;
-        
+
         /**
          * Get a vector of strings field. The vector is deleted with the message
          * and overwritten by subsequent calls to getVectorString.
@@ -840,7 +840,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryBoolean (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             bool&         result) const;
 
@@ -862,7 +862,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryChar (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             char&         result) const;
 
@@ -875,7 +875,7 @@ namespace Wombat
         bool tryChar (
             const MamaFieldDescriptor* field,
             char&                      result) const;
-        
+
         /**
          * Try to get an unsigned 8 bit integer field.
          * @param result The result (not modified if field not present) const
@@ -884,7 +884,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryI8 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_i8_t&    result) const;
 
@@ -897,7 +897,7 @@ namespace Wombat
         bool tryI8 (
             const MamaFieldDescriptor* field,
             mama_i8_t&                 result) const;
-        
+
         /**
          * Try to get an unsigned 8 bit integer field.
          * @param result The result (not modified if field not present) const
@@ -906,7 +906,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryU8 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_u8_t&    result) const;
 
@@ -919,7 +919,7 @@ namespace Wombat
         bool tryU8 (
             const MamaFieldDescriptor* field,
             mama_u8_t&                 result) const;
-        
+
         /**
          * Try to get a signed 16 bit integer field.
          * @param result The result (not modified if field not present) const
@@ -928,7 +928,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryI16 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_i16_t&   result) const;
 
@@ -950,7 +950,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryU16 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_u16_t&   result) const;
 
@@ -972,7 +972,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryI32 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_i32_t&   result) const;
 
@@ -994,7 +994,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryU32 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_u32_t&   result) const;
 
@@ -1016,7 +1016,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryI64 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_i64_t&   result) const;
 
@@ -1038,7 +1038,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryU64 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_u64_t&   result) const;
 
@@ -1061,7 +1061,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryF32 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_f32_t&   result) const;
 
@@ -1085,7 +1085,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryF64 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_f64_t&   result) const;
 
@@ -1108,7 +1108,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryString (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             const char*&  result) const;
 
@@ -1130,7 +1130,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryDateTime (
-            const char*    name, 
+            const char*    name,
             mama_fid_t     fid,
             MamaDateTime&  result) const;
 
@@ -1152,7 +1152,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryPrice (
-            const char*    name, 
+            const char*    name,
             mama_fid_t     fid,
             MamaPrice&     result) const;
 
@@ -1174,7 +1174,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryMsg (
-            const char*     name, 
+            const char*     name,
             mama_fid_t      fid,
             const MamaMsg*& result) const;
 
@@ -1187,7 +1187,7 @@ namespace Wombat
         bool tryMsg (
             const MamaFieldDescriptor*  field,
             const MamaMsg*&             result) const;
-            
+
         /**
          * Try to get a string field.
          * @param result The result (not modified if field not present) const
@@ -1197,7 +1197,7 @@ namespace Wombat
          * @return Whether the field was present.
          */
         bool tryOpaque (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             const void*&  result,
             size_t&       size) const;
@@ -1213,7 +1213,7 @@ namespace Wombat
             const MamaFieldDescriptor* field,
             const void*&               result,
             size_t&                    size) const;
-        
+
         /**
          * Try to get a vector of characters.  (Note: prefer using string fields
          * or opaque fields over a vector of characters.)
@@ -1572,10 +1572,10 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addBoolean (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             bool          value);
-        
+
         /**
          * Add a new boolean field.
          *
@@ -1594,7 +1594,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addChar (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             char          value);
 
@@ -1616,7 +1616,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addI8 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid,
             mama_i8_t    value);
 
@@ -1638,7 +1638,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addI16 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_i16_t    value);
 
@@ -1660,7 +1660,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addI32 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_i32_t    value);
 
@@ -1682,7 +1682,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addI64 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_i64_t    value);
 
@@ -1704,7 +1704,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addU8 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid,
             mama_u8_t    value);
 
@@ -1726,7 +1726,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addU16 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_u16_t    value);
 
@@ -1748,7 +1748,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addU32 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_u32_t    value);
 
@@ -1770,7 +1770,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addU64 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_u64_t    value);
 
@@ -1792,7 +1792,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addF32 (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             mama_f32_t    value);
 
@@ -1814,7 +1814,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addF64 (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid,
             mama_f64_t   value);
 
@@ -1836,7 +1836,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void addString (
-            const char*   name, 
+            const char*   name,
             mama_fid_t    fid,
             const char*   value);
 
@@ -1849,7 +1849,7 @@ namespace Wombat
         void addString (
             const MamaFieldDescriptor*  fieldDesc,
             const char*                 value);
-        
+
         /**
          * Add a date/time field.
          *
@@ -1858,7 +1858,7 @@ namespace Wombat
          * @param value The value.
          */
         void addDateTime (
-            const char*          name, 
+            const char*          name,
             mama_fid_t           fid,
             const MamaDateTime&  value);
 
@@ -1880,7 +1880,7 @@ namespace Wombat
          * @param value The value.
          */
         void addPrice (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const MamaPrice&  value);
 
@@ -1903,7 +1903,7 @@ namespace Wombat
          * @param size the size of the opaque field, in bytes
          */
         void addOpaque (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid,
             const void*  value,
             size_t       size);
@@ -1930,7 +1930,7 @@ namespace Wombat
             const char*  name,
             mama_fid_t   fid,
             MamaMsg*     value);
-       
+
         /**
          * Add a MamaMsg object
          * @param fieldDesc     The field descriptor
@@ -2242,7 +2242,7 @@ namespace Wombat
             mama_fid_t   fid,
             MamaMsg*     vectorValues[],
             size_t       vectorLen);
-       
+
         /**
          * Add a vector of MamaMsg objects.
          * @param fieldDesc     The field descriptor
@@ -2252,9 +2252,9 @@ namespace Wombat
        void addVectorMsg (
             const MamaFieldDescriptor*  fieldDesc,
             MamaMsg*                    vectorValues[],
-            size_t                      vectorLen);     
-             
-        
+            size_t                      vectorLen);
+
+
         /**
          * Update the value of an existing boolean field. If the field
          * does not exist it is added.
@@ -2264,7 +2264,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateBoolean (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid,
             bool         value);
 
@@ -2288,7 +2288,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateChar (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid,
             const char   value);
 
@@ -2312,7 +2312,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateI8 (
-            const char*      name, 
+            const char*      name,
             mama_fid_t       fid,
             const mama_i8_t  value);
 
@@ -2336,7 +2336,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateU8 (
-            const char*      name, 
+            const char*      name,
             mama_fid_t       fid,
             const mama_u8_t  value);
 
@@ -2360,7 +2360,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateI16 (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const mama_i16_t  value);
 
@@ -2384,7 +2384,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateU16 (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const mama_u16_t  value);
 
@@ -2408,7 +2408,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateI32 (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const mama_i32_t  value);
 
@@ -2432,7 +2432,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateU32 (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const mama_u32_t  value);
 
@@ -2456,7 +2456,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateI64 (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const mama_i64_t  value);
 
@@ -2480,7 +2480,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateU64 (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const mama_u64_t  value);
 
@@ -2504,10 +2504,10 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateF32 (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const mama_f32_t  value);
-        
+
         /**
          * Update the value of an existing F32 field. If the field does
          * not exist it is added.
@@ -2528,7 +2528,7 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateF64 (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const mama_f64_t  value);
 
@@ -2552,10 +2552,10 @@ namespace Wombat
          * @param fid  The field identifier.
          */
         void updateString (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid,
             const char*  value);
-        
+
         /**
          * Update the value of an existing string field. If the field does
          * not exist it is added.
@@ -2577,7 +2577,7 @@ namespace Wombat
          * @param size The size of the opaque in bytes
          */
         void updateOpaque (
-            const char*  name, 
+            const char*  name,
             mama_fid_t   fid,
             const void*  value,
             size_t       size);
@@ -2604,7 +2604,7 @@ namespace Wombat
          * @param value The value.
          */
         void updateDateTime (
-            const char*          name, 
+            const char*          name,
             mama_fid_t           fid,
             const MamaDateTime&  value);
 
@@ -2628,7 +2628,7 @@ namespace Wombat
          * @param value The value.
          */
         void updatePrice (
-            const char*       name, 
+            const char*       name,
             mama_fid_t        fid,
             const MamaPrice&  value);
 
@@ -2688,7 +2688,7 @@ namespace Wombat
          */
         void getFieldAsString (
             const char*  name,
-            mama_fid_t   fid, 
+            mama_fid_t   fid,
             char*        result,
             size_t       maxResultLen) const;
 
@@ -2711,16 +2711,16 @@ namespace Wombat
         MamaMsgField* getField (
             const char*  name,
             mama_fid_t   fid) const;
-        
+
         /**
          * Obtain a the mamaMsgField with the given fid.
          * @param fieldDesc  The field descriptor
          */
         MamaMsgField*  getField (
             const MamaFieldDescriptor*  fieldDesc) const;
-            
+
         /**
-         * Test for the presence of the MamaMsgField with the given fid. 
+         * Test for the presence of the MamaMsgField with the given fid.
          * This method does not return the field.
          * @param name The field name.
          * @param fid The field identifier.
@@ -2730,7 +2730,7 @@ namespace Wombat
             mama_fid_t   fid) const;
 
         /**
-         * Test for the presence of the MamaMsgField with the given field descriptor. 
+         * Test for the presence of the MamaMsgField with the given field descriptor.
          * This method does not return the field.
          * @param fieldDesc  The field descriptor
          */
@@ -2745,7 +2745,7 @@ namespace Wombat
          */
         bool tryField (
             const char*    name,
-            mama_fid_t     fid, 
+            mama_fid_t     fid,
             MamaMsgField*  result) const;
 
         /**
@@ -2767,7 +2767,7 @@ namespace Wombat
          */
         bool tryFieldAsString (
             const char*  name,
-            mama_fid_t   fid, 
+            mama_fid_t   fid,
             char*        result,
             size_t       maxResultLen) const;
 
@@ -2796,13 +2796,13 @@ namespace Wombat
             size_t&       bufferLength) const;
 
         /**
-         * Normally the Mama API owns incoming mamaMsg objects and they go out of 
-	     * scope and are freed when the message callback returns. Calling this 
-	     * method from the message callback creates a new C++ wrapper for the 
+         * Normally the Mama API owns incoming mamaMsg objects and they go out of
+	     * scope and are freed when the message callback returns. Calling this
+	     * method from the message callback creates a new C++ wrapper for the
 	     * underlying message and transfers responsibility for calling destroy()
-	     * to the caller. 
+	     * to the caller.
 	     *
-	     * The caller must also delete the pointer returned by 
+	     * The caller must also delete the pointer returned by
 	     * detach(). Note that calling "delete msg.detach()" invokes destroy() so
 	     * calling destroy is not necessary if the application calls delete.
          */
@@ -2813,7 +2813,7 @@ namespace Wombat
          * Whether this message is the result of a request needing a response.
          */
         bool isFromInbox (void) const;
-        
+
         mama_seqnum_t getSeqNum (void) const;
 
         /**
@@ -2834,23 +2834,23 @@ namespace Wombat
          * true during a fault-tolerant takeover.
          */
         bool getIsPossiblyDelayed (void) const;
-        
+
         /**
          * Return true if the message is delayed. This condition may be
          * true during a fault-tolerant takeover.
          */
         bool getIsDefinitelyDelayed (void) const;
-        
+
         /**
          * Return true when the FH sends the message out of sequence.
          */
         bool getIsOutOfSequence (void) const;
 
         /**
-         * Sets a new for an existing mamaMsg using the provided byte buffer. 
+         * Sets a new for an existing mamaMsg using the provided byte buffer.
          * The application is responsible for destroying the message.
          *
-         * @param buffer the new byte buffer  
+         * @param buffer the new byte buffer
          * @param size  size of buffer
          * @return status
         */
@@ -2876,9 +2876,9 @@ namespace Wombat
         void setMsg (
             mamaMsg  msg);
 
-        /** 
+        /**
          * Return const reference to underlying mamaMsg
-         */ 
+         */
         const mamaMsg& getUnderlyingMsg (void) const;
 
         /**
@@ -2888,30 +2888,30 @@ namespace Wombat
 
 
         /** Return the type of the payload message (wombat message or, if using
-         *  a non-wombat message payload, RV or FAST message). 
+         *  a non-wombat message payload, RV or FAST message).
          *
          * @return payloadType The payload type.
-         */   
+         */
         MAMAIgnoreDeprecatedOpen
         mamaPayloadType getPayloadType (void) const;
         MAMAIgnoreDeprecatedClose
-        
+
        /**
          * Get the native message structure for the underlying message
          * @return nativeMsg The resulting native handle.
          */
         void*  getNativeMsg (void);
-        
+
        /**
          * Sets a iterator to be used with existing mamaMsg.
          * The iterator is set to the first MamaMsgField of the mamaMsg
          *
-         * @param theiterator iterator to be used  
+         * @param theiterator iterator to be used
          * @return first MamaMsgField
         */
-        
+
         MamaMsgField& begin (
-            MamaMsgIterator&  theIterator) const;  
+            MamaMsgIterator&  theIterator) const;
 
         /**
          * Get a copy of the reply Handle

@@ -28,21 +28,21 @@ namespace Wombat.Containers
 		public TreeMap() : this(new DefaultComparator())
 		{
 		}
-		
+
 		public TreeMap(Comparator c) : this(new RedBlackTree(c))
 		{
 		}
-		
+
 		public TreeMap(Map m) : this()
 		{
 			putAll(m);
 		}
-		
+
 		public TreeMap(SortedMap m)
 		{
 			mBackingStore = m;
 		}
-		
+
 		#region SortedMap Members
 
 		public Comparator comparator()
@@ -140,12 +140,12 @@ namespace Wombat.Containers
 		}
 
 		#endregion
-	
+
 		#region ICloneable Members
 
 		public object Clone()
 		{
-			// the cast to Map is necessary, otherwise TreeMap will just 
+			// the cast to Map is necessary, otherwise TreeMap will just
 			// get backed by the original map, instead of copying it
 			TreeMap copy = new TreeMap((Map)mBackingStore);
 			return copy;
@@ -157,6 +157,6 @@ namespace Wombat.Containers
 
 		private SortedMap mBackingStore;
 
-		#endregion 
+		#endregion
 	}
 }

@@ -38,7 +38,7 @@
 /*Main mamaPublisher structure for the API*/
 typedef struct mamaDQPublisherManagerImpl_
 {
-    wtable_t                               mPublisherMap;
+    wtable_t                            mPublisherMap;
 
     mamaMsg                             mRefreshResponseMsg;
     mamaMsg                             mNoSubscribersMsg;
@@ -52,9 +52,9 @@ typedef struct mamaDQPublisherManagerImpl_
     uint64_t                            mSenderId;
     mama_seqnum_t                       mSeqNum;
 
-    mamaDQPublisherManagerCallbacks        mUserCallbacks;
+    mamaDQPublisherManagerCallbacks     mUserCallbacks;
 
-    mamaTransport                          mTransport;
+    mamaTransport                       mTransport;
     mamaQueue                           mQueue;
     char *                              mNameSpace;
     void*                               mClosure;
@@ -67,11 +67,11 @@ static void MAMACALLTYPE
 inboxMsgCb (mamaMsg msg, void *closure)
 {
     const char**        topics         = NULL;
-    const mama_i32_t*    types         = NULL;
-    size_t                 resultLen     = 0;
-    mamaPublishTopic*     info        = NULL;
-    int                 i            = 0;
-    mama_status          status         = MAMA_STATUS_NOT_FOUND;
+    const mama_i32_t*   types          = NULL;
+    size_t              resultLen      = 0;
+    mamaPublishTopic*   info           = NULL;
+    int                 i              = 0;
+    mama_status         status         = MAMA_STATUS_NOT_FOUND;
     mamaDQPublisherManagerImpl* impl = (mamaDQPublisherManagerImpl*) (closure);
 
     if ((status = mamaMsg_getVectorString (msg,NULL, MAMA_SYNC_TOPICS_ID, 
@@ -142,11 +142,11 @@ dqPublisherImplMsgCb (mamaSubscription subsc,
                       void*            closure,
                       void*            itemClosure)
 {
-    mama_i32_t                 msgType = 0;
-    mama_i32_t                subType = 0;
-    const char*                symbol    = NULL;
-    mama_status             status  = MAMA_STATUS_NOT_FOUND;
-    mamaPublishTopic*         info    = NULL;
+    mama_i32_t                  msgType = 0;
+    mama_i32_t                  subType = 0;
+    const char*                 symbol  = NULL;
+    mama_status                 status  = MAMA_STATUS_NOT_FOUND;
+    mamaPublishTopic*           info    = NULL;
     mamaDQPublisherManagerImpl* impl = (mamaDQPublisherManagerImpl*) (closure);
 
 
@@ -205,12 +205,11 @@ dqPublisherImplMsgCb (mamaSubscription subsc,
                                                 msgType,
                                                 msg);
         }
-
     }
     else
     {
 		if (impl->mUserCallbacks.onMsg)
-        	impl->mUserCallbacks.onMsg ((mamaDQPublisherManager)impl, msg);
+        impl->mUserCallbacks.onMsg ((mamaDQPublisherManager)impl, msg);
     }
 }
 
@@ -342,12 +341,13 @@ void mamaDQPublisherManager_destroy (mamaDQPublisherManager manager)
         if(NULL != impl->mPublisherMap)
         {
     wtable_destroy ( impl->mPublisherMap );
-}
+        }
 
         /* Free the impl itself. */
         free(impl);
     }
 }
+
 mama_status mamaDQPublisherManager_addPublisher (
         mamaDQPublisherManager manager, 
         const char *symbol, 
@@ -356,6 +356,7 @@ mama_status mamaDQPublisherManager_addPublisher (
 {
     mamaPublishTopic* newTopic = NULL;
     mamaDQPublisherManagerImpl* impl  = (mamaDQPublisherManagerImpl*) manager;
+
     newTopic =  (mamaPublishTopic*) wtable_lookup  (impl->mPublisherMap, (char*)symbol);
 
 
@@ -413,7 +414,7 @@ mama_status mamaDQPublisherManager_createPublisher (
     char* topic;
     int length = 0;
 
-    newTopic =  (mamaPublishTopic*)wtable_lookup (impl->mPublisherMap, (char*)symbol);
+    newTopic =  (mamaPublishTopic*) wtable_lookup  (impl->mPublisherMap, (char*)symbol);
 
     if (!newTopic)
     {
@@ -472,6 +473,7 @@ mama_status mamaDQPublisherManager_destroyPublisher (
         return (MAMA_STATUS_INVALID_ARG);
 
     mamaDQPublisher_destroy(newTopic->pub);
+
     wtable_remove (impl->mPublisherMap, symbol);
 
     free  ((void*)newTopic->symbol);

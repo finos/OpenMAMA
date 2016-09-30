@@ -30,7 +30,7 @@ namespace Wombat
     /// <remarks>
     /// Any incoming MamaMsg might contain FIDs but
     /// no field names. The dictionary allows applications to determine the name
-    /// associated with a given FID. 
+    /// associated with a given FID.
     /// </remarks>
 	public class MamaDictionary : MamaWrapper
 	{
@@ -50,7 +50,7 @@ namespace Wombat
 			MamaDictionaryCallback callback,
 			MamaSource source,
 			int retries,
-			double timeout) 
+			double timeout)
 		{
 			mCallbackForwarder = new CallbackForwarder(this, callback);
 
@@ -66,21 +66,21 @@ namespace Wombat
 			GC.KeepAlive(queue);
 		}
 
-        public void create(string filename) 
+        public void create(string filename)
 		{
 			int code = NativeMethods.mamaDictionary_create(ref nativeHandle);
 			CheckResultCode(code);
             code = NativeMethods.mamaDictionary_populateFromFile(nativeHandle, filename);
 			CheckResultCode(code);
 		}
-        
+
         public void writeToFile(string filename)
         {
             int code = NativeMethods.mamaDictionary_writeToFile(nativeHandle, filename);
 			CheckResultCode(code);
         }
 
-        
+
 		/// <summary>
 		/// Implements the destruction of the underlying peer object
 		/// </summary>
@@ -88,7 +88,7 @@ namespace Wombat
 		{
 			return (MamaStatus.mamaStatus)NativeMethods.mamaDictionary_destroy(nativeHandle);
 		}
-        
+
         public string getFeedName()
 		{
             EnsurePeerCreated();
@@ -100,7 +100,7 @@ namespace Wombat
 			}
 			return result;
 		}
-        
+
         public string getFeedHost()
 		{
             EnsurePeerCreated();
@@ -116,7 +116,7 @@ namespace Wombat
         /// <summary>
         /// Return the descriptor of the field with the specified name.
         /// </summary>
-        /// <remarks>If there  is more than one field with the same name, 
+        /// <remarks>If there  is more than one field with the same name,
         /// the one with the lowest field id is returned.
         /// </remarks>
 		public MamaFieldDescriptor getFieldByName(string fieldName)
@@ -146,20 +146,20 @@ namespace Wombat
 			CheckResultCode(code);
 			return value;
 		}
-		
+
 		/// <summary>
 		/// Returns the the number of entries in the dictionary.
 		/// </summary>
 		public int getSize()
-		{			
+		{
 			EnsurePeerCreated();
 			int value = 0;
-			int code = NativeMethods.mamaDictionary_getSize(nativeHandle, ref value); 
+			int code = NativeMethods.mamaDictionary_getSize(nativeHandle, ref value);
 			CheckResultCode(code);
 			return value;
 		}
-		
-		/// <summary> 
+
+		/// <summary>
 		/// Return the field with the specified field FID. This method is
         /// very efficient.
 		/// </summary>
@@ -177,8 +177,8 @@ namespace Wombat
 			}
 			return new MamaFieldDescriptor(fieldHandle);
 		}
-		
-		/// <summary> 
+
+		/// <summary>
 		/// Return the field with the corresponding zero based index. This
         /// method is O (N) with respect to the size of the dictionary.
 		/// </summary>
@@ -196,8 +196,8 @@ namespace Wombat
 			}
 			return new MamaFieldDescriptor(fieldHandle);
 		}
-		
-		/// <summary> 
+
+		/// <summary>
 		/// Recreate a data dictionary from the MamaMsg supplied.
 		/// The MamaMsg is copied and can therefore be deleted after
 		/// the method has returned.
@@ -210,14 +210,14 @@ namespace Wombat
             CheckResultCode(code);
 		}
 
-        /// <summary> 
+        /// <summary>
         /// Returns a MamaMsg representing the data dictionary. This message can be
         /// published or used to create a new MamaDictionary object.
         /// A new MamaMsg is created for each invocation of the method. It is the
         /// responsibility of the caller to delete the message when no longer
         /// needed.
         /// </summary>
-        public MamaMsg getDictionaryMessage()		
+        public MamaMsg getDictionaryMessage()
         {
             EnsurePeerCreated();
 			MamaMsg myDictMsg;
@@ -253,7 +253,7 @@ namespace Wombat
                 [MarshalAs(UnmanagedType.LPStr)] ref string feedHost);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaDictionary_getFieldDescriptorByName(
-				IntPtr dictionary, 
+				IntPtr dictionary,
 				ref IntPtr result,
 				[MarshalAs(UnmanagedType.LPStr)] string fname);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
@@ -281,12 +281,12 @@ namespace Wombat
 		private delegate void ErrorDelegate(IntPtr dictionary, string message, IntPtr closure);
 
 		[StructLayout(LayoutKind.Sequential)]
-		private struct Callbacks 
+		private struct Callbacks
 		{
 			public CompleteDelegate onComplete;
 			public TimeoutDelegate onTimeout;
 			public ErrorDelegate onError;
-		}  
+		}
 
 		private class CallbackForwarder
 		{
@@ -304,17 +304,17 @@ namespace Wombat
 			public Callbacks getMsgCallbacks()
 			{
 				Callbacks callbacks = new Callbacks();
-         
+
 				callbacks.onComplete = new CompleteDelegate(this.OnComplete);
 				callbacks.onTimeout = new TimeoutDelegate(this.OnTimeout);
 				callbacks.onError = new ErrorDelegate(this.OnError);
-			
+
 				return callbacks;
 			}
 
 			private void OnComplete(IntPtr dictionary, IntPtr closure)
 			{
-                if (mCallback != null) 
+                if (mCallback != null)
 				{
                     mCallback.onComplete(mSender);
 				}
@@ -322,7 +322,7 @@ namespace Wombat
 
 			private void OnTimeout(IntPtr dictionary, IntPtr closure)
 			{
-                if (mCallback != null) 
+                if (mCallback != null)
 				{
                     mCallback.onTimeout(mSender);
 				}
@@ -330,7 +330,7 @@ namespace Wombat
 
 			private void OnError(IntPtr dictionary, string message, IntPtr closure)
 			{
-                if (mCallback != null) 
+                if (mCallback != null)
 				{
                     mCallback.onError(mSender, message);
 				}

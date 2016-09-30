@@ -26,7 +26,7 @@
  * mamaIoHandler to read from the socket and connects back to the client on port
  * 107 (telnet). It echos the users input. Type "quit" to exit.
  *
- * It accepts the following command line arguments: 
+ * It accepts the following command line arguments:
  *      [-port number]     The TCP/IP port on which to listen. Defaults to 9998
  *      [-q]               Quiet mode. Suppress output.
  *
@@ -98,7 +98,7 @@ int main (int argc, const char **argv)
 
 static void  waitForConection (void)
 {
-    struct sockaddr_in myAddr; 
+    struct sockaddr_in myAddr;
     struct sockaddr_in theirAddr;
     int s;
 
@@ -115,7 +115,7 @@ static void  waitForConection (void)
     {
         printf ("Creating Socket on port %d\n", gPort);
     }
-    
+
     s = socket (PF_INET, SOCK_STREAM, 0);
 
     if (s < 0)
@@ -150,11 +150,11 @@ static void  waitForConection (void)
 
     if (gQuietLevel < 2)
     {
-        printf ("Accepting connection from %s\n", 
+        printf ("Accepting connection from %s\n",
                 inet_ntoa (theirAddr.sin_addr));
     }
 
-    send (gFD, 
+    send (gFD,
           "Type \"quit\" to stop server.\n",
           strlen ("Type \"quit\" to stop server.\n"), 0);
 }
@@ -213,21 +213,21 @@ static void createIOHandlers (void)
 
         gReadHandler = new MamaIo;
         gReadHandler->create (gDefaultQueue,
-                              new IOCallback (), 
-                              gFD, 
+                              new IOCallback (),
+                              gFD,
                               MAMA_IO_READ);
 
         gWriteHandler = new MamaIo;
-        gWriteHandler->create (gDefaultQueue, 
-                               new IOCallback (), 
-                               gFD, 
+        gWriteHandler->create (gDefaultQueue,
+                               new IOCallback (),
+                               gFD,
                                MAMA_IO_WRITE);
 
         /* Handles exceptional events like out of band data */
         gExceptHandler = new MamaIo;
-        gExceptHandler->create (gDefaultQueue, 
-                                new IOCallback (), 
-                                gFD, 
+        gExceptHandler->create (gDefaultQueue,
+                                new IOCallback (),
+                                gFD,
                                 MAMA_IO_EXCEPT);
     }
     catch (MamaStatus &status)
@@ -271,7 +271,7 @@ void parseCommandLine (int argc, const char **argv)
         else if (strcmp ("-m", argv[i]) == 0)
         {
             gMiddleware = argv[i+1];
-            i += 2;               
+            i += 2;
         }
     }
 

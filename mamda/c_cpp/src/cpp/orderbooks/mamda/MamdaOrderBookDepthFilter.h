@@ -64,11 +64,11 @@ public:
     * Return the full depth orderbook
     */
     virtual const MamdaOrderBook* getFullOrderBook () const;
-    
+
     virtual void onMsg (MamdaSubscription*  subscription,
                         const MamaMsg&      msg,
                         short               msgType) { };
-                        
+
     virtual void onBookRecap (
         MamdaSubscription*                  subscription,
         MamdaOrderBookListener&             listener,
@@ -105,11 +105,10 @@ public:
         const MamaMsg*                      msg,
         const MamdaOrderBookGap&            event,
         const MamdaOrderBook&               book);
-         
+
 private:
     struct MamdaOrderBookListenerImpl;
     MamdaOrderBookDepthFilterImpl&  mImpl;
 };
 
 #endif // MamdaOrderBookDepthFilterH
-

@@ -33,10 +33,10 @@
 using std::deque;
 
 struct QuoteCache
-{   
+{
 
     void initialize();
-    
+
     string          mSymbol;
     MamaDateTime    mSrcTime;
     MamaDateTime    mActTime;
@@ -64,9 +64,9 @@ struct QuoteCache
     bool            mGotAskPrice;
     bool            mGotBidSize;
     bool            mGotAskSize;
-    
+
     mama_i16_t      mMsgNum;
-    MamdaFieldState mMsgNumFieldState; 
+    MamdaFieldState mMsgNumFieldState;
     mama_i16_t      mMsgTotal;
     MamdaFieldState mMsgTotalFieldState;
 
@@ -74,15 +74,15 @@ struct QuoteCache
     // related fields.  These fields can be used by applications for
     // reference and will be passed for recaps.
 
-    MamdaFieldState mSrcTimeFieldState; 
+    MamdaFieldState mSrcTimeFieldState;
     MamdaFieldState mLineTimeFieldState;
     MamdaFieldState mSendTimeFieldState;
     MamdaFieldState mActivityTimeFieldState;
-    MamdaFieldState mMsgQualFieldState;  
-    MamdaFieldState mBookTimeFieldState; 
-    MamdaFieldState mMsgSeqNumFieldState; 
-    MamdaFieldState mSenderIdFieldState;  
-    MamdaFieldState mSymbolFieldState; 
+    MamdaFieldState mMsgQualFieldState;
+    MamdaFieldState mBookTimeFieldState;
+    MamdaFieldState mMsgSeqNumFieldState;
+    MamdaFieldState mSenderIdFieldState;
+    MamdaFieldState mSymbolFieldState;
     MamdaFieldState mPartIdFieldState;
     MamdaFieldState mEventSeqNumFieldState;
     MamdaFieldState mEventTimeFieldState;
@@ -96,7 +96,7 @@ struct QuoteToBookFieldUpdate
         const MamaMsgField&            field) = 0;
 };
 
-class MamdaQuoteToBookListenerImpl 
+class MamdaQuoteToBookListenerImpl
     : public MamaMsgFieldIterator
     , public MamdaOrderBookRecap
     , public MamdaOrderBookSimpleDelta
@@ -112,8 +112,8 @@ public:
 
     void removeHandlers ();
     void clear ();
-   
-    // Inherited from MamdaOrderBookRecap 
+
+    // Inherited from MamdaOrderBookRecap
     const MamdaOrderBook* getOrderBook () const;
 
     // Inherited from MamdaOrderBookGap
@@ -134,7 +134,7 @@ public:
                       const MamaMsg&      msg);
 
     void updateQuoteFields (const MamaMsg&      msg);
-    
+
     void updateFieldStates ();
 
     void addLevel (
@@ -183,7 +183,7 @@ public:
     const MamaDateTime&  getLineTime       () const;
     const MamaDateTime&  getSendTime       () const;
     const MamaMsgQual&   getMsgQual        () const;
-    
+
     MamdaFieldState     getSymbolFieldState()       const;
     MamdaFieldState     getPartIdFieldState()       const;
     MamdaFieldState     getEventSeqNumFieldState()  const;
@@ -204,7 +204,7 @@ public:
                        const MamaMsgField& field,
                        void*               closure);
 
-    // Lock to protected the impl's full order book.    
+    // Lock to protected the impl's full order book.
     MamdaLock                      mFullBookLock;
     MamdaOrderBook*                mFullBook;
     bool                           mLocalFullBook;
@@ -228,7 +228,7 @@ public:
     bool                       mClearStaleBook;
     bool                       mIsTransientMsg;
     bool                       mUpdateInconsistentBook;
-    // If mResolvePossiblyDuplicate is set then the listen will atempt, 
+    // If mResolvePossiblyDuplicate is set then the listen will atempt,
     // based upon sequence number and event times, to determine whether
     // a quote marked as "possibly duplicate" is definately a duplicate,
     // in which case it is dropped.
@@ -236,13 +236,13 @@ public:
     int                        mQuoteSizeMultiplier;
     deque<MamdaOrderBookHandler*>  mHandlers;
 
-    // Message Qualifier - holds information provides in formation 
+    // Message Qualifier - holds information provides in formation
     // regarding duplicate and delayed status of message.
     MamaMsgQual                mMsgQual;
 
     // The Quote Listener Data Caches
     QuoteCache                 mRegularCache;     // Regular update cache
-    QuoteCache                 mTransientCache;   // Transient cache 
+    QuoteCache                 mTransientCache;   // Transient cache
     QuoteCache&                mQuoteCache;       // Current cache in use
 
     struct FieldUpdateSymbol;
@@ -532,7 +532,7 @@ void MamdaQuoteToBookListenerImpl::checkQuoteCount (
     mQuoteCache.mQuoteCount = quoteCount;
 }
 
-void MamdaQuoteToBookListener::acquireReadLock ()  
+void MamdaQuoteToBookListener::acquireReadLock ()
 {
     ACQUIRE_RLOCK(mImpl.mFullBookLock);
 }
@@ -575,7 +575,7 @@ void MamdaQuoteToBookListener::onMsg (MamdaSubscription*  subscription,
             if ((mImpl.mFullBook->getQuality() != MAMA_QUALITY_OK) &&
                 !mImpl.mUpdateStaleBook)
             {
-                return;    
+                return;
             }
             // fall through
         case MAMA_MSG_TYPE_SNAPSHOT:
@@ -639,7 +639,7 @@ MamdaQuoteToBookListenerImpl::MamdaQuoteToBookListenerImpl(
 MamdaQuoteToBookListenerImpl::~MamdaQuoteToBookListenerImpl()
 {
     if (mLocalFullBook)
-        delete mFullBook;    
+        delete mFullBook;
 }
 
 void MamdaQuoteToBookListenerImpl::removeHandlers()
@@ -660,7 +660,7 @@ void MamdaQuoteToBookListenerImpl::clear()
 
 /*
 * If wMsgQual (fid 21) is populated, perform actions based on whether its
-* possible or definately a duplicate message 
+* possible or definately a duplicate message
 * Sets mIsTransientMsg, mMsgQual
 */
 bool MamdaQuoteToBookListenerImpl::evaluateMsgQual(
@@ -678,8 +678,8 @@ bool MamdaQuoteToBookListenerImpl::evaluateMsgQual(
         mMsgQual.setValue(msgQualVal);
 
         // If qualifier indicates message is possbily duplicate
-        // and the listener has been configure to attempt to 
-        // resolve the ambiguity regarding the duplicate 
+        // and the listener has been configure to attempt to
+        // resolve the ambiguity regarding the duplicate
         // status of the message.
         if (mMsgQual.getIsPossiblyDuplicate() &&
             mResolvePossiblyDuplicate)
@@ -692,7 +692,7 @@ bool MamdaQuoteToBookListenerImpl::evaluateMsgQual(
             {
                 // Only make a determination as to wheither or
                 // not a PossiblyDuplicate msg is an actual duplicate
-                // if the msg contains both a sequence number 
+                // if the msg contains both a sequence number
                 // and event time.
                 if ((seqNum < mRegularCache.mQuoteSeqNum) &&
                     (eventTime < mRegularCache.mQuoteTime))
@@ -705,7 +705,7 @@ bool MamdaQuoteToBookListenerImpl::evaluateMsgQual(
 
         if (!(isDuplicateMsg = mMsgQual.getIsDefinatelyDuplicate()))
         {
-            // If the message is possibly a duplicate or is 
+            // If the message is possibly a duplicate or is
             // out of sequence then is does not (on the whole)
             // qualify to update the regular record cache.
             mIsTransientMsg = (mMsgQual.getIsOutOfSequence() ||
@@ -717,14 +717,14 @@ bool MamdaQuoteToBookListenerImpl::evaluateMsgQual(
 
 void MamdaQuoteToBookListenerImpl::updateQuoteFields (
     const MamaMsg&  msg)
-{    
+{
     mQuoteCache.mLastGenericMsgWasQuote = false;
     mQuoteCache.mGotBidPrice  = false;
     mQuoteCache.mGotAskPrice  = false;
     mQuoteCache.mGotBidSize   = false;
     mQuoteCache.mGotAskSize   = false;
 
-    msg.iterateFields (*this, NULL, NULL); 
+    msg.iterateFields (*this, NULL, NULL);
 
     // Check certain special fields.
     if (mQuoteCache.mGotBidSize    || mQuoteCache.mGotAskSize   ||
@@ -868,7 +868,7 @@ void MamdaQuoteToBookListenerImpl::handleRecap (MamdaSubscription*  subscription
     // Clear the book
     mFullBook->clear();
 
-    // Clear ask/bid 
+    // Clear ask/bid
     mQuoteCache.mBidPrice = 0.0;
     mQuoteCache.mBidSize  = 0.0;
     mQuoteCache.mAskPrice = 0.0;
@@ -889,18 +889,18 @@ void MamdaQuoteToBookListenerImpl::handleRecap (MamdaSubscription*  subscription
     MamdaOrderBookPriceLevel* level = NULL;
     if (mQuoteCache.mGotBidSize || mQuoteCache.mGotBidPrice)
     {
-        addLevel (level, 
-                  mQuoteCache.mBidPrice.getValue(), 
-                  mQuoteCache.mBidSize, 
+        addLevel (level,
+                  mQuoteCache.mBidPrice.getValue(),
+                  mQuoteCache.mBidSize,
                   MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
                   mQuoteCache.mQuoteTime);
     }
 
     if (mQuoteCache.mGotAskSize || mQuoteCache.mGotAskPrice)
     {
-        addLevel (level, 
-                  mQuoteCache.mAskPrice.getValue(), 
-                  mQuoteCache.mAskSize, 
+        addLevel (level,
+                  mQuoteCache.mAskPrice.getValue(),
+                  mQuoteCache.mAskSize,
                   MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
                   mQuoteCache.mQuoteTime);
     }
@@ -937,10 +937,10 @@ void MamdaQuoteToBookListenerImpl::handleQuote (MamdaSubscription*  subscription
             }
             else
             {
-                addLevel (level, 
-                          mQuoteCache.mBidPrice.getValue(), 
-                          mQuoteCache.mBidSize, 
-                          MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID, 
+                addLevel (level,
+                          mQuoteCache.mBidPrice.getValue(),
+                          mQuoteCache.mBidSize,
+                          MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
                           mQuoteCache.mQuoteTime);
             }
         }
@@ -952,25 +952,25 @@ void MamdaQuoteToBookListenerImpl::handleQuote (MamdaSubscription*  subscription
             }
             else if (mQuoteCache.mBidPrice == level->getPrice())
             {
-                updateLevel (level,  
-                             mQuoteCache.mBidSize, 
-                             mQuoteCache.mBidSize - level->getSize(), 
-                             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID, 
+                updateLevel (level,
+                             mQuoteCache.mBidSize,
+                             mQuoteCache.mBidSize - level->getSize(),
+                             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
                              mQuoteCache.mQuoteTime);
             }
             else
             {
-                deleteLevel (level, 
-                             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID, 
+                deleteLevel (level,
+                             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
                              mQuoteCache.mQuoteTime);
-                addLevel (level, 
-                          mQuoteCache.mBidPrice.getValue(), 
-                          mQuoteCache.mBidSize, 
+                addLevel (level,
+                          mQuoteCache.mBidPrice.getValue(),
+                          mQuoteCache.mBidSize,
                           MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
                           mQuoteCache.mQuoteTime);
             }
         }
-    } 
+    }
 
     if (mQuoteCache.mGotAskSize || mQuoteCache.mGotAskPrice)
     {
@@ -992,10 +992,10 @@ void MamdaQuoteToBookListenerImpl::handleQuote (MamdaSubscription*  subscription
             }
             else
             {
-                addLevel (level, 
-                          mQuoteCache.mAskPrice.getValue(), 
-                          mQuoteCache.mAskSize, 
-                          MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK, 
+                addLevel (level,
+                          mQuoteCache.mAskPrice.getValue(),
+                          mQuoteCache.mAskSize,
+                          MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
                           mQuoteCache.mQuoteTime);
             }
         }
@@ -1007,30 +1007,30 @@ void MamdaQuoteToBookListenerImpl::handleQuote (MamdaSubscription*  subscription
             }
             else if (mQuoteCache.mAskPrice == level->getPrice())
             {
-                updateLevel (level, 
-                             mQuoteCache.mAskSize, 
+                updateLevel (level,
+                             mQuoteCache.mAskSize,
                              mQuoteCache.mAskSize - level->getSize(),
-                             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK, 
+                             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
                              mQuoteCache.mQuoteTime);
             }
             else
             {
-                deleteLevel (level, 
-                             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK, 
+                deleteLevel (level,
+                             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
                              mQuoteCache.mQuoteTime);
-                addLevel (level, 
-                          mQuoteCache.mAskPrice.getValue(), 
-                          mQuoteCache.mAskSize, 
-                          MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK, 
+                addLevel (level,
+                          mQuoteCache.mAskPrice.getValue(),
+                          mQuoteCache.mAskSize,
+                          MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
                           mQuoteCache.mQuoteTime);
             }
         }
     }
-    
+
     if (mUpdateInconsistentBook || mFullBook->getIsConsistent())
     {
         invokeDeltaHandlers (subscription, &msg);
-    } 
+    }
 }
 
 void MamdaQuoteToBookListenerImpl::addLevel (
@@ -1065,7 +1065,7 @@ void MamdaQuoteToBookListenerImpl::deleteLevel (
 {
     mFullBook->detach (level); // remove level from book, but still use level for indicating change
     level->setTime (plTime);
-    level->setSize (0); 
+    level->setSize (0);
     addDelta (level, (0-level->getSize()), MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_DELETE);
 }
 
@@ -1076,14 +1076,14 @@ void MamdaQuoteToBookListenerImpl::addDelta (MamdaOrderBookPriceLevel*         l
     ++mCurrentDeltaCount;
     if (mCurrentDeltaCount == 1)
     {
-        // This is number one, so save the "simple" delta. 
+        // This is number one, so save the "simple" delta.
         MamdaOrderBookSimpleDelta::set (
             NULL, level, plDeltaSize, plAction, MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UNKNOWN);
     }
     else if (mCurrentDeltaCount == 2)
     {
         // This is number two, so copy the saved "simple" delta to the
-        // "complex" delta and add the current one. 
+        // "complex" delta and add the current one.
         MamdaOrderBookComplexDelta::clear();
         MamdaOrderBookComplexDelta::setOrderBook (mFullBook);
         MamdaOrderBookComplexDelta::add (*this);
@@ -1092,7 +1092,7 @@ void MamdaQuoteToBookListenerImpl::addDelta (MamdaOrderBookPriceLevel*         l
     }
     else
     {
-        // This is number greater than two, so add the current delta. 
+        // This is number greater than two, so add the current delta.
         MamdaOrderBookComplexDelta::add (
             NULL, level, plDeltaSize, plAction, MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UNKNOWN);
     }
@@ -1128,7 +1128,7 @@ void MamdaQuoteToBookListenerImpl::setQuality (
     }
 }
 
-MamdaFieldState 
+MamdaFieldState
 MamdaQuoteToBookListenerImpl::getSymbolFieldState() const
 {
     return mQuoteCache.mSymbolFieldState;
@@ -1138,45 +1138,45 @@ MamdaFieldState
 MamdaQuoteToBookListenerImpl::getPartIdFieldState() const
 {
     return mQuoteCache.mPartIdFieldState;
-} 
+}
 
-MamdaFieldState  
+MamdaFieldState
 MamdaQuoteToBookListenerImpl::getEventSeqNumFieldState() const
 {
     return mQuoteCache.mEventSeqNumFieldState;
 }
 
-MamdaFieldState 
+MamdaFieldState
 MamdaQuoteToBookListenerImpl::getEventTimeFieldState() const
 {
     return mQuoteCache.mEventTimeFieldState;
 }
 
-MamdaFieldState 
+MamdaFieldState
 MamdaQuoteToBookListenerImpl::getSrcTimeFieldState() const
 {
     return mQuoteCache.mSrcTimeFieldState;
 }
 
-MamdaFieldState 
+MamdaFieldState
 MamdaQuoteToBookListenerImpl::getActivityTimeFieldState() const
 {
     return mQuoteCache.mActivityTimeFieldState;
 }
 
-MamdaFieldState 
+MamdaFieldState
 MamdaQuoteToBookListenerImpl::getLineTimeFieldState() const
 {
     return mQuoteCache.mLineTimeFieldState;
 }
 
-MamdaFieldState 
+MamdaFieldState
 MamdaQuoteToBookListenerImpl::getSendTimeFieldState() const
 {
     return mQuoteCache.mSendTimeFieldState;
 }
 
-MamdaFieldState 
+MamdaFieldState
 MamdaQuoteToBookListenerImpl::getMsgQualFieldState() const
 {
     return mQuoteCache.mMsgQualFieldState;
@@ -1349,7 +1349,7 @@ struct MamdaQuoteToBookListenerImpl::FieldUpdateQuoteSendTime
         impl.mQuoteCache.mSendTimeFieldState = MODIFIED;
     }
 };
-    
+
 struct MamdaQuoteToBookListenerImpl::FieldUpdateBidPrice
     : public QuoteToBookFieldUpdate
 {
@@ -1369,7 +1369,7 @@ struct MamdaQuoteToBookListenerImpl::FieldUpdateBidPrice
 
 struct MamdaQuoteToBookListenerImpl::FieldUpdateBidSize
     : public QuoteToBookFieldUpdate
-{   
+{
     void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                    const MamaMsgField&            field)
     {
@@ -1400,7 +1400,7 @@ struct MamdaQuoteToBookListenerImpl::FieldUpdateAskPrice
     }
 };
 
-struct MamdaQuoteToBookListenerImpl::FieldUpdateAskSize 
+struct MamdaQuoteToBookListenerImpl::FieldUpdateAskSize
     : public QuoteToBookFieldUpdate
 {
     void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
@@ -1438,17 +1438,17 @@ struct MamdaQuoteToBookListenerImpl::FieldUpdateQuoteSeqNum
 
 struct MamdaQuoteToBookListenerImpl::FieldUpdateQuoteDate
     : public QuoteToBookFieldUpdate
-{   
+{
     void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                    const MamaMsgField&            field)
     {
         field.getDateTime(impl.mQuoteCache.mQuoteDate);
     }
-};  
+};
 
 struct MamdaQuoteToBookListenerImpl::FieldUpdateQuoteQual
     : public QuoteToBookFieldUpdate
-{   
+{
     void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                    const MamaMsgField&            field)
     {
@@ -1458,7 +1458,7 @@ struct MamdaQuoteToBookListenerImpl::FieldUpdateQuoteQual
 
 struct MamdaQuoteToBookListenerImpl::FieldUpdateQuoteQualNative
     : public QuoteToBookFieldUpdate
-{   
+{
     void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                    const MamaMsgField&            field)
     {
@@ -1472,7 +1472,7 @@ struct MamdaQuoteToBookListenerImpl::FieldUpdateQuoteQualNative
         }
     }
 };
-    
+
 struct MamdaQuoteToBookListenerImpl::FieldUpdateTmpQuoteCount
     : public QuoteToBookFieldUpdate
 {
@@ -1492,7 +1492,7 @@ struct MamdaQuoteToBookListenerImpl::FieldUpdateAskTime
         field.getDateTime(impl.mQuoteCache.mAskTime);
     }
 };
-    
+
 struct MamdaQuoteToBookListenerImpl::FieldUpdateBidTime
     : public QuoteToBookFieldUpdate
 {
@@ -1574,24 +1574,24 @@ void MamdaQuoteToBookListenerImpl::initFieldUpdater (
 
 void MamdaQuoteToBookListenerImpl::updateFieldStates()
 {
-    if (mQuoteCache.mSymbolFieldState == MODIFIED)    
-        mQuoteCache.mSymbolFieldState = NOT_MODIFIED; 
-    if (mQuoteCache.mPartIdFieldState == MODIFIED)   
+    if (mQuoteCache.mSymbolFieldState == MODIFIED)
+        mQuoteCache.mSymbolFieldState = NOT_MODIFIED;
+    if (mQuoteCache.mPartIdFieldState == MODIFIED)
         mQuoteCache.mPartIdFieldState = NOT_MODIFIED;
-    if (mQuoteCache.mEventSeqNumFieldState == MODIFIED)    
-        mQuoteCache.mEventSeqNumFieldState = NOT_MODIFIED; 
-    if (mQuoteCache.mEventTimeFieldState == MODIFIED)   
+    if (mQuoteCache.mEventSeqNumFieldState == MODIFIED)
+        mQuoteCache.mEventSeqNumFieldState = NOT_MODIFIED;
+    if (mQuoteCache.mEventTimeFieldState == MODIFIED)
         mQuoteCache.mEventTimeFieldState = NOT_MODIFIED;
-    if (mQuoteCache.mSrcTimeFieldState == MODIFIED)    
+    if (mQuoteCache.mSrcTimeFieldState == MODIFIED)
         mQuoteCache.mSrcTimeFieldState = NOT_MODIFIED;
     if (mQuoteCache.mActivityTimeFieldState == MODIFIED)
         mQuoteCache.mActivityTimeFieldState = NOT_MODIFIED;
-    if (mQuoteCache.mLineTimeFieldState == MODIFIED)     
-        mQuoteCache.mLineTimeFieldState = NOT_MODIFIED;  
-    if (mQuoteCache.mSendTimeFieldState == MODIFIED)    
-        mQuoteCache.mSendTimeFieldState = NOT_MODIFIED; 
-    if (mQuoteCache.mMsgQualFieldState == MODIFIED)   
-        mQuoteCache.mMsgQualFieldState = NOT_MODIFIED; 
+    if (mQuoteCache.mLineTimeFieldState == MODIFIED)
+        mQuoteCache.mLineTimeFieldState = NOT_MODIFIED;
+    if (mQuoteCache.mSendTimeFieldState == MODIFIED)
+        mQuoteCache.mSendTimeFieldState = NOT_MODIFIED;
+    if (mQuoteCache.mMsgQualFieldState == MODIFIED)
+        mQuoteCache.mMsgQualFieldState = NOT_MODIFIED;
 
 }
 
@@ -1616,6 +1616,5 @@ void QuoteCache::initialize()
     mGotBidPrice = false;
     mGotAskPrice = false;
     mGotBidSize  = false;
-    mGotAskSize  = false; 
+    mGotAskSize  = false;
 }
-

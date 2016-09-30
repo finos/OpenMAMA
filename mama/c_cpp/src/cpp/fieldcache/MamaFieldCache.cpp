@@ -39,7 +39,7 @@ struct MamaFieldCache::MamaFieldCacheImpl
     {
         clear();
     }
-    
+
     void clear();
 
     mamaFieldCache mCache;
@@ -84,7 +84,7 @@ mama_size_t MamaFieldCache::getSize() const
     mamaFieldCache_getSize(mPimpl->mCache, &size);
     return size;
 }
-    
+
 void MamaFieldCache::setTrackModified(bool value)
 {
     mamaFieldCache_setTrackModified(mPimpl->mCache, (mama_bool_t)value);
@@ -125,7 +125,7 @@ void MamaFieldCache::lock()
 {
     mamaFieldCache_lock(mPimpl->mCache);
 }
-    
+
 void MamaFieldCache::unlock()
 {
     mamaFieldCache_unlock(mPimpl->mCache);
@@ -291,7 +291,7 @@ MamaFieldCache::const_iterator::const_iterator(mamaFieldCache fieldCache)
     : MamaFieldCacheIterator (fieldCache)
 {
 }
-    
+
 MamaFieldCache::const_iterator::const_iterator(const MamaFieldCache::iterator& it)
     : MamaFieldCacheIterator(it)
 {

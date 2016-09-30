@@ -39,7 +39,7 @@ namespace Wombat
 	};
 
     /// <summary>
-    /// A member of a MAMA fault tolerance group 
+    /// A member of a MAMA fault tolerance group
     /// </summary>
 	public class MamaFtMember : MamaWrapper
 	{
@@ -227,7 +227,7 @@ namespace Wombat
 		///    {group-name}.{hex-ip-addr}.{hex-pid}</para>
         /// <para>
 		/// For example, if the group name is "FOO", the IP address is
-		/// 192.168.187.9, and the PId is 10777, the default instance ID 
+		/// 192.168.187.9, and the PId is 10777, the default instance ID
         /// would be:</para>
 		///    FOO.c0a8bb9.2a19
 		/// </remarks>

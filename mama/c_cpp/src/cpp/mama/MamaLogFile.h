@@ -24,13 +24,13 @@
 
 #include "mama/mamacpp.h"
 
-namespace Wombat 
+namespace Wombat
 {
 
     /**
-     * The <code>MamaLogFile</code> class provides a single interface for 
+     * The <code>MamaLogFile</code> class provides a single interface for
      * the configuration and control of <code>Mama</code> logging activity.
-     * The <code>MamaLogFile</code> class expands upon the existing logging 
+     * The <code>MamaLogFile</code> class expands upon the existing logging
      * capabilities of <code>Mama</code> providing the ability to set log
      * file size and configure the number of log files maintained.
      *
@@ -42,7 +42,7 @@ namespace Wombat
 
         /**
          * Set the Size of the log files.
-         * Has no effect if log file is not successfully created via a 
+         * Has no effect if log file is not successfully created via a
          * call to MamaLogFile::enableLogging(...).
          *
          * @param newMax log file size.
@@ -51,7 +51,7 @@ namespace Wombat
 
         /**
          * Set the number of log files to be maintained.
-         * Has no effect if log file is not successfully created via a 
+         * Has no effect if log file is not successfully created via a
          * call to MamaLogFile::enableLogging(...).
          *
          * @param newNum number of log files to be maintained.
@@ -69,7 +69,7 @@ namespace Wombat
         /**
          * Enable logging.
          * Will set log level and attempt to open a file of the named provided.
-         * If a file could not be created or parameter file is NULL mama log 
+         * If a file could not be created or parameter file is NULL mama log
          * output is re-directed to stderr.
          *
          * @param file log file name

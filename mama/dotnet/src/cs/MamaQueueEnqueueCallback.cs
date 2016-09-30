@@ -31,7 +31,7 @@ namespace Wombat
         /// <summary>
         /// Method which is invoked when an event is enqueued on the queue for which
         /// this function was registered.
-        /// 
+        ///
         /// LBM Bridge: NB! Users may not dispatch events from this function. The
         /// function is invoked from an LBM internal thread. Attempts to dispatch from
         /// here will result in a deadlock.

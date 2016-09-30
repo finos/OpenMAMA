@@ -773,7 +773,7 @@ mamaMsgField_getVectorMsg (
                                               impl->myPayloadBridge);
                 /*
                  * We do not detach the middleware message so we do
-                 * not own it. 
+                 * not own it.
                  */
                 mamaMsgImpl_setPayload       (impl->myLastVectorPayloadMsg[i],
                                               payloadVector[i],
@@ -868,15 +868,15 @@ mamaMsgField_updateChar (
     mamaMsgField  field,
     char          value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -895,15 +895,15 @@ mamaMsgField_updateI8 (
     mamaMsgField  field,
     mama_i8_t     value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -922,15 +922,15 @@ mamaMsgField_updateU8 (
     mamaMsgField  field,
     mama_u8_t     value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -949,15 +949,15 @@ mamaMsgField_updateI16 (
     mamaMsgField  field,
     mama_i16_t    value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -984,7 +984,7 @@ mamaMsgField_updateU16 (
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -1003,7 +1003,7 @@ mamaMsgField_updateI32 (
     mamaMsgField  field,
     mama_i32_t    value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
@@ -1011,7 +1011,7 @@ mamaMsgField_updateI32 (
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -1029,7 +1029,7 @@ mamaMsgField_updateU32 (
     mamaMsgField        field,
     mama_u32_t          value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
@@ -1037,7 +1037,7 @@ mamaMsgField_updateU32 (
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -1056,7 +1056,7 @@ mamaMsgField_updateI64 (
     mamaMsgField       field,
     mama_i64_t         value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
@@ -1064,7 +1064,7 @@ mamaMsgField_updateI64 (
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -1083,7 +1083,7 @@ mamaMsgField_updateU64 (
     const mamaMsgField  field,
     mama_u64_t          value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
@@ -1091,7 +1091,7 @@ mamaMsgField_updateU64 (
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -1110,7 +1110,7 @@ mamaMsgField_updateF32 (
             const mamaMsgField  field,
             mama_f32_t          value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
@@ -1118,7 +1118,7 @@ mamaMsgField_updateF32 (
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -1137,7 +1137,7 @@ mamaMsgField_updateF64 (
             mamaMsgField  field,
             mama_f64_t    value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
@@ -1145,7 +1145,7 @@ mamaMsgField_updateF64 (
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -1164,7 +1164,7 @@ mamaMsgField_updateDateTime (
             mamaMsgField        field,
             const mamaDateTime  value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
@@ -1172,7 +1172,7 @@ mamaMsgField_updateDateTime (
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)
@@ -1190,7 +1190,7 @@ mamaMsgField_updatePrice (
             mamaMsgField           field,
             const mamaPrice        value)
 {
-    mamaMsgFieldImpl* impl = (mamaMsgFieldImpl*)field;
+    mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
     short             owner   = 0;
     msgPayload        payload = NULL;
 
@@ -1198,7 +1198,7 @@ mamaMsgField_updatePrice (
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
-    
+
     mamaMsgImpl_getPayload (impl->myMsg, &payload);
 
     if (impl->myPayloadBridge)

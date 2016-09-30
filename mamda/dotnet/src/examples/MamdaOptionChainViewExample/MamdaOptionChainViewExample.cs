@@ -32,7 +32,7 @@ namespace Wombat.Mamda.Examples
 	/// sliding set of strike prices and expiration cycles.  The strike
 	/// prices included in the view may change as the price of underlying
 	/// security changes.
-	/// 
+	///
 	/// <p>This example suffers from a minor lack of configurability: while
 	/// it does support subscriptions to multiple underlying symbols (with
 	/// multiple -s options), it does not allow a different source to be
@@ -74,7 +74,7 @@ namespace Wombat.Mamda.Examples
 				baseTransport.create(options.getTransport(), myBridge);
 				optionTransport = baseTransport;
 				defaultQueue = Mama.getDefaultEventQueue(myBridge);
-            
+
 				// The dictionary transport might be different from the
 				// other transports (although in this example we're just
 				// using the same transport name as the underlying).
@@ -127,10 +127,10 @@ namespace Wombat.Mamda.Examples
 					aBaseQuoteListener.addHandler(aBaseTicker);
 					aBaseSubscription.addMsgListener(aBaseTradeListener);
 					aBaseSubscription.addMsgListener(aBaseQuoteListener);
-					
+
 					aBaseSubscription.create(
 						baseTransport,
-                        defaultQueue, 
+                        defaultQueue,
 						options.getSource(),
                         symbol,
 						null);
@@ -151,7 +151,7 @@ namespace Wombat.Mamda.Examples
 					anOptionSubscription.setType(mamaSubscriptionType.MAMA_SUBSC_TYPE_GROUP);
 					anOptionSubscription.create(
 						optionTransport,
-                        defaultQueue, 
+                        defaultQueue,
                         options.getSource(),
 						symbol,
 						null);
@@ -175,7 +175,7 @@ namespace Wombat.Mamda.Examples
 		private class OptionChainDisplay :
 			MamdaOptionChainHandler,
 			MamdaStaleListener,
-			MamdaErrorListener 
+			MamdaErrorListener
 		{
 			MamdaOptionChainView  myView  = null;
 			bool myGotRecap = false;  // Updated when we get the first recap.
@@ -345,7 +345,7 @@ namespace Wombat.Mamda.Examples
 		/// the chain argument.
 		/// </summary>
 		private class OptionContractTicker :
-			MamdaTradeHandler, 
+			MamdaTradeHandler,
 			MamdaQuoteHandler
 		{
 			MamdaOptionContract   myContract = null;

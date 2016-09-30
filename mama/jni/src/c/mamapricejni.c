@@ -54,12 +54,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_clear
 {
     jlong       pPrice      = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];   
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.");
-    
+
     if(MAMA_STATUS_OK!=(status=mamaPrice_clear(
                         CAST_JLONG_TO_POINTER(mamaPrice,pPrice))))
     {
@@ -82,12 +82,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_setValue
 {
     jlong       pPrice      = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];   
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.");
-    
+
     if(MAMA_STATUS_OK!=(status=mamaPrice_setValue(
                             CAST_JLONG_TO_POINTER(mamaPrice,pPrice), (double) value)))
     {
@@ -110,13 +110,13 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaPrice_getValue
 {
     jlong       pPrice      = 0;
     mama_status status      = MAMA_STATUS_OK;
-    double      value       = 0.0;  
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    double      value       = 0.0;
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.", 0);
-    
+
     if(MAMA_STATUS_OK!=(status=mamaPrice_getValue(
                             CAST_JLONG_TO_POINTER(mamaPrice,pPrice), &value)))
     {
@@ -172,12 +172,12 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaPrice_toString
     jlong       pPrice      = 0;
     mama_status status      = MAMA_STATUS_OK;
     char        ret_c       [MAMA_PRICE_MAX_STR_LEN+1];
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.", NULL);
-    
+
     if(MAMA_STATUS_OK!=(status=mamaPrice_getAsString(
                             CAST_JLONG_TO_POINTER(mamaPrice,pPrice), ret_c, MAMA_PRICE_MAX_STR_LEN)))
     {
@@ -203,17 +203,17 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_copy
     jlong       pPrice       = 0;
     jlong       pPriceToCopy = 0;
     mama_status status       = MAMA_STATUS_OK;
-    char        errorString  [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString  [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.");
-    
-    pPriceToCopy = (*env)->GetLongField(env,other,pricePointerFieldId_g);   
-    
-    if(!pPriceToCopy || 
+
+    pPriceToCopy = (*env)->GetLongField(env,other,pricePointerFieldId_g);
+
+    if(!pPriceToCopy ||
        MAMA_STATUS_OK!=(status=mamaPrice_copy(
-                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice), 
+                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice),
                             CAST_JLONG_TO_POINTER(mamaPrice,pPriceToCopy))))
     {
          utils_buildErrorStringForStatus(
@@ -224,7 +224,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_copy
         utils_throwExceptionForMamaStatus(env,status,errorString);
     }
 }
-   
+
 /*
  * Class:     com_wombat_mama_MamaPrice
  * Method:    _create
@@ -232,11 +232,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_copy
  */
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice__1create
   (JNIEnv* env , jobject this)
-{  
+{
     mamaPrice   cPrice      = NULL;
     mama_status status      = MAMA_STATUS_OK;
     char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     if(MAMA_STATUS_OK!=(status=mamaPrice_create(&cPrice)))
     {
          utils_buildErrorStringForStatus(
@@ -264,14 +264,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice__1setPrecision
 {
     jlong       pPrice      = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];   
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.");
-    
+
     if(MAMA_STATUS_OK!=(status=mamaPrice_setPrecision(
-                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice), 
+                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice),
                             (mamaPricePrecision) precision)))
     {
          utils_buildErrorStringForStatus(
@@ -294,9 +294,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_setIsValidPrice
     jlong       pPrice      = 0;
     mama_status status      = MAMA_STATUS_OK;
     char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.");
 
     if(MAMA_STATUS_OK!=(status=mamaPrice_setIsValidPrice(
@@ -322,13 +322,13 @@ JNIEXPORT jbyte JNICALL Java_com_wombat_mama_MamaPrice__1getPrecision
 {
     jlong               pPrice      = 0;
     mama_status         status      = MAMA_STATUS_OK;
-    mamaPricePrecision  precision   = 0;   
+    mamaPricePrecision  precision   = 0;
     char                errorString [UTILS_MAX_ERROR_STRING_LENGTH];
 
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.", 0);
-    
+
     if(MAMA_STATUS_OK!=(status=mamaPrice_getPrecision(
                             CAST_JLONG_TO_POINTER(mamaPrice,pPrice), &precision)))
     {
@@ -356,7 +356,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaPrice_getIsValidPrice
     char                errorString [UTILS_MAX_ERROR_STRING_LENGTH];
 
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.", 0);
 
     if(MAMA_STATUS_OK!=(status=mamaPrice_getIsValidPrice(
@@ -382,13 +382,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_destroy
   (JNIEnv* env, jobject this)
 {
     jlong       pPrice      = 0;
-    mama_status status      = MAMA_STATUS_OK;   
+    mama_status status      = MAMA_STATUS_OK;
     char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
- 
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-        
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice, 
-    "MamaPrice.destroy(): Null parameter, MamaPrice may have already been destroyed."); 
+
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,
+    "MamaPrice.destroy(): Null parameter, MamaPrice may have already been destroyed.");
 
     if(MAMA_STATUS_OK!=(status=mamaPrice_destroy(
                             CAST_JLONG_TO_POINTER(mamaPrice,pPrice))))
@@ -400,7 +400,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_destroy
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
     }
-    
+
     (*env)->SetLongField(env, this,
          pricePointerFieldId_g,
          0);
@@ -416,15 +416,15 @@ JNIEXPORT jbyte JNICALL Java_com_wombat_mama_MamaPrice__1getHints
 {
     jlong       pPrice      = 0;
     mama_status status      = MAMA_STATUS_OK;
-    mama_u8_t   hints       = 0;  
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    mama_u8_t   hints       = 0;
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.", 0);
-    
+
     if(MAMA_STATUS_OK!=(status=mamaPrice_getHints(
-                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice), 
+                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice),
                             &hints)))
     {
          utils_buildErrorStringForStatus(
@@ -434,7 +434,7 @@ JNIEXPORT jbyte JNICALL Java_com_wombat_mama_MamaPrice__1getHints
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
     }
-    return (jbyte) hints; 
+    return (jbyte) hints;
 }
 
 /*
@@ -447,14 +447,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice__1setHints
  {
     jlong       pPrice      = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];   
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,
 		"Null parameter, MamaPrice may have already been destroyed.");
-    
+
     if(MAMA_STATUS_OK!=(status=mamaPrice_setHints(
-                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice), 
+                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice),
                             (mamaPriceHints) hints)))
     {
          utils_buildErrorStringForStatus(

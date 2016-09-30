@@ -34,19 +34,19 @@ typedef void * mamaQueueLockHandle;
 /*
    Decrements the count of open objects against the queue. Note that the
    queue cannot be destroyed until this count is 0.
-   
+
    @param handle The lock handle returned by mamaQueue_incrementObjectCount.
-   @param queue The mamaQueue.   
+   @param queue The mamaQueue.
 */
 MAMAExpDLL
-extern void 
+extern void
 mamaQueue_decrementObjectCount(mamaQueueLockHandle *handle, mamaQueue queue);
 
 /**
  * Increments the count of open objects against the queue. Note that the
  * queue cannot be destroyed until this count is 0.
- *  
- * @param queue The mamaQueue.   
+ *
+ * @param queue The mamaQueue.
  * @param owner The owner object, this is used for tracking and its value will be written out whenever
  *              the count is incremented and decremented.
  * @return The lock handle, this must be passed to the mamaQueue_decrementObjectCount function and will
@@ -69,7 +69,7 @@ mamaQueueImpl_getBridgeImpl (mamaQueue queue);
 
 /*
    Get the cached mamaMsg which is reused for all incoming messages.
-   
+
    @param queue The mamaQueue which has cached the message.
 
    @return The cached mamaMsg.
@@ -104,7 +104,7 @@ extern mama_status
 mamaQueueImpl_lowWatermarkExceeded (mamaQueue queue, size_t size);
 
 MAMAExpDLL
-extern mamaStatsCollector 
+extern mamaStatsCollector
 mamaQueueImpl_getStatsCollector (mamaQueue queue);
 
 #if defined(__cplusplus)

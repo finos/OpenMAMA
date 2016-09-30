@@ -27,25 +27,25 @@
 
 using namespace Wombat;
 
-static uint16_t theMaxFid = 0; 
+static uint16_t theMaxFid = 0;
 static bool initialised   = false;
 
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::HIGH_INDICATION_PRICE = NULL;
-const MamaFieldDescriptor* MamdaOrderImbalanceFields::LOW_INDICATION_PRICE  = NULL; 
-const MamaFieldDescriptor* MamdaOrderImbalanceFields::INDICATION_PRICE      = NULL; 
+const MamaFieldDescriptor* MamdaOrderImbalanceFields::LOW_INDICATION_PRICE  = NULL;
+const MamaFieldDescriptor* MamdaOrderImbalanceFields::INDICATION_PRICE      = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::BUY_VOLUME            = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::SELL_VOLUME           = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::MATCH_VOLUME          = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::SECURITY_STATUS_QUAL  = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::INSIDE_MATCH_PRICE    = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::FAR_CLEARING_PRICE    = NULL;
-const MamaFieldDescriptor* MamdaOrderImbalanceFields::NEAR_CLEARING_PRICE   = NULL; 
-const MamaFieldDescriptor* MamdaOrderImbalanceFields::NO_CLEARING_PRICE     = NULL; 
+const MamaFieldDescriptor* MamdaOrderImbalanceFields::NEAR_CLEARING_PRICE   = NULL;
+const MamaFieldDescriptor* MamdaOrderImbalanceFields::NO_CLEARING_PRICE     = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::PRICE_VAR_IND         = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::CROSS_TYPE            = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::SRC_TIME              = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::ACTIVITY_TIME         = NULL;
-    
+
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::MSG_TYPE              = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::ISSUE_SYMBOL          = NULL;
 const MamaFieldDescriptor* MamdaOrderImbalanceFields::PART_ID               = NULL;
@@ -85,7 +85,7 @@ void MamdaOrderImbalanceFields::setDictionary (const MamaDictionary&  dictionary
     CROSS_TYPE            = dictionary.getFieldByName ("wCrossType");
     SRC_TIME              = dictionary.getFieldByName ("wSrcTime");
     ACTIVITY_TIME         = dictionary.getFieldByName ("wActivityTime");
-    
+
     MSG_TYPE              = dictionary.getFieldByName ("wMsgType");
     ISSUE_SYMBOL          = dictionary.getFieldByName ("wIssueSymbol");
     PART_ID               = dictionary.getFieldByName ("wPartId");

@@ -35,7 +35,7 @@ extern "C" {
  * The mamaDictionary class maps field identifiers (FIDs) to
  * human readable strings. Any incoming mamaMsg might contain FIDs but
  * no field names. The dictionary allows applications to determine the name
- * associated with a given FID. 
+ * associated with a given FID.
  */
 
 /**
@@ -139,12 +139,12 @@ mamaDictionary_getFeedHost (
  *
  * @param dictionary The dictionary.
  * @param fid The field id.
- * @param result (out) points to the mamaFieldDescriptor (not a copy) 
+ * @param result (out) points to the mamaFieldDescriptor (not a copy)
  */
 MAMAExpDLL
 extern mama_status
 mamaDictionary_getFieldDescriptorByFid (
-    mamaDictionary        dictionary, 
+    mamaDictionary        dictionary,
     mamaFieldDescriptor*  result,
     mama_fid_t            fid);
 
@@ -165,40 +165,40 @@ mamaDictionary_getFieldDescriptorByIndex (
     unsigned short        index);
 
 /**
- * Return the descriptor of the field with the specified name. If there 
- * is more than one field with the same name, the one with the lowest 
+ * Return the descriptor of the field with the specified name. If there
+ * is more than one field with the same name, the one with the lowest
  * field id is returned.
  *
  * @param dictionary The dictionary.
- * @param result the result * or NULL if no such field 
+ * @param result the result * or NULL if no such field
  * @param fname The name of the field to search for.
  */
 MAMAExpDLL
 extern mama_status
 mamaDictionary_getFieldDescriptorByName (
-    mamaDictionary        dictionary, 
+    mamaDictionary        dictionary,
     mamaFieldDescriptor*  result,
     const char*           fname);
 
 /**
- * Return an array of mamaFieldDescriptor which includes every field 
- * in the dictionary with the specified name. 
+ * Return an array of mamaFieldDescriptor which includes every field
+ * in the dictionary with the specified name.
  * The caller is responsible for allocating descList with room enough
- * for all possible duplicate fields (use mamaDictionary_getSize () to 
- * be safe). 
+ * for all possible duplicate fields (use mamaDictionary_getSize () to
+ * be safe).
  *
  * @param dictionary The dictionary.
  * @param fname (in) The name to search dictionary for.
  * @param descList (out) An array of mamaFieldDescriptor objects, which are
  * not copies and should not be destroyed by the caller.
- * @param size (out) The final number of entries in descList.  The value should 
+ * @param size (out) The final number of entries in descList.  The value should
  * be intialised to the size allocated to decList.  This will be modified to the
  * actual number found on return, or will return once this value has been found.
  */
 MAMAExpDLL
 extern mama_status
 mamaDictionary_getFieldDescriptorByNameAll (
-    mamaDictionary        dictionary, 
+    mamaDictionary        dictionary,
     const char*           fname,
     mamaFieldDescriptor*  descList,
     size_t*               size);
@@ -210,7 +210,7 @@ mamaDictionary_getFieldDescriptorByNameAll (
  * @param value A pointer that will contain highest FID.
  */
 MAMAExpDLL
-extern mama_status 
+extern mama_status
 mamaDictionary_getMaxFid (
     mamaDictionary  dictionary,
     mama_fid_t*     value);
@@ -222,7 +222,7 @@ mamaDictionary_getMaxFid (
  * @param value   The number of entries in the dictionary.
  */
 MAMAExpDLL
-extern mama_status 
+extern mama_status
 mamaDictionary_getSize (
     mamaDictionary  dictionary,
     size_t*         value);
@@ -234,7 +234,7 @@ mamaDictionary_getSize (
  * @param value 1 if there are duplicates, 0 otherwise.
  */
 MAMAExpDLL
-extern mama_status 
+extern mama_status
 mamaDictionary_hasDuplicates (
     mamaDictionary  dictionary,
     int*            value);
@@ -242,7 +242,7 @@ mamaDictionary_hasDuplicates (
 /**
  * Build a data dictionary from the specified message.
  *
- * @param dictionary The dictionary 
+ * @param dictionary The dictionary
  * @param msg A mamaMsg representing the contents of a data dictionary.
  */
 MAMAExpDLL
@@ -253,7 +253,7 @@ mamaDictionary_buildDictionaryFromMessage (
 
 /**
  * Get the underlying message for the data dictionary.
- * 
+ *
  * A new message instance is created each time this function is called. It is
  * the responsibility for the caller to destroy the message when no longer
  * required.

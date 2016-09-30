@@ -60,7 +60,7 @@ namespace Wombat
 					}
 				}
 			}
-        
+
 			mFieldIterator = new FieldIterator(this);
 		}
 
@@ -77,20 +77,20 @@ namespace Wombat
 		{
 			cache.mSrcTime = DateTime.MinValue;
 			cache.mActTime = DateTime.MinValue;
-			cache.mEventSeqNum = 0; 
+			cache.mEventSeqNum = 0;
 			cache.mEventTime = DateTime.MinValue;
-			cache.mSecStatus = 0; 
-			cache.mSecStatusQual = 0; 
-			cache.mSecStatusStr = "Unknown"; 
-			cache.mSecStatusQualStr = null; 
-			cache.mSecStatusOrigStr = null;  
+			cache.mSecStatus = 0;
+			cache.mSecStatusQual = 0;
+			cache.mSecStatusStr = "Unknown";
+			cache.mSecStatusQualStr = null;
+			cache.mSecStatusOrigStr = null;
             cache.mShortSaleCircuitBreaker = ' ';
 			cache.mReason = null;
             cache.mLuldTime = DateTime.MinValue;
             cache.mLuldIndicator = ' ';
             cache.mLuldHighLimit = new MamaPrice();
             cache.mLuldLowLimit = new MamaPrice();
-            
+
             cache.mSrcTimeFieldState                 = MamdaFieldState.NOT_INITIALISED;
             cache.mActTimeFieldState                 = MamdaFieldState.NOT_INITIALISED;
             cache.mEventSeqNumFieldState             = MamdaFieldState.NOT_INITIALISED;
@@ -312,7 +312,7 @@ namespace Wombat
             updateFieldStates();
 			lock (this)
 			{
-				mUpdated = false;             
+				mUpdated = false;
 				msg.iterateFields(mFieldIterator, null, null);
 			}
 			switch (msgType)
@@ -349,7 +349,7 @@ namespace Wombat
 			MamaMsg            msg)
 		{
 			if (mUpdated)
-			{               
+			{
 				foreach (MamdaSecurityStatusHandler handler in mHandlers)
 				{
 					handler.onSecurityStatusUpdate(subscription, this, msg, this, this);
@@ -359,27 +359,27 @@ namespace Wombat
 
         private void updateFieldStates()
         {
-            if (mSecurityStatusCache.mSrcTimeFieldState          == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mSrcTimeFieldState          == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mSrcTimeFieldState          = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mActTimeFieldState          == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mActTimeFieldState          == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mActTimeFieldState          = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mEventSeqNumFieldState      == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mEventSeqNumFieldState      == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mEventSeqNumFieldState      = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mEventTimeFieldState        == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mEventTimeFieldState        == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mEventTimeFieldState        = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mSecStatusFieldState        == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mSecStatusFieldState        == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mSecStatusFieldState        = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mSecStatusQualFieldState    == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mSecStatusQualFieldState    == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mSecStatusQualFieldState    = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mSecStatusStrFieldState     == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mSecStatusStrFieldState     == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mSecStatusStrFieldState     = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mSecStatusQualStrFieldState == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mSecStatusQualStrFieldState == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mSecStatusQualStrFieldState = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mSecStatusOrigStrFieldState == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mSecStatusOrigStrFieldState == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mSecStatusOrigStrFieldState = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mShortSaleCircuitBreakerFieldState == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mShortSaleCircuitBreakerFieldState == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mShortSaleCircuitBreakerFieldState = MamdaFieldState.NOT_MODIFIED;
-            if (mSecurityStatusCache.mReasonFieldState           == MamdaFieldState.MODIFIED) 
+            if (mSecurityStatusCache.mReasonFieldState           == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mReasonFieldState           = MamdaFieldState.NOT_MODIFIED;
             if (mSecurityStatusCache.mLuldIndicatorFieldState     == MamdaFieldState.MODIFIED)
                 mSecurityStatusCache.mLuldIndicatorFieldState     = MamdaFieldState.NOT_MODIFIED;
@@ -440,14 +440,14 @@ namespace Wombat
                 default:
                     break;
             }
-			
+
 			return null;
         }
 
 		private interface SecurityStatusUpdate
 		{
 			void onUpdate(
-				MamdaSecurityStatusListener listener,            
+				MamdaSecurityStatusListener listener,
 				MamaMsgField                field);
 		}
 
@@ -473,7 +473,7 @@ namespace Wombat
         {
             public void onUpdate(MamdaSecurityStatusListener listener, MamaMsgField field)
             {
-                string statusQual = listener.getFieldAsString(field);           
+                string statusQual = listener.getFieldAsString(field);
                 if (string.Compare(listener.mSecurityStatusCache.mSecStatusQualStr, statusQual) != 0)
                 {
                     listener.mSecurityStatusCache.mSecStatusQualStr = statusQual;
@@ -508,13 +508,13 @@ namespace Wombat
         private class ShortSaleCircuitBreaker : SecurityStatusUpdate
         {
             public void onUpdate(MamdaSecurityStatusListener listener, MamaMsgField field)
-            {            
+            {
                 if ((field != null) && (listener.mSecurityStatusCache.mShortSaleCircuitBreaker != field.getChar()))
                 {
                     listener.mSecurityStatusCache.mShortSaleCircuitBreaker = field.getChar();
                     listener.mSecurityStatusCache.mShortSaleCircuitBreakerFieldState = MamdaFieldState.MODIFIED;
                     listener.mUpdated = true;
-                } 
+                }
             }
         }
 
@@ -563,13 +563,13 @@ namespace Wombat
         private class SecurityStatusLuldIndicator : SecurityStatusUpdate
         {
             public void onUpdate(MamdaSecurityStatusListener listener, MamaMsgField field)
-            {            
+            {
                 if ((field != null) && (listener.mSecurityStatusCache.mLuldIndicator != field.getChar() || listener.mSecurityStatusCache.mLuldIndicatorFieldState == MamdaFieldState.NOT_INITIALISED))
                 {
                     listener.mSecurityStatusCache.mLuldIndicator = field.getChar();
                     listener.mSecurityStatusCache.mLuldIndicatorFieldState = MamdaFieldState.MODIFIED;
                     listener.mUpdated = true;
-                } 
+                }
             }
         }
 
@@ -583,7 +583,7 @@ namespace Wombat
             }
         }
 
-       
+
         private class SecurityStatusLuldLowLimit : SecurityStatusUpdate
         {
             public void onUpdate(MamdaSecurityStatusListener listener, MamaMsgField field)
@@ -627,7 +627,7 @@ namespace Wombat
 			private MamdaSecurityStatusListener mListener;
 		}
 
-		protected class MamdaSecurityStatusCache 
+		protected class MamdaSecurityStatusCache
 		{
             /*
             * NOTE: fields which are enums can be pubished as integers if feedhandler
@@ -636,30 +636,30 @@ namespace Wombat
             * by getting the value based on the field type.
             */
 
-			public DateTime	mSrcTime		= DateTime.MinValue;  
-			public DateTime	mActTime		= DateTime.MinValue;  
-			public long		mEventSeqNum; 
+			public DateTime	mSrcTime		= DateTime.MinValue;
+			public DateTime	mActTime		= DateTime.MinValue;
+			public long		mEventSeqNum;
 			public DateTime	mEventTime		= DateTime.MinValue;
-			public long		mSecStatus; 
-			public long		mSecStatusQual; 
-			public string	mSecStatusStr; 
-			public string	mSecStatusQualStr; 
-			public string	mSecStatusOrigStr; 
+			public long		mSecStatus;
+			public long		mSecStatusQual;
+			public string	mSecStatusStr;
+			public string	mSecStatusQualStr;
+			public string	mSecStatusOrigStr;
             public char     mShortSaleCircuitBreaker;
 			public string	mReason;
             public DateTime mLuldTime               = DateTime.MinValue;
             public char     mLuldIndicator;
 			public MamaPrice    mLuldHighLimit      = new MamaPrice ();
 			public MamaPrice    mLuldLowLimit       = new MamaPrice ();
-            
+
             //Field States
             public MamdaFieldState  mSrcTimeFieldState          = new MamdaFieldState();
             public MamdaFieldState  mActTimeFieldState          = new MamdaFieldState();
             public MamdaFieldState  mEventSeqNumFieldState      = new MamdaFieldState();
             public MamdaFieldState  mEventTimeFieldState        = new MamdaFieldState();
             public MamdaFieldState  mSecStatusFieldState        = new MamdaFieldState();
-            public MamdaFieldState  mSecStatusQualFieldState    = new MamdaFieldState(); 
-            public MamdaFieldState  mSecStatusStrFieldState     = new MamdaFieldState(); 
+            public MamdaFieldState  mSecStatusQualFieldState    = new MamdaFieldState();
+            public MamdaFieldState  mSecStatusStrFieldState     = new MamdaFieldState();
             public MamdaFieldState  mSecStatusQualStrFieldState = new MamdaFieldState();
             public MamdaFieldState  mSecStatusOrigStrFieldState = new MamdaFieldState();
             public MamdaFieldState  mShortSaleCircuitBreakerFieldState = new MamdaFieldState();
@@ -683,7 +683,7 @@ namespace Wombat
 		private object mUpdatersGuard = new object();
 
 		private bool mUpdated;
-		
+
 		#endregion State
 
 		#endregion Implemenetation details

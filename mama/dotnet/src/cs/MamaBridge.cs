@@ -34,7 +34,7 @@ namespace Wombat
 			int code = NativeMethods.mama_loadBridge (ref nativeHandle, middleware);
 			CheckResultCode (code);
 		}
-        
+
         public MamaBridge (string middleware, string path): base()
 		{
 			int code = NativeMethods.mama_loadBridgeWithPath (ref nativeHandle, middleware, path);
@@ -67,12 +67,12 @@ namespace Wombat
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mama_loadBridge (ref IntPtr impl,
 				string middleware);
-		               
+
 			// export definitions
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mama_loadBridgeWithPath (ref IntPtr impl, string middleware,                string path);
         }
-		
+
 
 		#endregion // Implementation details
 	}

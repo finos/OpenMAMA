@@ -32,9 +32,9 @@ public class MamaPriceGetRoundedPrice extends TestCase
 {
     // The message under test
     protected MamaPrice mPrice;
-    
+
     protected Double b;
-   
+
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
@@ -67,13 +67,13 @@ public class MamaPriceGetRoundedPrice extends TestCase
 
         mPrice = new MamaPrice();
         mPrice.setValue(b);
-         
-         assertEquals(mPrice.getValue(), mPrice.getRoundedValue());       
-         
-         assertEquals(mPrice.getValue(), mPrice.getRoundedValue(MamaPricePrecision.PRECISION_UNKNOWN)); 
-         
-         assertEquals(mPrice.getValue(), mPrice.getRoundedValue(MamaPricePrecision.PRECISION_INT)); 
-         
+
+         assertEquals(mPrice.getValue(), mPrice.getRoundedValue());
+
+         assertEquals(mPrice.getValue(), mPrice.getRoundedValue(MamaPricePrecision.PRECISION_UNKNOWN));
+
+         assertEquals(mPrice.getValue(), mPrice.getRoundedValue(MamaPricePrecision.PRECISION_INT));
+
          assertEquals(mPrice.getValue(), mPrice.getRoundedValue(MamaPricePrecision.PRECISION_HALF_64));
     }
 
@@ -88,7 +88,7 @@ public class MamaPriceGetRoundedPrice extends TestCase
     	assertEquals(28.0611232,   mPrice.getRoundedValue(MamaPricePrecision.PRECISION_10000000));
     	assertEquals(28.06112321,   mPrice.getRoundedValue(MamaPricePrecision.PRECISION_100000000));
     	assertEquals(28.061123212,   mPrice.getRoundedValue(MamaPricePrecision.PRECISION_1000000000));
-    	
+
     }
 
     public void testImplicit()
@@ -112,5 +112,5 @@ public class MamaPriceGetRoundedPrice extends TestCase
     	mPrice.setPrecision(MamaPricePrecision.PRECISION_1000000000);
     	assertEquals(28.061123212,   mPrice.getRoundedValue());
 
-    }  
+    }
 }

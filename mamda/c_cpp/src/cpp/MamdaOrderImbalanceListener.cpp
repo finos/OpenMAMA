@@ -46,7 +46,7 @@ namespace Wombat
     };
 
 
-    struct OrderImbalanceCache 
+    struct OrderImbalanceCache
     {
         // The following fields are used for caching the offical order imbalance
         // and related fields.  These fields can be used by applications for
@@ -57,7 +57,7 @@ namespace Wombat
         int64_t               mBuyVolume;                MamdaFieldState     mBuyVolumeFieldState;
         int64_t               mSellVolume;               MamdaFieldState     mSellVolumeFieldState;
         int64_t               mMatchVolume;              MamdaFieldState     mMatchVolumeFieldState;
-        string                mSecurityStatusQual;       MamdaFieldState     mSecurityStatusQualFieldState; 
+        string                mSecurityStatusQual;       MamdaFieldState     mSecurityStatusQualFieldState;
         MamaPrice             mInsideMatchPrice;         MamdaFieldState     mInsideMatchPriceFieldState;
         MamaPrice             mFarClearingPrice;         MamdaFieldState     mFarClearingPriceFieldState;
         MamaPrice             mNearClearingPrice;        MamdaFieldState     mNearClearingPriceFieldState;
@@ -77,42 +77,42 @@ namespace Wombat
         MamaDateTime          mAuctionTime;              MamdaFieldState     mAuctionTimeFieldState;
         MamaDateTime          mLineTime;                 MamdaFieldState     mLineTimeFieldState;
         MamaDateTime          mSendTime;                 MamdaFieldState     mSendTimeFieldState;
-        string                mSymbol;                   MamdaFieldState     mSymbolFieldState;  
-      
+        string                mSymbol;                   MamdaFieldState     mSymbolFieldState;
+
 
         bool                                          mIsOrderImbalance;
-        MamdaOrderImbalanceType::OrderImbalanceType   mSecurityStatusQualValue;  
+        MamdaOrderImbalanceType::OrderImbalanceType   mSecurityStatusQualValue;
     };
 
-    class MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl 
+    class MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl
         : public MamaMsgFieldIterator
     {
     public:
-        MamdaOrderImbalanceListenerImpl   (MamdaOrderImbalanceListener& listener); 
-        ~MamdaOrderImbalanceListenerImpl  () {} 
+        MamdaOrderImbalanceListenerImpl   (MamdaOrderImbalanceListener& listener);
+        ~MamdaOrderImbalanceListenerImpl  () {}
 
-        void clearCache                   (OrderImbalanceCache& cache); 
+        void clearCache                   (OrderImbalanceCache& cache);
 
         void handleRecap                  (MamdaSubscription*   subscription,
-                                           const MamaMsg&       msg); 
+                                           const MamaMsg&       msg);
 
         void handleUpdate                 (MamdaSubscription*   subscription,
                                            const MamaMsg&       msg,
-                                           mama_i32_t           msgType); 
-       
+                                           mama_i32_t           msgType);
+
         void onField                      (const MamaMsg&       msg,
                                            const MamaMsgField&  field,
                                            void*                closure);
 
         void invokeTransientHandler       (MamdaSubscription*   subscription,
-                                           const MamaMsg&       msg); 
+                                           const MamaMsg&       msg);
 
         bool evaluateMsgQual              (MamdaSubscription*   subscription,
-                                           const MamaMsg&       msg); 
+                                           const MamaMsg&       msg);
 
-        void updateImbalaceOrderFields    (const MamaMsg&       msg); 
+        void updateImbalaceOrderFields    (const MamaMsg&       msg);
 
-        void addHandler                   (MamdaOrderImbalanceHandler*       handler); 
+        void addHandler                   (MamdaOrderImbalanceHandler*       handler);
 
         void updateFieldStates            ();
 
@@ -122,7 +122,7 @@ namespace Wombat
 
         } ImbalanceLock;
 
-        //thread locking    
+        //thread locking
         ImbalanceLock mImbalanceLock;
 
         MamdaOrderImbalanceListener& mListener;
@@ -134,35 +134,35 @@ namespace Wombat
         // persist during to next update.
         bool           mProcessPosDupAndOutOfSeqAsTransient;
 
-        // If mResolvePossiblyDuplicate is set then the listener will attempt, 
+        // If mResolvePossiblyDuplicate is set then the listener will attempt,
         // based upon sequence number and event times, to determine whether
         // a quote marked as "possibly duplicate" is definately a duplicate,
         // in which case it is dropped.
         bool           mResolvePossiblyDuplicate;
 
-        // The mUseTransientHandlers is used to determine whether or not the 
-        // normal of transient handlers should be invoked for a message which 
+        // The mUseTransientHandlers is used to determine whether or not the
+        // normal of transient handlers should be invoked for a message which
         // is determined to be transient regardless of whether the transient
         // or regular cache is being used (mFilterTransient)
         bool           mUsePosDupAndOutOfSeqHandlers;
 
-        // Used to record whether or not a message has been 
+        // Used to record whether or not a message has been
         // determined to be transient.
         bool           mIsTransientMsg;
 
         // The Order ImbalanceCacher Data Caches
         OrderImbalanceCache     mRegularCache;          // Regular update cache
-        OrderImbalanceCache*    mTransientCache;        // Transient cache 
+        OrderImbalanceCache*    mTransientCache;        // Transient cache
         OrderImbalanceCache&    mOrderImbalanceCache;   // Current cache in use
 
-        // Message Qualifier - holds information provides in formation 
+        // Message Qualifier - holds information provides in formation
         // regarding duplicate and delayed status of message.
         MamaMsgQual   mMsgQual;     MamdaFieldState mMsgQualFieldState;
 
-        static void initFieldUpdaters (); 
+        static void initFieldUpdaters ();
         static void initFieldUpdater  (const MamaFieldDescriptor*  fieldDesc,
-                                       OrderImbalanceFieldUpdate*  updater); 
-       
+                                       OrderImbalanceFieldUpdate*  updater);
+
 
         static OrderImbalanceFieldUpdate**  mFieldUpdaters;
         static volatile uint16_t            mFieldUpdatersSize;
@@ -197,17 +197,17 @@ namespace Wombat
         struct FieldUpdateSendTime;
 
         typedef vector<MamdaOrderImbalanceHandler*> HandlersList;
-        HandlersList mHandlersList; 
+        HandlersList mHandlersList;
         HandlersList::iterator mHandlersListIterator;
-        
+
     private:
         void handleNoOrderImbalance (MamdaSubscription* subscription,
-                                     const MamaMsg&     msg); 
+                                     const MamaMsg&     msg);
 
         void handleOrderImbalance   (MamdaSubscription* subscription,
-                                     const MamaMsg&     msg); 
+                                     const MamaMsg&     msg);
 
-        bool isImbalanceType        (const char*        securityStatus);  
+        bool isImbalanceType        (const char*        securityStatus);
     };
 
 
@@ -222,8 +222,8 @@ namespace Wombat
     MamdaOrderImbalanceListener::~MamdaOrderImbalanceListener ()
     {
         wthread_mutex_destroy (&mImpl.mImbalanceLock.mImbalanceMutex);
-	    /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.  
-	       If we do, it will not be initialized again if another listener is created 
+	    /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.
+	       If we do, it will not be initialized again if another listener is created
 	       after the first is destroyed. */
         /* wthread_mutex_destroy (&mImpl.mImbalanceFieldUpdaterLockMutex); */
         delete &mImpl;
@@ -277,7 +277,7 @@ namespace Wombat
        imbalanceCache.mLineTime.clear            ();
        imbalanceCache.mSendTime.clear            ();
        imbalanceCache.mSymbol                    = "";
-       
+
        imbalanceCache.mHighIndicationPriceFieldState    = NOT_INITIALISED;
        imbalanceCache.mLowIndicationPriceFieldState     = NOT_INITIALISED;
        imbalanceCache.mIndicationPriceFieldState        = NOT_INITIALISED;
@@ -304,7 +304,7 @@ namespace Wombat
        imbalanceCache.mAuctionTimeFieldState            = NOT_INITIALISED;
        imbalanceCache.mLineTimeFieldState               = NOT_INITIALISED;
        imbalanceCache.mSendTimeFieldState               = NOT_INITIALISED;
-       imbalanceCache.mSymbolFieldState                 = NOT_INITIALISED;  
+       imbalanceCache.mSymbolFieldState                 = NOT_INITIALISED;
     }
 
     MamaPrice& MamdaOrderImbalanceListener::getHighIndicationPrice () const
@@ -373,7 +373,7 @@ namespace Wombat
     }
 
     MamaDateTime& MamdaOrderImbalanceListener::getEventTime  () const
-    {   
+    {
         return mImpl.mOrderImbalanceCache.mEventTime;
     }
 
@@ -390,7 +390,7 @@ namespace Wombat
     {
         return mImpl.mOrderImbalanceCache.mActTime;
     }
-       
+
     mama_i32_t  MamdaOrderImbalanceListener::getMsgType () const
     {
         return mImpl.mOrderImbalanceCache.mMsgType;
@@ -508,7 +508,7 @@ namespace Wombat
     }
 
     MamdaFieldState MamdaOrderImbalanceListener::getEventTimeFieldState() const
-    {   
+    {
       return mImpl.mOrderImbalanceCache.mEventTimeFieldState;
     }
 
@@ -583,9 +583,9 @@ namespace Wombat
     void MamdaOrderImbalanceListener::onMsg (MamdaSubscription* subscription,
                                              const MamaMsg&     msg,
                                              short              msgType)
-    {               
+    {
        switch (msgType)
-       {       
+       {
        case MAMA_MSG_TYPE_INITIAL:
        case MAMA_MSG_TYPE_RECAP:
        case MAMA_MSG_TYPE_UPDATE:
@@ -603,52 +603,52 @@ namespace Wombat
         if (mOrderImbalanceCache.mHighIndicationPriceFieldState  == MODIFIED)
             mOrderImbalanceCache.mHighIndicationPriceFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mLowIndicationPriceFieldState  == MODIFIED) 
+        if (mOrderImbalanceCache.mLowIndicationPriceFieldState  == MODIFIED)
             mOrderImbalanceCache.mLowIndicationPriceFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mIndicationPriceFieldState  == MODIFIED)    
+        if (mOrderImbalanceCache.mIndicationPriceFieldState  == MODIFIED)
             mOrderImbalanceCache.mIndicationPriceFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mBuyVolumeFieldState  == MODIFIED)        
+        if (mOrderImbalanceCache.mBuyVolumeFieldState  == MODIFIED)
             mOrderImbalanceCache.mBuyVolumeFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mSellVolumeFieldState  == MODIFIED) 
+        if (mOrderImbalanceCache.mSellVolumeFieldState  == MODIFIED)
             mOrderImbalanceCache.mSellVolumeFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mMatchVolumeFieldState  == MODIFIED) 
+        if (mOrderImbalanceCache.mMatchVolumeFieldState  == MODIFIED)
             mOrderImbalanceCache.mMatchVolumeFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mSecurityStatusQualFieldState  == MODIFIED) 
+        if (mOrderImbalanceCache.mSecurityStatusQualFieldState  == MODIFIED)
             mOrderImbalanceCache.mSecurityStatusQualFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mInsideMatchPriceFieldState  == MODIFIED)   
+        if (mOrderImbalanceCache.mInsideMatchPriceFieldState  == MODIFIED)
             mOrderImbalanceCache.mInsideMatchPriceFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mFarClearingPriceFieldState  == MODIFIED)  
+        if (mOrderImbalanceCache.mFarClearingPriceFieldState  == MODIFIED)
             mOrderImbalanceCache.mFarClearingPriceFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mNearClearingPriceFieldState  == MODIFIED) 
+        if (mOrderImbalanceCache.mNearClearingPriceFieldState  == MODIFIED)
             mOrderImbalanceCache.mNearClearingPriceFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mNoClearingPriceFieldState  == MODIFIED)    
+        if (mOrderImbalanceCache.mNoClearingPriceFieldState  == MODIFIED)
             mOrderImbalanceCache.mNoClearingPriceFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mPriceVarIndFieldState  == MODIFIED)      
+        if (mOrderImbalanceCache.mPriceVarIndFieldState  == MODIFIED)
             mOrderImbalanceCache.mPriceVarIndFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mCrossTypeFieldState  == MODIFIED)    
+        if (mOrderImbalanceCache.mCrossTypeFieldState  == MODIFIED)
             mOrderImbalanceCache.mCrossTypeFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mEventTimeFieldState  == MODIFIED)  
+        if (mOrderImbalanceCache.mEventTimeFieldState  == MODIFIED)
             mOrderImbalanceCache.mEventTimeFieldState  =  NOT_MODIFIED;
 
         if (mOrderImbalanceCache.mEventSeqNumFieldState  == MODIFIED)
             mOrderImbalanceCache.mEventSeqNumFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mSrcTimeFieldState  == MODIFIED)      
+        if (mOrderImbalanceCache.mSrcTimeFieldState  == MODIFIED)
             mOrderImbalanceCache.mSrcTimeFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mActTimeFieldState  == MODIFIED)  
+        if (mOrderImbalanceCache.mActTimeFieldState  == MODIFIED)
             mOrderImbalanceCache.mActTimeFieldState  =  NOT_MODIFIED;
 
         if (mOrderImbalanceCache.mMsgTypeFieldState  == MODIFIED)
@@ -657,28 +657,28 @@ namespace Wombat
         if (mOrderImbalanceCache.mIssueSymbolFieldState  == MODIFIED)
             mOrderImbalanceCache.mIssueSymbolFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mPartIdFieldState  == MODIFIED)       
+        if (mOrderImbalanceCache.mPartIdFieldState  == MODIFIED)
             mOrderImbalanceCache.mPartIdFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mSeqNumFieldState  == MODIFIED)  
+        if (mOrderImbalanceCache.mSeqNumFieldState  == MODIFIED)
             mOrderImbalanceCache.mSeqNumFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mSecurityStatusOrigFieldState  == MODIFIED) 
+        if (mOrderImbalanceCache.mSecurityStatusOrigFieldState  == MODIFIED)
             mOrderImbalanceCache.mSecurityStatusOrigFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mSecurityStatusTimeFieldState  == MODIFIED) 
+        if (mOrderImbalanceCache.mSecurityStatusTimeFieldState  == MODIFIED)
             mOrderImbalanceCache.mSecurityStatusTimeFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mAuctionTimeFieldState  == MODIFIED)        
+        if (mOrderImbalanceCache.mAuctionTimeFieldState  == MODIFIED)
             mOrderImbalanceCache.mAuctionTimeFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mLineTimeFieldState  == MODIFIED)     
+        if (mOrderImbalanceCache.mLineTimeFieldState  == MODIFIED)
             mOrderImbalanceCache.mLineTimeFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mSendTimeFieldState  == MODIFIED)  
+        if (mOrderImbalanceCache.mSendTimeFieldState  == MODIFIED)
             mOrderImbalanceCache.mSendTimeFieldState  =  NOT_MODIFIED;
 
-        if (mOrderImbalanceCache.mSymbolFieldState  == MODIFIED)    
+        if (mOrderImbalanceCache.mSymbolFieldState  == MODIFIED)
             mOrderImbalanceCache.mSymbolFieldState  =  NOT_MODIFIED;
 
         if (mMsgQualFieldState == MODIFIED)
@@ -698,7 +698,7 @@ namespace Wombat
 
     /** Create a class for each field*/
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateHighIndicationPrice 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateHighIndicationPrice
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -710,7 +710,7 @@ namespace Wombat
         }
     };
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateLowIndicationPrice 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateLowIndicationPrice
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -723,7 +723,7 @@ namespace Wombat
     };
 
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateIndicationPrice 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateIndicationPrice
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -734,9 +734,9 @@ namespace Wombat
             impl.mOrderImbalanceCache.mIsOrderImbalance = true;
         }
     };
-     
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateBuyVolume 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateBuyVolume
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -747,9 +747,9 @@ namespace Wombat
             impl.mOrderImbalanceCache.mIsOrderImbalance = true;
         }
     };
-     
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateSellVolume 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateSellVolume
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -762,7 +762,7 @@ namespace Wombat
     };
 
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateMatchVolume 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateMatchVolume
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -774,18 +774,18 @@ namespace Wombat
             impl.mOrderImbalanceCache.mIsOrderImbalance = true;
         }
     };
-      
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateSecurityStatusQual 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateSecurityStatusQual
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
                        const MamaMsgField&                                            field)
         {
             impl.mOrderImbalanceCache.mSecurityStatusQual =
-                            field.getString ();     
+                            field.getString ();
             impl.mOrderImbalanceCache.mSecurityStatusQualFieldState = MODIFIED;
-            impl.mOrderImbalanceCache.mSecurityStatusQualValue = 
+            impl.mOrderImbalanceCache.mSecurityStatusQualValue =
             (MamdaOrderImbalanceType::OrderImbalanceType)MamdaOrderImbalanceType::stringToValue (field.getString());
             if (MamdaOrderImbalanceType::isMamdaOrderImbalanceType (impl.mOrderImbalanceCache.mSecurityStatusQualValue))
             {
@@ -793,9 +793,9 @@ namespace Wombat
             }
         }
     };
-       
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateMatchPrice 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateMatchPrice
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -806,9 +806,9 @@ namespace Wombat
             impl.mOrderImbalanceCache.mIsOrderImbalance = true;
         }
     };
-        
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateFarClearingPrice 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateFarClearingPrice
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -819,9 +819,9 @@ namespace Wombat
               impl.mOrderImbalanceCache.mIsOrderImbalance = true;
         }
     };
-       
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateNearClearingPrice 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateNearClearingPrice
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -832,9 +832,9 @@ namespace Wombat
              impl.mOrderImbalanceCache.mIsOrderImbalance = true;
         }
     };
-        
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateNoClearingPrice 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateNoClearingPrice
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -859,9 +859,9 @@ namespace Wombat
             }
         }
     };
-     
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdatePriceVarInd 
+    MamdaOrderImbalanceListenerImpl::FieldUpdatePriceVarInd
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -886,9 +886,9 @@ namespace Wombat
             }
         }
     };
-       
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateCrossType 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateCrossType
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -913,9 +913,9 @@ namespace Wombat
             }
         }
     };
-        
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateEventTime 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateEventTime
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -925,9 +925,9 @@ namespace Wombat
              impl.mOrderImbalanceCache.mEventTimeFieldState = MODIFIED;
         }
     };
-        
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateEventSeqNum 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateEventSeqNum
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -938,9 +938,9 @@ namespace Wombat
              impl.mOrderImbalanceCache.mEventSeqNumFieldState = MODIFIED;
         }
     };
-        
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateSrcTime 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateSrcTime
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -952,7 +952,7 @@ namespace Wombat
     };
 
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateActTime 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateActTime
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -962,9 +962,9 @@ namespace Wombat
              impl.mOrderImbalanceCache.mActTimeFieldState = MODIFIED;
         }
     };
-       
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateMsgType 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateMsgType
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -974,10 +974,10 @@ namespace Wombat
                             field.getI32 ();
              impl.mOrderImbalanceCache.mMsgTypeFieldState = MODIFIED;
         }
-    };   
+    };
 
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateIssueSymbol 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateIssueSymbol
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -987,10 +987,10 @@ namespace Wombat
                             field.getString ();
              impl.mOrderImbalanceCache.mIssueSymbolFieldState = MODIFIED;
         }
-    };  
-        
+    };
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdatePartId 
+    MamdaOrderImbalanceListenerImpl::FieldUpdatePartId
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -1000,10 +1000,10 @@ namespace Wombat
                             field.getString ();
              impl.mOrderImbalanceCache.mPartIdFieldState = MODIFIED;
         }
-    }; 
+    };
 
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateSeqNum 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateSeqNum
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -1013,10 +1013,10 @@ namespace Wombat
                             field.getU32 ();
              impl.mOrderImbalanceCache.mSeqNumFieldState = MODIFIED;
         }
-    };    
+    };
 
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateSecurityStatusOrig 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateSecurityStatusOrig
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -1029,7 +1029,7 @@ namespace Wombat
     };
 
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateSecurityStatusTime 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateSecurityStatusTime
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -1041,7 +1041,7 @@ namespace Wombat
     };
 
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateAuctionTime 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateAuctionTime
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -1053,7 +1053,7 @@ namespace Wombat
     };
 
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateLineTime 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateLineTime
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -1063,9 +1063,9 @@ namespace Wombat
            impl.mOrderImbalanceCache.mLineTimeFieldState = MODIFIED;
         }
     };
-       
+
     struct MamdaOrderImbalanceListener::
-    MamdaOrderImbalanceListenerImpl::FieldUpdateSendTime 
+    MamdaOrderImbalanceListenerImpl::FieldUpdateSendTime
         : public OrderImbalanceFieldUpdate
     {
         void onUpdate (MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl&  impl,
@@ -1085,7 +1085,7 @@ namespace Wombat
         MamdaOrderImbalanceListenerImpl::mFieldUpdatersSize = 0;
 
     pthread_mutex_t MamdaOrderImbalanceListener::
-        MamdaOrderImbalanceListenerImpl::mImbalanceFieldUpdaterLockMutex 
+        MamdaOrderImbalanceListenerImpl::mImbalanceFieldUpdaterLockMutex
         = PTHREAD_MUTEX_INITIALIZER;
 
     bool MamdaOrderImbalanceListener::
@@ -1095,7 +1095,7 @@ namespace Wombat
     {
         if (!mFieldUpdaters)
         {
-            mFieldUpdaters = 
+            mFieldUpdaters =
                 new OrderImbalanceFieldUpdate* [MamdaOrderImbalanceFields::getMaxFid() +1];
 
             mFieldUpdatersSize = MamdaOrderImbalanceFields::getMaxFid();
@@ -1106,7 +1106,7 @@ namespace Wombat
                 mFieldUpdaters[i] = NULL;
             }
         }
-        
+
         initFieldUpdater (MamdaOrderImbalanceFields::SRC_TIME,
                           new MamdaOrderImbalanceListener::
 		                  MamdaOrderImbalanceListenerImpl::FieldUpdateSrcTime);
@@ -1125,7 +1125,7 @@ namespace Wombat
 
         initFieldUpdater (MamdaOrderImbalanceFields::BUY_VOLUME,
                           new MamdaOrderImbalanceListener::
-                          MamdaOrderImbalanceListenerImpl::FieldUpdateBuyVolume); 
+                          MamdaOrderImbalanceListenerImpl::FieldUpdateBuyVolume);
 
         initFieldUpdater (MamdaOrderImbalanceFields::SELL_VOLUME,
                           new MamdaOrderImbalanceListener::
@@ -1161,11 +1161,11 @@ namespace Wombat
 
         initFieldUpdater (MamdaOrderImbalanceFields::CROSS_TYPE,
                           new MamdaOrderImbalanceListener::
-                          MamdaOrderImbalanceListenerImpl::FieldUpdateCrossType);  
-      
+                          MamdaOrderImbalanceListenerImpl::FieldUpdateCrossType);
+
         initFieldUpdater (MamdaOrderImbalanceFields::ACTIVITY_TIME,
                           new MamdaOrderImbalanceListener::
-                          MamdaOrderImbalanceListenerImpl::FieldUpdateActTime); 
+                          MamdaOrderImbalanceListenerImpl::FieldUpdateActTime);
 
         initFieldUpdater (MamdaOrderImbalanceFields::MSG_TYPE,
                           new MamdaOrderImbalanceListener::
@@ -1236,7 +1236,7 @@ namespace Wombat
     }
 
     void MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl::handleRecap (
-        MamdaSubscription*  subscription, 
+        MamdaSubscription*  subscription,
         const MamaMsg&      msg)
     {
          if(subscription->checkDebugLevel(MAMA_LOG_LEVEL_FINE))
@@ -1260,9 +1260,9 @@ namespace Wombat
             }
             else
             {
-                mHandler->onOrderImbalanceRecap (subscription, 
-                                                 mListener, 
-                                                 msg, 
+                mHandler->onOrderImbalanceRecap (subscription,
+                                                 mListener,
+                                                 msg,
                                                  mListener);
             }
         }
@@ -1307,10 +1307,10 @@ namespace Wombat
             wthread_mutex_unlock (&mImbalanceFieldUpdaterLockMutex);
         }
 
-        // Determine if this message is a duplicate or a tranient record 
+        // Determine if this message is a duplicate or a tranient record
         // which should not update the regular cache.
-        bool isDuplicateMsg = evaluateMsgQual (subscription, msg);        
-            
+        bool isDuplicateMsg = evaluateMsgQual (subscription, msg);
+
         if (!isDuplicateMsg)
         {
             if (mIsTransientMsg && mProcessPosDupAndOutOfSeqAsTransient)
@@ -1322,18 +1322,18 @@ namespace Wombat
                 }
                 mOrderImbalanceCache = *mTransientCache;
             }
-        
-            wthread_mutex_lock (&mImbalanceLock.mImbalanceMutex);     
+
+            wthread_mutex_lock (&mImbalanceLock.mImbalanceMutex);
 
             mOrderImbalanceCache.mIsOrderImbalance = false;
-            
-            updateFieldStates();     
-            
+
+            updateFieldStates();
+
             //update all fields
             msg.iterateFields (*this, NULL, NULL);
 
-            wthread_mutex_unlock (&mImbalanceLock.mImbalanceMutex);        
-                 
+            wthread_mutex_unlock (&mImbalanceLock.mImbalanceMutex);
+
             switch (msgType)
             {
                 case MAMA_MSG_TYPE_INITIAL:
@@ -1347,11 +1347,11 @@ namespace Wombat
                         if ((MamdaOrderImbalanceType::isMamdaImbalanceOrder (mOrderImbalanceCache.mSecurityStatusQualValue)) ||
                                 (mOrderImbalanceCache.mSecurityStatusQualValue == MamdaOrderImbalanceType::UNKNOWN))
                         {
-                            handleOrderImbalance (subscription, msg); 
+                            handleOrderImbalance (subscription, msg);
                         }
                         else
                         {
-                            handleNoOrderImbalance (subscription, msg); 
+                            handleNoOrderImbalance (subscription, msg);
                         }
                     }
                 }
@@ -1359,7 +1359,7 @@ namespace Wombat
                 default:
                 break;
             }
-            
+
             if (mIsTransientMsg && mProcessPosDupAndOutOfSeqAsTransient)
             {
                 mOrderImbalanceCache = mRegularCache;
@@ -1380,8 +1380,8 @@ namespace Wombat
                                subscription->getSource (),
                                subscription->getSymbol ());
             }
-        }    
-        
+        }
+
     }
 
     bool MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl::isImbalanceType (
@@ -1436,7 +1436,7 @@ namespace Wombat
                                        mListener);
        }
     }
-       
+
     void MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl::handleNoOrderImbalance (
         MamdaSubscription*  subscription,
         const MamaMsg&      msg)
@@ -1461,49 +1461,49 @@ namespace Wombat
        else
        {
            mHandler->onNoOrderImbalance (subscription,
-                                         mListener, 
-                                         msg, 
-                                         mListener, 
+                                         mListener,
+                                         msg,
+                                         mListener,
                                          mListener);
        }
     }
 
-    bool MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl::evaluateMsgQual (    
+    bool MamdaOrderImbalanceListener::MamdaOrderImbalanceListenerImpl::evaluateMsgQual (
         MamdaSubscription*  subscription,
         const MamaMsg&      msg)
     {
         bool isDuplicateMsg = false;
         mIsTransientMsg     = false;
 
-        mMsgQual.clear();   
+        mMsgQual.clear();
         uint16_t msgQualVal = 0;
 
         // Does message contains a qualifier- need to parse this anyway.
         // Need Fid as reserved field may not be in data dictionary
-        if (msg.tryU16 (MamaFieldMsgQual.mName, 
-                        MamaFieldMsgQual.mFid, 
+        if (msg.tryU16 (MamaFieldMsgQual.mName,
+                        MamaFieldMsgQual.mFid,
                         msgQualVal))
         {
             mMsgQual.setValue (msgQualVal);
             mMsgQualFieldState = MODIFIED;
 
             // If qualifier indicates messages is possbily duplicate
-            // and the listener has been configure to attempt to 
-            // resolve the ambiguity regarding the duplicate 
+            // and the listener has been configure to attempt to
+            // resolve the ambiguity regarding the duplicate
             // status of the message.
             if (mMsgQual.getIsPossiblyDuplicate() && mResolvePossiblyDuplicate)
             {
                 mama_seqnum_t seqNum = 0;
                 MamaDateTime  eventTime;
-                
+
                 if (msg.tryU32 (MamdaOrderImbalanceFields::SEQ_NUM, seqNum) &&
-                    msg.tryDateTime (MamdaOrderImbalanceFields::SRC_TIME, eventTime)) 
+                    msg.tryDateTime (MamdaOrderImbalanceFields::SRC_TIME, eventTime))
                 {
                     // Only make a determination as to whether or
                     // not a PossiblyDuplicate msg is an actual duplicate
-                    // if the msg contains both a sequence number 
+                    // if the msg contains both a sequence number
                     // and event time.
-                    if ((seqNum < mRegularCache.mEventSeqNum) && 
+                    if ((seqNum < mRegularCache.mEventSeqNum) &&
                         (eventTime < mRegularCache.mEventTime))
                     {
                         mMsgQual.setIsDefinatelyDuplicate (true);
@@ -1511,13 +1511,13 @@ namespace Wombat
                     }
                 }
             }
-            
+
             if (!(isDuplicateMsg = mMsgQual.getIsDefinatelyDuplicate()))
             {
-                // If the message is possibly a duplicate or is 
+                // If the message is possibly a duplicate or is
                 // out of sequence then is does not (on the whole)
                 // qualify to update the regular record cache.
-                mIsTransientMsg = (mMsgQual.getIsOutOfSequence() || 
+                mIsTransientMsg = (mMsgQual.getIsOutOfSequence() ||
                                    mMsgQual.getIsPossiblyDuplicate());
             }
         }

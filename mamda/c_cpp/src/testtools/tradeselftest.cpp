@@ -96,19 +96,19 @@ int main (int argc, const char** argv)
         MamaSource*      source            = cmdLine.getSource();
         MamaQueueGroup   queues (cmdLine.getNumThreads(),bridge);
         DictRequester    dictRequester (bridge);
-        uint32_t         intervalSecs      = cmdLine.getOptInt('i');        
+        uint32_t         intervalSecs      = cmdLine.getOptInt('i');
 
         if (intervalSecs == 0)
         {
             intervalSecs = 5;
         }
-        
+
 
         // Get and initialize the dictionary
         dictRequester.requestDictionary (cmdLine.getDictSource());
         MamdaCommonFields::setDictionary (*dictRequester.getDictionary());
         MamdaTradeFields::setDictionary (*dictRequester.getDictionary());
-        
+
 
         for (vector<const char*>::const_iterator i = symbolList.begin();
             i != symbolList.end();
@@ -143,7 +143,7 @@ int main (int argc, const char** argv)
         cerr << "Unknown Exception in main ()." << endl;
         exit (1);
     }
-    
+
 
     return 1;
 }
@@ -153,4 +153,3 @@ void usage (int exitStatus)
     std::cerr << "Usage: tradeselftest [-tport] tport_name [-m] middleware [-S] source [-s] symbol\n";
     exit(exitStatus);
 }
-

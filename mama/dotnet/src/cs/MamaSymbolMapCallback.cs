@@ -23,7 +23,7 @@ using System;
 
 namespace Wombat
 {
-    /// Callback interface to receive notifications regarding 
+    /// Callback interface to receive notifications regarding
     /// symbol mapping events
 	public interface MamaSymbolMapCallback
 	{
@@ -38,6 +38,6 @@ namespace Wombat
 			object closure,
 			ref string result,
 			string symbol,
-			int maxLen); 
+			int maxLen);
 	}
 }

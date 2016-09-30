@@ -32,7 +32,7 @@ namespace Wombat.Mamda.Examples
 	{
         private static MamdaSubscription[] mamdaSubscriptions;
 		private static int				   myQuietModeLevel;
-                
+
 		public static void Main(string[] args)
 		{
 			MamaTransport        transport    = null;
@@ -55,13 +55,13 @@ namespace Wombat.Mamda.Examples
 				transport = new MamaTransport();
 				transport.create(options.getTransport(), myBridge);
 				defaultQueue = Mama.getDefaultEventQueue(myBridge);
-	            
+
 				/*Get the data dictionary*/
 				MamaSource dictionarySource = new MamaSource();
                 dictionarySource.symbolNamespace = options.getDictSource();
 				dictionarySource.transport = transport;
 				dictionary = buildDataDictionary(transport, defaultQueue, dictionarySource);
-	            
+
 				MamdaQuoteFields.setDictionary(dictionary, null);
 				MamdaTradeFields.setDictionary(dictionary, null);
                 MamdaSecurityStatusFields.setDictionary(dictionary, null);
@@ -71,7 +71,7 @@ namespace Wombat.Mamda.Examples
 				foreach (string symbol in options.getSymbolList())
 				{
 					mamdaSubscriptions[i] =  new MamdaSubscription();
-                
+
 					MamdaTradeListener aTradeListener = new MamdaTradeListener();
 					MamdaQuoteListener aQuoteListener = new MamdaQuoteListener();
                     MamdaSecurityStatusListener aSecurityStatusListener = new MamdaSecurityStatusListener();
@@ -93,7 +93,7 @@ namespace Wombat.Mamda.Examples
 
                     i++;
 				}
-	            
+
 				Console.WriteLine("Hit Enter or Ctrl-C to exit.");
 				Mama.start(myBridge);
 				GC.KeepAlive(dictionary);
@@ -203,9 +203,9 @@ namespace Wombat.Mamda.Examples
 					subscription.getSymbol(),
 					recap.getQuoteCount(),
 					update.getBidPrice(),
-					update.getBidSize(), 
-					update.getAskSize(),  
-					update.getAskPrice(),  
+					update.getBidSize(),
+					update.getAskSize(),
+					update.getAskPrice(),
 					update.getEventSeqNum(),
 					update.getEventTime(),
 					update.getQuoteQual());
@@ -241,7 +241,7 @@ namespace Wombat.Mamda.Examples
 			{
 				prettyPrint("SecStatus recap ({0} - {1})", subscription.getSymbol(), recap.getSecurityStatusStr ());
  			}
-            
+
 			public void onSecurityStatusUpdate(
 				MamdaSubscription            subscription,
 				MamdaSecurityStatusListener  listener,
@@ -349,4 +349,3 @@ namespace Wombat.Mamda.Examples
 		private static MamaBridge	myBridge   = null;
 	}
 }
-

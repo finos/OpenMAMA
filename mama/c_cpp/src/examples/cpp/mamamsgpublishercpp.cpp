@@ -85,7 +85,7 @@ static const char *  gUsageString[] =
     "                         Supported types: I32,I64,U32,U64,F32,F64,String.",
     "                         Default message is one with all supported fields",
     "      [-m middleware]    The middleware to use [wmw/lbm/tibrv].",
-    "                         Default is wmw.", 
+    "                         Default is wmw.",
     "      [-i interval]      Publishing interval.",
     "                         Default value is 0.5",
     "      [-tport name]      The transport parameters to be used from",
@@ -112,7 +112,7 @@ public:
     virtual void onError  (MamaBasicSubscription*  subscription,
                            const MamaStatus&       status,
                            const char*             symbol);
-    virtual void onMsg    (MamaBasicSubscription*  subscription, 
+    virtual void onMsg    (MamaBasicSubscription*  subscription,
                            MamaMsg&          msg);
     virtual void onTimer  (MamaTimer*  timer);
     void publishMessage   (const MamaMsg*  request);
@@ -140,7 +140,7 @@ int main (int argc, const char **argv)
                                   gDefaultQueue,
                                   &publisher,
                                   gInBoundTopic);
-        publisher.create (&transport, gOutBoundTopic); 
+        publisher.create (&transport, gOutBoundTopic);
     }
     catch (MamaStatus &status)
     {
@@ -163,14 +163,14 @@ void MyHandler::onCreate (
 
 void MyHandler::onError (MamaBasicSubscription*  subscription,
                          const MamaStatus&       status,
-                         const char*             symbol) 
+                         const char*             symbol)
 {
-    printf ("Error creating subscription: %s\n", 
+    printf ("Error creating subscription: %s\n",
             status.toString ());
     exit (1);
 }
 
-void MyHandler::onMsg (MamaBasicSubscription* subscription, 
+void MyHandler::onMsg (MamaBasicSubscription* subscription,
                        MamaMsg&               msg)
 {
     if (gQuietLevel < 2)
@@ -225,7 +225,7 @@ void MyHandler::publishMessage (const MamaMsg*  request)
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error publishing message: " 
+        cerr << "Error publishing message: "
              << status.toString () << endl;
         exit (1);
     }
@@ -255,7 +255,7 @@ void parseMessage (char * msgString, MamaMsg* msg)
     {
         int32_t     realValue;
         sscanf      (value, "%d", &realValue);
-        msg->addI32 (fieldName, fieldId, realValue); 
+        msg->addI32 (fieldName, fieldId, realValue);
     }
     else if (strcmp(fieldType, "I64") == 0)
     {
@@ -357,7 +357,7 @@ void parseCommandLine (int argc, const char **argv)
         else if (strcmp ("-m", argv[i]) == 0)
         {
             gMiddleware = argv[i+1];
-            i += 2;               
+            i += 2;
         }
         else if (strcmp ("-d", argv[i]) == 0)
         {
@@ -398,11 +398,11 @@ void parseCommandLine (int argc, const char **argv)
             {
                 mama_enableLogging( stderr, MAMA_LOG_LEVEL_FINEST );
             }
-                                                                                                                             
+
             i++;
         }
     }
-    
+
     if (ifUseDefaultSym)
     {
         gSymbol = "TEST.SYMBOL";

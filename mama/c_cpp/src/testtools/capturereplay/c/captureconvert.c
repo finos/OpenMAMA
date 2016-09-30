@@ -208,7 +208,7 @@ int main (int argc, const char **argv)
     /* Parse command line options */
     parseCommandLine (argc, argv);
 
-    /* Load the payload bridges we wish to use for processing both input 
+    /* Load the payload bridges we wish to use for processing both input
      * and output files.
      */
     mama_log (MAMA_LOG_LEVEL_NORMAL, "Loading payload bridges.");

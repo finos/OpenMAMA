@@ -45,12 +45,12 @@ namespace Wombat
 			double intervalSeconds)
 		{
 			mSnapShotmHandler = new SnapShotChecker(this);
-			mRealTimeSubsc = new MamdaSubscription(); 
-			mRealTimeListener = new MamdaOrderBookListener(); 
+			mRealTimeSubsc = new MamdaSubscription();
+			mRealTimeListener = new MamdaOrderBookListener();
 			mHandler = handler;
 			mQueue = queue;
 			mIntervalSecs = intervalSeconds;
-			mRandomTimerFired = false; 
+			mRandomTimerFired = false;
 			mRealTimeSubsc.setType(mamaSubscriptionType.MAMA_SUBSC_TYPE_BOOK);
 			mRealTimeSubsc.create(transport, queue, source, symbol, null);
 			mRealTimeSubsc.addMsgListener(mRealTimeListener);
@@ -74,7 +74,7 @@ namespace Wombat
 			mRealTimeSubsc = realTimeSubsc;
 			mRealTimeListener = realTimeListener;
 			mIntervalSecs = intervalSeconds;
-			mRandomTimerFired = false;  
+			mRandomTimerFired = false;
 			init();
 		}
 
@@ -85,7 +85,7 @@ namespace Wombat
 		{
 			return mSuccessCount;
 		}
-    
+
 		/// <summary>
 		/// </summary>
 		/// <returns></returns>
@@ -93,7 +93,7 @@ namespace Wombat
 		{
 			return mFailureCount;
 		}
-    
+
 		/// <summary>
 		/// </summary>
 		/// <returns></returns>
@@ -101,13 +101,13 @@ namespace Wombat
 		{
 			return mInconclusiveCount;
 		}
-   
+
 		private void init()
 		{
 			mRealTimeListener.addHandler(mRealTimemHandler);
 			mSnapShotListener.addHandler(mSnapShotmHandler);
-			mSnapShotSubsc.addMsgListener(mSnapShotListener);        
-                
+			mSnapShotSubsc.addMsgListener(mSnapShotListener);
+
 			if (mIntervalSecs > 0)
 			{
 				Random generator = new Random();
@@ -147,7 +147,7 @@ namespace Wombat
 					mTimer.destroy();
 					mRandomTimerFired = true;
 					mTimer.create(mQueue, new TimerCallback(this), mIntervalSecs, null);
-				}              
+				}
 				checkSnapShotNow();
 			}
 		}
@@ -160,7 +160,7 @@ namespace Wombat
 			MamdaOrderBookRecap recap)
 		{
 			long snappedSeqNum  = listener.getSeqNum ();
-			long realTimeSeqNum = mRealTimeListener.getSeqNum ();        
+			long realTimeSeqNum = mRealTimeListener.getSeqNum ();
 
 			MamdaOrderBook fullBook = recap.getFullOrderBook();
 
@@ -174,9 +174,9 @@ namespace Wombat
 				}
 			}
 			else
-			{         
+			{
 				try
-				{                   
+				{
 					fullBook.assertEqual(mRealTimeListener.getFullOrderBook());
 					mSuccessCount++;
 					if (mHandler != null)
@@ -193,11 +193,11 @@ namespace Wombat
 							e.ToString(),
 							msg,
 							mRealTimeListener.getFullOrderBook(),
-							fullBook);                                             
+							fullBook);
 					}
 				}
 			}
-			//Deactivate the subscription            
+			//Deactivate the subscription
 			mSnapShotListener.clear();
 			mSnapShotSubsc.deactivate();
 		}
@@ -212,15 +212,15 @@ namespace Wombat
 			{
 				outer_.OnTimerCallback();
 			}
-			
+
 			public void onDestroy(MamaTimer mamaTimer, object closure)
 			{
 			}
-			
+
 			private MamdaOrderBookChecker outer_;
 		}
 
-    
+
 		private class RealTimeChecker : MamdaOrderBookHandler
 		{
 			public void onBookRecap(
@@ -238,7 +238,7 @@ namespace Wombat
 				MamaMsg msg,
 				MamdaOrderBookDelta delta,
 				MamdaOrderBookRecap recap)
-			{                                                             
+			{
 			}
 
 			public void onBookClear(
@@ -247,9 +247,9 @@ namespace Wombat
 				MamaMsg msg,
 				MamdaOrderBookDelta delta,
 				MamdaOrderBookRecap fullBook)
-			{                                  
+			{
 			}
-    
+
 			public void onBookGap(
 				MamdaSubscription subscription,
 				MamdaOrderBookListener listener,
@@ -261,7 +261,7 @@ namespace Wombat
 		}
 
 		private class SnapShotChecker : MamdaOrderBookHandler
-		{        
+		{
 			public SnapShotChecker(MamdaOrderBookChecker outer)
 			{
 				outer_ = outer;
@@ -276,7 +276,7 @@ namespace Wombat
 			{
 				outer_.OnBookRecapCallback(subscription, listener, msg, delta, recap);
 			}
-    
+
 			public void onBookDelta (MamdaSubscription        subscription,
 				MamdaOrderBookListener   listener,
 				MamaMsg                  msg,
@@ -307,13 +307,13 @@ namespace Wombat
 			private MamdaOrderBookChecker outer_;
 		}
 
-		private MamdaOrderBookCheckerHandler mHandler               = null;  
+		private MamdaOrderBookCheckerHandler mHandler               = null;
 		private MamdaSubscription            mRealTimeSubsc         = null;
 		private MamdaOrderBookListener       mRealTimeListener      = null;
 		private MamdaSubscription            mSnapShotSubsc         = new MamdaSubscription();
 		private MamdaOrderBookListener       mSnapShotListener      = new MamdaOrderBookListener();
 		private RealTimeChecker              mRealTimemHandler       = new RealTimeChecker();
-		private SnapShotChecker              mSnapShotmHandler       = null; 
+		private SnapShotChecker              mSnapShotmHandler       = null;
 		private MamaTimer                    mTimer                 = new MamaTimer();
 		private MamaQueue                    mQueue                 = null;
 		private double                       mIntervalSecs          = 0;

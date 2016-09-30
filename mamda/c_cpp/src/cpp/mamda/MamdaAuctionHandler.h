@@ -33,15 +33,15 @@ namespace Wombat
 
     /**
      * MamdaAuctionHandler is an interface for applications that want to
-     * have an easy way to access currency data.  
-     * The interface defines callback methods for for receiving updates 
+     * have an easy way to access currency data.
+     * The interface defines callback methods for for receiving updates
      * on currency data.
      */
 
     class MAMDAExpDLL MamdaAuctionHandler
     {
     public:
-     
+
         /**
          * Method invoked when the current auction information for the
          * security is available.  The reason for the invocation may be
@@ -62,7 +62,7 @@ namespace Wombat
             MamdaAuctionListener&      listener,
             const MamaMsg&             msg,
             const MamdaAuctionRecap&   recap) = 0;
-        
+
         /**
          * Method invoked when one or more of the Auction fields have
          * been updated by one of the following market data events:
@@ -83,7 +83,7 @@ namespace Wombat
             const MamaMsg&             msg,
             const MamdaAuctionRecap&   recap,
             const MamdaAuctionUpdate&  update) = 0;
-            
+
         virtual ~MamdaAuctionHandler () {};
     };
 

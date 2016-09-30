@@ -65,9 +65,9 @@ namespace Wombat
         /// The message.
         /// </param>
         void onMsg(MamaBasicSubscription subscription, MamaMsg message);
-    
+
         /// <summary>
-        /// Invoked whenever the basic subscription has been destroyed. The client can have confidence that 
+        /// Invoked whenever the basic subscription has been destroyed. The client can have confidence that
         /// no further messages will be placed on the queue for this subscription.
         /// </summary>
         /// <param name="subscription">

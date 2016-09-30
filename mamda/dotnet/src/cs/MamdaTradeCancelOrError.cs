@@ -168,13 +168,12 @@ namespace Wombat
 		/// Returns the ShortSaleCircuitBreaker
 		/// </summary>
 		/// <returns></returns>
-        char getOrigShortSaleCircuitBreaker();  
+        char getOrigShortSaleCircuitBreaker();
 
 		/// <summary>
 		/// Returns the FieldState, always MODIFIED
 		/// </summary>
 		/// <returns></returns>
-        MamdaFieldState getOrigShortSaleCircuitBreakerFieldState();  
+        MamdaFieldState getOrigShortSaleCircuitBreakerFieldState();
 	}
 }
-

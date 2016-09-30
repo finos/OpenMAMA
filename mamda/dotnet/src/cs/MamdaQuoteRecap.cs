@@ -160,7 +160,7 @@ namespace Wombat
         /// </summary>
         /// <returns>Field State</returns>
         MamdaFieldState getQuoteQualNativeFieldState();
-        
+
         /// <summary>
         /// <see cref="MamdaQuoteUpdate.getShortSaleCircuitBreaker()"/>
         /// </summary>
@@ -203,7 +203,6 @@ namespace Wombat
         MamdaFieldState    getAskUpdateCountFieldState();
         MamdaFieldState    getBidUpdateCountFieldState();
         MamdaFieldState    getAskYieldFieldState();
-        MamdaFieldState    getBidYieldFieldState();  
+        MamdaFieldState    getBidYieldFieldState();
 	}
 }
-

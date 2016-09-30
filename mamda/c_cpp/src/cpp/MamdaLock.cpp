@@ -30,7 +30,7 @@
 
 #include <mama/mamacpp.h>
 #include <mamda/MamdaLock.h>
- 
+
 using std::string;
 using std::ostringstream;
 using std::runtime_error;
@@ -41,7 +41,7 @@ namespace Wombat
     class MamdaLock::MamdaLockImpl
     {
     public:
-        MamdaLockImpl           (MamdaLock::Scheme     scheme, 
+        MamdaLockImpl           (MamdaLock::Scheme     scheme,
                                  const char*           context,
                                  int                   threads);
         ~MamdaLockImpl          ();
@@ -52,18 +52,18 @@ namespace Wombat
     private:
         MamdaLockImpl           (const MamdaLockImpl&  impl);     // No copying!
 
-        void handlePthreadError (int                   status,   
+        void handlePthreadError (int                   status,
                                  const string&         context);
 
-        bool lockMutex          (bool                  throwEx, 
+        bool lockMutex          (bool                  throwEx,
                                  const char*           context);
 
-        bool unlockMutex        (bool                  throwEx, 
+        bool unlockMutex        (bool                  throwEx,
                                  const char*           context);
 
         MamdaLock::Scheme       mScheme;
 
-        pthread_mutex_t         mMutex;    
+        pthread_mutex_t         mMutex;
         pthread_cond_t          mCond;
         pthread_mutexattr_t     mMutexAttr;
 
@@ -79,16 +79,16 @@ namespace Wombat
     };
 
     MamdaLock::MamdaLock(
-        Scheme       scheme, 
-        const char*  context, 
+        Scheme       scheme,
+        const char*  context,
         int          threads)
-        : mImpl (*new MamdaLockImpl(scheme, context, threads)) 
+        : mImpl (*new MamdaLockImpl(scheme, context, threads))
     {
     }
 
     MamdaLock::MamdaLockImpl::MamdaLockImpl (
-        MamdaLock::Scheme  scheme, 
-        const char*        context, 
+        MamdaLock::Scheme  scheme,
+        const char*        context,
         int                threads)
         : mScheme  (scheme)
         , mCount   (0)
@@ -124,7 +124,7 @@ namespace Wombat
         if (MamdaLock::EXCLUSIVE == scheme)
         {
 
-            status = pthread_mutexattr_settype(&mMutexAttr, 
+            status = pthread_mutexattr_settype(&mMutexAttr,
 						    WTHREAD_MUTEX_RECURSIVE);
 
             if (0 != status)
@@ -149,7 +149,7 @@ namespace Wombat
             handlePthreadError (status,
                                 "MamdaLock::Lock(): Failed to init cond");
         }
-    } 
+    }
 
     MamdaLock::~MamdaLock()
     {
@@ -205,14 +205,14 @@ namespace Wombat
     {
         bool isLogFinest = (MAMA_LOG_LEVEL_FINEST == mama_getLogLevel());
 
-        if (mThreads == -1) 
+        if (mThreads == -1)
         {
             mCount++;
             if (mCount % 10000 == 0)
             {
                 mama_log (MAMA_LOG_LEVEL_FINEST,
                           "%s: Acquired %d locks so far\n",
-                          mContext, 
+                          mContext,
                           mCount);
             }
             return true;
@@ -220,15 +220,15 @@ namespace Wombat
 
         // For the EXCLUSIVE locking scheme, it just uses
         // simple mutexes
-        if (mScheme == MamdaLock::SHARED) 
+        if (mScheme == MamdaLock::SHARED)
         {
             if (isLogFinest)
             {
                 mama_log (MAMA_LOG_LEVEL_FINEST,
                           "%s: Acquiring  %s lock using scheme %s PID(%d)\n",
-                          mContext, 
-                          MamdaLock::type (type), 
-                          MamdaLock::scheme (mScheme), 
+                          mContext,
+                          MamdaLock::type (type),
+                          MamdaLock::scheme (mScheme),
                           (void*)pthread_self());
             }
 
@@ -240,9 +240,9 @@ namespace Wombat
                 {
                     mama_log (MAMA_LOG_LEVEL_FINEST,
                               "%s: Acquired  %s lock using scheme %s PID(%d)\n",
-                              mContext, 
-                              MamdaLock::type (type), 
-                              MamdaLock::scheme (mScheme), 
+                              mContext,
+                              MamdaLock::type (type),
+                              MamdaLock::scheme (mScheme),
                               (void*)pthread_self());
                 }
 
@@ -254,16 +254,16 @@ namespace Wombat
                 return true;
             }
             else
-            { 
+            {
                 int status = pthread_rwlock_wrlock (&mRwLock);
 
                 if (isLogFinest)
                 {
                     mama_log (MAMA_LOG_LEVEL_FINEST,
                               "%s: Acquired  %s lock using scheme %s PID(%d)\n",
-                              mContext, 
-                              MamdaLock::type (type), 
-                              MamdaLock::scheme (mScheme), 
+                              mContext,
+                              MamdaLock::type (type),
+                              MamdaLock::scheme (mScheme),
                               (void*)pthread_self());
                 }
                 if (status)
@@ -275,7 +275,7 @@ namespace Wombat
             }
         }
         else
-        { 
+        {
             if (!lockMutex (false, "MamdaLock::acquire(): (1)"))
                 return false;
 
@@ -283,9 +283,9 @@ namespace Wombat
             {
                 mama_log (MAMA_LOG_LEVEL_FINEST,
                           "%s: Acquired  %s lock using scheme %s PID(%d)\n",
-                          mContext, 
-                          MamdaLock::type (type), 
-                          MamdaLock::scheme (mScheme), 
+                          mContext,
+                          MamdaLock::type (type),
+                          MamdaLock::scheme (mScheme),
                           (void*)pthread_self());
             }
 
@@ -301,16 +301,16 @@ namespace Wombat
 
     bool MamdaLock::MamdaLockImpl::release (MamdaLock::Type type)
     {
-        if (mThreads == -1) 
+        if (mThreads == -1)
             return true;
 
         if (MAMA_LOG_LEVEL_FINEST == mama_getLogLevel())
         {
             mama_log (MAMA_LOG_LEVEL_FINEST,
                       "%s: Releasing  %s lock using scheme %s PID(%d)\n",
-                      mContext, 
-                      MamdaLock::type (type), 
-                      MamdaLock::scheme (mScheme), 
+                      mContext,
+                      MamdaLock::type (type),
+                      MamdaLock::scheme (mScheme),
                       (void*)pthread_self());
         }
 
@@ -337,7 +337,7 @@ namespace Wombat
     }
 
     void MamdaLock::MamdaLockImpl::handlePthreadError (
-        int            status, 
+        int            status,
         const string&  context)
     {
         if (0 != status)
@@ -362,8 +362,8 @@ namespace Wombat
                     break;
             }
             mama_log (MAMA_LOG_LEVEL_NORMAL,
-                      "%s: %s (%d)!\n", 
-                      mContext, 
+                      "%s: %s (%d)!\n",
+                      mContext,
                       errorStr.c_str(),
                       status);
         }

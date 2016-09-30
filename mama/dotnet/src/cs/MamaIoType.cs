@@ -55,6 +55,6 @@ namespace Wombat
 		/// <summary>
 		/// An exceptional event like out of band data occurred
 		/// </summary>
-		MAMA_IO_EXCEPT 
+		MAMA_IO_EXCEPT
 	}
 }

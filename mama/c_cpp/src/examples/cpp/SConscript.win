@@ -31,7 +31,7 @@ libpath = []
 libpath.append('$libdir')
 libpath.append('%s/%s/wombatmsg/c_cpp/src/c' % ( env['blddir'], env['build'] ))
 
-env.Append( 
+env.Append(
 	LIBS 		= libs,
 	LIBPATH 	= libpath,
 	CPPPATH	= incpath,

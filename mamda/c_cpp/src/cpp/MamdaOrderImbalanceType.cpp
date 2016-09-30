@@ -40,7 +40,7 @@ const char* MamdaOrderImbalanceType::valueToString (const int value)
         case NO_ORDER_IMBALANCE_VALUE:      return "OrderImbNone";
         default:                            return "UNKNOWN";
     }
-    
+
 }
 
 const int  MamdaOrderImbalanceType::stringToValue (const char* type)
@@ -58,8 +58,8 @@ const int  MamdaOrderImbalanceType::stringToValue (const char* type)
     if (strcmp (MAMDA_ORDER_IMBALANCE_BUY,   type)==0)      return ORDER_IMBALANCE_BUY_VALUE;
     if (strcmp (MAMDA_ORDER_IMBALANCE_SELL,  type)==0)      return ORDER_IMBALANCE_SELL_VALUE;
     if (strcmp (MAMDA_NO_ORDER_IMBALANCE,    type)==0)      return NO_ORDER_IMBALANCE_VALUE;
-    
-    //for fh configured as int 
+
+    //for fh configured as int
     if (typeValue != 0) //success
     {
         if      (typeValue == MARKET_IMBALANCE_BUY_VALUE)   return MARKET_IMBALANCE_BUY_VALUE;
@@ -69,7 +69,7 @@ const int  MamdaOrderImbalanceType::stringToValue (const char* type)
         else if (typeValue == MOC_IMBALANCE_SELL_VALUE)     return MOC_IMBALANCE_SELL_VALUE;
         else if (typeValue == NO_MOC_IMBALANCE_VALUE)       return NO_MOC_IMBALANCE_VALUE;
         else if (typeValue == ORDER_IMB_VALUE)              return ORDER_IMB_VALUE;
-        else if (typeValue == ORDER_INF_VALUE)              return ORDER_INF_VALUE;     
+        else if (typeValue == ORDER_INF_VALUE)              return ORDER_INF_VALUE;
         else if (typeValue == ORDER_IMBALANCE_BUY_VALUE)    return ORDER_IMBALANCE_BUY_VALUE;
         else if (typeValue == ORDER_IMBALANCE_SELL_VALUE)   return ORDER_IMBALANCE_SELL_VALUE;
         else if (typeValue == NO_ORDER_IMBALANCE_VALUE)     return NO_ORDER_IMBALANCE_VALUE;
@@ -98,7 +98,7 @@ bool MamdaOrderImbalanceType::isMamdaOrderImbalanceType (const int value)
         case ORDER_IMBALANCE_BUY_VALUE:
         case ORDER_IMBALANCE_SELL_VALUE:
         case NO_MARKET_IMBALANCE_VALUE:
-        case NO_MOC_IMBALANCE_VALUE: 
+        case NO_MOC_IMBALANCE_VALUE:
         case NO_ORDER_IMBALANCE_VALUE:
             imbalanceType = true;
             break;
@@ -106,7 +106,7 @@ bool MamdaOrderImbalanceType::isMamdaOrderImbalanceType (const int value)
             imbalanceType = false;
             break;
    }
-   return imbalanceType;  
+   return imbalanceType;
 }
 
 /**
@@ -130,13 +130,12 @@ bool MamdaOrderImbalanceType::isMamdaImbalanceOrder (const int value)
             imbalanceOrder = true;
             break;
         case NO_MARKET_IMBALANCE_VALUE:
-        case NO_MOC_IMBALANCE_VALUE: 
+        case NO_MOC_IMBALANCE_VALUE:
         case NO_ORDER_IMBALANCE_VALUE:
             imbalanceOrder = false;
             break;
         default:
             imbalanceOrder = false;
     }
-    return imbalanceOrder;  
+    return imbalanceOrder;
 }
-    

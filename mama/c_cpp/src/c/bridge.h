@@ -507,7 +507,7 @@ typedef struct mamaBridgeImpl_
     mamaQueue mInternalEventQueue;
     mamaDispatcher mInternalDispatcher;
 
-    /*Associate arbitrary data with a bridge impl. Needed for the C++ wrapper*/
+    /*Associate arbitrary data with a bridge impl. */
     void*     mClosure;
     wLock     mLock;
 

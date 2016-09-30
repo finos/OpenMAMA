@@ -84,7 +84,7 @@ static void MAMACALLTYPE subscriptionMsgCB (
         mamaMsg             msg,
         void*               closure,
         void*               itemClosure);
-                                                                                                                       
+
 /*Invoked in response to errors*/
 static void MAMACALLTYPE subscriptionErrorCB  (
         mamaSubscription    subscription,
@@ -92,14 +92,14 @@ static void MAMACALLTYPE subscriptionErrorCB  (
         void*               platformError,
         const char*         subject,
         void*               closure );
-                                                                                                                       
+
 /*Invoked when a subscription is first created*/
 static void MAMACALLTYPE subscriptionCreateCB (
         mamaSubscription    subscription,
         void*               closure );
 
 static void MAMACALLTYPE subscriptionDestroyCB (
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     void *closure );
 
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_createNativeWildCardSubscription
@@ -142,7 +142,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_createNativeWi
         c_topic = (*env)->GetStringUTFChars(env,topic,0);
         if (!c_topic) return;/*Exception auto thrown*/
     }
-   
+
     if (source)
     {
         c_source = (*env)->GetStringUTFChars(env, source, 0);
@@ -179,7 +179,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_createNativeWi
     /*This global will be deleted when the subscription is destroyed*/
     closureImpl->mMessage  = (*env)->NewGlobalRef(env,messageImpl);
 
-    /*Add the Java Subscription to the closure - we need it in the 
+    /*Add the Java Subscription to the closure - we need it in the
      async callbacks so it can be passed to the Java callback*/
     closureImpl->mSubscription = (*env)->NewGlobalRef(env,this);
 
@@ -211,7 +211,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_createNativeWi
         utils_throwMamaException(env,errorString);
         return;
     }
-   
+
     /*Tidy up*/
     if(c_topic)(*env)->ReleaseStringUTFChars(env,topic, c_topic);
     if(c_source)(*env)->ReleaseStringUTFChars(env,source, c_source);
@@ -265,7 +265,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_createNativeSu
             transportPointerFieldId_g);
 
     closureImpl->mClientCB = (*env)->NewGlobalRef(env, callback);
-    
+
     /*If the client supplied a Java closure add it to ours*/
     if(closure)closureImpl->mUserData = (*env)->NewGlobalRef(env,closure);
 
@@ -290,7 +290,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_createNativeSu
     /*This global will be deleted when the subscription is destroyed*/
     closureImpl->mMessage  = (*env)->NewGlobalRef(env,messageImpl);
 
-    /*Add the Java Subscription to the closure - we need it in the 
+    /*Add the Java Subscription to the closure - we need it in the
      async callbacks so it can be passed to the Java callback*/
     closureImpl->mSubscription = (*env)->NewGlobalRef(env,this);
 
@@ -305,7 +305,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_createNativeSu
                      &c_callback,
                      c_topic,
                      closureImpl)))
-                     
+
     {
         if(c_topic)(*env)->ReleaseStringUTFChars(env,topic, c_topic);
         if(closure)(*env)->DeleteGlobalRef(env,closureImpl->mUserData);
@@ -320,7 +320,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_createNativeSu
         utils_throwMamaException(env,errorString);
         return;
     }
-    
+
     /*Tidy up*/
     if(c_topic)(*env)->ReleaseStringUTFChars(env,topic, c_topic);
     return;
@@ -351,7 +351,7 @@ Java_com_wombat_mama_MamaBasicSubscription_allocateSubscription
      mamaSubscription subscription       = NULL;
      mama_status      status             = MAMA_STATUS_OK;
      char             errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-     
+
      if(MAMA_STATUS_OK!=(status =
                  mamaSubscription_allocate(&subscription)))
      {
@@ -363,7 +363,7 @@ Java_com_wombat_mama_MamaBasicSubscription_allocateSubscription
          utils_throwMamaException(env,errorString);
          return;
      }
-     
+
      /*Add the subscription pointer to the Java object field*/
      (*env)->SetLongField(env, this,
                           subscriptionPointerFieldId_g,
@@ -386,7 +386,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaBasicSubscription_getSymbol
 
     subscriptionPointer = (*env)->GetLongField(env,this,
                                         subscriptionPointerFieldId_g);
-    
+
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaBasicSubscription.getSymbol(): Null parameter, subscription may have been destroyed.", NULL);
 
@@ -407,7 +407,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaBasicSubscription_getSymbol
 
     return (*env)->NewStringUTF(env, retVal_c);
 }
-                
+
 
 /*
  * Class:     com_wombat_mama_MamaBasicSubscription
@@ -431,32 +431,32 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_initIDs
             "com/wombat/mama/MamaBasicSubscriptionCallback");
     if (!basicSubscriptionCallbackClass) return;/*Exception auto thrown*/
 
-    /*Get a reference to the wildcard subscription callback class */               
-    basicWildCardSubscriptionCallbackClass = (*env)->FindClass(env,                
-            "com/wombat/mama/MamaBasicWildCardSubscriptionCallback");              
-    if (!basicWildCardSubscriptionCallbackClass) return; /*Exception auto thrown*/ 
-                                                                                    
-    /*MamaBasicWildCardSubscriptionCallback.onMsg */                               
-    subWildCardCallbackonMsgId_g = (*env)->GetMethodID(env,                        
-            basicWildCardSubscriptionCallbackClass,                                
-            "onMsg", "(Lcom/wombat/mama/MamaBasicSubscription;"                    
-            "Lcom/wombat/mama/MamaMsg;Ljava/lang/String;)V" );                     
-    if (!basicWildCardSubscriptionCallbackClass) return; /*Exception auto thrown*/ 
-                                                                                   
-    /*MamaBasicWildCardSubscriptionCallback.onDestroy*/                            
-    subWildCardCallbackonDestroyId_g = (*env)->GetMethodID(env,                    
-            basicWildCardSubscriptionCallbackClass,                                
-            "onDestroy", "(Lcom/wombat/mama/MamaBasicSubscription;)V");            
-                                                                                    
-    subWildCardCallbackonCreateId_g = (*env)->GetMethodID(env,                     
-            basicWildCardSubscriptionCallbackClass,                                
-            "onCreate", "(Lcom/wombat/mama/MamaBasicSubscription;)V" );            
-                                                                                    
-    /*MamaBasicWildCardSubscriptionCallback.onError */                             
-    subWildCardCallbackonErrorId_g = (*env)->GetMethodID(env,                      
-            basicWildCardSubscriptionCallbackClass,                                
-            "onError", "(Lcom/wombat/mama/MamaBasicSubscription;"                  
-            "SILjava/lang/String;)V" );             
+    /*Get a reference to the wildcard subscription callback class */
+    basicWildCardSubscriptionCallbackClass = (*env)->FindClass(env,
+            "com/wombat/mama/MamaBasicWildCardSubscriptionCallback");
+    if (!basicWildCardSubscriptionCallbackClass) return; /*Exception auto thrown*/
+
+    /*MamaBasicWildCardSubscriptionCallback.onMsg */
+    subWildCardCallbackonMsgId_g = (*env)->GetMethodID(env,
+            basicWildCardSubscriptionCallbackClass,
+            "onMsg", "(Lcom/wombat/mama/MamaBasicSubscription;"
+            "Lcom/wombat/mama/MamaMsg;Ljava/lang/String;)V" );
+    if (!basicWildCardSubscriptionCallbackClass) return; /*Exception auto thrown*/
+
+    /*MamaBasicWildCardSubscriptionCallback.onDestroy*/
+    subWildCardCallbackonDestroyId_g = (*env)->GetMethodID(env,
+            basicWildCardSubscriptionCallbackClass,
+            "onDestroy", "(Lcom/wombat/mama/MamaBasicSubscription;)V");
+
+    subWildCardCallbackonCreateId_g = (*env)->GetMethodID(env,
+            basicWildCardSubscriptionCallbackClass,
+            "onCreate", "(Lcom/wombat/mama/MamaBasicSubscription;)V" );
+
+    /*MamaBasicWildCardSubscriptionCallback.onError */
+    subWildCardCallbackonErrorId_g = (*env)->GetMethodID(env,
+            basicWildCardSubscriptionCallbackClass,
+            "onError", "(Lcom/wombat/mama/MamaBasicSubscription;"
+            "SILjava/lang/String;)V" );
     /*MamaSubscriptionCallback.onMsg()*/
     subCallbackonMsgId_g = (*env)->GetMethodID(env,
             basicSubscriptionCallbackClass,
@@ -492,7 +492,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_initIDs
 
     /* Get the destroy callback. */
     subCallbackonDestroyId_g =  (*env)->GetMethodID(env, basicSubscriptionCallbackClass,
-            "onDestroy", 
+            "onDestroy",
             "(Lcom/wombat/mama/MamaBasicSubscription;)V" );
     if (!subCallbackonDestroyId_g)
     {
@@ -531,7 +531,7 @@ void MAMACALLTYPE subscriptionErrorCB  (
                           subject,
                           closure,
                           subCallbackonErrorId_g);
-    return;      
+    return;
 }
 
 void MAMACALLTYPE subscriptionCreateCB (
@@ -583,7 +583,7 @@ void MAMACALLTYPE subscriptionWildCardMsgCB (mamaSubscription subscription,
                            closureImpl->mMessage,
                            (*env)->NewStringUTF(env, topic));
 
-    /* 
+    /*
        Need to check if any exceptions were propagated here.
        If we don't the exceptions could actually fill the stack!!
     */
@@ -641,12 +641,12 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaBasicSubscription_getSubscriptio
     jint            state               =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer, 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaBasicSubscription.getItemClosure(): Null parameter, subcription may have been destroyed.", NULL);
-    
+
     assert(0!=subscriptionPointer);
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_getState(
@@ -660,7 +660,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaBasicSubscription_getSubscriptio
                 status);
         utils_throwWombatException(env,errorString);
     }
-    
+
     return state;
 }
 
@@ -677,8 +677,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_destroyEx
     subscriptionPointer =
             (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer, 
-    "MamaBasicSubscription.destroy(): Null parameter, subscription may have already been destroyed."); 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
+    "MamaBasicSubscription.destroy(): Null parameter, subscription may have already been destroyed.");
 
     assert(0!=subscriptionPointer);
 
@@ -704,7 +704,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_deallocate(JNI
             /* Clear the subscription reference in the java class. */
             (*env)->SetLongField(env, this, subscriptionPointerFieldId_g, 0);
         }
-        
+
         /* Otherwise throw an error. */
         else
         {
@@ -717,7 +717,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaBasicSubscription_deallocate(JNI
                 msd);
 
             /* Throw the exception. */
-            utils_throwMamaException(env, errorString); 
+            utils_throwMamaException(env, errorString);
         }
     }
 }

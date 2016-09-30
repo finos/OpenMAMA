@@ -65,19 +65,19 @@ namespace Wombat
 
 		/// <summary>
 		/// Returns the Aggressor side or TradeSide
-		/// 
+		///
 		/// AggressorSide:
 		/// 0 : No AggressorSide is currently known/available.
 		/// 1 or B : Buy
 		/// 2 or S : Sell
-		/// 
+		///
 		/// TradeSide:
 		/// TRADE_SIDE_UNKNOWN
 		/// TRADE_SIDE_BUY
 		/// TRADE_SIDE_SELL
 		/// </summary>
 		/// <returns></returns>
-        string getSide();   
+        string getSide();
 
         /// <summary>
         /// Get the field state
@@ -111,10 +111,10 @@ namespace Wombat
 		/// <returns>Trade qualifier.  A normalized set of qualifiers for
 		/// the current trade for the security.</returns>
 		/// <remarks>
-		/// This field may contain multiple string values, separated by 
-		/// the colon(:) character. In the future, we will make this 
+		/// This field may contain multiple string values, separated by
+		/// the colon(:) character. In the future, we will make this
 		/// a configurable enumeration.
-		/// 
+		///
 		/// <table width="100%" border="1">
 		///   <tr><td><b>Value</b></td><td><b>Meaning</b></td></tr>
 		///   <tr>
@@ -361,7 +361,7 @@ namespace Wombat
 		/// Return the exchange provided trade condition.
 		/// </summary>
 		/// <returns>Trade condition (a.k.a. "sale condition").
-		/// Feed-specific trade qualifier code(s).  
+		/// Feed-specific trade qualifier code(s).
 		/// <see cref="getTradeQual"/></returns>
 		string getTradeCondition();
 
@@ -431,4 +431,3 @@ namespace Wombat
         MamdaFieldState getShortSaleCircuitBreakerFieldState();
 	}
 }
-

@@ -35,7 +35,7 @@ public class MamaQueueGroup
 
     /**
      * Create a <code>MamaQueueGroup</code> with the specified number of
-     * <code>MamaQueue</code>s. If the number of queues is 0, 
+     * <code>MamaQueue</code>s. If the number of queues is 0,
      * <code>getNextQueue()</code> returns the default queue for the bridge.
      *
      * @param numberOfQueues The number of queues to create.
@@ -132,8 +132,8 @@ public class MamaQueueGroup
         return myQueues == null ? Mama.getDefaultQueue (myBridge)
                                 : myQueues[myCurQueue++ % myQueues.length];
     }
-    
-    
+
+
     public void stopDispatch ()
     {
         if(myQueues != null)
@@ -148,8 +148,8 @@ public class MamaQueueGroup
             }
         }
     }
-    
-    
+
+
     public void startDispatch ()
     {
         if(myQueues != null)

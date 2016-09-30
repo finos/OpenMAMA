@@ -55,7 +55,7 @@ typedef enum
  */
 typedef void (MAMACALLTYPE *mamaIoCb) (mamaIo     io,
                                        mamaIoType ioType,
-                                       void*      closure); 
+                                       void*      closure);
 
 /**
  * @brief Create a IO handler.
@@ -82,7 +82,7 @@ MAMAExpDLL extern
 mama_status mamaIo_create (mamaIo*    result,
                            mamaQueue  queue,
                            uint32_t   descriptor,
-                           mamaIoCb   action, 
+                           mamaIoCb   action,
                            mamaIoType ioType,
                            void*      closure);
 

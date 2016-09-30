@@ -44,8 +44,8 @@ namespace Wombat
     /// connections established from a transport to another transport and
     /// connections established by the transport from another transport. In general
     /// MAMA applications establish connection from a MAMA transport to a feed
-    /// handler (publisher); however, they may also accept connections from other 
-    /// MAMA clients. Applications subscribe to topics and publisher messages over 
+    /// handler (publisher); however, they may also accept connections from other
+    /// MAMA clients. Applications subscribe to topics and publisher messages over
     /// all connections. When a transport successfully connects to another transport
     /// (ie. a feed handler) the mamaTranpsortCallback receives
     /// MAMA_TRANSPORT_CONNECT if the connection succeeds immediately otherwise it
@@ -59,7 +59,7 @@ namespace Wombat
     /// MAMA_TRANSPORT_ACCEPT_RECONNECT event indicating that the remote client is
     /// connecting or reconnecting. When the client disconnects MAMA passes the
     /// MAMA_TRANSPORT_DISCONNECT value.</para>
-    /// </remarks>    
+    /// </remarks>
     public interface MamaTransportCallback
     {
         /// <summary>
@@ -78,7 +78,7 @@ namespace Wombat
         void onQuality(MamaTransport transport);
 
         /// <summary>
-        /// Called when a subscriber connects to a publisher (Wombat Middleware) or when 
+        /// Called when a subscriber connects to a publisher (Wombat Middleware) or when
         /// reconnection to an RV daemon occurs (TIBRV).
         /// </summary>
         /// <param name="transport"></param>

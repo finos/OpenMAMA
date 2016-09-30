@@ -47,20 +47,20 @@ namespace Wombat
 	    MamaSubscriptionCallback *myUserCallback;
 
     public:
-        
-        SubscriptionTestCallback (MamaSubscriptionCallback *userCallback) 
+
+        SubscriptionTestCallback (MamaSubscriptionCallback *userCallback)
         {
-            // Save arguments in member variables        
+            // Save arguments in member variables
             myUserCallback = userCallback;
         }
 
         virtual ~SubscriptionTestCallback (void)
         {
         }
-	
+
         virtual void onCreate (MamaSubscription *subscription)
         {
-	        try 
+	        try
             {
 		        myUserCallback->onCreate (subscription);
 	        }
@@ -72,7 +72,7 @@ namespace Wombat
 
         virtual void onDestroy (MamaSubscription *subscription)
         {
-	        try 
+	        try
             {
 		        myUserCallback->onDestroy (subscription);
 	        }
@@ -82,14 +82,14 @@ namespace Wombat
 	        }
         }
 
-        virtual void onError (MamaSubscription  *subscription, 
-                              const MamaStatus  &status, 
+        virtual void onError (MamaSubscription  *subscription,
+                              const MamaStatus  &status,
                               const char        *subject)
         {
-	        try 
+	        try
             {
-		        myUserCallback->onError(subscription, 
-                                        status, 
+		        myUserCallback->onError(subscription,
+                                        status,
                                         subject);
 	        }
 	        catch (...)
@@ -100,7 +100,7 @@ namespace Wombat
 
         virtual void onGap (MamaSubscription *subscription)
         {
-	        try 
+	        try
             {
 		        myUserCallback->onGap (subscription);
 	        }
@@ -109,11 +109,11 @@ namespace Wombat
 		        fprintf (stderr, "TestCallback::onGap EXCEPTION CAUGHT\n");
 	        }
         }
-							       
-        virtual void onMsg (MamaSubscription  *subscription, 
+
+        virtual void onMsg (MamaSubscription  *subscription,
                             MamaMsg           &msg)
         {
-	        try 
+	        try
             {
 		        myUserCallback->onMsg (subscription, msg);
 	        }
@@ -129,12 +129,12 @@ namespace Wombat
                                 short             cause,
                                 const void*       platformInfo)
         {
-	        try 
+	        try
             {
-		        myUserCallback->onQuality (subscription, 
-                                           quality, 
-                                           symbol, 
-                                           cause, 
+		        myUserCallback->onQuality (subscription,
+                                           quality,
+                                           symbol,
+                                           cause,
                                            platformInfo);
 	        }
 	        catch (...)
@@ -145,7 +145,7 @@ namespace Wombat
 
         virtual void onRecapRequest(MamaSubscription *subscription)
         {
-	        try 
+	        try
             {
 		        myUserCallback->onRecapRequest(subscription);
 	        }
@@ -166,8 +166,8 @@ namespace Wombat
     struct MamaSubscriptionImpl
     {
 
-        MamaSubscriptionImpl (MamaSubscriptionCallback *callback, 
-                              void                     *closure, 
+        MamaSubscriptionImpl (MamaSubscriptionCallback *callback,
+                              void                     *closure,
                               MamaSubscription         *subscription)
         {
             // Save arguments in member variables
@@ -207,12 +207,12 @@ namespace Wombat
             // Only invoke the callback if it is supplied
             if (NULL != mCallback && !mFreed)
             {
-                // Invoke the onDestroy            
+                // Invoke the onDestroy
                 mCallback->onDestroy (mSubscription);
             }
         }
 
-        void InvokeError (mama_status  status, 
+        void InvokeError (mama_status  status,
                           const char   *topic)
         {
             // Only invoke the callback if it is supplied
@@ -222,8 +222,8 @@ namespace Wombat
                 MamaStatus cppStatus (status);
 
                 // Invoke the callback funtcion
-                mCallback->onError (mSubscription, 
-                                     status, 
+                mCallback->onError (mSubscription,
+                                     status,
                                      topic);
             }
         }
@@ -243,7 +243,7 @@ namespace Wombat
             // Only invoke the callback if it is supplied
             if (NULL != mCallback && !mFreed)
             {
-                // Convert the C message to a C++ message            
+                // Convert the C message to a C++ message
                 mResuableMsg.createFromMsg (msg);
 
                 // Invoke the callback
@@ -251,19 +251,19 @@ namespace Wombat
             }
         }
 
-        void InvokeQuality (mamaQuality  quality, 
-                            const char   *symbol, 
-                            short        cause, 
+        void InvokeQuality (mamaQuality  quality,
+                            const char   *symbol,
+                            short        cause,
                             const void   *platformInfo)
         {
             // Only invoke the callback if it is supplied
             if (NULL != mCallback && !mFreed)
             {
                 // Invoke the callback
-                mCallback->onQuality (mSubscription, 
-                                       quality, 
-                                       symbol, 
-                                       cause, 
+                mCallback->onQuality (mSubscription,
+                                       quality,
+                                       symbol,
+                                       cause,
                                        platformInfo);
             }
         }
@@ -292,14 +292,14 @@ namespace Wombat
     /* Constructor and Destructor. */
     /* *************************************************** */
 
-    MamaSubscription::MamaSubscription (void) 
+    MamaSubscription::MamaSubscription (void)
         : MamaBasicSubscription ()
         , mCallback            (NULL)
         , mSourceDeriv         (NULL)
     {
     }
 
-    MamaSubscription::~MamaSubscription (void) 
+    MamaSubscription::~MamaSubscription (void)
     {
         destroy();
 
@@ -322,7 +322,7 @@ namespace Wombat
         // Delete the source derivative
         if (NULL != mSourceDeriv)
         {
-            delete mSourceDeriv;        
+            delete mSourceDeriv;
         }
     }
 
@@ -330,7 +330,7 @@ namespace Wombat
     /* Private Function Implementations. */
     /* *************************************************** */
 
-    void MAMACALLTYPE MamaSubscription::onSubscriptionCreate (mamaSubscription  subscription, 
+    void MAMACALLTYPE MamaSubscription::onSubscriptionCreate (mamaSubscription  subscription,
                                                               void              *closure)
     {
         // Extract the impl from the closure.
@@ -342,7 +342,7 @@ namespace Wombat
         }
     }
 
-    void MAMACALLTYPE MamaSubscription::onSubscriptionDestroy (mamaSubscription  subscription, 
+    void MAMACALLTYPE MamaSubscription::onSubscriptionDestroy (mamaSubscription  subscription,
                                                                void              *closure)
     {
         // Extract the impl from the closure.
@@ -352,15 +352,15 @@ namespace Wombat
         {
             // Invoke the callback
             impl->InvokeDestroy ();
-        
+
             delete impl;
         }
     }
 
-    void MAMACALLTYPE MamaSubscription::onSubscriptionError (mamaSubscription  subscription, 
-                                                             mama_status       status, 
-                                                             void              *platformError, 
-                                                             const char        *subject, 
+    void MAMACALLTYPE MamaSubscription::onSubscriptionError (mamaSubscription  subscription,
+                                                             mama_status       status,
+                                                             void              *platformError,
+                                                             const char        *subject,
                                                              void              *closure)
     {
         // Extract the impl from the closure.
@@ -386,9 +386,9 @@ namespace Wombat
         }
     }
 
-    void MAMACALLTYPE MamaSubscription::onSubscriptionMessage (mamaSubscription  subscription, 
-                                                               mamaMsg           msg, 
-                                                               void              *closure, 
+    void MAMACALLTYPE MamaSubscription::onSubscriptionMessage (mamaSubscription  subscription,
+                                                               mamaMsg           msg,
+                                                               void              *closure,
                                                                void              *topicClosure)
     {
         // Extract the impl from the closure.
@@ -401,11 +401,11 @@ namespace Wombat
         }
     }
 
-    void MAMACALLTYPE MamaSubscription::onSubscriptionQuality (mamaSubscription  subscription, 
-                                                               mamaQuality       quality, 
-                                                               const char        *symbol, 
-                                                               short             cause, 
-                                                               const void        *platformInfo, 
+    void MAMACALLTYPE MamaSubscription::onSubscriptionQuality (mamaSubscription  subscription,
+                                                               mamaQuality       quality,
+                                                               const char        *symbol,
+                                                               short             cause,
+                                                               const void        *platformInfo,
                                                                void              *closure)
     {
         // Extract the impl from the closure.
@@ -417,7 +417,7 @@ namespace Wombat
         }
     }
 
-    void MAMACALLTYPE MamaSubscription::onSubscriptionRecapRequest (mamaSubscription  subscription, 
+    void MAMACALLTYPE MamaSubscription::onSubscriptionRecapRequest (mamaSubscription  subscription,
                                                                     void              *closure)
     {
         // Extract the impl from the closure.
@@ -485,7 +485,7 @@ namespace Wombat
                                   const char*                 source,
                                   const char*                 symbol,
                                   void*                       closure)
-        
+
     {
         // This static structure contains all of the callback function pointers
         static mamaMsgCallbacks subscriptionCallbacks =
@@ -505,6 +505,7 @@ namespace Wombat
 
         // Save the queue so that calls to MamaBasicSubscription->getQueue () work
         mQueue = queue;
+
         // Create a new impl
         mImpl = new MamaSubscriptionImpl (callback, closure, this);
 
@@ -514,7 +515,7 @@ namespace Wombat
             delete mSourceDeriv;
             mSourceDeriv = NULL;
         }
-	
+
         // Setup the MAMA subscription, it will be activated later
         mama_status status = mamaSubscription_setup2 (mSubscription,
                                                       transport->getCValue (),
@@ -540,7 +541,7 @@ namespace Wombat
                                   MamaSource*                 source,
                                   const char*                 symbol,
                                   void*                       closure)
-        
+
     {
         // This static structure contains all of the callback function pointers
         static mamaMsgCallbacks subscriptionCallbacks =
@@ -569,7 +570,7 @@ namespace Wombat
 
         // Create a new impl
         mImpl = new MamaSubscriptionImpl (callback,
-                                                               closure, 
+                                                               closure,
                                                                this);
 
         // Setup the MAMA subscription, it will be activated later
@@ -628,14 +629,14 @@ namespace Wombat
 
     void MamaSubscription::setRequiresInitial (bool requiresInitial)
     {
-        mamaTry(mamaSubscription_setRequiresInitial (mSubscription, 
+        mamaTry(mamaSubscription_setRequiresInitial (mSubscription,
                                                      requiresInitial == true ? 1 : 0));
     }
 
     bool MamaSubscription::getRequiresInitial (void)
     {
         int  requiresInitial = 0;
-        mamaTry (mamaSubscription_getRequiresInitial (mSubscription, 
+        mamaTry (mamaSubscription_getRequiresInitial (mSubscription,
                                                       &requiresInitial));
         return requiresInitial == 1 ? true : false;
     }
@@ -647,12 +648,12 @@ namespace Wombat
                                                      &receivedInitial));
         return receivedInitial == 1 ? true : false;
     }
-        
+
     void MamaSubscription::setRetries (int retries)
     {
         if (NULL != mSubscription)
         {
-            mamaTry (mamaSubscription_setRetries (mSubscription, 
+            mamaTry (mamaSubscription_setRetries (mSubscription,
                                                   retries));
         }
     }
@@ -660,11 +661,11 @@ namespace Wombat
     int MamaSubscription::getRetries (void)
     {
         int retries = 0;
-        mamaTry (mamaSubscription_getRetries (mSubscription, 
+        mamaTry (mamaSubscription_getRetries (mSubscription,
                                               &retries));
         return retries;
     }
-        
+
     void MamaSubscription::setSubscriptionType (mamaSubscriptionType type)
     {
         mamaTry (mamaSubscription_setSubscriptionType (mSubscription,
@@ -681,7 +682,7 @@ namespace Wombat
 
     void MamaSubscription::setAppDataType (uint8_t dataType)
     {
-        mamaTry (mamaSubscription_setAppDataType (mSubscription, 
+        mamaTry (mamaSubscription_setAppDataType (mSubscription,
                                                   dataType));
     }
 
@@ -693,41 +694,41 @@ namespace Wombat
         return dataType;
     }
 
-    void MamaSubscription::setItemClosure (void *closure) 
+    void MamaSubscription::setItemClosure (void *closure)
     {
-        mamaTry (mamaSubscription_setItemClosure (mSubscription, 
+        mamaTry (mamaSubscription_setItemClosure (mSubscription,
                                                   closure));
     }
 
-    void* MamaSubscription::getItemClosure (void) 
+    void* MamaSubscription::getItemClosure (void)
     {
         void *itemClosure = NULL;
-        mamaTry (mamaSubscription_getItemClosure (mSubscription, 
+        mamaTry (mamaSubscription_getItemClosure (mSubscription,
                                                   &itemClosure));
         return itemClosure;
     }
 
-    void MamaSubscription::setPreInitialCacheSize (int cacheSize) 
+    void MamaSubscription::setPreInitialCacheSize (int cacheSize)
     {
-        mamaTry (mamaSubscription_setPreIntitialCacheSize (mSubscription, 
+        mamaTry (mamaSubscription_setPreIntitialCacheSize (mSubscription,
                                                            cacheSize));
     }
 
-    int MamaSubscription::getPreInitialCacheSize (void) 
+    int MamaSubscription::getPreInitialCacheSize (void)
     {
         int result = 0;
-        mamaTry (mamaSubscription_getPreIntitialCacheSize (mSubscription, 
+        mamaTry (mamaSubscription_getPreIntitialCacheSize (mSubscription,
                                                            &result));
         return result;
     }
-        
+
     void MamaSubscription::setMsgQualifierFilter (bool ignoreDefinitelyDuplicate,
                                                   bool ignorePossiblyDuplicate,
                                                   bool ignoreDefinitelyDelyaed,
                                                   bool ignorePossiblyDelayed,
                                                   bool ignoreOutOfSequence)
     {
-        mamaTry (mamaSubscription_setMsgQualifierFilter (mSubscription,                                                       
+        mamaTry (mamaSubscription_setMsgQualifierFilter (mSubscription,
                                                          ignoreDefinitelyDuplicate,
                                                          ignorePossiblyDuplicate,
                                                          ignoreDefinitelyDelyaed,
@@ -755,34 +756,34 @@ namespace Wombat
                                                          &iSeq));
 
         ignoreDefinitelyDuplicate = iDDup != 0;
-        ignorePossiblyDuplicate   = iPDup != 0;  
+        ignorePossiblyDuplicate   = iPDup != 0;
         ignoreDefinitelyDelyaed   = iDDel != 0;
         ignorePossiblyDelayed     = iPDel != 0;
         ignoreOutOfSequence       = iSeq  != 0;
     }
-        
+
     void MamaSubscription::setSymbol (const char* symbol)
     {
-        mamaSubscription_setSymbol (mSubscription, 
+        mamaSubscription_setSymbol (mSubscription,
                                     symbol);
     }
 
-    void MamaSubscription::setServiceLevel (mamaServiceLevel svcLevel, 
+    void MamaSubscription::setServiceLevel (mamaServiceLevel svcLevel,
                                             long             svcLevelOpt)
     {
-        mamaTry (mamaSubscription_setServiceLevel (mSubscription, 
-                                                   svcLevel, 
+        mamaTry (mamaSubscription_setServiceLevel (mSubscription,
+                                                   svcLevel,
                                                    svcLevelOpt));
     }
 
     mamaServiceLevel MamaSubscription::getServiceLevel (void)
     {
         mamaServiceLevel svcLevel;
-        mamaTry (mamaSubscription_getServiceLevel (mSubscription, 
+        mamaTry (mamaSubscription_getServiceLevel (mSubscription,
                                                    &svcLevel));
         return svcLevel;
     }
-        
+
     long MamaSubscription::getServiceLevelOpt (void)
     {
         long svcLevelOpt = 0;
@@ -804,7 +805,7 @@ namespace Wombat
     const char* MamaSubscription::getSubscSource (void) const
     {
         const char* source  = NULL;
-        mamaTry (mamaSubscription_getSource (mSubscription, 
+        mamaTry (mamaSubscription_getSource (mSubscription,
                                              &source));
         return source;
     }
@@ -813,7 +814,7 @@ namespace Wombat
     {
         if (NULL != mSubscription)
         {
-            mamaTry (mamaSubscription_setTimeout (mSubscription, 
+            mamaTry (mamaSubscription_setTimeout (mSubscription,
                                                   timeout));
         }
     }
@@ -821,7 +822,7 @@ namespace Wombat
     double MamaSubscription::getTimeout (void)
     {
         double timeout = 0.0;
-        mamaTry (mamaSubscription_getTimeout (mSubscription, 
+        mamaTry (mamaSubscription_getTimeout (mSubscription,
                                               &timeout));
         return timeout;
     }
@@ -845,14 +846,14 @@ namespace Wombat
 
     void MamaSubscription::setRecoverGaps (bool recover)
     {
-        mamaTry (mamaSubscription_setRecoverGaps (mSubscription, 
+        mamaTry (mamaSubscription_setRecoverGaps (mSubscription,
                                                   recover ? 1 : 0));
     }
 
     bool MamaSubscription::getRecoverGaps (void) const
     {
         int result = 0;
-        mamaTry (mamaSubscription_getRecoverGaps (mSubscription, 
+        mamaTry (mamaSubscription_getRecoverGaps (mSubscription,
                                                   &result));
         return result != 0;
     }
@@ -861,7 +862,7 @@ namespace Wombat
     {
         if (NULL != mSubscription)
         {
-            mamaTry(mamaSubscription_setGroupSizeHint (mSubscription, 
+            mamaTry(mamaSubscription_setGroupSizeHint (mSubscription,
                                                        groupSizeHint));
         }
     }

@@ -31,7 +31,7 @@ namespace Wombat
     /// callback object, the closure and the delegate to be maintained while
     /// the code operates inside the native environment. Without this the
     /// managed object will be garbage collected resulting in a crash
-    /// whenever the callback is eventually made from the native layer.    
+    /// whenever the callback is eventually made from the native layer.
     /// </summary>
     internal class MamaCallbackWrapper<TCallback, TDelegate> : IDisposable
     {
@@ -86,7 +86,7 @@ namespace Wombat
             // Save arguments in member variables
             mCallback          = callback;
             mClosure           = closure;
-            mNativeDelegate    = nativeDelegate;            
+            mNativeDelegate    = nativeDelegate;
         }
 
         /// <summary>
@@ -134,10 +134,10 @@ namespace Wombat
             {
                 // Dispose managed resources
                 mCallback   = default(TCallback);
-                mClosure    = null;                
+                mClosure    = null;
             }
 
-            // Dispose all unmanaged resources            
+            // Dispose all unmanaged resources
             mNativeDelegate = default(TDelegate);
         }
 
@@ -152,7 +152,7 @@ namespace Wombat
             }
 
             set
-            {                
+            {
                 mCallback = value;
             }
         }
@@ -168,7 +168,7 @@ namespace Wombat
             }
 
             set
-            {                
+            {
                 mClosure = value;
             }
         }
@@ -187,7 +187,7 @@ namespace Wombat
             {
                 mNativeDelegate = value;
             }
-        }        
+        }
 
         #endregion
     }

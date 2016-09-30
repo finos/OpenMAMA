@@ -36,52 +36,52 @@ namespace Wombat
       /// MamaMsg
       /// </summary>
       MAMA_FIELD_TYPE_MSG         =   1,
-    
+
       /// <summary>
       /// Binary data
       /// </summary>
       MAMA_FIELD_TYPE_OPAQUE      =   7,
-    
+
       /// <summary>
       /// String
       /// </summary>
       MAMA_FIELD_TYPE_STRING      =   8,
-    
+
       /// <summary>
       /// Boolean
       /// </summary>
-      MAMA_FIELD_TYPE_BOOL        =   9, 
+      MAMA_FIELD_TYPE_BOOL        =   9,
 
       /// <summary>
       /// Character
       /// </summary>
-      MAMA_FIELD_TYPE_CHAR        =   10, 
+      MAMA_FIELD_TYPE_CHAR        =   10,
 
       /// <summary>
       /// Signed 8-bit int
       /// </summary>
-      MAMA_FIELD_TYPE_I8          =   14, 
+      MAMA_FIELD_TYPE_I8          =   14,
 
       /// <summary>
       /// Unsigned byte
       /// </summary>
       MAMA_FIELD_TYPE_U8          =   15,
-    
+
       /// <summary>
       /// Signed 16-bit int
       /// </summary>
       MAMA_FIELD_TYPE_I16         =   16,
-   
+
       /// <summary>
       /// Unsigned 16-bit int
       /// </summary>
       MAMA_FIELD_TYPE_U16         =   17,
-      
+
       /// <summary>
       /// Signed 32-bit int
       /// </summary>
       MAMA_FIELD_TYPE_I32         =   18,
-    
+
       /// <summary>
       /// unsigned 32-bit int
       /// </summary>
@@ -96,11 +96,11 @@ namespace Wombat
       /// Unsigned 64-bit int
       /// </summary>
       MAMA_FIELD_TYPE_U64         =   21,
-   
+
       /// <summary>
       /// 32-bit float
       /// </summary>
-      MAMA_FIELD_TYPE_F32         =   24, 
+      MAMA_FIELD_TYPE_F32         =   24,
 
       /// <summary>
       /// 64-bit float
@@ -120,79 +120,79 @@ namespace Wombat
       /// <summary>
       /// Array of I8s
       /// </summary>
-      MAMA_FIELD_TYPE_VECTOR_I8     =   34, 
-      
+      MAMA_FIELD_TYPE_VECTOR_I8     =   34,
+
        /// <summary>
        /// Array of U8s
        /// </summary>
-       MAMA_FIELD_TYPE_VECTOR_U8     =   35, 
+       MAMA_FIELD_TYPE_VECTOR_U8     =   35,
 
        /// <summary>
        /// Array of I16s
        /// </summary>
-       MAMA_FIELD_TYPE_VECTOR_I16    =   36, 
-      
+       MAMA_FIELD_TYPE_VECTOR_I16    =   36,
+
        /// <summary>
        /// Array of U16s
        /// </summary>
-       MAMA_FIELD_TYPE_VECTOR_U16    =   37, 
-            
+       MAMA_FIELD_TYPE_VECTOR_U16    =   37,
+
        /// <summary>
        /// Array of I32s
        /// </summary>
-       MAMA_FIELD_TYPE_VECTOR_I32    =   38, 
-            
+       MAMA_FIELD_TYPE_VECTOR_I32    =   38,
+
        /// <summary>
        /// Array of U32s
        /// </summary>
        MAMA_FIELD_TYPE_VECTOR_U32    =   39,
-            
+
        /// <summary>
        /// Array of I64s
        /// </summary>
-       MAMA_FIELD_TYPE_VECTOR_I64    =   40, 
-            
+       MAMA_FIELD_TYPE_VECTOR_I64    =   40,
+
        /// <summary>
        /// Array of U64s
        /// </summary>
        MAMA_FIELD_TYPE_VECTOR_U64    =   41,
-            
+
        /// <summary>
        /// Array of F32s
        /// </summary>
-       MAMA_FIELD_TYPE_VECTOR_F32    =   44, 
-            
+       MAMA_FIELD_TYPE_VECTOR_F32    =   44,
+
        /// <summary>
        /// Array of F64s
        /// </summary>
        MAMA_FIELD_TYPE_VECTOR_F64    =   45,
-            
+
        /// <summary>
        /// Array of strings
        /// </summary>
        MAMA_FIELD_TYPE_VECTOR_STRING =   46,
-            
+
        /// <summary>
        /// Array of MamaMsgs
        /// </summary>
        MAMA_FIELD_TYPE_VECTOR_MSG    =   47,
-            
+
        /// <summary>
        /// Array of MamaTimes
        /// </summary>
        MAMA_FIELD_TYPE_VECTOR_TIME   =   48,
-            
+
        /// <summary>
        /// Array of MamaPrices
        /// </summary>
        MAMA_FIELD_TYPE_VECTOR_PRICE  =   49,
-      
+
        /// <summary/>
        MAMA_FIELD_TYPE_QUANTITY		=	50,
 
        /// <summary/>
        MAMA_FIELD_TYPE_COLLECTION  =   99,
-       
+
        /// <summary>
        /// Unknown type
        /// </summary>
@@ -204,7 +204,7 @@ namespace Wombat
 	public class MamaMsgField : MamaWrapper
 	{
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="nativeHandle"></param>
 		internal MamaMsgField(IntPtr nativeHandle) : base(nativeHandle)
@@ -214,12 +214,12 @@ namespace Wombat
         public MamaMsgField()
 		{
 		}
-        
+
 		/// <summary>
 		/// Destroy the MamaMsg
 		/// </summary>
 		public void destroy()
-		{ 
+		{
 			Dispose();
 		}
 
@@ -238,7 +238,7 @@ namespace Wombat
 		/// Get the field type for this field.
 		/// </summary>
 		/// <returns></returns>
-		public mamaFieldType getType () 
+		public mamaFieldType getType ()
 		{
 			EnsurePeerCreated();
 			int type = 0;
@@ -246,12 +246,12 @@ namespace Wombat
 			CheckResultCode(code);
 			return (mamaFieldType)type;
 		}
-      
+
 		/// <summary>
 		/// Get the field descriptor for this field.
 		/// </summary>
 		/// <returns></returns>
-		public MamaFieldDescriptor getDescriptor () 
+		public MamaFieldDescriptor getDescriptor ()
 		{
 			EnsurePeerCreated();
 			IntPtr descriptor = IntPtr.Zero;
@@ -264,7 +264,7 @@ namespace Wombat
 		/// Convert the value of the specified field to a string. ( up to  255 characters )
 		/// </summary>
 		/// <returns></returns>
-		public string getAsString () 
+		public string getAsString ()
 		{
 			EnsurePeerCreated();
 			StringBuilder val = new StringBuilder(255);
@@ -277,7 +277,7 @@ namespace Wombat
 		/// <summary>
 		/// Get the field ID for this field.
 		/// </summary>
-		public int getFid () 
+		public int getFid ()
 		{
 			EnsurePeerCreated();
 			ushort ret = 0;
@@ -285,11 +285,11 @@ namespace Wombat
 			CheckResultCode(code);
 			return ret;
 		}
-	
+
 		/// <summary>
 		/// Get the field name for this field.
 		/// </summary>
-		public string getName () 
+		public string getName ()
 		{
 			EnsurePeerCreated();
 			IntPtr ret = IntPtr.Zero;
@@ -299,10 +299,10 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// Get the type name for this field. This is a human readable 
+		/// Get the type name for this field. This is a human readable
 		/// representation of the type.
 		/// </summary>
-		public string getTypeName () 
+		public string getTypeName ()
 		{
 			EnsurePeerCreated();
 			IntPtr ret = IntPtr.Zero;
@@ -314,7 +314,7 @@ namespace Wombat
 		/// <summary>
 		/// Get a bool field.
 		/// </summary>
-		public bool getBool () 
+		public bool getBool ()
 		{
 			EnsurePeerCreated();
 			bool ret = false;
@@ -326,7 +326,7 @@ namespace Wombat
 		/// <summary>
 		/// Get a character field.
 		/// </summary>
-		public char getChar () 
+		public char getChar ()
 		{
 			EnsurePeerCreated();
 			char ret = '\0';
@@ -338,7 +338,7 @@ namespace Wombat
 		/// <summary>
 		/// Get a I8, signed 8 bit integer, field.
 		/// </summary>
-		public sbyte getI8 () 
+		public sbyte getI8 ()
 		{
 			EnsurePeerCreated();
 			sbyte ret = 0;
@@ -362,7 +362,7 @@ namespace Wombat
 		/// <summary>
 		/// Get a I16, signed 16 bit integer, field.
 		/// </summary>
-		public short getI16 () 
+		public short getI16 ()
 		{
 			EnsurePeerCreated();
 			short ret = 0;
@@ -374,7 +374,7 @@ namespace Wombat
 		/// <summary>
 		/// Get a U16, unsigned 16 bit integer, field.
 		/// </summary>
-		public ushort getU16 () 
+		public ushort getU16 ()
 		{
 			EnsurePeerCreated();
 			ushort ret = 0;
@@ -386,7 +386,7 @@ namespace Wombat
 		/// <summary>
 		/// Get a I32, signed 32 bit integer, field.
 		/// </summary>
-		public int getI32 () 
+		public int getI32 ()
 		{
 			EnsurePeerCreated();
 			int ret = 0;
@@ -467,12 +467,12 @@ namespace Wombat
             string strRet = Marshal.PtrToStringAnsi(ret);
             return strRet;
 		}
-    
+
 		/// <summary>
 		/// Get an opaque field.
 		/// </summary>
-		public byte[] getOpaque() 
-		{   
+		public byte[] getOpaque()
+		{
 			EnsurePeerCreated();
 			IntPtr array = IntPtr.Zero;
 			uint size = 0;
@@ -494,7 +494,7 @@ namespace Wombat
 			ulong dateTime = 0;
 			code = NativeMethods.mamaMsgField_getDateTime(nativeHandle,ref dateTime);
 			CheckResultCode(code);
-        
+
 			ulong dateTimeMsec = 0;
 			code = NativeMethods.mamaDateTime_getEpochTimeMilliseconds (ref dateTime, ref dateTimeMsec);
 			CheckResultCode(code);
@@ -502,7 +502,7 @@ namespace Wombat
 
 			return ret;
 		}
-       
+
 		/// <summary>
 		/// Get a MAMA price field.
 		/// </summary>
@@ -530,21 +530,21 @@ namespace Wombat
             EnsurePeerCreated();
 
             IntPtr myP = IntPtr.Zero;
-            
+
             int code = NativeMethods.mamaMsgField_getMsg(nativeHandle, ref myP);
             MamaStatus.mamaStatus status = (MamaStatus.mamaStatus)code;
             if (status != MamaStatus.mamaStatus.MAMA_STATUS_OK)
             {
                 throw new MamaException(status);
             }
-            
+
             if (msg_ == null)
             {
                 msg_ = new MamaMsg ();
             }
 
             msg_.setNativeHandle(myP);
-            
+
             return msg_;
         }
 
@@ -586,7 +586,7 @@ namespace Wombat
 
 			char[] ret = new char[size];
 
-			for (int i = 0; i < ret.Length; i++) 
+			for (int i = 0; i < ret.Length; i++)
 			{
 				ret[i] = (char)bRet[i];
 			}
@@ -688,7 +688,7 @@ namespace Wombat
 
 			return ret;
 		}
-    
+
 		/// <summary>
 		/// Get a vector of unsigned 32 bit integers.
 		/// </summary>
@@ -726,7 +726,7 @@ namespace Wombat
 
 			return ret;
 		}
-    
+
 		/// <summary>
 		/// Get a vector of unsigned 64 bit integers.
 		/// </summary>
@@ -815,7 +815,7 @@ namespace Wombat
                 ret.Add(Marshal.PtrToStringAnsi(nativeStringPointer));
             }
 
-            // Convert the array list to an array of strings            
+            // Convert the array list to an array of strings
             return (string[])ret.ToArray(typeof(string));
 
         }
@@ -832,7 +832,7 @@ namespace Wombat
 			CheckResultCode(code);
 
 			MamaMsg[] ret = new MamaMsg[size];
-			for (int i = 0 ; i < size; i++) 
+			for (int i = 0 ; i < size; i++)
 			{
                 ret[i] = new MamaMsg(Marshal.ReadIntPtr(array, i * Marshal.SizeOf(typeof(IntPtr))));
 			}
@@ -843,7 +843,7 @@ namespace Wombat
 
         private MamaPrice price_ = null;
         private MamaMsg msg_ = null;
-        
+
 		#region Implementation details
 
 		private struct NativeMethods
@@ -856,7 +856,7 @@ namespace Wombat
 			public static extern int mamaMsgField_getDescriptor(IntPtr nativeHandle,
 				ref IntPtr result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsgField_getFid(IntPtr nativeHandle, 
+			public static extern int mamaMsgField_getFid(IntPtr nativeHandle,
 				ref ushort result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsgField_getName(IntPtr nativeHandle,
@@ -871,7 +871,7 @@ namespace Wombat
 			public static extern int mamaMsgField_getChar(IntPtr nativeHandle,
 				ref char result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsgField_getI8(IntPtr nativeHandle, 
+			public static extern int mamaMsgField_getI8(IntPtr nativeHandle,
 				ref sbyte result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsgField_getU8(IntPtr nativeHandle,
@@ -880,7 +880,7 @@ namespace Wombat
 			public static extern int mamaMsgField_getI16(IntPtr nativeHandle,
 				ref short result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsgField_getU16(IntPtr nativeHandle, 
+			public static extern int mamaMsgField_getU16(IntPtr nativeHandle,
 				ref ushort result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsgField_getI32(IntPtr nativeHandle,
@@ -933,7 +933,7 @@ namespace Wombat
 				ref IntPtr result,
 				ref uint size);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsgField_getVectorI16 (IntPtr nativeHandle, 
+			public static extern int mamaMsgField_getVectorI16 (IntPtr nativeHandle,
 				ref IntPtr result,
 				ref uint size);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
@@ -961,15 +961,15 @@ namespace Wombat
 				ref IntPtr result,
 				ref uint size);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsgField_getVectorF64 (IntPtr nativeHandle, 
+			public static extern int mamaMsgField_getVectorF64 (IntPtr nativeHandle,
 				ref IntPtr result,
 				ref uint size);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsgField_getVectorString (IntPtr nativeHandle, 
+			public static extern int mamaMsgField_getVectorString (IntPtr nativeHandle,
 				ref IntPtr result,
 				ref uint size);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsgField_getVectorMsg (IntPtr nativeHandle, 
+			public static extern int mamaMsgField_getVectorMsg (IntPtr nativeHandle,
 				ref IntPtr result,
 				ref uint size);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]

@@ -30,9 +30,9 @@ struct MamaFieldCacheField::MamaFieldCacheFieldImpl
 {
     MamaFieldCacheFieldImpl();
     ~MamaFieldCacheFieldImpl();
-    
+
     void clear();
-    
+
     const mamaFieldDescriptor* getFieldDescriptorC() const;
 
     mamaFieldCacheField mField;
@@ -133,7 +133,7 @@ mama_fid_t MamaFieldCacheField::getFid() const
     mamaFieldCacheField_getFid(mPimpl->mField, &value);
     return value;
 }
-    
+
 mamaFieldType MamaFieldCacheField::getType() const
 {
     mamaFieldType value = MAMA_FIELD_TYPE_UNKNOWN;
@@ -174,7 +174,7 @@ void MamaFieldCacheField::setPublish(bool value)
 {
     mamaFieldCacheField_setPublish(mPimpl->mField, value);
 }
-    
+
 bool MamaFieldCacheField::getPublish() const
 {
     mama_bool_t value = 0;
@@ -186,7 +186,7 @@ void MamaFieldCacheField::setCheckModified(bool value)
 {
     mamaFieldCacheField_setCheckModified(mPimpl->mField, value);
 }
-    
+
 bool MamaFieldCacheField::getCheckModified() const
 {
     mama_bool_t value = 0;

@@ -83,7 +83,7 @@ namespace Wombat
 			SECURITY_STATUS_QUAL_IPO                           = 65,     // toString IPO
             SECURITY_STATUS_QUAL_PRE_CROSS                     = 66,     // toString Pre-Cross
             SECURITY_STATUS_QUAL_CROSS                         = 67,     // toString Cross
-            SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION        = 68,     // toString Released For Quotation (IPO) 
+            SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION        = 68,     // toString Released For Quotation (IPO)
             SECURITY_STATUS_QUAL_IPO_WINDOW_EXT                = 69,     // toString IPO Window Extension
             SECURITY_STATUS_QUAL_PRECLOSING                    = 70,     // toString PreClosing
             SECURITY_STATUS_QUAL_AUCTION_EXTENSION             = 71,     // toString Auction Extension
@@ -111,7 +111,7 @@ namespace Wombat
             SECURITY_STATUS_QUAL_SUB_HOLIDAY                   = 93,     // toString SubHol
             SECURITY_STATUS_QUAL_BID_ONLY                      = 94,     // toString BidOnly
             SECURITY_STATUS_QUAL_ASK_ONLY                      = 95,     // toString AskOnly
-            SECURITY_STATUS_QUAL_UNKNOWN                       = 99,     // toString Unknown  
+            SECURITY_STATUS_QUAL_UNKNOWN                       = 99,     // toString Unknown
             SECURITY_STATUS_QUAL_OPENING_DELAY_COMMON          = 101,    // toString OpeningDelayCommon
             SECURITY_STATUS_QUAL_RESUME_COMMON                 = 102,    // toString ResumeCommon
             SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME_COMMON      = 103,    // toString NoOpenNoResumeCommon
@@ -121,7 +121,7 @@ namespace Wombat
             SECURITY_STATUS_QUAL_INFORMATION_REQUESTED_RELATED = 107,    // toString InfoRequestedRelated
             SECURITY_STATUS_QUAL_NEWS_PENDING_RELATED          = 108,    // toString NewsPendingRelated
             SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED  = 109,    // toString EquipChangeOverRelated
-            SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED     = 110,    // toString SubPennyTradingRelated   
+            SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED     = 110,    // toString SubPennyTradingRelated
             SECURITY_STATUS_QUAL_POST_TRADING                  = 111,    // toString PostTrading
             SECURITY_STATUS_QUAL_ONE_SIDED                     = 112,    // toString OneSided
             SECURITY_STATUS_QUAL_PRE_CALL                      = 113,    // toString PreCall
@@ -148,7 +148,7 @@ namespace Wombat
 		}
 
 		private static string SECURITY_STATUS_QUAL_STR_NONE                           = "None";
-        private static string SECURITY_STATUS_QUAL_STR_OPENING                        = "Opening";   
+        private static string SECURITY_STATUS_QUAL_STR_OPENING                        = "Opening";
 		private static string SECURITY_STATUS_QUAL_STR_EXCUSED                        = "Excused";
 		private static string SECURITY_STATUS_QUAL_STR_WITHDRAWN                      = "Withdrawn";
 		private static string SECURITY_STATUS_QUAL_STR_SUSPENDED                      = "Suspended";
@@ -198,13 +198,13 @@ namespace Wombat
 		private static string SECURITY_STATUS_QUAL_STR_OTHER                          = "Other";
 		private static string SECURITY_STATUS_QUAL_STR_RELATED                        = "Related";
 		private static string SECURITY_STATUS_QUAL_STR_IPO                            = "IPO";
-        
+
         private static  string SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY                   = "EmcImbBuy";
         private static  string SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL                  = "EmcImbSell";
         private static  string SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE                  = "EmcImbNone";
         private static  string SECURITY_STATUS_QUAL_STR_PRE_CROSS                     = "Pre-Cross";
         private static  string SECURITY_STATUS_QUAL_STR_CROSS                         = "Cross";
-        private static  string SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION        = "Released For Quotation (IPO)"; 
+        private static  string SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION        = "Released For Quotation (IPO)";
         private static  string SECURITY_STATUS_QUAL_STR_IPO_WINDOW_EXT                = "IPO Window Extension";
         private static  string SECURITY_STATUS_QUAL_STR_PRECLOSING                    = "PreClosing";
         private static  string SECURITY_STATUS_QUAL_STR_AUCTION_EXTENSION             = "Auction Extension";
@@ -378,67 +378,67 @@ namespace Wombat
 				case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RELATED:
 					return SECURITY_STATUS_QUAL_STR_RELATED;
 				case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO:
-					return SECURITY_STATUS_QUAL_STR_IPO; 
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CROSS:                  
-                    return SECURITY_STATUS_QUAL_STR_PRE_CROSS;        
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CROSS:                      
-                    return SECURITY_STATUS_QUAL_STR_CROSS;             
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION:     
-                    return SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION; 
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO_WINDOW_EXT:             
-                    return SECURITY_STATUS_QUAL_STR_IPO_WINDOW_EXT;         
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRECLOSING:                 
-                    return SECURITY_STATUS_QUAL_STR_PRECLOSING;             
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_AUCTION_EXTENSION:          
-                    return SECURITY_STATUS_QUAL_STR_AUCTION_EXTENSION;      
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_AUCTION:         
-                    return SECURITY_STATUS_QUAL_STR_VOLATILITY_AUCTION;     
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_AUTHORISED:        
-                    return SECURITY_STATUS_QUAL_STR_SECURITY_AUTHORISED;    
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN:         
-                    return SECURITY_STATUS_QUAL_STR_SECURITY_FORBIDDEN;     
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FAST_MARKET:                
-                    return SECURITY_STATUS_QUAL_STR_FAST_MARKET;            
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SLOW_MARKET:                
-                    return SECURITY_STATUS_QUAL_STR_SLOW_MARKET;            
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING:          
-                    return SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING;      
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INPUT:                
-                    return SECURITY_STATUS_QUAL_STR_ORDER_INPUT;            
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING:         
-                    return SECURITY_STATUS_QUAL_STR_PRE_ORDER_MATCHING;     
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_MATCHING:             
+					return SECURITY_STATUS_QUAL_STR_IPO;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CROSS:
+                    return SECURITY_STATUS_QUAL_STR_PRE_CROSS;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CROSS:
+                    return SECURITY_STATUS_QUAL_STR_CROSS;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION:
+                    return SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO_WINDOW_EXT:
+                    return SECURITY_STATUS_QUAL_STR_IPO_WINDOW_EXT;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRECLOSING:
+                    return SECURITY_STATUS_QUAL_STR_PRECLOSING;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_AUCTION_EXTENSION:
+                    return SECURITY_STATUS_QUAL_STR_AUCTION_EXTENSION;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_AUCTION:
+                    return SECURITY_STATUS_QUAL_STR_VOLATILITY_AUCTION;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_AUTHORISED:
+                    return SECURITY_STATUS_QUAL_STR_SECURITY_AUTHORISED;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN:
+                    return SECURITY_STATUS_QUAL_STR_SECURITY_FORBIDDEN;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FAST_MARKET:
+                    return SECURITY_STATUS_QUAL_STR_FAST_MARKET;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SLOW_MARKET:
+                    return SECURITY_STATUS_QUAL_STR_SLOW_MARKET;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING:
+                    return SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INPUT:
+                    return SECURITY_STATUS_QUAL_STR_ORDER_INPUT;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING:
+                    return SECURITY_STATUS_QUAL_STR_PRE_ORDER_MATCHING;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_MATCHING:
                     return SECURITY_STATUS_QUAL_STR_ORDER_MATCHING;
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BLOCKING:              
-                    return SECURITY_STATUS_QUAL_STR_BLOCKING;      
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_CANCEL:          
-                    return SECURITY_STATUS_QUAL_STR_ORDER_CANCEL;  
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FIXED_PRICE:           
-                    return SECURITY_STATUS_QUAL_STR_FIXED_PRICE;   
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SALES_INPUT:           
-                    return SECURITY_STATUS_QUAL_STR_SALES_INPUT;   
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION: 
-                    return SECURITY_STATUS_QUAL_STR_EXCHANGE_INTERVENTION;  
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_AUCTION:                
-                    return SECURITY_STATUS_QUAL_STR_PRE_AUCTION; 
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST:              
-                    return SECURITY_STATUS_QUAL_STR_ADJUST;      
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST_ON:           
-                    return SECURITY_STATUS_QUAL_STR_ADJUST_ON;   
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LATE_TRADING:        
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BLOCKING:
+                    return SECURITY_STATUS_QUAL_STR_BLOCKING;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_CANCEL:
+                    return SECURITY_STATUS_QUAL_STR_ORDER_CANCEL;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FIXED_PRICE:
+                    return SECURITY_STATUS_QUAL_STR_FIXED_PRICE;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SALES_INPUT:
+                    return SECURITY_STATUS_QUAL_STR_SALES_INPUT;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION:
+                    return SECURITY_STATUS_QUAL_STR_EXCHANGE_INTERVENTION;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_AUCTION:
+                    return SECURITY_STATUS_QUAL_STR_PRE_AUCTION;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST:
+                    return SECURITY_STATUS_QUAL_STR_ADJUST;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST_ON:
+                    return SECURITY_STATUS_QUAL_STR_ADJUST_ON;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LATE_TRADING:
                     return SECURITY_STATUS_QUAL_STR_LATE_TRADING;
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ENQUIRE:             
-                    return SECURITY_STATUS_QUAL_STR_ENQUIRE;     
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING:   
-                    return SECURITY_STATUS_QUAL_STR_PRE_NIGHT_TRADING; 
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING:        
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ENQUIRE:
+                    return SECURITY_STATUS_QUAL_STR_ENQUIRE;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING:
+                    return SECURITY_STATUS_QUAL_STR_PRE_NIGHT_TRADING;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING:
                     return SECURITY_STATUS_QUAL_STR_OPEN_NIGHT_TRADING;
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_HOLIDAY:        
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_HOLIDAY:
                     return  SECURITY_STATUS_QUAL_STR_SUB_HOLIDAY;
 
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BID_ONLY:             
-                    return SECURITY_STATUS_QUAL_STR_BID_ONLY;     
-                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ASK_ONLY:        
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BID_ONLY:
+                    return SECURITY_STATUS_QUAL_STR_BID_ONLY;
+                case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ASK_ONLY:
                     return SECURITY_STATUS_QUAL_STR_ASK_ONLY;
                 case mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_UNKNOWN:
                     return SECURITY_STATUS_QUAL_STR_UNKNOWN;
@@ -512,7 +512,7 @@ namespace Wombat
 			}
 			return SECURITY_STATUS_QUAL_STR_UNKNOWN;
 		}
-		
+
 		public static MamdaSecurityStatusQual.mamdaSecurityStatusQual mamdaSecurityStatusQualFromString (string securityStatusQual)
 		{
 			if (securityStatusQual == null)
@@ -622,115 +622,115 @@ namespace Wombat
 			if (securityStatusQual == SECURITY_STATUS_QUAL_STR_RELATED)
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RELATED;
 			if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IPO)
-				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO;   
+				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_PRE_CROSS)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CROSS;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CROSS;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_CROSS)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CROSS;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CROSS;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_IPO_WINDOW_EXT)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO_WINDOW_EXT;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO_WINDOW_EXT;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_PRECLOSING)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRECLOSING;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRECLOSING;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_AUCTION_EXTENSION )
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_AUCTION_EXTENSION;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_AUCTION_EXTENSION;
             if (securityStatusQual ==  SECURITY_STATUS_QUAL_STR_VOLATILITY_AUCTION)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_AUCTION;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_AUCTION;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SECURITY_AUTHORISED )
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_AUTHORISED;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_AUTHORISED;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SECURITY_FORBIDDEN)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_FAST_MARKET)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FAST_MARKET;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FAST_MARKET;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SLOW_MARKET)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SLOW_MARKET;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SLOW_MARKET;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ORDER_INPUT)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INPUT;   
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INPUT;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_PRE_ORDER_MATCHING)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ORDER_MATCHING)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_MATCHING;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_MATCHING;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_BLOCKING)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BLOCKING;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BLOCKING;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ORDER_CANCEL)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_CANCEL;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_CANCEL;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_FIXED_PRICE)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FIXED_PRICE;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FIXED_PRICE;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SALES_INPUT)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SALES_INPUT;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SALES_INPUT;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_EXCHANGE_INTERVENTION)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_PRE_AUCTION)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_AUCTION;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_AUCTION;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ADJUST)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ADJUST_ON)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST_ON;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST_ON;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_LATE_TRADING)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LATE_TRADING;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LATE_TRADING;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ENQUIRE)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ENQUIRE;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ENQUIRE;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_PRE_NIGHT_TRADING)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_OPEN_NIGHT_TRADING)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SUB_HOLIDAY)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_HOLIDAY;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_HOLIDAY;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_BID_ONLY)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BID_ONLY;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BID_ONLY;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ASK_ONLY)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ASK_ONLY;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ASK_ONLY;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_OPENING_DELAY_COMMON)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPENING_DELAY_COMMON;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPENING_DELAY_COMMON;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_RESUME_COMMON)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESUME_COMMON;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESUME_COMMON;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_NO_OPEN_NO_RESUME_COMMON)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME_COMMON;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME_COMMON;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_NEWS_DISSEMINATION_RELATED)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NEWS_DISSEMINATION_RELATED;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NEWS_DISSEMINATION_RELATED;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ORDER_INFLUX_RELATED)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INFLUX_RELATED;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INFLUX_RELATED;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ORDER_IMBALANCE_RELATED)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_IMBALANCE_RELATED;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_IMBALANCE_RELATED;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_INFORMATION_REQUESTED_RELATED)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_INFORMATION_REQUESTED_RELATED;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_INFORMATION_REQUESTED_RELATED;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_NEWS_PENDING_RELATED )
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NEWS_PENDING_RELATED;  
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_EQUIPMENT_CHANGEOVER_RELATED)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_POST_TRADING)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_POST_TRADING;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_ONE_SIDED)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ONE_SIDED;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ONE_SIDED;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_PRE_CALL)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CALL;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CALL;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_RESTRICTED_OPEN)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESTRICTED_OPEN;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESTRICTED_OPEN;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_QUOTE_RESUME)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_GUARD_QUOTE_RESUME)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_LIMIT_STATE_BID)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_BID;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_BID;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_LIMIT_STATE_ASK)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_ASK;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_ASK;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_LIMITSTATEBID_LIMITSTATEASK)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMITSTATEBID_LIMITSTATEASK;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_1)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_1;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_2;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3)
-                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;  
+                return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CIRCUIT_BREAKER_LEVEL_3;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE)
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
             if (securityStatusQual == SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED)
@@ -805,7 +805,7 @@ namespace Wombat
 			if (securityStatusQual == "33")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESERVED;
 			if (securityStatusQual == "34")
-				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FROZEN;	
+				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FROZEN;
 			if (securityStatusQual == "35")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PREOPEN;
             if (securityStatusQual == "36")
@@ -822,12 +822,12 @@ namespace Wombat
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO_IMBALANCE_SELL;
             if (securityStatusQual == "44")
                 return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NO_IPO_IMBALANCE;
-            if (securityStatusQual == "46")               
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_BUY;           
-            if (securityStatusQual == "47")              
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_SELL;          
-            if (securityStatusQual == "48")              
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_NONE;          
+            if (securityStatusQual == "46")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_BUY;
+            if (securityStatusQual == "47")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_SELL;
+            if (securityStatusQual == "48")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EMC_IMB_NONE;
 			if (securityStatusQual == "51")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPEN_DELAY;
 			if (securityStatusQual == "52")
@@ -858,102 +858,102 @@ namespace Wombat
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RELATED;
 			if (securityStatusQual == "65")
 				return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO;
-            
-            if (securityStatusQual == "66")                 
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CROSS;             
-            if (securityStatusQual == "67")                     
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CROSS;                 
-            if (securityStatusQual == "68")    
+
+            if (securityStatusQual == "66")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CROSS;
+            if (securityStatusQual == "67")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_CROSS;
+            if (securityStatusQual == "68")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION;
-            if (securityStatusQual == "69")            
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO_WINDOW_EXT;        
-            if (securityStatusQual == "70")                
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRECLOSING;            
-            if (securityStatusQual == "71")         
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_AUCTION_EXTENSION;     
-            if (securityStatusQual == "72")        
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_AUCTION;    
-            if (securityStatusQual == "73")       
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_AUTHORISED;   
-            if (securityStatusQual == "74")        
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN;    
-            if (securityStatusQual == "75")               
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FAST_MARKET;           
-            if (securityStatusQual == "76")           
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SLOW_MARKET;           
-            if (securityStatusQual == "77")     
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING;     
-            if (securityStatusQual == "78")           
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INPUT;           
-            if (securityStatusQual == "79")    
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING;    
-            if (securityStatusQual == "80")        
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_MATCHING;        
-            if (securityStatusQual == "81")              
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BLOCKING;              
-            if (securityStatusQual == "82")          
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_CANCEL;          
-            if (securityStatusQual == "83")           
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FIXED_PRICE;           
-            if (securityStatusQual == "84")           
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SALES_INPUT;           
-            if (securityStatusQual == "85") 
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION; 
-            if (securityStatusQual == "86")           
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_AUCTION;           
-            if (securityStatusQual == "87")                
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST;                
-            if (securityStatusQual == "88")             
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST_ON;             
-            if (securityStatusQual == "89")          
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LATE_TRADING;          
-            if (securityStatusQual == "90")               
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ENQUIRE;               
-            if (securityStatusQual == "91")     
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING;     
-            if (securityStatusQual == "92")    
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING;    
-            if (securityStatusQual == "93")    
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_HOLIDAY;    
-            if (securityStatusQual == "94")              
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BID_ONLY;              
-            if (securityStatusQual == "95")         
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ASK_ONLY;      
-            if (securityStatusQual == "101")         
-              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPENING_DELAY_COMMON;      
-            if (securityStatusQual == "102")         
+            if (securityStatusQual == "69")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IPO_WINDOW_EXT;
+            if (securityStatusQual == "70")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRECLOSING;
+            if (securityStatusQual == "71")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_AUCTION_EXTENSION;
+            if (securityStatusQual == "72")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_AUCTION;
+            if (securityStatusQual == "73")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_AUTHORISED;
+            if (securityStatusQual == "74")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN;
+            if (securityStatusQual == "75")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FAST_MARKET;
+            if (securityStatusQual == "76")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SLOW_MARKET;
+            if (securityStatusQual == "77")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING;
+            if (securityStatusQual == "78")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INPUT;
+            if (securityStatusQual == "79")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING;
+            if (securityStatusQual == "80")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_MATCHING;
+            if (securityStatusQual == "81")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BLOCKING;
+            if (securityStatusQual == "82")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_CANCEL;
+            if (securityStatusQual == "83")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_FIXED_PRICE;
+            if (securityStatusQual == "84")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SALES_INPUT;
+            if (securityStatusQual == "85")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION;
+            if (securityStatusQual == "86")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_AUCTION;
+            if (securityStatusQual == "87")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST;
+            if (securityStatusQual == "88")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ADJUST_ON;
+            if (securityStatusQual == "89")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LATE_TRADING;
+            if (securityStatusQual == "90")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ENQUIRE;
+            if (securityStatusQual == "91")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING;
+            if (securityStatusQual == "92")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING;
+            if (securityStatusQual == "93")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_HOLIDAY;
+            if (securityStatusQual == "94")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_BID_ONLY;
+            if (securityStatusQual == "95")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ASK_ONLY;
+            if (securityStatusQual == "101")
+              return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_OPENING_DELAY_COMMON;
+            if (securityStatusQual == "102")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESUME_COMMON;
-            if (securityStatusQual == "103")         
+            if (securityStatusQual == "103")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME_COMMON;
-            if (securityStatusQual == "104")         
+            if (securityStatusQual == "104")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NEWS_DISSEMINATION_RELATED;
-            if (securityStatusQual == "105")         
+            if (securityStatusQual == "105")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_INFLUX_RELATED;
-            if (securityStatusQual == "106")         
+            if (securityStatusQual == "106")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ORDER_IMBALANCE_RELATED;
-            if (securityStatusQual == "107")         
+            if (securityStatusQual == "107")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_INFORMATION_REQUESTED_RELATED;
-            if (securityStatusQual == "108")         
+            if (securityStatusQual == "108")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_NEWS_PENDING_RELATED;
-            if (securityStatusQual == "109")         
+            if (securityStatusQual == "109")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED;
-            if (securityStatusQual == "110")         
+            if (securityStatusQual == "110")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SUB_PENNY_TRADING_RELATED;
-            if (securityStatusQual == "111")         
+            if (securityStatusQual == "111")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_POST_TRADING;
-            if (securityStatusQual == "112")         
+            if (securityStatusQual == "112")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_ONE_SIDED;
-            if (securityStatusQual == "113")         
+            if (securityStatusQual == "113")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_PRE_CALL;
-            if (securityStatusQual == "114")         
+            if (securityStatusQual == "114")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_RESTRICTED_OPEN;
-            if (securityStatusQual == "116")         
+            if (securityStatusQual == "116")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE;
-            if (securityStatusQual == "117")         
+            if (securityStatusQual == "117")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME;
-            if (securityStatusQual == "118")         
+            if (securityStatusQual == "118")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD;
-            if (securityStatusQual == "119")         
+            if (securityStatusQual == "119")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_GUARD_QUOTE_RESUME;
             if (securityStatusQual == "120")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_LIMIT_STATE_BID;
@@ -971,19 +971,19 @@ namespace Wombat
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_STRADDLE;
             if (securityStatusQual == "127")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SHORT_SALE_RESTRICTED;
-            if (securityStatusQual == "128")         
+            if (securityStatusQual == "128")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_BUY;
-            if (securityStatusQual == "129")         
+            if (securityStatusQual == "129")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL;
-            if (securityStatusQual == "130")         
+            if (securityStatusQual == "130")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE;
-            if (securityStatusQual == "131")         
+            if (securityStatusQual == "131")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY;
-            if (securityStatusQual == "132")         
+            if (securityStatusQual == "132")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL;
-            if (securityStatusQual == "133")         
+            if (securityStatusQual == "133")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE;
-            if (securityStatusQual == "134")         
+            if (securityStatusQual == "134")
               return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY;
 
 			return mamdaSecurityStatusQual.SECURITY_STATUS_QUAL_UNKNOWN;

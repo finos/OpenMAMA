@@ -37,33 +37,33 @@ public final class MamaMdDataType
     public static final int            NEWS_STORY_VALUE = 2;
     public static final MamaMdDataType NEWS_STORY = new MamaMdDataType
                              (valueToString (NEWS_STORY_VALUE), NEWS_STORY_VALUE);
-   
+
     public static final int            WORLDVIEW_VALUE = 3;
     public static final MamaMdDataType WORLDVIEW = new MamaMdDataType
-                             (valueToString (WORLDVIEW_VALUE), WORLDVIEW_VALUE);                         
+                             (valueToString (WORLDVIEW_VALUE), WORLDVIEW_VALUE);
     
     public static final int            PROPERTY_VALUE = 4;
     public static final MamaMdDataType PROPERTY = new MamaMdDataType
-                             (valueToString (PROPERTY_VALUE), PROPERTY_VALUE);                         
+                             (valueToString (PROPERTY_VALUE), PROPERTY_VALUE);
 
     public static final int            USAGE_LOG_VALUE = 5;
     public static final MamaMdDataType USAGE_LOG = new MamaMdDataType
-                             (valueToString (USAGE_LOG_VALUE), USAGE_LOG_VALUE);                         
+                             (valueToString (USAGE_LOG_VALUE), USAGE_LOG_VALUE);
 
     public static final int            NEWS_QUERY_VALUE = 6;
     public static final MamaMdDataType NEWS_QUERY = new MamaMdDataType
-                             (valueToString (NEWS_QUERY_VALUE), NEWS_QUERY_VALUE);                         
+                             (valueToString (NEWS_QUERY_VALUE), NEWS_QUERY_VALUE);
 
     public static final int            TEMPLATE_VALUE = 7;
     public static final MamaMdDataType TEMPLATE = new MamaMdDataType
-                             (valueToString (TEMPLATE_VALUE), TEMPLATE_VALUE);                         
+                             (valueToString (TEMPLATE_VALUE), TEMPLATE_VALUE);
     /* No publicly created instances allowed */
-    private MamaMdDataType (String name, int value) 
+    private MamaMdDataType (String name, int value)
     {
         myStringValue = name;
         myValue       = value;
     }
-   
+
     /**
      * Returns the stringified name for the enumerated type.
      *
@@ -122,15 +122,15 @@ public final class MamaMdDataType
             case NEWS_STORY_VALUE:
                 return "NEWS_STORY";
             case WORLDVIEW_VALUE:
-                return "WORLDVIEW";    
+                return "WORLDVIEW";
             case PROPERTY_VALUE:
-                return "PROPERTY";    
+                return "PROPERTY";
             case USAGE_LOG_VALUE:
-                return "USAGE_LOG";    
+                return "USAGE_LOG";
             case NEWS_QUERY_VALUE:
-                return "NEWS_QUERY";    
+                return "NEWS_QUERY";
             case TEMPLATE_VALUE:
-                return "TEMPLATE";    
+                return "TEMPLATE";
             default:
                 return "UNKNOWN";
         }
@@ -155,15 +155,15 @@ public final class MamaMdDataType
             case NEWS_STORY_VALUE:
                 return NEWS_STORY;
             case WORLDVIEW_VALUE:
-                return WORLDVIEW;    
+                return WORLDVIEW;
             case PROPERTY_VALUE:
-                return PROPERTY;    
+                return PROPERTY;
             case USAGE_LOG_VALUE:
-                return USAGE_LOG;    
+                return USAGE_LOG;
             case NEWS_QUERY_VALUE:
-                return NEWS_QUERY;    
+                return NEWS_QUERY;
             case TEMPLATE_VALUE:
-                return TEMPLATE;    
+                return TEMPLATE;
             default:
                 return null;
         }

@@ -41,4 +41,4 @@ LDADD     = -lmama -lpthread -lm -lwombatcommon -ldl
 
 bin_PROGRAMS = mamachurnc
 
-nodist_mamachurnc_SOURCES=mamachurnc.c
+nodist_mamachurnc_SOURCES = mamachurnc.c

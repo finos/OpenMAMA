@@ -47,9 +47,9 @@ public static string toString(short tradeSide)
     switch (tradeSide)
     {
     case (short)mamdaTradeSide.TRADE_SIDE_BUY:    return TRADE_SIDE_BUY_STR;
-    case (short)mamdaTradeSide.TRADE_SIDE_SELL:   return TRADE_SIDE_SELL_STR;   
+    case (short)mamdaTradeSide.TRADE_SIDE_SELL:   return TRADE_SIDE_SELL_STR;
     case (short)mamdaTradeSide.TRADE_SIDE_UNKNOWN: return TRADE_SIDE_UNKNOWN_STR;
-    } 
+    }
     return TRADE_SIDE_UNKNOWN_STR;
 }
 
@@ -63,16 +63,16 @@ public static MamdaTradeSide.mamdaTradeSide mamdaTradeSideFromString (string  tr
     if (String.Compare(tradeSide,TRADE_SIDE_BUY_STR,false) == 0)
         return mamdaTradeSide.TRADE_SIDE_BUY;
     if (String.Compare(tradeSide,TRADE_SIDE_SELL_STR,false) == 0)
-        return mamdaTradeSide.TRADE_SIDE_SELL;    
+        return mamdaTradeSide.TRADE_SIDE_SELL;
     if (String.Compare(tradeSide,TRADE_SIDE_UNKNOWN_STR,false) == 0)
-        return mamdaTradeSide.TRADE_SIDE_UNKNOWN;    
-         
+        return mamdaTradeSide.TRADE_SIDE_UNKNOWN;
+
     if (String.Compare(tradeSide,"0",false) == 0)
         return mamdaTradeSide.TRADE_SIDE_UNKNOWN;
     if (String.Compare(tradeSide,"1",false) == 0)
         return mamdaTradeSide.TRADE_SIDE_BUY;
     if (String.Compare(tradeSide,"2",false) == 0)
-        return mamdaTradeSide.TRADE_SIDE_SELL;  
+        return mamdaTradeSide.TRADE_SIDE_SELL;
     return mamdaTradeSide.TRADE_SIDE_UNKNOWN;
 }
 

@@ -82,7 +82,7 @@ JNIEnv* utils_getENV(JavaVM* jvm)
             return NULL;
         }
     }
-    
+
     return env;
 }
 
@@ -94,7 +94,7 @@ void utils_throwExceptionForMamaStatus (
     switch (status)
     {
         case MAMA_STATUS_NOT_FOUND:
-            utils_throwMamaFieldNotFoundException (env,msg); 
+            utils_throwMamaFieldNotFoundException (env,msg);
             break;
         case MAMA_STATUS_NOT_ENTITLED:
             utils_throwMamaNotEntitledException (env,msg);
@@ -116,7 +116,7 @@ void utils_throwException(JNIEnv* env,const char* exceptionClass, const char* ms
     if(cls) (*env)->ThrowNew(env, cls, msg);
 
     (*env)->DeleteLocalRef(env,cls);
-    
+
     return;
 }
 
@@ -176,14 +176,14 @@ jobject utils_createJavaMamaMsg(JNIEnv* env)
 
     mamaMsgImplClass = (*env)->FindClass(env,"com/wombat/mama/MamaMsg");
     if (!mamaMsgImplClass) return NULL;
-    
+
     /*Create the message object*/
     javaMamaMsg = (*env)->NewObject(env, mamaMsgImplClass,
             messageConstructorId_g,JNI_FALSE);
-    
+
     /*Will have returned NULL if an exception was thrown*/
     (*env)->DeleteLocalRef(env, mamaMsgImplClass);
-       
+
     return javaMamaMsg;
 }
 
@@ -194,10 +194,10 @@ jobjectArray utils_getJniMsgArrayFromVectorMsg(JNIEnv* env, mamaMsg* msgVector,
     jobjectArray    result          =   NULL;
     jobject         messageImpl     =   NULL;
     int             i               =   0;
-    jclass          msgArrayClass   = 
+    jclass          msgArrayClass   =
                     (*env)->FindClass(env,"com/wombat/mama/MamaMsg");
     if(!msgArrayClass) return NULL;/*Exception auto thrown*/
-    
+
     /*Create the object array*/
     result = (*env)->NewObjectArray(env,vectorLength,msgArrayClass,NULL);
     if(!result)
@@ -205,7 +205,7 @@ jobjectArray utils_getJniMsgArrayFromVectorMsg(JNIEnv* env, mamaMsg* msgVector,
         (*env)->DeleteLocalRef(env, msgArrayClass);
         return NULL;
     }
-    
+
     for(i=0;i<vectorLength;i++)
     {
         /*Create new Java MamaMsg object*/
@@ -225,18 +225,18 @@ jobjectArray utils_getJniMsgArrayFromVectorMsg(JNIEnv* env, mamaMsg* msgVector,
 
 jobjectArray utils_getReusedJniMsgArrayFromVectorMsg(
                         JNIEnv* env, mamaMsg* msgVector, size_t vectorLength,
-                        jmethodID messageConstructorId, 
+                        jmethodID messageConstructorId,
                         jfieldID messagePointerFieldId, jobject** jMsgArray,
                         jint* jMsgArraySize)
 {
     jobjectArray    result           =  NULL;
     jint            i                =  0;
-    jobject         jMsg             =  NULL; 
-    jclass          msgClass         = 
+    jobject         jMsg             =  NULL;
+    jclass          msgClass         =
                     (*env)->FindClass(env,"com/wombat/mama/MamaMsg");
-    
+
     if(!msgClass) return NULL;/*Exception auto thrown*/
-    
+
     /*Create the object array*/
     result = (*env)->NewObjectArray(env,vectorLength,msgClass,NULL);
     if(!result)
@@ -244,22 +244,22 @@ jobjectArray utils_getReusedJniMsgArrayFromVectorMsg(
         (*env)->DeleteLocalRef(env, msgClass);
         return NULL;
     }
-    
-    utils_growJMsgArray (env, 
+
+    utils_growJMsgArray (env,
                         messageConstructorId,
-                        messagePointerFieldId, 
-                        jMsgArray, 
-                        jMsgArraySize, 
+                        messagePointerFieldId,
+                        jMsgArray,
+                        jMsgArraySize,
                         vectorLength,
                         msgVector);
-    
+
     for(;i<vectorLength;++i)
-    { 
+    {
         jobject jMsg = (*jMsgArray)[i];
-        
+
         (*env)->SetLongField(env, jMsg, messagePointerFieldId,
                              CAST_POINTER_TO_JLONG(msgVector[i]));
-      
+
         /*Add the msg to the new Java MamaMsg array*/
         (*env)->SetObjectArrayElement(env,result,i,jMsg);
     }
@@ -272,7 +272,7 @@ void utils_growJMsgArray (JNIEnv*   env,
                           jmethodID messageConstructorId,
                           jfieldID  messagePointerFieldId,
                           jobject** jMsgArray,
-                          jint*     currentSize,                         
+                          jint*     currentSize,
                           jint      vectorSize,
                           mamaMsg*  msgVector)
 {
@@ -280,43 +280,43 @@ void utils_growJMsgArray (JNIEnv*   env,
     jint    i                   = 0;
     jobject javaMamaMsg         = NULL;
     jclass  mamaMsgClass        = NULL;
-        
+
     if (*currentSize >= vectorSize)
         return;
     mamaMsgClass  = (*env)->FindClass(env,"com/wombat/mama/MamaMsg");
     if(!mamaMsgClass) return ;
-       
+
     newJMsgArray = malloc (vectorSize * sizeof (jobject*));
-    
-    /* Copy current elements */     
+
+    /* Copy current elements */
     for (; i < *currentSize; ++i)
     {
         newJMsgArray[i] = (*jMsgArray)[i];
-    }  
-    
+    }
+
     /* Create new elements. */
     for (; i < vectorSize; ++i)
     {
         /*Create new Java MamaMsg object*/
         javaMamaMsg = (*env)->NewObject(env, mamaMsgClass,
-                              messageConstructorId, JNI_FALSE);     
-        javaMamaMsg = (*env)->NewGlobalRef(env,javaMamaMsg); 
-        
+                              messageConstructorId, JNI_FALSE);
+        javaMamaMsg = (*env)->NewGlobalRef(env,javaMamaMsg);
+
         /* Note: We are taking advantage of the fact that Mama C reuses
-        arrays under the hood so we only need to set the C pointer once */                                          
+        arrays under the hood so we only need to set the C pointer once */
       /*  (*env)->SetLongField(env, javaMamaMsg, messagePointerFieldId,
                              CAST_POINTER_TO_JLONG(msgVector[i]));*/
         newJMsgArray[i] = javaMamaMsg;
     }
-    
-    if (*jMsgArray) 
+
+    if (*jMsgArray)
     {
-        free (*jMsgArray);  
+        free (*jMsgArray);
     }
-    
+
     *jMsgArray = newJMsgArray;
     *currentSize = vectorSize;
-}             
+}
 
 void utils_printAndClearExceptionFromStack(JNIEnv* env, const char* functName)
 {
@@ -324,7 +324,7 @@ void utils_printAndClearExceptionFromStack(JNIEnv* env, const char* functName)
 
     exc = (*env)->ExceptionOccurred(env);
     if(exc)
-    {        
+    {
 #if 0
         mama_log(MAMA_LOG_LEVEL_FINE,"%s(): Got exception"
                                      "on the stack: Clearing.",functName);

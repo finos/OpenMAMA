@@ -35,7 +35,7 @@ extern "C" {
  * This function will create an iterator to the given field cache and allocate all
  * associated memory. If this function succeeds then the iterator should be destroyed
  * by calling mamaFieldCacheIterator_destroy.
- * 
+ *
  * @param iterator (out) The iterator to create.
  * @param fieldCache (in) The cache to use to iterate.
  * @return Resulting status of the call which can be
@@ -51,7 +51,7 @@ mamaFieldCacheIterator_create(mamaFieldCacheIterator* iterator,
 /**
  * This function will destroy a field cache iterator previously allocated by a call
  * to mamaFieldCacheIterator_create.
- * 
+ *
  * @param iterator (in) The iterator to destroy.
  * @return Resulting status of the call which can be
  *      MAMA_STATUS_INVALID_ARG
@@ -65,7 +65,7 @@ mamaFieldCacheIterator_destroy(mamaFieldCacheIterator iterator);
 /**
  * This function will return the next field in the cache. If no other fields are
  * present it will return NULL.
- * 
+ *
  * @param iterator (in) The iterator to get the field from.
  * @return A mamaFieldCacheField pointing to the next field.
  */
@@ -76,7 +76,7 @@ mamaFieldCacheIterator_next(mamaFieldCacheIterator iterator);
 /**
  * This function will return a flag indicating if there are remaining fields to
  * iterate.
- * 
+ *
  * @param iterator (in) The iterator to check for other fields.
  * @return A flag indicating if there are other fields to iterate.
  */
@@ -87,7 +87,7 @@ mamaFieldCacheIterator_hasNext(mamaFieldCacheIterator iterator);
 /**
  * This function will return the first field in the cache. If the cache is empty,
  * a NULL field is returned.
- * 
+ *
  * @param iterator (in) The iterator to get the first field from.
  * @return The first field in cache.
  */

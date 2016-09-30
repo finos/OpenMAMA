@@ -202,7 +202,7 @@ mamaFieldCacheField_getPublish(mamaFieldCacheField field, mama_bool_t* publish);
 /**
  * This function will set the checkModifed flag of a <code>mamaFieldCacheField</code>.
  * If set to true, the field will be published only if modified.
- * 
+ *
  * @param field (in) The field.
  * @param check (in) The checkModified flag.
  * @return Resulting status of the call which can be
@@ -215,7 +215,7 @@ mamaFieldCacheField_setCheckModified(mamaFieldCacheField field, mama_bool_t chec
 
 /**
  * The function will get the checkModified flag of a <code>mamaFieldCacheField</code>.
- * 
+ *
  * @param field (in) The field.
  * @param check (out) The checkModified flag of the field.
  * @return Resulting status of the call which can be
@@ -698,7 +698,7 @@ mamaFieldCacheField_getDateTimeVector(const mamaFieldCacheField field,
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type BOOL.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -712,7 +712,7 @@ mamaFieldCacheField_setBool(mamaFieldCacheField field, mama_bool_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type CHAR.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -726,7 +726,7 @@ mamaFieldCacheField_setChar(mamaFieldCacheField field, char value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type I8.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -740,7 +740,7 @@ mamaFieldCacheField_setI8(mamaFieldCacheField field, mama_i8_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type U8.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -754,7 +754,7 @@ mamaFieldCacheField_setU8(mamaFieldCacheField field, mama_u8_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type I16.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -768,7 +768,7 @@ mamaFieldCacheField_setI16(mamaFieldCacheField field, mama_i16_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type U16.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -782,7 +782,7 @@ mamaFieldCacheField_setU16(mamaFieldCacheField field, mama_u16_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type I32.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -796,7 +796,7 @@ mamaFieldCacheField_setI32(mamaFieldCacheField field, mama_i32_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type U32.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -810,7 +810,7 @@ mamaFieldCacheField_setU32(mamaFieldCacheField field, mama_u32_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type I64.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -824,7 +824,7 @@ mamaFieldCacheField_setI64(mamaFieldCacheField field, mama_i64_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type U64.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -838,7 +838,7 @@ mamaFieldCacheField_setU64(mamaFieldCacheField field, mama_u64_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type F32.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -852,7 +852,7 @@ mamaFieldCacheField_setF32(mamaFieldCacheField field, mama_f32_t value);
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type F64.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -868,7 +868,7 @@ mamaFieldCacheField_setF64(mamaFieldCacheField field, mama_f64_t value);
  * This function will set the value of a <code>mamaFieldCacheField</code> of type STRING.
  * If parameter len is 0 then the length of the string is automatically computed
  * using <code>strlen</code>.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @param len (in) The length of the string. Can be 0.
@@ -885,7 +885,7 @@ mamaFieldCacheField_setString(const mamaFieldCacheField field,
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type PRICE.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -899,7 +899,7 @@ mamaFieldCacheField_setPrice(const mamaFieldCacheField field, const mamaPrice va
 
 /**
  * This function will set the value of a <code>mamaFieldCacheField</code> of type TIME.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -945,7 +945,7 @@ mamaFieldCacheField_setCharVector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type I8 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -961,7 +961,7 @@ mamaFieldCacheField_setI8Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type U8 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -977,7 +977,7 @@ mamaFieldCacheField_setU8Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type I16 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -993,7 +993,7 @@ mamaFieldCacheField_setI16Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type U16 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -1009,7 +1009,7 @@ mamaFieldCacheField_setU16Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type I32 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -1025,7 +1025,7 @@ mamaFieldCacheField_setI32Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type U32 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -1041,7 +1041,7 @@ mamaFieldCacheField_setU32Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type I64 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -1057,7 +1057,7 @@ mamaFieldCacheField_setI64Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type U64 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -1073,7 +1073,7 @@ mamaFieldCacheField_setU64Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type F32 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -1089,7 +1089,7 @@ mamaFieldCacheField_setF32Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type F64 vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -1105,7 +1105,7 @@ mamaFieldCacheField_setF64Vector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type STRING vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -1121,7 +1121,7 @@ mamaFieldCacheField_setStringVector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type PRICE vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be
@@ -1137,7 +1137,7 @@ mamaFieldCacheField_setPriceVector(const mamaFieldCacheField field,
 
 /**
  * This function will set the values of a <code>mamaFieldCacheField</code> of type TIME vector.
- * 
+ *
  * @param field (in) The field to set the value to.
  * @param value (in) The new value of the field.
  * @return Resulting status of the call which can be

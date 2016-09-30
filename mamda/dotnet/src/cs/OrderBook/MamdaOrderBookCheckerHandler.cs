@@ -24,9 +24,9 @@ using System;
 namespace Wombat
 {
 	/// <summary>
-	/// MamdaOrderBookCheckerHandler is an interface for applications 
+	/// MamdaOrderBookCheckerHandler is an interface for applications
 	/// that want to handle the results of the MamdaOrderBookChecker. Callback
-	/// interfaces are provided for correct and erroneous checks. 
+	/// interfaces are provided for correct and erroneous checks.
 	/// </summary>
 	public interface MamdaOrderBookCheckerHandler
 	{

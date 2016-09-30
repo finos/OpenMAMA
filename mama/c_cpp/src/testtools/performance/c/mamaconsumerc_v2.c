@@ -1293,10 +1293,10 @@ static void consumerShutdown (void)
 
     /*Transport*/
     fprintf (gFilep, "Shutdown: Destroying Transport\n");
-	
+
     for (i = 0; i < gNumTports; i++)
     {
-        
+
         if (gTransport[i] != NULL)
         {
             MAMA_CHECK (mamaTransport_destroy (gTransport[i]));
@@ -1475,7 +1475,7 @@ static void initializeMama (const char*     middleware)
     MAMA_CHECK (mama_loadBridge (&gMamaBridge, middleware));
     MAMA_CHECK (mama_open ());
     mama_getDefaultEventQueue (gMamaBridge, &gDefaultQueue);
-	
+
     for (i = 0; i < gNumTports; i++)
     {
 		MAMA_CHECK (mamaTransport_allocate (&gTransport[i]));
@@ -1495,8 +1495,8 @@ static void initializeMama (const char*     middleware)
         MAMA_CHECK (mamaTransport_setOutboundThrottle (gTransport[i],
                                                        MAMA_THROTTLE_DEFAULT,
                                                        -1));
-    }	
-	
+    }
+
     if (gNumTports == 1)
     {
         MAMA_CHECK (mamaTransport_create (gTransport[0], gTransportName, gMamaBridge));
@@ -1509,7 +1509,7 @@ static void initializeMama (const char*     middleware)
         {
             snprintf (currentTransport, 1024, "%s%.1d", gTransportName, i);
             MAMA_CHECK (mamaTransport_create (gTransport[i], currentTransport, gMamaBridge));
-        }				
+        }
     }
 
     setQueueMonitors (&gDefaultQueue);

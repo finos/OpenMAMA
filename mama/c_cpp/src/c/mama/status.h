@@ -130,7 +130,7 @@ typedef enum
     /* Unable to determine OS ID of account process is running under.*/
     MAMA_ENTITLE_STATUS_OS_LOGIN_ID_UNAVAILABLE         = 9005,
 
-    /* When an attempt is made to get entitlements after a successful attempt 
+    /* When an attempt is made to get entitlements after a successful attempt
      * has already been made */
     MAMA_ENTITLE_STATUS_ALREADY_ENTITLED                = 9006,
 
@@ -145,10 +145,10 @@ typedef enum
     /* No such host */
     MAMA_ENTITLE_HTTP_ERRHOST                           = 9010,
 
-    /* Can't create socket */      
+    /* Can't create socket */
     MAMA_ENTITLE_HTTP_ERRSOCK                           = 9011,
 
-    /* Can't connect to host */    
+    /* Can't connect to host */
     MAMA_ENTITLE_HTTP_ERRCONN                           = 9012,
 
     /* Write error on socket while writing header */
@@ -166,7 +166,7 @@ typedef enum
     /* Null data pointer */
     MAMA_ENTITLE_HTTP_ERRNULL                           = 9017,
 
-    /* No/Bad length in header */  
+    /* No/Bad length in header */
     MAMA_ENTITLE_HTTP_ERRNOLG                           = 9018,
 
     /* Can't allocate memory */
@@ -178,7 +178,7 @@ typedef enum
     /* Invalid url - must start with 'http://' */
     MAMA_ENTITLE_HTTP_ERRURLH                           = 9021,
 
-    /* Invalid port in url */      
+    /* Invalid port in url */
     MAMA_ENTITLE_HTTP_ERRURLP                           = 9022,
 
     /* Invalid QUERY HTTP RESULT 400 */
@@ -196,7 +196,7 @@ typedef enum
     /* Not Implemented HTTP RESULT 501 */
     MAMA_ENTITLE_HTTP_NO_IMPL                           = 9027,
 
-    /* Overloaded HTTP RESULT 503 */ 
+    /* Overloaded HTTP RESULT 503 */
     MAMA_ENTITLE_HTTP_OVERLOAD                          = 9028,
 
     /* No servers specified */
@@ -209,7 +209,7 @@ typedef enum
 } mama_status;
 
 MAMAExpDLL
-extern const char*     
+extern const char*
 mamaStatus_stringForStatus (mama_status status);
 
 #if defined(NDEBUG) && !defined(WITH_UNITTESTS)

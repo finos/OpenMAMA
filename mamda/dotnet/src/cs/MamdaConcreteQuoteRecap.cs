@@ -27,7 +27,7 @@ namespace Wombat
 	/// </summary>
 	public class MamdaConcreteQuoteRecap : MamdaQuoteRecap
 	{
-    
+
     	public MamdaConcreteQuoteRecap ()
 		{
 			mSymbol					= null;
@@ -67,7 +67,7 @@ namespace Wombat
 			mQuoteCount				= 0;
 			mShortSaleBidTick		= '\0';
             mShortSaleCircuitBreaker = ' ';
-            
+
             mAskTime				= DateTime.MinValue;
             mBidTime				= DateTime.MinValue;
             mAskIndicator			= null;
@@ -119,7 +119,7 @@ namespace Wombat
 			mQuoteCount            = 0;
 			mShortSaleBidTick      = '\0';
             mShortSaleCircuitBreaker = ' ';
-            
+
             mAskTime               = DateTime.MinValue;
             mBidTime               = DateTime.MinValue;
             mAskIndicator          = null;
@@ -129,7 +129,7 @@ namespace Wombat
             mAskYield              = 0;
             mBidYield              = 0;
 		}
-    
+
 		public void setSymbol(string symbol)
 		{
 				mSymbol = symbol;
@@ -148,7 +148,7 @@ namespace Wombat
         }
 
 		public void setPartId(string partId)
-		{  
+		{
             mPartId = partId;
 		}
 		public string getPartId()
@@ -485,7 +485,7 @@ namespace Wombat
 		public long getAskSize()
 		{
 			return (long) mAskSize;
-		} 
+		}
 
         /// <summary>Returns Field State, always MODIFIED
         /// </summary>
@@ -569,7 +569,7 @@ namespace Wombat
                 mAskPrevClosePrice.copy(askPrevClosePrice);
             else
                 mAskPrevClosePrice.clear();
-		} 
+		}
 		public MamaPrice getAskPrevClosePrice()
 		{
 			return mAskPrevClosePrice;
@@ -693,7 +693,7 @@ namespace Wombat
 
 		public void setQuoteQual(string quoteQualStr)
 		{
-			mQuoteQualStr = quoteQualStr; 
+			mQuoteQualStr = quoteQualStr;
 		}
 		public string  getQuoteQual()
 		{
@@ -776,7 +776,7 @@ namespace Wombat
 		{
 			mShortSaleBidTick = shortSaleBidTick;
 		}
-    
+
         public char getShortSaleCircuitBreaker()
         {
             return mShortSaleCircuitBreaker;
@@ -793,52 +793,52 @@ namespace Wombat
         public void setShortSaleCircuitBreaker(char shortSaleCircuitBreaker)
         {
             mShortSaleCircuitBreaker = shortSaleCircuitBreaker;
-        }        
+        }
 
 		public void setAskTime (DateTime askTime)
 		{
 				mAskTime = askTime;
 		}
-	    
+
 		public void setBidTime (DateTime bidTime)
 		{
 				mBidTime = bidTime;
 		}
-	    
+
 		public void setAskIndicator (string askIndicator)
 		{
 
 			mAskIndicator = askIndicator;
 		}
-	    
+
 		public void setBidIndicator (string bidIndicator)
 		{
 
 			mBidIndicator = bidIndicator;
 		}
-	    
+
 		public void setAskUpdateCount (long askUpdateCount)
 		{
 			mAskUpdateCount = askUpdateCount;
 		}
-	    
+
 		public void setBidUpdateCount (long bidUpdateCount)
 		{
 			mBidUpdateCount = bidUpdateCount;
 		}
-	    
+
 		public void setAskYield (double askYield)
 		{
 			mAskYield = askYield;
 		}
-	    
+
 		public void setBidYield (double bidYield)
 		{
 			mBidYield = bidYield;
 		}
-	    
-	    
-		public DateTime getAskTime () 
+
+
+		public DateTime getAskTime ()
 		{
 			return mAskTime;
 		}
@@ -851,7 +851,7 @@ namespace Wombat
 		return MamdaFieldState.MODIFIED;
 		}
 
-		public DateTime getBidTime () 
+		public DateTime getBidTime ()
 		{
 			return mBidTime;
 		}
@@ -890,7 +890,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
 		}
 
-		public long getAskUpdateCount () 
+		public long getAskUpdateCount ()
 		{
 			return mAskUpdateCount;
 		}
@@ -903,7 +903,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
 		}
 
-		public long getBidUpdateCount () 
+		public long getBidUpdateCount ()
 		{
 			return mBidUpdateCount;
 		}
@@ -916,7 +916,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
 		}
 
-		public double getAskYield () 
+		public double getAskYield ()
 		{
 			return mAskYield;
 		}
@@ -929,7 +929,7 @@ namespace Wombat
 			return MamdaFieldState.MODIFIED;
 		}
 
-		public double getBidYield () 
+		public double getBidYield ()
 		{
 			return mBidYield;
 		}
@@ -990,4 +990,3 @@ namespace Wombat
         private double          mBidYield;
 	}
 }
-

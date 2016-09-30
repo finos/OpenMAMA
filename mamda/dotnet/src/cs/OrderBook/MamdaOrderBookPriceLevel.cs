@@ -440,7 +440,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public bool hasTime()
@@ -480,7 +480,7 @@ namespace Wombat
 				throwError("action not equal");
 			if (mTime != rhs.mTime)
 				throwError ("time not equal");
-          
+
 			if (mEntries.Count != rhs.mEntries.Count)
 			{
 				throwError ("entries size mismatch (" + mEntries.Count +

@@ -5,7 +5,7 @@ import posixpath
 import platform
 
 import sys
-reload(sys)  
+reload(sys)
 sys.setdefaultencoding('utf8')
 
 from custom_builders import install_dotnet_library
@@ -166,7 +166,7 @@ src\\testtools\load\MamaChurn\AssemblyInfo.cs
 src\\testtools\load\MamaChurn\MamaChurnCS.cs""")
 examples['MamaChurnCS'] = {}
 examples['MamaChurnCS']['sources'] = mamachurn_sources
-examples['MamaChurnCS']['project'] = 'src\\testtools\load\MamaChurn\MamaChurnCS.csproj' 
+examples['MamaChurnCS']['project'] = 'src\\testtools\load\MamaChurn\MamaChurnCS.csproj'
 
 mamaio_sources = Split("""
 src\examples\MamaIo\AssemblyInfo.cs

@@ -11,18 +11,18 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
 
 #ifdef APSTUDIO_INVOKED
 
-1 TEXTINCLUDE DISCARDABLE 
+1 TEXTINCLUDE DISCARDABLE
 BEGIN
     "resource.h\0"
 END
 
-2 TEXTINCLUDE DISCARDABLE 
+2 TEXTINCLUDE DISCARDABLE
 BEGIN
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE DISCARDABLE 
+3 TEXTINCLUDE DISCARDABLE
 BEGIN
     "\r\n"
     "\0"
@@ -56,7 +56,7 @@ BEGIN
             VALUE "FileDescription", "MAMA API CPP"
             VALUE "FileVersion", RC_VERSION_STRING
             VALUE "InternalName", "MAMACPP"
-            VALUE "LegalCopyright", "Copyright © 2012 NYSE Technologies"
+            VALUE "LegalCopyright", "Copyright ï¿½ 2012 NYSE Technologies"
             VALUE "LegalTrademarks", "\0"
             VALUE "OriginalFilename", RC_CPP_DLL_NAME
             VALUE "PrivateBuild", "\0"
@@ -74,4 +74,3 @@ END
 
 #ifndef APSTUDIO_INVOKED
 #endif    // not APSTUDIO_INVOKED
-

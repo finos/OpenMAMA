@@ -68,7 +68,7 @@ namespace Wombat
 		{
 			return mSymbol;
 		}
-        
+
    		/// <summary>
 		/// </summary>
 		/// <param name="symbol">The order book subscription symbol.</param>
@@ -191,7 +191,7 @@ namespace Wombat
 		{
 			clear();
 			determineDiffs(mBidLevels, lhs.mBidLevels, rhs.mBidLevels, false);
-			determineDiffs(mAskLevels, lhs.mAskLevels, rhs.mAskLevels, true); 
+			determineDiffs(mAskLevels, lhs.mAskLevels, rhs.mAskLevels, true);
 		}
 
 		/// <summary>
@@ -328,7 +328,7 @@ namespace Wombat
 		/// </summary>
 		/// <param name="strict"></param>
 		public static void setStrictChecking(bool strict)
-		{   
+		{
 			MamdaOrderBookPriceLevel.setStrictChecking(strict);
 			MamdaOrderBookEntry.setStrictChecking(strict);
 		}
@@ -345,7 +345,7 @@ namespace Wombat
 					case MamdaOrderBookPriceLevel.Actions.Add:
 						addLevel(deltaLevel);
 						break;
-					case MamdaOrderBookPriceLevel.Actions.Update: 
+					case MamdaOrderBookPriceLevel.Actions.Update:
 						updateLevel(deltaLevel);
 						break;
 					case MamdaOrderBookPriceLevel.Actions.Delete:
@@ -366,7 +366,7 @@ namespace Wombat
 					case MamdaOrderBookPriceLevel.Actions.Add:
 						addLevel(level);
 						break;
-					case MamdaOrderBookPriceLevel.Actions.Update: 
+					case MamdaOrderBookPriceLevel.Actions.Update:
 						updateLevel(level);
 						break;
 					case MamdaOrderBookPriceLevel.Actions.Delete:
@@ -392,7 +392,7 @@ namespace Wombat
 
 			while (lhsEnum.MoveNext() && rhsEnum.MoveNext())
 			{
-				MamdaOrderBookPriceLevel lhsLevel = 
+				MamdaOrderBookPriceLevel lhsLevel =
 					(MamdaOrderBookPriceLevel)lhsEnum.Current;
 				MamdaOrderBookPriceLevel rhsLevel =
 					(MamdaOrderBookPriceLevel)rhsEnum.Current;
@@ -411,7 +411,7 @@ namespace Wombat
 				level.getAction(),
 				level.getNumEntries(),
 				level.hasTime() ? level.getTime().ToString() : "null");
-	                
+
 			foreach (MamdaOrderBookEntry entry in level)
 			{
 				writer.WriteLine("      |    id={0} size={1} action={2} time={3}",

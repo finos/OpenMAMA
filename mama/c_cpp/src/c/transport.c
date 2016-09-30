@@ -179,7 +179,7 @@ typedef struct transportImpl_
 
     uint8_t                 mInternal;
     uint8_t                 mDisableDisconnectCb;
-    preInitialScheme         mPreInitialScheme;
+    preInitialScheme        mPreInitialScheme;
     mama_bool_t             mPreRecapCacheEnabled;
     void*                   mClosure;
     mamaEntitlementBridge   mEntitlementBridge;
@@ -197,9 +197,9 @@ init (transportImpl* transport, int createResponder)
     self->mCause         = 0;
     self->mPlatformInfo  = NULL;
     self->mTopicPlatformInfo = NULL;
-    self->mPreInitialScheme = PRE_INITIAL_SCHEME_ON_GAP;
-    self->mDQStratScheme    = DQ_SCHEME_DELIVER_ALL;
-    self->mFTStratScheme    = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
+    self->mPreInitialScheme  = PRE_INITIAL_SCHEME_ON_GAP;
+    self->mDQStratScheme     = DQ_SCHEME_DELIVER_ALL;
+    self->mFTStratScheme     = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
 
     self->mClosure          = NULL;
 
@@ -481,7 +481,7 @@ static void enablePreRecapCache (mamaTransport transport, const char* middleware
 
     mama_log (MAMA_LOG_LEVEL_NORMAL,
               "%s: Pre-Recap cache %s", self->mName, self->mPreRecapCacheEnabled ? "enabled" : "disabled");
-}    
+}
 void mamaTransport_disableRefresh(mamaTransport transport, uint8_t disable)
 {
     self->mDisableRefresh=disable;
@@ -922,7 +922,7 @@ mamaTransport_create (mamaTransport transport,
         propValue = properties_Get (mamaInternal_getProperties (), propNameBuf);
         if (NULL != propValue)
         {
-            mama_log(MAMA_LOG_LEVEL_FINE, 
+            mama_log(MAMA_LOG_LEVEL_FINE,
                      "mamaTransport_create(): got property: %s = %s",
                      propNameBuf,
                      propValue);
@@ -930,7 +930,7 @@ mamaTransport_create (mamaTransport transport,
         }
         else
         {
-            mama_log(MAMA_LOG_LEVEL_WARN, 
+            mama_log(MAMA_LOG_LEVEL_WARN,
                      "mamaTransport_create(): No entitlement bridge specified for transport %s. Defaulting to %s.",
                      self->mName,
                      gEntitlementBridges[0]);
@@ -940,12 +940,12 @@ mamaTransport_create (mamaTransport transport,
         status = mamaInternal_getEntitlementBridgeByName(&self->mEntitlementBridge, entBridgeName);
         if (MAMA_STATUS_OK != status)
         {
-            mama_log(MAMA_LOG_LEVEL_ERROR, 
+            mama_log(MAMA_LOG_LEVEL_ERROR,
                      "mamaTransport_create(): Could not set entitlement bridge for transport %s.",
                      self->mName);
             return MAMA_STATUS_NO_BRIDGE_IMPL;
         }
-        mama_log(MAMA_LOG_LEVEL_FINE, 
+        mama_log(MAMA_LOG_LEVEL_FINE,
                  "mamaTransport_create(): Entitlement bridge set to %s [%s].",
                  entBridgeName,
                  self->mName);
@@ -1684,7 +1684,7 @@ mamaTransport_addSubscription (mamaTransport    transport,
     if (self->mRefreshTransport)
         refreshTransport_addSubscription (self->mRefreshTransport, handle);
     else
-        list_push_back (self->mListeners, handle);    
+        list_push_back (self->mListeners, handle);
 
     return MAMA_STATUS_OK;
 }
@@ -2019,7 +2019,7 @@ mamaTransportImpl_getTopicsAndTypesForSource (mamaTransport transport,
     if (self->mRefreshTransport)
         size = refreshTransport_numListeners (self->mRefreshTransport);
     else
-        size = list_size (self->mListeners); 
+        size = list_size (self->mListeners);
 
     closure.topics =
         (const char**) calloc (sizeof (char*), size);
@@ -2708,7 +2708,7 @@ mamaTransport_setClosure (mamaTransport transport, void* closure)
 mama_status
 mamaTransport_getClosure (mamaTransport transport, void** closure)
 {
-    if ((!self) || (!closure)) 
+    if ((!self) || (!closure))
         return MAMA_STATUS_NULL_ARG;
 
     *closure = self->mClosure;

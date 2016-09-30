@@ -128,7 +128,7 @@ namespace Wombat
         mImpl.mGotExpireDate = true;
     }
 
-    void MamdaOptionContract::setStrikePrice 
+    void MamdaOptionContract::setStrikePrice
         (double  strikePrice)
     {
         mImpl.mStrikePrice    = strikePrice;

@@ -32,7 +32,7 @@ namespace Wombat
 
     const char* toString (MamdaUncrossPriceInd  uncrossPriceInd)
     {
-        switch (uncrossPriceInd) 
+        switch (uncrossPriceInd)
         {
             case UNCROSS_NONE:              return UNCROSS_NONE_STR;
             case UNCROSS_INDICATIVE:        return UNCROSS_INDICATIVE_STR;

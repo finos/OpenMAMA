@@ -20,7 +20,7 @@
  */
 
 #ifndef MamdaSecStatusRecapH
-#define MamdaSecStatusRecapH 
+#define MamdaSecStatusRecapH
 
 #include <mamda/MamdaConfig.h>
 #include <mamda/MamdaBasicRecap.h>
@@ -32,8 +32,8 @@ namespace Wombat
 {
 
     /**
-     * MamdaSecStatus is an interface that provides access to the 
-     * Security Status fields such as symbol announce messages.  
+     * MamdaSecStatus is an interface that provides access to the
+     * Security Status fields such as symbol announce messages.
      */
 
     class MAMDAExpDLL MamdaSecStatusRecap : public MamdaBasicRecap
@@ -64,13 +64,13 @@ namespace Wombat
         virtual const char*  getReason() const = 0;
 
         /**
-         *   @return The reason field state 
+         *   @return The reason field state
          */
-        virtual MamdaFieldState  getReasonFieldState() const = 0;   
-        
+        virtual MamdaFieldState  getReasonFieldState() const = 0;
+
         /**
          * get the ShortSaleCircuitBreaker
-         * @return ShortSaleCircuitBreaker 
+         * @return ShortSaleCircuitBreaker
          * <ul>
          *   <li>return values:</li>
          *   <li>Blank: Short Sale Restriction Not in Effect.</li>
@@ -78,15 +78,15 @@ namespace Wombat
          *   <li>C: Short Sale Restriction Continued.</li>
          *   <li>D: Sale Restriction Deactivated.</li>
          *   <li>E: Sale Restriction in Effect.</li>
-         * </ul>    
-         */    
+         * </ul>
+         */
         virtual char  getShortSaleCircuitBreaker() const = 0;
-        
+
         /**
          * @return The ShortSaleCircuitBreaker Field State.
          */
         virtual MamdaFieldState  getShortSaleCircuitBreakerFieldState() const = 0;
-        
+
         /**
          * Action related to this security.
          * <ul>
@@ -98,7 +98,7 @@ namespace Wombat
         virtual char  getSecurityAction() const = 0;
 
         /**
-         * @return The security action field state 
+         * @return The security action field state
          */
         virtual MamdaFieldState  getSecurityActionFieldState() const = 0;
 
@@ -115,16 +115,16 @@ namespace Wombat
         virtual const char*  getSecurityType() const = 0;
 
         /**
-         * The security type field state 
-         * @return The security type field state 
+         * The security type field state
+         * @return The security type field state
          */
         virtual MamdaFieldState  getSecurityTypeFieldState() const = 0;
 
         /**
          * Deprecated.
          *
-         * Use getSecurityStatusEnum() to return the security status as an enumerated value, 
-         * or getSecurityStatusStr() to retrun it is a const char*. 
+         * Use getSecurityStatusEnum() to return the security status as an enumerated value,
+         * or getSecurityStatusStr() to retrun it is a const char*.
          */
         virtual const char*  getSecurityStatus() const = 0;
 
@@ -175,20 +175,20 @@ namespace Wombat
          *   <li>Unknown : Security status is currently unknown.</li>
          * </ul>
          *
-         * @return The normalized security status. 
+         * @return The normalized security status.
          */
         virtual const char*  getSecurityStatusStr() const = 0;
-        
+
         /**
-         * @return The normalized security status field state. 
+         * @return The normalized security status field state.
          */
         virtual MamdaFieldState  getSecurityStatusStrFieldState() const = 0;
 
         /**
          * Deprecated.
          *
-         * Use getSecurityStatusQualifierEnum() to return the security status qualifier 
-         * as an enumerated value, or getSecurityStatusQualifierStr() to retrun it is a const char*. 
+         * Use getSecurityStatusQualifierEnum() to return the security status qualifier
+         * as an enumerated value, or getSecurityStatusQualifierStr() to retrun it is a const char*.
          */
         virtual const char*  getSecurityStatusQual() const = 0;
 
@@ -292,7 +292,7 @@ namespace Wombat
         virtual MamdaSecurityStatusQual  getSecurityStatusQualifierEnum() const = 0;
 
         /**
-         * @return The normalized security status qualifier field state 
+         * @return The normalized security status qualifier field state
          */
         virtual MamdaFieldState  getSecurityStatusQualifierEnumFieldState() const = 0;
 
@@ -395,25 +395,25 @@ namespace Wombat
          *   <li>IPO : Upcoming IPO issue not yet trading.</li>
          * </ul>
          *
-         * @return The normalized security status qualifier. 
+         * @return The normalized security status qualifier.
          */
         virtual const char*  getSecurityStatusQualStr() const = 0;
 
         /**
-         * @return The normalized security status qualifier field state. 
+         * @return The normalized security status qualifier field state.
          */
         virtual MamdaFieldState  getSecurityStatusQualStrFieldState() const = 0;
 
         /**
          * Original "security status" field sent by the feed.
-         * NYSE Technologies also sends normalized security status. 
-         * 
+         * NYSE Technologies also sends normalized security status.
+         *
          * @return The exchange provided security status.
          * @see getSecurityStatus()
          */
         virtual const char*  getSecurityStatusNative() const = 0;
 
-        /** 
+        /**
          * @return The exchange provided security status field state.
          */
         virtual MamdaFieldState  getSecurityStatusNativeFieldState() const = 0;
@@ -424,12 +424,12 @@ namespace Wombat
          * @return Free text associated with the security status change.
          */
         virtual const char*  getFreeText() const = 0;
-        
+
         /**
          * @return Free text associated with the security status change field state.
          */
         virtual MamdaFieldState  getFreeTextFieldState() const = 0;
-        
+
         /**
          * Limit Up Limit Down Indicator
          *

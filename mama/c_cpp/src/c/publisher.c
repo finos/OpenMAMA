@@ -181,7 +181,7 @@ _createByIndex (mamaPublisher*              result,
                                     symbol,                 /* topic */
                                     source,
                                     root,
-                                    (mamaPublisher)impl)))) 
+                                    (mamaPublisher)impl))))
     {
         mamaPublisherImpl_cleanup (impl);
         return status;
@@ -347,7 +347,7 @@ mamaPublisher_send (mamaPublisher publisher,
                     mamaMsg       msg)
 {
     mamaPublisherImpl* impl     = (mamaPublisherImpl*)publisher;
-    mama_status        status; 
+    mama_status        status;
     mamaStatsCollector tportStatsCollector = NULL;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
@@ -390,7 +390,7 @@ mamaPublisher_sendFromInbox (mamaPublisher  publisher,
                              mamaMsg        msg)
 {
     mamaPublisherImpl* impl     = (mamaPublisherImpl*)publisher;
-    mama_status        status; 
+    mama_status        status;
     mamaStatsCollector tportStatsCollector = NULL;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
@@ -426,7 +426,7 @@ mamaPublisherImpl_sendFromInboxByIndex (mamaPublisher  publisher,
                                         mamaMsg        msg)
 {
     mamaPublisherImpl* impl     = (mamaPublisherImpl*)publisher;
-    mama_status        status; 
+    mama_status        status;
     mamaStatsCollector tportStatsCollector = NULL;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
@@ -463,7 +463,7 @@ mamaPublisher_sendReplyToInboxHandle (mamaPublisher publisher,
 {
     mamaPublisherImpl*  impl        = (mamaPublisherImpl*)publisher;
     mamaMsgReplyImpl*   replyStruct = ( mamaMsgReplyImpl *)replyAddress;
-    mama_status         status; 
+    mama_status         status;
     mamaStatsCollector tportStatsCollector = NULL;
 
 
@@ -514,7 +514,7 @@ mamaPublisher_sendReplyToInbox (mamaPublisher publisher,
                                 mamaMsg       reply)
 {
     mamaPublisherImpl* impl     = (mamaPublisherImpl*)publisher;
-    mama_status         status; 
+    mama_status         status;
     mamaStatsCollector tportStatsCollector = NULL;
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
@@ -916,7 +916,7 @@ static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
 
     /* Set the state to be deleted to at least show in the log that it has been completely removed. */
     mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_DESTROYING);
-                
+
     mamaTransport_removePublisher(impl->mTport, impl->mTransportHandle);
 
     if (!impl->mMamaPublisherBridgeImpl)

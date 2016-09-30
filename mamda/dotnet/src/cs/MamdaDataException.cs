@@ -61,7 +61,7 @@ namespace Wombat
 		/// </summary>
 		/// <param name="info"></param>
 		/// <param name="context"></param>
-		protected MamdaDataException(SerializationInfo info, StreamingContext context) : 
+		protected MamdaDataException(SerializationInfo info, StreamingContext context) :
 			base(info, context)
 		{
 		}

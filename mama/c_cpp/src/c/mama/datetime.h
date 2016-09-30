@@ -30,7 +30,6 @@
 #define MamaDateTimeH__
 
 
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -495,10 +494,10 @@ mamaDateTime_getEpochTime(const mamaDateTime     dateTime,
                           mama_u32_t*            seconds,
                           mama_u32_t*            microseconds,
                           mamaDateTimePrecision* precision);
-    
+
 /**
  * Get the date and time as seconds and microseconds since the Epoch
- * in the timezone supplied. 
+ * in the timezone supplied.
  *
  * @param dateTime The dateTime to set.
  * @param seconds  The number of seconds since the Epoch.
@@ -544,7 +543,7 @@ extern mama_status
 mamaDateTime_getEpochTimeMicrosecondsWithTz(const mamaDateTime dateTime,
                                             mama_u64_t*        microseconds,
                                             const mamaTimeZone tz);
-    
+
 /**
  * Get the date and time as milliseconds since the Epoch (UTC time
  * zone).
@@ -558,19 +557,19 @@ mamaDateTime_getEpochTimeMilliseconds(const mamaDateTime dateTime,
                                       mama_u64_t*        milliseconds);
 
 /**
- * Get the date and time as milliseconds since the Epoch in the 
+ * Get the date and time as milliseconds since the Epoch in the
  * timezone supplied.
  *
  * @param dateTime The dateTime to set.
  * @param milliseconds  The number of milliseconds since the Epoch.
- * @param tz The timezone for the returned values. 
+ * @param tz The timezone for the returned values.
  */
 MAMAExpDLL
 extern mama_status
 mamaDateTime_getEpochTimeMillisecondsWithTz(const mamaDateTime dateTime,
                                             mama_u64_t*        milliseconds,
                                             const mamaTimeZone tz);
-    
+
 /**
  * Get the date and time as seconds since the Epoch (UTC time
  * zone).
@@ -584,7 +583,7 @@ mamaDateTime_getEpochTimeSeconds(const mamaDateTime dateTime,
                                  mama_f64_t*        seconds);
 
 /**
- * Get the date and time as seconds since the Epoch, (using the UTC timezone). 
+ * Get the date and time as seconds since the Epoch, (using the UTC timezone).
  * If no date value is contained in the dateTime then it will be set to today's date
  * and the calculation made.
  *
@@ -602,20 +601,20 @@ mamaDateTime_getEpochTimeSecondsWithCheck(const mamaDateTime dateTime,
                                           mama_f64_t*        seconds);
 
 /**
- * Get the date and time as seconds since the Epoch in the 
+ * Get the date and time as seconds since the Epoch in the
  * timezone supplied.
  *
  * @param dateTime The dateTime to set
  * @param seconds The number of seconds (including partial seconds) since the
  * Epoch.
- * @param tz The timezone for the returned values. 
+ * @param tz The timezone for the returned values.
  */
 MAMAExpDLL
 extern mama_status
 mamaDateTime_getEpochTimeSecondsWithTz(const mamaDateTime dateTime,
                                        mama_f64_t*        seconds,
                                        const mamaTimeZone tz);
-    
+
 /**
  * Get the date and/or time with special, optional hints to indicate
  * whether the date/time includes date information, time information
@@ -652,14 +651,14 @@ mamaDateTime_getStructTimeVal(const mamaDateTime dateTime,
  *
  * @param dateTime The dateTime to set.
  * @param result   The struct timeval to fill in.
- * @param tz The timezone for the returned values. 
+ * @param tz The timezone for the returned values.
  */
 MAMAExpDLL
 extern mama_status
 mamaDateTime_getStructTimeValWithTz(const mamaDateTime dateTime,
                                     struct timeval*    result,
                                     const mamaTimeZone tz);
-    
+
 /**
  * Get the date/time as a "struct tm".
  *
@@ -676,15 +675,15 @@ mamaDateTime_getStructTm(const mamaDateTime dateTime,
  *
  * @param dateTime The dateTime to set.
  * @param result   The struct timeval to fill in.
- * @param tz The timezone for the returned values. 
- 
+ * @param tz The timezone for the returned values.
+
  */
 MAMAExpDLL
 extern mama_status
 mamaDateTime_getStructTmWithTz(const mamaDateTime dateTime,
                                struct tm*         result,
                                const mamaTimeZone tz);
-    
+
 /**
  * Get the date and/or time as a string.  If no date information is
  * available, no date is printed in the resulting string.  The format
@@ -749,9 +748,9 @@ mamaDateTime_getDateAsString(const mamaDateTime dateTime,
  * (%Y, %m, %d, %F, %T, %Y, %H, %M, %S, %B, %b, %h, ), with the
  * additional format strings, "%:" and "%;", which represents the
  * number of subseconds in millis. "%;" includes the dot and only prints the
- * subseconds if they are non-zero. "%:" does not include the dot, and 
- * prints "000" for 0 milliseconds. "%." and "%," are identical to "%:" and "%;" 
- * except they use the internal precision field to determine how many decimal 
+ * subseconds if they are non-zero. "%:" does not include the dot, and
+ * prints "000" for 0 milliseconds. "%." and "%," are identical to "%:" and "%;"
+ * except they use the internal precision field to determine how many decimal
  * places to print.
  *
  *
@@ -774,9 +773,9 @@ mamaDateTime_getAsFormattedString(const mamaDateTime dateTime,
  * (%Y, %m, %d, %F, %T, %Y, %H, %M, %S, %B, %b, %h, ), with the
  * additional format strings, "%:" and "%;", which represents the
  * number of subseconds in millis. "%;" includes the dot and only prints the
- * subseconds if they are non-zero. "%:" does not include the dot, and 
- * prints "000" for 0 milliseconds. "%." and "%," are identical to "%:" and "%;" 
- * except they use the internal precision field to determine how many decimal 
+ * subseconds if they are non-zero. "%:" does not include the dot, and
+ * prints "000" for 0 milliseconds. "%." and "%," are identical to "%:" and "%;"
+ * except they use the internal precision field to determine how many decimal
  * places to print.
  *
  * @param dateTime      The dateTime to set.

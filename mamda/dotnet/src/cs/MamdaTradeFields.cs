@@ -260,7 +260,7 @@ namespace Wombat
         {
             return mInitialised;
         }
-        
+
         public static void reset ()
         {
           if (MamdaCommonFields.isSet())
@@ -456,12 +456,11 @@ namespace Wombat
         public static MamaFieldDescriptor  CURRENCY_CODE          = null;
         public static MamaFieldDescriptor  CONFLATE_COUNT         = null;
 
-        public static MamaFieldDescriptor  SHORT_SALE_CIRCUIT_BREAKER = null; 
-        public static MamaFieldDescriptor  ORIG_SHORT_SALE_CIRCUIT_BREAKER = null; 
+        public static MamaFieldDescriptor  SHORT_SALE_CIRCUIT_BREAKER = null;
+        public static MamaFieldDescriptor  ORIG_SHORT_SALE_CIRCUIT_BREAKER = null;
         public static MamaFieldDescriptor  CORR_SHORT_SALE_CIRCUIT_BREAKER = null;
 
         public static int MAX_FID = 0;
         private static bool mInitialised = false;
     }
 }
-

@@ -25,7 +25,7 @@
 #include <mama/types.h>
 #include <mama/MamaSourceStateChangeCallback.h>
 
-namespace Wombat 
+namespace Wombat
 {
 
     class MamaSource;
@@ -61,21 +61,21 @@ namespace Wombat
         mama_u32_t         getWeight  (const char*  sourceName) const;
 
         mama_size_t        size       () const;
-        
+
         /**
         * Applications interested in event notifications can register
         * for events.
         * @param cb callback to register
         */
         void               registerStateChangeCallback   (MamaSourceStateChangeCallback& cb);
-        
+
         /**
         * Applications interested in event notifications can unregister
         * for events.
         * @param cb callback to unregister
         */
         void               unregisterStateChangeCallback (MamaSourceStateChangeCallback& cb);
-        
+
         /**
          * Re-evaluate the group by checking all of the relative weights
          * and changing the state of each MamaSource in the group as

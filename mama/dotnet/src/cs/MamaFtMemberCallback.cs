@@ -22,7 +22,7 @@
 namespace Wombat
 {
 	/// <summary>
-    /// Callback interface to receive notifications regarding 
+    /// Callback interface to receive notifications regarding
     /// Fault Tolerance events
 	/// </summary>
 	public interface MamaFtMemberCallback

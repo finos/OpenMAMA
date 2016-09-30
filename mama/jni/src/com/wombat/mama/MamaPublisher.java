@@ -156,7 +156,7 @@ public class MamaPublisher
     private native void _sendReplyToInboxWithThrottle (MamaMsg request, MamaMsg reply);
 
     private native void _sendFromInbox (MamaInbox inbox, MamaMsg msg);
-    
+
     private static native void initIDs();
 
     private void checkIsCreated(String invokingMethod)

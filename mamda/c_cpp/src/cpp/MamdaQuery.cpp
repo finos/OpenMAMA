@@ -43,45 +43,45 @@ namespace Wombat
     class MamdaQuery::QueryImpl
     {
     public:
-        QueryImpl  (); 
+        QueryImpl  ();
         ~QueryImpl () {};
-        
+
         void addCondition (MamdaQuery* query1);
         bool getXML       (char *restr);
         int  getDepth     ();
 
         vector <MamdaQuery*> mConditions;
     };
-     
+
     class MamdaQuery::QueryInfoImpl
     {
     public:
-        QueryInfoImpl  () {mSubsc = NULL;}; 
+        QueryInfoImpl  () {mSubsc = NULL;};
         ~QueryInfoImpl () {};
-        
+
         void               setSubscriptionInfo (MamdaSubscription* subscInfo);
         MamdaSubscription* getSubscriptionInfo ();
         MamdaSubscription* mSubsc;
     };
-     
-     
+
+
     class MamdaQuery::CondImpl
     {
     public:
-        CondImpl  (); 
+        CondImpl  ();
         ~CondImpl () {};
-        
+
         void setBool    (bool        val);
         void setInt     (int         val);
         void setDouble  (double      val);
         void setString  (const char* val);
         void setField   (const char* name);
         void setDate    (MamaDateTime& start, MamaDateTime& end);
-        
+
         bool addInt     (int         val);
         bool addDouble  (double      val);
         bool addString  (const char* val);
-        
+
         bool getXML     (char* restr);
         int  getDepth   ();
 
@@ -93,33 +93,33 @@ namespace Wombat
         double          startDate;
         double          endDate;
         char*           fieldName;
-        
+
         void                setSubscriptionInfo (MamdaSubscription* subscInfo);
         MamdaSubscription*  getSubscriptionInfo ();
         MamdaSubscription*  mSubsc;
     };
-     
-     
+
+
      MamdaQuery::MamdaQuery ()
         : mInfoImpl (*new QueryInfoImpl())
-    { 
+    {
     }
 
     bool MamdaQuery::getQuery (char *&restr)
     {
         char* mXML = new char [2048];
-           
+
         snprintf (mXML, 256, "<QUERY><VERSION>1.0</VERSION>");
-        
+
         getXML   (mXML);
-            
+
         strcat   (mXML, "</QUERY>");
-        
+
 	    restr = mXML;
 
         return true;
     }
-     
+
     void MamdaQuery::setSubscriptionInfo (MamdaSubscription* subscInfo)
     {
         mInfoImpl.setSubscriptionInfo (subscInfo);
@@ -129,8 +129,8 @@ namespace Wombat
     {
         return mInfoImpl.getSubscriptionInfo ();
     }
-      
-      
+
+
     void MamdaQuery::QueryInfoImpl::setSubscriptionInfo (MamdaSubscription* subscInfo)
     {
         mSubsc = subscInfo;
@@ -140,10 +140,10 @@ namespace Wombat
     {
         return mSubsc;
     }
-        
+
     MamdaOrQuery::MamdaOrQuery (MamdaQuery* query1, MamdaQuery* query2)
         : mImpl(*new QueryImpl())
-    { 
+    {
         mImpl.addCondition (query1);
         mImpl.addCondition (query2);
     }
@@ -158,7 +158,7 @@ namespace Wombat
         strcat (restr, "<OR>");
         mImpl.getXML (restr);
         strcat (restr, "</OR>");
-        
+
         return true;
     }
 
@@ -182,11 +182,11 @@ namespace Wombat
     bool MamdaAndQuery::getXML (char *restr)
     {
         strcat (restr, "<AND>");
-        
+
         mImpl.getXML (restr);
-            
+
         strcat (restr, "</AND>");
-        
+
         return true;
     }
 
@@ -222,7 +222,7 @@ namespace Wombat
         mImpl.setBool  (val);
         mImpl.setField (field);
     }
-        
+
     bool MamdaEqualsQuery::getXML (char *restr)
     {
         strcat (restr, "<EQUALS>");
@@ -386,20 +386,20 @@ namespace Wombat
     {
          for (size_t i=0; i<mConditions.size(); i++)
             (mConditions[i])->getXML(restr);
-            
+
          return true;
     }
 
     int MamdaQuery::QueryImpl::getDepth ()
     {
         int level=0, newlevel=0;
-        
+
         for (size_t i=0; i<mConditions.size(); i++)
         {
             if ((newlevel = (mConditions[i])->getDepth()) >= level)
                 level = newlevel + 1;
         }
-        
+
         return level;
     }
 
@@ -431,7 +431,7 @@ namespace Wombat
         mDoubles.push_back (val);
         mType = COND_TYPE_DOUBLE;
     }
-     
+
     void MamdaQuery::CondImpl::setDate (MamaDateTime& start, MamaDateTime& end)
     {
 
@@ -440,12 +440,12 @@ namespace Wombat
 
         mType = COND_TYPE_DATE;
     }
-         
+
     bool MamdaQuery::CondImpl::addInt (int val)
     {
         if (mType != COND_TYPE_INT)
             return false;
-            
+
         mInts.push_back(val);
         return (true);
 
@@ -455,9 +455,9 @@ namespace Wombat
     {
         if (mType != COND_TYPE_CHAR)
             return false;
-            
+
         char* newItem = strdup(val);
-                
+
         mStrings.push_back(newItem);
         return (true);
     }
@@ -466,7 +466,7 @@ namespace Wombat
     {
         if (mType != COND_TYPE_DOUBLE)
             return false;
-            
+
         mDoubles.push_back (val);
         return (true);
     }
@@ -475,23 +475,23 @@ namespace Wombat
     {
         size_t size = 256;
         char tempbuf [256];
-        
+
         switch (mType)
         {
             case COND_TYPE_BOOL:
-                snprintf (tempbuf, 
-                          size, 
-                          "<field>%s</field><value type=\"string\">%s</value>", 
-                          fieldName, 
+                snprintf (tempbuf,
+                          size,
+                          "<field>%s</field><value type=\"string\">%s</value>",
+                          fieldName,
                           (bVal) ? "true" : "false");
                 strcat (restr, tempbuf);
                 break;
 
             case COND_TYPE_INT:
 
-                snprintf (tempbuf, 
+                snprintf (tempbuf,
                           size,
-                          "<field>%s</field>", 
+                          "<field>%s</field>",
                           fieldName);
                 strcat (restr, tempbuf);
 
@@ -504,106 +504,106 @@ namespace Wombat
 
                     for (size_t i=0; i<mInts.size(); i++)
                     {
-                        snprintf (tempbuf,  
+                        snprintf (tempbuf,
                                   size,
-                                  "<item>%d</item>", 
+                                  "<item>%d</item>",
                                   mInts[i]);
                     }
 
-                    snprintf (tempbuf, 
+                    snprintf (tempbuf,
                               size,
                               "</list>");
                     strcat (restr, tempbuf);
                 }
                 else
                 {
-                    snprintf (tempbuf,  
+                    snprintf (tempbuf,
                               size,
-                              "<value type=\"int\">%d</value>", 
+                              "<value type=\"int\">%d</value>",
                               mInts[0]);
                     strcat (restr, tempbuf);
                 }
                 break;
 
             case COND_TYPE_CHAR:
-                snprintf (tempbuf,  
+                snprintf (tempbuf,
                           size,
-                          "<field>%s</field>", 
+                          "<field>%s</field>",
                           fieldName);
                 strcat (restr, tempbuf);
 
                 if (mStrings.size()>1)
                 {
-                    snprintf (tempbuf,  
+                    snprintf (tempbuf,
                               size,
                               "<list type=\"string\">");
                     strcat (restr, tempbuf);
 
                     for (size_t i=0; i<mStrings.size(); i++)
                     {
-                        snprintf (tempbuf,  
+                        snprintf (tempbuf,
                                   size,
-                                  "<item>%s</item>", 
+                                  "<item>%s</item>",
                                   mStrings[i]);
                         strcat (restr, tempbuf);
                     }
 
-                    snprintf (tempbuf,  
+                    snprintf (tempbuf,
                               size,
                               "</list>");
                     strcat (restr, tempbuf);
                 }
                 else
                 {
-                    snprintf (tempbuf,  
+                    snprintf (tempbuf,
                               size,
-                              "<value type=\"string\">%s</value>", 
+                              "<value type=\"string\">%s</value>",
                               mStrings[0]);
                     strcat (restr, tempbuf);
                 }
                 break;
 
             case COND_TYPE_DATE:
-                snprintf (tempbuf,  
+                snprintf (tempbuf,
                           size,
-                          "<start type=\"double\">%.0f</start><end type=\"double\">%.0f</end>", 
-                          startDate, 
+                          "<start type=\"double\">%.0f</start><end type=\"double\">%.0f</end>",
+                          startDate,
                           endDate);
                 strcat (restr, tempbuf);
                 break;
 
             case COND_TYPE_DOUBLE:
-                snprintf (tempbuf,  
+                snprintf (tempbuf,
                           size,
-                          "<field>%s</field>", 
+                          "<field>%s</field>",
                           fieldName);
                 strcat (restr, tempbuf);
 
                 if (mDoubles.size()>1)
                 {
-                    snprintf (tempbuf,  
+                    snprintf (tempbuf,
                               size,
                               "<list type=\"double\">");
                     strcat (restr, tempbuf);
 
                     for (size_t i=0; i<mDoubles.size(); i++)
                     {
-                        snprintf (tempbuf,  
+                        snprintf (tempbuf,
                                   size,
-                                  "<item>%f</item>", 
+                                  "<item>%f</item>",
                                   mDoubles[i]);
                         strcat (restr, tempbuf);
                     }
-                    snprintf (tempbuf,  
+                    snprintf (tempbuf,
                               size,
                               "</list>");
                     strcat (restr, tempbuf);
                 }
                 else
                 {
-                    snprintf (tempbuf,  
+                    snprintf (tempbuf,
                               size,
-                              "<value type=\"double\">%f</value>", 
+                              "<value type=\"double\">%f</value>",
                               mDoubles[0]);
                     strcat (restr, tempbuf);
                 }
@@ -611,14 +611,13 @@ namespace Wombat
             default:
                 break;
         }
-        
+
         return true;
     }
 
     int MamdaQuery::CondImpl::getDepth ()
-    {   
+    {
         return 1;
     }
 
 }
-

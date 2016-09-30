@@ -200,7 +200,7 @@ namespace Wombat
 
         mama_log (MAMA_LOG_LEVEL_FINER,
                   "MamdaMultiParticipantManager: full image for %s (%s)",
-                  subscription->getSymbol(), 
+                  subscription->getSymbol(),
                   partId ? partId : "NULL");
 
         if (!partId)
@@ -212,7 +212,7 @@ namespace Wombat
             mama_log (MAMA_LOG_LEVEL_FINE,
                       "MamdaMultiParticipantManager: found participant record %s",
                       partId);
-            
+
             createPartListAndNotify (subscription, partId);
         }
     }
@@ -222,8 +222,8 @@ namespace Wombat
         MamdaSubscription*  subscription,
         const char*         partId)
     {
-        //This is the one chance that apps will receive the 
-        //onParticipantCreate callback. 
+        //This is the one chance that apps will receive the
+        //onParticipantCreate callback.
         mPartListeners.insert(
                 ListenerListMap::value_type (string (partId), ListenerList()));
 
@@ -233,9 +233,9 @@ namespace Wombat
         for (; i != end; ++i)
         {
             MamdaMultiParticipantHandler* handler = *i;
-            handler->onParticipantCreate (subscription, 
-                                          mSelf, 
-                                          partId, 
+            handler->onParticipantCreate (subscription,
+                                          mSelf,
+                                          partId,
                                           false);
         }
     }
@@ -274,9 +274,9 @@ namespace Wombat
             ListenerListMap::iterator found = mPartListeners.find (partId);
             if (found != mPartListeners.end())
             {
-                forwardMsg (found->second, 
-                            subscription, 
-                            msg, 
+                forwardMsg (found->second,
+                            subscription,
+                            msg,
                             msgType);
             }
             else
@@ -289,9 +289,9 @@ namespace Wombat
                 //A listener may not have been registered!
                 if (found != mPartListeners.end())
                 {
-                    forwardMsg (found->second, 
-                                subscription, 
-                                msg, 
+                    forwardMsg (found->second,
+                                subscription,
+                                msg,
                                 msgType);
                 }
             }
@@ -300,9 +300,9 @@ namespace Wombat
         {
             if(!mConsListeners.empty())
             {
-                forwardMsg (mConsListeners, 
-                            subscription, 
-                            msg, 
+                forwardMsg (mConsListeners,
+                            subscription,
+                            msg,
                             msgType);
             }
             else
@@ -312,9 +312,9 @@ namespace Wombat
                 //A listener may not have been registered!
                 if(!mConsListeners.empty())
                 {
-                    forwardMsg (mConsListeners, 
-                                subscription, 
-                                msg, 
+                    forwardMsg (mConsListeners,
+                                subscription,
+                                msg,
                                 msgType);
                 }
             }
@@ -332,8 +332,8 @@ namespace Wombat
         for (; i != end; ++i)
         {
             MamdaMsgListener* listener = *i;
-            listener->onMsg (subscription, 
-                             msg, 
+            listener->onMsg (subscription,
+                             msg,
                              msgType);
         }
     }
@@ -343,20 +343,20 @@ namespace Wombat
     {
         const char* symbol = NULL;
         const char* partId = NULL;
-         
+
         if (msg.tryString (MamdaCommonFields::PART_ID, partId))
         {
             if (strlen (partId) != 0)
                 return partId;
-        }      
-        
+        }
+
         if (!msg.tryString (MamdaCommonFields::ISSUE_SYMBOL, symbol))
-        {        
+        {
             if (!msg.tryString (MamdaCommonFields::INDEX_SYMBOL, symbol))
             {
                 if (!msg.tryString (MamdaCommonFields::SYMBOL, symbol))
                 {
-                     mama_log (MAMA_LOG_LEVEL_FINEST, 
+                     mama_log (MAMA_LOG_LEVEL_FINEST,
                                "getPartId: cannot extrapolate partid from update");
                      return NULL;
                 }
@@ -364,19 +364,19 @@ namespace Wombat
         }
 
         const char* lastDot = strrchr (symbol, '.');
-        
+
         if (lastDot)
         {
             if (lastDot[1] != '\0')
                 partId = lastDot +1;
         }
-        
+
         if (!partId)
         {
             mama_log (MAMA_LOG_LEVEL_FINEST,
                       "getPartId: cannot extrapolate partid from update");
         }
-                        
+
         return partId;
     }
 

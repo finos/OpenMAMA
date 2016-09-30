@@ -83,7 +83,7 @@ namespace Wombat
 			PRICE_VAR_IND         = dictionary.getFieldByName(wPriceVarInd);
 			CROSS_TYPE            = dictionary.getFieldByName(wCrossType);
 			SRC_TIME              = dictionary.getFieldByName(wSrcTime);
-			MSG_TYPE              = dictionary.getFieldByName(wMsgType);  
+			MSG_TYPE              = dictionary.getFieldByName(wMsgType);
 			ISSUE_SYMBOL          = dictionary.getFieldByName(wIssueSymbol);
 			PART_ID               = dictionary.getFieldByName(wPartId);
 			SEQ_NUM               = dictionary.getFieldByName(wSeqNum);
@@ -94,7 +94,7 @@ namespace Wombat
 			SEND_TIME			  = dictionary.getFieldByName(wSendTime);
 			LINE_TIME			  = dictionary.getFieldByName(wLineTime);
 			SYMBOL				  = dictionary.getFieldByName(wSymbol);
-        
+
 			MAX_FID = dictionary.getMaxFid();
 			mInitialised = true;
 		}
@@ -117,18 +117,18 @@ namespace Wombat
             }
             mInitialised           = false;
             MAX_FID               = 0;
-    
+
             HIGH_INDICATION_PRICE = null;
-            LOW_INDICATION_PRICE  = null; 
-            INDICATION_PRICE      = null; 
+            LOW_INDICATION_PRICE  = null;
+            INDICATION_PRICE      = null;
             BUY_VOLUME            = null;
             SELL_VOLUME           = null;
             MATCH_VOLUME          = null;
             SECURITY_STATUS_QUAL  = null;
             INSIDE_MATCH_PRICE    = null;
             FAR_CLEARING_PRICE    = null;
-            NEAR_CLEARING_PRICE   = null; 
-            NO_CLEARING_PRICE     = null; 
+            NEAR_CLEARING_PRICE   = null;
+            NO_CLEARING_PRICE     = null;
             PRICE_VAR_IND         = null;
             CROSS_TYPE            = null;
             SRC_TIME              = null;
@@ -146,19 +146,19 @@ namespace Wombat
         }
 
 		public static MamaFieldDescriptor HIGH_INDICATION_PRICE = null;
-		public static MamaFieldDescriptor LOW_INDICATION_PRICE  = null; 
-		public static MamaFieldDescriptor INDICATION_PRICE      = null; 
+		public static MamaFieldDescriptor LOW_INDICATION_PRICE  = null;
+		public static MamaFieldDescriptor INDICATION_PRICE      = null;
 		public static MamaFieldDescriptor BUY_VOLUME            = null;
 		public static MamaFieldDescriptor SELL_VOLUME           = null;
 		public static MamaFieldDescriptor MATCH_VOLUME          = null;
 		public static MamaFieldDescriptor SECURITY_STATUS_QUAL  = null;
 		public static MamaFieldDescriptor INSIDE_MATCH_PRICE    = null;
 		public static MamaFieldDescriptor FAR_CLEARING_PRICE    = null;
-		public static MamaFieldDescriptor NEAR_CLEARING_PRICE   = null; 
-		public static MamaFieldDescriptor NO_CLEARING_PRICE     = null; 
+		public static MamaFieldDescriptor NEAR_CLEARING_PRICE   = null;
+		public static MamaFieldDescriptor NO_CLEARING_PRICE     = null;
 		public static MamaFieldDescriptor PRICE_VAR_IND         = null;
 		public static MamaFieldDescriptor CROSS_TYPE            = null;
-   
+
 		public static MamaFieldDescriptor SRC_TIME              = null;
 		public static MamaFieldDescriptor ACTIVITY_TIME         = null;
 		public static MamaFieldDescriptor MSG_TYPE              = null;
@@ -171,7 +171,7 @@ namespace Wombat
 		public static MamaFieldDescriptor AUCTION_TIME          = null;
 		public static MamaFieldDescriptor LINE_TIME				= null;
 		public static MamaFieldDescriptor SEND_TIME				= null;
-    
+
 		public static int  MAX_FID = 0;
 		private static bool mInitialised = false;
 	}

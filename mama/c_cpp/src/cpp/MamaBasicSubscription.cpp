@@ -44,8 +44,8 @@ class BasicSubscriptionTestCallback : public MamaBasicSubscriptionCallback
 
 
 public:
-    
-    BasicSubscriptionTestCallback(MamaBasicSubscriptionCallback *userCallback) 
+
+    BasicSubscriptionTestCallback(MamaBasicSubscriptionCallback *userCallback)
     {
         mUserCallback = userCallback;
     }
@@ -56,7 +56,7 @@ public:
 
 	virtual void onDestroy(MamaBasicSubscription *subscription, void *closure)
 	{
-        try 
+        try
         {
             // Invoke the user callback
             MamaBasicSubscriptionCallback *callback = (MamaBasicSubscriptionCallback *)mUserCallback;
@@ -91,7 +91,7 @@ public:
 		    fprintf (stderr, "onError EXCEPTION CAUGHT\n");
 	    }
     }
-								   
+
     void onMsg(MamaBasicSubscription *subscription, MamaMsg &msg)
     {
 	    try {
@@ -101,9 +101,9 @@ public:
 	    {
 		    fprintf (stderr, "onMsg EXCEPTION CAUGHT\n");
 	    }
-    }	
+    }
 };
-    
+
 /* An instance of this class is allocated each time the subscription is created and is passed
  * down into the C layer as the closure.
  * It will be member variables from this class used to invoke callbacks during event processing
@@ -188,7 +188,7 @@ struct MamaBasicSubscriptionImpl
         // Only invoke the callback if it is supplied
         if(NULL != mCallback)
         {
-            // Convert the C message to a C++ message            
+            // Convert the C message to a C++ message
             mResuableMsg.createFromMsg(msg);
 
             // Invoke the callback
@@ -232,7 +232,7 @@ MamaBasicSubscription::~MamaBasicSubscription(void)
         mamaSubscription_getState(mSubscription, &state);
         if (state == MAMA_SUBSCRIPTION_DESTROYING)
             invoke = true;
-        mamaSubscription_deallocate(mSubscription);        
+        mamaSubscription_deallocate(mSubscription);
         if (invoke)
         {
             mImpl->InvokeDestroy();
@@ -327,7 +327,7 @@ void MamaBasicSubscription::createBasic(
         NULL,                           // OnRecapRequest
         onSubscriptionDestroy
     };
-        
+
     // Create a new impl
     mImpl = new MamaBasicSubscriptionImpl(callback, closure, this);
 
@@ -398,11 +398,11 @@ mamaSubscriptionState MamaBasicSubscription::getState(void)
     return ret;
 }
 
-const char* MamaBasicSubscription::getTopic(void) const 
+const char* MamaBasicSubscription::getTopic(void) const
 {
     const char* topic  = NULL;
     mamaTry(mamaSubscription_getSubscSymbol(mSubscription, &topic));
-    return topic; 
+    return topic;
 }
 
 MamaTransport* MamaBasicSubscription::getTransport(void) const

@@ -26,7 +26,7 @@
 #include <mama/fieldcache/fieldcachetypes.h>
 #include <string>
 
-namespace Wombat 
+namespace Wombat
 {
 
     class MamaFieldCacheField;
@@ -49,23 +49,23 @@ public:
      * clean all the memory allocated.
      */
     virtual ~MamaFieldCacheRecord();
-    
+
     /**
      * Creates a <code>MamaFieldCacheRecord</code>.
      */
     virtual void create();
-    
+
     /**
      * Clear the <code>MamaFieldCacheRecord</code>.
      * No fields will be present in the record after this operation. The record is
      * ready to be used, as long as create has been called once.
      */
     virtual void clear();
-    
+
     /**
      * Add and creates a <code>MamaFieldCacheField</code> to the record.
      * The new field is then returned.
-     * 
+     *
      * @param fid Field id of the field to create.
      * @param type Field type of the field to create.
      * @param name Name of the field to create.
@@ -74,33 +74,33 @@ public:
     virtual MamaFieldCacheField& add(mama_fid_t fid,
                                      mamaFieldType type,
                                      const char* name = NULL);
-    
+
     /**
      * Add and creates a <code>MamaFieldCacheField</code> to the record.
      * The new field is then returned.
-     * 
+     *
      * @param descriptor Descriptor of the field to create.
      * @return The new field created.
      */
     virtual MamaFieldCacheField& add(const MamaFieldDescriptor& descriptor);
 
-    
+
     virtual const MamaFieldCacheField& operator[](mama_size_t index) const;
     virtual MamaFieldCacheField& operator[](mama_size_t index);
-    
+
     /**
      * Find a <code>MamaFieldCacheField</code> in the record.
-     * 
+     *
      * @param fid Field id of the field to look up.
      * @param name Field name of the field to look up.
      * @return The field in the record.
      */
     virtual const MamaFieldCacheField& find(mama_fid_t fid,
                                             const char* name = NULL) const;
-    
+
     /**
      * Find a <code>MamaFieldCacheField</code> in the record.
-     * 
+     *
      * @param fid Field id of the field to look up.
      * @param name Field name of the field to look up.
      * @return The field in the record.
@@ -108,14 +108,14 @@ public:
     virtual MamaFieldCacheField& find(mama_fid_t fid, const char* name = NULL);
     /**
      * Return the number of fields present in the record.
-     * 
+     *
      * @return Size of the record.
      */
     virtual mama_size_t getSize() const;
-    
+
     virtual mamaFieldCacheRecord getCValue();
     virtual const mamaFieldCacheRecord getCValue() const;
-    
+
 private:
     MamaFieldCacheRecord(const MamaFieldCacheRecord&);
     MamaFieldCacheRecord& operator=(const MamaFieldCacheRecord&);

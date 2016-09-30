@@ -33,7 +33,7 @@ public class MamaMsgTryMethods extends TestCase
     /* ****************************************************** */
     /* Protected Member Variables. */
     /* ****************************************************** */
-    
+
     // The message under test
     protected MamaMsg mMsg;
 
@@ -87,7 +87,7 @@ public class MamaMsgTryMethods extends TestCase
     public void testBool()
     {
         // Extract the field
-        MamaBoolean result = new MamaBoolean();        
+        MamaBoolean result = new MamaBoolean();
         Assert.assertTrue(mMsg.tryBoolean(null, 1, result));
 
         // Check for a missing field
@@ -265,7 +265,7 @@ public class MamaMsgTryMethods extends TestCase
         // Verify that the result is valid
         int[] arrayValues = result.getValue();
         Assert.assertEquals(arrayValues[0], 1);
-        Assert.assertEquals(arrayValues[1], 2);        
+        Assert.assertEquals(arrayValues[1], 2);
     }
 
     public void testU16Array()

@@ -39,7 +39,7 @@ namespace Wombat
 	/// publisher (e.g., feed handler) is only publishing deltas containing
 	/// modified fields.
 	/// </remarks>
-	public class MamdaQuoteListener : 
+	public class MamdaQuoteListener :
 		MamdaMsgListener,
 		MamdaQuoteRecap,
 		MamdaQuoteUpdate,
@@ -54,7 +54,7 @@ namespace Wombat
 		{
 			//Initialize the cache
 			clearCache(mQuoteCache);
-       
+
 			//Single iterator instance needed for all messages
 			mFieldIterator = new FieldIterator (this);
 		}
@@ -97,8 +97,8 @@ namespace Wombat
 			cache.mShortSaleBidTick = 'Z';
             cache.mShortSaleCircuitBreaker = ' ';
 			cache.mTmpQuoteCount	= 0;
-			cache.mQuoteCount		= 0; 
-            cache.mConflateCount	= 1; 
+			cache.mQuoteCount		= 0;
+            cache.mConflateCount	= 1;
 			cache.mGotBidPrice		= false;
 			cache.mGotAskPrice		= false;
 			cache.mGotBidSize		= false;
@@ -109,7 +109,7 @@ namespace Wombat
 			cache.mGotBidPartId		= false;
 			cache.mGotAskPartId		= false;
             cache.mGotQuoteCount	= false;
-            
+
             cache.mAskTime          = DateTime.MinValue;
             cache.mBidTime          = DateTime.MinValue;
             cache.mAskIndicator     = null;
@@ -118,7 +118,7 @@ namespace Wombat
             cache.mBidUpdateCount   = 0;
             cache.mAskYield         = 0;
             cache.mBidYield         = 0;
-            
+
             //Field State
             cache.mSymbolFieldState				= new MamdaFieldState();
             cache.mPartIdFieldState				= new MamdaFieldState();
@@ -155,7 +155,7 @@ namespace Wombat
             cache.mShortSaleBidTickFieldState	= new MamdaFieldState();
             cache.mShortSaleCircuitBreakerFieldState =new MamdaFieldState();
             cache.mTmpQuoteCountFieldState		= new MamdaFieldState();
-            cache.mQuoteCountFieldState			= new MamdaFieldState(); 
+            cache.mQuoteCountFieldState			= new MamdaFieldState();
             cache.mConflateCountFieldState		= new MamdaFieldState();
             cache.mAskTimeFieldState			= new MamdaFieldState();
             cache.mBidTimeFieldState			= new MamdaFieldState();
@@ -314,11 +314,11 @@ namespace Wombat
 
 		public MamaPrice getQuoteMidPrice()
 		{
-			if ((mQuoteCache.mBidPrice.getValue() > 0.0) && 
+			if ((mQuoteCache.mBidPrice.getValue() > 0.0) &&
 				(mQuoteCache.mAskPrice.getValue() > 0.0))
 			{
 				mQuoteCache.mMidPrice.setValue((
-				mQuoteCache.mAskPrice.getValue() + 
+				mQuoteCache.mAskPrice.getValue() +
 				mQuoteCache.mBidPrice.getValue()) / 2.0);
 			}
 			else
@@ -367,7 +367,7 @@ namespace Wombat
 		{
 			return mQuoteCache.mQuoteDate;
 		}
-        
+
 		public long getBeginGapSeqNum()
 		{
 			return mGapBegin;
@@ -378,45 +378,45 @@ namespace Wombat
 			return mGapEnd;
 		}
 
-		public DateTime getAskTime () 
+		public DateTime getAskTime ()
 		{
 			return mQuoteCache.mAskTime;
 		}
-	    
-		public DateTime getBidTime () 
+
+		public DateTime getBidTime ()
 		{
 			return mQuoteCache.mBidTime;
 		}
-	    
+
 		public string getAskIndicator ()
 		{
 			return mQuoteCache.mAskIndicator;
 		}
-	    
+
 		public string getBidIndicator ()
 		{
 			return mQuoteCache.mBidIndicator;
 		}
-	    
-		public long getAskUpdateCount () 
+
+		public long getAskUpdateCount ()
 		{
 			return mQuoteCache.mAskUpdateCount;
 		}
-	    
-		public long getBidUpdateCount () 
+
+		public long getBidUpdateCount ()
 		{
 			return mQuoteCache.mBidUpdateCount;
 		}
-		public double getAskYield () 
+		public double getAskYield ()
 		{
 			return mQuoteCache.mAskYield;
 		}
-	    
-		public double getBidYield () 
+
+		public double getBidYield ()
 		{
 			return mQuoteCache.mBidYield;
 		}
-    
+
 		public MamdaFieldState getSymbolFieldState()
 		{
 			return mQuoteCache.mSymbolFieldState;
@@ -568,9 +568,9 @@ namespace Wombat
 		}
 
 		public MamdaFieldState getShortSaleCircuitBreakerFieldState()
-		{          
+		{
 			return mQuoteCache.mShortSaleCircuitBreakerFieldState;
-		}  
+		}
 
 		public MamdaFieldState getQuoteCountFieldState()
 		{
@@ -591,7 +591,7 @@ namespace Wombat
 		{
 			return mQuoteCache.mQuoteDateFieldState;
 		}
-	        
+
 		public MamdaFieldState getBeginGapSeqNumFieldState()
 		{
 			return mGapBeginFieldState;
@@ -602,52 +602,52 @@ namespace Wombat
 			return mGapEndFieldState;
 		}
 
-		public MamdaFieldState getAskTimeFieldState() 
+		public MamdaFieldState getAskTimeFieldState()
 		{
 			return mQuoteCache.mAskTimeFieldState;
 		}
-	    
-		public MamdaFieldState getBidTimeFieldState() 
+
+		public MamdaFieldState getBidTimeFieldState()
 		{
 			return mQuoteCache.mBidTimeFieldState;
 		}
-    
+
 		public MamdaFieldState getAskIndicatorFieldState()
 		{
 			return mQuoteCache.mAskIndicatorFieldState;
 		}
-	    
+
 		public MamdaFieldState getBidIndicatorFieldState()
 		{
 			return mQuoteCache.mBidIndicatorFieldState;
 		}
-	    
-		public MamdaFieldState getAskUpdateCountFieldState() 
+
+		public MamdaFieldState getAskUpdateCountFieldState()
 		{
 			return mQuoteCache.mAskUpdateCountFieldState;
 		}
-	    
-		public MamdaFieldState getBidUpdateCountFieldState() 
+
+		public MamdaFieldState getBidUpdateCountFieldState()
 		{
 			return mQuoteCache.mBidUpdateCountFieldState;
 		}
-		public MamdaFieldState getAskYieldFieldState() 
+		public MamdaFieldState getAskYieldFieldState()
 		{
 			return mQuoteCache.mAskYieldFieldState;
 		}
-	    
-		public MamdaFieldState getBidYieldFieldState() 
+
+		public MamdaFieldState getBidYieldFieldState()
 		{
 			return mQuoteCache.mBidYieldFieldState;
 		}
-        
+
 		// Implementation of MamdaListener interface.
 		// NB! For internal use only.
 		public void onMsg(
 			MamdaSubscription subscription,
 			MamaMsg           msg,
 			mamaMsgType		  msgType)
-		{			
+		{
 			// Listeners may be created on multiple threads and we only
 			// want a single list of updaters.
 			if (mUpdaters == null)
@@ -670,10 +670,10 @@ namespace Wombat
 
 			// If msg is a quote-related message, invoke the
 			// appropriate callback:
-            
+
             //Clear conflate count
-            mQuoteCache.mConflateCount  = 1; 
-             
+            mQuoteCache.mConflateCount  = 1;
+
 			switch (msgType)
 			{
 				case mamaMsgType.MAMA_MSG_TYPE_INITIAL:
@@ -732,8 +732,8 @@ namespace Wombat
 				recap.setQuoteQualNative(mQuoteCache.mQuoteQualNative);
 				recap.setQuoteCount(mQuoteCache.mQuoteCount);
 				recap.setShortSaleBidTick(mQuoteCache.mShortSaleBidTick);
-                recap.setShortSaleCircuitBreaker(getShortSaleCircuitBreaker());                
-                
+                recap.setShortSaleCircuitBreaker(getShortSaleCircuitBreaker());
+
                 recap.setAskTime (mQuoteCache.mAskTime);
                 recap.setBidTime (mQuoteCache.mBidTime);
                 recap.setAskIndicator (mQuoteCache.mAskIndicator);
@@ -751,7 +751,7 @@ namespace Wombat
 		{
             updateFieldStates();
             updateQuoteFields(msg);
-        
+
             checkQuoteCount(subscription, msg, false);
 
 			foreach (MamdaQuoteHandler handler in mHandlers)
@@ -763,9 +763,9 @@ namespace Wombat
 		private void handleQuote(
 			MamdaSubscription  subscription,
 			MamaMsg            msg)
-		{         
+		{
             updateFieldStates();
-            updateQuoteFields(msg);          
+            updateQuoteFields(msg);
 			checkQuoteCount(subscription, msg, true);
 
             if (mIgnoreUpdate)
@@ -775,7 +775,7 @@ namespace Wombat
             }
 
 			foreach (MamdaQuoteHandler handler in mHandlers)
-			{              
+			{
 				handler.onQuoteUpdate (subscription, this, msg, this, this);
 			}
 		}
@@ -783,9 +783,9 @@ namespace Wombat
 		private void handleUpdate(
 			MamdaSubscription  subscription,
 			MamaMsg            msg)
-		{          
+		{
             updateFieldStates();
-            updateQuoteFields(msg);           
+            updateQuoteFields(msg);
 			if (mLastGenericMsgWasQuote)
 			{
 				checkQuoteCount(subscription, msg, true);
@@ -803,17 +803,17 @@ namespace Wombat
 				mLastGenericMsgWasQuote = false;
 			}
 		}
-	    
+
 		private void checkQuoteCount(
 			MamdaSubscription  subscription,
 			MamaMsg            msg,
 			bool               checkForGap)
-		{        
+		{
             mIgnoreUpdate = false;
-    
+
 			if (checkForGap && mQuoteCache.mGotQuoteCount)
 			{
-				if ((mQuoteCache.mQuoteCount > 0) && 
+				if ((mQuoteCache.mQuoteCount > 0) &&
                         (mQuoteCache.mTmpQuoteCount > (mQuoteCache.mQuoteCount + mQuoteCache.mConflateCount)))
 				{
 					mGapBegin = mQuoteCache.mQuoteCount + mQuoteCache.mConflateCount;
@@ -830,12 +830,12 @@ namespace Wombat
 			}
 
 			/* Check for duplicates.  Only check if quote count > 0, in case it isn't being sent down.*/
-            if ( mQuoteCache.mGotQuoteCount && 
-                 mQuoteCache.mQuoteCount > 0 && 
+            if ( mQuoteCache.mGotQuoteCount &&
+                 mQuoteCache.mQuoteCount > 0 &&
                  (mQuoteCache.mTmpQuoteCount == mQuoteCache.mQuoteCount) )
             {
                 mIgnoreUpdate = true;
-            }        
+            }
 
 			mQuoteCache.mQuoteCount = mQuoteCache.mTmpQuoteCount;
             mQuoteCache.mQuoteCountFieldState = MamdaFieldState.MODIFIED;
@@ -884,7 +884,7 @@ namespace Wombat
 			addToUpdatersList(updaters, MamdaQuoteFields.SHORT_SALE_BID_TICK, new MamdaShortSaleBidTick());
             addToUpdatersList(updaters, MamdaQuoteFields.SHORT_SALE_CIRCUIT_BREAKER, new MamdaShortSaleCircuitBreaker());
 			addToUpdatersList(updaters, MamdaQuoteFields.BID_TICK, new MamdaShortSaleBidTick());
-            
+
             addToUpdatersList (updaters, MamdaQuoteFields.ASK_TIME, new MamdaAskTime ());
             addToUpdatersList (updaters, MamdaQuoteFields.BID_TIME, new MamdaBidTime ());
             addToUpdatersList (updaters, MamdaQuoteFields.ASK_INDICATOR, new MamdaAskIndicator ());
@@ -988,9 +988,9 @@ namespace Wombat
         mQuoteCache.mAskYieldFieldState           = MamdaFieldState.NOT_MODIFIED;
         if(mQuoteCache.mBidYieldFieldState           == MamdaFieldState.MODIFIED)
         mQuoteCache.mBidYieldFieldState           = MamdaFieldState.NOT_MODIFIED;
-        if(mGapBeginFieldState           == MamdaFieldState.MODIFIED)  
+        if(mGapBeginFieldState           == MamdaFieldState.MODIFIED)
            mGapBeginFieldState           = MamdaFieldState.NOT_MODIFIED;
-        if(mGapEndFieldState             == MamdaFieldState.MODIFIED)  
+        if(mGapEndFieldState             == MamdaFieldState.MODIFIED)
             mGapEndFieldState           = MamdaFieldState.NOT_MODIFIED;
         }
 
@@ -1036,10 +1036,10 @@ namespace Wombat
                         mQuoteCache.mPartId =
                             mQuoteCache.mSymbol.Substring(lastDot, lastChar - lastDot);
                         mQuoteCache.mGotPartId = true;
-                        mQuoteCache.mPartIdFieldState = MamdaFieldState.MODIFIED; 
+                        mQuoteCache.mPartIdFieldState = MamdaFieldState.MODIFIED;
                     }
 				}
-                    
+
 			}
 		}
 
@@ -1422,13 +1422,13 @@ namespace Wombat
 		}
 
         private class MamdaShortSaleCircuitBreaker : QuoteUpdate
-        {           
-            public void onUpdate(MamdaQuoteListener listener, MamaMsgField field)                 
-            { 
-                listener.mQuoteCache.mShortSaleCircuitBreaker = field.getChar(); 
-                listener.mQuoteCache.mShortSaleCircuitBreakerFieldState = MamdaFieldState.MODIFIED;  
+        {
+            public void onUpdate(MamdaQuoteListener listener, MamaMsgField field)
+            {
+                listener.mQuoteCache.mShortSaleCircuitBreaker = field.getChar();
+                listener.mQuoteCache.mShortSaleCircuitBreakerFieldState = MamdaFieldState.MODIFIED;
             }
-        }      
+        }
 
 		private class MamdaBidTick : QuoteUpdate
 		{
@@ -1456,7 +1456,7 @@ namespace Wombat
 				}
 			}
 		}
-        
+
     private class MamdaAskTime : QuoteUpdate
     {
         public void onUpdate (MamdaQuoteListener listener,
@@ -1466,7 +1466,7 @@ namespace Wombat
             listener.mQuoteCache.mAskTimeFieldState = MamdaFieldState.MODIFIED;
         }
     }
-    
+
     private class MamdaBidTime : QuoteUpdate
     {
         public void onUpdate (MamdaQuoteListener listener,
@@ -1476,7 +1476,7 @@ namespace Wombat
             listener.mQuoteCache.mBidTimeFieldState = MamdaFieldState.MODIFIED;
         }
     }
-    
+
     private class MamdaAskIndicator : QuoteUpdate
     {
         public void onUpdate (MamdaQuoteListener listener,
@@ -1494,7 +1494,7 @@ namespace Wombat
             }
         }
     }
-    
+
     private class MamdaBidIndicator : QuoteUpdate
     {
         public void onUpdate (MamdaQuoteListener listener,
@@ -1514,7 +1514,7 @@ namespace Wombat
 
         }
     }
-    
+
     private class MamdaAskUpdateCount : QuoteUpdate
     {
         public void onUpdate (MamdaQuoteListener listener,
@@ -1525,7 +1525,7 @@ namespace Wombat
             listener.mQuoteCache.mAskUpdateCountFieldState = MamdaFieldState.MODIFIED;
         }
     }
-    
+
     private class MamdaBidUpdateCount : QuoteUpdate
     {
         public void onUpdate (MamdaQuoteListener listener,
@@ -1536,7 +1536,7 @@ namespace Wombat
             listener.mQuoteCache.mBidUpdateCountFieldState = MamdaFieldState.MODIFIED;
         }
     }
-    
+
     private class MamdaAskYield : QuoteUpdate
     {
         public void onUpdate (MamdaQuoteListener listener,
@@ -1547,7 +1547,7 @@ namespace Wombat
             listener.mQuoteCache.mAskYieldFieldState = MamdaFieldState.MODIFIED;
         }
     }
-    
+
     private class MamdaBidYield : QuoteUpdate
     {
         public void onUpdate (MamdaQuoteListener listener,
@@ -1558,14 +1558,14 @@ namespace Wombat
             listener.mQuoteCache.mBidYieldFieldState = MamdaFieldState.MODIFIED;
         }
     }
-	    
+
 		/*************************************************************
 		*Private class used for Field Iteration
 		************************************************************/
 		private class FieldIterator : MamaMsgFieldIterator
 		{
 			private MamdaQuoteListener mListener;
-	        
+
 			public FieldIterator(MamdaQuoteListener listener)
 			{
 				mListener = listener;
@@ -1577,14 +1577,14 @@ namespace Wombat
 			{
 				try
 				{
-                    
+
 					int fieldId = field.getFid();
                     if (fieldId <= mMaxFid)
                     {
                         QuoteUpdate updater = (QuoteUpdate)mUpdaters[fieldId];
 
                         if (updater != null)
-                        {                          
+                        {
                             updater.onUpdate(mListener, field);
                         }
                     }
@@ -1639,7 +1639,7 @@ namespace Wombat
 			public char            mShortSaleBidTick = 'Z';
             public char            mShortSaleCircuitBreaker;
 			public long            mTmpQuoteCount;
-			public long            mQuoteCount; 
+			public long            mQuoteCount;
             public long            mConflateCount;
 			public bool            mGotBidPrice;
 			public bool            mGotAskPrice;
@@ -1651,7 +1651,7 @@ namespace Wombat
 			public bool            mGotBidPartId;
 			public bool            mGotAskPartId;
             public bool            mGotQuoteCount;
-            
+
             public DateTime        mAskTime;
             public DateTime        mBidTime;
             public string          mAskIndicator;
@@ -1660,7 +1660,7 @@ namespace Wombat
             public long            mBidUpdateCount;
             public double          mAskYield;
             public double          mBidYield;
-            
+
             public MamdaFieldState       mSymbolFieldState             = new MamdaFieldState();
             public MamdaFieldState       mPartIdFieldState             = new MamdaFieldState();
             public MamdaFieldState       mSrcTimeFieldState            = new MamdaFieldState();
@@ -1694,7 +1694,7 @@ namespace Wombat
             public MamdaFieldState       mQuoteQualStrFieldState       = new MamdaFieldState();
             public MamdaFieldState       mQuoteQualNativeFieldState    = new MamdaFieldState();
             public MamdaFieldState       mShortSaleBidTickFieldState   = new MamdaFieldState();
-            public MamdaFieldState       mShortSaleCircuitBreakerFieldState = new MamdaFieldState(); 
+            public MamdaFieldState       mShortSaleCircuitBreakerFieldState = new MamdaFieldState();
             public MamdaFieldState       mTmpQuoteCountFieldState      = new MamdaFieldState();
             public MamdaFieldState       mQuoteCountFieldState         = new MamdaFieldState();
             public MamdaFieldState       mConflateCountFieldState      = new MamdaFieldState();
@@ -1743,4 +1743,3 @@ namespace Wombat
 
 	}
 }
-

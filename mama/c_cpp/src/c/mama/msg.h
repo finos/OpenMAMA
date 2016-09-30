@@ -43,9 +43,9 @@ struct wombatMsg_;
 
 /**
  Enum to reference the available MAMA message payloads. */
-MAMATypeDeprecated(mamaPayloadType, 
+MAMATypeDeprecated(mamaPayloadType,
         "mamaPayloadType has been deprecated, use dynamic loading instead!")
-typedef enum mamaPayloadType_ 
+typedef enum mamaPayloadType_
 {
     MAMA_PAYLOAD_SOLACE     = '1',
     MAMA_PAYLOAD_V5         = '5',

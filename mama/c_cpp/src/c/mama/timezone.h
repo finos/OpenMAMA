@@ -36,16 +36,16 @@ extern "C" {
 
 /** Return a pointer to a mamaTimeZone corresponding to the local time zone. */
 MAMAExpDLL
-extern mamaTimeZone mamaTimeZone_local(void); 
+extern mamaTimeZone mamaTimeZone_local(void);
 
 /** Return a pointer to a mamaTimeZone corresponding to the UTC time zone. */
 MAMAExpDLL
-extern mamaTimeZone mamaTimeZone_utc(void); 
+extern mamaTimeZone mamaTimeZone_utc(void);
 
 /** Return a pointer to a mamaTimeZone corresponding to the US Eastern
  * time zone. */
 MAMAExpDLL
-extern mamaTimeZone mamaTimeZone_usEastern(void); 
+extern mamaTimeZone mamaTimeZone_usEastern(void);
 
 /** Create an instance of a mamaTimeZone. */
 MAMAExpDLL

@@ -110,7 +110,7 @@ namespace Wombat
         MamdaFieldState getIrregVolumeFieldState();
 
         /// <summary>
-        /// Trade participant ID for the last irregular trade.  This is typically an 
+        /// Trade participant ID for the last irregular trade.  This is typically an
         /// exchange ID, sometimes a market maker ID.
         /// </summary>
         /// <returns></returns>
@@ -242,12 +242,12 @@ namespace Wombat
 
 		/// <summary>
 		/// Returns the Aggressor side or TradeSide
-		/// 
+		///
 		/// AggressorSide:
 		/// 0 : No AggressorSide is currently known/available.
 		/// 1 or B : Buy
 		/// 2 or S : Sell
-		/// 
+		///
 		/// TradeSide:
 		/// TRADE_SIDE_UNKNOWN
 		/// TRADE_SIDE_BUY
@@ -423,7 +423,7 @@ namespace Wombat
 
         /// <summary>
         /// Total value of all shares traded in a security at the time it is
-        /// disseminated. Calculated by the sum of multiplying the trade price by trade volume 
+        /// disseminated. Calculated by the sum of multiplying the trade price by trade volume
         /// for each qualifying trade.
         /// </summary>
         /// <returns></returns>
@@ -437,7 +437,7 @@ namespace Wombat
 
         /// <summary>
         /// Total value of all shares traded off exchange in a security at the time it is
-        /// disseminated. Calculated by the sum of multiplying the trade price by trade volume 
+        /// disseminated. Calculated by the sum of multiplying the trade price by trade volume
         /// for each qualifying trade.
         /// </summary>
         /// <returns></returns>
@@ -451,7 +451,7 @@ namespace Wombat
 
         /// <summary>
         /// Total value of all shares traded on exchange in a security at the time it is
-        /// disseminated. Calculated by the sum of multiplying the trade price by trade volume 
+        /// disseminated. Calculated by the sum of multiplying the trade price by trade volume
         /// for each qualifying trade.
         /// </summary>
         /// <returns></returns>
@@ -578,9 +578,9 @@ namespace Wombat
         /// </summary>
         /// <returns>Field State</returns>
         MamdaFieldState getTradeUnitsFieldState();
-        
+
         long getLastSeqNum();
-        
+
         /// <summary>
         /// Get the field state
         /// </summary>
@@ -588,7 +588,7 @@ namespace Wombat
         MamdaFieldState getLastSeqNumFieldState();
 
         long getHighSeqNum();
-        
+
         /// <summary>
         /// Get the field state
         /// </summary>
@@ -596,7 +596,7 @@ namespace Wombat
         MamdaFieldState getHighSeqNumFieldState();
 
         long getLowSeqNum();
-        
+
         /// <summary>
         /// Get the field state
         /// </summary>
@@ -604,7 +604,7 @@ namespace Wombat
         MamdaFieldState getLowSeqNumFieldState();
 
         long getTotalVolumeSeqNum();
-        
+
         /// <summary>
         /// Get the field state
         /// </summary>
@@ -612,7 +612,7 @@ namespace Wombat
         MamdaFieldState getTotalVolumeSeqNumFieldState();
 
         string getCurrencyCode();
-        
+
         /// <summary>
         /// Get the field state
         /// </summary>
@@ -623,13 +623,12 @@ namespace Wombat
 		/// Returns the ShortSaleCircuitBreaker
 		/// </summary>
 		/// <returns></returns>
-        char getShortSaleCircuitBreaker();  
+        char getShortSaleCircuitBreaker();
 
 		/// <summary>
 		/// Returns the FieldState, always MODIFIED
 		/// </summary>
 		/// <returns></returns>
-        MamdaFieldState getShortSaleCircuitBreakerFieldState(); 
+        MamdaFieldState getShortSaleCircuitBreakerFieldState();
     }
 }
-

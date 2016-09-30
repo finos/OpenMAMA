@@ -169,14 +169,14 @@ void DQPublisherManagerTestCallback::onError (MamaDQPublisherManager* publisher,
 
 struct MamaDQPublisherManagerImpl
 {
-    MamaDQPublisherManagerImpl (MamaDQPublisherManager* publisher): 
+    MamaDQPublisherManagerImpl (MamaDQPublisherManager* publisher):
         mParent                 (publisher),
 		mCallback				(NULL)
     {
     	mamaDQPublisherManager_allocate(&mDQPublisherManager);
     	mReuseableMsg.create();
     };
-    
+
     virtual ~MamaDQPublisherManagerImpl (void) { destroy (); }
 
     void create (MamaTransport *transport, MamaQueue* queue,
@@ -184,10 +184,10 @@ struct MamaDQPublisherManagerImpl
              const char* sourcename, const char* root);
     void destroy (void);
 
-     
+
     void addPublisher (const char *symbol, MamaDQPublisher* pub, void * cache);
     MamaDQPublisher* removePublisher (const char *symbol);
-    
+
     MamaDQPublisher* createPublisher (const char *symbol, void * cache);
     void destroyPublisher (const char *symbol);
 
@@ -201,7 +201,7 @@ struct MamaDQPublisherManagerImpl
     MamaDQPublisherManager* mParent;
     mamaDQPublisherManager 		 	mDQPublisherManager;
     MamaDQPublisherManagerCallback*  mCallback;
-    
+
     MamaPublishTopic				mReuseableInfo;
 };
 
@@ -212,7 +212,7 @@ void MAMACALLTYPE dqPublisherManagerImplCreateCb (
 	MamaDQPublisherManagerImpl* mImpl = (MamaDQPublisherManagerImpl*)mamaDQPublisherManager_getClosure(manager);
 	mImpl->mCallback->onCreate(mImpl->mParent);
 }
-    
+
 void MAMACALLTYPE dqPublisherManagerImplNewRequestCb(
         mamaDQPublisherManager manager,
         const char*        symbol,
@@ -253,7 +253,7 @@ void MAMACALLTYPE dqPublisherManagerImplRefreshCb(
 
 void MAMACALLTYPE dqPublisherManagerImplErrorCb(
         mamaDQPublisherManager manager,
-                              mama_status      status,
+        mama_status      status,
         const char*        errortxt,
         mamaMsg     msg)
 {
@@ -274,7 +274,7 @@ void MAMACALLTYPE dqPublisherManagerImplMsgCb(
 
 
 
-MamaDQPublisherManager::~MamaDQPublisherManager (void) 
+MamaDQPublisherManager::~MamaDQPublisherManager (void)
 {
     if (mImpl)
     {
@@ -283,12 +283,12 @@ MamaDQPublisherManager::~MamaDQPublisherManager (void)
     }
 }
 
-MamaDQPublisherManager::MamaDQPublisherManager (void) 
+MamaDQPublisherManager::MamaDQPublisherManager (void)
     : mImpl (new MamaDQPublisherManagerImpl (this))
 {
 }
 
-void MamaDQPublisherManager::create (MamaTransport *transport, 
+void MamaDQPublisherManager::create (MamaTransport *transport,
              MamaQueue*  queue,
              MamaDQPublisherManagerCallback*   callback,
              const char* sourcename,
@@ -332,12 +332,12 @@ void MamaDQPublisherManager::setStatus (mamaMsgStatus  status)
 {
 	mamaDQPublisherManager_setStatus(mImpl->mDQPublisherManager, status);
 }
-    
+
 void MamaDQPublisherManager::setSenderId (uint64_t  id)
 {
 	mamaDQPublisherManager_setSenderId(mImpl->mDQPublisherManager, id);
 }
-   
+
 void MamaDQPublisherManager::setSeqNum (mama_seqnum_t num)
 {
 	mamaDQPublisherManager_setSeqNum(mImpl->mDQPublisherManager, num);
@@ -371,7 +371,7 @@ MamaDQPublisher* MamaDQPublisherManagerImpl::removePublisher (const char *symbol
 	mamaDQPublisherManager_removePublisher(mDQPublisherManager, symbol, &aDQPublisher);
 	return (MamaDQPublisher*)mamaDQPublisher_getClosure(aDQPublisher);
 }
- 
+
 MamaDQPublisher* MamaDQPublisherManagerImpl::createPublisher (const char *symbol, void * cache)
 {
 	MamaDQPublisher* aDQPublisher = new MamaDQPublisher;
@@ -381,7 +381,7 @@ MamaDQPublisher* MamaDQPublisherManagerImpl::createPublisher (const char *symbol
 }
 
 void MamaDQPublisherManagerImpl::destroyPublisher (const char *symbol)
-{	
+{
 	MamaDQPublisher* aDQPublisher = removePublisher(symbol);
 	aDQPublisher->destroy();
 }
@@ -395,7 +395,7 @@ const MamaDQPublisher* MamaDQPublisherManagerImpl::getPublisher (const char* sym
         return static_cast<MamaDQPublisher*>(mamaDQPublisher_getClosure(aDQPublisher));
 }
 
-void MamaDQPublisherManagerImpl::create (MamaTransport *transport, 
+void MamaDQPublisherManagerImpl::create (MamaTransport *transport,
              MamaQueue*  queue,
              MamaDQPublisherManagerCallback*   callback,
              const char* sourcename,
@@ -404,14 +404,14 @@ void MamaDQPublisherManagerImpl::create (MamaTransport *transport,
     // This static structure contains all of the callback function pointers
     static mamaDQPublisherManagerCallbacks aDQPublisherManagerCb =
     {
-	dqPublisherManagerImplCreateCb,
-	dqPublisherManagerImplNewRequestCb,
-	dqPublisherManagerImplRequestCb,
-	dqPublisherManagerImplRefreshCb,
+        dqPublisherManagerImplCreateCb,
+        dqPublisherManagerImplNewRequestCb,
+        dqPublisherManagerImplRequestCb,
+        dqPublisherManagerImplRefreshCb,
         dqPublisherManagerImplErrorCb,
         dqPublisherManagerImplMsgCb
     };
-	
+
     mCallback = callback;
     mamaDQPublisherManager_create(mDQPublisherManager, transport->getCValue(), queue->getCValue(),
 			&aDQPublisherManagerCb,
@@ -424,8 +424,8 @@ void MamaDQPublisherManagerImpl::destroy (void)
 
     if (mamaInternal_getCatchCallbackExceptions())
     {
-	delete mCallback;
-	mCallback = 0;
+        delete mCallback;
+        mCallback = 0;
     }
     return;
 }

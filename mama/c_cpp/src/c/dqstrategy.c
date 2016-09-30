@@ -595,6 +595,7 @@ dqContext_initializeContext (mamaDqContext *ctx, int cacheSize,
     ctx->mSenderId      = 0;
     ctx->mRecapRequest  = recap;
     ctx->mSetCacheMsgStale = 0;
+
     if (cacheSize > 0)
     {
         /*We may be simply resetting the context*/

@@ -132,7 +132,7 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
     }
 
     if (impl->mSendTime)
-        {
+    {
         mamaMsg_getTempCopy (msg, &modifableMsg);
         updateSendTime(impl, modifableMsg);
     }
@@ -148,7 +148,7 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
                                        mamaMsg reply)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-   
+
     if (impl->mSenderId != 0)
         updateSenderId(impl, reply);
         
@@ -167,7 +167,6 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
 
     if (impl->mSendTime)
     	updateSendTime(impl, reply);
-
     return (mamaPublisher_sendReplyToInbox (impl->mPublisher, request, reply));
 }
 

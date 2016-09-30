@@ -24,7 +24,7 @@ using System;
 namespace Wombat
 {
 	/// <summary>
-	/// MamdaFundamentals is an interface that provides access to the 
+	/// MamdaFundamentals is an interface that provides access to the
 	/// fundamental equity pricing/analysis attributes, indicators and ratios.
 	/// </summary>
 	public interface MamdaFundamentals
@@ -40,7 +40,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getCorporateActionTypeFieldState();
-        
+
 		/// <summary>
 		/// Dividend price.
 		/// </summary>
@@ -51,7 +51,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getDividendPriceFieldState();
-        
+
 		/// <summary>
 		/// Frequency of the dividend payments.
 		/// <ul>
@@ -72,7 +72,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getDividendFrequencyFieldState();
-        
+
 		/// <summary>
 		/// The date on or after which a security is traded without a
 		/// previously declared dividend or distribution.
@@ -85,7 +85,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getDividendExDateFieldState();
-        
+
 		/// <summary>
 		/// Date on which corporate action distribution will be paid or
 		/// effective.
@@ -98,7 +98,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getDividendPayDateFieldState();
-        
+
 		/// <summary>
 		/// This is the date on which all shareholders are considered a
 		/// "holder of record" and ensured the right of a dividend or distribution.
@@ -111,7 +111,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getDividendRecordDateFieldState();
-        
+
 		/// <summary>
 		/// Currency of dividend.
 		/// </summary>
@@ -123,7 +123,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getDividendCurrencyFieldState();
-        
+
 		/// <summary>
 		/// Shares outstanding. The number of authorized shares in a company
 		/// that are held by investors, including employees and
@@ -138,7 +138,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getSharesOutFieldState();
-        
+
 		/// <summary>
 		/// The number of shares of a security that are outstanding and
 		/// available for trading by the public.
@@ -151,7 +151,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getSharesFloatFieldState();
-        
+
 		/// <summary>
 		/// Authorized shares. The number of shares that a corporation is
 		/// permitted to issue.
@@ -164,7 +164,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getSharesAuthorizedFieldState();
-        
+
 		/// <summary>
 		/// Earnings per share, including common stock, preferred stock,
 		/// unexercised stock options, unexercised warrants, and some
@@ -181,7 +181,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getEarningsPerShareFieldState();
-        
+
 		/// <summary>
 		/// The relative rate at which the price of a security moves up and
 		/// down.
@@ -194,7 +194,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getVolatilityFieldState();
-        
+
 		/// <summary>
 		/// The most common measure of how expensive a stock is. The P/E
 		/// ratio is equal to a stock's market capitalization divided by its
@@ -209,7 +209,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getPriceEarningsRatioFieldState();
-        
+
 		/// <summary>
 		/// Yield, for cash instruments where prices are published
 		/// </summary>
@@ -221,7 +221,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getYieldFieldState();
-        
+
 		/// <summary>
 		/// Feed-specific market segment code in native feed format.
 		/// </summary>
@@ -233,7 +233,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getMarketSegmentNativeFieldState();
-        
+
 		/// <summary>
 		/// Feed-specific market sector code in native feed format.
 		/// </summary>
@@ -245,7 +245,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getMarketSectorNativeFieldState();
-        
+
 		/// <summary>
 		/// Market subgroup.
 		/// </summary>
@@ -257,7 +257,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getMarketSegmentFieldState();
-        
+
 		/// <summary>
 		/// A distinct subset of a market, society, industry, or economy,
 		/// whose components share similar characteristics
@@ -270,7 +270,7 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getMarketSectorFieldState();
-        
+
 		/// <summary>
 		/// Volatility estimated from historical data
 		/// </summary>
@@ -282,19 +282,19 @@ namespace Wombat
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getHistoricalVolatilityFieldState();
-        
+
 		/// <summary>
 		/// Theoretical interest rate at which an investment may earn
 		/// interest without incurring any risk
 		/// </summary>
 		/// <returns></returns>
 		double getRiskFreeRate();
-        
+
         /// <summary>
         /// Field State
         /// </summary>
         /// <returns></returns>
         MamdaFieldState getRiskFreeRateFieldState();
-        
+
 	}
 }

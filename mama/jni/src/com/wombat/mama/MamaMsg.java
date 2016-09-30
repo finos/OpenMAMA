@@ -93,17 +93,17 @@ public class MamaMsg
     */
     private MamaMsgField msgField_i = null;
     /* Reuseable objects */
-    private MamaDateTime myDateTime = null; 
-    private MamaPrice    myPrice    = null; 
-    
+    private MamaDateTime myDateTime = null;
+    private MamaPrice    myPrice    = null;
+
     private MamaMsgIterator myIterator = null;
-    
+
     /* Pointer to the underlying C structure of the reuseable objects */
     private long dateTimePointer_i = 0;
-    private long pricePointer_i    = 0; 
-    
+    private long pricePointer_i    = 0;
+
     /* Pointer to an array of reuseable JNI Msg Objects for extracting
-    vector messages */        
+    vector messages */
     private long  jMsgArray_i     = 0;
     private int   jMsgArraySize_i = 0;
 
@@ -127,14 +127,14 @@ public class MamaMsg
      * @param payloadId The identifier of the payload to be used.
      */
     public MamaMsg (char payloadId)
-    {    
+    {
         createForPayload (payloadId);
     }
 
     /**
      * Create a MamaMsg.
-     * 
-     * @param MamaPayloadBridge 
+     *
+     * @param payloadBridge The MamaPayloadBridge to be used
      */
     public MamaMsg (MamaPayloadBridge payloadBridge)
     {
@@ -143,7 +143,7 @@ public class MamaMsg
 
     /*
     * The reason for this private constructor is so we can
-    * create an instance of this class without actually creating 
+    * create an instance of this class without actually creating
     * the underlying C structure. This is required for subscription
     * callbacks where the message will already exist and we simply
     * set the pointer value correctly.
@@ -198,8 +198,8 @@ public class MamaMsg
      */
     public MamaBuffer getStringAsBuffer(String name, int fid)
     {
-		if (mamaBuffer==null)
-			mamaBuffer = new MamaBuffer();
+        if (mamaBuffer==null)
+            mamaBuffer = new MamaBuffer();
 
         // First call the native function to populate the member array
         int length = nativeGetAsBuffer(name, fid, mamaBuffer.array(), mamaBuffer.array().length, true);
@@ -243,7 +243,7 @@ public class MamaMsg
      *
      * @param name The field name.
      * @param fid The field Id.
-     * @param buffer A MamaBuffer that will contain the string if it is present 
+     * @param mamaBuffer A MamaBuffer that will contain the string if it is present
      *             in the message.
      * @return Boolean indicating of the field was present in the message or not.
      */
@@ -252,7 +252,7 @@ public class MamaMsg
         // First call the native function to populate the member array
         int length = nativeGetAsBuffer(name, fid, mamaBuffer.array(), mamaBuffer.array().length, false);
 
-        /* Exit with a FALSE if the length is equalled to INT_MAX as this will 
+        /* Exit with a FALSE if the length is equalled to INT_MAX as this will
         *    indicate that the field was not found from the native function above
         */
         if (length==Integer.MAX_VALUE)
@@ -289,7 +289,7 @@ public class MamaMsg
     {
         return msgPointer_i;
     }
-    
+
     /**
       * Return a iterator for use with this MamaMsg
       *
@@ -299,7 +299,7 @@ public class MamaMsg
       */
     public Iterator iterator (MamaDictionary dictionary)
     {
-              
+
         if (myIterator == null)
         {
             myIterator = new MamaMsgIterator(this, dictionary);
@@ -308,10 +308,10 @@ public class MamaMsg
         {
             myIterator.reset (this, dictionary);
         }
-        
+
         return myIterator;
     }
-    
+
     /**
       * Return an iterator for use with this MamaMsg
       *
@@ -320,10 +320,10 @@ public class MamaMsg
     public Iterator iterator ()
     {
         iterator (null);
-        
+
         return myIterator;
     }
-    
+
     /** Returns the total number of fields in the message.
       *
       * @return Number of fields in the message as in int
@@ -342,7 +342,7 @@ public class MamaMsg
       *                          exist
       */
     public native boolean  getBoolean (String name, int fid);
-    
+
     /**
       * Returns a Boolean value from the underlying message.
       *
@@ -389,8 +389,8 @@ public class MamaMsg
       */
     public char getChar( MamaFieldDescriptor fieldDesc )
     {
-        final String METHOD_NAME = "getChar(): "; 
-        if (null != fieldDesc) 
+        final String METHOD_NAME = "getChar(): ";
+        if (null != fieldDesc)
         {
             /*This can throw WombatException*/
             return getChar(fieldDesc.getName(), fieldDesc.getFid());
@@ -414,7 +414,7 @@ public class MamaMsg
       *                          exist
       */
     public native byte getI8 (String name, int fid);
-    
+
     /**
       * Returns a Integer (I8) value from the underlying message.
       *
@@ -449,7 +449,7 @@ public class MamaMsg
       *                          exist
       */
     public native short getU8 (String name, int fid);
-    
+
     /**
       * Returns a Unsigned Integer (U8) value from the underlying message.
       *
@@ -471,7 +471,6 @@ public class MamaMsg
                     +"MamaFieldDescriptor was null.");
         }
     }
-
 
     /**
       * Returns an I16 value from the underlying message.
@@ -520,7 +519,7 @@ public class MamaMsg
       *                          exist
       */
     public native int getU16 (String name, int fid);
-    
+
     /**
       * Returns a Unsigned Integer (U16) value from the underlying message.
       *
@@ -577,7 +576,6 @@ public class MamaMsg
                     + " MamaFieldDescriptor was null.");
         }
     }
-
 
     /**
       * Returns a U32 value from the underlying message.
@@ -766,7 +764,7 @@ public class MamaMsg
       *                          exist
       */
     public native String getString (String name, int fid);
-    
+
     /**
       * Returns a String value from the underlying message.
       *
@@ -823,7 +821,7 @@ public class MamaMsg
                     + " MamaFieldDescriptor was null.");
         }
     }
-	
+
 	/**
 	  * Return the internal message buffer as an array of bytes which is
 	  * suitable for writing to a file.
@@ -832,7 +830,7 @@ public class MamaMsg
 	  * @return The byte array containing the message wire format
 	  */
 	public native byte[] getByteBuffer();
-	
+
 	/**
 	  * Create a mamaMsg from the provided byte buffer.
 	  * This function causes a memory buffer to be allocated that is persisted for
@@ -840,20 +838,20 @@ public class MamaMsg
 	  * will cause an error. Instead destroy the message and then re-created it
 	  * using this function.
 	  * @param byteArray The byte array containing the wire format of the message
-	  */  
+	  */
 	public void createFromByteBuffer(byte[] byteArray)
 	{
 		if(byteArray == null)
 		{
-			throw new WombatException("createFromByteBuffer(): byteArray was null.");			
+			throw new WombatException("createFromByteBuffer(): byteArray was null.");
 		}
-		
+
 		// Call the native function
 		_createFromByteBuffer(byteArray);
 	}
-	
+
 	private native void _createFromByteBuffer(byte[] byteArray);
-	
+
 	/**
 	  * Set a new buffer for an existing mamaMsg. This approach is faster than
 	  * creating a new message for buffers as the message can reuse memory
@@ -862,20 +860,20 @@ public class MamaMsg
 	  * @param byteArray The byte array containing the wire format of the message
       *
       * @exception WombatException will be thrown if the byteArray is null
-	  */  
+	  */
 	public void setNewBuffer(byte[] byteArray)
 	{
 		if(byteArray == null)
 		{
-			throw new WombatException("setNewBuffer(): byteArray was null.");			
+			throw new WombatException("setNewBuffer(): byteArray was null.");
 		}
-		
+
 		// Call the native function
 		_setNewBuffer(byteArray);
 	}
-	
+
 	private native void _setNewBuffer(byte[] byteArray);
-   
+
     /**
       * Returns a Opaque value from the underlying message.
       *
@@ -907,7 +905,7 @@ public class MamaMsg
                     + " MamaFieldDescriptor was null.");
         }
     }
-         
+
     /**
       * Returns a MamaDateTime value from the underlying message.
       *
@@ -919,13 +917,13 @@ public class MamaMsg
     public MamaDateTime getDateTime (String name, int fid)
     {
         if (myDateTime == null)
-        {  
+        {
             myDateTime = new MamaDateTime();
             dateTimePointer_i = myDateTime.getPointerVal();
-        }        
+        }
         _getDateTime (name, fid);
-        return myDateTime;    
-    } 
+        return myDateTime;
+    }
 
     /**
       * Returns a MamaDateTime value from the underlying message.
@@ -939,8 +937,8 @@ public class MamaMsg
         return getDateTime (fieldDesc.getName (), fieldDesc.getFid());
     }
 
-    private native void _getDateTime (String name, int fid); 
-    
+    private native void _getDateTime (String name, int fid);
+
     /**
       * Returns a MamaPrice value from the underlying message.
       *
@@ -952,10 +950,10 @@ public class MamaMsg
     public MamaPrice getPrice (String name, int fid)
     {
         if (myPrice == null)
-        {  
+        {
             myPrice = new MamaPrice();
             pricePointer_i = myPrice.getPointerVal();
-        }            
+        }
         _getPrice (name, fid);
         return myPrice;
     }
@@ -971,7 +969,7 @@ public class MamaMsg
     {
         return getPrice (fieldDesc.getName(), fieldDesc.getFid());
     }
-    
+
     private native void _getPrice (String name, int fid);
 
     /**
@@ -1027,7 +1025,7 @@ public class MamaMsg
     {
         return getArrayI8 (fieldDesc.getName(), fieldDesc.getFid());
     }
-    
+
     /**
       * Returns a U8 Array value from the underlying message.
       *
@@ -1049,7 +1047,7 @@ public class MamaMsg
     {
         return getArrayU8 (fieldDesc.getName(), fieldDesc.getFid());
     }
-    
+
     /**
       * Returns an I16 Array value from the underlying message.
       *
@@ -1071,7 +1069,7 @@ public class MamaMsg
     {
         return getArrayI16 (fieldDesc.getName(), fieldDesc.getFid());
     }
-    
+
     /**
       * Returns a U16 Array value from the underlying message.
       *
@@ -1093,7 +1091,7 @@ public class MamaMsg
     {
         return getArrayU16 (fieldDesc.getName(), fieldDesc.getFid());
     }
-    
+
     /**
       * Returns an I32 Array value from the underlying message.
       *
@@ -1115,7 +1113,7 @@ public class MamaMsg
     {
         return getArrayI32 (fieldDesc.getName (), fieldDesc.getFid ());
     }
-    
+
     /**
       * Returns a U32 Array value from the underlying message.
       *
@@ -1159,7 +1157,7 @@ public class MamaMsg
     {
         return getArrayI64 (fieldDesc.getName(), fieldDesc.getFid());
     }
-    
+
     /**
       * Returns an U64 Array value from the underlying message.
       *
@@ -1180,7 +1178,7 @@ public class MamaMsg
     public long[] getArrayU64 (MamaFieldDescriptor fieldDesc)
     {
         return getArrayU64 (fieldDesc.getName (), fieldDesc.getFid ());
-    }    
+    }
 
     /**
       * Returns an F32 Array value from the underlying message.
@@ -1203,7 +1201,7 @@ public class MamaMsg
     {
         return getArrayF32 (fieldDesc.getName(), fieldDesc.getFid());
     }
-    
+
     /**
       * Returns an F64 Array value from the underlying message.
       *
@@ -1225,7 +1223,7 @@ public class MamaMsg
     {
         return getArrayF64 (fieldDesc.getName(), fieldDesc.getFid());
     }
-    
+
     /**
       * Returns an String Array value from the underlying message.
       *
@@ -1328,7 +1326,7 @@ public class MamaMsg
     public void addBool (String name,int fid, boolean value)
     {
         /* addBoolean is the one we "should" be using anyway,
-           so just call through to that to avoid having two 
+           so just call through to that to avoid having two
            identical native functions. */
         addBoolean (name, fid, value);
     }
@@ -1368,7 +1366,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addI8 (String name, int fid, byte value);
-        
+
     /**
       * Add an U8 (byte) value to the underlying message.
       *
@@ -1380,7 +1378,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addU8 (String name, int fid, short value);
-    
+
     /**
       * Add an I16 (short) value to the underlying message.
       *
@@ -1392,7 +1390,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addI16 (String name, int fid, short value);
-    
+
     /**
       * Add an U16 (short) value to the underlying message.
       *
@@ -1404,7 +1402,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addU16 (String name, int fid, int value);
-    
+
     /**
       * Add an I32 (int) value to the underlying message.
       *
@@ -1416,7 +1414,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addI32 (String name, int fid, int value);
-       
+
     /**
       * Add an U32 (int) value to the underlying message.
       *
@@ -1428,7 +1426,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addU32 (String name, int fid, long value);
-    
+
     /**
       * Add an I64 (long) value to the underlying message.
       *
@@ -1440,7 +1438,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addI64 (String name, int fid, long value);
-    
+
     /**
       * Add an U64 (long) value to the underlying message.
       *
@@ -1464,7 +1462,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addF32 (String name, int fid, float value);
-    
+
     /**
       * Add an F64 (double) value to the underlying message.
       *
@@ -1488,7 +1486,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addString (String name, int fid, String value);
-    
+
     /**
       * Add an MamaDateTime value to the underlying message.
       *
@@ -1500,7 +1498,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addDateTime (String name, int fid, MamaDateTime value);
-    
+
     /**
       * Add an MamaPrice value to the underlying message.
       *
@@ -1512,7 +1510,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addPrice (String name, int fid, MamaPrice value);
-    
+
     /**
       * Add an MamaMsg value to the underlying message.
       *
@@ -1536,7 +1534,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addOpaque (String name, int fid,byte[] value);
-    
+
     /**
       * Add an I8 Array (byte[]) value to the underlying message.
       *
@@ -1548,7 +1546,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addArrayI8 (String name, int fid, byte[] value);
-    
+
     /**
       * Add a U8 Array (short[]) value to the underlying message.
       *
@@ -1572,7 +1570,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addArrayI16 (String name, int fid, short[] value);
-    
+
     /**
       * Add a U16 Array (int[]) value to the underlying message.
       *
@@ -1620,7 +1618,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addArrayI64 (String name, int fid, long[] value);
-    
+
     /**
       * Add a U64 Array (long[]) value to the underlying message.
       *
@@ -1644,7 +1642,7 @@ public class MamaMsg
       *                          exist
       */
     public native void addArrayF32 (String name, int fid, float[] value);
-    
+
     /**
       * Add a F64 Array (double[]) value to the underlying message.
       *
@@ -1667,22 +1665,22 @@ public class MamaMsg
       * @exception MamaException will be thrown if the message pointer does not
       *                          exist
       */
-    public native void addArrayMsg (String name, int fid, MamaMsg[] value); 
+    public native void addArrayMsg (String name, int fid, MamaMsg[] value);
 
     /**
      * This function will add a new field containing an array of messages.
      * Unlinke addArrayMsg it will not add the entire array but only the
      * number of messages supplied in the length parameter.
-     * @param name the field name.
-     * @param fid the field id.
-     * @param value the array of messages.
-     * @param length the number of messages to add from the array, if this
+     * @param name The field name.
+     * @param fid  The field id.
+     * @param value The array of messages.
+     * @param length The number of messages to add from the array, if this
      *                    parameter is outside the array bounds then an
      *                    exception will be thrown.
      * @exception com.wombat.mama.MamaException
      */
     public native void addArrayMsgWithLength (String name, int fid, MamaMsg[] value, int length);
-    
+
     /**
       * Add a String Array (String[]) value to the underlying message.
       *
@@ -1696,8 +1694,8 @@ public class MamaMsg
       * @exception MamaException will be thrown if the message pointer does not
       *                          exist
       */
-    public native void addArrayString (String name, int fid, String[] value, int length);  
-    
+    public native void addArrayString (String name, int fid, String[] value, int length);
+
     /**
       * Add a String Array (String[]) value to the underlying message.
       *
@@ -1708,11 +1706,11 @@ public class MamaMsg
       * @exception MamaException will be thrown if the message pointer does not
       *                          exist
       */
-    public void addArrayString (String name, int fid, String[] value)    
+    public void addArrayString (String name, int fid, String[] value)
     {
-        addArrayString (name, fid, value, value.length);    
+        addArrayString (name, fid, value, value.length);
     }
-    
+
     /**
       * Update the value of an I8 (byte) value in the underlying message.
       *
@@ -1724,7 +1722,7 @@ public class MamaMsg
       *                          exist
       */
     public native void updateI8 (String name, int fid, byte value);
-    
+
     /**
       * Update the value of a U8 (byte) value in the underlying message.
       *
@@ -1760,7 +1758,7 @@ public class MamaMsg
       *                          exist
       */
     public native void updateU16( String name, int fid, int value );
-    
+
     /**
       * Update the value of an I32 (int) value in the underlying message.
       *
@@ -1783,7 +1781,7 @@ public class MamaMsg
       * @exception MamaException will be thrown if the message pointer does not
       *                          exist
       */
-    public native void updateU32( String name, int fid, long value ); 
+    public native void updateU32( String name, int fid, long value );
 
     /**
       * Update the value of an I64 (long) value in the underlying message.
@@ -1796,7 +1794,7 @@ public class MamaMsg
       *                          exist
       */
     public native void updateI64 (String name, int fid, long value);
-    
+
     /**
       * Update the value of a U64 (long) value in the underlying message.
       *
@@ -1808,7 +1806,7 @@ public class MamaMsg
       *                          exist
       */
     public native void updateU64 (String name, int fid, long value);
-    
+
     /**
       * Update the value of an F32 (float) value in the underlying message.
       *
@@ -1844,7 +1842,7 @@ public class MamaMsg
       *                          exist
       */
     public native void updateString (String name, int fid, String value);
-    
+
     /**
       * Update the value of a MamaPrice value in the underlying message.
       *
@@ -2012,7 +2010,7 @@ public class MamaMsg
       *                          exist
       */
     public native void updateArrayF64 (String name, int fid, double[] value);
-    
+
     /**
       * Return the value of a Char field from the underlying message.
       *
@@ -2031,10 +2029,10 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getChar();
     }
-    
+
     /**
       * Return the value of a Char field from the underlying message.
       *
@@ -2046,8 +2044,8 @@ public class MamaMsg
     public char getChar (MamaFieldDescriptor fieldDesc, char defaultValue)
     {
         return getChar (fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
-    }  
-            
+    }
+
     /**
       * Return the value of an I8 field from the underlying message.
       *
@@ -2066,10 +2064,10 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getI8();
     }
-    
+
     /**
       * Return the value of an I8 field from the underlying message.
       *
@@ -2081,8 +2079,8 @@ public class MamaMsg
     public byte getI8 (MamaFieldDescriptor fieldDesc, byte defaultValue)
     {
         return getI8 (fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
-    }  
-    
+    }
+
     /**
       * Return the value of a U8 field from the underlying message.
       *
@@ -2101,7 +2099,7 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getU8();
     }
 
@@ -2119,7 +2117,6 @@ public class MamaMsg
         return getU8 (fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
     }
 
-    
     /**
       * Return the value of an I16 field from the underlying message.
       *
@@ -2138,9 +2135,9 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getI16();
-    }    
+    }
 
     /**
       * Return the value of an I16 field from the underlying message.
@@ -2153,7 +2150,7 @@ public class MamaMsg
     public short getI16 (MamaFieldDescriptor fieldDesc, short defaultValue)
     {
         return getI16(fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
-    }  
+    }
 
     /**
       * Return the value of a U16 field from the underlying message.
@@ -2173,9 +2170,9 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getU16();
-    }        
+    }
 
     /**
       * Return the value of a U16 field from the underlying message.
@@ -2189,7 +2186,7 @@ public class MamaMsg
     {
         return getU16(fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
     }
-    
+
     /**
       * Return the value of an I32 field from the underlying message.
       *
@@ -2208,10 +2205,10 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getI32();
     }
-    
+
     /**
       * Return the value of an I32 field from the underlying message.
       *
@@ -2223,8 +2220,8 @@ public class MamaMsg
     public int getI32 (MamaFieldDescriptor fieldDesc, int defaultValue)
     {
         return getI32(fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
-    }  
-    
+    }
+
     /**
       * Return the value of a U32 field from the underlying message.
       *
@@ -2243,7 +2240,7 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getU32();
     }
 
@@ -2259,7 +2256,7 @@ public class MamaMsg
     {
         return getU32(fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
     }
-    
+
     /**
       * Return the value of an I64 field from the underlying message.
       *
@@ -2278,9 +2275,9 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getI64();
-    }   
+    }
 
     /**
       * Return the value of an I64 field from the underlying message.
@@ -2313,7 +2310,7 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getU64();
     }
 
@@ -2329,7 +2326,7 @@ public class MamaMsg
     {
         return getU64(fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
     }
-    
+
     /**
       * Return the value of an F32 field from the underlying message.
       *
@@ -2348,9 +2345,9 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getF32();
-    }    
+    }
 
     /**
       * Return the value of an F32 field from the underlying message.
@@ -2363,8 +2360,8 @@ public class MamaMsg
     public float getF32 (MamaFieldDescriptor fieldDesc, float defaultValue)
     {
         return getF32(fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
-    }  
-    
+    }
+
     /**
       * Return the value of an F64 field from the underlying message.
       *
@@ -2383,9 +2380,9 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getF64();
-    }        
+    }
 
     /**
       * Return the value of an F64 field from the underlying message.
@@ -2398,7 +2395,7 @@ public class MamaMsg
     public double getF64 (MamaFieldDescriptor fieldDesc, double defaultValue)
     {
         return getF64(fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
-    } 
+    }
 
     /**
       * Return the value of a String field from the underlying message.
@@ -2418,9 +2415,9 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getString();
-    }         
+    }
 
     /**
       * Return the value of a String field from the underlying message.
@@ -2433,8 +2430,8 @@ public class MamaMsg
     public String getString (MamaFieldDescriptor fieldDesc, String defaultValue)
     {
         return getString(fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
-    }  
-    
+    }
+
     /**
       * Return the value of a MamaPrice field from the underlying message.
       *
@@ -2453,9 +2450,9 @@ public class MamaMsg
         {
             return defaultValue;
         }
-                                                                                                                                
+
         return field.getPrice();
-    }         
+    }
 
     /**
       * Return the value of a MamaPrice field from the underlying message.
@@ -2468,8 +2465,8 @@ public class MamaMsg
     public MamaPrice getPrice (MamaFieldDescriptor fieldDesc, MamaPrice defaultValue)
     {
         return getPrice(fieldDesc.getName(), fieldDesc.getFid(), defaultValue);
-    }  
-    
+    }
+
     /**
       * Return the value of a MamaMsg field from the underlying message.
       *
@@ -2484,8 +2481,8 @@ public class MamaMsg
         {
             return defaultValue;
         }
-    
-        MamaMsgField field = getField (fieldDesc.getName(), 
+
+        MamaMsgField field = getField (fieldDesc.getName(),
                                        fieldDesc.getFid(), null);
         if (field == null)
         {
@@ -2493,7 +2490,7 @@ public class MamaMsg
         }
         return field.getMsg();
     }
-    
+
     /**
       * Return the value of an I32 Array field from the underlying message.
       *
@@ -2508,16 +2505,16 @@ public class MamaMsg
         {
             return defaultValue;
         }
-    
-        MamaMsgField field = getField (fieldDesc.getName(), 
+
+        MamaMsgField field = getField (fieldDesc.getName(),
                                        fieldDesc.getFid(), null);
         if (field == null)
         {
             return defaultValue;
         }
         return field.getArrayI32();
-    }  
-    
+    }
+
     /**
       * Return the value of a MamaMsg Array field from the underlying message.
       *
@@ -2533,17 +2530,17 @@ public class MamaMsg
         {
             return defaultValue;
         }
-        
-        MamaMsgField field = getField (fieldDesc.getName(), 
+
+        MamaMsgField field = getField (fieldDesc.getName(),
                                        fieldDesc.getFid(), null);
         if (field == null)
         {
             return defaultValue;
-        
-        } 
-        return field.getArrayMsg();    
+
+        }
+        return field.getArrayMsg();
     }
-    
+
     /**
       * Try to get the value of a Boolean field from the underlying message.
       *
@@ -2578,7 +2575,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryChar(String name, int fid, MamaChar result);
+    public native boolean tryChar(String name, int fid, MamaChar result);
 
     /**
       * Return the value of a MamaChar field from the underlying message.
@@ -2603,7 +2600,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryI8(String name, int fid, MamaByte result);
+    public native boolean tryI8(String name, int fid, MamaByte result);
 
     /**
       * Return the value of a MamaByte field from the underlying message.
@@ -2618,7 +2615,7 @@ public class MamaMsg
         if (null == field) return false;
         return tryI8 (field.getName(), field.getFid(), result );
     }
-   
+
     /**
       * Try to get the value of a MamaShort field from the underlying message.
       *
@@ -2628,7 +2625,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryU8(String name, int fid, MamaShort result);
+    public native boolean tryU8(String name, int fid, MamaShort result);
 
     /**
       * Return the value of a MamaShort field from the underlying message.
@@ -2653,7 +2650,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryI16(String name, int fid, MamaShort result);
+    public native boolean tryI16(String name, int fid, MamaShort result);
 
     /**
       * Return the value of a MamaShort field from the underlying message.
@@ -2678,7 +2675,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryU16(String name, int fid, MamaInteger result);
+    public native boolean tryU16(String name, int fid, MamaInteger result);
 
     /**
       * Return the value of a MamaInteger field from the underlying message.
@@ -2694,7 +2691,7 @@ public class MamaMsg
         if (null == field) return false;
         return tryU16 (field.getName(), field.getFid(), result );
     }
-    
+
     /**
       * Try to get the value of a MamaInteger field from the underlying message.
       *
@@ -2704,7 +2701,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryI32(String name, int fid, MamaInteger result);
+    public native boolean tryI32(String name, int fid, MamaInteger result);
 
     /**
       * Return the value of a MamaInteger field from the underlying message.
@@ -2729,7 +2726,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryU32(String name, int fid, MamaLong result);
+    public native boolean tryU32(String name, int fid, MamaLong result);
 
     /**
       * Return the value of a MamaLong field from the underlying message.
@@ -2754,7 +2751,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryI64(String name, int fid, MamaLong result);
+    public native boolean tryI64(String name, int fid, MamaLong result);
 
     /**
       * Return the value of a MamaLong field from the underlying message.
@@ -2779,7 +2776,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryU64(String name, int fid, MamaLong result);
+    public native boolean tryU64(String name, int fid, MamaLong result);
 
     /**
       * Return the value of a MamaLong field from the underlying message.
@@ -2804,7 +2801,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryF32(String name, int fid, MamaFloat result);
+    public native boolean tryF32(String name, int fid, MamaFloat result);
 
     /**
       * Return the value of a MamaFloat field from the underlying message.
@@ -2829,7 +2826,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryF64(String name, int fid, MamaDouble result);
+    public native boolean tryF64(String name, int fid, MamaDouble result);
 
     /**
       * Return the value of a MamaDouble field from the underlying message.
@@ -2853,7 +2850,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-    public boolean tryDateTime (MamaFieldDescriptor field,MamaDateTime result)
+    public boolean tryDateTime (MamaFieldDescriptor field, MamaDateTime result)
     {
         if (null == field) return false;
         return tryDateTime (field.getName(), field.getFid(),
@@ -2869,7 +2866,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryDateTime(String name, int fid, MamaDateTime result);
+    public native boolean tryDateTime(String name, int fid, MamaDateTime result);
 
     /**
       * Return the value of a MamaPrice field from the underlying message.
@@ -2894,7 +2891,7 @@ public class MamaMsg
       *
       * @return Boolean representing whether the field was present or not
       */
-	public native boolean tryPrice(String name, int fid, MamaPrice result);
+    public native boolean tryPrice(String name, int fid, MamaPrice result);
 
     /**
       * Try to get the value of a MamaString field from the underlying message.
@@ -3079,7 +3076,7 @@ public class MamaMsg
         if (null == field) return false;
         return tryArrayMsg (field.getName(), field.getFid(), result );
     }
-    
+
     /**
       * Try to get the value of a MamaArrayString field from the underlying message.
       *
@@ -3132,12 +3129,12 @@ public class MamaMsg
             msgField_i = new MamaMsgField();
         }
         _iterateFields (iterator, dictionary, closure);
-    } 
-    
+    }
+
     private native  void _iterateFields(MamaMsgFieldIterator iterator,
                                         MamaDictionary dictionary,
                                         Object closure);
-                              
+
     /**
       * Return a String representation of the entire message.
 
@@ -3210,14 +3207,14 @@ public class MamaMsg
       * and it will be the responsibility of the user to destroy.
       */
     public native MamaMsg detach ();
-    
+
     /**
       * Update the MamaMsg with the fields of another MamaMsg.
       *
       * @param rhs The MamaMsg to be used to update the current message
       */
     public native void apply(MamaMsg rhs);
-    
+
     /*Will create the underlying C Message and set the pointer value
      for the Java MamaMsg object*/
     private native void create ();
@@ -3237,10 +3234,10 @@ public class MamaMsg
       *
       * @return The MamaMsgField or null
       */
-    public MamaMsgField getField (MamaFieldDescriptor field, 
+    public MamaMsgField getField (MamaFieldDescriptor field,
                                   MamaDictionary dict)
     {
-        return getField (field.getName (), field.getFid(),dict);
+        return getField (field.getName (), field.getFid(), dict);
     }
 
     /**
@@ -3255,8 +3252,8 @@ public class MamaMsg
     public MamaMsgField getField (String fieldName, int fid,
                                   MamaDictionary dict)
     {
-        
-        /*calls the native method first. This will 
+
+        /*calls the native method first. This will
           reuse the reusable mamaMsgField in MamaMsg
           Only create the MsgField if we actually need to
         */
@@ -3269,7 +3266,7 @@ public class MamaMsg
         if (msgField_i.getPointerVal() == 0)
         {
             return null;
-        } 
+        }
         return msgField_i;
     }
 

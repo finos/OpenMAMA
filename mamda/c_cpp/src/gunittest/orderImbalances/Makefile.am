@@ -39,7 +39,7 @@ LDFLAGS  += -L${blddir}/../../cpp -L${blddir}/../../cpp/orderbooks \
         -L${blddir}/../../../../../mama/c_cpp/src/c/ \
         -L${blddir}/../../../../../mama/c_cpp/src/cpp
 
-LIBS = -lmamdabook -lmamda -lrt 
+LIBS = -lmamdabook -lmamda -lrt
 LIBS += -lmama -lwombatcommon -lmamacpp -lgtest
 
 LDADD = -lgtest_main
@@ -50,4 +50,3 @@ common_files = ../common/MainUnitTest.cpp ../common/MamdaUnitTestUtils.cpp
 dist_UnitTestMamdaOrderImbalance_SOURCES = MamdaOrderImbalanceFieldTests.cpp $(common_files)
 
 bin_PROGRAMS = UnitTestMamdaOrderImbalance
-

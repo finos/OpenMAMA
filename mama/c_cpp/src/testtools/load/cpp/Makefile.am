@@ -32,7 +32,7 @@ INCLUDES = -I$(srcdir) \
            -I${srcdir}/../../../../../../common/c_cpp/src/cpp \
            -I${srcdir}/.. \
            -I${srcdir}/../..
-            
+
 
 LDFLAGS += -L${srcdir}/../../../c \
            -L${srcdir}/../../../cpp \

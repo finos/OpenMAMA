@@ -37,7 +37,7 @@ namespace Wombat
     struct MamdaOrderBookBasicDeltaList::MamdaOrderBookBasicDeltaListImpl
     {
         MamdaOrderBookBasicDeltaListImpl();
-            
+
         void checkSide (const MamdaOrderBookPriceLevel*  level);
 
         void conflateLevelDeltas (MamdaOrderBookEntry*              entry,
@@ -45,33 +45,33 @@ namespace Wombat
                                   mama_quantity_t                   plDeltaSize,
                                   MamdaOrderBookPriceLevel::Action  plAction,
                                   MamdaOrderBookEntry::Action       entryAction);
-                                 
+
         void conflateEntryDeltas (MamdaOrderBookEntry*              entry,
                                   MamdaOrderBookPriceLevel*         level,
                                   mama_quantity_t                   plDeltaSize,
                                   MamdaOrderBookPriceLevel::Action  plAction,
                                   MamdaOrderBookEntry::Action       entryAction);
-                                                        
+
         void addEntryDelta       (BasicDeltaList&                   deltaList,
                                   MamdaOrderBookEntry*              entry,
                                   MamdaOrderBookPriceLevel*         level,
                                   mama_quantity_t                   plDeltaSize,
                                   MamdaOrderBookPriceLevel::Action  plAction,
                                   MamdaOrderBookEntry::Action       entryAction);
-                                
+
         void applyEntryDelta     (BasicDeltaList&                   deltaList,
                                   MamdaOrderBookEntry*              entry,
                                   MamdaOrderBookPriceLevel*         level,
                                   mama_quantity_t                   plDeltaSize,
                                   MamdaOrderBookPriceLevel::Action  plAction,
                                   MamdaOrderBookEntry::Action       entryAction);
-                                
+
         BasicDeltaMap*                               mBidLevelDeltas;
         BasicDeltaMap*                               mAskLevelDeltas;
 
         DeltaListMap*                                mBidEntryDeltas;
         DeltaListMap*                                mAskEntryDeltas;
-        
+
         mutable BasicDeltaList*                      mDeltas;
         MamdaOrderBook*                              mBook;
         MamdaOrderBookBasicDeltaList::ModifiedSides  mModSides;
@@ -80,7 +80,7 @@ namespace Wombat
         bool                                         mProcessEntries;
         bool                                         mSendImmediately;
         mama_size_t                                  mSize;
-    }; 
+    };
 
     MamdaOrderBookBasicDeltaList::MamdaOrderBookBasicDeltaList()
         : mImpl (*new MamdaOrderBookBasicDeltaListImpl)
@@ -91,7 +91,7 @@ namespace Wombat
     {
         clear();
         delete mImpl.mDeltas;  // can safely be NULL
-        
+
         if (mImpl.mBidLevelDeltas)
             delete mImpl.mBidLevelDeltas;
         if (mImpl.mAskLevelDeltas)
@@ -101,7 +101,7 @@ namespace Wombat
             delete mImpl.mBidEntryDeltas;
         if (mImpl.mAskEntryDeltas)
             delete mImpl.mAskEntryDeltas;
-        
+
         delete &mImpl;
     }
 
@@ -127,7 +127,7 @@ namespace Wombat
                 delete delta;
             }
             mImpl.mBidLevelDeltas->clear();
-            
+
             end = mImpl.mAskLevelDeltas->end();
             i   = mImpl.mAskLevelDeltas->begin();
             for (; i != end; ++i)
@@ -135,7 +135,7 @@ namespace Wombat
                 MamdaOrderBookBasicDelta* delta = i->second;
                 delete delta;
             }
-            mImpl.mAskLevelDeltas->clear();   
+            mImpl.mAskLevelDeltas->clear();
         }
         else if (mImpl.mBidEntryDeltas)
         {
@@ -154,7 +154,7 @@ namespace Wombat
                 delete deltas;
             }
             mImpl.mBidEntryDeltas->clear();
-            
+
             levelEnd  = mImpl.mAskEntryDeltas->end();
             levelIter = mImpl.mAskEntryDeltas->begin();
             for (; levelIter != levelEnd; ++levelIter)
@@ -198,12 +198,12 @@ namespace Wombat
                     mImpl.conflateLevelDeltas (entry, level, plDeltaSize,
                                                 plAction, entryAction);
                 }
-            }   
+            }
             else
             {
                 MamdaOrderBookBasicDelta* basicDelta = new MamdaOrderBookBasicDelta;
                 basicDelta->set (entry, level, plDeltaSize, plAction, entryAction);
-                
+
                 if (!mImpl.mDeltas)
                     mImpl.mDeltas = new BasicDeltaList;
                 mImpl.mDeltas->push_back (basicDelta);
@@ -261,7 +261,7 @@ namespace Wombat
     mama_size_t MamdaOrderBookBasicDeltaList::getSize() const
     {
         if (mImpl.mDeltas)
-        {  
+        {
             return mImpl.mDeltas->size();
         }
         else
@@ -429,15 +429,15 @@ namespace Wombat
             mBidEntryDeltas = new DeltaListMap;
         if (!mAskEntryDeltas)
             mAskEntryDeltas = new DeltaListMap;
-            
+
         double price = level->getPrice();
         DeltaListMap* deltaSide =
             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID == level->getSide()
             ? mBidEntryDeltas
             : mAskEntryDeltas;
-                 
+
         DeltaListMap::iterator found = deltaSide->find (price);
-        
+
         /* No deltas for this price level */
         if (found == deltaSide->end())
         {
@@ -448,7 +448,7 @@ namespace Wombat
                            plDeltaSize, plAction, entryAction);
             return;
         }
-        
+
         BasicDeltaList*  deltaList = found->second;
         if (0 == deltaList->size())
         {
@@ -456,7 +456,7 @@ namespace Wombat
                            plDeltaSize, plAction, entryAction);
             return;
         }
-        
+
         /* Existing deltas for this level */
         switch (plAction)
         {
@@ -464,9 +464,9 @@ namespace Wombat
             {
                 BasicDeltaList::iterator end = deltaList->end();
                 BasicDeltaList::iterator i   = deltaList->begin();
-                
+
                 MamdaOrderBookBasicDelta* basicDelta = *i;
-                
+
                 MamdaOrderBookPriceLevel::Action  firstAction =
                             basicDelta->getPlDeltaAction();
                 for (; i != end; ++i)
@@ -484,9 +484,9 @@ namespace Wombat
                     addEntryDelta (*deltaList, NULL, level,
                                     plDeltaSize, plAction, entryAction);
                     mSendImmediately = true;
-                    
+
                 }
-             
+
                 break;
             }
             case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD:
@@ -518,8 +518,8 @@ namespace Wombat
         MamdaOrderBookBasicDelta* basicDelta = new MamdaOrderBookBasicDelta;
         basicDelta->set (entry, level, plDeltaSize, plAction, entryAction);
         deltaList.push_back (basicDelta);
-        ++mSize; 
-    } 
+        ++mSize;
+    }
 
     /* Maybe change to a findOrCreate if needed */
     void
@@ -548,12 +548,12 @@ namespace Wombat
                     {
                         deltaList.erase (i);
                         delete delta;
-                        --mSize; 
+                        --mSize;
                         /* Do not add new entry if the existing one was added
-                           this conflation interval */ 
+                           this conflation interval */
                         if (MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD
                            != existingAction)
-                        {   
+                        {
                             addEntryDelta (deltaList, entry, level,
                                        plDeltaSize, plAction, entryAction);
                         }
@@ -561,10 +561,10 @@ namespace Wombat
                     }
                     case MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UPDATE:
                     case MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD:
-                    { 
+                    {
                         deltaList.erase (i);
                         delete delta;
-                        --mSize; 
+                        --mSize;
                         addEntryDelta (deltaList, entry, level,
                                        plDeltaSize, plAction, entryAction);
                         return;
@@ -578,7 +578,7 @@ namespace Wombat
         addEntryDelta (deltaList, entry, level,
                        plDeltaSize, plAction, entryAction);
         return;
-    } 
+    }
 
     void
     MamdaOrderBookBasicDeltaList::MamdaOrderBookBasicDeltaListImpl::conflateLevelDeltas (
@@ -598,14 +598,14 @@ namespace Wombat
             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID == level->getSide()
             ? mBidLevelDeltas
             : mAskLevelDeltas;
-                 
+
         BasicDeltaMap::iterator found = deltaSide->find(price);
         /* No deltas for this price level */
         if (found == deltaSide->end())
-        {       
+        {
             MamdaOrderBookBasicDelta* basicDelta = new MamdaOrderBookBasicDelta;
             basicDelta->set (entry, level, plDeltaSize, plAction, entryAction);
-            
+
             deltaSide->insert (BasicDeltaMap::value_type(price,basicDelta));
             ++mSize;
         }
@@ -621,7 +621,7 @@ namespace Wombat
                     {
                         delete existingDelta;
                         deltaSide->erase (found);
-                         --mSize; 
+                         --mSize;
                     }
                     else
                     {
@@ -632,7 +632,7 @@ namespace Wombat
                 case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD:
                     existingDelta->setPlDeltaAction (
                             MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE);
-                          
+
                 case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE: /* Fall through */
                     existingDelta->applyPlDeltaSize (plDeltaSize);
                     existingDelta->setPriceLevel (level);
@@ -660,7 +660,7 @@ namespace Wombat
             , mMapIterator     (NULL)
             , mEntryIterator   (NULL)
             {}
-            
+
         iteratorImpl (const iteratorImpl& copy)
             : mDeltas          (copy.mDeltas)
             , mDeltaIterator   (NULL)
@@ -685,7 +685,7 @@ namespace Wombat
                 {
                     mMapIterator   = new DeltaListMap::iterator (*copy.mMapIterator);
                     if (*mMapIterator != mAskEntryDeltas->end())
-                    {  
+                    {
                         mEntryIterator = new BasicDeltaList::iterator (
                                             (*mMapIterator)->second->begin ());
                     }
@@ -695,20 +695,20 @@ namespace Wombat
                     }
                 }
             }
-            
+
         iteratorImpl (BasicDeltaList*           deltas,
                       BasicDeltaList::iterator  iter)
             : mDeltas          (deltas)
             , mDeltaIterator   (new BasicDeltaList::iterator (iter))
             , mBidLevelDeltas  (NULL)
-            , mAskLevelDeltas  (NULL)  
+            , mAskLevelDeltas  (NULL)
             , mLevelIterator   (NULL)
             , mBidEntryDeltas  (NULL)
             , mAskEntryDeltas  (NULL)
             , mMapIterator     (NULL)
             , mEntryIterator   (NULL)
             {}
-            
+
         iteratorImpl (BasicDeltaMap*            bidDeltas,
                       BasicDeltaMap*            askDeltas,
                       BasicDeltaMap::iterator   iter)
@@ -745,7 +745,7 @@ namespace Wombat
                         *mMapIterator = mAskEntryDeltas->begin();
                     }
                 }
-                
+
                 if (*mMapIterator != mAskEntryDeltas->end())
                 {
                     mEntryIterator = new BasicDeltaList::iterator (
@@ -756,7 +756,7 @@ namespace Wombat
                     mEntryIterator = NULL;
                 }
             }
-            
+
         ~iteratorImpl ()
         {
             if (mDeltaIterator)
@@ -768,7 +768,7 @@ namespace Wombat
             if (mLevelIterator)
             {
                 delete mLevelIterator;
-                mLevelIterator = NULL;    
+                mLevelIterator = NULL;
 
             }
 
@@ -781,11 +781,11 @@ namespace Wombat
             if (mEntryIterator)
             {
                 delete mEntryIterator;
-                mEntryIterator = NULL;    
+                mEntryIterator = NULL;
 
             }
         }
-        
+
         BasicDeltaList* const       mDeltas;
         BasicDeltaList::iterator*   mDeltaIterator;
 
@@ -801,7 +801,7 @@ namespace Wombat
 
     MamdaOrderBookBasicDeltaList::iterator::iterator ()
         : mImpl (*new iteratorImpl(mImpl.mDeltas,
-                                   mImpl.mBidLevelDeltas, 
+                                   mImpl.mBidLevelDeltas,
                                    mImpl.mAskLevelDeltas,
                                    mImpl.mBidEntryDeltas,
                                    mImpl.mAskEntryDeltas))
@@ -841,7 +841,7 @@ namespace Wombat
                     mImpl.mBidEntryDeltas = new DeltaListMap;
                 if (!mImpl.mAskEntryDeltas)
                     mImpl.mAskEntryDeltas = new DeltaListMap;
-        
+
                 if (0 != mImpl.mBidEntryDeltas->size())
                 {
                     return iterator(iterator::iteratorImpl(
@@ -863,7 +863,7 @@ namespace Wombat
                     mImpl.mBidLevelDeltas = new BasicDeltaMap;
                 if (!mImpl.mAskLevelDeltas)
                     mImpl.mAskLevelDeltas = new BasicDeltaMap;
-        
+
                 if (0 != mImpl.mBidLevelDeltas->size())
                 {
                     return iterator(iterator::iteratorImpl(
@@ -902,7 +902,7 @@ namespace Wombat
                     mImpl.mBidEntryDeltas = new DeltaListMap;
                 if (!mImpl.mAskEntryDeltas)
                     mImpl.mAskEntryDeltas = new DeltaListMap;
-        
+
                 return iterator(iterator::iteratorImpl(mImpl.mBidEntryDeltas,
                                                 mImpl.mAskEntryDeltas,
                                                 mImpl.mAskEntryDeltas->end()));
@@ -963,7 +963,7 @@ namespace Wombat
                     mImpl.mBidLevelDeltas = new BasicDeltaMap;
                 if (!mImpl.mAskLevelDeltas)
                     mImpl.mAskLevelDeltas = new BasicDeltaMap;
-                
+
                 /* Start at the ask side if the bid side is empty */
                 if (0 != mImpl.mBidLevelDeltas->size())
                 {
@@ -1017,7 +1017,7 @@ namespace Wombat
                                                 mImpl.mAskLevelDeltas,
                                                 mImpl.mAskLevelDeltas->end()));
             }
-           
+
         }
         else
         {
@@ -1030,7 +1030,7 @@ namespace Wombat
 
     MamdaOrderBookBasicDeltaList::iterator&
     MamdaOrderBookBasicDeltaList::iterator::operator= (const iterator& rhs)
-    {  
+    {
         if (&rhs != this)
         {
             if (rhs.mImpl.mDeltaIterator)
@@ -1073,30 +1073,30 @@ namespace Wombat
         else if (mImpl.mMapIterator)
         {
             if (*mImpl.mMapIterator == mImpl.mAskEntryDeltas->end())
-            {  
+            {
                 return *this;
-            }    
+            }
             ++(*mImpl.mEntryIterator);
             /* If this entry delta is the last one for this level */
             if ((*mImpl.mEntryIterator) == (*mImpl.mMapIterator)->second->end ())
-            {  
+            {
                 do
                 {
                     ++(*mImpl.mMapIterator);
-        
+
                     if  ((*mImpl.mMapIterator) == mImpl.mBidEntryDeltas->end())
-                    {   
+                    {
                         *mImpl.mMapIterator = mImpl.mAskEntryDeltas->begin();
                     }
                 } /* Ignore empty levels */
                 while ((*mImpl.mMapIterator != mImpl.mAskEntryDeltas->end()) &&
                        (0 == (*mImpl.mMapIterator)->second->size()));
-                      
+
                 if (*mImpl.mMapIterator != mImpl.mAskEntryDeltas->end())
-                {    
+                {
                     *mImpl.mEntryIterator = (*mImpl.mMapIterator)->second->begin ();
                 }
-            }   
+            }
         }
         return *this;
     }
@@ -1125,17 +1125,17 @@ namespace Wombat
         else if (mImpl.mMapIterator)
         {
             if (*mImpl.mMapIterator == mImpl.mAskEntryDeltas->end())
-            {  
+            {
                 return *this;
-            }    
+            }
             ++(*mImpl.mEntryIterator);
             /* If this entry delta is the last one for this level */
             if ((*mImpl.mEntryIterator) == (*mImpl.mMapIterator)->second->end ())
-            {  
+            {
                 do
                 {
                     ++(*mImpl.mMapIterator);
-        
+
                     if  ((*mImpl.mMapIterator) == mImpl.mBidEntryDeltas->end())
                     {
                         *mImpl.mMapIterator = mImpl.mAskEntryDeltas->begin();
@@ -1143,12 +1143,12 @@ namespace Wombat
                 } /* Ignore empty levels */
                 while ((*mImpl.mMapIterator != mImpl.mAskEntryDeltas->end()) &&
                        (0 == (*mImpl.mMapIterator)->second->size()));
-                      
+
                 if (*mImpl.mMapIterator != mImpl.mAskEntryDeltas->end())
-                { 
+                {
                     *mImpl.mEntryIterator = (*mImpl.mMapIterator)->second->begin ();
                 }
-            }   
+            }
         }
         return *this;
     }
@@ -1166,7 +1166,7 @@ namespace Wombat
             if ((rhs.mImpl.mEntryIterator) &&
                 (*mImpl.mEntryIterator ==  *rhs.mImpl.mEntryIterator))
                 return true;
-                
+
             /* special case of the end interator*/
             return  (mImpl.mAskEntryDeltas->end() == *mImpl.mMapIterator &&
                      mImpl.mAskEntryDeltas->end() == *rhs.mImpl.mMapIterator);
@@ -1185,36 +1185,36 @@ namespace Wombat
     {
 
         if (mImpl.mDeltaIterator)
-        {   
+        {
             return *(*mImpl.mDeltaIterator);
         }
         else if (mImpl.mLevelIterator)
-        {  
+        {
            return (*(*mImpl.mLevelIterator)).second;
         }
         else if (mImpl.mEntryIterator)
-        {  
+        {
            return *(*mImpl.mEntryIterator);
-        }  
+        }
         return NULL;
     }
 
     const MamdaOrderBookBasicDelta*
     MamdaOrderBookBasicDeltaList::iterator::operator*() const
-    {  
+    {
         if (mImpl.mDeltaIterator)
-        {      
+        {
             return *(*mImpl.mDeltaIterator);
         }
         else if (mImpl.mLevelIterator)
-        {   
+        {
            return (*(*mImpl.mLevelIterator)).second;
         }
         else if (mImpl.mEntryIterator)
-        {    
+        {
            return *(*mImpl.mEntryIterator);
-        }  
+        }
         return NULL;
-    }   
+    }
 
 } // namespace

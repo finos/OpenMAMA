@@ -38,9 +38,9 @@ namespace Wombat
 		public const int BID_SIDE_VALUE = 0;
 		public static readonly MamdaOrderImbalanceSide BID_SIDE =
 			new MamdaOrderImbalanceSide(valueToString(BID_SIDE_VALUE), BID_SIDE_VALUE);
-    
+
 		/**ASK_SIDE_IMBALANCE*/
-		public const int ASK_SIDE_VALUE = 1; 
+		public const int ASK_SIDE_VALUE = 1;
 		public static readonly MamdaOrderImbalanceSide ASK_SIDE =
 			new MamdaOrderImbalanceSide(valueToString(ASK_SIDE_VALUE), ASK_SIDE_VALUE);
 
@@ -118,7 +118,7 @@ namespace Wombat
 		/// <summary>
 		/// Utility method for mapping type integer values to corresponding string
 		/// values.
-		/// 
+		///
 		/// Returns "UNKNOWN" is the int type value is not recognised.
 		/// </summary>
 		/// <param name="value">The int value for a MamdaOrderImbalanceSide</param>
@@ -160,6 +160,6 @@ namespace Wombat
 					return null;
 			}
 		}
-        
+
 	}
 }

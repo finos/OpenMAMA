@@ -35,7 +35,7 @@ namespace Wombat
         MAMA_QUALITY_OK,
         MAMA_QUALITY_MAYBE_STALE,
         MAMA_QUALITY_STALE,
-        MAMA_QUALITY_PARTIAL_STALE, 
+        MAMA_QUALITY_PARTIAL_STALE,
         MAMA_QUALITY_FORCED_STALE,
         MAMA_QUALITY_DUPLICATE,
         MAMA_QUALITY_UNKNOWN
@@ -76,8 +76,8 @@ namespace Wombat
         void onError(MamaSubscription subscription, MamaStatus.mamaStatus status, string subject);
 
         /// <summary>
-        /// Function invoked when a sequence number gap is detected. At this point the topic is 
-        /// considered stale and the subscription will not receive further messages until the 
+        /// Function invoked when a sequence number gap is detected. At this point the topic is
+        /// considered stale and the subscription will not receive further messages until the
         /// feed handler satisfies a recap request.
         /// </summary>
         /// <param name="subscription">
@@ -109,7 +109,7 @@ namespace Wombat
         /// The symbol.
         /// </param>
         void onQuality(MamaSubscription subscription, mamaQuality quality, string symbol);
-       
+
         /// <summary>
         /// Invoked when a recap is requested upon detecting a sequence number gap.
         /// </summary>
@@ -125,7 +125,7 @@ namespace Wombat
         /// The subscription that has been destroyed.
         /// </param>
         void onDestroy(MamaSubscription subscription);
-    }   
+    }
 
     #endregion
 }

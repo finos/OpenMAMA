@@ -21,16 +21,16 @@
 
 /*----------------------------------------------------------------------------
  *
- * This application demonstrates how to measure the performence by a pingpong 
- * test. 
+ * This application demonstrates how to measure the performence by a pingpong
+ * test.
  *
- * mamatest_requestercpp  accepts the following command line arguments: 
+ * mamatest_requestercpp  accepts the following command line arguments:
  *      [-n name]          The client name
  *      [-pp number]       The number of how many pingpongs to be sent.
  *                         Default 100000.
  *      [-stats number]    Intervals for stats. Default 100
  *      [-tport name]      The transport parameters to be used from
- *                         mama.properties. 
+ *                         mama.properties.
  *      [-m middleware]    The middleware to use [wmw/lbm/tibrv]
  *                         Default is wmw.
  *
@@ -67,7 +67,7 @@ static mamaBridge               gBridge             = NULL;
 static const char *             gMiddleware         = "wmw";
 static MamaQueue*               gDefaultQueue       = NULL;
 
-// the reply simulater has 5 outbound topics and one inbound. 
+// the reply simulater has 5 outbound topics and one inbound.
 static const char *           gOutBoundTopicCalc        = "MAMA_REPLY_CALC";
 static const char *           gOutBoundTopicRisk        = "MAMA_REPLY_RISK";
 static const char *           gOutBoundTopicPosition    = "MAMA_REPLY_POSITION";
@@ -106,7 +106,7 @@ static const char *           gUsageString[]            =
     "      [-tport name]      The transport parameters to be used from",
     "                         mama.properties. Default is pong",
     "      [-m middleware]    The middleware to use [wmw/lbm/tibrv].",
-    "                         Default is wmw.", 
+    "                         Default is wmw.",
     "",
     " mamatest_replycpp  accepts the following command line arguments:",
     "      [-tport name]      The transport parameters to be used from",
@@ -172,7 +172,7 @@ void initializeMama (void)
         Mama::open ();
 
         gDefaultQueue = Mama::getDefaultEventQueue (gBridge);
-        
+
         if (gUseSeparateTransports)
         {
             gTransportPub = new MamaTransport;
@@ -203,28 +203,28 @@ static void createPublisher (void)
                                    gTransportPub : gTransport;
 
         gPublisherCalc = new MamaPublisher;
-        gPublisherCalc->create (transport, 
-                                gOutBoundTopicCalc); 
+        gPublisherCalc->create (transport,
+                                gOutBoundTopicCalc);
 
         gPublisherRisk = new MamaPublisher;
-        gPublisherRisk->create (transport, 
-                                gOutBoundTopicRisk); 
+        gPublisherRisk->create (transport,
+                                gOutBoundTopicRisk);
 
         gPublisherPosition = new MamaPublisher;
-        gPublisherPosition->create (transport, 
-                                    gOutBoundTopicPosition); 
+        gPublisherPosition->create (transport,
+                                    gOutBoundTopicPosition);
 
         gPublisherSignal = new MamaPublisher;
-        gPublisherSignal->create (transport, 
-                                  gOutBoundTopicSignal); 
+        gPublisherSignal->create (transport,
+                                  gOutBoundTopicSignal);
 
         gPublisherHistorical = new MamaPublisher;
-        gPublisherHistorical->create (transport, 
-                                      gOutBoundTopicHistorical); 
+        gPublisherHistorical->create (transport,
+                                      gOutBoundTopicHistorical);
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error creating publisher: " 
+        cerr << "Error creating publisher: "
              << status.toString () << endl;
         exit (1);
     }
@@ -245,14 +245,14 @@ public:
 
     virtual void onError (MamaBasicSubscription*  subscription,
                           const MamaStatus&       status,
-                          const char*             subject) 
+                          const char*             subject)
     {
-        printf ("Error creating subscription: %s\n", 
+        printf ("Error creating subscription: %s\n",
                 status.toString ());
         exit (1);
     }
 
-    virtual void onMsg (MamaBasicSubscription* subscription, 
+    virtual void onMsg (MamaBasicSubscription* subscription,
                         MamaMsg&               msg)
     {
         int timeSec      = 0;
@@ -264,20 +264,20 @@ public:
             printf ("\nRecieved inbound msg.\n");
         }
 
-        // identify which server the request is intended for 
-        int calc_server; 
+        // identify which server the request is intended for
+        int calc_server;
         msg.tryI32 ("wCalcServer", 2, calc_server);
-        
-        // identify which server the request is intended for 
-        int requestSeqNum; 
+
+        // identify which server the request is intended for
+        int requestSeqNum;
         msg.tryI32 ("wRequestSeqNum", 5, requestSeqNum);
-        
+
         // find the machine name of the machine sending the request
         const char* id = NULL;
         msg.tryString ("wRequesterId", 4, id);
         char* requesterId = const_cast<char*> (id);
 
-        // retrieve the request function 
+        // retrieve the request function
         const char* func = NULL;
         msg.tryString ("wRequestFunction", 7, func);
         char* requestFunction = const_cast<char*> (func);
@@ -314,8 +314,8 @@ public:
             printf ("calc server\t %i\n",      calc_server);
             printf ("requestFunction\t  %s\n", requestFunction);
             printf ("requester ID\t %s\n",     requesterId);
-            printf ("request SeqNum\t %i\n",   requestSeqNum); 
-        } 
+            printf ("request SeqNum\t %i\n",   requestSeqNum);
+        }
 
         // decides which one of the calc servers processes the request
         switch (calc_server)
@@ -331,9 +331,9 @@ public:
                 msg->create ();
 
                 msg->addI32    ("wMsgType",         1,  MAMA_MSG_TYPE_WOMBAT_REQUEST);
-                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_CALC);                
+                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_CALC);
                 msg->addI32    ("wMsgStatus",       3,  MAMA_MSG_STATUS_OK);
-                msg->addString ("wRequesterId",     4,  requesterId);                  
+                msg->addString ("wRequesterId",     4,  requesterId);
                 msg->addI32    ("wRequestSeqNum",   5,  requestSeqNum);
                 msg->addString ("wActivityTime",    6,  "12:00:00");
                 msg->addString ("wRequestFunction", 7,  "getTestResult");
@@ -341,8 +341,8 @@ public:
                 msg->addI32    ("wTimeSec",         9,  timeSec);
                 msg->addI32    ("wTimeMicroSec",    10, timeMicroSec);
 
-                gPublisherCalc->send (msg); 
-                gNumPublished += 1; 
+                gPublisherCalc->send (msg);
+                gNumPublished += 1;
                 delete msg;
                 break;
             }
@@ -357,9 +357,9 @@ public:
                 msg->create ();
 
                 msg->addI32    ("wMsgType",         1,  MAMA_MSG_TYPE_WOMBAT_REQUEST);
-                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_RISK);                
+                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_RISK);
                 msg->addI32    ("wMsgStatus",       3,  MAMA_MSG_STATUS_OK);
-                msg->addString ("wRequesterId",     4,  requesterId);                  
+                msg->addString ("wRequesterId",     4,  requesterId);
                 msg->addI32    ("wRequestSeqNum",   5,  requestSeqNum);
                 msg->addString ("wActivityTime",    6,  "12:00:00");
                 msg->addString ("wRequestFunction", 7,  "getTestResult");
@@ -368,12 +368,12 @@ public:
                 msg->addI32    ("wTimeMicroSec",    10, timeMicroSec);
 
                 gPublisherRisk->send (msg);
-                gNumPublished += 1; 
+                gNumPublished += 1;
 
                 if (gNumPublished%gPrintInterval == 0)
                 {
-                    printf ("%i\n", gNumPublished); 
-                }  
+                    printf ("%i\n", gNumPublished);
+                }
 
                 delete msg;
                 break;
@@ -389,9 +389,9 @@ public:
                 msg->create ();
 
                 msg->addI32    ("wMsgType",         1,  MAMA_MSG_TYPE_WOMBAT_REQUEST);
-                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_POSITION);                
+                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_POSITION);
                 msg->addI32    ("wMsgStatus",       3,  MAMA_MSG_STATUS_OK);
-                msg->addString ("wRequesterId",     4,  requesterId);                  
+                msg->addString ("wRequesterId",     4,  requesterId);
                 msg->addI32    ("wRequestSeqNum",   5,  requestSeqNum);
                 msg->addString ("wActivityTime",    6,  "12:00:00");
                 msg->addString ("wRequestFunction", 7,  "getTestResult");
@@ -399,13 +399,13 @@ public:
                 msg->addI32    ("wTimeSec",         9,  timeSec);
                 msg->addI32    ("wTimeMicroSec",    10, timeMicroSec);
 
-                gPublisherPosition->send (msg); 
+                gPublisherPosition->send (msg);
                 gNumPublished += 1;
 
                 if (gNumPublished%gPrintInterval == 0)
                 {
-                    printf ("%i\n", gNumPublished); 
-                }  
+                    printf ("%i\n", gNumPublished);
+                }
 
                 delete msg;
                 break;
@@ -416,14 +416,14 @@ public:
                 {
                     printf ("Publishing Signal Reply \n");
                 }
-                
+
                 MamaMsg *msg = new MamaMsg;
                 msg->create ();
 
                 msg->addI32    ("wMsgType",         1,  MAMA_MSG_TYPE_WOMBAT_REQUEST);
-                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_SIGNAL);                
+                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_SIGNAL);
                 msg->addI32    ("wMsgStatus",       3,  MAMA_MSG_STATUS_OK);
-                msg->addString ("wRequesterId",     4,  requesterId);                  
+                msg->addString ("wRequesterId",     4,  requesterId);
                 msg->addI32    ("wRequestSeqNum",   5,  requestSeqNum);
                 msg->addString ("wActivityTime",    6,  "12:00:00");
                 msg->addString ("wRequestFunction", 7,  "getTestResult");
@@ -431,13 +431,13 @@ public:
                 msg->addI32    ("wTimeSec",         9,  timeSec);
                 msg->addI32    ("wTimeMicroSec",    10, timeMicroSec);
 
-                gPublisherSignal->send (msg); 
-                gNumPublished += 1; 
+                gPublisherSignal->send (msg);
+                gNumPublished += 1;
 
                 if (gNumPublished%gPrintInterval == 0)
                 {
-                    printf ("%i\n", gNumPublished); 
-                }  
+                    printf ("%i\n", gNumPublished);
+                }
 
                 delete msg;
                 break;
@@ -448,14 +448,14 @@ public:
                 {
                     printf ("Publishing Historical Reply \n");
                 }
-                
+
                 MamaMsg *msg = new MamaMsg;
                 msg->create ();
 
                 msg->addI32    ("wMsgType",         1,  MAMA_MSG_TYPE_WOMBAT_REQUEST);
-                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_HISTORICAL);                
+                msg->addI32    ("wCalcServer",      2,  MAMA_REPLY_HISTORICAL);
                 msg->addI32    ("wMsgStatus",       3,  MAMA_MSG_STATUS_OK);
-                msg->addString ("wRequesterId",     4,  requesterId);                  
+                msg->addString ("wRequesterId",     4,  requesterId);
                 msg->addI32    ("wRequestSeqNum",   5,  requestSeqNum);
                 msg->addString ("wActivityTime",    6,  "12:00:00");
                 msg->addString ("wRequestFunction", 7,  "getTestResult");
@@ -463,15 +463,15 @@ public:
                 msg->addI32    ("wTimeSec",         9,  timeSec);
                 msg->addI32    ("wTimeMicroSec",    10, timeMicroSec);
 
-                gPublisherHistorical->send (msg); 
-                gNumPublished += 1; 
+                gPublisherHistorical->send (msg);
+                gNumPublished += 1;
 
                 delete msg;
                 break;
             }
             case MAMA_REQUEST:
             {
-                // will always be a request in the reply server 
+                // will always be a request in the reply server
                 break;
             }
             default:
@@ -499,7 +499,7 @@ static void createInboundSubscription (void)
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error creating subscription: " 
+        cerr << "Error creating subscription: "
              << status.toString () << endl;
         exit (1);
     }

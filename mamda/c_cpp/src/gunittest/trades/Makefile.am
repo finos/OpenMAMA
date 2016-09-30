@@ -40,7 +40,7 @@ LDFLAGS  += -L${blddir}/../../cpp -L${blddir}/../../cpp/orderbooks \
         -L${blddir}/../../../../../mama/c_cpp/src/cpp
 
 
-LIBS = -lmamdabook -lmamda -lrt 
+LIBS = -lmamdabook -lmamda -lrt
 LIBS += -lmama -lwombatcommon -lmamacpp -lgtest
 
 LDADD = -lgtest_main
@@ -56,5 +56,3 @@ dist_UnitTestMamdaTradeTests_SOURCES =  MamdaTradeCallBackTests.cpp \
                                 $(common_files)
 
 bin_PROGRAMS = UnitTestMamdaTradeTests
-
-

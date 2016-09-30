@@ -6,7 +6,7 @@ env = env.Clone()
 
 InstMamdaNewsInclude = \
     Split("""
-	mamda/MamdaNewsFields.h 
+	mamda/MamdaNewsFields.h
 	mamda/MamdaNewsHeadline.h
 	mamda/MamdaNewsHeadlineHandler.h
 	mamda/MamdaNewsManager.h

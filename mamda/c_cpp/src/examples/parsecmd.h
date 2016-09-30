@@ -32,7 +32,7 @@ using namespace Wombat;
 class CommonCommandLineParser
 {
 public:
-    CommonCommandLineParser (int          argc, 
+    CommonCommandLineParser (int          argc,
                              const char*  argv[]);
     ~CommonCommandLineParser ();
 
@@ -63,11 +63,11 @@ public:
     bool                        getOptBool   (const char*  option);
     int                         getOptInt    (char         option,
                                               int          defaultValue = 0);
-    int                         getOptInt    (const char*  option, 
+    int                         getOptInt    (const char*  option,
                                               int          defaultValue = 0);
     const char*                 getOptString (char         option);
     const char*                 getOptString (const char*  option);
-    
+
     const char*                 getQueryArg1 ();
     const char*                 getQueryArg2 ();
     const char*                 getQueryArg3 ();
@@ -76,7 +76,7 @@ public:
     int                         getQueryType ();
     int                         getQueries   ();
     bool                        getPublishRecaps ();
-    
+
 private:
     struct CommonCommandLineParserImpl;
     CommonCommandLineParserImpl& mImpl;

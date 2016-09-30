@@ -20,7 +20,7 @@
  */
 
 /*
-* Implementation for each of the native methods defined in the Mama.java 
+* Implementation for each of the native methods defined in the Mama.java
 * source file.
 */
 
@@ -74,11 +74,11 @@ static	void MAMACALLTYPE	startBackgroundCallback(int status);
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* jvm, void* reserved)
 {
     /*
-        We cache the jvm pointer for future use in asynchronous callbacks. 
+        We cache the jvm pointer for future use in asynchronous callbacks.
     */
     javaVM_g = jvm;
 
-    /*As per the spec*/ 
+    /*As per the spec*/
     return JNI_VERSION_1_2;
 }
 
@@ -139,7 +139,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_Mama_loadBridge
                                                     middleware_c);
     if (path_c) (*env)->ReleaseStringUTFChars(env,
                                               path,
-                                              path_c);    
+                                              path_c);
 
     (*env)->DeleteLocalRef(env, bridgeClass);
     return result;
@@ -398,7 +398,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_close
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     if (MAMA_STATUS_OK != (status = mama_close()))
-    { 
+    {
         utils_buildErrorStringForStatus(
                             errorString,
                             UTILS_MAX_ERROR_STRING_LENGTH,
@@ -771,7 +771,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_setApplicationClassName
     }
 
     /*Release any strings created*/
-    if (applicationClassName_c) (*env)->ReleaseStringUTFChars(env, 
+    if (applicationClassName_c) (*env)->ReleaseStringUTFChars(env,
                                                               applicationClassName,
                                                               applicationClassName_c);
 }
@@ -990,7 +990,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_initIDs
 	}
 
 	/*Tidy up local refs*/
-	(*env)->DeleteLocalRef(env, mamaStartBackgroundCallbackClass);	
+	(*env)->DeleteLocalRef(env, mamaStartBackgroundCallbackClass);
 
 	/* The onLog callback. */
 	/* Find the callback class. */
@@ -1001,7 +1001,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_initIDs
 		onLogId_g = (*env)->GetMethodID(
 			env,
 			mamaLogCallbackClass,
-			"onNativeLogCallback",			
+			"onNativeLogCallback",
 			"(ILjava/lang/String;)V");
 	}
 
@@ -1037,7 +1037,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_log
     {
 		/* Convert the jstring to a c string. */
 		cMessage = (*env)->GetStringUTFChars(env, message, 0);
-		if(!cMessage) 
+		if(!cMessage)
 		{
 			return;/*Exception auto thrown*/
 		}
@@ -1085,7 +1085,7 @@ void MAMACALLTYPE onMamaLog(MamaLogLevel level, const char *format, va_list argu
 	/* Get the java environment. */
 	JNIEnv *env = utils_getENV(javaVM_g);
 	if(env != NULL)
-	{    
+	{
 		/* Only continue if the callback has been supplied. */
 		if(mLogCallback != NULL)
 		{
@@ -1096,15 +1096,15 @@ void MAMACALLTYPE onMamaLog(MamaLogLevel level, const char *format, va_list argu
 
 			/* Format the message into the buffer. */
 			vsnprintf(buffer, (sizeof(buffer) - 1), format, argumentList);
-		
+
 			/* Add a null terminator. */
 			strcat(buffer, "\0");
 
             /* Convert the character pointer to a java string. */
-            javaBuffer = (*env)->NewStringUTF(env, buffer);	
+            javaBuffer = (*env)->NewStringUTF(env, buffer);
 
             /* Invoke the log method. */
-            (*env)->CallVoidMethod(env, mLogCallback, onLogId_g, level, javaBuffer);			
+            (*env)->CallVoidMethod(env, mLogCallback, onLogId_g, level, javaBuffer);
 
             (*env)->DeleteLocalRef(env, javaBuffer);
         }
@@ -1129,5 +1129,5 @@ void MAMACALLTYPE startBackgroundCallback(int status)
                                mStartBackgroundCallback,
                                onStartBackgroundCompleted_g,
 							   status);
-    }    
+    }
 }

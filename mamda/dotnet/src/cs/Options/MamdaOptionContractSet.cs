@@ -65,7 +65,7 @@ namespace Wombat
 		{
 			mExchangeContracts.put(exchange, contract);
 		}
-		
+
 		/// <summary>
 		/// Return the contract for the best bid and offer.
 		/// </summary>
@@ -115,7 +115,7 @@ namespace Wombat
 		{
 			return mExchangeContracts.keySet();
 		}
-	
+
 		private MamdaOptionContract  mBboContract       = null;
 		private MamdaOptionContract  mWombatmBboContract = null;
 		private TreeMap              mExchangeContracts = null;

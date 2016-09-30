@@ -55,13 +55,13 @@ jlong 	createTimeZone (JNIEnv* env, jobject this);
  */
 JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaDateTime_isEmpty
   (JNIEnv* env, jobject this)
-{   
+{
     jlong pDateTime   = 0;
-    
+
     pDateTime = (*env)->GetLongField (env,this, dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0);
-    
+
     return (jboolean) mamaDateTime_empty(
                         CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime));
 }
@@ -76,14 +76,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_setEpochTimeF64
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.");
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_setEpochTimeF64(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             (mama_f64_t) secondsSinceEpoch)))
     {
          utils_buildErrorStringForStatus(
@@ -105,13 +105,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_setEpochTimeMillisecond
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.");
 
     if(MAMA_STATUS_OK!=(status=mamaDateTime_setEpochTimeMilliseconds(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             (mama_u64_t) millisecondsSinceEpoch)))
     {
          utils_buildErrorStringForStatus(
@@ -133,14 +133,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_setEpochTimeMicrosecond
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.");
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_setEpochTimeMicroseconds(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             (mama_u64_t) microsecondsSinceEpoch)))
     {
          utils_buildErrorStringForStatus(
@@ -162,12 +162,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_setToNow
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_setToNow(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime))))
     {
@@ -190,15 +190,15 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_setDate
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
     if(MAMA_STATUS_OK!=(status=mamaDateTime_setDate(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
-                            (mama_u32_t) year, 
-                            (mama_u32_t) month, 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
+                            (mama_u32_t) year,
+                            (mama_u32_t) month,
                             (mama_u32_t) day)))
     {
          utils_buildErrorStringForStatus(
@@ -221,14 +221,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_copyTime
     jlong       pDateTime       = 0;
     jlong       pDateTimeToCopy = 0;
     mama_status status          = MAMA_STATUS_OK;
-    char        errorString     [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString     [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
-    pDateTimeToCopy = (*env)->GetLongField(env,other,dateTimePointerFieldId_g);   
-    
+
+    pDateTimeToCopy = (*env)->GetLongField(env,other,dateTimePointerFieldId_g);
+
     if((pDateTimeToCopy == 0) ||
         MAMA_STATUS_OK!=(status=mamaDateTime_copyTime(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
@@ -254,14 +254,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_copyDate
     jlong       pDateTime       = 0;
     jlong       pDateTimeToCopy = 0;
     mama_status status          = MAMA_STATUS_OK;
-    char        errorString     [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString     [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    pDateTimeToCopy = (*env)->GetLongField(env,other,dateTimePointerFieldId_g);   
-    
-    if((pDateTimeToCopy == 0) || 
+    pDateTimeToCopy = (*env)->GetLongField(env,other,dateTimePointerFieldId_g);
+
+    if((pDateTimeToCopy == 0) ||
         MAMA_STATUS_OK!=(status=mamaDateTime_copyDate(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTimeToCopy))))
@@ -285,12 +285,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_clear
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_clear(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime))))
     {
@@ -300,9 +300,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_clear
                 "Error calling MamaDateTime.clear().",
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
-    }    
+    }
 }
- 
+
 /*
  * Class:     com_wombat_mama_MamaDateTime
  * Method:    clearTime
@@ -313,12 +313,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_clearTime
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_clearTime(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime))))
     {
@@ -328,7 +328,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_clearTime
                 "Error calling MamaDateTime.clearTime().",
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
-    }    
+    }
 }
 
 /*
@@ -341,12 +341,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_clearDate
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_clearDate(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime))))
     {
@@ -356,7 +356,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_clearDate
                 "Error calling MamaDateTime.clearDate().",
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
-    }    
+    }
 }
 
 /*
@@ -369,14 +369,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_addSeconds__D
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_addSeconds(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             (mama_f64_t) seconds)))
     {
          utils_buildErrorStringForStatus(
@@ -385,8 +385,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_addSeconds__D
                 "Error calling MamaDateTime.addSeconds().",
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
-    }    
-} 
+    }
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -398,14 +398,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_addSeconds__J
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_addWholeSeconds(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             (mama_i32_t) seconds)))
     {
          utils_buildErrorStringForStatus(
@@ -414,7 +414,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_addSeconds__J
                 "Error calling MamaDateTime.addSeconds().",
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
-    }     
+    }
 }
 
 /*
@@ -427,14 +427,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_addMicroSeconds
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_addMicroseconds(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             (mama_i32_t) microSeconds)))
     {
          utils_buildErrorStringForStatus (
@@ -443,7 +443,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_addMicroSeconds
                 "Error calling MamaDateTime.addMicroSeconds().",
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
-    }     
+    }
 }
 
 /*
@@ -458,10 +458,10 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeMicrosec
     jlong       pTimeZone   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u64_t  epochTime   = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
 
     if (NULL != timeZone)
@@ -474,7 +474,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeMicrosec
         }
         timeZone_set (env, pTimeZone, timeZone);
     }
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeMicrosecondsWithTz(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &epochTime,
@@ -487,7 +487,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeMicrosec
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;
-    }       
+    }
     return (jlong) epochTime;
  }
 
@@ -503,12 +503,12 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeMillisec
     jlong       pTimeZone   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u64_t  epochTime   = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if (NULL != timeZone)
     {
         pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
@@ -519,7 +519,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeMillisec
         }
         timeZone_set (env, pTimeZone, timeZone);
     }
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeMillisecondsWithTz(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &epochTime,
@@ -534,7 +534,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeMillisec
         return 0;
      }
     return (jlong) epochTime;
- } 
+ }
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -548,12 +548,12 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeSecond
     jlong       pTimeZone   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_f64_t  epochTime   = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if (NULL != timeZone)
     {
         pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
@@ -564,9 +564,9 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeSecond
         }
         timeZone_set (env, pTimeZone, timeZone);
     }
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeSecondsWithTz (
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &epochTime,
                             CAST_JLONG_TO_POINTER (mamaTimeZone,pTimeZone))))
     {
@@ -577,9 +577,9 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime__1getEpochTimeSecond
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;
-    }       
+    }
     return (jdouble) epochTime;
- } 
+ }
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -592,14 +592,14 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeSecondsW
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_f64_t  epochTime   = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getEpochTimeSecondsWithCheck (
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &epochTime)))
     {
          utils_buildErrorStringForStatus(
@@ -609,16 +609,16 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime_getEpochTimeSecondsW
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;
-    }       
+    }
     return (jdouble) epochTime;
- } 
+ }
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
  * Method:    hasDate
  * Signature: ()Z
  */
-JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaDateTime_hasDate 
+JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaDateTime_hasDate
     (JNIEnv* env, jobject this)
 {
     jlong       pDateTime   = 0;
@@ -653,12 +653,12 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaDateTime_hasDate
  */
 JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaDateTime_hasTime
     (JNIEnv* env, jobject this)
-{ 
+{
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_bool_t result      = 0;
     char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-  
+
     pDateTime = (*env)->GetLongField(env, this, dateTimePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
         "Null parameter, MamaDateTime may have already been destroyed.", 0);
@@ -690,15 +690,15 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getAsString
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     char        ret_c       [MAX_DATE_TIME_STR_LEN+1];
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", NULL) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getAsString(
-                            CAST_JLONG_TO_POINTER(mamaDateTime,pDateTime), 
-                            ret_c, 
+                            CAST_JLONG_TO_POINTER(mamaDateTime,pDateTime),
+                            ret_c,
                             MAX_DATE_TIME_STR_LEN)))
     {
          utils_buildErrorStringForStatus(
@@ -725,10 +725,10 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getAsFormattedString
     const char* c_Str       = NULL;
     mama_status status      = MAMA_STATUS_OK;
     char        ret_c       [MAX_DATE_TIME_STR_LEN+1];
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
                              "Null parameter, MamaDateTime may have already been destroyed.", NULL) ;
 
     if (NULL != timeZone)
@@ -743,11 +743,11 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getAsFormattedString
     }
 
     c_Str = (*env)->GetStringUTFChars(env,str,0);
- 
+
     if (!c_Str ||
         MAMA_STATUS_OK!=(status=mamaDateTime_getAsFormattedStringWithTz(
-                            CAST_JLONG_TO_POINTER(mamaDateTime,pDateTime), 
-                            ret_c, 
+                            CAST_JLONG_TO_POINTER(mamaDateTime,pDateTime),
+                            ret_c,
                             MAX_DATE_TIME_STR_LEN,
                             c_Str,
                             timeZone
@@ -763,7 +763,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getAsFormattedString
         return 0;
     }
     return (*env)->NewStringUTF (env, ret_c);
-}  
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -776,15 +776,15 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getTimeAsString
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     char        ret_c       [MAX_DATE_TIME_STR_LEN+1];
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", NULL) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getTimeAsString(
-                            CAST_JLONG_TO_POINTER(mamaDateTime,pDateTime), 
-                            ret_c, 
+                            CAST_JLONG_TO_POINTER(mamaDateTime,pDateTime),
+                            ret_c,
                             MAX_DATE_TIME_STR_LEN)))
     {
          utils_buildErrorStringForStatus(
@@ -796,7 +796,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getTimeAsString
         return 0;
     }
     return (*env)->NewStringUTF (env, ret_c);
-} 
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -809,15 +809,15 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getDateAsString
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     char        ret_c       [MAX_DATE_TIME_STR_LEN+1];
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", NULL) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getDateAsString(
-                            CAST_JLONG_TO_POINTER(mamaDateTime,pDateTime), 
-                            ret_c, 
+                            CAST_JLONG_TO_POINTER(mamaDateTime,pDateTime),
+                            ret_c,
                             MAX_DATE_TIME_STR_LEN)))
     {
          utils_buildErrorStringForStatus(
@@ -829,7 +829,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaDateTime_getDateAsString
         return NULL;
     }
     return (*env)->NewStringUTF(env, ret_c);
-} 
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -842,14 +842,14 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getYear
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u32_t  year        = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getYear(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &year)))
     {
          utils_buildErrorStringForStatus(
@@ -859,9 +859,9 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getYear
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;
-    }       
+    }
     return (jlong) year;
- } 
+ }
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -874,14 +874,14 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getMonth
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u32_t  month       = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getMonth(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &month)))
     {
          utils_buildErrorStringForStatus(
@@ -891,9 +891,9 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getMonth
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;
-    }       
+    }
     return (jlong) month;
- } 
+ }
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -906,14 +906,14 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getMonth
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u32_t  day         = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getDay(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &day)))
     {
          utils_buildErrorStringForStatus(
@@ -923,9 +923,9 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getMonth
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return 0;
-    }       
+    }
     return (jlong) day;
-}   
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -938,14 +938,14 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getHour
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u32_t  hour        = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getHour(
-                            CAST_JLONG_TO_POINTER (mamaDateTime, pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime, pDateTime),
                             &hour)))
     {
          utils_buildErrorStringForStatus(
@@ -955,9 +955,9 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getHour
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return 0;
-    }       
+    }
     return (jlong) hour;
-}   
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -970,14 +970,14 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getMinute
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u32_t  minute      = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getMinute(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &minute)))
     {
          utils_buildErrorStringForStatus(
@@ -987,9 +987,9 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getMinute
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;
-    }       
+    }
     return (jlong) minute;
-}    
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -1002,14 +1002,14 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getSecond
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u32_t  second      = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getSecond(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &second)))
     {
          utils_buildErrorStringForStatus(
@@ -1019,10 +1019,10 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getSecond
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return 0;
-    }       
+    }
     return (jlong) second;
-} 
- 
+}
+
 /*
  * Class:     com_wombat_mama_MamaDateTime
  * Method:    getMicroSecond
@@ -1034,14 +1034,14 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getMicrosecond
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
     mama_u32_t  microSecond = 0;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_getMicrosecond(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             &microSecond)))
     {
          utils_buildErrorStringForStatus(
@@ -1051,9 +1051,9 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_getMicrosecond
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
         return 0;
-    }       
+    }
     return (jlong) microSecond;
-} 
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -1064,19 +1064,19 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime_diffSeconds
   (JNIEnv* env, jclass this, jobject time1, jobject time2)
 {
     jlong       pTime1      = 0;
-    jlong       pTime2      = 0; 
+    jlong       pTime2      = 0;
     mama_f64_t  result      = 0.0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pTime1 = (*env)->GetLongField(env,time1,dateTimePointerFieldId_g);
     pTime2 = (*env)->GetLongField(env,time2,dateTimePointerFieldId_g);
-    
+
     if((0 == pTime1) ||
-       (0 == pTime2) || 
+       (0 == pTime2) ||
        MAMA_STATUS_OK!=(status=mamaDateTime_diffSeconds(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime1), 
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime2), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime1),
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime2),
                             &result)))
     {
          utils_buildErrorStringForStatus(
@@ -1086,7 +1086,7 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime_diffSeconds
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return 0;
-    }       
+    }
     return (jdouble) result;
 }
 
@@ -1099,19 +1099,19 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime_diffSecondsSameDay
   (JNIEnv* env, jclass this, jobject time1, jobject time2)
 {
     jlong       pTime1      = 0;
-    jlong       pTime2      = 0; 
+    jlong       pTime2      = 0;
     mama_f64_t  result      = 0.0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pTime1 = (*env)->GetLongField (env,time1,dateTimePointerFieldId_g);
     pTime2 = (*env)->GetLongField (env,time2,dateTimePointerFieldId_g);
-    
+
     if((0 == pTime1) ||
-       (0 == pTime2) || 
+       (0 == pTime2) ||
        MAMA_STATUS_OK!=(status=mamaDateTime_diffSecondsSameDay(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime1), 
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime2), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime1),
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime2),
                             &result)))
     {
          utils_buildErrorStringForStatus(
@@ -1121,7 +1121,7 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaDateTime_diffSecondsSameDay
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return 0;
-    }       
+    }
     return (jdouble) result;
 }
 
@@ -1134,19 +1134,19 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_diffMicroseconds
   (JNIEnv* env, jclass this, jobject time1, jobject time2)
 {
     jlong       pTime1      = 0;
-    jlong       pTime2      = 0; 
+    jlong       pTime2      = 0;
     mama_i64_t  result      = 0.0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pTime1 = (*env)->GetLongField (env,time1,dateTimePointerFieldId_g);
     pTime2 = (*env)->GetLongField (env,time2,dateTimePointerFieldId_g);
-    
+
     if((0 == pTime1) ||
-       (0 == pTime2) || 
+       (0 == pTime2) ||
        MAMA_STATUS_OK!=(status=mamaDateTime_diffMicroseconds(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime1), 
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime2), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime1),
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pTime2),
                             &result)))
     {
          utils_buildErrorStringForStatus(
@@ -1156,29 +1156,29 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaDateTime_diffMicroseconds
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return 0;
-    }       
-    return (jdouble) result;   
+    }
+    return (jdouble) result;
 
-} 
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
  * Method:    destroy
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_destroy 
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_destroy
   (JNIEnv* env, jobject this)
 {
     jlong       pDateTime   = 0;
     jlong       pTimeZone   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
-		"Null parameter, MamaDateTime may have already been destroyed.") 
-    
+
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
+		"Null parameter, MamaDateTime may have already been destroyed.")
+
     pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
     if (0 != pTimeZone)
     {
@@ -1192,12 +1192,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_destroy
                     status);
             utils_throwExceptionForMamaStatus (env,status,errorString);
             return;
-        }              
+        }
         (*env)->SetLongField(env, this,
                          tzFieldObjectFieldId_g,
                          0);
     }
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_destroy(
                             CAST_JLONG_TO_POINTER (mamaDateTime, pDateTime))))
     {
@@ -1225,14 +1225,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_copy
     jlong       pDateTime       = 0;
     jlong       pDateTimeToCopy = 0;
     mama_status status          = MAMA_STATUS_OK;
-    char        errorString     [UTILS_MAX_ERROR_STRING_LENGTH];    
-    
-    pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
-		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    pDateTimeToCopy = (*env)->GetLongField(env,other,dateTimePointerFieldId_g);   
+    char        errorString     [UTILS_MAX_ERROR_STRING_LENGTH];
 
-    if((pDateTimeToCopy == 0) || 
+    pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
+		"Null parameter, MamaDateTime may have already been destroyed.") ;
+    pDateTimeToCopy = (*env)->GetLongField(env,other,dateTimePointerFieldId_g);
+
+    if((pDateTimeToCopy == 0) ||
         MAMA_STATUS_OK!=(status=mamaDateTime_copy(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTimeToCopy))))
@@ -1244,7 +1244,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_copy
                 status);
         utils_throwExceptionForMamaStatus (env,status,errorString);
     }
-}   
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -1256,16 +1256,16 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setEpochTime
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_setEpochTime(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
-                            (mama_u32_t) seconds, 
-                            (mama_u32_t) microseconds, 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
+                            (mama_u32_t) seconds,
+                            (mama_u32_t) microseconds,
                             (mamaDateTimePrecision) precision)))
     {
          utils_buildErrorStringForStatus(
@@ -1287,14 +1287,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setPrecision
 {
     jlong       pDateTime   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if(MAMA_STATUS_OK!=(status=mamaDateTime_setPrecision(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             (mamaDateTimePrecision) precision)))
     {
          utils_buildErrorStringForStatus(
@@ -1318,14 +1318,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setFromString
     jlong       pTimeZone   = 0;
     const char* c_Str       = NULL;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if (NULL != timeZone)
-    {    
+    {
         pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
         if (0 == pTimeZone)
         {
@@ -1334,15 +1334,15 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setFromString
         }
         timeZone_set (env, pTimeZone, timeZone);
     }
-        
+
     c_Str = (*env)->GetStringUTFChars(env,str,0);
-  
+
     if (!c_Str ||
         MAMA_STATUS_OK!=(status=mamaDateTime_setFromStringWithTz(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             c_Str,
-                            timeZone 
-                            ? CAST_JLONG_TO_POINTER (mamaTimeZone, pTimeZone) 
+                            timeZone
+                            ? CAST_JLONG_TO_POINTER (mamaTimeZone, pTimeZone)
                             : NULL)))
     {
          utils_buildErrorStringForStatus(
@@ -1365,14 +1365,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setToMidnightToday
     jlong       pDateTime   = 0;
     jlong       pTimeZone   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if (NULL != timeZone)
-    {    
+    {
         pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
         if (0 == pTimeZone)
         {
@@ -1381,10 +1381,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setToMidnightToday
         }
         timeZone_set (env, pTimeZone, timeZone);
     }
-          
+
     if (MAMA_STATUS_OK!=(status=mamaDateTime_setToMidnightToday(
                             CAST_JLONG_TO_POINTER (mamaDateTime, pDateTime),
-                            timeZone 
+                            timeZone
                             ? CAST_JLONG_TO_POINTER (mamaTimeZone, pTimeZone)
                             : NULL)))
     {
@@ -1395,27 +1395,27 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setToMidnightToday
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
     }
-}  
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
  * Method:    _setTime
  * Signature: (IIIJSLjava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setTime (JNIEnv* env, jobject this, jint hour, jint minute, 
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setTime (JNIEnv* env, jobject this, jint hour, jint minute,
                                                     jint second, jlong microsecond, jshort precision, jstring timeZone)
 {
     jlong       pDateTime   = 0;
     jlong       pTimeZone   = 0;
     mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
-    
+
     if (NULL != timeZone)
-    {    
+    {
         pTimeZone = (*env)->GetLongField (env,this,tzFieldObjectFieldId_g);
         if (0 == pTimeZone)
         {
@@ -1424,15 +1424,15 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setTime (JNIEnv* env,
         }
         timeZone_set (env, pTimeZone, timeZone);
     }
-          
+
     if (MAMA_STATUS_OK!=(status=mamaDateTime_setTimeWithPrecisionAndTz(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             (mama_u32_t) hour,
                             (mama_u32_t) minute,
                             (mama_u32_t) second,
                             (mama_u32_t) microsecond,
-                            (mamaDateTimePrecision) precision,                                                    
-                            timeZone 
+                            (mamaDateTimePrecision) precision,
+                            timeZone
                                ? CAST_JLONG_TO_POINTER (mamaTimeZone,pTimeZone)
                                : NULL)))
     {
@@ -1443,7 +1443,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setTime (JNIEnv* env,
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
     }
-}  
+}
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
@@ -1451,19 +1451,19 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setTime (JNIEnv* env,
  * Signature: ()S
  */
 JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaDateTime__1getDayOfWeek
-  (JNIEnv* env, jobject this)       
+  (JNIEnv* env, jobject this)
 {
     jlong           pDateTime   = 0;
     mama_status     status      = MAMA_STATUS_OK;
     mamaDayOfWeek   day         = 0;
-    char            errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
+    char            errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.", 0) ;
-    
+
     if (MAMA_STATUS_OK!=(status=mamaDateTime_getDayOfWeek(
-                            CAST_JLONG_TO_POINTER (mamaDateTime, pDateTime), 
+                            CAST_JLONG_TO_POINTER (mamaDateTime, pDateTime),
                             &day)))
     {
          utils_buildErrorStringForStatus(
@@ -1473,11 +1473,11 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaDateTime__1getDayOfWeek
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return 0;
-    }       
+    }
     return (jshort) day;
-}   
-  
-     
+}
+
+
 /*
  * Class:     com_wombat_mama_MamaDateTime
  * Method:    _create
@@ -1490,7 +1490,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1create
     mamaTimeZone    cTimeZone  = NULL;
     mama_status     status     = MAMA_STATUS_OK;
     char errorString           [UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     if (MAMA_STATUS_OK!=(status=mamaDateTime_create(&cDateTime)))
     {
          utils_buildErrorStringForStatus(
@@ -1501,11 +1501,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1create
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return ;
     }
-  
+
     /*If we get this far we have a valid dateTime pointer to set*/
     (*env)->SetLongField(env, this,
                          dateTimePointerFieldId_g,
-                         CAST_POINTER_TO_JLONG(cDateTime));                 
+                         CAST_POINTER_TO_JLONG(cDateTime));
 }
 
 
@@ -1513,36 +1513,36 @@ void timeZone_set (JNIEnv* env, jlong pTimeZone, jstring timeZoneValue)
 {
     mama_status status      = MAMA_STATUS_OK;
     const char* c_value     = NULL;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH]; 
-    
-    c_value = (*env)->GetStringUTFChars(env,timeZoneValue,0);    
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
+    c_value = (*env)->GetStringUTFChars(env,timeZoneValue,0);
     if (!c_value ||
        MAMA_STATUS_OK!=(status=mamaTimeZone_set(
-                            CAST_JLONG_TO_POINTER (mamaTimeZone,pTimeZone), 
+                            CAST_JLONG_TO_POINTER (mamaTimeZone,pTimeZone),
                             c_value)))
     {
-        if (c_value) (*env)->ReleaseStringUTFChars(env,timeZoneValue,c_value);           
+        if (c_value) (*env)->ReleaseStringUTFChars(env,timeZoneValue,c_value);
          utils_buildErrorStringForStatus(
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Error calling MamaTimeZone.set().",
                 status);
-                
+
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return;
-    }   
-    
+    }
+
     /*Tidy up*/
-    if(c_value)(*env)->ReleaseStringUTFChars(env,timeZoneValue,c_value);           
+    if(c_value)(*env)->ReleaseStringUTFChars(env,timeZoneValue,c_value);
 }
-    
+
 jlong createTimeZone (JNIEnv* env, jobject this)
 {
     mamaTimeZone    cTimeZone  = NULL;
 	jlong			jTimeZone  = 0;
     mama_status     status     = MAMA_STATUS_OK;
     char errorString           [UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     if (MAMA_STATUS_OK!=(status=mamaTimeZone_create(&cTimeZone)))
     {
          utils_buildErrorStringForStatus(
@@ -1553,15 +1553,15 @@ jlong createTimeZone (JNIEnv* env, jobject this)
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return jTimeZone;
     }
-  
+
 	/* Cast the cTimeZone to a jlong. */
 	jTimeZone = CAST_POINTER_TO_JLONG(cTimeZone);
-  
+
     /*If we get this far we have a valid timeZome pointer to set*/
     (*env)->SetLongField(env, this,
                          tzFieldObjectFieldId_g,
                          jTimeZone);
-						 
+
 	return jTimeZone;
 }
 
@@ -1577,9 +1577,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_initIDs
             env, class,"dateTimePointer_i",
             UTILS_JAVA_POINTER_TYPE_SIGNATURE);
     if (!dateTimePointerFieldId_g) return;/*Exception auto thrown*/
-    
+
     tzFieldObjectFieldId_g  = (*env)->GetFieldID(
             env, class,"timeZonePointer_i",
-            UTILS_JAVA_POINTER_TYPE_SIGNATURE);  
-    if (!tzFieldObjectFieldId_g); return;/*Exception auto thrown*/               
+            UTILS_JAVA_POINTER_TYPE_SIGNATURE);
+    if (!tzFieldObjectFieldId_g); return;/*Exception auto thrown*/
 }

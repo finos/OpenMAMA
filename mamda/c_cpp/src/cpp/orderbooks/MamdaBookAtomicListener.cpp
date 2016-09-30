@@ -56,14 +56,14 @@ namespace Wombat
         void handleUpdate           (MamdaSubscription*  subscription,
                                      const MamaMsg&      msg);
 
-        void handleStandardFields   (MamdaSubscription*  subscription, 
+        void handleStandardFields   (MamdaSubscription*  subscription,
                                      const MamaMsg&      msg,
                                      bool                checkSeqNum);
 
         void createDeltaFromMamaMsg (MamdaSubscription*  subscription,
                                      const MamaMsg&      msg,
                                      bool                isRecap);
-     
+
         void createDeltaFromMamaMsgWithVectorFields (
                                      MamdaSubscription*  subscription,
                                      const MamaMsg&      msg,
@@ -101,12 +101,12 @@ namespace Wombat
                     MamdaSubscription*  subscription,
                     const MamaMsg&      msg,
                     const MamaMsg&      plMsg,
-                    bool                isRecap); 
+                    bool                isRecap);
 
         void invokeClearHandlers (MamdaSubscription*  subscription,
                                   const MamaMsg&      msg);
         void invokeGapHandlers   (MamdaSubscription*  subscription,
-                                  const MamaMsg&      msg);   
+                                  const MamaMsg&      msg);
 
         void clearLevelFields();
         void clearLevelEntryFields();
@@ -118,7 +118,7 @@ namespace Wombat
         MamdaBookAtomicLevelEntryHandler*  mLevelEntryHandler;
 
         // The following fields are used for caching the order book delta and
-        // related fields.  These fields can be used by applications for 
+        // related fields.  These fields can be used by applications for
         // reference and will be passed for recaps.
 
         string             mSymbol;        MamdaFieldState      mSymbolFieldState;
@@ -138,11 +138,11 @@ namespace Wombat
         MamaPrice          mPriceLevelPrice;
         mama_f64_t         mPriceLevelSize;
         mama_f64_t         mPriceLevelSizeChange;
-        int32_t            mPriceLevelAction;      // char field 
+        int32_t            mPriceLevelAction;      // char field
         int32_t            mPriceLevelSide;        // char field
         MamaDateTime       mPriceLevelTime;
-        mama_f32_t         mPriceLevelNumEntries; 
-        mama_u32_t         mPriceLevelActNumEntries; 
+        mama_f32_t         mPriceLevelNumEntries;
+        mama_u32_t         mPriceLevelActNumEntries;
         int32_t            mPriceLevelEntryAction; // char field
         int32_t            mPriceLevelEntryReason; // char field
         string             mPriceLevelEntryId;
@@ -153,7 +153,7 @@ namespace Wombat
         // Additional fields for gaps:
         mama_seqnum_t      mGapBegin;
         mama_seqnum_t      mGapEnd;
-        
+
         bool               mHasMarketOrders;
         bool               mProcessMarketOrders;
 
@@ -237,12 +237,12 @@ namespace Wombat
     mama_u32_t MamdaBookAtomicListener::getPriceLevelNumLevels () const
     {
         return mImpl.mPriceLevels;
-    } 
+    }
 
     mama_u32_t MamdaBookAtomicListener::getPriceLevelNum () const
     {
         return mImpl.mPriceLevel;
-    } 
+    }
 
     double MamdaBookAtomicListener::getPriceLevelPrice () const
     {
@@ -252,7 +252,7 @@ namespace Wombat
     MamaPrice&  MamdaBookAtomicListener::getPriceLevelMamaPrice () const
     {
       return mImpl.mPriceLevelPrice;
-      
+
     }
 
     mama_f64_t MamdaBookAtomicListener::getPriceLevelSize () const
@@ -414,7 +414,7 @@ namespace Wombat
         // If msg is a orderBook-related message, invoke the
         // appropriate callback:
         try
-        { 
+        {
             switch (msgType)
             {
             case MAMA_MSG_TYPE_BOOK_UPDATE:
@@ -497,8 +497,8 @@ namespace Wombat
     }
 
     void MamdaBookAtomicListener::
-    MamdaBookAtomicListenerImpl::handleStandardFields ( 
-        MamdaSubscription*  subscription, 
+    MamdaBookAtomicListenerImpl::handleStandardFields (
+        MamdaSubscription*  subscription,
         const MamaMsg&      msg,
         bool                checkSeqNum)
     {
@@ -585,7 +585,7 @@ namespace Wombat
                 mMsgQual.setValue(msgQual);
             }
         }
-        
+
         if (!msg.tryDateTime (MamdaOrderBookFields::BOOK_TIME, mEventTime))
         {
             mEventTime=mSrcTime;
@@ -725,7 +725,7 @@ namespace Wombat
                 else
                 {
                     mama_log (MAMA_LOG_LEVEL_ERROR,
-                              "MamdaBookAtomicListener::createDeltaFromPriceLevel() : MamaMsg is NULL." 
+                              "MamdaBookAtomicListener::createDeltaFromPriceLevel() : MamaMsg is NULL."
                               " symbol [%s] price level [%f] entry id  [%s].",
                             mSymbol.c_str(),
                             mPriceLevelPrice.getValue(),
@@ -785,7 +785,7 @@ namespace Wombat
                           "MamdaAtomicBookListener: Market Order Update deliberately not processed");
                 return;
             }
-        
+
 	    if (mBookHandler)
         {
           mBookHandler->onBookAtomicBeginBook (
@@ -866,7 +866,7 @@ namespace Wombat
             const MamaMsg** msgLevels = NULL;
             present = msg.tryVectorMsg (MamdaOrderBookFields::PRICE_LEVELS,
                                         msgLevels, msgLevelsNum);
-            
+
             if (present)
             {
                 mPriceLevels = msgLevelsNum;
@@ -892,27 +892,27 @@ namespace Wombat
                 MamaMsgField bidField;
                 MamaMsgField askField;
                 mHasMarketOrders = false;
-                
+
                 if (msg.tryField (MamdaOrderBookFields::BID_MARKET_ORDERS, &bidField))
                 {
                     mHasMarketOrders = true;
                     mOrderType = MamdaOrderBookTypes::MAMDA_BOOK_LEVEL_MARKET;
                     mama_log (MAMA_LOG_LEVEL_FINEST,
                               "MamdaAtomicBookListener: processing Bid side Market Orders");
-                
+
                     const MamaMsg** bidMsgv;
                     mama_size_t   bidSize;
                     bidField.getVectorMsg (bidMsgv, bidSize);
                     createDeltaFromMamaMsgWithoutVectorFields (subscription, *bidMsgv[0], isRecap, true);
                 }
-                
+
                 if (msg.tryField (MamdaOrderBookFields::ASK_MARKET_ORDERS, &askField))
                 {
                     mHasMarketOrders = true;
                     mOrderType = MamdaOrderBookTypes::MAMDA_BOOK_LEVEL_MARKET;
                     mama_log (MAMA_LOG_LEVEL_FINEST,
                               "MamdaAtomicBookListener: processing Ask side Market Orders");
-                
+
                     const MamaMsg** askMsgv;
                     mama_size_t   askSize;
                     askField.getVectorMsg (askMsgv, askSize);
@@ -959,7 +959,7 @@ namespace Wombat
         if (mBookHandler)
         {
             mBookHandler->onBookAtomicEndBook (subscription, mListener);
-        } 
+        }
     }
 
     void MamdaBookAtomicListener::
@@ -1036,7 +1036,7 @@ namespace Wombat
             {
                 if (numLevelFieldInMsg == 1)
                 {
-                    
+
                     if (!isMarketOrder)
                     {
                     /* Price level fields are probably be in the main message. */
@@ -1049,8 +1049,8 @@ namespace Wombat
                 }
                 else
                 {
-                    // mama_log (MAMA_LOG_LEVEL_FINEST, 
-                    mama_log (MAMA_LOG_LEVEL_NORMAL, 
+                    // mama_log (MAMA_LOG_LEVEL_FINEST,
+                    mama_log (MAMA_LOG_LEVEL_NORMAL,
                               "MamdaBookAtomicListener: "
                               "cannot find price level fields in MamaMsg...");
                     break;
@@ -1168,9 +1168,9 @@ namespace Wombat
     MamdaBookAtomicListenerImpl::getLevelInfoAndEntries(
         MamdaSubscription*  subscription,
         const MamaMsg&      msg,
-        const MamaMsg&      plMsg, 
+        const MamaMsg&      plMsg,
         bool                isRecap)
-    { 
+    {
         if(!plMsg.tryPrice(MamdaOrderBookFields::PL_PRICE, mPriceLevelPrice))
         {
             mama_log (MAMA_LOG_LEVEL_FINEST,
@@ -1189,10 +1189,10 @@ namespace Wombat
         {
             mPriceLevelTime = mEventTime;
         }
-        
-        
+
+
         plMsg.tryF64(MamdaOrderBookFields::PL_SIZE_CHANGE, mPriceLevelSizeChange);
-        
+
         // Call the Price Level Handler if set
         if (mLevelHandler)
         {
@@ -1206,10 +1206,10 @@ namespace Wombat
                 mLevelHandler->onBookAtomicLevelDelta (
                     subscription, mListener, msg, mListener);
             }
-        }    
+        }
 
-        /* Handle entries. 
-         * 
+        /* Handle entries.
+         *
          * Note: the number of entries actually present may well
          * not add up to the PL_NUM_ENTRIES; it may be more than,
          * less than or equal to PL_NUM_ENTRIES.  For example, if
@@ -1269,25 +1269,25 @@ namespace Wombat
                     for (size_t j = 0; j < numEntriesInMsg; j++)
                     {
                         const MamaMsg* entMsg = msgEntries[j];
-        
+
                         entMsg->tryI32 (MamdaOrderBookFields::ENTRY_ACTION,
                                         mPriceLevelEntryAction);
-        
+
                         entMsg->tryI32 (MamdaOrderBookFields::ENTRY_REASON,
                                         mPriceLevelEntryReason);
-        
-                        mPriceLevelEntryId 
+
+                        mPriceLevelEntryId
                         = entMsg->getString (MamdaOrderBookFields::ENTRY_ID);
-            
+
                         entMsg->tryU64 (MamdaOrderBookFields::ENTRY_SIZE,
                                         mPriceLevelEntrySize);
-            
+
                         if (!entMsg->tryDateTime(MamdaOrderBookFields::ENTRY_TIME,
                                                 mPriceLevelEntryTime))
                         {
                             mPriceLevelEntryTime=mPriceLevelTime;
                         }
-                
+
                         if (isRecap)
                         {
                             mLevelEntryHandler->onBookAtomicLevelEntryRecap (
@@ -1303,7 +1303,7 @@ namespace Wombat
                 else
                 {
                     /* Second, try the list of entries. */
-        
+
                     // PRICE_ENTRY_LENGTH may be 0 but we want to go into the
                     // below loop at least once for flattened messages scenario
                     int16_t maxEntryFields = MamdaOrderBookFields::PL_ENTRY_LENGTH
@@ -1311,7 +1311,7 @@ namespace Wombat
                     int16_t numEntryAttached = 1;
                     plMsg.tryI16(MamdaOrderBookFields::PL_NUM_ATTACH,
                             numEntryAttached);
-                    
+
                     if (numEntryAttached < maxEntryFields)
                     {
                         maxEntryFields = numEntryAttached;
@@ -1320,10 +1320,10 @@ namespace Wombat
                     for (int16_t j = 1; j <= maxEntryFields; j++)
                     {
                         const MamaMsg* entMsg = NULL;
-        
+
                         // The PL_ENTRY array may not exist
                         if(MamdaOrderBookFields::PL_ENTRY)
-                        {                
+                        {
                             plMsg.tryMsg(MamdaOrderBookFields::PL_ENTRY[j], entMsg);
                         }
                         else
@@ -1331,7 +1331,7 @@ namespace Wombat
                             mama_log (MAMA_LOG_LEVEL_FINEST,
                             "MamdaAtomicBookListener: no RV pl entry fields in the dictionary");
                         }
-        
+
                         if ((entMsg == NULL) && (numEntryAttached == 1))
                         {
                             /* Price level fields are probably be in the
@@ -1345,22 +1345,22 @@ namespace Wombat
                         {
                             entMsg->tryI32 (MamdaOrderBookFields::ENTRY_ACTION,
                                             mPriceLevelEntryAction);
-        
+
                             entMsg->tryI32 (MamdaOrderBookFields::ENTRY_REASON,
                                             mPriceLevelEntryReason);
-                
+
                             mPriceLevelEntryId
                             = entMsg->getString (MamdaOrderBookFields::ENTRY_ID);
-                            
+
                             entMsg->tryU64 (MamdaOrderBookFields::ENTRY_SIZE,
                                             mPriceLevelEntrySize);
-                            
+
                             if (!entMsg->tryDateTime(MamdaOrderBookFields::ENTRY_TIME,
                                                     mPriceLevelEntryTime))
                             {
                                 mPriceLevelEntryTime=mPriceLevelTime;
                             }
-                            
+
                             if (isRecap)
                             {
                                 mLevelEntryHandler->onBookAtomicLevelEntryRecap (
@@ -1375,7 +1375,7 @@ namespace Wombat
                     }
                 }
             }
-        }  
+        }
     }
 
 
@@ -1386,7 +1386,7 @@ namespace Wombat
     {
         if (mBookHandler)
         {
-            mBookHandler->onBookAtomicGap (subscription, mListener, 
+            mBookHandler->onBookAtomicGap (subscription, mListener,
                         msg, mListener);
         }
     }
@@ -1405,19 +1405,19 @@ namespace Wombat
     void MamdaBookAtomicListener::MamdaBookAtomicListenerImpl::clearLevelFields()
     {
         mPriceLevel                = 0;
-        mPriceLevelPrice.clear(); 
+        mPriceLevelPrice.clear();
         mPriceLevelSize            = 0.0;
         mPriceLevelNumEntries      = 1;
         mPriceLevelAction          = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD;
         mPriceLevelSide            = MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID;
         mPriceLevelSizeChange      = 0;
-        mPriceLevelActNumEntries   = 0; 
+        mPriceLevelActNumEntries   = 0;
         mPriceLevelTime.clear();
         mOrderType                 = MamdaOrderBookTypes::MAMDA_BOOK_LEVEL_LIMIT;
         clearLevelEntryFields();
     }
 
-    void 
+    void
     MamdaBookAtomicListener::MamdaBookAtomicListenerImpl::clearLevelEntryFields()
     {
 

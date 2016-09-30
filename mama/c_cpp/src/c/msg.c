@@ -238,7 +238,7 @@ mamaMsg_detach (mamaMsg msg)
         /*Message already logged in mamaQueueImpl_detachMsg*/
         return status;
     }
-    
+
     /*We also need to detach the middleware bridge specific message*/
     if (MAMA_STATUS_OK!=(status=impl->mBridgeImpl->bridgeMamaMsgDetach
                 (impl->mBridgeMessage)))
@@ -264,10 +264,10 @@ mamaMsg_detach (mamaMsg msg)
     }
 
     msg->mPayloadBridge->msgPayloadSetParent (impl->mPayload, msg);
-    
+
     /*If this is a dqStrategy cache message*/
     if (impl->mDqStrategyContext)
-    {  
+    {
 
         if (MAMA_STATUS_OK!=(status=dqStrategyImpl_detachMsg (impl->mDqStrategyContext, msg)))
         {
@@ -278,7 +278,7 @@ mamaMsg_detach (mamaMsg msg)
     }
 
     /*We are now responsible for destroying the middleware message*/
-    impl->mMessageOwner = 1; 
+    impl->mMessageOwner = 1;
 
     return MAMA_STATUS_OK;
 }
@@ -383,8 +383,8 @@ mamaMsgImpl_getPayload (const mamaMsg msg, msgPayload* payload)
     if (!impl || !payload) return MAMA_STATUS_NULL_ARG;
 
     *payload = impl->mPayload;
-    
-    return MAMA_STATUS_OK;    
+
+    return MAMA_STATUS_OK;
 }
 
 MAMAIgnoreDeprecatedOpen
@@ -409,6 +409,10 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "rai";
         case MAMA_PAYLOAD_UMS:
             return "UMS";
+        case MAMA_PAYLOAD_INRUSH:
+            return "INRUSH";
+        case MAMA_PAYLOAD_KWANTUM:
+            return "KWANTUM";
         case MAMA_PAYLOAD_TICK42RMDS:
             return "TICK42RMDS";
         case MAMA_PAYLOAD_QPID:
@@ -425,10 +429,6 @@ mamaPayload_convertToString (mamaPayloadType payloadType)
             return "WombatMsg";
         case MAMA_PAYLOAD_EXEGY:
             return "EXEGY";
-        case MAMA_PAYLOAD_INRUSH:
-            return "INRUSH";
-        case MAMA_PAYLOAD_KWANTUM:
-            return "KWANTUM";
 
         default:
             return "unknown";
@@ -490,9 +490,9 @@ mamaMsgImpl_setPayload (mamaMsg msg, msgPayload payload, short owner)
     }
 
     impl->mPayload      = payload;
-    impl->mMessageOwner = owner; 
+    impl->mMessageOwner = owner;
     impl->mPayloadBridge->msgPayloadSetParent (impl->mPayload, msg);
-    
+
     return MAMA_STATUS_OK;
 }
 
@@ -543,7 +543,7 @@ mamaMsgImpl_setMsgBuffer(mamaMsg     msg,
     mamaMsgImpl*    impl        = (mamaMsgImpl*)msg;
     mama_status     status      = MAMA_STATUS_OK;
     msgPayload      payload     = NULL;
-    
+
     if (impl == NULL)
     {
         mama_log (MAMA_LOG_LEVEL_WARN,
@@ -666,7 +666,7 @@ mamaMsgImpl_setMessageOwner (mamaMsg msg,
     mama_status status  =   MAMA_STATUS_OK;
 
     mamaMsgImpl* impl   =   (mamaMsgImpl*)msg;
-    impl->mMessageOwner = owner; 
+    impl->mMessageOwner = owner;
 
     return status;
 }
@@ -679,7 +679,7 @@ mamaMsgImpl_getMessageOwner (mamaMsg msg,
 
     mamaMsgImpl* impl   =   (mamaMsgImpl*)msg;
     *owner = impl->mMessageOwner;
-    
+
     return status;
 }
 
@@ -720,9 +720,9 @@ mamaMsgImpl_createForPayload (mamaMsg*                  msg,
     impl->mBridgeMessage          =  NULL;
     impl->mMessageOwner           =  owner;
     impl->mDqStrategyContext      =  NULL;
-    
+
     /* The payloadBridge and payload are optional for this function */
-    if (payloadBridge) 
+    if (payloadBridge)
     {
         impl->mPayloadBridge->msgPayloadSetParent (impl->mPayload, impl);
     }
@@ -1249,10 +1249,10 @@ mamaMsg_addMsg(
 
     CHECK_MODIFY (impl->mMessageOwner);
 
-   return impl->mPayloadBridge->msgPayloadAddMsg (impl->mPayload,
-                                                       name,
-                                                       fid,
-                                                       subMsg->mPayload);
+    return impl->mPayloadBridge->msgPayloadAddMsg (impl->mPayload,
+                                                   name,
+                                                   fid,
+                                                   subMsg->mPayload);
 
 
 }
@@ -3587,8 +3587,8 @@ mama_status mamaMsgIterator_destroy (mamaMsgIterator iterator)
 mamaMsgField
 mamaMsgIterator_next (mamaMsgIterator iterator)
 {
-    mamaMsgIteratorImpl*     impl = (mamaMsgIteratorImpl*)iterator;
-    mamaMsgFieldImpl* currentField = (mamaMsgFieldImpl*) impl->mCurrentField;
+    mamaMsgIteratorImpl* impl         = (mamaMsgIteratorImpl*)iterator;
+    mamaMsgFieldImpl*    currentField = (mamaMsgFieldImpl*) impl->mCurrentField;
 
     if (!impl)
         return (NULL);
@@ -3597,8 +3597,8 @@ mamaMsgIterator_next (mamaMsgIterator iterator)
     {
         msgFieldPayload msgField = NULL;
         msgPayload      payload  = NULL;
-        
-        mamaMsgImpl_getPayload (currentField->myMsg, &payload); 
+
+        mamaMsgImpl_getPayload (currentField->myMsg, &payload);
 
         if (NULL == (msgField =
            (impl->mPayloadBridge->msgPayloadIterNext (
@@ -3629,8 +3629,8 @@ mamaMsgIterator_hasNext (mamaMsgIterator iterator)
     if (impl->mPayloadBridge)
     {
         msgPayload payload  = NULL;
-        
-        mamaMsgImpl_getPayload (currentField->myMsg, &payload); 
+
+        mamaMsgImpl_getPayload (currentField->myMsg, &payload);
         return impl->mPayloadBridge->msgPayloadIterHasNext (
                                         impl->mPayloadIter,
                                         payload);
@@ -3652,8 +3652,8 @@ mamaMsgIterator_begin (mamaMsgIterator iterator)
     {
         msgFieldPayload msgField = NULL;
         msgPayload      payload  = NULL;
-        
-        mamaMsgImpl_getPayload (currentField->myMsg, &payload); 
+
+        mamaMsgImpl_getPayload (currentField->myMsg, &payload);
 
         if (NULL == (msgField =
            (impl->mPayloadBridge->msgPayloadIterBegin (

@@ -31,7 +31,7 @@ namespace Wombat
         /// <summary>
         ///  Definition of the callback method for when a user added event fires.
 		///  Concrete instances of this interface are registered with an
-		///  event queue using the MamaQueue.enqueueEvent(). 
+		///  event queue using the MamaQueue.enqueueEvent().
         /// </summary>
         /// <param name="mamaQueue">
         /// The queue on which the event is being processed.

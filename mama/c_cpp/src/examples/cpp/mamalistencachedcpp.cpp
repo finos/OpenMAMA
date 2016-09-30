@@ -57,7 +57,7 @@ using std::endl;
 using std::for_each;
 
 
-typedef list<MamaSubscription *> SubscriptionList; 
+typedef list<MamaSubscription *> SubscriptionList;
 typedef vector<const char*>      FieldList;
 typedef vector<const char*>      SymbolList;
 
@@ -95,7 +95,7 @@ public:
     MamaListen  ();
     ~MamaListen ();
 
-    void  parseCommandLine                (int argc, const char* argv[]);   
+    void  parseCommandLine                (int argc, const char* argv[]);
     void  initializeMama                  ();
     void  buildDataDictionary             ();
     void  dumpDataDictionary              ();
@@ -115,12 +115,12 @@ public:
     void  enableOutputLog                 ();
     bool  displayFieldData                ();
     bool  useNewIterators                 ();
-    
+
     mamaBridge      getMamaBridge         ();
     MamaDictionary* getMamaDictionary     ();
     virtual void onTimer                  (MamaTimer* timer);
     virtual void onDestroy                (MamaTimer* timer, void* closure);
-    
+
     MamaListen                           (const MamaListen& copy);
     MamaListen&                          operator= (const MamaListen& rhs);
 
@@ -133,7 +133,7 @@ public:
     bool getVerifyCache                  ();
     double getVerifyInterval             ();
     bool getPrintCache                   ();
-    
+
 private:
     MamaTimer                mShutdownTimer;
     int                      mShutdownTime;
@@ -164,7 +164,7 @@ private:
     MamaLogLevel             mSubscLogLevel;
     MamaSymbolMapFile*       mSymbolMapFromFile;
     MamaDictionary*          mDictionary;
-    SymbolList               mSymbolList;    
+    SymbolList               mSymbolList;
     FieldList                mFieldList;
     void*                    mDisplayCallback;
     SubscriptionList         mSubscriptionList;
@@ -174,47 +174,47 @@ private:
     FILE*                    mMamaLogFile;
     bool                     mPrintVectorFields;
     bool                     mDisplayData;
-    bool                     mQualityForAll;    
+    bool                     mQualityForAll;
     bool                     mNewIterators;
 
     void usage               (int exitStatus);
-    void subscribeToSymbol   (const char* symbol); 
+    void subscribeToSymbol   (const char* symbol);
     bool                     mVerifyCache;
     double                   mVerifyInterval;
     bool                     mPrintCache;
 };
 
 /**************************************************************************
- *DisplayCallback -An implementation of the callback interface for   *  
+ *DisplayCallback -An implementation of the callback interface for   *
                        -subscriptions                                     *
 **************************************************************************/
 class DisplayCallback : public MamaSubscriptionCallback, public MamaTimerCallback
-                    
+
 {
 public:
     DisplayCallback               () {}
     virtual ~DisplayCallback      (void);
-    
+
     DisplayCallback               (MamaListen*        mamaListen,
                                    FieldList*         fieldList);
-    
+
     virtual void onCreate         (MamaSubscription*  subscription);
-    
+
     virtual void onError          (MamaSubscription*  subscription,
                                    const MamaStatus&  status,
                                    const char*        subject);
-    
+
     virtual void onMsg            (MamaSubscription*  subscription,
                                    MamaMsg&           msg);
-    
+
     virtual void onQuality        (MamaSubscription*  subscription,
                                    mamaQuality        quality,
                                    const char*        symbol,
                                    short              cause,
-                                   const void*        platformInfo); 
-    
+                                   const void*        platformInfo);
+
     virtual void onGap            (MamaSubscription*  subscription);
-    
+
     virtual void onRecapRequest   (MamaSubscription*  subscription);
 
     void displaySpecificFields    (const MamaMsg&     msg,
@@ -227,14 +227,14 @@ public:
 
     void subMsgDisplayAllFields   (const MamaMsg&     msg);
 
-    void displayMsgField          (const MamaMsg&     msg, 
+    void displayMsgField          (const MamaMsg&     msg,
                                    const MamaMsgField&  field);
 
     template <class Vector>
-    void displayVectorField       (Vector*            field, 
+    void displayVectorField       (Vector*            field,
                                    size_t             size,
                                    const char*        format);
- 
+
     template <class T>
     void printData                (const char*        format,
                                    T                  data);
@@ -244,14 +244,14 @@ public:
      */
     void printData               (const char*         format,
                                   unsigned char       data);
-    
+
     void checkSnapshotIntegrity   (const              MamaMsg& msg,
                                    const char*        symbol);
-    
+
     virtual void onTimer          (MamaTimer           *timer);
-    
+
     void displayCache             (MamaFieldCache*     fieldCache);
-    
+
     MamaFieldCache* getFieldCache            (const char* symbol);
 
 private:
@@ -269,7 +269,7 @@ private:
           return strcmp(left, right) < 0;
       }
     };
-    
+
     typedef std::map<const char*, MamaFieldCache*, strless> FieldCacheMap;
     FieldCacheMap mFieldCaches;
 };
@@ -283,7 +283,7 @@ class MsgIteratorCallback : public MamaMsgFieldIterator
 public:
     MsgIteratorCallback          () {}
     MsgIteratorCallback          (MamaListen* mamaListen);
-    
+
     virtual ~MsgIteratorCallback (void) {}
     void onField                 (const MamaMsg&       msg,
                                   const MamaMsgField&  field,
@@ -303,7 +303,7 @@ class MsgAsserterCallback : public MamaMsgFieldIterator
 public:
     MsgAsserterCallback ()  {}
     MsgAsserterCallback (MamaListen* mamaListen,MamaFieldCache* mFieldCache);
-    
+
     virtual ~MsgAsserterCallback (void) {}
     void onField                 (const MamaMsg&       msg,
                                   const MamaMsgField&  field,
@@ -327,7 +327,7 @@ public:
         mMamaListen = mamaListen;
         mBridgeImpl = bridgeImpl;
     }
-    
+
     virtual ~DictionaryCallback (void) {}
 
     void onTimeout (void)
@@ -383,8 +383,8 @@ public:
         printf ("Transport quality is now %s\n",
                 mamaQuality_convertToString (quality));
     }
-    
-    virtual void onPublisherDisconnect (MamaTransport *transport, 
+
+    virtual void onPublisherDisconnect (MamaTransport *transport,
                                           const void *platformInfo)
     {
         printf ("TransportCallback::onPublisherDisconnect\n");
@@ -394,7 +394,7 @@ public:
     {
         printf ("TransportCallback::onNamingServiceConnect\n");
     }
-    
+
     void onNamingServiceDisconnect (MamaTransport*  transport)
     {
         printf ("TransportCallback::onNamingServiceDisconnect\n");
@@ -406,7 +406,7 @@ private:
 };
 
 /******************************************************************
-Data Quality Callback 
+Data Quality Callback
 ******************************************************************/
 class QueueMonitorCallback : public MamaQueueMonitorCallback
 {
@@ -414,16 +414,16 @@ public:
     QueueMonitorCallback          () {}
     virtual ~QueueMonitorCallback () {}
 
-    virtual void onHighWatermarkExceeded (MamaQueue* queue, 
-                                          size_t size, 
+    virtual void onHighWatermarkExceeded (MamaQueue* queue,
+                                          size_t size,
                                           void* closure)
     {
         printf ("%s queue high water mark exceeded. Size %lu\n",
                 queue->getQueueName(), (unsigned long) size);
     }
 
-    virtual void onLowWatermark (MamaQueue* queue, 
-                                 size_t size, 
+    virtual void onLowWatermark (MamaQueue* queue,
+                                 size_t size,
                                  void *closure)
     {
         printf ("%s queue low water mark exceeded. Size %lu\n",
@@ -578,13 +578,13 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
         else if ((strcmp (argv[i], "-h") == 0) ||
                  (strcmp (argv[i], "-?") == 0))
         {
-            usage (0); 
+            usage (0);
             i++;
         }
         else if (strcmp (argv[i], "-s") == 0)
         {
             mSymbolList.push_back (argv[i + 1]);
-            i += 2; 
+            i += 2;
         }
         else if (strcmp (argv[i], "-f") == 0)
         {
@@ -674,7 +674,7 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
         {
             mDisplayData = false;
             i++;
-        } 
+        }
         else if (strcmp (argv[i], "-log_file") == 0)
         {
             const char* logfileName = argv[i+1];
@@ -695,12 +695,12 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
                          argv[i+1]);
                 exit (1);
             }
-            
+
         }
         else if (strcmp ("-m", argv[i]) == 0)
         {
             mMiddleware = argv[i+1];
-            i += 2;               
+            i += 2;
         }
         else if (strcmp (argv[i], "-V") == 0)
         {
@@ -721,13 +721,13 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
         }
         else if (strcmp (argv[i], "-version") == 0)
         {
-            printf ("%s\n", Mama::getVersion (mBridgeImpl)); 
+            printf ("%s\n", Mama::getVersion (mBridgeImpl));
             exit (0);
         }
         else if (strcmp ("-shutdown", argv[i]) == 0)
         {
             mShutdownTime = atoi (argv[i + 1]);
-            i += 2;               
+            i += 2;
         }
         else if (strcmp (argv[i], "-ni") == 0)
         {
@@ -767,10 +767,10 @@ void MamaListen::subscribeToSymbol (const char* symbol)
         mDisplayCallback = new DisplayCallback (this, &mFieldList);
     }
 
-    
+
     MamaSubscription* sub = NULL;
     sub = new MamaSubscription;
-    
+
     sub->setTimeout          (mTimeout);
     sub->setRetries          (3);
     sub->setRequiresInitial  (mRequireInitial);
@@ -781,19 +781,19 @@ void MamaListen::subscribeToSymbol (const char* symbol)
     {
         sub->setServiceLevel (MAMA_SERVICE_LEVEL_SNAPSHOT, 0);
     }
-    
+
     if (mGroupSubscription)
     {
         sub->setSubscriptionType (MAMA_SUBSC_TYPE_GROUP);
     }
-    
+
     sub->create (mTransport,
          mQueueGroup->getNextQueue (),
                  (DisplayCallback*)mDisplayCallback,
          mSource,
          symbol,
          NULL);
-    
+
     mSubscriptionList.push_back (sub);
     sub->setDebugLevel (mSubscLogLevel);
 
@@ -804,19 +804,19 @@ void MamaListen::subscribeToSymbol (const char* symbol)
 }
 
 void  MamaListen::subscribeToSymbols ()
-{    
+{
     int index = 0;
     mQueueGroup = new MamaQueueGroup (mThreads, mBridgeImpl);
-    
+
     /* Has queue monitoring been enabled? */
     if (mHighWaterMark>0 || mLowWaterMark>0)
     {
         for (index=0; index<mThreads; index++)
         {
             char queueNameBuf[12];
-            
+
             MamaQueue* queue = mQueueGroup->getNextQueue ();
-            
+
             snprintf (queueNameBuf, 12, "QUEUE %d", index);
 
             printf ("Setting monitor for %s\n", queueNameBuf);
@@ -829,7 +829,7 @@ void  MamaListen::subscribeToSymbols ()
             {
                 queue->setHighWatermark (mHighWaterMark);
             }
-        
+
             if (mLowWaterMark>0)
             {
                 try
@@ -840,15 +840,15 @@ void  MamaListen::subscribeToSymbols ()
                 catch (MamaStatus status)
                 {
                     cerr << "Could not set "
-                         << queue->getQueueName () 
+                         << queue->getQueueName ()
                          << "queue low water mark MamaStatus: "
                          << status.toString ()
                          << endl;
-                } 
+                }
             }
         }
     }
-    
+
     SymbolList::iterator i;
     for (i=mSymbolList.begin(); i != mSymbolList.end(); i++)
     {
@@ -863,7 +863,7 @@ void MamaListen::dumpDataDictionary ()
     if (mDumpDataDict)
     {
         int size = mDictionary->getSize ();
-       
+
         printf ("DICT SIZE: %d\n", size);
         for( i = 0; i < size; i++)
         {
@@ -871,7 +871,7 @@ void MamaListen::dumpDataDictionary ()
             if (field)
             {
                 printf ("  %3d : %-7s(%4d) : %s\n",
-                        field->getFid(), 
+                        field->getFid(),
                         field->getTypeName(),
                         field->getType(),
                         field->getName());
@@ -904,7 +904,7 @@ void MamaListen::buildDataDictionary ()
 bool MamaListen::hasSpecificFields ()
 {
     if( mFieldList.empty ())
-    {   
+    {
         return false;
     }
     return true;
@@ -939,7 +939,7 @@ void MamaListen::start ()
 void MamaListen::shutdownListener ()
 {
     if (mQueueGroup != NULL)
-    {        
+    {
         mQueueGroup->stopDispatch();
     }
     if (mDictionary != NULL)
@@ -955,7 +955,7 @@ void MamaListen::shutdownListener ()
     {
         ((MamaSubscription*)*i)->destroy();
         delete *i;
-    } 
+    }
 
     // Destroy the queue group, this must be done after everything using the queues has been destroyed
     if (mQueueGroup != NULL)
@@ -965,13 +965,13 @@ void MamaListen::shutdownListener ()
         delete mQueueGroup;
         mQueueGroup = NULL;
     }
-    
-    if ((mDictTransport !=  NULL)  && (mDictTransport  != mTransport))                 
+
+    if ((mDictTransport !=  NULL)  && (mDictTransport  != mTransport))
     {
         delete mDictTransport;
         mDictTransport = NULL;
     }
-    
+
     if (mTransport != NULL)
     {
         delete mTransport;
@@ -980,15 +980,15 @@ void MamaListen::shutdownListener ()
 
     Mama::close ();
 }
-    
+
 void MamaListen::initializeMama ()
 {
     mBridgeImpl = Mama::loadBridge (mMiddleware);
-    
+
     Mama::open ();
-    
+
     mDefaultQueue = Mama::getDefaultEventQueue (mBridgeImpl);
-    
+
     if (mHighWaterMark > 0)
     {
         mDefaultQueue->setHighWatermark (mHighWaterMark);
@@ -1004,15 +1004,15 @@ void MamaListen::initializeMama ()
         catch (MamaStatus status)
         {
             cerr << "Could not set default queue"
-                    "low water mark MamaStatus: " 
-                 << status.toString () 
+                    "low water mark MamaStatus: "
+                 << status.toString ()
                  << endl;
         }
     }
-    
+
     mTransport = new MamaTransport;
     mTransport->setTransportCallback (new TransportCallback ());
-    mTransport->create               (mTport, mBridgeImpl);  
+    mTransport->create               (mTport, mBridgeImpl);
 
     if (!mQualityForAll)
     {
@@ -1023,12 +1023,12 @@ void MamaListen::initializeMama ()
     {
         mTransport->setOutboundThrottle (mThrottle, MAMA_THROTTLE_DEFAULT);
     }
-    
+
     if (mRecapThrottle != -1)
     {
         mTransport->setOutboundThrottle (mRecapThrottle, MAMA_THROTTLE_RECAP);
     }
-    
+
     if (mDictTport != NULL)
     {
         if (strlen(mDictTport) == 0)
@@ -1037,14 +1037,14 @@ void MamaListen::initializeMama ()
         }
         mDictTransport = new MamaTransport;
         mDictTransport->create (mDictTport, mBridgeImpl);
-        
+
     }
     else
     {
         mDictTransport=mTransport;
     }
-    mDictSource = new MamaSource (mDictSourceName, 
-                                  mDictTransport, 
+    mDictSource = new MamaSource (mDictSourceName,
+                                  mDictTransport,
                                   mDictSourceName);
 }
 
@@ -1062,7 +1062,7 @@ mamaBridge MamaListen::getMamaBridge()
 {
     return mBridgeImpl;
 }
-void MamaListen::readSymbolsFromFile (void) 
+void MamaListen::readSymbolsFromFile (void)
 {
     /* get subjects from file or interactively */
     FILE* fp = NULL;
@@ -1213,12 +1213,12 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
         sprintf(fieldBuffer,"%20s | %3d | %20s | ",
                 field.getName (), field.getFid (),
                 field.getTypeName ());
- 
+
        printData ("%s", fieldBuffer);
     }
-   
+
     short fieldType = field.getType ();
-    
+
     switch (fieldType)
     {
     case MAMA_FIELD_TYPE_MSG:
@@ -1237,7 +1237,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
          printData ("%d\n", field.getBool ());
          break;
     case MAMA_FIELD_TYPE_CHAR:
-         printData ("%c\n", field.getChar ()); 
+         printData ("%c\n", field.getChar ());
          break;
     case MAMA_FIELD_TYPE_I8:
          printData ("%d\n", field.getI8 ());
@@ -1272,7 +1272,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
     case MAMA_FIELD_TYPE_TIME:
          {
              MamaDateTime      mamaDateTime;
-             char              dateTime [BUFFER_SIZE]; 
+             char              dateTime [BUFFER_SIZE];
              field.getDateTime (mamaDateTime);
              mamaDateTime.getAsString (dateTime,BUFFER_SIZE);
              printData ("%s\n", dateTime);
@@ -1285,7 +1285,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              field.getPrice        (mamaPrice);
              mamaPrice.getAsString (price, BUFFER_SIZE);
              printData             ("%s\n", price);
-         } 
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_BOOL:
          {
@@ -1304,12 +1304,12 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
          }
          break;
     case MAMA_FIELD_TYPE_VECTOR_I8:
-         {    
+         {
              const int8_t*      vectorI8;
              size_t             resultLen;
              field.getVectorI8  (vectorI8, resultLen);
              displayVectorField (vectorI8, resultLen, "%d");
-         }     
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_U8:
          {
@@ -1317,7 +1317,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorU8  (vectorU8, resultLen);
              displayVectorField (vectorU8, resultLen, "%u");
-         } 
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_I16:
          {
@@ -1325,7 +1325,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorI16 (vectorI16, resultLen);
              displayVectorField (vectorI16, resultLen, "%d");
-         }  
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_U16:
          {
@@ -1341,10 +1341,10 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorI32 (vectorI32, resultLen);
              displayVectorField (vectorI32, resultLen, "%d");
-         } 
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_U32:
-         {    
+         {
              const uint32_t*    vectorU32;
              size_t             resultLen;
              field.getVectorU32 (vectorU32, resultLen);
@@ -1365,7 +1365,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorU64 (vectorU64, resultLen);
              displayVectorField (vectorU64, resultLen, "%u");
-         }   
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_F32:
          {
@@ -1373,7 +1373,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorF32 (vectorF32, resultLen);
              displayVectorField (vectorF32, resultLen, "%f");
-         }   
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_F64:
          {
@@ -1389,12 +1389,12 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t                resultLen;
              field.getVectorString (vectorString, resultLen);
              displayVectorField    (vectorString, resultLen, "%s");
-         }  
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_MSG:
-         {  
+         {
              if (mMamaListen->printVectorFields ())
-             {                   
+             {
                  size_t             resultLen = 0;
                  const MamaMsg**    mamaMsg   = NULL;
                  field.getVectorMsg (mamaMsg, resultLen);
@@ -1423,7 +1423,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
          break;
     }
 
-    
+
 }
 
 DisplayCallback::DisplayCallback (MamaListen* mamaListen,
@@ -1431,7 +1431,7 @@ DisplayCallback::DisplayCallback (MamaListen* mamaListen,
 {
     mMamaListen = mamaListen;
     mFieldList  = myFieldList;
-    
+
     if (mMamaListen->getVerifyCache())
     {
         printf("Creating verification timer\n");
@@ -1455,13 +1455,13 @@ void DisplayCallback::displayField (const MamaMsg&             msg,
         if (mMamaListen->getQuietness () < 1)
         {
             printf ("%20s | %3d | %20s | %s\n",
-                    field->getName (),     
+                    field->getName (),
                     field->getFid (),
-                    field->getTypeName (), 
+                    field->getTypeName (),
                     fieldValueStr);
         }
     }
-    
+
 }
 
 void DisplayCallback::displayAllFields (const MamaMsg& msg)
@@ -1472,7 +1472,7 @@ void DisplayCallback::displayAllFields (const MamaMsg& msg)
 
     if (!(mMamaListen->useNewIterators()))
     {
-        msg.iterateFields (cb, mMamaListen->getMamaDictionary (), NULL);   
+        msg.iterateFields (cb, mMamaListen->getMamaDictionary (), NULL);
     }
     else
     {
@@ -1481,7 +1481,7 @@ void DisplayCallback::displayAllFields (const MamaMsg& msg)
         MamaMsgIterator* mMamaMsgIterator = new MamaMsgIterator(mMamaListen->getMamaDictionary ());
 
         msg.begin(*mMamaMsgIterator);
-        
+
         while (*(*mMamaMsgIterator) != NULL)
         {
             displayMsgField (msg, *(*mMamaMsgIterator));
@@ -1493,7 +1493,7 @@ void DisplayCallback::displayAllFields (const MamaMsg& msg)
 }
 
 void DisplayCallback::displayCache (MamaFieldCache* fieldCache)
-{  
+{
     if (mMamaListen->getQuietness () < 1)
     {
         printData("Cache size: %d\n", fieldCache->getSize());
@@ -1539,17 +1539,17 @@ void DisplayCallback::subMsgDisplayAllFields (const MamaMsg& msg)
     else
     {
         MamaMsgIterator subiterator (mMamaListen->getMamaDictionary ());
-        
+
         printData ("%s", "\n {");
 
         msg.begin(subiterator);
-        
+
         while (*subiterator != NULL)
         {
             displayMsgField (msg, *subiterator);
             ++subiterator;
         }
-        
+
         printData ("%s", "}");
     }
 }
@@ -1563,7 +1563,7 @@ void DisplayCallback::checkSnapshotIntegrity (const MamaMsg& msg, const char* sy
     {
         printf("Field cache integrity check start.\n");
 
-        MsgAsserterCallback acb (mMamaListen, fieldCache);        
+        MsgAsserterCallback acb (mMamaListen, fieldCache);
         msg.iterateFields (acb, mMamaListen->getMamaDictionary (), NULL);
         if (failedField)
         {
@@ -1573,26 +1573,26 @@ void DisplayCallback::checkSnapshotIntegrity (const MamaMsg& msg, const char* sy
         {
             printf ("\ncheckSnapshotIntegrity: SUCCESSFUL");
         }
-        printf("\nField cache integrity check end.\n");            
+        printf("\nField cache integrity check end.\n");
     }
 }
 
-void DisplayCallback::onMsg (MamaSubscription* subscription, 
+void DisplayCallback::onMsg (MamaSubscription* subscription,
                              MamaMsg&    msg)
 {
     switch (msg.getType ())
     {
-    case MAMA_MSG_TYPE_SNAPSHOT:    
+    case MAMA_MSG_TYPE_SNAPSHOT:
     {
          checkSnapshotIntegrity (msg, subscription->getSymbol());
-         return; 
+         return;
     }
-    case MAMA_MSG_TYPE_DELETE:    
+    case MAMA_MSG_TYPE_DELETE:
     case MAMA_MSG_TYPE_EXPIRE:
          mMamaListen->removeSubscription (subscription);
          subscription->destroy();
          delete subscription;
-        
+
          if (mMamaListen->hasSubscriptions ())
          {
              fprintf (stderr, "Symbol deleted or expired. No more subscriptions\n");
@@ -1600,7 +1600,7 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
          }
          return;
 
-    default: 
+    default:
          break;
     }
 
@@ -1612,7 +1612,7 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
          mMamaListen->removeSubscription (subscription);
          subscription->destroy();
          delete subscription;
-         
+
          if (mMamaListen->hasSubscriptions ())
          {
              fprintf (stderr,
@@ -1623,7 +1623,7 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
     default:
          break;
     }
-     
+
     if (mMamaListen->getQuietness() < 2)
     {
         char msgBuffer [BUFFER_SIZE];
@@ -1632,9 +1632,9 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
                  subscription->getSymbol (),
                  msg.getMsgTypeName (),
                  msg.getMsgStatusString ());
-        printData ("%s", (const char*)msgBuffer); 
+        printData ("%s", (const char*)msgBuffer);
     }
-    
+
     MamaFieldCache* fieldCache = getFieldCache(subscription->getSymbol());
     // Apply the message to the cache.
     fieldCache->apply (msg, mMamaListen->getMamaDictionary());
@@ -1663,7 +1663,7 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
     fieldCache->getDeltaMessage(cacheMessage);
 }
 
-void DisplayCallback::displaySpecificFields (const MamaMsg& msg, 
+void DisplayCallback::displaySpecificFields (const MamaMsg& msg,
                                              MamaSubscription* subsc)
 {
     if (mMamaListen->getQuietness () < 2)
@@ -1713,7 +1713,7 @@ void DisplayCallback::printData (const char*     format,
 }
 
 template <class Vector>
-void DisplayCallback::displayVectorField  (Vector*  field, 
+void DisplayCallback::displayVectorField  (Vector*  field,
                                            size_t   size,
                                            const char* format)
 {
@@ -1723,7 +1723,7 @@ void DisplayCallback::displayVectorField  (Vector*  field,
         for (size_t counter = 0; counter < size; counter++)
         {
             printData (format, field[counter]);
-            counter == size-1 ? 
+            counter == size-1 ?
                 printData ("%s", ""):
                 printData ("%s", ",");
         }
@@ -1758,7 +1758,7 @@ void DisplayCallback::onRecapRequest (MamaSubscription*  subscription)
     flush (cout);
 }
 
-void DisplayCallback::onError (MamaSubscription*      subscriber, 
+void DisplayCallback::onError (MamaSubscription*      subscriber,
                                const MamaStatus& status,
                                const char*       subject)
 {
@@ -1774,7 +1774,7 @@ void DisplayCallback::onQuality (MamaSubscription*  subscription,
                                  short              cause,
                                  const void*        platformInfo)
 {
-    printf ("Quality change: %s\n", 
+    printf ("Quality change: %s\n",
             mamaQuality_convertToString(quality));
     flush (cout);
 }
@@ -1792,9 +1792,9 @@ void DisplayCallback::onTimer (MamaTimer* timer)
         snapshot->setRetries          (3);
         snapshot->setRequiresInitial  (1);
         snapshot->setSubscriptionType (MAMA_SUBSC_TYPE_NORMAL);
-        snapshot->setServiceLevel     (MAMA_SERVICE_LEVEL_SNAPSHOT, 0);     
+        snapshot->setServiceLevel     (MAMA_SERVICE_LEVEL_SNAPSHOT, 0);
         snapshot->create (
-                mMamaListen->getTransport(),             
+                mMamaListen->getTransport(),
                 mMamaListen->getQueueGroup()->getNextQueue(),
                 this,
                 mMamaListen->getSource(),
@@ -1815,14 +1815,14 @@ void MsgAsserterCallback::onField (const MamaMsg&       msg,
 {
     short fieldType = field.getType ();
 
-    if ((field.getFid() == MamaFieldMsgType.mFid) || 
+    if ((field.getFid() == MamaFieldMsgType.mFid) ||
         (field.getFid() == MamaFieldAppMsgType.mFid))
     {
         return;
     }
 
     switch (fieldType)
-    {    
+    {
     case MAMA_FIELD_TYPE_BOOL:
     {
         MamaFieldCacheFieldBool cachedBoolField;
@@ -1859,7 +1859,7 @@ void MsgAsserterCallback::onField (const MamaMsg&       msg,
         }
         break;
     }
-    case MAMA_FIELD_TYPE_U8:         
+    case MAMA_FIELD_TYPE_U8:
     {
         MamaFieldCacheFieldU8 cachedUint8Field;
         mama_u8_t val = cachedUint8Field.get(*mFieldCache->find (field.getFid()));
@@ -1867,8 +1867,8 @@ void MsgAsserterCallback::onField (const MamaMsg&       msg,
         {
             printf ("\nThe Failed Field is %s and the values are %u, %u",
             field.getName(),field.getU8(),val);
-            failedField = true; 
-        }            
+            failedField = true;
+        }
         break;
     }
     case MAMA_FIELD_TYPE_I16:
@@ -1888,7 +1888,7 @@ void MsgAsserterCallback::onField (const MamaMsg&       msg,
         MamaFieldCacheFieldU16 cachedUint16Field;
         mama_u16_t val = cachedUint16Field.get(*mFieldCache->find (field.getFid()));
         if (val != field.getU16())
-        {  
+        {
             printf ("\nThe Failed Field is %s and the values are %u, %u",
             field.getName(),field.getU16(),val);
             failedField = true;
@@ -1969,7 +1969,7 @@ void MsgAsserterCallback::onField (const MamaMsg&       msg,
         }
         break;
     }
-    case MAMA_FIELD_TYPE_STRING:                           
+    case MAMA_FIELD_TYPE_STRING:
     {
         MamaFieldCacheFieldString cachedStrField;
         const std::string& val = cachedStrField.get(*mFieldCache->find (field.getFid()));
@@ -1984,7 +1984,7 @@ void MsgAsserterCallback::onField (const MamaMsg&       msg,
     case MAMA_FIELD_TYPE_TIME:
     {
         MamaDateTime     mamaDateTime;
-        char             dateTime [BUFFER_SIZE]; 
+        char             dateTime [BUFFER_SIZE];
         field.getDateTime (mamaDateTime);
         mamaDateTime.getAsString (dateTime,BUFFER_SIZE);
         MamaFieldCacheFieldDateTime cachedDateTimeField;
@@ -1998,7 +1998,7 @@ void MsgAsserterCallback::onField (const MamaMsg&       msg,
         break;
     }
     case MAMA_FIELD_TYPE_PRICE:
-    {  
+    {
         MamaPrice    mamaPrice;
         char         price [BUFFER_SIZE];
         field.getPrice (mamaPrice);
@@ -2015,7 +2015,7 @@ void MsgAsserterCallback::onField (const MamaMsg&       msg,
     }
     case MAMA_FIELD_TYPE_UNKNOWN:
     default:
-         break;       
+         break;
     }
 }
 
@@ -2043,7 +2043,7 @@ int main (int argc, const char** argv)
     {
         mMamaListen.readSymbolsFromFile ();
     }
-    
+
     try
     {
         mMamaListen.initializeMama      ();
@@ -2051,9 +2051,9 @@ int main (int argc, const char** argv)
         mMamaListen.dumpDataDictionary  ();
         mMamaListen.loadSymbolMap       ();
         mMamaListen.subscribeToSymbols  ();
-                
+
         printf ("Type CTRL-C to exit.\n");
-        
+
         /**
          * Wait for some signal to end.
          */
@@ -2071,7 +2071,7 @@ int main (int argc, const char** argv)
 std::ostream& operator<<(std::ostream& os, const MamaFieldCacheField& field)
 {
     short fieldType = field.getType ();
-    
+
     switch (fieldType)
     {
     case MAMA_FIELD_TYPE_BOOL:
@@ -2118,7 +2118,7 @@ std::ostream& operator<<(std::ostream& os, const MamaFieldCacheField& field)
     }
     case MAMA_FIELD_TYPE_U32:
     {
-        MamaFieldCacheFieldU32 cachedUint32Field; 
+        MamaFieldCacheFieldU32 cachedUint32Field;
         os << cachedUint32Field.get(field);
         break;
     }
@@ -2148,7 +2148,7 @@ std::ostream& operator<<(std::ostream& os, const MamaFieldCacheField& field)
         break;
     }
     case MAMA_FIELD_TYPE_STRING:
-    {         
+    {
         MamaFieldCacheFieldString cachedStrField;
         os << cachedStrField.get(field);
         break;
@@ -2333,7 +2333,7 @@ std::ostream& operator<<(std::ostream& os, const MamaFieldCacheField& field)
             os << "[" << values[i].getAsString() << "]";
         }
         break;
-    }    
+    }
     case MAMA_FIELD_TYPE_VECTOR_TIME:
     {
         MamaFieldCacheFieldDateTimeVector cachedVectorField;
@@ -2351,4 +2351,3 @@ std::ostream& operator<<(std::ostream& os, const MamaFieldCacheField& field)
     }
     return os;
 }
-

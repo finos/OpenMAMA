@@ -26,5 +26,5 @@ namespace Wombat.Containers
 	public interface Iterable
 	{
 		Iterator iterator();
-	}	
+	}
 }

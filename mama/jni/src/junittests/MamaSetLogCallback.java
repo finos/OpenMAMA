@@ -53,7 +53,7 @@ public class MamaSetLogCallback extends TestCase
 
     // This class is used to intercept log messages
     private TestLogCallback mCallback;
-    
+
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
@@ -93,7 +93,7 @@ public class MamaSetLogCallback extends TestCase
     }
 
     public void testLogMessage()
-    {   
+    {
         // Set the log function
         Mama.setLogCallback(mCallback);
 
@@ -108,5 +108,5 @@ public class MamaSetLogCallback extends TestCase
 
         // Check to make sure that the message has been received
         assertEquals(mCallback.mBuffer, "Hooray");
-    }  
+    }
 }

@@ -105,7 +105,7 @@ int main (int argc, const char** argv)
         // Initialise the MAMA API
         mamaBridge bridge = Mama::loadBridge (cmdLine.getMiddleware());
         Mama::open ();
-               
+
         const vector<const char*>&
                          symbolList        = cmdLine.getSymbolList ();
         MamaSource*      source            = cmdLine.getSource();
@@ -136,7 +136,7 @@ int main (int argc, const char** argv)
         Mama::start(bridge);
     }
     catch (MamaStatus &e)
-    {  
+    {
         // This exception can be thrown from Mama.open ()
         // Mama::createTransport (transportName) and from
         // MamdaSubscription constructor when entitlements is enabled.
@@ -160,7 +160,7 @@ int main (int argc, const char** argv)
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: bookselftest [-S source] [-s symbol ...] " 
+    std::cerr << "Usage: bookselftest [-S source] [-s symbol ...] "
               << "[-threads x] [-m middleware] \n";
     exit(exitStatus);
 }

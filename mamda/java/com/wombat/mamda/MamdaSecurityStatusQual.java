@@ -1,4 +1,4 @@
-/* $Id$
+/* $Id: MamdaSecurityStatusQual.java,v 1.4.4.1.6.1.4.3.2.2 2012/12/17 17:05:38 garymolloy Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2012 NYSE Technologies, Inc.

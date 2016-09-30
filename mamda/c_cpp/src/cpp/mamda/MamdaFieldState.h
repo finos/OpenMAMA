@@ -32,7 +32,7 @@ namespace Wombat
      * MODIFIED value indicates the field was updated in last tick,
      * NOT_MODIFIED value indicates that there was no change in the last tick,
      * NOT_INITIALISED value indicates that the field has never been updated.
-     * 
+     *
      */
     enum MamdaFieldState
     {
@@ -45,7 +45,7 @@ namespace Wombat
     /**
      * Convert a MamdaFieldState to an appropriate, displayable
      * string.
-     * 
+     *
      * @param mamdaFieldState The <code>MamdaFieldState</code> to stringify
      *
      * @return The stringified version of the <code>MamdaFieldState</code>

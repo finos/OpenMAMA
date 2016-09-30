@@ -33,8 +33,8 @@ namespace Wombat
     enum MamdaUncrossPriceInd
     {
         UNCROSS_NONE,
-        UNCROSS_INDICATIVE,      
-        UNCROSS_FIRM,      
+        UNCROSS_INDICATIVE,
+        UNCROSS_FIRM,
         UNCROSS_INSUFFICIENT_VOL
     };
 

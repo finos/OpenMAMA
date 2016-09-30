@@ -102,7 +102,7 @@ typedef enum
     /* The subscription is in the process of being de-allocated, but waiting on deactivation to complete*/
     MAMA_SUBSCRIPTION_DEALLOCATING  = 9,
 
-    /* The subscription has been de-allocated. This state is only temporary and exists until such point as the subscription's 
+    /* The subscription has been de-allocated. This state is only temporary and exists until such point as the subscription's
      * memory is freed. It is provided so that a log entry will be written out.
      */
     MAMA_SUBSCRIPTION_DEALLOCATED   = 10,

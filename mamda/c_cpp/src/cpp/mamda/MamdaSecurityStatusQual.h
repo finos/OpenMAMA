@@ -35,22 +35,22 @@ namespace Wombat
     {
         SECURITY_STATUS_QUAL_NONE                   = 0,   // toString() - None
         SECURITY_STATUS_QUAL_OPENING                = 1,   // toString() - Opening
-        SECURITY_STATUS_QUAL_EXCUSED                = 7,   // toString() - Excused 
-        SECURITY_STATUS_QUAL_WITHDRAWN              = 8,   // toString() - Withdrawn 
+        SECURITY_STATUS_QUAL_EXCUSED                = 7,   // toString() - Excused
+        SECURITY_STATUS_QUAL_WITHDRAWN              = 8,   // toString() - Withdrawn
         SECURITY_STATUS_QUAL_SUSPENDED              = 9,   // toString() - Suspended
         SECURITY_STATUS_QUAL_RESUME                 = 11,  // toString() - Resume
         SECURITY_STATUS_QUAL_QUOTE_RESUME           = 12,  // toString() - QuoteResume
         SECURITY_STATUS_QUAL_TRADE_RESUME           = 13,  // toString() - TradeResume
-        SECURITY_STATUS_QUAL_RESUME_TIME            = 14,  // toString() - ResumeTime  
-        SECURITY_STATUS_QUAL_MKT_IMB_BUY            = 16,  // toString() - MktImbBuy 
-        SECURITY_STATUS_QUAL_MKT_IMB_SELL           = 17,  // toString() - MktImbSell 
+        SECURITY_STATUS_QUAL_RESUME_TIME            = 14,  // toString() - ResumeTime
+        SECURITY_STATUS_QUAL_MKT_IMB_BUY            = 16,  // toString() - MktImbBuy
+        SECURITY_STATUS_QUAL_MKT_IMB_SELL           = 17,  // toString() - MktImbSell
         SECURITY_STATUS_QUAL_NO_MKT_IMB             = 18,  // toString() - NoMktImb
         SECURITY_STATUS_QUAL_MOC_IMB_BUY            = 19,  // toString() - MocImbBuy
         SECURITY_STATUS_QUAL_MOC_IMB_SELL           = 20,  // toString() - MocImbSell
         SECURITY_STATUS_QUAL_NO_MOC_IMB             = 21,  // toString() - NoMocImb
-        SECURITY_STATUS_QUAL_ORDER_IMB              = 22,  // toString() - OrderImb  
-        SECURITY_STATUS_QUAL_ORDER_INF              = 23,  // toString() - OrderInf 
-        SECURITY_STATUS_QUAL_ORDER_IMB_BUY          = 24,  // toString() - OrderImbBuy 
+        SECURITY_STATUS_QUAL_ORDER_IMB              = 22,  // toString() - OrderImb
+        SECURITY_STATUS_QUAL_ORDER_INF              = 23,  // toString() - OrderInf
+        SECURITY_STATUS_QUAL_ORDER_IMB_BUY          = 24,  // toString() - OrderImbBuy
         SECURITY_STATUS_QUAL_ORDER_IMB_SELL         = 25,  // toString() - OrderImbSell
         SECURITY_STATUS_QUAL_ORDER_IMB_NONE         = 26,  // toString() - OrderImbNone
         SECURITY_STATUS_QUAL_LOA_IMBALANCE_BUY      = 27,  // toString() - LoaImbBuy
@@ -59,9 +59,9 @@ namespace Wombat
         SECURITY_STATUS_QUAL_ORDERS_ELIMINATED      = 30,  // toString() - OrdersEliminated
         SECURITY_STATUS_QUAL_RANGE_ID               = 31,  // toString() - RangeInd
         SECURITY_STATUS_QUAL_ITS_PREOPEN            = 32,  // toString() - ItsPreOpen
-        SECURITY_STATUS_QUAL_RESERVED               = 33,  // toString() - Reserved  
-        SECURITY_STATUS_QUAL_FROZEN                 = 34,  // toString() - Frozen 
-        SECURITY_STATUS_QUAL_PREOPEN                = 35,  // toString() - PreOpen 
+        SECURITY_STATUS_QUAL_RESERVED               = 33,  // toString() - Reserved
+        SECURITY_STATUS_QUAL_FROZEN                 = 34,  // toString() - Frozen
+        SECURITY_STATUS_QUAL_PREOPEN                = 35,  // toString() - PreOpen
         SECURITY_STATUS_QUAL_THO_IMBALANCE_BUY      = 36,  // toString() - ThoImbBuy
         SECURITY_STATUS_QUAL_THO_IMBALANCE_SELL     = 37,  // toString() - ThoImbSell
         SECURITY_STATUS_QUAL_NO_THO_IMBALANCE       = 38,  // toString() - ThoNoImb
@@ -75,16 +75,16 @@ namespace Wombat
         SECURITY_STATUS_QUAL_OPEN_DELAY             = 51,  // toString() - OpenDelay
         SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME      = 52,  // toString() - NoOpenNoResume
         SECURITY_STATUS_QUAL_PRICE_IND              = 53,  // toString() - PriceInd
-        SECURITY_STATUS_QUAL_EQUIPMENT              = 54,  // toString() - Equipment  
-        SECURITY_STATUS_QUAL_FILINGS                = 55,  // toString() - Filings 
-        SECURITY_STATUS_QUAL_NEWS                   = 56,  // toString() - News 
+        SECURITY_STATUS_QUAL_EQUIPMENT              = 54,  // toString() - Equipment
+        SECURITY_STATUS_QUAL_FILINGS                = 55,  // toString() - Filings
+        SECURITY_STATUS_QUAL_NEWS                   = 56,  // toString() - News
         SECURITY_STATUS_QUAL_NEWS_DISSEM            = 57,  // toString() - NewsDissem
         SECURITY_STATUS_QUAL_LISTING                = 58,  // toString() - Listing
         SECURITY_STATUS_QUAL_OPERATION              = 59,  // toString() - Operation
         SECURITY_STATUS_QUAL_INFO                   = 60,  // toString() - Info
-        SECURITY_STATUS_QUAL_SEC                    = 61,  // toString() - SEC  
-        SECURITY_STATUS_QUAL_TIMES                  = 62,  // toString() - Times 
-        SECURITY_STATUS_QUAL_OTHER                  = 63,  // toString() - Other 
+        SECURITY_STATUS_QUAL_SEC                    = 61,  // toString() - SEC
+        SECURITY_STATUS_QUAL_TIMES                  = 62,  // toString() - Times
+        SECURITY_STATUS_QUAL_OTHER                  = 63,  // toString() - Other
         SECURITY_STATUS_QUAL_RELATED                = 64,  // toString() - Related
         SECURITY_STATUS_QUAL_IPO                    = 65,  // toString() - IPO
         SECURITY_STATUS_QUAL_PRE_CROSS              = 66,  // toString() - Pre-Cross
@@ -116,10 +116,10 @@ namespace Wombat
         SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING     = 92,  // toString() - OpenNightTrading
         SECURITY_STATUS_QUAL_SUB_HOLIDAY            = 93,  // toString() - SubHoliday
         SECURITY_STATUS_QUAL_BID_ONLY               = 94,  // toString() - BidOnly
-        SECURITY_STATUS_QUAL_ASK_ONLY               = 95,  // toString() - AskOnly 
+        SECURITY_STATUS_QUAL_ASK_ONLY               = 95,  // toString() - AskOnly
 
         SECURITY_STATUS_QUAL_UNKNOWN                = 99,   // toString() - Unknown
-        
+
         SECURITY_STATUS_QUAL_OPENING_DELAY_COMMON           = 101, // toString() - OpenDelayCommon
         SECURITY_STATUS_QUAL_RESUME_COMMON                  = 102, // toString() - ResumeCommon
         SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME_COMMON       = 103, // toString() - NoOpenNoResumeCommon
@@ -134,7 +134,7 @@ namespace Wombat
         SECURITY_STATUS_QUAL_ONE_SIDED                      = 112, // toString() - OneSided
         SECURITY_STATUS_QUAL_PRE_CALL                       = 113, // toString() - PreCall
         SECURITY_STATUS_QUAL_RESTRICTED_OPEN                = 114, // toString() - RestrictedOpen
-        
+
         SECURITY_STATUS_QUAL_VOLATILITY_PAUSE               = 116, // toString() - VolatilityPause
         SECURITY_STATUS_QUAL_VOLATILITY_PAUSE_QUOTE_RESUME  = 117, // toString() - VolatilityPauseQuoteResume
         SECURITY_STATUS_QUAL_VOLATILITY_GUARD               = 118, // toString() - VolatilityGuard
@@ -152,9 +152,9 @@ namespace Wombat
         SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_SELL         = 129, // toString() - ImbPreOpenSell
         SECURITY_STATUS_QUAL_IMBALANCE_PREOPEN_NONE         = 130, // toString() - ImbPreOpenNone
         SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY         = 131, // toString() - ImbPreCloseBuy
-        SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL        = 132, // toString() - ImbPreCloseSell    
-        SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE        = 133, // toString() - ImbPreCloseNone    
-        SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY             = 134  // toString() - ScheduledIntraday    
+        SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL        = 132, // toString() - ImbPreCloseSell
+        SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE        = 133, // toString() - ImbPreCloseNone
+        SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY             = 134  // toString() - ScheduledIntraday
     };
 
 
@@ -163,7 +163,7 @@ namespace Wombat
      * string.
      *
      * @param securityStatusQual The security status qualifier as an enumeration.
-     * 
+     *
      * @return The security status qualifier as a string.
      */
     MAMDAExpDLL const char*  toString (MamdaSecurityStatusQual securityStatusQual);
@@ -175,7 +175,7 @@ namespace Wombat
      * a string.
      *
      * @param securityStatusQualStr The security status qualifier as a string.
-     * 
+     *
      * @return The security status qualifier as an enumeration.
      */
     MAMDAExpDLL MamdaSecurityStatusQual  mamdaSecurityStatusQualFromString (

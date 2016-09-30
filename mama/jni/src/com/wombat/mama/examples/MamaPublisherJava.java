@@ -393,11 +393,3 @@ public class MamaPublisherJava implements MamaPublisherCallback
     };
 
 }
-
-
-
-
-
-
-
-

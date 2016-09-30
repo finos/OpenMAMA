@@ -28,7 +28,7 @@ namespace Wombat.Mamda.Examples
 {
 	/// <summary>
 	/// An example of MAMDA option chain processing.
-	/// 
+	///
 	/// <p>This example suffers from a minor lack of configurability: while
 	/// it does support subscriptions to multiple underlying symbols (with
 	/// multiple -s options), it does not allow a different source to be
@@ -48,8 +48,8 @@ namespace Wombat.Mamda.Examples
 			MamaQueue            defaultQueue      = null;
 			MamaDictionary       dictionary        = null;
 			CommandLineProcessor options = new CommandLineProcessor(args);
-            
-            
+
+
 			if (options.hasLogLevel())
 			{
 				logLevel_ = options.getLogLevel();
@@ -123,10 +123,10 @@ namespace Wombat.Mamda.Examples
 					aBaseQuoteListener.addHandler(aBaseTicker);
 					aBaseSubscription.addMsgListener(aBaseTradeListener);
 					aBaseSubscription.addMsgListener(aBaseQuoteListener);
-					
+
 					aBaseSubscription.create(
 						baseTransport,
-						defaultQueue, 
+						defaultQueue,
 						options.getSource(),
 						symbol,
 						null);
@@ -146,13 +146,13 @@ namespace Wombat.Mamda.Examples
 					anOptionSubscription.setType(mamaSubscriptionType.MAMA_SUBSC_TYPE_GROUP);
 					anOptionSubscription.create(
 						optionTransport,
-						defaultQueue,                       
+						defaultQueue,
 						options.getSource(),
 						symbol,
 						null);
                     optionSubscriptions.Add(anOptionSubscription);
 				}
-           
+
 				//Start dispatching on the default event queue
 				Mama.start(myBridge);
 				GC.KeepAlive(dictionary);
@@ -170,7 +170,7 @@ namespace Wombat.Mamda.Examples
 		private class OptionChainDisplay :
 			MamdaOptionChainHandler,
 			MamdaStaleListener,
-			MamdaErrorListener 
+			MamdaErrorListener
 		{
 			MamdaOptionChain  myChain = null;
 			bool myGotRecap = false;  // Updated when we get the first recap.
@@ -219,7 +219,7 @@ namespace Wombat.Mamda.Examples
 
 				// (Optional: create a trade/quote handler for the
 				// individual option contract.)
-				OptionContractTicker aTicker = 
+				OptionContractTicker aTicker =
 					new OptionContractTicker(contract, chain, this);
 				contract.addQuoteHandler(aTicker);
 				contract.addTradeHandler(aTicker);
@@ -323,7 +323,7 @@ namespace Wombat.Mamda.Examples
 		/// the chain argument.
 		/// </summary>
 		private class OptionContractTicker :
-			MamdaTradeHandler, 
+			MamdaTradeHandler,
 			MamdaQuoteHandler
 		{
 			MamdaOptionContract myContract = null;

@@ -103,7 +103,7 @@ public class MamaMsgVectorFields extends TestCase
         message.getArrayI8("vi8", 1);
 
         // Destroy the message
-        message.destroy();        
+        message.destroy();
     }
 
     public void testVectorI16()
@@ -459,7 +459,7 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the field
         MamaMsgField field = message.getField("vm", 1, null);
-        
+
         // Get the data from the field
         field.getArrayMsg();
 

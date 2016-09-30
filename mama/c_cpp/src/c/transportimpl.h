@@ -296,11 +296,11 @@ mama_status mamaTransportImpl_allocateInternalTransport(mamaTransport *transport
  * @param[in] platformInfo Bridge specific info.
  *
  */
-MAMAExpDLL 
-extern void 
+MAMAExpDLL
+extern void
 mamaTransportImpl_setAdvisoryCauseAndPlatformInfo(
-        mamaTransport transport, 
-        short cause, 
+        mamaTransport transport,
+        short cause,
         const void *platformInfo);
 
 /**
@@ -320,7 +320,7 @@ extern mama_bool_t
 mamaTransportImpl_preRecapCacheEnabled (mamaTransport transport);
 
 
-mama_status 
+mama_status
 mamaTransportImpl_getEntitlementBridge(mamaTransport tport, mamaEntitlementBridge* entBridge);
 
 #if defined(__cplusplus)

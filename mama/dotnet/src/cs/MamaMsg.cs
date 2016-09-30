@@ -44,7 +44,7 @@ namespace Wombat
         MAMA_PAYLOAD_V5 = '5',
 
         /// <summary>
-        /// AVIS Message 
+        /// AVIS Message
         /// </summary>
         MAMA_PAYLOAD_AVIS = 'A',
 
@@ -138,7 +138,7 @@ namespace Wombat
         MAMA_MSG_TYPE_UPDATE            =   0,
 
         /// <summary>
-        /// Initial value. The initial image (full record) for normal subscriptions. 
+        /// Initial value. The initial image (full record) for normal subscriptions.
         /// The initial
         /// value is the first message (several messages for multi-part initial
         /// values) to arrive with all of the information in the cache. Multi-part
@@ -254,8 +254,8 @@ namespace Wombat
         MAMA_MSG_TYPE_NOT_FOUND         =   22,
 
         /// <summary>
-        /// End of group of initial values.  Marks the last initial value for 
-        /// group subscriptions. 
+        /// End of group of initial values.  Marks the last initial value for
+        /// group subscriptions.
         /// </summary>
         MAMA_MSG_TYPE_END_OF_INITIALS   =   23,
 
@@ -285,7 +285,7 @@ namespace Wombat
         MAMA_MSG_TYPE_MISC              =   100,
 
         /// <summary>
-        /// Returned if an RV error is encountered. The MsgStatus will be 
+        /// Returned if an RV error is encountered. The MsgStatus will be
         /// the tibrv_status
         /// </summary>
         MAMA_MSG_TYPE_TIBRV             =   101,
@@ -462,8 +462,8 @@ namespace Wombat
 		protected override MamaStatus.mamaStatus DestroyNativePeer()
 		{
 
-                
-                
+
+
 			return 0;
 		}
 
@@ -525,7 +525,7 @@ namespace Wombat
 		/// </summary>
         [Obsolete("MamaMsg(MamaPayloadType PayloadId) has been deprecated, "
                  +"use MamaMsg(char payloadId) instead.")]
-		public MamaMsg (mamaPayloadType payloadId) 
+		public MamaMsg (mamaPayloadType payloadId)
 		{
 	        int code = NativeMethods.mamaMsg_createForPayload(ref nativeHandle, payloadId);
 			CheckResultCode(code);
@@ -550,7 +550,7 @@ namespace Wombat
 		    int code = NativeMethods.mamaMsg_createForPayloadBridge (ref nativeHandle, payloadBridge.NativeHandle);
 			CheckResultCode(code);
 		}
-			
+
 		/// <summary>
 		/// Create a deep copy of a message.
 		/// </summary>
@@ -567,12 +567,12 @@ namespace Wombat
 
 			GC.KeepAlive(mamaMsgSrc);
 		}
-      
+
 		internal MamaMsg(IntPtr nativeHandle) : base(nativeHandle)
 		{
 		}
 
-		
+
 		public void getByteBuffer (ref byte[] byteBuffer, ref int size)
 		{
 			EnsurePeerCreated();
@@ -618,11 +618,11 @@ namespace Wombat
         public MamaMsg detach ()
         {
             int code = NativeMethods.mamaMsg_detach(nativeHandle);
-            
+
             MamaMsg result = new MamaMsg ();
             code = NativeMethods.mamaMsg_destroy(result.nativeHandle);
             result.setNativeHandle (nativeHandle);
-            
+
             return result;
         }
 		private ulong convertToMamaDateTime (DateTime val)
@@ -646,7 +646,7 @@ namespace Wombat
 		/// Extract the type
 		/// </summary>
 		/// <returns></returns>
-		public mamaMsgType getType () 
+		public mamaMsgType getType ()
 		{
 			EnsurePeerCreated();
 			return (mamaMsgType) NativeMethods.mamaMsgType_typeForMsg(nativeHandle);
@@ -656,7 +656,7 @@ namespace Wombat
 		/// Return the status
 		/// </summary>
 		/// <returns></returns>
-		public mamaMsgStatus getStatus () 
+		public mamaMsgStatus getStatus ()
 		{
 			EnsurePeerCreated();
             return (mamaMsgStatus)getI32(null, (ushort)MamaReservedFields.MsgStatus.getFid());
@@ -684,7 +684,7 @@ namespace Wombat
 		public void iterateFields(
 			MamaMsgFieldIterator iterator,
 			MamaDictionary  dictionary,
-			object closure) 
+			object closure)
 		{
 #if MAMA_WRAPPERS_CHECK_ARGUMENTS
 			if (iterator == null)
@@ -696,9 +696,9 @@ namespace Wombat
 
 			IntPtr dictHandle = dictionary != null ? dictionary.NativeHandle : IntPtr.Zero;
 			if (forwarder == null)
-			{	
+			{
 				forwarder = new CallbackForwarder(this, iterator, closure);
-				callback = 
+				callback =
 					new CallbackForwarder.MamaMessageIteratorDelegate(forwarder.OnField);
 				GC.SuppressFinalize(forwarder);
 				GC.SuppressFinalize(callback);
@@ -729,24 +729,24 @@ namespace Wombat
         {
             if (tempMsgVector != null)
                 tempMsgVector[0].Dispose ();
-            
+
             if (price_ != null)
                 price_.Dispose ();
-            
+
             if (mField != null)
                 mField.Dispose ();
-                
+
             if (msg_ != null)
                 msg_.Dispose ();
-                
+
         }
-        
+
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		protected override MamaStatus.mamaStatus DestroyNativePeer()
-		{  
+		{
             return (MamaStatus.mamaStatus)NativeMethods.mamaMsg_destroy(nativeHandle);
 		}
 
@@ -768,7 +768,7 @@ namespace Wombat
 		/// Get the size of the underlying message in bytes.
 		/// Only works for tibrvMsg and wombatmsg types.
 		/// </summary>
-		public int getByteSize () 
+		public int getByteSize ()
 		{
 			EnsurePeerCreated();
 			int size = 0;
@@ -859,7 +859,7 @@ namespace Wombat
 		/// Add a new 32 bit unsigned int field.
 		/// </summary>
 		public void addI32(
-			string name, 
+			string name,
 			ushort fid,
 			int val)
 		{
@@ -872,7 +872,7 @@ namespace Wombat
 		/// Add a new 32 bit signed int field.
 		/// </summary>
 		public void addU32(
-			string name, 
+			string name,
 			ushort fid,
 			uint val)
 		{
@@ -885,7 +885,7 @@ namespace Wombat
 		/// Add a new I64 field.
 		/// </summary>
 		public void addI64(
-			string name, 
+			string name,
 			ushort fid,
 			long val)
 		{
@@ -898,7 +898,7 @@ namespace Wombat
 		/// Add a new U64 field.
 		/// </summary>
 		public void addU64(
-			string name, 
+			string name,
 			ushort fid,
 			ulong val)
 		{
@@ -911,7 +911,7 @@ namespace Wombat
 		/// Add a new float (f32) field.
 		/// </summary>
 		public void addF32(
-			string name, 
+			string name,
 			ushort fid,
 			float val)
 		{
@@ -924,7 +924,7 @@ namespace Wombat
 		/// Add a new f64 field.
 		/// </summary>
 		public void addF64(
-			string name, 
+			string name,
 			ushort fid,
 			double val)
 		{
@@ -938,7 +938,7 @@ namespace Wombat
 		/// Add a string field.
 		/// </summary>
 		public void addString(
-			string name, 
+			string name,
 			ushort fid,
 			string val)
 		{
@@ -951,7 +951,7 @@ namespace Wombat
 		/// Add an opaque field.
 		/// </summary>
 		public void addOpaque(
-			string name, 
+			string name,
 			ushort fid,
 			byte[] val)
 		{
@@ -1021,7 +1021,7 @@ namespace Wombat
 			try
 			{
 				byte[] loc = new byte[val.Length];
-				for (int i = 0; i < loc.Length; ++i) 
+				for (int i = 0; i < loc.Length; ++i)
 				{
 					loc[i] = (byte)(val[i] ? 1 : 0);
 				}
@@ -1048,7 +1048,7 @@ namespace Wombat
 			try
 			{
 				byte[] loc = new byte[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (byte)val[i];
 				}
@@ -1075,7 +1075,7 @@ namespace Wombat
 			try
 			{
 				byte[] loc = new byte[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (byte)val[i];
 				}
@@ -1146,7 +1146,7 @@ namespace Wombat
 			try
 			{
 				short[] loc = new short[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (short)val[i];
 				}
@@ -1195,7 +1195,7 @@ namespace Wombat
 			try
 			{
 				int[] loc = new int[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (int)val[i];
 				}
@@ -1244,7 +1244,7 @@ namespace Wombat
 			try
 			{
 				long[] loc = new long[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (long)val[i];
 				}
@@ -1329,7 +1329,7 @@ namespace Wombat
 			}
 		}
 
-		
+
 
 		/// <summary>
 		/// Update the value of an existing bool field. If the field does not exist
@@ -1339,7 +1339,7 @@ namespace Wombat
 			string name,
 			ushort fid,
 			bool val)
-		{	
+		{
 			EnsurePeerCreated();
 			int code = NativeMethods.mamaMsg_updateBool(nativeHandle, name, fid,val);
 			CheckResultCode(code);
@@ -1420,7 +1420,7 @@ namespace Wombat
 		/// it is added.
 		/// </summary>
 		public void updateI32(
-			string name, 
+			string name,
 			ushort fid,
 			int val)
 		{
@@ -1434,7 +1434,7 @@ namespace Wombat
 		/// it is added.
 		/// </summary>
 		public void updateU32(
-			string name, 
+			string name,
 			ushort fid,
 			uint val)
 		{
@@ -1448,7 +1448,7 @@ namespace Wombat
 		/// it is added.
 		/// </summary>
 		public void updateI64(
-			string name, 
+			string name,
 			ushort fid,
 			long val)
 		{
@@ -1462,7 +1462,7 @@ namespace Wombat
 		/// it is added.
 		/// </summary>
 		public void updateU64(
-			string name, 
+			string name,
 			ushort fid,
 			ulong val)
 		{
@@ -1476,7 +1476,7 @@ namespace Wombat
 		/// it is added.
 		/// </summary>
 		public void updateF32(
-			string name, 
+			string name,
 			ushort fid,
 			float val)
 		{
@@ -1490,7 +1490,7 @@ namespace Wombat
 		/// it is added.
 		/// </summary>
 		public void updateF64(
-			string name, 
+			string name,
 			ushort fid,
 			double val)
 		{
@@ -1504,7 +1504,7 @@ namespace Wombat
 		/// does not exist it is added.
 		/// </summary>
 		public void updateString(
-			string name, 
+			string name,
 			ushort fid,
 			string val)
 		{
@@ -1517,7 +1517,7 @@ namespace Wombat
 		/// Update an opaque field.
 		/// </summary>
 		public void updateOpaque(
-			string name, 
+			string name,
 			ushort fid,
 			byte[] val)
 		{
@@ -1576,7 +1576,7 @@ namespace Wombat
 			try
 			{
 				byte[] loc = new byte[val.Length];
-				for (int i = 0; i < loc.Length; ++i) 
+				for (int i = 0; i < loc.Length; ++i)
 				{
 					loc[i] = (byte)(val[i] ? 1 : 0);
 				}
@@ -1603,7 +1603,7 @@ namespace Wombat
 			try
 			{
 				byte[] loc = new byte[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (byte)val[i];
 				}
@@ -1630,7 +1630,7 @@ namespace Wombat
 			try
 			{
 				byte[] loc = new byte[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (byte)val[i];
 				}
@@ -1701,7 +1701,7 @@ namespace Wombat
 			try
 			{
 				short[] loc = new short[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (short)val[i];
 				}
@@ -1750,7 +1750,7 @@ namespace Wombat
 			try
 			{
 				int[] loc = new int[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (int)val[i];
 				}
@@ -1799,7 +1799,7 @@ namespace Wombat
 			try
 			{
 				long[] loc = new long[val.Length];
-				for (int i = 0; i < val.Length; i++) 
+				for (int i = 0; i < val.Length; i++)
 				{
 					loc[i] = (long)val[i];
 				}
@@ -1884,7 +1884,7 @@ namespace Wombat
 			}
 		}
 
-		
+
 
 		/// <summary>
 		/// Get a bool field.
@@ -2178,7 +2178,7 @@ namespace Wombat
 		/// Get a I32, signed 32 bit integer, field.
 		/// </summary>
 		public int getI32(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			int result = 0;
@@ -2224,7 +2224,7 @@ namespace Wombat
 		/// Get a U32, unsigned 32 bit integer, field.
 		/// </summary>
 		public uint getU32(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -2272,7 +2272,7 @@ namespace Wombat
 		/// Get a I64, signed 64 bit integer, field.
 		/// </summary>
 		public long getI64(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			long result = 0;
@@ -2318,7 +2318,7 @@ namespace Wombat
 		/// Get a U64, unsigned 64 bit integer, field.
 		/// </summary>
 		public ulong getU64(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -2366,7 +2366,7 @@ namespace Wombat
 		/// Get a float (f32) field.
 		/// </summary>
 		public float getF32(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -2414,7 +2414,7 @@ namespace Wombat
 		/// Get a F64 field.
 		/// </summary>
 		public double getF64(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -2462,7 +2462,7 @@ namespace Wombat
 		/// Get a string field.
 		/// </summary>
 		public string getString(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -2476,7 +2476,7 @@ namespace Wombat
         {
             result = IntPtr.Zero;
             if (MamaWrapper.CheckResultCodeIgnoreNotFound(
-                NativeMethods.mamaMsg_getString(base.nativeHandle, name, fid, ref result)) 
+                NativeMethods.mamaMsg_getString(base.nativeHandle, name, fid, ref result))
                 != MamaStatus.mamaStatus.MAMA_STATUS_OK)
             {
                 return false;
@@ -2490,8 +2490,8 @@ namespace Wombat
 		{
 			return tryStringAnsi (null, (ushort)descriptor.getFid(), ref result);
 		}
-        
-        
+
+
 		/// <summary>
 		/// Get a string field.
 		/// </summary>
@@ -2530,7 +2530,7 @@ namespace Wombat
 		/// Get an opaque field.
 		/// </summary>
 		public byte[] getOpaque(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -2584,7 +2584,7 @@ namespace Wombat
 			string name,
 			ushort fid)
 		{
-            
+
 			DateTime result = DateTime.MinValue;
 			tryDateTimeImpl(name, fid, ref result, true);
             return result;
@@ -2643,7 +2643,7 @@ namespace Wombat
             {
 				throw new MamaException(status);
             }
-            
+
             return price_;
 		}
 
@@ -2689,7 +2689,7 @@ namespace Wombat
 		/// Get a submessage.
 		/// </summary>
 		public MamaMsg getMsg(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			if (msg_ == null)
@@ -2718,7 +2718,7 @@ namespace Wombat
 		/// <param name="valueIfMissing"></param>
 		/// <returns></returns>
 		public MamaMsg getMsg(
-			string name, 
+			string name,
 			ushort fid,
 			MamaMsg valueIfMissing)
 		{
@@ -2748,7 +2748,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Get a MAMA msg field.
-		/// The result contains the reusable field object of the 
+		/// The result contains the reusable field object of the
 		/// nativeHandle object. Applications calling this method will receive the same
 		/// reusable object for repeated calls on same nativeHandle object.
 		/// </summary>
@@ -2776,7 +2776,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Get a MAMA msg field.
-		/// The result contains the reusable field object of the 
+		/// The result contains the reusable field object of the
 		/// nativeHandle object. Applications calling this method will receive the same
 		/// reusable object for repeated calls on same nativeHandle object.
 		/// </summary>
@@ -2788,7 +2788,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Get a MAMA msg field.
-		/// The result contains the reusable field object of the 
+		/// The result contains the reusable field object of the
 		/// nativeHandle object. Applications calling this method will receive the same
 		/// reusable object for repeated calls on same nativeHandle object.
 		/// </summary>
@@ -2810,7 +2810,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Get a MAMA msg field.
-		/// The result contains the reusable field object of the 
+		/// The result contains the reusable field object of the
 		/// nativeHandle object. Applications calling this method will receive the same
 		/// reusable object for repeated calls on same nativeHandle object.
 		/// </summary>
@@ -2825,7 +2825,7 @@ namespace Wombat
 		/// Get a vector of booleans.
 		/// </summary>
 		public bool[] getVectorBool(
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -2867,7 +2867,7 @@ namespace Wombat
 			if (tryVectorBool (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -2884,7 +2884,7 @@ namespace Wombat
 		/// Get a vector of chars.
 		/// </summary>
 		public char[] getVectorChar (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -2898,7 +2898,7 @@ namespace Wombat
 
 			char[] ret = new char[size];
 
-			for (int i = 0; i < ret.Length; i++) 
+			for (int i = 0; i < ret.Length; i++)
 			{
 				ret[i] = (char)bRet[i];
 			}
@@ -2927,7 +2927,7 @@ namespace Wombat
 			if (tryVectorChar (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -2944,7 +2944,7 @@ namespace Wombat
 		/// Get a vector of signed 8 bit integers.
 		/// </summary>
 		public sbyte[] getVectorI8 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -2956,7 +2956,7 @@ namespace Wombat
 			sbyte[] ret = new sbyte[size];
 			Marshal.Copy(array, bRet, 0, (int)size);
 
-			for (int i = 0; i < ret.Length; i++) 
+			for (int i = 0; i < ret.Length; i++)
 			{
 				ret[i] = (sbyte)bRet[i];
 			}
@@ -2985,7 +2985,7 @@ namespace Wombat
 			if (tryVectorI8 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3002,7 +3002,7 @@ namespace Wombat
 		/// Get a vector of unsigned 8 bit integers.
 		/// </summary>
 		public byte[] getVectorU8 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3037,7 +3037,7 @@ namespace Wombat
 			if (tryVectorU8 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3054,7 +3054,7 @@ namespace Wombat
 		/// Get a vector of signed 16 bit integers.
 		/// </summary>
 		public short[] getVectorI16 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3089,7 +3089,7 @@ namespace Wombat
 			if (tryVectorI16 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3106,7 +3106,7 @@ namespace Wombat
 		/// Get a vector of unsigned 16 bit integers.
 		/// </summary>
 		public ushort[] getVectorU16 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3118,7 +3118,7 @@ namespace Wombat
 			ushort[] ret = new ushort[size];
 			Marshal.Copy(array, sRet, 0, (int)size);
 
-			for (int i = 0; i < ret.Length; i++) 
+			for (int i = 0; i < ret.Length; i++)
 			{
 				ret[i] = (ushort)sRet[i];
 			}
@@ -3147,7 +3147,7 @@ namespace Wombat
 			if (tryVectorU16 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3164,7 +3164,7 @@ namespace Wombat
 		/// Get a vector of signed 32 bit integers.
 		/// </summary>
 		public int[] getVectorI32 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3199,7 +3199,7 @@ namespace Wombat
 			if (tryVectorI32 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3216,7 +3216,7 @@ namespace Wombat
 		/// Get a vector of unsigned 32 bit integers.
 		/// </summary>
 		public uint[] getVectorU32 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3228,7 +3228,7 @@ namespace Wombat
 			uint[] ret = new uint[size];
 			Marshal.Copy(array, iRet, 0, (int)size);
 
-			for (int i = 0; i < ret.Length; i++) 
+			for (int i = 0; i < ret.Length; i++)
 			{
 				ret[i] = (uint)iRet[i];
 			}
@@ -3257,7 +3257,7 @@ namespace Wombat
 			if (tryVectorU32 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3274,7 +3274,7 @@ namespace Wombat
 		/// Get a vector of signed 64 bit integers.
 		/// </summary>
 		public long[] getVectorI64 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3309,7 +3309,7 @@ namespace Wombat
 			if (tryVectorI64 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3326,7 +3326,7 @@ namespace Wombat
 		/// Get a vector of unsigned 64 bit integers.
 		/// </summary>
 		public ulong[] getVectorU64 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3338,7 +3338,7 @@ namespace Wombat
 			ulong[] ret = new ulong[size];
 			Marshal.Copy(array, lRet, 0, (int)size);
 
-			for (int i = 0; i < ret.Length; i++) 
+			for (int i = 0; i < ret.Length; i++)
 			{
 				ret[i] = (ulong)lRet[i];
 			}
@@ -3367,7 +3367,7 @@ namespace Wombat
 			if (tryVectorU64 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3384,7 +3384,7 @@ namespace Wombat
 		/// Get a vector of 32 bit floating point numbers.
 		/// </summary>
 		public float[] getVectorF32 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3419,7 +3419,7 @@ namespace Wombat
 			if (tryVectorF32 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3436,7 +3436,7 @@ namespace Wombat
 		/// Get a vector of 64 bit floating point numbers.
 		/// </summary>
 		public double[] getVectorF64 (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3471,7 +3471,7 @@ namespace Wombat
 			if (tryVectorF64 (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3497,13 +3497,13 @@ namespace Wombat
         /// Thrown if the vector could not be found.
         /// </exception>
 		public string[] getVectorString (
-			string name, 
+			string name,
 			ushort fid)
 		{
             // Returns
             string[] ret = null;
 
-            // Try to get the vector            
+            // Try to get the vector
             bool tvs = tryVectorString(name, fid, ref ret);
 
             // Throw an exception if it could not be found
@@ -3512,7 +3512,7 @@ namespace Wombat
                 throw new MamaException((MamaStatus.mamaStatus)MamaStatus.mamaStatus.MAMA_STATUS_NOT_FOUND);
 			}
 
-            return ret;            
+            return ret;
 		}
 
 		/// <summary>
@@ -3536,7 +3536,7 @@ namespace Wombat
 			if (tryVectorString (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3553,7 +3553,7 @@ namespace Wombat
 		/// Get a vector of timestamps.
 		/// </summary>
 		public DateTime[] getVectorDateTime (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			EnsurePeerCreated();
@@ -3564,7 +3564,7 @@ namespace Wombat
 			long[] lRet = new long[size];
 			DateTime[] dtRet = new DateTime[size];
 
-			for (int i = 0; i < size; i++) 
+			for (int i = 0; i < size; i++)
 			{
 				dtRet[i] = new DateTime(convertFromMamaDateTime ((ulong)lRet[i]));
 			}
@@ -3593,7 +3593,7 @@ namespace Wombat
 			if (tryVectorDateTime (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3610,13 +3610,13 @@ namespace Wombat
 		/// Get a vector of prices.
 		/// </summary>
 		public MamaPrice[] getVectorPrice (
-			string name, 
+			string name,
 			ushort fid)
 		{
             // Returns
             MamaPrice[] ret = null;
 
-            // Try to get the vector            
+            // Try to get the vector
             bool tvs = tryVectorPrice(name, fid, ref ret);
 
             // Throw an exception if it could not be found
@@ -3650,7 +3650,7 @@ namespace Wombat
 			if (tryVectorPrice (name, fid, ref result))
 				return result;
 			else
-				return valueIfMissing; 
+				return valueIfMissing;
 		}
 
 		/// <summary>
@@ -3667,7 +3667,7 @@ namespace Wombat
 		/// Get a vector of submessages.
 		/// </summary>
 		public MamaMsg[] getVectorMsg (
-			string name, 
+			string name,
 			ushort fid)
 		{
 			MamaMsg[] result = null;
@@ -3860,7 +3860,7 @@ namespace Wombat
 		{
 			return tryI16 (null, (ushort)descriptor.getFid(), ref result);
 		}
-		
+
 		/// <summary>
 		/// Try to get a U16, unsigned 16 bit integer, field.
 		/// </summary>
@@ -3889,12 +3889,12 @@ namespace Wombat
 		{
 			return tryU16 (null, (ushort)descriptor.getFid(), ref result);
 		}
-		
+
 		/// <summary>
 		/// Try to get a U32, unsigned 32 bit integer, field.
 		/// </summary>
 		public bool tryU32(
-			string name, 
+			string name,
 			ushort fid,
 			ref uint result)
 		{
@@ -3967,7 +3967,7 @@ namespace Wombat
 		/// Try to get a U64, unsigned 64 bit integer, field.
 		/// </summary>
 		public bool tryU64(
-			string name, 
+			string name,
 			ushort fid,
 			ref ulong result)
 		{
@@ -3991,12 +3991,12 @@ namespace Wombat
 		{
 			return tryU64 (null, (ushort)descriptor.getFid(), ref result);
 		}
-		
+
 		/// <summary>
 		/// Try to get a float (f32) field.
 		/// </summary>
 		public bool tryF32(
-			string name, 
+			string name,
 			ushort fid,
 			ref float result)
 		{
@@ -4025,7 +4025,7 @@ namespace Wombat
 		/// Try to get a f64 field.
 		/// </summary>
 		public bool tryF64(
-			string name, 
+			string name,
 			ushort fid,
 			ref double result)
 		{
@@ -4049,12 +4049,12 @@ namespace Wombat
 		{
 			return tryF64 (null, (ushort)descriptor.getFid(), ref result);
 		}
-		
+
 		/// <summary>
 		/// Try to get a string field.
 		/// </summary>
 		public bool tryString(
-			string name, 
+			string name,
 			ushort fid,
 			ref string result)
 		{
@@ -4083,7 +4083,7 @@ namespace Wombat
 		/// Try to get an opaque field.
 		/// </summary>
 		public bool tryOpaque(
-			string name, 
+			string name,
 			ushort fid,
 			ref byte[] result)
 		{
@@ -4111,7 +4111,7 @@ namespace Wombat
 			return tryOpaque (null, (ushort)descriptor.getFid(), ref result);
 		}
 
-    
+
         /// <overloads>
         /// Try to get a DateTime object
         /// </overloads>
@@ -4139,7 +4139,7 @@ namespace Wombat
 			ref MamaPrice result)
 		{
 			EnsurePeerCreated();
-            
+
             if (result == null)
                 result = new MamaPrice();
 
@@ -4160,7 +4160,7 @@ namespace Wombat
 			ushort fid,
 			MamaPrice result)
 		{
-			EnsurePeerCreated();         
+			EnsurePeerCreated();
 
 			int code = NativeMethods.mamaMsg_getPrice(nativeHandle, name, fid, result.NativeHandle);
 			if (CheckResultCodeIgnoreNotFound(code) != MamaStatus.mamaStatus.MAMA_STATUS_OK)
@@ -4170,7 +4170,7 @@ namespace Wombat
 
 			return true;
 		}
-        
+
 		/// <summary>
 		/// Try to get a MAMA price field.
 		/// </summary>
@@ -4185,23 +4185,23 @@ namespace Wombat
 		/// Try to get a submessage.
 		/// </summary>
 		public bool tryMsg(
-			string name, 
+			string name,
 			ushort fid,
 			ref MamaMsg result)
 		{
 			EnsurePeerCreated();
-			
-           
-            IntPtr myp = IntPtr.Zero;    
+
+
+            IntPtr myp = IntPtr.Zero;
 			int code = NativeMethods.mamaMsg_getMsg(nativeHandle, name, fid, ref myp);
 			if (CheckResultCodeIgnoreNotFound(code) != MamaStatus.mamaStatus.MAMA_STATUS_OK)
 			{
 				return false;
 			}
-            
+
             if (result == null)
                 result = new MamaMsg();
-            
+
             result.setNativeHandle(myp);
 			return true;
 		}
@@ -4220,7 +4220,7 @@ namespace Wombat
 		/// Try to get a vector of booleans.
 		/// </summary>
 		public bool tryVectorBool(
-			string name, 
+			string name,
 			ushort fid,
 			ref bool[] result)
 		{
@@ -4250,17 +4250,17 @@ namespace Wombat
 		/// Try to get a vector of booleans.
 		/// </summary>
 		public bool tryVectorBool(
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref bool[] result)
 		{
 			return tryVectorBool (null, (ushort)descriptor.getFid(), ref result);
 		}
-		
+
 		/// <summary>
 		/// Try to get a vector of chars.
 		/// </summary>
 		public bool tryVectorChar (
-			string name, 
+			string name,
 			ushort fid,
 			ref char[] result)
 		{
@@ -4278,7 +4278,7 @@ namespace Wombat
 
 			char[] val = new char[size];
 
-			for (int i = 0; i < val.Length; i++) 
+			for (int i = 0; i < val.Length; i++)
 			{
 				val[i] = (char)bRet[i];
 			}
@@ -4291,7 +4291,7 @@ namespace Wombat
 		/// Try to get a vector of chars.
 		/// </summary>
 		public bool tryVectorChar (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref char[] result)
 		{
 			return tryVectorChar (null, (ushort)descriptor.getFid(), ref result);
@@ -4301,7 +4301,7 @@ namespace Wombat
 		/// Try to get a vector of signed 8 bit integers.
 		/// </summary>
 		public bool tryVectorI8 (
-			string name, 
+			string name,
 			ushort fid,
 			ref sbyte[] result)
 		{
@@ -4317,7 +4317,7 @@ namespace Wombat
 			sbyte[] val = new sbyte[size];
 			Marshal.Copy(array, bVal, 0, (int)size);
 
-			for (int i = 0; i < val.Length; i++) 
+			for (int i = 0; i < val.Length; i++)
 			{
 				val[i] = (sbyte)bVal[i];
 			}
@@ -4330,17 +4330,17 @@ namespace Wombat
 		/// Try to get a vector of signed 8 bit integers.
 		/// </summary>
 		public bool tryVectorI8 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref sbyte[] result)
 		{
 			return tryVectorI8 (null, (ushort)descriptor.getFid(), ref result);
 		}
-			
+
 		/// <summary>
 		/// Try to get a vector of unsigned 8 bit integers.
 		/// </summary>
 		public bool tryVectorU8 (
-			string name, 
+			string name,
 			ushort fid,
 			ref byte[] result)
 		{
@@ -4363,7 +4363,7 @@ namespace Wombat
 		/// Try to get a vector of unsigned 8 bit integers.
 		/// </summary>
 		public bool tryVectorU8 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref byte[] result)
 		{
 			return tryVectorU8 (null, (ushort)descriptor.getFid(), ref result);
@@ -4373,7 +4373,7 @@ namespace Wombat
 		/// Try to get a vector of signed 16 bit integers.
 		/// </summary>
 		public bool tryVectorI16 (
-			string name, 
+			string name,
 			ushort fid,
 			ref short[] result)
 		{
@@ -4396,7 +4396,7 @@ namespace Wombat
 		/// Try to get a vector of signed 16 bit integers.
 		/// </summary>
 		public bool tryVectorI16 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref short[] result)
 		{
 			return tryVectorI16 (null, (ushort)descriptor.getFid(), ref result);
@@ -4406,7 +4406,7 @@ namespace Wombat
 		/// Try to get a vector of unsigned 16 bit integers.
 		/// </summary>
 		public bool tryVectorU16 (
-			string name, 
+			string name,
 			ushort fid,
 			ref ushort[] result)
 		{
@@ -4422,7 +4422,7 @@ namespace Wombat
 			ushort[] val = new ushort[size];
 			Marshal.Copy(array, sVal, 0, (int)size);
 
-			for (int i = 0; i < val.Length; i++) 
+			for (int i = 0; i < val.Length; i++)
 			{
 				val[i] = (ushort)sVal[i];
 			}
@@ -4435,7 +4435,7 @@ namespace Wombat
 		/// Try to get a vector of unsigned 16 bit integers.
 		/// </summary>
 		public bool tryVectorU16 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref ushort[] result)
 		{
 			return tryVectorU16 (null, (ushort)descriptor.getFid(), ref result);
@@ -4445,7 +4445,7 @@ namespace Wombat
 		/// Try to get a vector of signed 32 bit integers.
 		/// </summary>
 		public bool tryVectorI32 (
-			string name, 
+			string name,
 			ushort fid,
 			ref int[] result)
 		{
@@ -4468,17 +4468,17 @@ namespace Wombat
 		/// Try to get a vector of signed 32 bit integers.
 		/// </summary>
 		public bool tryVectorI32 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref int[] result)
 		{
 			return tryVectorI32 (null, (ushort)descriptor.getFid(), ref result);
 		}
-			
+
 		/// <summary>
 		/// Try to get a vector of unsigned 32 bit integers.
 		/// </summary>
 		public bool tryVectorU32 (
-			string name, 
+			string name,
 			ushort fid,
 			ref uint[] result)
 		{
@@ -4494,7 +4494,7 @@ namespace Wombat
 			uint[] val = new uint[size];
 			Marshal.Copy(array, iVal, 0, (int)size);
 
-			for (int i = 0; i < val.Length; i++) 
+			for (int i = 0; i < val.Length; i++)
 			{
 				val[i] = (uint)iVal[i];
 			}
@@ -4507,17 +4507,17 @@ namespace Wombat
 		/// Try to get a vector of unsigned 32 bit integers.
 		/// </summary>
 		public bool tryVectorU32 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref uint[] result)
 		{
 			return tryVectorU32 (null, (ushort)descriptor.getFid(), ref result);
 		}
-			
+
 		/// <summary>
 		/// Try get a vector of signed 64 bit integers.
 		/// </summary>
 		public bool tryVectorI64 (
-			string name, 
+			string name,
 			ushort fid,
 			ref long[] result)
 		{
@@ -4540,7 +4540,7 @@ namespace Wombat
 		/// Try get a vector of signed 64 bit integers.
 		/// </summary>
 		public bool tryVectorI64 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref long[] result)
 		{
 			return tryVectorI64 (null, (ushort)descriptor.getFid(), ref result);
@@ -4550,7 +4550,7 @@ namespace Wombat
 		/// Try to get a vector of unsigned 64 bit integers.
 		/// </summary>
 		public bool tryVectorU64 (
-			string name, 
+			string name,
 			ushort fid,
 			ref ulong[] result)
 		{
@@ -4566,7 +4566,7 @@ namespace Wombat
 			ulong[] val = new ulong[size];
 			Marshal.Copy(array, lVal, 0, (int)size);
 
-			for (int i = 0; i < val.Length; i++) 
+			for (int i = 0; i < val.Length; i++)
 			{
 				val[i] = (ulong)lVal[i];
 			}
@@ -4579,7 +4579,7 @@ namespace Wombat
 		/// Try to get a vector of unsigned 64 bit integers.
 		/// </summary>
 		public bool tryVectorU64 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref ulong[] result)
 		{
 			return tryVectorU64 (null, (ushort)descriptor.getFid(), ref result);
@@ -4589,7 +4589,7 @@ namespace Wombat
 		/// Try to get a vector of 32 bit floating point numbers.
 		/// </summary>
 		public bool tryVectorF32 (
-			string name, 
+			string name,
 			ushort fid,
 			ref float[] result)
 		{
@@ -4612,7 +4612,7 @@ namespace Wombat
 		/// Try to get a vector of 32 bit floating point numbers.
 		/// </summary>
 		public bool tryVectorF32 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref float[] result)
 		{
 			return tryVectorF32 (null, (ushort)descriptor.getFid(), ref result);
@@ -4622,7 +4622,7 @@ namespace Wombat
 		/// Try to get a vector of 64 bit floating point numbers.
 		/// </summary>
 		public bool tryVectorF64 (
-			string name, 
+			string name,
 			ushort fid,
 			ref double[] result)
 		{
@@ -4645,7 +4645,7 @@ namespace Wombat
 		/// Try to get a vector of 64 bit floating point numbers.
 		/// </summary>
 		public bool tryVectorF64 (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref double[] result)
 		{
 			return tryVectorF64 (null, (ushort)descriptor.getFid(), ref result);
@@ -4655,7 +4655,7 @@ namespace Wombat
 		/// Try to get a vector of strings (char*).
 		/// </summary>
 		public bool tryVectorString (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref string[] result)
 		{
 			return tryVectorString (null, (ushort)descriptor.getFid(), ref result);
@@ -4665,7 +4665,7 @@ namespace Wombat
 		/// Try to get a vector of timestamps.
 		/// </summary>
 		public bool tryVectorDateTime (
-			string name, 
+			string name,
 			ushort fid,
 			ref DateTime[] result)
 		{
@@ -4680,7 +4680,7 @@ namespace Wombat
 			long[] lVal = new long[size];
 			DateTime[] dtVal = new DateTime[size];
 
-			for (int i = 0; i < size; i++) 
+			for (int i = 0; i < size; i++)
 			{
 				dtVal[i] = new DateTime(convertFromMamaDateTime ((ulong)lVal[i]));
 			}
@@ -4693,17 +4693,17 @@ namespace Wombat
 		/// Try to get a vector of timestamps.
 		/// </summary>
 		public bool tryVectorDateTime (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref DateTime[] result)
 		{
 			return tryVectorDateTime (null, (ushort)descriptor.getFid(), ref result);
 		}
-        
+
 		/// <summary>
 		/// Try to get a vector of prices.
 		/// </summary>
 		public bool tryVectorPrice (
-			MamaFieldDescriptor descriptor, 
+			MamaFieldDescriptor descriptor,
 			ref MamaPrice[] result)
 		{
 			return tryVectorPrice (null, (ushort)descriptor.getFid(), ref result);
@@ -4729,7 +4729,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Try to get a MAMA msg field.
-		/// The result contains the reusable field object of the 
+		/// The result contains the reusable field object of the
 		/// nativeHandle object. Applications calling this method will receive the same
 		/// reusable object for repeated calls on same nativeHandle object.
 		/// </summary>
@@ -4739,20 +4739,20 @@ namespace Wombat
 			ref MamaMsgField result)
 		{
 			EnsurePeerCreated();
-            
+
             IntPtr myP = IntPtr.Zero;
 			int code = NativeMethods.mamaMsg_getField(nativeHandle, name, fid, ref myP);
 			if (CheckResultCodeIgnoreNotFound(code) != MamaStatus.mamaStatus.MAMA_STATUS_OK)
 			{
 				return false;
 			}
-			
+
 			if (mField == null)
 			{
 				mField = new MamaMsgField();
 				mField.SelfManageLifeTime(false);
 			}
-             
+
 			mField.setNativeHandle(myP);
             result = mField;
 			return true;
@@ -4760,7 +4760,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Try to get a MAMA msg field.
-		/// The result contains the reusable field object of the 
+		/// The result contains the reusable field object of the
 		/// nativeHandle object. Applications calling this method will receive the same
 		/// reusable object for repeated calls on same nativeHandle object.
 		/// </summary>
@@ -4773,7 +4773,7 @@ namespace Wombat
 
         /// <overloads>Try to get a signed 32-bit integer field</overloads>
 		public bool tryI32(
-			string name, 
+			string name,
 			ushort fid,
 			ref NullableInt result)
 		{
@@ -4883,7 +4883,7 @@ namespace Wombat
 					return false;
 				}
 			}
-            
+
             long ret = ((long)dateTimeMsec * TimeSpan.TicksPerMillisecond) + 621355968000000000;
 			result = new DateTime(ret);
 			return true;
@@ -4896,9 +4896,9 @@ namespace Wombat
 			bool throwOnError)
 		{
 			EnsurePeerCreated();
-            
+
             IntPtr myP = IntPtr.Zero;
-            
+
 			int code = NativeMethods.mamaMsg_getMsg(nativeHandle, name, fid, ref myP);
 
             if (throwOnError)
@@ -4911,12 +4911,12 @@ namespace Wombat
                     return false;
             }
 
-            
+
             if (result == null)
                 result = new MamaMsg();
-                
+
             result.setNativeHandle(myP);
-            
+
 			return true;
 		}
 
@@ -4951,26 +4951,26 @@ namespace Wombat
                     tempMsgVector[0] = new MamaMsg();
                     tempMsgVector[0].SelfManageLifeTime(false);
                 }
-                
+
                  ret = tempMsgVector;
                  ret[0].setNativeHandle(Marshal.ReadIntPtr(array));
             }
             else
             {
                 ret = new MamaMsg[size];
-                             
-                for (int i = 0 ; i < size; i++) 
+
+                for (int i = 0 ; i < size; i++)
                 {
                     ret[i] = new MamaMsg(Marshal.ReadIntPtr(array, i * Marshal.SizeOf(typeof(IntPtr))));
                 }
             }
-            
+
 			result = ret;
 			return true;
 		}
 
 
-        
+
 		/// <summary>
         /// Returns the total number of fields in the message. Sub-messages count as
         /// a single field.
@@ -4985,7 +4985,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// Return a string representation the message. 
+        /// Return a string representation the message.
         /// </summary>
         public override string ToString()
         {
@@ -5008,7 +5008,7 @@ namespace Wombat
 			CheckResultCode(code);
             return result;
         }
-        
+
         /// <summary>
         /// Return the sequence
         /// </summary>
@@ -5059,12 +5059,12 @@ namespace Wombat
 			EnsurePeerCreated();
             return Marshal.PtrToStringAnsi(NativeMethods.mamaStatus_stringForStatus((int)type));
         }
-        
+
         /// <summary>
         /// Return the field value as string
         /// </summary>
         public string getFieldAsString (
-			string name, 
+			string name,
             ushort fid)
         {
 			EnsurePeerCreated();
@@ -5104,7 +5104,7 @@ namespace Wombat
         private MamaMsg msg_ = null;
 		private CallbackForwarder forwarder = null;
         private CallbackForwarder.MamaMessageIteratorDelegate callback = null;
-        private IntPtr buffer = IntPtr.Zero;    
+        private IntPtr buffer = IntPtr.Zero;
         private byte[] myByteBuffer = null;
 		#region Implementation details
 		private class CallbackForwarder
@@ -5112,7 +5112,7 @@ namespace Wombat
 			public delegate void MamaMessageIteratorDelegate(IntPtr msg, IntPtr field, IntPtr closure);
 
 			public CallbackForwarder(
-				MamaMsg sender, 
+				MamaMsg sender,
 				MamaMsgFieldIterator callback,
 				object closure)
 			{
@@ -5123,7 +5123,7 @@ namespace Wombat
 
 			internal void OnField(IntPtr msg, IntPtr field, IntPtr closure)
 			{
-				if (mCallback != null) 
+				if (mCallback != null)
 				{
                     if (mField == null)
                     {
@@ -5148,7 +5148,7 @@ namespace Wombat
 		private struct NativeMethods
 		{
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_iterateFields(IntPtr msg, 
+			public static extern int mamaMsg_iterateFields(IntPtr msg,
 				CallbackForwarder.MamaMessageIteratorDelegate callback,
 				IntPtr dict,
 				IntPtr closure);
@@ -5162,14 +5162,14 @@ namespace Wombat
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaMsg_createForPayloadBridge(ref IntPtr mamaMsg, IntPtr mamaPayloadBridge);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_copy (IntPtr mamaMsgSrc, 
+			public static extern int mamaMsg_copy (IntPtr mamaMsgSrc,
 				ref IntPtr mamaMsgCopy );
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_clear (IntPtr mamaMsg);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_destroy (IntPtr mamaMsg);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getByteSize (IntPtr mamaMsg, 
+			public static extern int mamaMsg_getByteSize (IntPtr mamaMsg,
 				ref int size);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_addBool(IntPtr mamaMsg,
@@ -5202,43 +5202,43 @@ namespace Wombat
 				ushort fid,
 				ushort val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_addI32(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_addI32(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				int val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_addU32(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_addU32(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				uint val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_addI64(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_addI64(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				long val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_addU64(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_addU64(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ulong val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_addF32(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_addF32(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				float val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_addF64(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_addF64(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				double val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_addString(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_addString(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				string val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_addOpaque (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_addOpaque (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				IntPtr val,
 				int size);
@@ -5384,43 +5384,43 @@ namespace Wombat
 				ushort fid,
 				ushort val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_updateI32(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_updateI32(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				int val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_updateU32(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_updateU32(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				uint val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_updateI64(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_updateI64(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				long val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_updateU64(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_updateU64(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ulong val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_updateF32(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_updateF32(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				float val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_updateF64(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_updateF64(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				double val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_updateString(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_updateString(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				string val);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_updateOpaque(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_updateOpaque(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				IntPtr val,
 				int size);
@@ -5561,43 +5561,43 @@ namespace Wombat
 				ushort fid,
 				ref ushort result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getI32(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getI32(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref int result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getU32(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getU32(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref uint result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getI64(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getI64(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref long result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getU64(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getU64(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref ulong result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getF32(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getF32(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref float result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getF64(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getF64(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref double result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getString(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getString(IntPtr mamaMsg,
+				string name,
 				ushort fid,
                 ref IntPtr result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getOpaque(IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getOpaque(IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint size);
@@ -5622,103 +5622,103 @@ namespace Wombat
 				ushort fid,
 				IntPtr result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getMsg (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getMsg (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorBool (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorBool (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorChar (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorChar (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorI8 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorI8 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorU8 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorU8 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorI16 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorI16 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorU16 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorU16 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorI32 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorI32 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorU32 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorU32 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorI64 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorI64 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorU64 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorU64 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorF32 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorF32 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorF64 (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorF64 (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorString (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorString (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorDateTime (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorDateTime (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorPrice (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorPrice (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getVectorMsg (IntPtr mamaMsg, 
-				string name, 
+			public static extern int mamaMsg_getVectorMsg (IntPtr mamaMsg,
+				string name,
 				ushort fid,
 				ref IntPtr result,
 				ref uint resultLen);
@@ -5745,9 +5745,9 @@ namespace Wombat
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr mamaStatus_stringForStatus (int type);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaMsg_getFieldAsString (IntPtr mamaMsg, 
-				string fieldName, 
-				ushort fid, 
+			public static extern int mamaMsg_getFieldAsString (IntPtr mamaMsg,
+				string fieldName,
+				ushort fid,
 				StringBuilder  buf,
 				int length);
 
@@ -5777,7 +5777,7 @@ namespace Wombat
 			public static extern int mamaMsg_createFromByteBuffer(ref IntPtr nativeHandle, IntPtr array, int size);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_createForBridgeFromByteBuffer(ref IntPtr nativeHandle, IntPtr array, int size, IntPtr nativeBridgeHandle);
-		
+
 		}
 
 		#endregion // Implementation details

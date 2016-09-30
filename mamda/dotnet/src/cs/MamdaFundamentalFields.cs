@@ -158,6 +158,6 @@ namespace Wombat
 
 		private static bool mInitialised = false;
 	}
-    
-   
+
+
 }

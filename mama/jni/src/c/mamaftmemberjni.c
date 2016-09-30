@@ -79,7 +79,7 @@ static void MAMACALLTYPE ftStateChangeCallback (mamaFtMember ftMember,
  * Method:    destroy
  * Signature: ()V
  */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_destroy 
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_destroy
     (JNIEnv* env, jobject this)
 {
     mama_status status                              = MAMA_STATUS_OK;
@@ -99,7 +99,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_destroy
     {
         ftStateChangeCallbackClosure* closure =
             CAST_JLONG_TO_POINTER(ftStateChangeCallbackClosure*,ftStateChangeCallbackClosurePointer);
-        
+
         if(closure->mClientJavaCallback)
         {
             (*env)->DeleteGlobalRef(env,closure->mClientJavaCallback);
@@ -199,7 +199,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_deactivate
 
     return;
 }
-   
+
 /*
  * Class:     com_wombat_mama_MamaFtMember
  * Method:    isActive
@@ -280,7 +280,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaFtMember_getGroupName
  * Signature: ()I
  */
 JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaFtMember_getWeight
-    (JNIEnv* env, jobject this) 
+    (JNIEnv* env, jobject this)
 {
     mama_status status          = MAMA_STATUS_OK;
     jlong       ftMemberPointer = 0;
@@ -383,7 +383,7 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaFtMember_getTimeoutInterval
  * Method:    setWeight
  * Signature: (I)V
  */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setWeight 
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setWeight
     (JNIEnv* env, jobject this, jint weight)
 {
     mama_status status           = MAMA_STATUS_OK;
@@ -416,7 +416,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setWeight
  * Method:    setInstanceId
  * Signature: (Ljava/lang/String;)V
  */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setInstanceId 
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setInstanceId
     (JNIEnv* env, jobject this, jstring id)
 {
     mama_status status           = MAMA_STATUS_OK;
@@ -427,11 +427,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setInstanceId
      ftMemberPointer = (*env)->GetLongField(env,this,ftMemberPointerFieldId_g);
         MAMA_THROW_NULL_PARAMETER_RETURN_VOID(ftMemberPointer,
     "MamaFtMember.getSetInstanceId(): Null parameter, MamaFtMember may have already been destroyed.");
-    
+
     if (id)
     {
         instanceId = (*env)->GetStringUTFChars(env,id,0);
-        
+
         if(!instanceId) return;
 
         if(MAMA_STATUS_OK!=(status=mamaFtMember_setInstanceId(
@@ -486,17 +486,17 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_create
  * Method:    setupFtMember
  * Signature: (ILcom/wombat/mama/MamaQueue;Lcom/wombat/mama/MamaFtMemberCallback;Lcom/wombat/mama/MamaTransport;Ljava/lang/String;IDD)V
  */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setupFtMember 
-    (JNIEnv*    env, 
-     jobject    this, 
-     jshort     ftType, 
-     jobject    queue, 
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setupFtMember
+    (JNIEnv*    env,
+     jobject    this,
+     jshort     ftType,
+     jobject    queue,
      jobject    callback,
-     jobject    transport, 
+     jobject    transport,
      jstring    name,
      jint       weight,
      jdouble    heartbeatInterval,
-     jdouble    timeoutInterval) 
+     jdouble    timeoutInterval)
 {
     mama_status                     status           = MAMA_STATUS_OK;
     jlong                           ftMemberPointer  = 0;
@@ -515,13 +515,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setupFtMember
     if (name)
     {
         groupName = (*env)->GetStringUTFChars(env,name,0);
-        
+
         if(!groupName) return;
     }
 
     closureData = (ftStateChangeCallbackClosure*) calloc (1, sizeof
             (ftStateChangeCallbackClosure));
-    
+
     if (!closureData)
     {
         utils_throwMamaException(env,"setupFtMember():"
@@ -529,13 +529,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setupFtMember
         return;
     }
 
-    /* Store the ft member and the callback as globals in the callback */ 
+    /* Store the ft member and the callback as globals in the callback */
     closureData->mJavaFtMember = (*env)->NewGlobalRef(env, this);
     closureData->mClientJavaCallback = (*env)->NewGlobalRef(env,callback);
 
     if (transport)
     {
-        transportPointer = (*env)->GetLongField(env, transport, transportPointerFieldId_g); 
+        transportPointer = (*env)->GetLongField(env, transport, transportPointerFieldId_g);
         transport_c      = CAST_JLONG_TO_POINTER(mamaTransport, transportPointer);
     }
 
@@ -547,7 +547,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaFtMember_setupFtMember
 
     if (MAMA_STATUS_OK!=(status=mamaFtMember_setup (
                                 CAST_JLONG_TO_POINTER(mamaFtMember, ftMemberPointer),
-                                (mamaFtType)ftType, 
+                                (mamaFtType)ftType,
                                 queue_c,
                                 ftStateChangeCallback,
                                 transport_c,
@@ -623,8 +623,8 @@ void MAMACALLTYPE ftStateChangeCallback (mamaFtMember ftMember,
 {
     JNIEnv* env                                 = NULL;
     jstring groupName                           = NULL;
-    ftStateChangeCallbackClosure* closureData   = 
-        (ftStateChangeCallbackClosure*)closure;    
+    ftStateChangeCallbackClosure* closureData   =
+        (ftStateChangeCallbackClosure*)closure;
 
     env = utils_getENV(javaVM_g);
 

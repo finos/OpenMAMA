@@ -60,7 +60,7 @@ static jfieldID jMamaIntValue_g = NULL;
 static jfieldID jMamaCharValue_g = NULL;
 static jfieldID jMamaDoubleValue_g = NULL;
 static jfieldID jMamaFloatValue_g = NULL;
-static jfieldID jMamaStringValue_g = NULL; 
+static jfieldID jMamaStringValue_g = NULL;
 
 /*Method ids for MamaMsg.java method callbacks*/
 jmethodID        messageConstructorId_g    =   NULL;
@@ -93,7 +93,7 @@ static mama_status mamaTry(JNIEnv*     env,
 static mama_status mamaTryIgnoreNotFound(JNIEnv*     env,
                            mama_status status,
                            const char* msgOnFail);
-                           
+
 static void growMsgArray (const size_t size);
 
 mama_status convertString(JNIEnv *env, jstring in, const char **out);
@@ -321,8 +321,8 @@ do                                                                          \
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);              \
     return result;                                                          \
 }                                                                           \
-while(0)       
-                          
+while(0)
+
 #define TryFieldWithType(CFUNC, CTYPE)                  \
 do                                                                          \
 {                                                                           \
@@ -350,7 +350,7 @@ do                                                                          \
 while(0)
 
 
-   
+
 /******************************************************************************
 * Public function implementation
 *******************************************************************************/
@@ -364,7 +364,7 @@ char *CopyBuffer(jbyte *buffer, jsize len)
 		/* Copy the memory over. */
 		memcpy(ret, buffer, len);
 	}
-	
+
 	return ret;
 }
 
@@ -384,7 +384,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1createFromByteBuffer(JNIEn
 				errorString,
 				UTILS_MAX_ERROR_STRING_LENGTH,
 				"This message already has a byte buffer, destroy it then re-create.",
-				MAMA_STATUS_INVALID_ARG);        
+				MAMA_STATUS_INVALID_ARG);
 		utils_throwExceptionForMamaStatus(env,MAMA_STATUS_INVALID_ARG ,errorString);
 		return;
 	}
@@ -407,7 +407,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1createFromByteBuffer(JNIEn
 					mama_status status = MAMA_STATUS_NOMEM;
 					g_byteBuffer = CopyBuffer(nativeByteArray, arrayLength);
 					if(NULL != g_byteBuffer)
-					{				
+					{
 						/* The address of the message pointer must be passed to this function. */
 						mamaMsg messagePointer = CAST_JLONG_TO_POINTER(mamaMsg,msgPointer);
 
@@ -423,17 +423,17 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1createFromByteBuffer(JNIEn
 							free(g_byteBuffer);
 							g_byteBuffer = NULL;
 						}
-					}		
-					
+					}
+
 					/* Release the array of bytes. */
 					(*env)->ReleaseByteArrayElements(env, byteArray, nativeByteArray, JNI_ABORT);
-					
+
 					/* If something went wrong with the native function then throw an exception. */
 					mamaTry(env, status, "mamaMsg_createFromByteBuffer()");
 				}
 			}
 		}
-	}	
+	}
 }
 
 /*
@@ -457,11 +457,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1setNewBuffer(JNIEnv *env, 
 			{
 				/* Make a copy of the buffer and save it in the global variable to prevent the
 				 * memory from being freed.
-				 */					
+				 */
 				mama_status status = MAMA_STATUS_NOMEM;
 				char *newBuffer = CopyBuffer(nativeByteArray, arrayLength);
 				if(NULL != newBuffer)
-				{				
+				{
 					/* The address of the message pointer must be passed to this function. */
 					mamaMsg messagePointer = CAST_JLONG_TO_POINTER(mamaMsg,msgPointer);
 
@@ -481,18 +481,18 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1setNewBuffer(JNIEnv *env, 
 						}
 						g_byteBuffer = newBuffer;
 					}
-					
+
 					/* If something went wrong then delete the global array. */
 					else
 					{
 						free(newBuffer);
 						newBuffer = NULL;
 					}
-				}		
-				
+				}
+
 				/* Release the array of bytes. */
 				(*env)->ReleaseByteArrayElements(env, byteArray, nativeByteArray, JNI_ABORT);
-				
+
 				/* If something went wrong with the native function then throw an exception. */
 				mamaTry(env, status, "mamaMsg_setNewBuffer()");
 			}
@@ -509,7 +509,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getByteBuffer(JNIEnv* 
 {
 	/* Returns. */
     jbyteArray ret = NULL;
-	
+
 	/* Get the pointer to the underlying message*/
     jlong msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer, "Null parameter, MamaMsg may have already been destroyed.",NULL);
@@ -529,13 +529,13 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getByteBuffer(JNIEnv* 
 				/* Create a java byte array. */
 				ret = (*env)->NewByteArray (env, cResultLen);
 				if(NULL != ret)
-				{		
+				{
 					/* Copy the bytes across. */
 					(*env)->SetByteArrayRegion (env, ret, 0, cResultLen, cResult);
-				}			
+				}
 			}
 		}
-		
+
 		else
 		{
 			/* Format an error string. */
@@ -544,12 +544,12 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getByteBuffer(JNIEnv* 
 					errorString,
 					UTILS_MAX_ERROR_STRING_LENGTH,
 					"Could not get the byte buffer from the mamaMsg.",
-					gbb);        
+					gbb);
 			utils_throwExceptionForMamaStatus(env,gbb ,errorString);
 			return NULL;
 		}
 	}
-    
+
     return ret;
 }
 
@@ -594,7 +594,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getBoolean
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -628,7 +628,7 @@ JNIEXPORT jchar JNICALL Java_com_wombat_mama_MamaMsg_getChar
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
    if(name)
@@ -665,7 +665,7 @@ JNIEXPORT jbyte JNICALL Java_com_wombat_mama_MamaMsg_getI8
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -702,7 +702,7 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaMsg_getU8
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -739,7 +739,7 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaMsg_getI16
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -776,7 +776,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_getU16
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -814,7 +814,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_getI32
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -851,7 +851,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaMsg_getU32
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -889,7 +889,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaMsg_getI64
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -926,7 +926,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaMsg_getU64
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -963,7 +963,7 @@ JNIEXPORT jlong JNICALL Java_com_wombat_mama_MamaMsg_getSeqNum
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
 
@@ -990,7 +990,7 @@ JNIEXPORT jfloat JNICALL Java_com_wombat_mama_MamaMsg_getF32
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -1027,7 +1027,7 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaMsg_getF64
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(name)
@@ -1114,7 +1114,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaMsg_getMsg
 
     assert(messagePointerFieldId_g!=NULL);
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", NULL);
 
     if(name)
@@ -1175,7 +1175,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getOpaque
 
     /* Get the pointer to the underlying message*/
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", NULL);
 
     /* Get the C string for the name if specified*/
@@ -1185,7 +1185,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getOpaque
         if(!c_name)
             return NULL;
     }
-    
+
     if (MAMA_STATUS_OK!=(status=mamaMsg_getOpaque(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer),
                     c_name,
@@ -1207,7 +1207,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getOpaque
     if (cResultLen > 0)
     {
         result = (*env)->NewByteArray (env, cResultLen);
-        
+
         if (!result)
         {
             if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
@@ -1215,7 +1215,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getOpaque
         }
 
         (*env)->SetByteArrayRegion (env, result, 0, cResultLen, cResult);
-        
+
     }
 
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
@@ -1239,12 +1239,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1getPrice
     char            errorString     [UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
-    
+
     pricePointer   = (*env)->GetLongField(env,this,msgPricePointerFieldId_g);
     assert(0!=pricePointer);
-    
+
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
@@ -1268,7 +1268,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1getPrice
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return;
     }
-    
+
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
 }
 
@@ -1288,14 +1288,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1getDateTime
     char            errorString     [UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     dateTimePointer   = (*env)->GetLongField(env,
                                              this,
                                              msgDateTimePointerFieldId_g);
     assert(0!=dateTimePointer);
-    
+
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
@@ -1340,16 +1340,16 @@ JNIEXPORT jobjectArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayMsg
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
     jlong           jMsgArrayPointer=   0;
     jint            jMsgArraySize   =   0;
-    
+
     assert(messagePointerFieldId_g!=NULL);
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", NULL);
-    
+
     /* Both will be 0/NULL if this is the first call */
     jMsgArrayPointer = (*env)->GetLongField(env,this,jMsgArrayFieldId_g);
     jMsgArraySize = (*env)->GetIntField(env,this,jMsgArraySizeFieldId_g);
-    
+
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
@@ -1372,17 +1372,17 @@ JNIEXPORT jobjectArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayMsg
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return NULL;
     }
-    
+
     if(resultLength>0)
     {
         jobject* jMsgArray = CAST_JLONG_TO_POINTER (jobject*, jMsgArrayPointer);
         result = utils_getReusedJniMsgArrayFromVectorMsg(env,
                 (mamaMsg*)tempResult,resultLength,messageConstructorId_g,
-                messagePointerFieldId_g, 
-                &jMsgArray, 
+                messagePointerFieldId_g,
+                &jMsgArray,
                 &jMsgArraySize);
         (*env)->SetIntField (env, this, jMsgArraySizeFieldId_g, jMsgArraySize);
-        (*env)->SetLongField (env, this, jMsgArrayFieldId_g, 
+        (*env)->SetLongField (env, this, jMsgArrayFieldId_g,
                              CAST_POINTER_TO_JLONG (jMsgArray));
     }
 
@@ -1410,7 +1410,7 @@ JNIEXPORT jbyteArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayI8
 JNIEXPORT jshortArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayU8
 (JNIEnv* env, jobject this, jstring name, jint fid)
 {
-    ExpandGetScalarVectorU (jshort, Short, U8, mama_u8_t); 
+    ExpandGetScalarVectorU (jshort, Short, U8, mama_u8_t);
 }
 
 /*
@@ -1432,7 +1432,7 @@ JNIEXPORT jshortArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayI16
 JNIEXPORT jintArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayU16
 (JNIEnv* env, jobject this, jstring name, jint fid)
 {
-    ExpandGetScalarVectorU (jint, Int, U16, mama_u16_t); 
+    ExpandGetScalarVectorU (jint, Int, U16, mama_u16_t);
 }
 
 /*
@@ -1454,7 +1454,7 @@ JNIEXPORT jintArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayI32
 JNIEXPORT jlongArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayU32
 (JNIEnv* env, jobject this, jstring name, jint fid)
 {
-    ExpandGetScalarVectorU (jlong, Long, U32, mama_u32_t); 
+    ExpandGetScalarVectorU (jlong, Long, U32, mama_u32_t);
 }
 
 /*
@@ -1476,7 +1476,7 @@ JNIEXPORT jlongArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayI64
 JNIEXPORT jlongArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayU64
 (JNIEnv* env, jobject this, jstring name, jint fid)
 {
-    ExpandGetScalarVectorU (jlong, Long, U64, mama_u64_t); 
+    ExpandGetScalarVectorU (jlong, Long, U64, mama_u64_t);
 }
 
 /*
@@ -1518,13 +1518,13 @@ JNIEXPORT jobjectArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayString
     mama_status     status          =   MAMA_STATUS_OK;
     jstring         nextString      =   NULL;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    jclass          stringArrayClass   = 
+    jclass          stringArrayClass   =
                     (*env)->FindClass(env,"java/lang/String");
     if(!stringArrayClass) return NULL;/*Exception auto thrown*/
-    
+
     assert(messagePointerFieldId_g!=NULL);
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", NULL);
 
     if(name)
@@ -1550,9 +1550,9 @@ JNIEXPORT jobjectArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayString
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return NULL;
     }
-    
+
     if(resultLength>0)
-    {  
+    {
         /*Create the jstring array*/
         result = (*env)->NewObjectArray(env,resultLength,stringArrayClass,NULL);
         if(!result)
@@ -1560,13 +1560,13 @@ JNIEXPORT jobjectArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayString
             if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
             (*env)->DeleteLocalRef(env, stringArrayClass);
             return NULL;
-        }   
+        }
         for(i=0;i<resultLength;++i)
-        {     
+        {
             nextString = (*env)->NewStringUTF(env, tempResult[i]);
             /*Add the new msg to the Java MamaMsg array*/
             (*env)->SetObjectArrayElement(env,result,i,nextString);
-        }   
+        }
     }
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
     (*env)->DeleteLocalRef(env, stringArrayClass);
@@ -1575,7 +1575,7 @@ JNIEXPORT jobjectArray JNICALL Java_com_wombat_mama_MamaMsg_getArrayString
 
 /*
  * Class:     com_wombat_mama_MamaMsg
- * Method:    getIsDefinitelyDuplicate 
+ * Method:    getIsDefinitelyDuplicate
  * Signature: ()Z
  */
 JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsDefinitelyDuplicate
@@ -1603,7 +1603,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsDefinitelyDuplicate
     }
 
     return cResult == 0 ? JNI_FALSE : JNI_TRUE;
-} 
+}
 
 /*
  * Class:     com_wombat_mama_MamaMsg
@@ -1697,7 +1697,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsDefinitelyDelayed
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return JNI_FALSE;
     }
-    
+
     return cResult == 0 ? JNI_FALSE : JNI_TRUE;
 }
 
@@ -1732,7 +1732,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsOutOfSequence
 
     return cResult == 0 ? JNI_FALSE : JNI_TRUE;
 }
-        
+
 /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    addBoolean
@@ -1747,7 +1747,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addBoolean
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -1780,7 +1780,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addChar
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -1813,7 +1813,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addI8
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -1846,7 +1846,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addU8
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -1879,7 +1879,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addI16
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -1912,7 +1912,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addU16
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -1945,7 +1945,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addI32
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -1978,7 +1978,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addU32
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2012,7 +2012,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addI64
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2046,7 +2046,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addU64
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2080,7 +2080,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addF32
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2114,7 +2114,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addF64
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2127,7 +2127,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addF64
             mamaMsg_addF64(CAST_JLONG_TO_POINTER(mamaMsg,msgPointer),
                                   c_name, (mama_fid_t)fid,(mama_f64_t)value),
             "mamaMsg_addF64() ");
-    
+
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
 
     return;
@@ -2150,7 +2150,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addString
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2193,7 +2193,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addPrice
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2234,9 +2234,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addOpaque
     jbyte*      native_array      =   NULL;
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
-    
+
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
@@ -2246,13 +2246,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addOpaque
     native_array_len = (*env)->GetArrayLength (env, opaque);
 
     native_array = (*env)->GetByteArrayElements (env, opaque, NULL);
-    if (!native_array) 
+    if (!native_array)
     {
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
         return; /*Exception autothrown*/
     }
 
-    mamaTry (env, 
+    mamaTry (env,
              mamaMsg_addOpaque (CAST_JLONG_TO_POINTER(mamaMsg,msgPointer),
                                 c_name,
                                 fid,
@@ -2264,7 +2264,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addOpaque
 
     /*Needed according to the JNI documentation*/
     (*env)->ReleaseByteArrayElements (env, opaque, native_array, JNI_ABORT);
-    
+
     return;
 }
 
@@ -2394,7 +2394,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addDateTime
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2437,7 +2437,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addMsg
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2447,7 +2447,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addMsg
     }
 
     msgToAddPointer = (*env)->GetLongField(env, msgToAdd, messagePointerFieldId_g);
-    
+
     if(!msgToAddPointer)
     {
         if(c_name)(*env)->ReleaseStringUTFChars(env, name, c_name);
@@ -2461,7 +2461,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addMsg
                              CAST_JLONG_TO_POINTER(mamaMsg, msgToAddPointer)),
            "mamaMsg_addMsg()");
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
-    
+
     return;
 }
 
@@ -2483,7 +2483,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayMsg
 
     assert(messagePointerFieldId_g!=NULL);
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
     if(name)
     {
@@ -2497,18 +2497,18 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayMsg
     {
         return;
     }
-    
 
-    cMsgArray = malloc (size * sizeof(mamaMsg));    
+
+    cMsgArray = malloc (size * sizeof(mamaMsg));
     for (i = 0; i < size; ++i)
     {
         /* obtain the next message from the array */
         nextMsg = (*env)->GetObjectArrayElement(env, msgArray, i);
-    
+
         /* get the underlying C structure */
         nextMsgPointer = (*env)->GetLongField(env,nextMsg,messagePointerFieldId_g);
         assert(nextMsgPointer!=0);
-        
+
         /* add it to the array */
         cMsgArray[i] = CAST_JLONG_TO_POINTER(mamaMsg,nextMsgPointer);
     }
@@ -2532,22 +2532,22 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayMsg
  */
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayMsgWithLength
   (JNIEnv* env, jobject this, jstring name, jint fid, jobjectArray msgArray, jint length)
-{  
+{
     /* The message pointer must be valid. */
     assert(messagePointerFieldId_g != NULL);
     {
         /* Error return. */
         mama_status ret = MAMA_STATUS_NULL_ARG;
 
-        /* Get the message object itself. */    
+        /* Get the message object itself. */
         jlong msgPointer = (*env)->GetLongField(env, this, messagePointerFieldId_g);
         if((msgPointer != 0) && (msgArray != NULL))
-        {    
+        {
             /* If the name argument has been provided then convert it to the C equivalent. */
             const char *cName = NULL;
             ret = convertString(env, name, &cName);
             if(ret == MAMA_STATUS_OK)
-            {    
+            {
                 /* obtain the size the array */
                 jsize size = (*env)->GetArrayLength(env, msgArray);
 
@@ -2558,10 +2558,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayMsgWithLength
                     /* The java array cannot be passed down to the C layer, the underlying message
                      * pointers must be extracted and put into a C array. Allocate this now.
                      */
-                    mamaMsg *cArray = calloc(length, sizeof(mamaMsg));  
+                    mamaMsg *cArray = calloc(length, sizeof(mamaMsg));
                     ret = MAMA_STATUS_NOMEM;
                     if(cArray != NULL)
-                    {            
+                    {
                         /* Iterate through the java array up to the supplied length and populate the new C
                          * array allocated above.
                          */
@@ -2585,7 +2585,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayMsgWithLength
                 /* Free the C name. */
                 if(cName != NULL)
                 {
-                    (*env)->ReleaseStringUTFChars(env, name, cName);    
+                    (*env)->ReleaseStringUTFChars(env, name, cName);
                 }
             }
         }
@@ -2599,7 +2599,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayMsgWithLength
             /* Throw the exception. */
             utils_throwMamaException(env, message);
             return;
-        }    
+        }
     }
 }
 
@@ -2619,21 +2619,21 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayString
     const char**    cStringArray = NULL;
     assert(messagePointerFieldId_g!=NULL);
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
         if(!c_name)return;/*Exception thrown*/
     }
-   
-    
-    cStringArray = malloc (length * sizeof(char*));    
+
+
+    cStringArray = malloc (length * sizeof(char*));
     for (i = 0; i < length; ++i)
     {
         /* obtain the next jstring from the array */
         nextString = (jstring)(*env)->GetObjectArrayElement(env, stringArray, i);
-    
+
         /* get the C string */
         nextCstring = (*env)->GetStringUTFChars(env,nextString,0);
         if(!nextCstring)
@@ -2642,7 +2642,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayString
             free (cStringArray);
             return;/*Exception auto thrown*/
         }
-  
+
         /* add it to the array */
         cStringArray[i] = nextCstring;
     }
@@ -2652,7 +2652,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_addArrayString
                                     c_name,
                                     (mama_fid_t)fid,
                                     cStringArray,
-                                    (mama_size_t)length),   
+                                    (mama_size_t)length),
             "mamaMsg_addVectorMsg()");
    /* clean up */
     for (i = 0; i < length; ++i)
@@ -2679,7 +2679,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateI8
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2712,7 +2712,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateI16
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2746,7 +2746,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateI32
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2780,7 +2780,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateI64
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2812,7 +2812,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateU8
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2845,7 +2845,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateU16
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2879,7 +2879,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateU32
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2913,7 +2913,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateU64
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2946,7 +2946,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateF32
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2980,7 +2980,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateF64
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -2993,7 +2993,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateF64
             mamaMsg_updateF64(CAST_JLONG_TO_POINTER(mamaMsg,msgPointer),
                                      c_name, (mama_fid_t)fid,(double)value),
             "mamaMsg_updateF64() ");
-            
+
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
 
     return;
@@ -3014,7 +3014,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateString
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -3055,7 +3055,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateChar
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
         "Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -3088,7 +3088,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateBoolean
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
         "Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -3122,7 +3122,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updatePrice
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -3164,7 +3164,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateDateTime
     assert(messagePointerFieldId_g!=NULL);
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -3223,7 +3223,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateArrayI16
 {
    ExpandAddOrUpdateScalarVector (jshort, Short, I16, mama_i16_t, update);
 }
-                                                                                                         
+
 /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    updateArrayU16
@@ -3234,7 +3234,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateArrayU16
 {
    ExpandAddOrUpdateScalarVectorU (jint, Int, U16, mama_u16_t, update);
 }
-                                                                                                         
+
 /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    updateArrayI32
@@ -3245,7 +3245,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateArrayI32
 {
    ExpandAddOrUpdateScalarVector (jint, Int, I32, mama_i32_t, update);
 }
-                                                                                                         
+
 /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    updateArrayU32
@@ -3267,7 +3267,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateArrayI64
 {
    ExpandAddOrUpdateScalarVector (jlong, Long, I64, mama_i64_t, update);
 }
-                                                                                                         
+
 /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    updateArrayU64
@@ -3278,7 +3278,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateArrayU64
 {
     ExpandAddOrUpdateScalarVectorU (jlong, Long, U64, mama_u64_t, update);
 }
-                                                                                                         
+
 /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    updateArrayF32
@@ -3289,7 +3289,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_updateArrayF32
 {
     ExpandAddOrUpdateScalarVector (jfloat, Float, F32, mama_f32_t, update);
 }
-                                                                                                         
+
 /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    updateArrayF64
@@ -3325,21 +3325,21 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsgIterator_iteratorNext
     mamaMsgIterator            iteratorPointer_c   =   NULL;
     mamaMsgField            field;
 
-    
+
     iteratorPointer = (*env)->GetLongField(env,this,iteratorPointerFieldId_g);
     iteratorPointer_c = CAST_JLONG_TO_POINTER(mamaMsgIterator,iteratorPointer);
-    
+
     javaMsgField = (*env)->GetObjectField
                     (env,
                     this,
                     iteratorFieldPointerFieldId_g);
-        
+
     field = mamaMsgIterator_next (iteratorPointer_c);
-    
+
         /*Set the pointer val for this MamaMsgField*/
     (*env)->SetLongField(env, javaMsgField, messageFieldPointerFieldId_g,
-                           CAST_POINTER_TO_JLONG(field)); 
-                           
+                           CAST_POINTER_TO_JLONG(field));
+
 }
 
 /*
@@ -3353,21 +3353,21 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsgIterator_iteratorHasNext
     jlong                   iteratorPointer     =   0;
     mamaMsgIterator            iteratorPointer_c   =   NULL;
     int ret;
-    
+
     iteratorPointer = (*env)->GetLongField(env,this,iteratorPointerFieldId_g);
     iteratorPointer_c = CAST_JLONG_TO_POINTER(mamaMsgIterator,iteratorPointer);
-    
+
     ret = mamaMsgIterator_hasNext (iteratorPointer_c);
 
     return (ret==0?JNI_FALSE:JNI_TRUE);
-} 
-  
+}
+
 /*
  * Class:     com_wombat_mama_MamaMsg_MmIterator
  * Method:    createIterator
  * Signature: (Lcom/wombat/mama/MamaMsg;Lcom/wombat/mama/MamaDictionary;)V
 */
-  
+
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsgIterator_iteratorCreate
   (JNIEnv * env, jobject this, jobject msg, jobject dictionary)
 {
@@ -3377,27 +3377,27 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsgIterator_iteratorCreate
     jobject                 javaMsgField    =   NULL;
     mamaDictionary          dictPointer_c   =   NULL;
     mamaMsgField            field;
-    
+
     /*Get the msg pointer from the Java object*/
     msgPointer = (*env)->GetLongField(env,msg,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
-    
+
     if(NULL!=dictionary)
     {
         dictPointer = (*env)->GetLongField(env,dictionary,
                                                dictionaryPointerFieldId_g);
         dictPointer_c = CAST_JLONG_TO_POINTER(mamaDictionary,dictPointer);
     }
-       
+
     javaMsgField = (*env)->GetObjectField
                         (env,
                         this,
                         iteratorFieldPointerFieldId_g);
-                        
+
     assert(NULL!=javaMsgField);
-       
+
 
     mamaMsgIterator_create (&localiterator, dictPointer_c);
 
@@ -3407,12 +3407,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsgIterator_iteratorCreate
 
     /*Set the pointer val for this iterator*/
     (*env)->SetLongField(env, this, iteratorPointerFieldId_g,
-                           CAST_POINTER_TO_JLONG (localiterator)); 
-                           
+                           CAST_POINTER_TO_JLONG (localiterator));
+
     /*Set the pointer val for this MamaMsgField*/
     (*env)->SetLongField(env, javaMsgField, messageFieldPointerFieldId_g,
-                           CAST_POINTER_TO_JLONG(field)); 
-    
+                           CAST_POINTER_TO_JLONG(field));
+
 }
 
 /*
@@ -3439,7 +3439,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsgIterator_iteratorDestroy
                  "Error from mamaMsgIterator_destroy()",
                  status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
-    }   
+    }
 
     (*env)->SetLongField(env, this, iteratorPointerFieldId_g, 0);
 }
@@ -3459,10 +3459,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsgIterator_iteratorAssociate
     mamaDictionary          dictPointer_c   =   NULL;
     mamaMsgIterator            iteratorPointer_c   =   NULL;
     mamaMsgField            field;
-    
+
     /*Get the msg pointer from the Java object*/
     msgPointer = (*env)->GetLongField(env,msg,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(NULL!=dictionary)
@@ -3471,27 +3471,27 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsgIterator_iteratorAssociate
                                                dictionaryPointerFieldId_g);
         dictPointer_c = CAST_JLONG_TO_POINTER(mamaDictionary,dictPointer);
     }
-    
+
     iteratorPointer = (*env)->GetLongField(env,this,iteratorPointerFieldId_g);
     iteratorPointer_c = CAST_JLONG_TO_POINTER(mamaMsgIterator,iteratorPointer);
-    
-    
-    mamaMsgIterator_associate(iteratorPointer_c, 
+
+
+    mamaMsgIterator_associate(iteratorPointer_c,
                                 CAST_JLONG_TO_POINTER(mamaMsg,msgPointer));
-    
+
     mamaMsgIterator_setDict(iteratorPointer_c, dictPointer_c);
-    
+
     field = mamaMsgIterator_begin (iteratorPointer_c);
-         
+
     javaMsgField = (*env)->GetObjectField
                         (env,
                         this,
                         iteratorFieldPointerFieldId_g);
-                        
+
     /*Set the pointer val for this MamaMsgField*/
     (*env)->SetLongField(env, javaMsgField, messageFieldPointerFieldId_g,
-                           CAST_POINTER_TO_JLONG(field)); 
-                           
+                           CAST_POINTER_TO_JLONG(field));
+
 }
 
 /*Callback function for iterateFields() */
@@ -3557,7 +3557,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1iterateFields
 
     /*Get the msg pointer from the Java object*/
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(NULL!=dictionary)
@@ -3596,9 +3596,9 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaMsg_getFieldAsString
     jlong           msgPointer      =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
     char retVal_c[128];
-    
+
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", NULL);
 
 
@@ -3633,7 +3633,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_isFromInbox
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", 0);
 
 
@@ -3656,7 +3656,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaMsg_toString
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", NULL);
 
 
@@ -3720,10 +3720,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_clear
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
-    
+
     if(MAMA_STATUS_OK!=(status=mamaMsg_clear(
                             CAST_JLONG_TO_POINTER(mamaMsg,msgPointer))))
     {
@@ -3750,9 +3750,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_copy
     jlong       rhsMsgPointer   =   0;
     mamaMsg     c_result        =   NULL;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
 
@@ -3791,9 +3791,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_apply
     jlong       rhsMsgPointer   =   0;
     mamaMsg     c_result        =   NULL;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
 
@@ -3831,11 +3831,11 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaMsg_detach
     jclass          msgClass   =
         (*env)->FindClass(env,"com/wombat/mama/MamaMsg");
     if (!msgClass) return NULL;
-    
+
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     assert(0!=msgPointer);
-    
-    
+
+
     if(MAMA_STATUS_OK!=(status=mamaMsg_detach(
                             CAST_JLONG_TO_POINTER(mamaMsg,msgPointer))))
     {
@@ -3847,7 +3847,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaMsg_detach
         utils_throwExceptionForMamaStatus(env,status,errorString);
         return NULL;
     }
-    
+
 
         /*If we get this far we have a sub message*/
         result = (*env)->NewObject(env, msgClass,
@@ -3885,11 +3885,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1destroy
              messagePointerFieldId_g,
              0);
     }
-    
+
     /* Both will be 0/NULL if this is the first call */
     jMsgArrayPointer = (*env)->GetLongField(env,this,jMsgArrayFieldId_g);
-    jMsgArraySize = (*env)->GetIntField(env,this,jMsgArraySizeFieldId_g);   
-    
+    jMsgArraySize = (*env)->GetIntField(env,this,jMsgArraySizeFieldId_g);
+
     jMsgArray = CAST_JLONG_TO_POINTER(jobject*,jMsgArrayPointer);
 
     if (jMsgArray)
@@ -3903,15 +3903,15 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1destroy
            (*env)->DeleteGlobalRef(env,jMsg);
 
         }
-    
+
         free (CAST_JLONG_TO_POINTER(jobject*,jMsgArray));
-        jMsgArray = 0; 
+        jMsgArray = 0;
         (*env)->SetLongField(env, this,
              jMsgArrayFieldId_g,
              0);
     }
 
-    if (0 != jMsgArraySize) 
+    if (0 != jMsgArraySize)
     {
         jMsgArraySize = 0;
         (*env)->SetIntField (env, this, jMsgArraySizeFieldId_g, jMsgArraySize);
@@ -4000,15 +4000,15 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_createForPayloadBridge
     jlong       payloadBridgePointer    =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    payloadBridgePointer = (*env)->GetLongField (env, 
-                                                 payloadBridge, 
+    payloadBridgePointer = (*env)->GetLongField (env,
+                                                 payloadBridge,
                                                  payloadBridgePointer);
     assert (0!=payloadBridgePointer);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_createForPayloadBridge(
                     &cMessage, payloadBridgePointer)))
     {
-        utils_buildErrorStringForStatus(    
+        utils_buildErrorStringForStatus(
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Could not create MamaMsg for payload bridge.",
@@ -4018,7 +4018,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_createForPayloadBridge
     }
 
     /*If we get this far we have a valid message pointer to set*/
-    (*env)->SetLongField(env, this, 
+    (*env)->SetLongField(env, this,
                          messagePointerFieldId_g,
                          CAST_POINTER_TO_JLONG (cMessage));
     return;
@@ -4030,7 +4030,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_createForPayloadBridge
  * Signature: (Ljava/lang/String;ILcom/wombat/mama/MamaDictionary;)V
  */
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1getField
-(JNIEnv * env, jobject this, jstring name, 
+(JNIEnv * env, jobject this, jstring name,
  jint fieldId, jobject dictionary)
 {
     const  char*    c_name          = NULL;
@@ -4041,7 +4041,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1getField
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
     assert(messagePointerFieldId_g!=NULL);
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.");
 
     if(name)
@@ -4064,7 +4064,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1getField
     }
 
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
-    
+
 }
 
 /*
@@ -4074,23 +4074,23 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1getField
  */
 JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryBoolean
   (JNIEnv *env , jobject this, jstring name, jint fid, jobject result)
-{   
+{
     mama_status     status          = MAMA_STATUS_OK;
     mama_bool_t     cResult         = 0;
     TryFieldWithType (Bool, mama_bool_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetBooleanField(env, result, jBooleanValue_g,
                                 cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
-        
+
 }
-  
+
 
 /*
  * Class:     com_wombat_mama_MamaMsg
@@ -4103,15 +4103,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryChar
     mama_status     status          = MAMA_STATUS_OK;
     mama_u8_t       cResult         = 0;
     TryFieldWithType (Bool, mama_u8_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetCharField(env, result, jMamaCharValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 
 }
@@ -4127,15 +4127,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI8
     mama_status     status          = MAMA_STATUS_OK;
     mama_i8_t       cResult         =   NULL;
     TryFieldWithType (I8, mama_i8_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetByteField(env, result, jMamaByteValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
 /*
@@ -4149,15 +4149,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryU8
     mama_status     status          = MAMA_STATUS_OK;
     mama_u8_t       cResult         = 0;
     TryFieldWithType (U8, mama_u8_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetShortField(env, result, jMamaShortValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
 /*
@@ -4171,15 +4171,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI16
     mama_status     status          = MAMA_STATUS_OK;
     mama_i16_t       cResult         =   NULL;
     TryFieldWithType (I16, mama_i16_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetShortField(env, result, jMamaShortValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
 /*
@@ -4193,15 +4193,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryU16
     mama_status     status          = MAMA_STATUS_OK;
     mama_u16_t       cResult        = 0;
     TryFieldWithType (U16, mama_u16_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetIntField(env, result, jMamaIntValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
 /*
@@ -4215,15 +4215,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI32
     mama_status     status          = MAMA_STATUS_OK;
     mama_i32_t       cResult         =   NULL;
     TryFieldWithType (I32, mama_i32_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetIntField(env, result, jMamaIntValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
 /*
@@ -4237,15 +4237,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryU32
     mama_status     status          = MAMA_STATUS_OK;
     mama_u32_t       cResult         =   NULL;
     TryFieldWithType (U32, mama_u32_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetLongField(env, result, jMamaLongValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
 /*
@@ -4259,15 +4259,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI64
     mama_status     status          = MAMA_STATUS_OK;
     mama_i64_t       cResult         =   NULL;
     TryFieldWithType (I64, mama_i64_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetLongField(env, result, jMamaLongValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
 /*
@@ -4281,18 +4281,18 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryU64
     mama_status     status          = MAMA_STATUS_OK;
     mama_u64_t       cResult         =   NULL;
     TryFieldWithType (U64, mama_u64_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetLongField(env, result, jMamaLongValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
-  
+
   /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    tryI64
@@ -4304,15 +4304,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryF32
     mama_status     status          = MAMA_STATUS_OK;
     mama_f32_t       cResult        =   0;
     TryFieldWithType (F32, mama_f32_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetFloatField(env, result, jMamaFloatValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
 /*
@@ -4326,15 +4326,15 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryF64
     mama_status     status          = MAMA_STATUS_OK;
     mama_f64_t       cResult         =   0;
     TryFieldWithType (F64, mama_f64_t);
-    
+
     if  (status == MAMA_STATUS_OK)
     {
         (*env)->SetDoubleField(env, result, jMamaDoubleValue_g,
                              cResult);
-    
+
         return JNI_TRUE;
     }
-    
+
     return JNI_FALSE;
 }
 
@@ -4348,23 +4348,23 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryDateTime
 {
     mama_status     status          = MAMA_STATUS_OK;
     jlong           dateTimePointer     =   0;
-    jlong              msgPointer      =   0;       
-    const char*        c_name          =   NULL;                            
-  
-    /* Get the pointer to the underlying message*/                          
-    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);    
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
-		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);    
+    jlong              msgPointer      =   0;
+    const char*        c_name          =   NULL;
+
+    /* Get the pointer to the underlying message*/
+    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
     dateTimePointer   = (*env)->GetLongField(env,result,dateTimePointerFieldId_g);
     assert(0!=dateTimePointer);
-       
-       /* Get the C string for the name if specified*/                         
-    if(name)                                                                
-    {                                                                       
-        c_name = (*env)->GetStringUTFChars(env,name,0);                     
-        if(!c_name) return NULL;                                            
-    }    
-    
+
+       /* Get the C string for the name if specified*/
+    if(name)
+    {
+        c_name = (*env)->GetStringUTFChars(env,name,0);
+        if(!c_name) return NULL;
+    }
+
     if(MAMA_STATUS_OK==(mamaTryIgnoreNotFound(env, mamaMsg_getDateTime(
                         CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), c_name, fid,
                         CAST_JLONG_TO_POINTER(mamaDateTime,dateTimePointer)), "Could not get DateYime from mamaMsg.")))
@@ -4372,9 +4372,9 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryDateTime
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
         return JNI_TRUE;
     }
-    
+
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
-    
+
     return JNI_FALSE;
 }
 
@@ -4389,21 +4389,21 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryPrice
 {
     mama_status     status          = MAMA_STATUS_OK;
     jlong           pricePointer     =   0;
-    jlong              msgPointer      =   0;         
+    jlong              msgPointer      =   0;
      const char*        c_name          =   NULL;
-      /* Get the C string for the name if specified*/                         
-    if(name)                                                                
-    {                                                                       
-        c_name = (*env)->GetStringUTFChars(env,name,0);                     
-        if(!c_name) return NULL;                                            
-    }  
-    
-    /* Get the pointer to the underlying message*/                          
-    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);    
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
-		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);    
+      /* Get the C string for the name if specified*/
+    if(name)
+    {
+        c_name = (*env)->GetStringUTFChars(env,name,0);
+        if(!c_name) return NULL;
+    }
+
+    /* Get the pointer to the underlying message*/
+    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
     pricePointer   = (*env)->GetLongField(env,result,pricePointerFieldId_g);
-       
+
     if(MAMA_STATUS_OK==(mamaTryIgnoreNotFound(env, mamaMsg_getPrice(
                         CAST_JLONG_TO_POINTER(mamaMsg,msgPointer),c_name, fid,
                         CAST_JLONG_TO_POINTER(mamaPrice,pricePointer)), "Could not get Price from mamaMsg.")))
@@ -4411,7 +4411,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryPrice
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
         return JNI_TRUE;
     }
-    
+
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
     return JNI_FALSE;
 }
@@ -4425,36 +4425,36 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryString
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    jlong              msgPointer      =   0;         
+    jlong              msgPointer      =   0;
      const char*        c_name          =   NULL;
      const char*     retVal_c        =   NULL;
-     jstring      resultstr = NULL;  
-      /* Get the C string for the name if specified*/                         
-    if(name)                                                                
-    {                                                                       
-        c_name = (*env)->GetStringUTFChars(env,name,0);                     
-        if(!c_name) return NULL;                                            
-    }  
+     jstring      resultstr = NULL;
+      /* Get the C string for the name if specified*/
+    if(name)
+    {
+        c_name = (*env)->GetStringUTFChars(env,name,0);
+        if(!c_name) return NULL;
+    }
 
-    /* Get the pointer to the underlying message*/                          
-    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);    
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    /* Get the pointer to the underlying message*/
+    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
-    
+
     if(MAMA_STATUS_OK==(mamaTryIgnoreNotFound(env, mamaMsg_getString(
                         CAST_JLONG_TO_POINTER(mamaMsg,msgPointer),c_name, fid,
-                        &retVal_c), "Could not get string from mamaMsg.")))                       
+                        &retVal_c), "Could not get string from mamaMsg.")))
     {
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
-        
+
         resultstr =  (*env)->NewStringUTF(env, retVal_c);
-        
+
         (*env)->SetObjectField(env, result, jMamaStringValue_g,
                      resultstr);
-                             
+
         return JNI_TRUE;
     }
-    
+
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
     return JNI_FALSE;
 }
@@ -4472,14 +4472,14 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryArrayMsg
     mama_status     status          =   MAMA_STATUS_OK;
     jlong           jMsgArrayPointer=   0;
     jint            jMsgArraySize   =   0;
-    
+
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
 		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
 
     jMsgArrayPointer = (*env)->GetLongField(env,result,jMsgArrayFieldId_g);
     jMsgArraySize = (*env)->GetIntField(env,result,jMsgArraySizeFieldId_g);
-    
+
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
@@ -4523,29 +4523,29 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_initIDs
     jclass  mamaFloatClass               =   NULL;
     jclass  mamaIntClass               =   NULL;
     jclass  mamaStrClass               =   NULL;
-    
+
     jclass mamaMsgIteratorClass=NULL;
-    
-  
+
+
     mamaMsgIteratorClass = (*env)->FindClass(env,"com/wombat/mama/MamaMsgIterator");
     if(!mamaMsgIteratorClass) return;/* Exception auto thrown*/
-    
+
     iteratorPointerFieldId_g = (*env)->GetFieldID(env,
                        mamaMsgIteratorClass, "iteratorPointer_i",
                        UTILS_JAVA_POINTER_TYPE_SIGNATURE);
-                        
+
     iteratorFieldPointerFieldId_g = (*env)->GetFieldID(env,
                        mamaMsgIteratorClass, "myMsgField_i",
                        "Lcom/wombat/mama/MamaMsgField;");
-                       
+
     if(!iteratorPointerFieldId_g)
     {
         (*env)->DeleteLocalRef(env,mamaMsgIteratorClass);
         return;
     }
-                    
-                        
-                        
+
+
+
     fieldIteratorCallbackClass = (*env)->FindClass(env,"com/wombat/mama/MamaMsgFieldIterator");
     if(!fieldIteratorCallbackClass) return;/* Exception auto thrown*/
 
@@ -4565,7 +4565,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_initIDs
 
     if (!messagePointerFieldId_g) return;/*Exception auto thrown*/
 
-    
+
     /*The MamaMsgField object in the message for iterateFields.*/
     msgFieldObjectFieldId_g = (*env)->GetFieldID(env,
                               class,"msgField_i",
@@ -4578,11 +4578,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_initIDs
     msgPricePointerFieldId_g = (*env)->GetFieldID(env,
                              class,"pricePointer_i",
                              UTILS_JAVA_POINTER_TYPE_SIGNATURE);
-    
+
     msgDateTimePointerFieldId_g = (*env)->GetFieldID(env,
                              class,"dateTimePointer_i",
-                             UTILS_JAVA_POINTER_TYPE_SIGNATURE);                                                  
-                                                      
+                             UTILS_JAVA_POINTER_TYPE_SIGNATURE);
+
     priceClass = (*env)->FindClass(env,"com/wombat/mama/MamaPrice");
     if(!priceClass) return;/* Exception auto thrown */
 
@@ -4600,65 +4600,65 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_initIDs
     jMsgArrayFieldId_g  = (*env)->GetFieldID(env,
                         class,"jMsgArray_i",
                         UTILS_JAVA_POINTER_TYPE_SIGNATURE);
- 
+
     jMsgArraySizeFieldId_g = (*env)->GetFieldID(env,
                                class,"jMsgArraySize_i",
-                               "I");                             
-                              
+                               "I");
+
     booleanClass = (*env)->FindClass(env,"com/wombat/mama/MamaBoolean");
     if(!booleanClass) return;/* Exception auto thrown */
     jBooleanValue_g = (*env)->GetFieldID(env,
                                booleanClass,"myValue",
-                               "Z"); 
-    
+                               "Z");
+
     mamaLongClass = (*env)->FindClass(env,"com/wombat/mama/MamaLong");
-    if(!mamaLongClass) return;/* Exception auto thrown */   
+    if(!mamaLongClass) return;/* Exception auto thrown */
     jMamaLongValue_g = (*env)->GetFieldID(env,
                                mamaLongClass,"myValue",
-                               "J"); 
-                               
+                               "J");
+
     mamaShortClass = (*env)->FindClass(env,"com/wombat/mama/MamaShort");
-    if(!mamaShortClass) return;/* Exception auto thrown */   
+    if(!mamaShortClass) return;/* Exception auto thrown */
     jMamaShortValue_g = (*env)->GetFieldID(env,
                                mamaShortClass,"myValue",
-                               "S"); 
-    
+                               "S");
+
 	mamaByteClass = (*env)->FindClass(env,"com/wombat/mama/MamaByte");
-    if(!mamaByteClass) return;/* Exception auto thrown */   
+    if(!mamaByteClass) return;/* Exception auto thrown */
     jMamaByteValue_g = (*env)->GetFieldID(env,
                                mamaByteClass,"myValue",
                                "B");
-							   
+
         mamaIntClass = (*env)->FindClass(env,"com/wombat/mama/MamaInteger");
-    if(!mamaIntClass) return;/* Exception auto thrown */   
+    if(!mamaIntClass) return;/* Exception auto thrown */
     jMamaIntValue_g = (*env)->GetFieldID(env,
                                mamaIntClass,"myValue",
-                               "I"); 
-                               
+                               "I");
+
         mamaCharClass = (*env)->FindClass(env,"com/wombat/mama/MamaChar");
-    if(!mamaCharClass) return;/* Exception auto thrown */   
+    if(!mamaCharClass) return;/* Exception auto thrown */
     jMamaCharValue_g = (*env)->GetFieldID(env,
                                mamaCharClass,"myValue",
-                               "C"); 
-    
+                               "C");
+
         mamaDoubleClass = (*env)->FindClass(env,"com/wombat/mama/MamaDouble");
-    if(!mamaDoubleClass) return;/* Exception auto thrown */   
+    if(!mamaDoubleClass) return;/* Exception auto thrown */
     jMamaDoubleValue_g = (*env)->GetFieldID(env,
                                mamaDoubleClass,"myValue",
-                               "D"); 
-    
+                               "D");
+
         mamaFloatClass = (*env)->FindClass(env,"com/wombat/mama/MamaFloat");
-    if(!mamaFloatClass) return;/* Exception auto thrown */   
+    if(!mamaFloatClass) return;/* Exception auto thrown */
     jMamaFloatValue_g = (*env)->GetFieldID(env,
                                mamaFloatClass,"myValue",
                                "F");
-    
+
         mamaStrClass = (*env)->FindClass(env,"com/wombat/mama/MamaString");
-    if(!mamaStrClass) return;/* Exception auto thrown */   
+    if(!mamaStrClass) return;/* Exception auto thrown */
     jMamaStringValue_g = (*env)->GetFieldID(env,
                                mamaStrClass,"myValue",
                                "Ljava/lang/String;");
-                               
+
     /*Tidy up any outstanding resources*/
     (*env)->DeleteLocalRef(env,fieldIteratorCallbackClass);
     return;
@@ -4759,14 +4759,14 @@ mama_status populateCMessageArray(mamaMsg *cArray, JNIEnv *env, jobjectArray jav
 {
     /* Returns. */
     mama_status ret = MAMA_STATUS_OK;
-    
+
     /* Iterate through the java array up to the supplied length and populate the new C
      * array allocated above.
      */
     jint messageIndex = 0;
     while((ret == MAMA_STATUS_OK) && (messageIndex < length))
     {
-        /* Obtain the next message from the java array. */        
+        /* Obtain the next message from the java array. */
         jobject nextMsg = (*env)->GetObjectArrayElement(env, javaArray, messageIndex);
         ret = MAMA_STATUS_PLATFORM;
         if(nextMsg != NULL)
@@ -4791,7 +4791,7 @@ mama_status populateCMessageArray(mamaMsg *cArray, JNIEnv *env, jobjectArray jav
 }
 
 JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_nativeGetAsBuffer
-    (JNIEnv *env, jobject this, jstring name, jint fid, jbyteArray byteArray, 
+    (JNIEnv *env, jobject this, jstring name, jint fid, jbyteArray byteArray,
      jint arraySize, jboolean throwOnError)
 {
     /* Returns. */
@@ -4815,7 +4815,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaMsg_nativeGetAsBuffer
         /* Convert the field name from unicode if it has been provided. */
         const char *convertedName = NULL;
         if(NULL != name)
-        {            
+        {
             convertedName = (*env)->GetStringUTFChars(env, name, 0);            
         }
         {

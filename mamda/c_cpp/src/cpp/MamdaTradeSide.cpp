@@ -34,9 +34,9 @@ namespace Wombat
         switch (tradeSide)
         {
             case TRADE_SIDE_BUY:     return TRADE_SIDE_BUY_STR;
-            case TRADE_SIDE_SELL:    return TRADE_SIDE_SELL_STR;   
+            case TRADE_SIDE_SELL:    return TRADE_SIDE_SELL_STR;
             case TRADE_SIDE_UNKNOWN: return TRADE_SIDE_UNKNOWN_STR;
-        } 
+        }
         return TRADE_SIDE_UNKNOWN_STR;
     }
 
@@ -46,17 +46,17 @@ namespace Wombat
         if (strcmp (tradeSide, TRADE_SIDE_BUY_STR) == 0)
             return TRADE_SIDE_BUY;
         if (strcmp (tradeSide, TRADE_SIDE_SELL_STR) == 0)
-            return TRADE_SIDE_SELL;    
+            return TRADE_SIDE_SELL;
         if (strcmp (tradeSide, TRADE_SIDE_UNKNOWN_STR) == 0)
-            return TRADE_SIDE_UNKNOWN;    
-             
+            return TRADE_SIDE_UNKNOWN;
+
         // A misconfigured FH might send numbers as strings:
         if (strcmp (tradeSide,"0") == 0)
             return TRADE_SIDE_UNKNOWN;
         if (strcmp (tradeSide,"1") == 0)
             return TRADE_SIDE_BUY;
         if (strcmp (tradeSide,"2") == 0)
-            return TRADE_SIDE_SELL;  
+            return TRADE_SIDE_SELL;
         return TRADE_SIDE_UNKNOWN;
     }
 

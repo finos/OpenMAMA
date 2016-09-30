@@ -52,7 +52,7 @@ public class MamaSource extends MamaSourceManager
         super ();
         createMamaSource ();
     }
-    
+
     public MamaSource (final String sourceId, MamaTransport transport,
                        final String symbolNamespace)
     {
@@ -62,27 +62,27 @@ public class MamaSource extends MamaSourceManager
         this.setTransport (transport);
         this.setSymbolNamespace (symbolNamespace);
     }
-    
+
     public native void setId (final String sourceId);
 
     public native void setMappedId (final String mappedId);
-    
+
     public native void setDisplayId (final String displayId);
-   
+
     public native void setQuality (short quality);
-   
+
     public void setState (MamaSourceState state)
     {
         this.myState = state;
     }
-    
+
     public void setParent (MamaSource parent)
     {
         this.myParent = parent;
     }
 
     public native void setSymbolNamespace (final String symbolNamespace);
-    
+
     public void setTransportName (final String transportName)
     {
         myTransport.setName (transportName);
@@ -90,7 +90,7 @@ public class MamaSource extends MamaSourceManager
     }
 
     private native void _setTransportName (final String transportName);
-    
+
     public void setTransport (MamaTransport transport)
     {
         this.myTransport = transport;
@@ -100,13 +100,13 @@ public class MamaSource extends MamaSourceManager
     private native void _setTransport (MamaTransport transport);
 
     public native final String getId ();
-    
+
     public native final String getMappedId ();
-    
+
     public native final String getDisplayId ();
-    
+
     public native short getQuality ();
-    
+
     /**
      * Get the state of a mama source object
      * @return The state of the source object
@@ -125,7 +125,7 @@ public class MamaSource extends MamaSourceManager
         return myState.toString();
 
         return MamaSourceState.UKNOWN.toString();
-    }    
+    }
     /**
      * Get the parent source of the mama source object
      * @return MamaSource parent object
@@ -136,12 +136,12 @@ public class MamaSource extends MamaSourceManager
     }
 
     public native final String getSymbolNamespace ();
-    
+
     public MamaTransport getTransport ()
     {
         return myTransport;
     }
-    
+
     /**
      * Add a subscriptions to the mamaSource
      *
@@ -149,7 +149,7 @@ public class MamaSource extends MamaSourceManager
      * @param subscription MamaSubscription object
      * @exception MamaException will be thrown is the key value already exists in the Map
      */
-    public void addSubscription (final String key, 
+    public void addSubscription (final String key,
                                  MamaSubscription subscription)
     {
         if (mySubscriptionsMap == null)
@@ -173,7 +173,7 @@ public class MamaSource extends MamaSourceManager
         if (null != mySubscriptionsMap)
         {
             return (MamaSubscription)mySubscriptionsMap.get (key);
-        } 
+        }
         else if (null != myParent)
         {
             return myParent.findSubscription (key);
@@ -187,10 +187,10 @@ public class MamaSource extends MamaSourceManager
     public boolean isPartOf (MamaSource source)
     {
         return this == source || myParent != null && myParent.isPartOf (source);
-    } 
-    
+    }
+
     private native static void initIDs();
-    
+
     private native void createMamaSource ();
 
     private native void destroyMamaSource ();

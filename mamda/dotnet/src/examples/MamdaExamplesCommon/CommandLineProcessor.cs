@@ -81,7 +81,7 @@ namespace Wombat.Mamda.Examples
 				}
 				else if (arg == "-v")
 				{
-					mLogLevel = 
+					mLogLevel =
 						mLogLevel == MamaLogLevel.MAMA_LOG_LEVEL_WARN ? MamaLogLevel.MAMA_LOG_LEVEL_NORMAL :
 						mLogLevel == MamaLogLevel.MAMA_LOG_LEVEL_NORMAL ? MamaLogLevel.MAMA_LOG_LEVEL_FINE :
 						mLogLevel == MamaLogLevel.MAMA_LOG_LEVEL_FINE ? MamaLogLevel.MAMA_LOG_LEVEL_FINER : MamaLogLevel.MAMA_LOG_LEVEL_FINEST;
@@ -92,12 +92,12 @@ namespace Wombat.Mamda.Examples
 				{
 					mQuietModeLevel++;
 					i++;
-				}   
+				}
 				else if (arg == "-b")
 				{
 					mCacheFullBooks = false;
 					i++;
-				}   
+				}
 				else if (arg == "-e")
 				{
 					mPrintEntries = true;
@@ -163,7 +163,7 @@ namespace Wombat.Mamda.Examples
 		{
 			return mDictSource;
 		}
-        
+
 		public double getThrottleRate ()
 		{
 			return mThrottleRate;
@@ -178,7 +178,7 @@ namespace Wombat.Mamda.Examples
 		{
 			return mDictTransport;
 		}
-        
+
 		public string getMiddleware()
 		{
 			return mMiddleware;
@@ -198,7 +198,7 @@ namespace Wombat.Mamda.Examples
 		{
 			return mHasLogLevel;
 		}
-    
+
 		public MamaLogLevel getLogLevel()
 		{
 			return mLogLevel;
@@ -208,12 +208,12 @@ namespace Wombat.Mamda.Examples
 		{
 			return mQuietModeLevel;
 		}
-      
+
 		public bool cacheFullBooks()
 		{
 			return mCacheFullBooks;
 		}
-    
+
 		public bool getPrintEntries()
 		{
 			return mPrintEntries;
@@ -228,7 +228,7 @@ namespace Wombat.Mamda.Examples
 		{
 			return mUseWorldView;
 		}
-      
+
 		public bool logReqResp()
 		{
 			return mLogReqResp;
@@ -238,17 +238,17 @@ namespace Wombat.Mamda.Examples
 		{
 			return mChurnRate;
 		}
-        
+
         public int getPrecision()
         {
           return mPrecision;
         }
-   
+
 		public string getLogFileName()
 		{
 			return mLogFileName;
 		}
-   
+
 		public double getTimerInterval()
 		{
 			return mTimerInterval;
@@ -258,7 +258,7 @@ namespace Wombat.Mamda.Examples
 		{
 			return mSnapshot;
 		}
-		
+
 		public int getNumThreads()
 		{
 			return mNumThreads;
@@ -281,7 +281,7 @@ namespace Wombat.Mamda.Examples
 					Console.WriteLine("Enter one symbol per line and terminate with a .");
 					Console.Write("SUBJECT> ");
 				}
-        
+
 				string symbol;
 				while (null != (symbol = reader.ReadLine()))
 				{
@@ -322,7 +322,7 @@ namespace Wombat.Mamda.Examples
 		private bool				mCacheFullBooks = true;
 		private bool				mPrintEntries   = false;
 		private bool				mUseWorldView   = false;
-		private bool				mLogReqResp     = false; 
+		private bool				mLogReqResp     = false;
 		private string				mSymbology      = "DIRECT";
 		private int					mChurnRate      = 0; /*Default Value*/
 		private string				mLogFileName    = null;

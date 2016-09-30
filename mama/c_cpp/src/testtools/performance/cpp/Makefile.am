@@ -51,7 +51,3 @@ bin_PROGRAMS = mamapingpong_replycpp \
 
 nodist_mamapingpong_replycpp_SOURCES     = mamapingpong_replycpp.cpp
 nodist_mamapingpong_requestercpp_SOURCES = mamapingpong_requestercpp.cpp
-
-
-
-

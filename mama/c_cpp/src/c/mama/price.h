@@ -75,7 +75,7 @@ typedef mama_u8_t  mamaPriceHints;
  */
 #define MAMA_PRICE_EPSILON   ((mama_f64_t)0.00000000001)
 
-                           
+
 /**
  * Create a mamaPrice object.
  *
@@ -107,7 +107,7 @@ mamaPrice_clear (mamaPrice  price);
  * Copy a price object. The destination object must have already
  * been allocated using mamaPrice_create().
  *
- * @param copy The destination price. 
+ * @param copy The destination price.
  * @param src The price to copy.
  */
 MAMAExpDLL
@@ -196,7 +196,7 @@ extern mama_status
 mamaPrice_setIsValidPrice (mamaPrice   price,
                            mama_bool_t valid);
 
-                        
+
 /**
  * Set all of the price hints.
  *
@@ -245,7 +245,7 @@ mamaPrice_getValue(const mamaPrice      price,
                    double*              value);
 
 /**
- * This function obtains the double value of a price rounded to the supplied precision. 
+ * This function obtains the double value of a price rounded to the supplied precision.
  *
  * @param[in]	price       The price to round.
  * @param[in] 	precision 	The precision to use for rounding.
@@ -276,7 +276,7 @@ mamaPrice_getPrecision(const mamaPrice      price,
  *
  * @param price          The price to get.
  * @param valid          If the value is valid.
- */    
+ */
 MAMAExpDLL
 extern mama_status
 mamaPrice_getIsValidPrice (const mamaPrice price,

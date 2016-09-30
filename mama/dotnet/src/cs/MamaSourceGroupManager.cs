@@ -101,7 +101,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// Locates an existing mamaSourceGroup for the given name. If none exists 
+		/// Locates an existing mamaSourceGroup for the given name. If none exists
 		/// creates a new mamaSource and adds to the sourceGroupManager.
 		/// </summary>
 		/// <param name="name">The string identifier for the mamaSourceGroup</param>
@@ -218,28 +218,28 @@ namespace Wombat
 		{
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSourceGroupManager_create(ref IntPtr sourceGroupManager);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSourceGroupManager_destroy(IntPtr sourceGroupManager);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSourceGroupManager_createSourceGroup(
 				IntPtr  sourceGroupManager,
 				[MarshalAs(UnmanagedType.LPStr)] string name,
 				ref IntPtr sourceGroup);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSourceGroupManager_findOrCreateSourceGroup(
 				IntPtr  sourceGroupManager,
 				[MarshalAs(UnmanagedType.LPStr)] string name,
 				ref IntPtr sourceGroup);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSourceGroupManager_findSourceGroup(
 				IntPtr  sourceGroupManager,
 				[MarshalAs(UnmanagedType.LPStr)] string name,
 				ref IntPtr sourceGroup);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSourceGroupManager_addSourceGroup(
 				IntPtr sourceGroupManager,

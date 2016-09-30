@@ -88,7 +88,7 @@ namespace Wombat
             /// The actual timer object that will be provided in the callbacks.
             /// </summary>
             private MamaTimer mTimer;
-            
+
             #endregion
 
             /* ************************************************************** */
@@ -151,7 +151,7 @@ namespace Wombat
             /// This function will invoke the destroy callback
             /// </summary>
             internal void InvokeDestroy()
-            {        
+            {
                 if(null != mCallback)
                 {
                     mCallback.onDestroy(mTimer, mClosure);
@@ -166,7 +166,7 @@ namespace Wombat
                 // Only invoke the callback if it is supplied
                 if(null != mCallback)
                 {
-                    mCallback.onTimer(mTimer, mClosure);                    
+                    mCallback.onTimer(mTimer, mClosure);
                 }
             }
 
@@ -256,7 +256,7 @@ namespace Wombat
             // Use the impl to invoke the destroy callback, (if this has been supplied)
             impl.InvokeDestroy();
 
-            /* The timer has now been destroyed and the impl is no longer required, free the handle to 
+            /* The timer has now been destroyed and the impl is no longer required, free the handle to
              * allow the garbage collector to clean it up.
              */
             handle.Free();
@@ -369,7 +369,7 @@ namespace Wombat
              * this is to allow clean-up to be done whenever the timer has been fully destroyed.
              */
             IntPtr nativeTimer = IntPtr.Zero;
-            CheckResultCode(NativeMethods.mamaTimer_create2(ref nativeTimer, queue.NativeHandle, mTickDelegate, mDestroyDelegate, interval, impl));			
+            CheckResultCode(NativeMethods.mamaTimer_create2(ref nativeTimer, queue.NativeHandle, mTickDelegate, mDestroyDelegate, interval, impl));
 
             // Save the native timer in the member variable
             NativeHandle = nativeTimer;
@@ -402,7 +402,7 @@ namespace Wombat
             // Verify that the C timer has been created
             EnsurePeerCreated();
 
-            // Call the native method to get the interval			
+            // Call the native method to get the interval
             CheckResultCode(NativeMethods.mamaTimer_getInterval(NativeHandle, ref ret));
 
             return ret;
@@ -411,13 +411,13 @@ namespace Wombat
         /// <summary>
         /// Reset the timer to the beginning of the interval.
         /// </summary>
-        public void reset() 
+        public void reset()
         {
             // Verify that the C timer has been created
 			EnsurePeerCreated();
 
             // Call the native method
-            CheckResultCode(NativeMethods.mamaTimer_reset(NativeHandle));			
+            CheckResultCode(NativeMethods.mamaTimer_reset(NativeHandle));
         }
 
         /// <summary>
@@ -427,13 +427,13 @@ namespace Wombat
         /// <param name="interval">
         /// The interval in settings.
         /// </param>
-        public void setInterval(double interval) 
+        public void setInterval(double interval)
         {
             // Verify that the C timer has been created
 			EnsurePeerCreated();
 
             // Call the native method to set the interval
-            CheckResultCode(NativeMethods.mamaTimer_setInterval(NativeHandle, interval));			
+            CheckResultCode(NativeMethods.mamaTimer_setInterval(NativeHandle, interval));
         }
 
         #endregion

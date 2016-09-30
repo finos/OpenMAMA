@@ -30,7 +30,7 @@
 #define NO_IMBALANCE_SIDE    "NONE"
 
 namespace Wombat
-{ 
+{
 
     class MAMDAExpDLL MamdaOrderImbalanceSide
     {
@@ -50,7 +50,7 @@ namespace Wombat
             NO_IMBALANCE_SIDE_VALUE
 
         } OrderImbalanceSide;
-        
+
        const char* valueToString (const int value);
 
     };//class

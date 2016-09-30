@@ -150,7 +150,7 @@ namespace Wombat
 				if (args[i].CompareTo ("-b") == 0)
 				{
 					ft_type = (uint)mamaFtType.MAMA_FT_TYPE_BRIDGE;
-                   i++;
+					i++;
 					continue;
 				}
 
@@ -219,7 +219,7 @@ namespace Wombat
 
 		[STAThread]
 		static void Main (string[] args)
-		{  
+		{
 		    try
 			{
 				MamaFtMemberCS ftDemo = new MamaFtMemberCS();

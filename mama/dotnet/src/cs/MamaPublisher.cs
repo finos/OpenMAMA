@@ -62,7 +62,7 @@ namespace Wombat
         internal MamaPublisher(IntPtr nativeHandle) : base(nativeHandle)
         {
             // Create the callback store
-            mCallbackStore = new MamaCallbackStore<MamaSendCompleteCallback, MamaThrottledSendCompleteDelegate>();            
+            mCallbackStore = new MamaCallbackStore<MamaSendCompleteCallback, MamaThrottledSendCompleteDelegate>();
         }
 
         #endregion
@@ -96,7 +96,7 @@ namespace Wombat
         /// <summary>
         /// Create a mama publisher for the corresponding transport. If the transport
         /// is a marketdata transport, as opposed to a "basic" transport, the topic
-        /// corresponds to the symbol. For a basic transport, the source and root get 
+        /// corresponds to the symbol. For a basic transport, the source and root get
         /// ignored.
         /// </summary>
         /// <param name="transport">The transport.</param>
@@ -123,7 +123,7 @@ namespace Wombat
                 throw new InvalidOperationException("MamaPublisher already created");
             }
 #endif // MAMA_WRAPPERS_CHECK_ARGUMENTS
-            
+
             int code = NativeMethods.mamaPublisher_create(ref nativeHandle, transport.NativeHandle, topic, source, root);
             CheckResultCode(code);
             GC.KeepAlive(transport);
@@ -132,7 +132,7 @@ namespace Wombat
         /// <summary>
         /// Create a mama publisher for the corresponding transport. If the transport
         /// is a marketdata transport, as opposed to a "basic" transport, the topic
-        /// corresponds to the symbol. For a basic transport, the source and root get 
+        /// corresponds to the symbol. For a basic transport, the source and root get
         /// ignored.
         /// </summary>
         /// <param name="transport">The transport.</param>
@@ -191,7 +191,7 @@ namespace Wombat
         /// <summary>
         /// Create a mama publisher for the corresponding transport. If the transport
         /// is a marketdata transport, as opposed to a "basic" transport, the topic
-        /// corresponds to the symbol. For a basic transport, the source and root get 
+        /// corresponds to the symbol. For a basic transport, the source and root get
         /// ignored.
         /// </summary>
         /// <param name="transport">The transport.</param>
@@ -208,7 +208,7 @@ namespace Wombat
         /// <summary>
         /// Create a mama publisher for the corresponding transport. If the transport
         /// is a marketdata transport, as opposed to a "basic" transport, the topic
-        /// corresponds to the symbol. For a basic transport, the source and root get 
+        /// corresponds to the symbol. For a basic transport, the source and root get
         /// ignored.
         /// </summary>
         /// <param name="transport">The transport.</param>
@@ -233,7 +233,7 @@ namespace Wombat
             }
             EnsurePeerCreated();
 #endif // MAMA_WRAPPERS_CHECK_ARGUMENTS
-            
+
             int code = NativeMethods.mamaPublisher_send(nativeHandle, message.NativeHandle);
             CheckResultCode(code);
             GC.KeepAlive(message);
@@ -250,7 +250,7 @@ namespace Wombat
         /// the throttle</param>
         /// <param name="closure">User supplied data returned in the send complete callback.</param>
         public void sendWithThrottle(
-            MamaMsg message, 
+            MamaMsg message,
             MamaSendCompleteCallback callback,
             object closure)
         {
@@ -278,8 +278,8 @@ namespace Wombat
 
             // Call the native function
             int code = NativeMethods.mamaPublisher_sendWithThrottle(
-                nativeHandle, 
-                message.NativeHandle, 
+                nativeHandle,
+                message.NativeHandle,
                 (Wombat.MamaPublisher.MamaThrottledSendCompleteDelegate)wrapper.NativeDelegate,
                 nativeClosure);
             try
@@ -325,7 +325,7 @@ namespace Wombat
             }
             EnsurePeerCreated();
 #endif // MAMA_WRAPPERS_CHECK_ARGUMENTS
-            
+
             int code = NativeMethods.mamaPublisher_sendFromInbox(nativeHandle, inbox.NativeHandle, message.NativeHandle);
             CheckResultCode(code);
             GC.KeepAlive(inbox);
@@ -379,7 +379,7 @@ namespace Wombat
             int code = NativeMethods.mamaPublisher_sendFromInboxWithThrottle(
                 nativeHandle,
                 inbox.NativeHandle,
-                message.NativeHandle, 
+                message.NativeHandle,
                 (Wombat.MamaPublisher.MamaThrottledSendCompleteDelegate)wrapper.NativeDelegate,
                 nativeClosure);
             try
@@ -395,11 +395,11 @@ namespace Wombat
 
                 // Dispose it
                 ((IDisposable)wrapper).Dispose();
-                
+
                 // Rethrow the exception
                 throw;
             }
-        
+
             // Ensure that the message passed will not delete its native peer
             message.SelfManageLifeTime(false);
         }
@@ -469,7 +469,7 @@ namespace Wombat
         private void onSendComplete(IntPtr publisher, IntPtr msg, int status, IntPtr closure)
         {
             // Extract the wrapper object from the store
-            using (MamaCallbackWrapper<MamaSendCompleteCallback, MamaThrottledSendCompleteDelegate> wrapper 
+            using (MamaCallbackWrapper<MamaSendCompleteCallback, MamaThrottledSendCompleteDelegate> wrapper
                 = mCallbackStore.RemoveWrapper(closure))
             {
                 if (mReusableMsg == null)
@@ -480,7 +480,7 @@ namespace Wombat
                 {
                     mReusableMsg.setNativeHandle (msg);
                 }
-                
+
                 MamaSendCompleteCallback callback = (MamaSendCompleteCallback)wrapper.Callback;
                 callback.onSendComplete(this, mReusableMsg, (MamaStatus.mamaStatus)status, wrapper.Closure);
             }
@@ -621,7 +621,7 @@ namespace Wombat
 
         private delegate void OnPublisherDestroyDelegate(IntPtr nativeHandle, IntPtr closure);
         // =====================================================================================
-       
+
         // Interop API
         private struct NativeMethods
         {
@@ -632,13 +632,13 @@ namespace Wombat
                 public OnPublisherErrorDelegate mError;
                 public OnPublisherDestroyDelegate mDestroy;
                 public IntPtr mReserved;
-            }  
+            }
 
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaPublisher_create(
-                ref IntPtr result, 
+                ref IntPtr result,
                 IntPtr tport,
-                [MarshalAs(UnmanagedType.LPStr)] string symbol, 
+                [MarshalAs(UnmanagedType.LPStr)] string symbol,
                 [MarshalAs(UnmanagedType.LPStr)] string source,
                 [MarshalAs(UnmanagedType.LPStr)] string root);
 
@@ -655,9 +655,9 @@ namespace Wombat
 
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaPublisher_send(
-                IntPtr publisher, 
+                IntPtr publisher,
                 IntPtr msg);
-            
+
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaPublisher_sendWithThrottle(
                 IntPtr publisher,
@@ -667,21 +667,21 @@ namespace Wombat
 
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaPublisher_sendFromInboxWithThrottle(
-                IntPtr publisher, 
-                IntPtr inbox, 
+                IntPtr publisher,
+                IntPtr inbox,
                 IntPtr msg,
                 MamaThrottledSendCompleteDelegate sendCompleteCallback,
                 IntPtr closure);
 
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaPublisher_sendFromInbox(
-                IntPtr publisher, 
-                IntPtr inbox, 
+                IntPtr publisher,
+                IntPtr inbox,
                 IntPtr msg);
 
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaPublisher_sendReplyToInbox(
-                IntPtr publisher, 
+                IntPtr publisher,
                 IntPtr request,
                 IntPtr reply);
 

@@ -43,7 +43,7 @@ LDFLAGS  += -L${srcdir}/../cpp \
             -L$(srcdir)/../../../../mama/c_cpp/src/c \
             -L$(srcdir)/../../../../common/c_cpp/src/c
 
-LIBS += -lmamdabook -lmamda -lmamacpp -lpthread -lrt 
+LIBS += -lmamdabook -lmamda -lmamacpp -lpthread -lrt
 LIBS += -lmama -lwombatcommon
 
 common_files = \
@@ -53,4 +53,3 @@ common_files = \
 bookselftest_SOURCES    = bookselftest.cpp   $(common_files)
 quoteselftest_SOURCES   = quoteselftest.cpp  $(common_files)
 tradeselftest_SOURCES   = tradeselftest.cpp  $(common_files)
-

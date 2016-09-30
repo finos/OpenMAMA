@@ -58,10 +58,10 @@ public:
         const MamaMsg&          msg,
         const MamdaTradeRecap&  recap)
     {
-        cout << "Trade Recap (" 
-             << subscription->getSymbol () 
+        cout << "Trade Recap ("
+             << subscription->getSymbol ()
              << ") \n"
-             << flush;            
+             << flush;
     }
 
     void onTradeReport (
@@ -92,10 +92,10 @@ public:
         const MamdaTradeGap&            event,
         const MamdaTradeRecap&          recap)
     {
-        cout << "Trade Gap (" 
+        cout << "Trade Gap ("
              << subscription->getSymbol()
              << ") \n"
-             << flush;        
+             << flush;
     }
 
     void onTradeCancelOrError (
@@ -104,8 +104,8 @@ public:
         const MamaMsg&                  msg,
         const MamdaTradeCancelOrError&  event,
         const MamdaTradeRecap&          recap)
-    {        
-        cout << "Trade Cancel (" 
+    {
+        cout << "Trade Cancel ("
              << subscription->getSymbol()
              << ") \n"
              << flush;
@@ -117,8 +117,8 @@ public:
         const MamaMsg&                  msg,
         const MamdaTradeCorrection&     event,
         const MamdaTradeRecap&          recap)
-    {        
-        cout << "Trade Correction (" 
+    {
+        cout << "Trade Correction ("
              << subscription->getSymbol()
              << ") \n"
              << flush;
@@ -130,7 +130,7 @@ public:
         const MamaMsg&                  msg,
         const MamdaTradeClosing&        event,
         const MamdaTradeRecap&          recap)
-    {        
+    {
         cout << "Trade Closing ("
              << subscription->getSymbol()
              << ") \n"
@@ -142,7 +142,7 @@ public:
         MamdaTradeListener&             listener,
         const MamaMsg&                  msg,
         const MamdaTradeOutOfSequence&  event,
-        const MamdaTradeRecap&          recap) 
+        const MamdaTradeRecap&          recap)
     {
         cout << "Out of sequence trade (" << subscription->getSymbol ()
              << " / "         << event.getMsgQual().getAsString()
@@ -160,7 +160,7 @@ public:
         MamdaTradeListener&                 listener,
         const MamaMsg&                      msg,
         const MamdaTradePossiblyDuplicate&  event,
-        const MamdaTradeRecap&              recap) 
+        const MamdaTradeRecap&              recap)
     {
         cout << "Possibly duplicate trade (" << subscription->getSymbol ()
              << " / "         << event.getMsgQual().getAsString()
@@ -178,25 +178,25 @@ public:
         MamdaErrorSeverity   severity,
         MamdaErrorCode       errorCode,
         const char*          errorStr)
-    {        
-        cout << "onError: " 
+    {
+        cout << "onError: "
              << subscription->getSymbol()
              << " ("
              << errorStr
              << ") \n"
-             << flush;        
+             << flush;
     }
 
     void onQuality (
         MamdaSubscription*   subscription,
         mamaQuality          quality)
-    {        
-        cout << "onQuality: " 
+    {
+        cout << "onQuality: "
              << subscription->getSymbol()
              << " ("
              << mamaQuality_convertToString (quality)
              << ") \n"
-             << flush;        
+             << flush;
     }
 
 };
@@ -210,7 +210,7 @@ int main (int argc, const char **argv)
         // Initialise the MAMA API
         mamaBridge bridge = cmdLine.getBridge();
         Mama::open ();
-        
+
         const vector<const char*>& symbolList = cmdLine.getSymbolList ();
         MamaSource*                source     = cmdLine.getSource();
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);

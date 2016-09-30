@@ -31,7 +31,7 @@ namespace Wombat
     /// <summary>
 	/// Level of logging within MAMA
 	/// </summary>
-	public enum MamaLogLevel 
+	public enum MamaLogLevel
 	{
 		/// <summary>
 		/// No logging
@@ -52,7 +52,7 @@ namespace Wombat
 	    /// <summary>
 	    /// Standard log level
 	    /// </summary>
-		MAMA_LOG_LEVEL_NORMAL = 4,		
+		MAMA_LOG_LEVEL_NORMAL = 4,
         /// <summary>
         /// Fine log level
         /// </summary>
@@ -66,11 +66,11 @@ namespace Wombat
         /// </summary>
         MAMA_LOG_LEVEL_FINEST = 7
 	}
-	
+
 	/// <summary>
 	/// Logging policy within MAMA
 	/// </summary>
-	public enum MamaLogFilePolicy 
+	public enum MamaLogFilePolicy
 	{
 		/// <summary>
 		/// Unbounded log size
@@ -160,12 +160,12 @@ namespace Wombat
         /// function.
         /// </summary>
         internal delegate void LogSizeCallbackDelegate();
-        
+
         #endregion
 
         /* ************************************************************** */
         #region Private Member Variables
-                
+
 
         /// <summary>
         /// This wrapper is used to store the log file callback.
@@ -175,8 +175,8 @@ namespace Wombat
         /// <summary>
         /// This wrapper is used to store the log size callback.
         /// </summary>
-        private static MamaCallbackWrapper<MamaLogFileCallback, LogSizeCallbackDelegate> m_logSizeCbWrapper;        
-                
+        private static MamaCallbackWrapper<MamaLogFileCallback, LogSizeCallbackDelegate> m_logSizeCbWrapper;
+
         #endregion
 
         #endregion
@@ -196,7 +196,7 @@ namespace Wombat
                 ((IDisposable)m_logFileCbWrapper).Dispose();
                 m_logFileCbWrapper = null;
             }
-                        
+
             // Null is allowed to clear the callback
             if (callback == null)
             {
@@ -214,7 +214,7 @@ namespace Wombat
 
                 // Call the native function
                 MamaWrapper.CheckResultCode(NativeMethods.mama_setLogCallback2((LogFileCallbackDelegate)m_logFileCbWrapper.NativeDelegate));
-            }            
+            }
         }
 
         /// <summary>
@@ -273,7 +273,7 @@ namespace Wombat
                 callback.onLog((MamaLogLevel)level, message);
             }
         }
-        
+
         /// <summary>
         /// This event handler is called whenever the log size is exceeded.
         /// </summary>
@@ -287,7 +287,7 @@ namespace Wombat
                 callback.onLogSizeExceeded();
             }
         }
-               
+
         /// <summary>
         /// Name of DLL containing Native code
         /// </summary>
@@ -298,26 +298,26 @@ namespace Wombat
 #endif
 
 		/// <summary>
-        /// Load the bridge specified by middleware string.  
+        /// Load the bridge specified by middleware string.
         /// If the bridge has already been loaded then the existing bridge instance
-        /// will be returned. 
+        /// will be returned.
         /// </summary>
-        /// <param name="middleware"></param> The middleware string. Can be "wmw", "lbm" or 
+        /// <param name="middleware"></param> The middleware string. Can be "wmw", "lbm" or
         /// "tibrv".
-        /// <returns>mama_status Whether the call was successful or not</returns>		
+        /// <returns>mama_status Whether the call was successful or not</returns>
         public static MamaBridge loadBridge (string middleware)
 		{
 			return new MamaBridge (middleware);
 		}
 
-      
+
         /// <summary>
-        /// Load the bridge specified by middleware string using the path 
+        /// Load the bridge specified by middleware string using the path
         /// specified by the user.
         /// If the bridge has already been loaded then the existing bridge instance
         /// will be returned
         /// </summary>
-        /// <param name="middleware"></param> The middleware string. Can be "wmw", "lbm" or 
+        /// <param name="middleware"></param> The middleware string. Can be "wmw", "lbm" or
          /// "tibrv".
         /// <param name="path"></param> The path to the bridge library
         /// <returns>mama_status Whether the call was successful or not</returns>
@@ -325,7 +325,7 @@ namespace Wombat
         {
             return new MamaBridge (middleware, path);
         }
-		
+
 		/// <summary>
 		/// Load the payload brige specified by the payload string.
 		/// </summary>
@@ -336,30 +336,30 @@ namespace Wombat
 		}
 
 		/// <summary>
-        /// 
-        /// Initialize MAMA. 
-        /// 
-        /// MAMA employs a reference count to track multiple calls to Mama.open() and 
-        /// Mama.close(). The count is incremented every time Mama.open() is called 
-        /// and decremented when Mama.close() is called. The resources are not actually 
-        /// released until the count reaches zero. 
+        ///
+        /// Initialize MAMA.
+        ///
+        /// MAMA employs a reference count to track multiple calls to Mama.open() and
+        /// Mama.close(). The count is incremented every time Mama.open() is called
+        /// and decremented when Mama.close() is called. The resources are not actually
+        /// released until the count reaches zero.
         ///
         /// If entitlements are enabled for the library, the available entitlement
         /// server names are read from the entitlement.servers property in the
         /// mama.properties file located in the %WOMBAT_PATH% directory.
         ///
         /// This function is thread safe.
-        ///     
+        ///
 		/// </summary>
 		public static void open ()
-		{		
+		{
             initGetVersionWrapper();
 			MamaWrapper.CheckResultCode(NativeMethods.mama_open());
             Interlocked.Increment(ref mMamaopen);
 		}
 
         /// <summary>
-        /// 
+        ///
         /// Initialize MAMA.
         ///
         /// Allows users of the API to override the default behavior of mama_open()
@@ -368,7 +368,7 @@ namespace Wombat
         ///
         /// The properties file must have the same structure as a standard
         /// mama.properties file.
-        /// 
+        ///
         /// If null is passed as the path the API will look for the properties file on
         /// the %WOMBAT_PATH%.
         ///
@@ -390,7 +390,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// Set a specific property for the API. 
+		/// Set a specific property for the API.
 		/// If the property being set has already been given a value from a
 		/// properties file that value will be replaced.
 		/// See the example mama.properties provided with the distribution for
@@ -412,7 +412,7 @@ namespace Wombat
 		{
 			return Marshal.PtrToStringAnsi(NativeMethods.mama_getProperty (name));
 		}
-		
+
 		/// <summary>
 		/// Return the version information for the library
 		/// The version of Mama follows in parenthesis
@@ -436,14 +436,14 @@ namespace Wombat
         /// <summary>
         /// Start processing messages on the internal queue. This starts Mama's
         /// internal throttle, refresh logic, and other internal Mama processes as well
-        /// as dispatching messages from the internal queue. 
+        /// as dispatching messages from the internal queue.
         /// <p>
         /// Mama.start( ) blocks until an invocation of Mama.stop() occurs.
         ///
-        /// MAMA employs a reference count to track multiple calls to Mama.start() and 
-        /// Mama.stop(). The count is incremented every time Mama.start() is called and 
-        /// decremented when Mama.stop() is called. The first Mama.start() call does not 
-        /// unblock until the count reaches zero. 
+        /// MAMA employs a reference count to track multiple calls to Mama.start() and
+        /// Mama.stop(). The count is incremented every time Mama.start() is called and
+        /// decremented when Mama.stop() is called. The first Mama.start() call does not
+        /// unblock until the count reaches zero.
         ///
         /// This function is thread safe.
         /// </p>
@@ -457,17 +457,17 @@ namespace Wombat
         }
 
 		/// <summary>
-        /// 
+        ///
         /// Close MAMA and free all associated resource.
         ///
-        /// MAMA employs a reference count to track multiple calls to Mama.open() and 
-        /// Mama.close(). The count is incremented every time Mama.open() is called and 
+        /// MAMA employs a reference count to track multiple calls to Mama.open() and
+        /// Mama.close(). The count is incremented every time Mama.open() is called and
         /// decremented when Mama.close() is called. The
-        /// resources are not actually released until the count reaches zero. 
+        /// resources are not actually released until the count reaches zero.
         ///
         /// This function is thread safe.
 		/// </summary>
-		public static void close () 
+		public static void close ()
 		{
             try
             {
@@ -476,14 +476,14 @@ namespace Wombat
 
             finally
             {
-                /* Decrement the ref count even if something went wrong or there will be crashes 
+                /* Decrement the ref count even if something went wrong or there will be crashes
                  * when the various objects are finalized.
                  * The objects will only destroy the native objects if MAMA is still open.
                  */
                 Interlocked.Decrement(ref mMamaopen);
             }
 		}
-        
+
         /// <summary>
         /// Start Mama in the background. This method invokes Mama.start() in a separate thread.
         /// </summary>
@@ -502,7 +502,7 @@ namespace Wombat
             // Call the native function
             MamaWrapper.CheckResultCode(NativeMethods.mama_startBackground(bridgeImpl.NativeHandle, mStartBackgroundShimCallback));
         }
-      
+
 
         public static bool opened
 		{
@@ -511,21 +511,21 @@ namespace Wombat
 				return (mMamaopen > 0);
 			}
 		}
-        
+
         /// <summary>
         /// Stop dispatching on the default event queue for the specified bridge.
         ///
-        /// MAMA employs a reference count to track multiple calls to Mama.start() and 
-        /// Mama.stop(). The count is incremented every time Mama.start() is called and 
-        /// decremented when Mama.stop() is called. The first Mama.start() call does not 
-        /// unblock until the count reaches zero. 
+        /// MAMA employs a reference count to track multiple calls to Mama.start() and
+        /// Mama.stop(). The count is incremented every time Mama.start() is called and
+        /// decremented when Mama.stop() is called. The first Mama.start() call does not
+        /// unblock until the count reaches zero.
         ///
         /// This function is thread safe.
         /// </summary>
         /// <param name="bridgeImpl">
         /// The bridge specific structure.
         /// </param>
-        public static void stop (MamaBridge bridgeImpl) 
+        public static void stop (MamaBridge bridgeImpl)
 		{
 			MamaWrapper.CheckResultCode(NativeMethods.mama_stop(bridgeImpl.NativeHandle));
 		}
@@ -550,7 +550,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// Enable logging, accepts a string representing the file location. 
+		/// Enable logging, accepts a string representing the file location.
 		/// </summary>
 		/// <param name="fileName">
         /// The full path to the log file.
@@ -564,7 +564,7 @@ namespace Wombat
         /// <exception cref="ArgumentOutOfRangeException">
         /// The file name contains invalid characters.
         /// </exception>
-		public static void logToFile(string fileName, MamaLogLevel level) 
+		public static void logToFile(string fileName, MamaLogLevel level)
 		{
             // Check the arguments
             if ((fileName == null) || (fileName == string.Empty))
@@ -583,11 +583,11 @@ namespace Wombat
             {
                 throw new ArgumentOutOfRangeException("level");
             }
-            
+
             // Call the native function
 			MamaWrapper.CheckResultCode(NativeMethods.mama_logToFile(fileName, (int)level));
 		}
-		
+
         /// <summary>
         /// Disable logging.
         /// </summary>
@@ -595,7 +595,7 @@ namespace Wombat
 		{
 			MamaWrapper.CheckResultCode(NativeMethods.mama_disableLogging());
 		}
-		
+
         /// <summary>
         /// Set the log level.
         /// </summary>
@@ -615,7 +615,7 @@ namespace Wombat
 
 			MamaWrapper.CheckResultCode(NativeMethods.mama_setLogLevel((int)level));
 		}
-		
+
         /// <summary>
         /// Get the log level.
         /// </summary>
@@ -624,7 +624,7 @@ namespace Wombat
 		{
 			return (MamaLogLevel)NativeMethods.mama_getLogLevel();
 		}
-		
+
         /// <summary>
         /// Set the log file max size.
         /// </summary>
@@ -642,7 +642,7 @@ namespace Wombat
 
 			MamaWrapper.CheckResultCode(NativeMethods.mama_setLogSize(size));
 		}
-		
+
         /// <summary>
         /// Set the max number of log files.
         /// </summary>
@@ -660,7 +660,7 @@ namespace Wombat
 
 			MamaWrapper.CheckResultCode(NativeMethods.mama_setNumLogFiles(numFiles));
 		}
-		
+
         /// <summary>
         /// Set logging policy.
         /// </summary>
@@ -669,7 +669,7 @@ namespace Wombat
 		{
 			MamaWrapper.CheckResultCode(NativeMethods.mama_setLogFilePolicy((int)policy));
 		}
-		
+
         /// <summary>
         /// Set append to prevent overwriting existing logfiles.
         /// </summary>
@@ -679,10 +679,10 @@ namespace Wombat
 			int appendC = 0;
 			if(append)
 				appendC = 1;
-				
+
 			MamaWrapper.CheckResultCode(NativeMethods.mama_setAppendToLogFile(appendC));
 		}
-		
+
         /// <summary>
         /// Get logging to file status
         /// </summary>
@@ -695,7 +695,7 @@ namespace Wombat
 			else
 				return true;
 		}
-		
+
         /// <summary>
 		/// Add string to mama log at specified mama level.
 		/// </summary>
@@ -708,7 +708,7 @@ namespace Wombat
         /// <exception cref="ArgumentOutOfRangeException">
         /// The logging level is invalid.
         /// </exception>
-        public static void log(MamaLogLevel level, string text) 
+        public static void log(MamaLogLevel level, string text)
 		{
             // Check for a valid enumeration value
             if (!Enum.IsDefined(typeof(MamaLogLevel), (int)level))
@@ -727,7 +727,7 @@ namespace Wombat
                 NativeMethods.mama_log2((int)level, text);
             }
 		}
-              
+
         /// <summary>
         /// This function will invoke the default log function.
         /// </summary>
@@ -736,7 +736,7 @@ namespace Wombat
         /// </param>
         /// <param name="text">
         /// The log message.
-        /// </param>        
+        /// </param>
         /// <exception cref="ArgumentNullException">
         /// The logging text has not been supplied.
         /// </exception>
@@ -760,32 +760,32 @@ namespace Wombat
             // Call the native method
             NativeMethods.mama_logDefault2((int)level, text);
         }
-        
-        
-        
+
+
+
 		/// <summary>
 		/// Set the high watermark for the internal default MAMA queue.
 		/// See <code>mamaQueue_setHighWatermark()</code> for details.
-		/// 
+		///
 		/// Although the monitoring callbacks on the default queue cannot be
 		/// specified for RV, setting of the high water mark is still supported.
 		/// </summary>
 		/// <param name="highWatermark"></param>
 		public static void setDefaultQueueHighWatermark (int highWatermark)
 		{
-        
+
 		}
 
 		/// <summary>
 		/// Set the low watermark for the internal default MAMA queue.
 		/// See <code>mamaQueue_setLowWatermark()</code> for details.
-		/// 
+		///
 		/// Currently supported only on Wombat TCP middleware.
 		/// </summary>
 		/// <param name="lowWatermark"></param>
 		public static void setDefaultQueueLowWatermark (int lowWatermark)
 		{
-		      
+
   		}
 
 		/// <summary>
@@ -800,15 +800,15 @@ namespace Wombat
 
 		#region Implementation details
 
-		
-        // For WAM, allows the C-layer to call up to the wrapper so we can get 
+
+        // For WAM, allows the C-layer to call up to the wrapper so we can get
         // the wrapper version in addition to the C version
         private delegate string wrapperGetVersion(IntPtr bridgeImpl);
         private static wrapperGetVersion wrapperVersionGetter = new wrapperGetVersion(getVersion);
         private static void initGetVersionWrapper()
         {
             NativeMethods.mama_setWrapperGetVersion(wrapperVersionGetter);
-        }		
+        }
 
         /// <summary>
         /// This class is used for forward callback events from the native mama_startBackground
@@ -836,7 +836,7 @@ namespace Wombat
             }
 
             /// <summary>
-            /// Handler is called whenever mama_start completes, 
+            /// Handler is called whenever mama_start completes,
             /// </summary>
             /// <param name="status">
             /// The status returned from mama_start.
@@ -846,7 +846,7 @@ namespace Wombat
                 // Invoke the callback function
                 if (mCallback != null)
                 {
-                    // Create a new mama status using the data passed in                    
+                    // Create a new mama status using the data passed in
                     mCallback.onStartComplete(status);
                 }
             }
@@ -908,7 +908,7 @@ namespace Wombat
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mama_setLogCallback2(LogFileCallbackDelegate callback);
         }
-		
+
 		// Static variables used to dispatch callback events from mama_startbackground.
         private static StartBackgroundCallbackForwarder mStartBackgroundCallbackForwarder;
         private static StartBackgroundCallbackForwarder.StartBackgroundCompleteDelegate mStartBackgroundShimCallback;
