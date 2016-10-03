@@ -3844,10 +3844,10 @@ TEST_F(PayloadVectorDateTimeTests, AddVectorDateTime)
     for( unsigned int ii(0) ; ii < VECTOR_SIZE ; ++ii )
     {
         char buf[56];
-        int eq = mamaDateTime_equal (m_in[ii],
-                                     m_out[ii] );
         mamaDateTime_getAsString(m_in[ii], buf, 56);
         mamaDateTime_getAsString(m_out[ii], buf, 56);
+        int eq = mamaDateTime_equal (m_in[ii],
+                                     m_out[ii] );
         EXPECT_EQ (1, eq);
     }
 }
@@ -3898,55 +3898,50 @@ TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeInvalidFid)
 
 // UpdateVectorDateTime test fixtures
 // **********************************
-// Disabled as mamaMsg_addVectorDateTime is not implemented.
 TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
     CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    //EXPECT_EQ (MAMA_STATUS_OK, m_status);
-    //EXPECT_EQ (VECTOR_SIZE, m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
-    /*
     if( MAMA_STATUS_OK == m_status )
     {
         for( unsigned int ii(0) ; ii < VECTOR_SIZE ; ++ii )
         {
             int eq = mamaDateTime_equal( m_in[ii],
                                          m_out[ii] );
-            EXPECT_EQ (0, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
     {
         FAIL();
     }
-    */
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorTime(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    //EXPECT_EQ (MAMA_STATUS_OK, m_status);
-    //EXPECT_EQ (VECTOR_UPDATE_SIZE, m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (VECTOR_UPDATE_SIZE, m_outSize);
 
-    /*
     if( MAMA_STATUS_OK == m_status )
     {
         for( unsigned int ii(0) ; ii < VECTOR_UPDATE_SIZE ; ++ii )
         {
             int eq = mamaDateTime_equal( m_update[ii],
                                          m_out[ii] );
-            EXPECT_EQ (0, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
     {
         FAIL();
     }
-    */
 }
 
 TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullUpdate)
@@ -3955,25 +3950,23 @@ TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullUpdate)
     CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    //EXPECT_EQ (MAMA_STATUS_OK, m_status);
-    //EXPECT_EQ (VECTOR_SIZE, m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
-    /*
     if( MAMA_STATUS_OK == m_status )
     {
         for( unsigned int ii(0) ; ii < VECTOR_SIZE ; ++ii )
         {
             int eq = mamaDateTime_equal( m_in[ii],
                                          m_out[ii] );
-            EXPECT_EQ (0, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
     {
         FAIL();
     }
-    */
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorTime(m_msg, NULL, 1, NULL, VECTOR_UPDATE_SIZE);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
@@ -3985,11 +3978,10 @@ TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullMessage)
     CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    //m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, (mama_u64_t* const*) &m_out, &m_outSize);
-    //EXPECT_EQ (MAMA_STATUS_OK, m_status);
-    //EXPECT_EQ (VECTOR_SIZE, m_outSize);
+    m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
-    /*
     if( MAMA_STATUS_OK == m_status )
     {
         for( unsigned int ii(0) ; ii < VECTOR_SIZE ; ++ii )
@@ -3997,14 +3989,13 @@ TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullMessage)
             int eq = mamaDateTime_equal( m_in[ii],
                                          m_out[ii] );
 
-            EXPECT_EQ (0, eq);
+            EXPECT_EQ (1, eq);
         }
     }
     else
     {
         FAIL();
     }
-    */
 
     m_status = m_payloadBridge->msgPayloadUpdateVectorTime(NULL, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
