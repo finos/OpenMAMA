@@ -1,6 +1,14 @@
-OpenMAMA Client Library
+OpenMAMA - The Open Middleware Agnostic Messaging API
 ================================================================================
-OpenMAMA is a lightweight wrapper that provides a common API interface to different middleware and messaging solutions across a variety of platforms and languages.
+
+[![Join the chat at https://gitter.im/OpenMAMA/OpenMAMA](https://badges.gitter.im/OpenMAMA/OpenMAMA.svg)](https://gitter.im/OpenMAMA/OpenMAMA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+| Branch          | CI Status |
+|-----------------|---------------|
+| master (stable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA%20Master%20Branch%20with%20Qpid%20Proton/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA%20Master%20Branch%20with%20Qpid%20Proton/)|
+| next (unstable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA%20Next%20Branch%20with%20Qpid%20Proton/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA%20Next%20Branch%20with%20Qpid%20Proton/)|
+
+OpenMAMA is a vendor neutral lightweight wrapper that provides a common API interface to different middleware and messaging solutions across a variety of platforms and languages.
 
 OpenMAMDA is a framework that adds Market Data functionality, such as order book handling on top of MAMA.
 
@@ -8,24 +16,18 @@ Please see the [project page](http://www.openmama.org) above for more informatio
 
 Supported Platforms
 --------------------------------------------------------------------------------
-Currently C, C++ and JNI/Java on Linux and Windows are the supported platforms.
+Currently C, C++, C# and Java are all supported languages.
 
-Supported distributions are
-
-* Redhat 5
-* Redhat 6
-* SUSE 10
-* Windows 7+
-* Java SE 6 (from Oracle)
+Supported distributions are listed [here](https://github.com/OpenMAMA/OpenMAMA/wiki/Platforms)
 
 Getting Started
 --------------------------------------------------------------------------------
 OpenMAMA is designed to have minimal build requirements. 
-Full instructions for [Linux](http://wiki.openmama.org/index.php/Build_Instructions) and [Windows](http://wiki.openmama.org/index.php/Build_instructions_(Windows)) can be found on the wiki.
+Full instructions for [Linux](https://github.com/OpenMAMA/OpenMAMA/wiki/Building-on-Linux) and [Windows](https://github.com/OpenMAMA/OpenMAMA/wiki/Building-on-Windows) can be found on the wiki.
 
 Documentation
 --------------------------------------------------------------------------------
-Currently, our [wiki](http://wiki.openmama.org/index.php/Main_Page) contains the most up-to-date information on using OpenMAMA.
+Currently, our [wiki](https://github.com/OpenMAMA/OpenMAMA/wiki) contains the most up-to-date information on using OpenMAMA.
 Developer's Guides are also hosted on our [Documentation](http://www.openmama.org/documentation) page.
 
 Contributing

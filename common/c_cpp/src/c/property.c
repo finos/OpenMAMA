@@ -579,3 +579,10 @@ propertiesImpl_AddProperty( propertiesImpl properties,
 
     return 1;
 }
+
+uint32_t properties_Count (wproperty_t handle)
+{
+    /* Get the impl */
+    propertiesImpl_ *this = (propertiesImpl_ *)handle;
+    return wtable_get_count (this->mTable);
+}

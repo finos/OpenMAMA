@@ -80,8 +80,8 @@ case $key in
     BRANCH="next"
     ;;
     -v|--version)
-    VERSION="$1"
-    BRANCH=OpenMAMA-${VERSION}
+    BRANCH=OpenMAMA-$1
+    VERSION="${1//-/}"
     shift
     ;;
     -b|--build-number)
@@ -215,7 +215,10 @@ if [ $CLONE_SOURCE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try cd ${SOURCE_DIR}
 
     # Read only clone, depth 1
-    try git clone -q --depth=1 -b ${BRANCH} https://github.com/OpenMAMA/OpenMAMA.git
+    try git clone -q https://github.com/OpenMAMA/OpenMAMA.git
+    try cd OpenMAMA
+    try git checkout ${BRANCH}
+    try cd ${SOURCE_DIR}
 
     # Remove the .git folder (for packaging)
     try rm -rf OpenMAMA/.git
@@ -261,9 +264,9 @@ if [ $MOCK_BUILD -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try /usr/bin/mock -r epel-6-i386 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-el6-i386.log 2>&1
     try /usr/bin/mock -r epel-6-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-el6-x64.log 2>&1
     try /usr/bin/mock -r epel-7-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-el7-x64.log 2>&1
-    try /usr/bin/mock -r fedora-21-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f21-x64.log 2>&1
     try /usr/bin/mock -r fedora-22-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f22-x64.log 2>&1
     try /usr/bin/mock -r fedora-23-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f23-x64.log 2>&1
+    try /usr/bin/mock -r fedora-24-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f24-x64.log 2>&1
     next
     RETURN_CODE=$?
 fi
@@ -278,7 +281,7 @@ if [ $PACKAGE_RELEASE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try mkdir -p ${RELEASE_DIR}
 
     # Copy in and rename the source tarball
-    try cp ${SOURCE_DIR}/openmama-${VERSION}.tgz ${RELEASE_DIR}/openmama-${VERSION}-src.tar.gz
+    #try cp ${SOURCE_DIR}/openmama-${VERSION}.tgz ${RELEASE_DIR}/openmama-${VERSION}-src.tar.gz
 
     # Copy in the Source RPM
     try cp ${BUILD_DIR}/SRPMS/openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm ${RELEASE_DIR}
@@ -288,9 +291,9 @@ if [ $PACKAGE_RELEASE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try cp /var/lib/mock/epel-6-i386/result/openmama-${VERSION}-${BUILD_NUMBER}.el6.i686.rpm ${RELEASE_DIR}
     try cp /var/lib/mock/epel-6-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm ${RELEASE_DIR}
     try cp /var/lib/mock/epel-7-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.el7.*.x86_64.rpm ${RELEASE_DIR}
-    try cp /var/lib/mock/fedora-21-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc21.x86_64.rpm ${RELEASE_DIR}
     try cp /var/lib/mock/fedora-22-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc22.x86_64.rpm ${RELEASE_DIR}
     try cp /var/lib/mock/fedora-23-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc23.x86_64.rpm ${RELEASE_DIR}
+    try cp /var/lib/mock/fedora-24-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc24.x86_64.rpm ${RELEASE_DIR}
 
     # Build and tar the binary release
     if [ -d ${BUILD_DIR}/binary ]; then
@@ -309,7 +312,7 @@ if [ $PACKAGE_RELEASE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/mama/c_cpp/src/examples/mama.properties ${BINARY_DIR}/config/
 
     try cd ${BUILD_DIR}/binary/
-    try tar -zcf ${RELEASE_DIR}/openmama-${VERSION}-x86_64.tar.gz openmama-${VERSION}
+    try tar -zcf ${RELEASE_DIR}/openmama-${VERSION}.linux.x86_64.tar.gz openmama-${VERSION}
 
     next
     RETURN_CODE=$?

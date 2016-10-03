@@ -30,15 +30,20 @@ else:
 
 libs.append('libevent')
 
+
 if 'debug' in env['build']:
-  libs.append('qpid-protond')
+  qpidLibName = "qpid-protond"
   buildType = "Debug"
 else:
-  libs.append('qpid-proton')
+  qpidLibName = "qpid-proton"
   buildType = "Release"
+
+libs.append(qpidLibName)
 
 libPath.append('%s/proton-c/%s/%s' % (env['qpid_home'], archPath, buildType))
 libPath.append('%s/WIN32-Prj/%s/%s' % (env['libevent_home'], archPath, buildType))
+
+qpidInstLibs = '%s/proton-c/%s/%s/%s.dll' % (env['qpid_home'], archPath, buildType, qpidLibName)
 
 env['CCFLAGS'].append(['/TP', '/WX-'])
 env['CPPPATH'] = incPath
@@ -47,3 +52,6 @@ env.Append(LIBS = libs, LIBPATH=libPath)
 sources = Glob('*.c')
 
 env.InstallLibrary(sources, target)
+
+if 'dynamic' in env['build']:
+    Alias ('install', env.Install('$bindir', qpidInstLibs))

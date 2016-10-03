@@ -267,6 +267,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     size_t                  targetInc     = 0;
     char*                   url           = NULL;
     qpidMsgType             type          = QPID_MSG_PUB_SUB;
+    int                     err           = 0;
 
     if (NULL == impl)
     {
@@ -343,13 +344,14 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     }
 
     /* Note the messages don't actually get published until here */
-    if (pn_messenger_send(impl->mTransport->mOutgoing,
-            QPID_MESSENGER_SEND_TIMEOUT))
+    err = pn_messenger_send (impl->mTransport->mOutgoing,
+                             QPID_MESSENGER_SEND_TIMEOUT);
+    if (err && err != PN_TIMEOUT)
     {
         qpidError = PN_MESSENGER_ERROR (impl->mTransport->mOutgoing);
         mama_log (MAMA_LOG_LEVEL_SEVERE, "qpidBridgeMamaPublisher_send(): "
-                  "Qpid Error:[%s]",
-                  qpidError);
+                  "Qpid Error:[%s][%d]",
+                  qpidError, err);
 
         return MAMA_STATUS_PLATFORM;
     }
@@ -363,17 +365,16 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
 /* Send reply to inbox. */
 mama_status
 qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
-                                          void*             request,
+                                          mamaMsg           request,
                                           mamaMsg           reply)
 {
     qpidPublisherBridge*    impl            = (qpidPublisherBridge*) publisher;
-    mamaMsg                 requestMsg      = (mamaMsg) request;
     const char*             inboxSubject    = NULL;
     const char*             replyTo         = NULL;
     msgBridge               bridgeMsg       = NULL;
     mama_status             status          = MAMA_STATUS_OK;
 
-    if (NULL == publisher || NULL == request || NULL == reply)
+    if (NULL == publisher || NULL == request|| NULL == reply)
     {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -387,7 +388,7 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
                                             impl->mSubject);
 
     /* Get the incoming bridge message from the mamaMsg */
-    status = mamaMsgImpl_getBridgeMsg (requestMsg, &bridgeMsg);
+    status = mamaMsgImpl_getBridgeMsg (request, &bridgeMsg);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,

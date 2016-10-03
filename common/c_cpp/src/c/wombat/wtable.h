@@ -28,6 +28,7 @@ extern "C" {
 
 #include "wincompat.h"
 #include <sys/types.h>
+#include <wombat/port.h>
 
 typedef void* wtable_t;
 
@@ -118,7 +119,14 @@ void wtable_clear_for_each (wtable_t table, wTableCallback cb, void* closure);
 /**
  * Dump a table for debugging purposes.
  */
+COMMONExpDLL
 void dumptable (wtable_t table);
+
+/**
+* Return number of elements in the table
+*/
+COMMONExpDLL
+uint32_t wtable_get_count (wtable_t table);
 
 #if defined(__cplusplus)
 }

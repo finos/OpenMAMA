@@ -33,6 +33,8 @@
 /* Linux implementation. */
 /* *************************************************** */
 
+#if defined(__i386__) || defined(__x86_64__)
+
 /* 32-bit atomic exchange. Returns previous value. */
 static __inline__ uint32_t
 axchg32 (uint32_t* ptr, uint32_t newVal)
@@ -61,6 +63,43 @@ adec32 (uint32_t* ptr)
                       : "=m" (*ptr)
                       : "m" (*ptr));
 }
+
+#else
+
+#ifdef __GNUC__
+
+/* 32-bit atomic exchange. Returns previous value. */
+static __inline__ uint32_t
+axchg32 (uint32_t* ptr, uint32_t newVal)
+{
+    /* Warning: behavior not guaranteed to be consistent
+       on all platforms.  Unit tests may be required to validate
+       on each build.
+       http://gcc.gnu.org/onlinedocs/gcc-4.3.5/gcc/Atomic-Builtins.html
+    */
+    return __sync_lock_test_and_set(ptr, newVal);
+}
+
+/* 32-bit atomic increment. */
+static __inline__ void
+ainc32 (uint32_t* ptr)
+{
+    __sync_fetch_and_add(ptr, 1);
+}
+
+/* 32-bit atomic decrement. */
+static __inline__ void
+adec32 (uint32_t* ptr)
+{
+   __sync_fetch_and_sub(ptr, 1);
+}
+
+#else
+#error "Unsupported CPU / compiler combination, please implement atomic functions"
+#endif
+
+
+#endif
 
 /* *************************************************** */
 /* Type Defines. */

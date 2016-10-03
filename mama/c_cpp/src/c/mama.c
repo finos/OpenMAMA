@@ -247,6 +247,12 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
 mama_status
 mama_loadEntitlementBridgeInternal  (const char* name);
 
+mama_bool_t
+mama_areVersionsCompatibleInternal (versionInfo mamaVer, versionInfo bridgeVer);
+
+void
+mama_normalizeMamaBridgeInterfaceVersionInternal (versionInfo* version);
+
 MAMAExpDLL
 void
 mama_setWrapperGetVersion(fpWrapperGetVersion value);
@@ -330,6 +336,12 @@ mamaInternal_loadProperties (const char *path,
                              const char *filename)
 {
     wproperty_t fileProperties;
+    int usingDefaults = 0;
+
+    if (!path && !filename)
+    {
+        usingDefaults = 1;
+    }
 
     if( gProperties == 0 )
     {
@@ -356,22 +368,27 @@ mamaInternal_loadProperties (const char *path,
 
     fileProperties = properties_Load (path, filename);
 
-    if( fileProperties == 0 )
+    /* Fail if loading properties failed and we have no properties so far or
+     * non-defaults were specified */
+    if( fileProperties == 0 && (!usingDefaults || 0 == properties_Count(gProperties)))
     {
-            mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open properties file.\n");
+        mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open properties file.\n");
         return;
     }
 
-    /* We've got file properties, so we need to merge 'em into
-     * anything we've already gotten */
-    properties_Merge( fileProperties, gProperties );
+    if (NULL != fileProperties)
+    {
+        /* We've got file properties, so we need to merge 'em into
+         * anything we've already gotten */
+        properties_Merge(fileProperties, gProperties);
 
-    /* Free the file properties, note that FreeEx2 is called to ensure that the data
-     * isn't freed as the pointers have been copied over to gProperties.
-     */
-    properties_FreeEx2(gProperties);
-    
-   gProperties =  fileProperties;
+        /* Free the file properties, note that FreeEx2 is called to ensure that the data
+         * isn't freed as the pointers have been copied over to gProperties.
+         */
+        properties_FreeEx2(gProperties);
+
+        gProperties = fileProperties;
+    }
 }
 
 static int mamaInternal_statsPublishingEnabled (void)
@@ -1178,23 +1195,10 @@ mama_setPropertiesFromFile (const char *path,
 {
     wproperty_t fileProperties;
 
-    if (!gProperties)
+    if (!path || !filename)
     {
-       mamaInternal_loadProperties( NULL, NULL );
-    }
-
-    if( !path )
-    {
-        path = environment_getVariable(WOMBAT_PATH_ENV);
-        mama_log (MAMA_LOG_LEVEL_NORMAL, "Using path specified in %s",
-            WOMBAT_PATH_ENV);
-    }
-
-    if( !filename )
         return MAMA_STATUS_NULL_ARG;
-
-    mama_log (MAMA_LOG_LEVEL_NORMAL,
-              "Attempting to load additional MAMA properties from %s", path ? path : "");
+    }
 
     mamaInternal_loadProperties (path, filename);
 
@@ -2047,21 +2051,20 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
         goto error_handling_impl_allocated;
     }
 
-    /* Fail to load if the major and minor versions don't match. Only do this
-     * check in OpenMAMA until versions are consolidated. */
-    if ((2 == gImpl.version.mMajor) &&
-            (gImpl.version.mMajor != bridgeMamaVersion.mMajor ||
-             gImpl.version.mMinor != bridgeMamaVersion.mMinor))
+    /* Fail to load if bridge and API versions are incompatible */
+    if (! mama_areVersionsCompatibleInternal (gImpl.version, bridgeMamaVersion))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadPayloadBridgeInternal (): "
                   "Failed to initialise payload bridge [%s]. "
-                  "MAMA Runtime Version v%d.%d.x not compatible with bridge's compile version v%d.%d.x",
+                  "MAMA Runtime Version v%d.%d.%d not compatible with bridge's compile version v%d.%d.%d",
                   payloadName,
                   gImpl.version.mMajor,
                   gImpl.version.mMinor,
+                  gImpl.version.mRelease,
                   bridgeMamaVersion.mMajor,
-                  bridgeMamaVersion.mMinor);
+                  bridgeMamaVersion.mMinor,
+                  bridgeMamaVersion.mRelease);
         goto error_handling_impl_allocated;
     }
 
@@ -2568,21 +2571,20 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         goto error_handling_impl_allocated;
     }
 
-    /* Fail to load if the major and minor versions don't match. Only do this
-     * check in OpenMAMA until versions are consolidated. */
-    if ((2 == gImpl.version.mMajor) &&
-            (gImpl.version.mMajor != bridgeMamaVersion.mMajor ||
-             gImpl.version.mMinor != bridgeMamaVersion.mMinor))
+    /* Fail to load if bridge and API versions are incompatible */
+    if (! mama_areVersionsCompatibleInternal (gImpl.version, bridgeMamaVersion))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadBridge (): "
                   "Failed to initialise middleware bridge [%s]. "
-                  "MAMA Runtime Version v%d.%d.x not compatible with bridge's compile version v%d.%d.x",
+                  "MAMA Runtime Version v%d.%d.%d not compatible with bridge's compile version v%d.%d.%d",
                   middlewareName,
                   gImpl.version.mMajor,
                   gImpl.version.mMinor,
+                  gImpl.version.mRelease,
                   bridgeMamaVersion.mMajor,
-                  bridgeMamaVersion.mMinor);
+                  bridgeMamaVersion.mMinor,
+                  bridgeMamaVersion.mRelease);
         goto error_handling_impl_allocated;
     }
 
@@ -3051,4 +3053,64 @@ mamaInternal_setMetaProperty (const char* name, const char* value)
                   gImpl.internalProperties, name, value, existingValue);
         return MAMA_STATUS_NOMEM;
     }
+}
+
+/* NB copy rather than reference - this is intentional because we are going to
+ * be modifying these values to normalized versions */
+mama_bool_t mama_areVersionsCompatibleInternal (versionInfo mamaVer, versionInfo bridgeVer)
+{
+    /* Normalize bridge versions with standard major / minor versions */
+    mama_normalizeMamaBridgeInterfaceVersionInternal (&mamaVer);
+    mama_normalizeMamaBridgeInterfaceVersionInternal (&bridgeVer);
+
+    /* If major and minor versions match, they are compatible */
+    if (mamaVer.mMajor == bridgeVer.mMajor && mamaVer.mMinor == bridgeVer.mMinor)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+/* This function is destructive and will modify the versionInfo provided to
+ * return a bridge compatibility version (i.e. 6.0, 6.1 etc)
+   +-----------------+------------------------------+
+   | (O)MAMA Version | Normalized Interface Version |
+   +-----------------+------------------------------+
+   | 2.2.x           | 6.0.0                        |
+   | 2.3.x           | 6.0.0                        |
+   | 6.0.x (x <  7)  | 6.0.0                        |
+   | 2.4.x           | 6.1.0                        |
+   | 6.0.x (x >= 7)  | 6.1.0                        |
+   | 6.1.x           | 6.1.0                        |
+   | 6.2.x (future)  | 6.2.0                        |
+   +-----------------+------------------------------+
+ */
+void mama_normalizeMamaBridgeInterfaceVersionInternal (versionInfo* version)
+{
+    /* 2.3.x is equivalent to all releases prior to MAMA 6.0.7 */
+    if (version->mMajor == 2 && version->mMinor < 4)
+    {
+        version->mMajor = 6;
+        version->mMinor = 0;
+    }
+
+    /* 6.0.7+ is equivalent in bridge compatibility to 6.1.x */
+    if (version->mMajor == 6 && version->mMinor == 0 && version->mRelease >= 7)
+    {
+        version->mMajor = 6;
+        version->mMinor = 1;
+    }
+
+    /* 2.4.x is equivalent to 6.1 */
+    if (version->mMajor == 2 && version->mMinor == 4)
+    {
+        version->mMajor = 6;
+        version->mMinor = 1;
+    }
+
+    /* This is irrelevant at this point so blank for clarity */
+    version->mRelease = 0;
 }

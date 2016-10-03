@@ -1198,10 +1198,10 @@ jobject mamaTransportImpl_getConnectionObject(JNIEnv *env, const void *platformI
     if(NULL != platformInfo)
     {
         /* Cast the platform info to a C connection object. */
-        mamaConnection *cConnection = (mamaConnection *)platformInfo;
+        mamaConnection cConnection = (mamaConnection)platformInfo;
 
         /* Save the pointer to the C connection object inside the re-usable Java connection object. */
-        (*env)->SetLongField(env, transportClosure->mConnection, connectionPointerFieldId_g, CAST_POINTER_TO_JLONG(*cConnection));
+        (*env)->SetLongField(env, transportClosure->mConnection, connectionPointerFieldId_g, CAST_POINTER_TO_JLONG(cConnection));
 
         /* Return a reference to the re-usable object. */
         ret = transportClosure->mConnection;

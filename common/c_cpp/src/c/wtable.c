@@ -40,6 +40,7 @@ typedef struct wtable
     char*          name;
     bucket_t**     buckets;  /* pointer to array of (initially NULL) buckets */
     unsigned short size;     /* size of table (in bits) */
+    uint32_t       count;    /* number of elements in table */
 } _wtable_t;
 
 static const char* libname = "wtable";
@@ -115,6 +116,7 @@ void wtable_free_all( wtable_t table )
             free( b->data );
             blast = b;
             b = b->next;
+            wtable->count--;
             free(blast);
         }
 
@@ -146,6 +148,7 @@ void wtable_free_all_xdata( wtable_t table )
             
             blast = b;
             b = b->next;
+            wtable->count--;
             free(blast);
         }
 
@@ -280,6 +283,7 @@ int wtable_insert (wtable_t table, const char* key, void* data)
         b->data = data;
         b->next = wtable->buckets[h];
         wtable->buckets[h] = b;
+        wtable->count++;
         return 1;
     }
     else
@@ -413,6 +417,7 @@ void* wtable_remove (wtable_t table, const char* key)
                 data = b->data;
                 free (b->key);
                 free (b);
+                wtable->count--;
                 return data;
             }
             b0 = b;
@@ -454,6 +459,7 @@ void wtable_clear (wtable_t table)
                 }
                 free (b->key);  /* The key is our job. */
                 b = b->next;
+                wtable->count--;
                 free (blast);
             }/* end while */
 
@@ -486,10 +492,21 @@ void wtable_clear_for_each (wtable_t table, wTableCallback cb, void* closure)
                 cb (table, b->data, b->key, closure);
                 free (b->key);  /* The key is our job. */
                 b = b->next;
+                wtable->count--;
                 free (blast);
             }/* end while */
 
             wtable->buckets[i] = NULL;
         }/* end for */
     }
+}
+
+uint32_t wtable_get_count (wtable_t table)
+{
+    if (table)
+    {
+        _wtable_t *  wtable = (_wtable_t *)table;
+        return wtable->count;
+    }
+    return 0;
 }

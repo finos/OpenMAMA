@@ -243,6 +243,11 @@
     <ClCompile Include="wtable.c" />
     <ClCompile Include="windows\wUuid.c" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="windows\wombat\port.h" />
+    <ClInclude Include="property.h" />
+    <ClInclude Include="wombat\wtable.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
