@@ -3830,16 +3830,14 @@ protected:
 
 // AddVectorDateTime test fixtures
 // *******************************
-
 TEST_F(PayloadVectorDateTimeTests, AddVectorDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
-    ASSERT_EQ( m_status, MAMA_STATUS_OK );
-    EXPECT_EQ( m_outSize, VECTOR_SIZE );
+    EXPECT_EQ (MAMA_STATUS_OK, m_status);
+    EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
     for( unsigned int ii(0) ; ii < VECTOR_SIZE ; ++ii )
     {
@@ -3855,21 +3853,18 @@ TEST_F(PayloadVectorDateTimeTests, AddVectorDateTime)
 TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeNullDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeNullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeAfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 2, m_in, VECTOR_SIZE);
@@ -3879,7 +3874,6 @@ TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeAfterInit)
 TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 0, m_in, VECTOR_SIZE);
@@ -3889,7 +3883,6 @@ TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeInvalidName)
 TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 0, m_in, VECTOR_SIZE);
@@ -3901,7 +3894,6 @@ TEST_F(PayloadVectorDateTimeTests, AddVectorDateTimeInvalidFid)
 TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
@@ -3947,7 +3939,6 @@ TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTime)
 TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
@@ -3975,7 +3966,6 @@ TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullUpdate)
 TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
@@ -4006,13 +3996,11 @@ TEST_F(PayloadVectorDateTimeTests, UpdateVectorDateTimeNullMessage)
 TEST_F(PayloadVectorDateTimeTests, GetVectorDateTime)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    // TODO Check prototype for GetVectorDateTime
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
-    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
+    EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4032,10 +4020,9 @@ TEST_F(PayloadVectorDateTimeTests, GetVectorDateTime)
     m_status = m_payloadBridge->msgPayloadUpdateVectorTime(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    // TODO Check prototype for GetVectorDateTime
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
-    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_EQ (VECTOR_UPDATE_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4056,7 +4043,6 @@ TEST_F(PayloadVectorDateTimeTests, GetVectorDateTime)
 TEST_F(PayloadVectorDateTimeTests, GetVectorDateTimeNullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, NULL, &m_outSize);
@@ -4066,7 +4052,6 @@ TEST_F(PayloadVectorDateTimeTests, GetVectorDateTimeNullResult)
 TEST_F(PayloadVectorDateTimeTests, GetVectorDateTimeNullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorDateTime(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorDateTime(m_msg, NULL, 1, &m_out, NULL);
@@ -4138,10 +4123,8 @@ protected:
 TEST_F(PayloadVectorPriceTests, AddVectorPrice)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    // TODO Check prototype for GetVectorPrice
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK , m_status);
 
@@ -4165,21 +4148,18 @@ TEST_F(PayloadVectorPriceTests, AddVectorPrice)
 TEST_F(PayloadVectorPriceTests, AddVectorPriceNullPrice)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, NULL, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG , m_status);
 }
 
 TEST_F(PayloadVectorPriceTests, AddVectorPriceNullMsg)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(NULL, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
 TEST_F(PayloadVectorPriceTests, AddVectorPriceAfterInit)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 2, m_in, VECTOR_SIZE);
@@ -4189,7 +4169,6 @@ TEST_F(PayloadVectorPriceTests, AddVectorPriceAfterInit)
 TEST_F(PayloadVectorPriceTests, AddVectorPriceInvalidName)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, "Bob", 0, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 0, m_in, VECTOR_SIZE);
@@ -4199,7 +4178,6 @@ TEST_F(PayloadVectorPriceTests, AddVectorPriceInvalidName)
 TEST_F(PayloadVectorPriceTests, AddVectorPriceInvalidFid)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 0, m_in, VECTOR_SIZE);
@@ -4208,11 +4186,9 @@ TEST_F(PayloadVectorPriceTests, AddVectorPriceInvalidFid)
 
 // UpdateVectorPrice test fixtures
 // *******************************
-// wmsgPayload_updateVectorPrice not implemented
 TEST_F(PayloadVectorPriceTests, UpdateVectorPrice)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
@@ -4233,7 +4209,6 @@ TEST_F(PayloadVectorPriceTests, UpdateVectorPrice)
         FAIL();
     }
 
-    // TODO Interface inconsistent
     m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
@@ -4259,10 +4234,8 @@ TEST_F(PayloadVectorPriceTests, UpdateVectorPrice)
 TEST_F(PayloadVectorPriceTests, UpdateVectorPriceNullUpdate)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    // TODO Check prototype for GetVectorPrice
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
@@ -4288,10 +4261,8 @@ TEST_F(PayloadVectorPriceTests, UpdateVectorPriceNullUpdate)
 TEST_F(PayloadVectorPriceTests, UpdateVectorPriceNullMessage)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    // TODO Check prototype for GetVectorPrice
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
     EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
@@ -4320,13 +4291,11 @@ TEST_F(PayloadVectorPriceTests, UpdateVectorPriceNullMessage)
 TEST_F(PayloadVectorPriceTests, GetVectorPrice)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
-    // TODO Check prototype for GetVectorPrice
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
-    EXPECT_EQ ((mama_size_t)VECTOR_SIZE, m_outSize);
+    EXPECT_EQ (VECTOR_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4343,13 +4312,12 @@ TEST_F(PayloadVectorPriceTests, GetVectorPrice)
         FAIL();
     }
 
-    // TODO Interface Inconsistent
     m_status = m_payloadBridge->msgPayloadUpdateVectorPrice(m_msg, NULL, 1, m_update, VECTOR_UPDATE_SIZE);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
-    EXPECT_EQ ((mama_size_t)VECTOR_UPDATE_SIZE, m_outSize);
+    EXPECT_EQ (VECTOR_UPDATE_SIZE, m_outSize);
 
     if( MAMA_STATUS_OK == m_status )
     {
@@ -4370,7 +4338,6 @@ TEST_F(PayloadVectorPriceTests, GetVectorPrice)
 TEST_F(PayloadVectorPriceTests, GetVectorPriceNullResult)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, NULL, &m_outSize);
@@ -4380,7 +4347,6 @@ TEST_F(PayloadVectorPriceTests, GetVectorPriceNullResult)
 TEST_F(PayloadVectorPriceTests, GetVectorPriceNullSize)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 1, &m_out, NULL);
@@ -4390,10 +4356,10 @@ TEST_F(PayloadVectorPriceTests, GetVectorPriceNullSize)
 TEST_F(PayloadVectorPriceTests, GetVectorPriceNotFound)
 {
     m_status = m_payloadBridge->msgPayloadAddVectorPrice(m_msg, NULL, 1, m_in, VECTOR_SIZE);
-    CHECK_NON_IMPLEMENTED_OPTIONAL(m_status);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 
     m_status = m_payloadBridge->msgPayloadGetVectorPrice(m_msg, NULL, 2, &m_out, &m_outSize);
     EXPECT_EQ (MAMA_STATUS_NOT_FOUND, m_status);
 }
+
 
