@@ -24,6 +24,8 @@
 
 /* Call Types */
 #define COMMONExpDLL
+#define COMMONENTExpDLL
+#define MAMAENTCExpDLL
 #define WMWExpDLL
 #define MAMAExpDLL
 #define MAMACPPExpDLL

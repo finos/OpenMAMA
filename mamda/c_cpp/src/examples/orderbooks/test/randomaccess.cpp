@@ -37,7 +37,7 @@ int main (int argc, const char** argv)
     char uniqueId[32];
     for (int level = 0; level < N; level++)
     {
-        MamdaOrderBookTypes::Side side = (level < N/2) ? 
+        MamdaOrderBookTypes::Side side = (level < N/2) ?
             MamdaOrderBookTypes::MAMDA_BOOK_SIDE_BID :
             MamdaOrderBookTypes::MAMDA_BOOK_SIDE_ASK;
         double price = 50.0 + (100.0 * level/(double)N);

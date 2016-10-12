@@ -474,7 +474,7 @@ mama_status mamaFieldCache_setTrackModified(
 }
 
 mama_status mamaFieldCache_getTrackModified(
-    mamaFieldCache fieldCache,
+    mamaFieldCache fieldCache, 
     mama_bool_t* trackModified)
 {
     if (!fieldCache || !trackModified)

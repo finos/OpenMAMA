@@ -46,8 +46,8 @@
 #include "../dictrequester.h"
 
 /*  *********************************************************************** */
-/* This example program integrates advanced MAMA publishing and MAMDA order */ 
-/* book publishing functionality to enable publishing of MamdaOrderBook     */ 
+/* This example program integrates advanced MAMA publishing and MAMDA order */
+/* book publishing functionality to enable publishing of MamdaOrderBook     */
 /* data to clients. The example application has two main components; the    */
 /* publisher manager/publisher and  the order book publishing functionality.*/
 /* The subscription handler, MamaDQPublisherManagerCallback, is implemented */
@@ -55,13 +55,13 @@
 /* handles the subscription level requests for the underlying symbol from   */
 /* potential clients, refresh requests and has inherent error handling.     */
 
-/* The publisher manager, MamaDQPublishManager, creates the subscription    */ 
+/* The publisher manager, MamaDQPublishManager, creates the subscription    */
 /* used for listening to client requests on a source and acts as a store    */
 /* for all the publishers publishing different symbols on that source. The  */
 /* MamaDQPublisher, publisher, adds certain fiels to the message, such as   */
 /* the message type, before publishing the message.                         */
 
-/* In this application, a MamdaOrderBook object is created and during       */ 
+/* In this application, a MamdaOrderBook object is created and during       */
 /* runtime is populated with levels and/or entries, depending on the        */
 /* configuration paremeters. Data for the example program is artifically    */
 /* created as an array of book order data and this drives the example       */
@@ -69,7 +69,7 @@
 /* during the MamaTimer::onTimer() callback, and any changes published      */
 /* using the publishing functionality.                                      */
 
-/* Clients that connect to the bookpublisher application, subscribing to a  */ 
+/* Clients that connect to the bookpublisher application, subscribing to a  */
 /* symbol that is being published, will firstly receive a book initial      */
 /* message followed by the book updates every second. Recaps requests from  */
 /* the clients are handled by the bookpublisher and clients will receive    */
@@ -115,7 +115,7 @@ const EntAction ENTADD    = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD;
 const EntAction ENTUPDATE = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UPDATE;
 const EntAction ENTDELETE = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE;
 
-//  The struct "order" represents all pl and entry info of a typical book order                                                          
+//  The struct "order" represents all pl and entry info of a typical book order
 struct order
 {
     Side        side;
@@ -127,35 +127,35 @@ struct order
     double      entSize;
     double      sizeChange;
     int         numEntries;
-};         
+};
 
 //Initialise an arry of these orders
-order orderArray[] = 
+order orderArray[] =
 {
     {bidSide, PLADD,    100, 1000, "bid1", ENTADD,    1000, 1000,  1},
     {bidSide, PLADD,    101, 2000, "bid1", ENTADD,    2000, 2000,  1},
-    {bidSide, PLUPDATE, 100, 2000, "bid2", ENTADD,    1000, 1000,  2},                
-    {askSide, PLADD,    110, 2000, "ask1", ENTADD,    2000, 2000,  1},    
+    {bidSide, PLUPDATE, 100, 2000, "bid2", ENTADD,    1000, 1000,  2},
+    {askSide, PLADD,    110, 2000, "ask1", ENTADD,    2000, 2000,  1},
     {askSide, PLADD,    109, 3000, "ask1", ENTADD,    3000, 3000,  1},
     {bidSide, PLUPDATE, 101, 4000, "bid2", ENTADD,    3000, 3000,  2},
-    {bidSide, PLUPDATE, 101, 2000, "bid1", ENTDELETE, 0,    -2000, 1},    
+    {bidSide, PLUPDATE, 101, 2000, "bid1", ENTDELETE, 0,    -2000, 1},
     {askSide, PLADD,    104, 4000, "ask1", ENTADD,    4000, 4000,  1},
     {bidSide, PLUPDATE, 100, 1500, "bid3", ENTADD,    500,  500,   3},
-    {askSide, PLDELETE, 110, 0,    "ask1", ENTDELETE, 0,    -2000, 0},     
+    {askSide, PLDELETE, 110, 0,    "ask1", ENTDELETE, 0,    -2000, 0},
 };
 /*  ******************************************************************* */
 
 class BookPublisher : public MamaTimerCallback, MamaDQPublisherManagerCallback
 {
 public:
-    BookPublisher (); 
+    BookPublisher ();
     ~BookPublisher () {};
-       
+
     void                onTimer                  (MamaTimer*   timer);
-    void                createBook               (const char*  sym, 
+    void                createBook               (const char*  sym,
                                                   const char*  partId);
     void                createPublisherTransport (mamaBridge   bridge);
-    void                createPublisherManager   (const char*  pubSource, 
+    void                createPublisherManager   (const char*  pubSource,
                                                   mamaBridge   bridge);
     void                createTimer              (const char*  symbol,
                                                   mamaBridge   bridge);
@@ -176,20 +176,20 @@ public:
                        short                   subType,
                        short                   msgType,
                        MamaMsg&                msg);
-      
-        
+
+
     void onRequest  (MamaDQPublisherManager*  publisherManager,
                      const MamaPublishTopic&  publishTopicInfo,
                      short                    subType,
                      short                    msgType,
                      MamaMsg&                 msg);
-    
+
     void onRefresh (MamaDQPublisherManager*   publisherManager,
                     const MamaPublishTopic&   publishTopicInfo,
                     short                     subType,
                     short                     msgType,
-                    MamaMsg&                  msg) { } 
-        
+                    MamaMsg&                  msg) { }
+
      void onError  (MamaDQPublisherManager*   publisher,
                     const MamaStatus&         status,
                     const char*               errortxt,
@@ -197,7 +197,7 @@ public:
 
 
     void            acquireLock              ();
-    void            releaseLock              ();                   
+    void            releaseLock              ();
 
 private:
     MamaDQPublisherManager*     mPublisherManager;
@@ -205,7 +205,7 @@ private:
     MamdaOrderBook*             mBook;
     MamaDateTime                mBookTime;
     MamaMsg                     mPublishMsg;
-    MamaDQPublisher*            mPublisher; 
+    MamaDQPublisher*            mPublisher;
     MamaTimer*                  mTimer;
     bool                        mProcessEntries;
     MamdaLock                   mBookLock;
@@ -220,9 +220,9 @@ class TransportCallback : public MamaTransportCallback
 {
 public:
     TransportCallback          () {}
-    virtual ~TransportCallback () {} 
+    virtual ~TransportCallback () {}
 
-    virtual void onDisconnect (MamaTransport *tport) 
+    virtual void onDisconnect (MamaTransport *tport)
     {
         if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
         cout << "TRANSPORT DISCONNECTED\n";
@@ -260,21 +260,21 @@ int main (int argc, const char **argv)
     {
         BookPublisher* mBookPublisher = new BookPublisher;
         CommonCommandLineParser     cmdLine (argc, argv);
-          
+
         // Initialise the MAMA API
         mamaBridge bridge = cmdLine.getBridge();
-       
+
         Mama::open ();
-        
-        const char* symbol      = cmdLine.getOptString("s");          
-        const char* partId      = cmdLine.getOptString("p");          
+
+        const char* symbol      = cmdLine.getOptString("s");
+        const char* partId      = cmdLine.getOptString("p");
         const char* pubSource   = cmdLine.getOptString("SP");
         const char* dictFile    = cmdLine.getOptString("use_dict_file");
         mBookPublisher->mPublishRecaps = cmdLine.getPublishRecaps();
-        
+
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);
         mBookPublisher->setQueueGroup (&queues);;
-        
+
         mBookPublisher->setProcessEntries (cmdLine.getOptBool ('e'));
         mBookPublisher->createPublisherTransport (bridge);
         mBookPublisher->createPublisherManager (pubSource, bridge);
@@ -297,14 +297,14 @@ int main (int argc, const char **argv)
         //create publisher and also set up MamaTimer to process order and publish changes
         mBookPublisher->createTimer   (symbol, bridge);
         mBookPublisher->createMessage ();
-       
+
         //set up new Book and enable order book publishing
-        mBookPublisher->createBook (symbol, partId);          
-               
+        mBookPublisher->createBook (symbol, partId);
+
         Mama::start (bridge);
     }
     catch (MamaStatus &e)
-    {  
+    {
         // This exception can be thrown from Mama.open ()
         // Mama::createTransport (transportName) and from
         // MamdaSubscription constructor when entitlements is enabled.
@@ -321,7 +321,7 @@ int main (int argc, const char **argv)
         cerr << "Unknown Exception in main ()." << endl;
         exit (1);
     }
-    exit (1);    
+    exit (1);
 }
 
 /* ******************************************************************************** */
@@ -330,15 +330,15 @@ int main (int argc, const char **argv)
 /* ******************************************************************************** */
 
 void BookPublisher::onTimer (MamaTimer* timer)
-{  
+{
     if (!mPublishing) return;
     //  On every timer update we take the next order from the orderArray and processEntries
 
     // clear book when at end of orderArray
-    // To avoid editing the book while publishing using multiple threads, we need to have a 
+    // To avoid editing the book while publishing using multiple threads, we need to have a
     // lock during the book editing functionality and also when sending initial/recap data.
     // We use the MamdaLock class for this functionality and have two functions called
-    // acquireLock() and releaseLock() that implement this functionality. 
+    // acquireLock() and releaseLock() that implement this functionality.
     acquireLock();
     bool publish = false;
     if (10 == mOrderCount)
@@ -349,7 +349,7 @@ void BookPublisher::onTimer (MamaTimer* timer)
         publish = true;
     }
     else
-    { 
+    {
         // process multiple orders, alike a complex update
         processOrder();
         processOrder();
@@ -364,32 +364,32 @@ void BookPublisher::onTimer (MamaTimer* timer)
             publish = mBook->populateDelta(mPublishMsg);
         }
     }
-    if (publish) publishMessage(NULL);    
+    if (publish) publishMessage(NULL);
     releaseLock();
 }
 
 /* ******************************************************************************** */
 /* processOrder() processes the next order in the orderArray,then loops back to 1st */
 /* when all order are processed, clearing the book at this point. This generates    */
-/* changes to the book for publishing. Any real world application would replace     */ 
+/* changes to the book for publishing. Any real world application would replace     */
 /* this functionality with it's own appropriate book handling functionality         */
 /* ******************************************************************************** */
 
-void BookPublisher::processOrder () 
-{   
+void BookPublisher::processOrder ()
+{
     MamdaOrderBookPriceLevel* level = NULL;
     MamdaOrderBookEntry*      entry = NULL;
     order thisOrder = orderArray[mOrderCount];
     mBookTime.setToNow();
 
     if (mProcessEntries)
-    {          
+    {
         switch (thisOrder.entAction)
         {
             case ENTDELETE:
             {
                 level = mBook->getLevelAtPrice (thisOrder.price, thisOrder.side);
-                
+
                 if (level)
                     entry = level->findEntry (thisOrder.entId);
                 if (entry)
@@ -422,7 +422,7 @@ void BookPublisher::processOrder ()
             level->setSizeChange (thisOrder.sizeChange);
             level->setPrice      (thisOrder.price);
             level->setSize       (thisOrder.volume);
-            level->setNumEntries (thisOrder.numEntries);           
+            level->setNumEntries (thisOrder.numEntries);
             level->setTime       (mBookTime);
             level->setAction     (thisOrder.plAction);
         }
@@ -433,11 +433,11 @@ void BookPublisher::processOrder ()
             level->setSizeChange (thisOrder.sizeChange);
             level->setPrice      (thisOrder.price);
             level->setSize       (thisOrder.volume);
-            level->setNumEntries (thisOrder.numEntries);           
+            level->setNumEntries (thisOrder.numEntries);
             level->setTime       (mBookTime);
-            level->setAction     (thisOrder.plAction);                
+            level->setAction     (thisOrder.plAction);
         }
-        
+
         switch (thisOrder.plAction)
         {
             case PLDELETE:
@@ -456,13 +456,13 @@ void BookPublisher::processOrder ()
     mOrderCount++;
 }
 
-void BookPublisher::createBook (const char* symbol, const char* partId) 
-{ 
+void BookPublisher::createBook (const char* symbol, const char* partId)
+{
     mBook = new MamdaOrderBook();
-    // This turns on the generation of deltas at the order book 
+    // This turns on the generation of deltas at the order book
     mBook->generateDeltaMsgs (true);
-    if (symbol) mBook->setSymbol (symbol); 
-    if (partId) mBook->setPartId (partId); 
+    if (symbol) mBook->setSymbol (symbol);
+    if (partId) mBook->setPartId (partId);
     mBookTime.setToNow();
     mBook->setBookTime (mBookTime);
     mSymbolList.push_back (symbol);
@@ -506,11 +506,11 @@ void BookPublisher::onError (
     MamaDQPublisherManager*  publisher,
     const MamaStatus&        status,
     const char*              errortxt,
-    MamaMsg*                 msg) 
+    MamaMsg*                 msg)
 {
     if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
     {
-        if (msg) 
+        if (msg)
         {
             cout << "Unhandled Msg:"
                  <<  status.toString ()
@@ -536,12 +536,12 @@ void BookPublisher::onNewRequest (
     short                    msgType,
     MamaMsg&                 msg)
 {
-    if (publishingSymbol(symbol))  
+    if (publishingSymbol(symbol))
     {
         mPublisher = mPublisherManager->createPublisher(symbol, this);
         mPublishing = true;
         if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
-        {        
+        {
             cout << "Received New request: " <<  symbol << endl;
         }
         switch (msgType)
@@ -551,18 +551,18 @@ void BookPublisher::onNewRequest (
                 acquireLock();
                 getBook()->populateRecap(getPublishMsg());
                 publishMessage(&msg);
-                releaseLock();          
-                break;           
+                releaseLock();
+                break;
             default:
                 acquireLock();
                 getBook()->populateRecap(getPublishMsg());
                 publishMessage(&msg);
-                releaseLock();          
+                releaseLock();
                 break;
         }
     }
     else if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
-    {        
+    {
         cout << "Received request for unknown symbol: " <<  symbol << endl;
     }
     flush (cout);
@@ -574,7 +574,7 @@ void BookPublisher::onRequest (
     short                    subType,
     short                    msgType,
     MamaMsg&                 msg)
-{  
+{
     const char*  symbol  = publishTopicInfo.mSymbol;
     bool         publish = false;
     if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
@@ -583,22 +583,22 @@ void BookPublisher::onRequest (
              << symbol
              << "\n";
     }
-    
+
     switch (msgType)
-    {      
+    {
         case MAMA_SUBSC_SUBSCRIBE:
         case MAMA_SUBSC_SNAPSHOT:
-            // publish current delta list first 
+            // publish current delta list first
             acquireLock();
             publish = getBook()->populateDelta(getPublishMsg());
             if (publish) publishMessage(NULL);
             publish = false;
-                
+
             getBook()->populateRecap(getPublishMsg());
             publishMessage(&msg);
-            releaseLock();          
+            releaseLock();
             break;
-            
+
         case MAMA_SUBSC_DQ_SUBSCRIBER :
         case MAMA_SUBSC_DQ_PUBLISHER:
         case MAMA_SUBSC_DQ_NETWORK:
@@ -608,7 +608,7 @@ void BookPublisher::onRequest (
             acquireLock();
             publish = getBook()->populateDelta(getPublishMsg());
             if (publish) publishMessage(NULL);
-            
+
             getBook()->populateRecap(getPublishMsg());
             publishMessage(NULL);
             releaseLock();
@@ -627,19 +627,19 @@ void BookPublisher::createPublisherTransport (mamaBridge bridge)
     mPubTransport = new MamaTransport;
     mPubTransport->create ("pub", bridge);
     mPubTransport->setTransportCallback (new TransportCallback ());
-}        
+}
 
 void BookPublisher::createPublisherManager (const char* pubSource, mamaBridge bridge)
 {
     mPublisherManager = new MamaDQPublisherManager();
 
     //create pub
-    mPublisherManager->create (mPubTransport, 
+    mPublisherManager->create (mPubTransport,
                          mQueueGroup->getNextQueue(),
                          this,
                          pubSource);
 }
- 
+
 void BookPublisher::createTimer (const char* symbol, mamaBridge bridge)
 {
     //create timer, on next queue, for editing book and publishing changes every 1s
@@ -658,35 +658,35 @@ void BookPublisher::setProcessEntries (bool process)
 }
 
 MamdaOrderBook* BookPublisher::getBook()
-{   
+{
     return mBook;
 }
 
 MamaMsg& BookPublisher::getPublishMsg()
-{   
+{
     mPublishMsg.clear();
     return mPublishMsg;
 }
 
 void BookPublisher::acquireLock ()
-{ 
-    ACQUIRE_WLOCK(mBookLock); 
+{
+    ACQUIRE_WLOCK(mBookLock);
 }
 
 void BookPublisher::releaseLock ()
-{ 
-    RELEASE_WLOCK(mBookLock); 
-}    
+{
+    RELEASE_WLOCK(mBookLock);
+}
 
 void BookPublisher::setQueueGroup (MamaQueueGroup* queues)
 {
     mQueueGroup = queues;
 }
 
-bool BookPublisher::publishingSymbol (const char * symbol) 
+bool BookPublisher::publishingSymbol (const char * symbol)
 {
     SymbolList::const_iterator i;
-    
+
     for (i = mSymbolList.begin (); i != mSymbolList.end (); i++)
     {
         if  (strcmp(*i,symbol)==0)
@@ -712,10 +712,10 @@ BookPublisher::BookPublisher()
     , mPublishing       (false)
 {
 }
-    
+
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: bookpublisher [-SP publisher source] -s symbol [-s symbol ...]\n" 
+    std::cerr << "Usage: bookpublisher [-SP publisher source] -s symbol [-s symbol ...]\n"
               << "[-DT dict tport] [-use_dict_file dict file] [-p partId] [-e] process entries [-threads num. of threads]\n"
               << "[-PR] publish recaps\n";
     exit (exitStatus);

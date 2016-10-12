@@ -59,7 +59,7 @@ class Linux:
                     tools = tools,
                     toolpath = ['site_scons/site_tools'])
 
-            #ConfigureJNI searches os.env for java_home not env['ENV']['JAVA_HOME'] 
+            #ConfigureJNI searches os.env for java_home not env['ENV']['JAVA_HOME']
             #This is needed if set on cmd line via scons java_home=/path/to/java
             os.environ['JAVA_HOME'] = optsEnv['java_home']
             if not ConfigureJNI(env):
@@ -71,7 +71,7 @@ class Linux:
         else:
             os_env['PATH'] = os.environ['PATH']
             env = Environment(ENV=os_env,
-                        tools = tools, 
+                        tools = tools,
                         toolpath = ['site_scons/site_tools'])
 
         env['SPAWN'] = logger.log_output

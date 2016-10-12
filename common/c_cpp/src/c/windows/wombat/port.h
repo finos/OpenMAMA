@@ -290,15 +290,15 @@ COMMONExpDLL    void wthread_mutexattr_settype (int* attr, int);
         }                                                 \
     } while (0)
 
-#define timeradd(tvp, uvp, vvp)						\
-	do {								\
-		(vvp)->tv_sec = (tvp)->tv_sec + (uvp)->tv_sec;		\
-		(vvp)->tv_usec = (tvp)->tv_usec + (uvp)->tv_usec;       \
-		if ((vvp)->tv_usec >= 1000000) {			\
-			(vvp)->tv_sec++;				\
-			(vvp)->tv_usec -= 1000000;			\
-		}							\
-	} while (0)
+#define timeradd(tvp, uvp, vvp)                     \
+    do {                                \
+        (vvp)->tv_sec = (tvp)->tv_sec + (uvp)->tv_sec;      \
+        (vvp)->tv_usec = (tvp)->tv_usec + (uvp)->tv_usec;       \
+        if ((vvp)->tv_usec >= 1000000) {            \
+            (vvp)->tv_sec++;                \
+            (vvp)->tv_usec -= 1000000;          \
+        }                           \
+    } while (0)
 
 
 /* time gm not available on Windows */

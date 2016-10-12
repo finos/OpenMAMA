@@ -99,7 +99,7 @@ int main (int argc, const char **argv)
         {
             const char* symbol = *i;
             MamdaSubscription*  aSubscription  = new MamdaSubscription;
-            MamdaFundamentalListener* aFundamentalListener = 
+            MamdaFundamentalListener* aFundamentalListener =
                 new MamdaFundamentalListener;
             FundamentalTicker*    aTicker = new FundamentalTicker;
 
@@ -111,9 +111,9 @@ int main (int argc, const char **argv)
     }
     catch (MamaStatus &e)
     {
-        
+
         // This exception can be thrown from Mama.open (),
-        // Mama::createTransport (transportName) and from 
+        // Mama::createTransport (transportName) and from
         // MamdaSubscription constructor when entitlements is enabled.
         cerr << "MamaStatus exception in main (): " << e.toString () << endl;
         exit (1);
@@ -135,6 +135,6 @@ int main (int argc, const char **argv)
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: fundamentallisten [-tport] tport_name [-m] middleware [-S] source [-s] symbol";                 
+    std::cerr << "Usage: fundamentallisten [-tport] tport_name [-m] middleware [-S] source [-s] symbol";
     exit (exitStatus);
 }

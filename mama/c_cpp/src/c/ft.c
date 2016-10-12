@@ -154,8 +154,8 @@ typedef struct mamaFtMemberImpl_
     int                            myPid;
     int                            myRecvWindow;
     ft_recvHeartbeat               ftRecvHearbeat;
-    ft_setup               ftSetup;
-    ft_activate               ftActivate;
+    ft_setup                       ftSetup;
+    ft_activate                    ftActivate;
     ft_deactivate                  ftDeactivate;
     ft_sendHeartbeat               ftSendHeartbeat;
 } mamaFtMemberImpl;
@@ -197,12 +197,12 @@ static mamaIo       gReadHandler  =  NULL;
 int                receiveHeartbeat  (mamaFtMemberImpl*  impl);
 
 void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
-                     unsigned int hbWeight,
-                     unsigned int hbIncarnation,
-                     int          hbPid,
-                     int          hbIpAddr,
-                     int          hbPrimary,
-                     char*        hbGroupName);
+                         unsigned int hbWeight,
+                         unsigned int hbIncarnation,
+                         int          hbPid,
+                         int          hbIpAddr,
+                         int          hbPrimary,
+                         char*        hbGroupName);
 
 /* FT callbacks: */
 static void MAMACALLTYPE
@@ -324,7 +324,7 @@ mamaFtMember_deactivate (
     /* cancel timer. */
     if (impl->myHeartbeatTimer)
     {
-    mamaTimer_destroy (impl->myHeartbeatTimer);
+        mamaTimer_destroy (impl->myHeartbeatTimer);
         impl->myHeartbeatTimer=NULL;
     }
     stopTimeoutTimer (impl);
@@ -719,12 +719,12 @@ int mamaBetterCredentials (mamaFtMemberImpl*  impl, unsigned int weight,
 
 
 void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
-                     unsigned int hbWeight,
-                     unsigned int hbIncarnation,
-                     int          hbPid,
-                     int          hbIpAddr,
-                     int          hbPrimary,
-                     char*        hbGroupName)
+                         unsigned int hbWeight,
+                         unsigned int hbIncarnation,
+                         int          hbPid,
+                         int          hbIpAddr,
+                         int          hbPrimary,
+                         char*        hbGroupName)
 {
 
     if (strcmp (hbGroupName, impl->myGroupName)  != 0)
@@ -769,7 +769,6 @@ void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
 /****************************************************************************
 *       Multicast FT specific
 ******************************************************************************/
-
 const char *multicastFt_getProperty(char *buffer, const char *propertyName, const char *transportName)
 {
     /* Returns. */

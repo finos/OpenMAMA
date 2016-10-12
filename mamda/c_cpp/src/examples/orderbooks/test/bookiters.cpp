@@ -47,8 +47,8 @@ int main (int argc, const char** argv)
     char uniqueId[32];
     for (int level = 0; level < N; level++)
     {
-        MamdaOrderBookPriceLevel::Side side = (level < N/2) ? 
-            MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID : 
+        MamdaOrderBookPriceLevel::Side side = (level < N/2) ?
+            MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID :
             MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK;
         double price = 50.0 + (100.0 * level/(double)N);
 
@@ -146,7 +146,7 @@ int main (int argc, const char** argv)
     beginMicrosecs = now.getEpochTimeMicroseconds();
     for (int i = 0; i < searchTimes; i++)
     {
-        const MamdaOrderBookPriceLevel* foundLevel = 
+        const MamdaOrderBookPriceLevel* foundLevel =
             book.getLevelAtPrice (targetLevel->getPrice(),
                                   targetLevel->getSide());
         assert (foundLevel == targetLevel);

@@ -63,7 +63,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
 
     private MamaMsgField  tmpField      = new MamaMsgField();
     private boolean       mIgnoreUpdate = false;
-   
+
     // The following fields are used for caching the offical last
     // price and related fields.  These fields can be used by
     // applications for reference and will be passed for recaps.
@@ -104,7 +104,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         public MamaDateTime   mEventTime                = new MamaDateTime ();
         public MamaString     mQuoteQualStr             = new MamaString();
         public MamaString     mQuoteQualNative          = new MamaString();
-        public MamaChar       mShortSaleBidTick         = new MamaChar();    
+        public MamaChar       mShortSaleBidTick         = new MamaChar();
         public MamaChar       mShortSaleCircuitBreaker  = new MamaChar();
         private MamaDateTime  mAskTime                  = new MamaDateTime ();
         private MamaDateTime  mBidTime                  = new MamaDateTime ();
@@ -113,12 +113,12 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         private MamaLong      mAskUpdateCount           = new MamaLong();
         private MamaLong      mBidUpdateCount           = new MamaLong();
         private MamaDouble    mAskYield                 = new MamaDouble();
-        private MamaDouble    mBidYield                 = new MamaDouble(); 
+        private MamaDouble    mBidYield                 = new MamaDouble();
         private MamaString    mBidSizesList             = new MamaString();
         private MamaString    mAskSizesList             = new MamaString();
 
         public MamaLong       mTmpQuoteCount  = new MamaLong();
-        public long           mQuoteCount     = 0; 
+        public long           mQuoteCount     = 0;
         public boolean        mGotBidPrice    = false;
         public boolean        mGotAskPrice    = false;
         public boolean        mGotBidSize     = false;
@@ -131,7 +131,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         public boolean        mGotQuoteCount  = false;
         public boolean        mGotIssueSymbol = false;
         public MamaLong       mConflateCount  = new MamaLong();
-        
+
         // temp fields
         private MamaDouble tmpDouble = new MamaDouble();
         private MamaPrice  tmpPrice  = new MamaPrice();
@@ -139,7 +139,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
 
 
         /*      FieldState Accessors        */
-        
+
         public MamdaFieldState   mSymbolFieldState                  = new MamdaFieldState();
         public MamdaFieldState   mIssueSymbolFieldState             = new MamdaFieldState();
         public MamdaFieldState   mPartIdFieldState                  = new MamdaFieldState();
@@ -174,7 +174,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         public MamdaFieldState   mEventTimeFieldState               = new MamdaFieldState();
         public MamdaFieldState   mQuoteQualStrFieldState            = new MamdaFieldState();
         public MamdaFieldState   mQuoteQualNativeFieldState         = new MamdaFieldState();
-        public MamdaFieldState   mShortSaleBidTickFieldState        = new MamdaFieldState(); 
+        public MamdaFieldState   mShortSaleBidTickFieldState        = new MamdaFieldState();
         public MamdaFieldState   mShortSaleCircuitBreakerFieldState = new MamdaFieldState();
         private MamdaFieldState  mAskTimeFieldState                 = new MamdaFieldState();
         private MamdaFieldState  mBidTimeFieldState                 = new MamdaFieldState();
@@ -183,7 +183,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         private MamdaFieldState  mAskUpdateCountFieldState          = new MamdaFieldState();
         private MamdaFieldState  mBidUpdateCountFieldState          = new MamdaFieldState();
         private MamdaFieldState  mAskYieldFieldState                = new MamdaFieldState();
-        private MamdaFieldState  mBidYieldFieldState                = new MamdaFieldState(); 
+        private MamdaFieldState  mBidYieldFieldState                = new MamdaFieldState();
         public MamdaFieldState   mTmpQuoteCountFieldState           = new MamdaFieldState();
         public MamdaFieldState   mQuoteCountFieldState              = new MamdaFieldState();
         public MamdaFieldState   mConflateCountFieldState           = new MamdaFieldState();
@@ -212,55 +212,55 @@ public class MamdaQuoteListener implements MamdaMsgListener,
 
     public void clearCache (MamdaQuoteCache cache)
     {
-        cache.mSymbol.setValue          (null);          
-        cache.mIssueSymbol.setValue     (null);     
-        cache.mPartId.setValue          (null);          
-        cache.mSrcTime.clear            ();               
-        cache.mActTime.clear            ();               
-        cache.mLineTime.clear           ();              
-        cache.mSendTime.clear           ();              
-        cache.mPubId.setValue           (null);           
-        cache.mBidPrice.clear           ();              
-        cache.mBidSize.setValue         (0);            
-        cache.mBidDepth.setValue        (0);           
-        cache.mBidPartId.setValue       (null);       
-        cache.mBidClosePrice.clear      ();         
-        cache.mBidCloseDate.clear       ();          
-        cache.mBidPrevClosePrice.clear  ();     
-        cache.mBidPrevCloseDate.clear   ();      
-        cache.mBidHigh.clear            ();               
-        cache.mBidLow.clear             ();                
-        cache.mAskPrice.clear           ();              
-        cache.mAskSize.setValue         (0);            
-        cache.mAskDepth.setValue        (0);           
-        cache.mAskPartId.setValue       (null);       
-        cache.mAskClosePrice.clear      ();         
-        cache.mAskCloseDate.clear       ();          
-        cache.mAskPrevClosePrice.clear  ();     
-        cache.mAskPrevCloseDate.clear   ();      
-        cache.mAskHigh.clear            ();               
-        cache.mAskLow.clear             ();                
-        cache.mMidPrice.clear           ();              
-        cache.mEventSeqNum.setValue     (0);        
-        cache.mEventDate.clear          ();             
-        cache.mEventTime.clear          ();             
-        cache.mQuoteQualStr.setValue    (null);    
-        cache.mQuoteQualNative.setValue (null); 
+        cache.mSymbol.setValue          (null);
+        cache.mIssueSymbol.setValue     (null);
+        cache.mPartId.setValue          (null);
+        cache.mSrcTime.clear            ();
+        cache.mActTime.clear            ();
+        cache.mLineTime.clear           ();
+        cache.mSendTime.clear           ();
+        cache.mPubId.setValue           (null);
+        cache.mBidPrice.clear           ();
+        cache.mBidSize.setValue         (0);
+        cache.mBidDepth.setValue        (0);
+        cache.mBidPartId.setValue       (null);
+        cache.mBidClosePrice.clear      ();
+        cache.mBidCloseDate.clear       ();
+        cache.mBidPrevClosePrice.clear  ();
+        cache.mBidPrevCloseDate.clear   ();
+        cache.mBidHigh.clear            ();
+        cache.mBidLow.clear             ();
+        cache.mAskPrice.clear           ();
+        cache.mAskSize.setValue         (0);
+        cache.mAskDepth.setValue        (0);
+        cache.mAskPartId.setValue       (null);
+        cache.mAskClosePrice.clear      ();
+        cache.mAskCloseDate.clear       ();
+        cache.mAskPrevClosePrice.clear  ();
+        cache.mAskPrevCloseDate.clear   ();
+        cache.mAskHigh.clear            ();
+        cache.mAskLow.clear             ();
+        cache.mMidPrice.clear           ();
+        cache.mEventSeqNum.setValue     (0);
+        cache.mEventDate.clear          ();
+        cache.mEventTime.clear          ();
+        cache.mQuoteQualStr.setValue    (null);
+        cache.mQuoteQualNative.setValue (null);
         cache.mShortSaleBidTick.setValue('Z');
         cache.mShortSaleCircuitBreaker.setValue(' ');
-        cache.mAskTime.clear            ();               
-        cache.mBidTime.clear            ();               
-        cache.mAskIndicator.setValue    (null);    
-        cache.mBidIndicator.setValue    (null);    
-        cache.mAskUpdateCount.setValue  (0);     
-        cache.mBidUpdateCount.setValue  (0);     
-        cache.mAskYield.setValue        (0);           
-        cache.mBidYield.setValue        (0);           
-        cache.mAskSizesList.setValue    (null);           
-        cache.mBidSizesList.setValue    (null);           
+        cache.mAskTime.clear            ();
+        cache.mBidTime.clear            ();
+        cache.mAskIndicator.setValue    (null);
+        cache.mBidIndicator.setValue    (null);
+        cache.mAskUpdateCount.setValue  (0);
+        cache.mBidUpdateCount.setValue  (0);
+        cache.mAskYield.setValue        (0);
+        cache.mBidYield.setValue        (0);
+        cache.mAskSizesList.setValue    (null);
+        cache.mBidSizesList.setValue    (null);
 
-        cache.mTmpQuoteCount.setValue   (0);      
-        cache.mQuoteCount               = 0;              
+        cache.mTmpQuoteCount.setValue   (0);
+        cache.mQuoteCount               = 0;
         cache.mGotBidPrice              = false;
         cache.mGotAskPrice              = false;
         cache.mGotBidSize               = false;
@@ -319,16 +319,16 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         cache.mBidYieldFieldState.setState          (MamdaFieldState.NOT_INITIALISED);
 
         cache.mTmpQuoteCountFieldState.setState     (MamdaFieldState.NOT_INITIALISED);
-        cache.mQuoteCountFieldState.setState        (MamdaFieldState.NOT_INITIALISED);    
+        cache.mQuoteCountFieldState.setState        (MamdaFieldState.NOT_INITIALISED);
         cache.mConflateCountFieldState.setState     (MamdaFieldState.NOT_INITIALISED);
-        cache.mAskSizesListFieldState.setState      (MamdaFieldState.NOT_INITIALISED);    
+        cache.mAskSizesListFieldState.setState      (MamdaFieldState.NOT_INITIALISED);
         cache.mBidSizesListFieldState.setState      (MamdaFieldState.NOT_INITIALISED);
 
     }
 
     /**
      * Add a specialized quote handler.  Currently, only one
-     * handler can (and must) be registered.  
+     * handler can (and must) be registered.
      */
     public void addHandler (MamdaQuoteHandler  handler)
     {
@@ -471,11 +471,11 @@ public class MamdaQuoteListener implements MamdaMsgListener,
 
     public MamaPrice getQuoteMidPrice()
     {
-        if ((mQuoteCache.mBidPrice.getValue() > 0.0) && 
+        if ((mQuoteCache.mBidPrice.getValue() > 0.0) &&
             (mQuoteCache.mAskPrice.getValue() > 0.0))
         {
             mQuoteCache.mMidPrice.setValue ((
-                mQuoteCache.mAskPrice.getValue() + 
+                mQuoteCache.mAskPrice.getValue() +
             mQuoteCache.mBidPrice.getValue()) / 2.0);
         }
         else
@@ -509,17 +509,17 @@ public class MamdaQuoteListener implements MamdaMsgListener,
     {
         return mQuoteCache.mAskTime;
     }
-    
+
     public MamaDateTime getBidTime()
     {
         return mQuoteCache.mBidTime;
     }
-    
+
     public String getAskIndicator()
     {
         return mQuoteCache.mAskIndicator.getValue();
     }
-        
+
     public String getBidIndicator()
     {
         return mQuoteCache.mBidIndicator.getValue();
@@ -565,7 +565,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         return mQuoteCache.mEventTime;
     }
 
-        
+
     public String getAskSizesList()
     {
       return mQuoteCache.mBidSizesList.getValue();
@@ -575,21 +575,21 @@ public class MamdaQuoteListener implements MamdaMsgListener,
     {
       return mQuoteCache.mAskSizesList.getValue();
     }
-    
+
     public MamaDateTime getEventDateTime()
     {
         MamaDateTime mEventDateTime = new MamaDateTime (mQuoteCache.mEventTime, mQuoteCache.mEventDate);
-        
+
         return mEventDateTime;
     }
-    
+
     public MamaDateTime getQuoteDate()
     {
         MamaDateTime mEventDateTime = new MamaDateTime (mQuoteCache.mEventTime, mQuoteCache.mEventDate);
-        
+
         return mEventDateTime;
     }
-    
+
     public long getBeginGapSeqNum()
     {
         return mGapBegin;
@@ -602,7 +602,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
 
 
     /*      FieldState Accessors        */
-    
+
     public short getSymbolFieldState()
     {
         return mQuoteCache.mSymbolFieldState.getState();
@@ -759,25 +759,25 @@ public class MamdaQuoteListener implements MamdaMsgListener,
     }
 
     public short getShortSaleCircuitBreakerFieldState()
-    {          
+    {
         return mQuoteCache.mShortSaleCircuitBreakerFieldState.getState();
-    }        
+    }
 
     public short getAskTimeFieldState()
     {
         return mQuoteCache.mAskTimeFieldState.getState();
     }
-    
+
     public short getBidTimeFieldState()
     {
         return mQuoteCache.mBidTimeFieldState.getState();
     }
-    
+
     public short getAskIndicatorFieldState()
     {
         return mQuoteCache.mAskIndicatorFieldState.getState();
     }
-        
+
     public short getBidIndicatorFieldState()
     {
         return mQuoteCache.mBidIndicatorFieldState.getState();
@@ -832,7 +832,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
     {
         return mQuoteCache.mBidSizesListFieldState.getState();
     }
-    
+
     public short getBeginGapSeqNumFieldState()
     {
         return mGapBeginFieldState.getState();
@@ -842,7 +842,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
     {
         return mGapEndFieldState.getState();
     }
-    
+
     /*    End FieldState Accessors         */
 
 
@@ -872,10 +872,10 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 }
             }
         }
-        
+
         // If msg is a quote-related message, invoke the
         // appropriate callback:
-     
+
         switch (msgType)
         {
             case MamaMsgType.TYPE_INITIAL:
@@ -915,13 +915,13 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         updateFieldStates();
         updateQuoteFields (msg);
         checkQuoteCount (subscription, msg, true);
-        
+
         if (mIgnoreUpdate)
         {
             mIgnoreUpdate = false;
             return;
         }
-    
+
         Iterator i = mHandlers.iterator();
         while (i.hasNext())
         {
@@ -954,7 +954,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
             mLastGenericMsgWasQuote = false;
         }
     }
-    
+
    private void checkQuoteCount (MamdaSubscription  subscription,
                                  MamaMsg            msg,
                                  boolean            checkForGap)
@@ -989,9 +989,9 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 }
             }
         }
-   
-        /* Check for duplicates.  Only check if quote count > 0 in case it isn't being sent down. */ 
-        if ( mQuoteCache.mGotQuoteCount && 
+
+        /* Check for duplicates.  Only check if quote count > 0 in case it isn't being sent down. */
+        if ( mQuoteCache.mGotQuoteCount &&
              quoteCount > 0 &&
              (quoteCount == mQuoteCache.mQuoteCount) )
         {
@@ -1012,142 +1012,142 @@ public class MamdaQuoteListener implements MamdaMsgListener,
 
         if (MamdaCommonFields.SYMBOL != null)
             mUpdaters[i++] = new MamdaQuoteSymbol ();
-        
+
         if (MamdaCommonFields.ISSUE_SYMBOL != null)
             mUpdaters[i++] = new MamdaQuoteIssueSymbol ();
-        
+
         if (MamdaCommonFields.PART_ID != null)
             mUpdaters[i++] = new MamdaQuotePartId ();
-        
+
         if (MamdaCommonFields.SRC_TIME != null)
             mUpdaters[i++] = new MamdaQuoteSrcTime ();
-        
+
         if (MamdaCommonFields.ACTIVITY_TIME != null)
             mUpdaters[i++] = new MamdaQuoteActivityTime ();
-        
+
         if (MamdaCommonFields.LINE_TIME != null)
             mUpdaters[i++] = new MamdaQuoteLineTime ();
-        
+
         if (MamdaCommonFields.SEND_TIME != null)
             mUpdaters[i++] = new MamdaQuoteSendTime ();
-        
+
         if (MamdaCommonFields.PUB_ID != null)
             mUpdaters[i++] = new MamdaQuotePubId ();
-        
+
         if (MamdaQuoteFields.BID_PRICE != null)
             mUpdaters[i++] = new MamdaQuoteBidPrice ();
-            
+
         if (MamdaQuoteFields.BID_SIZE != null)
             mUpdaters[i++] = new MamdaQuoteBidSize ();
-        
+
         if (MamdaQuoteFields.BID_PART_ID != null)
             mUpdaters[i++] = new MamdaQuoteBidPartId ();
-            
+
         if (MamdaQuoteFields.BID_DEPTH != null)
             mUpdaters[i++] = new MamdaQuoteBidDepth ();
-            
+
         if (MamdaQuoteFields.BID_CLOSE_PRICE != null)
             mUpdaters[i++] = new MamdaQuoteBidClosePrice ();
-            
+
         if (MamdaQuoteFields.BID_CLOSE_DATE != null)
             mUpdaters[i++] = new MamdaQuoteBidCloseDate ();
-            
+
         if (MamdaQuoteFields.BID_PREV_CLOSE_PRICE != null)
             mUpdaters[i++] = new MamdaQuoteBidPrevClosePrice ();
-            
+
         if (MamdaQuoteFields.BID_PREV_CLOSE_DATE != null)
             mUpdaters[i++] = new MamdaQuoteBidPrevCloseDate ();
-            
+
         if (MamdaQuoteFields.BID_HIGH != null)
             mUpdaters[i++] = new MamdaQuoteBidHigh ();
-            
+
         if (MamdaQuoteFields.BID_LOW != null)
             mUpdaters[i++] = new MamdaQuoteBidLow ();
-            
+
         if (MamdaQuoteFields.ASK_PRICE != null)
             mUpdaters[i++] = new MamdaQuoteAskPrice ();
-            
+
         if (MamdaQuoteFields.ASK_SIZE != null)
             mUpdaters[i++] = new MamdaQuoteAskSize ();
-            
+
         if (MamdaQuoteFields.ASK_PART_ID != null)
             mUpdaters[i++] = new MamdaQuoteAskPartId ();
-            
+
         if (MamdaQuoteFields.ASK_DEPTH != null)
             mUpdaters[i++] = new MamdaQuoteAskDepth ();
-            
+
         if (MamdaQuoteFields.ASK_CLOSE_PRICE != null)
             mUpdaters[i++] = new MamdaQuoteAskClosePrice ();
-        
+
         if (MamdaQuoteFields.ASK_CLOSE_DATE != null)
             mUpdaters[i++] = new MamdaQuoteAskCloseDate ();
-            
+
         if (MamdaQuoteFields.ASK_PREV_CLOSE_PRICE != null)
             mUpdaters[i++] = new MamdaQuoteAskPrevClosePrice ();
-        
+
         if (MamdaQuoteFields.ASK_PREV_CLOSE_DATE != null)
             mUpdaters[i++] = new MamdaQuoteAskPrevCloseDate ();
-            
+
         if (MamdaQuoteFields.ASK_HIGH != null)
             mUpdaters[i++] = new MamdaQuoteAskHigh ();
-        
+
         if (MamdaQuoteFields.ASK_LOW != null)
-            mUpdaters[i++] = new MamdaQuoteAskLow ();       
-            
+            mUpdaters[i++] = new MamdaQuoteAskLow ();
+
         if (MamdaQuoteFields.QUOTE_SEQ_NUM != null)
             mUpdaters[i++] = new MamdaQuoteSeqNum ();
-        
+
         if (MamdaQuoteFields.QUOTE_DATE != null)
             mUpdaters[i++] = new MamdaQuoteDate ();
-        
+
         if (MamdaQuoteFields.QUOTE_TIME != null)
             mUpdaters[i++] = new MamdaQuoteTime ();
-        
+
         if (MamdaQuoteFields.QUOTE_QUAL != null)
             mUpdaters[i++] = new MamdaQuoteQual ();
-            
+
         if (MamdaQuoteFields.QUOTE_QUAL_NATIVE != null)
             mUpdaters[i++] = new MamdaQuoteQualNative ();
-        
+
         if (MamdaQuoteFields.QUOTE_COUNT != null)
             mUpdaters[i++] = new MamdaQuoteCount ();
-        
+
         if (MamdaQuoteFields.SHORT_SALE_BID_TICK != null)
             mUpdaters[i++] = new MamdaShortSaleBidTick ();
 
          if (MamdaQuoteFields.SHORT_SALE_CIRCUIT_BREAKER != null)
             mUpdaters[i++] = new MamdaShortSaleCircuitBreaker();
-            
+
         if (MamdaQuoteFields.BID_TICK != null)
             mUpdaters[i++] = new MamdaBidTick ();
-        
+
         if (MamdaQuoteFields.ASK_TIME != null)
             mUpdaters[i++] = new MamdaAskTime ();
-        
+
         if (MamdaQuoteFields.BID_TIME != null)
             mUpdaters[i++] = new MamdaBidTime ();
-        
+
         if (MamdaQuoteFields.ASK_INDICATOR != null)
             mUpdaters[i++] = new MamdaAskIndicator ();
-        
+
         if (MamdaQuoteFields.BID_INDICATOR != null)
             mUpdaters[i++] = new MamdaBidIndicator ();
-        
+
         if (MamdaQuoteFields.ASK_UPDATE_COUNT != null)
             mUpdaters[i++] = new MamdaAskUpdateCount ();
-        
+
         if (MamdaQuoteFields.BID_UPDATE_COUNT != null)
             mUpdaters[i++] = new MamdaBidUpdateCount ();
 
         if (MamdaQuoteFields.ASK_YIELD != null)
             mUpdaters[i++] = new MamdaAskYield ();
-        
+
         if (MamdaQuoteFields.BID_YIELD != null)
             mUpdaters[i++] = new MamdaBidYield ();
-        
+
         if (MamdaQuoteFields.ASK_SIZES_LIST != null)
           mUpdaters[i++] = new MamdaAskSizesList ();
-        
+
         if (MamdaQuoteFields.BID_SIZES_LIST != null)
           mUpdaters[i++] = new MamdaBidSizesList ();
 
@@ -1170,87 +1170,87 @@ public class MamdaQuoteListener implements MamdaMsgListener,
             mQuoteCache.mIssueSymbolFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mPartIdFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mPartIdFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mSrcTimeFieldState.getState() == MamdaFieldState.MODIFIED) 
+      if (mQuoteCache.mSrcTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mSrcTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mActTimeFieldState.getState() == MamdaFieldState.MODIFIED)  
+      if (mQuoteCache.mActTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mActTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mLineTimeFieldState.getState() == MamdaFieldState.MODIFIED) 
+      if (mQuoteCache.mLineTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mLineTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mSendTimeFieldState.getState() == MamdaFieldState.MODIFIED)  
+      if (mQuoteCache.mSendTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mSendTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mPubIdFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mPubIdFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mBidPriceFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidPriceFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidSizeFieldState.getState() == MamdaFieldState.MODIFIED)   
+      if (mQuoteCache.mBidSizeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidSizeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidDepthFieldState.getState() == MamdaFieldState.MODIFIED) 
+      if (mQuoteCache.mBidDepthFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidDepthFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidPartIdFieldState.getState() == MamdaFieldState.MODIFIED) 
+      if (mQuoteCache.mBidPartIdFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidPartIdFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mBidClosePriceFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidClosePriceFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidCloseDateFieldState.getState() == MamdaFieldState.MODIFIED)   
+      if (mQuoteCache.mBidCloseDateFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidCloseDateFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidPrevClosePriceFieldState.getState() == MamdaFieldState.MODIFIED)    
+      if (mQuoteCache.mBidPrevClosePriceFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidPrevClosePriceFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidPrevCloseDateFieldState.getState() == MamdaFieldState.MODIFIED)   
+      if (mQuoteCache.mBidPrevCloseDateFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidPrevCloseDateFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mBidHighFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidHighFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidLowFieldState.getState() == MamdaFieldState.MODIFIED)   
+      if (mQuoteCache.mBidLowFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidLowFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mAskPriceFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskPriceFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mAskSizeFieldState.getState() == MamdaFieldState.MODIFIED)   
+      if (mQuoteCache.mAskSizeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskSizeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mAskDepthFieldState.getState() == MamdaFieldState.MODIFIED) 
+      if (mQuoteCache.mAskDepthFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskDepthFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mAskPartIdFieldState.getState() == MamdaFieldState.MODIFIED) 
+      if (mQuoteCache.mAskPartIdFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskPartIdFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mAskClosePriceFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskClosePriceFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mAskCloseDateFieldState.getState() == MamdaFieldState.MODIFIED)   
+      if (mQuoteCache.mAskCloseDateFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskCloseDateFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mAskPrevClosePriceFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskPrevClosePriceFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mAskPrevCloseDateFieldState.getState() == MamdaFieldState.MODIFIED)   
+      if (mQuoteCache.mAskPrevCloseDateFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskPrevCloseDateFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mAskHighFieldState.getState() == MamdaFieldState.MODIFIED) 
+      if (mQuoteCache.mAskHighFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskHighFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mAskLowFieldState.getState() == MamdaFieldState.MODIFIED)   
+      if (mQuoteCache.mAskLowFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskLowFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mMidPriceFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mMidPriceFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mEventSeqNumFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mEventSeqNumFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mEventDateFieldState.getState() == MamdaFieldState.MODIFIED)    
+      if (mQuoteCache.mEventDateFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mEventDateFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mEventTimeFieldState.getState() == MamdaFieldState.MODIFIED)  
+      if (mQuoteCache.mEventTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mEventTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mQuoteQualStrFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mQuoteQualStrFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mQuoteQualNativeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mQuoteQualNativeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mShortSaleBidTickFieldState.getState() == MamdaFieldState.MODIFIED) 
+      if (mQuoteCache.mShortSaleBidTickFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mShortSaleBidTickFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mShortSaleCircuitBreakerFieldState.getState() == MamdaFieldState.MODIFIED) 
-            mQuoteCache.mShortSaleCircuitBreakerFieldState.setState(MamdaFieldState.NOT_MODIFIED); 
-      if (mQuoteCache.mAskTimeFieldState.getState() == MamdaFieldState.MODIFIED) 
+      if (mQuoteCache.mShortSaleCircuitBreakerFieldState.getState() == MamdaFieldState.MODIFIED)
+            mQuoteCache.mShortSaleCircuitBreakerFieldState.setState(MamdaFieldState.NOT_MODIFIED);
+      if (mQuoteCache.mAskTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidTimeFieldState.getState() == MamdaFieldState.MODIFIED)  
+      if (mQuoteCache.mBidTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mAskIndicatorFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskIndicatorFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidIndicatorFieldState.getState() == MamdaFieldState.MODIFIED)   
+      if (mQuoteCache.mBidIndicatorFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidIndicatorFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mAskUpdateCountFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskUpdateCountFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidUpdateCountFieldState.getState() == MamdaFieldState.MODIFIED)  
+      if (mQuoteCache.mBidUpdateCountFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidUpdateCountFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mAskYieldFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mAskYieldFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      if (mQuoteCache.mBidYieldFieldState.getState() == MamdaFieldState.MODIFIED)  
+      if (mQuoteCache.mBidYieldFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mBidYieldFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mTmpQuoteCountFieldState.getState() == MamdaFieldState.MODIFIED)
             mQuoteCache.mTmpQuoteCountFieldState.setState(MamdaFieldState.NOT_MODIFIED);
@@ -1264,13 +1264,13 @@ public class MamdaQuoteListener implements MamdaMsgListener,
         mQuoteCache.mAskSizesListFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mQuoteCache.mBidSizesListFieldState.getState() == MamdaFieldState.MODIFIED)
         mQuoteCache.mBidSizesListFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      
+
       if (mGapBeginFieldState.getState() == MamdaFieldState.MODIFIED)
             mGapBeginFieldState.setState(MamdaFieldState.NOT_MODIFIED);
       if (mGapEndFieldState.getState() == MamdaFieldState.MODIFIED)
             mGapEndFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-      
-      
+
+
     }
     private void updateQuoteFields (MamaMsg msg )
     {
@@ -1283,16 +1283,16 @@ public class MamdaQuoteListener implements MamdaMsgListener,
 		mQuoteCache.mGotAskSize     = false;
 		mQuoteCache.mGotBidDepth    = false;
 		mQuoteCache.mGotAskDepth    = false;
-		
+
 		mQuoteCache.mGotPartId      = false;
 		mQuoteCache.mGotBidPartId   = false;
 		mQuoteCache.mGotAskPartId   = false;
-		
+
 
         // Iterate over all of the fields in the message.
         synchronized (this)
         {
-            getQuoteFields(msg);        
+            getQuoteFields(msg);
         }
 
         if (mQuoteCache.mGotIssueSymbol)
@@ -1300,7 +1300,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
             mQuoteCache.mSymbol.setValue(mQuoteCache.mIssueSymbol.getValue());
             mQuoteCache.mSymbolFieldState.setState(MamdaFieldState.MODIFIED);
         }
-        
+
         // Check certain special fields.
         if (mQuoteCache.mGotBidSize   || mQuoteCache.mGotAskSize   ||
             mQuoteCache.mGotBidDepth  || mQuoteCache.mGotAskDepth  ||
@@ -1321,7 +1321,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 {
                     mQuoteCache.mPartId.setValue (mQuoteCache.mSymbol.getValue().substring (lastDot));
                     mQuoteCache.mPartIdFieldState.setState (MamdaFieldState.MODIFIED);
-                    mQuoteCache.mGotPartId = true; 
+                    mQuoteCache.mGotPartId = true;
                 }
             }
         }
@@ -1332,7 +1332,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener);
     }
-    
+
     private static class MamdaQuoteSymbol implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1344,7 +1344,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
             }
         }
     }
-    
+
     private static class MamdaQuoteIssueSymbol implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1364,7 +1364,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
 
             if (msg.tryString (null, MamdaCommonFields.PART_ID.getFid(), listener.mQuoteCache.mPartId))
             {
-                listener.mQuoteCache.mGotPartId = true; 
+                listener.mQuoteCache.mGotPartId = true;
                 listener.mQuoteCache.mPartIdFieldState.setState (MamdaFieldState.MODIFIED);
             }
         }
@@ -1726,7 +1726,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
             }
         }
     }
-    
+
     private static class MamdaQuoteCount implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1775,7 +1775,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                         }
                         break;
 
-                    default: 
+                    default:
                         break;
                 }
             }
@@ -1784,13 +1784,13 @@ public class MamdaQuoteListener implements MamdaMsgListener,
 
     private static class MamdaShortSaleCircuitBreaker implements QuoteUpdate
     {
-        public void onUpdate (MamaMsg msg,  MamdaQuoteListener listener)                             
-        { 
+        public void onUpdate (MamaMsg msg,  MamdaQuoteListener listener)
+        {
             if (msg.tryChar (null, MamdaQuoteFields.SHORT_SALE_CIRCUIT_BREAKER.getFid(), listener.mQuoteCache.mShortSaleCircuitBreaker))
                 listener.mQuoteCache.mShortSaleCircuitBreakerFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
-    
+
     private static class MamdaBidTick implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1827,13 +1827,13 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                         }
                         break;
 
-                    default: 
+                    default:
                         break;
                 }
             }
         }
     }
-    
+
     private static class MamdaAskTime implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1842,7 +1842,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 listener.mQuoteCache.mAskTimeFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
-    
+
     private static class MamdaBidTime implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1851,7 +1851,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 listener.mQuoteCache.mBidTimeFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
-    
+
     private static class MamdaAskIndicator implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1874,7 +1874,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
             }
         }
     }
-    
+
     private static class MamdaBidIndicator implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1897,7 +1897,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
             }
         }
     }
-    
+
     private static class MamdaAskUpdateCount implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1906,7 +1906,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 listener.mQuoteCache.mAskUpdateCountFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
-    
+
     private static class MamdaBidUpdateCount implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1915,7 +1915,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 listener.mQuoteCache.mBidUpdateCountFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
-    
+
     private static class MamdaAskYield implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1924,7 +1924,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 listener.mQuoteCache.mAskYieldFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
-    
+
     private static class MamdaBidYield implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1933,7 +1933,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 listener.mQuoteCache.mBidYieldFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
-    
+
     private static class MamdaBidSizesList implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)
@@ -1942,7 +1942,7 @@ public class MamdaQuoteListener implements MamdaMsgListener,
                 listener.mQuoteCache.mBidSizesListFieldState.setState (MamdaFieldState.MODIFIED);
         }
     }
-    
+
     private static class MamdaAskSizesList implements QuoteUpdate
     {
         public void onUpdate (MamaMsg msg, MamdaQuoteListener listener)

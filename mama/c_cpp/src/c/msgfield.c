@@ -1007,7 +1007,7 @@ mamaMsgField_updateI32 (
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
@@ -1033,7 +1033,7 @@ mamaMsgField_updateU32 (
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
@@ -1060,7 +1060,7 @@ mamaMsgField_updateI64 (
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
@@ -1087,7 +1087,7 @@ mamaMsgField_updateU64 (
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
@@ -1114,7 +1114,7 @@ mamaMsgField_updateF32 (
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
@@ -1141,7 +1141,7 @@ mamaMsgField_updateF64 (
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
@@ -1168,7 +1168,7 @@ mamaMsgField_updateDateTime (
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);
@@ -1194,7 +1194,7 @@ mamaMsgField_updatePrice (
     short             owner   = 0;
     msgPayload        payload = NULL;
 
-    if (!impl) return MAMA_STATUS_NULL_ARG;
+    if (!impl)  return MAMA_STATUS_NULL_ARG;
 
     mamaMsgImpl_getMessageOwner (impl->myMsg, &owner);
     CHECK_MODIFY (owner);

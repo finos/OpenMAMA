@@ -112,8 +112,8 @@ typedef struct mamaDispatcherImpl_
     /*The queue on which this dispatcher is dispatching*/
     mamaQueue       mQueue;
     /*The thread on which this dispatcher is dispathcing.*/
-    wthread_t      mThread;
-    char           mThreadName[256];
+    wthread_t       mThread;
+    char            mThreadName[256];
     /*Whether the dispatcher is dispatching*/
     wInterlockedInt mIsDispatching;
 } mamaDispatcherImpl;
@@ -212,7 +212,7 @@ mamaQueue_create (mamaQueue* queue,
 
     /* Generate a unique queue name */
     snprintf (queueName, sizeof(queueName),
-            "NO_NAME_%d", wInterlocked_increment(&gQueueNumber));
+              "NO_NAME_%d", wInterlocked_increment(&gQueueNumber));
 
     /*Create the queue structure*/
     impl = (mamaQueueImpl*)calloc (1, sizeof (mamaQueueImpl));
@@ -424,7 +424,7 @@ mamaQueue_create_usingNative (mamaQueue* queue,
 
     /* Generate a unique queue name */
     snprintf (queueName, sizeof(queueName),
-            "NO_NAME_%d", wInterlocked_increment(&gQueueNumber));
+              "NO_NAME_%d", wInterlocked_increment(&gQueueNumber));
 
     /*Create the queue structure*/
     impl = (mamaQueueImpl*)calloc (1, sizeof (mamaQueueImpl));

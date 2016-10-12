@@ -50,7 +50,7 @@ class ListenerCallback : public MamdaMsgListener
 public:
     ListenerCallback ():
         mDictionary (NULL) {}
-    
+
     ~ListenerCallback () {}
 
     void onMsg (
@@ -119,7 +119,7 @@ int main (int argc, const char **argv)
             if (cmdLine.getSnapshot())
                 aSubscription->setServiceLevel (MAMA_SERVICE_LEVEL_SNAPSHOT);
             aSubscription->create (queues.getNextQueue(), source, symbol);
-            
+
         }
 
         Mama::start(bridge);
@@ -146,7 +146,7 @@ int main (int argc, const char **argv)
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: mamdalisten [-tport] tport_name [-m] middleware [-S] source [-s] symbol [options] \n";        
+    std::cerr << "Usage: mamdalisten [-tport] tport_name [-m] middleware [-S] source [-s] symbol [options] \n";
     std::cerr << "Options:" << std::endl;
     std::cerr << "  -1   Create snapshot subscriptions" << std::endl;
 

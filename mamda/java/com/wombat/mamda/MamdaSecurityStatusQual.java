@@ -25,22 +25,22 @@ public class MamdaSecurityStatusQual
 {
     public static final short SECURITY_STATUS_QUAL_NONE                          = 0;    // toString()  None
     public static final short SECURITY_STATUS_QUAL_OPENING                       = 1;    // toString()  Opening
-    public static final short SECURITY_STATUS_QUAL_EXCUSED                       = 7;    // toString()  Excused 
-    public static final short SECURITY_STATUS_QUAL_WITHDRAWN                     = 8;    // toString()  Withdrawn 
+    public static final short SECURITY_STATUS_QUAL_EXCUSED                       = 7;    // toString()  Excused
+    public static final short SECURITY_STATUS_QUAL_WITHDRAWN                     = 8;    // toString()  Withdrawn
     public static final short SECURITY_STATUS_QUAL_SUSPENDED                     = 9;    // toString()  Suspended
     public static final short SECURITY_STATUS_QUAL_RESUME                        = 11;   // toString()  Resume
     public static final short SECURITY_STATUS_QUAL_QUOTE_RESUME                  = 12;   // toString()  QuoteResume
     public static final short SECURITY_STATUS_QUAL_TRADE_RESUME                  = 13;   // toString()  TradeResume
-    public static final short SECURITY_STATUS_QUAL_RESUME_TIME                   = 14;   // toString()  ResumeTime  
-    public static final short SECURITY_STATUS_QUAL_MKT_IMB_BUY                   = 16;   // toString()  MktImbBuy 
-    public static final short SECURITY_STATUS_QUAL_MKT_IMB_SELL                  = 17;   // toString()  MktImbSell 
+    public static final short SECURITY_STATUS_QUAL_RESUME_TIME                   = 14;   // toString()  ResumeTime
+    public static final short SECURITY_STATUS_QUAL_MKT_IMB_BUY                   = 16;   // toString()  MktImbBuy
+    public static final short SECURITY_STATUS_QUAL_MKT_IMB_SELL                  = 17;   // toString()  MktImbSell
     public static final short SECURITY_STATUS_QUAL_NO_MKT_IMB                    = 18;   // toString()  NoMktImb
     public static final short SECURITY_STATUS_QUAL_MOC_IMB_BUY                   = 19;   // toString()  MocImbBuy
     public static final short SECURITY_STATUS_QUAL_MOC_IMB_SELL                  = 20;   // toString()  MocImbSell
     public static final short SECURITY_STATUS_QUAL_NO_MOC_IMB                    = 21;   // toString()  NoMocImb
-    public static final short SECURITY_STATUS_QUAL_ORDER_IMB                     = 22;   // toString()  OrderImb  
-    public static final short SECURITY_STATUS_QUAL_ORDER_INF                     = 23;   // toString()  OrderInf 
-    public static final short SECURITY_STATUS_QUAL_ORDER_IMB_BUY                 = 24;   // toString()  OrderImbBuy 
+    public static final short SECURITY_STATUS_QUAL_ORDER_IMB                     = 22;   // toString()  OrderImb
+    public static final short SECURITY_STATUS_QUAL_ORDER_INF                     = 23;   // toString()  OrderInf
+    public static final short SECURITY_STATUS_QUAL_ORDER_IMB_BUY                 = 24;   // toString()  OrderImbBuy
     public static final short SECURITY_STATUS_QUAL_ORDER_IMB_SELL                = 25;   // toString()  OrderImbSell
     public static final short SECURITY_STATUS_QUAL_ORDER_IMB_NONE                = 26;   // toString()  OrderImbNone
     public static final short SECURITY_STATUS_QUAL_LOA_IMBALANCE_BUY             = 27;   // toString()  LoaImbBuy
@@ -49,9 +49,9 @@ public class MamdaSecurityStatusQual
     public static final short SECURITY_STATUS_QUAL_ORDERS_ELMINATED              = 30;   // toString()  OrdersEliminated
     public static final short SECURITY_STATUS_QUAL_RANGE_ID                      = 31;   // toString()  RangeInd
     public static final short SECURITY_STATUS_QUAL_ITS_PREOPEN                   = 32;   // toString()  ItsPreOpen
-    public static final short SECURITY_STATUS_QUAL_RESERVED                      = 33;   // toString()  Reserved  
-    public static final short SECURITY_STATUS_QUAL_FROZEN                        = 34;   // toString()  Frozen 
-    public static final short SECURITY_STATUS_QUAL_PREOPEN                       = 35;   // toString()  PreOpen 
+    public static final short SECURITY_STATUS_QUAL_RESERVED                      = 33;   // toString()  Reserved
+    public static final short SECURITY_STATUS_QUAL_FROZEN                        = 34;   // toString()  Frozen
+    public static final short SECURITY_STATUS_QUAL_PREOPEN                       = 35;   // toString()  PreOpen
     public static final short SECURITY_STATUS_QUAL_THO_IMBALANCE_BUY             = 36;   // toString()  ThoImbBuy
     public static final short SECURITY_STATUS_QUAL_THO_IMBALANCE_SELL            = 37;   // toString()  ThoImbSell
     public static final short SECURITY_STATUS_QUAL_NO_THO_IMBALANCE              = 38;   // toString()  ThoNoImb
@@ -65,21 +65,21 @@ public class MamdaSecurityStatusQual
     public static final short SECURITY_STATUS_QUAL_OPEN_DELAY                    = 51;   // toString()  OpenDelay
     public static final short SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME             = 52;   // toString()  NoOpenNoResume
     public static final short SECURITY_STATUS_QUAL_PRICE_IND                     = 53;   // toString()  PriceInd
-    public static final short SECURITY_STATUS_QUAL_EQUIPMENT                     = 54;   // toString()  Equipment  
-    public static final short SECURITY_STATUS_QUAL_FILINGS                       = 55;   // toString()  Filings 
-    public static final short SECURITY_STATUS_QUAL_NEWS                          = 56;   // toString()  News 
+    public static final short SECURITY_STATUS_QUAL_EQUIPMENT                     = 54;   // toString()  Equipment
+    public static final short SECURITY_STATUS_QUAL_FILINGS                       = 55;   // toString()  Filings
+    public static final short SECURITY_STATUS_QUAL_NEWS                          = 56;   // toString()  News
     public static final short SECURITY_STATUS_QUAL_NEWS_DISSEM                   = 57;   // toString()  NewsDissem
     public static final short SECURITY_STATUS_QUAL_LISTING                       = 58;   // toString()  Listing
     public static final short SECURITY_STATUS_QUAL_OPERATION                     = 59;   // toString()  Operation
     public static final short SECURITY_STATUS_QUAL_INFO                          = 60;   // toString()  Info
-    public static final short SECURITY_STATUS_QUAL_SEC                           = 61;   // toString()  SEC  
-    public static final short SECURITY_STATUS_QUAL_TIMES                         = 62;   // toString()  Times 
-    public static final short SECURITY_STATUS_QUAL_OTHER                         = 63;   // toString()  Other 
+    public static final short SECURITY_STATUS_QUAL_SEC                           = 61;   // toString()  SEC
+    public static final short SECURITY_STATUS_QUAL_TIMES                         = 62;   // toString()  Times
+    public static final short SECURITY_STATUS_QUAL_OTHER                         = 63;   // toString()  Other
     public static final short SECURITY_STATUS_QUAL_RELATED                       = 64;   // toString()  Related
     public static final short SECURITY_STATUS_QUAL_IPO                           = 65;   // toString()  IPO
     public static final short SECURITY_STATUS_QUAL_PRE_CROSS                     = 66;   // toString()  Pre-Cross
     public static final short SECURITY_STATUS_QUAL_CROSS                         = 67;   // toString()  Cross
-    public static final short SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION        = 68;   // toString()  Released For Quotation (IPO) 
+    public static final short SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION        = 68;   // toString()  Released For Quotation (IPO)
     public static final short SECURITY_STATUS_QUAL_IPO_WINDOW_EXT                = 69;   // toString()  IPO Window Extension
     public static final short SECURITY_STATUS_QUAL_PRECLOSING                    = 70;   // toString()  PreClosing
     public static final short SECURITY_STATUS_QUAL_AUCTION_EXTENSION             = 71;   // toString()  Auction Extension
@@ -106,8 +106,8 @@ public class MamdaSecurityStatusQual
     public static final short SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING            = 92;   // toString()  OpenNightTrading
     public static final short SECURITY_STATUS_QUAL_SUB_HOLIDAY                   = 93;   // toString()  SubHoliday
     public static final short SECURITY_STATUS_QUAL_BID_ONLY                      = 94;   // toString()  BidOnly
-    public static final short SECURITY_STATUS_QUAL_ASK_ONLY                      = 95;   // toString()  AskOnly 
-    public static final short SECURITY_STATUS_QUAL_UNKNOWN                       = 99;  
+    public static final short SECURITY_STATUS_QUAL_ASK_ONLY                      = 95;   // toString()  AskOnly
+    public static final short SECURITY_STATUS_QUAL_UNKNOWN                       = 99;
     public static final short SECURITY_STATUS_QUAL_OPENING_DELAY_COMMON          = 101;  // toString()  OpeningDelayCommon
     public static final short SECURITY_STATUS_QUAL_RESUME_COMMON                 = 102;  // toString()  ResumeCommon
     public static final short SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME_COMMON      = 103;  // toString()  NoOpenNoResumeCommon
@@ -140,8 +140,8 @@ public class MamdaSecurityStatusQual
     public static final short SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_BUY        = 131;  // toString()  ImbPreCloseBuy
     public static final short SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_SELL       = 132;  // toString()  ImbPreCloseSell
     public static final short SECURITY_STATUS_QUAL_IMBALANCE_PRECLOSE_NONE       = 133;  // toString()  ImbPreCloseNone
-    public static final short SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY            = 134;  // toString()  ScheduledIntraday 
-    
+    public static final short SECURITY_STATUS_QUAL_SCHEDULED_INTRADAY            = 134;  // toString()  ScheduledIntraday
+
     //Only used internally
     private static final String SECURITY_STATUS_QUAL_STR_NONE                               = "None";
     private static final String SECURITY_STATUS_QUAL_STR_OPENING                            = "Opening";
@@ -194,13 +194,13 @@ public class MamdaSecurityStatusQual
     private static final String SECURITY_STATUS_QUAL_STR_OTHER                              = "Other";
     private static final String SECURITY_STATUS_QUAL_STR_RELATED                            = "Related";
     private static final String SECURITY_STATUS_QUAL_STR_IPO                                = "IPO";
-    
+
     private static final String SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY                        = "EmcImbBuy";
     private static final String SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL                       = "EmcImbSell";
     private static final String SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE                       = "EmcImbNone";
     private static final String SECURITY_STATUS_QUAL_STR_PRE_CROSS                          = "Pre-Cross";
     private static final String SECURITY_STATUS_QUAL_STR_CROSS                              = "Cross";
-    private static final String SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION             = "Released For Quotation (IPO)"; 
+    private static final String SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION             = "Released For Quotation (IPO)";
     private static final String SECURITY_STATUS_QUAL_STR_IPO_WINDOW_EXT                     = "IPO Window Extension";
     private static final String SECURITY_STATUS_QUAL_STR_PRECLOSING                         = "PreClosing";
     private static final String SECURITY_STATUS_QUAL_STR_AUCTION_EXTENSION                  = "Auction Extension";
@@ -254,7 +254,7 @@ public class MamdaSecurityStatusQual
     private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_2            = "CircuitBreakerLevel2";
     private static final String SECURITY_STATUS_QUAL_STR_CIRCUIT_BREAKER_LEVEL_3            = "CircuitBreakerLevel3";
     private static final String SECURITY_STATUS_QUAL_STR_VOLATILITY_PAUSE_STRADDLE          = "VolatilityPauseStraddle";
-    
+
     private static final String SECURITY_STATUS_QUAL_STR_SHORT_SALE_RESTRICTED              = "ShortSaleRestricted";
     private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_BUY              = "ImbPreOpenBuy";
     private static final String SECURITY_STATUS_QUAL_STR_IMBALANCE_PREOPEN_SELL             = "ImbPreOpenSell";
@@ -268,14 +268,14 @@ public class MamdaSecurityStatusQual
 
      public static String toString (short securityStatusQual)
     {
-        switch (securityStatusQual) 
+        switch (securityStatusQual)
         {
             case SECURITY_STATUS_QUAL_NONE:
                 return SECURITY_STATUS_QUAL_STR_NONE;
             case SECURITY_STATUS_QUAL_OPENING:
                 return SECURITY_STATUS_QUAL_STR_OPENING;
             case SECURITY_STATUS_QUAL_EXCUSED:
-                return SECURITY_STATUS_QUAL_STR_EXCUSED;     
+                return SECURITY_STATUS_QUAL_STR_EXCUSED;
             case SECURITY_STATUS_QUAL_WITHDRAWN:
                 return SECURITY_STATUS_QUAL_STR_WITHDRAWN;
             case SECURITY_STATUS_QUAL_SUSPENDED:
@@ -356,10 +356,10 @@ public class MamdaSecurityStatusQual
                 return SECURITY_STATUS_QUAL_STR_NEWS;
             case SECURITY_STATUS_QUAL_NEWS_DISSEM:
                 return SECURITY_STATUS_QUAL_STR_NEWS_DISSEM;
-            case SECURITY_STATUS_QUAL_LISTING:      
+            case SECURITY_STATUS_QUAL_LISTING:
                 return SECURITY_STATUS_QUAL_STR_LISTING;
             case SECURITY_STATUS_QUAL_OPERATION:
-                return SECURITY_STATUS_QUAL_STR_OPERATION;    
+                return SECURITY_STATUS_QUAL_STR_OPERATION;
             case SECURITY_STATUS_QUAL_INFO:
                 return SECURITY_STATUS_QUAL_STR_INFO;
             case SECURITY_STATUS_QUAL_SEC:
@@ -372,78 +372,78 @@ public class MamdaSecurityStatusQual
                 return SECURITY_STATUS_QUAL_STR_RELATED;
             case SECURITY_STATUS_QUAL_IPO:
                 return SECURITY_STATUS_QUAL_STR_IPO;
-            case SECURITY_STATUS_QUAL_EMC_IMB_BUY:                
-                return SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY;       
-            case SECURITY_STATUS_QUAL_EMC_IMB_SELL:               
-                return SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL;      
-            case SECURITY_STATUS_QUAL_EMC_IMB_NONE:               
-                return SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE;      
-            case SECURITY_STATUS_QUAL_PRE_CROSS:                  
-                return SECURITY_STATUS_QUAL_STR_PRE_CROSS;        
-            case SECURITY_STATUS_QUAL_CROSS:                      
-                return SECURITY_STATUS_QUAL_STR_CROSS;             
-            case SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION:     
-                return SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION; 
-            case SECURITY_STATUS_QUAL_IPO_WINDOW_EXT:             
-                return SECURITY_STATUS_QUAL_STR_IPO_WINDOW_EXT;         
-            case SECURITY_STATUS_QUAL_PRECLOSING:                 
-                return SECURITY_STATUS_QUAL_STR_PRECLOSING;             
-            case SECURITY_STATUS_QUAL_AUCTION_EXTENSION:          
-                return SECURITY_STATUS_QUAL_STR_AUCTION_EXTENSION;      
-            case SECURITY_STATUS_QUAL_VOLATILITY_AUCTION:         
-                return SECURITY_STATUS_QUAL_STR_VOLATILITY_AUCTION;     
-            case SECURITY_STATUS_QUAL_SECURITY_AUTHORISED:        
-                return SECURITY_STATUS_QUAL_STR_SECURITY_AUTHORISED;    
-            case SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN:         
-                return SECURITY_STATUS_QUAL_STR_SECURITY_FORBIDDEN;     
-            case SECURITY_STATUS_QUAL_FAST_MARKET:                
-                return SECURITY_STATUS_QUAL_STR_FAST_MARKET;            
-            case SECURITY_STATUS_QUAL_SLOW_MARKET:                
-                return SECURITY_STATUS_QUAL_STR_SLOW_MARKET;            
-            case SECURITY_STATUS_QUAL_SUB_PENNY_TRADING:          
-                return SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING;      
-            case SECURITY_STATUS_QUAL_ORDER_INPUT:                
-                return SECURITY_STATUS_QUAL_STR_ORDER_INPUT;            
-            case SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING:         
-                return SECURITY_STATUS_QUAL_STR_PRE_ORDER_MATCHING;     
-            case SECURITY_STATUS_QUAL_ORDER_MATCHING:             
+            case SECURITY_STATUS_QUAL_EMC_IMB_BUY:
+                return SECURITY_STATUS_QUAL_STR_EMC_IMB_BUY;
+            case SECURITY_STATUS_QUAL_EMC_IMB_SELL:
+                return SECURITY_STATUS_QUAL_STR_EMC_IMB_SELL;
+            case SECURITY_STATUS_QUAL_EMC_IMB_NONE:
+                return SECURITY_STATUS_QUAL_STR_EMC_IMB_NONE;
+            case SECURITY_STATUS_QUAL_PRE_CROSS:
+                return SECURITY_STATUS_QUAL_STR_PRE_CROSS;
+            case SECURITY_STATUS_QUAL_CROSS:
+                return SECURITY_STATUS_QUAL_STR_CROSS;
+            case SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION:
+                return SECURITY_STATUS_QUAL_STR_RELEASED_FOR_QUOTATION;
+            case SECURITY_STATUS_QUAL_IPO_WINDOW_EXT:
+                return SECURITY_STATUS_QUAL_STR_IPO_WINDOW_EXT;
+            case SECURITY_STATUS_QUAL_PRECLOSING:
+                return SECURITY_STATUS_QUAL_STR_PRECLOSING;
+            case SECURITY_STATUS_QUAL_AUCTION_EXTENSION:
+                return SECURITY_STATUS_QUAL_STR_AUCTION_EXTENSION;
+            case SECURITY_STATUS_QUAL_VOLATILITY_AUCTION:
+                return SECURITY_STATUS_QUAL_STR_VOLATILITY_AUCTION;
+            case SECURITY_STATUS_QUAL_SECURITY_AUTHORISED:
+                return SECURITY_STATUS_QUAL_STR_SECURITY_AUTHORISED;
+            case SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN:
+                return SECURITY_STATUS_QUAL_STR_SECURITY_FORBIDDEN;
+            case SECURITY_STATUS_QUAL_FAST_MARKET:
+                return SECURITY_STATUS_QUAL_STR_FAST_MARKET;
+            case SECURITY_STATUS_QUAL_SLOW_MARKET:
+                return SECURITY_STATUS_QUAL_STR_SLOW_MARKET;
+            case SECURITY_STATUS_QUAL_SUB_PENNY_TRADING:
+                return SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING;
+            case SECURITY_STATUS_QUAL_ORDER_INPUT:
+                return SECURITY_STATUS_QUAL_STR_ORDER_INPUT;
+            case SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING:
+                return SECURITY_STATUS_QUAL_STR_PRE_ORDER_MATCHING;
+            case SECURITY_STATUS_QUAL_ORDER_MATCHING:
                 return SECURITY_STATUS_QUAL_STR_ORDER_MATCHING;
-            case SECURITY_STATUS_QUAL_BLOCKING:              
-                return SECURITY_STATUS_QUAL_STR_BLOCKING;      
-            case SECURITY_STATUS_QUAL_ORDER_CANCEL:          
-                return SECURITY_STATUS_QUAL_STR_ORDER_CANCEL;  
-            case SECURITY_STATUS_QUAL_FIXED_PRICE:           
-                return SECURITY_STATUS_QUAL_STR_FIXED_PRICE;   
-            case SECURITY_STATUS_QUAL_SALES_INPUT:           
-                return SECURITY_STATUS_QUAL_STR_SALES_INPUT;   
-            case SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION: 
-                return SECURITY_STATUS_QUAL_STR_EXCHANGE_INTERVENTION;  
-            case SECURITY_STATUS_QUAL_PRE_AUCTION:                
-                return SECURITY_STATUS_QUAL_STR_PRE_AUCTION; 
-            case SECURITY_STATUS_QUAL_ADJUST:              
-                return SECURITY_STATUS_QUAL_STR_ADJUST;      
-            case SECURITY_STATUS_QUAL_ADJUST_ON:           
-                return SECURITY_STATUS_QUAL_STR_ADJUST_ON;   
-            case SECURITY_STATUS_QUAL_LATE_TRADING:        
+            case SECURITY_STATUS_QUAL_BLOCKING:
+                return SECURITY_STATUS_QUAL_STR_BLOCKING;
+            case SECURITY_STATUS_QUAL_ORDER_CANCEL:
+                return SECURITY_STATUS_QUAL_STR_ORDER_CANCEL;
+            case SECURITY_STATUS_QUAL_FIXED_PRICE:
+                return SECURITY_STATUS_QUAL_STR_FIXED_PRICE;
+            case SECURITY_STATUS_QUAL_SALES_INPUT:
+                return SECURITY_STATUS_QUAL_STR_SALES_INPUT;
+            case SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION:
+                return SECURITY_STATUS_QUAL_STR_EXCHANGE_INTERVENTION;
+            case SECURITY_STATUS_QUAL_PRE_AUCTION:
+                return SECURITY_STATUS_QUAL_STR_PRE_AUCTION;
+            case SECURITY_STATUS_QUAL_ADJUST:
+                return SECURITY_STATUS_QUAL_STR_ADJUST;
+            case SECURITY_STATUS_QUAL_ADJUST_ON:
+                return SECURITY_STATUS_QUAL_STR_ADJUST_ON;
+            case SECURITY_STATUS_QUAL_LATE_TRADING:
                 return SECURITY_STATUS_QUAL_STR_LATE_TRADING;
-            case SECURITY_STATUS_QUAL_ENQUIRE:             
-                return SECURITY_STATUS_QUAL_STR_ENQUIRE;     
-            case SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING:   
-                return SECURITY_STATUS_QUAL_STR_PRE_NIGHT_TRADING; 
-            case SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING:        
+            case SECURITY_STATUS_QUAL_ENQUIRE:
+                return SECURITY_STATUS_QUAL_STR_ENQUIRE;
+            case SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING:
+                return SECURITY_STATUS_QUAL_STR_PRE_NIGHT_TRADING;
+            case SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING:
                 return SECURITY_STATUS_QUAL_STR_OPEN_NIGHT_TRADING;
-            case SECURITY_STATUS_QUAL_SUB_HOLIDAY:        
+            case SECURITY_STATUS_QUAL_SUB_HOLIDAY:
                 return SECURITY_STATUS_QUAL_STR_SUB_HOLIDAY;
-            case SECURITY_STATUS_QUAL_BID_ONLY:             
-                return SECURITY_STATUS_QUAL_STR_BID_ONLY;     
-            case SECURITY_STATUS_QUAL_ASK_ONLY:        
+            case SECURITY_STATUS_QUAL_BID_ONLY:
+                return SECURITY_STATUS_QUAL_STR_BID_ONLY;
+            case SECURITY_STATUS_QUAL_ASK_ONLY:
                 return SECURITY_STATUS_QUAL_STR_ASK_ONLY;
             case SECURITY_STATUS_QUAL_UNKNOWN:
                 return SECURITY_STATUS_QUAL_STR_UNKNOWN;
             case SECURITY_STATUS_QUAL_OPENING_DELAY_COMMON:
                 return SECURITY_STATUS_QUAL_STR_OPENING_DELAY_COMMON;
             case SECURITY_STATUS_QUAL_RESUME_COMMON :
-                return  SECURITY_STATUS_QUAL_STR_RESUME_COMMON;          
+                return  SECURITY_STATUS_QUAL_STR_RESUME_COMMON;
             case  SECURITY_STATUS_QUAL_NO_OPEN_NO_RESUME_COMMON:
                 return  SECURITY_STATUS_QUAL_STR_NO_OPEN_NO_RESUME_COMMON;
             case SECURITY_STATUS_QUAL_NEWS_DISSEMINATION_RELATED:
@@ -700,7 +700,7 @@ public class MamdaSecurityStatusQual
         if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_INFORMATION_REQUESTED_RELATED))
             return  SECURITY_STATUS_QUAL_INFORMATION_REQUESTED_RELATED;
         if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_NEWS_PENDING_RELATED))
-            return  SECURITY_STATUS_QUAL_NEWS_PENDING_RELATED;                                       
+            return  SECURITY_STATUS_QUAL_NEWS_PENDING_RELATED;
         if (securityStatusQual.equals (SECURITY_STATUS_QUAL_STR_EQUIPMENT_CHANGEOVER_RELATED))
             return  SECURITY_STATUS_QUAL_EQUIPMENT_CHANGEOVER_RELATED;
         if (securityStatusQual.equals ( SECURITY_STATUS_QUAL_STR_SUB_PENNY_TRADING_RELATED))
@@ -825,12 +825,12 @@ public class MamdaSecurityStatusQual
             return SECURITY_STATUS_QUAL_IPO_IMBALANCE_SELL;
         if (securityStatusQual.equals ("44"))
             return SECURITY_STATUS_QUAL_NO_IPO_IMBALANCE;
-        if (securityStatusQual.equals ("46"))               
-          return SECURITY_STATUS_QUAL_EMC_IMB_BUY;           
-        if (securityStatusQual.equals ("47"))              
-          return SECURITY_STATUS_QUAL_EMC_IMB_SELL;          
-        if (securityStatusQual.equals ("48"))              
-          return SECURITY_STATUS_QUAL_EMC_IMB_NONE;  
+        if (securityStatusQual.equals ("46"))
+          return SECURITY_STATUS_QUAL_EMC_IMB_BUY;
+        if (securityStatusQual.equals ("47"))
+          return SECURITY_STATUS_QUAL_EMC_IMB_SELL;
+        if (securityStatusQual.equals ("48"))
+          return SECURITY_STATUS_QUAL_EMC_IMB_NONE;
         if (securityStatusQual.equals ("51"))
             return SECURITY_STATUS_QUAL_OPEN_DELAY;
         if (securityStatusQual.equals ("52"))
@@ -860,67 +860,67 @@ public class MamdaSecurityStatusQual
         if (securityStatusQual.equals ("64"))
             return SECURITY_STATUS_QUAL_RELATED;
         if (securityStatusQual.equals ("65"))
-            return SECURITY_STATUS_QUAL_IPO;         
-        if (securityStatusQual.equals ("66"))                 
-          return SECURITY_STATUS_QUAL_PRE_CROSS;             
-        if (securityStatusQual.equals ("67"))                     
-          return SECURITY_STATUS_QUAL_CROSS;                 
-        if (securityStatusQual.equals ("68"))    
+            return SECURITY_STATUS_QUAL_IPO;
+        if (securityStatusQual.equals ("66"))
+          return SECURITY_STATUS_QUAL_PRE_CROSS;
+        if (securityStatusQual.equals ("67"))
+          return SECURITY_STATUS_QUAL_CROSS;
+        if (securityStatusQual.equals ("68"))
           return SECURITY_STATUS_QUAL_RELEASED_FOR_QUOTATION;
-        if (securityStatusQual.equals ("69"))            
-          return SECURITY_STATUS_QUAL_IPO_WINDOW_EXT;        
-        if (securityStatusQual.equals ("70"))                
-          return SECURITY_STATUS_QUAL_PRECLOSING;            
-        if (securityStatusQual.equals ("71"))         
-          return SECURITY_STATUS_QUAL_AUCTION_EXTENSION;     
-        if (securityStatusQual.equals ("72"))        
-          return SECURITY_STATUS_QUAL_VOLATILITY_AUCTION;    
-        if (securityStatusQual.equals ("73"))       
-          return SECURITY_STATUS_QUAL_SECURITY_AUTHORISED;   
-        if (securityStatusQual.equals ("74"))        
-          return SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN;    
-        if (securityStatusQual.equals ("75"))               
-          return SECURITY_STATUS_QUAL_FAST_MARKET;           
-        if (securityStatusQual.equals ("76"))           
-          return SECURITY_STATUS_QUAL_SLOW_MARKET;           
-        if (securityStatusQual.equals ("77"))     
-          return SECURITY_STATUS_QUAL_SUB_PENNY_TRADING;     
-        if (securityStatusQual.equals ("78"))           
-          return SECURITY_STATUS_QUAL_ORDER_INPUT;           
-        if (securityStatusQual.equals ("79"))    
-          return SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING;    
-        if (securityStatusQual.equals ("80"))        
-          return SECURITY_STATUS_QUAL_ORDER_MATCHING;        
-        if (securityStatusQual.equals ("81"))              
-          return SECURITY_STATUS_QUAL_BLOCKING;              
-        if (securityStatusQual.equals ("82"))          
-          return SECURITY_STATUS_QUAL_ORDER_CANCEL;          
-        if (securityStatusQual.equals ("83"))           
-          return SECURITY_STATUS_QUAL_FIXED_PRICE;           
-        if (securityStatusQual.equals ("84"))           
-          return SECURITY_STATUS_QUAL_SALES_INPUT;           
-        if (securityStatusQual.equals ("85")) 
-          return SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION; 
-        if (securityStatusQual.equals ("86"))           
-          return SECURITY_STATUS_QUAL_PRE_AUCTION;           
-        if (securityStatusQual.equals ("87"))                
-          return SECURITY_STATUS_QUAL_ADJUST;                
-        if (securityStatusQual.equals ("88"))             
-          return SECURITY_STATUS_QUAL_ADJUST_ON;             
-        if (securityStatusQual.equals ("89"))          
-          return SECURITY_STATUS_QUAL_LATE_TRADING;          
-        if (securityStatusQual.equals ("90"))               
-          return SECURITY_STATUS_QUAL_ENQUIRE;               
-        if (securityStatusQual.equals ("91"))     
-          return SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING;     
-        if (securityStatusQual.equals ("92"))    
-          return SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING; 
-        if (securityStatusQual.equals ("93"))    
-          return  SECURITY_STATUS_QUAL_SUB_HOLIDAY; 
-        if (securityStatusQual.equals ("94"))              
-          return SECURITY_STATUS_QUAL_BID_ONLY;              
-        if (securityStatusQual.equals ("95"))         
-          return SECURITY_STATUS_QUAL_ASK_ONLY; 
+        if (securityStatusQual.equals ("69"))
+          return SECURITY_STATUS_QUAL_IPO_WINDOW_EXT;
+        if (securityStatusQual.equals ("70"))
+          return SECURITY_STATUS_QUAL_PRECLOSING;
+        if (securityStatusQual.equals ("71"))
+          return SECURITY_STATUS_QUAL_AUCTION_EXTENSION;
+        if (securityStatusQual.equals ("72"))
+          return SECURITY_STATUS_QUAL_VOLATILITY_AUCTION;
+        if (securityStatusQual.equals ("73"))
+          return SECURITY_STATUS_QUAL_SECURITY_AUTHORISED;
+        if (securityStatusQual.equals ("74"))
+          return SECURITY_STATUS_QUAL_SECURITY_FORBIDDEN;
+        if (securityStatusQual.equals ("75"))
+          return SECURITY_STATUS_QUAL_FAST_MARKET;
+        if (securityStatusQual.equals ("76"))
+          return SECURITY_STATUS_QUAL_SLOW_MARKET;
+        if (securityStatusQual.equals ("77"))
+          return SECURITY_STATUS_QUAL_SUB_PENNY_TRADING;
+        if (securityStatusQual.equals ("78"))
+          return SECURITY_STATUS_QUAL_ORDER_INPUT;
+        if (securityStatusQual.equals ("79"))
+          return SECURITY_STATUS_QUAL_PRE_ORDER_MATCHING;
+        if (securityStatusQual.equals ("80"))
+          return SECURITY_STATUS_QUAL_ORDER_MATCHING;
+        if (securityStatusQual.equals ("81"))
+          return SECURITY_STATUS_QUAL_BLOCKING;
+        if (securityStatusQual.equals ("82"))
+          return SECURITY_STATUS_QUAL_ORDER_CANCEL;
+        if (securityStatusQual.equals ("83"))
+          return SECURITY_STATUS_QUAL_FIXED_PRICE;
+        if (securityStatusQual.equals ("84"))
+          return SECURITY_STATUS_QUAL_SALES_INPUT;
+        if (securityStatusQual.equals ("85"))
+          return SECURITY_STATUS_QUAL_EXCHANGE_INTERVENTION;
+        if (securityStatusQual.equals ("86"))
+          return SECURITY_STATUS_QUAL_PRE_AUCTION;
+        if (securityStatusQual.equals ("87"))
+          return SECURITY_STATUS_QUAL_ADJUST;
+        if (securityStatusQual.equals ("88"))
+          return SECURITY_STATUS_QUAL_ADJUST_ON;
+        if (securityStatusQual.equals ("89"))
+          return SECURITY_STATUS_QUAL_LATE_TRADING;
+        if (securityStatusQual.equals ("90"))
+          return SECURITY_STATUS_QUAL_ENQUIRE;
+        if (securityStatusQual.equals ("91"))
+          return SECURITY_STATUS_QUAL_PRE_NIGHT_TRADING;
+        if (securityStatusQual.equals ("92"))
+          return SECURITY_STATUS_QUAL_OPEN_NIGHT_TRADING;
+        if (securityStatusQual.equals ("93"))
+          return  SECURITY_STATUS_QUAL_SUB_HOLIDAY;
+        if (securityStatusQual.equals ("94"))
+          return SECURITY_STATUS_QUAL_BID_ONLY;
+        if (securityStatusQual.equals ("95"))
+          return SECURITY_STATUS_QUAL_ASK_ONLY;
         if(securityStatusQual.equals("101"))
           return SECURITY_STATUS_QUAL_OPENING_DELAY_COMMON;
         if(securityStatusQual.equals("102"))

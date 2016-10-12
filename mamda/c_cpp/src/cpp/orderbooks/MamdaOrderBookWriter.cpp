@@ -78,16 +78,16 @@ namespace Wombat
         {
             newVector[i] = new MamaMsg;
             newVector[i]->create();
-        }        
+        }
         if (mMsgVector) delete [] mMsgVector;
         mMsgVector = NULL;
-            
+
         mMsgVector  = newVector;
         mMsgVectorSize = newSize;
     }
 
     void BookMsgHolder::print()
-    {        
+    {
         if (mMsgVector)
         {
             for (size_t i = 0; i < mMsgVectorSize; i++)
@@ -106,31 +106,31 @@ namespace Wombat
         void    populateMsg         (MamaMsg& msg, const MamdaOrderBookComplexDelta& delta);
         void    populateMsg         (MamaMsg& msg, const MamdaOrderBookSimpleDelta& delta);
         void    populateMsg         (MamaMsg& msg, const MamdaOrderBook& book);
-                                
-      
+
+
         void    addComplexDeltaFields   (MamaMsg&                          msg,
                                          const MamdaOrderBookComplexDelta& delta);
-                
+
         void    addSimpleDeltaFields    (MamaMsg&                          msg,
                                          const MamdaOrderBookSimpleDelta&  delta);
-                                        
+
         void    addBookLevels           (MamaMsg&               msg,
-                                         const MamdaOrderBook&  book);                       
-        
+                                         const MamdaOrderBook&  book);
+
         void    addBookLevel            (MamaMsg&                          plMsg,
                                          const MamdaOrderBookPriceLevel*   level,
                                          mama_f64_t                        plDeltaSize,
                                          MamdaOrderBookPriceLevel::Action  plDeltaAction,
                                          const MamaDateTime*               bookTime);
-                                        
+
         void    addBookLevelEntries     (MamaMsg&                          plMsg,
                                          const MamdaOrderBookPriceLevel&   level);
-        
+
         void    addBookEntry            (MamaMsg&                          msg,
                                          const MamdaOrderBookEntry*        entry,
                                          MamdaOrderBookEntry::Action       entryDeltaAction,
                                          const MamaDateTime*               plTime);
-        
+
         BookMsgHolder*                  mPricelevels;
         BookMsgHolder*                  mEntries;
     };
@@ -146,13 +146,13 @@ namespace Wombat
     {
         mImpl.mPricelevels->clear();
         mImpl.mEntries->clear();
-        
+
         delete mImpl.mPricelevels;
-        mImpl.mPricelevels = NULL; 
+        mImpl.mPricelevels = NULL;
 
         delete mImpl.mEntries;
-        mImpl.mEntries = NULL; 
-        
+        mImpl.mEntries = NULL;
+
         delete &mImpl;
     }
 
@@ -164,14 +164,14 @@ namespace Wombat
     }
 
     void   MamdaOrderBookWriter::populateMsg (
-        MamaMsg&                          msg, 
+        MamaMsg&                          msg,
         const MamdaOrderBookSimpleDelta&  delta)
     {
         mImpl.populateMsg (msg, delta);
     }
 
     void   MamdaOrderBookWriter::populateMsg (
-        MamaMsg&               msg, 
+        MamaMsg&               msg,
         const MamdaOrderBook&  book)
     {
         mImpl.populateMsg (msg, book);
@@ -184,7 +184,7 @@ namespace Wombat
     }
 
     void MamdaOrderBookWriter::MamdaOrderBookWriterImpl::populateMsg (
-        MamaMsg&                           msg, 
+        MamaMsg&                           msg,
         const MamdaOrderBookComplexDelta&  delta)
     {
         mPricelevels->clear();
@@ -193,9 +193,9 @@ namespace Wombat
         msg.updateU8 (NULL, MamaFieldMsgType.mFid, MAMA_MSG_TYPE_BOOK_UPDATE);
         addComplexDeltaFields(msg, delta);
     }
-        
+
     void MamdaOrderBookWriter::MamdaOrderBookWriterImpl::populateMsg (
-        MamaMsg&                          msg, 
+        MamaMsg&                          msg,
         const MamdaOrderBookSimpleDelta&  delta)
     {
         mPricelevels->clear();
@@ -204,14 +204,14 @@ namespace Wombat
         msg.updateU8 (NULL, MamaFieldMsgType.mFid, MAMA_MSG_TYPE_BOOK_UPDATE);
         addSimpleDeltaFields (msg, delta);
     }
-        
+
     void MamdaOrderBookWriter::MamdaOrderBookWriterImpl::populateMsg (
-        MamaMsg&               msg, 
+        MamaMsg&               msg,
         const MamdaOrderBook&  book)
-    {  
+    {
         mPricelevels->clear();
         mEntries->clear();
-         
+
         msg.updateU8 (NULL, MamaFieldMsgType.mFid, MAMA_MSG_TYPE_BOOK_INITIAL);
         addBookLevels (msg, book);
     }
@@ -224,7 +224,7 @@ namespace Wombat
         mama_i16_t entryCount = 0;
 
         mPricelevels->grow(1);
-                      
+
         addBookLevel (msg, pl,
                       delta.getPlDeltaSize(),
                       delta.getPlDeltaAction(),
@@ -248,13 +248,13 @@ namespace Wombat
                         MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
                         (mama_i16_t)entryCount);
         }
-        
+
         msg.addDateTime (NULL, MamdaOrderBookFields::BOOK_TIME->getFid(),
                          delta.getEventTime());
-                         
+
         msg.addDateTime (NULL, MamdaCommonFields::SRC_TIME->getFid(),
                          delta.getSrcTime());
-        
+
         if (delta.getEventSeqNum() != 0)
         {
             msg.addI64 (NULL, MamdaCommonFields::SEQ_NUM->getFid(),
@@ -271,62 +271,62 @@ namespace Wombat
         // in each of "delta-size" price levels or "delta-size" entries
         // within one price level, so let's make sure both vectors are
         // large enough.
-        
+
         mPricelevels->grow(delta.getSize());
         mEntries->grow(delta.getSize());
-                        
+
         MamdaOrderBookComplexDelta::iterator end = delta.end();
         MamdaOrderBookComplexDelta::iterator iter = delta.begin();
-        
+
         MamdaOrderBookBasicDelta*  basicDelta       = NULL;
         MamdaOrderBookBasicDelta*  savedBasicDelta  = NULL;
         MamdaOrderBookPriceLevel*  pl               = NULL;
         MamdaOrderBookPriceLevel*  lastPl           = NULL;
-        
+
         MamdaOrderBookPriceLevel*  flatEntryPl      = NULL;
         MamdaOrderBookBasicDelta*  flatEntryDelta   = NULL;
-        
+
         size_t                     plCount    = 0;
         size_t                     entryCount = 0;
-        
+
         if (delta.getSize() > 0)
         {
             for (; iter !=end; ++iter)
             {
                 basicDelta = *iter;
                 pl = basicDelta->getPriceLevel();
-                
+
                 if (lastPl != pl)
                 {
                     if (lastPl != NULL)
                     {
                         MamaMsg& plMsg = *mPricelevels->mMsgVector[plCount];
-                   
-                        addBookLevel  (plMsg, 
-                                      lastPl, 
-                                      savedBasicDelta->getPlDeltaSize(), 
-                                      savedBasicDelta->getPlDeltaAction(),
-                                      &(delta.getEventTime()));
-                                          
+
+                        addBookLevel  (plMsg,
+                                    lastPl,
+                                    savedBasicDelta->getPlDeltaSize(),
+                                    savedBasicDelta->getPlDeltaAction(),
+                                    &(delta.getEventTime()));
+
                         if (1 == entryCount)
                         {
                             addBookEntry (plMsg,
-                                         flatEntryDelta->getEntry(),
-                                         flatEntryDelta->getEntryDeltaAction(), 
-                                         &(flatEntryPl->getTime()));
+                                        flatEntryDelta->getEntry(),
+                                        flatEntryDelta->getEntryDeltaAction(),
+                                        &(flatEntryPl->getTime()));
 
                         }
                         if (entryCount > 1)
                         {
                             plMsg.addVectorMsg (NULL,
-                                               MamdaOrderBookFields::PL_ENTRIES->getFid(),
-                                               mEntries->mMsgVector,
-                                               entryCount);
+                                            MamdaOrderBookFields::PL_ENTRIES->getFid(),
+                                            mEntries->mMsgVector,
+                                            entryCount);
                         }
-                        if ((size_t)defaultNumAttachedEntries != entryCount)
+                        if (defaultNumAttachedEntries != entryCount)
                             plMsg.addI16 (NULL,
-                                         MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
-                                         (mama_i16_t) entryCount);
+                                        MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
+                                        (mama_i16_t) entryCount);
                         ++plCount;
                         entryCount = 0;
                     }
@@ -340,7 +340,7 @@ namespace Wombat
 
                     addBookEntry (entMsg,
                                 basicDelta->getEntry(),
-                                basicDelta->getEntryDeltaAction(), 
+                                basicDelta->getEntryDeltaAction(),
                                 &(pl->getTime()));
                     ++entryCount;
                     //save this delta and pl
@@ -348,78 +348,78 @@ namespace Wombat
                     flatEntryDelta = basicDelta;
                     flatEntryPl = pl;
                 }
-            }    
+            }
 
             // Add the last entry vector and other price level fields to the
             // last price level message.
             MamaMsg& plMsg = *mPricelevels->mMsgVector[plCount];
 
             addBookLevel (plMsg, pl,
-                          savedBasicDelta->getPlDeltaSize(),
-                          savedBasicDelta->getPlDeltaAction(),
-                          &(delta.getEventTime()));
-            
+                        savedBasicDelta->getPlDeltaSize(),
+                        savedBasicDelta->getPlDeltaAction(),
+                        &(delta.getEventTime()));
+
             if (1 == entryCount)
             {
                 addBookEntry (plMsg, basicDelta->getEntry(),
-                              basicDelta->getEntryDeltaAction(),
-                              &(pl->getTime()));
+                            basicDelta->getEntryDeltaAction(),
+                            &(pl->getTime()));
 
-            }              
+            }
             if (entryCount > 1)
             {
                 plMsg.addVectorMsg (NULL,
-                                   MamdaOrderBookFields::PL_ENTRIES->getFid(),
-                                   mEntries->mMsgVector,
-                                   entryCount);
+                                MamdaOrderBookFields::PL_ENTRIES->getFid(),
+                                mEntries->mMsgVector,
+                                entryCount);
 
             }
-            
-            if ((size_t)defaultNumAttachedEntries != entryCount)
+
+            if (defaultNumAttachedEntries != entryCount)
                 plMsg.addI16 (NULL,
-                             MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
-                             (mama_i16_t) entryCount);
+                            MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
+                            (mama_i16_t) entryCount);
             ++plCount;
 
             if (1 == plCount)
             {
                 addBookLevel (msg, pl,
-                              basicDelta->getPlDeltaSize(),
-                              basicDelta->getPlDeltaAction(),
-                              &(delta.getEventTime()));
+                            basicDelta->getPlDeltaSize(),
+                            basicDelta->getPlDeltaAction(),
+                            &(delta.getEventTime()));
                 if (1 == entryCount)
                 {
                     addBookEntry (msg, basicDelta->getEntry(),
-                              basicDelta->getEntryDeltaAction(),
-                              &(pl->getTime()));
+                            basicDelta->getEntryDeltaAction(),
+                            &(pl->getTime()));
                 }
                 if (entryCount > 1)
                 {
                     msg.addVectorMsg (NULL,
-                                   MamdaOrderBookFields::PL_ENTRIES->getFid(),
-                                   mEntries->mMsgVector,
-                                   entryCount);
+                                MamdaOrderBookFields::PL_ENTRIES->getFid(),
+                                mEntries->mMsgVector,
+                                entryCount);
                 }
             }
         }
-        
+
         // Add the vector of plMsgs to the main msg if plCount > 1
         if (plCount > 1)
         {
         msg.addVectorMsg (NULL, MamdaOrderBookFields::PRICE_LEVELS->getFid(),
                           mPricelevels->mMsgVector,
-                          plCount);   
+                          plCount);
         }
-                          
+
         msg.addU32 (NULL, MamdaOrderBookFields::NUM_LEVELS->getFid(),
-                    (mama_u32_t)plCount);             
-        
+                    (mama_u32_t)plCount);
+
         msg.addDateTime (NULL, MamdaOrderBookFields::BOOK_TIME->getFid(),
                          delta.getEventTime());
-        
+
         msg.addDateTime (NULL, MamdaCommonFields::SRC_TIME->getFid(),
                          delta.getSrcTime());
-                         
+
         if (delta.getEventSeqNum() != 0)
         {
             msg.addI64 (NULL, MamdaCommonFields::SEQ_NUM->getFid(),
@@ -438,19 +438,19 @@ namespace Wombat
             msg.addString (NULL, MamdaOrderBookFields::ENTRY_ID->getFid(),
                            entry->getId());
         }
-        
+
         msg.addI8  (NULL, MamdaOrderBookFields::ENTRY_ACTION->getFid(),
                     entryDeltaAction);
-        
+
         msg.addU32 (NULL, MamdaOrderBookFields::ENTRY_SIZE->getFid(),
                     (mama_u32_t)entry->getSize());
-        
+
         if ((NULL == plTime) || (plTime->compare(entry->getTime())!=0 ))
         {
             msg.addDateTime (NULL, MamdaOrderBookFields::ENTRY_TIME->getFid(),
                              entry->getTime());
         }
-        
+
         if (entry->getStatus() != 0)
         {
             msg.addU16 (NULL, MamdaOrderBookFields::ENTRY_STATUS->getFid(),
@@ -467,7 +467,7 @@ namespace Wombat
     {
         msg.addPrice(NULL, MamdaOrderBookFields::PL_PRICE->getFid(),
                    level->getMamaPrice());
-        
+
         if (defaultPlAction != (char)plDeltaAction)
         {
             msg.addI8 (NULL, MamdaOrderBookFields::PL_ACTION->getFid(),
@@ -478,19 +478,19 @@ namespace Wombat
             msg.addI8 (NULL, MamdaOrderBookFields::PL_SIDE->getFid(),
                       (char)level->getSide());
         }
-            
-        msg.addU32  (NULL, MamdaOrderBookFields::PL_SIZE->getFid(), 
+
+        msg.addU32  (NULL, MamdaOrderBookFields::PL_SIZE->getFid(),
                      level->getSize());
-        
+
         msg.addU32  (NULL, MamdaOrderBookFields::PL_SIZE_CHANGE->getFid(),
                      (mama_u32_t)level->getSizeChange());
-        
+
         if ((NULL == bookTime || (bookTime->compare (level->getTime())!=0)))
         {
             msg.addDateTime (NULL, MamdaOrderBookFields::PL_TIME->getFid(),
-                             level->getTime());   
+                             level->getTime());
         }
-        
+
         if (defaultNumEntries != level->getNumEntries())
         {
             msg.addU16 (NULL, MamdaOrderBookFields::PL_NUM_ENTRIES->getFid(),
@@ -525,7 +525,7 @@ namespace Wombat
             addBookLevel (plMsg, pl, 0.0,
                           MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD,
                           &(book.getBookTime()));
-            
+
             addBookLevelEntries (plMsg, *pl);
         }
         MamdaOrderBook::constAskIterator plAskEnd   = book.askEnd();
@@ -549,19 +549,19 @@ namespace Wombat
                               mPricelevels->mMsgVector,
                               plCount);
         }
-                  
+
         msg.addI16 (NULL, MamdaOrderBookFields::NUM_LEVELS->getFid(),
                     (mama_i16_t)plCount);
 
         msg.addString (NULL, MamdaCommonFields::SYMBOL->getFid(),
                        book.getSymbol());
-        
+
         if (book.hasPartId())
         {
             msg.addString (NULL, MamdaCommonFields::PART_ID->getFid(),
-                           book.getPartId());    
+                           book.getPartId());
         }
-            
+
         msg.addDateTime (NULL, MamdaOrderBookFields::BOOK_TIME->getFid(),
                          book.getBookTime());
 
@@ -575,7 +575,7 @@ namespace Wombat
         mama_u32_t numEntriesTotal = level.getNumEntriesTotal();
         // Make sure the reusable sub-submessage vector is large enough
         mEntries->grow(numEntriesTotal);
-      
+
         mama_u32_t entCount = 0;
         MamdaOrderBookPriceLevel::iterator end = level.end();
         MamdaOrderBookPriceLevel::iterator e = level.begin();
@@ -592,7 +592,7 @@ namespace Wombat
             addBookEntry (entMsg, ent,
                           MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
                           &(level.getTime()));
-            entCount++;        
+            entCount++;
         }
 
         if (1 == entCount)
@@ -609,7 +609,7 @@ namespace Wombat
                                mEntries->mMsgVector,
                                entCount);
         }
-        
+
         if (defaultNumAttachedEntries != (mama_i16_t) entCount)
             plMsg.addI16 (NULL, MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
                         (mama_i16_t)entCount);

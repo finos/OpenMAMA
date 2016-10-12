@@ -52,16 +52,16 @@ class AuctionTicker : public MamdaAuctionHandler
 {
 public:
     virtual ~AuctionTicker () {}
-    
-               
+
+
     void onAuctionRecap (
         MamdaSubscription*         subscription,
         MamdaAuctionListener&      listener,
         const MamaMsg&             msg,
         const MamdaAuctionRecap&   recap)
         {
-             cout << "Auction Recap (" 
-                  << subscription->getSymbol () 
+             cout << "Auction Recap ("
+                  << subscription->getSymbol ()
                   << ") \n Uncross Price: "
                   << recap.getUncrossPrice().getAsString()
                   << "(" << recap.getUncrossPriceFieldState() << ")"
@@ -70,21 +70,21 @@ public:
                   << "(" << recap.getUncrossVolumeFieldState() << ")"
                   << ", Uncross Price Ind:"
                   << toString(recap.getUncrossPriceInd())
-                  << "(" << recap.getUncrossPriceIndFieldState() << ")" 
+                  << "(" << recap.getUncrossPriceIndFieldState() << ")"
                   << "\n"
-                  << flush;         
+                  << flush;
         }
-        
-    void onAuctionUpdate ( 
+
+    void onAuctionUpdate (
         MamdaSubscription*          subscription,
         MamdaAuctionListener&      listener,
         const MamaMsg&              msg,
         const MamdaAuctionRecap&   recap,
         const MamdaAuctionUpdate&  update)
-        
+
         {
-             cout << "Auction Update (" 
-                  << subscription->getSymbol () 
+             cout << "Auction Update ("
+                  << subscription->getSymbol ()
                   << ") \n Uncross Price: "
                   << update.getUncrossPrice().getAsString()
                   << "(" << update.getUncrossPriceFieldState() << ")"
@@ -93,9 +93,9 @@ public:
                   << "(" << update.getUncrossVolumeFieldState() << ")"
                   << ", Uncross Price Ind:"
                   << toString(update.getUncrossPriceInd())
-                  << "(" << update.getUncrossPriceIndFieldState() << ")" 
+                  << "(" << update.getUncrossPriceIndFieldState() << ")"
                   << "\n"
-                  << flush;          
+                  << flush;
         }
 
 
@@ -116,7 +116,7 @@ public:
         cout << "Quality (" << subscription->getSymbol () << "): " << quality;
         flush (cout);
     }
-    
+
 };
 
 
@@ -137,7 +137,7 @@ int main (int argc, const char **argv)
 
         MamdaAuctionFields::setDictionary (*dictRequester.getDictionary ());
         MamdaCommonFields::setDictionary (*dictRequester.getDictionary());
-        
+
         const char* symbolMapFile = cmdLine.getSymbolMapFile ();
         if (symbolMapFile)
         {
@@ -156,12 +156,12 @@ int main (int argc, const char **argv)
             MamdaSubscription* aSubscription = new MamdaSubscription;
             MamdaAuctionListener* aListener = new MamdaAuctionListener();
             AuctionTicker* aTicker = new AuctionTicker();
-            
+
             aListener->addHandler (aTicker);
             aSubscription->addMsgListener   (aListener);
             aSubscription->addQualityListener (aTicker);
             aSubscription->addErrorListener (aTicker);
-            aSubscription->create (queues.getNextQueue(), source, symbol);   
+            aSubscription->create (queues.getNextQueue(), source, symbol);
         }
 
         Mama::start(bridge);

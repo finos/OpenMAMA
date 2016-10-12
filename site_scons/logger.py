@@ -2,7 +2,7 @@ import subprocess,sys,os
 from time import gmtime, strftime,sleep,time
 
 import sys
-reload(sys)  
+reload(sys)
 sys.setdefaultencoding('utf8')
 
 class Logger:
@@ -40,7 +40,7 @@ class Logger:
             if self.opts['verbose'] == True:
                sys.stderr.write('WARNING:: %s' % (stderr))
             self.fd.write('%s\n' % (stderr))
-        # Include stdout logs if there are any. This is especially 
+        # Include stdout logs if there are any. This is especially
         # helpful in Windows builds where MSVS CL command-line sends
         # useful errors/warnings to stdout instead of stderr.
         if len(stdout) > 0:

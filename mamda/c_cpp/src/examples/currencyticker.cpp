@@ -51,16 +51,16 @@ class CurrencyTicker : public MamdaCurrencyHandler
 {
 public:
     virtual ~CurrencyTicker () {}
-    
-               
+
+
     void onCurrencyRecap (
         MamdaSubscription*          subscription,
         MamdaCurrencyListener&      listener,
         const MamaMsg&              msg,
         const MamdaCurrencyRecap&   recap)
         {
-             cout << "Currency Recap (" 
-                  << subscription->getSymbol () 
+             cout << "Currency Recap ("
+                  << subscription->getSymbol ()
                   << ") \n  BidPrice: "
                   << recap.getBidPrice().getAsString()
                   << "(" << recap.getBidPriceFieldState() << ")"
@@ -68,16 +68,16 @@ public:
                   << recap.getAskPrice().getAsString()
                   << "(" << recap.getAskPriceFieldState() << ")"
                   << "\n"
-                  << flush;         
+                  << flush;
         }
-        
-    void onCurrencyUpdate ( 
+
+    void onCurrencyUpdate (
         MamdaSubscription*          subscription,
         MamdaCurrencyListener&      listener,
         const MamaMsg&              msg,
         const MamdaCurrencyRecap&   recap,
         const MamdaCurrencyUpdate&  update)
-        
+
         {
             cout << "\n BidPrice:"
                  << update.getBidPrice().getAsString()
@@ -86,7 +86,7 @@ public:
                  << update.getAskPrice().getAsString()
                  << "(" << recap.getAskPriceFieldState() << ")"
                  << "\n"
-                 << flush;         
+                 << flush;
 }
 
 
@@ -107,7 +107,7 @@ public:
         cout << "Quality (" << subscription->getSymbol () << "): " << quality;
         flush (cout);
     }
-    
+
 };
 
 
@@ -128,7 +128,7 @@ int main (int argc, const char **argv)
 
         MamdaCurrencyFields::setDictionary (*dictRequester.getDictionary ());
         MamdaCommonFields::setDictionary (*dictRequester.getDictionary());
-        
+
         const char* symbolMapFile = cmdLine.getSymbolMapFile ();
         if (symbolMapFile)
         {
@@ -147,12 +147,12 @@ int main (int argc, const char **argv)
             MamdaSubscription* aSubscription = new MamdaSubscription;
             MamdaCurrencyListener* aListener = new MamdaCurrencyListener();
             CurrencyTicker* aTicker = new CurrencyTicker();
-            
+
             aListener->addHandler (aTicker);
             aSubscription->addMsgListener   (aListener);
             aSubscription->addQualityListener (aTicker);
             aSubscription->addErrorListener (aTicker);
-            aSubscription->create (queues.getNextQueue(), source, symbol);   
+            aSubscription->create (queues.getNextQueue(), source, symbol);
         }
 
         Mama::start(bridge);

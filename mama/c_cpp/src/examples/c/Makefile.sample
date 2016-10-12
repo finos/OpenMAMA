@@ -53,7 +53,7 @@ all: mamalistenc mamainboxc \
 	mamaproxyc mamaio \
 	mamamultisubscriberc mamaftmemberc \
 	mamalistencachedc
-    
+
 mamalistenc: mamalistenc.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
@@ -83,4 +83,3 @@ mamaftmemberc: mamaftmemberc.o
 
 mamalistencachedc: mamalistencachedc.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
-

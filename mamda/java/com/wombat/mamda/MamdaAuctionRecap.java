@@ -39,7 +39,7 @@ public interface MamdaAuctionRecap extends MamdaBasicRecap
     /**
      * Get the uncross vol.
      *
-     * @return uncross price.   The indicative volume, or the volume turned over in the auction 
+     * @return uncross vol.   The indicative volume, or the volume turned over in the auction 
      */    
     MamaDouble  getUncrossVolume();
 

@@ -342,7 +342,7 @@ void CacheCallback::onEvent(MamaQueue& queue, void* closure)
     {
         if (closure)
         {
-            try
+        	try
             {
                 cachedMsg->updateU8 (NULL,
                                      MamaFieldMsgType.mFid,
@@ -361,7 +361,7 @@ void CacheCallback::onEvent(MamaQueue& queue, void* closure)
         }
         else
         {
-            try
+        	try
             {
                 cachedMsg->updateU8 (NULL,
                                      MamaFieldMsgType.mFid,

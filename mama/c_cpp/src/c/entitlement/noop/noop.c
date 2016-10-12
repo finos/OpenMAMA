@@ -99,7 +99,7 @@ mama_status
 noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle handle, int isSnapshot)
 {
     mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_setIsSnapShot():");
-    return MAMA_STATUS_OK;
+	return MAMA_STATUS_OK;
 }
 
 int

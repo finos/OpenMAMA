@@ -71,11 +71,11 @@ public:
             prettyPrint (subscription, level);
         }
     }
-  
+
     void onBookAtomicBeginBook (
         MamdaSubscription*           subscription,
         MamdaBookAtomicListener&     listener,
-        bool                         isRecap) 
+        bool                         isRecap)
 
     {
         if (gExampleLogLevel == EXAMPLE_LOG_LEVEL_NORMAL)
@@ -96,7 +96,7 @@ public:
         }
         flush (cout);
     }
-  
+
     void onBookAtomicGap (
         MamdaSubscription*           subscription,
         MamdaBookAtomicListener&     listener,
@@ -112,10 +112,10 @@ public:
         flush (cout);
     }
 
-  
+
     void onBookAtomicEndBook (
         MamdaSubscription*           subscription,
-        MamdaBookAtomicListener&     listener) 
+        MamdaBookAtomicListener&     listener)
     {
         if (gExampleLogLevel == EXAMPLE_LOG_LEVEL_NORMAL)
         {
@@ -170,7 +170,7 @@ public:
         }
     }
 
-    void onError ( 
+    void onError (
         MamdaSubscription*  subscription,
         MamdaErrorSeverity  severity,
         MamdaErrorCode      code,
@@ -207,7 +207,7 @@ public:
         flush (cout);
     }
 
-    void prettyPrint (MamdaSubscription*           subscription, 
+    void prettyPrint (MamdaSubscription*           subscription,
                       const MamdaBookAtomicLevel&  level)
     {
         // Price Level Info
@@ -288,7 +288,7 @@ int main (int argc, const char** argv)
             aSubscription->create             (queues->getNextQueue(), source, symbol);
             aBookListener->setProcessMarketOrders (processMarketOrders);
         }
-        
+
         // Dispatch on the default MAMA queue
         Mama::start(bridge);
     }
@@ -307,7 +307,7 @@ int main (int argc, const char** argv)
         cerr << "Unknown Exception in main ()." << endl;
         exit(EXIT_FAILURE);
     }
-    
+
     return 0;
 }
 

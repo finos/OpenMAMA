@@ -25,13 +25,13 @@
 #include "mama/log.h"
 #include "MsgFieldImpl.h"
 
-namespace Wombat 
+namespace Wombat
 {
     /******************************************************************************
      * MamaMsg Methods
      */
-        
-    MamaMsg::~MamaMsg () 
+
+    MamaMsg::~MamaMsg ()
     {
         cleanup();
         /* The reuseable field does not get destroyed in cleanup() */
@@ -42,7 +42,7 @@ namespace Wombat
         }
     }
 
-    MamaMsg::MamaMsg (void) 
+    MamaMsg::MamaMsg (void)
         : mMsg                  (NULL)
         , mDestroy              (true)
         , mVectorMsg            (NULL)
@@ -52,12 +52,12 @@ namespace Wombat
         , mCvectorMsgAllocSize  (0)
         , mTmpMsg               (NULL)
         , mString               (NULL)
-        , mMsgField             (new MamaMsgField) 
+        , mMsgField             (new MamaMsgField)
         , mCopyMsg              (NULL)
     {
     }
 
-    MamaMsg::MamaMsg (const MamaMsg&  copy) 
+    MamaMsg::MamaMsg (const MamaMsg&  copy)
         : mMsg                  (NULL)
         , mDestroy              (true)
         , mVectorMsg            (NULL)
@@ -97,7 +97,7 @@ namespace Wombat
         {
             mamaMsg_destroy(mMsg);
         }
-        
+
         mamaMsg_createForPayloadBridge  (&mMsg,
                                   payloadBridge
                                   );
@@ -182,7 +182,7 @@ namespace Wombat
         return result;
     }
     MAMAIgnoreDeprecatedClose
-        
+
     void*  MamaMsg::getNativeMsg (void)
     {
         void*  result;
@@ -206,14 +206,14 @@ namespace Wombat
     }
 
     bool MamaMsg::getBoolean (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         mama_bool_t result = 0;
         mamaTry (mamaMsg_getBool (mMsg, name, fid, &result));
         return (result != 0);
     }
-        
+
     bool MamaMsg::getBoolean (const MamaFieldDescriptor* fieldDesc) const
     {
         if (!fieldDesc)
@@ -221,16 +221,16 @@ namespace Wombat
         else
             return getBoolean (fieldDesc->getName (), fieldDesc->getFid ());
     }
-        
+
     char MamaMsg::getChar (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         char result = ' ';
         mamaTry (mamaMsg_getChar (mMsg, name, fid, &result));
         return result;
     }
-        
+
     char MamaMsg::getChar ( const MamaFieldDescriptor* fieldDesc) const
     {
         if (!fieldDesc)
@@ -240,7 +240,7 @@ namespace Wombat
     }
 
     int8_t MamaMsg::getI8 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         int8_t result;
@@ -255,16 +255,16 @@ namespace Wombat
         else
             return getI8 (fieldDesc->getName (), fieldDesc->getFid ());
     }
-        
+
     uint8_t MamaMsg::getU8 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         uint8_t result;
         mamaTry (mamaMsg_getU8 (mMsg, name, fid, &result));
         return result;
     }
-        
+
     uint8_t MamaMsg::getU8 (const MamaFieldDescriptor* fieldDesc) const
     {
         if (!fieldDesc)
@@ -272,16 +272,16 @@ namespace Wombat
         else
             return getU8 (fieldDesc->getName (), fieldDesc->getFid ());
     }
-        
+
     int16_t MamaMsg::getI16 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         int16_t result;
         mamaTry (mamaMsg_getI16 (mMsg, name, fid, &result));
         return result;
     }
-        
+
     int16_t MamaMsg::getI16 (const MamaFieldDescriptor* fieldDesc) const
     {
         if (!fieldDesc)
@@ -289,16 +289,16 @@ namespace Wombat
         else
             return getI16 (fieldDesc->getName (), fieldDesc->getFid ());
     }
-        
+
     uint16_t MamaMsg::getU16 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         uint16_t result;
         mamaTry (mamaMsg_getU16 (mMsg, name, fid, &result));
         return result;
     }
-        
+
     uint16_t MamaMsg::getU16 (const MamaFieldDescriptor* fieldDesc) const
     {
         if (!fieldDesc)
@@ -306,9 +306,9 @@ namespace Wombat
         else
             return getU16 (fieldDesc->getName (), fieldDesc->getFid ());
     }
-        
+
     int32_t MamaMsg::getI32 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         int32_t result;
@@ -325,7 +325,7 @@ namespace Wombat
     }
 
     uint32_t MamaMsg::getU32 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         uint32_t result;
@@ -342,7 +342,7 @@ namespace Wombat
     }
 
     int64_t MamaMsg::getI64 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         int64_t result;
@@ -359,7 +359,7 @@ namespace Wombat
     }
 
     uint64_t MamaMsg::getU64 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         uint64_t result;
@@ -376,7 +376,7 @@ namespace Wombat
     }
 
     mama_f32_t MamaMsg::getF32 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         mama_f32_t result;
@@ -393,7 +393,7 @@ namespace Wombat
     }
 
     mama_f64_t MamaMsg::getF64 (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         mama_f64_t result;
@@ -410,7 +410,7 @@ namespace Wombat
     }
 
     const char* MamaMsg::getString (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         const char* result = NULL;
@@ -425,9 +425,9 @@ namespace Wombat
         else
             return getString (fieldDesc->getName (), fieldDesc->getFid ());
     }
-        
+
     const void* MamaMsg::getOpaque (
-        const char*       name, 
+        const char*       name,
         mama_fid_t        fid,
         size_t&           size) const
     {
@@ -766,7 +766,7 @@ namespace Wombat
         {
             MamaMsg* vecMsg = mVectorMsg[i];
             vecMsg->setMsg (tmpResult[i]);
-            vecMsg->setDestroyCMsg (false); 
+            vecMsg->setDestroyCMsg (false);
         }
 
         return (const MamaMsg**)mVectorMsg;
@@ -798,7 +798,7 @@ namespace Wombat
     }
 
     bool MamaMsg::tryBoolean (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         bool&         result) const
     {
@@ -826,12 +826,12 @@ namespace Wombat
     }
 
     bool MamaMsg::tryChar (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         char&         result) const
     {
         char val = ' ';
-        if (mamaTryIgnoreNotFound (mamaMsg_getChar (mMsg, name, fid, &val)) != MAMA_STATUS_OK) 
+        if (mamaTryIgnoreNotFound (mamaMsg_getChar (mMsg, name, fid, &val)) != MAMA_STATUS_OK)
         {
             return false;
         }
@@ -852,14 +852,14 @@ namespace Wombat
             return false;
         }
     }
-        
+
     bool MamaMsg::tryI8 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         int8_t&      result) const
     {
         int8_t val;
-        if (mamaTryIgnoreNotFound (mamaMsg_getI8 (mMsg, name, fid, &val)) != MAMA_STATUS_OK) 
+        if (mamaTryIgnoreNotFound (mamaMsg_getI8 (mMsg, name, fid, &val)) != MAMA_STATUS_OK)
         {
             return false;
         }
@@ -880,14 +880,14 @@ namespace Wombat
             return false;
         }
     }
-        
+
     bool MamaMsg::tryU8 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         uint8_t&      result) const
     {
         uint8_t val;
-        if (mamaTryIgnoreNotFound (mamaMsg_getU8 (mMsg, name, fid, &val)) != MAMA_STATUS_OK) 
+        if (mamaTryIgnoreNotFound (mamaMsg_getU8 (mMsg, name, fid, &val)) != MAMA_STATUS_OK)
         {
             return false;
         }
@@ -908,9 +908,9 @@ namespace Wombat
             return false;
         }
     }
-        
+
     bool MamaMsg::tryI16 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         int16_t&      result) const
     {
@@ -934,12 +934,12 @@ namespace Wombat
     }
 
     bool MamaMsg::tryU16 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         uint16_t&      result) const
     {
         uint16_t val;
-        if (mamaTryIgnoreNotFound (mamaMsg_getU16 (mMsg, name, fid, &val)) != MAMA_STATUS_OK) 
+        if (mamaTryIgnoreNotFound (mamaMsg_getU16 (mMsg, name, fid, &val)) != MAMA_STATUS_OK)
         {
             return false;
         }
@@ -962,12 +962,12 @@ namespace Wombat
     }
 
     bool MamaMsg::tryI32 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         int32_t&      result) const
     {
         int32_t val;
-        if (mamaTryIgnoreNotFound (mamaMsg_getI32 (mMsg, name, fid, &val)) != MAMA_STATUS_OK) 
+        if (mamaTryIgnoreNotFound (mamaMsg_getI32 (mMsg, name, fid, &val)) != MAMA_STATUS_OK)
         {
             return false;
         }
@@ -990,12 +990,12 @@ namespace Wombat
     }
 
     bool MamaMsg::tryU32 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         uint32_t&      result) const
     {
         uint32_t val;
-        if (mamaTryIgnoreNotFound (mamaMsg_getU32 (mMsg, name, fid, &val)) != MAMA_STATUS_OK) 
+        if (mamaTryIgnoreNotFound (mamaMsg_getU32 (mMsg, name, fid, &val)) != MAMA_STATUS_OK)
         {
             return false;
         }
@@ -1018,12 +1018,12 @@ namespace Wombat
     }
 
     bool MamaMsg::tryI64 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         int64_t&      result) const
     {
         int64_t val;
-        if (mamaTryIgnoreNotFound (mamaMsg_getI64 (mMsg, name, fid, &val)) != MAMA_STATUS_OK) 
+        if (mamaTryIgnoreNotFound (mamaMsg_getI64 (mMsg, name, fid, &val)) != MAMA_STATUS_OK)
         {
             return false;
         }
@@ -1046,12 +1046,12 @@ namespace Wombat
     }
 
     bool MamaMsg::tryU64 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         uint64_t&      result) const
     {
         uint64_t val;
-        if (mamaTryIgnoreNotFound (mamaMsg_getU64 (mMsg, name, fid, &val)) != MAMA_STATUS_OK) 
+        if (mamaTryIgnoreNotFound (mamaMsg_getU64 (mMsg, name, fid, &val)) != MAMA_STATUS_OK)
         {
             return false;
         }
@@ -1074,7 +1074,7 @@ namespace Wombat
     }
 
     bool MamaMsg::tryF32 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         mama_f32_t&   result) const
     {
@@ -1102,7 +1102,7 @@ namespace Wombat
     }
 
     bool MamaMsg::tryF64 (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         mama_f64_t&   result) const
     {
@@ -1130,7 +1130,7 @@ namespace Wombat
     }
 
     bool MamaMsg::tryString (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         const char*&  result) const
     {
@@ -1158,7 +1158,7 @@ namespace Wombat
     }
 
     bool MamaMsg::tryDateTime (
-        const char*    name, 
+        const char*    name,
         mama_fid_t     fid,
         MamaDateTime&  result) const
     {
@@ -1177,7 +1177,7 @@ namespace Wombat
         if (field)
         {
             // For performance
-            if (mamaTryIgnoreNotFound (mamaMsg_getDateTime (mMsg, field->getName(), 
+            if (mamaTryIgnoreNotFound (mamaMsg_getDateTime (mMsg, field->getName(),
                             field->getFid (), result.getCValue())) != MAMA_STATUS_OK)
             {
                 return false;
@@ -1191,7 +1191,7 @@ namespace Wombat
     }
 
     bool MamaMsg::tryPrice (
-        const char*    name, 
+        const char*    name,
         mama_fid_t     fid,
         MamaPrice&     result) const
     {
@@ -1221,7 +1221,7 @@ namespace Wombat
         mamaMsg  tmpResult = NULL;
         if (MAMA_STATUS_OK != mamaMsg_getMsg(mMsg,name,fid,&tmpResult))
             return false;
-            
+
         if (!mTmpMsg)
         {
             mTmpMsg = new MamaMsg ();
@@ -1238,7 +1238,7 @@ namespace Wombat
     bool MamaMsg::tryMsg (
         const MamaFieldDescriptor* field,
         const MamaMsg*&            result) const
-    {  
+    {
         if (field)
         {
             return tryMsg (field->getName(), field->getFid(), result);
@@ -1250,7 +1250,7 @@ namespace Wombat
     }
 
     bool MamaMsg::tryOpaque (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         const void*&  result,
         size_t&       size) const
@@ -1711,7 +1711,7 @@ namespace Wombat
     {                                                               \
         if (field)                                                  \
             method( field->getName(), field->getFid(), value);      \
-    }                                                               
+    }
 */
 #define ExpandImplAddScalar(method,fType,cFunc) \
 void MamaMsg::method (const char* name, mama_fid_t fid, fType value)   \
@@ -1734,13 +1734,13 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
 
 
     void MamaMsg::addBoolean (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         bool          value)
     {
         mama_bool_t b_value = 0;
 
-        if (true == value) 
+        if (true == value)
         {
             b_value = 1;
         }
@@ -1757,9 +1757,9 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
             addBoolean (fieldDesc->getName(), fieldDesc->getFid(), value);
         }
     }
-        
+
     void MamaMsg::addDateTime (
-        const char*         name, 
+        const char*         name,
         mama_fid_t          fid,
         const MamaDateTime& value)
     {
@@ -1777,7 +1777,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     void MamaMsg::addPrice (
-        const char*         name, 
+        const char*         name,
         mama_fid_t          fid,
         const MamaPrice&    value)
     {
@@ -1795,7 +1795,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     void MamaMsg::addOpaque (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         const void*   value,
         size_t        size)
@@ -1815,8 +1815,8 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     void MamaMsg::addMsg (
-        const char* name, 
-        mama_fid_t fid, 
+        const char* name,
+        mama_fid_t fid,
         MamaMsg* value)
     {
         if (value)
@@ -1827,10 +1827,10 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         {
             throw MamaStatus(MAMA_STATUS_NULL_ARG);
         }
-    }   
+    }
 
     void MamaMsg::addMsg (
-        const MamaFieldDescriptor* fieldDesc, 
+        const MamaFieldDescriptor* fieldDesc,
         MamaMsg* value)
     {
         if (fieldDesc)
@@ -1838,25 +1838,25 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
             addMsg(fieldDesc->getName(), fieldDesc->getFid(), value);
         }
     }
-       
+
     void MamaMsg::addVectorMsg (
         const MamaFieldDescriptor*  fieldDesc,
         MamaMsg*                    vectorValues[],
         size_t                      vectorLen)
-    {    
+    {
         if (fieldDesc)
         {
             addVectorMsg (fieldDesc->getName(), fieldDesc->getFid(), vectorValues, vectorLen);
         }
-    }            
-            
+    }
+
     void MamaMsg::addVectorMsg (
         const char*       name,
         mama_fid_t        fid,
         MamaMsg*          vectorValues[],
         size_t            vectorLen)
-    {    
-        growCvector (vectorLen);  
+    {
+        growCvector (vectorLen);
 
         for (size_t i = 0; i < vectorLen; i++)
         {
@@ -1865,7 +1865,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         }
 
         mamaTry (mamaMsg_addVectorMsg (mMsg, name, fid, mCvectorMsg, vectorLen));
-    }       
+    }
 
     #define ExpandAddVectorScalar(method,fType,cFunc)                       \
                                                                             \
@@ -1935,13 +1935,13 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     ExpandUpdateVectorScalar (updateString, const char*,      mamaMsg_updateString)
 
     void MamaMsg::updateBoolean (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         bool          value)
     {
         mama_bool_t b_value = 0;
 
-        if (true == value) 
+        if (true == value)
         {
             b_value = 1;
         }
@@ -1960,7 +1960,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     void MamaMsg::updateDateTime (
-        const char*         name, 
+        const char*         name,
         mama_fid_t          fid,
         const MamaDateTime& value)
     {
@@ -1978,7 +1978,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     void MamaMsg::updatePrice (
-        const char*         name, 
+        const char*         name,
         mama_fid_t          fid,
         const MamaPrice&    value)
     {
@@ -1996,7 +1996,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     void MamaMsg::updateOpaque (
-        const char*   name, 
+        const char*   name,
         mama_fid_t    fid,
         const void*   value,
         size_t        size)
@@ -2019,9 +2019,9 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     mamaMsgType MamaMsg::getType (void) const
     {
         int32_t result;
-        mamaTry (mamaMsg_getI32 (mMsg, 
-                                 MamaFieldMsgType.mName, 
-                                 MamaFieldMsgType.mFid, 
+        mamaTry (mamaMsg_getI32 (mMsg,
+                                 MamaFieldMsgType.mName,
+                                 MamaFieldMsgType.mFid,
                                  &result));
         return static_cast<mamaMsgType> (result);
     }
@@ -2049,7 +2049,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     MamaMsgField* MamaMsg::getField (
-        const char*   name, 
+        const char*   name,
         mama_fid_t   fid) const
     {
         mamaMsgField  tmpResult = NULL;
@@ -2066,7 +2066,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
 
 
     MamaMsgField* MamaMsg::getField (const MamaFieldDescriptor* fieldDesc)const
-                                    
+
     {
         if (!fieldDesc)
             return NULL;
@@ -2074,7 +2074,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     bool MamaMsg::tryField (
-        const char*  name, 
+        const char*  name,
         mama_fid_t   fid) const
     {
         mamaMsgField tmpResult = NULL;
@@ -2087,7 +2087,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
 
 
     bool MamaMsg::tryField (
-        const MamaFieldDescriptor*  fieldDesc, 
+        const MamaFieldDescriptor*  fieldDesc,
         MamaMsgField*               result) const
     {
         if (!fieldDesc)
@@ -2096,8 +2096,8 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     bool MamaMsg::tryField (
-        const char* name, 
-        mama_fid_t fid, 
+        const char* name,
+        mama_fid_t fid,
         MamaMsgField* result) const
     {
         mamaMsgField tmpResult = NULL;
@@ -2124,12 +2124,12 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
 
     void MamaMsg::getFieldAsString (
         const char*  name,
-        mama_fid_t   fid, 
+        mama_fid_t   fid,
         char*        result,
         size_t       maxResultLen) const
     {
         mamaTry (mamaMsg_getFieldAsString (
-                     mMsg, 
+                     mMsg,
                      name,
                      fid,
                      result,
@@ -2150,7 +2150,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
 
     bool MamaMsg::tryFieldAsString (
         const char*  name,
-        mama_fid_t   fid, 
+        mama_fid_t   fid,
         char*        result,
         size_t       maxResultLen) const
     {
@@ -2274,7 +2274,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         void*                  mClosure;
     };
 
-    extern "C" 
+    extern "C"
     {
         static void MAMACALLTYPE msgItCb (
             const mamaMsg       msg,
@@ -2329,7 +2329,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
                 newVector[i] = new MamaMsg;
             }
 
-            if (mVectorMsg) 
+            if (mVectorMsg)
                 delete [] mVectorMsg;
 
             mVectorMsg = newVector;
@@ -2355,7 +2355,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
                 newVector[i] = NULL;
             }
 
-            if (mCvectorMsg) 
+            if (mCvectorMsg)
                 delete [] mCvectorMsg;
 
             mCvectorMsg = newVector;
@@ -2396,7 +2396,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
             mCvectorMsg = NULL;
             mCvectorMsgAllocSize = 0;
         }
-        
+
         if (mTmpMsg)
         {
             delete mTmpMsg;
@@ -2413,16 +2413,16 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     void MamaMsg::applyMsg (const MamaMsg&  delta)
     {
         mama_status status;
-        
+
         if (MAMA_STATUS_OK != (status = mamaMsg_applyMsg (mMsg, delta.getUnderlyingMsg())))
             throw MamaStatus(status);
-            
+
     }
 
     MamaMsgField& MamaMsg::begin (MamaMsgIterator& theiterator) const
-    {  
+    {
         mamaMsgIterator_associate(
-            ((mamaMsgIterator)(theiterator.myImpl)), 
+            ((mamaMsgIterator)(theiterator.myImpl)),
             getUnderlyingMsg());
 
         mamaMsgIterator_begin (
@@ -2435,18 +2435,18 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     }
 
     MamaMsgIterator::MamaMsgIterator (const MamaDictionary*  dictionary)
-    {  
+    {
         mamaDictionary dictC = NULL;
         if (dictionary)
         {
             dictC = dictionary->getDictC ();
         }
-        
+
         mamaTry(mamaMsgIterator_create (&myImpl, dictC));
     }
 
     MamaMsgIterator::MamaMsgIterator ()
-    {  
+    {
         mamaTry(mamaMsgIterator_create (&myImpl, NULL));
     }
 
@@ -2498,7 +2498,7 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         {
             dictC = dictionary->getDictC ();
         }
-        
+
         mamaMsgIterator_setDict((mamaMsgIterator)myImpl, dictC);
     }
 

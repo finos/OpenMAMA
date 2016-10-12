@@ -34,7 +34,7 @@ class Windows:
             if not optsEnv.has_key('qpid_home'):
                 print 'ERROR: Qpid home must be specified'
                 Exit(1)
-            
+
             if not optsEnv.has_key('libevent_home'):
                 print 'ERROR: In order to build the QPID bridge, '\
                       'Libevent home must be specified'
@@ -81,7 +81,7 @@ class Windows:
                 MSVS_VERSION = optsEnv['vsver'],
                 TARGET_ARCH = optsEnv['target_arch'])
 
-            #ConfigureJNI searches os.env for java_home not env['ENV']['JAVA_HOME'] 
+            #ConfigureJNI searches os.env for java_home not env['ENV']['JAVA_HOME']
             #This is needed if set on cmd line via scons java_home=/path/to/java
             os.environ['JAVA_HOME'] = optsEnv['java_home']
             if not ConfigureJNI(env):

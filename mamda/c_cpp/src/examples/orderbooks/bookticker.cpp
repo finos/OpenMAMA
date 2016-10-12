@@ -51,7 +51,7 @@ using std::cerr;
 using std::cout;
 
 using namespace Wombat;
-    
+
 void usage (int exitStatus);
 
 class PrettyPrint
@@ -73,14 +73,14 @@ public:
 
     void prettyPrint (const MamdaOrderBookBasicDelta&  delta)
     {
-        
+
         MamdaOrderBookPriceLevel*        level  = delta.getPriceLevel ();
         mama_quantity_t                  size   = delta.getPlDeltaSize ();
         MamdaOrderBookPriceLevel::Action action = delta.getPlDeltaAction();
 
         if (MamdaOrderBookPriceLevel::MAMDA_BOOK_LEVEL_LIMIT
             == level->getOrderType())
-        {            
+        {
             double price = level->getPrice ();
             printf (" %7g %7.*f  %c \n", size, mPrecision, price, action);
         }
@@ -103,7 +103,7 @@ public:
         MamdaOrderBook::constAskIterator askEnd  = book.askEnd ();
         char timeStr[32];
 
-      
+
         if (mShowMarketOrders)
         {
             printf ("    MARKET ORDERS ---------------------------------------------------------------\n");
@@ -140,7 +140,7 @@ public:
             printf ("\n");
             printf ("    LIMIT ORDERS  ---------------------------------------------------------------\n");
         }
-      
+
         while ((bidIter != bidEnd) || (askIter != askEnd))
         {
             if (bidIter != bidEnd)
@@ -189,7 +189,7 @@ public:
         MamdaOrderBook::constAskIterator askIter = book.askBegin ();
         MamdaOrderBook::constAskIterator askEnd  = book.askEnd ();
         char timeStr[32];
-        
+
         if (mShowMarketOrders)
         {
             const MamdaOrderBookPriceLevel* marketBidLevel =
@@ -238,7 +238,7 @@ public:
                     printf ("  %14s  %12s %7g  MARKET\n",
                             id, timeStr, size);
                     ++i;
-                }   
+                }
             }
         }
 
@@ -261,13 +261,13 @@ public:
                 mama_quantity_t  size  = entry->getSize ();
                 double           price = bidLevel->getPrice ();
                 entry->getTime().getAsFormattedString (timeStr, 32, "%T%;");
-                printf ("  %14s  %12s %7g %7.*f\n", 
+                printf ("  %14s  %12s %7g %7.*f\n",
                         id, timeStr, size, mPrecision, price);
                 ++i;
             }
             ++bidIter;
         }
-        
+
         while (askIter != askEnd)
         {
             const MamdaOrderBookPriceLevel* askLevel = *askIter;
@@ -294,14 +294,14 @@ public:
             ++askIter;
         }
         flush (cout);
-        
+
     }
 
     void setPrecision (int  precision)
     {
       mPrecision = precision;
     }
-    
+
     void setShowEntries (bool  showEntries)
     {
         mShowEntries = showEntries;
@@ -344,7 +344,7 @@ public:
             prettyPrint (subscription->getSymbol(), book);
         }
     }
-    
+
     void onBookDelta (
         MamdaSubscription*                 subscription,
         MamdaOrderBookListener&            listener,
@@ -368,12 +368,12 @@ public:
         if (gExampleLogLevel >= EXAMPLE_LOG_LEVEL_NORMAL)
         {
             mama_seqnum_t seqNum = (msg) ? msg->getSeqNum() : 0;
-            
+
             cout << (orderType ==
                      MamdaOrderBookPriceLevel::MAMDA_BOOK_LEVEL_MARKET ? "MARKET " : "")
                  << "DELTA!!!  (seq# " << seqNum << ")" << endl;
 
-            if (mShowDeltas) 
+            if (mShowDeltas)
             {
                 prettyPrint (delta);
             }
@@ -400,7 +400,7 @@ public:
         const MamaMsg*                      msg,
         const MamdaOrderBookComplexDelta&   delta,
         const MamdaOrderBook&               book,
-        MamdaOrderBookPriceLevel::OrderType orderType)    
+        MamdaOrderBookPriceLevel::OrderType orderType)
     {
         if (gExampleLogLevel >= EXAMPLE_LOG_LEVEL_NORMAL)
         {
@@ -545,7 +545,7 @@ int main (int argc, const char **argv)
                 source->getTransport()->setSymbolMap (aMap);
             }
         }
-        
+
         for (vector<const char*>::const_iterator i = symbolList.begin ();
             i != symbolList.end ();
             ++i)
@@ -567,17 +567,17 @@ int main (int argc, const char **argv)
             aTicker->setShowMarketOrders (processMarketOrders);
             aTicker->setShowDeltas       (showDeltas);
             aTicker->setPrecision        (precision);
-            
+
             aSubscription->setType (MAMA_SUBSC_TYPE_BOOK);
             aSubscription->setMdDataType (MAMA_MD_DATA_TYPE_ORDER_BOOK);
-            
+
             aSubscription->create (queues.getNextQueue(), source, symbol);
         }
 
         Mama::start (bridge);
     }
     catch (MamaStatus &e)
-    {  
+    {
         // This exception can be thrown from Mama.open ()
         // Mama::createTransport (transportName) and from
         // MamdaSubscription constructor when entitlements is enabled.
@@ -600,7 +600,7 @@ int main (int argc, const char **argv)
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: bookticker [-S source] -s symbol [-s symbol ...]\n " 
+    std::cerr << "Usage: bookticker [-S source] -s symbol [-s symbol ...]\n "
               << "[-threads x] [-deltas] (For showing Deltas) [-e] (For showing Entries)\n"
               << "[-k] (process market orders) [-tport] [-dict_tport] \n";
     exit (exitStatus);

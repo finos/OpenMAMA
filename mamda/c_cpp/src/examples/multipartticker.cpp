@@ -124,7 +124,7 @@ public:
         const MamdaQuoteGap&    event,
         const MamdaQuoteRecap&  recap)
     {
-        cout << "Quote gap (" << event.getBeginGapSeqNum () << "-" 
+        cout << "Quote gap (" << event.getBeginGapSeqNum () << "-"
              << event.getEndGapSeqNum () << ")\n";
         flush (cout);
     }
@@ -274,7 +274,7 @@ public:
              << ")\n";
         flush (cout);
     }
-    
+
     void onTradePossiblyDuplicate (
         MamdaSubscription*                  subscription,
         MamdaTradeListener&                 listener,
@@ -356,7 +356,7 @@ int main (int argc, const char* argv[])
         // Initialise the MAMA API
         mamaBridge bridge = cmdLine.getBridge();
         Mama::open ();
- 
+
         const vector<const char*>&  symbolList    = cmdLine.getSymbolList ();
         MamaSource*                 source        = cmdLine.getSource();
         MamaQueueGroup  queues (cmdLine.getNumThreads(), bridge);
@@ -365,10 +365,10 @@ int main (int argc, const char* argv[])
         if ((throttleRate > 100.0) || (throttleRate <= 0.0))
         {
             // We don't really want to swamp the FHs with these types of
-            // subscriptions.  
+            // subscriptions.
             throttleRate = 100.0;
         }
-        source->getTransport()->setOutboundThrottle (throttleRate, 
+        source->getTransport()->setOutboundThrottle (throttleRate,
                                                      MAMA_THROTTLE_DEFAULT);
 
         DictRequester   dictRequester (bridge);
@@ -407,7 +407,7 @@ int main (int argc, const char* argv[])
     }
     catch (MamaStatus &e)
     {
-        
+
         // This exception can be thrown from Mama::start (),
         // Mama::createTransport (transportName) and from
         // MamdaSubscription constructor when entitlements is
@@ -430,6 +430,6 @@ int main (int argc, const char* argv[])
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: multipartticker [-tport] tport_name [-m] middleware [-S] source [-s] symbol ";              
+    std::cerr << "Usage: multipartticker [-tport] tport_name [-m] middleware [-S] source [-s] symbol ";
     exit (exitStatus);
 }

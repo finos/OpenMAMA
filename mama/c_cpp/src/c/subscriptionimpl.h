@@ -78,7 +78,7 @@ typedef enum
 /* Structures. */
 /* *************************************************** */
 
-/* For wild card and group subscriptions subject hash table we track item/topic 
+/* For wild card and group subscriptions subject hash table we track item/topic
  * specific context information for each subject that we encounter. This
  * information includes whether the user is entitled to the subject, the
  * sequence number if available, and a user supplied closure. The user can set
@@ -88,7 +88,7 @@ typedef enum
  */
 
 typedef struct SubjectContext_
-{    
+{
     EntitleStatus       mEntitlement; /* default to NOT_DETERMINED! */
     int32_t             mEntitleCode;
     uint8_t             mEntitlementAlreadyVerified;
@@ -97,11 +97,11 @@ typedef struct SubjectContext_
     void*               mClosure;
     unsigned short      mInitialArrived;
     char*               mSymbol;
-    int                 mImageCount; 
+    int                 mImageCount;
     mamaEntitlementSubscription mEntitlementSubscription;
     mamaEntitlementBridge       mEntitlementBridge;
 } SubjectContext_;
-    
+
 /* *************************************************** */
 /* Internal Function Prototypes. */
 /* *************************************************** */
@@ -110,11 +110,11 @@ typedef struct SubjectContext_
  * This function will cancel the subscription preventing further update messages being
  * received from the bridge. Note that the subscription will still be active.
  *
- * @param[in] subscription The subscription. 
+ * @param[in] subscription The subscription.
  *
  * @return mama_status value can be one of
  *              MAMA_STATUS_NO_BRIDGE_IMPL
- *              MAMA_STATUS_NULL_ARG 
+ *              MAMA_STATUS_NULL_ARG
  *              MAMA_STATUS_OK
  */
 extern mama_status
@@ -131,10 +131,10 @@ mamaSubscription_cancel(
  * @param[in] msgType The type of message.
  * @param[in] ctx The subscription context.
  */
-void 
+void
 mamaSubscription_checkSeqNum(
     mamaSubscription subscription,
-    mamaMsg msg, 
+    mamaMsg msg,
     int msgType,
     SubjectContext *ctx);
 
@@ -156,14 +156,14 @@ void mamaSubscription_clearTransport(
  * @param[in] msg The mesage to deliver.
  */
 void mamaSubscription_forwardMsg(
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     const mamaMsg msg);
 
 /**
  * This function will return a flag indicating if the subscription accepts multiple
  * initial values, this can be the case with group or wildcard subscriptions.
  *
- * @param[in] subscription The subscription. 
+ * @param[in] subscription The subscription.
  *
  * @return 1 indicates that multiple initials are accepted else 0.
  */
@@ -178,7 +178,7 @@ mamaSubscription_getAcceptMultipleInitials(
  * @param[in] subscription The subscription.
  * @param[out] cause To return the cause.
  * @param[out] platformInfo to return the platform specific information.
- */      
+ */
 extern void
 mamaSubscription_getAdvisoryCauseAndPlatformInfo(
     mamaSubscription subscription,
@@ -188,7 +188,7 @@ mamaSubscription_getAdvisoryCauseAndPlatformInfo(
 /**
  * This function returns the bridge from the subscription.
  *
- * @param[in] subscription The subscription. 
+ * @param[in] subscription The subscription.
  *
  * @return The bridge.
  */
@@ -219,17 +219,17 @@ mamaSubscription_getSubscriptionBridge(
  * @return mama_status value can be one of
  *              MAMA_STATUS_NULL_ARG
  *              MAAM_STATUS_OK
- */              
+ */
 MAMAExpDLL
 extern mama_status
 mamaSubscription_getExpectingInitial(
-    mamaSubscription subscription, 
-    int *expectingInitial); 
+    mamaSubscription subscription,
+    int *expectingInitial);
 
 /**
  * This function will return the count of initials received by the subscription.
  *
- * @param[in] subscription The subscription. 
+ * @param[in] subscription The subscription.
  *
  * @return The current number of initials received.
  */
@@ -246,7 +246,7 @@ mamaSubscription_getInitialCount(
  * @return mama_status value can be one of
  *              MAMA_STATUS_NULL_ARG
  *              MAAM_STATUS_OK
- */              
+ */
 extern mama_status
 mamaSubscription_getQuality(
     mamaSubscription subscription,
@@ -269,7 +269,7 @@ mamaSubscription_getSubscRoot(
  * @param[in] subscription The subscription.
  * @param[in] logStats Whether to turn logging on or off *
  */
-void 
+void
 mamaSubscription_setLogStats (mamaSubscription  subscription,
                               short             logStats);
 
@@ -297,7 +297,7 @@ mamaSubscription_getLogStats (mamaSubscription  subscription);
 MAMAExpDLL
 extern mama_status
 mamaSubscription_getTransportIndex(
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     int *tportIndex);
 
 /**
@@ -320,14 +320,14 @@ mamaSubscription_getWildCardType(
  *
  * @return 1 if it is a wildcard subscription or else 0.
  */
-int 
+int
 mamaSubscription_hasWildcards(
     mamaSubscription subsc);
 
 /**
  * This function will increment the count of initials received by the subscription.
  *
- * @param[in] subscription The subscription. 
+ * @param[in] subscription The subscription.
  */
 extern void
 mamaSubscription_incrementInitialCount(
@@ -367,7 +367,7 @@ mamaSubscription_isTportDisconnected(
  *              MAMA_STATUS_NO_BRIDGE_IMPL
  *              MAMA_STATUS_NULL_ARG
  *              MAAM_STATUS_OK
- */                            
+ */
 MAMAExpDLL
 extern mama_status
 mamaSubscription_processErr(
@@ -387,7 +387,7 @@ mamaSubscription_processErr(
 MAMAExpDLL
 extern mama_status
 mamaSubscription_processMsg(
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     mamaMsg message);
 
 /**
@@ -405,7 +405,7 @@ mamaSubscription_processMsg(
 MAMAExpDLL
 extern mama_status
 mamaSubscription_processWildCardMsg(
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     mamaMsg msg,
     const char *topic,
     void *topicClosure);
@@ -415,7 +415,7 @@ mamaSubscription_processWildCardMsg(
  * by the bridge. This function is used for wildcard subscriptions.
  *
  * @param[in] subscription The subscription.
- * @param[in] message The message to process. 
+ * @param[in] message The message to process.
  * @param[in] topicClosue Symbol specific closure.
  *
  * @return mama_status value can be one of
@@ -424,20 +424,20 @@ mamaSubscription_processWildCardMsg(
 MAMAExpDLL
 extern mama_status
 mamaSubscription_processTportMsg(
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     mamaMsg msg,
     void *topicClosure);
 
 /**
  * This function sends a recap request for the subscription.
  *
- * @param[in] subscription The subscription. 
+ * @param[in] subscription The subscription.
  *
  * @return mama_status value can be one of
  *              MAMA_STATUS_NOT_IMPLEMENTED - for group subscriptions.
  *              MAAM_STATUS_OK
  */
-extern mama_status 
+extern mama_status
 mamaSubscription_requestRecap(
     mamaSubscription subscription);
 
@@ -458,7 +458,7 @@ mamaSubscription_requiresSubscribe(
  * This function will reset the count of initials received by the subscription
  * to 0.
  *
- * @param[in] subscription The subscription. 
+ * @param[in] subscription The subscription.
  */
 extern void
 mamaSubscription_resetInitialCount(
@@ -470,7 +470,7 @@ mamaSubscription_resetInitialCount(
  *
  * @param[in] subscription The subscription.
  */
-void 
+void
 mamaSubscription_respondToRefreshMessage(
     mamaSubscription subscription);
 
@@ -479,13 +479,13 @@ mamaSubscription_respondToRefreshMessage(
  * that calling this will cause the next refresh message received to be ignored, (as this
  * subscription is the one sending it).
  *
- * @param[in] subscription The subscription. 
+ * @param[in] subscription The subscription.
  * @param[in] msg The refresh message to send.
  *
  */
 extern void
 mamaSubscription_sendRefresh(
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     const mamaMsg msg );
 
 /**
@@ -529,10 +529,10 @@ mamaSubscription_setPossiblyStale(
  *          MAMA_STATUS_NULL_ARG
  *          MAMA_STATUS_OK
  */
-MAMAExpDLL 
-extern mama_status 
+MAMAExpDLL
+extern mama_status
 mamaSubscription_setTransportIndex(
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     int tportIndex);
 
 /**
@@ -562,7 +562,7 @@ mamaSubscription_setTransportIndex(
 MAMAExpDLL
 extern mama_status
 mamaSubscription_setupBasic(
-    mamaSubscription          subscription, 
+    mamaSubscription          subscription,
     mamaTransport             transport,
     mamaQueue                 queue,
     const mamaMsgCallbacks*   callbacks,
@@ -576,7 +576,7 @@ mamaSubscription_setupBasic(
  * @param[in] subscription The subscription.
  * @param[in] ctx The subscription context.
  */
-void 
+void
 mamaSubscription_stopWaitForResponse(
     mamaSubscription subscription,
     SubjectContext *ctx);
@@ -584,7 +584,7 @@ mamaSubscription_stopWaitForResponse(
 /**
  * This function will cause the transport callback to be invoked with a quality event.
  *
- * @param[in] subscription The subscription. 
+ * @param[in] subscription The subscription.
  */
 extern void
 mamaSubscription_unsetAllPossiblyStale(

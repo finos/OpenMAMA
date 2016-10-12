@@ -76,7 +76,7 @@ public class MamdaSecurityStatus
             case  SECURITY_STATUS_SUSPENDED:        return SECURITY_STATUS_STR_SUSPENDED;
             case  SECURITY_STATUS_AT_LAST:          return SECURITY_STATUS_STR_AT_LAST;
             case  SECURITY_STATUS_INACTIVE:         return SECURITY_STATUS_STR_INACTIVE;
-            case  SECURITY_STATUS_UNKNOWN:   
+            case  SECURITY_STATUS_UNKNOWN:
             default:
                 return "Unknown";
         }
@@ -84,7 +84,7 @@ public class MamdaSecurityStatus
 
     /**
      * Convert a string representation of a security status to the
-     * enumeration.  
+     * enumeration.
      *
      * @param securityStatusStr The security status as a string.
      *
@@ -122,7 +122,7 @@ public class MamdaSecurityStatus
             return SECURITY_STATUS_INACTIVE;
         if (securityStatus.equals (SECURITY_STATUS_STR_UNKNOWN))
             return SECURITY_STATUS_UNKNOWN;
-        
+
         //A misconfigured FH might send numbers as strings
         if (securityStatus.equals ("0"))
             return SECURITY_STATUS_NONE;

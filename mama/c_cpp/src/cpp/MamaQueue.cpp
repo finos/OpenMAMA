@@ -46,7 +46,7 @@ namespace Wombat
 
     void QueueEnqueueTestCallback::onEventEnqueue (void* closure)
     {
-        try
+	    try
         {
 		    mCallback->onEventEnqueue (closure);
 	    }

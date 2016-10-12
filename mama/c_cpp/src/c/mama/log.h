@@ -94,7 +94,7 @@ MAMAExpDLL
 extern void MAMACALLTYPE
 mama_logDefault (MamaLogLevel level, const char *format, va_list ap);
 
-/** 
+/**
  * @brief Second Log Function
  *
  * @details This second logging function takes only a message and not a format string with
@@ -317,7 +317,7 @@ mama_setLogCallback (mamaLogCb callback);
  * managed clients.
  *
  * @param[in] callback The callback to be used. Pass NULL to restore
- *						the mama_logDefault function.
+ *                      the mama_logDefault function.
  *
  * @return mama_status return code can be one of:
  *              MAMA_STATUS_PLATFORM
@@ -521,7 +521,7 @@ mama_tryStringToLogPolicy(const char* s, mamaLogFilePolicy* policy);
  * @details If the level is already at the maximum verbosity it will be unchanged
  * after calling the function, otherwise the level will be incremented.
  * Returns zero if level is not changed, or non-zero if it is changed
- * If an unrecognized level is passed, the function will return 
+ * If an unrecognized level is passed, the function will return
  * non-zero and the variable will be set to the minimum verbosity
  *
  * @param[in] level The MAMA Log level to increment.
@@ -538,7 +538,7 @@ mama_logIncrementVerbosity(MamaLogLevel* level);
  * @details If the level is already at the minimum verbosity it will be unchanged
  * after calling the function, otherwise the level will be decremented.
  * Returns zero if level is not changed, or non-zero if it is changed
- * If an unrecognized level is passed, the function will return 
+ * If an unrecognized level is passed, the function will return
  * non-zero and the variable will be set to the maximum verbosity
  *
  * @param[in] level The MAMA Log level to increment.
@@ -551,7 +551,7 @@ mama_logDecrementVerbosity(MamaLogLevel* level);
 
 /**
  * @brief Force rolling the log file.
- * 
+ *
  * @return The status of the operation.
  */
 MAMAExpDLL

@@ -63,9 +63,9 @@
 
 extern void initReservedFields (void);
 
-
 mamaEntitlementCallbacks  gEntitlementCallbacks;
 extern const char*        gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
+
 /* Sats Configuration*/
 int gLogQueueStats          = 1;
 int gLogTransportStats      = 1;
@@ -117,7 +117,6 @@ wproperty_t             gProperties      = 0;
 static mamaPayloadBridge    gDefaultPayload = NULL;
 
 static wthread_key_t last_err_key;
-
 
 /**
  * struct mamaApplicationGroup
@@ -935,11 +934,11 @@ mama_openWithPropertiesCount (const char* path,
 
     if (strlen( (char*) gEntitlementBridges))
     {
-    	mama_log (MAMA_LOG_LEVEL_FINE, "%s (entitled)",mama_version);
+        mama_log (MAMA_LOG_LEVEL_FINE, "%s (entitled)",mama_version);
     }
     else
     {
-    	mama_log (MAMA_LOG_LEVEL_FINE, "%s (non entitled)",mama_version);
+        mama_log (MAMA_LOG_LEVEL_FINE, "%s (non entitled)",mama_version);
     }
 
 
@@ -1299,13 +1298,13 @@ mama_getVersion (mamaBridge bridgeImpl)
     /*Delegate the call to the bridge specific implementation*/
     if (strlen( (char*) gEntitlementBridges))
     {
-    	snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (entitled)",
-    			mama_version, impl->bridgeGetVersion ());
+        snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (entitled)",
+                mama_version, impl->bridgeGetVersion ());
     }
     else
     {
-    	snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (non entitled)",
-    			mama_version, impl->bridgeGetVersion ());
+        snprintf(mama_ver_string,sizeof(mama_ver_string),"%s (%s) (non entitled)",
+                mama_version, impl->bridgeGetVersion ());
     }
 
     return mama_ver_string;
@@ -1459,6 +1458,7 @@ mama_closeCount (unsigned int* count)
             mamaStat_destroy (gPublisherReplySend);
             gPublisherReplySend = NULL;
         }
+
         if (gGlobalStatsCollector)
         {
             if (gStatsGenerator)
@@ -1779,6 +1779,7 @@ mama_startBackgroundEx (mamaBridge bridgeImpl, mamaStopCBEx exCallback, void* cl
     /* Passing this NULL tells mama_StartBackgroundHelper to use new functionality */
     return mama_startBackgroundHelper (bridgeImpl, NULL, exCallback, closure);
 }
+
 /**
  * Stop processing messages
  */
