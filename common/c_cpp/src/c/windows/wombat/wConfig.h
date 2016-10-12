@@ -30,10 +30,20 @@
 #   define COMMONDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define COMMONExpDLL __declspec( dllexport )
 #   define COMMONDeprecatedExpDLL(MSG) __declspec( dllexport, deprecated(##MSG) )
+#elif defined( COMMONENT_DLL )
+    /* We are building common enterprise dll */
+#   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllexport )
+#elif defined( WIRECACHE_DLL )
+    /* We are building wirecache dll */
+#   define WCACHEExpDLL __declspec( dllexport )
+#   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
 #elif defined( MAMA_DLL ) && defined( MAMA )
     /* We are building mama as a dll */
 #   define COMMONDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
 #   define COMMONExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG))
 #   define MAMADeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define MAMAExpDLL __declspec( dllexport )
@@ -47,16 +57,30 @@
 #   define MAMAExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
 #   define COMMONDeprecated(MSG) __declspec( deprecated )
 #   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
 #   define COMMONExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
 #   define MAMAExpBridgeDLL __declspec( dllexport )
 #   define MAMAExpDeprecatedBridgeDLL(MSG) __declspec( dllexport, deprecated(##MSG) )
 #   define WMWDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define WMWExpDLL __declspec( dllimport )
 #   define WMWExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
+#   define WCACHEExpDLL __declspec( dllexport )
+#elif defined( MAMA_DLL ) && defined( MAMAENT )
+    /* We are building mamaenterprisec or mamaenterprisecpp as a dll */
+#   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
+#   define MAMAExpDLL __declspec( dllimport )
+#   define MAMADeprecated(MSG) __declspec( deprecated(##MSG) )
+#   define MAMAExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
+#   define MAMAExpBridgeDLL __declspec( dllimport )
+#   define MAMACPPExpDLL __declspec( dllimport )
+#   define MAMACPPExpDeprecatedDLL(MSG) __declspec( dllexport, deprecated(##MSG) )
+#   define MAMAENTCExpDLL __declspec( dllexport )
 #elif defined( MAMA_DLL ) && defined( MAMACPP )
     /* We are building mamacpp as a dll */
 #   define COMMONDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
 #   define COMMONExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
 #   define MAMADeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define MAMAExpDLL __declspec( dllimport )
@@ -69,6 +93,7 @@
     /* We are building mamda as a dll */
 #   define COMMONDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
 #   define COMMONDeprecatedExpDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
 #   define MAMADeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define MAMAExpDLL __declspec( dllimport )
@@ -83,6 +108,7 @@
     /* We are building extra mamda as a dll */
 #   define COMMONDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
 #   define COMMONExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
 #   define MAMADeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define MAMAExpDLL __declspec( dllimport )
@@ -99,12 +125,14 @@
     /* We are building mama apps (non static) */
 #   define COMMONDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
 #   define COMMONExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
 #   define WMWDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define WMWExpDLL __declspec( dllexport )
 #   define WMWExpDeprecatedDLL(MSG) __declspec( dllexport, deprecated(##MSG) )
 #   define MAMADeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define MAMAExpDLL __declspec( dllimport )
+#   define MAMAENTCExpDLL __declspec( dllimport )
 #   define MAMAExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
 #   define MAMACPPExpDLL __declspec( dllimport )
 #   define MAMACPPExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
@@ -118,6 +146,7 @@
     /* We are building wmw as a dll */
 #   define COMMONDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
 #   define COMMONExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
 #   define WMWDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define WMWExpDLL __declspec( dllexport )
@@ -126,6 +155,7 @@
     /* We are building wmw test apps */
 #   define COMMONDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define COMMONExpDLL __declspec( dllimport )
+#   define COMMONENTExpDLL __declspec( dllimport )
 #   define COMMONExpDeprecatedDLL(MSG) __declspec( dllimport, deprecated(##MSG) )
 #   define WMWDeprecated(MSG) __declspec( deprecated(##MSG) )
 #   define WMWExpDLL __declspec( dllimport )
@@ -134,6 +164,7 @@
     /* We are building on linux or statically */
 #   define COMMONDeprecated(MSG)
 #   define COMMONExpDLL
+#   define COMMONENTExpDLL
 #   define COMMONExpDeprecatedDLL(MSG)
 #   define WMWDeprecated(MSG)
 #   define WMWExpDLL
@@ -142,6 +173,7 @@
 #   define WCACHEExpDeprecatedDLL(MSG)
 #   define MAMADeprecated(MSG)
 #   define MAMAExpDLL
+#   define MAMAENTCExpDLL
 #   define MAMAExpDeprecatedDLL(MSG)
 #   define MAMACPPExpDLL
 #   define MAMACPPExpDeprecatedDLL(MSG)

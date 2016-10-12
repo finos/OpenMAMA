@@ -2102,7 +2102,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
                   "Failed to initialise payload bridge [%s]. "
                   "Cannot find function %s in implementation library.",
                   payloadName,
-                  payloadImplName);
+                  initFuncName);
         goto error_handling_impl;
     }
 

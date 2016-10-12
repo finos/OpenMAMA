@@ -14,7 +14,7 @@ echo #ifndef MamaVersionH >> %BUILD_DIR%\mama\version.h
 echo #define MamaVersionH >> %BUILD_DIR%\mama\version.h
 echo #define MAMA_VERSION_MAJOR %VERSION_MAJOR% >> %BUILD_DIR%\mama\version.h
 echo #define MAMA_VERSION_MINOR %VERSION_MINOR% >> %BUILD_DIR%\mama\version.h
-echo #define MAMA_VERSION_RELEASE %VERSION_RELEASE% >> %BUILD_DIR%\mama\version.h
+echo #define MAMA_VERSION_RELEASE "%VERSION_RELEASE%" >> %BUILD_DIR%\mama\version.h
 echo #define MAMA_VERSION "mama %VERSION_MAJOR%.%VERSION_MINOR%.%VERSION_RELEASE%" >> %BUILD_DIR%\mama\version.h	
 echo #define RC_VERSION_NUMERICAL %RC_VERSION_NUMERICAL% >> %BUILD_DIR%\mama\version.h
 echo #define RC_VERSION_STRING "%RC_VERSION_STRING%" >> %BUILD_DIR%\mama\version.h
@@ -29,6 +29,6 @@ echo "generating %BUILD_DIR%/entitlementlibraries.c"
 
 echo /* This file was automatically generated */ > %BUILD_DIR%\entitlementlibraries.c
 echo #include ^<mamainternal.h^> >> %BUILD_DIR%\entitlementlibraries.c
-echo const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {"noop"}; >> %BUILD_DIR%\entitlementlibraries.c
+echo const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {"noop, NULL"}; >> %BUILD_DIR%\entitlementlibraries.c
 
 echo "complete" 

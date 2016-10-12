@@ -245,12 +245,17 @@ mamaInternal_setMetaProperty (const char* name, const char* value);
 /* ************************************************************************* */
 /* Callbacks. */
 /* ************************************************************************* */
+
+MAMAExpDLL
 void MAMACALLTYPE mamaImpl_entitlementDisconnectCallback(
                             const  sessionDisconnectReason reason,
                             const  char * const            userId,
                             const  char * const            host,
                             const  char * const            appName);
+MAMAExpDLL
 void MAMACALLTYPE mamaImpl_entitlementUpdatedCallback (void);
+
+MAMAExpDLL
 void MAMACALLTYPE mamaImpl_entitlementCheckingSwitchCallback (
                             int isEntitlementsCheckingDisabled);
 

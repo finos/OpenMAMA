@@ -168,6 +168,9 @@
     <Compile Include="MamaPublisher.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MamaPublisherCallback.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="MamaPublisherCallback.cs" />
     <Compile Include="MamaQueue.cs">
       <SubType>Code</SubType>
@@ -231,6 +234,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MamaTransportCallback.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="MamaTransportTopicCallback.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MamaTransportTopicCallback.cs" />

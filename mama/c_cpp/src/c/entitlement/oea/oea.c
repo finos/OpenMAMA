@@ -97,6 +97,7 @@ oeaEntitlementBridge_init(entitlementBridge* bridge)
     const char**    entitlementServers;
     const char*     appName;
     mama_status     status;
+    oeaClient*      oClient;
 
     oeaEntitlementBridge* oeaBridge = calloc(1, sizeof(oeaEntitlementBridge));
     if  (NULL == oeaBridge) return MAMA_STATUS_NOMEM;
