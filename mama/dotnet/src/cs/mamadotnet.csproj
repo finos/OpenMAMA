@@ -171,7 +171,6 @@
     <Compile Include="MamaPublisherCallback.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MamaPublisherCallback.cs" />
     <Compile Include="MamaQueue.cs">
       <SubType>Code</SubType>
     </Compile>
