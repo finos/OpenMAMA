@@ -238,7 +238,6 @@
     <Compile Include="MamaTransportTopicCallback.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="MamaTransportTopicCallback.cs" />
     <Compile Include="MamaVersion.cs" />
     <Compile Include="MamaWeightedSource.cs">
       <SubType>Code</SubType>
