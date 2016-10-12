@@ -1337,7 +1337,6 @@ mamaDispatcher_create (mamaDispatcher *result,
     wInterlocked_set(0, &impl->mIsDispatching);
 
     impl->mQueue = queue;
-    impl->mDestroy = 0;
 
     snprintf (impl->mThreadName, 256, "%s%s", MAMAQUEUE_THREAD_PREFIX, qImpl->mQueueName);
     threadStatus = wombatThread_create(impl->mThreadName,
