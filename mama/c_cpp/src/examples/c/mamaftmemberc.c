@@ -39,8 +39,8 @@ static const char *     gUsageString[] =
 " It accepts the following command line arguments:",
 "      [-tport name]      The transport parameters to be used from",
 "                         mama.properties. Default is sub",
-"      [-m middleware]    The middleware to use [wmw/lbm/tibrv]. Default", 
-"                         is wmw.", 
+"      [-m middleware]    The middleware to use [wmw/lbm/tibrv]. Default",
+"                         is wmw.",
 "      [-g]               Fault tolerant group name.",
 "      [-w]               Fault tolerant weighting.",
 "      [-b]               Use Bridged FT (default is native).",
@@ -78,7 +78,7 @@ int main (int argc, const char** argv)
     parseCommandLine (argc, argv);
 
     initializeMama ();
-   
+
     createFtMember ();
 
     mama_start (gMamaBridge);
@@ -89,20 +89,20 @@ int main (int argc, const char** argv)
 void initializeMama (void)
 {
     mama_status status;
-   
+
     status = mama_loadBridge (&gMamaBridge, gMiddleware);
     if (status != MAMA_STATUS_OK)
     {
-        printf ("Error loading bridge: %s\n", 
+        printf ("Error loading bridge: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
-    
+
     status = mama_open ();
-    
+
     if (status != MAMA_STATUS_OK)
     {
-        printf ("Error initializing mama: %s\n", 
+        printf ("Error initializing mama: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
@@ -113,16 +113,16 @@ void initializeMama (void)
 
     if (status != MAMA_STATUS_OK)
     {
-        printf ("Error allocating transport: %s\n", 
+        printf ("Error allocating transport: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
-    
+
     status = mamaTransport_create (gTransport, gTransportName, gMamaBridge);
 
     if (status != MAMA_STATUS_OK)
     {
-        printf ("Error creating transport: %s\n", 
+        printf ("Error creating transport: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
@@ -135,7 +135,7 @@ static void createFtMember (void)
 
     if (MAMA_STATUS_OK != (status= mamaFtMember_create(&gFtMember)))
     {
-        printf ("Error creating FT Member: %s\n", 
+        printf ("Error creating FT Member: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
@@ -151,7 +151,7 @@ static void createFtMember (void)
                        6.0,
                        NULL)))
     {
-        printf ("Error setting up FT Member: %s\n",            
+        printf ("Error setting up FT Member: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
 
@@ -159,7 +159,7 @@ static void createFtMember (void)
 
     if (MAMA_STATUS_OK != (status= mamaFtMember_activate(gFtMember)))
     {
-        printf ("Error activating FT Member: %s\n",            
+        printf ("Error activating FT Member: %s\n",
                 mamaStatus_stringForStatus (status));
         exit (status);
     }
@@ -216,7 +216,7 @@ void parseCommandLine (int argc, const char** argv)
         else if (strcmp ("-m", argv[i]) == 0)
         {
             gMiddleware = (argv[i+1]);
-            i += 2;               
+            i += 2;
         }
         else if (strcmp (argv[i], "-b") == 0)
         {

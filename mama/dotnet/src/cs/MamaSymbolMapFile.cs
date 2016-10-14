@@ -1,4 +1,4 @@
-/* $Id$
+/* $Id: MamaSymbolMapFile.cs,v 1.4.20.4 2012/07/26 11:27:10 stuartbeattie Exp $
  *
  * OpenMAMA: The open middleware agnostic messaging API
  * Copyright (C) 2011 NYSE Technologies, Inc.

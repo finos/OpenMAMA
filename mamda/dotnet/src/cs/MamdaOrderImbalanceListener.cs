@@ -27,13 +27,13 @@ namespace Wombat
 {
 	/// <summary>
 	/// A MamdaOrderImbalanceListener is class that specializes in handling
-	/// imbalance order updates. An imbalance order occurs when too many 
+	/// imbalance order updates. An imbalance order occurs when too many
 	/// orders of a particular type - either buy, sell or limit - for listed
-	/// securities and not enough of the other, matching orders are received by 
+	/// securities and not enough of the other, matching orders are received by
 	/// an exchange.
 	/// Developers provide their own implementation of the
 	/// MamdaOrderImbalanceHandler interface and will be delivered notifications
-	/// for imbalance updates.  
+	/// for imbalance updates.
 	/// </summary>
 	public class MamdaOrderImbalanceListener :
 		MamdaMsgListener,
@@ -43,13 +43,13 @@ namespace Wombat
 	{
 		public MamdaOrderImbalanceListener()
 		{
-			clearCache (mOrderImbalanceCache);       			
+			clearCache (mOrderImbalanceCache);
 
 			mFieldIterator = new FieldIterator(this);
 		}
 
 		/// <summary>
-		/// Registers handler interested in receiving update 
+		/// Registers handler interested in receiving update
 		/// and recap events.
 		/// </summary>
 		/// <param name="handler">the handler to be registered.</param>
@@ -57,12 +57,12 @@ namespace Wombat
 		{
 			mHandlers.Add(handler);
 		}
-    
+
 		/// <summary>
 		/// Returns the high indication price of the imbalance order.
 		/// </summary>
 		/// <returns></returns>
-		public  MamaPrice getHighIndicationPrice() 
+		public  MamaPrice getHighIndicationPrice()
 		{
 			return mOrderImbalanceCache.mHighIndicationPrice;
 		}
@@ -119,7 +119,7 @@ namespace Wombat
 		public  String getImbalanceState ()
 		{
 			return mOrderImbalanceCache.mSecurityStatusQual;
-		} 
+		}
 
 		/// <summary>
 		/// Returns the match price for the imbalance order.
@@ -156,9 +156,9 @@ namespace Wombat
 		{
 			return mOrderImbalanceCache.mNoClearingPrice;
 		}
-    
+
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public  char getPriceVarInd ()
@@ -230,7 +230,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public int getMsgType ()
@@ -239,7 +239,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public String getIssueSymbol ()
@@ -248,7 +248,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public String getSymbol ()
@@ -257,7 +257,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public String getPartId ()
@@ -266,7 +266,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public int getSeqNum ()
@@ -275,7 +275,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public String getSecurityStatusOrig ()
@@ -284,7 +284,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public DateTime getSecurityStatusTime ()
@@ -293,7 +293,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public DateTime getAuctionTime ()
@@ -302,12 +302,12 @@ namespace Wombat
 		}
 
 /*      FieldState Accessors        */
-        
+
         /// <summary>
         /// Returns the high indication price field state
         /// </summary>
         /// <returns></returns>
-        public  MamdaFieldState getHighIndicationPriceFieldState() 
+        public  MamdaFieldState getHighIndicationPriceFieldState()
         {
 			return mOrderImbalanceCache.mHighIndicationPriceFieldState;
         }
@@ -331,7 +331,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// Returns the buy volume field state of the imbalance order 
+        /// Returns the buy volume field state of the imbalance order
         /// </summary>
         /// <returns></returns>
         public  MamdaFieldState getBuyVolumeFieldState()
@@ -364,7 +364,7 @@ namespace Wombat
         public  MamdaFieldState getImbalanceStateFieldState()
         {
 			return mOrderImbalanceCache.mSecurityStatusQualFieldState;
-        } 
+        }
 
         /// <summary>
         /// Returns the match price field state for the imbalance order.
@@ -401,9 +401,9 @@ namespace Wombat
         {
 			return mOrderImbalanceCache.mNoClearingPriceFieldState;
         }
-    
+
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public  MamdaFieldState getPriceVarIndFieldState()
@@ -475,7 +475,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getMsgTypeFieldState()
@@ -484,7 +484,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getIssueSymbolFieldState()
@@ -493,7 +493,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getSymbolFieldState()
@@ -502,7 +502,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getPartIdFieldState()
@@ -511,7 +511,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getSeqNumFieldState()
@@ -520,7 +520,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getSecurityStatusOrigFieldState()
@@ -529,7 +529,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getSecurityStatusTimeFieldState()
@@ -538,7 +538,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getAuctionTimeFieldState()
@@ -588,13 +588,13 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// Returns the imbalance side of the imbalance order. 
+		/// Returns the imbalance side of the imbalance order.
 		/// This is determined by the Buy and Sell volumes.
 		/// </summary>
 		/// <returns></returns>
 		public MamdaOrderImbalanceSide getImbalanceSide ()
 		{
-			if (mOrderImbalanceCache.mBuyVolume > 
+			if (mOrderImbalanceCache.mBuyVolume >
 				mOrderImbalanceCache.mSellVolume)
 			{
 				mSide = MamdaOrderImbalanceSide.BID_SIDE;
@@ -605,7 +605,7 @@ namespace Wombat
 			}
 			return mSide;
 		}
-   
+
 		/// <summary>
 		/// Returns the imbalance volume, which is either the sell or buy volume
 		/// </summary>
@@ -615,7 +615,7 @@ namespace Wombat
 			if (MamdaOrderImbalanceSide.BID_SIDE == getImbalanceSide())
 			{
 				return (getBuyVolume () - getSellVolume());
-			}  
+			}
 			return (getSellVolume () - getBuyVolume());
 		}
 
@@ -669,7 +669,7 @@ namespace Wombat
 				handler.onOrderImbalanceRecap(subscription, this, msg);
 			}
 		}
-	   
+
 		private void handleOrderImbalance(
 			MamdaSubscription	subscription,
 			MamaMsg				msg)
@@ -679,7 +679,7 @@ namespace Wombat
 				handler.onOrderImbalance(subscription, this, msg);
 			}
 		}
-	    
+
 		private void handleNoOrderImbalance(
 			MamdaSubscription	subscription,
 			MamaMsg				msg)
@@ -692,62 +692,62 @@ namespace Wombat
 
         private void updateFieldStates()
         {
-        if (mOrderImbalanceCache.mHighIndicationPriceFieldState == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mHighIndicationPriceFieldState == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mHighIndicationPriceFieldState = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mLowIndicationPriceFieldState  == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mLowIndicationPriceFieldState  == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mLowIndicationPriceFieldState  = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mIndicationPriceFieldState     == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mIndicationPriceFieldState     == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mIndicationPriceFieldState     = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mBuyVolumeFieldState           == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mBuyVolumeFieldState           == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mBuyVolumeFieldState           = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mSellVolumeFieldState          == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mSellVolumeFieldState          == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mSellVolumeFieldState          = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mMatchVolumeFieldState         == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mMatchVolumeFieldState         == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mMatchVolumeFieldState         = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mSecurityStatusQualFieldState  == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mSecurityStatusQualFieldState  == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mSecurityStatusQualFieldState  = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mInsideMatchPriceFieldState    == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mInsideMatchPriceFieldState    == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mInsideMatchPriceFieldState    = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mFarClearingPriceFieldState    == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mFarClearingPriceFieldState    == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mFarClearingPriceFieldState    = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mNearClearingPriceFieldState   == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mNearClearingPriceFieldState   == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mNearClearingPriceFieldState   = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mNoClearingPriceFieldState     == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mNoClearingPriceFieldState     == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mNoClearingPriceFieldState     = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mPriceVarIndFieldState         == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mPriceVarIndFieldState         == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mPriceVarIndFieldState         = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mCrossTypeFieldState           == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mCrossTypeFieldState           == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mCrossTypeFieldState           = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mEventTimeFieldState           == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mEventTimeFieldState           == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mEventTimeFieldState           = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mEventSeqNumFieldState         == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mEventSeqNumFieldState         == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mEventSeqNumFieldState         = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mSrcTimeFieldState             == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mSrcTimeFieldState             == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mSrcTimeFieldState             = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mActTimeFieldState             == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mActTimeFieldState             == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mActTimeFieldState             = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mMsgTypeFieldState             == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mMsgTypeFieldState             == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mMsgTypeFieldState             = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mIssueSymbolFieldState         == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mIssueSymbolFieldState         == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mIssueSymbolFieldState         = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mPartIdFieldState              == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mPartIdFieldState              == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mPartIdFieldState              = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mSymbolFieldState              == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mSymbolFieldState              == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mSymbolFieldState              = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mSeqNumFieldState              == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mSeqNumFieldState              == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mSeqNumFieldState              = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mSecurityStatusOrigFieldState  == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mSecurityStatusOrigFieldState  == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mSecurityStatusOrigFieldState  = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mSecurityStatusTimeFieldState  == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mSecurityStatusTimeFieldState  == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mSecurityStatusTimeFieldState  = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mAuctionTimeFieldState         == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mAuctionTimeFieldState         == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mAuctionTimeFieldState         = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mLineTimeFieldState            == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mLineTimeFieldState            == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mLineTimeFieldState            = MamdaFieldState.NOT_MODIFIED;
-        if (mOrderImbalanceCache.mSendTimeFieldState            == MamdaFieldState.MODIFIED)  
+        if (mOrderImbalanceCache.mSendTimeFieldState            == MamdaFieldState.MODIFIED)
             mOrderImbalanceCache.mSendTimeFieldState            = MamdaFieldState.NOT_MODIFIED;
         }
-        
+
         private void updateOrderImbalanceFields(
 			MamdaSubscription	subscription,
 			MamaMsg				msg,
@@ -757,8 +757,8 @@ namespace Wombat
 			lock (this)
 			{
 				MamaMsgField msgField = null;
-	            
-				/*The wSecStatusQual will not always be in the message 
+
+				/*The wSecStatusQual will not always be in the message
 				so you need to account for this by checking for it.
 				*/
 				try
@@ -795,11 +795,11 @@ namespace Wombat
 						value = MamdaOrderImbalanceType.stringToValue(securityStatus);
 						if (MamdaOrderImbalanceType.isMamdaImbalanceOrder(value))
 						{
-							handleOrderImbalance(subscription,msg); 
+							handleOrderImbalance(subscription,msg);
 						}
 						else
 						{
-							handleNoOrderImbalance(subscription, msg); 
+							handleNoOrderImbalance(subscription, msg);
 						}
 					}
 				}
@@ -807,9 +807,9 @@ namespace Wombat
 			default:
 				break;
 			}
-	        
+
 		}
-	    
+
 		private static bool isImbalanceType(string securityStatus)
 		{
 			int value = MamdaOrderImbalanceType.stringToValue(securityStatus);
@@ -1232,7 +1232,7 @@ namespace Wombat
 			public DateTime     mAuctionTime         = DateTime.MinValue;
 			public DateTime		mLineTime			 = DateTime.MinValue;
 			public DateTime		mSendTime			 = DateTime.MinValue;
-            
+
             //FieldState
             public MamdaFieldState    mHighIndicationPriceFieldState = new MamdaFieldState();
             public MamdaFieldState    mLowIndicationPriceFieldState  = new MamdaFieldState();
@@ -1298,7 +1298,7 @@ namespace Wombat
 			cache.mSecurityStatusOrig	= null;
 			cache.mSecurityStatusTime	= DateTime.MinValue;
 			cache.mAuctionTime			= DateTime.MinValue;
-            
+
             cache.mHighIndicationPriceFieldState    = MamdaFieldState.NOT_INITIALISED;
             cache.mLowIndicationPriceFieldState     = MamdaFieldState.NOT_INITIALISED;
             cache.mIndicationPriceFieldState        = MamdaFieldState.NOT_INITIALISED;
@@ -1328,26 +1328,25 @@ namespace Wombat
             cache.mSecurityStatusTimeFieldState     = MamdaFieldState.NOT_INITIALISED;
             cache.mAuctionTimeFieldState            = MamdaFieldState.NOT_INITIALISED;
 		}
-            
+
 		#region State
-            
-		private ArrayList mHandlers = new ArrayList();    
+
+		private ArrayList mHandlers = new ArrayList();
 		private MamdaOrderImbalanceSide mSide = MamdaOrderImbalanceSide.ASK_SIDE;
-            
+
 		private static ImbalanceOrderUpdate [] mUpdaters = null;
 		private static object mUpdatersGuard = new object();
         private static int mMaxFid = 0;
-            
+
 		protected readonly MamdaOrderImbalanceCache mOrderImbalanceCache =
 			new MamdaOrderImbalanceCache ();
-            
+
 		// Used for all field iteration processing
 		private FieldIterator mFieldIterator = null;
-            
+
 		#endregion State
-            
+
 		#endregion Implementation details
-            
-	}          
-}           
-            
+
+	}
+}

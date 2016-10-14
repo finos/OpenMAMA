@@ -72,16 +72,16 @@ namespace Wombat
 		/// <summary>
 		/// Return the human readable name of the field.
 		/// </summary>
-		public string getName () 
+		public string getName ()
 		{
 			EnsurePeerCreated();
 			return Marshal.PtrToStringAnsi(NativeMethods.mamaFieldDescriptor_getName(nativeHandle));
 		}
-	
+
 		/// <summary>
 		/// Return the field identifier
 		/// </summary>
-		public int getFid () 
+		public int getFid ()
 		{
 			EnsurePeerCreated();
 			return NativeMethods.mamaFieldDescriptor_getFid(nativeHandle);
@@ -90,16 +90,16 @@ namespace Wombat
 		/// <summary>
 		/// Return the data type
 		/// </summary>
-		public mamaFieldType getType () 
+		public mamaFieldType getType ()
 		{
 			EnsurePeerCreated();
 			return (mamaFieldType)NativeMethods.mamaFieldDescriptor_getType(nativeHandle);
 		}
-	 
+
 		/// <summary>
 		/// Return a human readable string for mamaMsgType
 		/// </summary>
-		public string getTypeName () 
+		public string getTypeName ()
 		{
 			EnsurePeerCreated();
 			return Marshal.PtrToStringAnsi(NativeMethods.mamaFieldDescriptor_getTypeName(nativeHandle));
@@ -139,7 +139,7 @@ namespace Wombat
 			}
 		}
 
-        
+
 		/// <summary>
 		/// Publish name for the field
 		/// </summary>

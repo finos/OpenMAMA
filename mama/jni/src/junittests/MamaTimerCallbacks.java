@@ -37,7 +37,7 @@ public class MamaTimerCallbacks extends TestCase
 
     // The mama bridge
     private MamaBridge mBridge;
-    
+
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
@@ -90,7 +90,7 @@ public class MamaTimerCallbacks extends TestCase
         private MamaBridge mBridge;
         private TestTimerCallback mTestCallback;
 
-    
+
          public TestTimerCallback_RecreateOnTick(MamaBridge bridge)
          {
             mBridge = bridge;
@@ -181,7 +181,7 @@ public class MamaTimerCallbacks extends TestCase
 
         // Allocate a timer
         MamaTimer timer = new MamaTimer();
-            
+
         // Get the default queue
         MamaQueue queue = Mama.getDefaultQueue(mBridge);
 

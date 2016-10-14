@@ -51,7 +51,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the BuyVolume.
 		/// </returns>
-		long getBuyVolume(); 
+		long getBuyVolume();
 
         /// <summary>
         /// Returns the FieldState.
@@ -67,7 +67,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the CrossType.
 		/// </returns>
-		char getCrossType(); 
+		char getCrossType();
 
         /// <summary>
         /// Returns the FieldState.
@@ -83,7 +83,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the EventSeqNum.
 		/// </returns>
-		long getEventSeqNum(); 
+		long getEventSeqNum();
 
         /// <summary>
         /// Returns the FieldState.
@@ -99,7 +99,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the EventTime.
 		/// </returns>
-		DateTime getEventTime(); 
+		DateTime getEventTime();
 
         /// <summary>
         /// Returns the FieldState.
@@ -115,7 +115,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the FarClearingPrice.
 		/// </returns>
-		MamaPrice getFarClearingPrice(); 
+		MamaPrice getFarClearingPrice();
 
         /// <summary>
         /// Returns the FieldState.
@@ -131,7 +131,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the HighIndicationPrice.
 		/// </returns>
-		MamaPrice getHighIndicationPrice(); 
+		MamaPrice getHighIndicationPrice();
 
         /// <summary>
         /// Returns the FieldState.
@@ -163,7 +163,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the InsideMatchPrice.
 		/// </returns>
-		MamaPrice getMatchPrice(); 
+		MamaPrice getMatchPrice();
 
         /// <summary>
         /// Returns the FieldState.
@@ -179,7 +179,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the IssueSymbol.
 		/// </returns>
-		string getIssueSymbol(); 
+		string getIssueSymbol();
 
         /// <summary>
         /// Returns the FieldState.
@@ -195,7 +195,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the LowIndicationPrice.
 		/// </returns>
-		MamaPrice getLowIndicationPrice(); 
+		MamaPrice getLowIndicationPrice();
 
         /// <summary>
         /// Returns the FieldState.
@@ -211,7 +211,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the MatchVolume.
 		/// </returns>
-		long getMatchVolume(); 
+		long getMatchVolume();
 
         /// <summary>
         /// Returns the FieldState.
@@ -227,7 +227,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the MsgType.
 		/// </returns>
-		int getMsgType(); 
+		int getMsgType();
 
         /// <summary>
         /// Returns the FieldState.
@@ -243,7 +243,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the NearClearingPrice.
 		/// </returns>
-		MamaPrice getNearClearingPrice(); 
+		MamaPrice getNearClearingPrice();
 
         /// <summary>
         /// Returns the FieldState.
@@ -259,7 +259,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the NoClearingPrice.
 		/// </returns>
-		char getNoClearingPrice();  
+		char getNoClearingPrice();
 
         /// <summary>
         /// Returns the FieldState.
@@ -291,7 +291,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the SecurityStatusOrig.
 		/// </returns>
-		string getSecurityStatusOrig(); 
+		string getSecurityStatusOrig();
 
         /// <summary>
         /// Returns the FieldState.
@@ -323,7 +323,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the SecurityStatusTime.
 		/// </returns>
-		DateTime getSecurityStatusTime(); 
+		DateTime getSecurityStatusTime();
 
         /// <summary>
         /// Returns the FieldState.
@@ -339,7 +339,7 @@ namespace Wombat
 		/// <returns>
 		/// Returns the SellVolume.
 		/// </returns>
-		long getSellVolume(); 
+		long getSellVolume();
 
         /// <summary>
         /// Returns the FieldState.

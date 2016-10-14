@@ -28,7 +28,7 @@
 #include <mama/MamaDateTime.h>
 #include <stdexcept>
 
-namespace Wombat 
+namespace Wombat
 {
 
 /**
@@ -43,14 +43,14 @@ public:
 
     /**
      * Set the field value.
-     * 
+     *
      * @param field The field to set the value to.
      * @param value The new value of the field.
      */
     void set(MamaFieldCacheField& field, const T& value);
     /**
      * Return the value of the field.
-     * 
+     *
      * @param field The field to get the value from.
      * @return The value of the field.
      */
@@ -148,14 +148,14 @@ class MAMACPPExpDLL MamaFieldCacheFieldString : public MamaFieldCacheFieldBase
 public:
     /**
      * Set the field value.
-     * 
+     *
      * @param field The field to set the value to.
      * @param value The new value of the field.
      */
     void set(MamaFieldCacheField& field, const char* value, mama_size_t len = 0);
     /**
      * Return the value of the field.
-     * 
+     *
      * @param field The field to get the value from.
      * @return The value of the field.
      */
@@ -178,14 +178,14 @@ class MAMACPPExpDLL MamaFieldCacheFieldPrice : public MamaFieldCacheFieldBase
 public:
     /**
      * Set the field value.
-     * 
+     *
      * @param field The field to set the value to.
      * @param value The new value of the field.
      */
     void set(MamaFieldCacheField& field, const MamaPrice& value);
     /**
      * Return the value of the field.
-     * 
+     *
      * @param field The field to get the value from.
      * @return The value of the field.
      */
@@ -211,14 +211,14 @@ class MAMACPPExpDLL MamaFieldCacheFieldDateTime : public MamaFieldCacheFieldBase
 public:
     /**
      * Set the field value.
-     * 
+     *
      * @param field The field to set the value to.
      * @param value The new value of the field.
      */
     void set(MamaFieldCacheField& field, const MamaDateTime& value);
     /**
      * Return the value of the field.
-     * 
+     *
      * @param field The field to get the value from.
      * @return The value of the field.
      */
@@ -246,7 +246,7 @@ class MAMACPPExpDLL MamaFieldCacheFieldVectorBasic : public MamaFieldCacheFieldB
 public:
     /**
      * Set the field value.
-     * 
+     *
      * @param field The field to set the values to.
      * @param values The new values of the field.
      * @param size The number of fields in <code>values</code>.
@@ -254,7 +254,7 @@ public:
     void set(MamaFieldCacheField& field, const T* values, mama_size_t size);
     /**
      * Return the field values.
-     * 
+     *
      * @param field The field to get the values from.
      * @param values A reference to the values to be returned.
      * @param size A reference to the size of the vector to be returned.
@@ -262,13 +262,13 @@ public:
     void get(const MamaFieldCacheField& field, const T*& values, mama_size_t& size) const;
     /**
      * Return the value of a specific field of a vector field.
-     * 
+     *
      * @param field The field to get the value from.
      * @param index The index of the element of the vector to get the value from.
      * @return The value of the field.
      */
     const T& get(const MamaFieldCacheField& field, mama_size_t index) const;
-    
+
 protected:
     void checkType(const MamaFieldCacheField& field) const
     {
@@ -361,7 +361,7 @@ class MAMACPPExpDLL MamaFieldCacheFieldStringVector
 public:
     /**
      * Set the values of a string vector field.
-     * 
+     *
      * @param field The field to set the values to.
      * @param values The new values of the field.
      * @param size The number of fields in <code>values</code>.
@@ -369,7 +369,7 @@ public:
     void set(MamaFieldCacheField& field, const char** values, mama_size_t size);
     /**
      * Return the values of a string vector.
-     * 
+     *
      * @param field The field to get the values from.
      * @param values A reference to the values to be returned.
      * @param size A reference to the size of the vector to be returned.
@@ -377,7 +377,7 @@ public:
     void get(const MamaFieldCacheField& field, const char**& values, mama_size_t& size) const;
     /**
      * Return the value of a specific field of a string vector field.
-     * 
+     *
      * @param field The field to get the value from.
      * @param index The index of the element of the vector to get the value from.
      * @return The value of the field.
@@ -422,7 +422,7 @@ protected:
             newVector[i] = mValues[i];
         }
 
-        if (mValues) 
+        if (mValues)
             delete[] mValues;
 
         mValues = newVector;
@@ -444,7 +444,7 @@ class MAMACPPExpDLL MamaFieldCacheFieldPriceVector
 public:
     /**
      * Set the values of a MamaPrice vector field.
-     * 
+     *
      * @param field The field to set the values to.
      * @param values The new values of the field.
      * @param size The number of fields in <code>values</code>.
@@ -452,7 +452,7 @@ public:
     void set(MamaFieldCacheField& field, const MamaPrice* values, mama_size_t size);
     /**
      * Return the values of a MamaPrice vector field.
-     * 
+     *
      * @param field The field to get the values from.
      * @param values A reference to the values to be returned.
      * @param size A reference to the size of the vector to be returned.
@@ -460,7 +460,7 @@ public:
     void get(const MamaFieldCacheField& field, const MamaPrice*& values, mama_size_t& size) const;
     /**
      * Return the value of a specific field of a MamaPrice vector field.
-     * 
+     *
      * @param field The field to get the value from.
      * @param index The index of the element of the vector to get the value from.
      * @return The value of the field.
@@ -488,7 +488,7 @@ class MAMACPPExpDLL MamaFieldCacheFieldDateTimeVector
 public:
     /**
      * Set the values of MamDateTime vector field.
-     * 
+     *
      * @param field The field to set the values to.
      * @param values The new values of the field.
      * @param size The number of fields in <code>values</code>.
@@ -496,7 +496,7 @@ public:
     void set(MamaFieldCacheField& field, const MamaDateTime* values, mama_size_t size);
     /**
      * Return the values of a MamaDateTime vector field.
-     * 
+     *
      * @param field The field to get the values from.
      * @param values A reference to the values to be returned.
      * @param size A reference to the size of the vector to be returned.
@@ -504,7 +504,7 @@ public:
     void get(const MamaFieldCacheField& field, const MamaDateTime*& values, mama_size_t& size) const;
     /**
      * Return the value of a specific field of a MamaDateTime vector field.
-     * 
+     *
      * @param field The field to get the value from.
      * @param index The index of the element of the vector to get the value from.
      * @return The value of the field.
@@ -525,7 +525,7 @@ private:
 
 /**
  * Helper function to set the value of a String field.
- * 
+ *
  * @param field The field to set the value to.
  * @param value The value to set.
  */
@@ -533,7 +533,7 @@ void setFieldValue(MamaFieldCacheField& field, const char* value);
 
 /**
  * Helper function to set the value of a MamaPrice field.
- * 
+ *
  * @param field The field to set the value to.
  * @param value The value to set.
  */
@@ -541,7 +541,7 @@ void setFieldValue(MamaFieldCacheField& field, const MamaPrice& value);
 
 /**
  * Helper function to set the value of a MamaDateTime field.
- * 
+ *
  * @param field The field to set the value to.
  * @param value The value to set.
  */
@@ -713,7 +713,7 @@ void getV(Type<MAMA_FIELD_TYPE_F64> type, const MamaFieldCacheField& field, T& v
 
 /**
  * Helper function to set the value of a generic single-value field.
- * 
+ *
  * @param field The field to set the value to.
  * @param value The value to set.
  */
@@ -789,7 +789,7 @@ void setFieldValue(MamaFieldCacheField& field, const T& value)
 
 /**
  * Helper function to get the value of a string field.
- * 
+ *
  * @param field The field to get the value from.
  * @param value The value to return.
  */
@@ -797,7 +797,7 @@ void getFieldValue(const MamaFieldCacheField& field, const char*& value);
 
 /**
  * Helper function to get the value of a MamaPrice field.
- * 
+ *
  * @param field The field to get the value from.
  * @param value The value to return.
  */
@@ -805,7 +805,7 @@ void getFieldValue(const MamaFieldCacheField& field, MamaPrice& value);
 
 /**
  * Helper function to get the value of a MamaDateTime field.
- * 
+ *
  * @param field The field to get the value from.
  * @param value The value to return.
  */
@@ -813,7 +813,7 @@ void getFieldValue(const MamaFieldCacheField& field, MamaDateTime& value);
 
 /**
  * Helper function to get the value of a generic single-value field.
- * 
+ *
  * @param field The field to get the value from.
  * @param value The value to return.
  */
@@ -889,7 +889,7 @@ void getFieldValue(const MamaFieldCacheField& field, T& value)
 
 /**
  * Helper function to set the values of a generic vector field.
- * 
+ *
  * @param field The field to set the values to.
  * @param values The values to set.
  * @param size The number of values in the field.
@@ -996,7 +996,7 @@ void setFieldValue(MamaFieldCacheField& field, const T* values, mama_size_t size
 
 /**
  * Helper function to set the values of a string vector field.
- * 
+ *
  * @param field The field to set the values to.
  * @param values The values to set.
  * @param size The number of values in the field.
@@ -1013,7 +1013,7 @@ void getFieldValue(const MamaFieldCacheField& field, const mamaDateTime*& values
 
 /**
  * Helper function to get the values of a generic vector field.
- * 
+ *
  * @param field The field to get the values from.
  * @param values The values to return.
  * @param size The number of values in the field.
@@ -1082,7 +1082,7 @@ void getFieldValue(const MamaFieldCacheField& field, const T*& values, mama_size
             MamaFieldCacheFieldU64Vector getField;
             getField.get(field, (const mama_u64_t*&)values, size);
             break;
-        }        
+        }
         case MAMA_FIELD_TYPE_VECTOR_F32:
         {
             MamaFieldCacheFieldF32Vector getField;

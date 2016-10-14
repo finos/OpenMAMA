@@ -36,7 +36,7 @@ struct MamaFieldCacheRecord::MamaFieldCacheRecordImpl
     {
         clear();
     }
-    
+
     void clear();
 
     mamaFieldCacheRecord mRecord;

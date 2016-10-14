@@ -25,16 +25,16 @@
 
 #define FOUND_CREATE_PUBLISHER    1
 #define FOUND_CREATE_TRANSPORT    1
-#define BUCKET_NUMBER             983 
+#define BUCKET_NUMBER             983
 
-static void mamaPlayback_rightCopy (char* input, char* output, 
+static void mamaPlayback_rightCopy (char* input, char* output,
                                     int start);
 
-static mama_bool_t 
+static mama_bool_t
 mamaPlayback_addPublisher (mamaPlaybackPublisher mamaPlayback,
                            char* key,
                            mamaPublisher publisher);
-static mama_bool_t 
+static mama_bool_t
 mamaPlayback_addTransport (mamaPlaybackPublisher mamaPlayback,
                            char* key,
                            mamaTransport transport);
@@ -65,7 +65,7 @@ static void freeTransportCb (wtable_t table,void *data,
 static int
 injectDateTime (mamaDateTime dateTime, mamaMsg msg);
 
-static void freePublisherCb (wtable_t table,void *data, 
+static void freePublisherCb (wtable_t table,void *data,
                              const char* key, void *closure )
 {
     if (key != NULL)
@@ -87,10 +87,10 @@ mama_status mamaPlayback_allocate (mamaPlaybackPublisher* mamaPlayback)
     mamaFilePlaybackImpl* impl =
         (mamaFilePlaybackImpl*) calloc (1, sizeof(mamaFilePlaybackImpl));
     if (impl == NULL)  return MAMA_STATUS_NOMEM;
-    
+
     impl->myPublisherTable = wtable_create ("PublishMap", BUCKET_NUMBER);
     impl->myTransportTable = wtable_create ("TransportMap", BUCKET_NUMBER);
-    
+
     mamaPlaybackFileParser_allocate (&impl->myFileParser);
     if (impl->myFileParser == NULL)
     {
@@ -98,15 +98,15 @@ mama_status mamaPlayback_allocate (mamaPlaybackPublisher* mamaPlayback)
                   "File opening error : No memory for allocation\n");
         return MAMA_STATUS_NOMEM;
     }
-    
+
     *mamaPlayback = (mamaPlaybackPublisher*)impl;
     return MAMA_STATUS_OK;
-}  
+}
 
 mama_status mamaPlayback_deallocate (mamaPlaybackPublisher mamaPlayback)
 {
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
-    
+
     if (impl == NULL) return MAMA_STATUS_INVALID_ARG;
     /* destroy publishers & transports before freeing the hash tables*/
 
@@ -118,7 +118,7 @@ mama_status mamaPlayback_deallocate (mamaPlaybackPublisher mamaPlayback)
         wtable_destroy (impl->myTransportTable);
         impl->myTransportTable = NULL;
     }
-    
+
     if (impl->myPublisherTable != NULL)
     {
         wtable_destroy (impl->myPublisherTable);
@@ -151,7 +151,7 @@ mama_status mamaPlayback_createPublisher (mamaPlaybackPublisher mamaPlayback,
                                    NULL,   /* Not needed for basic publishers */
                                    NULL);  /* Not needed for basic publishers */
      mama_logStdout (MAMA_LOG_LEVEL_FINE,
-                     "PLAYBACK INFO!!!, Publisher created (%p)\n", 
+                     "PLAYBACK INFO!!!, Publisher created (%p)\n",
                      publisher);
     if (status != MAMA_STATUS_OK)
     {
@@ -173,7 +173,7 @@ mama_status mamaPlayback_createTransport (mamaPlaybackPublisher mamaPlayback,
 
     if (impl == NULL)
         return MAMA_STATUS_NULL_ARG;
-    
+
     status = mamaTransport_allocate (transport);
     if (status != MAMA_STATUS_OK)
     {
@@ -209,7 +209,7 @@ mamaPlayback_setTransportSleep (mamaPlaybackPublisher mamaPlayback,
     return MAMA_STATUS_OK;
 }
 
-mama_bool_t 
+mama_bool_t
 mamaPlayback_findOrCreateTransport (mamaPlaybackPublisher mamaPlayback,
                                     char* transportName,
                                     mamaTransport* transport)
@@ -220,7 +220,7 @@ mamaPlayback_findOrCreateTransport (mamaPlaybackPublisher mamaPlayback,
 
     tempTransport = (mamaTransport)wtable_lookup
         (impl->myTransportTable , transportName);
-  
+
     if (tempTransport != NULL)
     {
         *transport  = tempTransport;
@@ -263,7 +263,7 @@ mamaPlayback_findOrCreateTransport (mamaPlaybackPublisher mamaPlayback,
     return -1;
 }
 
-mama_bool_t 
+mama_bool_t
 mamaPlayback_findOrCreatePublisher (mamaPlaybackPublisher mamaPlayback,
                                     char* keyName,
                                     mamaPublisher* publisher,
@@ -278,10 +278,10 @@ mamaPlayback_findOrCreatePublisher (mamaPlaybackPublisher mamaPlayback,
     mamaPublisher tempPublisher= NULL;
 
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
-       
-    tempPublisher = (mamaPublisher)wtable_lookup 
+
+    tempPublisher = (mamaPublisher)wtable_lookup
         (impl->myPublisherTable , keyName);
-    
+
     if (tempPublisher != NULL)
     {
         *publisher = tempPublisher;
@@ -335,7 +335,7 @@ mama_status mamaPlayback_destroyPublishers (mamaPlaybackPublisher mamaPlayback)
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
 
-    wtable_clear_for_each (impl->myPublisherTable, 
+    wtable_clear_for_each (impl->myPublisherTable,
                            freePublisherCb, NULL);
     return MAMA_STATUS_OK;
 }
@@ -345,7 +345,7 @@ mama_status mamaPlayback_destroyTransports (mamaPlaybackPublisher mamaPlayback)
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
 
-    wtable_clear_for_each (impl->myTransportTable, 
+    wtable_clear_for_each (impl->myTransportTable,
                            freeTransportCb, NULL);
     return MAMA_STATUS_OK;
 }
@@ -353,10 +353,10 @@ mama_status mamaPlayback_destroyTransports (mamaPlaybackPublisher mamaPlayback)
 mama_status mamaPlayback_publishMsg (mamaPlaybackPublisher mamaPlayback,
                                      mamaPublisher publisher)
 {
-    mamaFilePlaybackImpl* impl = 
+    mamaFilePlaybackImpl* impl =
         (mamaFilePlaybackImpl*)mamaPlayback;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
-    
+
     if (publisher != NULL)
     {
         mamaPublisher_send (publisher, impl->myNewMessage);
@@ -369,9 +369,9 @@ mama_status mamaPlayback_openFile (mamaPlaybackPublisher mamaPlayback,
                                      const char* fileName)
 {
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
-    
+
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
-    
+
     if (fileName == NULL)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL,
@@ -391,10 +391,10 @@ mama_status mamaPlayback_setBridge (mamaPlaybackPublisher mamaPlayback,
                                     mamaBridge            bridge)
 {
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
-    
+
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
     impl->myBridge = bridge;
-  
+
     return MAMA_STATUS_OK;
 }
 
@@ -405,10 +405,10 @@ mama_bool_t mamaPlayback_publishFromFile (mamaPlaybackPublisher mamaPlayback,
     mamaPublisher publisher = NULL;
     char*          header    = NULL;
     char*         temp      = NULL;
-    int           position  = 0;   
+    int           position  = 0;
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
-   
+
     if (mamaPlaybackFileParser_getNextHeader (impl->myFileParser,
                                               &header))
     {
@@ -429,9 +429,9 @@ mama_bool_t mamaPlayback_publishFromFile (mamaPlaybackPublisher mamaPlayback,
         {
             injectDateTime (dateTime, impl->myNewMessage);
         }
-        if (mamaPlayback_findOrCreatePublisher (impl,header, 
+        if (mamaPlayback_findOrCreatePublisher (impl,header,
                                                 &publisher, delim) != -1)
-        { 
+        {
             mamaPlayback_publishMsg (impl, publisher);
         }
     }
@@ -439,7 +439,7 @@ mama_bool_t mamaPlayback_publishFromFile (mamaPlaybackPublisher mamaPlayback,
     {
         return -1;
     }
-    
+
     return MAMA_STATUS_OK;
 }
 
@@ -490,7 +490,7 @@ mama_status mamaPlayback_getSymbol (mamaPlaybackPublisher mamaPlayback,
 {
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
-    
+
     *symbol = impl->mySymbol;
     return MAMA_STATUS_OK;
 }
@@ -499,7 +499,7 @@ mama_status mamaPlayback_getSource (mamaPlaybackPublisher mamaPlayback,
 {
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
-    
+
     *source = impl->mySource;
     return MAMA_STATUS_OK;
 }
@@ -509,7 +509,7 @@ mama_status mamaPlayback_getTransportName (mamaPlaybackPublisher mamaPlayback,
 {
     mamaFilePlaybackImpl* impl = (mamaFilePlaybackImpl*)mamaPlayback;
     if (impl == NULL) return MAMA_STATUS_NULL_ARG;
-    
+
     *transportName = impl->myTransportName;
     return MAMA_STATUS_OK;
 }

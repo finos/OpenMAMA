@@ -64,7 +64,7 @@ InstMamaInclude = \
    mama/mamacpp.h
    mama/MamaStat.h
    mama/MamaStatsCollector.h
-   mama/MamaReservedFields.h   
+   mama/MamaReservedFields.h
 """)
 
 InstConflationInclude = \

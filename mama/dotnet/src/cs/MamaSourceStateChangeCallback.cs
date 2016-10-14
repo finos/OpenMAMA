@@ -25,7 +25,7 @@ using System.Runtime.InteropServices;
 namespace Wombat
 {
 	/// <summary>
-	/// Applications can register with MamaSourceGroup to receive state change 
+	/// Applications can register with MamaSourceGroup to receive state change
 	/// notifications when the state of sources within
 	/// the group has changed.
 	/// </summary>

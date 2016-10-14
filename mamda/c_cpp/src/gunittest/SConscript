@@ -7,10 +7,10 @@ env.Clone()
 modules = \
     Split("""
 common
-orderbooks  
-orderImbalances  
-quotes  
-secstatus  
+orderbooks
+orderImbalances
+quotes
+secstatus
 trades
 """)
 

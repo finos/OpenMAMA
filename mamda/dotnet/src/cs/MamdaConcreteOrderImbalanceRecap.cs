@@ -84,7 +84,7 @@ namespace Wombat
 		/// <summary>
 		/// </summary>
 		/// <param name="actTime"></param>
-		public void setActivityTime(DateTime actTime) 
+		public void setActivityTime(DateTime actTime)
 		{
 			if (actTime != DateTime.MinValue)
 				this.mActTime = actTime;
@@ -108,10 +108,10 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="actTime"></param>
-		public void setLineTime(DateTime lineTime) 
+		public void setLineTime(DateTime lineTime)
 		{
 			if (lineTime != DateTime.MinValue)
 				this.mLineTime = lineTime;
@@ -135,20 +135,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="actTime"></param>
-		public void setSendTime(DateTime sendTime) 
+		public void setSendTime(DateTime sendTime)
 		{
 			if (sendTime != DateTime.MinValue)
 				this.mSendTime = sendTime;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public DateTime getAuctionTime() 
+		public DateTime getAuctionTime()
 		{
 			return mAuctionTime;
 		}
@@ -163,20 +163,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="auctionTime"></param>
-		public void setAuctionTime(DateTime auctionTime) 
+		public void setAuctionTime(DateTime auctionTime)
 		{
 			if (auctionTime != DateTime.MinValue)
 				this.mAuctionTime = auctionTime;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public long getBuyVolume() 
+		public long getBuyVolume()
 		{
 			return mBuyVolume;
 		}
@@ -190,19 +190,19 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="buyVolume"></param>
-		public void setBuyVolume(long buyVolume) 
+		public void setBuyVolume(long buyVolume)
 		{
 			this.mBuyVolume = buyVolume;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public char getCrossType() 
+		public char getCrossType()
 		{
 			return mCrossType;
 		}
@@ -216,19 +216,19 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="crossType"></param>
-		public void setCrossType(char crossType) 
+		public void setCrossType(char crossType)
 		{
 			this.mCrossType = crossType;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public long getEventSeqNum() 
+		public long getEventSeqNum()
 		{
 			return mEventSeqNum;
 		}
@@ -242,19 +242,19 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="eventSeqNum"></param>
-		public void setEventSeqNum(long eventSeqNum) 
+		public void setEventSeqNum(long eventSeqNum)
 		{
 			this.mEventSeqNum = eventSeqNum;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public DateTime getEventTime() 
+		public DateTime getEventTime()
 		{
 			return mEventTime;
 		}
@@ -268,20 +268,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="eventTime"></param>
-		public void setEventTime(DateTime eventTime) 
+		public void setEventTime(DateTime eventTime)
 		{
 			if (mEventTime != DateTime.MinValue)
 				this.mEventTime = eventTime;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public MamaPrice getFarClearingPrice() 
+		public MamaPrice getFarClearingPrice()
 		{
 			return mFarClearingPrice;
 		}
@@ -295,20 +295,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="farClearingPrice"></param>
-		public void setFarClearingPrice(MamaPrice farClearingPrice) 
+		public void setFarClearingPrice(MamaPrice farClearingPrice)
 		{
 			if (null != farClearingPrice)
 				this.mFarClearingPrice = new MamaPrice(farClearingPrice);
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public MamaPrice getHighIndicationPrice() 
+		public MamaPrice getHighIndicationPrice()
 		{
 			return mHighIndicationPrice;
 		}
@@ -322,17 +322,17 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="highIndicationPrice"></param>
-		public void setHighIndicationPrice(MamaPrice highIndicationPrice) 
+		public void setHighIndicationPrice(MamaPrice highIndicationPrice)
 		{
 			if (null != highIndicationPrice)
 				this.mHighIndicationPrice = new MamaPrice(highIndicationPrice);
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public MamaPrice getImbalancePrice()
@@ -349,10 +349,10 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="indicationPrice"></param>
-		public void setImbalancePrice(MamaPrice indicationPrice) 
+		public void setImbalancePrice(MamaPrice indicationPrice)
 		{
 			if (null != indicationPrice)
 				this.mIndicationPrice = new MamaPrice(indicationPrice);
@@ -360,10 +360,10 @@ namespace Wombat
 
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public MamaPrice getMatchPrice() 
+		public MamaPrice getMatchPrice()
 		{
 			return mInsideMatchPrice;
 		}
@@ -377,20 +377,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="insideMatchPrice"></param>
-		public void setMatchPrice(MamaPrice insideMatchPrice) 
+		public void setMatchPrice(MamaPrice insideMatchPrice)
 		{
 			if (null != insideMatchPrice)
 				this.mInsideMatchPrice = new MamaPrice(insideMatchPrice);
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public string getIssueSymbol() 
+		public string getIssueSymbol()
 		{
 			return mIssueSymbol;
 		}
@@ -404,20 +404,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="issueSymbol"></param>
-		public void setIssueSymbol(String issueSymbol) 
+		public void setIssueSymbol(String issueSymbol)
 		{
 			if (issueSymbol != null)
 				this.mIssueSymbol = issueSymbol;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public string getSymbol() 
+		public string getSymbol()
 		{
 			return mSymbol;
 		}
@@ -431,20 +431,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="issueSymbol"></param>
-		public void setSymbol(String symbol) 
+		public void setSymbol(String symbol)
 		{
 			if (symbol != null)
 				this.mSymbol = symbol;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public MamaPrice getLowIndicationPrice() 
+		public MamaPrice getLowIndicationPrice()
 		{
 			return mLowIndicationPrice;
 		}
@@ -458,20 +458,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="lowIndicationPrice"></param>
-		public void setLowIndicationPrice(MamaPrice lowIndicationPrice) 
+		public void setLowIndicationPrice(MamaPrice lowIndicationPrice)
 		{
 			if (null != lowIndicationPrice)
 				this.mLowIndicationPrice = new MamaPrice(lowIndicationPrice);
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public long getMatchVolume() 
+		public long getMatchVolume()
 		{
 			return mMatchVolume;
 		}
@@ -485,19 +485,19 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="matchVolume"></param>
-		public void setMatchVolume(long matchVolume) 
+		public void setMatchVolume(long matchVolume)
 		{
 			this.mMatchVolume = matchVolume;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public int getMsgType() 
+		public int getMsgType()
 		{
 			return mMsgType;
 		}
@@ -511,19 +511,19 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="msgType"></param>
-		public void setMsgType(int msgType) 
+		public void setMsgType(int msgType)
 		{
 			this.mMsgType = msgType;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public MamaPrice getNearClearingPrice() 
+		public MamaPrice getNearClearingPrice()
 		{
 			return mNearClearingPrice;
 		}
@@ -537,7 +537,7 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="nearClearingPrice"></param>
 		public void setNearClearingPrice(MamaPrice nearClearingPrice)
@@ -547,10 +547,10 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public char getNoClearingPrice() 
+		public char getNoClearingPrice()
 		{
 			return mNoClearingPrice;
 		}
@@ -564,19 +564,19 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="noClearingPrice"></param>
-		public void setNoClearingPrice(char noClearingPrice) 
+		public void setNoClearingPrice(char noClearingPrice)
 		{
 			this.mNoClearingPrice = noClearingPrice;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public string getPartId() 
+		public string getPartId()
 		{
 			return mPartId;
 		}
@@ -590,20 +590,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="partId"></param>
-		public void setPartId(String partId) 
+		public void setPartId(String partId)
 		{
 			if (null != mPartId)
 				this.mPartId = partId;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public char getPriceVarInd() 
+		public char getPriceVarInd()
 		{
 			return mPriceVarInd;
 		}
@@ -617,19 +617,19 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="priceVarInd"></param>
-		public void setPriceVarInd(char priceVarInd) 
+		public void setPriceVarInd(char priceVarInd)
 		{
 			this.mPriceVarInd = priceVarInd;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public String getSecurityStatusOrig() 
+		public String getSecurityStatusOrig()
 		{
 			return mSecurityStatusOrig;
 		}
@@ -643,20 +643,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="securityStatusOrig"></param>
-		public void setSecurityStatusOrig(string securityStatusOrig) 
+		public void setSecurityStatusOrig(string securityStatusOrig)
 		{
 			if (null != securityStatusOrig)
 				this.mSecurityStatusOrig = securityStatusOrig;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public string getImbalanceState() 
+		public string getImbalanceState()
 		{
 			return mSecurityStatusQual;
 		}
@@ -670,20 +670,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="securityStatusQual"></param>
-		public void setImbalanceState(string securityStatusQual) 
+		public void setImbalanceState(string securityStatusQual)
 		{
 			if (null != securityStatusQual)
 				this.mSecurityStatusQual = securityStatusQual;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public DateTime getSecurityStatusTime() 
+		public DateTime getSecurityStatusTime()
 		{
 			return mSecurityStatusTime;
 		}
@@ -697,20 +697,20 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="securityStatusTime"></param>
-		public void setSecurityStatusTime(DateTime securityStatusTime) 
+		public void setSecurityStatusTime(DateTime securityStatusTime)
 		{
 			if (mSecurityStatusTime != DateTime.MinValue)
 				this.mSecurityStatusTime = securityStatusTime;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public long getSellVolume() 
+		public long getSellVolume()
 		{
 			return mSellVolume;
 		}
@@ -724,19 +724,19 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="sellVolume"></param>
-		public void setSellVolume(long sellVolume) 
+		public void setSellVolume(long sellVolume)
 		{
 			this.mSellVolume = sellVolume;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public int getSeqNum() 
+		public int getSeqNum()
 		{
 			return mSeqNum;
 		}
@@ -750,19 +750,19 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="seqNum"></param>
-		public void setSeqNum(int seqNum) 
+		public void setSeqNum(int seqNum)
 		{
 			this.mSeqNum = seqNum;
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
-		public DateTime getSrcTime() 
+		public DateTime getSrcTime()
 		{
 			return mSrcTime;
 		}
@@ -776,10 +776,10 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="srcTime">the datetime to set.</param>
-		public void setSrcTime(DateTime srcTime) 
+		public void setSrcTime(DateTime srcTime)
 		{
 			if (mSrcTime != DateTime.MinValue)
 				this.mSrcTime = srcTime;
@@ -806,7 +806,7 @@ namespace Wombat
 		private DateTime	 mActTime             = DateTime.MinValue;
 		private DateTime	 mSendTime			  = DateTime.MinValue;
 		private DateTime     mLineTime			  = DateTime.MinValue;
-    
+
 		private int          mMsgType;
 		private String       mIssueSymbol         = null;
 		private String		 mSymbol			  = null;

@@ -27,7 +27,7 @@ namespace Wombat
 {
 	/// <summary>
     /// A MamaSourceGroup monitors a set of <see cref="MamaSource"/>s that presumably
-    /// provide a duplicate set of data. 
+    /// provide a duplicate set of data.
 	/// </summary>
 	/// <remarks>
     /// Each member of the mGroup is given
@@ -129,7 +129,7 @@ namespace Wombat
 		/// <param name="source">The mamaSource being added to the mamaSourceGroup.</param>
 		/// <param name="weight">The weighing to apply to the source being added.</param>
 		public void add(
-			MamaSource source, 
+			MamaSource source,
 			uint weight)
 		{
 #if MAMA_WRAPPERS_CHECK_ARGUMENTS
@@ -148,7 +148,7 @@ namespace Wombat
 		/// CLS compliant version of add(MamaSource, UInt32)
 		/// </summary>
 		public void add(
-			MamaSource source, 
+			MamaSource source,
 			int weight)
 		{
 #if MAMA_WRAPPERS_CHECK_ARGUMENTS
@@ -210,7 +210,7 @@ namespace Wombat
 		/// <param name="sourceName">The name of the source whose weight is being updated.</param>
 		/// <param name="weight">The new weight value for the specified source.</param>
 		public void setWeight(
-			string sourceName, 
+			string sourceName,
 			uint weight)
 		{
 #if MAMA_WRAPPERS_CHECK_ARGUMENTS
@@ -228,7 +228,7 @@ namespace Wombat
 		/// CLS compliant version of setWeight(System.String, UInt32)
 		/// </summary>
 		public void setWeight(
-			string sourceName, 
+			string sourceName,
 			int weight)
 		{
 #if MAMA_WRAPPERS_CHECK_ARGUMENTS
@@ -271,7 +271,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// The mCallback interface registered here will receive a mCallback whenever the 
+		/// The mCallback interface registered here will receive a mCallback whenever the
 		/// state of sources in the mGroup changes.
 		/// </summary>
 		/// <param name="mCallback">The mCallback object</param>
@@ -420,8 +420,8 @@ namespace Wombat
 		private sealed class Cookie : StateChangedRegistration
 		{
 			public Cookie(
-				MamaSourceGroup mGroup, 
-				MamaSourceStateChangeCallback mCallback, 
+				MamaSourceGroup mGroup,
+				MamaSourceStateChangeCallback mCallback,
 				IntPtr registrationHandle,
 				IntPtr mKey)
 			{

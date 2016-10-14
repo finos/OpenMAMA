@@ -24,11 +24,11 @@
  * This sample application demonstrates how to send mamaMsg's from an inbox,
  * and receive the reply.
  *
- * It accepts the following command line arguments: 
+ * It accepts the following command line arguments:
  *      [-s topic]         The topic to which to subscribe. Default value
  *                         is "MAMA_INBOUND_TOPIC".
  *      [-tport name]      The transport parameters to be used from
- *                         mama.properties. 
+ *                         mama.properties.
  *      [-q]               Quiet mode. Suppress output.
  *
  *
@@ -65,15 +65,15 @@ static MamaQueue*    gDefaultQueue             = NULL;
 static const char *  gUsageString[]            =
 {
     "This sample application demonstrates how to subscribe and process",
-    "mamaMsg's from a basic subscription.",    
+    "mamaMsg's from a basic subscription.",
     "",
     " It accepts the following command line arguments:",
     "      [-s topic]         The topic to which to subscribe. Default value",
     "                         is \"MAMA_INBOUND_TOPIC\".",
     "      [-tport name]      The transport parameters to be used from",
     "                         mama.properties. Default is sub",
-    "      [-m middleware]    The middleware to use [wmw/lbm/tibrv]. Default", 
-    "                         is wmw.", 
+    "      [-m middleware]    The middleware to use [wmw/lbm/tibrv]. Default",
+    "                         is wmw.",
     "      [-q]               Quiet mode. Suppress output.",
     NULL
 };
@@ -88,7 +88,7 @@ int main (int argc, const char**  argv)
 {
     setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
-    
+
     initializeMama ();
     if (gWildcard || gTport)
     {
@@ -114,7 +114,7 @@ void initializeMama (void)
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error initializing mama or creating transport: " 
+        cerr << "Error initializing mama or creating transport: "
              << status.toString () << endl;
         exit (1);
     }
@@ -127,7 +127,7 @@ public:
 
     virtual void onField (const MamaMsg&       msg,
                           const MamaMsgField&  field,
-                          void*                closure) 
+                          void*                closure)
     {
 
         char        value[256]= "";
@@ -184,19 +184,19 @@ public:
             printf ("Destroyed subscription.\n");
         }
     }
-   
+
 
     virtual void onError (MamaBasicWildCardSubscription*  subscription,
                           const MamaStatus&               status,
-                          const char*                     subject) 
+                          const char*                     subject)
     {
-        printf ("Error creating subscription: %s\n", 
+        printf ("Error creating subscription: %s\n",
                 status.toString ());
         exit (1);
     }
 
-    virtual void onMsg (MamaBasicWildCardSubscription* subscription, 
-                        MamaMsg&                       msg, 
+    virtual void onMsg (MamaBasicWildCardSubscription* subscription,
+                        MamaMsg&                       msg,
                         const char*                    topic)
     {
         if (gMuteTopic)
@@ -236,14 +236,14 @@ public:
 
     virtual void onError (MamaBasicSubscription*  subscription,
                           const MamaStatus&       status,
-                          const char*             subject) 
+                          const char*             subject)
     {
-        printf ("Error creating subscription: %s\n", 
+        printf ("Error creating subscription: %s\n",
                 status.toString ());
         exit (1);
     }
 
-    virtual void onMsg (MamaBasicSubscription* subscription, 
+    virtual void onMsg (MamaBasicSubscription* subscription,
                         MamaMsg&               msg)
     {
         if (gQuietLevel < 2)
@@ -279,7 +279,7 @@ static void createSubscriber (void)
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error creating subscription: " 
+        cerr << "Error creating subscription: "
              << status.toString () << endl;
         exit (1);
     }
@@ -303,7 +303,7 @@ static void createWildCardSubscriber (void)
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error creating subscription: " 
+        cerr << "Error creating subscription: "
              << status.toString () << endl;
         exit (1);
     }
@@ -360,7 +360,7 @@ void parseCommandLine (int argc, const char**  argv)
         else if (strcmp ("-m", argv[i]) == 0)
         {
             gMiddleware = argv[i+1];
-            i += 2;               
+            i += 2;
         }
         else if (strcmp(argv[i], "-V") == 0)
         {
@@ -380,7 +380,7 @@ void parseCommandLine (int argc, const char**  argv)
         }
         else if (strcmp (argv[i], "-w") == 0)
         {
-            if (gTport) 
+            if (gTport)
             {
                 printf ("A subscription can only be wildcard or "
                         "tport not both\n");
@@ -391,19 +391,19 @@ void parseCommandLine (int argc, const char**  argv)
         }
         else if (strcmp ("-t", argv[i]) == 0)
         {
-            if (gWildcard) 
+            if (gWildcard)
             {
                 printf ("A subscription can only be wildcard or "
                         "tport not both\n");
                 exit(1);
             }
             gTport = 1;
-            i += 1;               
+            i += 1;
         }
         else if (strcmp ("-mute", argv[i]) == 0)
         {
             gMuteTopic = argv[i+1];
-            i += 2;               
+            i += 2;
         }
     }
 

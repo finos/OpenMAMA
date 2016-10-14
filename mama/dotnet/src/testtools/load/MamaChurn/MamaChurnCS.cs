@@ -363,7 +363,7 @@ namespace MamaChurnCS
         /// Subscription callbacks
         /// </summary>
         /// <param name="args"></param>
-        ////////////////////////////////////////////////////////////////////////////////////      
+        ////////////////////////////////////////////////////////////////////////////////////
 
         public void onCreate(MamaSubscription subscription)
         {
@@ -860,7 +860,7 @@ namespace MamaChurnCS
                             // Stop processing all the queues
                             mamaQueueGroup.stop();
 
-                            // Destroy all the subscriptions                            
+                            // Destroy all the subscriptions
                             for (int subIndex = 0; subIndex < mamaSubscriptions.Length; subIndex++)
                             {
                                 mamaSubscriptions[subIndex].destroy();
@@ -930,6 +930,3 @@ namespace MamaChurnCS
         }
     }
 }
-
-
-

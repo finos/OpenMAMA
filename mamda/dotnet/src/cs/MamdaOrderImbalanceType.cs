@@ -74,7 +74,7 @@ namespace Wombat
 		public const int ORDER_IMBALANCE_BUY_VALUE = 24;
 		public static readonly MamdaOrderImbalanceType  ORDER_IMBALANCE_BUY =
 			new MamdaOrderImbalanceType(valueToString(ORDER_IMBALANCE_BUY_VALUE), ORDER_IMBALANCE_BUY_VALUE);
-		
+
 		/**ORDER_IMBALANCE_SELL_VALUE*/
 		public const int ORDER_IMBALANCE_SELL_VALUE = 25;
 		public static readonly MamdaOrderImbalanceType ORDER_IMBALANCE_SELL =
@@ -167,7 +167,7 @@ namespace Wombat
 		/// <summary>
 		/// Utility method for mapping type integer values to corresponding string
 		/// values.
-		/// 
+		///
 		/// Returns "UNKNOWN" if the int type value is not recognised.
 		/// </summary>
 		/// <param name="value">The int value for a MamdaOrderImbalanceType</param>
@@ -202,9 +202,9 @@ namespace Wombat
 				default:
 					return "UNKNOWN";
 			}
-    
+
 		}
-    
+
 		public static int stringToValue(String type)
 		{
 			if (type == MARKET_IMBALANCE_BUY.toString())
@@ -268,7 +268,7 @@ namespace Wombat
 				case ORDER_IMBALANCE_BUY_VALUE:
 				case ORDER_IMBALANCE_SELL_VALUE:
 				case NO_MARKET_IMBALANCE_VALUE:
-				case NO_MOC_IMBALANCE_VALUE: 
+				case NO_MOC_IMBALANCE_VALUE:
 				case NO_ORDER_IMBALANCE_VALUE:
 					imbalanceType = true;
 					break;
@@ -276,7 +276,7 @@ namespace Wombat
 					imbalanceType = false;
 					break;
 			}
-			return imbalanceType;  
+			return imbalanceType;
 		}
 
 		public static bool isMamdaImbalanceOrder(int value)
@@ -295,7 +295,7 @@ namespace Wombat
 					imbalanceOrder = true;
 					break;
 				case NO_MARKET_IMBALANCE_VALUE:
-				case NO_MOC_IMBALANCE_VALUE: 
+				case NO_MOC_IMBALANCE_VALUE:
 				case NO_ORDER_IMBALANCE_VALUE:
 					imbalanceOrder = false;
 					break;
@@ -303,8 +303,8 @@ namespace Wombat
 					imbalanceOrder = false;
 					break;
 			}
-			return imbalanceOrder;  
-		} 
+			return imbalanceOrder;
+		}
 
 		/// <summary>
 		/// Compare the two types for equality.

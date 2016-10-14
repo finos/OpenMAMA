@@ -66,7 +66,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher__1create
     jlong           transportPointer    =   0;
     mama_status     status              =   MAMA_STATUS_OK;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-  
+
     /*Get the transport pointer*/
     assert(transport!=NULL);
     transportPointer = (*env)->GetLongField(env, transport,
@@ -80,7 +80,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher__1create
          cTopic = (*env)->GetStringUTFChars(env,topic,0);
          if(!cTopic)return;
     }
-    
+
     if(MAMA_STATUS_OK!=(mamaDQPublisher_allocate(
                     &cPublisher)))
     {
@@ -91,7 +91,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher__1create
         utils_throwMamaException(env,errorString);
         return;
     }
-                    
+
     if(MAMA_STATUS_OK!=(mamaDQPublisher_create(
                     cPublisher,
                     cTransport,
@@ -107,12 +107,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher__1create
 
     (*env)->SetLongField(env,this,dqpublisherPointerFieldId_g,
                          CAST_POINTER_TO_JLONG(cPublisher));
-        
+
     if(cTopic)(*env)->ReleaseStringUTFChars(env,topic, cTopic);
-    
+
     return;
 }
-       
+
 
 /*
  * Class:     com_wombat_mama_MamaDQPublisher
@@ -141,11 +141,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher__1send
                 "Failed to send from publisher.", status);
         utils_throwMamaException(env,errorString);
     }
-    
+
     return;
 
  }
-  
+
 
 /*
  * Class:     com_wombat_mama_MamaDQPublisher
@@ -193,10 +193,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher__1destroy
 
     publisherPointer = (*env)->GetLongField(env,this,dqpublisherPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
     mamaDQPublisher_destroy(
                     CAST_JLONG_TO_POINTER(mamaDQPublisher,publisherPointer));
-                    
+
     return;
  }
 
@@ -211,12 +211,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher__1setStatus
     jlong           publisherPointer            =   0;
 
     publisherPointer = (*env)->GetLongField(env,this,dqpublisherPointerFieldId_g);
-    assert(publisherPointer!=0);  
-    
+    assert(publisherPointer!=0);
+
     mamaDQPublisher_setStatus(
                     CAST_JLONG_TO_POINTER(mamaDQPublisher,publisherPointer),
                     status);
-                    
+
     return;
  }
 
@@ -232,11 +232,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher__1setSenderId
 
     publisherPointer = (*env)->GetLongField(env,this,dqpublisherPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
     mamaDQPublisher_setSenderId(
                     CAST_JLONG_TO_POINTER(mamaDQPublisher,publisherPointer),
                     (uint64_t)senderId);
-                    
+
     return;
  }
 
@@ -252,16 +252,16 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher__1setSeqNum
 
     publisherPointer = (*env)->GetLongField(env,this,dqpublisherPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
     mamaDQPublisher_setSeqNum(
                     CAST_JLONG_TO_POINTER(mamaDQPublisher,publisherPointer),
                     (mama_seqnum_t) seqnum);
-                    
+
     return;
  }
 
 
-  
+
 /******************************************************************************
 * Public function implementation
 *******************************************************************************/
@@ -281,8 +281,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisher_initIDs
 
     dqpublisherConstructorId_g = (*env)->GetMethodID(env, class,
                               "<init>", "()V" );
-                              
-    if (!dqpublisherConstructorId_g) return;/*Exception auto thrown*/     
-    
+
+    if (!dqpublisherConstructorId_g) return;/*Exception auto thrown*/
+
     return;
 }

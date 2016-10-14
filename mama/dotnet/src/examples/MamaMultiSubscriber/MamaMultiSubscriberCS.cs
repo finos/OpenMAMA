@@ -56,7 +56,7 @@ namespace Wombat
 		private ArrayList			mamaTransports		= new ArrayList();
 		private MamaQueue			mamaDefaultQueue;
 		private ArrayList			mamaSubscriptions	= new ArrayList();
-	
+
 		const string usage =
 			"This sample application demonstrates how to subscribe and process\n" +
 			"mamaMsg's from a basic subscription using one or more middlewares at once.\n" +
@@ -70,12 +70,12 @@ namespace Wombat
 			"      [-q]               Quiet mode. Suppress output.\n" +
 			"      [-m  middleware]    The one or more middlewares to use [wmw/lbm/tibrv].\n" +
 			"      [-v]               Increase verbosity. Can be passed multiple times\n";
-		
+
 		private bool parseCommandLine(string[] args)
 		{
 			for (int i = 0; i < args.Length;i++)
 			{
-				if (args[i].CompareTo("-s") == 0) 
+				if (args[i].CompareTo("-s") == 0)
 				{
 					if ((i +1) < args.Length)
 					{
@@ -93,7 +93,7 @@ namespace Wombat
 					}
 				}
 
-				if (args[i].CompareTo("-tport") == 0) 
+				if (args[i].CompareTo("-tport") == 0)
 				{
 					if ((i +1) < args.Length)
 					{
@@ -102,13 +102,13 @@ namespace Wombat
 					}
 				}
 
-				if (args[i].CompareTo("--help") == 0) 
+				if (args[i].CompareTo("--help") == 0)
 				{
 					Console.WriteLine(usage);
 					return false;
 				}
 
-				if (args[i].CompareTo("-?") == 0) 
+				if (args[i].CompareTo("-?") == 0)
 				{
 					Console.WriteLine(usage);
 					return false;
@@ -138,7 +138,7 @@ namespace Wombat
 					}
 					continue;
 				}
-                
+
 				Console.WriteLine("Error: unrecognized parameter: " + args[i]);
 				return false;
 			}
@@ -193,7 +193,7 @@ namespace Wombat
 				mamaDefaultQueue,
 				this,   // callback
 				topicName);
-                
+
 			Console.WriteLine("Starting mama...");
 
 			mamaSubscriptions.Add(mamaSubscription);
@@ -205,7 +205,7 @@ namespace Wombat
 
 		[STAThread]
 		static void Main(string[] args)
-		{  
+		{
 			MamaMultiSubscriberCS mamaMultiSubscriber = new MamaMultiSubscriberCS(args);
 		}
 
@@ -215,17 +215,17 @@ namespace Wombat
 					   field.getName(),
 					   field.getFid(),
 					   field.getTypeName()));
-                
-				   /*  
-					   The most efficient way of extracting data while iterating 
-					   fields is to obtain the field type and then call the 
+
+				   /*
+					   The most efficient way of extracting data while iterating
+					   fields is to obtain the field type and then call the
 					   associated strongly-typed accessor.
 
-					   MamaMsgField.getAsString() will return a string version 
-					   of the data but is considerably less efficient and is not 
+					   MamaMsgField.getAsString() will return a string version
+					   of the data but is considerably less efficient and is not
 					   recommended for production use.
-				   */  
-                        
+				   */
+
 				   switch(field.getType())
 				   {
 					   case mamaFieldType.MAMA_FIELD_TYPE_MSG:
@@ -240,7 +240,7 @@ namespace Wombat
 				   }
                    Console.Out.Flush();
 			   }
-        
+
 		private void displayAllFields(MamaMsg msg)
 		{
 			MamaMsgIterator iterator = new MamaMsgIterator(null);
@@ -298,7 +298,7 @@ namespace Wombat
         {
             Console.WriteLine("Transport Naming Service Disconnected.");
         }
-        
+
 		// Subscription callbacks
 		public void onCreate(MamaSubscription subscription)
 		{
@@ -316,7 +316,7 @@ namespace Wombat
 		{
 			Console.WriteLine("Subscription quality:" + (int)quality);
 		}
-        
+
 		public void onMsg(MamaSubscription subscription, MamaMsg msg)
 		{
 			Console.WriteLine("Received msg:");
@@ -337,11 +337,5 @@ namespace Wombat
         {
         }
 	}
-    
+
 }
-
-
-				
-
-
-

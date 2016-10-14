@@ -89,11 +89,11 @@ namespace Wombat
             /// <param name="bridge">
             /// The MAMA bridge.
             /// </param>
-            public MamaQueueThread(MamaBridge bridge) 
+            public MamaQueueThread(MamaBridge bridge)
             {
                 // Create the queue
                 mQueue = new MamaQueue(bridge);
-                
+
                 // Start dispatching straight away
                 start();
             }
@@ -264,7 +264,7 @@ namespace Wombat
 		public MamaQueueGroup(MamaBridge bridgeImpl, int queueCount)
 		{
             // Check arguments
-            if (queueCount < 1) 
+            if (queueCount < 1)
             {
                 throw new ArgumentOutOfRangeException("queueCount", queueCount, "Queue count should be > 0");
             }
@@ -274,7 +274,7 @@ namespace Wombat
             for (int nextQueue = 0; nextQueue<queueCount; nextQueue++)
             {
                 mQueueThreads[nextQueue] = new MamaQueueThread(bridgeImpl);
-            }		    
+            }
 		}
 
         /// <summary>
@@ -283,7 +283,7 @@ namespace Wombat
         ~MamaQueueGroup()
         {
             // Dispose only unmanaged resources
-            Dispose(false);            
+            Dispose(false);
         }
 
         #endregion
@@ -341,7 +341,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// Destroy the queue group and destroy all the queues waiting on each queue, this is 
+        /// Destroy the queue group and destroy all the queues waiting on each queue, this is
         /// equivalent to disposing the class.
         /// </summary>
         public void destroyWait()
@@ -417,18 +417,18 @@ namespace Wombat
         /// the group if this is the first time that it has been called.
         /// Note that when all queues have been returned it will go back to the start of the array.
         /// </summary>
-        public MamaQueue getNextQueue() 
-        {           
+        public MamaQueue getNextQueue()
+        {
             // Returns
             MamaQueue ret = null;
 
-            lock(this) 
+            lock(this)
             {
                 // Only continue if the array of threads is valid
-                if (mQueueThreads != null) 
+                if (mQueueThreads != null)
                 {
                     // If the queue index has reached the end of the array then go back to the start
-                    if (mNextQueueIndex >= mQueueThreads.Length) 
+                    if (mNextQueueIndex >= mQueueThreads.Length)
                     {
                         mNextQueueIndex = 0;
                     }

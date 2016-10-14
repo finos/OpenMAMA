@@ -37,7 +37,7 @@ namespace Wombat.Mamda.Examples
 			MamaDictionary dictionary = null;
 			ListenerCallback callback = new ListenerCallback();
 			CommandLineProcessor options = new CommandLineProcessor(args);
-	        
+
 			try
 			{
 				// Initialize MAMA
@@ -60,7 +60,7 @@ namespace Wombat.Mamda.Examples
 				foreach (string symbol in options.getSymbolList())
 				{
 					MamdaSubscription aSubscription = new MamdaSubscription ();
-	                
+
 					aSubscription.addMsgListener(callback);
 					aSubscription.addStaleListener(callback);
 					aSubscription.addErrorListener(callback);
@@ -75,7 +75,7 @@ namespace Wombat.Mamda.Examples
 										null);
 	                mamdaSubscriptions.Add(aSubscription);
 				}
-	           
+
 				Console.WriteLine("Hit Enter or Ctrl-C to exit.");
 				Mama.start(myBridge);
 				GC.KeepAlive(dictionary);
@@ -89,7 +89,7 @@ namespace Wombat.Mamda.Examples
 		}
 
 		private class ListenerCallback :
-			MamdaMsgListener, 
+			MamdaMsgListener,
 			MamdaStaleListener,
 			MamdaErrorListener
 		{

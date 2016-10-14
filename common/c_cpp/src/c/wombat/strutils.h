@@ -31,7 +31,6 @@ extern "C" {
 #define VERSION_INFO_STR_MAX    64
 #define VERSION_INFO_EXTRA_MAX  16
 
-
 typedef unsigned long int       w_u32_t;
 typedef long int                w_i32_t;
 typedef float                   w_f32_t;

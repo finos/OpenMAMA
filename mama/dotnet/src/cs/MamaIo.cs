@@ -85,7 +85,7 @@ namespace Wombat
 		/// <param name="closure">The closure that is passed to the callback.</param>
 		public void create(
 			MamaQueue queue,
-			MamaIoCallback action, 
+			MamaIoCallback action,
 			uint descriptor,
 			mamaIoType ioType,
 			object closure)
@@ -101,14 +101,14 @@ namespace Wombat
 
 			IntPtr queueHandle = queue != null ? queue.NativeHandle : IntPtr.Zero;
 			int code = NativeMethods.mamaIo_create(
-				ref nativeHandle, 
-				queueHandle, 
-				descriptor, 
+				ref nativeHandle,
+				queueHandle,
+				descriptor,
 				mIoDelegate,
 				(int)ioType,
 				IntPtr.Zero);
 			CheckResultCode(code);
-			
+
 			GC.KeepAlive(queue);
 		}
 
@@ -117,7 +117,7 @@ namespace Wombat
 		/// </summary>
 		public void create(
 			MamaQueue queue,
-			MamaIoCallback action, 
+			MamaIoCallback action,
 			uint descriptor,
 			mamaIoType ioType)
 		{
@@ -130,7 +130,7 @@ namespace Wombat
 		/// </summary>
 		public void create(
 			MamaQueue queue,
-			MamaIoCallback action, 
+			MamaIoCallback action,
 			long descriptor,
 			mamaIoType ioType,
 			object closure)
@@ -150,7 +150,7 @@ namespace Wombat
 		/// </summary>
 		public void create(
 			MamaQueue queue,
-			MamaIoCallback action, 
+			MamaIoCallback action,
 			long descriptor,
 			mamaIoType ioType)
 		{
@@ -228,7 +228,7 @@ namespace Wombat
 				ref IntPtr result,
 				IntPtr queue,
 				uint descriptor,
-				MamaIoDelegate action, 
+				MamaIoDelegate action,
 				int ioType,
 				IntPtr closure);
 

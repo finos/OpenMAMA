@@ -42,15 +42,15 @@ namespace Wombat
 			Call	= (byte)'C',
 			Put		= (byte)'P'
 		}
-		
+
         public enum ExerciseStyle : byte
         {
-            Unknown  = (byte)'Z', 
+            Unknown  = (byte)'Z',
             American = (byte)'A',
             European = (byte)'E',
             Capped   = (byte)'C'
-        }      
-         
+        }
+
 		private MamdaOptionContract()
 		{
 			// Hide the default constructor.
@@ -273,7 +273,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Set whether this contract is in the "view" within the option
-		/// chain.  
+		/// chain.
 		/// <see cref="MamdaOptionChain"/>
 		/// </summary>
 		/// <param name="inView"></param>
@@ -292,7 +292,7 @@ namespace Wombat
 		{
 			return mInView;
 		}
-		
+
 		private string              mSymbol;
 		private string              mExchange;
 		private DateTime            mExpireDate    = DateTime.MinValue;

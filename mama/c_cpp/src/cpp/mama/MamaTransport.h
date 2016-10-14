@@ -24,7 +24,7 @@
 
 #include "mama/mama.h"
 
-namespace Wombat 
+namespace Wombat
 {
 
     class MamaSymbolMap;
@@ -40,7 +40,7 @@ namespace Wombat
     class MAMACPPExpDLL MamaTransportTopicEventCallback
     {
     public:
-        virtual ~MamaTransportTopicEventCallback() 
+        virtual ~MamaTransportTopicEventCallback()
         {
         };
         /**
@@ -90,7 +90,7 @@ namespace Wombat
     class MAMACPPExpDLL MamaTransportCallback
     {
     public:
-        virtual ~MamaTransportCallback() 
+        virtual ~MamaTransportCallback()
         {
         };
 
@@ -108,14 +108,14 @@ namespace Wombat
          * wmw:   provides a pointer to a C mamaConnection struct for the event
          */
         virtual void onDisconnect (
-            MamaTransport*  transport, 
+            MamaTransport*  transport,
             const void*     platformInfo)
         {
             return;
         }
 
         /**
-         * Invoked when the transport reconnects 
+         * Invoked when the transport reconnects
          *
          * @param transport The transport which has reconnected.
          * @param platformInfo Info associated with the event.
@@ -152,9 +152,9 @@ namespace Wombat
             short              cause,
             const void*        platformInfo) = 0;
 
-        /** 
+        /**
          * Invoked on the subscriber when the transport connects.
-         * 
+         *
          * @param transport The transport which has connected.
          * @param platformInfo Info associated with the event.
          *
@@ -228,9 +228,9 @@ namespace Wombat
             return;
         }
 
-        /** 
+        /**
          * Invoked on the subscriber when the naming service connects.
-         * 
+         *
          * @param transport The transport which has connected.
          * @param platformInfo Info associated with the event.
          */
@@ -241,9 +241,9 @@ namespace Wombat
             return;
         }
 
-        /** 
+        /**
          * Invoked on the subscriber when the naming service disconnects.
-         * 
+         *
          * @param transport The transport which has connected.
          * @param platformInfo Info associated with the event.
          */
@@ -258,7 +258,7 @@ namespace Wombat
     /**
      * The MamaTransport class provides market data functionality.
      */
-    class MAMACPPExpDLL MamaTransport 
+    class MAMACPPExpDLL MamaTransport
     {
     public:
         /**
@@ -279,12 +279,12 @@ namespace Wombat
          */
         MamaTransport (
             mamaTransport  cTransport);
-        
+
         /**
          * Create a transport. Platform specific parameters are read from
          * the properties file. The parameters are
          * dependent on the underlying messaging transport.
-         * 
+         *
          * @param name The transport name
          * @param bridgeImpl The middleware-specific bridge structure
          */
@@ -300,7 +300,7 @@ namespace Wombat
          */
         void setName (
             const char* name);
-        
+
         /**
          * get the transport name.
          */
@@ -352,7 +352,7 @@ namespace Wombat
          */
         void setTransportCallback (
             MamaTransportCallback*  callback);
-        
+
         /**
          * Set the symbology mapping class.
          *
@@ -385,7 +385,7 @@ namespace Wombat
         const char* getDescription () const;
 
         /*
-         * Find a connection for the specified IP address and port. If the port is 0 
+         * Find a connection for the specified IP address and port. If the port is 0
          * the first connection for the specified IP address is returned.
          *
          * The caller must delete() the returned value.
@@ -430,14 +430,14 @@ namespace Wombat
 
         /**
          * Set whether to invoke the quality callback for all subscriptions
-         * whenever a data quality event occurs (the default), or 
+         * whenever a data quality event occurs (the default), or
          * whether to invoke the quality callback only when data subsequently arrives for a
          * subscription.
          *
-         * If set to true, an onQuality callback will be invoked for a subscription 
-         * whenever a data quality event occurs on the transport, even in between 
-         * updates for that description.  If set to false, the onQuality callback 
-         * will not be called when the data quality event occurs on the transport.  
+         * If set to true, an onQuality callback will be invoked for a subscription
+         * whenever a data quality event occurs on the transport, even in between
+         * updates for that description.  If set to false, the onQuality callback
+         * will not be called when the data quality event occurs on the transport.
          * However, it will still be invoked when an update arrives for the subscription.
          *
          * @param invokeQualityForAllSubscs Whether to invoke quality callback for
@@ -492,11 +492,11 @@ namespace Wombat
         // Access to C types for implementation of related classes.
         mamaTransport        getCValue    ();
         const mamaTransport  getCValue    () const;
-        
+
         /**
          * Return the underlying native transport. Applications should avoid this
          * method if possible as it may result in non-portable, middleware specific
-         * code. Callers must cast the nativeTport to the appropriate type. 
+         * code. Callers must cast the nativeTport to the appropriate type.
          *
          *
          * Note: this method returns the underlying C construct not a C++ object.

@@ -23,18 +23,18 @@
 #include "mamacppinternal.h"
 #include "mamainternal.h"
 
-namespace Wombat 
+namespace Wombat
 {
 
     class QueueEnqueueTestCallback : public MamaQueueEnqueueCallback
     {
     public:
-	    QueueEnqueueTestCallback (MamaQueueEnqueueCallback* usercallback) 
+	    QueueEnqueueTestCallback (MamaQueueEnqueueCallback* usercallback)
         {
             mCallback = usercallback;
         }
 
-	    virtual ~QueueEnqueueTestCallback () 
+	    virtual ~QueueEnqueueTestCallback ()
         {
         };
 
@@ -46,7 +46,7 @@ namespace Wombat
 
     void QueueEnqueueTestCallback::onEventEnqueue (void* closure)
     {
-	    try 
+	    try
         {
 		    mCallback->onEventEnqueue (closure);
 	    }
@@ -59,26 +59,26 @@ namespace Wombat
     class QueueEventTestCallback : public MamaQueueEventCallback
     {
     public:
-	    QueueEventTestCallback (MamaQueueEventCallback* usercallback) 
+	    QueueEventTestCallback (MamaQueueEventCallback* usercallback)
         {
             mCallback = usercallback;
         }
 
-        virtual ~QueueEventTestCallback () 
+        virtual ~QueueEventTestCallback ()
         {
         };
 
-        virtual void onEvent (MamaQueue&  queue, 
+        virtual void onEvent (MamaQueue&  queue,
                               void*       closure);
 
     private:
 	    MamaQueueEventCallback* mCallback;
     };
 
-    void QueueEventTestCallback::onEvent (MamaQueue&  queue, 
+    void QueueEventTestCallback::onEvent (MamaQueue&  queue,
                                           void*       closure)
     {
-	    try 
+	    try
         {
 		    mCallback->onEvent (queue, closure);
 	    }
@@ -91,32 +91,32 @@ namespace Wombat
     class QueueMonitorTestCallback : public MamaQueueMonitorCallback
     {
     public:
-	    QueueMonitorTestCallback (MamaQueueMonitorCallback* usercallback) 
+	    QueueMonitorTestCallback (MamaQueueMonitorCallback* usercallback)
         {
             mCallback = usercallback;
         }
 
-        virtual ~QueueMonitorTestCallback () 
+        virtual ~QueueMonitorTestCallback ()
         {
         }
 
-        virtual void onHighWatermarkExceeded (MamaQueue*  queue, 
-                                              size_t      size, 
+        virtual void onHighWatermarkExceeded (MamaQueue*  queue,
+                                              size_t      size,
                                               void*       closure);
 
-        virtual void onLowWatermark (MamaQueue*  queue, 
-                                     size_t      size, 
+        virtual void onLowWatermark (MamaQueue*  queue,
+                                     size_t      size,
                                      void        *closure);
 
     private:
 	    MamaQueueMonitorCallback* mCallback;
     };
 
-    void QueueMonitorTestCallback::onHighWatermarkExceeded (MamaQueue*  queue, 
-                                                            size_t      size, 
+    void QueueMonitorTestCallback::onHighWatermarkExceeded (MamaQueue*  queue,
+                                                            size_t      size,
                                                             void*       closure)
     {
-	    try 
+	    try
         {
 		    mCallback->onHighWatermarkExceeded (queue, size, closure);
 	    }
@@ -126,11 +126,11 @@ namespace Wombat
 	    }
     }
 
-    void QueueMonitorTestCallback::onLowWatermark (MamaQueue*  queue, 
-                                                   size_t      size, 
+    void QueueMonitorTestCallback::onLowWatermark (MamaQueue*  queue,
+                                                   size_t      size,
                                                    void        *closure)
     {
-	    try 
+	    try
         {
 		    mCallback->onLowWatermark (queue, size, closure);
 	    }
@@ -149,7 +149,7 @@ namespace Wombat
         void*                   mClientClosure;
     };
 
-    struct MamaQueue::MamaQueueImpl 
+    struct MamaQueue::MamaQueueImpl
     {
     public:
         MamaQueueImpl (void)
@@ -196,11 +196,11 @@ namespace Wombat
 		mPimpl->mOwner=true;
     }
 
-    void MamaQueue::create (mamaBridge  bridgeImpl, 
+    void MamaQueue::create (mamaBridge  bridgeImpl,
                             void*       nativeQueue)
     {
-        mamaTry (mamaQueue_create_usingNative (&mQueue, 
-                                               bridgeImpl, 
+        mamaTry (mamaQueue_create_usingNative (&mQueue,
+                                               bridgeImpl,
                                                nativeQueue));
     }
 
@@ -243,7 +243,7 @@ namespace Wombat
             if (queue->mPimpl->mMonitorCallback)
             {
                 queue->mPimpl->mMonitorCallback->onHighWatermarkExceeded (
-                        queue, 
+                        queue,
                         size,
                         queue->mPimpl->mMonitorCallbackClosure);
             }
@@ -268,7 +268,7 @@ namespace Wombat
         static void MAMACALLTYPE queueEventCallBack  (mamaQueue  queue,
                                          void*      closure)
         {
-            MamaQueueEnqueueEventClosure* closureData 
+            MamaQueueEnqueueEventClosure* closureData
                     = (MamaQueueEnqueueEventClosure*)closure;
 
             if (!closureData)
@@ -304,7 +304,7 @@ namespace Wombat
 
         mPimpl->mMonitorCallbackClosure = closure;
 
-        mamaTry (mamaQueue_setQueueMonitorCallbacks (mQueue, 
+        mamaTry (mamaQueue_setQueueMonitorCallbacks (mQueue,
                                                      &queueMonitorCallbacks,
                                                      this));
     }
@@ -343,7 +343,7 @@ namespace Wombat
     const char* MamaQueue::getQueueName () const
     {
         const char* queueName = NULL;
-        mamaTry (mamaQueue_getQueueName (mQueue, &queueName)); 
+        mamaTry (mamaQueue_getQueueName (mQueue, &queueName));
 
         return queueName;
     }
@@ -375,7 +375,7 @@ namespace Wombat
         if (mQueue)
         {
             /* Store these in the impl for use in the C callback function */
-            mPimpl->mClosure = closure; 
+            mPimpl->mClosure = closure;
 
 		    if (mamaInternal_getCatchCallbackExceptions ())
 		    {
@@ -387,8 +387,8 @@ namespace Wombat
 		    }
 
             /* We are using the impl instance as the closure to the call */
-            mamaTry (mamaQueue_setEnqueueCallback (mQueue, 
-                                                   enqueueCallback, 
+            mamaTry (mamaQueue_setEnqueueCallback (mQueue,
+                                                   enqueueCallback,
                                                    this));
         }
     }
@@ -418,7 +418,7 @@ namespace Wombat
                 delete (closureData);
                 throw MamaStatus (status);
             }
-        }   
+        }
     }
 
     void MamaQueue::enqueueEvent  (MamaQueueEventCallback&  cb,
@@ -431,7 +431,7 @@ namespace Wombat
             MamaQueueEnqueueEventClosure* closureData =
                         new MamaQueueEnqueueEventClosure;
             /* Store these in the closure for use in the C callback function */
-           
+
             closureData->mQueue          = this;
             closureData->mClientCallback = &cb;
             closureData->mClientClosure  = closure;
@@ -446,7 +446,7 @@ namespace Wombat
                 delete (closureData);
                 throw MamaStatus (status);
             }
-        }   
+        }
     }
 
     void MamaQueue::destroyInternal(mama_status status)
@@ -459,7 +459,7 @@ namespace Wombat
 
         // Reset the queue pointer
         mQueue = NULL;
-        
+
         // Delete the callback monitor
         if (mamaInternal_getCatchCallbackExceptions())
 	    {
@@ -478,12 +478,12 @@ namespace Wombat
     }
 
     void MamaQueue::destroy ()
-    {	
+    {
         mama_status status = MAMA_STATUS_OK;
 
         if ((mQueue) && (mPimpl->mOwner))
         {
-            status = mamaQueue_destroy (mQueue);        
+            status = mamaQueue_destroy (mQueue);
         }
 
         destroyInternal(status);
@@ -495,7 +495,7 @@ namespace Wombat
 
         if (mQueue)
         {
-            status = mamaQueue_destroyTimedWait (mQueue, timeout);        
+            status = mamaQueue_destroyTimedWait (mQueue, timeout);
         }
 
         destroyInternal (status);
@@ -507,7 +507,7 @@ namespace Wombat
 
         if (mQueue)
         {
-            status = mamaQueue_destroyWait (mQueue);        
+            status = mamaQueue_destroyWait (mQueue);
         }
 
         destroyInternal (status);

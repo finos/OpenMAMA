@@ -47,7 +47,7 @@ namespace Wombat
     /**
      * Convert a MamdaTradeExecVenue to an appropriate, displayable
      * string.
-     * 
+     *
      * @param tradeExecVenue The <code>MamdaTradeExecVenue</code> to stringify
      *
      * @return The stringified version of the <code>MamdaTradeExecVenue</code>
@@ -61,7 +61,7 @@ namespace Wombat
      * a string.
      *
      * @param tradeExecVenueStr The trade execution venue as a string.
-     * 
+     *
      * @return The trade execution venue as an enumerated value.
      */
     MAMDAExpDLL MamdaTradeExecVenue mamdaTradeExecVenueFromString (

@@ -17,12 +17,13 @@ API_HOME=/home/wombat/apis
 #BDYNAMIC = -Bdynamic
 
 # GNU compiler:
-ifneq (,$(CXX))
+ifeq (,$(CXX))
   CXX = g++
 endif
-ifneq (,$(CC))
+ifeq (,$(CC))
   CC = gcc
 endif
+
 BSTATIC  = -Xlinker -Bstatic
 BDYNAMIC = -Xlinker -Bdynamic
 
@@ -40,8 +41,8 @@ LDFLAGS      = -rdynamic \
 MAMDA_LIBS   = $(BSTATIC) -lmamda $(BDYNAMIC)
 MAMA_LIBS    = $(BSTATIC) -lmamacpp -lmama -lwombatmsg -lwcache \
                $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -ldl -lpthread -lwombatcommon -ldl
-               
-    
+
+
 COMMON_LIBS  = $(MAMDA_LIBS) $(MAMA_LIBS) $(SYS_LIBS)
 
 # Targets:
@@ -74,7 +75,6 @@ optionview: optionview.o parsecmd.o dictrequester.o
 
 secstatuslisten: secstatuslisten.o parsecmd.o dictrequester.o
 	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
-    
+
 fundamentallisten: fundamentallisten.o parsecmd.o dictrequester.o
 	$(LINK.C) -o $@ $^ $(COMMON_LIBS)
-

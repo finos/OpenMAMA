@@ -29,13 +29,13 @@ namespace Wombat.Mamda.Examples
 	/// <summary>
 	/// Example program illustrating the use of MAMDA with multi participant group
 	/// subscriptions.
-	/// 
+	///
 	/// In this example, we create one ComboTicker for *each* of the
 	/// individual participants and consolidated member of the
 	/// MamdaMultiParticipantManager (i.e., one each for the BBO and each
 	/// participant). (The same instance could be used for all. However, a separate
 	/// MamdaMsglistener instance must be used for each.)
-	/// 
+	///
 	/// If the developer only wanted a subset of these members, then those
 	/// could be selected in his/her implementation of
 	/// MamdaMultiParticipantManager.  Similarly, the developer may not
@@ -63,7 +63,7 @@ namespace Wombat.Mamda.Examples
 			CommandLineProcessor options      = new CommandLineProcessor(args);
 			double               throttleRate = options.getThrottleRate();
 
-            
+
 			if (options.hasLogLevel())
 			{
 				logLevel_ = options.getLogLevel();
@@ -136,7 +136,7 @@ namespace Wombat.Mamda.Examples
 		/// <summary>
 		/// Implementation of the <code>MamdaMultiParticipantHandler</code>
 		/// interface.
-		/// 
+		///
 		/// Here we are adding a trade and quote listener for every participant and
 		/// consolidated update as part of the underlying group subscription. The
 		/// assumption here is that we are interested in all trade and quote

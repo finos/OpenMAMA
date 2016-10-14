@@ -154,8 +154,8 @@ typedef struct mamaFtMemberImpl_
     int                            myPid;
     int                            myRecvWindow;
     ft_recvHeartbeat               ftRecvHearbeat;
-    ft_setup               ftSetup;
-    ft_activate               ftActivate;
+    ft_setup                       ftSetup;
+    ft_activate                    ftActivate;
     ft_deactivate                  ftDeactivate;
     ft_sendHeartbeat               ftSendHeartbeat;
 } mamaFtMemberImpl;
@@ -197,12 +197,12 @@ static mamaIo       gReadHandler  =  NULL;
 int                receiveHeartbeat  (mamaFtMemberImpl*  impl);
 
 void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
-                     unsigned int hbWeight,
-                     unsigned int hbIncarnation,
-                     int          hbPid,
-                     int          hbIpAddr,
-                     int          hbPrimary,
-                     char*        hbGroupName);
+                         unsigned int hbWeight,
+                         unsigned int hbIncarnation,
+                         int          hbPid,
+                         int          hbIpAddr,
+                         int          hbPrimary,
+                         char*        hbGroupName);
 
 /* FT callbacks: */
 static void MAMACALLTYPE
@@ -324,7 +324,7 @@ mamaFtMember_deactivate (
     /* cancel timer. */
     if (impl->myHeartbeatTimer)
     {
-    mamaTimer_destroy (impl->myHeartbeatTimer);
+        mamaTimer_destroy (impl->myHeartbeatTimer);
         impl->myHeartbeatTimer=NULL;
     }
     stopTimeoutTimer (impl);
@@ -719,12 +719,12 @@ int mamaBetterCredentials (mamaFtMemberImpl*  impl, unsigned int weight,
 
 
 void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
-                     unsigned int hbWeight,
-                     unsigned int hbIncarnation,
-                     int          hbPid,
-                     int          hbIpAddr,
-                     int          hbPrimary,
-                     char*        hbGroupName)
+                         unsigned int hbWeight,
+                         unsigned int hbIncarnation,
+                         int          hbPid,
+                         int          hbIpAddr,
+                         int          hbPrimary,
+                         char*        hbGroupName)
 {
 
     if (strcmp (hbGroupName, impl->myGroupName)  != 0)
@@ -769,7 +769,6 @@ void mamaCheckHeartbeat (mamaFtMemberImpl*  impl,
 /****************************************************************************
 *       Multicast FT specific
 ******************************************************************************/
-
 const char *multicastFt_getProperty(char *buffer, const char *propertyName, const char *transportName)
 {
     /* Returns. */
@@ -873,9 +872,10 @@ multicastFt_setup (
     {
         ftService = multicastFt_getProperty (propertyName,
                 "mama.native.transport.%s.service", transportName);
-        if (ftService != NULL)
-            service = atol (ftService);
     }
+
+    if (ftService != NULL)
+        service = atol (ftService);
 
     ftTtl = multicastFt_getProperty (propertyName,
             "mama.multicast.transport.%s.ttl", transportName);
@@ -883,20 +883,25 @@ multicastFt_setup (
     {
         ftTtl = multicastFt_getProperty (propertyName,
                 "mama.native.transport.%s.ttl", transportName);
-        if (ftTtl != NULL)
-            ttl = (unsigned char)atol (ftTtl);
     }
+
+    if (ftTtl != NULL)
+        ttl = (unsigned char)atol (ftTtl);
 
     iorecvstr = multicastFt_getProperty (propertyName,
             "mama.multicast.transport.%s.iowindow", transportName);
-    if (iorecvstr != NULL)
+    if (iorecvstr == NULL)
     {
-        iorecv=atoi (iorecvstr);
+        iorecvstr = multicastFt_getProperty (propertyName,
+                "mama.native.transport.%s.iowindow", transportName);
     }
 
+    if (iorecvstr != NULL)
+        iorecv = atoi (iorecvstr);
+
     mama_log (MAMA_LOG_LEVEL_NORMAL,
-              "MAMA multicast FT: INTERFACE %s NETWORK %s SERVICE %d TTL %d",
-              ftInterface,ftNetwork,service,ttl);
+              "MAMA multicast FT: INTERFACE %s NETWORK %s SERVICE %d TTL %d IOWINDOW %d",
+              ftInterface,ftNetwork,service,ttl,iorecv);
 
     /* if interface name is set */
     if (ftInterface!=NULL && ftInterface[0]!='\0')

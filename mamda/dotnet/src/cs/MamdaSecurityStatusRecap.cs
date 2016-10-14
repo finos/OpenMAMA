@@ -30,7 +30,7 @@ namespace Wombat
 	public interface MamdaSecurityStatusRecap
 	{
 		/// <summary>
-		/// <see cref="MamdaSecurityStatusUpdate.getSecurityStatus()"/> 
+		/// <see cref="MamdaSecurityStatusUpdate.getSecurityStatus()"/>
 		/// </summary>
 		/// <returns></returns>
 		long getSecurityStatus();

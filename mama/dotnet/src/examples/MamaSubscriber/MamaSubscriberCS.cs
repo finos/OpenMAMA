@@ -27,14 +27,14 @@ namespace Wombat
 	/// <summary>
     /// Example of how to subscribe and process messages from a basic subscription
     /// </summary>
-    public class MamaSubscriberCS: 
-        MamaTransportCallback, 
+    public class MamaSubscriberCS:
+        MamaTransportCallback,
         MamaSubscriptionCallback
 	{
         private string middlewareName = "wmw";
 		private string transportName = "sub";
         private string topicName = "MAMA_TOPIC";
-        
+
         private MamaLogLevel mamaLogLevel = MamaLogLevel.MAMA_LOG_LEVEL_WARN;
 		private MamaBridge mamaBridge;
         private MamaTransport mamaTransport;
@@ -42,7 +42,7 @@ namespace Wombat
         private MamaSubscription mamaSubscription;
         private ArrayList mamaSubscriptions = new ArrayList();
         private ArrayList myMethods = new ArrayList();
-        
+
         const string usage =
             "Example of how to subscribe and process messages from a basic subscription \n" +
             "Command line arguments:\n" +
@@ -52,12 +52,12 @@ namespace Wombat
             "      [-tport name]      The transport parameters to be used from\n" +
             "                         mama.properties. Default is 'sub'\n" +
             "      [-v]               Increase MAMA verbosity. Can be passed multiple times\n";
-        
+
         private bool parseCommandLine(string[] args)
         {
             for (int i = 0; i < args.Length;i++)
             {
-                if (args[i].CompareTo("-s") == 0) 
+                if (args[i].CompareTo("-s") == 0)
                 {
                     if ((i +1) < args.Length)
                     {
@@ -75,7 +75,7 @@ namespace Wombat
 					}
 				}
 
-                if (args[i].CompareTo("-tport") == 0) 
+                if (args[i].CompareTo("-tport") == 0)
                 {
                     if ((i +1) < args.Length)
                     {
@@ -84,13 +84,13 @@ namespace Wombat
                     }
                 }
 
-                if (args[i].CompareTo("--help") == 0) 
+                if (args[i].CompareTo("--help") == 0)
                 {
                     Console.WriteLine(usage);
                     return false;
                 }
 
-                if (args[i].CompareTo("-?") == 0) 
+                if (args[i].CompareTo("-?") == 0)
                 {
                     Console.WriteLine(usage);
                     return false;
@@ -120,24 +120,24 @@ namespace Wombat
                     }
                     continue;
                 }
-                
+
                 Console.WriteLine("Error: unrecognized parameter: " + args[i]);
                 return false;
             }
 
             return true;
         }
-        
+
         private MamaSubscriberCS(string[] args)
         {
-            try 
+            try
             {
                 if (parseCommandLine(args))
-                {                    
+                {
 					mamaBridge = Mama.loadBridge(middlewareName);
-					
+
 					Mama.open();
-         
+
                     mamaTransport = new MamaTransport();
                     mamaTransport.setTransportCallback(this);
                     mamaTransport.create(transportName, mamaBridge);
@@ -150,44 +150,44 @@ namespace Wombat
                         mamaDefaultQueue,
                         this,   // callback
                         topicName);
-                
+
                     Console.WriteLine("Starting mama...");
                     Mama.start(mamaBridge);
-                    
+
                     // Prevent over-enthusiastic GC from reclaiming transport object
                     GC.KeepAlive(mamaTransport);
                 }
-            } 
-            catch (Exception e) 
+            }
+            catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
         }
 
-	    
+
         [STAThread]
         static void Main(string[] args)
-        {  
+        {
             MamaSubscriberCS mamaSubscriber = new MamaSubscriberCS(args);
         }
-                
+
         private void displayField(MamaMsgField field)
         {
             Console.Write(String.Format("{0,20}{1,20}{2,20}",
                 field.getName(),
                 field.getFid(),
                 field.getTypeName()));
-                
-            /*  
-                The most efficient way of extracting data while iterating 
-                fields is to obtain the field type and then call the 
+
+            /*
+                The most efficient way of extracting data while iterating
+                fields is to obtain the field type and then call the
                 associated strongly-typed accessor.
 
-                MamaMsgField.getAsString() will return a stringified version 
-                of the data but is considerably less efficient and is not 
+                MamaMsgField.getAsString() will return a stringified version
+                of the data but is considerably less efficient and is not
                 recommended for production use.
-            */  
-                        
+            */
+
             switch(field.getType())
             {
                 case mamaFieldType.MAMA_FIELD_TYPE_MSG:
@@ -202,7 +202,7 @@ namespace Wombat
             }
             Console.Out.Flush();
         }
-        
+
         private void displayAllFields(MamaMsg msg)
         {
             MamaMsgIterator iterator = new MamaMsgIterator(null);
@@ -260,7 +260,7 @@ namespace Wombat
         {
             Console.WriteLine("Transport Naming Service Disconnected.");
         }
-        
+
         // Subscription callbacks
         public void onCreate(MamaSubscription subscription)
         {
@@ -278,7 +278,7 @@ namespace Wombat
         {
             Console.WriteLine("Subscription quality:" + (int)quality);
         }
-        
+
         public void onMsg(MamaSubscription subscription, MamaMsg msg)
         {
             Console.WriteLine("Received msg:");
@@ -299,5 +299,5 @@ namespace Wombat
         {
         }
     }
-    
+
 }

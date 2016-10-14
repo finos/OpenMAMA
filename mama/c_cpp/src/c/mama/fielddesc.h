@@ -39,35 +39,35 @@ extern "C" {
 typedef enum mamaFieldType_
 {
     /** Sub message*/
-    MAMA_FIELD_TYPE_MSG           =    1, 
+    MAMA_FIELD_TYPE_MSG           =    1,
 
     /** Opaque binary */
     MAMA_FIELD_TYPE_OPAQUE        =    7,
-    
+
     /** String */
     MAMA_FIELD_TYPE_STRING        =    8,
-    
+
     /** Boolean */
-    MAMA_FIELD_TYPE_BOOL          =    9, 
+    MAMA_FIELD_TYPE_BOOL          =    9,
 
     /** Character */
-    MAMA_FIELD_TYPE_CHAR          =   10, 
+    MAMA_FIELD_TYPE_CHAR          =   10,
 
     /** Signed 8 bit integer */
-    MAMA_FIELD_TYPE_I8            =   14, 
+    MAMA_FIELD_TYPE_I8            =   14,
 
     /** Unsigned byte */
     MAMA_FIELD_TYPE_U8            =   15,
-    
+
     /** Signed 16 bit integer */
     MAMA_FIELD_TYPE_I16           =   16,
-   
+
     /** Unsigned 16 bit integer */
     MAMA_FIELD_TYPE_U16           =   17,
-    
+
     /** Signed 32 bit integer */
     MAMA_FIELD_TYPE_I32           =   18,
-    
+
     /** Unsigned 32 bit integer */
     MAMA_FIELD_TYPE_U32           =   19,
 
@@ -76,9 +76,9 @@ typedef enum mamaFieldType_
 
     /** Unsigned 64 bit integer */
     MAMA_FIELD_TYPE_U64           =   21,
-   
+
     /** 32 bit float */
-    MAMA_FIELD_TYPE_F32           =   24, 
+    MAMA_FIELD_TYPE_F32           =   24,
 
     /** 64 bit float */
     MAMA_FIELD_TYPE_F64           =   25,
@@ -92,22 +92,22 @@ typedef enum mamaFieldType_
     /** Array type support */
     MAMA_FIELD_TYPE_VECTOR_BOOL   =   29,
     MAMA_FIELD_TYPE_VECTOR_CHAR   =   30,
-    MAMA_FIELD_TYPE_VECTOR_I8     =   34, 
-    MAMA_FIELD_TYPE_VECTOR_U8     =   35, 
-    MAMA_FIELD_TYPE_VECTOR_I16    =   36, 
-    MAMA_FIELD_TYPE_VECTOR_U16    =   37, 
-    MAMA_FIELD_TYPE_VECTOR_I32    =   38, 
+    MAMA_FIELD_TYPE_VECTOR_I8     =   34,
+    MAMA_FIELD_TYPE_VECTOR_U8     =   35,
+    MAMA_FIELD_TYPE_VECTOR_I16    =   36,
+    MAMA_FIELD_TYPE_VECTOR_U16    =   37,
+    MAMA_FIELD_TYPE_VECTOR_I32    =   38,
     MAMA_FIELD_TYPE_VECTOR_U32    =   39,
-    MAMA_FIELD_TYPE_VECTOR_I64    =   40, 
+    MAMA_FIELD_TYPE_VECTOR_I64    =   40,
     MAMA_FIELD_TYPE_VECTOR_U64    =   41,
-    MAMA_FIELD_TYPE_VECTOR_F32    =   44, 
+    MAMA_FIELD_TYPE_VECTOR_F32    =   44,
     MAMA_FIELD_TYPE_VECTOR_F64    =   45,
     MAMA_FIELD_TYPE_VECTOR_STRING =   46,
     MAMA_FIELD_TYPE_VECTOR_MSG    =   47,
     MAMA_FIELD_TYPE_VECTOR_TIME   =   48,
     MAMA_FIELD_TYPE_VECTOR_PRICE  =   49,
     MAMA_FIELD_TYPE_QUANTITY      =   50,
-    
+
     /** Collection */
     MAMA_FIELD_TYPE_COLLECTION    =   99,
 
@@ -151,9 +151,9 @@ stringToMamaFieldType (const char*  str);
 MAMAExpDLL
 extern mama_status
 mamaFieldDescriptor_create(
-    mamaFieldDescriptor*  descriptor, 
-    mama_fid_t            fid, 
-    mamaFieldType         type, 
+    mamaFieldDescriptor*  descriptor,
+    mama_fid_t            fid,
+    mamaFieldType         type,
     const char*           name);
 
 /**
@@ -200,7 +200,7 @@ mamaFieldDescriptor_getName(
     const mamaFieldDescriptor  descriptor);
 
 /**
- * return a human readable representation of the type name. 
+ * return a human readable representation of the type name.
  *
  * @param descriptor The descriptor.
  */

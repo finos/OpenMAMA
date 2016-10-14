@@ -202,18 +202,18 @@ namespace Wombat
 			{
 				tradeListener.onMsg(subscription, msg, msgType);
 			}
-		}	
+		}
 
         private MamdaOptionContract.ExerciseStyle extractExerciseStyle(
                 MamaMsg            msg,
                 string             fullSymbol)
             {
                 MamdaOptionContract.ExerciseStyle exerciseStyle = MamdaOptionContract.ExerciseStyle.Unknown;
-                int exerciseStyleInt = 0;   
-               
+                int exerciseStyleInt = 0;
+
                 if (!msg.tryField (MamdaOptionFields.EXERCISE_STYLE, ref tmpfield_) )
                 {
-                    Console.WriteLine("findContract:CANNOT find exercisestyle in msg:"+fullSymbol+exerciseStyle);                    
+                    Console.WriteLine("findContract:CANNOT find exercisestyle in msg:"+fullSymbol+exerciseStyle);
                 }
                 else
                 {
@@ -222,17 +222,17 @@ namespace Wombat
                         case mamaFieldType.MAMA_FIELD_TYPE_I8:
                         case mamaFieldType.MAMA_FIELD_TYPE_U8:
                         case mamaFieldType.MAMA_FIELD_TYPE_I16:
-                        case mamaFieldType.MAMA_FIELD_TYPE_U16:                
+                        case mamaFieldType.MAMA_FIELD_TYPE_U16:
                             exerciseStyleInt =tmpfield_.getU16();
                         switch(exerciseStyleInt)
                         {
-                            case 1:                                    
+                            case 1:
                                 exerciseStyle = MamdaOptionContract.ExerciseStyle.American;
                                 break;
                             case 2:
                                 exerciseStyle = MamdaOptionContract.ExerciseStyle.European;
                                 break;
-                            case 3:                                    
+                            case 3:
                                 exerciseStyle = MamdaOptionContract.ExerciseStyle.Capped;
                                 break;
                             case 99:
@@ -243,21 +243,21 @@ namespace Wombat
                                 Console.Write("Unhandled value for wExerciseStyle."+exerciseStyleInt);
                                 break;
                             }
-                            break;       
-                            case mamaFieldType.MAMA_FIELD_TYPE_STRING:                      
+                            break;
+                            case mamaFieldType.MAMA_FIELD_TYPE_STRING:
                             string exerciseStyleStr = tmpfield_.getString();                             ;
                             switch (exerciseStyleStr[0])
                             {
                                 case '1':
-                                case 'A':                                        
+                                case 'A':
                                     exerciseStyle = MamdaOptionContract.ExerciseStyle.American;
                                     break;
                                 case '2':
-                                case 'E':                                        
+                                case 'E':
                                     exerciseStyle = MamdaOptionContract.ExerciseStyle.European;
                                     break;
                                 case '3':
-                                case 'C':                                       
+                                case 'C':
                                     exerciseStyle = MamdaOptionContract.ExerciseStyle.Capped;
                                     break;
                                 default:
@@ -282,10 +282,10 @@ namespace Wombat
                 string         fullSymbol)
             {
                 MamdaOptionContract.PutOrCall putCall = MamdaOptionContract.PutOrCall.Unknown;
-                int putCallInt = 0;               
+                int putCallInt = 0;
                 if (!msg.tryField (MamdaOptionFields.PUT_CALL, ref tmpfield_))
-                {   
-                    
+                {
+
                    Console.WriteLine("findContract:CANNOT find put/call in msg:"+fullSymbol+putCall);
                 }
                 else
@@ -295,7 +295,7 @@ namespace Wombat
                         case mamaFieldType.MAMA_FIELD_TYPE_I8:
                         case mamaFieldType.MAMA_FIELD_TYPE_U8:
                         case mamaFieldType.MAMA_FIELD_TYPE_I16:
-                        case mamaFieldType.MAMA_FIELD_TYPE_U16:                  
+                        case mamaFieldType.MAMA_FIELD_TYPE_U16:
                             putCallInt = tmpfield_.getU16();
                         switch(putCallInt)
                         {
@@ -309,13 +309,13 @@ namespace Wombat
                                 putCall = MamdaOptionContract.PutOrCall.Unknown;
                                 break;
                             default:
-                                putCall =  MamdaOptionContract.PutOrCall.Unknown;                       
+                                putCall =  MamdaOptionContract.PutOrCall.Unknown;
                                 Console.WriteLine("Unhandled value for wPutCall."+ putCallInt);
                                 break;
                         }
-                        break; 
-                        case mamaFieldType.MAMA_FIELD_TYPE_STRING:                       
-                        string putCallStr = tmpfield_.getString();                      
+                        break;
+                        case mamaFieldType.MAMA_FIELD_TYPE_STRING:
+                        string putCallStr = tmpfield_.getString();
                         switch (putCallStr[0])
                         {
                             case '1':
@@ -327,7 +327,7 @@ namespace Wombat
                                 putCall = MamdaOptionContract.PutOrCall.Call;
                                 break;
                             default:
-                                putCall = MamdaOptionContract.PutOrCall.Unknown; 
+                                putCall = MamdaOptionContract.PutOrCall.Unknown;
                                 if ((putCallStr=="99") && (putCallStr=="Z"))
                                 {
                                     Console.WriteLine("Unhandled value for wPutCall."+ putCallStr);
@@ -337,7 +337,7 @@ namespace Wombat
                         }
                         break;
                         default:
-                            putCall = MamdaOptionContract.PutOrCall.Unknown;               
+                            putCall = MamdaOptionContract.PutOrCall.Unknown;
                             Console.WriteLine("Unhandled type for wPutCall. Expected string or integer but returned: "+tmpfield_.getType());
                             break;
                     }
@@ -371,7 +371,7 @@ namespace Wombat
                 double strikePrice = 0.0;
                 string putCall = String.Empty;
                 uint openInterest = 0;
-                
+
                 msg.tryString(MamdaOptionFields.EXPIRATION_DATE, ref expireDateStr);
                 msg.tryF64(MamdaOptionFields.STRIKE_PRICE, ref strikePrice);
 
@@ -418,7 +418,7 @@ namespace Wombat
                MamdaOptionContract.ExerciseStyle exerciseStyleChar = extractExerciseStyle(msg,fullSymbol);
                contract.setExerciseStyle(exerciseStyleChar);
 
-               
+
                 if (msg.tryU32 (MamdaOptionFields.OPEN_INTEREST, ref openInterest))
                 {
                     contract.setOpenInterest( (long)openInterest );
@@ -454,7 +454,7 @@ namespace Wombat
                 default:
                     break;
             }
-			
+
 			return null;
         }
 
@@ -473,7 +473,7 @@ namespace Wombat
         private MamdaOptionAction   mLastAction          = MamdaOptionAction.Unknown;
 
         private MamaMsgField        tmpfield_              = new MamaMsgField();
-        
+
         //FieldState
         private MamdaFieldState  mSrcTimeFieldState        = new MamdaFieldState();
         private MamdaFieldState  mActTimeFieldState        = new MamdaFieldState();

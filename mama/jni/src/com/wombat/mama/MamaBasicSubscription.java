@@ -24,7 +24,7 @@ package com.wombat.mama;
 /*
 * Wrapper class for the native C basic subscription structure
 */
-public class MamaBasicSubscription 
+public class MamaBasicSubscription
 {
     /* ************************************************** */
     /* Static Initialisation. */
@@ -90,7 +90,7 @@ public class MamaBasicSubscription
      *
      * @param callback      The object implementing the callback functions.
      * @param transport     The MamaTransport.
-     * @param queue         The MamaQueue.     
+     * @param queue         The MamaQueue.
      * @param topic         The symbol name.
      * @param closure       The closure will be passed to subsequent callback invocations
      *                      for this subscription.
@@ -114,7 +114,7 @@ public class MamaBasicSubscription
             null);
     }
 
-    /**
+   /*
     * Create a basic wildcard subscription.
     *
     * The topic must be a valid wildcard topic for the underlying middleware.
@@ -165,7 +165,7 @@ public class MamaBasicSubscription
     {
         return myClosure;
     }
-    
+
     /**
      * This function returns the pointer to the underlying C subscription.
      * @return The pointer.
@@ -261,5 +261,6 @@ public class MamaBasicSubscription
         final String                                source,
         final String                                topic,
         final Object                                closure);
+
 
 }/*End class*/

@@ -69,11 +69,11 @@ namespace Wombat
                              const char*                 source,
                              const char*                 symbol,
                              void*                       closure     = NULL);
-        
+
         /**
          * Set up a subscription.
          *
-         * @param queue The mama queue. 
+         * @param queue The mama queue.
          * @param callback  The callback.
          * @param source  The MamaSource identifying the publisher for this
          * symbol.
@@ -92,15 +92,15 @@ namespace Wombat
          * which dispatches tasks that produce messages at a controlled
          * rate. The rate is determined by the outbound throttle rate of
          * the underlying <code>MamaTransport</code>.
-         * 
+         *
          * In the event that listener creation fails as the result of an
          * messaging related error the callback is invoked with
          * information regarding the error.
-         * 
+         *
          * If entitlements are enabled, and the caller is not entitled to
          * the requested symbol, the first invocation of the callback will
          * invoked with status "MamaMsgStatus.NOT_ENTITLED".
-         * 
+         *
          * As an added convenience, callers may implement the
          * <code>onComplete</code> and <code>onError</code> members of
          * <code>MamaSubscriptionCallback</code>.  <code>onComplete</code>
@@ -108,12 +108,12 @@ namespace Wombat
          * signalling the successful creation of the listener.
          * <code>onError</code> is invoked if a TIBRV or entitlement error
          * occurs prior to listener creation.
-         * 
+         *
          * It is also possible for an entitlement error to occur after a
          * listener is created. This occurs when the entitlement
          * information is included in the initial message sent by the feed
          * handler as is often the case.
-         * 
+         *
          * If an error occurs during listener
          * creation. <code>destroy</code> is called automatically.
          */
@@ -123,8 +123,8 @@ namespace Wombat
          * Deactivate a subscriber.  The subscription can be reactivated
          * using activate().
          */
-         virtual void deactivate ();   
-        
+         virtual void deactivate ();
+
 
         /**
          * Set up and activate a subscriber using the throttle queue. This
@@ -143,7 +143,7 @@ namespace Wombat
                               const char*                 source,
                               const char*                 symbol,
                               void*                       closure     = NULL);
-        
+
         /**
          * Set up and activate a subscriber using the throttle queue. This
          * method is equivalent to calling setup() followed by activate().
@@ -206,7 +206,7 @@ namespace Wombat
          * value requests. Calling it after createXXX() only affects recap
          * requests. The default is MAMA_DEFAULT_RETRIES.
          *
-         * @param retries The number of time to retry the initial value request.    
+         * @param retries The number of time to retry the initial value request.
          */
         virtual void setRetries (int retries);
 
@@ -239,7 +239,7 @@ namespace Wombat
          * time, snapshot, etc.). The default is real time.
          * @param svcLevelOpt An optional argument for certain service levels.
          */
-        virtual void setServiceLevel (mamaServiceLevel svcLevel, 
+        virtual void setServiceLevel (mamaServiceLevel svcLevel,
                                       long             svcLevelOpt);
 
         /**
@@ -255,7 +255,7 @@ namespace Wombat
         virtual const char*  getSymbol (void) const;
 
         virtual MamaSubscriptionCallback*   getCallback (void) const;
-        
+
         /**
          * Sets the symbol for this subscription.
          * Should generally only be used for updating symbology mappings.
@@ -353,7 +353,7 @@ namespace Wombat
          *
          * @param groupSizeHint Approximate expected group size
          */
-        virtual void setGroupSizeHint (int groupSizeHint); 
+        virtual void setGroupSizeHint (int groupSizeHint);
 
                /**
          * Set the item closure for group subscriptions.
@@ -377,7 +377,7 @@ namespace Wombat
          * returns the closure from the most recent callback.
          */
         virtual void* getItemClosure (void);
-         
+
         /**
          * Set the number of messages to cache for each symbol before the initial
          * value arrives. This allows the subscription to recover when the initial
@@ -390,7 +390,7 @@ namespace Wombat
          * @param cacheSize The size of the cache.
          */
         virtual void setPreInitialCacheSize (int cacheSize);
-        
+
         /**
          * Return the initial value cache size.
          *
@@ -461,49 +461,49 @@ namespace Wombat
          * Note that the subscription will not be fully destroyed until the
          * onDestroy callback is received from the MamaBasicSubscriptionCallback
          * interface.
-         * To destroy from the dispatching thread the destroy function should be 
+         * To destroy from the dispatching thread the destroy function should be
          * used in preference.
          */
         virtual void destroyEx();
 
     private:
 
-        /* Private functions. */    
-        static void MAMACALLTYPE onSubscriptionCreate       (mamaSubscription subscription, 
+        /* Private functions. */
+        static void MAMACALLTYPE onSubscriptionCreate       (mamaSubscription subscription,
                                                              void             *closure);
 
-        static void MAMACALLTYPE onSubscriptionDestroy      (mamaSubscription subscription, 
+        static void MAMACALLTYPE onSubscriptionDestroy      (mamaSubscription subscription,
                                                              void             *closure);
 
-        static void MAMACALLTYPE onSubscriptionError        (mamaSubscription subscription, 
-                                                             mama_status      status, 
-                                                             void             *platformError, 
-                                                             const char       *subject, 
+        static void MAMACALLTYPE onSubscriptionError        (mamaSubscription subscription,
+                                                             mama_status      status,
+                                                             void             *platformError,
+                                                             const char       *subject,
                                                              void             *closure);
 
-        static void MAMACALLTYPE onSubscriptionGap          (mamaSubscription subscription, 
+        static void MAMACALLTYPE onSubscriptionGap          (mamaSubscription subscription,
                                                              void*            closure);
 
-        static void MAMACALLTYPE onSubscriptionMessage      (mamaSubscription subscription, 
-                                                             mamaMsg          msg, 
-                                                             void             *closure, 
+        static void MAMACALLTYPE onSubscriptionMessage      (mamaSubscription subscription,
+                                                             mamaMsg          msg,
+                                                             void             *closure,
                                                              void             *topicClosure);
 
-        static void MAMACALLTYPE onSubscriptionQuality      (mamaSubscription subscription, 
-                                                             mamaQuality      quality, 
-                                                             const char       *symbol, 
-                                                             short            cause, 
-                                                             const void       *platformInfo, 
+        static void MAMACALLTYPE onSubscriptionQuality      (mamaSubscription subscription,
+                                                             mamaQuality      quality,
+                                                             const char       *symbol,
+                                                             short            cause,
+                                                             const void       *platformInfo,
                                                              void             *closure);
 
-        static void MAMACALLTYPE onSubscriptionRecapRequest (mamaSubscription subscription, 
-                                                             void*            closure);    
+        static void MAMACALLTYPE onSubscriptionRecapRequest (mamaSubscription subscription,
+                                                             void*            closure);
 
         // The callback class passed to the create function
         MamaSubscriptionCallback *mCallback;
 
         // The source derivative
-        MamaSourceDerivative *mSourceDeriv;    
+        MamaSourceDerivative *mSourceDeriv;
         MamaSubscriptionImpl    *mImpl;
     };
 

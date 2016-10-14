@@ -56,4 +56,3 @@ namespace Wombat
         MamdaFieldState getEndGapSeqNumFieldState();
 	}
 }
-

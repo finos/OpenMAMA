@@ -11,10 +11,10 @@ public interface MamaBasicWildCardSubscriptionCallback
     /**
      * Method invoked when subscription creation is complete.
      * Since subscriptions are created asynchronous by throttle, this callback
-     * provides the subscription instance after the throttle processes the 
+     * provides the subscription instance after the throttle processes the
      * creation request.
      * In the case where a subscription is created on a queue other than the default
-     * it is possible for <code>onMsg</code> calls to be processed to be called before 
+     * it is possible for <code>onMsg</code> calls to be processed to be called before
      * the <code>onCreate</code> callback is processed.
      *
      * @param subscription The subscription.

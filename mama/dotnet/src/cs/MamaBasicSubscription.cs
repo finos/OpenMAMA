@@ -56,7 +56,7 @@ namespace Wombat
                 public OnSubscriptionRecapRequestDelegate mRecapRequest;
                 public OnSubscriptionDestroyDelegate mDestroy;
                 public IntPtr mReserved;
-            }  
+            }
 
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaSubscription_allocate(ref IntPtr result);
@@ -184,7 +184,7 @@ namespace Wombat
                 GCHandle handle = GCHandle.Alloc(impl);
 
                 // Return the native pointer
-                return (IntPtr)handle;                
+                return (IntPtr)handle;
             }
 
             /// <summary>
@@ -200,11 +200,11 @@ namespace Wombat
             }
 
             /// <summary>
-            /// This function will invoke the destroy callback on the user supplied callback implementation.            
+            /// This function will invoke the destroy callback on the user supplied callback implementation.
             /// </summary>
             internal virtual void InvokeDestroy()
             {
-                // Only the MamaBasicSubscriptionCallback class has the onDestroy function        
+                // Only the MamaBasicSubscriptionCallback class has the onDestroy function
                 MamaBasicSubscriptionCallback callback = mCallback as MamaBasicSubscriptionCallback;
                 if(null != callback)
                 {
@@ -292,11 +292,11 @@ namespace Wombat
         /// The native closure passed to the create function.
         /// </param>
         protected delegate void OnSubscriptionDestroyDelegate(IntPtr nativeHandle, IntPtr closure);
-                
+
         /// <summary>
-        /// This delegate describes the native function invoked if an error occurs during prior to subscription 
+        /// This delegate describes the native function invoked if an error occurs during prior to subscription
         /// creation or if the subscription receives a message for an un-entitled subject.
-        /// If the status is MAMA_MSG_STATUS_NOT_ENTITTLED the subject parameter is the specific unentitled subject. 
+        /// If the status is MAMA_MSG_STATUS_NOT_ENTITTLED the subject parameter is the specific unentitled subject.
         /// If the subscription subject contains wildcards, the subscription may still receive messages for other
         /// entitled subjects. Note wildcard subscriptions are not supported on all platforms.
         /// </summary>
@@ -319,7 +319,7 @@ namespace Wombat
 
         /// <summary>
         /// This delegate describes the native function invoked when a sequence number gap is detected. At this
-        /// point the topic is considered stale and the subscription will not receive further messages until the 
+        /// point the topic is considered stale and the subscription will not receive further messages until the
         /// feed handler satisfies a recap request.
         /// </summary>
         /// <param name="nativeHandle">
@@ -382,7 +382,7 @@ namespace Wombat
         /// The native closure passed to the create function.
         /// </param>
         protected delegate void OnSubscriptionRecapRequestDelegate(IntPtr nativeHandle, IntPtr closure);
-        
+
         #endregion
 
         /* ************************************************************** */
@@ -446,7 +446,7 @@ namespace Wombat
         {
             // Allocate the native subscription
             IntPtr nativeSubscription = IntPtr.Zero;
-            CheckResultCode(NativeMethods.mamaSubscription_allocate(ref nativeSubscription));            
+            CheckResultCode(NativeMethods.mamaSubscription_allocate(ref nativeSubscription));
 
             // Save the result in the member variable
             NativeHandle = nativeSubscription;
@@ -511,7 +511,7 @@ namespace Wombat
             // Use the impl to invoke the destroy callback, (if this has been supplied)
             impl.InvokeDestroy();
 
-            /* The timer has now been destroyed and the impl is no longer required, free the handle to 
+            /* The timer has now been destroyed and the impl is no longer required, free the handle to
              * allow the garbage collector to clean it up.
              */
             handle.Free();
@@ -534,7 +534,7 @@ namespace Wombat
         /// </param>
         /// <param name="closure">
         /// Native reference to the closure.
-        /// </param>        
+        /// </param>
         private static void OnError(IntPtr nativeHandle, int nativeStatus, IntPtr platformError, string subject, IntPtr closure)
         {
             // Obtain the handle from the closure
@@ -594,7 +594,7 @@ namespace Wombat
             // Only deallocate if this has not already been done
             if (IntPtr.Zero != NativeHandle)
             {
-                ret = (MamaStatus.mamaStatus)NativeMethods.mamaSubscription_deallocate(NativeHandle);                
+                ret = (MamaStatus.mamaStatus)NativeMethods.mamaSubscription_deallocate(NativeHandle);
             }
 
             return ret;
@@ -628,7 +628,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// This function will create the basic subscription without marketdata semantics.        
+        /// This function will create the basic subscription without marketdata semantics.
         /// </summary>
         /// <param name="transport">
         /// The MamaTransport.
@@ -667,11 +667,11 @@ namespace Wombat
                 queue.NativeHandle,
                 ref mCallbackDelegates,
                 symbol,
-                impl));           
+                impl));
         }
 
         /// <summary>
-        /// Free the memory for a mamaSubscription which was allocated via a call to constructor. 
+        /// Free the memory for a mamaSubscription which was allocated via a call to constructor.
         /// This function will call destroy() if the subscription has not already been destroyed.
         /// Calling this function will reduce time during finalization.
         /// </summary>
@@ -708,13 +708,13 @@ namespace Wombat
         /// <summary>
         /// Destroy the subscription.
         /// This function is another option to destroy the resources associated with the subscription
-        /// It will schedule the destroy() of the subscription on the queue on which it dispatches. 
+        /// It will schedule the destroy() of the subscription on the queue on which it dispatches.
         /// This function does not free the memory associated with the subscription.
         /// create() can be called again after this function has
         /// been called.
-        /// After the Subscription is effectively destroyed, the OnDestroy callback will be triggered 
+        /// After the Subscription is effectively destroyed, the OnDestroy callback will be triggered
         /// for it.
-        /// 
+        ///
         /// This function can be called from any thread, as opposed to destroy().
         /// </summary>
         public void destroyEx()
@@ -786,7 +786,7 @@ namespace Wombat
                 // Get the symbol from the native layer
                 IntPtr ret = IntPtr.Zero;
                 CheckResultCode(NativeMethods.mamaSubscription_getSubscSymbol(NativeHandle, ref ret));
-                
+
                 // Convert to an ANSI string
                 return Marshal.PtrToStringAnsi(ret);
             }

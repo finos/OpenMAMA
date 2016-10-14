@@ -46,7 +46,7 @@
  * 3. Subscribing to top-of-book MSFT & ORCL from Island ITCH feed
  *    (specific fields):
  *
- *    mamalistencpp -S ORDER -s MSFT.ISLD -s MSFT.ISLD wBidPrice wBidSize 
+ *    mamalistencpp -S ORDER -s MSFT.ISLD -s MSFT.ISLD wBidPrice wBidSize
  *        wAskPrice  wAskSize wTradePrice wTradeVolume wTotalVolume
  *
  * 4. Subscribing to a list of symbols from a file (all fields) and
@@ -54,7 +54,7 @@
  *    of all normal updates):
  *
  *    mamalistencpp -S NASDAQ -q -f file
- * 
+ *
  * 5. Use the -threads x parameter to dispatch messages from x additional
  *    queues.
  * <pre>
@@ -89,7 +89,7 @@ using std::endl;
 using std::for_each;
 
 typedef list<MamaSubscription *> SubscriptionList;
-typedef vector<const char*>      FieldList;  
+typedef vector<const char*>      FieldList;
 typedef vector<const char*>      SymbolList;
 
 #define BUFFER_SIZE 256
@@ -112,7 +112,7 @@ static const char* gUsageString[]=
     "    subsequent examples, below). Middleware WombatTCP.",
     "",
     "    mamalistencpp -D -d ORDER -S ORDER -s MSFT.ISLD -m wmw",
-    "", 
+    "",
     " 2. Subscribing to top-of-book MSFT quote from Island ITCH feed (all",
     "    fields) where the feed handler source is ORDER:",
     "",
@@ -139,7 +139,7 @@ public:
     MamaListen  ();
     ~MamaListen ();
 
-    void  parseCommandLine                (int argc, const char* argv[]);   
+    void  parseCommandLine                (int argc, const char* argv[]);
     void  initializeMama                  ();
     void  buildDataDictionary             ();
     void  dumpDataDictionary              ();
@@ -167,7 +167,7 @@ public:
 
     MamaListen                            (const MamaListen& copy);
     MamaListen&                           operator= (const MamaListen& rhs);
-  
+
 private:
     MamaTimer                mShutdownTimer;
     int                      mShutdownTime;
@@ -181,7 +181,7 @@ private:
     int                      mThreads;
     const char*              mTport;
     const char*              mDictSourceName;
-    MamaSource*              mDictSource; 
+    MamaSource*              mDictSource;
     const char*              mDictTport;
     MamaTransport*           mDictTransport;
     int                      mDumpDataDict;
@@ -205,26 +205,26 @@ private:
     MamaTransport*           mTransport;
     MamaQueueGroup*          mQueueGroup;
     MamaLogLevel             mMamaLogLevel;
-    FILE*                    mMamaLogFile;   
+    FILE*                    mMamaLogFile;
     bool                     mPrintMessages;
     bool                     mDisplayData;
     bool                     mQualityForAll;
     bool                     mNewIterators;
-    
+
     void usage               (int exitStatus);
-    void subscribeToSymbol   (const char* symbol); 
+    void subscribeToSymbol   (const char* symbol);
 
 };
 
 /**************************************************************************
- *DisplayCallback -An implementation of the callback interface for   *  
+ *DisplayCallback -An implementation of the callback interface for   *
                        -subscriptions                                     *
 **************************************************************************/
 class DisplayCallback : public MamaSubscriptionCallback
-                    
+
 {
 public:
-    DisplayCallback               () 
+    DisplayCallback               ()
                                   : mMamaListen (NULL),
                                     mFieldList (NULL)
                                     {};
@@ -246,12 +246,12 @@ public:
                                    mamaQuality        quality,
                                    const char*        symbol,
                                    short              cause,
-                                   const void*        platformInfo); 
-  
+                                   const void*        platformInfo);
+
     virtual void onGap            (MamaSubscription*  subscription);
 
     virtual void onRecapRequest   (MamaSubscription*  subscription);
-                                  
+
     void displaySpecificFields    (const MamaMsg&     msg,
                                    MamaSubscription   *subsc );
 
@@ -264,10 +264,10 @@ public:
                                    const MamaMsgField&  field);
 
     template <class Vector>
-    void displayVectorField       (Vector*            field, 
+    void displayVectorField       (Vector*            field,
                                    size_t             size,
                                    const char*        format);
- 
+
     template <class T>
     void printData                (const char*        format,
                                    T                  data);
@@ -292,11 +292,11 @@ MsgIteratorCallback - Implementation of interface for iterating   *
 class MsgIteratorCallback : public MamaMsgFieldIterator
 {
 public:
-    MsgIteratorCallback          () 
+    MsgIteratorCallback          ()
         : mMamaListen (NULL)
     {}
     MsgIteratorCallback          (MamaListen* mamaListen);
-    
+
     virtual ~MsgIteratorCallback (void) {}
     void onField                 (const MamaMsg&       msg,
                                   const MamaMsgField&  field,
@@ -358,12 +358,12 @@ public:
 
     virtual void onDisconnect (MamaTransport *tport)
     {
-        printf ("TransportCallback::onDisconnect\n");        
+        printf ("TransportCallback::onDisconnect\n");
     }
 
     virtual void onReconnect  (MamaTransport *tport)
     {
-        printf ("TransportCallback::onReconnect\n");        
+        printf ("TransportCallback::onReconnect\n");
     }
 
     virtual void onQuality (MamaTransport* tport,
@@ -376,7 +376,7 @@ public:
                  mamaQuality_convertToString (quality));
     }
 
-    virtual void onPublisherDisconnect (MamaTransport *transport, 
+    virtual void onPublisherDisconnect (MamaTransport *transport,
                                           const void *platformInfo)
     {
         printf ("TransportCallback::onPublisherDisconnect\n");
@@ -386,7 +386,7 @@ public:
     {
         printf ("TransportCallback::onNamingServiceConnect\n");
     }
-    
+
     void onNamingServiceDisconnect (MamaTransport*  transport)
     {
         printf ("TransportCallback::onNamingServiceDisconnect\n");
@@ -398,7 +398,7 @@ private:
 };
 
 /******************************************************************
-Data Quality Callback 
+Data Quality Callback
 ******************************************************************/
 class QueueMonitorCallback : public MamaQueueMonitorCallback
 {
@@ -406,16 +406,16 @@ public:
     QueueMonitorCallback          () {}
     virtual ~QueueMonitorCallback () {}
 
-    virtual void onHighWatermarkExceeded (MamaQueue* queue, 
-                                          size_t size, 
+    virtual void onHighWatermarkExceeded (MamaQueue* queue,
+                                          size_t size,
                                           void* closure)
     {
         std::cout << queue->getQueueName() << "queue high water mark exceeded."
                   << " Size: " << size << std::endl;
     }
 
-    virtual void onLowWatermark (MamaQueue* queue, 
-                                 size_t size, 
+    virtual void onLowWatermark (MamaQueue* queue,
+                                 size_t size,
                                  void *closure)
     {
         std::cout << queue->getQueueName() << "queue low water mark exceeded."
@@ -568,13 +568,13 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
         else if ((strcmp (argv[i], "-h") == 0) ||
                  (strcmp (argv[i], "-?") == 0))
         {
-            usage (0); 
+            usage (0);
             i++;
         }
         else if (strcmp (argv[i], "-s") == 0)
         {
             mSymbolList.push_back (argv[i + 1]);
-            i += 2; 
+            i += 2;
         }
         else if (strcmp (argv[i], "-f") == 0)
         {
@@ -664,7 +664,7 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
         {
             mDisplayData = false;
             i++;
-        } 
+        }
         else if (strcmp (argv[i], "-log_file") == 0)
         {
             const char* logfileName = argv[i+1];
@@ -685,12 +685,12 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
                          argv[i+1]);
                 exit (1);
             }
-            
+
         }
         else if (strcmp ("-m", argv[i]) == 0)
         {
             mMiddleware = argv[i+1];
-            i += 2;               
+            i += 2;
         }
         else if (strcmp (argv[i], "-V") == 0)
         {
@@ -711,13 +711,13 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
         }
         else if (strcmp (argv[i], "-version") == 0)
         {
-            printf ("%s\n", Mama::getVersion (mBridgeImpl)); 
+            printf ("%s\n", Mama::getVersion (mBridgeImpl));
             exit (0);
         }
         else if (strcmp ("-shutdown", argv[i]) == 0)
         {
             mShutdownTime = atoi (argv[i + 1]);
-            i += 2;               
+            i += 2;
         }
         else if (strcmp (argv[i], "-ni") == 0)
         {
@@ -735,7 +735,7 @@ void MamaListen::parseCommandLine (int argc, const char* argv[])
 void MamaListen::subscribeToSymbol (const char* symbol)
 {
     static int howMany = 0;
-    
+
 
     if (!mDisplayCallback)
     {
@@ -750,7 +750,7 @@ void MamaListen::subscribeToSymbol (const char* symbol)
     sub->setRequiresInitial  (mRequireInitial);
     sub->setSubscriptionType (MAMA_SUBSC_TYPE_NORMAL);
     sub->setServiceLevel     (MAMA_SERVICE_LEVEL_REAL_TIME, 0);
-    
+
     if (mSnapshot)
     {
         sub->setServiceLevel (MAMA_SERVICE_LEVEL_SNAPSHOT, 0);
@@ -788,9 +788,9 @@ void  MamaListen::subscribeToSymbols ()
         for (index=0; index<mThreads; index++)
         {
             char queueNameBuf[12];
-            
+
             MamaQueue* queue = mQueueGroup->getNextQueue ();
-            
+
             snprintf (queueNameBuf, 12, "QUEUE %d", index);
 
             printf ("Setting monitor for %s\n", queueNameBuf);
@@ -803,7 +803,7 @@ void  MamaListen::subscribeToSymbols ()
             {
                 queue->setHighWatermark (mHighWaterMark);
             }
-        
+
             if (mLowWaterMark>0)
             {
                 try
@@ -814,11 +814,11 @@ void  MamaListen::subscribeToSymbols ()
                 catch (MamaStatus status)
                 {
                     cerr << "Could not set "
-                         << queue->getQueueName () 
+                         << queue->getQueueName ()
                          << "queue low water mark MamaStatus: "
                          << status.toString ()
                          << endl;
-                } 
+                }
             }
         }
     }
@@ -837,7 +837,7 @@ void MamaListen::dumpDataDictionary ()
     if (mDumpDataDict)
     {
         int size = mDictionary->getSize ();
-       
+
         printf ("DICT SIZE: %d\n", size);
         for( i = 0; i < size; i++)
         {
@@ -845,7 +845,7 @@ void MamaListen::dumpDataDictionary ()
             if (field)
             {
                 printf ("  %3d : %-7s(%4d) : %s\n",
-                        field->getFid(), 
+                        field->getFid(),
                         field->getTypeName(),
                         field->getType(),
                         field->getName());
@@ -878,7 +878,7 @@ void MamaListen::buildDataDictionary ()
 bool MamaListen::hasSpecificFields ()
 {
     if( mFieldList.empty ())
-    {   
+    {
         return false;
     }
     return true;
@@ -913,7 +913,7 @@ void MamaListen::start ()
 void MamaListen::shutdownListener ()
 {
     if (mQueueGroup != NULL)
-    {        
+    {
         mQueueGroup->stopDispatch();
     }
     if (mDictionary != NULL)
@@ -929,7 +929,7 @@ void MamaListen::shutdownListener ()
     {
         ((MamaSubscription*)*i)->destroy();
         delete *i;
-    } 
+    }
 
     // Destroy the queue group, this must be done after everything using the queues has been destroyed
     if (mQueueGroup != NULL)
@@ -939,13 +939,13 @@ void MamaListen::shutdownListener ()
         delete mQueueGroup;
         mQueueGroup = NULL;
     }
-    
-    if ((mDictTransport !=  NULL)  && (mDictTransport  != mTransport))                 
+
+    if ((mDictTransport !=  NULL)  && (mDictTransport  != mTransport))
     {
         delete mDictTransport;
         mDictTransport = NULL;
     }
-    
+
     if (mTransport != NULL)
     {
         delete mTransport;
@@ -958,11 +958,11 @@ void MamaListen::shutdownListener ()
 void MamaListen::initializeMama ()
 {
     mBridgeImpl = Mama::loadBridge (mMiddleware);
-    
+
     Mama::open ();
 
     mDefaultQueue = Mama::getDefaultEventQueue (mBridgeImpl);
-        
+
     if (mHighWaterMark > 0)
     {
         mDefaultQueue->setHighWatermark (mHighWaterMark);
@@ -978,15 +978,15 @@ void MamaListen::initializeMama ()
         catch (MamaStatus status)
         {
             cerr << "Could not set default queue"
-                    "low water mark MamaStatus: " 
-                 << status.toString () 
+                    "low water mark MamaStatus: "
+                 << status.toString ()
                  << endl;
         }
     }
 
     mTransport = new MamaTransport;
     mTransport->setTransportCallback (new TransportCallback ());
-    mTransport->create               (mTport, mBridgeImpl);  
+    mTransport->create               (mTport, mBridgeImpl);
 
     if (!mQualityForAll)
     {
@@ -1002,7 +1002,7 @@ void MamaListen::initializeMama ()
     {
         mTransport->setOutboundThrottle (mRecapThrottle, MAMA_THROTTLE_RECAP);
     }
-    
+
     if (mDictTport != NULL)
     {
         if (strlen(mDictTport) == 0)
@@ -1011,14 +1011,14 @@ void MamaListen::initializeMama ()
         }
         mDictTransport = new MamaTransport;
         mDictTransport->create (mDictTport, mBridgeImpl);
-        
+
     }
     else
     {
         mDictTransport=mTransport;
     }
-    mDictSource = new MamaSource (mDictSourceName, 
-                                  mDictTransport, 
+    mDictSource = new MamaSource (mDictSourceName,
+                                  mDictTransport,
                                   mDictSourceName);
 }
 
@@ -1036,7 +1036,7 @@ mamaBridge MamaListen::getMamaBridge()
 {
     return mBridgeImpl;
 }
-void MamaListen::readSymbolsFromFile (void) 
+void MamaListen::readSymbolsFromFile (void)
 {
     /* get subjects from file or interactively */
     FILE* fp = NULL;
@@ -1152,12 +1152,12 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
         sprintf(fieldBuffer,"%20s | %3d | %20s | ",
                 name, field.getFid (),
                 field.getTypeName ());
- 
+
        printData ("%s", fieldBuffer);
     }
-   
+
     short fieldType = field.getType ();
-    
+
     switch (fieldType)
     {
     case MAMA_FIELD_TYPE_MSG:
@@ -1176,7 +1176,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
          printData ("%d\n", field.getBool ());
          break;
     case MAMA_FIELD_TYPE_CHAR:
-         printData ("%c\n", field.getChar ()); 
+         printData ("%c\n", field.getChar ());
          break;
     case MAMA_FIELD_TYPE_I8:
          printData ("%d\n", field.getI8 ());
@@ -1211,7 +1211,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
     case MAMA_FIELD_TYPE_TIME:
          {
              MamaDateTime      mamaDateTime;
-             char              dateTime [BUFFER_SIZE]; 
+             char              dateTime [BUFFER_SIZE];
              field.getDateTime (mamaDateTime);
              mamaDateTime.getAsString (dateTime,BUFFER_SIZE);
              printData ("%s\n", dateTime);
@@ -1224,7 +1224,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              field.getPrice        (mamaPrice);
              mamaPrice.getAsString (price, BUFFER_SIZE);
              printData             ("%s\n", price);
-         } 
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_BOOL:
          {
@@ -1243,12 +1243,12 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
          }
          break;
     case MAMA_FIELD_TYPE_VECTOR_I8:
-         {    
+         {
              const int8_t*      vectorI8;
              size_t             resultLen;
              field.getVectorI8  (vectorI8, resultLen);
              displayVectorField (vectorI8, resultLen, "%d");
-         }     
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_U8:
          {
@@ -1256,7 +1256,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorU8  (vectorU8, resultLen);
              displayVectorField (vectorU8, resultLen, "%u");
-         } 
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_I16:
          {
@@ -1264,7 +1264,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorI16 (vectorI16, resultLen);
              displayVectorField (vectorI16, resultLen, "%d");
-         }  
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_U16:
          {
@@ -1280,10 +1280,10 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorI32 (vectorI32, resultLen);
              displayVectorField (vectorI32, resultLen, "%d");
-         } 
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_U32:
-         {    
+         {
              const uint32_t*    vectorU32;
              size_t             resultLen;
              field.getVectorU32 (vectorU32, resultLen);
@@ -1304,7 +1304,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorU64 (vectorU64, resultLen);
              displayVectorField (vectorU64, resultLen, "%u");
-         }   
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_F32:
          {
@@ -1312,7 +1312,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
              size_t             resultLen;
              field.getVectorF32 (vectorF32, resultLen);
              displayVectorField (vectorF32, resultLen, "%f");
-         }   
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_F64:
          {
@@ -1323,17 +1323,17 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
          }
          break;
     case MAMA_FIELD_TYPE_VECTOR_STRING:
-         {   
+         {
              const char**          vectorString;
              size_t                resultLen;
              field.getVectorString (vectorString, resultLen);
              displayVectorField    (vectorString, resultLen, "%s");
-         }  
+         }
          break;
     case MAMA_FIELD_TYPE_VECTOR_MSG:
-         {  
+         {
              if (mMamaListen->printVectorFields ())
-             {                   
+             {
                  size_t             resultLen = 0;
                  const MamaMsg**    mamaMsg   = NULL;
                  field.getVectorMsg (mamaMsg, resultLen);
@@ -1362,7 +1362,7 @@ void DisplayCallback::displayMsgField (const MamaMsg&       msg,
          break;
     }
 
-    
+
 }
 
 DisplayCallback::DisplayCallback (MamaListen* mamaListen,
@@ -1373,7 +1373,7 @@ DisplayCallback::DisplayCallback (MamaListen* mamaListen,
 }
 
 DisplayCallback::~DisplayCallback ()
-{   
+{
 }
 
 void DisplayCallback::displayAllFields (const MamaMsg& msg)
@@ -1384,7 +1384,7 @@ void DisplayCallback::displayAllFields (const MamaMsg& msg)
 
     if (!(mMamaListen->useNewIterators()))
     {
-        msg.iterateFields (cb, mMamaListen->getMamaDictionary (), NULL);   
+        msg.iterateFields (cb, mMamaListen->getMamaDictionary (), NULL);
     }
     else
     {
@@ -1393,7 +1393,7 @@ void DisplayCallback::displayAllFields (const MamaMsg& msg)
         MamaMsgIterator* mMamaMsgIterator = new MamaMsgIterator(mMamaListen->getMamaDictionary ());
 
         msg.begin(*mMamaMsgIterator);
-        
+
         while (*(*mMamaMsgIterator) != NULL)
         {
             MamaMsgField afield = *(*mMamaMsgIterator);
@@ -1414,24 +1414,24 @@ void DisplayCallback::subMsgDisplayAllFields (const MamaMsg& msg)
     else
     {
         MamaMsgIterator subiterator (mMamaListen->getMamaDictionary ());
-        
+
         printData ("%s", "\n {");
 
         msg.begin(subiterator);
-        
+
         while (*subiterator != NULL)
         {
             MamaMsgField afield = *subiterator;
             displayMsgField (msg, afield.getName (), afield);
             ++subiterator;
         }
-        
+
         printData ("%s", "}");
     }
 }
 
 
-void DisplayCallback::onMsg (MamaSubscription* subscription, 
+void DisplayCallback::onMsg (MamaSubscription* subscription,
                              MamaMsg&    msg)
 {
     switch (msg.getType ())
@@ -1441,15 +1441,15 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
          mMamaListen->removeSubscription (subscription);
          subscription->destroy();
          delete subscription;
-        
+
          if (mMamaListen->hasSubscriptions ())
          {
              fprintf (stderr, "Symbol deleted or expired. No more subscriptions\n");
              exit(1);
          }
          return;
-         
-    default: 
+
+    default:
          break;
     }
 
@@ -1461,7 +1461,7 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
          mMamaListen->removeSubscription (subscription);
          subscription->destroy();
          delete subscription;
-         
+
          if (mMamaListen->hasSubscriptions ())
          {
              fprintf (stderr,
@@ -1472,7 +1472,7 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
     default:
          break;
     }
-     
+
     if (mMamaListen->getQuietness() < 2)
     {
         char msgBuffer [BUFFER_SIZE];
@@ -1481,9 +1481,9 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
                  subscription->getSymbol (),
                  msg.getMsgTypeName (),
                  msg.getMsgStatusString ());
-        printData ("%s", msgBuffer); 
+        printData ("%s", msgBuffer);
     }
-    
+
     if (mMamaListen->hasSpecificFields ())
     {
         displaySpecificFields (msg, subscription);
@@ -1495,7 +1495,7 @@ void DisplayCallback::onMsg (MamaSubscription* subscription,
     flush (cout);
 }
 
-void DisplayCallback::displaySpecificFields (const MamaMsg& msg, 
+void DisplayCallback::displaySpecificFields (const MamaMsg& msg,
                                              MamaSubscription* subsc)
 {
 
@@ -1541,7 +1541,7 @@ void DisplayCallback::printData (const char*     format,
 }
 
 template <class Vector>
-void DisplayCallback::displayVectorField  (Vector*  field, 
+void DisplayCallback::displayVectorField  (Vector*  field,
                                            size_t   size,
                                            const char* format)
 {
@@ -1551,7 +1551,7 @@ void DisplayCallback::displayVectorField  (Vector*  field,
         for (size_t counter = 0; counter < size; counter++)
         {
             printData (format, field[counter]);
-            counter == size-1 ? 
+            counter == size-1 ?
             printData ("%s", ""):
             printData ("%s", ",");
         }
@@ -1586,7 +1586,7 @@ void DisplayCallback::onRecapRequest (MamaSubscription*  subscription)
     flush (cout);
 }
 
-void DisplayCallback::onError (MamaSubscription*      subscriber, 
+void DisplayCallback::onError (MamaSubscription*      subscriber,
                                     const MamaStatus& status,
                                     const char*       subject)
 {
@@ -1602,7 +1602,7 @@ void DisplayCallback::onQuality (MamaSubscription*  subscription,
                                  short              cause,
                                  const void*        platformInfo)
 {
-    printf ("Quality change: %s\n", 
+    printf ("Quality change: %s\n",
             mamaQuality_convertToString(quality));
     flush (cout);
 }

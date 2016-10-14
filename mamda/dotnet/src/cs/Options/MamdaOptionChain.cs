@@ -32,7 +32,7 @@ namespace Wombat
 	public class MamdaOptionChain
 	{
 		/// <summary>
-		/// MamdaOptionChain Constructor. 
+		/// MamdaOptionChain Constructor.
 		/// </summary>
 		/// <param name="symbol">The underlying symbol.</param>
 		public MamdaOptionChain(string symbol)
@@ -103,7 +103,7 @@ namespace Wombat
 		/// Find an option contract by OPRA symbol.
 		/// </summary>
 		/// <param name="contractSymbol"></param>
-		/// <returns>MamdaOptionContract The contract object representing the 
+		/// <returns>MamdaOptionContract The contract object representing the
 		/// option.</returns>
 		public MamdaOptionContract getContract(String contractSymbol)
 		{
@@ -476,7 +476,7 @@ namespace Wombat
 			}
 
 			public bool equals(object o1, object o2)
-			{ 
+			{
 				return (compare(o1, o2) == 0);
 			}
 		}

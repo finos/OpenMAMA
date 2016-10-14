@@ -295,12 +295,12 @@ public class MamaSubscriberJava
             {
                 myQuietLevel++;
                 i++;
-            } 
+            }
             else if ( "-m".equals( arg ))
             {
                 myMiddleware = args[i+1];
                 i += 2;
-            }  
+            }
             else if (args[i].equals ("-v"))
             {
                 myLogLevel = myLogLevel == null
@@ -331,19 +331,19 @@ public class MamaSubscriberJava
         int whatLength = 0;
         if (what!=null)
             whatLength = what.length();
-    
+
         StringBuffer sb = new StringBuffer(what);
-    
+
         final int spaces = width - whatLength;
-    
-        for(int i = 0; i < spaces; i++) 
+
+        for(int i = 0; i < spaces; i++)
             sb.append(" ");
-        
+
         System.out.print(sb.toString());
         System.out.flush();
     }
-    
-    private static class SubscriptionCallback 
+
+    private static class SubscriptionCallback
         implements MamaBasicSubscriptionCallback
     {
         public void onCreate( MamaBasicSubscription subscription )
@@ -387,7 +387,7 @@ public class MamaSubscriberJava
 
 			msg.iterateFields(new FieldIterator(), null, "Closure");
         }
-        
+
         private void displayMamaMsgField (MamaMsgField field)
         {
             short fieldType = field.getType ();
@@ -458,7 +458,6 @@ public class MamaSubscriberJava
                     print ("Unknown type: " + fieldType, 20);
             }
         }
-        
+
     }
 }
-

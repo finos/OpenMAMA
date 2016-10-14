@@ -25,7 +25,7 @@
 #include "mama/mamacpp.h"
 #include "mama/MamaSendCompleteCallback.h"
 
-namespace Wombat 
+namespace Wombat
 {
     class MamaInbox;
     class MamaPublisherImpl;
@@ -40,7 +40,7 @@ namespace Wombat
      */
     class MAMACPPExpDLL MamaPublisher
     {
-    public: 
+    public:
         virtual ~MamaPublisher (void);
 
         MamaPublisher (void);
@@ -75,12 +75,12 @@ namespace Wombat
             MamaMsg*  msg) const;
 
         virtual void sendWithThrottle (
-            MamaMsg*                   msg, 
+            MamaMsg*                   msg,
             MamaSendCompleteCallback*  cb,
             void*                      closure) const ;
 
         virtual void sendFromInbox (
-            MamaInbox*  inbox, 
+            MamaInbox*  inbox,
             MamaMsg*    msg) const;
 
         virtual void sendFromInboxWithThrottle(
@@ -88,13 +88,13 @@ namespace Wombat
             MamaMsg*                   msg,
             MamaSendCompleteCallback*  cb,
             void*                      closure) const;
-       
+
         virtual void sendReplyToInbox (
-            const MamaMsg&  request, 
+            const MamaMsg&  request,
             MamaMsg*        reply) const;
 
         virtual void sendReplyToInbox (
-            mamaMsgReply  replyHandle, 
+            mamaMsgReply  replyHandle,
             MamaMsg*      reply) const;
 
         virtual void destroy (void);

@@ -64,8 +64,8 @@ namespace Wombat
 		/// </summary>
 		/// <remarks>
 		/// LBM: LBM uses an unbounded event queue. Setting this values allows users
-		/// of the API to receive a callback if the value is exceeded. 
-		/// (<see cref="MamaQueue.setQueueMonitorCallbacks"/> for setting queue-related 
+		/// of the API to receive a callback if the value is exceeded.
+		/// (<see cref="MamaQueue.setQueueMonitorCallbacks"/> for setting queue-related
         /// callbacks.) The default behaviour is for the queue to grow unbounded without
 		/// notifications.
         /// <para>
@@ -174,7 +174,7 @@ namespace Wombat
         /// Register the specified callback function to receive a callback
         /// each time an event is enqueued on the specified MamaQueue
         /// </summary>
-        public void setEnqueueCallback(MamaQueueEnqueueCallback callback) 
+        public void setEnqueueCallback(MamaQueueEnqueueCallback callback)
         {
 			EnsurePeerCreated();
             mEnqueueCallbackForwarder = new EnqueueCallbackForwarder(this, callback);
@@ -269,8 +269,8 @@ namespace Wombat
         /// <summary>
         /// Destroy a queue. Note that the queue can only be destroyed if all of the objects created
         /// on it, (timers, subscriptions etc), have been destroyed. This function will block until
-        /// all of the objects have been destroyed and will then destroy the queue. 
-        /// </summary>        
+        /// all of the objects have been destroyed and will then destroy the queue.
+        /// </summary>
         public void destroyWait()
         {
             // Verify that the native queue is valid
@@ -292,7 +292,7 @@ namespace Wombat
         /// <summary>
         /// Destroy a queue. Note that the queue can only be destroyed if all of the objects created
         /// on it, (timers, subscriptions etc), have been destroyed. This function will block until
-        /// all of the objects have been destroyed and will then destroy the queue. 
+        /// all of the objects have been destroyed and will then destroy the queue.
         /// </summary>
         /// <exception cref="MamaException">
         /// Thrown with a status code of MAMA_STATUS_TIMEOUT if the time period elapses before the
@@ -350,7 +350,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// Dispatch a single event from the specified queue. If there is no event on 
+        /// Dispatch a single event from the specified queue. If there is no event on
         /// the queue simply return and do nothing.
         /// </summary>
         public void dispatchEvent ()
@@ -375,7 +375,7 @@ namespace Wombat
             while (status != QueueState.Stopped)
                 Thread.Sleep(10);
         }
-    
+
 		/// <summary>
 		/// Dispatch messages from the queue. This call blocks and dispatches
 		/// until timeout has elapsed.
@@ -432,7 +432,7 @@ namespace Wombat
             /// <summary>
             /// List of all objects that have been enqueued, objects must be preserved to ensure that
             /// they are not garbage collected while waiting for the native layer to enqueue the event.
-            /// </summary>                       
+            /// </summary>
 			private static Dictionary<long, EnqueueEventForwarder> mEventList;
 
             /// <summary>
@@ -493,18 +493,18 @@ namespace Wombat
             /// </summary>
             /// <param name="callback">
             /// The callback object that will be invoked whenever an event is processed.
-            /// </param>            
+            /// </param>
             /// <param name="closure">
             /// Utility object.
             /// </param>
             /// <param name="sender">
             /// The queue.
             /// </param>
-            public EnqueueEventForwarder(MamaQueueEventCallback callback, object closure, MamaQueue sender) 
+            public EnqueueEventForwarder(MamaQueueEventCallback callback, object closure, MamaQueue sender)
 			{
                 // Save arguments in member variables.
                 mCallback  = callback;
-                mClosure   = closure;                
+                mClosure   = closure;
 				mSender    = sender;
 
                 // Save a reference to this object in the static list
@@ -514,7 +514,7 @@ namespace Wombat
             #endregion
 
             #region Event Handlers
-            
+
             /// <summary>
             /// This function is called by the underlying C layer whenever an event is processed.
             /// </summary>
@@ -564,7 +564,7 @@ namespace Wombat
 
                 // Release the mutex
                 mEventMutex.ReleaseMutex();
-                                
+
                 return ret;
             }
 
@@ -635,7 +635,7 @@ namespace Wombat
 		{
 			public delegate void EnqueueCallback(IntPtr queue, IntPtr closure);
 
-			public EnqueueCallbackForwarder(MamaQueue sender, MamaQueueEnqueueCallback callback) 
+			public EnqueueCallbackForwarder(MamaQueue sender, MamaQueueEnqueueCallback callback)
 			{
 				mSender = sender;
 				mCallback = callback;
@@ -643,7 +643,7 @@ namespace Wombat
 
 			internal void OnEnqueue(IntPtr queue, IntPtr closure)
 			{
-				if (mCallback != null) 
+				if (mCallback != null)
 				{
 					mCallback.onEnqueue(mSender);
 				}
@@ -727,7 +727,7 @@ namespace Wombat
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaQueue_stopDispatch (IntPtr nativeHandle);
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaQueue_timedDispatch (IntPtr nativeHandle, 
+			public static extern int mamaQueue_timedDispatch (IntPtr nativeHandle,
 				ulong timeout);
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaQueue_setEnqueueCallback (IntPtr nativeHandle,

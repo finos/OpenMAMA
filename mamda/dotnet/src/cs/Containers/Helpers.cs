@@ -30,7 +30,7 @@ namespace Wombat.Containers
 		{
 			mIEnum = e;
 		}
-	
+
 		#region Iterator Members
 
 		public bool hasNext()
@@ -55,7 +55,7 @@ namespace Wombat.Containers
 		}
 
 		#endregion
-		
+
 		private IEnumerator mIEnum;
 		private bool mMoved;
 		private bool mMoveSucceeded;

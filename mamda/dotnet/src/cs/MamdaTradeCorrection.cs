@@ -280,14 +280,13 @@ namespace Wombat
 		/// <see>MamdaTradeReport.getCorrShortSaleCircuitBreaker()
 		/// </summary>
 		/// <returns></returns>
-         char getCorrShortSaleCircuitBreaker();  
+         char getCorrShortSaleCircuitBreaker();
 
 		/// <summary>
 		/// Get the field state
 		/// </summary>
 		/// <returns>Field State</returns>
-        MamdaFieldState getCorrShortSaleCircuitBreakerFieldState();   
+        MamdaFieldState getCorrShortSaleCircuitBreakerFieldState();
 
 	}
 }
-

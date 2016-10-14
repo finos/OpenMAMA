@@ -56,7 +56,7 @@ namespace Wombat
 
 			string wSrcTime       = lookupFieldName(properties, "wSrcTime");
 			string wActivityTime  = lookupFieldName(properties, "wActivityTime");
-			string wLineTime      = lookupFieldName(properties, "wLineTime");	
+			string wLineTime      = lookupFieldName(properties, "wLineTime");
 			string wPartId        = lookupFieldName(properties, "wPartId");
 			string wSeqNum        = lookupFieldName(properties, "wSeqNum");
 			string wBookTime      = lookupFieldName(properties, "wBookTime");
@@ -76,7 +76,7 @@ namespace Wombat
 			string wEntryReason   = lookupFieldName(properties, "wEntryReason");
 			string wEntrySize     = lookupFieldName(properties, "wEntrySize");
 			string wEntryTime     = lookupFieldName(properties, "wEntryTime");
-			string wEntryStatus   = lookupFieldName(properties, "wEntryStatus");				
+			string wEntryStatus   = lookupFieldName(properties, "wEntryStatus");
 
 			SRC_TIME       = dictionary.getFieldByName(wSrcTime);
 			ACTIVITY_TIME  = dictionary.getFieldByName(wActivityTime);
@@ -185,7 +185,7 @@ namespace Wombat
 		{
 			return mInitialised;
 		}
-        
+
         public static void reset ()
         {
           if (MamdaCommonFields.isSet())
@@ -221,7 +221,7 @@ namespace Wombat
           PRICE_LEVEL    = null;
           PL_ENTRY       = null;
           }
-		
+
 		public static MamaFieldDescriptor   SRC_TIME       = null;
 		public static MamaFieldDescriptor   ACTIVITY_TIME  = null;
 		public static MamaFieldDescriptor   LINE_TIME      = null;

@@ -45,13 +45,13 @@ namespace Wombat.Mamda.Examples
 			CommandLineProcessor options      = new CommandLineProcessor (args);
 			myQuietModeLevel = options.getQuietModeLevel();
 
-            
+
 			if (options.hasLogLevel())
 			{
 				myLogLevel = options.getLogLevel();
 				Mama.enableLogging(myLogLevel);
 			}
-            
+
 			myCacheFullBooks = options.cacheFullBooks();
 			myPrintEntries = options.getPrintEntries();
 			mySnapshot = options.getSnapshot();
@@ -70,7 +70,7 @@ namespace Wombat.Mamda.Examples
                 dictionarySource.symbolNamespace = options.getDictSource();
 				dictionarySource.transport = transport;
 				dictionary = buildDataDictionary(transport, defaultQueue, dictionarySource);
-	            
+
 				MamdaOrderBookFields.setDictionary (dictionary, null);
 
 				foreach (string symbol in options.getSymbolList())
@@ -83,9 +83,9 @@ namespace Wombat.Mamda.Examples
 					}
 					else
 					{
-						aBookListener = new MamdaOrderBookListener(null, new MamdaOrderBook());                    
+						aBookListener = new MamdaOrderBookListener(null, new MamdaOrderBook());
 					}
-	                
+
 					BookTicker aTicker = new BookTicker();
 
 					aBookListener.addHandler(aTicker);
@@ -104,7 +104,7 @@ namespace Wombat.Mamda.Examples
 						options.getSource(),
 						symbol,
 						null);
-                    
+
                     mamdaSubscriptions.Add(aSubscription);
 				}
 
@@ -138,7 +138,7 @@ namespace Wombat.Mamda.Examples
 				{
 					Console.WriteLine ("RECAP!!!  (seq# {0}) ", msg.getSeqNum());
 				}
-				
+
 				if (myCacheFullBooks)
 				{
 					prettyPrint(bookRecap.getFullOrderBook());
@@ -147,7 +147,7 @@ namespace Wombat.Mamda.Examples
 				{
 					prettyPrint(bookDelta.getDeltaOrderBook());
 				}
-			}   
+			}
 
 			public void onBookDelta(
 				MamdaSubscription        sub,
@@ -192,7 +192,7 @@ namespace Wombat.Mamda.Examples
 			{
 				Console.WriteLine (
 					"Received book gap " + sub.getSymbol ()
-						+ " Start: " + gapEvent.getBeginGapSeqNum() 
+						+ " Start: " + gapEvent.getBeginGapSeqNum()
 						+ " End: "   + gapEvent.getEndGapSeqNum());
 			}
 
@@ -250,7 +250,7 @@ namespace Wombat.Mamda.Examples
 					{
 						MamdaOrderBookPriceLevel bidLevel = (MamdaOrderBookPriceLevel)bidEnum.Current;
 						if (myQuietModeLevel < 1)
-						{       
+						{
                             Console.Write("   ");
 							paddedPrint(bidLevel.getTime().ToString("hh:mm:ss.FFF"), 12, false);
 							paddedPrint(bidLevel.getNumEntries(), 4, false);
@@ -354,7 +354,7 @@ namespace Wombat.Mamda.Examples
 				string strVal = val != null ? val.ToString() : "null";
 				paddedPrint(strVal, padLen, padAfter);
 			}
-            
+
             private void paddedPrintPrice(MamaPrice price, int padLen, bool padAfter)
             {
                 String precisionStr = "F2";

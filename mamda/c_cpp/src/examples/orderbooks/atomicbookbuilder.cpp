@@ -45,15 +45,15 @@
 #include <mamda/MamdaOrderBookPriceLevel.h>
 
 /*  *********************************************************************** */
-/* This example program demonstrates the use of the MAMDA atomic book       */ 
-/* listener to maintain an orderbook. Due to platform differences between   */ 
+/* This example program demonstrates the use of the MAMDA atomic book       */
+/* listener to maintain an orderbook. Due to platform differences between   */
 /* V5 and legacy platforms, a number of methods should not be accessed      */
 /* when processing V5 entry updates using the atomic book listener          */
 /* interface. This example program demonstrates how an orderbook can be     */
 /* maintained by using the atomic book listener, independent of platform    */
 /* (V5 or legacy) or updates being received (entry or level).               */
 
-/* In this application, a MamdaOrderBook object is created and populated    */ 
+/* In this application, a MamdaOrderBook object is created and populated    */
 /* as updates are received. For each update, the orderbook is printed.      */
 
 /* The application handles the following scenarios:                         */
@@ -87,7 +87,7 @@ void usage (int exitStatus);
  *      - MamdaBookAtomicLevelHandler to recieve level callbacks
  *      - MamdaBookAtomicLevelEntryHandler to receive entry callbacks
  *
- * As per MAMDA Developers guide, when consuming V5 entry updates the 
+ * As per MAMDA Developers guide, when consuming V5 entry updates the
  *  following methods should not be accessed on the MamdaBookAtomicLevel
  *  interface:
  *      - getPriceLevelSize()
@@ -95,7 +95,7 @@ void usage (int exitStatus);
  *      - getPriceLevelAction()
  *      - getPriceLevelNumEntries()
  *
- * As per MAMDA Developers guide, when consuming V5 entry updates the 
+ * As per MAMDA Developers guide, when consuming V5 entry updates the
  *  following methods should not be accessed on the MamdaBookAtomicLevelEntry
  *  interface:
  *      - getPriceLevelSize()
@@ -172,7 +172,7 @@ private:
             {
                 printf ("                                         ");
             }
-            
+
             printf ("\n");
             printf ("    LIMIT ORDERS  ---------------------------------------------------------------\n");
         }
@@ -213,6 +213,7 @@ private:
             printf ("\n");
         }
         printf ("\n");
+        flush (cout);
     }
 
     /*
@@ -332,6 +333,7 @@ private:
             }
             ++askIter;
         }
+        flush (cout);
     }
 
     /*
@@ -363,12 +365,13 @@ private:
         double      size          = level.getSize ();
 
         cout << "LEVEL "
-            << symbol << " " 
-            << time   << " " 
-            << action << " " 
-            << price  << " " 
+            << symbol << " "
+            << time   << " "
+            << action << " "
+            << price  << " "
             << side   << " "
             << size   << endl;
+        flush (cout);
     }
 
     /*
@@ -388,17 +391,18 @@ private:
         double      size          = levelEntry.getPriceLevelEntrySize ();
 
         cout << "ENTRY "
-            << symbol      << " " 
-            << time        << " " 
-            << entryId     << " " 
-            << entryAction << " " 
-            << price       << " " 
+            << symbol      << " "
+            << time        << " "
+            << entryId     << " "
+            << entryAction << " "
+            << price       << " "
             << entrySide   << " "
             << size        << endl;
+        flush (cout);
     }
-    
+
     /**
-     * Helper function to apply a MamdaOrderBookPriceLevel to 
+     * Helper function to apply a MamdaOrderBookPriceLevel to
      * a MamdaOrderBook
      */
     void applyLevel (MamdaOrderBookPriceLevel& level)
@@ -456,17 +460,18 @@ private:
                     }
                     break;
                 default:
-                    cout << "atomicbookbuilder: Unknown price level [" 
+                    cout << "atomicbookbuilder: Unknown price level ["
                         << level.getAction() << "]\n";
                     break;
             }
 
             mLevelPtr = NULL;
         }
+        flush (cout);
     }
 
     /**
-     * Helper function to apply a MamdaBookAtomicLevelEntry to 
+     * Helper function to apply a MamdaBookAtomicLevelEntry to
      * a MamdaOrderBook
      */
     void applyEntry (const MamdaBookAtomicLevelEntry& levelEntry)
@@ -502,7 +507,7 @@ private:
                             }
                         }
                         /*
-                         * intentional fall through to add the entry if 
+                         * intentional fall through to add the entry if
                          * the entry or level cannot be found to update it
                          */
                     }
@@ -568,10 +573,11 @@ private:
             mEntryPtr = NULL;
             mLevelPtr = NULL;
         }
+        flush (cout);
     }
 
     /**
-     * Helper function to store a MamdaBookAtomicLevel in 
+     * Helper function to store a MamdaBookAtomicLevel in
      *  the resuabale MamdaOrderBookPriceLevel
      */
     void storeLevel(const MamdaBookAtomicLevel&  level)
@@ -594,7 +600,7 @@ private:
 
 public:
     AtomicBookBuilder (
-            const char* symbol) 
+            const char* symbol)
     : mShowEntries      (false)
     , mShowMarketOrders (false)
     , mEntryPtr         (NULL)
@@ -605,8 +611,8 @@ public:
         mOrderBook.setQuality (MAMA_QUALITY_OK);
     }
 
-    virtual ~AtomicBookBuilder () 
-    { 
+    virtual ~AtomicBookBuilder ()
+    {
         free(mSymbol);
     }
 
@@ -632,7 +638,7 @@ public:
     void onBookAtomicBeginBook (
         MamdaSubscription*           subscription,
         MamdaBookAtomicListener&     listener,
-        bool                         isRecap) 
+        bool                         isRecap)
 
     {
         cout<< "BOOK BEGIN\n";
@@ -650,6 +656,7 @@ public:
                 cout << "DELTA!!!\n";
             }
         }
+        flush (cout);
     }
 
     /**
@@ -678,27 +685,28 @@ public:
             cout << " (" << listener.getBeginGapSeqNum ();
             cout << "-" << listener.getEndGapSeqNum () << ")\n";
         }
+        flush (cout);
     }
 
     /**
-     * Method invoked when we stop processing the last level in a message. We 
-     * invoke this method after the last entry for the level gets processed. 
+     * Method invoked when we stop processing the last level in a message. We
+     * invoke this method after the last entry for the level gets processed.
      * The subscription may be destroyed from this callback.
      */
     void onBookAtomicEndBook (
         MamdaSubscription*           subscription,
-        MamdaBookAtomicListener&     listener) 
+        MamdaBookAtomicListener&     listener)
     {
         /**
          * When level recap/delta is received, it is stored in a MamdaOrderBookPriceLevel.
          * If no entry deltas/recaps are received, then the price level should be applied
-         *  to the book. 
+         *  to the book.
          * The entry delta/recap callback will mark the price level with an UNKNOWN side to
          *  show that it does not need to be applied to the book
          */
         if(mReusablePriceLevel.getSide() != MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_UNKNOWN)
         {
-            if (gExampleLogLevel == EXAMPLE_LOG_LEVEL_NORMAL 
+            if (gExampleLogLevel == EXAMPLE_LOG_LEVEL_NORMAL
                     && mOrderBook.getQuality() == MAMA_QUALITY_OK)
             {
                 prettyPrint(subscription, mReusablePriceLevel);
@@ -712,6 +720,7 @@ public:
             prettyPrint(mOrderBook);
         }
         cout<< "BOOK END\n";
+        flush (cout);
     }
 
     /**
@@ -733,7 +742,7 @@ public:
          * The level should only be processed when entires are not received
          *  i.e. for level only based feeds
          * If an entry was received on the previous level, then the level will
-         *  have been marked with an UNKNOWN side and should not be applied to 
+         *  have been marked with an UNKNOWN side and should not be applied to
          *  the book
          */
         if(mReusablePriceLevel.getSide() != MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_UNKNOWN)
@@ -761,12 +770,12 @@ public:
          * The level should only be processed when entires are not received
          *  i.e. for level only based feeds
          * If an entry was received on the previous level, then the level will
-         *  have been marked with an UNKNOWN side and should not be applied to 
+         *  have been marked with an UNKNOWN side and should not be applied to
          *  the book
          */
         if(mReusablePriceLevel.getSide() != MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_UNKNOWN)
         {
-            if (gExampleLogLevel == EXAMPLE_LOG_LEVEL_NORMAL 
+            if (gExampleLogLevel == EXAMPLE_LOG_LEVEL_NORMAL
                     && mOrderBook.getQuality() == MAMA_QUALITY_OK)
             {
                 prettyPrint(subscription, mReusablePriceLevel);
@@ -789,7 +798,7 @@ public:
      * - Recap update (e.g., after server fault tolerant event or data
      *   quality event.)
      * - After stale status removed.
-     */ 
+     */
     void onBookAtomicLevelEntryRecap (
         MamdaSubscription*                  subscription,
         MamdaBookAtomicListener&            listener,
@@ -828,7 +837,7 @@ public:
         mReusablePriceLevel.setSide (MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_UNKNOWN);
     }
 
-    void onError ( 
+    void onError (
         MamdaSubscription*  subscription,
         MamdaErrorSeverity  severity,
         MamdaErrorCode      code,
@@ -838,6 +847,7 @@ public:
         {
             cout << "atomicbookbuilder: ERROR: " << errorStr << "\n";
         }
+        flush (cout);
     }
 
     void onQuality (MamdaSubscription* subscription, mamaQuality quality)
@@ -848,8 +858,9 @@ public:
         }
 
         mOrderBook.setQuality (quality);
+        flush (cout);
     }
-    
+
 };
 
 int main (int argc, const char** argv)
@@ -905,7 +916,7 @@ int main (int argc, const char** argv)
              */
             aBookListener->addBookHandler (aBuilder);
 
-           
+
             /*
              * Add the level handler to handle level updates where available
              */
@@ -928,7 +939,7 @@ int main (int argc, const char** argv)
             aSubscription->create             (queues->getNextQueue(), source, symbol);
             aBookListener->setProcessMarketOrders (processMarketOrders);
         }
-        
+
         // Dispatch on the default MAMA queue
         Mama::start(bridge);
     }
@@ -947,7 +958,7 @@ int main (int argc, const char** argv)
         cerr << "Unknown Exception in main ()." << endl;
         exit(EXIT_FAILURE);
     }
-    
+
     return 0;
 }
 

@@ -36,7 +36,7 @@ namespace Wombat
 
             virtual ~MamaStatsCollector (void);
 
-            virtual void create          (mamaStatsCollectorType type, 
+            virtual void create          (mamaStatsCollectorType type,
                                           const char*            name,
                                           const char*            middleware);
 

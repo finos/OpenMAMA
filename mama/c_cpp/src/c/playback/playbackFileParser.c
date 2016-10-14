@@ -79,7 +79,7 @@ mama_status mamaPlaybackFileParser_init (mamaPlaybackFileParser
     impl->myMamaMsgLen  = 0;
     impl->myMaxMsgLen   = 0;
     impl->myMsgBuffer   = NULL;
-    impl->myMamaMsg    = NULL;
+    impl->myMamaMsg     = NULL;
     return MAMA_STATUS_OK;
 }
 
@@ -144,7 +144,7 @@ mamaPlaybackFileParser_openFile (mamaPlaybackFileParser fileParser,
 {
     mama_status status = MAMA_STATUS_OK;
     fileParserStatus fileStatus = FILE_PARSER_STATUS_OK;
-    
+
     mamaPlaybackFileParserImpl* impl =
         (mamaPlaybackFileParserImpl*)fileParser;
     if (impl == NULL)  return MAMA_STATUS_NULL_ARG;
@@ -173,13 +173,13 @@ mamaPlaybackFileParser_openFile (mamaPlaybackFileParser fileParser,
             parserType = FILE_PARSER_TYPE_MMAP;
         }
 
-        fileStatus = fileParser_create (impl->myFileReader, 
+        fileStatus = fileParser_create (impl->myFileReader,
             parserType, fileName);
         if (fileStatus != FILE_PARSER_STATUS_OK)
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "openFile: Failed to create file reader for file: %s (%s)", 
-                  fileName, 
+                  "openFile: Failed to create file reader for file: %s (%s)",
+                  fileName,
                   fileParser_stringForStatus(fileStatus));
             return MAMA_STATUS_PLATFORM;
         }

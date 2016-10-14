@@ -28,7 +28,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 
 /**
- * MamaDataTime 
+ * MamaDataTime
  *
  * Posix date/time representation.
  *
@@ -39,7 +39,7 @@ public class MamaDateTime implements Comparable
     {
         initIDs();
     }
-    
+
     /* A long value containing a pointer to the underlying C message structure*/
     private long                dateTimePointer_i   = 0;
     private long                timeZonePointer_i   = 0;
@@ -47,15 +47,15 @@ public class MamaDateTime implements Comparable
     {
         return dateTimePointer_i;
     }
-   
+
     protected void setPointerVal(long pointerVal)
     {
         dateTimePointer_i = pointerVal;
-    } 
-    
+    }
+
     /* Reusable object for return value*/
     private Calendar    myCalendar   = null;
-    
+
     public MamaDateTime ()
     {
         _create();
@@ -64,7 +64,7 @@ public class MamaDateTime implements Comparable
     public MamaDateTime (MamaDateTime copy)
     {
         _create ();
-        copy (copy);    
+        copy (copy);
     }
 
     public MamaDateTime (MamaDateTime time, MamaDateTime date)
@@ -74,7 +74,7 @@ public class MamaDateTime implements Comparable
         setPrecision (MamaDateTimePrecision.PREC_MILLISECONDS);
         copyDate (date);
     }
-    
+
     public MamaDateTime (Calendar calendar)
     {
         _create ();
@@ -92,7 +92,7 @@ public class MamaDateTime implements Comparable
                          MamaTimeZone tz)
     {
         _create ();
-        _setFromString (str, (tz!=null ? tz.tz():null)); 
+        _setFromString (str, (tz!=null ? tz.tz():null));
     }
 
     public String toString ()
@@ -140,7 +140,7 @@ public class MamaDateTime implements Comparable
                               long                  microseconds,
                               MamaDateTimePrecision precision)
     {
-        _setEpochTime (secondsSinceEpoch, microseconds, precision.getShortValue());                                  
+        _setEpochTime (secondsSinceEpoch, microseconds, precision.getShortValue());
     }
 
     public void setEpochTime (long secondsSinceEpoch,
@@ -167,23 +167,23 @@ public class MamaDateTime implements Comparable
         _setEpochTime (secondsSinceEpoch, microseconds, precision.getShortValue());
     }
 
-    void setPrecision (MamaDateTimePrecision precision) 
+    void setPrecision (MamaDateTimePrecision precision)
     {
         _setPrecision (precision.getShortValue());
     }
-    
-    final void setFromString (String       str, 
+
+    final void setFromString (String       str,
                               MamaTimeZone tz)
     {
-        _setFromString (str,(tz!=null ? tz.tz():null));  
+        _setFromString (str,(tz!=null ? tz.tz():null));
     }
 
     public native void setToNow ();
 
 
     public void setToMidnightToday (MamaTimeZone tz)
-    {  
-        _setToMidnightToday (tz!=null ? tz.tz():null);  
+    {
+        _setToMidnightToday (tz!=null ? tz.tz():null);
     }
 
     public void set (int year,
@@ -210,7 +210,7 @@ public class MamaDateTime implements Comparable
         MamaTimeZone tz)
     {
        _setTime (hour, minute, second, microsecond, precision.getShortValue(), (tz!=null ? tz.tz():null));
-        
+
     }
 
     public native void setDate (
@@ -222,7 +222,7 @@ public class MamaDateTime implements Comparable
 
     public native void copyDate (MamaDateTime src);
 
-    
+
     public native void clear ();
 
     public native void clearTime ();
@@ -233,15 +233,15 @@ public class MamaDateTime implements Comparable
 
     public native boolean hasTime ();
 
-    public native void addSeconds (double seconds); 
+    public native void addSeconds (double seconds);
 
     public native void addSeconds (long seconds);
 
     public native void addMicroSeconds (long microSeconds);
 
 	/**
-	 * Get the date and time as microseconds since the Epoch, (using the UTC timezone).	 
-	 *	 
+	 * Get the date and time as microseconds since the Epoch, (using the UTC timezone).
+	 *
 	 * @return The number of microseconds since the Epoch.
 	 * @exception com.wombat.mama MamaException thrown if the underlying JNI object has been destroyed.
 	 * @exception com.wombat.common.WombatException for other general MAMA errors.
@@ -297,7 +297,7 @@ public class MamaDateTime implements Comparable
     public native String getDateAsString ();
 
     public native long getYear ();
-    
+
     public native long getMonth ();
 
     public native long getDay ();
@@ -317,7 +317,7 @@ public class MamaDateTime implements Comparable
 
     public native static double diffSeconds (MamaDateTime t1,
                                              MamaDateTime t0);
-                                      
+
     public native static double diffSecondsSameDay (MamaDateTime t1,
                                                     MamaDateTime t0);
 
@@ -333,43 +333,43 @@ public class MamaDateTime implements Comparable
     }
 
     public native void destroy ();
-    
-    private native void _create ();  
-    
-    public native void copy (MamaDateTime copy); 
-    
-    private native void _setEpochTime (long secondsSinceEpoch, 
-                                       long microseconds, 
+
+    private native void _create ();
+
+    public native void copy (MamaDateTime copy);
+
+    private native void _setEpochTime (long secondsSinceEpoch,
+                                       long microseconds,
                                        short precision);
-    
+
     private native void _setPrecision (short precision);
-    
+
     private native int  _getPrecision ();
-    
-    private native void _setFromString (String str, 
+
+    private native void _setFromString (String str,
                                        String tz);
-    
+
     private native void _setToMidnightToday (String tz);
-    
+
     private native void _setTime (int hour,
                                   int minute,
                                   int second,
                                   long microsecond,
                                   short precision,
                                   String tz);
-                                  
-  
+
+
     private native short _getDayOfWeek();
-    
+
     private native long _getEpochTimeMicroseconds (String tz);
 
     private native long _getEpochTimeMilliseconds (String tz);
-    
+
     private native double _getEpochTimeSeconds (String tz);
-    
+
     /*Used to cache ids for callback methods/fields*/
     private static native void initIDs();
-    
+
     protected void finalize()
     {
         if (dateTimePointer_i != 0)

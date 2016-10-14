@@ -426,7 +426,7 @@ namespace Wombat
 			public static extern int mamaSource_setMappedId(
 				IntPtr source,
 				[MarshalAs(UnmanagedType.LPStr)] string id);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSource_setDisplayId(
 				IntPtr source,
@@ -436,22 +436,22 @@ namespace Wombat
 			public static extern int mamaSource_setQuality(
 				IntPtr source,
 				int quality);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSource_setState(
 				IntPtr source,
 				int sourceState);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSource_setParent(
 				IntPtr source,
 				IntPtr parent);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSource_setSymbolNamespace(
 				IntPtr source,
 				[MarshalAs(UnmanagedType.LPStr)] string symbolNamespace);
-			
+
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSource_setTransportName(
 				IntPtr source,
@@ -465,7 +465,7 @@ namespace Wombat
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSource_setSymbology(
 				IntPtr source,
-				IntPtr symbology);                        
+				IntPtr symbology);
 
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaSource_getId(

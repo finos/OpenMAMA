@@ -24,7 +24,7 @@
 
 #include "mama/mama.h"
 
-namespace Wombat 
+namespace Wombat
 {
 class MamaStatus;
 class MamaMsg;
@@ -46,16 +46,16 @@ class MAMACPPExpDLL MamaBasicSubscription
 public:
 
     /**
-     * The destructor will call <code>destroy()</code> if the 
+     * The destructor will call <code>destroy()</code> if the
      * subscription has not already been destroyed.
      */
     virtual ~MamaBasicSubscription ();
-   
+
     /**
      * Constructor. Call createBasic() to activate the subscription.
      */
     MamaBasicSubscription (void);
-    
+
     /**
      * Create a basic subscription without market data semantics.
      *
@@ -89,7 +89,7 @@ public:
      * Note that the subscription will not be fully destroyed until the
      * onDestroy callback is received from the MamaBasicSubscriptionCallback
      * interface.
-     * To destroy from the dispatching thread the destroy function should be 
+     * To destroy from the dispatching thread the destroy function should be
      * used in preference.
      */
     virtual void destroyEx();
@@ -134,14 +134,14 @@ public:
      *
      */
     virtual void setClosure (void*  closure);
-    
+
     /**
      * Return the closure for the subscription.
      *
      * @return the closure.
      */
     virtual void* getClosure (void) const;
-    
+
     /**
      * Set the debug level for this subscription.
      *
@@ -178,8 +178,8 @@ public:
 
 private:
 
-    /* Private functions. */    
-    static void MAMACALLTYPE onSubscriptionCreate(mamaSubscription subsc, void *closure);    
+    /* Private functions. */
+    static void MAMACALLTYPE onSubscriptionCreate(mamaSubscription subsc, void *closure);
     static void MAMACALLTYPE onSubscriptionDestroy(mamaSubscription subscription, void *closure);
     static void MAMACALLTYPE onSubscriptionError(mamaSubscription subsc, mama_status status, void *platformError, const char *subject, void *closure);
     static void MAMACALLTYPE onSubscriptionMessage(mamaSubscription subsc, mamaMsg msg, void *closure, void *itemClosure);

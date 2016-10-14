@@ -138,38 +138,38 @@ static mama_status msshutdown            (mamaCaptureConfig subCapture,
 static mama_status subscribeToSymbols  (mamaCaptureConfig subCapture,
                                         mamaCaptureList captureList);
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 timeoutCb                  (mamaDictionary      dict,
                             void *              closure);
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 errorCb                    (mamaDictionary      dict,
                             const char *        errMsg,
                             void *              closure);
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 transportCb (mamaTransport tport,
              mamaTransportEvent,
              short cause,
              const void* platformInfo,
              void *closure);
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 completeCb                 (mamaDictionary      dict,
                             void *              closure);
 
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 listenerMsgCb (mamaSubscription    subscription,
                mamaMsg             msg,
                void *              closure,
                void *              itemClosure);
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 listenerErrorCb (mamaSubscription    subscription,
                  mama_status         status,
                  void *              platformError,
                  const char *        subject,
                  void *              closure);
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 listenerCreateCb (mamaSubscription    subscription,
                   void *              closure);
 
@@ -408,7 +408,7 @@ Callbacks
 *******************************************************************/
 
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 transportCb (mamaTransport tport,
              mamaTransportEvent ev,
              short cause,
@@ -428,7 +428,7 @@ transportCb (mamaTransport tport,
     }
 }
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 listenerMsgCb       (mamaSubscription    subscription,
                      mamaMsg             msg,
                      void *              closure,
@@ -458,7 +458,7 @@ listenerMsgCb       (mamaSubscription    subscription,
               context->capture, subSource, subTransport , subSymbol);
     */
 }
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 listenerErrorCb (mamaSubscription    subscription,
                              mama_status         status,
                              void *              platformError,
@@ -471,7 +471,7 @@ listenerErrorCb (mamaSubscription    subscription,
               mamaStatus_stringForStatus (status));
 }
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 listenerCreateCb (mamaSubscription    subscription,
                               void *              closure)
 {
@@ -479,7 +479,7 @@ listenerCreateCb (mamaSubscription    subscription,
 }
 
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 timeoutCb                  (mamaDictionary      dict,
                             void *              closure)
 {
@@ -488,7 +488,7 @@ timeoutCb                  (mamaDictionary      dict,
     mama_stop ((*gCapture)->myBridge);
 
 }
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 errorCb                    (mamaDictionary      dict,
                             const char *        errMsg,
                             void *              closure)
@@ -497,7 +497,7 @@ errorCb                    (mamaDictionary      dict,
     mama_stop ((*gCapture)->myBridge);
 
 }
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 completeCb                 (mamaDictionary      dict,
                             void *              closure)
 {

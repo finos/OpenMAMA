@@ -126,4 +126,3 @@ namespace Wombat
 			MamdaTradeRecap          recap);
 	}
 }
-

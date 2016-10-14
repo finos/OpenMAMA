@@ -25,7 +25,7 @@ namespace Wombat
 {
 	/// <summary>
 	/// MamdaFundamentalHandler is an interface for applications that want to
-	/// have an easy way to access fundamental equity pricing/analysis attributes, 
+	/// have an easy way to access fundamental equity pricing/analysis attributes,
 	/// indicators and ratios.  The interface defines a single callback methods for
 	/// for receiving updates on fundamental data.
 	/// </summary>

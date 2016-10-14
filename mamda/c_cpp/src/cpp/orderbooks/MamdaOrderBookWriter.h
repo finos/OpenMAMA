@@ -45,11 +45,11 @@ public:
         {
             mMsgVector[i] = NULL;
         }
-        
+
     }
     mama_size_t               mMsgVectorSize;
     MamaMsg**                 mMsgVector;
-    
+
     ~BookMsgHolder();
     void    grow (mama_size_t     size);
     void    clear();
@@ -62,16 +62,16 @@ public:
 
     MamdaOrderBookWriter ();
     ~MamdaOrderBookWriter ();
-    
+
     void    populateMsg (MamaMsg& msg, const MamdaOrderBookComplexDelta& delta);
     void    populateMsg (MamaMsg& msg, const MamdaOrderBookSimpleDelta& delta);
     void    populateMsg (MamaMsg& msg, const MamdaOrderBook& book);
 
-private: 
+private:
 
     struct MamdaOrderBookWriterImpl;
     MamdaOrderBookWriterImpl& mImpl;
-    
+
     // No copy constructor nor assignment operator.
     MamdaOrderBookWriter (const MamdaOrderBookWriter&);
     MamdaOrderBookWriter& operator= (const MamdaOrderBookWriter&);

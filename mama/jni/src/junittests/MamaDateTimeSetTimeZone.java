@@ -96,4 +96,3 @@ public class MamaDateTimeSetTimeZone extends TestCase
         assertEquals(time, "03:16:42.000099");
     }
 }
-

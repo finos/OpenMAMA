@@ -50,7 +50,7 @@ class ListenerCallback : public MamdaMsgListener
 public:
     ListenerCallback ():
         mDictionary (NULL) {}
-    
+
     ~ListenerCallback () {}
 
     void onMsg (
@@ -119,7 +119,7 @@ int main (int argc, const char **argv)
             if (cmdLine.getSnapshot())
                 aSubscription->setServiceLevel (MAMA_SERVICE_LEVEL_SNAPSHOT);
             aSubscription->create (queues.getNextQueue(), source, symbol);
-            
+
         }
 
         Mama::start(bridge);
@@ -146,7 +146,7 @@ int main (int argc, const char **argv)
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: mamdalisten [-tport] tport_name [-m] middleware [-S] source [-s] symbol [options] \n";        
+    std::cerr << "Usage: mamdalisten [-tport] tport_name [-m] middleware [-S] source [-s] symbol [options] \n";
     std::cerr << "Options:" << std::endl;
     std::cerr << "  -1   Create snapshot subscriptions" << std::endl;
 
@@ -160,6 +160,7 @@ void ListenerCallback::onMsg (
 {
     cout << "Update (" << subscription->getSymbol () <<  "): \n";
     msg.iterateFields (*this, mDictionary, NULL);
+    flush (cout);
 }
 
 void ListenerCallback::onError (
@@ -169,6 +170,7 @@ void ListenerCallback::onError (
     const char*          errorStr)
 {
     cout << "Error (" << subscription->getSymbol () << ")" << endl;
+    flush (cout);
 }
 
 void ListenerCallback::onQuality (
@@ -176,6 +178,7 @@ void ListenerCallback::onQuality (
     mamaQuality          quality)
 {
     cout << "Quality (" << subscription->getSymbol () << "): " << quality << endl;
+    flush (cout);
 }
 
 void ListenerCallback::onField (
@@ -189,6 +192,7 @@ void ListenerCallback::onField (
     msg.getFieldAsString (desc, fieldValueStr,256);
     printf ("%20s | %3d | ", desc->getName (),     desc->getFid ());
     printf ("%20s | %s\n",   desc->getTypeName (), fieldValueStr);
+    flush (cout);
 }
 
 void ListenerCallback::setDictionary (

@@ -64,7 +64,7 @@ namespace Wombat
             String wActivityTime = lookupFieldName(properties, "wActivityTime");
             String wPubId = lookupFieldName(properties, "wPubId");
             String wMsgQual = lookupFieldName(properties, "wMsgQual");
-            
+
 			SYMBOL = dictionary.getFieldByName(wSymbol);
 			ISSUE_SYMBOL = dictionary.getFieldByName(wIssueSymbol);
             INDEX_SYMBOL = dictionary.getFieldByName(wIndexSymbol);
@@ -75,7 +75,7 @@ namespace Wombat
 			ACTIVITY_TIME = dictionary.getFieldByName(wActivityTime);
             PUB_ID = dictionary.getFieldByName(wPubId);
 			MSG_QUAL = dictionary.getFieldByName(wMsgQual);
-        
+
 			mInitialised = true;
 		}
 
@@ -116,10 +116,10 @@ namespace Wombat
         public static MamaFieldDescriptor  MSG_NUM       = null;
         public static MamaFieldDescriptor  MSG_TOTAL     = null;
         public static MamaFieldDescriptor  SENDER_ID     = null;
-    
-    
+
+
 		private static bool mInitialised = false;
 	}
-    
+
 
 }

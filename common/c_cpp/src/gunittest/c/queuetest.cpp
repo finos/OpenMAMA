@@ -423,3 +423,42 @@ TEST_F (CommonQueueTestC, EnqueueDispatchManyQueues)
     }
 }
 
+/*  Description: Creates a queue then attempts to enqueue more
+ *  events than max size.
+ *
+ *  Expected Result: WOMBAT_QUEUE_OK
+ */
+TEST_F (CommonQueueTestC, EnqueueMoreThanMaxSize)
+{
+    wombatQueue queue       = NULL;
+    uint32_t    maxSize     = 100;
+    uint32_t    initialSize = 100;
+    uint32_t    growBySize  = 100;
+    int         toEnqueue   = 101;
+    void*       data        = NULL;
+    void*       closure     = NULL;
+
+    ASSERT_EQ (WOMBAT_QUEUE_OK, wombatQueue_allocate(&queue));
+
+    EXPECT_EQ (WOMBAT_QUEUE_OK, wombatQueue_create(queue,
+                                                   maxSize,
+                                                   initialSize,
+                                                   growBySize));
+
+    /*Enqueue 100 items, the maximum allowed in the queue when created.*/
+    for(int i=0;i!=(toEnqueue-1);i++)
+    {
+        EXPECT_EQ (WOMBAT_QUEUE_OK, wombatQueue_enqueue (queue,
+                                                         onEvent,
+                                                         data,
+                                                         closure));
+    }
+    /*Try to enqueue one more than the maximum amount, the call to *
+     *wombatQueue_enqueue should fail and retuen WOMBAT_QUEUE_FULL */
+    EXPECT_EQ (WOMBAT_QUEUE_FULL, wombatQueue_enqueue (queue,
+                                                     onEvent,
+                                                     data,
+                                                     closure));
+
+    ASSERT_EQ (WOMBAT_QUEUE_OK, wombatQueue_destroy (queue));
+}

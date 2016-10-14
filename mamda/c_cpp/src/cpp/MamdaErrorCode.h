@@ -28,8 +28,8 @@
 
 
 namespace Wombat
-{ 
-    
+{
+
 static const char* stringForErrorCode (const MamdaErrorCode& errorCode)
 {
     switch (errorCode)
@@ -70,7 +70,7 @@ static MamdaErrorCode errorCodeForMamaStatus (MamaStatus status)
         case MAMA_STATUS_NOT_PERMISSIONED:     return MAMDA_ERROR_NOT_PERMISSIONED;
         case MAMA_STATUS_BANDWIDTH_EXCEEDED:   return MAMDA_ERROR_BANDWIDTH_EXCEEDED;
         case MAMA_STATUS_DELETE:               return MAMDA_ERROR_DELETE;
-        default:                               return MAMDA_ERROR_MISC; 
+        default:                               return MAMDA_ERROR_MISC;
     }
 }
 

@@ -179,7 +179,7 @@ int main (int argc, const char **argv)
             const char* symbol = *i;
             MamdaSubscription*      aSubscription = new MamdaSubscription;
             MamdaOrderBookListener* aBookListener = new MamdaOrderBookListener;
-            BookViewer* aViewer = 
+            BookViewer* aViewer =
                 new BookViewer (*aBookListener->getOrderBook());
 
             aBookListener->setProcessEntries  (true);
@@ -230,7 +230,7 @@ int main (int argc, const char **argv)
 void usage (int exitStatus)
 {
     std::cerr << "Usage: bookviewer -m middleware [-S source] "
-              << "-s symbol [-s symbol ...] " 
+              << "-s symbol [-s symbol ...] "
               << "[-b] (For black and white) [-threads x]\n";
     exit (exitStatus);
 }
@@ -319,8 +319,9 @@ void BookViewer::onBookGap (
     const MamdaOrderBook&       book)
 {
     cout << "GAP!!!\n";
-    cout << "Book gap (" << event.getBeginGapSeqNum () << "-" 
+    cout << "Book gap (" << event.getBeginGapSeqNum () << "-"
          << event.getEndGapSeqNum () << ")\n";
+    flush (cout);
 }
 
 void BookViewer::onError (
@@ -330,6 +331,7 @@ void BookViewer::onError (
     const char*          errorStr)
 {
     cout << "bookticker: ERROR: " << errorStr << "\n";
+    flush (cout);
 }
 
 void BookViewer::onQuality (
@@ -337,6 +339,7 @@ void BookViewer::onQuality (
     mamaQuality          quality)
 {
     cout << "bookticker: QUALITY: " << quality << "\n";
+    flush (cout);
 }
 
 void BookViewer::setShowEntries (bool  showEntries)

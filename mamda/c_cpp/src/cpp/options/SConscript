@@ -46,7 +46,7 @@ sources = \
 	MamdaOptionExpirationDateSet.cpp
 	MamdaOptionExpirationStrikes.cpp
 	MamdaOptionFields.cpp
-	MamdaOptionStrikeSet.cpp 
+	MamdaOptionStrikeSet.cpp
 """)
 
 env.Append(LIBS=['mamda','mamacpp'],CPPPATH=[includePath], LIBPATH=libPath)

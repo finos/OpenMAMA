@@ -73,68 +73,68 @@ namespace Wombat
             , mPlNumProps (0)
             , mEntryPropertyFids (NULL)
             , mEntryNumProps (0)
-        { 
+        {
             clear();
         }
         ~BookMsgFields();
         void clear();
         void clearEntry();
         void clearPriceLevel();
-        
+
         void clearEntries();
 
-        mama_i16_t                  mMsgNum;                  MamdaFieldState mMsgNumFieldState; 
+        mama_i16_t                  mMsgNum;                  MamdaFieldState mMsgNumFieldState;
         mama_i16_t                  mMsgTotal;                MamdaFieldState mMsgTotalFieldState;
 
         // The following fields are used for caching the order book and
         // related fields.  These fields can be used by applications for
         // reference and will be passed for recaps.
 
-        MamaDateTime                     mSrcTime;             MamdaFieldState mSrcTimeFieldState; 
+        MamaDateTime                     mSrcTime;             MamdaFieldState mSrcTimeFieldState;
         MamaDateTime                     mLineTime;            MamdaFieldState mLineTimeFieldState;
         MamaDateTime                     mSendTime;            MamdaFieldState mSendTimeFieldState;
         MamaDateTime                     mActivityTime;        MamdaFieldState mActivityTimeFieldState;
-        MamaMsgQual                      mMsgQual;             MamdaFieldState mMsgQualFieldState;  
-        MamaDateTime                     mBookTime;            MamdaFieldState mBookTimeFieldState; 
-        mama_seqnum_t                    mMsgSeqNum;           MamdaFieldState mMsgSeqNumFieldState; 
-        mama_u64_t                       mSenderId;            MamdaFieldState mSenderIdFieldState;  
-                                                               MamdaFieldState mSymbolFieldState; 
+        MamaMsgQual                      mMsgQual;             MamdaFieldState mMsgQualFieldState;
+        MamaDateTime                     mBookTime;            MamdaFieldState mBookTimeFieldState;
+        mama_seqnum_t                    mMsgSeqNum;           MamdaFieldState mMsgSeqNumFieldState;
+        mama_u64_t                       mSenderId;            MamdaFieldState mSenderIdFieldState;
+                                                               MamdaFieldState mSymbolFieldState;
                                                                MamdaFieldState mPartIdFieldState;
                                                                MamdaFieldState mEventSeqNumFieldState;
                                                                MamdaFieldState mEventTimeFieldState;
 
         mama_u8_t                          mBookType;
         // PriceLevels:
-        const mamaMsg*                     mPriceLevelVector;  
-        mama_size_t                        mNumLevels;         
-        MamaPrice                          mPlPrice;           
-        MamdaOrderBookPriceLevel::Side     mPlSide;            
-        MamaDateTime                       mPlTime;            
+        const mamaMsg*                     mPriceLevelVector;
+        mama_size_t                        mNumLevels;
+        MamaPrice                          mPlPrice;
+        MamdaOrderBookPriceLevel::Side     mPlSide;
+        MamaDateTime                       mPlTime;
         bool                               mHasPlTime;
-        MamdaOrderBookPriceLevel::Action   mPlAction;          
+        MamdaOrderBookPriceLevel::Action   mPlAction;
         bool                               mHasPlAction;
         mama_f64_t                         mPlSize;
         bool                               mHasPlSize;
         mama_quantity_t                    mPlSizeChange;
         bool                               mHasPlSizeChange;
-        mama_f32_t                         mPlNumEntries;      
-        vector<mamaMsg>                    mPriceLevels;        /* for RV books */    
-        mamaMsg                            mBidMarketOrders;   
-        mamaMsg                            mAskMarketOrders;   
-        bool                               mHasMarketOrders;   
+        mama_f32_t                         mPlNumEntries;
+        vector<mamaMsg>                    mPriceLevels;        /* for RV books */
+        mamaMsg                            mBidMarketOrders;
+        mamaMsg                            mAskMarketOrders;
+        bool                               mHasMarketOrders;
 
         // Entries:
-        const mamaMsg*                     mEntryVector;       
-        mama_size_t                        mPlNumAttach;       
-        const char*                        mEntryId;           
-        mama_quantity_t                    mEntrySize;         
-        MamaDateTime                       mEntryTime;         
-        MamdaOrderBookEntry::Action        mEntryAction;       
-        MamdaOrderBookTypes::Reason        mEntryReason;       
+        const mamaMsg*                     mEntryVector;
+        mama_size_t                        mPlNumAttach;
+        const char*                        mEntryId;
+        mama_quantity_t                    mEntrySize;
+        MamaDateTime                       mEntryTime;
+        MamdaOrderBookEntry::Action        mEntryAction;
+        MamdaOrderBookTypes::Reason        mEntryReason;
         vector<mamaMsg>                    mEntries;           /* for RV MamdaFieldStatebooks */
-        mama_u16_t                         mEntryStatus;       
-       
-        // Properties 
+        mama_u16_t                         mEntryStatus;
+
+        // Properties
         mama_fid_t*                        mBookPropertyFids;
         mama_size_t                        mBookNumProps;
         MamdaOrderBookTypes::PropMsgType   mBookPropMsgType;
@@ -181,7 +181,7 @@ namespace Wombat
         //! \throw<MamdaOrderBookException>
         void handleUpdate           (MamdaSubscription*  subscription,
                                      const MamaMsg&      msg);
-        
+
         void updateFieldStates ();
         /*
          * processBookMessage processes a MamaMsg containing a partial
@@ -262,7 +262,7 @@ namespace Wombat
         void onTimer             (MamaTimer* timer);
 
         void forceInvokeDeltaHandlers ();
-                                                      
+
         // Inherited from MamdaBasicRecap and MamdaBasicEvent
         const char*          getSymbol         () const;
         const char*          getPartId         () const;
@@ -273,7 +273,7 @@ namespace Wombat
         const MamaMsgQual&   getMsgQual        () const;
         const MamaDateTime&  getEventTime      () const;
         mama_seqnum_t        getEventSeqNum    () const;
-        
+
         MamdaFieldState     getSymbolFieldState()       const;
         MamdaFieldState     getPartIdFieldState()       const;
         MamdaFieldState     getEventSeqNumFieldState()  const;
@@ -287,7 +287,7 @@ namespace Wombat
         MamdaFieldState  getPlTimeFieldState () const;
         // Inherited from MamdaOrderBookRecap
         const MamdaOrderBook*  getOrderBook    () const;
-        
+
         MamdaOrderBook*  getOrderBook    ();
 
         // Inherited from MamdaOrderBookGap
@@ -296,7 +296,7 @@ namespace Wombat
 
         MamdaOrderBookListener&        mListener;
 
-        // Lock to protected the impl's full order book.    
+        // Lock to protected the impl's full order book.
         MamdaLock                      mFullBookLock;
         MamdaOrderBook*                mFullBook;
         bool                           mLocalFullBook;
@@ -328,17 +328,17 @@ namespace Wombat
                        mama_quantity_t                      plDeltaSize,
                        MamdaOrderBookPriceLevel::Action     plAction,
                        MamdaOrderBookEntry::Action          entryAction);
-        
+
         void addMarketOrderDelta (
                        MamdaOrderBookEntry*              entry,
                        MamdaOrderBookPriceLevel*         level,
                        mama_quantity_t                   plDeltaSize,
                        MamdaOrderBookPriceLevel::Action  plAction,
                        MamdaOrderBookEntry::Action       entryAction);
-                                      
+
         MamdaOrderBookSimpleDelta*       mSimpleMarketOrderDelta;
         MamdaOrderBookComplexDelta*      mComplexDeltaMarketOrderDelta;
-        
+
         mama_u32_t                  mCurrentDeltaCount;
         mama_u32_t                  mCurrentMarketOrderDeltaCount;
 
@@ -356,8 +356,8 @@ namespace Wombat
         double                      mConflationInterval;
         MamaTimer*                  mConflationTimer;
         MamdaSubscription*          mSubscription;
-       
-        
+
+
         BookMsgFields  mBookMsgFields;
 
         struct BookFieldUpdate
@@ -505,7 +505,7 @@ namespace Wombat
         return mImpl.getOrderBook ();
     }
 
-    MamdaOrderBook* MamdaOrderBookListener::getOrderBook () 
+    MamdaOrderBook* MamdaOrderBookListener::getOrderBook ()
     {
         return mImpl.getOrderBook ();
     }
@@ -628,7 +628,7 @@ namespace Wombat
         mImpl.setProcessMarketOrders (process);
     }
 
-    bool MamdaOrderBookListener::getProcessMarketOrders () const 
+    bool MamdaOrderBookListener::getProcessMarketOrders () const
     {
         return mImpl.getProcessMarketOrders();
     }
@@ -682,7 +682,7 @@ namespace Wombat
         {
             mImpl.mSubscription = subscription;
         }
-        
+
         try
         {
             switch (msgType)
@@ -702,7 +702,7 @@ namespace Wombat
             case MAMA_MSG_TYPE_BOOK_CLEAR:
                 mImpl.handleClear (subscription, msg);
                 break;
-            case MAMA_MSG_TYPE_BOOK_INITIAL:     
+            case MAMA_MSG_TYPE_BOOK_INITIAL:
             case MAMA_MSG_TYPE_BOOK_RECAP:
             case MAMA_MSG_TYPE_BOOK_SNAPSHOT:
                 mImpl.handleRecap (subscription, msg);
@@ -719,7 +719,7 @@ namespace Wombat
         {
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "MamdaOrderBookListener: caught exception for %s: %s",
-                      (subscription ? getSymbol() : "(nil)"), 
+                      (subscription ? getSymbol() : "(nil)"),
                       e.what());
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "MamdaOrderBookListener: message was: %s",
@@ -729,7 +729,7 @@ namespace Wombat
         {
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "MamdaOrderBookListener: caught MamaStatus exception: %s",
-                      e.toString()); 
+                      e.toString());
         }
         if (gMamaLogLevel == MAMA_LOG_LEVEL_FINEST)
             mama_log (MAMA_LOG_LEVEL_FINEST,
@@ -771,7 +771,7 @@ namespace Wombat
     }
 
     void MamdaOrderBookListener::setConflationInterval (double interval)
-    { 
+    {
         mImpl.mConflationInterval = interval;
     }
 
@@ -800,7 +800,7 @@ namespace Wombat
         , mEntryManager (NULL)
         , mUniqueEntryIds (false)
         , mIgnoredEntries (NULL)
-        , mHaveEntries (false) 
+        , mHaveEntries (false)
         , mIgnoreUpdate (false)
         , mConflateDeltas (false)
         , mConflationInterval (0.5)
@@ -819,7 +819,7 @@ namespace Wombat
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::~MamdaOrderBookListenerImpl()
     {
         if (mLocalFullBook)
-        { 
+        {
                 delete mFullBook;
         }
         if (mIgnoredEntries) wtable_destroy(mIgnoredEntries);
@@ -877,7 +877,7 @@ namespace Wombat
         if (mEntryManager)
         {
             mEntryManager->clear();
-        }   
+        }
         MamdaOrderBookBasicDelta::clear();
         MamdaOrderBookComplexDelta::clear();
 
@@ -897,14 +897,14 @@ namespace Wombat
         bool complete = false;
 
         acquireLock();
-        
+
         if (mFullBook->getIsConsistent()==false)
         {
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "Received Recap: Book now consistent for [%s]",
                       (subscription ? getSymbol() : "no symbol"));
         }
-        
+
         processBookMessage (subscription, msg, true);
         updateFieldStates();
         try
@@ -917,14 +917,14 @@ namespace Wombat
         {
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "MamdaOrderBookListener: caught exception for %s: %s",
-                      (subscription ? getSymbol() : "(nil)"), 
+                      (subscription ? getSymbol() : "(nil)"),
                       e.what());
         }
         catch (MamaStatus& e)
         {
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "MamdaOrderBookListener: caught MamaStatus exception: %s",
-                      e.toString()); 
+                      e.toString());
         }
 
         if (complete)
@@ -934,7 +934,7 @@ namespace Wombat
             setQuality (subscription, MAMA_QUALITY_OK);
             invokeRecapHandlers (subscription, &msg);
             /* Have to do this for conflation. For recaps a delta is created but
-               used not */   
+               used not */
             MamdaOrderBookComplexDelta::clear();
         }
         releaseLock ();
@@ -949,7 +949,7 @@ namespace Wombat
             mama_log (MAMA_LOG_LEVEL_FINEST,
                   "MamdaOrderBookListener: handling update for order book %s",
                   getSymbol());
-                  
+
         if (!mGotInitial)
         {
             throw MamdaOrderBookException ("got update before initial/recap");
@@ -957,16 +957,16 @@ namespace Wombat
 
         acquireLock();
         processBookMessage (subscription, msg, false);
-        
+
         if (mIgnoreUpdate)
-        {  
+        {
             mIgnoreUpdate = false;
             releaseLock();
             return;
         }
         else
            updateFieldStates();
-        
+
         try
         {
             createDelta (false);
@@ -975,14 +975,14 @@ namespace Wombat
         {
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "MamdaOrderBookListener: caught exception for %s: %s",
-                      (subscription ? getSymbol() : "(nil)"), 
+                      (subscription ? getSymbol() : "(nil)"),
                       e.what());
         }
         catch (MamaStatus& e)
         {
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "MamdaOrderBookListener: caught MamaStatus exception: %s",
-                      e.toString()); 
+                      e.toString());
         }
 
         if (!mHandlers.empty())
@@ -1018,7 +1018,7 @@ namespace Wombat
         releaseLock();
     }
 
-    extern "C" 
+    extern "C"
     {
         static void MAMACALLTYPE msgItCb (
             const mamaMsg       msg,
@@ -1027,7 +1027,7 @@ namespace Wombat
         {
             MamdaOrderBookListener::MamdaOrderBookListenerImpl* listenerImpl
                 = (MamdaOrderBookListener::MamdaOrderBookListenerImpl*) (closure);
-            
+
             mama_fid_t fid = 0;
             mamaMsgField_getFid (field, &fid);
             if (fid <= listenerImpl->mFieldUpdatersSize)
@@ -1050,7 +1050,7 @@ namespace Wombat
     {
 
         mBookMsgFields.clear();
-        
+
         mBookMsgFields.mBookType = 0;
         msg.tryU8 (MamdaOrderBookFields::BOOK_TYPE, mBookMsgFields.mBookType);
 
@@ -1064,10 +1064,10 @@ namespace Wombat
         }
         mFullBook->setBookTime(mBookMsgFields.mBookTime);
 
-    #ifdef WITH_UNITTESTS    
+    #ifdef WITH_UNITTESTS
         if (0 == mBookMsgFields.mMsgSeqNum)
             msg.tryU32(MamdaCommonFields::MSG_SEQ_NUM, mBookMsgFields.mMsgSeqNum);
-    #endif    
+    #endif
 
         if (mBookMsgFields.mMsgNum == 1)
         {
@@ -1080,7 +1080,7 @@ namespace Wombat
             // when it's a recap
             if (!mConflateDeltas)
             {
-                mCurrentDeltaCount = 0;  
+                mCurrentDeltaCount = 0;
             }
             if (isRecap)
             {
@@ -1093,7 +1093,7 @@ namespace Wombat
                 }
             }
         }
-        
+
         mama_seqnum_t  seqNum = mBookMsgFields.mMsgSeqNum;
         mama_u64_t senderId = mBookMsgFields.mSenderId;
         if (!isRecap && (seqNum == mEventSeqNum))
@@ -1120,24 +1120,24 @@ namespace Wombat
 
     void MamdaOrderBookListener::MamdaOrderBookListenerImpl::updateFieldStates()
     {
-        if (mBookMsgFields.mSymbolFieldState == MODIFIED)    
-            mBookMsgFields.mSymbolFieldState = NOT_MODIFIED; 
-        if (mBookMsgFields.mPartIdFieldState == MODIFIED)   
+        if (mBookMsgFields.mSymbolFieldState == MODIFIED)
+            mBookMsgFields.mSymbolFieldState = NOT_MODIFIED;
+        if (mBookMsgFields.mPartIdFieldState == MODIFIED)
             mBookMsgFields.mPartIdFieldState = NOT_MODIFIED;
-        if (mBookMsgFields.mEventSeqNumFieldState == MODIFIED)    
-            mBookMsgFields.mEventSeqNumFieldState = NOT_MODIFIED; 
-        if (mBookMsgFields.mEventTimeFieldState == MODIFIED)   
+        if (mBookMsgFields.mEventSeqNumFieldState == MODIFIED)
+            mBookMsgFields.mEventSeqNumFieldState = NOT_MODIFIED;
+        if (mBookMsgFields.mEventTimeFieldState == MODIFIED)
             mBookMsgFields.mEventTimeFieldState = NOT_MODIFIED;
-        if (mBookMsgFields.mSrcTimeFieldState == MODIFIED)    
+        if (mBookMsgFields.mSrcTimeFieldState == MODIFIED)
             mBookMsgFields.mSrcTimeFieldState = NOT_MODIFIED;
         if (mBookMsgFields.mActivityTimeFieldState == MODIFIED)
             mBookMsgFields.mActivityTimeFieldState = NOT_MODIFIED;
-        if (mBookMsgFields.mLineTimeFieldState == MODIFIED)     
-            mBookMsgFields.mLineTimeFieldState = NOT_MODIFIED;  
-        if (mBookMsgFields.mSendTimeFieldState == MODIFIED)    
-            mBookMsgFields.mSendTimeFieldState = NOT_MODIFIED; 
-        if (mBookMsgFields.mMsgQualFieldState == MODIFIED)   
-            mBookMsgFields.mMsgQualFieldState = NOT_MODIFIED; 
+        if (mBookMsgFields.mLineTimeFieldState == MODIFIED)
+            mBookMsgFields.mLineTimeFieldState = NOT_MODIFIED;
+        if (mBookMsgFields.mSendTimeFieldState == MODIFIED)
+            mBookMsgFields.mSendTimeFieldState = NOT_MODIFIED;
+        if (mBookMsgFields.mMsgQualFieldState == MODIFIED)
+            mBookMsgFields.mMsgQualFieldState = NOT_MODIFIED;
 
     }
 
@@ -1153,7 +1153,7 @@ namespace Wombat
         mamaMsg_iterateFields (msg, msgItCb, NULL, this);
         if ((!mBookMsgFields.mHasPlTime) && (!mBookMsgFields.mBookTime.empty()))
         {
-            mBookMsgFields.mPlTime = mBookMsgFields.mBookTime;        
+            mBookMsgFields.mPlTime = mBookMsgFields.mBookTime;
         }
     }
 
@@ -1175,12 +1175,12 @@ namespace Wombat
             (!mBookMsgFields.mHasMarketOrders))
         {
             mama_log (MAMA_LOG_LEVEL_FINEST,
-                        "MamdaOrderBookListener::createDelta:- No price levels in update");                    
+                        "MamdaOrderBookListener::createDelta:- No price levels in update");
             return true;
         }
         if (mProcessMarketOrders)
         {
-          if (mBookMsgFields.mBidMarketOrders) 
+          if (mBookMsgFields.mBidMarketOrders)
           {
             mBookMsgFields.clearPriceLevel();
             processLevelMessage (mBookMsgFields.mBidMarketOrders);
@@ -1243,7 +1243,7 @@ namespace Wombat
                           " received delete for unknown price level (%.2f)",
                           mBookMsgFields.mPlPrice.getValue());
             }
-            
+
             else
             {
                 processEntries (level, mBookMsgFields.mPlAction);
@@ -1349,10 +1349,10 @@ namespace Wombat
                       MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UNKNOWN);
                   return;
             }
-            
+
             MamdaOrderBookPriceLevel::iterator end = level->end ();
             MamdaOrderBookPriceLevel::iterator i   = level->begin ();
-            
+
             // Received PriceLevel Delete for priceLevel with no entries
             if (end == i)
             {
@@ -1367,14 +1367,14 @@ namespace Wombat
             // entries but the message has no entries.
             // Assume that all entries in the book are to be deleted and
             // build up the delta using the actual entries in the cached level.
-            do 
+            do
             {
                 MamdaOrderBookEntry* entry = *i;
-                
+
                 // Increment here before removing element otherwise the
                 // iterator is invalidated
                 ++i;
-                
+
                 // Don't call processEntry as we already have the entry we want
                 // so we can skip stright to removing the entry and building up
                 // the delta
@@ -1394,7 +1394,7 @@ namespace Wombat
             return;
         }
 
-        if (mBookMsgFields.mEntryVector == NULL && 
+        if (mBookMsgFields.mEntryVector == NULL &&
             mBookMsgFields.mEntries.empty ()    &&
             mBookMsgFields.mEntryId     != NULL)
         {
@@ -1431,7 +1431,7 @@ namespace Wombat
                                       mBookMsgFields.mEntrySize,
                                       mBookMsgFields.mEntryTime,
                                       mBookMsgFields.mEntryStatus);
-                        mBookMsgFields.clearEntry();                                  
+                        mBookMsgFields.clearEntry();
                     }
                 }
             }
@@ -1522,7 +1522,7 @@ namespace Wombat
             // No entry delta; just this price level delta.
             addDelta (NULL, level, plSizeChange, plAction,
                         MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UNKNOWN);
-                        
+
             if (mFullBook->getGenerateDeltaMsgs())
             {
                 mFullBook->addDelta(NULL, level, plSizeChange, plAction,
@@ -1550,7 +1550,7 @@ namespace Wombat
         mama_quantity_t                     size,
         const MamaDateTime&                 entryTime,
         mama_u16_t                          status)
-    { 
+    {
         // We have to connect this entry to the price level, even if this
         // is a deletion and even if this is a deletion of an entry that
         // did not even previously exist.  The delta levels and entries
@@ -1614,7 +1614,7 @@ namespace Wombat
                 if (entryAction == MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE)
                 {
                     mEntryManager->removeEntry (id);
-                    entry->setManager (NULL); 
+                    entry->setManager (NULL);
                 }
             }
             else
@@ -1780,7 +1780,7 @@ namespace Wombat
 
         if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST)
         {
-            mama_log (MAMA_LOG_LEVEL_FINEST, 
+            mama_log (MAMA_LOG_LEVEL_FINEST,
                       "  found delta entry (%s) for price level (%g) "
                       "side=%c, plAct=%c, plSize=%g, entAct=%c, entSize=%g",
                       entry->getId(), level->getPrice(), level->getSide(),
@@ -1792,11 +1792,11 @@ namespace Wombat
 
         if (mFullBook->getGenerateDeltaMsgs())
         {
-            mFullBook->addDelta(entry, level, mBookMsgFields.mPlSizeChange, 
+            mFullBook->addDelta(entry, level, mBookMsgFields.mPlSizeChange,
                                  plAction, entryAction);
         }
-        
-        mHaveEntries = true; 
+
+        mHaveEntries = true;
     }
 
     void MamdaOrderBookListener::MamdaOrderBookListenerImpl::addIgnoreEntryId (
@@ -1864,7 +1864,7 @@ namespace Wombat
             mama_log (MAMA_LOG_LEVEL_NORMAL,
                         "MamdaOrderBookListener: got message with no delta: %s",
                         msg->toString());
-            return;              
+            return;
         }
 
         deque<MamdaOrderBookHandler*>::iterator end = mHandlers.end();
@@ -1883,7 +1883,7 @@ namespace Wombat
                 MamdaOrderBookComplexDelta::setOrderBook(mFullBook);
                 handler->onBookComplexDelta (subscription, mListener, msg,
                                              *this, *mFullBook);
-                MamdaOrderBookComplexDelta::clear();                             
+                MamdaOrderBookComplexDelta::clear();
             }
         }
 
@@ -2008,7 +2008,7 @@ namespace Wombat
 
     /*  FieldState Accessors    */
 
-    MamdaFieldState 
+    MamdaFieldState
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::getSymbolFieldState() const
     {
         return mBookMsgFields.mSymbolFieldState;
@@ -2020,43 +2020,43 @@ namespace Wombat
         return mBookMsgFields.mPartIdFieldState;
     }
 
-    MamdaFieldState  
+    MamdaFieldState
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::getEventSeqNumFieldState() const
     {
         return mBookMsgFields.mEventSeqNumFieldState;
     }
 
-    MamdaFieldState 
+    MamdaFieldState
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::getEventTimeFieldState() const
     {
         return mBookMsgFields.mEventTimeFieldState;
     }
 
-    MamdaFieldState 
+    MamdaFieldState
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::getSrcTimeFieldState() const
     {
         return mBookMsgFields.mSrcTimeFieldState;
     }
 
-    MamdaFieldState 
+    MamdaFieldState
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::getActivityTimeFieldState() const
     {
         return mBookMsgFields.mActivityTimeFieldState;
     }
 
-    MamdaFieldState 
+    MamdaFieldState
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::getLineTimeFieldState() const
     {
         return mBookMsgFields.mLineTimeFieldState;
     }
 
-    MamdaFieldState 
+    MamdaFieldState
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::getSendTimeFieldState() const
     {
         return mBookMsgFields.mSendTimeFieldState;
     }
 
-    MamdaFieldState 
+    MamdaFieldState
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::getMsgQualFieldState() const
     {
         return mBookMsgFields.mMsgQualFieldState;
@@ -2115,11 +2115,11 @@ namespace Wombat
         }
         if (!mComplexDeltaMarketOrderDelta)
         {
-            mComplexDeltaMarketOrderDelta = new MamdaOrderBookConcreteComplexDelta();    
+            mComplexDeltaMarketOrderDelta = new MamdaOrderBookConcreteComplexDelta();
         }
     }
 
-    bool MamdaOrderBookListener::MamdaOrderBookListenerImpl::getProcessMarketOrders () const 
+    bool MamdaOrderBookListener::MamdaOrderBookListenerImpl::getProcessMarketOrders () const
     {
         return mProcessMarketOrders;
     }
@@ -2133,7 +2133,7 @@ namespace Wombat
     {
         ++mCurrentDeltaCount;
         if (mCurrentDeltaCount == 1)
-        {        
+        {
             /* This is number one, so save the "simple" delta. */
             MamdaOrderBookSimpleDelta::set (
                 entry, level, plDeltaSize, plAction, entryAction);
@@ -2198,18 +2198,18 @@ namespace Wombat
                 mama_log (MAMA_LOG_LEVEL_FINEST,
                           "MamdaOrderBookListener: conflation timer fired for %s",
                           subscription? getSymbol() : "(nil)");
-        acquireLock();     
-        if (0 != mCurrentDeltaCount) 
+        acquireLock();
+        if (0 != mCurrentDeltaCount)
         {   /* Only invoke if the complex delta actually has any deltas in it.
                Empty deltas can occur when an add and a delete for the same
                entry occur in the same interval */
-            
+
             if ((mCurrentDeltaCount == 1) ||
                 (this->MamdaOrderBookComplexDelta::getSize() != 0))
             {
                 invokeDeltaHandlers (subscription, NULL);
-            }              
-            mFullBook->cleanupDetached();     
+            }
+            mFullBook->cleanupDetached();
         }
 
         releaseLock();
@@ -2282,7 +2282,7 @@ namespace Wombat
     /**** WARNING ***/
     /*** Currently not checking return value from mamaMsgField_* calls */
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateMsgSeqNum 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateMsgSeqNum
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2290,23 +2290,23 @@ namespace Wombat
         {
             impl.mBookMsgFields.mMsgSeqNum = 0;
             mamaMsgField_getU32 (field, &(impl.mBookMsgFields.mMsgSeqNum));
-            
+
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateMsgNum 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateMsgNum
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
                        const mamaMsgField&                                  field)
         {
-            
+
             impl.mBookMsgFields.mMsgNum = 0;
             mamaMsgField_getI16 (field, &(impl.mBookMsgFields.mMsgNum));
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateMsgTotal 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateMsgTotal
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2317,14 +2317,14 @@ namespace Wombat
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateSymbol 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateSymbol
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
                        const mamaMsgField&                                  field)
         {
             /* We only need to set this value once for a book.
-             Annoyingly the stl string will return a 0 length char* instead of 
+             Annoyingly the stl string will return a 0 length char* instead of
              a NULL pointer when the string has no value*/
             if (impl.mFullBook && strlen(impl.mFullBook->getSymbol())==0)
             {
@@ -2338,7 +2338,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdatePartId 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdatePartId
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2356,7 +2356,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateSrcTime 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateSrcTime
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2367,7 +2367,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateLineTime 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateLineTime
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2379,7 +2379,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateBookTime 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateBookTime
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2413,7 +2413,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateNumLevels 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateNumLevels
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2425,7 +2425,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdatePriceLevels 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdatePriceLevels
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2434,13 +2434,13 @@ namespace Wombat
             /*This field being null indicates that no vector of levels was found*/
             impl.mBookMsgFields.mPriceLevelVector = NULL;
             mamaMsgField_getVectorMsg (
-                field, 
+                field,
                 &impl.mBookMsgFields.mPriceLevelVector,
                 &impl.mBookMsgFields.mNumLevels);
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateBidMarketOrders 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateBidMarketOrders
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2511,11 +2511,11 @@ namespace Wombat
             {
                 const char* resultString = NULL;
                 mamaMsgField_getString (field, &resultString);
-                impl.mBookMsgFields.mPlSide = 
+                impl.mBookMsgFields.mPlSide =
                     (MamdaOrderBookPriceLevel::Side) resultString [0];
             }
             else
-            {        
+            {
                 char result = ' ';
                 mamaMsgField_getChar (field, &(result));
                 impl.mBookMsgFields.mPlSide =
@@ -2535,7 +2535,7 @@ namespace Wombat
             //Adding support for this in MAMDA for client apps coded to expect this behaviour
             mamaFieldType type;
             mamaMsgField_getType (field, &type);
-            
+
             if (type == MAMA_FIELD_TYPE_STRING)
             {
                 const char* resultString = NULL;
@@ -2544,10 +2544,10 @@ namespace Wombat
                     (MamdaOrderBookPriceLevel::Action) resultString [0];
             }
             else
-            {   
+            {
                 char result = ' ';
                 mamaMsgField_getChar (field, &(result));
-                impl.mBookMsgFields.mPlAction = 
+                impl.mBookMsgFields.mPlAction =
                     (MamdaOrderBookPriceLevel::Action) result;
             }
             impl.mBookMsgFields.mHasPlAction = true;
@@ -2578,7 +2578,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdatePlTime 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdatePlTime
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
         void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
@@ -2627,7 +2627,7 @@ namespace Wombat
                 impl.mBookMsgFields.mEntryVector = NULL;
                 /*This being NULL indicates that no vector of entries was found*/
                 mamaMsgField_getVectorMsg (
-                    field, 
+                    field,
                     &impl.mBookMsgFields.mEntryVector,
                     &impl.mBookMsgFields.mPlNumAttach);
             }
@@ -2669,7 +2669,7 @@ namespace Wombat
                        const mamaMsgField&                                  field)
         {
             if (impl.mProcessEntries || impl.mBookMsgFields.mBookType == 1)
-                mamaMsgField_getDateTime (field, 
+                mamaMsgField_getDateTime (field,
                                       impl.mBookMsgFields.mEntryTime.getCValue());
         }
     };
@@ -2682,18 +2682,18 @@ namespace Wombat
         {
             if (impl.mProcessEntries || impl.mBookMsgFields.mBookType == 1)
             {
-                // There is a bug in 2.14 FHs which can cause character fields to be 
-                // sent as strings. FH property CharFieldAsStringField in 2.16-> can 
-                // enable this behaviour. Adding support for this in MAMDA for client 
+                // There is a bug in 2.14 FHs which can cause character fields to be
+                // sent as strings. FH property CharFieldAsStringField in 2.16-> can
+                // enable this behaviour. Adding support for this in MAMDA for client
                 // apps coded to expect this behaviour
                 mamaFieldType type;
                 mamaMsgField_getType (field, &type);
-        
+
                 if (type == MAMA_FIELD_TYPE_STRING)
                 {
                     const char* resultString = NULL;
                     mamaMsgField_getString (field, &resultString);
-                    impl.mBookMsgFields.mEntryAction = 
+                    impl.mBookMsgFields.mEntryAction =
                         (MamdaOrderBookEntry::Action) resultString [0];
                 }
                 else
@@ -2716,17 +2716,17 @@ namespace Wombat
             if (impl.mProcessEntries || impl.mBookMsgFields.mBookType == 1)
             {
                 //There is a bug in 2.14 FHs which can cause character fields to
-                // be sent as strings FH property CharFieldAsStringField in 2.16-> 
-                // can enable this behaviour. Adding support for this in MAMDA for 
+                // be sent as strings FH property CharFieldAsStringField in 2.16->
+                // can enable this behaviour. Adding support for this in MAMDA for
                 // client apps coded to expect this behaviour
                 mamaFieldType type;
                 mamaMsgField_getType (field, &type);
-        
+
                 if (type == MAMA_FIELD_TYPE_STRING)
                 {
                     const char* resultString = NULL;
                     mamaMsgField_getString (field, &resultString);
-                    impl.mBookMsgFields.mEntryReason = 
+                    impl.mBookMsgFields.mEntryReason =
                         (MamdaOrderBookTypes::Reason) resultString [0];
                 }
                 else
@@ -2868,7 +2868,7 @@ namespace Wombat
                 impl.mBookMsgFields.mPlPropMsgType = (MamdaOrderBookTypes::PropMsgType) resultString [0];
             }
             else
-            { 
+            {
                 mamaMsgField_getChar (field,
                                       (char*)(&impl.mBookMsgFields.mPlPropMsgType));
             }
@@ -2909,7 +2909,7 @@ namespace Wombat
         {
             impl.mBookMsgFields.mSenderId = 0;
             mamaMsgField_getU64 (field, &(impl.mBookMsgFields.mSenderId));
-            
+
         }
     };
 
@@ -2929,7 +2929,7 @@ namespace Wombat
         int i;
         if (!mFieldUpdaters)
         {
-            mFieldUpdaters = 
+            mFieldUpdaters =
                 new BookFieldUpdate*[MamdaOrderBookFields::getMaxFid()+1];
             mFieldUpdatersSize = MamdaOrderBookFields::getMaxFid();
             for (uint32_t i = 0; i <= mFieldUpdatersSize; ++i)
@@ -3039,16 +3039,16 @@ namespace Wombat
                          MamdaOrderBookListenerImpl::FieldUpdateEntryPropMsgType);
         initFieldUpdater(MamdaOrderBookFields::ENTRY_STATUS,
                          new MamdaOrderBookListener::
-                         MamdaOrderBookListenerImpl::FieldUpdateEntryStatus);               
+                         MamdaOrderBookListenerImpl::FieldUpdateEntryStatus);
         initFieldUpdater(MamdaOrderBookFields::BID_MARKET_ORDERS,
                          new MamdaOrderBookListener::
                          MamdaOrderBookListenerImpl::FieldUpdateBidMarketOrders);
         initFieldUpdater(MamdaOrderBookFields::ASK_MARKET_ORDERS,
                          new MamdaOrderBookListener::
-                         MamdaOrderBookListenerImpl::FieldUpdateAskMarketOrders);                 
-                         
+                         MamdaOrderBookListenerImpl::FieldUpdateAskMarketOrders);
+
         // For books that don't support vector message fields (RV messages)
-        MamdaOrderBookListenerImpl::FieldUpdateEntry* entryUpdater = 
+        MamdaOrderBookListenerImpl::FieldUpdateEntry* entryUpdater =
             new MamdaOrderBookListenerImpl::FieldUpdateEntry;
 
         for (i = 1; i < MamdaOrderBookFields::getNumEntryFields (); ++i)
@@ -3057,7 +3057,7 @@ namespace Wombat
                               entryUpdater);
         }
 
-        MamdaOrderBookListenerImpl::FieldUpdateLevel* levelUpdater = 
+        MamdaOrderBookListenerImpl::FieldUpdateLevel* levelUpdater =
             new MamdaOrderBookListenerImpl::FieldUpdateLevel;
         for (i = 1; i < MamdaOrderBookFields::getNumLevelFields (); ++i)
         {
@@ -3090,10 +3090,10 @@ namespace Wombat
         mEntryAction       = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE;
         mEntryReason       = MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN;
         mEntryTime.clear();
-    }   
-        
+    }
+
     void BookMsgFields::clearPriceLevel()
-    {   
+    {
         mPlPrice.clear();
         mPlSize            = 0.0;
         mHasPlSize         = false;
@@ -3108,7 +3108,7 @@ namespace Wombat
         mPlTime.clear ();
         mHasPlTime         = false;
     }
-            
+
     void BookMsgFields::clear()
     {
         mMsgSeqNum         = 0;
@@ -3154,8 +3154,8 @@ namespace Wombat
         mSendTimeFieldState        = NOT_INITIALISED;
         mMsgQualFieldState         = NOT_INITIALISED;
 
-                            
-        
+
+
 
         if (mBidMarketOrders)
         {

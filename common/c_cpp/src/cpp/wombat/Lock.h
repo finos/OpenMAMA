@@ -42,5 +42,49 @@ private:
     std::auto_ptr <LockImpl> mImpl;
 };
 
+// NoLock class is used a template parameter when unlocked access is required
+class COMMONExpDLL NoLock
+{
+public:
+    NoLock ()
+    {}
+
+    ~NoLock ()
+    {}
+
+    void lock ()
+    {}
+
+    void unlock ()
+    {}
+
+private:
+    NoLock (const NoLock& copy);    // no copy
+    NoLock& operator= (const NoLock& rhs); // no assignment
+};
+
+template < class LockT >
+class COMMONExpDLL AutoLock
+{
+public:
+
+    AutoLock (LockT & l)
+        : mLock (l)
+    {
+        mLock.lock ();
+    }
+
+    ~AutoLock ()
+    {
+        mLock.unlock ();
+    }
+
+private:
+    AutoLock (const AutoLock& copy);    // no copy
+    AutoLock& operator= (const AutoLock& rhs); // no assignment
+
+    LockT   &mLock;
+};
+
 }
 #endif

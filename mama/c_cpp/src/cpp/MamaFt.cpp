@@ -151,7 +151,7 @@ namespace Wombat
 
         mamaTry (mamaFtMember_setup (mCValue,
 				                     MAMA_FT_TYPE_MULTICAST,
-                                     cQueue, 
+                                     cQueue,
                                      mamaFtCallbackWrapper,
                                      transport ? transport->getCValue () : NULL,
                                      groupName,
@@ -182,7 +182,7 @@ namespace Wombat
 
         mamaTry (mamaFtMember_setup (mCValue,
 				                     MAMA_FT_TYPE_BRIDGE,
-                                     cQueue, 
+                                     cQueue,
                                      mamaFtCallbackWrapper,
                                      transport->getCValue (),
                                      groupName,

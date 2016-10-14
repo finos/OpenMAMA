@@ -148,7 +148,7 @@ namespace Wombat.Containers
 		{
 			if (mRoot == null)
 				return null;
-			
+
 			Node startNode = new Node(new object(), new object());
 
 			Node childNode = startNode;
@@ -293,7 +293,7 @@ namespace Wombat.Containers
 		{
 			if (mRoot == null)
 				return null;
-			
+
 			Node current = mRoot;
 			while (current != null)
 			{
@@ -587,7 +587,7 @@ namespace Wombat.Containers
 								startNode = tree.GetSuccessor((Node)startNode);
 						}
 					}
-					
+
 					Node current = startNode;
 					do
 					{
@@ -632,7 +632,7 @@ namespace Wombat.Containers
 				{
 					if (tree.size() == 0)
 						return false;
-					
+
 					Node startNode;
 					if (mFromStart)
 					{

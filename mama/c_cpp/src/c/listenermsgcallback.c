@@ -171,7 +171,15 @@ static void processPointToPointMessage (msgCallback*    callback,
         mamaSubscription_deactivate (self->mSubscription);
     }
 
-    mamaSubscription_forwardMsg (self->mSubscription, msg);
+    if (!ctx->mDqContext.mDoNotForward)
+    {
+        mamaSubscription_forwardMsg (self->mSubscription, msg);
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "Subscription for %s not forwarded as message seqnum is before seqnum expecting", userSymbol);
+    }
 
     /*
        NB!!!  - can't destroy a subscription after an initial!!!!!
@@ -545,21 +553,25 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         listenerMsgCallback_invokeErrorCallback(callback, ctx,
                 MAMA_STATUS_DELETE, subscription, userSymbol);
         return;
+        break;
     case MAMA_MSG_TYPE_EXPIRE:
         mamaSubscription_stopWaitForResponse(subscription,ctx);
         listenerMsgCallback_invokeErrorCallback(callback, ctx,
                 MAMA_STATUS_EXPIRED, subscription, userSymbol);
         return;
+        break;
     case MAMA_MSG_TYPE_NOT_PERMISSIONED:
         mamaSubscription_stopWaitForResponse(subscription,ctx);
         listenerMsgCallback_invokeErrorCallback(callback, ctx,
                 MAMA_STATUS_NOT_PERMISSIONED, subscription, userSymbol);
         return;
+        break;
     case MAMA_MSG_TYPE_NOT_FOUND:
         mamaSubscription_stopWaitForResponse(subscription,ctx);
         listenerMsgCallback_invokeErrorCallback(callback, ctx,
                 MAMA_STATUS_NOT_FOUND, subscription, userSymbol);
         return;
+        break;
     case MAMA_MSG_TYPE_UNKNOWN:
         mama_log (MAMA_LOG_LEVEL_FINE,
                            "%s%s %s%s"

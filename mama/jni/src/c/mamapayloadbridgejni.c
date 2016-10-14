@@ -50,10 +50,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPayloadBridge_initIDs
     payloadBridgePointerFieldId_g = (*env)->GetFieldID(
             env, class,"bridgePointer_i",
             UTILS_JAVA_POINTER_TYPE_SIGNATURE);
-    if (!payloadBridgePointerFieldId_g) return;/*Exception auto thrown*/      
-    
+    if (!payloadBridgePointerFieldId_g) return;/*Exception auto thrown*/
+
     payloadBridgeConstructorId_g = (*env)->GetMethodID(env, class,
                               "<init>", "()V" );
-    if (!payloadBridgeConstructorId_g) return;/*Exception auto thrown*/        
+    if (!payloadBridgeConstructorId_g) return;/*Exception auto thrown*/
     return;
 }

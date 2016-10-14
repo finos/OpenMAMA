@@ -38,7 +38,7 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
 
     // The message under test
     private MamaMsg mMsg;
-   
+
     /* ****************************************************** */
     /* Private Functions. */
     /* ****************************************************** */
@@ -120,7 +120,7 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
         catch(MamaException me)
         {
             CheckException(me, "STATUS_NULL_ARG");
-        }        
+        }
     }
 
     public void testNormal()
@@ -166,6 +166,6 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
         catch(MamaException me)
         {
             CheckException(me, "STATUS_INVALID_ARG");
-        } 
-    }   
+        }
+    }
 }

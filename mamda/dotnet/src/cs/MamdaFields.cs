@@ -26,11 +26,11 @@ namespace Wombat
 {
 	/// <summary>
 	/// Common base class for all the MamdaXXXFields classes.
-	/// 
-	/// Each of the subclasses maintains a cache of relevant MamaFieldDescriptors 
+	///
+	/// Each of the subclasses maintains a cache of relevant MamaFieldDescriptors
 	/// obtained from the MamaDictionary using the fields standard name.
 	/// If the dictionary is being published with non standard field name mappings
-	/// users can pass a <code>NameValueCollection</code> object to the corresponding 
+	/// users can pass a <code>NameValueCollection</code> object to the corresponding
 	/// <code>setDictionary()</code> method which contains field mappings.
 	/// <br />
 	/// Each mapping should have the following format:<br />
@@ -54,12 +54,12 @@ namespace Wombat
 			string result = defaultFieldName;
 			if (properties != null)
 			{
-				string possibleFieldName = 
+				string possibleFieldName =
 					properties["mamda.field." + defaultFieldName];
 				if (possibleFieldName != null)
 					result = possibleFieldName;
 			}
 			return result;
-		}	
+		}
 	}
 }

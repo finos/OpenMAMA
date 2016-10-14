@@ -82,13 +82,13 @@
 /*
     Macros to check if the passed in parameter is NULL and if so throw an exception.
     In JNI you must return for the exception to be thrown.
-  
+
 */
 #define MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(p,errorString,retValue)    \
-    if (!p) {utils_throwMamaException(env, errorString);    return retValue; }                                                        
+    if (!p) {utils_throwMamaException(env, errorString);    return retValue; }
 
 #define MAMA_THROW_NULL_PARAMETER_RETURN_VOID(p,errorString)    \
-    if (!p) {utils_throwMamaException(env, errorString);    return; }    
+    if (!p) {utils_throwMamaException(env, errorString);    return; }
 
 /**
  * This function should be called by all native threads that enter a function
@@ -124,7 +124,7 @@ void utils_throwExceptionForMamaStatus (
                             mama_status status,
                             const char* msg);
 /*
-   Each throws a specific type of Java Exception using the 
+   Each throws a specific type of Java Exception using the
    specified message.
 */
 void utils_throwWombatException (JNIEnv* env, const char* msg);
@@ -149,8 +149,8 @@ void utils_buildErrorStringForStatus(char buffer[], int bufferLength,
 
 /*
  Creates a new Java MamaMsg object and returns it as a jobject.
- The newly created Java object does not create an underlying 
- C structure. 
+ The newly created Java object does not create an underlying
+ C structure.
  A NULL return indicates failure and that an exception has been
  thrown.
 */
@@ -164,33 +164,33 @@ jobjectArray utils_getJniMsgArrayFromVectorMsg(JNIEnv* env, mamaMsg* msgVector,
         size_t vectorLength, jmethodID messageConstructorId,
         jfieldID messagePointerFieldId);
 
-        
+
 /*
- Used from mamamsgjni.c and mamamsgfieldjni.c. Creates and Populates a 
- jobjectArray of MamaMsgs from the contents of the mamaMsg vector supplied. 
+ Used from mamamsgjni.c and mamamsgfieldjni.c. Creates and Populates a
+ jobjectArray of MamaMsgs from the contents of the mamaMsg vector supplied.
  The MamaMsg objects are reused from the jMsgArray, and more will be allocated
  if needed.
 */
-jobjectArray utils_getReusedJniMsgArrayFromVectorMsg(JNIEnv* env, 
-        mamaMsg* msgVector, size_t vectorLength, 
-        jmethodID messageConstructorId, jfieldID messagePointerFieldId, 
-        jobject** jMsgArray, jint* jMsgArraySize);   
- 
+jobjectArray utils_getReusedJniMsgArrayFromVectorMsg(JNIEnv* env,
+        mamaMsg* msgVector, size_t vectorLength,
+        jmethodID messageConstructorId, jfieldID messagePointerFieldId,
+        jobject** jMsgArray, jint* jMsgArraySize);
+
 /*
- Will reallocate jMsgArray and populate it with MamaMsg objects if 
+ Will reallocate jMsgArray and populate it with MamaMsg objects if
  newSize > currentSize
-*/               
+*/
 void utils_growJMsgArray (JNIEnv*   env,
                           jmethodID messageConstructorId,
                           jfieldID  messagePointerFieldId,
                           jobject** jMsgArray,
                           jint*     currentSize,
                           jint      newSize,
-                          mamaMsg*  msgVector);            
+                          mamaMsg*  msgVector);
 /*
  Checks the thread stack for any pending Exceptions. Prints the first
  Exception on the stack and then clears the stack.
- 
+
  @param env Pointer to the JNI Environment
  @param where The function in which the Exception was caught
 */

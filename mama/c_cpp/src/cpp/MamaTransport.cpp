@@ -28,10 +28,10 @@
 namespace Wombat
 {
 
-    struct MamaTransport::MamaTransportImpl 
+    struct MamaTransport::MamaTransportImpl
     {
         MamaTransportImpl ();
-         
+
         void  setSymbolMap       (const MamaSymbolMap*  map);
         const MamaSymbolMap*     getSymbolMap () const;
 
@@ -40,9 +40,9 @@ namespace Wombat
         const MamaSymbolMap*     mMap;
         bool                     mDeleteCTransport;
     };
-        
 
-    extern "C" 
+
+    extern "C"
     {
         int MAMACALLTYPE symbolMapWrapperFunc (void*        closure,
                                   char*        result,
@@ -136,11 +136,11 @@ namespace Wombat
     class TransportTopicTestCallback : public MamaTransportTopicEventCallback
     {
     public:
-        TransportTopicTestCallback ( MamaTransportTopicEventCallback* ucallback) 
+        TransportTopicTestCallback ( MamaTransportTopicEventCallback* ucallback)
         {
             usercallback = ucallback;
         }
-        
+
         virtual ~TransportTopicTestCallback() {}
 
         void onTopicSubscribe (MamaTransport* tport,
@@ -154,9 +154,9 @@ namespace Wombat
             catch (...)
             {
                 fprintf(stderr, "MamaTransportTopicEventCallback onTopicSubscribe, EXCEPTION CAUGHT\n");
-            }    
+            }
         }
-        
+
         void onTopicUnsubscribe (MamaTransport* tport,
                                  const char* topic,
                                  const void* platformInfo)
@@ -214,20 +214,20 @@ namespace Wombat
         }
 
     private:
-      MamaTransportTopicEventCallback* usercallback;  
+      MamaTransportTopicEventCallback* usercallback;
 
     };
     class TransportTestCallback : public MamaTransportCallback
     {
     public:
-        TransportTestCallback          (MamaTransportCallback* userCallback) 
+        TransportTestCallback          (MamaTransportCallback* userCallback)
         {
             mUserCallback = userCallback;
         }
 
         virtual ~TransportTestCallback () {}
 
-        void onDisconnect (MamaTransport  *tport, 
+        void onDisconnect (MamaTransport  *tport,
                              const void*    platformInfo)
         {
             try {
@@ -239,10 +239,10 @@ namespace Wombat
             }
         }
 
-        void onReconnect (MamaTransport  *tport, 
+        void onReconnect (MamaTransport  *tport,
                             const void*    platformInfo)
         {
-            try 
+            try
             {
                 mUserCallback->onReconnect (tport, platformInfo);
             }
@@ -256,7 +256,7 @@ namespace Wombat
                         short           cause,
                         const void*     platformInfo)
         {
-            try 
+            try
             {
                 mUserCallback->onQuality (tport, cause, platformInfo);
             }
@@ -269,7 +269,7 @@ namespace Wombat
         void onConnect (MamaTransport*  transport,
                           const void*     platformInfo)
         {
-            try 
+            try
             {
                 mUserCallback->onConnect(transport, platformInfo);
             }
@@ -282,7 +282,7 @@ namespace Wombat
         void onAccept (MamaTransport*  transport,
                          const void*     platformInfo)
         {
-            try 
+            try
             {
                 mUserCallback->onAccept(transport, platformInfo);
             }
@@ -295,7 +295,7 @@ namespace Wombat
         void onAcceptReconnect (MamaTransport*  transport,
                                   const void*     platformInfo)
         {
-            try 
+            try
             {
                 mUserCallback->onAcceptReconnect (transport, platformInfo);
             }
@@ -308,7 +308,7 @@ namespace Wombat
         void onPublisherDisconnect (MamaTransport*  transport,
                                       const void*     platformInfo)
         {
-            try 
+            try
             {
                 mUserCallback->onPublisherDisconnect (transport, platformInfo);
             }
@@ -321,7 +321,7 @@ namespace Wombat
         void onNamingServiceConnect (MamaTransport*  transport,
                                        const void*     platformInfo)
         {
-            try 
+            try
             {
                 mUserCallback->onNamingServiceConnect (transport, platformInfo);
             }
@@ -334,7 +334,7 @@ namespace Wombat
         void onNamingServiceDisconnect (MamaTransport*  transport,
                                           const void*     platformInfo)
         {
-            try 
+            try
             {
                 mUserCallback->onNamingServiceDisconnect (transport, platformInfo);
             }
@@ -349,7 +349,7 @@ namespace Wombat
     };
 
 
-    MamaTransport::MamaTransport (void) 
+    MamaTransport::MamaTransport (void)
         : mPimpl     (new MamaTransportImpl)
         , mTransport (NULL)
 		, mQueue     (NULL)
@@ -358,7 +358,7 @@ namespace Wombat
         mPimpl->mDeleteCTransport = true;
     }
 
-    MamaTransport::MamaTransport (mamaTransport tport) 
+    MamaTransport::MamaTransport (mamaTransport tport)
         : mPimpl     (new MamaTransportImpl)
         , mTransport (tport)
 		, mQueue     (NULL)
@@ -366,7 +366,7 @@ namespace Wombat
         mPimpl->mDeleteCTransport = false;
     }
 
-    MamaTransport::~MamaTransport (void) 
+    MamaTransport::~MamaTransport (void)
     {
         if (mPimpl)
         {
@@ -385,7 +385,7 @@ namespace Wombat
 
     void MamaTransport::create (const char* name, mamaBridge bridgeImpl)
     {
-        mamaTry (mamaTransport_create (mTransport, name, bridgeImpl)); 
+        mamaTry (mamaTransport_create (mTransport, name, bridgeImpl));
     }
 
     void MamaTransport::setName (const char* name)
@@ -419,8 +419,8 @@ namespace Wombat
     void MamaTransport::setOutboundThrottle (double outboundThrottle,
                                              mamaThrottleInstance instance)
     {
-        mamaTry (mamaTransport_setOutboundThrottle (mTransport, 
-                                                    instance, 
+        mamaTry (mamaTransport_setOutboundThrottle (mTransport,
+                                                    instance,
                                                     outboundThrottle));
     }
 
@@ -463,7 +463,7 @@ namespace Wombat
         {
             mPimpl->myTopicEventCallback = new TransportTopicTestCallback (callback);
         }
-        else 
+        else
         {
             mPimpl->myTopicEventCallback = callback;
         }
@@ -517,13 +517,13 @@ namespace Wombat
     {
     }
 
-    MamaConnection* 
-    MamaTransport::findConnection (const char* IpAddress, uint16_t port) 
+    MamaConnection*
+    MamaTransport::findConnection (const char* IpAddress, uint16_t port)
     {
         mamaConnection connection;
-        mamaTry (mamaTransport_findConnection (mTransport, 
+        mamaTry (mamaTransport_findConnection (mTransport,
                                                &connection,
-                                               IpAddress, 
+                                               IpAddress,
                                                port));
         return new MamaConnection (this, connection);
     }
@@ -596,7 +596,7 @@ namespace Wombat
         return mTransport;
     }
 
-    void* MamaTransport::getNativeTransport (int index) 
+    void* MamaTransport::getNativeTransport (int index)
     {
         void* result;
         mamaTry (mamaTransport_getNativeTransport (mTransport, index, &result));

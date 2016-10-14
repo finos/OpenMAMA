@@ -170,7 +170,7 @@ namespace Wombat
     void MamdaOrderBookPriceLevel::setNumEntries (mama_u32_t  numEntries)
     {
         mImpl.mNumEntries      = numEntries;
-        mImpl.mNumEntriesTotal = (mImpl.mEntries ?  mImpl.mEntries->size() : 
+        mImpl.mNumEntriesTotal = (mImpl.mEntries ?  mImpl.mEntries->size() :
                                                         numEntries);
     }
 
@@ -245,14 +245,14 @@ namespace Wombat
         const MamdaOrderBookPriceLevel*  level,
         MamdaOrderBookEntryFilter*       filter,
         MamdaOrderBookBasicDeltaList*    delta)
-    {    
+    {
         mImpl.addEntriesFromLevel (level->mImpl, filter, delta);
     }
 
     void MamdaOrderBookPriceLevel::deleteEntriesFromSource (
         const MamaSource*               source,
         MamdaOrderBookBasicDeltaList*   delta)
-    {    
+    {
         mImpl.deleteEntriesFromSource (source, delta);
     }
 
@@ -502,7 +502,7 @@ namespace Wombat
             throwError ("side not equal");
         if (mAction != rhs.mAction)
             throwError ("action not equal");
-        if (mTime != rhs.mTime) 
+        if (mTime != rhs.mTime)
             throwError ("time not equal");
         if (mOrderType != rhs.mOrderType)
             throwError ("order type not equal");
@@ -611,12 +611,12 @@ namespace Wombat
         }
         mNumEntriesTotal++;
         entry->setPriceLevel (&mLevel);
-        
+
         if ((mBook) && (mBook->getGenerateDeltaMsgs()))
         {
             //Need to set correct action based on numEntries in level
             MamdaOrderBookPriceLevel::Action plAction;
-            if (mNumEntriesTotal > 1) 
+            if (mNumEntriesTotal > 1)
             {
                 plAction = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE;
             }
@@ -624,7 +624,7 @@ namespace Wombat
             {
                 plAction = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD;
             }
-            mBook->addDelta(entry, entry->getPriceLevel(), 
+            mBook->addDelta(entry, entry->getPriceLevel(),
                              entry->getPriceLevel()->getSizeChange(),
                              plAction,
                              MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
@@ -645,10 +645,10 @@ namespace Wombat
             {
                 // found it
                 existingEntry->setDetails (entry);
-                
+
                 if (mBook && mBook->getGenerateDeltaMsgs())
                 {
-                    mBook->addDelta(const_cast<MamdaOrderBookEntry*>(&entry), entry.getPriceLevel(), 
+                    mBook->addDelta(const_cast<MamdaOrderBookEntry*>(&entry), entry.getPriceLevel(),
                                      entry.getPriceLevel()->getSizeChange(),
                                      MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE,
                                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UPDATE);
@@ -765,14 +765,14 @@ namespace Wombat
         const MamdaOrderBookPriceLevelImpl&  levelImpl,
         MamdaOrderBookEntryFilter*           filter,
         MamdaOrderBookBasicDeltaList*        delta)
-    {       
+    {
         if (!levelImpl.mEntries)
             return;
         EntryList::const_iterator end = levelImpl.mEntries->end();
         EntryList::const_iterator i   = levelImpl.mEntries->begin();
         for (; i != end; ++i)
         {
-            const MamdaOrderBookEntry*  entry = *i;        
+            const MamdaOrderBookEntry*  entry = *i;
             MamdaOrderBookEntry* copyEntry = new MamdaOrderBookEntry (*entry);
             if (filter && !filter->checkEntry(copyEntry))
             {
@@ -782,11 +782,11 @@ namespace Wombat
             {
                 copyEntry->setAction(MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
                 addEntry (copyEntry);
-            } 
+            }
             if(delta)
             {
-                delta->add (copyEntry, &(mLevel), (entry->getSize()), 
-                            MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD, 
+                delta->add (copyEntry, &(mLevel), (entry->getSize()),
+                            MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD,
                             MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
             }
         }
@@ -812,7 +812,7 @@ namespace Wombat
                 ++i;
                 if (delta)
                 {
-                    delta->add (entry, &(mLevel), -(entry->getSize()), MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE, 
+                    delta->add (entry, &(mLevel), -(entry->getSize()), MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE,
                                 MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE);
                 }
                 eraseEntryByIterator (mEntries, erasable, entry);
@@ -929,7 +929,7 @@ namespace Wombat
                 {
                     // Different ID (either something exists on the LHS
                     // and not on RHS or vice versa).
-                    MamdaOrderBookPriceLevel::const_iterator rhsFound = 
+                    MamdaOrderBookPriceLevel::const_iterator rhsFound =
                         findEntryAfter (rhsIter, lhsId);
                     if (rhsFound != rhsEnd)
                     {
@@ -1025,7 +1025,7 @@ namespace Wombat
         {
             //Need to set correct action based on numEntries in level
             MamdaOrderBookPriceLevel::Action plAction;
-            if (0 == mNumEntriesTotal) 
+            if (0 == mNumEntriesTotal)
             {
                 plAction = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD;
             }
@@ -1033,7 +1033,7 @@ namespace Wombat
             {
                 plAction = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE;
             }
-            mBook->addDelta(entry, entry->getPriceLevel(), 
+            mBook->addDelta(entry, entry->getPriceLevel(),
                              entry->getPriceLevel()->getSizeChange(),
                              plAction,
                              MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
@@ -1120,7 +1120,7 @@ namespace Wombat
         EntryList::iterator   beg = mImpl.mEntries->begin();
         MamdaOrderBookEntry*  entry;
         while (beg != end)
-        { 
+        {
             entry = *beg;
             if (!checkState || entry->isVisible())
                 break;
@@ -1154,9 +1154,9 @@ namespace Wombat
     }
 
     MamdaOrderBookPriceLevel::iterator MamdaOrderBookPriceLevel::end()
-    {   
+    {
         if (!mImpl.mEntries)
-        {   
+        {
             mImpl.mEntries = new EntryList;
         }
         return iterator(iterator::iteratorImpl(mImpl.mEntries,
@@ -1243,7 +1243,7 @@ namespace Wombat
         {
             mImpl.mEntries  = rhs.mImpl.mEntries;
             mImpl.mIterator = rhs.mImpl.mIterator;
-        }        
+        }
         return *this;
     }
 
@@ -1289,7 +1289,7 @@ namespace Wombat
 
     bool MamdaOrderBookPriceLevel::iterator::operator== (const iterator& rhs) const
     {
-        return ((&rhs == this) || (mImpl.mEntries && rhs.mImpl.mEntries && 
+        return ((&rhs == this) || (mImpl.mEntries && rhs.mImpl.mEntries &&
                                    mImpl.mIterator == rhs.mImpl.mIterator));
     }
 

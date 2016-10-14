@@ -3,7 +3,7 @@ import posixpath
 import platform
 
 import sys
-reload(sys)  
+reload(sys)
 sys.setdefaultencoding('utf8')
 
 Import('env')
@@ -21,7 +21,7 @@ dotnet = Environment( tools = ['default','csharp'] )
 framework_dir = env['dotnet_framework']
 
 env['CSC'] = posixpath.join(framework_dir,'csc.exe')
-dotnet.Append( 
+dotnet.Append(
 	CSCFLAGS 		= ['/nostdlib+'],
 	ASSEMBLYREFS 	= [posixpath.join( framework_dir, 'mscorlib.dll' ), posixpath.join( framework_dir, 'system.dll' )],
 )
@@ -32,11 +32,11 @@ ai = os.path.join( Dir('#').abspath, 'mama\\dotnet\\src\\cs\\AssemblyInfo.cs' )
 ver = open( cs , "w" )
 ver.write("""
 namespace Wombat
-{ 
-	/// ^<summary^>MAMA version information^</summary^> 
-	public class MamaVersion 
-	{ 
-		public static int MAMADOTNET_VERSION_MAJOR = %s; 
+{
+	/// ^<summary^>MAMA version information^</summary^>
+	public class MamaVersion
+	{
+		public static int MAMADOTNET_VERSION_MAJOR = %s;
 		public static int MAMADOTNET_VERSION_MINOR = %s;
 		public static string MAMADOTNET_VERSION_RELEASE = "%s";
 		public static string MAMADOTNET_VERSION = "mamadotnet %s";
@@ -50,7 +50,7 @@ assembly.write("""
 using System.Reflection;
 using System.Runtime.CompilerServices;
 [assembly: AssemblyTitle("MAMA")]
-[assembly: AssemblyDescription("MAMA API C#")] 
+[assembly: AssemblyDescription("MAMA API C#")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("NYSE Technologies")]
 [assembly: AssemblyProduct("NYSE Technologies MAMA")]
@@ -134,5 +134,5 @@ elif 'dynamic' in env['build']:
 	dotnet.Append( CSCFLAGS = ['/optimize','/define:TRACE'] )
 
 if 'dynamic' in env['build']:
-	lib = dotnet.CLILibrary( 'MAMA',sources ) 
+	lib = dotnet.CLILibrary( 'MAMA',sources )
 	Alias('install',env.Install('$libdir',lib ) )

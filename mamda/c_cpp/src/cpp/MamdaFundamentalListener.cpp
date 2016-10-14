@@ -49,7 +49,7 @@ namespace Wombat
         MamdaFundamentalListenerImpl  (MamdaFundamentalListener&  listener);
         ~MamdaFundamentalListenerImpl () {}
 
-      
+
 
         void handleFundamentalMessage     (MamdaSubscription*  subscription,
 				                           const MamaMsg&      msg,
@@ -73,7 +73,7 @@ namespace Wombat
 
         MamdaFundamentalListener&    mListener;
         MamdaFundamentalHandler*     mHandler;
-        
+
         /*
          * NOTE: fields which are enums can be pubished as integers if feedhandler
          * uses mama-publish-enums-as-ints.  It may also be possible for a feed to
@@ -81,19 +81,19 @@ namespace Wombat
          * by getting the value based on the field type.
          */
 
-        // Basic Event Fields 
-        string        mSymbol;             MamdaFieldState     mSymbolFieldState;      
-        bool          mSymbolIsModified;    
-        string        mPartId;             MamdaFieldState     mPartIdFieldState; 
-        MamaDateTime  mSrcTime;            MamdaFieldState     mSrcTimeFieldState;     
+        // Basic Event Fields
+        string        mSymbol;             MamdaFieldState     mSymbolFieldState;
+        bool          mSymbolIsModified;
+        string        mPartId;             MamdaFieldState     mPartIdFieldState;
+        MamaDateTime  mSrcTime;            MamdaFieldState     mSrcTimeFieldState;
         MamaDateTime  mActTime;            MamdaFieldState     mActivityTimeFieldState;
-        MamaDateTime  mLineTime;           MamdaFieldState     mLineTimeFieldState;    
-        MamaDateTime  mSendTime;           MamdaFieldState     mSendTimeFieldState;      
-        
-        // Fundamental Fields 
+        MamaDateTime  mLineTime;           MamdaFieldState     mLineTimeFieldState;
+        MamaDateTime  mSendTime;           MamdaFieldState     mSendTimeFieldState;
+
+        // Fundamental Fields
         // The following fields are used for caching the last reported
         // fundamental equity pricing/analysis attributes, indicators and ratios.
-        // The reason for cahcing these values is to allow a configuration that 
+        // The reason for cahcing these values is to allow a configuration that
         // passes the minimum amount of data  (unchanged fields not sent).
         string      mCorpActType;          MamdaFieldState      mCorpActTypeFieldState;
         double      mDividendPrice;        MamdaFieldState      mDividendPriceFieldState;
@@ -160,8 +160,8 @@ namespace Wombat
 
     MamdaFundamentalListener::~MamdaFundamentalListener()
     {
-	    /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.  
-	       If we do, it will not be initialized again if another listener is created 
+	    /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.
+	       If we do, it will not be initialized again if another listener is created
 	       after the first is destroyed. */
         /* wthread_mutex_destroy (&mImpl.mFundamentalFieldUpdaterLockMutex); */
         delete &mImpl;
@@ -454,7 +454,7 @@ namespace Wombat
         MamdaSubscription* subscription,
         const MamaMsg&     msg,
         short              msgType)
-    { 
+    {
         // If msg is a trade-related message, invoke the
         // appropriate callback:
         if (subscription->checkDebugLevel (MAMA_LOG_LEVEL_FINE))
@@ -607,13 +607,13 @@ namespace Wombat
         MamdaSubscription*  subscription,
         const MamaMsg&      msg)
     {
-        // should probably check if cache has changed 
+        // should probably check if cache has changed
         // prior to calling any handlers
         if (mHandler)
         {
-            mHandler->onFundamentals (subscription, 
-                                      mListener, 
-                                      msg, 
+            mHandler->onFundamentals (subscription,
+                                      mListener,
+                                      msg,
                                       mListener);
         }
     }
@@ -623,107 +623,107 @@ namespace Wombat
         MamdaSubscription*  subscription,
         const MamaMsg&      msg)
     {
-        // should probably check if cache has changed 
+        // should probably check if cache has changed
         // prior to calling any handlers
         if (mHandler)
         {
-            mHandler->onFundamentals (subscription, 
-                                      mListener, 
-                                      msg, 
+            mHandler->onFundamentals (subscription,
+                                      mListener,
+                                      msg,
                                       mListener);
         }
     }
 
     void MamdaFundamentalListener::MamdaFundamentalListenerImpl::updateFieldStates()
     {
-      if (mSymbolFieldState == MODIFIED)    
-        mSymbolFieldState = NOT_MODIFIED; 
+      if (mSymbolFieldState == MODIFIED)
+        mSymbolFieldState = NOT_MODIFIED;
 
-      if (mPartIdFieldState == MODIFIED)   
+      if (mPartIdFieldState == MODIFIED)
         mPartIdFieldState = NOT_MODIFIED;
 
-      if (mSrcTimeFieldState == MODIFIED)    
+      if (mSrcTimeFieldState == MODIFIED)
         mSrcTimeFieldState = NOT_MODIFIED;
 
       if (mActivityTimeFieldState == MODIFIED)
         mActivityTimeFieldState = NOT_MODIFIED;
 
-      if (mLineTimeFieldState == MODIFIED)     
-        mLineTimeFieldState = NOT_MODIFIED;  
+      if (mLineTimeFieldState == MODIFIED)
+        mLineTimeFieldState = NOT_MODIFIED;
 
-      if (mSendTimeFieldState == MODIFIED)    
-        mSendTimeFieldState = NOT_MODIFIED; 
-      
-      if (mCorpActTypeFieldState == MODIFIED)    
+      if (mSendTimeFieldState == MODIFIED)
+        mSendTimeFieldState = NOT_MODIFIED;
+
+      if (mCorpActTypeFieldState == MODIFIED)
         mCorpActTypeFieldState = NOT_MODIFIED;
 
       if (mDividendPriceFieldState == MODIFIED)
         mDividendPriceFieldState = NOT_MODIFIED;
 
-      if (mDivFreqFieldState == MODIFIED)        
+      if (mDivFreqFieldState == MODIFIED)
         mDivFreqFieldState = NOT_MODIFIED;
 
       if (mDivExDateFieldState == MODIFIED)
         mDivExDateFieldState = NOT_MODIFIED;
 
-      if (mDivPayDateFieldState == MODIFIED) 
+      if (mDivPayDateFieldState == MODIFIED)
         mDivPayDateFieldState = NOT_MODIFIED;
 
       if (mDivRecordDateFieldState == MODIFIED)
         mDivRecordDateFieldState = NOT_MODIFIED;
 
-      if (mDivCurrencyFieldState == MODIFIED)    
+      if (mDivCurrencyFieldState == MODIFIED)
         mDivCurrencyFieldState = NOT_MODIFIED;
 
-      if (mSharesOutFieldState == MODIFIED)    
+      if (mSharesOutFieldState == MODIFIED)
         mSharesOutFieldState = NOT_MODIFIED;
 
       if (mSharesFloatFieldState == MODIFIED)
         mSharesFloatFieldState = NOT_MODIFIED;
 
-      if (mSharesAuthFieldState == MODIFIED)   
+      if (mSharesAuthFieldState == MODIFIED)
         mSharesAuthFieldState = NOT_MODIFIED;
 
       if (mEarnPerShareFieldState == MODIFIED)
         mEarnPerShareFieldState = NOT_MODIFIED;
 
-      if (mVolatilityFieldState == MODIFIED)    
+      if (mVolatilityFieldState == MODIFIED)
         mVolatilityFieldState = NOT_MODIFIED;
 
-      if (mPeRatioFieldState == MODIFIED)     
+      if (mPeRatioFieldState == MODIFIED)
         mPeRatioFieldState = NOT_MODIFIED;
 
-      if (mYieldFieldState == MODIFIED)    
+      if (mYieldFieldState == MODIFIED)
         mYieldFieldState = NOT_MODIFIED;
 
-      if (mMrktSegmNativeFieldState == MODIFIED) 
+      if (mMrktSegmNativeFieldState == MODIFIED)
         mMrktSegmNativeFieldState = NOT_MODIFIED;
 
-      if (mMrktSectNativeFieldState == MODIFIED) 
+      if (mMrktSectNativeFieldState == MODIFIED)
         mMrktSectNativeFieldState = NOT_MODIFIED;
 
-      if (mMarketSegmentFieldState == MODIFIED)  
+      if (mMarketSegmentFieldState == MODIFIED)
         mMarketSegmentFieldState = NOT_MODIFIED;
 
-      if (mMarketSectorFieldState == MODIFIED)   
+      if (mMarketSectorFieldState == MODIFIED)
         mMarketSectorFieldState = NOT_MODIFIED;
 
       if (mHistVolatilityFieldState == MODIFIED)
         mHistVolatilityFieldState = NOT_MODIFIED;
 
-      if (mRiskFreeRateFieldState == MODIFIED)   
+      if (mRiskFreeRateFieldState == MODIFIED)
         mRiskFreeRateFieldState = NOT_MODIFIED;
-    } 
-      
+    }
+
     void MamdaFundamentalListener::MamdaFundamentalListenerImpl::updateFundamentalFields (
         const MamaMsg&  msg)
-    { 
+    {
         const char* symbol = NULL;
         const char* partId = NULL;
-      
+
         getSymbolAndPartId (msg, symbol, partId);
 
-        if (symbol) 
+        if (symbol)
         {
           mSymbol = symbol;
           mSymbolFieldState = MODIFIED;
@@ -796,42 +796,42 @@ namespace Wombat
         string rtnString;
 
         if (divFreq.compare("0") == 0)
-        { 
+        {
             // No dividend payments are made
             rtnString = MamdaFundamentalFields::DIV_FREQ_NONE;
         }
         else  if (divFreq.compare("1") == 0)
-        { 
+        {
             // Monthly
             rtnString = MamdaFundamentalFields::DIV_FREQ_MONTHLY;
         }
         else if (divFreq.compare("3") == 0)
-        { 
+        {
             // Quarterly
             rtnString = MamdaFundamentalFields::DIV_FREQ_QUARTERLY;
         }
         else if (divFreq.compare("6") == 0)
-        { 
+        {
             // Semi-Annually
             rtnString = MamdaFundamentalFields::DIV_FREQ_SEMI_ANNUALLY;
         }
         else if (divFreq.compare("12") == 0)
-        { 
+        {
             // Annually
             rtnString = MamdaFundamentalFields::DIV_FREQ_ANNUALLY;
         }
         else if (divFreq.compare("13") == 0)
-        { 
+        {
             // Payment frequency is special.
             rtnString = MamdaFundamentalFields::DIV_FREQ_SPECIAL;
         }
         else if (divFreq.compare("14") == 0)
-        { 
+        {
             // Irregular payment frequency.
             rtnString = MamdaFundamentalFields::DIV_FREQ_IRREGULAR;
         }
         else if (divFreq.compare("99") == 0)
-        { 
+        {
             // Invalid dividend frequency period.
             rtnString = MamdaFundamentalFields::DIV_FREQ_INVALID;
         }
@@ -923,7 +923,7 @@ namespace Wombat
                 default:
                     mama_log (MAMA_LOG_LEVEL_FINE,
                               "Unhandled type %d for wDivFreq.  "
-                              "Expected string or integer.", 
+                              "Expected string or integer.",
                               field.getType());
                     break;
             }
@@ -1123,7 +1123,7 @@ namespace Wombat
                 default:
                     mama_log (MAMA_LOG_LEVEL_FINE,
                               "Unhandled type %d for wMarketSegment.  "
-                              "Expected string or integer.", 
+                              "Expected string or integer.",
                               field.getType());
                     break;
             }
@@ -1159,7 +1159,7 @@ namespace Wombat
                         stringbuilder << sector;
                         impl.mMarketSector = stringbuilder.str();
                         impl.mMarketSectorFieldState = MODIFIED;
-                    }        
+                    }
                     break;
                 case MAMA_FIELD_TYPE_STRING:
                     marketSector = field.getString();
@@ -1179,7 +1179,7 @@ namespace Wombat
                 default:
                     mama_log (MAMA_LOG_LEVEL_FINE,
                               "Unhandled type %d for wMarketSector.  "
-                              "Expected string or integer.", 
+                              "Expected string or integer.",
                               field.getType());
             }
         }
@@ -1225,7 +1225,7 @@ namespace Wombat
     {
         if (!mFieldUpdaters)
         {
-            mFieldUpdaters = 
+            mFieldUpdaters =
                 new FundamentalFieldUpdate* [MamdaFundamentalFields::getMaxFid() +1];
 
             mFieldUpdatersSize = MamdaFundamentalFields::getMaxFid();

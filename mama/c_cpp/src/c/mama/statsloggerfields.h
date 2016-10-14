@@ -28,28 +28,27 @@
 extern "C" {
 #endif
 MAMAExpDLL
-extern const MamaReservedField  MamaSlIntervalStartTime;         
-MAMAExpDLL 
-extern const MamaReservedField  MamaSlIntervalEndTime; 
-MAMAExpDLL 
+extern const MamaReservedField  MamaSlIntervalStartTime;
+MAMAExpDLL
+extern const MamaReservedField  MamaSlIntervalEndTime;
+MAMAExpDLL
 extern const MamaReservedField  MamaSlEvents;
 MAMAExpDLL
-extern const MamaReservedField  MamaSlEventTime;  
+extern const MamaReservedField  MamaSlEventTime;
 MAMAExpDLL
-extern const MamaReservedField  MamaSlEventType;                 
-MAMAExpDLL 
+extern const MamaReservedField  MamaSlEventType;
+MAMAExpDLL
 extern const MamaReservedField  MamaSlEventReason;
-MAMAExpDLL 
+MAMAExpDLL
 extern const MamaReservedField  MamaSlTotalMsgCount;
-MAMAExpDLL 
+MAMAExpDLL
 extern const MamaReservedField  MamaSlIntervalMsgCount;
 MAMAExpDLL
 extern const MamaReservedField  MamaStatEvents;
-    
-                        
-#if defined(__cplusplus)       
-}                              
-#endif                         
-                               
-#endif /* StatsLoggerFieldsH__*/
 
+
+#if defined(__cplusplus)
+}
+#endif
+
+#endif /* StatsLoggerFieldsH__*/

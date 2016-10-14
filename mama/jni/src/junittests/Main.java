@@ -49,14 +49,14 @@ public class Main
         TestSuite suite = new TestSuite();
 
         // Add all tests
-        suite.addTestSuite(MamaDateTimeSetTimeZone.class); 
-        suite.addTestSuite(MamaInboxCallbacks.class);     
-        suite.addTestSuite(MamaMsgAddArrayMsgWithLength.class); 
-        suite.addTestSuite(MamaMsgGetByteBuffer.class);     
-        suite.addTestSuite(MamaMsgGetStringAsCharBuffer.class); 
-        suite.addTestSuite(MamaMsgTryMethods.class); 
-        suite.addTestSuite(MamaMsgVectorFields.class); 
-        suite.addTestSuite(MamaOpenClose.class); 
+        suite.addTestSuite(MamaDateTimeSetTimeZone.class);
+        suite.addTestSuite(MamaInboxCallbacks.class);
+        suite.addTestSuite(MamaMsgAddArrayMsgWithLength.class);
+        suite.addTestSuite(MamaMsgGetByteBuffer.class);
+        suite.addTestSuite(MamaMsgGetStringAsCharBuffer.class);
+        suite.addTestSuite(MamaMsgTryMethods.class);
+        suite.addTestSuite(MamaMsgVectorFields.class);
+        suite.addTestSuite(MamaOpenClose.class);
         suite.addTestSuite(MamaPriceGetRoundedPrice.class);
         suite.addTestSuite(MamaSetLogCallback.class);
         suite.addTestSuite(MamaTimerCallbacks.class);
@@ -96,7 +96,7 @@ public class Main
             }
             else
             {
-                ok = false;            // error 
+                ok = false;            // error
                 break;
             }
         }
@@ -115,4 +115,3 @@ public class Main
         System.exit(0);                                                // TODO temporary - not exiting JVM - daemon thread?
     }
 }
-

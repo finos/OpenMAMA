@@ -27,7 +27,7 @@ namespace Wombat.Mamda.Examples
 {
 	/// <summary>
 	/// Is a MamdaTradeHandler and a MamdaQuoteHandler.
-	/// 
+	///
 	/// Can be used to handler callbacks from both a TradeListener and a
 	/// QuoteListener.
 	/// </summary>

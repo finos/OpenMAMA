@@ -11,7 +11,7 @@ echo #define MamdaVersionHH >> %BUILD_DIR%\version.h
 echo #define MAMDA_VERSION_MAJOR %VERSION_MAJOR% >> %BUILD_DIR%\version.h
 echo #define MAMDA_VERSION_MINOR %VERSION_MINOR% >> %BUILD_DIR%\version.h
 echo #define MAMDA_VERSION_RELEASE %VERSION_RELEASE% >> %BUILD_DIR%\version.h
-echo #define MAMDA_VERSION "mamda %VERSION_MAJOR%.%VERSION_MINOR%.%VERSION_RELEASE%" >> %BUILD_DIR%\version.h	
+echo #define MAMDA_VERSION "mamda %VERSION_MAJOR%.%VERSION_MINOR%.%VERSION_RELEASE%" >> %BUILD_DIR%\version.h
 echo extern "C" const char* mamda_version; >> %BUILD_DIR%\version.h
 echo #endif >> %BUILD_DIR%\version.h
 echo /* This file was automatically generated */ > %BUILD_DIR%\version.c

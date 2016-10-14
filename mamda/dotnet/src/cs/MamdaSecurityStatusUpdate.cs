@@ -337,7 +337,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Unnormalized (feed-specific) reason associated with the current status
-		/// of the security (e.g. halted, delayed, etc.). 
+		/// of the security (e.g. halted, delayed, etc.).
 		/// </summary>
 		/// <returns></returns>
 		string getReason();
@@ -351,7 +351,7 @@ namespace Wombat
 		/// <summary>
 		/// ShortSaleCircuitBreaker
 		/// </summary>
-		/// <returns>return values: 
+		/// <returns>return values:
 		/// Blank: Short Sale Restriction Not in Effect.
 		/// A: Short Sale Restriction Activiated.
 		/// C: Short Sale Restriction Continued.

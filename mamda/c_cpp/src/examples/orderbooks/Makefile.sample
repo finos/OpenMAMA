@@ -46,7 +46,7 @@ MAMA_LIBS    = $(BSTATIC) -lmamacpp -lmama -lwombatmsg -lwcache -lwombatcommon \
                $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -lpthread -ldl
 COMMON_LIBS  = $(MAMDA_LIBS) $(MAMA_LIBS) $(SYS_LIBS)
 
-ifeq ($(WITH_NCURSES),1) 
+ifeq ($(WITH_NCURSES),1)
 SAMPLE_PROGRAMS = atomicbookbuilder atomicbookticker bookticker bookpublisher bookviewer
 else
 SAMPLE_PROGRAMS = atomicbookbuilder atomicbookticker bookticker bookpublisher

@@ -30,7 +30,7 @@ namespace Wombat
     /// <summary>
     /// An enumeration that represents the service
     /// level (a) requested by a subscribing application, or (b) provided
-    /// by the publisher.  
+    /// by the publisher.
     /// </summary>
     /// <remarks>
     /// In the future, the service level provided to the
@@ -46,12 +46,12 @@ namespace Wombat
         /// Real time updates
         /// </summary>
         MAMA_SERVICE_LEVEL_REAL_TIME = 0,
-        
+
         /// <summary>
         /// Single snapshot image only
         /// </summary>
         MAMA_SERVICE_LEVEL_SNAPSHOT = 1,
-        
+
         /// <summary>
         /// Repeating snapshot image. When creating subscriptions, the
         /// serviceLevelOpt parameter should be set to the number of
@@ -61,7 +61,7 @@ namespace Wombat
         /// be allowed to be outstanding at a time.
         /// </summary>
         MAMA_SERVICE_LEVEL_REPEATING_SNAPSHOT = 2,
-        
+
         /// <summary>
         /// Conflated updates (future)
         /// </summary>
@@ -214,7 +214,7 @@ namespace Wombat
             }
 
             /// <summary>
-            /// Invoked whenever the basic subscription has been destroyed. The client can have confidence that 
+            /// Invoked whenever the basic subscription has been destroyed. The client can have confidence that
             /// no further messages will be placed on the queue for this subscription.
             /// </summary>
             /// <param name="subscription">
@@ -332,7 +332,7 @@ namespace Wombat
             /// <param name="subscription">
             /// The actual C# subscription object.
             /// </param>
-            internal MamaSubscriptionImpl(MamaSubscriptionCallback callback, object closure, MamaSubscription subscription)                                    
+            internal MamaSubscriptionImpl(MamaSubscriptionCallback callback, object closure, MamaSubscription subscription)
                 : base()
             {
                 // Save arguments in member variables
@@ -345,7 +345,7 @@ namespace Wombat
 
             /* ************************************************************** */
             #region Internal Operations
-           
+
             /// <summary>
             /// This function creates a new impl and returns an IntPtr that can then be passed to
             /// the native layer.
@@ -388,7 +388,7 @@ namespace Wombat
             }
 
             /// <summary>
-            /// This function will invoke the destroy callback on the user supplied callback implementation.            
+            /// This function will invoke the destroy callback on the user supplied callback implementation.
             /// </summary>
             internal override void InvokeDestroy()
             {
@@ -453,7 +453,7 @@ namespace Wombat
                     {
                         mReusableMsg.setNativeHandle(nativeMsg);
                     }
-                    
+
                     // Invoke the callback
                     mCallback.onMsg(mSubscription, mReusableMsg);
                 }
@@ -517,16 +517,16 @@ namespace Wombat
             MamaBasicSubscription.mCallbackDelegates.mDestroy         = new MamaBasicSubscription.OnSubscriptionDestroyDelegate(MamaSubscription.onDestroy);
             MamaBasicSubscription.mCallbackDelegates.mGap             = new MamaBasicSubscription.OnSubscriptionGapDelegate(MamaSubscription.onGap);
             MamaBasicSubscription.mCallbackDelegates.mQuality         = new MamaBasicSubscription.OnSubscriptionQualityDelegate(MamaSubscription.OnQuality);
-            MamaBasicSubscription.mCallbackDelegates.mRecapRequest    = new MamaBasicSubscription.OnSubscriptionRecapRequestDelegate(MamaSubscription.onRecapRequest);            
+            MamaBasicSubscription.mCallbackDelegates.mRecapRequest    = new MamaBasicSubscription.OnSubscriptionRecapRequestDelegate(MamaSubscription.onRecapRequest);
         }
 
         /// <summary>
-		/// Allocate memory for a new subscription. The subscription is not actually created 
+		/// Allocate memory for a new subscription. The subscription is not actually created
 		/// until a call to one of the create() functions is made.
 		/// Memory must be freed using the deallocate()
 		/// </summary>
 		public MamaSubscription() : base()
-		{			
+		{
 		}
 
 		internal MamaSubscription(IntPtr nativeHandle) : base(nativeHandle)
@@ -574,7 +574,7 @@ namespace Wombat
                 // If we are destroying rather than deactivating then delete the impl
                 if ((mamaSubscriptionState.MAMA_SUBSCRIPTION_DESTROYED == state) || (mamaSubscriptionState.MAMA_SUBSCRIPTION_DEALLOCATING == state))
                 {
-                    /* The subscription has now been destroyed or deleted and the impl is no longer required, free the handle to 
+                    /* The subscription has now been destroyed or deleted and the impl is no longer required, free the handle to
                      * allow the garbage collector to clean it up.
                      */
                     handle.Free();
@@ -589,7 +589,7 @@ namespace Wombat
                 // Use the impl to invoke the destroy callback, (if this has been supplied)
                 impl.InvokeDestroy();
 
-                /* The timer has now been destroyed and the impl is no longer required, free the handle to 
+                /* The timer has now been destroyed and the impl is no longer required, free the handle to
                  * allow the garbage collector to clean it up.
                  */
                 handle.Free();
@@ -693,14 +693,14 @@ namespace Wombat
         /// has been successfully invoked. The subscription rate can be governed via the
         /// MamaTransport.setOutboundThrottle function.
         /// Any subscription properties should be set prior to calling this function.
-        /// </summary>        
+        /// </summary>
         public void activate()
         {
             // Ensure that the subscription has been created
             EnsurePeerCreated();
 
             // Call the native layer
-            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_activate(NativeHandle));        
+            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_activate(NativeHandle));
         }
 
         /// <summary>
@@ -754,7 +754,7 @@ namespace Wombat
         /// <summary>
         /// This function will create the basic subscription without marketdata semantics.
         /// To pass a closure use the overload.
-        /// This overload provides access to the basic subscription with the MamaSubscriptionCallback rather than the 
+        /// This overload provides access to the basic subscription with the MamaSubscriptionCallback rather than the
         /// MamaBasicSubscriptionCallback interface.
         /// Instantiating the base class directly will provide better performance.
         /// </summary>
@@ -778,7 +778,7 @@ namespace Wombat
 
         /// <summary>
         /// This function will create the basic subscription without marketdata semantics.
-        /// This overload provides access to the basic subscription with the MamaSubscriptionCallback rather than the 
+        /// This overload provides access to the basic subscription with the MamaSubscriptionCallback rather than the
         /// MamaBasicSubscriptionCallback interface.
         /// Instantiating the base class directly will provide better performance.
         /// </summary>
@@ -806,7 +806,7 @@ namespace Wombat
         /// <summary>
         /// Deactivate an active subscription.
         /// The onDestroy callback will be invoked whenever the subscription has been fully deactivated.
-        /// </summary>        
+        /// </summary>
         public void deactivate()
         {
             // Verify that the native subscription has been allocated
@@ -830,7 +830,7 @@ namespace Wombat
 
             // Call the native layer
             CheckResultCode(SubscriptionNativeMethods.mamaSubscription_getPreIntitialCacheSize(NativeHandle, ref cacheSize));
-            
+
             return cacheSize;
         }
 
@@ -852,8 +852,8 @@ namespace Wombat
             // Call the native layer
             int receivedInitial = 0;
             CheckResultCode(SubscriptionNativeMethods.mamaSubscription_getReceivedInitial(NativeHandle, ref receivedInitial));
-            
-            // Convert the integer returned from the native call into a boolean            
+
+            // Convert the integer returned from the native call into a boolean
             if (receivedInitial == 1)
             {
                 ret = true;
@@ -865,7 +865,7 @@ namespace Wombat
         /// <summary>
         /// Set the number of messages to cache for each symbol before the initial
         /// value arrives. This allows the subscription to recover when the initial
-        /// value arrives late (after a subsequent trade or quote already arrived).     
+        /// value arrives late (after a subsequent trade or quote already arrived).
         /// For group subscription, a separate cache is used for each group member.
         /// The default is 10.
         /// </summary>
@@ -878,7 +878,7 @@ namespace Wombat
             EnsurePeerCreated();
 
             // Call the native layer to set the cache size
-            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setPreIntitialCacheSize(NativeHandle, cacheSize));            
+            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setPreIntitialCacheSize(NativeHandle, cacheSize));
         }
 
         /// <summary>
@@ -897,12 +897,12 @@ namespace Wombat
             int recoverGaps = recover ? 1 : 0;
 
             // Call the native layer to set the flag
-            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setRecoverGaps(NativeHandle, recoverGaps));            
+            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setRecoverGaps(NativeHandle, recoverGaps));
         }
 
         /// <summary>
         /// Whether an initial value is required for the specified subscription.
-        /// This only applies to market data subscriptions and not to basic subscriptions. 
+        /// This only applies to market data subscriptions and not to basic subscriptions.
         /// Default value of true indicating that initial values are required.
         /// </summary>
         /// <param name="requiresInitial">
@@ -917,7 +917,7 @@ namespace Wombat
             int requiresInit = requiresInitial ? 1 : 0;
 
             // Call the native layer
-            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setRequiresInitial(NativeHandle, requiresInit));            
+            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setRequiresInitial(NativeHandle, requiresInit));
         }
 
         /// <summary>
@@ -932,7 +932,7 @@ namespace Wombat
             EnsurePeerCreated();
 
             // Call the native layer to set the number of retries
-            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setRetries(NativeHandle, retries));            
+            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setRetries(NativeHandle, retries));
         }
 
         /// <summary>
@@ -980,7 +980,7 @@ namespace Wombat
             EnsurePeerCreated();
 
             // Call the native layer to set the subscription type
-            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setSubscriptionType(NativeHandle, (int)type));            
+            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setSubscriptionType(NativeHandle, (int)type));
         }
 
         /// <summary>
@@ -995,11 +995,11 @@ namespace Wombat
             EnsurePeerCreated();
 
             // Call the native layer to set the timeout
-            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setTimeout(NativeHandle, timeout));            
+            CheckResultCode(SubscriptionNativeMethods.mamaSubscription_setTimeout(NativeHandle, timeout));
         }
 
         /// <summary>
-        /// Set the parameters for a subscription that may be actually activated later.  
+        /// Set the parameters for a subscription that may be actually activated later.
         /// Activate the subscription using MamaSubscription.activate().
         /// </summary>
         /// <param name="transport">
@@ -1041,11 +1041,11 @@ namespace Wombat
                 ref MamaBasicSubscription.mCallbackDelegates,
                 sourceName,
                 symbol,
-                impl));            
+                impl));
         }
-        
+
 		/// <summary>
-        /// Set the parameters for a subscription that may be actually activated later.  
+        /// Set the parameters for a subscription that may be actually activated later.
         /// Activate the subscription using MamaSubscription.activate().
         /// </summary>
         /// <param name="queue">
@@ -1087,7 +1087,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// Set the parameters for a subscription that may be actually activated later.  
+        /// Set the parameters for a subscription that may be actually activated later.
         /// Activate the subscription using MamaSubscription.activate().
         /// This overload passes a null value for the closure.
         /// </summary>
@@ -1101,7 +1101,7 @@ namespace Wombat
         /// The MamaSource identifying the publisher for this symbol.</param>
         /// <param name="symbol">
         /// The symbol for the listener.
-        /// </param>        
+        /// </param>
         public void setup(MamaQueue queue, MamaSubscriptionCallback callback, MamaSource source, string symbol)
         {
             // Call the overload passing null for the closure
@@ -1119,7 +1119,7 @@ namespace Wombat
                 IntPtr ret = IntPtr.Zero;
                 CheckResultCode(SubscriptionNativeMethods.mamaSubscription_getSource(NativeHandle, ref ret));
 
-                // Convert to an ansi string                
+                // Convert to an ansi string
                 return Marshal.PtrToStringAnsi(ret);
             }
         }

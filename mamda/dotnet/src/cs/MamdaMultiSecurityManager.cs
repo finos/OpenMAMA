@@ -30,12 +30,12 @@ namespace Wombat
 	/// group symbol which provides a single subscription to multiple
 	/// different securities.
 	/// Developers are notified of each element available for the group and can
-	/// choose which elements they wish to provide handling for 
+	/// choose which elements they wish to provide handling for
 	/// (e.g. based on wildcards).
-	/// 
+	///
 	/// Specialized Listeners can be added to the
 	/// <code>MamdaMultiSecurityManager</code> in response to the callbacks
-	/// on the <code>MamdaMultiSecurityHandler</code> being invoked. 
+	/// on the <code>MamdaMultiSecurityHandler</code> being invoked.
 	/// Alternatively, the Listeners can be added up front if the participants
 	/// are known in advance.
 	/// </summary>
@@ -55,7 +55,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Add a specialized handler for notifications about new
-		/// securities.  
+		/// securities.
 		/// </summary>
 		/// <param name="handler">Concrete instance of the MamdaMultiSecurityHandler
 		/// interface</param>
@@ -67,7 +67,7 @@ namespace Wombat
 		/// <summary>
 		/// Add a specialized message listener (e.g. a MamdaQuoteListener,
 		/// MamdaTradeListener, etc.) for a security.
-		/// 
+		///
 		/// Multiple listeners for each security can be added.
 		/// </summary>
 		/// <param name="listener">Concrete instance of the MamdaMsgListener interface.</param>
@@ -191,7 +191,7 @@ namespace Wombat
 			}
 		}
 
-		/*Map containing a list of listeners for each security. 
+		/*Map containing a list of listeners for each security.
 		  Keyed on the symbol*/
 		private Map mListeners;
 

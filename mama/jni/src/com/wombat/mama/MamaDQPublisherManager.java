@@ -35,9 +35,9 @@ public class MamaDQPublisherManager
 {
 	/*A long value containing a pointer to the underlying C publisher manager structure*/
 	private long dqpublisherManagerPointer_i = 0;
-    
+
     private static final ArrayList myTopics = new ArrayList();
-    
+
 	static
 	{
 		initIDs();
@@ -51,14 +51,14 @@ public class MamaDQPublisherManager
      * @param callback The associated callback to use
      * @param source The source namepaceto create the publisher manager with
      */
-    public void create (MamaTransport transport, 
+    public void create (MamaTransport transport,
                         MamaQueue queue,
-		                MamaDQPublisherManagerCallback callback, 
+		                MamaDQPublisherManagerCallback callback,
                         String source)
 	{
 		_create (transport, queue, callback, source, "_MD");
 	}
-    
+
     /**
      * Create in instance of the MamaDQPublisherManager
      *
@@ -68,10 +68,10 @@ public class MamaDQPublisherManager
      * @param source The source name to create the publisher manager with
      * @param root The root of the source namespace
      */
-	public void create (MamaTransport transport, 
+	public void create (MamaTransport transport,
                         MamaQueue queue,
-		                MamaDQPublisherManagerCallback callback, 
-                        String source, 
+		                MamaDQPublisherManagerCallback callback,
+                        String source,
                         String root)
 	{
 		_create (transport, queue, callback, source, root);
@@ -83,7 +83,7 @@ public class MamaDQPublisherManager
 	public void destroy()
 	{
 		checkIsCreated("destroy");
-		_destroy();	
+		_destroy();
 	}
 
     /**
@@ -94,7 +94,7 @@ public class MamaDQPublisherManager
      * @param cache The callback associated with the new publisher
      */
 	// Probably needs to be more defensive in terms of dealing with nulls
-	public void addPublisher (String symbol, 
+	public void addPublisher (String symbol,
                               MamaDQPublisher publisher,
 		                      MamaSubscriptionCallback cache)
 	{
@@ -102,7 +102,7 @@ public class MamaDQPublisherManager
 		_addPublisher(symbol, publisher, cache);
 	}
 
-    
+
     /**
      * Remove a Publisher from the MamaDQPublisherManager
      *
@@ -113,7 +113,7 @@ public class MamaDQPublisherManager
         checkIsCreated("removePublisher");
         return _removePublisher(symbol);
     }
-    
+
     /**
      * Remove a Publisher from the MamaDQPublisherManager
      *
@@ -124,7 +124,7 @@ public class MamaDQPublisherManager
         checkIsCreated("destroyPublisher");
         _destroyPublisher(symbol);
     }
-    
+
     /**
      * Create a new Publisher and associate it with the MamaDQPublisherManager
      *
@@ -137,7 +137,7 @@ public class MamaDQPublisherManager
 	public MamaDQPublisher createPublisher (String symbol, Object cache)
 	{
 		checkIsCreated("createPublisher");
-        
+
         MamaDQPublisher myPub = new MamaDQPublisher();
         MamaPublishTopic myTopic = new MamaPublishTopic(symbol, myPub, cache);
         _createPublisher (symbol, myPub, myTopic);
@@ -178,7 +178,7 @@ public class MamaDQPublisherManager
 		checkIsCreated("setSenderId");
 		_setSenderId(id);
 	}
-    
+
     /**
      * Send out a synchronization request from the MamaDQPublisherManager
      *
@@ -202,21 +202,21 @@ public class MamaDQPublisherManager
 		checkIsCreated("sendSyncRequest");
 		_sendNoSubscribers(symbol);
 	}
-    
-	private native void _create (MamaTransport transport, 
+
+	private native void _create (MamaTransport transport,
                                  MamaQueue queue,
-		                         MamaDQPublisherManagerCallback callback, 
-                                 String source, 
+		                         MamaDQPublisherManagerCallback callback,
+                                 String source,
                                  String root);
 
 	private native void _destroy ();
 
-	private native void _addPublisher (String symbol, 
-                                       MamaDQPublisher publisher, 
+	private native void _addPublisher (String symbol,
+                                       MamaDQPublisher publisher,
                                        Object cache);
-    
+
     private native MamaDQPublisher _removePublisher (String symbol);
-    
+
     private native void _destroyPublisher (String symbol);
 
 	private native MamaDQPublisher _createPublisher (String symbol, MamaDQPublisher pub, Object cache);
@@ -226,11 +226,11 @@ public class MamaDQPublisherManager
 	private native void _setSeqNum (long seqNum);
 
     private native void _setSenderId (long id);
-    
+
 	private native void _sendSyncRequest (int numMsg, double delay, double duration);
 
     private native void _sendNoSubscribers (String symbol);
-    
+
 	private static native void initIDs ();
 
 	private void checkIsCreated (String invokingMethod)
@@ -250,7 +250,7 @@ public class MamaDQPublisherManager
 		private final MamaDQPublisher dqPublisher;
 		private final String symbol;
         private final Object cache;
-        
+
         /**
          * Constructor for MamaPublishTopic
          *
@@ -258,7 +258,7 @@ public class MamaDQPublisherManager
          * @param dqPublisher The publisher
          * @param cache The cache
          */
-		public MamaPublishTopic (String          symbol, 
+		public MamaPublishTopic (String          symbol,
                                  MamaDQPublisher dqPublisher,
 								 Object          cache)
 		{
@@ -272,34 +272,34 @@ public class MamaDQPublisherManager
          *
          * @return MamaDQPublisher The publisher
          */
-		public MamaDQPublisher getPublisher()
-		{
-			return dqPublisher;	
-		}
+        public MamaDQPublisher getPublisher()
+        {
+            return dqPublisher;
+        }
 
         /**
          * Return the cache for the MamaPublishTopic
          *
          * @return Object The cache
          */
-		public Object getCache()
-		{
-			return cache;
-		}
+        public Object getCache()
+        {
+            return cache;
+        }
 
         /**
          * Return the symbol for the MamaPublishTopic
          *
          * @return String The symbol
          */
-		public String getSymbol()
-		{
-			return symbol;
-		}
-	}
+        public String getSymbol()
+        {
+            return symbol;
+        }
+    }
 
     /**
-     * Retrieve the cache associated with the given topic.
+     * Accessor for the internal ArrayList that contains all the current publishers
      *
      * @param symbol The symbol for the which you want to get the cache
      *

@@ -49,7 +49,7 @@ namespace Wombat
          * @param imbalance       Provides access to imbalance details
          * @param update          Provides access to update details
        */
-        virtual void onOrderImbalance ( 
+        virtual void onOrderImbalance (
             MamdaSubscription*           subscription,
             MamdaOrderImbalanceListener& listener,
             const MamaMsg&               msg,
@@ -70,9 +70,9 @@ namespace Wombat
             const MamaMsg&               msg,
             MamdaOrderImbalanceRecap&    imbalance,
             MamdaOrderImbalanceUpdate&   update) = 0;
-        
-        /** 
-         * Method invoked when the current order imbalance information 
+
+        /**
+         * Method invoked when the current order imbalance information
          * is available.  The reason for the invocation may be
          * any of the following:
          * - Initial image.
@@ -89,7 +89,7 @@ namespace Wombat
             MamdaOrderImbalanceListener& listener,
             const MamaMsg&               msg,
             MamdaOrderImbalanceRecap&    imbalance) = 0;
-            
+
         virtual ~MamdaOrderImbalanceHandler() {};
     };
 

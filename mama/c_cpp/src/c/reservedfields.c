@@ -60,9 +60,9 @@ const MamaReservedField MamaFieldAppMsgType       = { "MamaAppMsgType",    18 };
 const MamaReservedField MamaFieldSenderId         = { "MamaSenderId",      20 };
 const MamaReservedField MamaFieldMsgQual          = { "wMsgQual",          21 };
 const MamaReservedField MamaFieldConflateCount    = { "wConflateCount",    22 };
-const MamaReservedField MamaFieldConflateQuoteCount  
+const MamaReservedField MamaFieldConflateQuoteCount
                                                 = { "wConflateQuoteCount", 23 };
-const MamaReservedField MamaFieldConflateTradeCount  
+const MamaReservedField MamaFieldConflateTradeCount
                                                 = { "wConflateTradeCount", 24 };
 const MamaReservedField MamaFieldRvDaemon         = { "MdRvDaemon",        51 };
 const MamaReservedField MamaFieldRvNetwork        = { "MdRvNetwork",       52 };
@@ -76,10 +76,10 @@ const MamaReservedField MamaFieldSubscSourceApp   = { "MdSubscSourceApp",  64 };
 const MamaReservedField MamaFieldSubscSourceUser  = { "MdSubscSourceUser", 65 };
 const MamaReservedField MamaFieldServiceLevel     = { "MdServiceLevel",    66 };
 const MamaReservedField MamaFieldSubscSourceIp    = { "MdSubscSourceIp",   67 };
-const MamaReservedField MamaFieldSubscSourceAppClass 
+const MamaReservedField MamaFieldSubscSourceAppClass
                                               = { "MdSubscSourceAppClass", 68 };
 const MamaReservedField MamaFieldInterfaceVersion = { "InterfaceVersion",  69 };
-const MamaReservedField MamaFieldUpdateTopic      = { "MdUpdateTopic",     70 };                             
+const MamaReservedField MamaFieldUpdateTopic      = { "MdUpdateTopic",     70 };
 const MamaReservedField MamaFieldSubscSymbol      = { "MdSubscSymbol",     71 };
 const MamaReservedField MamaFieldTportName        = { "MamaTportName",     72 };
 const MamaReservedField MamaFieldSubscNamespace   = { "MdSubscNamespace",  73 };

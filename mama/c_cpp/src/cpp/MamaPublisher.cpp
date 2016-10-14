@@ -37,7 +37,7 @@ namespace Wombat
             mcallback = usercallback;
         }
 
-        virtual ~SendCompleteTestCallback () 
+        virtual ~SendCompleteTestCallback ()
         {
         };
 
@@ -49,21 +49,21 @@ namespace Wombat
         MamaSendCompleteCallback* mcallback;
     };
 
-    void SendCompleteTestCallback::onSendComplete (MamaPublisher&  publisher, 
-                                                   MamaMsg*        msg, 
-                                                   MamaStatus&     status,     
+    void SendCompleteTestCallback::onSendComplete (MamaPublisher&  publisher,
+                                                   MamaMsg*        msg,
+                                                   MamaStatus&     status,
                                                    void*           closure)
     {
-        try 
+        try
         {
-            mcallback->onSendComplete (publisher, 
-                                       msg, 
-                                       status, 
+            mcallback->onSendComplete (publisher,
+                                       msg,
+                                       status,
                                        closure);
         }
         catch (...)
         {
-            fprintf (stderr, 
+            fprintf (stderr,
                      "MamaSendCompleteCallback onSendComplete EXCEPTION CAUGHT\n");
         }
     }
@@ -84,11 +84,11 @@ namespace Wombat
                          void*         closure)
     {
         /* Delegate to the C++ callback */
-        MamaSendCompleteClosure* sendClosure = 
+        MamaSendCompleteClosure* sendClosure =
             static_cast<MamaSendCompleteClosure*>(closure);
         MamaPublisherImpl* pubImpl = sendClosure->mPublisherImpl;
         MamaStatus cppStatus (status);
-        
+
         if (sendClosure->mSendCompleteCallback)
         {
             sendClosure->mSendCompleteCallback->onSendComplete (
@@ -109,7 +109,7 @@ namespace Wombat
         delete sendClosure;
     }
 
-    MamaPublisher::~MamaPublisher (void) 
+    MamaPublisher::~MamaPublisher (void)
     {
         if (mPimpl && !destroyed)
         {
@@ -162,7 +162,7 @@ namespace Wombat
 
     void MamaPublisher::sendWithThrottle (MamaMsg*                  msg,
                                           MamaSendCompleteCallback* cb,
-                                          void*                     closure) const 
+                                          void*                     closure) const
     {
         mPimpl->sendWithThrottle (msg, cb, closure);
     }
@@ -179,14 +179,14 @@ namespace Wombat
     {
         mPimpl->sendFromInboxWithThrottle (inbox, msg, cb, closure);
     }
-       
-    void MamaPublisher::sendReplyToInbox (const MamaMsg&  request, 
+
+    void MamaPublisher::sendReplyToInbox (const MamaMsg&  request,
                                           MamaMsg*        reply) const
     {
         mPimpl->sendReplyToInbox (request, reply);
     }
 
-    void MamaPublisher::sendReplyToInbox(mamaMsgReply  replyHandle, 
+    void MamaPublisher::sendReplyToInbox(mamaMsgReply  replyHandle,
                                          MamaMsg*      reply) const
     {
         mPimpl->sendReplyToInbox (replyHandle, reply);
@@ -258,9 +258,9 @@ namespace Wombat
     {
     }
 
-    void MamaPublisherImpl::create (MamaTransport *transport, 
-                                    const char    *topic, 
-                                    const char    *source, 
+    void MamaPublisherImpl::create (MamaTransport *transport,
+                                    const char    *topic,
+                                    const char    *source,
                                     const char    *root)
     {
         if (mPublisher)
@@ -268,9 +268,9 @@ namespace Wombat
             throw MamaStatus (MAMA_STATUS_INVALID_ARG);
         }
 
-        mamaTry (mamaPublisher_create (&mPublisher, 
-                                       transport->getCValue(), 
-                                       topic, 
+        mamaTry (mamaPublisher_create (&mPublisher,
+                                       transport->getCValue(),
+                                       topic,
                                        source,
                                        root));
     }
@@ -334,7 +334,7 @@ namespace Wombat
     void MamaPublisherImpl::send (MamaMsg *msg) const
     {
         mamaTry (mamaPublisher_send (mPublisher, msg->getUnderlyingMsg ()));
-    } 
+    }
 
     void MamaPublisherImpl::sendWithThrottle (MamaMsg*                  msg,
                                               MamaSendCompleteCallback* cb,
@@ -348,7 +348,7 @@ namespace Wombat
 
         if (mamaInternal_getCatchCallbackExceptions ())
         {
-            sendCompleteClosure->mSendCompleteCallback 
+            sendCompleteClosure->mSendCompleteCallback
                     = new SendCompleteTestCallback (cb);
         }
         else
@@ -358,17 +358,17 @@ namespace Wombat
 
         sendCompleteClosure->mSendMessage           = msg;
         sendCompleteClosure->mSendCompleteClosure   = closure;
-        
-        mamaTry (mamaPublisher_sendWithThrottle (mPublisher, 
+
+        mamaTry (mamaPublisher_sendWithThrottle (mPublisher,
                                                  msg->getUnderlyingMsg (),
                                                  sendCompleteCb,
                                                  sendCompleteClosure));
-    } 
+    }
 
     void MamaPublisherImpl::sendFromInbox (MamaInbox *inbox,
-                                           MamaMsg   *msg) const 
+                                           MamaMsg   *msg) const
     {
-        mamaTry (mamaPublisher_sendFromInbox (mPublisher, 
+        mamaTry (mamaPublisher_sendFromInbox (mPublisher,
                                               inbox->getCValue (),
                                               msg->getUnderlyingMsg ()));
 
@@ -377,7 +377,7 @@ namespace Wombat
     void MamaPublisherImpl::sendFromInboxWithThrottle (MamaInbox*                inbox,
                                                        MamaMsg*                  msg,
                                                        MamaSendCompleteCallback* cb,
-                                                       void*                     closure) const 
+                                                       void*                     closure) const
     {
         /* Memory for this is deleted in the C sendComplete callback */
         MamaSendCompleteClosure* sendCompleteClosure = new MamaSendCompleteClosure;
@@ -397,17 +397,17 @@ namespace Wombat
         sendCompleteClosure->mSendMessage           = msg;
         sendCompleteClosure->mSendCompleteClosure   = closure;
 
-        mamaTry (mamaPublisher_sendFromInboxWithThrottle (mPublisher, 
+        mamaTry (mamaPublisher_sendFromInboxWithThrottle (mPublisher,
                                                           inbox->getCValue (),
                                                           msg->getUnderlyingMsg (),
                                                           sendCompleteCb,
                                                           sendCompleteClosure));
-    }   
+    }
 
-    void MamaPublisherImpl::sendReplyToInbox (const MamaMsg  &request, 
-                                              MamaMsg        *reply) const 
+    void MamaPublisherImpl::sendReplyToInbox (const MamaMsg  &request,
+                                              MamaMsg        *reply) const
     {
-        mamaTry (mamaPublisher_sendReplyToInbox (mPublisher, 
+        mamaTry (mamaPublisher_sendReplyToInbox (mPublisher,
                                                  request.getUnderlyingMsg (),
                                                  reply->getUnderlyingMsg ()));
     }

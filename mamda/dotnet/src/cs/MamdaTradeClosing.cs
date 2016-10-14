@@ -59,4 +59,3 @@ namespace Wombat
         MamdaFieldState getIsIndicativeFieldState();
 	}
 }
-

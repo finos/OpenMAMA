@@ -52,7 +52,7 @@ namespace Wombat
         /**
          * @return Returns the myBuyVolume.
          */
-        virtual int64_t getBuyVolume() const = 0; 
+        virtual int64_t getBuyVolume() const = 0;
 
         /**
          * Get the myBuyVolume field state
@@ -64,7 +64,7 @@ namespace Wombat
         /**
          * @return Returns the myCrossType.
          */
-        virtual  char getCrossType() const = 0; 
+        virtual  char getCrossType() const = 0;
 
         /**
          * Get the myCrossType field state
@@ -76,7 +76,7 @@ namespace Wombat
         /**
          * @return Returns the myEventSeqNum.
          */
-        virtual mama_seqnum_t getEventSeqNum() const = 0 ; 
+        virtual mama_seqnum_t getEventSeqNum() const = 0 ;
 
         /**
          * Get the myEventSeqNum field state
@@ -88,7 +88,7 @@ namespace Wombat
         /**
          * @return Returns the myEventTime.
          */
-        virtual const MamaDateTime& getEventTime() const = 0; 
+        virtual const MamaDateTime& getEventTime() const = 0;
 
         /**
          * Get the myEventTime field state
@@ -100,7 +100,7 @@ namespace Wombat
         /**
          * @return Returns the myFarClearingPrice.
          */
-        virtual const MamaPrice& getFarClearingPrice() const = 0; 
+        virtual const MamaPrice& getFarClearingPrice() const = 0;
 
         /**
          * Get the myFarClearingPrice field state
@@ -112,7 +112,7 @@ namespace Wombat
         /**
          * @return Returns the myHighIndicationPrice.
          */
-        virtual const MamaPrice& getHighIndicationPrice() const = 0; 
+        virtual const MamaPrice& getHighIndicationPrice() const = 0;
 
         /**
          * Get the myHighIndicationPrice field state
@@ -136,7 +136,7 @@ namespace Wombat
         /**
          * @return Returns the myInsideMatchPrice.
          */
-        virtual const MamaPrice& getMatchPrice() const = 0; 
+        virtual const MamaPrice& getMatchPrice() const = 0;
 
         /**
          * Get the myInsideMatchPrice field state
@@ -148,7 +148,7 @@ namespace Wombat
         /**
          * @return Returns the myIssueSymbol.
          */
-        virtual const char* getIssueSymbol() const = 0; 
+        virtual const char* getIssueSymbol() const = 0;
 
         /**
          * Get the myIssueSymbol field state
@@ -160,7 +160,7 @@ namespace Wombat
         /**
          * @return Returns the myLowIndicationPrice.
          */
-        virtual const MamaPrice& getLowIndicationPrice() const = 0; 
+        virtual const MamaPrice& getLowIndicationPrice() const = 0;
 
         /**
          * Get the myLowIndicationPrice field state
@@ -172,7 +172,7 @@ namespace Wombat
         /**
          * @return Returns the myMatchVolume.
          */
-        virtual int64_t getMatchVolume() const = 0; 
+        virtual int64_t getMatchVolume() const = 0;
 
         /**
          * Get the myMatchVolume field state
@@ -184,7 +184,7 @@ namespace Wombat
         /**
          * @return Returns the myMsgType.
          */
-        virtual int32_t getMsgType() const = 0; 
+        virtual int32_t getMsgType() const = 0;
 
         /**
          * Get the myMsgType field state
@@ -196,7 +196,7 @@ namespace Wombat
         /**
          * @return Returns the myNearClearingPrice.
          */
-        virtual const MamaPrice& getNearClearingPrice() const = 0; 
+        virtual const MamaPrice& getNearClearingPrice() const = 0;
 
         /**
          * Get the myNearClearingPrice field state
@@ -208,7 +208,7 @@ namespace Wombat
         /**
          * @return Returns the myNoClearingPrice.
          */
-        virtual char getNoClearingPrice() const = 0; 
+        virtual char getNoClearingPrice() const = 0;
 
         /**
          * Get the myNoClearingPrice field state
@@ -220,7 +220,7 @@ namespace Wombat
         /**
          * @return Returns the myPartId.
          */
-        virtual const char* getPartId() const = 0; 
+        virtual const char* getPartId() const = 0;
 
         /**
          * Get the myPartId field state
@@ -244,7 +244,7 @@ namespace Wombat
         /**
          * @return Returns the mySecurityStatusOrig.
          */
-        virtual const char* getSecurityStatusOrig() const = 0; 
+        virtual const char* getSecurityStatusOrig() const = 0;
 
         /**
          * Get the mySecurityStatusOrig field state
@@ -268,7 +268,7 @@ namespace Wombat
         /**
          * @return Returns the mySecurityStatusTime.
          */
-        virtual const MamaDateTime& getSecurityStatusTime() const = 0; 
+        virtual const MamaDateTime& getSecurityStatusTime() const = 0;
 
         /**
          * Get the mySecurityStatusTime field state
@@ -280,7 +280,7 @@ namespace Wombat
         /**
          * @return Returns the mySellVolume.
          */
-        virtual int64_t getSellVolume() const = 0; 
+        virtual int64_t getSellVolume() const = 0;
 
         /**
          * Get the mySellVolume field state
@@ -292,7 +292,7 @@ namespace Wombat
         /**
          * @return Returns the mySeqNum.
          */
-        virtual mama_seqnum_t getSeqNum() const = 0; 
+        virtual mama_seqnum_t getSeqNum() const = 0;
 
         /**
          * Get the mySeqNum field state

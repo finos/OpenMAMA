@@ -129,7 +129,7 @@ namespace Wombat
             double                            percentage,
             MamdaOptionAtTheMoneyCompareType  compareType);
 
-        void dump(); 
+        void dump();
 
         string                        mSymbol;
         ContractSet                   mCallOptions;
@@ -362,7 +362,7 @@ namespace Wombat
         return nextContract;
     }
 
-    const MamdaOptionExpirationDateSet&  
+    const MamdaOptionExpirationDateSet&
     MamdaOptionChain::getAllExpirations () const
     {
         return mImpl.mExpirationSet;
@@ -400,12 +400,12 @@ namespace Wombat
     {
         processNewContractDetails (contractSymbol, contract);
     }
-     
+
     void MamdaOptionChain::MamdaOptionChainImpl::processNewContractDetails (
         const char*           contractSymbol,
         MamdaOptionContract*  contract)
     {
-        // Not waiting on a recap to update contract details 
+        // Not waiting on a recap to update contract details
         if (!contract->getRecapRequired())
         {
             const char*          exchange       = contract->getExchange();
@@ -455,7 +455,7 @@ namespace Wombat
 	        {
 	            MamdaOptionExpirationStrikes::const_iterator foundStrikeSet =
 	                expireStrikes->find (strikePrice);
-	            if ((foundStrikeSet == expireStrikes->end()) && gotExpireDate) 
+	            if ((foundStrikeSet == expireStrikes->end()) && gotExpireDate)
 	            {
 		            strikeSet = new MamdaOptionStrikeSet (expireDate, strikePrice);
 		            expireStrikes->
@@ -680,8 +680,8 @@ namespace Wombat
             mama_log (MAMA_LOG_LEVEL_FINER,
                       "getStrikesWithinRangeSize: "
                       "lowerBound=%f atTheMoney=%f upperBound=%f",
-                      lowerBound, 
-                      atTheMoney, 
+                      lowerBound,
+                      atTheMoney,
                       upperBound);
         }
     }
@@ -694,7 +694,7 @@ namespace Wombat
         ContractSet::const_iterator callEnd  =  mCallOptions.end();
         ContractSet::const_iterator putIter  =  mPutOptions.begin();
         ContractSet::const_iterator putEnd   =  mPutOptions.end();
-      
+
         while ((callIter != callEnd) || (putIter != putEnd))
         {
             cout << i << " | ";
@@ -706,7 +706,7 @@ namespace Wombat
 	            cout << callContract->getExchange()                   << " ";
 	            cout << callContract->getExpireDate().getAsString()   << " ";
 	            cout << callContract->getStrikePrice();
-	            
+
 	            callIter++;
 	        }
 	        else
@@ -723,7 +723,7 @@ namespace Wombat
 	            cout << callContract->getExchange()                   << " ";
 	            cout << callContract->getExpireDate().getAsString()   << " ";
 	            cout << callContract->getStrikePrice();
-	            
+
 	            putIter++;
 	        }
 	        else

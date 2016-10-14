@@ -57,22 +57,22 @@ namespace Wombat
         string                  mIssueSymbol;              MamdaFieldState     mIssueSymbolFieldState;
         string                  mSymbol;                   MamdaFieldState     mSymbolFieldState;
         string                  mPartId;                   MamdaFieldState     mPartIdFieldState;
-        MamaDateTime            mSrcTime;                  MamdaFieldState     mSrcTimeFieldState; 
-        MamaDateTime            mActTime;                  MamdaFieldState     mActTimeFieldState; 
+        MamaDateTime            mSrcTime;                  MamdaFieldState     mSrcTimeFieldState;
+        MamaDateTime            mActTime;                  MamdaFieldState     mActTimeFieldState;
         MamaDateTime            mLineTime;                 MamdaFieldState     mLineTimeFieldState;
         MamaDateTime            mSendTime;                 MamdaFieldState     mSendTimeFieldState;
-        MamaMsgQual             mMsgQual;                  MamdaFieldState     mMsgQualFieldState; 
-        string                  mReason;                   MamdaFieldState     mReasonFieldState; 
+        MamaMsgQual             mMsgQual;                  MamdaFieldState     mMsgQualFieldState;
+        string                  mReason;                   MamdaFieldState     mReasonFieldState;
         char                    mSecurityAction;           MamdaFieldState     mSecurityActionFieldState;
-        string                  mSecurityType;             MamdaFieldState     mSecurityTypeFieldState; 
+        string                  mSecurityType;             MamdaFieldState     mSecurityTypeFieldState;
         MamdaSecurityStatus     mSecurityStatus;           MamdaFieldState     mSecurityStatusFieldState;
-        char                    mShortSaleCircuitBreaker;  MamdaFieldState     mShortSaleCircuitBreakerFieldState;  
-        MamdaSecurityStatusQual mSecurityStatusQual;       MamdaFieldState     mSecurityStatusQualFieldState;  
+        char                    mShortSaleCircuitBreaker;  MamdaFieldState     mShortSaleCircuitBreakerFieldState;
+        MamdaSecurityStatusQual mSecurityStatusQual;       MamdaFieldState     mSecurityStatusQualFieldState;
         string                  mSecurityStatusNative;     MamdaFieldState     mSecurityStatusNativeFieldState;
-        MamaDateTime            mSecurityStatusTime;       MamdaFieldState     mSecurityStatusTimeFieldState; 
-        string                  mFreeText;                 MamdaFieldState     mFreeTextFieldState; 
+        MamaDateTime            mSecurityStatusTime;       MamdaFieldState     mSecurityStatusTimeFieldState;
+        string                  mFreeText;                 MamdaFieldState     mFreeTextFieldState;
         mama_seqnum_t           mEventSeqNum;              MamdaFieldState     mEventSeqNumFieldState;
-        mama_u32_t              mTmpSecStatusCount;        
+        mama_u32_t              mTmpSecStatusCount;
         mama_u32_t              mSecStatusCount;           MamdaFieldState     mSecStatusCountFieldState;
         mama_seqnum_t           mGapBegin;                 MamdaFieldState     mGapBeginFieldState;
         mama_seqnum_t           mGapEnd;                   MamdaFieldState     mGapEndFieldState;
@@ -82,7 +82,7 @@ namespace Wombat
         MamaPrice               mLuldLowLimit;             MamdaFieldState     mLuldLowLimitFieldState;
     };
 
-    class MamdaSecStatusListener::MamdaSecStatusListenerImpl 
+    class MamdaSecStatusListener::MamdaSecStatusListenerImpl
         : public MamaMsgFieldIterator
     {
     public:
@@ -122,12 +122,12 @@ namespace Wombat
 
         } SecStatusLock;
 
-        //thread locking    
+        //thread locking
         SecStatusLock             mSecStatusLock;
 
         // The SecStatusCache Data Caches
         SecStatusCache            mRegularCache;     // Regular update cache
-        SecStatusCache            mTransientCache;   // Transient cache 
+        SecStatusCache            mTransientCache;   // Transient cache
         SecStatusCache&           mSecStatusCache;   // Current cache in use
 
         static MamdaSecurityStatus      getSecurityStatus     (const MamaMsgField&  field);
@@ -174,15 +174,15 @@ namespace Wombat
 
     MamdaSecStatusListener::MamdaSecStatusListener ()
         : mImpl (*new MamdaSecStatusListenerImpl(*this))
-    {   
+    {
         wthread_mutex_init (&mImpl.mSecStatusLock.mSecStatusMutex, NULL);
     }
 
     MamdaSecStatusListener::~MamdaSecStatusListener()
     {
         wthread_mutex_destroy (&mImpl.mSecStatusLock.mSecStatusMutex);
-	    /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.  
-	       If we do, it will not be initialized again if another listener is created 
+	    /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.
+	       If we do, it will not be initialized again if another listener is created
 	       after the first is destroyed. */
         /* wthread_mutex_destroy (&mImpl.mSecStatusFieldUpdaterLockMutex); */
         delete &mImpl;
@@ -212,7 +212,7 @@ namespace Wombat
     {
         return mImpl.mSecStatusCache.mSrcTime;
     }
-     
+
     const MamaDateTime& MamdaSecStatusListener::getActivityTime() const
     {
         return mImpl.mSecStatusCache.mActTime;
@@ -343,7 +343,7 @@ namespace Wombat
     {
         return mImpl.mSecStatusCache.mSrcTimeFieldState;
     }
-     
+
     MamdaFieldState MamdaSecStatusListener::getActivityTimeFieldState() const
     {
         return mImpl.mSecStatusCache.mActTimeFieldState;
@@ -553,11 +553,11 @@ namespace Wombat
         MamdaSubscription*  subscription,
         const MamaMsg&      msg)
     {
-        // Generic update 
+        // Generic update
         if (mHandler)
         {
-            mHandler->onSecStatusRecap (subscription, 
-                                        mListener, 
+            mHandler->onSecStatusRecap (subscription,
+                                        mListener,
                                         msg,
                                         mListener);
         }
@@ -570,8 +570,8 @@ namespace Wombat
         if (mHandler)
         {
             if (updated)
-        		mHandler->onSecStatusUpdate (subscription, 
-                                             mListener, 
+        		mHandler->onSecStatusUpdate (subscription,
+                                             mListener,
                                              msg);
         }
     }
@@ -590,18 +590,18 @@ namespace Wombat
         secStatusCache.mSecurityAction          = ' ';
         secStatusCache.mShortSaleCircuitBreaker = ' ';
 
-        secStatusCache.mSecurityType            = ""; 
+        secStatusCache.mSecurityType            = "";
         secStatusCache.mSecurityStatus          = SECURITY_STATUS_UNKNOWN;
         secStatusCache.mSecurityStatusQual      = SECURITY_STATUS_QUAL_UNKNOWN;
         secStatusCache.mSecurityStatusNative    = "";
         secStatusCache.mSecurityStatusTime.clear();
-        secStatusCache.mFreeText                = ""; 
+        secStatusCache.mFreeText                = "";
 
         secStatusCache.mLuldTime.clear();
         secStatusCache.mLuldIndicator = ' ';
         secStatusCache.mLuldHighLimit.clear();
         secStatusCache.mLuldLowLimit.clear();
-        
+
         secStatusCache.mIssueSymbolFieldState           = NOT_INITIALISED;
         secStatusCache.mSymbolFieldState                = NOT_INITIALISED;
         secStatusCache.mPartIdFieldState                = NOT_INITIALISED;
@@ -634,68 +634,68 @@ namespace Wombat
     void MamdaSecStatusListener::
         MamdaSecStatusListenerImpl::updateFieldStates ()
     {
-        if (mSecStatusCache.mIssueSymbolFieldState == MODIFIED)             
-            mSecStatusCache.mIssueSymbolFieldState = NOT_MODIFIED; 
-     
-        if (mSecStatusCache.mSymbolFieldState == MODIFIED)             
-            mSecStatusCache.mSymbolFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mIssueSymbolFieldState == MODIFIED)
+            mSecStatusCache.mIssueSymbolFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mPartIdFieldState == MODIFIED)          
+        if (mSecStatusCache.mSymbolFieldState == MODIFIED)
+            mSecStatusCache.mSymbolFieldState = NOT_MODIFIED;
+
+        if (mSecStatusCache.mPartIdFieldState == MODIFIED)
             mSecStatusCache.mPartIdFieldState = NOT_MODIFIED;
-     
-        if (mSecStatusCache.mSrcTimeFieldState == MODIFIED)      
-            mSecStatusCache.mSrcTimeFieldState = NOT_MODIFIED; 
-     
-        if (mSecStatusCache.mActTimeFieldState == MODIFIED)        
-            mSecStatusCache.mActTimeFieldState = NOT_MODIFIED;  
 
-        if (mSecStatusCache.mLineTimeFieldState == MODIFIED)       
-            mSecStatusCache.mLineTimeFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mSrcTimeFieldState == MODIFIED)
+            mSecStatusCache.mSrcTimeFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mSendTimeFieldState == MODIFIED)       
-            mSecStatusCache.mSendTimeFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mActTimeFieldState == MODIFIED)
+            mSecStatusCache.mActTimeFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mMsgQualFieldState == MODIFIED)        
-            mSecStatusCache.mMsgQualFieldState = NOT_MODIFIED;  
+        if (mSecStatusCache.mLineTimeFieldState == MODIFIED)
+            mSecStatusCache.mLineTimeFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mReasonFieldState == MODIFIED)         
-            mSecStatusCache.mReasonFieldState = NOT_MODIFIED; 
-     
+        if (mSecStatusCache.mSendTimeFieldState == MODIFIED)
+            mSecStatusCache.mSendTimeFieldState = NOT_MODIFIED;
+
+        if (mSecStatusCache.mMsgQualFieldState == MODIFIED)
+            mSecStatusCache.mMsgQualFieldState = NOT_MODIFIED;
+
+        if (mSecStatusCache.mReasonFieldState == MODIFIED)
+            mSecStatusCache.mReasonFieldState = NOT_MODIFIED;
+
         if (mSecStatusCache.mSecurityActionFieldState == MODIFIED)
-            mSecStatusCache.mSecurityActionFieldState = NOT_MODIFIED; 
+            mSecStatusCache.mSecurityActionFieldState = NOT_MODIFIED;
 
         if (mSecStatusCache.mShortSaleCircuitBreakerFieldState == MODIFIED)
-            mSecStatusCache.mShortSaleCircuitBreakerFieldState = NOT_MODIFIED; 
+            mSecStatusCache.mShortSaleCircuitBreakerFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mSecurityTypeFieldState == MODIFIED)    
-            mSecStatusCache.mSecurityTypeFieldState = NOT_MODIFIED;  
+        if (mSecStatusCache.mSecurityTypeFieldState == MODIFIED)
+            mSecStatusCache.mSecurityTypeFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mSecurityStatusFieldState == MODIFIED)  
-            mSecStatusCache.mSecurityStatusFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mSecurityStatusFieldState == MODIFIED)
+            mSecStatusCache.mSecurityStatusFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mSecurityStatusQualFieldState == MODIFIED)   
-            mSecStatusCache.mSecurityStatusQualFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mSecurityStatusQualFieldState == MODIFIED)
+            mSecStatusCache.mSecurityStatusQualFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mSecurityStatusNativeFieldState == MODIFIED)    
+        if (mSecStatusCache.mSecurityStatusNativeFieldState == MODIFIED)
             mSecStatusCache.mSecurityStatusNativeFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mSecurityStatusTimeFieldState == MODIFIED)      
-            mSecStatusCache.mSecurityStatusTimeFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mSecurityStatusTimeFieldState == MODIFIED)
+            mSecStatusCache.mSecurityStatusTimeFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mFreeTextFieldState == MODIFIED)                
-            mSecStatusCache.mFreeTextFieldState = NOT_MODIFIED;  
+        if (mSecStatusCache.mFreeTextFieldState == MODIFIED)
+            mSecStatusCache.mFreeTextFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mEventSeqNumFieldState == MODIFIED)     
-            mSecStatusCache.mEventSeqNumFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mEventSeqNumFieldState == MODIFIED)
+            mSecStatusCache.mEventSeqNumFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mSecStatusCountFieldState == MODIFIED)        
-            mSecStatusCache.mSecStatusCountFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mSecStatusCountFieldState == MODIFIED)
+            mSecStatusCache.mSecStatusCountFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mGapBeginFieldState == MODIFIED)             
-            mSecStatusCache.mGapBeginFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mGapBeginFieldState == MODIFIED)
+            mSecStatusCache.mGapBeginFieldState = NOT_MODIFIED;
 
-        if (mSecStatusCache.mGapEndFieldState == MODIFIED)         
-            mSecStatusCache.mGapEndFieldState = NOT_MODIFIED; 
+        if (mSecStatusCache.mGapEndFieldState == MODIFIED)
+            mSecStatusCache.mGapEndFieldState = NOT_MODIFIED;
 
         if (mSecStatusCache.mLuldTimeFieldState == MODIFIED)
             mSecStatusCache.mLuldTimeFieldState = NOT_MODIFIED;
@@ -719,13 +719,13 @@ namespace Wombat
 
         getSymbolAndPartId (msg, symbol, partId);
 
-        if (symbol) 
+        if (symbol)
         {
           mSecStatusCache.mSymbol           = symbol;
           mSecStatusCache.mSymbolFieldState = MODIFIED;
         }
 
-        if (partId) 
+        if (partId)
         {
           mSecStatusCache.mPartId           = partId;
           mSecStatusCache.mPartIdFieldState = MODIFIED;
@@ -775,7 +775,7 @@ namespace Wombat
             default:
                 mama_log (MAMA_LOG_LEVEL_FINE,
                           "Unhandled type %d for wSecurityStatus.  "
-                          "Expected string or integer.", 
+                          "Expected string or integer.",
                           field.getType());
                 break;
         }
@@ -803,7 +803,7 @@ namespace Wombat
             default:
                 mama_log (MAMA_LOG_LEVEL_FINE,
                           "Unhandled type %d for wSecurityStatusQual.  "
-                          "Expected string or integer.", 
+                          "Expected string or integer.",
                           field.getType());
                 break;
         }
@@ -820,7 +820,7 @@ namespace Wombat
         mama_u32_t secStatusCount = mSecStatusCache.mTmpSecStatusCount;
         if (checkForGap && (secStatusCount > 0))
         {
-            if ((mSecStatusCache.mSecStatusCount > 0) && 
+            if ((mSecStatusCache.mSecStatusCount > 0) &&
                 (secStatusCount > (mSecStatusCache.mSecStatusCount +1)))
             {
                 mSecStatusCache.mSecStatusCount = mSecStatusCache.mTmpSecStatusCount;
@@ -841,7 +841,7 @@ namespace Wombat
         mSecStatusCache.mSecStatusCountFieldState = MODIFIED;
     }
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusIssueSymbol 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusIssueSymbol
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -856,7 +856,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusSrcTime 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusSrcTime
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -867,7 +867,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusActTime 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusActTime
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -878,7 +878,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusLineTime 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusLineTime
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -889,7 +889,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateMsgQual 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateMsgQual
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -900,7 +900,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusReason 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusReason
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -914,7 +914,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityAction 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityAction
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -934,7 +934,7 @@ namespace Wombat
                     break;
                 default : break;
              }
-             
+
 		    if (impl.mSecStatusCache.mSecurityAction != result)
 		    {
 			    impl.mSecStatusCache.mSecurityAction = result;
@@ -949,17 +949,17 @@ namespace Wombat
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
                        const MamaMsgField&                                  field)
-        {       
+        {
             if (field.getChar() != impl.mSecStatusCache.mShortSaleCircuitBreaker)
             {
                 impl.mSecStatusCache.mShortSaleCircuitBreaker = field.getChar();
                 impl.mSecStatusCache.mShortSaleCircuitBreakerFieldState = MODIFIED;
                 impl.updated = true;
-            } 
+            }
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityStatusTime 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityStatusTime
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -970,7 +970,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityType 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityType
         : public SecStatusFieldUpdate
     {
       void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -987,7 +987,7 @@ namespace Wombat
 
 
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityStatus 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityStatus
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -1003,7 +1003,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityStatusQual 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityStatusQual
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -1019,7 +1019,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityStatusNative 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecurityStatusNative
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,
@@ -1034,7 +1034,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusFreeText 
+    struct MamdaSecStatusListener::MamdaSecStatusListenerImpl::FieldUpdateSecStatusFreeText
         : public SecStatusFieldUpdate
     {
         void onUpdate (MamdaSecStatusListener::MamdaSecStatusListenerImpl&  impl,

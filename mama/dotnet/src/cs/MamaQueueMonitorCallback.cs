@@ -23,7 +23,7 @@ using System;
 
 namespace Wombat
 {
-    /// Callback interface to receive notifications regarding 
+    /// Callback interface to receive notifications regarding
     /// <see cref="MamaQueue"/> events
 	public interface MamaQueueMonitorCallback
 	{

@@ -56,7 +56,7 @@ namespace Wombat
 		public void addHandler(MamdaFundamentalHandler handler)
 		{
 			mHandlers.Add(handler);
-		} 
+		}
 
 		public DateTime getSrcTime()
 		{
@@ -167,7 +167,7 @@ namespace Wombat
 		{
 			return mRiskFreeRate;
 		}
-        
+
         public MamdaFieldState getSrcTimeFieldState()
         {
 			return mSrcTimeStrFieldState;
@@ -330,25 +330,25 @@ namespace Wombat
         private void updateFieldStates()
         {
           if (mCorpActTypeFieldState == MamdaFieldState.MODIFIED)       mCorpActTypeFieldState = MamdaFieldState.NOT_MODIFIED;
-          if (mDividendPriceFieldState == MamdaFieldState.MODIFIED)     mDividendPriceFieldState = MamdaFieldState.NOT_MODIFIED; 
-          if (mDivFreqFieldState == MamdaFieldState.MODIFIED)           mDivFreqFieldState = MamdaFieldState.NOT_MODIFIED;       
-          if (mDivExDateFieldState == MamdaFieldState.MODIFIED)         mDivExDateFieldState = MamdaFieldState.NOT_MODIFIED;     
-          if (mDivPayDateFieldState == MamdaFieldState.MODIFIED)        mDivPayDateFieldState = MamdaFieldState.NOT_MODIFIED;    
-          if (mDivRecordDateFieldState == MamdaFieldState.MODIFIED)     mDivRecordDateFieldState = MamdaFieldState.NOT_MODIFIED; 
-          if (mDivCurrencyFieldState == MamdaFieldState.MODIFIED)       mDivCurrencyFieldState = MamdaFieldState.NOT_MODIFIED;   
-          if (mSharesOutFieldState == MamdaFieldState.MODIFIED)         mSharesOutFieldState = MamdaFieldState.NOT_MODIFIED;     
-          if (mSharesFloatFieldState == MamdaFieldState.MODIFIED)       mSharesFloatFieldState = MamdaFieldState.NOT_MODIFIED;   
-          if (mSharesAuthFieldState == MamdaFieldState.MODIFIED)        mSharesAuthFieldState = MamdaFieldState.NOT_MODIFIED;    
-          if (mEarnPerShareFieldState == MamdaFieldState.MODIFIED)      mEarnPerShareFieldState = MamdaFieldState.NOT_MODIFIED;  
-          if (mVolatilityFieldState == MamdaFieldState.MODIFIED)        mVolatilityFieldState = MamdaFieldState.NOT_MODIFIED;    
-          if (mPeRatioFieldState == MamdaFieldState.MODIFIED)           mPeRatioFieldState = MamdaFieldState.NOT_MODIFIED;       
-          if (mYieldFieldState == MamdaFieldState.MODIFIED)             mYieldFieldState = MamdaFieldState.NOT_MODIFIED;         
+          if (mDividendPriceFieldState == MamdaFieldState.MODIFIED)     mDividendPriceFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mDivFreqFieldState == MamdaFieldState.MODIFIED)           mDivFreqFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mDivExDateFieldState == MamdaFieldState.MODIFIED)         mDivExDateFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mDivPayDateFieldState == MamdaFieldState.MODIFIED)        mDivPayDateFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mDivRecordDateFieldState == MamdaFieldState.MODIFIED)     mDivRecordDateFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mDivCurrencyFieldState == MamdaFieldState.MODIFIED)       mDivCurrencyFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mSharesOutFieldState == MamdaFieldState.MODIFIED)         mSharesOutFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mSharesFloatFieldState == MamdaFieldState.MODIFIED)       mSharesFloatFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mSharesAuthFieldState == MamdaFieldState.MODIFIED)        mSharesAuthFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mEarnPerShareFieldState == MamdaFieldState.MODIFIED)      mEarnPerShareFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mVolatilityFieldState == MamdaFieldState.MODIFIED)        mVolatilityFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mPeRatioFieldState == MamdaFieldState.MODIFIED)           mPeRatioFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mYieldFieldState == MamdaFieldState.MODIFIED)             mYieldFieldState = MamdaFieldState.NOT_MODIFIED;
           if (mMrktSegmNativeFieldState == MamdaFieldState.MODIFIED)    mMrktSegmNativeFieldState = MamdaFieldState.NOT_MODIFIED;
           if (mMrktSectNativeFieldState == MamdaFieldState.MODIFIED)    mMrktSectNativeFieldState = MamdaFieldState.NOT_MODIFIED;
-          if (mMarketSegmentFieldState == MamdaFieldState.MODIFIED)     mMarketSegmentFieldState = MamdaFieldState.NOT_MODIFIED; 
-          if (mMarketSectorFieldState == MamdaFieldState.MODIFIED)      mMarketSectorFieldState = MamdaFieldState.NOT_MODIFIED;  
+          if (mMarketSegmentFieldState == MamdaFieldState.MODIFIED)     mMarketSegmentFieldState = MamdaFieldState.NOT_MODIFIED;
+          if (mMarketSectorFieldState == MamdaFieldState.MODIFIED)      mMarketSectorFieldState = MamdaFieldState.NOT_MODIFIED;
           if (mHistVolatilityFieldState == MamdaFieldState.MODIFIED)    mHistVolatilityFieldState = MamdaFieldState.NOT_MODIFIED;
-          if (mRiskFreeRateFieldState == MamdaFieldState.MODIFIED)      mRiskFreeRateFieldState = MamdaFieldState.NOT_MODIFIED;  
+          if (mRiskFreeRateFieldState == MamdaFieldState.MODIFIED)      mRiskFreeRateFieldState = MamdaFieldState.NOT_MODIFIED;
         }
 
         private void updateFundamentalFields(MamaMsg msg)
@@ -362,13 +362,13 @@ namespace Wombat
 
             if (msg.tryDateTime(MamdaFundamentalFields.SRC_TIME, ref mSrcTimeStr))
               mSrcTimeStrFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryDateTime(MamdaFundamentalFields.ACTIVITY_TIME, ref mActTimeStr))
               mActTimeStrFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryString(MamdaFundamentalFields.CORP_ACT_TYPE, ref mCorpActType))
               mCorpActTypeFieldState = MamdaFieldState.MODIFIED;
-            
+
             if(msg.tryField (MamdaFundamentalFields.DIVIDEND_FREQ, ref mTmpfield))
             {
                 mDivFreq = getFieldAsString(mTmpfield);
@@ -377,19 +377,19 @@ namespace Wombat
 
             if (msg.tryString(MamdaFundamentalFields.DIVIDEND_EX_DATE, ref mDivExDate))
               mDivExDateFieldState = MamdaFieldState.MODIFIED;
-            
+
             if(msg.tryString(MamdaFundamentalFields.DIVIDEND_PAY_DATE, ref mDivPayDate))
               mDivPayDateFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryString(MamdaFundamentalFields.DIVIDEND_REC_DATE, ref mDivRecordDate))
               mDivRecordDateFieldState = MamdaFieldState.MODIFIED;
-            
+
             if(msg.tryString(MamdaFundamentalFields.DIVIDEND_CURRENCY, ref mDivCurrency))
               mDivCurrencyFieldState = MamdaFieldState.MODIFIED;
 
             if (msg.tryString(MamdaFundamentalFields.MRKT_SEGM_NATIVE, ref mMrktSegmNative))
               mMrktSegmNativeFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryString(MamdaFundamentalFields.MRKT_SECT_NATIVE, ref mMrktSectNative))
               mMrktSectNativeFieldState = MamdaFieldState.MODIFIED;
 
@@ -407,31 +407,31 @@ namespace Wombat
 
             if (msg.tryI64  (MamdaFundamentalFields.SHARES_OUT, ref mSharesOut))
               mSharesOutFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryI64  (MamdaFundamentalFields.SHARES_FLOAT, ref mSharesFloat))
               mSharesFloatFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryI64  (MamdaFundamentalFields.SHARES_AUTH, ref mSharesAuth))
               mSharesAuthFieldState = MamdaFieldState.MODIFIED;
 
             if (msg.tryF64(MamdaFundamentalFields.DIVIDEND_PRICE, ref mDividendPrice))
               mDividendPriceFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryF64(MamdaFundamentalFields.EARN_PER_SHARE, ref mEarnPerShare))
               mEarnPerShareFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryF64(MamdaFundamentalFields.VOLATILITY, ref mVolatility))
               mVolatilityFieldState = MamdaFieldState.MODIFIED;
 
             if (msg.tryF64(MamdaFundamentalFields.PRICE_EARN_RATIO, ref mPeRatio))
               mPeRatioFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryF64(MamdaFundamentalFields.YIELD, ref mYield))
               mYieldFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryF64(MamdaFundamentalFields.HIST_VOLATILITY, ref mHistVolatility))
               mHistVolatilityFieldState = MamdaFieldState.MODIFIED;
-            
+
             if (msg.tryF64(MamdaFundamentalFields.RISK_FREE_RATE, ref mRiskFreeRate))
               mRiskFreeRateFieldState = MamdaFieldState.MODIFIED;
         }
@@ -460,11 +460,11 @@ namespace Wombat
 		private DateTime			mActTimeStr     = DateTime.MinValue;
         private MamdaFieldState  mSrcTimeStrFieldState    = new MamdaFieldState();
         private MamdaFieldState  mActTimeStrFieldState    = new MamdaFieldState();
-        
-		// Fundamental Fields 
+
+		// Fundamental Fields
 		// The following fields are used for caching the last reported
 		// fundamental equity pricing/analysis attributes, indicators and ratios.
-		// The reason for cahcing these values is to allow a configuration that 
+		// The reason for cahcing these values is to allow a configuration that
 		// passes the minimum amount of data  (unchanged fields not sent).
         private string      mCorpActType    = null;     private MamdaFieldState  mCorpActTypeFieldState    = new MamdaFieldState();
         private double      mDividendPrice  = 0.0;      private MamdaFieldState  mDividendPriceFieldState  = new MamdaFieldState();
@@ -486,7 +486,7 @@ namespace Wombat
         private string      mMarketSector   = null;     private MamdaFieldState  mMarketSectorFieldState   = new MamdaFieldState();
         private double      mHistVolatility = 0.0;      private MamdaFieldState  mHistVolatilityFieldState = new MamdaFieldState();
         private double      mRiskFreeRate   = 0.0;      private MamdaFieldState  mRiskFreeRateFieldState   = new MamdaFieldState();
-		
+
 		// Additional general fields (future):
         private MamaMsgField mTmpfield      = new MamaMsgField();
 	}

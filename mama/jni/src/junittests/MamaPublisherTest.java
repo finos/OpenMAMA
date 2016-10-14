@@ -26,7 +26,7 @@ import com.wombat.mama.*;
 
 /**
  *
- * This class will test MamaPublisher 
+ * This class will test MamaPublisher
  */
 public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCallback, MamaThrottleCallback,
                                                            MamaPublisherCallback,
@@ -60,14 +60,14 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
 
             // Load the bridge
             bridge = Mama.loadBridge(Main.GetBridgeName());
-        
+
             // Open mama
             Mama.open();
 
             transport = new MamaTransport();
             transport.addTransportListener(this);
             transport.addTransportTopicListener(new MamaPublisherTransportTopicListener());
-            transport.create(Main.GetTransportName(), bridge);        
+            transport.create(Main.GetTransportName(), bridge);
 
             int waits = 0;
             while (!connected)
@@ -92,7 +92,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
 
     @Override
     protected void tearDown()
-    {        
+    {
         try
         {
             // Close mama
@@ -225,7 +225,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                 MamaPublisher p = new MamaPublisher();
                 p.create(transport, Main.GetSymbol(), Main.GetSource());
                 p.sendWithThrottle(msg, this);
-                
+
                 Thread.sleep(250);
             }
         }
@@ -272,7 +272,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                     // 50% let finalize destroy
                     p = null;
                 }
-                
+
                 Thread.sleep(250);
             }
 
@@ -306,7 +306,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                 p.create(transport, queueGroup.getNextQueue(), Main.GetSymbol(), Main.GetSource(), this, null);
                 p.send(msg);
                 p.destroy();
-                
+
                 Thread.sleep(100);
             }
 
@@ -342,7 +342,7 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
                 p.create(transport, queueGroup.getNextQueue(), Main.GetSymbol(), Main.GetBadSource(), this, null);
                 p.send(msg);
                 p.destroy();
-                
+
                 Thread.sleep(100);
             }
 
@@ -359,4 +359,3 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
         }
     }
 }
-

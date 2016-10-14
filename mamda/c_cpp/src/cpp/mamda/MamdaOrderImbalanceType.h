@@ -84,12 +84,12 @@ namespace Wombat
 
             /** UKNOWN */
             UNKNOWN = -99
-            
+
         } OrderImbalanceType;
-        
+
         static const char* valueToString (const int   value);
         static const int   stringToValue (const char* type);
-        
+
         /**
          * Determines if the value is of type order imbalance
          * @param value
@@ -104,6 +104,6 @@ namespace Wombat
          */
         static bool isMamdaImbalanceOrder (const int value);
     };
-    
+
 } // namespace
 #endif

@@ -36,8 +36,8 @@ namespace Wombat.Mamda.Examples
 			MamaDictionary       dictionary   = null;
 			CommandLineProcessor options      = new CommandLineProcessor(args);
 			double               throttleRate = options.getThrottleRate();
-            
-            
+
+
 			if (options.hasLogLevel())
 			{
 				logLevel_ = options.getLogLevel();

@@ -69,16 +69,16 @@ namespace Wombat
         void onField               (const MamaMsg&      msg,
                                     const MamaMsgField& field,
                                     void*               closure);
-                                           
+
         static MamdaUncrossPriceInd getUncrossPriceInd (
             const MamaMsgField&  field);
-        
+
         void updateAuctionFields   (const MamaMsg&      msg);
         void updateFieldStates     ();
 
         MamdaAuctionListener&  mListener;
         MamdaAuctionHandler*   mHandler;
-        
+
         /*
          * NOTE: fields which are enums can be pubished as integers if feedhandler
          * uses mama-publish-enums-as-ints.  It may also be possible for a feed to
@@ -86,22 +86,22 @@ namespace Wombat
          * by getting the value based on the field type.
          */
 
-        // Basic Event Fields 
-        string                 mSymbol;                 MamdaFieldState     mSymbolFieldState;      
-        string                 mPartId;                 MamdaFieldState     mPartIdFieldState;    
-        MamaDateTime           mSrcTime;                MamdaFieldState     mSrcTimeFieldState;     
+        // Basic Event Fields
+        string                 mSymbol;                 MamdaFieldState     mSymbolFieldState;
+        string                 mPartId;                 MamdaFieldState     mPartIdFieldState;
+        MamaDateTime           mSrcTime;                MamdaFieldState     mSrcTimeFieldState;
         MamaDateTime           mActTime;                MamdaFieldState     mActTimeFieldState;
-        MamaDateTime           mLineTime;               MamdaFieldState     mLineTimeFieldState;    
+        MamaDateTime           mLineTime;               MamdaFieldState     mLineTimeFieldState;
         MamaDateTime           mSendTime;               MamdaFieldState     mSendTimeFieldState;
         mama_seqnum_t          mEventSeqNum;            MamdaFieldState     mEventSeqNumFieldState;
         MamaDateTime           mEventTime;              MamdaFieldState     mEventTimeFieldState;
         MamaMsgQual            mMsgQual;                MamdaFieldState     mMsgQualFieldState;
-        
-        
-        // Auction Fields 
+
+
+        // Auction Fields
         // The following fields are used for caching the last reported
         // fundamental equity pricing/analysis attributes, indicators and ratios.
-        // The reason for caching these values is to allow a configuration that 
+        // The reason for caching these values is to allow a configuration that
         // passes the minimum amount of data  (unchanged fields not sent).
         MamaPrice              mUncrossPrice;           MamdaFieldState     mUncrossPriceFieldState;
         mama_quantity_t        mUncrossVolume;          MamdaFieldState     mUncrossVolumeFieldState;
@@ -109,7 +109,7 @@ namespace Wombat
         MamaDateTime           mAuctionTime;            MamdaFieldState     mAuctionTimeFieldState;
 
         bool mInitialised;
-        
+
         static void initFieldUpdaters ();
 
         static void initFieldUpdater  (const MamaFieldDescriptor*  fieldDesc,
@@ -125,9 +125,9 @@ namespace Wombat
         struct FieldUpdateAuctionTime;
         struct FieldUpdateAuctionSrcTime;
         struct FieldUpdateAuctionActTime;
-        struct FieldUpdateAuctionLineTime;  
-        struct FieldUpdateAuctionSendTime;    
-        
+        struct FieldUpdateAuctionLineTime;
+        struct FieldUpdateAuctionSendTime;
+
         struct FieldUpdateUncrossPrice;
         struct FieldUpdateUncrossVolume;
         struct FieldUpdateUncrossPriceInd;
@@ -141,8 +141,8 @@ namespace Wombat
 
     MamdaAuctionListener::~MamdaAuctionListener()
     {
-        /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.  
-           If we do, it will not be initialized again if another listener is created 
+        /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.
+           If we do, it will not be initialized again if another listener is created
            after the first is destroyed. */
         /* wthread_mutex_destroy (&mImpl.mAuctionFieldUpdaterLockMutex); */
         delete &mImpl;
@@ -284,7 +284,7 @@ namespace Wombat
     {
       return mImpl.mUncrossPriceFieldState;
     }
-     
+
     MamdaFieldState MamdaAuctionListener::getUncrossVolumeFieldState () const
     {
       return mImpl.mUncrossVolumeFieldState;
@@ -301,7 +301,7 @@ namespace Wombat
         MamdaSubscription* subscription,
         const MamaMsg&     msg,
         short              msgType)
-    { 
+    {
         // If msg is a trade-related message, invoke the
         // appropriate callback:
         if(subscription->checkDebugLevel (MAMA_LOG_LEVEL_FINE))
@@ -309,7 +309,7 @@ namespace Wombat
             const char *contractSymbol = "N/A";
 
             msg.tryString (
-                MamdaCommonFields::ISSUE_SYMBOL, 
+                MamdaCommonFields::ISSUE_SYMBOL,
                 contractSymbol);
 
             mama_forceLog (
@@ -329,8 +329,8 @@ namespace Wombat
             case MAMA_MSG_TYPE_RECAP:
             case MAMA_MSG_TYPE_UPDATE:
                 mImpl.handleAuctionMessage (
-                    subscription, 
-                    msg, 
+                    subscription,
+                    msg,
                     msgType);
                 break;
         }
@@ -351,11 +351,11 @@ namespace Wombat
         mSymbol = "";
         mPartId = "";
 
-        mSrcTime.clear      ();                
-        mActTime.clear      ();                
-        mLineTime.clear     ();               
-        mSendTime.clear     ();       
-        mEventTime.clear    ();         
+        mSrcTime.clear      ();
+        mActTime.clear      ();
+        mLineTime.clear     ();
+        mSendTime.clear     ();
+        mEventTime.clear    ();
         mAuctionTime.clear  ();
         mUncrossPrice.clear ();
 
@@ -369,13 +369,13 @@ namespace Wombat
         mSrcTimeFieldState         = NOT_INITIALISED;
         mActTimeFieldState         = NOT_INITIALISED;
         mLineTimeFieldState        = NOT_INITIALISED;
-        mSendTimeFieldState        = NOT_INITIALISED;    
-        mEventTimeFieldState       = NOT_INITIALISED;    
-        
-        mUncrossPriceFieldState    = NOT_INITIALISED;     
+        mSendTimeFieldState        = NOT_INITIALISED;
+        mEventTimeFieldState       = NOT_INITIALISED;
+
+        mUncrossPriceFieldState    = NOT_INITIALISED;
         mUncrossVolumeFieldState   = NOT_INITIALISED;
-        mUncrossPriceIndFieldState = NOT_INITIALISED; 
-        mAuctionTimeFieldState     = NOT_INITIALISED;                
+        mUncrossPriceIndFieldState = NOT_INITIALISED;
+        mAuctionTimeFieldState     = NOT_INITIALISED;
     }
 
     void MamdaAuctionListener::
@@ -446,9 +446,9 @@ namespace Wombat
         if (mHandler)
         {
             mHandler->onAuctionRecap (
-                subscription, 
-                mListener, 
-                msg, 
+                subscription,
+                mListener,
+                msg,
                 mListener);
         }
     }
@@ -459,15 +459,15 @@ namespace Wombat
         MamdaSubscription*  subscription,
         const MamaMsg&      msg)
     {
-        // should probably check if cache has changed 
+        // should probably check if cache has changed
         // prior to calling any handlers
         if (mHandler)
         {
             mHandler->onAuctionUpdate (
-                subscription, 
-                mListener, 
-                msg, 
-                mListener, 
+                subscription,
+                mListener,
+                msg,
+                mListener,
                 mListener);
         }
     }
@@ -475,10 +475,10 @@ namespace Wombat
     void MamdaAuctionListener::
         MamdaAuctionListenerImpl::updateFieldStates()
     {
-        if (mSymbolFieldState == MODIFIED)    
+        if (mSymbolFieldState == MODIFIED)
             mSymbolFieldState = NOT_MODIFIED;
- 
-        if (mPartIdFieldState == MODIFIED)   
+
+        if (mPartIdFieldState == MODIFIED)
             mPartIdFieldState = NOT_MODIFIED;
 
         if (mSrcTimeFieldState == MODIFIED)
@@ -497,39 +497,39 @@ namespace Wombat
             mEventSeqNumFieldState = NOT_MODIFIED;
 
         if (mEventTimeFieldState == MODIFIED)
-            mEventTimeFieldState = NOT_MODIFIED;    
-        
-        if (mUncrossPriceFieldState == MODIFIED)    
+            mEventTimeFieldState = NOT_MODIFIED;
+
+        if (mUncrossPriceFieldState == MODIFIED)
             mUncrossPriceFieldState = NOT_MODIFIED;
 
-        if (mUncrossVolumeFieldState == MODIFIED)    
+        if (mUncrossVolumeFieldState == MODIFIED)
             mUncrossVolumeFieldState = NOT_MODIFIED;
 
-        if (mUncrossPriceIndFieldState == MODIFIED)    
+        if (mUncrossPriceIndFieldState == MODIFIED)
             mUncrossPriceIndFieldState = NOT_MODIFIED;
 
         if (mAuctionTimeFieldState == MODIFIED)
             mAuctionTimeFieldState = NOT_MODIFIED;
-    } 
-      
+    }
+
     void MamdaAuctionListener::MamdaAuctionListenerImpl::updateAuctionFields (
         const MamaMsg&  msg)
-    { 
+    {
         const char* symbol = NULL;
         const char* partId = NULL;
-        
+
         getSymbolAndPartId (
-            msg, 
-            symbol, 
+            msg,
+            symbol,
             partId);
 
-        if (symbol) 
+        if (symbol)
         {
             mSymbol           = symbol;
             mSymbolFieldState = MODIFIED;
         }
 
-        if (partId) 
+        if (partId)
         {
             mPartId           = partId;
             mPartIdFieldState = MODIFIED;
@@ -598,7 +598,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionSrcTime 
+    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionSrcTime
         : public AuctionFieldUpdate
     {
         void onUpdate (
@@ -622,7 +622,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionActTime 
+    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionActTime
         : public AuctionFieldUpdate
     {
         void onUpdate (
@@ -634,7 +634,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionLineTime 
+    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionLineTime
         : public AuctionFieldUpdate
     {
         void onUpdate (
@@ -664,7 +664,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateUncrossVolume 
+    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateUncrossVolume
         : public AuctionFieldUpdate
     {
         void onUpdate (
@@ -681,7 +681,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateUncrossPriceInd 
+    struct MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateUncrossPriceInd
         : public AuctionFieldUpdate
     {
         void onUpdate (
@@ -698,10 +698,10 @@ namespace Wombat
         }
     };
 
-    AuctionFieldUpdate** 
+    AuctionFieldUpdate**
         MamdaAuctionListener::MamdaAuctionListenerImpl::mFieldUpdaters     = NULL;
 
-    volatile uint16_t 
+    volatile uint16_t
         MamdaAuctionListener::MamdaAuctionListenerImpl::mFieldUpdatersSize = 0;
 
     wthread_static_mutex_t MamdaAuctionListener::MamdaAuctionListenerImpl::
@@ -712,12 +712,12 @@ namespace Wombat
     {
         if (!mFieldUpdaters)
         {
-            mFieldUpdaters = 
+            mFieldUpdaters =
                 new AuctionFieldUpdate* [MamdaAuctionFields::getMaxFid() + 1];
 
             mFieldUpdatersSize = MamdaAuctionFields::getMaxFid();
 
-            /* Use uint32_t instead of uint16_t to avoid infinite 
+            /* Use uint32_t instead of uint16_t to avoid infinite
                loop if max FID = 65535 */
             for (uint32_t i = 0; i <= mFieldUpdatersSize; ++i)
             {
@@ -726,7 +726,7 @@ namespace Wombat
         }
 
         initFieldUpdater(
-            MamdaAuctionFields::AUCTION_TIME, 
+            MamdaAuctionFields::AUCTION_TIME,
             new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionTime);
 
         initFieldUpdater(
@@ -735,31 +735,31 @@ namespace Wombat
 
         initFieldUpdater(
             MamdaCommonFields::ACTIVITY_TIME,
-            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionActTime);   
-      
+            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionActTime);
+
         initFieldUpdater(
             MamdaCommonFields::LINE_TIME,
-            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionLineTime); 
+            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionLineTime);
 
         initFieldUpdater(
             MamdaCommonFields::SEND_TIME,
-            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionSendTime);   
-      
-        initFieldUpdater(
-            MamdaCommonFields::LINE_TIME,
-            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionLineTime); 
+            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionSendTime);
 
         initFieldUpdater(
-            MamdaAuctionFields::UNCROSS_PRICE, 
+            MamdaCommonFields::LINE_TIME,
+            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateAuctionLineTime);
+
+        initFieldUpdater(
+            MamdaAuctionFields::UNCROSS_PRICE,
             new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateUncrossPrice);
 
         initFieldUpdater(
             MamdaAuctionFields::UNCROSS_VOLUME,
-            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateUncrossVolume); 
-        
+            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateUncrossVolume);
+
         initFieldUpdater(
             MamdaAuctionFields::UNCROSS_PRICE_IND,
-            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateUncrossPriceInd);    
+            new MamdaAuctionListener::MamdaAuctionListenerImpl::FieldUpdateUncrossPriceInd);
     }
 
     void MamdaAuctionListener::MamdaAuctionListenerImpl::initFieldUpdater (

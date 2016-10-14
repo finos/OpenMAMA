@@ -44,7 +44,7 @@ static const char * gUsageString[] =
     "      [-tport name]     The transport parameters to be used from",
     "                        mama.properties. Default is pub",
     "      [-dictionary]     The dictionary file which is sent in response to client requests. Required.",
-    "      [-q]              Quiet mode. Suppress output.", 
+    "      [-q]              Quiet mode. Suppress output.",
     "      [-rewind|-r]      Rewind symbols when they reach the end of the file.",
     "      [-v]              Increase logging verbosity.",
     NULL
@@ -86,28 +86,28 @@ static int                      gRewind                 = 0;
 
 static void parseCommandLine (int argc, const char** argv);
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnCreateCb (mamaDQPublisherManager manager);
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnNewRequestCb(mamaDQPublisherManager manager,
                                   const char*            symbol,
                                   short                  subType,
                                   short                  msgType,
                                   mamaMsg                msg);
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnRequestCb(mamaDQPublisherManager manager,
                                mamaPublishTopic*      info,
                                short                  subType,
                                short                  msgType,
                                mamaMsg                msg);
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnRefreshCb(mamaDQPublisherManager manager,
                                mamaPublishTopic*      info,
                                short                  subType,
                                short                  msgType,
                                mamaMsg                msg);
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnErrorCb(mamaDQPublisherManager manager,
                              mama_status            status,
                              const char*            errortxt,
@@ -124,15 +124,15 @@ static void prepareDictionaryListener (void);
 static void MAMACALLTYPE  dictionarySubOnCreate  (mamaSubscription subsc, void* closure);
 static void MAMACALLTYPE  dictionarySubOnDestroy (mamaSubscription subsc, void* closure);
 
-static void MAMACALLTYPE  dictionarySubOnError   (mamaSubscription subsc, 
+static void MAMACALLTYPE  dictionarySubOnError   (mamaSubscription subsc,
                                     mama_status      status,
-                                    void*            platformError, 
+                                    void*            platformError,
                                     const char*      subject,
                                     void*            closure);
 
-static void MAMACALLTYPE dictionarySubOnMsg     (mamaSubscription subsc, 
+static void MAMACALLTYPE dictionarySubOnMsg     (mamaSubscription subsc,
                                     mamaMsg          msg,
-                                    void*            closure, 
+                                    void*            closure,
                                     void*            itemClosure);
 
 static void MAMACALLTYPE pubCallback (mamaTimer timer, void* closure)
@@ -185,9 +185,9 @@ static void MAMACALLTYPE pubCallback (mamaTimer timer, void* closure)
                     }
                 }
             }
-            if (gRewind && !header) 
+            if (gRewind && !header)
             {
-                mama_log (MAMA_LOG_LEVEL_FINE, 
+                mama_log (MAMA_LOG_LEVEL_FINE,
                             "End of file reached for symbol %s - Rewinding.",
                             gSubscriptionList[index].symbol);
                 status = mamaPlaybackFileParser_rewindFile(
@@ -199,8 +199,8 @@ static void MAMACALLTYPE pubCallback (mamaTimer timer, void* closure)
                            mamaStatus_stringForStatus(status));
                 }
             } else if (!header) {
-                mama_log (MAMA_LOG_LEVEL_FINE, 
-                            "End of file reached for symbol %s.", 
+                mama_log (MAMA_LOG_LEVEL_FINE,
+                            "End of file reached for symbol %s.",
                             gSubscriptionList[index].symbol);
             }
         }
@@ -257,22 +257,22 @@ static void prepareDictionaryListener (void)
     dictionarySubCallbacks.onRecapRequest = NULL;
 
     status = mamaSubscription_allocate (&gDictionarySubscription);
-    if (MAMA_STATUS_OK != status) 
+    if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Could not allocate dictionary subscription.");
         exit (1);
     }
 
-    status = mamaSubscription_createBasic (gDictionarySubscription, 
+    status = mamaSubscription_createBasic (gDictionarySubscription,
                                            gPubTransport,
-                                           gPubDefaultQueue, 
+                                           gPubDefaultQueue,
                                            &dictionarySubCallbacks,
-                                           "_MDDD.WOMBAT.DATA_DICT", 
+                                           "_MDDD.WOMBAT.DATA_DICT",
                                            NULL);
-    if (status != MAMA_STATUS_OK) 
+    if (status != MAMA_STATUS_OK)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Could not create dictionary subscription");
         exit (1);
     }
@@ -295,7 +295,7 @@ static void prepareDictionaryListener (void)
     status = mamaPublisher_create (&gDictionaryPublisher,
                                    gPubTransport,
                                    "WOMBAT.DATA_DICT",
-                                   NULL, 
+                                   NULL,
                                    NULL);
 
     if (MAMA_STATUS_OK != status)
@@ -325,7 +325,7 @@ static void initializeMama ()
     status = mama_loadBridge (&gPubBridge, gPubMiddleware);
     if (MAMA_STATUS_OK != status)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Could not load middleware bridge. Exiting.");
         exit (1);
     }
@@ -364,7 +364,7 @@ int main (int argc, const char **argv)
     mama_enableLogging (stderr, MAMA_LOG_LEVEL_NORMAL);
     parseCommandLine (argc, argv);
 
-    mama_log (MAMA_LOG_LEVEL_NORMAL, 
+    mama_log (MAMA_LOG_LEVEL_NORMAL,
               "Reading symbols from file, please standby.");
 
     initializeMama ();
@@ -384,13 +384,13 @@ int main (int argc, const char **argv)
     return 0;
 }
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnCreateCb (mamaDQPublisherManager manager)
 {
     mama_log (MAMA_LOG_LEVEL_NORMAL, "Created publisher subscription.");
 }
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnErrorCb (mamaDQPublisherManager manager,
                               mama_status            status,
                               const char*            errortxt,
@@ -398,22 +398,22 @@ subscriptionHandlerOnErrorCb (mamaDQPublisherManager manager,
 {
     if (msg)
     {
-        mama_log (MAMA_LOG_LEVEL_WARN, 
+        mama_log (MAMA_LOG_LEVEL_WARN,
                   "Unhandled Msg: %s (%s) %s\n",
-                  mamaStatus_stringForStatus (status), 
+                  mamaStatus_stringForStatus (status),
                   mamaMsg_toString (msg),
                   errortxt);
     }
     else
     {
-        mama_log (MAMA_LOG_LEVEL_WARN, 
-                  "Unhandled Msg: %s %s\n", 
+        mama_log (MAMA_LOG_LEVEL_WARN,
+                  "Unhandled Msg: %s %s\n",
                   mamaStatus_stringForStatus (status),
                   errortxt);
     }
 }
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
                                    const char*            symbol,
                                    short                  subType,
@@ -434,14 +434,14 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
 
     if (index == gNumSymbols)
     {
-       mama_log  (MAMA_LOG_LEVEL_WARN, 
-                  "Received request for unknown symbol: %s", 
+       mama_log  (MAMA_LOG_LEVEL_WARN,
+                  "Received request for unknown symbol: %s",
                   symbol);
         return;
     }
 
-    mama_log (MAMA_LOG_LEVEL_NORMAL, 
-              "Received new request: %s", 
+    mama_log (MAMA_LOG_LEVEL_NORMAL,
+              "Received new request: %s",
               symbol);
 
     mamaDQPublisherManager_createPublisher (manager, symbol, (void*)&gSubscriptionList[index], &gSubscriptionList[index].pub);
@@ -475,14 +475,14 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
         case MAMA_SUBSC_SNAPSHOT:
             if (subType == MAMA_SUBSC_TYPE_BOOK)
             {
-                mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+                mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg,
                                   NULL,
-                                  MamaFieldMsgType.mFid, 
+                                  MamaFieldMsgType.mFid,
                                   MAMA_MSG_TYPE_BOOK_INITIAL);
             } else {
-                mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+                mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg,
                                   NULL,
-                                  MamaFieldMsgType.mFid, 
+                                  MamaFieldMsgType.mFid,
                                   MAMA_MSG_TYPE_INITIAL);
             }
             mamaDQPublisher_sendReply (gSubscriptionList[index].pub, msg,
@@ -490,9 +490,9 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
             break;
         default:
             mama_log (MAMA_LOG_LEVEL_NORMAL, "Publishing MAMA_MSG_TYPE_RECAP");
-            mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+            mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg,
                               NULL,
-                              MamaFieldMsgType.mFid, 
+                              MamaFieldMsgType.mFid,
                               MAMA_MSG_TYPE_RECAP);
 
             mamaDQPublisher_send (gSubscriptionList[index].pub,
@@ -505,7 +505,7 @@ subscriptionHandlerOnNewRequestCb (mamaDQPublisherManager manager,
 
 
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
                                 mamaPublishTopic*      publishTopicInfo,
                                 short                  subType,
@@ -514,8 +514,8 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
 {
     int index =0;
 
-    mama_log (MAMA_LOG_LEVEL_NORMAL, 
-              "Received request: %s", 
+    mama_log (MAMA_LOG_LEVEL_NORMAL,
+              "Received request: %s",
               publishTopicInfo->symbol);
 
     switch (msgType)
@@ -524,19 +524,19 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
     case MAMA_SUBSC_SNAPSHOT:
         index = ((pubCache*) publishTopicInfo->cache)->index;
 
-        if (subType == MAMA_SUBSC_TYPE_BOOK) 
+        if (subType == MAMA_SUBSC_TYPE_BOOK)
         {
-            mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+            mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg,
                               NULL,
-                              MamaFieldMsgType.mFid, 
+                              MamaFieldMsgType.mFid,
                               MAMA_MSG_TYPE_BOOK_INITIAL);
         } else {
-            mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+            mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg,
                               NULL,
-                              MamaFieldMsgType.mFid, 
+                              MamaFieldMsgType.mFid,
                               MAMA_MSG_TYPE_INITIAL);
         }
-        mamaDQPublisher_sendReply (gSubscriptionList[index].pub, 
+        mamaDQPublisher_sendReply (gSubscriptionList[index].pub,
                                    msg,
                                    gSubscriptionList[index].cachedMsg);
         break;
@@ -546,9 +546,9 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
     case MAMA_SUBSC_DQ_UNKNOWN:
     case MAMA_SUBSC_DQ_GROUP_SUBSCRIBER:
         index = (int) ((pubCache*)publishTopicInfo->cache)->index;
-        mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg, 
+        mamaMsg_updateU8 (gSubscriptionList[index].cachedMsg,
                           NULL,
-                          MamaFieldMsgType.mFid, 
+                          MamaFieldMsgType.mFid,
                           MAMA_MSG_TYPE_RECAP);
         mamaDQPublisher_send (gSubscriptionList[index].pub,
                               gSubscriptionList[index].cachedMsg);
@@ -561,15 +561,15 @@ subscriptionHandlerOnRequestCb (mamaDQPublisherManager manager,
     }
 }
 
-static void MAMACALLTYPE 
+static void MAMACALLTYPE
 subscriptionHandlerOnRefreshCb (mamaDQPublisherManager  publisherManager,
                                 mamaPublishTopic*       publishTopicInfo,
                                 short                   subType,
                                 short                   msgType,
                                 mamaMsg                 msg)
 {
-    mama_log (MAMA_LOG_LEVEL_NORMAL, 
-              "Received Refresh: %s", 
+    mama_log (MAMA_LOG_LEVEL_NORMAL,
+              "Received Refresh: %s",
               publishTopicInfo->symbol);
 }
 
@@ -620,7 +620,7 @@ static void readSymbolsFromFile (void)
 
                 if (0 == (symbolIndex % 20))
                 {
-                    mama_log (MAMA_LOG_LEVEL_NORMAL, 
+                    mama_log (MAMA_LOG_LEVEL_NORMAL,
                               "Read %d symbols from playback file.",
                               symbolIndex);
                     mama_log (MAMA_LOG_LEVEL_NORMAL,
@@ -649,8 +649,8 @@ static void readSymbolsFromFile (void)
     gNumSymbols = symbolIndex;
 
     /* End logging. */
-    mama_log (MAMA_LOG_LEVEL_NORMAL, 
-              "Symbols read from playback file. Total symbols:\t%d", 
+    mama_log (MAMA_LOG_LEVEL_NORMAL,
+              "Symbols read from playback file. Total symbols:\t%d",
               gNumSymbols);
 
     mamaPlaybackFileParser_closeFile  (fileParser);
@@ -771,18 +771,18 @@ static void MAMACALLTYPE dictionarySubOnDestroy (mamaSubscription subsc, void* c
     mama_log (MAMA_LOG_LEVEL_NORMAL, "Dictionary Subscription Destroyed:");
 }
 
-static void MAMACALLTYPE dictionarySubOnError (mamaSubscription subsc, 
+static void MAMACALLTYPE dictionarySubOnError (mamaSubscription subsc,
                                   mama_status      status,
-                                  void*            platformError, 
+                                  void*            platformError,
                                   const char*      subject,
                                   void*            closure)
 {
     mama_log (MAMA_LOG_LEVEL_NORMAL, "Dictionary Subscription Error:");
 }
 
-static void MAMACALLTYPE dictionarySubOnMsg (mamaSubscription subsc, 
+static void MAMACALLTYPE dictionarySubOnMsg (mamaSubscription subsc,
                                 mamaMsg          msg,
-                                void*            closure, 
+                                void*            closure,
                                 void*            itemClosure)
 {
     mama_status status = MAMA_STATUS_OK;
@@ -790,11 +790,10 @@ static void MAMACALLTYPE dictionarySubOnMsg (mamaSubscription subsc,
                                              msg,
                                              gDictionaryMessage);
 
-    if (MAMA_STATUS_OK != status) 
+    if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Failed to send dictionary message.");
         exit (1);
     }
 }
-

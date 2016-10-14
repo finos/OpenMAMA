@@ -43,7 +43,7 @@ namespace Wombat
         case TRADE_EXEC_VENUE_ON_EXCHANGE_OFF_BOOK:  return TRADE_EXEC_VENUE_STR_ON_EXCHANGE_OFF_BOOK;
         case TRADE_EXEC_VENUE_OFF_EXCHANGE:          return TRADE_EXEC_VENUE_STR_OFF_EXCHANGE;
         case TRADE_EXEC_VENUE_SYSTEM_INTERNALISER:   return TRADE_EXEC_VENUE_STR_SYSTEM_INTERNALISER;
-        case TRADE_EXEC_VENUE_ON_EXCHANGE_DARK_BOOK: return TRADE_EXEC_VENUE_STR_ON_EXCHANGE_DARK_BOOK;    
+        case TRADE_EXEC_VENUE_ON_EXCHANGE_DARK_BOOK: return TRADE_EXEC_VENUE_STR_ON_EXCHANGE_DARK_BOOK;
         }
         return "Error!";
     }
@@ -81,7 +81,7 @@ namespace Wombat
             return TRADE_EXEC_VENUE_ON_EXCHANGE_DARK_BOOK;
         if (strcmp (tradeExecVenue,"6") == 0)
             return TRADE_EXEC_VENUE_ON_EXCHANGE_OFF_BOOK;
-        
+
         return TRADE_EXEC_VENUE_UNKNOWN;
     }
 

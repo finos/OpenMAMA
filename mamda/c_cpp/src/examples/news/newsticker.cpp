@@ -168,6 +168,7 @@ public:
                  << headline.getNewsStoryId() << "\n";
             manager.requestStory (headline, this, NULL);
         }
+        flush (cout);
     }
 
     void onNewsStory (
@@ -203,6 +204,7 @@ public:
             default:
                 ;
         }
+        flush (cout);
     }
 
     void onNewsStoryError (
@@ -213,6 +215,7 @@ public:
     {
         cout << "NewsTicker: could not fetch story ID " << storyId
              << ": reason???\n";
+        flush (cout);
     }
 
     void onError (
@@ -222,8 +225,9 @@ public:
         const char*          errorStr)
     {
         cout << "NewsTicker:: OnError () sub =  " \
-			 <<  subscription->getSymbol() << " errorStr = \"" 
+			 <<  subscription->getSymbol() << " errorStr = \""
              << errorStr << "\"\n";
+        flush (cout);
     }
 
     void onQuality (
@@ -247,10 +251,10 @@ int main (int argc, const char **argv)
 
         setbuf (stdout, NULL);
         CommonCommandLineParser     cmdLine (argc, argv);
-        
+
         bridge = cmdLine.getBridge();
         Mama::open();
-        
+
         const vector<const char*>&  symbolList    = cmdLine.getSymbolList();
         int                         threads       = cmdLine.getNumThreads();
         MamaSource*                 source        = cmdLine.getSource();
@@ -260,12 +264,12 @@ int main (int argc, const char **argv)
         dictRequester.requestDictionary (cmdLine.getDictSource());
         MamdaCommonFields::setDictionary (*dictRequester.getDictionary());
         MamdaNewsFields::setDictionary (*dictRequester.getDictionary());
-        
+
         aNewsManager->addBroadcastHeadlineHandler (aTicker);
         aNewsManager->addBroadcastStoryHandler (aTicker);
         aNewsManager->addQualityHandler (aTicker);
         aNewsManager->addErrorHandler (aTicker);
- 
+
         for (vector<const char*>::const_iterator i = symbolList.begin();
              i != symbolList.end();
              ++i)

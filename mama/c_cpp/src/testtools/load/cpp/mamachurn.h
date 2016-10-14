@@ -72,17 +72,17 @@ class TransportCallback : public MamaTransportCallback
         mamaQuality quality = transport->getQuality();
         printf("**** Transport quality %s\n", mamaQuality_convertToString(quality));
     };
-};  
+};
 
 class SubscriptionCallbacks : public MamaSubscriptionCallback
 {
     void onCreate(MamaSubscription* subscription);
     void onError(MamaSubscription* subscription, const MamaStatus& satus, const char* symbol);
     void onMsg(MamaSubscription* subscription, MamaMsg& msg);
-    void onDestroy(MamaSubscription* subscription) {};   
-    void onQuality(MamaSubscription* subscription, 
-                    mamaQuality quality, 
-                    const char* symbol, 
-                    short cause, 
+    void onDestroy(MamaSubscription* subscription) {};
+    void onQuality(MamaSubscription* subscription,
+                    mamaQuality quality,
+                    const char* symbol,
+                    short cause,
                     const void* platformInfo) {};
 };

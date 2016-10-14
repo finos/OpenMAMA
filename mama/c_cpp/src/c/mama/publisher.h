@@ -132,7 +132,7 @@ mamaPublisher_create (mamaPublisher*    result,
 /**
  *  Create a mama publisher for a corresponding transport. Include publisher
  *  event callbacks.
- *  
+ *
  *  @param result A pointer to hold the resulting mamaPublisher.
  *  @param tport The transport.
  *  @param queue The mama queue.

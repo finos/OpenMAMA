@@ -115,7 +115,7 @@ namespace Wombat
 		/// the security. This field may contain multiple string values,
 		/// separated by the colon(:) character.  In the future, this will
 		/// be made a configurable enumeration.
-		/// 
+		///
 		/// <table width="100%" border="1">
 		///   <tr><td><b>Value</b></td><td><b>Meaning</b></td></tr>
 		///   <tr>
@@ -296,7 +296,7 @@ namespace Wombat
 		/// The exchange specific non normalized quote qualifier.
 		/// </summary>
 		/// <returns>The exchange specific quote qualifier. <see cref="getQuoteQual"/></returns>
-		/// 
+		///
 		string getQuoteQualNative();
 
         /// <summary>
@@ -309,7 +309,7 @@ namespace Wombat
 		/// NASDAQ Bid Tick Indicator for Short Sale Rule Compliance.
 		/// National Bid Tick Indicator based on changes to the bid price of the
 		/// National Best Bid or Offer (National BBO).
-		/// 
+		///
 		/// <table width="100%" border="1">
 		///   <tr><td><b>Value</b></td><td><b>Meaning</b></td></tr>
 		///   <tr>
@@ -345,11 +345,11 @@ namespace Wombat
 		/// <summary>
 		/// get the ShortSaleCircuitBreaker
 		/// </summary>
-		/// <returns>return values: 
-		/// Blank: Short Sale Restriction Not in Effect. 
-		/// A: Short Sale Restriction Activiated. 
-		/// C: Short Sale Restriction Continued. 
-		/// D: Sale Restriction Deactivated. 
+		/// <returns>return values:
+		/// Blank: Short Sale Restriction Not in Effect.
+		/// A: Short Sale Restriction Activiated.
+		/// C: Short Sale Restriction Continued.
+		/// D: Sale Restriction Deactivated.
 		/// E: Sale Restriction in Effect.</returns>
         char getShortSaleCircuitBreaker();
 
@@ -375,8 +375,8 @@ namespace Wombat
         long            getAskUpdateCount();
         long            getBidUpdateCount();
         double          getAskYield();
-        double          getBidYield();  
-        
+        double          getBidYield();
+
         MamdaFieldState    getAskTimeFieldState();
         MamdaFieldState    getBidTimeFieldState();
         MamdaFieldState    getAskIndicatorFieldState();
@@ -384,7 +384,6 @@ namespace Wombat
         MamdaFieldState    getAskUpdateCountFieldState();
         MamdaFieldState    getBidUpdateCountFieldState();
         MamdaFieldState    getAskYieldFieldState();
-        MamdaFieldState    getBidYieldFieldState();  
+        MamdaFieldState    getBidYieldFieldState();
 	}
 }
-

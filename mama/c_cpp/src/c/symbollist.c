@@ -39,13 +39,13 @@ typedef struct mamaSymbolList_
 
     /* User supplied closure. */
     void *myClosure;
-    
+
     /* This list contains mamaSymbolListMemberImpl objects, one for each symbol. */
     wList myMembers;
 
     /* This callback is invoked whenever members are removed from the symbol list. */
     removeSymbolCbType myRemoveCb;
-    
+
 } mamaSymbolListImpl;
 
 /* *************************************************** */
@@ -68,7 +68,7 @@ void mamaSymbolListImpl_removeMember(wList list, void *member, void *closure);
 /* Public Functions. */
 /* *************************************************** */
 
-mama_status mamaSymbolList_addMember(mamaSymbolList symbolList, mamaSymbolListMember member) 
+mama_status mamaSymbolList_addMember(mamaSymbolList symbolList, mamaSymbolListMember member)
 {
     /* Returns. */
     mama_status ret = MAMA_STATUS_NULL_ARG;
@@ -77,7 +77,7 @@ mama_status mamaSymbolList_addMember(mamaSymbolList symbolList, mamaSymbolListMe
         /* Get the impl. */
         mamaSymbolListImpl *impl = (mamaSymbolListImpl *)symbolList;
 
-        /* Add the new member to the list. */        
+        /* Add the new member to the list. */
         list_push_back (impl->myMembers, member);
 
         /* Invoke the callback if it has been supplied. */
@@ -93,7 +93,7 @@ mama_status mamaSymbolList_addMember(mamaSymbolList symbolList, mamaSymbolListMe
     return ret;
 }
 
-mama_status mamaSymbolList_allocate(mamaSymbolList *result) 
+mama_status mamaSymbolList_allocate(mamaSymbolList *result)
 {
     /* Returns. */
     mama_status ret = MAMA_STATUS_NULL_ARG;
@@ -114,7 +114,7 @@ mama_status mamaSymbolList_allocate(mamaSymbolList *result)
         /* Return the impl. */
         *result = (mamaSymbolList)impl;
     }
-   
+
     return ret;
 }
 
@@ -134,7 +134,7 @@ mamaSymbolListMember mamaSymbolList_allocateMember(mamaSymbolList symbolList)
     return ret;
 }
 
-mama_status mamaSymbolList_clear(mamaSymbolList symbolList, int membersToo) 
+mama_status mamaSymbolList_clear(mamaSymbolList symbolList, int membersToo)
 {
     /* Returns. */
     mama_status ret = MAMA_STATUS_NULL_ARG;
@@ -142,7 +142,7 @@ mama_status mamaSymbolList_clear(mamaSymbolList symbolList, int membersToo)
     {
         /* Get the impl. */
         mamaSymbolListImpl *impl = (mamaSymbolListImpl *)symbolList;
-    
+
         /* Remove all the members if the flag is set. */
         if(0 != membersToo)
         {
@@ -164,7 +164,7 @@ mama_status mamaSymbolList_deallocate(mamaSymbolList symbolList)
     {
         /* Get the impl. */
         mamaSymbolListImpl *impl = (mamaSymbolListImpl*)symbolList;
-    
+
         /* Remove all the symbol list member structures. */
         ret = mamaSymbolList_clear(symbolList, 0);
         if(MAMA_STATUS_OK == ret)
@@ -208,7 +208,7 @@ mama_status mamaSymbolList_deallocateWithMembers(mamaSymbolList symbolList)
     return mamaSymbolList_deallocate(symbolList);
 }
 
-mama_status mamaSymbolList_findMember(const mamaSymbolList symbolList, const char *symbol, const char *source, mamaTransport transport, mamaSymbolListMember *member) 
+mama_status mamaSymbolList_findMember(const mamaSymbolList symbolList, const char *symbol, const char *source, mamaTransport transport, mamaSymbolListMember *member)
 {
     /* Returns. */
     mama_status ret = MAMA_STATUS_NULL_ARG;
@@ -232,7 +232,7 @@ mama_status mamaSymbolList_findMember(const mamaSymbolList symbolList, const cha
             mamaSymbolListMember_getSymbol(tempMember, &tempSymbol);
             mamaSymbolListMember_getSource(tempMember, &tempSource);
             mamaSymbolListMember_getTransport(tempMember, &tempTport);
-            
+
             /* Compare the member's names and transport. */
             if((strncmp(source, tempSource, MAMA_MAX_SOURCE_LEN) == 0) && (transport == tempTport))
             {
@@ -248,7 +248,7 @@ mama_status mamaSymbolList_findMember(const mamaSymbolList symbolList, const cha
         /* Return the member. */
         *member = tempMember;
     }
-    
+
     return ret;
 }
 
@@ -299,9 +299,9 @@ mama_status mamaSymbolList_iterate(mamaSymbolList symbolList, mamaSymbolListIter
         /* Get the impl. */
         mamaSymbolListImpl *impl = (mamaSymbolListImpl *)symbolList;
 
-        /* Create a new iterator. */        
+        /* Create a new iterator. */
         wIterator  i = list_create_iterator (impl->myMembers);
-        
+
         /* Iterate all the members in the list. */
         mamaSymbolListMember member = NULL;
         while (NULL != (member = iterator_next(i)))
@@ -311,7 +311,7 @@ mama_status mamaSymbolList_iterate(mamaSymbolList symbolList, mamaSymbolListIter
 
         /* Destroy the iterator. */
         iterator_destroy (i);
-        
+
         /* Invoke the callback if it has been supplied. */
         if(NULL != completeFunc)
         {
@@ -335,14 +335,14 @@ mama_status mamaSymbolList_removeMember(mamaSymbolList symbolList, const char *s
 
         /* To return the removed member. */
         mamaSymbolListMember localMember = NULL;
-    
+
         /* Find the member in the symbol list. */
         ret = mamaSymbolList_findMember(symbolList, symbol, source, transport, &localMember);
         if(MAMA_STATUS_OK == ret)
         {
             /* Remove the member from the list. */
             list_remove_element(impl->myMembers, localMember);
-    
+
             /* Invoke the callback if it has been installed. */
             if(NULL != impl->myRemoveCb)
             {
@@ -357,7 +357,7 @@ mama_status mamaSymbolList_removeMember(mamaSymbolList symbolList, const char *s
         *member = localMember;
     }
 
-    return ret;    
+    return ret;
 }
 
 mama_status mamaSymbolList_removeMemberByRef(mamaSymbolList symbolList, mamaSymbolListMember member)
@@ -396,9 +396,9 @@ mama_status mamaSymbolList_setAddSymbolHandler(mamaSymbolList symbolList, addSym
 
         /* Save the callback. */
         impl->myAddCb = addCb;
-        
+
         /* Function succeeded. */
-        ret = MAMA_STATUS_OK;        
+        ret = MAMA_STATUS_OK;
     }
 
     return ret;
@@ -415,9 +415,9 @@ mama_status mamaSymbolList_setClosure(mamaSymbolList symbolList, void *closure)
 
         /* Save the closure. */
         impl->myClosure = closure;
-        
+
         /* Function succeeded. */
-        ret = MAMA_STATUS_OK;        
+        ret = MAMA_STATUS_OK;
     }
 
     return ret;
@@ -434,9 +434,9 @@ mama_status mamaSymbolList_setRemoveSymbolHandler(mamaSymbolList symbolList, rem
 
         /* Save the callback. */
         impl->myRemoveCb = removeCb;
-        
+
         /* Function succeeded. */
-        ret = MAMA_STATUS_OK;        
+        ret = MAMA_STATUS_OK;
     }
     return ret;
 }

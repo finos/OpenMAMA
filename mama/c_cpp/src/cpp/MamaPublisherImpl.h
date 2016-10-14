@@ -96,9 +96,9 @@ namespace Wombat
         MamaPublisher* mParent;
 
     private:
-        static void MAMACALLTYPE onPublisherCreate (mamaPublisher publisher, 
+        static void MAMACALLTYPE onPublisherCreate (mamaPublisher publisher,
                                                     void*         closure);
-        static void MAMACALLTYPE onPublisherDestroy (mamaPublisher publisher, 
+        static void MAMACALLTYPE onPublisherDestroy (mamaPublisher publisher,
                                                      void*         closure);
 
         static void MAMACALLTYPE onPublisherError (mamaPublisher publisher,

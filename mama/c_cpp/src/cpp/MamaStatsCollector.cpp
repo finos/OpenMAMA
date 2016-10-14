@@ -24,7 +24,7 @@
 
 namespace Wombat
 {
-    MamaStatsCollector::~MamaStatsCollector (void) 
+    MamaStatsCollector::~MamaStatsCollector (void)
     {
         if (mSimpl)
         {
@@ -34,11 +34,11 @@ namespace Wombat
     }
 
     MamaStatsCollector::MamaStatsCollector (MamaStatsCollectorImpl* impl)
-        : mSimpl (impl) 
+        : mSimpl (impl)
     {
     }
 
-    MamaStatsCollector::MamaStatsCollector (void) 
+    MamaStatsCollector::MamaStatsCollector (void)
         : mSimpl (new MamaStatsCollectorImpl (this))
     {
     }

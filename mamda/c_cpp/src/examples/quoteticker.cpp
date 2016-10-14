@@ -89,7 +89,7 @@ public:
         const MamdaQuoteGap&    event,
         const MamdaQuoteRecap&  recap)
     {
-        cout << "Quote gap (" << event.getBeginGapSeqNum () << "-" 
+        cout << "Quote gap (" << event.getBeginGapSeqNum () << "-"
              << event.getEndGapSeqNum () << ")\n"
              << flush;
     }
@@ -160,9 +160,9 @@ public:
         MamdaSubscription*   subscription,
         mamaQuality          quality)
     {
-        cout << "Quote Quality: "  
-            << subscription->getSymbol () 
-            << "(" 
+        cout << "Quote Quality: "
+            << subscription->getSymbol ()
+            << "("
             << mamaQuality_convertToString (quality)
             << ")\n"
             << flush;
@@ -178,7 +178,7 @@ int main (int argc, const char **argv)
         // Initialise the MAMA API
         mamaBridge bridge = cmdLine.getBridge();
         Mama::open ();
-        
+
         const vector<const char*>& symbolList = cmdLine.getSymbolList ();
         MamaSource*                source     = cmdLine.getSource();
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);

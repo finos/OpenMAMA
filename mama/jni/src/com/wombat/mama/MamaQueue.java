@@ -32,7 +32,7 @@ public class MamaQueue
         initIDs();
     }
 
-    /*A long holding the C pointer value to the underlying 
+    /*A long holding the C pointer value to the underlying
       MamaQueue C structure */
     private long queuePointer_i = 0;
 
@@ -44,7 +44,7 @@ public class MamaQueue
     {
         return queuePointer_i;
     }
-    
+
     public MamaQueue () {
 		reuseableMsg = new MamaMsg(false);
 	};
@@ -82,10 +82,10 @@ public class MamaQueue
     public native void dispatch();
 
     public native void stopDispatch();
-    
+
     public native void enqueueEvent (MamaQueueEventCallback callback,
                                      Object closure);
-    
+
     public native void setQueueMonitorCallback (
                                         MamaQueueMonitorCallback callback);
 
@@ -104,7 +104,7 @@ public class MamaQueue
     public native String getQueueBridgeName ();
 
     public native long getEventCount ();
-    
+
     /*Used to cache ids for callback methods/fields*/
     private static native void initIDs();
 }/*end class*/

@@ -84,7 +84,7 @@ typedef struct mamaSubscriptionImpl_
     mamaSubscriptionType     mType;
     mamaServiceLevel         mServiceLevel;
     long                     mServiceLevelOpt;
-    subscriptionBridge       mSubscBridge; /* SubscriberBridge */    
+    subscriptionBridge       mSubscBridge; /* SubscriberBridge */
     mamaTransport            mTransport;
     int                      mTransportIndex;    /* Transport bridge index */
     mamaQueue                mQueue;
@@ -92,8 +92,8 @@ typedef struct mamaSubscriptionImpl_
     char*                    mUserSymbol;
     mamaMsgCallbacks         mUserCallbacks;
     mamaWildCardMsgCallbacks mWcCallbacks;
-    void*                    mClosure;        
-    short                    mIsThrottled;    
+    void*                    mClosure;
+    short                    mIsThrottled;
 
     /* This lock is used to protect access to this structure during creation and destruction. */
     wLock                    mCreateDestroyLock;
@@ -125,7 +125,7 @@ typedef struct mamaSubscriptionImpl_
     mamaSubscMsgType        mSubscMsgType;
     uint8_t                 mAppDataType;
     int                     mInitialCount;
-    
+
     mamaPublisher           mSubscPublisher;
     MamaLogLevel            mDebugLevel;
 
@@ -133,7 +133,7 @@ typedef struct mamaSubscriptionImpl_
     uint16_t                mMsgQualFilter;
     int                     mExpectingInitial;
     int                     mStateMachineTrace;
-    
+
     mamaBridgeImpl*         mBridgeImpl;
 
     int                     mGroupSizeHint;
@@ -147,7 +147,7 @@ typedef struct mamaSubscriptionImpl_
 
     /* The queue lock handle. */
     mamaQueueLockHandle mLockHandle;
-    
+
 } mamaSubscriptionImpl;
 
 /* *************************************************** */
@@ -191,7 +191,7 @@ mama_status mamaSubscriptionImpl_createBasic(mamaSubscription subscription, mama
  * deleting the impl. Note that this function will also set the state of the subscription to be
  * MAMA_SUBSCRIPTION_DEALLOCATED which will result in a finest level log message being written out.
  *
- * @param[in] impl The subscritpion impl to deallocate. 
+ * @param[in] impl The subscritpion impl to deallocate.
  */
 void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl);
 
@@ -213,7 +213,7 @@ void MAMACALLTYPE mamaSubscriptionImpl_onSubscriptionDestroyed(mamaSubscription 
  * subscription is in the MAMA_SUBSCRIPTION_ACTIVATING state.
  * Note that this function should only be called under the subscription lock.
  *
- * @param[in] impl The subscritpion impl. 
+ * @param[in] impl The subscritpion impl.
  * @return mama_status code can be one of the following:
  *      MAMA_STATUS_SUBSCRIPTION_INVALID_STATE - indicates that the throttle processed the subscription which this
  *                                               function was being called. The subscription is now in the state
@@ -227,14 +227,14 @@ mama_status mamaSubscriptionImpl_removeFromThrottle(mamaSubscriptionImpl *impl);
  * log message.
  *
  * @param[in] impl The subscritpion impl to change the state of.
- * @param[in] state The new state. 
+ * @param[in] state The new state.
  */
 void mamaSubscriptionImpl_setState(mamaSubscriptionImpl *impl, mamaSubscriptionState state);
 
 /**
  * This function will invoke the user callback function.
  *
- * @param[in] impl The subscritpion impl to change the state of. 
+ * @param[in] impl The subscritpion impl to change the state of.
  * @param[in] closure The closure will be passed back up to the onDestroy callback function.
  */
 void mamaSubscriptionImpl_invokeDestroyedCallback(mamaSubscriptionImpl *impl);
@@ -280,7 +280,7 @@ mamaSubscription_initialize (
 
 static mama_status
 setSubscInfo (
-    mamaSubscription  subscription, 
+    mamaSubscription  subscription,
     mamaTransport     transport,
     const char*       root,
     const char*       source,
@@ -329,12 +329,12 @@ mama_status mamaSubscription_deactivate_internal(mamaSubscriptionImpl *impl);
 static void createAction (void *subscription, void *closure2)
 {
     mamaSubscriptionImpl_completeMarketDataInitialisation (self);
-    
+
 }
 
 static mama_status
 mamaSubscription_create_ (
-    mamaSubscription         subscription, 
+    mamaSubscription         subscription,
     mamaQueue                queue,
     const mamaMsgCallbacks*  callbacks,
     mamaSource               source,
@@ -368,14 +368,14 @@ mamaSubscription_allocate (
     impl->mType                   = MAMA_SUBSC_TYPE_NORMAL;
     impl->mServiceLevel           = MAMA_SERVICE_LEVEL_REAL_TIME;
     impl->mServiceLevelOpt        = 0;
-    impl->mSubscBridge            = NULL;    
+    impl->mSubscBridge            = NULL;
     impl->mTransport              = NULL;
     impl->mTransportIndex         = 0;
     impl->mQueue                  = NULL;
     impl->mSubscSymbol            = NULL;
     impl->mUserSymbol             = NULL;
-    impl->mClosure                = NULL;        
-    impl->mIsThrottled            = 1;    
+    impl->mClosure                = NULL;
+    impl->mIsThrottled            = 1;
     impl->mSubscSource            = NULL;
     impl->mSubscRoot              = NULL;
     impl->mSubscHandle            = NULL;
@@ -403,7 +403,7 @@ mamaSubscription_allocate (
     impl->mStateMachineTrace      = 0;
 
 
-    
+
     /* Create the mutex. */
     impl->mCreateDestroyLock = wlock_create();
 
@@ -425,18 +425,18 @@ mamaSubscription_allocate (
     /* Initialise the state. */
     wInterlocked_initialize(&impl->mState);
 
-    /* Set the initial state of the subscription now that the memory has been allocated. */    
+    /* Set the initial state of the subscription now that the memory has been allocated. */
     mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_ALLOCATED);
 
     *result = impl;
-    
-    
+
+
     return MAMA_STATUS_OK;
 }
 
 mama_status
 mamaSubscription_setupBasic (
-    mamaSubscription         subscription, 
+    mamaSubscription         subscription,
     mamaTransport            transport,
     mamaQueue                queue,
     const mamaMsgCallbacks*  callbacks,
@@ -460,12 +460,12 @@ mamaSubscription_setupBasic (
                   " Queue");
         return MAMA_STATUS_INVALID_QUEUE;
     }
-        
+
     /*The subscription gets the bridge impl from the transport*/
-    self->mBridgeImpl             = 
+    self->mBridgeImpl             =
         mamaTransportImpl_getBridgeImpl (transport);
 
-    if (!self->mBridgeImpl) 
+    if (!self->mBridgeImpl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,"mamaSubscription_setupBasic():"
                   "Could not get bridge impl from transport.");
@@ -503,9 +503,9 @@ mamaSubscription_setupBasic (
         setSubscInfo (self, transport, root, source, symbol);
         return MAMA_STATUS_NOT_ENTITLED;
     }
-    
+
     self->mSubjectContext.mSymbol = copyString (symbol);
-    
+
     /* mamaSubscMsgType is being removed in favor of a combination of
      * mamaServiceLevel, mamaSubscriptionType.  For backward
      * compatibility with older feed handlers, we still need to send
@@ -583,8 +583,8 @@ mamaSubscription_setupBasic (
         self->mUserCallbacks.onRecapRequest = callbacks->onRecapRequest;
         self->mUserCallbacks.onDestroy      = callbacks->onDestroy;
     }
-    self->mRecoverGaps                  = checkSeqNumGaps; 
-    self->mAcceptMultipleInitials       = acceptMultipleInitials;    
+    self->mRecoverGaps                  = checkSeqNumGaps;
+    self->mAcceptMultipleInitials       = acceptMultipleInitials;
     self->mTransport                    = transport;
     mamaTransportImpl_getTransportIndex (transport, &self->mTransportIndex);
     mamaTransportImpl_nextTransportIndex (transport, source, symbol);
@@ -600,7 +600,7 @@ mamaSubscription_setupBasic (
     {
         self->mGroupSizeHint = MINIMUM_GROUP_SIZE_HINT;
     }
-    
+
     setSubscInfo (self, transport, root, source, symbol);
 
     /*Create the publisher - needed for the image request object */
@@ -615,7 +615,7 @@ mamaSubscription_setupBasic (
                                    self->mSubscRoot,
                                    NULL)))
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Could not create publisher bridge. [%s]",
                   mamaStatus_stringForStatus (status));
         return status;
@@ -628,12 +628,12 @@ mamaSubscription_setupBasic (
                         mamaTransportImpl_getThrottle (self->mTransport,
                                                        MAMA_THROTTLE_DEFAULT)))
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Could not create image reqest. [%s]",
                   mamaStatus_stringForStatus (status));
         return status;
     }
-    
+
     if (MAMA_STATUS_OK!=imageRequest_create (&self->mRecapRequest,
                         subscription,
                         &self->mSubjectContext,
@@ -641,7 +641,7 @@ mamaSubscription_setupBasic (
                         mamaTransportImpl_getThrottle (self->mTransport,
                                                        MAMA_THROTTLE_RECAP)))
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Could not create recap image reqest. [%s]",
                   mamaStatus_stringForStatus (status));
         return status;
@@ -651,17 +651,17 @@ mamaSubscription_setupBasic (
     if (MAMA_STATUS_OK!=(status=listenerMsgCallback_create (&self->mCallback,
                                       (mamaSubscription)self)))
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Could not create msg listener. [%s]",
                   mamaStatus_stringForStatus (status));
         return status;
     }
-    
+
     /*Create the DQ strategy - sequence number checking etc.*/
-    if (MAMA_STATUS_OK!=(status=dqStrategy_create (&self->mDqStrategy, 
+    if (MAMA_STATUS_OK!=(status=dqStrategy_create (&self->mDqStrategy,
                       subscription)))
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Could not create DQ strategy. [%s]",
                   mamaStatus_stringForStatus (status));
         return status;
@@ -675,7 +675,7 @@ mamaSubscription_setupBasic (
 
 mama_status
 mamaSubscription_setupBasicWildCard (
-    mamaSubscription                  subscription, 
+    mamaSubscription                  subscription,
     mamaTransport                     transport,
     mamaQueue                         queue,
     const mamaWildCardMsgCallbacks*   callbacks,
@@ -703,16 +703,16 @@ mamaSubscription_setupBasicWildCard (
 mama_status mamaSubscription_activate_internal (mamaSubscriptionImpl *impl)
 {
     mama_status status = MAMA_STATUS_OK;
-        
+
     if (!impl->mTransport) return MAMA_STATUS_INVALID_ARG;
 
     /*We need to reset the context for each reuse of a subscription*/
     if (MAMA_STATUS_OK!=(status=dqContext_initializeContext (
-                                    &impl->mSubjectContext.mDqContext, 
+                                    &impl->mSubjectContext.mDqContext,
                                     impl->mPreInitialCacheSize,
                                     impl->mRecapRequest)))
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mamaSubscription_activate(): Failed to initialize DQ"
                   " context for subscription [%s]",
                   mamaStatus_stringForStatus(status));
@@ -726,7 +726,7 @@ mama_status mamaSubscription_activate_internal (mamaSubscriptionImpl *impl)
                                   createAction,
                                   impl,
                                   impl,
-                                  NULL, 
+                                  NULL,
                                   0,
                                   &impl->mAction)))
     {
@@ -741,7 +741,7 @@ mama_status mamaSubscription_activate_internal (mamaSubscriptionImpl *impl)
 
 mama_status
 mamaSubscription_create (
-    mamaSubscription         subscription, 
+    mamaSubscription         subscription,
     mamaQueue                queue,
     const mamaMsgCallbacks*  callbacks,
     mamaSource               source,
@@ -759,7 +759,7 @@ mamaSubscription_create (
 
 mama_status
 mamaSubscription_createSnapshot (
-    mamaSubscription         subscription, 
+    mamaSubscription         subscription,
     mamaQueue                queue,
     const mamaMsgCallbacks*  callbacks,
     mamaSource               source,
@@ -767,14 +767,14 @@ mamaSubscription_createSnapshot (
     void*                    closure)
 {
     if (!self) return MAMA_STATUS_NULL_ARG;
-    
+
     /*Set the properties required for a snapshot subscription*/
     self->mType             = MAMA_SUBSC_TYPE_NORMAL;
     self->mServiceLevel     = MAMA_SERVICE_LEVEL_SNAPSHOT;
     self->mServiceLevelOpt  = 0;
     self->mRequiresInitial  = 1;
     self->mAppDataType      = MAMA_MD_DATA_TYPE_STANDARD;
-    
+
     return mamaSubscription_create (
         subscription,
         queue,
@@ -801,7 +801,7 @@ mama_createDictionary (
 
     result = mamaDictionary_create (dictionary);
     if (result != MAMA_STATUS_OK) return result;
-    
+
     result = mamaDictionary_setClosure (*dictionary, closure);
     if (result != MAMA_STATUS_OK) return result;
 
@@ -810,13 +810,13 @@ mama_createDictionary (
         mamaDictionary_setCompleteCallback (*dictionary,
                                             dictionaryCallback.onComplete);
     }
-    
+
     if (dictionaryCallback.onError != NULL)
     {
         mamaDictionary_setErrorCallback (*dictionary,
                                          dictionaryCallback.onError);
     }
-    
+
     if (dictionaryCallback.onTimeout != NULL)
     {
         mamaDictionary_setTimeoutCallback (*dictionary,
@@ -829,7 +829,7 @@ mama_createDictionary (
         mamaDictionary_destroy (*dictionary);
         return result;
     }
-    
+
     /*Set the properties required for a dictionary subscription*/
     self->mType             = MAMA_SUBSC_TYPE_DICTIONARY;
     self->mServiceLevel     = MAMA_SERVICE_LEVEL_SNAPSHOT;
@@ -838,8 +838,8 @@ mama_createDictionary (
     self->mAppDataType      = MAMA_MD_DATA_TYPE_STANDARD;
     self->mTimeout          = timeout;
     self->mRetries          = retries;
-        
-    mamaDictionary_setSubscPtr (*dictionary, subscription); 
+
+    mamaDictionary_setSubscPtr (*dictionary, subscription);
 
     result = mamaSubscription_create_ (
         subscription,
@@ -854,7 +854,7 @@ mama_createDictionary (
 
 mama_status
 mamaSubscription_createBasicWildCard (
-    mamaSubscription                  subscription, 
+    mamaSubscription                  subscription,
     mamaTransport                     transport,
     mamaQueue                         queue,
     const mamaWildCardMsgCallbacks*   callbacks,
@@ -925,13 +925,13 @@ mamaSubscription_initialize (mamaSubscription subscription)
               self->mSubscSource != NULL ? self->mSubscSource : "",
               self->mSubscSymbol != NULL ? self->mSubscSymbol : "",
               self->mUserSymbol  != NULL ? self->mUserSymbol  : "");
-    
+
     if (self->mSubscMsgType != MAMA_SUBSC_DDICT_SNAPSHOT &&
         self->mSubscMsgType != MAMA_SUBSC_SNAPSHOT)
     {
         /*Delegate to the correct bridge implementation*/
             mamaMsgCallbacks    cb;
-            
+
             cb.onCreate = self->mUserCallbacks.onCreate;
             cb.onError = self->mUserCallbacks.onError;
             cb.onMsg = self->mUserCallbacks.onMsg;
@@ -949,10 +949,10 @@ mamaSubscription_initialize (mamaSubscription subscription)
                                        cb,
                                        self,
                                        self->mClosure);
-    }   
+    }
     if (self->mRequiresInitial)
     {
-        
+
         mamaMsg subscribeMsg = NULL;
         self->mExpectingInitial = 1;
         self->mSubjectContext.mInitialArrived=0;
@@ -975,8 +975,8 @@ mamaSubscription_initialize (mamaSubscription subscription)
                    "Subscription send request without inbox().");
     }
 
-    if (self->mBridgeImpl && 
-        (self->mBridgeImpl->bridgeMamaSubscriptionHasWildcards 
+    if (self->mBridgeImpl &&
+        (self->mBridgeImpl->bridgeMamaSubscriptionHasWildcards
             (self->mSubscBridge) || self->mType == MAMA_SUBSC_TYPE_GROUP))
     {
         configureForMultipleTopics (subscription);
@@ -987,26 +987,26 @@ mamaSubscription_initialize (mamaSubscription subscription)
     if (gGenerateQueueStats)
     {
         queueStatsCollector = mamaQueueImpl_getStatsCollector (self->mQueue);
-        mamaStatsCollector_incrementStat (queueStatsCollector, 
+        mamaStatsCollector_incrementStat (queueStatsCollector,
                                           MamaStatNumSubscriptions.mFid);
     }
     if (gGenerateTransportStats)
     {
         transportStatsCollector = mamaTransport_getStatsCollector (self->mTransport);
-        mamaStatsCollector_incrementStat (transportStatsCollector, 
-                                          MamaStatNumSubscriptions.mFid);  
+        mamaStatsCollector_incrementStat (transportStatsCollector,
+                                          MamaStatNumSubscriptions.mFid);
     }
     if (mamaInternal_getGlobalStatsCollector() != NULL)
     {
-        mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(), 
-                                          MamaStatNumSubscriptions.mFid); 
+        mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
+                                          MamaStatNumSubscriptions.mFid);
     }
 }
 
 mama_status
 getSubscribeMessage (mamaSubscription subscription, mamaMsg *msg)
 {
-    
+
     return msgUtils_createSubscriptionMessage (self,
                                                self->mSubscMsgType,
                                                msg,
@@ -1015,13 +1015,13 @@ getSubscribeMessage (mamaSubscription subscription, mamaMsg *msg)
 
 
 
-const char * 
+const char *
 mamaSubscription_getSubscRoot (mamaSubscription subscription)
 {
     return self->mSubscRoot;
 }
 
-const char * 
+const char *
 mamaSubscription_getEntitleSubject (mamaSubscription subscription)
 {
     return self->mEntitleSubject;
@@ -1034,7 +1034,7 @@ mamaSubscription_getRespondToNextRefresh (mamaSubscription subscription)
 }
 
 mama_status
-mamaSubscription_setRespondToNextRefresh (mamaSubscription subscription, 
+mamaSubscription_setRespondToNextRefresh (mamaSubscription subscription,
                                           const int value)
 {
     self->mRespondToNextRefresh = value;
@@ -1044,7 +1044,7 @@ mamaSubscription_setRespondToNextRefresh (mamaSubscription subscription,
 void
 mamaSubscription_resetRefreshForListener (mamaSubscription subscription)
 {
-    mamaTransportImpl_resetRefreshForListener (self->mTransport,  
+    mamaTransportImpl_resetRefreshForListener (self->mTransport,
                                            self->mSubscHandle);
 }
 
@@ -1055,7 +1055,7 @@ void MAMACALLTYPE sendCompleteCb (mamaPublisher publisher,
                 void*         closure)
 {
     /*Destroy the message once it has been sent from the throttle*/
-    if (msg) 
+    if (msg)
     {
         if (MAMA_STATUS_OK!=mamaMsg_destroy (msg))
         {
@@ -1066,13 +1066,13 @@ void MAMACALLTYPE sendCompleteCb (mamaPublisher publisher,
 }
 
 void
-mamaSubscription_sendRefresh (mamaSubscription subscription, 
+mamaSubscription_sendRefresh (mamaSubscription subscription,
                                                 const mamaMsg msg)
 {
     const char* symbol  = NULL;
     const char* source  = NULL;
 
-    if (!self && ! self->mBridgeImpl) 
+    if (!self && ! self->mBridgeImpl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "mamaSubscription_sendRefresh():"
                   " Could not send refresh. NULL sub or bridge.");
@@ -1090,7 +1090,7 @@ mamaSubscription_sendRefresh (mamaSubscription subscription,
 
     mama_log (MAMA_LOG_LEVEL_FINEST, "mamaSubscription_sendRefresh(): "
               "Sending refresh to: %s (%s)",
-              source  == NULL ? "" : source, 
+              source  == NULL ? "" : source,
               symbol  == NULL ? "" : symbol);
 
     /* We can't send the template because it sits on the throttle queue
@@ -1099,16 +1099,16 @@ mamaSubscription_sendRefresh (mamaSubscription subscription,
 
     mamaPublisher_sendWithThrottle (self->mSubscPublisher,
                                     msg,
-                                    sendCompleteCb, 
+                                    sendCompleteCb,
                                     NULL /*No need to use closure*/);
 }
-    
-void 
+
+void
 mamaSubscription_respondToRefreshMessage (mamaSubscriptionImpl *impl)
 {
     if (impl->mRespondToNextRefresh)
     {
-        mamaTransportImpl_resetRefreshForListener (impl->mTransport, 
+        mamaTransportImpl_resetRefreshForListener (impl->mTransport,
                                                    impl->mSubscHandle);
     }
     else
@@ -1117,19 +1117,19 @@ mamaSubscription_respondToRefreshMessage (mamaSubscriptionImpl *impl)
     }
 }
 
-int 
+int
 mamaSubscription_hasWildcards (mamaSubscription subscription)
 {
     if (!self) return 0;
     if (!self->mBridgeImpl) return 0;
 
-    return self->mBridgeImpl->bridgeMamaSubscriptionHasWildcards 
+    return self->mBridgeImpl->bridgeMamaSubscriptionHasWildcards
                             (self->mSubscBridge);
 }
 
-void 
+void
 mamaSubscription_checkSeqNum (mamaSubscription subscription,
-                              mamaMsg msg, 
+                              mamaMsg msg,
                               int msgType,
                               SubjectContext *ctx)
 {
@@ -1138,10 +1138,10 @@ mamaSubscription_checkSeqNum (mamaSubscription subscription,
         if (self->mDqStrategy != NULL) /* Msg may arive before created.*/
         {
             dqStrategy_checkSeqNum (self->mDqStrategy,
-                                    msg, 
+                                    msg,
                                     msgType,
                                     &ctx->mDqContext);
-                                    
+
         }
     }
 }
@@ -1196,7 +1196,7 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
         return NULL;
     }
 
-    context = (SubjectContext*) wtable_lookup (self->mSubjects, 
+    context = (SubjectContext*) wtable_lookup (self->mSubjects,
                                                 (char *) sendSubject);
 
     if (context == NULL)
@@ -1213,7 +1213,7 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
         context = (SubjectContext*)calloc (1, sizeof (SubjectContext));
 
         if (MAMA_STATUS_OK!=imageRequest_create (
-                        &recap, 
+                        &recap,
                         subscription,
                         context,
                         self->mSubscPublisher,
@@ -1250,7 +1250,7 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
 }
 
 /* Normal case where we stop the response for a paricular context */
-void 
+void
 mamaSubscription_stopWaitForResponse (mamaSubscription subscription,
                                       SubjectContext* ctx)
 {
@@ -1277,7 +1277,7 @@ mamaSubscription_setPossiblyStale (mamaSubscription subscription)
     {
         return status;
     }
-    
+
     if (state == DQ_STATE_OK)
     {
         if (self->mUserCallbacks.onQuality != NULL)
@@ -1304,32 +1304,32 @@ mamaSubscription_getQuality (mamaSubscription subscription,
                           mamaQuality*        quality)
 {
     dqState     state        = DQ_STATE_NOT_ESTABLISHED;
-    
+
     if (!self) return MAMA_STATUS_NULL_ARG;
 
     dqStrategy_getDqState (self->mSubjectContext.mDqContext, &state);
-    
-    
+
+
     switch (state)
     {
         case DQ_STATE_OK:
             *quality = MAMA_QUALITY_OK;
             break;
-           
+
         case DQ_STATE_WAITING_FOR_RECAP:
         case DQ_STATE_STALE_NO_RECAP:
             *quality = MAMA_QUALITY_STALE;
             break;
-            
+
         case DQ_STATE_POSSIBLY_STALE:
             *quality = MAMA_QUALITY_MAYBE_STALE;
             break;
-        
+
         case DQ_STATE_DUPLICATE:
             *quality = MAMA_QUALITY_DUPLICATE;
             break;
 
-                        
+
         default:
         case DQ_STATE_NOT_ESTABLISHED:
             *quality = MAMA_QUALITY_UNKNOWN;
@@ -1344,12 +1344,12 @@ mamaSubscription_requestRecap(mamaSubscription subscription)
     if (self->mType == MAMA_SUBSC_TYPE_GROUP)
         return MAMA_STATUS_NOT_IMPLEMENTED;
     else
-        return dqStrategy_sendRecapRequest (self->mDqStrategy, 
-                                                NULL, 
+        return dqStrategy_sendRecapRequest (self->mDqStrategy,
+                                                NULL,
                                                 &self->mSubjectContext.mDqContext);
 }
-                     
-                          
+
+
 void
 mamaSubscription_unsetAllPossiblyStale (mamaSubscription subscription)
 {
@@ -1418,10 +1418,10 @@ mamaSubscription_forwardMsg (mamaSubscription subscription,
                                 const mamaMsg msg)
 {
     self->mUserCallbacks.onMsg (
-        subscription, 
-        msg, 
-        self->mClosure, 
-        self->mCurSubjectContext == NULL ? NULL 
+        subscription,
+        msg,
+        self->mClosure,
+        self->mCurSubjectContext == NULL ? NULL
                                          : self->mCurSubjectContext->mClosure);
 }
 
@@ -1471,7 +1471,7 @@ mamaSubscription_cleanup (mamaSubscription subscription)
         mamaPublisher_destroy (self->mSubscPublisher);
         self->mSubscPublisher = NULL;
     }
-    
+
     /* Destroy the initial request inbox. */
     if (self->mInitialRequest != NULL)
     {
@@ -1500,10 +1500,10 @@ mamaSubscription_cleanup (mamaSubscription subscription)
             self->mSubjectContext.mEntitlementSubscription = NULL;
         }
     }
-    
+
     dqContext_cleanup (&self->mSubjectContext.mDqContext);
     self->mRecapRequest = NULL;
-    
+
     checkFree (&self->mSubjectContext.mSymbol);
 
     return MAMA_STATUS_OK;
@@ -1555,7 +1555,7 @@ mama_status mamaSubscription_deactivate_internal(mamaSubscriptionImpl *impl)
      * recaps will be issued. Any such requests must now be removed.
      */
     if((impl->mSubscMsgType != MAMA_SUBSC_DDICT_SNAPSHOT) && (impl->mSubscMsgType != MAMA_SUBSC_SNAPSHOT))
-    {   
+    {
         if(NULL != impl->mTransport)
         {
             /* Unregister as a transport listener. */
@@ -1568,7 +1568,7 @@ mama_status mamaSubscription_deactivate_internal(mamaSubscriptionImpl *impl)
      * now be destroyed.
      * The subscription will be cleaned up whenever the mamaSubscriptionImpl_onSubscriptionDestroyed callback
      * is invoked.
-     */    
+     */
     /* Note that the state of the subscription will be changed in the bridge callback. */
     if((NULL != impl->mSubscBridge) && (NULL != impl->mBridgeImpl))
     {
@@ -1640,7 +1640,7 @@ int mamaSubscription_isValid(mamaSubscription subscription)
             ret = 1;
         }
     }
-    
+
     return ret;
 }
 
@@ -1653,7 +1653,7 @@ void mamaSubscription_setIsThrottled (mamaSubscription  subscription,
         impl->mIsThrottled = isThrottled;
     }
 }
-    
+
 int mamaSubscription_isExpectingUpdates (mamaSubscription subscription)
 {
     if (subscription)
@@ -1684,8 +1684,8 @@ configureForMultipleTopics (mamaSubscription subscription)
     return MAMA_STATUS_OK;
 }
 
-mama_status 
-mamaSubscription_getTransport (mamaSubscription  subscription, 
+mama_status
+mamaSubscription_getTransport (mamaSubscription  subscription,
                                mamaTransport*    result)
 {
     if (!subscription) return MAMA_STATUS_INVALID_ARG;
@@ -1694,7 +1694,7 @@ mamaSubscription_getTransport (mamaSubscription  subscription,
 }
 
 mama_status
-mamaSubscription_getQueue ( mamaSubscription subscription, 
+mamaSubscription_getQueue ( mamaSubscription subscription,
                            mamaQueue*       result)
 {
     if (!subscription) return MAMA_STATUS_INVALID_ARG;
@@ -1740,6 +1740,10 @@ mamaSubscription_setSymbol (
 {
     if (!subscription) return MAMA_STATUS_NULL_ARG;
     checkFree (&self->mUserSymbol);
+    if (!symbol)
+    {
+        symbol = "";
+    }
     self->mUserSymbol = strdup(symbol);
     return MAMA_STATUS_OK;
 }
@@ -1798,7 +1802,7 @@ mamaSubscription_getServiceLevelOpt (
 mama_status
 mamaSubscription_setRequiresInitial (
         mamaSubscription  subscription,
-        int               requiresInitial) 
+        int               requiresInitial)
 {
     if (!subscription) return MAMA_STATUS_NULL_ARG;
     self->mRequiresInitial = requiresInitial;
@@ -1823,14 +1827,14 @@ mamaSubscription_getPlatformError (
     if (!self) return MAMA_STATUS_NULL_ARG;
     if (!self->mBridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
 
-    return self->mBridgeImpl->bridgeMamaSubscriptionGetPlatformError 
+    return self->mBridgeImpl->bridgeMamaSubscriptionGetPlatformError
             (self->mSubscBridge, error);
 }
 
 mama_status
 mamaSubscription_setExpectingInitial (
         mamaSubscription  subscription,
-        int               expectingInitial) 
+        int               expectingInitial)
 {
     if (!subscription) return MAMA_STATUS_NULL_ARG;
     self->mExpectingInitial = expectingInitial;
@@ -1895,8 +1899,8 @@ mamaSubscription_getSubscSymbol (
     return MAMA_STATUS_OK;
 }
 
-mama_status 
-mamaSubscription_setTimeout ( mamaSubscription subscription, 
+mama_status
+mamaSubscription_setTimeout ( mamaSubscription subscription,
                              double timeout)
 {
     if (!self) return MAMA_STATUS_NULL_ARG;
@@ -1953,7 +1957,7 @@ mamaSubscription_getRecapTimeout (mamaSubscription subscription, double *val)
 }
 
 mama_status
-mamaSubscription_setRetries ( mamaSubscription subscription, 
+mamaSubscription_setRetries ( mamaSubscription subscription,
                              int retries)
 {
     if (!self) return MAMA_STATUS_NULL_ARG;
@@ -1978,7 +1982,7 @@ mamaSubscription_getRetries ( mamaSubscription subscription, int *val)
 }
 
 mama_status
-mamaSubscription_setAppDataType (mamaSubscription  subscription, 
+mamaSubscription_setAppDataType (mamaSubscription  subscription,
                                  uint8_t           appDataType)
 {
     if (!self) return MAMA_STATUS_NULL_ARG;
@@ -1995,7 +1999,7 @@ mamaSubscription_getAppDataType (mamaSubscription  subscription,
     return MAMA_STATUS_OK;
 }
 
-mama_status 
+mama_status
 mamaSubscription_setMsgQualifierFilter (mamaSubscription subscription,
                                         int ignoreDefinitelyDuplicate,
                                         int ignorePossiblyDuplicate,
@@ -2052,7 +2056,7 @@ mamaSubscription_setMsgQualifierFilter (mamaSubscription subscription,
     return MAMA_STATUS_OK;
 }
 
-mama_status 
+mama_status
 mamaSubscription_getMsgQualifierFilter (mamaSubscription subscription,
                                         int *ignoreDefinitelyDuplicate,
                                         int *ignorePossiblyDuplicate,
@@ -2061,8 +2065,8 @@ mamaSubscription_getMsgQualifierFilter (mamaSubscription subscription,
                                         int *ignoreOutOfSequence)
 {
     if (!self) return MAMA_STATUS_NULL_ARG;
-    
-    *ignoreDefinitelyDuplicate = 
+
+    *ignoreDefinitelyDuplicate =
         self->mMsgQualFilter & MAMA_MSG_QUAL_DEFINITELY_DUPLICATE;
     *ignorePossiblyDuplicate =
         self->mMsgQualFilter & MAMA_MSG_QUAL_POSSIBLY_DUPLICATE;
@@ -2072,47 +2076,47 @@ mamaSubscription_getMsgQualifierFilter (mamaSubscription subscription,
         self->mMsgQualFilter & MAMA_MSG_QUAL_POSSIBLY_DELAYED;
     *ignoreOutOfSequence =
         self->mMsgQualFilter & MAMA_MSG_QUAL_OUT_OF_SEQUENCE;
-    
+
     return MAMA_STATUS_OK;
 }
 
-    
+
 mama_status
 mamaSubscription_processErr (mamaSubscription subscription, int deactivate)
 {
     const char*        source = NULL;
     const char*        symbol = NULL;
     void*              closure = NULL;
-    
+
     mamaMsgCallbacks* callbacks = mamaSubscription_getUserCallbacks(subscription);
     if (deactivate)
     {
         mamaSubscription_deactivate (subscription);
     }
-    
+
     mamaSubscription_getSource   (subscription, &source);
     mamaSubscription_getSymbol   (subscription, &symbol);
-    mamaSubscription_getClosure  (subscription, &closure);     
-    
+    mamaSubscription_getClosure  (subscription, &closure);
+
     if( gMamaLogLevel >= MAMA_LOG_LEVEL_FINER )
     {
-        mama_log (MAMA_LOG_LEVEL_FINER, 
+        mama_log (MAMA_LOG_LEVEL_FINER,
                     "mamaSubscription_processErr(): Symbol %s. Subscription deactivated %d", symbol, deactivate);
     }
-    
+
     /* The error cause should have been set by the calling function */
-    
+
     callbacks->onError(subscription,
                         MAMA_STATUS_TIMEOUT,
                         MAMA_MSG_STATUS_OK,
                         symbol,
-                        closure); 
+                        closure);
 
     return MAMA_STATUS_OK;
 }
 
 mama_status
-mamaSubscription_processTportMsg( mamaSubscription subscription, 
+mamaSubscription_processTportMsg( mamaSubscription subscription,
                                   mamaMsg msg,
                                   void* topicClosure)
 {
@@ -2124,10 +2128,10 @@ mamaSubscription_processTportMsg( mamaSubscription subscription,
                                                MAMA_LOG_LEVEL_FINEST)))
     {
         const char* text = mamaMsg_toString(msg);
-        mama_forceLog (MAMA_LOG_LEVEL_FINEST, 
+        mama_forceLog (MAMA_LOG_LEVEL_FINEST,
                 "mamaSubscription_processMsg(): %s%s msg = %s subsc (%p)",
-                userSymbolFormatted, 
-                text, 
+                userSymbolFormatted,
+                text,
                 subscription);
     }
 
@@ -2160,7 +2164,7 @@ mamaSubscription_processTportMsg( mamaSubscription subscription,
 }
 
 mama_status
-mamaSubscription_processWildCardMsg( mamaSubscription subscription, 
+mamaSubscription_processWildCardMsg( mamaSubscription subscription,
                                      mamaMsg msg,
                                      const char* topic,
                                      void* topicClosure)
@@ -2174,10 +2178,10 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
                                                MAMA_LOG_LEVEL_FINEST)))
     {
         const char* text = mamaMsg_toString(msg);
-        mama_forceLog (MAMA_LOG_LEVEL_FINEST, 
+        mama_forceLog (MAMA_LOG_LEVEL_FINEST,
                 "mamaSubscription_processWildCardMsg(): %s%s msg = %s subsc (%p)",
-                userSymbolFormatted, 
-                text, 
+                userSymbolFormatted,
+                text,
                 subscription);
     }
 
@@ -2189,7 +2193,7 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
 
         if (NULL != entBridge)
         {
-            allowed = entBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription, 
+            allowed = entBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription,
                                                                 self->mSubjectContext.mSymbol);
             if (!allowed)
             {
@@ -2213,7 +2217,7 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
     /* Do not access subscription here as it may have been deleted/destroyed */
     return MAMA_STATUS_OK;
 }
-    
+
 mama_status
 mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
 {
@@ -2228,10 +2232,10 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
                                                MAMA_LOG_LEVEL_FINEST)))
     {
         const char* text = mamaMsg_toString(msg);
-        mama_log (MAMA_LOG_LEVEL_FINEST, 
+        mama_log (MAMA_LOG_LEVEL_FINEST,
                 "mamaSubscription_processMsg(): %s%s msg = %s subsc (%p)",
-                userSymbolFormatted, 
-                text, 
+                userSymbolFormatted,
+                text,
                 subscription);
     }
 
@@ -2252,7 +2256,7 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
 
         }
         listenerMsgCallback_processMsg (callback, msg,
-                self->mCurSubjectContext); 
+                self->mCurSubjectContext);
     }
     else
     {
@@ -2319,11 +2323,11 @@ mamaSubscription_muteCurrentTopic (mamaSubscription subscription)
     {
         return MAMA_STATUS_INVALID_ARG;
     }
-    
+
     if (self->mWildCardType == wc_transport)
     {
         return self->mBridgeImpl->bridgeMamaSubscriptionMuteCurrentTopic
-                (self->mSubscBridge); 
+                (self->mSubscBridge);
     }
 
     return MAMA_STATUS_NO_BRIDGE_IMPL;
@@ -2348,7 +2352,7 @@ mamaSubscription_setItemClosure (
     else
     {
         /* Wild Card */
-        return self->mBridgeImpl->bridgeMamaSubscriptionSetTopicClosure 
+        return self->mBridgeImpl->bridgeMamaSubscriptionSetTopicClosure
             (self->mSubscBridge, closure);
     }
 
@@ -2425,7 +2429,7 @@ mamaSubscription_setPreIntitialCacheSize (
     impl->mPreInitialCacheSize = cacheSize < 0 ? 0 : cacheSize;
     return MAMA_STATUS_OK;
 }
-    
+
 mama_status
 mamaSubscription_getPreIntitialCacheSize (
     mamaSubscription  subscription,
@@ -2471,7 +2475,7 @@ mamaSubscription_checkDebugLevel (
 
 mama_status
 mamaSubscription_getTransportIndex (
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     int*             tportIndex)
 {
     mamaSubscriptionImpl* impl = (mamaSubscriptionImpl*)subscription;
@@ -2483,7 +2487,7 @@ mamaSubscription_getTransportIndex (
 
 mama_status
 mamaSubscription_setTransportIndex (
-    mamaSubscription subscription, 
+    mamaSubscription subscription,
     int              tportIndex)
 {
     mamaSubscriptionImpl* impl = (mamaSubscriptionImpl*)subscription;
@@ -2527,9 +2531,17 @@ isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subs
 
 char* copyString (const char*  str)
 {
+    size_t len;
+    char* result;
+
+    if (!str)
+    {
+        str = "";
+    }
+
     /* Windows does not like strdup */
-    size_t len = strlen (str) + 1;
-    char* result = (char*)calloc (len, sizeof (char));
+    len = strlen (str) + 1;
+    result = (char*)calloc (len, sizeof (char));
     strncpy (result, str, len);
     return result;
 }
@@ -2569,15 +2581,15 @@ mamaBridgeImpl*
 mamaSubscription_getBridgeImpl (mamaSubscription subscription)
 {
     if (!self) return NULL;
-    
-    return self->mBridgeImpl; 
-}                              
+
+    return self->mBridgeImpl;
+}
 
 subscriptionBridge
 mamaSubscription_getSubscriptionBridge (mamaSubscription subscription)
 {
     if (!self) return NULL;
-    
+
     return self->mSubscBridge;
 }
 
@@ -2624,11 +2636,11 @@ mama_status mamaSubscription_activate(mamaSubscription subscription)
         {
             /* The next action will depend on the current state of the subscription. */
             switch(wInterlocked_read(&impl->mState))
-            {            
+            {
                     /* Activate the subscription. */
                 case MAMA_SUBSCRIPTION_DEACTIVATED:
-                case MAMA_SUBSCRIPTION_SETUP:            
-               
+                case MAMA_SUBSCRIPTION_SETUP:
+
                     /* Set the state to indicate that the subscription is in the process of being activated. */
                     mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_ACTIVATING);
 
@@ -2650,11 +2662,11 @@ mama_status mamaSubscription_activate(mamaSubscription subscription)
                     break;
 
                     /* The following states are invalid, the subscription can only be activated if it is fully set-up. */
-                case MAMA_SUBSCRIPTION_ALLOCATED:      
+                case MAMA_SUBSCRIPTION_ALLOCATED:
                 case MAMA_SUBSCRIPTION_DESTROYING:
                 case MAMA_SUBSCRIPTION_DESTROYED:
                 default:
-                        
+
                     ret = MAMA_STATUS_SUBSCRIPTION_INVALID_STATE;
                     break;
             }
@@ -2691,10 +2703,10 @@ mama_status mamaSubscription_deactivate(mamaSubscription subscription)
             }
 
             wlock_lock(impl->mCreateDestroyLock);
-            
+
             /* The next action will depend on the current state of the subscription. */
             switch(wInterlocked_read(&impl->mState))
-            {      
+            {
                     /* The subscription is waiting on the throttle. */
                 case MAMA_SUBSCRIPTION_ACTIVATING:
                      wombatThrottle_removeAction(throttle, impl->mAction);
@@ -2729,7 +2741,7 @@ mama_status mamaSubscription_deactivate(mamaSubscription subscription)
                         mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEACTIVATED);
                     }
                     break;
-            
+
                 case MAMA_SUBSCRIPTION_DEACTIVATING:
                 case MAMA_SUBSCRIPTION_DEACTIVATED:
                     ret = MAMA_STATUS_OK;
@@ -2746,7 +2758,7 @@ mama_status mamaSubscription_deactivate(mamaSubscription subscription)
             }
 
             wlock_unlock(impl->mCreateDestroyLock);
-            
+
             if(NULL != throttle)
             {
                wombatThrottle_unlock(throttle);
@@ -2808,19 +2820,19 @@ mama_status mamaSubscription_deallocate(mamaSubscription subscription)
                 mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEALLOCATING);
                 ret = MAMA_STATUS_OK;
                 break;
-                
+
                 /* The subscription has already been destroyed or has just been allocated, clean-up can now be performed. */
             case MAMA_SUBSCRIPTION_ALLOCATED:
-            case MAMA_SUBSCRIPTION_DESTROYED:            
+            case MAMA_SUBSCRIPTION_DESTROYED:
                 /* Delete the subscription. */
                 mamaSubscriptionImpl_deallocate(impl);
                 /* Return from here to prevent the mutex being unlocked. */
                 return MAMA_STATUS_OK;
                 break;
 
-                /* All other states are invalid. */            
+                /* All other states are invalid. */
             default:
-                mama_log (MAMA_LOG_LEVEL_WARN,"Subscription %p: Could not deallocate mamaSubscription as it has not been destroyed.", subscription);                
+                mama_log (MAMA_LOG_LEVEL_WARN,"Subscription %p: Could not deallocate mamaSubscription as it has not been destroyed.", subscription);
                 ret = MAMA_STATUS_SUBSCRIPTION_INVALID_STATE;
                 break;
         }
@@ -2842,18 +2854,18 @@ mama_status mamaSubscription_destroy(mamaSubscription subscription)
         mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
 
         mamaSubscription_deactivate(subscription);
-        
+
          wlock_lock(impl->mCreateDestroyLock);
-         
+
         /* The next action will depend on the current state of the subscription. */
         switch(wInterlocked_read(&impl->mState))
-        {         
+        {
                 /* Otherwise the subscription has been correctly removed from the throttle. */
                 /* Fall through to perform the remaining clean-up. */
 
                 /* For the following states the subscription is not active, simply perform clean-up. */
             case MAMA_SUBSCRIPTION_SETUP:
-            case MAMA_SUBSCRIPTION_DEACTIVATED:                       
+            case MAMA_SUBSCRIPTION_DEACTIVATED:
                  mamaSubscription_cleanup(subscription);
                  mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DESTROYED);
                   wlock_unlock(impl->mCreateDestroyLock);
@@ -2861,30 +2873,30 @@ mama_status mamaSubscription_destroy(mamaSubscription subscription)
                  return MAMA_STATUS_OK;
                 break;
 
-            
+
                 /* The subscription is currently de-activating, simply change this to destroying to ensure clean-up is performed
                  * whenever the mamaSubscriptionImpl_onSubscriptionDestroyed function is called.
                  */
-            case MAMA_SUBSCRIPTION_DEACTIVATING: 
+            case MAMA_SUBSCRIPTION_DEACTIVATING:
                 mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DESTROYING);
                 ret = MAMA_STATUS_OK;
                 break;
-                                
+
                 /* The subscription is in the process of being destroyed, just return and the callback will be invoked by the
-                 * middleware thread. 
+                 * middleware thread.
                  */
-            case MAMA_SUBSCRIPTION_DESTROYING:          
+            case MAMA_SUBSCRIPTION_DESTROYING:
             case MAMA_SUBSCRIPTION_DESTROYED:
             case MAMA_SUBSCRIPTION_ALLOCATED:
                 ret = MAMA_STATUS_OK;
                 break;
 
-                /* All other states are invalid. */            
+                /* All other states are invalid. */
             default:
                 ret = MAMA_STATUS_SUBSCRIPTION_INVALID_STATE;
                 break;
         }
-        
+
         wlock_unlock(impl->mCreateDestroyLock);
     }
 
@@ -2964,7 +2976,7 @@ mama_status mamaSubscription_setup2(mamaSubscription subscription, mamaTransport
         if((MAMA_SUBSCRIPTION_ALLOCATED == wInterlocked_read(&impl->mState)) || (MAMA_SUBSCRIPTION_DESTROYED == wInterlocked_read(&impl->mState)))
         {
             /* Perform the basic setup, note that the state will be changed in here. */
-            ret = mamaSubscription_setupBasic(subscription, transport, queue, callbacks, sourceName, symbol, closure);    
+            ret = mamaSubscription_setupBasic(subscription, transport, queue, callbacks, sourceName, symbol, closure);
         }
 
         /* Unlock the mutex. */
@@ -3027,7 +3039,7 @@ mama_status mamaSubscription_cancel(mamaSubscription subscription)
 /* Private Functions. */
 /* *************************************************** */
 
-mama_status mamaSubscriptionImpl_completeBasicInitialisation(mamaSubscription subscription) 
+mama_status mamaSubscriptionImpl_completeBasicInitialisation(mamaSubscription subscription)
 {
     /* Returns. */
     mama_status ret = MAMA_STATUS_NULL_ARG;
@@ -3040,7 +3052,7 @@ mama_status mamaSubscriptionImpl_completeBasicInitialisation(mamaSubscription su
     {
         /* Obtain the impl. */
         mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
-    
+
         ret = MAMA_STATUS_SUBSCRIPTION_INVALID_STATE;
         if(MAMA_SUBSCRIPTION_ACTIVATING == wInterlocked_read(&impl->mState))
         {
@@ -3048,7 +3060,7 @@ mama_status mamaSubscriptionImpl_completeBasicInitialisation(mamaSubscription su
              * must be performed internally before the user callback can be invoked.
              */
             mamaMsgCallbacks cb;
-            memset(&cb, 0, sizeof(cb));    
+            memset(&cb, 0, sizeof(cb));
 
             /* Fill in the fields. */
             cb.onCreate         = impl->mUserCallbacks.onCreate;
@@ -3091,7 +3103,7 @@ mama_status mamaSubscriptionImpl_completeBasicInitialisation(mamaSubscription su
             if(MAMA_STATUS_OK == ret)
             {
 
-                self->mLockHandle = mamaQueue_incrementObjectCount(impl->mQueue, subscription);  
+                self->mLockHandle = mamaQueue_incrementObjectCount(impl->mQueue, subscription);
                 /* The subscription is now active, set this before the onCreate callback. */
                 mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_ACTIVATED);
 
@@ -3102,7 +3114,7 @@ mama_status mamaSubscriptionImpl_completeBasicInitialisation(mamaSubscription su
     return ret;
 }
 
-mama_status mamaSubscriptionImpl_completeMarketDataInitialisation(mamaSubscription subscription) 
+mama_status mamaSubscriptionImpl_completeMarketDataInitialisation(mamaSubscription subscription)
 {
     /* Returns. */
     mama_status ret = MAMA_STATUS_NULL_ARG;
@@ -3115,7 +3127,7 @@ mama_status mamaSubscriptionImpl_completeMarketDataInitialisation(mamaSubscripti
     {
         /* Obtain the impl. */
         mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
-    
+
         /* It is possible that the subscription has been destroyed while the throttle thread is waiting at the
          * mutex lock statement above. Therefore an additional check on the status must now be made, execution
          * should only continue if the status is activating.
@@ -3123,15 +3135,15 @@ mama_status mamaSubscriptionImpl_completeMarketDataInitialisation(mamaSubscripti
 
         /* Acquire the mutex. */
         wlock_lock(impl->mCreateDestroyLock);
-         
+
         self->mAction = NULL;
-        
+
         ret = MAMA_STATUS_OK;
         if(MAMA_SUBSCRIPTION_ACTIVATING == wInterlocked_read(&impl->mState))
         {
             impl->mEntitleSubject[0] = '\0';
 
-            if (impl->mSubscSource != NULL && strlen (impl->mSubscSource) > 0 && 
+            if (impl->mSubscSource != NULL && strlen (impl->mSubscSource) > 0 &&
                 impl->mSubscSymbol != NULL && strlen (impl->mSubscSymbol) > 0)
             {
                 snprintf (impl->mEntitleSubject, WOMBAT_SUBJECT_MAX, "%s.%s", impl->mSubscSource, impl->mSubscSymbol);
@@ -3143,37 +3155,37 @@ mama_status mamaSubscriptionImpl_completeMarketDataInitialisation(mamaSubscripti
 
             /* Add the subscription to the list of active subscriptions on the transport. This is only done if the
              * subscription is receiving regular updates. The transport uses its list for actions like refreshing.
-             */            
+             */
             if (impl->mSubscMsgType != MAMA_SUBSC_DDICT_SNAPSHOT &&
                 impl->mSubscMsgType != MAMA_SUBSC_SNAPSHOT)
-            {                
+            {
                 ret = mamaTransport_addSubscription (self->mTransport, self, &self->mSubscHandle);
             }
 
             if(MAMA_STATUS_OK == ret)
             {
-                /* Complete the initialisation of the subscription. */               
+                /* Complete the initialisation of the subscription. */
                 mamaSubscription_initialize(impl);
-                
+
                 /* The subscription is now active. */
-                mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_ACTIVATED);                
+                mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_ACTIVATED);
             }
         }
         else
         {
             mama_log(MAMA_LOG_LEVEL_WARN, "Subscription %p came off throttle in state %s.", impl, mamaSubscription_stringForState(wInterlocked_read(&impl->mState)));
-        }    
+        }
         /* Unlock the mutex. */
         wlock_unlock(impl->mCreateDestroyLock);
-                
-        self->mUserCallbacks.onCreate (self, self->mClosure);    
+
+        self->mUserCallbacks.onCreate (self, self->mClosure);
     }
-    
+
     return ret;
 }
 
 mama_status mamaSubscriptionImpl_createBasic(
-    mamaSubscription        subscription, 
+    mamaSubscription        subscription,
     mamaTransport           transport,
     mamaQueue               queue,
     const mamaMsgCallbacks* callbacks,
@@ -3190,7 +3202,7 @@ mama_status mamaSubscriptionImpl_createBasic(
         {
             /* Get the impl. */
             mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
-            
+
             /* Lock the mutex. */
             wlock_lock(impl->mCreateDestroyLock);
 
@@ -3203,9 +3215,9 @@ mama_status mamaSubscriptionImpl_createBasic(
                 impl->mBridgeImpl = mamaTransportImpl_getBridgeImpl(transport);
 
                 /* If the bridge isn't valid then write a log message. */
-                if(NULL == impl->mBridgeImpl) 
+                if(NULL == impl->mBridgeImpl)
                 {
-                    mama_log (MAMA_LOG_LEVEL_ERROR,"mamaSubscription_setupBasic(): Could not get bridge impl from transport.");                
+                    mama_log (MAMA_LOG_LEVEL_ERROR,"mamaSubscription_setupBasic(): Could not get bridge impl from transport.");
                 }
                 else
                 {
@@ -3217,7 +3229,7 @@ mama_status mamaSubscriptionImpl_createBasic(
                     impl->mTransport            = transport;
                     impl->mType                 = MAMA_SUBSC_TYPE_BASIC;
                     impl->mUserSymbol           = strdup (topic);
-                
+
                     /* The callback structure will be NULL for wildcard subscriptions. */
                     if(NULL != callbacks)
                     {
@@ -3228,8 +3240,8 @@ mama_status mamaSubscriptionImpl_createBasic(
                         impl->mUserCallbacks.onGap          = callbacks->onGap;
                         impl->mUserCallbacks.onRecapRequest = callbacks->onRecapRequest;
                         impl->mUserCallbacks.onDestroy      = callbacks->onDestroy;
-                    }                
-    
+                    }
+
                     /* The subscription has now been setup and is awaiting final processing by the throttle. */
                     mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_ACTIVATING);
 
@@ -3243,13 +3255,13 @@ mama_status mamaSubscriptionImpl_createBasic(
                 }
             }
             wlock_unlock(impl->mCreateDestroyLock);
-            
+
             if (ret == MAMA_STATUS_OK)
-                impl->mUserCallbacks.onCreate(impl, impl->mClosure);        
+                impl->mUserCallbacks.onCreate(impl, impl->mClosure);
         }
 
     }
-        
+
     return ret;
 }
 
@@ -3257,9 +3269,9 @@ void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl)
 {
     /* Set the state to be de-allocated to at least show in the log that it has been completely removed. */
     mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEALLOCATED);
-                
+
     clearSubscInfo (impl);
-        
+
     /* Destroy the mutex. */
     wlock_destroy(impl->mCreateDestroyLock);
 
@@ -3278,27 +3290,27 @@ void MAMACALLTYPE mamaSubscriptionImpl_onSubscriptionDestroyed(mamaSubscription 
     mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
     if(NULL != impl)
     {
- 
+
         if(NULL != impl->mQueue)
             mamaQueue_decrementObjectCount(&impl->mLockHandle, impl->mQueue);
 
         /* Lock the mutex. */
         wlock_lock(impl->mCreateDestroyLock);
 
-   
+
         /* The next action will depend on the current state of the subscription. */
         switch(wInterlocked_read(&impl->mState))
-        {       
+        {
                 /* The subscription is being deactivated. */
             case MAMA_SUBSCRIPTION_DEACTIVATING:
                 /* Change the state. */
                 mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEACTIVATED);
-                break;  
+                break;
 
                 /* The subscription is being deallocated, i.e. mamaSubscription_deallocate has been called
                  * before the destroy callback has come in from the bridge.
                  */
-            case MAMA_SUBSCRIPTION_DEALLOCATING :          
+            case MAMA_SUBSCRIPTION_DEALLOCATING :
                  mamaSubscription_cleanup(subscription);
                  wlock_unlock(impl->mCreateDestroyLock);
                  mamaSubscriptionImpl_invokeDestroyedCallback(impl);
@@ -3326,14 +3338,14 @@ void MAMACALLTYPE mamaSubscriptionImpl_onSubscriptionDestroyed(mamaSubscription 
 
                 /* Otherwise the subscription is in an invalid state. */
             default:
-                {        
+                {
                     /* Log a message. */
                     int state = wInterlocked_read(&impl->mState);
                     mama_log(MAMA_LOG_LEVEL_ERROR, "Subscription %p is at the invalid state %s, (0x%X).", impl, mamaSubscription_stringForState(state), state);
                 }
                 break;
         }
-       /* Unlock the mutex before the callback is invoked. */        
+       /* Unlock the mutex before the callback is invoked. */
         wlock_unlock(impl->mCreateDestroyLock);
     }
 }
@@ -3349,7 +3361,7 @@ void mamaSubscriptionImpl_setState(mamaSubscriptionImpl *impl, mamaSubscriptionS
 }
 
 void mamaSubscriptionImpl_invokeDestroyedCallback(mamaSubscriptionImpl *impl)
-{       
+{
     if(NULL != impl->mUserCallbacks.onDestroy)
     {
         (*impl->mUserCallbacks.onDestroy)((mamaSubscription)impl, impl->mClosure);

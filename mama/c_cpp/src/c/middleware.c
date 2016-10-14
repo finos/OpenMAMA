@@ -28,13 +28,13 @@ mamaMiddleware_convertFromString (const char*  str)
 {
     if (!str)
         return MAMA_MIDDLEWARE_UNKNOWN;
-    
+
     if (strcasecmp (str, "wmw") == 0)
         return MAMA_MIDDLEWARE_WMW;
         
     if (strcasecmp (str, "lbm") == 0)
         return MAMA_MIDDLEWARE_LBM;
-        
+
     if (strcasecmp (str, "tibrv") == 0)
         return MAMA_MIDDLEWARE_TIBRV;
 
@@ -46,7 +46,7 @@ mamaMiddleware_convertFromString (const char*  str)
 
     if (strcasecmp (str, "solace") == 0)
         return MAMA_MIDDLEWARE_SOLACE;
-    
+
     if (strcasecmp (str, "rai") == 0)
         return MAMA_MIDDLEWARE_RAI;
 
@@ -114,7 +114,7 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "ibmwfo";
         case MAMA_MIDDLEWARE_ACTIV:
             return "activ";
-	case MAMA_MIDDLEWARE_TICK42RMDS:
+        case MAMA_MIDDLEWARE_TICK42RMDS:
             return "tick42rmds";
         case MAMA_MIDDLEWARE_UMS:
             return "ums";

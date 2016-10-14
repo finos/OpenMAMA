@@ -80,6 +80,7 @@ public:
             cout << "Quote Recap (" << recap.getSymbol ()
                  << " ("            << recap.getPartId () << "))\n";
         }
+        flush (cout);
     }
 
     void onQuoteUpdate (
@@ -117,7 +118,7 @@ public:
     {
         if (gExampleLogLevel >= EXAMPLE_LOG_LEVEL_NORMAL)
         {
-            cout << "Quote gap (" << event.getBeginGapSeqNum () << "-" 
+            cout << "Quote gap (" << event.getBeginGapSeqNum () << "-"
                 << event.getEndGapSeqNum () << ")\n"
                 << flush;
         }
@@ -288,7 +289,7 @@ public:
                  << flush;
         }
     }
-    
+
     void onTradePossiblyDuplicate (
         MamdaSubscription*                  subscription,
         MamdaTradeListener&                 listener,
@@ -321,6 +322,7 @@ public:
              << "    Status:"     << recap.getSecurityStatus ()
              <<  "   Symbol:"     << recap.getIssueSymbol ()
              << "\n";
+        flush (cout);
     }
 
     void onSecStatusUpdate (
@@ -332,8 +334,9 @@ public:
              << "):  Action:"     << listener.getSecurityAction ()
              << "    Status:"     << listener.getSecurityStatus ()
              <<  "   Symbol:"     << listener.getIssueSymbol ();
+        flush (cout);
     }
-                            
+
     void onError (
         MamdaSubscription*   subscription,
         MamdaErrorSeverity   severity,
@@ -355,12 +358,12 @@ int main (int argc, const char **argv)
     setbuf (stdout, NULL);
     try
     {
-        
+
         CommonCommandLineParser     cmdLine (argc, argv);
         // Initialise the MAMA API
         mamaBridge bridge = cmdLine.getBridge();
-        Mama::open ();     
-        
+        Mama::open ();
+
         const vector<const char*>& symbolList = cmdLine.getSymbolList ();
         MamaSource*                source     = cmdLine.getSource();
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);
@@ -431,6 +434,6 @@ int main (int argc, const char **argv)
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: comboticker [-tport ] tport_name [-m ] middleware [-S ] source [-s ] symbol";                 
+    std::cerr << "Usage: comboticker [-tport ] tport_name [-m ] middleware [-S ] source [-s ] symbol";
     exit (exitStatus);
 }

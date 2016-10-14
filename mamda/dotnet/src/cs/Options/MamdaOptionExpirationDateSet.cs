@@ -88,7 +88,7 @@ namespace Wombat
 			}
 			return result.ToString();
 		}
-		
+
 		public override string ToString()
 		{
 			return toString();

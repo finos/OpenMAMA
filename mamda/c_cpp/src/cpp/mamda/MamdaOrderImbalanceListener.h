@@ -35,12 +35,12 @@ namespace Wombat
 
     /**
      * A MamdaOrderImbalanceListener is class that specializes in handling
-     * an imbalance order updates. An imbalance order occurs when too many 
+     * an imbalance order updates. An imbalance order occurs when too many
      * orders of a particular type - either buy, sell or limit - for listed
-     * securities and not enough of the other, matching orders are received by 
+     * securities and not enough of the other, matching orders are received by
      * an exchange.
      * Developers provide their own implementation of the
-     * MamdaOrderImbalanceHandler interface and will be delivered notifications 
+     * MamdaOrderImbalanceHandler interface and will be delivered notifications
      * for imbalance updates.  An obvious application for this
      * MAMDA class is any kind of tick capture application.
      *
@@ -49,7 +49,7 @@ namespace Wombat
      * MamdaOrderImbalanceFields::setDictionary() with a valid dictionary object
      * which contains OrderImbalance related fields.
     */
-    class MAMDAExpDLL MamdaOrderImbalanceListener 
+    class MAMDAExpDLL MamdaOrderImbalanceListener
         : public MamdaOrderImbalanceUpdate
         , public MamdaMsgListener
         , public MamdaOrderImbalanceRecap
@@ -159,7 +159,7 @@ namespace Wombat
         struct MamdaOrderImbalanceListenerImpl;
     private:
         MamdaOrderImbalanceListenerImpl& mImpl;
-       
+
 
     };//MamdaOrderImbalanceListenerH
 

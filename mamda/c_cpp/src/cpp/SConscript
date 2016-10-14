@@ -89,7 +89,7 @@ InstMamdaInclude = \
     mamda/MamdaAuctionFields.h
     mamda/MamdaAuctionHandler.h
     mamda/MamdaAuctionRecap.h
-    mamda/MamdaAuctionUpdate.h 
+    mamda/MamdaAuctionUpdate.h
 """)
 
 includePath = []

@@ -130,7 +130,7 @@ namespace NUnitTest
         [Test]
         [ExpectedException(typeof(ArgumentNullException))]
         public void NullParameterTest()
-        {            
+        {
             // Call the test function
             m_queue.enqueueEvent(null, null);
 
@@ -165,7 +165,7 @@ namespace NUnitTest
             Int32 intClosure = new Int32();
             intClosure = 69;
 
-            // Call the test function passing a 
+            // Call the test function passing a
             m_queue.enqueueEvent(this as MamaQueueEventCallback, intClosure);
 
             // Wait until the event has been fired
@@ -175,7 +175,7 @@ namespace NUnitTest
             Assert.AreEqual(m_numberEvents, 1);
 
             // Verify that the closure is correct
-            Assert.AreEqual((Int32)m_closure, intClosure);            
+            Assert.AreEqual((Int32)m_closure, intClosure);
         }
 
         #endregion

@@ -63,7 +63,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// Destroys the underlying peer object and unbinds the wrapper from it. 
+		/// Destroys the underlying peer object and unbinds the wrapper from it.
 		/// </summary>
 		public void Dispose()
 		{
@@ -80,12 +80,12 @@ namespace Wombat
 			if (disposing)
 			{
                 OnDispose();
-                if (mOwnsThePeer)        
+                if (mOwnsThePeer)
 				// prevent the object from being finalized later
                 GC.SuppressFinalize(this);
 			}
 
-                    
+
 			if (!mOwnsThePeer)
 			{
 				return;
@@ -102,7 +102,7 @@ namespace Wombat
 					if (disposing)
 					{
 						// only throw exception if the object is not being finalized
-						if (status != MamaStatus.mamaStatus.MAMA_STATUS_OK) 
+						if (status != MamaStatus.mamaStatus.MAMA_STATUS_OK)
 						{
 							throw new MamaException(status);
 						}
@@ -161,7 +161,7 @@ namespace Wombat
                 else
                     GC.ReRegisterForFinalize(this);
             }
-            
+
             mOwnsThePeer  = value;
 		}
 
@@ -183,7 +183,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Throws an exception if the native object has not been created.
-		/// </summary>		
+		/// </summary>
         /// <exception cref="InvalidOperationException">
         /// Thrown if the native object has not been created.
         /// </exception>

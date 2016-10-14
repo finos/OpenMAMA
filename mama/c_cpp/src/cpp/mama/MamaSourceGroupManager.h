@@ -25,7 +25,7 @@
 #include <mama/types.h>
 #include <mama/config.h>
 
-namespace Wombat 
+namespace Wombat
 {
 
     class MamaSourceGroup;

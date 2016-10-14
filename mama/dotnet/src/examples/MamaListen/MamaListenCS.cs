@@ -192,7 +192,7 @@ namespace MamaListen
             private MamaBridge m_bridge;
 
             /// <summary>
-            /// Flag will be set if the dictionary is downloaded correctly. 
+            /// Flag will be set if the dictionary is downloaded correctly.
             /// </summary>
             private bool m_dictionaryComplete;
 
@@ -353,7 +353,7 @@ namespace MamaListen
                                 }
                                 Console.WriteLine(indentSpacer + "}");
                             }
-                        }                        
+                        }
                         break;
                     case mamaFieldType.MAMA_FIELD_TYPE_STRING:
                         logMessage += field.getString();
@@ -708,9 +708,9 @@ namespace MamaListen
             }
 
             public delegate bool ControlEventHandler(ConsoleEvent consoleEvent);
-                        
+
             [DllImport("kernel32.dll")]
-            public static extern bool SetConsoleCtrlHandler(ControlEventHandler e, bool add);            
+            public static extern bool SetConsoleCtrlHandler(ControlEventHandler e, bool add);
         }
 
         #endregion
@@ -748,7 +748,7 @@ namespace MamaListen
         /// </summary>
         /// <param name="args">
         /// Command line arguments.
-        /// </param>            
+        /// </param>
         internal void run(string[] args)
         {
             // Install an event handler to capture the Ctrl-C press
@@ -809,7 +809,7 @@ namespace MamaListen
                     MamaTransport dictionaryTransport = null;
                     try
                     {
-                        if((m_dictionaryTransportName == null) || (m_dictionaryTransportName == string.Empty))                        
+                        if((m_dictionaryTransportName == null) || (m_dictionaryTransportName == string.Empty))
                         {
                             dictionarySource.transport = m_transport;
                         }
@@ -888,7 +888,7 @@ namespace MamaListen
                         {
                             // Not supported on all middlewares.
                             queue.setLowWatermark(m_lowWaterMark);
-                        }                         
+                        }
                     }
                 }
             }
@@ -922,7 +922,7 @@ namespace MamaListen
 
             // Enumerate all the symbol names and create a subscription for each one
             foreach (string symbol in m_symbols)
-            {               
+            {
                 MamaSubscription subscription = new MamaSubscription();
 
                 // Set the service level depending on whether we need a snapshot subscription or not
@@ -963,7 +963,7 @@ namespace MamaListen
         /// variables.
         /// </summary>
         private void createTransport()
-        { 
+        {
             m_transport = new MamaTransport();
 
             // Register for the callbacks before the transport is created
@@ -1036,7 +1036,7 @@ namespace MamaListen
         /// </param>
         /// <returns>
         /// True is returned if the event is handled, basically just for Ctrl C.
-        /// </returns>        
+        /// </returns>
         private bool onControlHandler(NativeMethods.ConsoleEvent consoleEvent)
         {
             bool ret = false;
@@ -1066,7 +1066,7 @@ namespace MamaListen
         private bool parseCommandLine(string[] args)
         {
             bool ret = true;
-            
+
             if ((args == null) || (args.Length == 0))
             {
                 throw new ApplicationException("No command line arguments supplied.");
@@ -1328,7 +1328,7 @@ namespace MamaListen
                 m_queueGroup.destroyWait();
                 m_queueGroup = null;
             }
-            
+
             if (m_transport != null)
             {
                 m_transport.destroy();

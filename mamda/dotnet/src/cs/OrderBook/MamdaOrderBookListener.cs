@@ -111,7 +111,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public DateTime getSrcTime()
@@ -120,7 +120,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <returns></returns>
 		public DateTime getActivityTime()
@@ -144,7 +144,7 @@ namespace Wombat
 			return mEventTime;
 		}
         /*  Field State Accessors   */
-        
+
         public MamdaFieldState   getSymbolFieldState()
         {
           return mSymbolFieldState;
@@ -152,7 +152,7 @@ namespace Wombat
 
         public MamdaFieldState   getPartIdFieldState()
         {
-          return mPartIdFieldState; 
+          return mPartIdFieldState;
         }
 
         public MamdaFieldState   getSrcTimeFieldState()
@@ -186,7 +186,7 @@ namespace Wombat
         }
 
         /* End Field State Accessors    */
-        
+
 
 		/// <summary>
 		/// </summary>
@@ -318,7 +318,7 @@ namespace Wombat
 				case mamaMsgType.MAMA_MSG_TYPE_BOOK_UPDATE:
 					handleUpdate(subscription, msg);
 					break;
-			}          
+			}
 		}
 
 		private void handleClear(
@@ -327,7 +327,7 @@ namespace Wombat
 		{
 			// Synchronize the current Order Book in case a snapshot is being created
 			if (mFullBook != null)
-			{        
+			{
 				lock (mFullBook)
 				{
 					handleStandardFields(subscription, msg, false);
@@ -365,7 +365,7 @@ namespace Wombat
                         mDeltaBook.setBookTime(msg.getDateTime(MamdaOrderBookFields.BOOK_TIME, mSrcTime));
 						mDeltaBook.setAsDeltaDifference(mFullBook, mTempmDeltaBook);
 						mFullBook.copy(mTempmDeltaBook);
-						mFullBook.setSymbol(subscription.getSymbol());						
+						mFullBook.setSymbol(subscription.getSymbol());
                         mFullBook.setBookTime(mDeltaBook.getBookTime());
 						mFullBook.setIsConsistent(true);
 						invokeRecapHandlers(subscription, msg);
@@ -424,8 +424,8 @@ namespace Wombat
 					{
 						mFullBook.apply(mDeltaBook);
 					}
-					
-                    mFullBook.setBookTime(mDeltaBook.getBookTime()); 
+
+                    mFullBook.setBookTime(mDeltaBook.getBookTime());
                 }
 				if (mHandlers.Count > 0)
 				{
@@ -518,11 +518,11 @@ namespace Wombat
 
 		/// <summary>
 		/// Returns whether a complete book delta was received.
-		/// 
+		///
 		/// Books without vector fields (i.e. fixed field layout) might
 		/// come in multiple MamaMsgs.  The MdMsgNum and MdTotalNum
 		/// fields can be used to determine which message is which.
-		/// 
+		///
 		/// When a single price level is present, it may or may not be
 		/// encapsulated in a nested message field.  Similarly, with single
 		/// entries in a price level.
@@ -609,7 +609,7 @@ namespace Wombat
             MamdaOrderBook deltaBook)
 		{
 			level.setPrice(plMsg.getPrice(MamdaOrderBookFields.PL_PRICE));
-        
+
 			level.setSize((long)plMsg.getF64(MamdaOrderBookFields.PL_SIZE, 0));
 			level.setNumEntries((int)plMsg.getF64(MamdaOrderBookFields.PL_NUM_ENTRIES, 1));
 			level.setAction((MamdaOrderBookPriceLevel.Actions)plMsg.getChar(
@@ -637,7 +637,7 @@ namespace Wombat
              is not specified in the data dictionary*/
             if (MamdaOrderBookFields.PL_ENTRIES != null)
             {
-                /* null is passed as default value otherwise 
+                /* null is passed as default value otherwise
                     getVectorMsg throws an exception if not found*/
                 msgEntries = plMsg.getVectorMsg(MamdaOrderBookFields.PL_ENTRIES, null);
             }

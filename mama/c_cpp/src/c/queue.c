@@ -33,6 +33,7 @@
 #include "wlock.h"
 #include "wombat/wInterlocked.h"
 #include <wombat/strutils.h>
+#include <wombat/thread.h>
 
 extern int gGenerateQueueStats;
 extern int gLogQueueStats;
@@ -46,6 +47,9 @@ int MAMACALLTYPE mamaQueue_pollQueueSizeCb (void* closure);
 
 /* property to turn on object locking tracking. */
 #define MAMAQUEUE_PROPERTY_OBJECT_LOCK_TRACKING "mama.queue.object_lock_tracking"
+
+/* for named threads */
+#define MAMAQUEUE_THREAD_PREFIX "mama_dispatcher_"
 
 /* *************************************************** */
 /* Structures. */
@@ -109,6 +113,7 @@ typedef struct mamaDispatcherImpl_
     mamaQueue       mQueue;
     /*The thread on which this dispatcher is dispathcing.*/
     wthread_t       mThread;
+    char            mThreadName[256];
     /*Whether the dispatcher is dispatching*/
     wInterlockedInt mIsDispatching;
 } mamaDispatcherImpl;
@@ -207,7 +212,7 @@ mamaQueue_create (mamaQueue* queue,
 
     /* Generate a unique queue name */
     snprintf (queueName, sizeof(queueName),
-            "NO_NAME_%d", wInterlocked_increment(&gQueueNumber));
+              "NO_NAME_%d", wInterlocked_increment(&gQueueNumber));
 
     /*Create the queue structure*/
     impl = (mamaQueueImpl*)calloc (1, sizeof (mamaQueueImpl));
@@ -419,7 +424,7 @@ mamaQueue_create_usingNative (mamaQueue* queue,
 
     /* Generate a unique queue name */
     snprintf (queueName, sizeof(queueName),
-            "NO_NAME_%d", wInterlocked_increment(&gQueueNumber));
+              "NO_NAME_%d", wInterlocked_increment(&gQueueNumber));
 
     /*Create the queue structure*/
     impl = (mamaQueueImpl*)calloc (1, sizeof (mamaQueueImpl));
@@ -1296,8 +1301,10 @@ mama_status
 mamaDispatcher_create (mamaDispatcher *result,
                        mamaQueue      queue)
 {
-    mamaQueueImpl*      qImpl   = (mamaQueueImpl*)queue;
-    mamaDispatcherImpl* impl    = NULL;
+    mamaQueueImpl*      qImpl        = (mamaQueueImpl*)queue;
+    mamaDispatcherImpl* impl         = NULL;
+    wombatThread        thread       = NULL;
+    wombatThreadStatus  threadStatus = WOMBAT_THREAD_OK;
 
     if (!queue)
     {
@@ -1330,7 +1337,24 @@ mamaDispatcher_create (mamaDispatcher *result,
     wInterlocked_set(0, &impl->mIsDispatching);
 
     impl->mQueue = queue;
-    if (wthread_create(&impl->mThread, NULL, dispatchThreadProc, impl))
+
+    snprintf (impl->mThreadName, 256, "%s%s", MAMAQUEUE_THREAD_PREFIX, qImpl->mQueueName);
+    threadStatus = wombatThread_create(impl->mThreadName,
+                            &thread,
+                            NULL,
+                            dispatchThreadProc,
+                            impl);
+
+    if (threadStatus == WOMBAT_THREAD_PROPERTY)
+    {
+        /* Failed to set the thread affinity, but the thread has been created
+         * so log an error but carry on. */
+        mama_log (MAMA_LOG_LEVEL_ERROR, "mamaDispatcher_create(): Could not apply "
+                                        "thread affinity to %s",
+                                        impl->mThreadName);
+
+    }
+    else if (threadStatus != WOMBAT_THREAD_OK)
     {
         free (impl);
         mama_log (MAMA_LOG_LEVEL_ERROR, "mamaDispatcher_create(): Could not "
@@ -1338,6 +1362,7 @@ mamaDispatcher_create (mamaDispatcher *result,
         return MAMA_STATUS_SYSTEM_ERROR;
     }
 
+    impl->mThread = wombatThread_getOsThread (thread);
     qImpl->mDispatcher = (mamaDispatcher)impl;
     *result = (mamaDispatcher)impl;
 
@@ -1366,6 +1391,7 @@ mamaDispatcher_destroy (mamaDispatcher dispatcher)
 
     /* Destroy the thread handle. */
     wthread_destroy(impl->mThread);
+    wombatThread_destroy (impl->mThreadName);
 
     impl->mQueue->mDispatcher = NULL;
     impl->mThread = 0; 

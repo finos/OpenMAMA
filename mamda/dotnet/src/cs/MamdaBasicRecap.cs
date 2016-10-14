@@ -41,7 +41,7 @@ namespace Wombat
         /// </summary>
         /// <returns>Symbol Field State</returns>
         MamdaFieldState getSymbolFieldState();
-        
+
 		/// <summary>
 		/// Participant ID.  This may be an exchange identifier, a
 		/// market maker ID, etc., or NULL (if this is not related to any

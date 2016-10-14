@@ -49,7 +49,7 @@ namespace Wombat
 		/// chain.  This method gets invoked exactly once for every option
 		/// contract in the chain.  The primary purpose of this method is
 		/// to allow a user application to initialize any per-contract data
-		/// as well to register handlers for trades and quotes.  
+		/// as well to register handlers for trades and quotes.
 		/// </summary>
 		/// <remarks>
 		/// Note: This method differs from onOptionSeriesUpdate() as

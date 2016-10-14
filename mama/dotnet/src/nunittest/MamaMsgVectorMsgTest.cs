@@ -19,7 +19,7 @@ namespace NUnitTest
         #endregion
 
         #region Private Member Variables
-		
+
 		private MamaBridge mBridge;
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace NUnitTest
 
 			mBridge = Mama.loadBridge (MamaCommon.middlewareName);
 			Mama.open ();
-			
+
             // Create the message
             m_msg = new MamaMsg();
 

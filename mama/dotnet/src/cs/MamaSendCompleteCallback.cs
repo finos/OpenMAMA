@@ -34,7 +34,7 @@ namespace Wombat
 		/// mamaPublisher_sendWithThrottle() or
 		/// mamaPublisher_sendFromInboxWithThrottle() has been sent from
 		/// the throttle queue.
-		/// 
+		///
 		/// Messages sent on the throttle queue are no longer destroyed by the API. It
 		/// is the responsibility of the application developer to manage the lifecycle
 		/// of any messages sent on the throttle.

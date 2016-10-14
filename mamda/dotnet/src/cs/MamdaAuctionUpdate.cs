@@ -68,4 +68,3 @@ namespace Wombat
         MamdaFieldState getUncrossPriceIndFieldState();
 	}
 }
-

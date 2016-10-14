@@ -23,22 +23,21 @@
 #include <mama/statsloggerfields.h>
 #include <mama/reservedfields.h>
 
-const MamaReservedField  MamaSlIntervalStartTime         
+const MamaReservedField  MamaSlIntervalStartTime
     = {"MamaSlIntervalStartTime",   101};
-const MamaReservedField  MamaSlIntervalEndTime    
+const MamaReservedField  MamaSlIntervalEndTime
     = {"MamaSlIntervalEndTime",     102};
-const MamaReservedField  MamaSlEvents  
-    = {"MamaSlEvents",              103};   
-const MamaReservedField  MamaSlEventTime    
-    = {"MamaSlEventTime",           104};  
-const MamaReservedField  MamaSlEventType   
-    = {"MamaSlEventType",           105};    
-const MamaReservedField  MamaSlEventReason    
-    = {"MamaSlReason",              106};  
-const MamaReservedField  MamaSlTotalMsgCount    
-    = {"MamaSlTotalMsgCount",       107}; 
-const MamaReservedField  MamaSlIntervalMsgCount    
-    = {"MamaSlIntervalMsgCount",    108};        
+const MamaReservedField  MamaSlEvents
+    = {"MamaSlEvents",              103};
+const MamaReservedField  MamaSlEventTime
+    = {"MamaSlEventTime",           104};
+const MamaReservedField  MamaSlEventType
+    = {"MamaSlEventType",           105};
+const MamaReservedField  MamaSlEventReason
+    = {"MamaSlReason",              106};
+const MamaReservedField  MamaSlTotalMsgCount
+    = {"MamaSlTotalMsgCount",       107};
+const MamaReservedField  MamaSlIntervalMsgCount
+    = {"MamaSlIntervalMsgCount",    108};
 const MamaReservedField  MamaStatEvents
     = {"MamaStatEvents",            109};
-      

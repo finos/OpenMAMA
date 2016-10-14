@@ -28,7 +28,7 @@ namespace Wombat
 	/// </summary>
 	public class MamaReservedFields
 	{
-		private MamaReservedFields() 
+		private MamaReservedFields()
 		{
 		}
 
@@ -36,8 +36,8 @@ namespace Wombat
 		public static readonly MamaFieldDescriptor SeqNum = new MamaFieldDescriptor(10, mamaFieldType.MAMA_FIELD_TYPE_I64, "MdSeqNum");
 		public static readonly MamaFieldDescriptor MsgNum = new MamaFieldDescriptor(7, mamaFieldType.MAMA_FIELD_TYPE_I32, "MdMsgNum");
 		public static readonly MamaFieldDescriptor MsgTotal = new MamaFieldDescriptor(8, mamaFieldType.MAMA_FIELD_TYPE_I32, "MdMsgTotal");
-        
-        public static readonly MamaFieldDescriptor AppMsgType = new MamaFieldDescriptor(18, mamaFieldType.MAMA_FIELD_TYPE_I32, "MamaAppMsgType"); 
+
+        public static readonly MamaFieldDescriptor AppMsgType = new MamaFieldDescriptor(18, mamaFieldType.MAMA_FIELD_TYPE_I32, "MamaAppMsgType");
         public static readonly MamaFieldDescriptor MsgType = new MamaFieldDescriptor(1, mamaFieldType.MAMA_FIELD_TYPE_I32, "MdMsgType");
 		public static readonly MamaFieldDescriptor SenderId = new MamaFieldDescriptor(20,mamaFieldType.MAMA_FIELD_TYPE_U64,"MamaSenderId");
         public static readonly MamaFieldDescriptor SendTime =  new MamaFieldDescriptor(16, mamaFieldType.MAMA_FIELD_TYPE_TIME, "MamaSendTime");

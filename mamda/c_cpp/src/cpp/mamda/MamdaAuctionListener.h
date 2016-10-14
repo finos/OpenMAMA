@@ -43,7 +43,7 @@ namespace Wombat
      * application for this MAMDA class is any kind of currency analysis
      * application.
      *
-     * MamdaAuctionListener should initialize the MamdaAuctionFields class 
+     * MamdaAuctionListener should initialize the MamdaAuctionFields class
      * prior to receiving the first message by calling
      * MamdaAuctionFields::setDictionary() with a valid dictionary object
      * which contains Auction related fields.
@@ -68,7 +68,7 @@ namespace Wombat
         const MamaDateTime&  getEventTime()     const;
         const MamaMsgQual&   getMsgQual()       const;
         bool                 isInitialised()    const;
-        
+
         MamdaFieldState     getSymbolFieldState()       const;
         MamdaFieldState     getPartIdFieldState()       const;
         MamdaFieldState     getSrcTimeFieldState()      const;

@@ -80,6 +80,7 @@ FILE*        gMamaControlledLogFile     = NULL;
 MamaLogLevel gMamaLogLevel              = MAMA_LOG_LEVEL_WARN;
 mamaLogCb    gMamaLogFunc               = mama_logDefault;
 mamaLogCb    gMamaForceLogFunc          = mama_forceLogDefault;
+mamaLogCb3   gMamaForceLogPrefixFunc    = mama_forceLogPrefixDefault;
 static char* gMamaControlledLogFileName = NULL;
 
 /* This static global is used to suppor the setLogCallback2 function required for C#. */
@@ -571,6 +572,43 @@ mama_forceLogDefault (MamaLogLevel level,
 	}
 }
 
+void MAMACALLTYPE
+mama_forceLogPrefixDefault (const char* prefix,
+                            const char* format,
+                            va_list ap)
+{
+    /* Acquire the read lock. */
+    MRSW_RESULT al = mamaLog_acquireLock(1);
+    if(MRSW_S_OK == al)
+    {
+        char    ts[MAMALOG_TIME_BUFFER_LENGTH] = "";
+        FILE*   f;
+
+        if (loggingToFile)
+        {
+            mamaLog_logLimitReached ();
+            f = gMamaControlledLogFile;
+        }
+        else
+        {
+            f = (gMamaLogFile == NULL) ? stderr : gMamaLogFile;
+        }
+
+        /* Format the current time */
+        mamaLog_getTime(ts, MAMALOG_TIME_BUFFER_LENGTH);
+
+        fprintf (f, "%s", ts);
+        fprintf (f, "(%x) : ", (unsigned int)wGetCurrentThreadId());
+        fprintf (f, "%s: ", prefix);
+        vfprintf (f, format, ap);
+        fprintf (f, "\n");
+        fflush (f);
+
+        /* Release the read lock. */
+        MRSWLock_release(g_lock, 1);
+    }
+}
+
 mama_status
 mama_setLogSize(unsigned long size)
 {	
@@ -797,6 +835,33 @@ mama_setForceLogCallback (mamaLogCb callback)
 
     return ret;
 }
+
+mama_status
+mama_setForceLogPrefixCallback (mamaLogCb3 callback)
+{
+	/* Returns. */
+	mama_status ret = MAMA_STATUS_NULL_ARG;
+	if(callback != NULL)
+	{		
+		/* Acquire the write lock. */
+		MRSW_RESULT al = mamaLog_acquireLock(0);
+		ret = MAMA_STATUS_PLATFORM;
+		if(MRSW_S_OK == al)
+		{
+			/* Write the value. */
+			gMamaForceLogPrefixFunc = callback;
+
+			/* Release the write lock. */
+			MRSWLock_release(g_lock, 0);
+
+			/* The function has succeeded. */
+			ret = MAMA_STATUS_OK;
+		}
+	}
+
+    return ret;
+}
+
 
 mama_status
 mama_enableLogging (FILE         *f,
@@ -1063,35 +1128,22 @@ mama_forceLogVaWithPrefix (const char* prefix,
                            const char* format,
                            va_list     args)
 {
-    MRSW_RESULT al = mamaLog_acquireLock(1);
-    if(MRSW_S_OK == al)
-    {
-        char    ts[MAMALOG_TIME_BUFFER_LENGTH] = "";
-        FILE*   f;
+	/* Get the log function under the reader lock. */
+	mamaLogCb3 forceLogFunction = NULL;
 
-        if (loggingToFile)
-        {
-            mamaLog_logLimitReached ();
-            f = gMamaControlledLogFile;
+	/* Acquire the read lock. */
+	mamaLog_acquireLock(1);
+
+	/* Get the variables. */
+	forceLogFunction = gMamaForceLogPrefixFunc;
+	
+	/* Release the read lock as quickly as possible. */
+	/* Release the read lock as quickly as possible. */
+	MRSWLock_release(g_lock, 1);	
+	{
+            /* Call the log function .*/
+            forceLogFunction(prefix, format, args);
         }
-        else
-        {
-            f = (gMamaLogFile == NULL) ? stderr : gMamaLogFile;
-        }
-
-        /* Format the current time */
-        mamaLog_getTime(ts, MAMALOG_TIME_BUFFER_LENGTH);
-
-        fprintf (f, "%s", ts);
-        fprintf (f, "(%x) : ", (unsigned int)wGetCurrentThreadId());
-        fprintf (f, "%s: ", prefix);
-        vfprintf (f, format, args);
-        fprintf (f, "\n");
-        fflush (f);
-
-        /* Release the read lock. */
-        MRSWLock_release(g_lock, 1);
-    }
 }
 
 void

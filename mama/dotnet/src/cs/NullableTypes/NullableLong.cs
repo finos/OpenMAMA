@@ -67,7 +67,7 @@ namespace Wombat
 			}
 		}
 
-        /// <overloads>Get the value</overloads>        
+        /// <overloads>Get the value</overloads>
         /// <summary>
         /// Get the value
         /// </summary>
@@ -96,7 +96,7 @@ namespace Wombat
         /// Compare another object. If both objects are the same, then return zero.
         /// If this object has a value but the other object does not, return +1
         /// If this object does not have a value, but the other object does have a value,
-        /// return -1. If both objects have a value, the return value will be 
+        /// return -1. If both objects have a value, the return value will be
         /// an indication of their relative values
         /// </summary>
         public int CompareTo(object obj)

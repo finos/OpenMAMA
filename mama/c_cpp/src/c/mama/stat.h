@@ -110,7 +110,7 @@ mamaStat_reset (mamaStat stat);
 /**
  * Adds the stats object counter with the value
  *
- * @param stat  The stats object to added 
+ * @param stat  The stats object to added
  * @param value The value to be added to be stat
  */
 MAMAExpDLL
@@ -120,7 +120,7 @@ mamaStat_add (mamaStat stat, int value);
 /**
  * Subtract the stats object counter with the value
  *
- * @param stat  The stats object to subtracted 
+ * @param stat  The stats object to subtracted
  * @param value the value to be subtracted from stat
  */
 MAMAExpDLL

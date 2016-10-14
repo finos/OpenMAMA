@@ -40,7 +40,7 @@ typedef struct inboxCbClosure
 {
     jobject mInbox;
     jobject mJavaCallback;
-    jobject mReuseableMsgObject;    
+    jobject mReuseableMsgObject;
 } inboxCbClosure;
 
 /******************************************************************************
@@ -87,7 +87,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaInbox_create
     mamaInbox       cInbox              =   NULL;
     mama_status     status              =   MAMA_STATUS_OK;
     char            errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-        
+
     closureImpl = (inboxCbClosure*) calloc(1,sizeof(inboxCbClosure));
     if(!closureImpl)
     {
@@ -95,31 +95,30 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaInbox_create
                 " Could not allocate.");
         return;
     }
-    
+
     assert(NULL!=transport);
     assert(NULL!=callback);
     assert(NULL!=queue);
-    
+
     closureImpl->mInbox = (*env)->NewGlobalRef(env,this);
-    closureImpl->mJavaCallback = (*env)->NewGlobalRef(env,callback);    
+    closureImpl->mJavaCallback = (*env)->NewGlobalRef(env,callback);
 
     transportPointer =
         (*env)->GetLongField(env,transport,transportPointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,  
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(transportPointer,
 		"Null parameter, MamaTransport may have already been destroyed.")
 
-        queuePointer = (*env)->GetLongField(env,queue,queuePointerFieldId_g);
-        MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,  
-			"Null parameter, MamaQueue may have already been destroyed.")
+    queuePointer = (*env)->GetLongField(env,queue,queuePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(queuePointer,
+		"Null parameter, MamaQueue may have already been destroyed.")
 
-        cQueue = CAST_JLONG_TO_POINTER(mamaQueue, queuePointer);
+    cQueue = CAST_JLONG_TO_POINTER(mamaQueue, queuePointer);
 
     /* Use the reuseable message object from our queue*/
     messageImpl =  (*env)->GetObjectField(env,queue,queuePointerMsg_g);
+    closureImpl->mReuseableMsgObject =  (*env)->NewGlobalRef (env, messageImpl);
 
-    closureImpl->mReuseableMsgObject = (*env)->NewGlobalRef(env,messageImpl);
-
-    /*Finally! Create the mamaInbox structure*/    
+    /*Finally! Create the mamaInbox structure*/
     if(MAMA_STATUS_OK!=(status=mamaInbox_create2(
                         &cInbox,
                         CAST_JLONG_TO_POINTER(mamaTransport,transportPointer),
@@ -154,18 +153,18 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaInbox_create
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaInbox__1destroy(JNIEnv* env, jobject this)
 {
     /* Errors. */
-    mama_status ret = MAMA_STATUS_NULL_ARG;    
+    mama_status ret = MAMA_STATUS_NULL_ARG;
 
     /* Get the C inbox object from the java class. */
     jlong inboxPointer = (*env)->GetLongField(env, this, inboxPointerFieldId_g);
     if(0 != inboxPointer)
-    {        
+    {
         /* Set the native inbox and closure to NULL inside the java class. */
-        (*env)->SetLongField(env, this, inboxPointerFieldId_g, 0);     
-	    (*env)->SetLongField(env, this, internalClosurePointerFieldId_g, 0);			    
+        (*env)->SetLongField(env, this, inboxPointerFieldId_g, 0);
+	    (*env)->SetLongField(env, this, internalClosurePointerFieldId_g, 0);
 
         /* Destroy the C timer. */
-        ret = mamaInbox_destroy(CAST_JLONG_TO_POINTER(mamaInbox, inboxPointer));        
+        ret = mamaInbox_destroy(CAST_JLONG_TO_POINTER(mamaInbox, inboxPointer));
     }
 
     /* If anything went wrong throw an exception. */
@@ -190,17 +189,17 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaInbox_initIDs
 {
 
     jclass  inboxCallbackClass   =   NULL;
-    
+
     inboxPointerFieldId_g = (*env)->GetFieldID(env,
             class, "inboxPointer_i",
             UTILS_JAVA_POINTER_TYPE_SIGNATURE);
     if (!inboxPointerFieldId_g) return;/*Exception auto thrown*/
-    
+
     internalClosurePointerFieldId_g = (*env)->GetFieldID(env,
             class, "internalCClosurePointer_i",
             UTILS_JAVA_POINTER_TYPE_SIGNATURE);
     if (!internalClosurePointerFieldId_g) return;/*Exception auto thrown*/
-    
+
     inboxCallbackClass = (*env)->FindClass(env,
             "com/wombat/mama/MamaInboxCallback");
     if (!inboxCallbackClass) return;
@@ -217,7 +216,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaInbox_initIDs
 
     callbackOnDestroyId_g = (*env)->GetMethodID(env,inboxCallbackClass,
                         "onDestroy","(Lcom/wombat/mama/MamaInbox;)V");
-    
+
     return;
 }
 
@@ -231,9 +230,9 @@ void MAMACALLTYPE destroyCB(mamaInbox inbox, void *closure)
         inboxCbClosure *closureImpl = (inboxCbClosure *)closure;
         if(NULL != closureImpl)
         {
-            /* Invoke the callback if it has been supplied. */        
+            /* Invoke the callback if it has been supplied. */
             if((NULL != closureImpl->mInbox) && (NULL != closureImpl->mJavaCallback))
-            {       
+            {
 			    (*env)->CallVoidMethod(env, closureImpl->mJavaCallback, callbackOnDestroyId_g, closureImpl->mInbox);
             }
 

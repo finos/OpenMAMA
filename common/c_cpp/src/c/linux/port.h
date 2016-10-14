@@ -29,6 +29,7 @@
 #define  PORT_LINUX_H__
 
 #include <pthread.h>
+#include <sched.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
 #include <sys/vfs.h>
@@ -141,6 +142,7 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 #define wthread_join		pthread_join
 #define wthread_create		pthread_create
 #define wthread_exit            pthread_exit
+#define wthread_set_affinity_mask pthread_setaffinity_np
 
 #define wthread_cond_t	        pthread_cond_t
 #define wthread_cond_init       pthread_cond_init

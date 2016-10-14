@@ -2511,7 +2511,7 @@ namespace Wombat
                 listener.mTradeCache.mLastPartIdFieldState = MamdaFieldState.MODIFIED;
             }
         }
-        
+
         private class TradeAccVolume : TradeUpdate
         {
             public void onUpdate(
@@ -3889,10 +3889,9 @@ namespace Wombat
 
         private MamdaFieldState mIsIndicativeFieldState = new MamdaFieldState();
         private MamdaFieldState mTmpTradeCountFieldState = new MamdaFieldState();
-        
+
         #endregion State
 
         #endregion Implementation details
     }
 }
-

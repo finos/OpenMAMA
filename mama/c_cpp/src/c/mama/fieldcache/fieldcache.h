@@ -75,7 +75,7 @@ mamaFieldCache_clear(mamaFieldCache fieldCache);
 
 /**
  * This function will return the number of fields in the cache.
- * 
+ *
  * @param fieldCache (in) The field cache.
  * @param size (out) The number of fields in the cache.
  * @return Resulting status of the call which can be
@@ -108,7 +108,7 @@ mamaFieldCache_find(mamaFieldCache fieldCache,
                     mamaFieldCacheField* field);
 
 /**
- * This function will retrieve a field from the cache. If it does not exist, a 
+ * This function will retrieve a field from the cache. If it does not exist, a
  * new one is created, added to the cache and returned.
  *
  * @param fieldCache (in) The field cache.
@@ -153,7 +153,7 @@ mamaFieldCache_setModified(mamaFieldCache fieldCache,
  * Update the cache content with the field given.
  * If the field is already present, it will be updated, otherwise it will be
  * added to the cache.
- * 
+ *
  * @param fieldCache (in) The field cache.
  * @param field (in) The field to get the content to update in the cache.
  * @return Resulting status of the call which can be
@@ -174,9 +174,9 @@ mamaFieldCache_applyField(mamaFieldCache fieldCache,
  * @param message (in) The <code>mamaMsg</code> to use to populate the cache.
  * @param dictionary (in) The dictionary (optional: can be NULL).
  * @return Resulting status of the call which can be
- *      MAMA_STATUS_NULL_ARG  
+ *      MAMA_STATUS_NULL_ARG
  *      MAMA_STATUS_OK
- *      Other error codes from the mama functions. 
+ *      Other error codes from the mama functions.
  */
 MAMAExpDLL
 extern mama_status
@@ -210,9 +210,9 @@ mamaFieldCache_applyRecord(mamaFieldCache fieldCache,
  * fields in the cache.
  *
  * @param fieldCache (in) The field cache to obtain the fields from.
- * @param message (in) This <code>mamaMsg</code> will be populated with all the fields. 
+ * @param message (in) This <code>mamaMsg</code> will be populated with all the fields.
  * @return Resulting status of the call which can be
- *      MAMA_STATUS_NULL_ARG 
+ *      MAMA_STATUS_NULL_ARG
  *      MAMA_STATUS_OK
  *      Other mama return codes.
  */
@@ -227,7 +227,7 @@ mamaFieldCache_getFullMessage(mamaFieldCache fieldCache,mamaMsg message);
  * modified fields in the cache.
  *
  * @param fieldCache (in) The field cache to obtain the modified fields from.
- * @param message (in) This <code>mamMsg</code> will be populated with the modified fields. 
+ * @param message (in) This <code>mamMsg</code> will be populated with the modified fields.
  * @return Resulting status of the call which can be
  *      MAMA_STATUS_NULL_ARG
  *      MAMA_STATUS_OK
@@ -278,7 +278,7 @@ mamaFieldCache_setTrackModified(mamaFieldCache fieldCache, mama_bool_t trackModi
  *      MAMA_STATUS_OK
  */
 MAMAExpDLL
-extern mama_status 
+extern mama_status
 mamaFieldCache_getTrackModified(mamaFieldCache fieldCache, mama_bool_t *trackModified);
 
 /**
@@ -308,7 +308,7 @@ mamaFieldCache_setUseFieldNames(mamaFieldCache fieldCache, mama_bool_t useFieldN
  *      MAMA_STATUS_OK
  */
 MAMAExpDLL
-extern mama_status 
+extern mama_status
 mamaFieldCache_getUseFieldNames(mamaFieldCache fieldCache, mama_bool_t *useFieldNames);
 
 /**

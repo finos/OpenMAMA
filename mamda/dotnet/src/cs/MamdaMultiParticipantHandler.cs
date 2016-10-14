@@ -41,7 +41,7 @@ namespace Wombat
 	{
 		/// <summary>
 		/// Method invoked when the consolidated trade and BBO quote
-		/// information for the security has become available.  
+		/// information for the security has become available.
 		/// This method is invoked only if there is BBO or consolidated trade
 		/// information available.
 		/// </summary>

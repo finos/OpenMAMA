@@ -33,7 +33,7 @@ namespace Wombat
 			int code = NativeMethods.mama_loadPayloadBridge (ref nativeHandle, payload);
 			CheckResultCode (code);
 		}
-        
+
         /// <summary>
 		/// Destroy a mamaPayloadBridge object.
 		/// </summary>
@@ -61,7 +61,7 @@ namespace Wombat
 			public static extern int mama_loadPayloadBridge (ref IntPtr impl,
 				string payload);
         }
-		
+
 
 		#endregion // Implementation details
 	}

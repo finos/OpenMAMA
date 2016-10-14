@@ -42,26 +42,26 @@ typedef struct dqcallbackClosure
        and must be deleted when the subscription is deleted.
      */
     jobject mUserData;
-    
+
     /*
        The callback object for the subscription. This is stored as a
        global reference and must be deleted when the subscription is deleted
      */
     jobject mClientCB;
-    
+
     /*
        The java Publisher Manager object. Stored as a global reference
        and deleted when the subscription is destroyed.
      */
     jobject  mPublisherManager;
-    
+
     /*
        The Message which is to be reused for the callbacks.
        This is more efficient than creating a new message for each.
        Global reference which gets deleted when the subscription is destroyed.
      */
     jobject mMessage;
-    
+
 } dqcallbackClosure;
 
 
@@ -104,21 +104,21 @@ static void MAMACALLTYPE mamaDQPublisherManagerOnCreateCb (mamaDQPublisherManage
 {
 	JNIEnv*             env             =   NULL;
     dqcallbackClosure*    closureImpl     =   (dqcallbackClosure*)mamaDQPublisherManager_getClosure(manager);
-    
+
     assert(closureImpl!=NULL);
     assert(closureImpl->mClientCB!=NULL);
     assert(closureImpl->mMessage!=NULL);
     assert(closureImpl->mPublisherManager!=NULL);
-    
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
-    if (!env) return;/*Can't throw exception without JNIEnv*/   
-    
+    if (!env) return;/*Can't throw exception without JNIEnv*/
+
     /*invoke the callback*/
     (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                            dqCreateId_g,
                            closureImpl->mPublisherManager);
-                           
+
     utils_printAndClearExceptionFromStack (env,"mamaDQPublisherManagerOnCreateCb");
 }
 
@@ -130,22 +130,22 @@ static void MAMACALLTYPE mamaDQPublisherManagerOnErrorCb (mamaDQPublisherManager
     JNIEnv*             env             =   NULL;
     dqcallbackClosure*    closureImpl     =   (dqcallbackClosure*)mamaDQPublisherManager_getClosure(manager);
     jstring jErrorTxt;
-    
+
     assert(closureImpl!=NULL);
     assert(closureImpl->mClientCB!=NULL);
     assert(closureImpl->mMessage!=NULL);
     assert(closureImpl->mPublisherManager!=NULL);
-    
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
     if (!env) return;/*Can't throw exception without JNIEnv*/
-    
+
     (*env)->SetLongField(env, closureImpl->mMessage,
                          messagePointerFieldId_g,
                          CAST_POINTER_TO_JLONG(msg));
-    
+
     jErrorTxt = (*env)->NewStringUTF(env, errortxt);
-    
+
     /*invoke the callback*/
     (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                            dqErrorId_g,
@@ -154,7 +154,7 @@ static void MAMACALLTYPE mamaDQPublisherManagerOnErrorCb (mamaDQPublisherManager
                            jErrorTxt,
                            closureImpl->mMessage);
 
-    /* 
+    /*
        Need to check if any exceptions were propagated here.
        If we don't the exceptions could actually fill the stack!!
     */
@@ -174,17 +174,17 @@ static void MAMACALLTYPE mamaDQPublisherManagerOnNewRequestCb (mamaDQPublisherMa
     assert(closureImpl->mClientCB!=NULL);
     assert(closureImpl->mMessage!=NULL);
     assert(closureImpl->mPublisherManager!=NULL);
-    
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
     if (!env) return;/*Can't throw exception without JNIEnv*/
-    
+
     (*env)->SetLongField(env, closureImpl->mMessage,
                          messagePointerFieldId_g,
                          CAST_POINTER_TO_JLONG(msg));
-    
+
     jSymbol = (*env)->NewStringUTF(env, symbol);
-    
+
     /*invoke the callback*/
     (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                            dqNewRequestId_g,
@@ -194,7 +194,7 @@ static void MAMACALLTYPE mamaDQPublisherManagerOnNewRequestCb (mamaDQPublisherMa
                            msgType,
                            closureImpl->mMessage);
 
-    /* 
+    /*
        Need to check if any exceptions were propagated here.
        If we don't the exceptions could actually fill the stack!!
     */
@@ -210,20 +210,20 @@ static void MAMACALLTYPE mamaDQPublisherManagerOnRequestCb (mamaDQPublisherManag
 {
     JNIEnv*             env             =   NULL;
     dqcallbackClosure*    closureImpl     =   (dqcallbackClosure*)mamaDQPublisherManager_getClosure(manager);
-    
+
     assert(closureImpl!=NULL);
     assert(closureImpl->mClientCB!=NULL);
     assert(closureImpl->mMessage!=NULL);
     assert(closureImpl->mPublisherManager!=NULL);
-    
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
     if (!env) return;/*Can't throw exception without JNIEnv*/
-    
+
     (*env)->SetLongField(env, closureImpl->mMessage,
                          messagePointerFieldId_g,
-                         CAST_POINTER_TO_JLONG(msg)); 
-    
+                         CAST_POINTER_TO_JLONG(msg));
+
     /*invoke the callback*/
     (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                            dqRequestId_g,
@@ -233,7 +233,7 @@ static void MAMACALLTYPE mamaDQPublisherManagerOnRequestCb (mamaDQPublisherManag
                            msgType,
                            closureImpl->mMessage);
 
-    /* 
+    /*
        Need to check if any exceptions were propagated here.
        If we don't the exceptions could actually fill the stack!!
     */
@@ -246,23 +246,23 @@ static void MAMACALLTYPE mamaDQPublisherManagerOnRefreshCb (mamaDQPublisherManag
                                                             short                   subType,
                                                             short                   msgType,
                                                             mamaMsg                 msg)
-{ 
+{
     JNIEnv*             env             =   NULL;
     dqcallbackClosure*    closureImpl     =   (dqcallbackClosure*)mamaDQPublisherManager_getClosure(publisherManager);
-    
+
     assert(closureImpl!=NULL);
     assert(closureImpl->mClientCB!=NULL);
     assert(closureImpl->mMessage!=NULL);
     assert(closureImpl->mPublisherManager!=NULL);
-    
+
     /*Get the env for the current thread*/
     env = utils_getENV(javaVM_g);
     if (!env) return;/*Can't throw exception without JNIEnv*/
-    
+
     (*env)->SetLongField(env, closureImpl->mMessage,
                          messagePointerFieldId_g,
-                         CAST_POINTER_TO_JLONG(msg)); 
-    
+                         CAST_POINTER_TO_JLONG(msg));
+
     /*invoke the callback*/
     (*env)->CallVoidMethod(env, closureImpl->mClientCB,
                            dqRefreshId_g,
@@ -272,15 +272,15 @@ static void MAMACALLTYPE mamaDQPublisherManagerOnRefreshCb (mamaDQPublisherManag
                            msgType,
                            closureImpl->mMessage);
 
-    /* 
+    /*
        Need to check if any exceptions were propagated here.
        If we don't the exceptions could actually fill the stack!!
     */
     utils_printAndClearExceptionFromStack (env,"onMsg");
 }
-       
-       
-       
+
+
+
 
 /*
  * Class:     com_wombat_mama_MamaDQPublisherManager
@@ -323,14 +323,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1create
                 " Could not allocate.");
         return;
     }
-    
+
     closureImpl->mUserData      =   NULL;
     closureImpl->mClientCB      =   NULL;
     closureImpl->mPublisherManager  =   NULL;
     closureImpl->mMessage       =   NULL;
-    
+
     closureImpl->mClientCB = (*env)->NewGlobalRef(env, callback);
-    
+
     /*Create a reuseable message object to hang off the subscription*/
     messageImpl = utils_createJavaMamaMsg(env);
     if(NULL==messageImpl)
@@ -341,7 +341,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1create
     }/*Exception will have been thrown*/
     /*This global will be deleted when the subscription is destroyed*/
     closureImpl->mMessage  = (*env)->NewGlobalRef(env,messageImpl);
-    
+
 
     /*Get the char* from the jstring*/
     if(NULL!=topic)
@@ -354,7 +354,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1create
          cRoot= (*env)->GetStringUTFChars(env,root,0);
          if(!cRoot)return;
     }
-    
+
     if(MAMA_STATUS_OK!=(mamaDQPublisherManager_allocate(
                     &cPublisher)))
     {
@@ -365,18 +365,18 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1create
         utils_throwMamaException(env,errorString);
         return;
     }
-             
-	/*Add the Java Subscription to the closure - we need it in the 
+
+	/*Add the Java Subscription to the closure - we need it in the
       async callbacks so it can be passed to the Java callback*/
     closureImpl->mPublisherManager = (*env)->NewGlobalRef(env,this);
-             
+
     managerCallback.onCreate =  mamaDQPublisherManagerOnCreateCb;
     managerCallback.onError =  mamaDQPublisherManagerOnErrorCb;
     managerCallback.onNewRequest =  mamaDQPublisherManagerOnNewRequestCb;
     managerCallback.onRequest =  mamaDQPublisherManagerOnRequestCb;
     managerCallback.onRefresh =  mamaDQPublisherManagerOnRefreshCb;
 
-    
+
     if(MAMA_STATUS_OK!=(mamaDQPublisherManager_create(
                     cPublisher,
                     cTransport,
@@ -396,9 +396,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1create
 
     (*env)->SetLongField(env,this,dqPublisherManagerPointerFieldId_g,
                          CAST_POINTER_TO_JLONG(cPublisher));
-        
+
     if(cTopic)(*env)->ReleaseStringUTFChars(env,topic, cTopic);
-    
+
     return;
   }
 
@@ -412,13 +412,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1destroy
  {
     jlong           publisherPointer    =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
      mamaDQPublisherManager_destroy(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer));
-                    
+
     return;
  }
 
@@ -430,40 +430,40 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1destroy
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1addPublisher
   (JNIEnv *env, jobject this, jstring symbol, jobject publisher, jobject cache)
  {
- 
+
      jlong           publisherPointer    =   0;
      jlong           subpublisherPointer    =   0;
      const char*     cSymbol              =   NULL;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
     jobject topic = NULL;
-    
+
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
     subpublisherPointer = (*env)->GetLongField(env,publisher,dqpublisherPointerFieldId_g);
     assert(subpublisherPointer!=0);
-    
+
 	if(NULL!=symbol)
     {
          cSymbol= (*env)->GetStringUTFChars(env,symbol,0);
          if(!cSymbol)
 			return;
     }
-	
-    
+
+
     topic = (*env)->NewObject(env, mamaDQPublishTopicClass,
                                dqtopicConstructorId_g, symbol,publisher, cache);
-                               
-                               
-    
+
+
+
     mamaDQPublisherManager_addPublisher(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer),
 					cSymbol,
                     CAST_JLONG_TO_POINTER(mamaDQPublisher,subpublisherPointer),
                     (*env)->NewGlobalRef(env,topic));
-                    
-                    
-                    
+
+
+
     return;
  }
 
@@ -481,7 +481,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1createPu
 	jobject      result                 = NULL;
 	const char*     cSymbol             = NULL;
     mama_status     status              = MAMA_STATUS_OK;
-   
+
 	if(NULL!=symbol)
     {
          cSymbol= (*env)->GetStringUTFChars(env,symbol,0);
@@ -491,7 +491,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1createPu
 
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
-      
+
 
     if(MAMA_STATUS_OK != (status = mamaDQPublisherManager_createPublisher(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer),
@@ -506,12 +506,12 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1createPu
                 status);
         utils_throwMamaException(env,errorString);
     }
-                 
-                               
+
+
     (*env)->SetLongField(env, pub, dqpublisherPointerFieldId_g,
-                         CAST_POINTER_TO_JLONG(cPublisher));                
-                    
-    return result; 
+                         CAST_POINTER_TO_JLONG(cPublisher));
+
+    return result;
  }
 
 /*
@@ -525,12 +525,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1setStatus
       jlong           publisherPointer            =   0;
 
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
-    assert(publisherPointer!=0);  
-    
+    assert(publisherPointer!=0);
+
     mamaDQPublisher_setStatus(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer),
                     status);
-                    
+
     return;
   }
 
@@ -546,24 +546,24 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1removePu
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
     const char* cSymbol;
     mamaDQPublisher   cPublisher = NULL;
-    
+
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
   	if(NULL!=symbol)
     {
          cSymbol= (*env)->GetStringUTFChars(env,symbol,0);
          if(!cSymbol)
 			return NULL;
     }
-    
-    
+
+
      mamaDQPublisherManager_removePublisher(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer), cSymbol, &cPublisher );
-                    
+
     return NULL;
   }
- 
+
 /*
  * Class:     com_wombat_mama_MamaDQPublisherManager
  * Method:    _destroyPublisher
@@ -575,24 +575,24 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1destroyPubl
     jlong           publisherPointer    =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
     const char* cSymbol;
-    
+
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
   	if(NULL!=symbol)
     {
          cSymbol= (*env)->GetStringUTFChars(env,symbol,0);
          if(!cSymbol)
 			return;
     }
-    
-    
+
+
      mamaDQPublisherManager_destroyPublisher(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer), cSymbol );
-                    
+
     return;
   }
-  
+
 /*
  * Class:     com_wombat_mama_MamaDQPublisherManager
  * Method:    _setSeqNum
@@ -600,17 +600,17 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1destroyPubl
  */
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1setSeqNum
   (JNIEnv *env, jobject this, jlong seqnum)
-  
+
    {
     jlong           publisherPointer            =   0;
 
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
     mamaDQPublisher_setSeqNum(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer),
                     seqnum);
-                    
+
     return;
  }
 
@@ -627,11 +627,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1setSenderId
 
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
     mamaDQPublisher_setSenderId(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer),
                     (uint64_t)senderId);
-                    
+
     return;
  }
 
@@ -647,13 +647,13 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1sendSyncReq
 
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
- 
+
     mamaDQPublisherManager_sendSyncRequest(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer),
                     (mama_u16_t)nummsg,
 					(mama_f64_t) delay,
 					(mama_f64_t) duration);
-                    
+
     return;
  }
 
@@ -667,10 +667,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1sendNoSubsc
  {
     jlong           publisherPointer            = 0;
     const char*     cSymbol                     = NULL;
-    
+
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
-    
+
  	if(NULL!=symbol)
     {
          cSymbol= (*env)->GetStringUTFChars(env,symbol,0);
@@ -679,10 +679,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1sendNoSubsc
     }
     mamaDQPublisherManager_sendNoSubscribers(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer), cSymbol);
-                    
+
     return;
  }
- 
+
 /*
  * Class:     com_wombat_mama_MamaDQPublisherManager
  * Method:    initIDs
@@ -695,17 +695,17 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager_initIDs
     dqPublisherManagerPointerFieldId_g = (*env)->GetFieldID(env,
             class, "dqpublisherManagerPointer_i", UTILS_JAVA_POINTER_TYPE_SIGNATURE);
     if (!dqPublisherManagerPointerFieldId_g) return;/*Exception auto thrown*/
- 
+
   /*Get a reference to the subscription Callback class*/
-    dqPublisherManagerCallbackClass = (*env)->FindClass(env, 
+    dqPublisherManagerCallbackClass = (*env)->FindClass(env,
             "com/wombat/mama/MamaDQPublisherManagerCallback");
     if (!dqPublisherManagerCallbackClass) return;/*Exception auto thrown*/
-    
+
       /*Get a reference to the subscription Callback class*/
-    mamaDQPublishTopicClass = (*env)->FindClass(env, 
+    mamaDQPublishTopicClass = (*env)->FindClass(env,
             "com/wombat/mama/MamaDQPublisherManager$MamaPublishTopic");
     if (!mamaDQPublishTopicClass) return;/*Exception auto thrown*/
-    
+
 	mamaDQPublisherClass = (*env)->FindClass(env,
                                  "com/wombat/mama/MamaDQPublisher");
 	if (!mamaDQPublisherClass) return;/*Exception auto thrown*/
@@ -713,7 +713,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager_initIDs
     /*Callback.onNewRequest()*/
     dqNewRequestId_g = (*env)->GetMethodID(env, dqPublisherManagerCallbackClass,
             "onNewRequest", "(Lcom/wombat/mama/MamaDQPublisherManager;Ljava/lang/String;SSLcom/wombat/mama/MamaMsg;)V" );
-      
+
 	/*Callback.onRequest()*/
     dqRequestId_g = (*env)->GetMethodID(env, dqPublisherManagerCallbackClass,
             "onRequest", "(Lcom/wombat/mama/MamaDQPublisherManager;Lcom/wombat/mama/MamaDQPublisherManager$MamaPublishTopic;SSLcom/wombat/mama/MamaMsg;)V" );
@@ -728,17 +728,16 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager_initIDs
 
 	/*Callback.onCreate()*/
     dqCreateId_g = (*env)->GetMethodID(env, dqPublisherManagerCallbackClass,
-            "onCreate", "(Lcom/wombat/mama/MamaDQPublisherManager;)V" );          
-    
+            "onCreate", "(Lcom/wombat/mama/MamaDQPublisherManager;)V" );
+
     dqtopicConstructorId_g = (*env)->GetMethodID(env, mamaDQPublishTopicClass,
-                              "<init>", "(Ljava/lang/String;Lcom/wombat/mama/MamaDQPublisher;Ljava/lang/Object;)V" );        
+                              "<init>", "(Ljava/lang/String;Lcom/wombat/mama/MamaDQPublisher;Ljava/lang/Object;)V" );
     if (!dqNewRequestId_g)
     {
         (*env)->DeleteLocalRef(env, dqPublisherManagerCallbackClass);
         return;/*Exception auto thrown*/
     }
-                                                      
-    
+
+
     return;
 }
-

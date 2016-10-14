@@ -33,7 +33,7 @@ namespace Wombat
 	/// Note: It is possible to provide individual MamdaTradeHandler and
 	/// MamdaQuoteHandler handlers for trades and quotes, even though the
 	/// MamdaOptionChainHandler also provides a general callback interface
-	/// for updates to the underlying.  
+	/// for updates to the underlying.
 	/// </remarks>
 	public class MamdaOptionUnderlying
 	{

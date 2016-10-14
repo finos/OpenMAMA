@@ -26,7 +26,7 @@
 
 namespace Wombat
 {
-    
+
 /**
  * Bridge callback.
  */
@@ -38,7 +38,7 @@ public:
     /**
      * Invoked when an info message is generated
      * at the bridge level.  Currently only available in LBM.
-     * 
+     *
      * @param bridge   The bridge which the message
      *                 relates to.
      * @param message  The message.

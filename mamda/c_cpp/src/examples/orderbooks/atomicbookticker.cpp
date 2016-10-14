@@ -71,17 +71,18 @@ public:
             prettyPrint (subscription, level);
         }
     }
-  
+
     void onBookAtomicBeginBook (
         MamdaSubscription*           subscription,
         MamdaBookAtomicListener&     listener,
-        bool                         isRecap) 
+        bool                         isRecap)
 
     {
         if (gExampleLogLevel == EXAMPLE_LOG_LEVEL_NORMAL)
         {
             cout << "BEGIN BOOK - " <<  subscription->getSymbol () << endl;
         }
+        flush (cout);
     }
 
     void onBookAtomicClear (
@@ -93,8 +94,9 @@ public:
         {
             cout << "BOOK CLEAR - " <<  subscription->getSymbol () << endl << endl;
         }
+        flush (cout);
     }
-  
+
     void onBookAtomicGap (
         MamdaSubscription*           subscription,
         MamdaBookAtomicListener&     listener,
@@ -107,12 +109,13 @@ public:
             cout << "\t Begin Gap: " << listener.getBeginGapSeqNum () << endl;
             cout << "\t End Gap  : " << listener.getEndGapSeqNum ()   << endl << endl;
         }
+        flush (cout);
     }
 
-  
+
     void onBookAtomicEndBook (
         MamdaSubscription*           subscription,
-        MamdaBookAtomicListener&     listener) 
+        MamdaBookAtomicListener&     listener)
     {
         if (gExampleLogLevel == EXAMPLE_LOG_LEVEL_NORMAL)
         {
@@ -128,6 +131,7 @@ public:
             }
             cout << endl;
         }
+        flush (cout);
     }
 
     void onBookAtomicLevelEntryRecap (
@@ -166,7 +170,7 @@ public:
         }
     }
 
-    void onError ( 
+    void onError (
         MamdaSubscription*  subscription,
         MamdaErrorSeverity  severity,
         MamdaErrorCode      code,
@@ -176,6 +180,7 @@ public:
         {
             cout << "atomicbookticker: ERROR: " << errorStr << "\n";
         }
+        flush (cout);
     }
 
     void onQuality (MamdaSubscription* subscription, mamaQuality quality)
@@ -184,6 +189,7 @@ public:
         {
             cout << "atomicbookticker: QUALITY: " << quality << "\n";
         }
+        flush (cout);
     }
 
     void prettyPrint (MamdaSubscription*                subscription,
@@ -198,9 +204,10 @@ public:
 
         cout << "\tENTRY | " << symbol << " | " << actNumEntries << " | ";
         cout << entryAction << " | " << entryId << " | " << entrySize << endl;
+        flush (cout);
     }
 
-    void prettyPrint (MamdaSubscription*           subscription, 
+    void prettyPrint (MamdaSubscription*           subscription,
                       const MamdaBookAtomicLevel&  level)
     {
         // Price Level Info
@@ -218,6 +225,7 @@ public:
         cout << setiosflags(ios::fixed) << setprecision(2) << price << setprecision(0) << " | ";
 
         cout << size << " | " << action << " | " << side << " | " << numEntries << " | " << time << endl;
+        flush (cout);
     }
 };
 
@@ -280,7 +288,7 @@ int main (int argc, const char** argv)
             aSubscription->create             (queues->getNextQueue(), source, symbol);
             aBookListener->setProcessMarketOrders (processMarketOrders);
         }
-        
+
         // Dispatch on the default MAMA queue
         Mama::start(bridge);
     }
@@ -299,7 +307,7 @@ int main (int argc, const char** argv)
         cerr << "Unknown Exception in main ()." << endl;
         exit(EXIT_FAILURE);
     }
-    
+
     return 0;
 }
 

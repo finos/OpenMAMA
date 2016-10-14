@@ -36,12 +36,12 @@ namespace Wombat
         partId = NULL;
 
         if(!msg.tryString (MamdaCommonFields::ISSUE_SYMBOL, symbol))
-        {        
+        {
             if(!msg.tryString (MamdaCommonFields::INDEX_SYMBOL, symbol))
             {
                 if (!msg.tryString (MamdaCommonFields::SYMBOL, symbol))
                 {
-                    mama_log (MAMA_LOG_LEVEL_FINEST, 
+                    mama_log (MAMA_LOG_LEVEL_FINEST,
                               "getSymbolAndPartId: cannot find symbol field in message");
                 }
             }
@@ -53,10 +53,10 @@ namespace Wombat
             // No explicit part ID in message, but maybe in symbol.
             if (NULL == symbol)
             {
-                mama_log (MAMA_LOG_LEVEL_FINEST,  
+                mama_log (MAMA_LOG_LEVEL_FINEST,
                           "getSymbolAndPartId: cannot find symbol or part id fields in message");
                 return;
-            }   
+            }
 
             const char* lastDot = strrchr (symbol, '.');
 
@@ -67,13 +67,13 @@ namespace Wombat
                     partId = lastDot+1;
                 }
                 else
-                {                 
-                    mama_log (MAMA_LOG_LEVEL_FINEST, 
+                {
+                    mama_log (MAMA_LOG_LEVEL_FINEST,
                               "getSymbolAndPartId: cannot find part id field in message");
                 }
             }
             else
-                mama_log (MAMA_LOG_LEVEL_FINEST, 
+                mama_log (MAMA_LOG_LEVEL_FINEST,
                           "getSymbolAndPartId: cannot find part id field in message");
         }
     }

@@ -1669,13 +1669,13 @@ unsigned long  makeTime (
 
     /* tm_mon stores the months since Jan (0 to 11) */
     if (mon > 0)
-        timeInfo.tm_mon   = mon  - 1;
+        timeInfo.tm_mon   = mon - 1;
     else
         timeInfo.tm_mon   = 0;
 
     /* day of the month (1 to 31) */
     if (day > 0)
-        timeInfo.tm_mday  = day;
+        timeInfo.tm_mday = day;
     else
         timeInfo.tm_mday = 1;
 

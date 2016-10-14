@@ -139,7 +139,7 @@ def find_java_files(env, arg, dirpath, filenames):
 ## Replacement Java Class Emitter
 #
 # The default emitter for the Java builder walks the full directory tree
-# this causes problems when you do not want to build all files below a 
+# this causes problems when you do not want to build all files below a
 # folder, e.g. in mamda. This emitter does not recurse through directories.
 
 def emit_java_classes_norecurse(target, source, env):

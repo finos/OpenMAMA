@@ -70,7 +70,7 @@ class ListenerCallback : public MamdaOrderBookHandler
 public:
     ListenerCallback ():
         mDictionary (NULL) {}
-    
+
     ~ListenerCallback () {}
 
     void onBookRecap (
@@ -83,7 +83,7 @@ public:
     {
         ++gRecapStats;
     }
-    
+
     void onBookDelta (
         MamdaSubscription*                 subscription,
         MamdaOrderBookListener&            listener,
@@ -93,7 +93,7 @@ public:
     {
         ++gUpdateStats;
     }
-    
+
      void onBookComplexDelta (
         MamdaSubscription*                 subscription,
         MamdaOrderBookListener&            listener,
@@ -102,8 +102,9 @@ public:
         const MamdaOrderBook&              book)
      {
          cout<<"\nComplexDelta";
+         flush (cout);
      }
-     
+
     void onBookGap (
         MamdaSubscription*          subscription,
         MamdaOrderBookListener&     listener,
@@ -113,7 +114,7 @@ public:
     {
         ++gBookGapStats;
     }
-    
+
     void onBookClear (
         MamdaSubscription*          subscription,
         MamdaOrderBookListener&     listener,
@@ -122,8 +123,9 @@ public:
         const MamdaOrderBook&       book)
     {
         cout<<"\nBookClear";
+        flush (cout);
     }
-    
+
     void onError (
         MamdaSubscription*   subscription,
         MamdaErrorSeverity   severity,
@@ -131,38 +133,39 @@ public:
         const char*          errorStr)
     {
         cout<<"\nonError";
+        flush (cout);
     }
-    
+
     void onQuality (
         MamdaSubscription*   subscription,
         mamaQuality          quality)
     {
         ++gQualityStats;
     }
-    
+
     void setDictionary (
         const MamaDictionary* dictionary)
     {
         mDictionary = dictionary;
     }
-    
+
 private:
     const MamaDictionary* mDictionary;
 };
 
-class BookChurn 
+class BookChurn
 {
 public:
     BookChurn ()
     {
         logFileName = NULL;
     }
-    
+
     ~BookChurn () {}
-    
+
     void subscribeToBooks (const char* symbol, MamaQueue* queue);
-    void initialize (CommonCommandLineParser& cmdLine, mamaBridge bridge); 
-    
+    void initialize (CommonCommandLineParser& cmdLine, mamaBridge bridge);
+
 private:
     ListenerCallback    mChurn;
     MamaTimer           churnTimer;
@@ -170,7 +173,7 @@ private:
     MamaQueueGroup*     queues;
     DictRequester*      dictRequester;
     const char*         symbolMapFile;
-    MamaSymbolMapFile*  aMap;     
+    MamaSymbolMapFile*  aMap;
     const char*         logFileName;
     MamaQueue*          defaultQueue;
 };
@@ -184,12 +187,12 @@ private:
     int         churnRate;
     int         randomNo;
     MamaQueue*  mDefaultQueue;
-    
+
 public:
     ChurnTimerCallback (MamaQueue* defaultQueue)
         : mDefaultQueue (defaultQueue) {}
     ~ChurnTimerCallback() {}
-    
+
     void onTimer (MamaTimer* timer)
     {
         churnRate = gChurnRate;
@@ -208,7 +211,7 @@ public:
                     ++subscriptionListIterator;
                 }
                 //Destroying the Subscription
-                vector<MamdaMsgListener*> mMsgListeners = 
+                vector<MamdaMsgListener*> mMsgListeners =
                     ((MamdaSubscription*)*subscriptionListIterator)->getMsgListeners();
                 ((MamdaSubscription*)*subscriptionListIterator)->destroy();
                 unsigned long size = mMsgListeners.size();
@@ -220,7 +223,7 @@ public:
                 break;
             }
             //Removing the Subscription from the linked list
-            symbol = ((MamdaSubscription*)*subscriptionListIterator)->getSymbol(); 
+            symbol = ((MamdaSubscription*)*subscriptionListIterator)->getSymbol();
             mSubscriptionList.remove ((MamdaSubscription*)*subscriptionListIterator);
             //Subscribing to the particular symbol
             subscribeToBooks(symbol, mDefaultQueue);
@@ -253,6 +256,7 @@ class StatsTimerCallback : public MamaTimerCallback
             gUpdateStats  = 0;
             gBookGapStats = 0;
             gQualityStats = 0;
+            flush (cout);
         }
 };
 
@@ -300,7 +304,7 @@ void BookChurn::initialize (CommonCommandLineParser& cmdLine, mamaBridge bridge)
     MamdaOrderBookFields::setDictionary (*(dictRequester->getDictionary ()));
     symbolMapFile   = cmdLine.getSymbolMapFile ();
     gChurnRate      = cmdLine.getChurnRate ();
-    gChurnInterval  = cmdLine.getTimerInterval (); 
+    gChurnInterval  = cmdLine.getTimerInterval ();
     logFileName     = cmdLine.getLogFileName ();
 
     defaultQueue = Mama::getDefaultEventQueue (bridge);
@@ -310,7 +314,7 @@ void BookChurn::initialize (CommonCommandLineParser& cmdLine, mamaBridge bridge)
     if (logFileName != NULL)
     {
         gMyFile.open (logFileName,ios::out);
-    
+
         if (gMyFile.is_open())
         {
             gMyFile<<"ChurnStas"<<","<<"RecapStas"<<","<<"UpdateStats"<<","<<"BookGapStats"<<","<<"QualityStats"<<"\n";
@@ -320,7 +324,7 @@ void BookChurn::initialize (CommonCommandLineParser& cmdLine, mamaBridge bridge)
     if (symbolMapFile)
     {
         aMap = new MamaSymbolMapFile;
-        
+
         if (MAMA_STATUS_OK == aMap->load (symbolMapFile))
         {
             gSource->getTransport()->setSymbolMap (aMap);
@@ -334,8 +338,8 @@ void BookChurn::initialize (CommonCommandLineParser& cmdLine, mamaBridge bridge)
         const char* symbol = *i;
         subscribeToBooks (symbol, defaultQueue);
     }
-    //Churn Timer   
-    ChurnTimerCallback* churnCallback = new ChurnTimerCallback(defaultQueue); 
+    //Churn Timer
+    ChurnTimerCallback* churnCallback = new ChurnTimerCallback(defaultQueue);
     churnTimer.create (defaultQueue,churnCallback,gChurnInterval,NULL);
     //Stats Timer
     StatsTimerCallback* statsCallback = new StatsTimerCallback();

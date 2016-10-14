@@ -28,10 +28,10 @@ namespace Wombat
 	/// The underpinning object in any MAMA application
 	/// </summary>
     /// <remarks>
-    /// The mamaTransport defines the network protocol level parameters over 
-    /// which MAMA distributes data. Transports effectively provide scope for 
-    /// data identifying the underlying protocols and their values for data 
-    /// delivery. It is an isolated communication channel for data traffic. 
+    /// The mamaTransport defines the network protocol level parameters over
+    /// which MAMA distributes data. Transports effectively provide scope for
+    /// data identifying the underlying protocols and their values for data
+    /// delivery. It is an isolated communication channel for data traffic.
     /// Transports specify the communication channels to use for making
     /// subscriptions and publishing data through the API.
     /// </remarks>
@@ -65,27 +65,27 @@ namespace Wombat
         }
 
       /// <summary>
-      /// Allocate a transport structure. 
+      /// Allocate a transport structure.
       /// You need to call destroy() when the class is no more needed
       /// The transport is not created until create() is called.
-      /// Any transport properties should be set 
+      /// Any transport properties should be set
       /// prior to calling create()
       /// </summary>
       public MamaTransport() : base()
       {
 		  int code = NativeMethods.mamaTransport_allocate(ref nativeHandle);
 		  CheckResultCode(code);
-      }                                                       
+      }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		/// <param name="transport"></param>
 		internal MamaTransport(IntPtr transport) : base(transport)
 		{
-		}                                                       
+		}
 
-		public IntPtr getNativeTransport () 
+		public IntPtr getNativeTransport ()
 		{
 			IntPtr val = IntPtr.Zero;
 			int code =  NativeMethods.mamaTransport_getNativeTransport (nativeHandle, 0, ref val);
@@ -100,12 +100,12 @@ namespace Wombat
       /// on the underlying messaging transport.
       /// TIBRV transports support the following: mama.tibrv.transport.name.service,
       /// mama.tibrv.transport.name.network, and mama.tibrv.transport.name.daemon.
-      /// These correspond to the parameters for tibrvTransport_Create(). 
+      /// These correspond to the parameters for tibrvTransport_Create().
       /// LBM: See the example mama.properties supplied with the release.
       /// </summary>
       /// <param name="name"></param>
       /// <param name="bridgeImpl"></param>
-      public void create(string name, MamaBridge bridgeImpl) 
+      public void create(string name, MamaBridge bridgeImpl)
       {
 #if MAMA_WRAPPERS_CHECK_ARGUMENTS
 		  if (name == null)
@@ -189,7 +189,7 @@ namespace Wombat
 
         /// <summary>
         /// Request conflation for a MamaTransport.
-        /// Currently only available for WMW.   
+        /// Currently only available for WMW.
         /// </summary>
         public void requestConflation()
         {
@@ -208,7 +208,7 @@ namespace Wombat
         }
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		protected override void OnDispose()
 		{
@@ -220,7 +220,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// 
+		///
 		/// </summary>
 		public void destroy()
 		{
@@ -242,7 +242,7 @@ namespace Wombat
       /// disconnects or reconnects. Passing NULL removes the callback.
       /// </summary>
       /// <param name="callback"></param>
-      public void setTransportCallback(MamaTransportCallback callback) 
+      public void setTransportCallback(MamaTransportCallback callback)
       {
 		  EnsurePeerCreated();
 		  if (callback == null)
@@ -327,11 +327,11 @@ namespace Wombat
 		{
 			private enum mamaTransportEvent : int
 			{
-                // enums need to be ordered as in transport.c 
+                // enums need to be ordered as in transport.c
 				MAMA_TRANSPORT_CONNECT                   = 0,
 				MAMA_TRANSPORT_CONNECT_FAILED            = 1,
-				MAMA_TRANSPORT_RECONNECT                 = 2, 
-				MAMA_TRANSPORT_DISCONNECT                = 3, 
+				MAMA_TRANSPORT_RECONNECT                 = 2,
+				MAMA_TRANSPORT_DISCONNECT                = 3,
 				MAMA_TRANSPORT_ACCEPT                    = 4,
 				MAMA_TRANSPORT_ACCEPT_RECONNECT          = 5,
 				MAMA_TRANSPORT_PUBLISHER_DISCONNECT      = 6,
@@ -351,15 +351,15 @@ namespace Wombat
 				IntPtr closure);
 
 			public void OnTransportCallback(
-				IntPtr transport, 
-				int transportEvent, 
-				short cause, 
-				IntPtr opaque, 
+				IntPtr transport,
+				int transportEvent,
+				short cause,
+				IntPtr opaque,
 				IntPtr closure)
 			{
-				if (mCallback != null) 
+				if (mCallback != null)
 				{
-					switch ((mamaTransportEvent)transportEvent) 
+					switch ((mamaTransportEvent)transportEvent)
 					{
 						case mamaTransportEvent.MAMA_TRANSPORT_RECONNECT :
 							mCallback.onReconnect(mTarget);
@@ -393,7 +393,7 @@ namespace Wombat
 				}
 			}
 
-			public CallbackForwarder(MamaTransport target, MamaTransportCallback callback) 
+			public CallbackForwarder(MamaTransport target, MamaTransportCallback callback)
 			{
 				this.mTarget = target;
 				this.mCallback = callback;
@@ -405,7 +405,7 @@ namespace Wombat
         {
             private enum mamaTransportTopicEvent : int
             {
-                // enums need to be ordered as in transport.c 
+                // enums need to be ordered as in transport.c
                 MAMA_TRANSPORT_TOPIC_SUBSCRIBED = 0,
                 MAMA_TRANSPORT_TOPIC_UNSUBSCRIBED = 1,
                 MAMA_TRANSPORT_TOPIC_PUBLISH_ERROR = 2,
@@ -460,7 +460,7 @@ namespace Wombat
                 this.mCallback = callback;
             }
         }
-        
+
         // Interop bridge for symbol map
 		private sealed class CallbackForwarderSymbolMap
 		{
@@ -519,7 +519,7 @@ namespace Wombat
 			public static extern int mamaTransport_allocate(ref IntPtr result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaTransport_create(
-				IntPtr transport, 
+				IntPtr transport,
 				[MarshalAs(UnmanagedType.LPStr)]
 				string name,
 				IntPtr bridgeImpl);
@@ -535,7 +535,7 @@ namespace Wombat
 			public static extern int mamaTransport_destroy(IntPtr transport);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaTransport_setTransportCallback (IntPtr transport,
-				CallbackForwarder.TransportCallbackDelegate callback, 
+				CallbackForwarder.TransportCallbackDelegate callback,
 				IntPtr closure);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaTransport_setTransportTopicCallback(IntPtr transport,

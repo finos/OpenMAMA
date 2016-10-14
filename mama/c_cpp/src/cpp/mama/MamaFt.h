@@ -19,13 +19,13 @@
  * 02110-1301 USA
  */
 
-#ifndef MAMA_FT_CPP_H_ 
+#ifndef MAMA_FT_CPP_H_
 #define MAMA_FT_CPP_H_
 
 #include <mama/ft.h>
 #include <mama/MamaQueue.h>
 
-namespace Wombat 
+namespace Wombat
 {
     class MamaFtMember;
 
@@ -33,7 +33,7 @@ namespace Wombat
     class MAMACPPExpDLL MamaFtMemberCallback
     {
     public:
-        virtual ~MamaFtMemberCallback () 
+        virtual ~MamaFtMemberCallback ()
         {
         };
 
@@ -73,13 +73,13 @@ namespace Wombat
         void                   setWeight            (mama_u32_t   weight);
         void                   setInstanceId        (const char*  id);
 
-        mamaFtMember           getCValue            ()       
+        mamaFtMember           getCValue            ()
         {
-            return mCValue; 
+            return mCValue;
         }
-        const mamaFtMember     getCValue            () const 
-        { 
-            return mCValue; 
+        const mamaFtMember     getCValue            () const
+        {
+            return mCValue;
         }
 
     protected:
@@ -116,4 +116,4 @@ namespace Wombat
 
 } // namespace Wombat
 
-#endif // MAMA_FT_CPP_H_ 
+#endif // MAMA_FT_CPP_H_

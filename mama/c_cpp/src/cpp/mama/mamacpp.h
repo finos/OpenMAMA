@@ -136,8 +136,8 @@ public:
 };
 
 /**
- * Callback object passed to Mama::registerEntitlmentCallbacks().  The 
- * onSessionDisconnect() method will be invoked when a disconnect request is 
+ * Callback object passed to Mama::registerEntitlmentCallbacks().  The
+ * onSessionDisconnect() method will be invoked when a disconnect request is
  * received from the entitlements server.
  */
 class MAMACPPExpDLL MamaEntitlementCallback
@@ -145,18 +145,18 @@ class MAMACPPExpDLL MamaEntitlementCallback
 public:
     virtual ~MamaEntitlementCallback () {};
     /**
-     * Function invoked when diconnect request is received from the 
-     * entitlements server 
+     * Function invoked when diconnect request is received from the
+     * entitlements server
      * @param reason  Reason disconnect request was sent
-     * @param userId  ID of user who initiated the disconnection, either by 
+     * @param userId  ID of user who initiated the disconnection, either by
      *                attempting to initiate a new connection or an admin user
      *                explicitly issuing a disconnect
-     * @param host    Hostname/IP address of the site server or where userId 
+     * @param host    Hostname/IP address of the site server or where userId
      *                is attempting to connect from
-     * @param appName "site server" or application that userId is using to 
-     *                disconnect (possibly NULL) 
+     * @param appName "site server" or application that userId is using to
+     *                disconnect (possibly NULL)
      **/
-    virtual void 
+    virtual void
     onSessionDisconnect (const sessionDisconnectReason reason,
                          const char* userId,
                          const char* host,
@@ -165,14 +165,14 @@ public:
     /**
      * Function invoked after dynamic entitlements update has occurred
      */
-    virtual void 
+    virtual void
     onEntitlementUpdate () = 0;
 
     /**
      * Function invoked after entitlements checking has been switched,
      * for example, from enabled to disabled.
      **/
-    virtual void 
+    virtual void
     onEntitlementCheckingSwitch (const int isEntitlementsCheckingDisabled) {};
 };
 
@@ -184,13 +184,13 @@ class MAMACPPExpDLL Mama
 {
 public:
 
-    /** Load the bridge specified by middleware string.  
+    /** Load the bridge specified by middleware string.
      * If the bridge has already been loaded then the existing bridge instance
-     * will be returned. 
+     * will be returned.
      * @param impl The bridge object
-     * @param middleware  The middleware string. Can be "wmw", "lbm" or 
-     * "tibrv".      
-     * @return mama_status Whether the call was successful or not. 
+     * @param middleware  The middleware string. Can be "wmw", "lbm" or
+     * "tibrv".
+     * @return mama_status Whether the call was successful or not.
      */
 
     static mamaBridge loadBridge (const char* middleware);
@@ -198,17 +198,17 @@ public:
 
    /** Load the bridge specified by middleware string using the path specified by the user.
      * If the bridge has already been loaded then the existing bridge instance
-     * will be returned. 
+     * will be returned.
      * @param impl The bridge object
-     * @param middleware  The middleware string. Can be "wmw", "lbm" or 
-     * "tibrv".      
+     * @param middleware  The middleware string. Can be "wmw", "lbm" or
+     * "tibrv".
      * @param path The path to the bridge library
-     * @return mama_status Whether the call was successful or not. 
+     * @return mama_status Whether the call was successful or not.
      */
 
     static mamaBridge loadBridge (const char* middleware, const char* path);
     /**
-     * Returns the version of the mama binary. The version of the underlying 
+     * Returns the version of the mama binary. The version of the underlying
      * transport is also returned in parens after the mama version.
      */
     static const char* getVersion (mamaBridge bridgeImpl);
@@ -219,7 +219,7 @@ public:
      * MAMA employs a reference count to track multiple
      * calls to Mama::open() and Mama::close(). The count is incremented every time
      * Mama::open() is called and decremented when Mama::close() is called. The
-     * resources are not actually released until the count reaches zero. 
+     * resources are not actually released until the count reaches zero.
      *
      * This function is thread safe.
      */
@@ -346,9 +346,12 @@ public:
     static const char * getProperty (const char* name);
 
     /**
-     * Close MAMA and free all associated resources if no more references exist
-     * (e.g.if open has been called 3 times then it will require 3 calls to 
-     * close in order for all resources to be freed).
+     * Close MAMA and free all associated resource.
+     *
+     * MAMA employs a reference count to track multiple
+     * calls to Mama::open() and Mama::close(). The count is incremented every time
+     * Mama::open() is called and decremented when Mama::close() is called. The
+     * resources are not actually released until the count reaches zero.
      *
      * This function is thread safe.
      */
@@ -369,14 +372,14 @@ public:
     /**
      * Start processing messages on the internal queue. This starts Mama's
      * internal throttle, refresh logic, and other internal Mama processes as well
-     * as dispatching messages from the internal queue. 
+     * as dispatching messages from the internal queue.
      * <p>
      * Mama::start( ) blocks until an invocation of Mama::stop() occurs.
      *
-     * MAMA employs a reference count to track multiple calls to Mama::start() and 
-     * Mama::stop(). The count is incremented every time Mama::start() is called and 
-     * decremented when Mama::stop() is called. The first Mama::start() call does not 
-     * unblock until the count reaches zero. 
+     * MAMA employs a reference count to track multiple calls to Mama::start() and
+     * Mama::stop(). The count is incremented every time Mama::start() is called and
+     * decremented when Mama::stop() is called. The first Mama::start() call does not
+     * unblock until the count reaches zero.
      *
      * This function is thread safe.
      *
@@ -397,13 +400,13 @@ public:
     /**
      * Stop dispatching on the default event queue for the specified bridge.
      *
-     * MAMA employs a reference count to track multiple calls to Mama::start() and 
-     * Mama::stop(). The count is incremented every time Mama::start() is called and 
-     * decremented when Mama::stop() is called. The first Mama::start() call does not 
-     * unblock until the count reaches zero. 
+     * MAMA employs a reference count to track multiple calls to Mama::start() and
+     * Mama::stop(). The count is incremented every time Mama::start() is called and
+     * decremented when Mama::stop() is called. The first Mama::start() call does not
+     * unblock until the count reaches zero.
      *
      * This function is thread safe.
-     * 
+     *
      * @param[in] bridgeImpl The bridge specific structure.
      */
     static void stop (mamaBridge bridgeImpl);
@@ -551,29 +554,28 @@ public:
     static void setBridgeCallback (mamaBridge bridge, MamaBridgeCallback* callback);
 
     /**
-     * It adds the newly created statsCollector to the statsGenerator list 
-     * @param statsCollector 
+     * It adds the newly created statsCollector to the statsGenerator list
+     * @param statsCollector
      */
     static void addStatsCollector (MamaStatsCollector* statsCollector);
 
     /**
      * It removes the statsCollector from the statsGenerator list
-     * @param statsCollector 
+     * @param statsCollector
      */
     static void removeStatsCollector (MamaStatsCollector* statsCollector);
 
 
-private: 
+private:
     /**
      * Utility class. No instances.
      */
     Mama (void) {}
 
     /**
-     * vector of MamaQueue pointers to be tidied up at Mama::close()
-     */
+    * vector of MamaQueue pointers to be tidied up at Mama::close()
+    */
     static std::vector<MamaQueue*> mDefaultQueueWrappers;
-
 };
 
 } /* namespace Wombat */

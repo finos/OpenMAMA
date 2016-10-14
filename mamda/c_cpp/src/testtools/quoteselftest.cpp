@@ -88,23 +88,23 @@ int main (int argc, const char** argv)
         //Initialise the MAMA API
         mamaBridge bridge = cmdLine.getBridge();
         Mama::open ();
- 
+
         const vector<const char*>&
                          symbolList        = cmdLine.getSymbolList ();
         MamaSource*      source            = cmdLine.getSource();
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);
         DictRequester    dictRequester (bridge);
         uint32_t         intervalSecs      = cmdLine.getOptInt('i');
-        
+
         if (intervalSecs == 0)
         {
             intervalSecs = 5;
         }
-        
+
         // Get and initialize the dictionary
         dictRequester.requestDictionary (cmdLine.getDictSource());
         MamdaQuoteFields::setDictionary (*dictRequester.getDictionary());
-        
+
         for (vector<const char*>::const_iterator i = symbolList.begin();
             i != symbolList.end();
             ++i)
@@ -135,12 +135,12 @@ int main (int argc, const char** argv)
         cerr << "Unknown Exception in main ()." << endl;
         exit (1);
     }
-    
-    return 1;    
+
+    return 1;
 }
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: quoteselftest [-tport] tport_name [-S] source [-s] symbol\n"; 
+    std::cerr << "Usage: quoteselftest [-tport] tport_name [-S] source [-s] symbol\n";
     exit(exitStatus);
 }

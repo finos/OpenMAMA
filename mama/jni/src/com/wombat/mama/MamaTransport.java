@@ -55,7 +55,7 @@ public class MamaTransport
             // Ensure that the listeners are null
             mClientListener = null;
         }
-        
+
         /* ****************************************************** */
         /* Interface Implementations. */
         /* ****************************************************** */
@@ -67,7 +67,7 @@ public class MamaTransport
                 mClientListener.onDisconnect(cause, platformInfo);
             }
         }
-        
+
         public void onReconnect(short cause, final Object platformInfo)
         {
             if (mClientListener != null)
@@ -75,7 +75,7 @@ public class MamaTransport
                 mClientListener.onReconnect(cause, platformInfo);
             }
         }
-        
+
         public void onQuality(short cause, final Object platformInfo)
         {
             if(mClientListener != null)
@@ -290,7 +290,7 @@ public class MamaTransport
 
     /* Queue for callbacks */
     private MamaQueue myQueue = null;
-    
+
     /* The re-usable transport listener. */
     InternalTransportListener mListener;
 

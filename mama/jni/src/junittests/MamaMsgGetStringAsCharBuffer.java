@@ -41,7 +41,7 @@ public class MamaMsgGetStringAsCharBuffer extends TestCase
 
     // The message under test
     private MamaMsg mMessage;
-    
+
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */

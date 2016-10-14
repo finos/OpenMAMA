@@ -30,17 +30,17 @@ namespace Wombat.Containers
 		{
 			mHashTable = new Hashtable(initialCapacity, loadFactor);
 		}
-		
+
 		public HashMap(int initialCapacity)
 		{
 			mHashTable = new Hashtable(initialCapacity);
 		}
-		
+
 		public HashMap()
 		{
 			mHashTable = new Hashtable();
 		}
-		
+
 		public HashMap(HashMap m)
 		{
 			mHashTable = new Hashtable(m.mHashTable);
@@ -50,7 +50,7 @@ namespace Wombat.Containers
 		{
 			mHashTable = ht;
 		}
-	
+
 		#region Map Members
 
 		public int size()
@@ -124,19 +124,19 @@ namespace Wombat.Containers
 		}
 
 		#endregion
-		
+
 		private void putFast(object key, object value)
 		{
 			mHashTable[key] = value;
 		}
-		
+
 		private sealed class HashMapSetOverHashtableKeys : Set
 		{
 			public HashMapSetOverHashtableKeys(Hashtable ht)
 			{
 				mHashTable = ht;
 			}
-		
+
 			#region Collection Members
 
 			public int size()
@@ -214,7 +214,7 @@ namespace Wombat.Containers
 			}
 
 			#endregion
-			
+
 			private Hashtable mHashTable;
 		}
 
@@ -224,7 +224,7 @@ namespace Wombat.Containers
 			{
 				mHashTable = ht;
 			}
-		
+
 			#region Collection Members
 
 			public int size()
@@ -302,7 +302,7 @@ namespace Wombat.Containers
 			}
 
 			#endregion
-			
+
 			private Hashtable mHashTable;
 		}
 
@@ -312,7 +312,7 @@ namespace Wombat.Containers
 			{
 				mHashMap = hm;
 			}
-		
+
 			#region Collection Members
 
 			public int size()
@@ -427,14 +427,14 @@ namespace Wombat.Containers
 			{
 				return new MapEntryIteratorOverDictionaryEnumerator(mHashMap.mHashTable);
 			}
-			
+
 			private sealed class MapEntryOverDictionaryEntry : MapEntry
 			{
 				public MapEntryOverDictionaryEntry(DictionaryEntry e)
 				{
 					mDictEntry = e;
 				}
-			
+
 				#region MapEntry Members
 
 				public object getKey()
@@ -458,7 +458,7 @@ namespace Wombat.Containers
 
 				private DictionaryEntry mDictEntry;
 			}
-			
+
 			private sealed class MapEntryIteratorOverDictionaryEnumerator : Iterator
 			{
 				public MapEntryIteratorOverDictionaryEnumerator(Hashtable ht)
@@ -466,7 +466,7 @@ namespace Wombat.Containers
 					mHashTable = ht;
 					mDictEntry = mHashTable.GetEnumerator();
 				}
-			
+
 				#region Iterator Members
 
 				public bool hasNext()
@@ -504,9 +504,9 @@ namespace Wombat.Containers
 			#endregion
 
 		}
-		
+
 		private Hashtable mHashTable;
-	
+
 		#region ICloneable Members
 
 		/// <summary>

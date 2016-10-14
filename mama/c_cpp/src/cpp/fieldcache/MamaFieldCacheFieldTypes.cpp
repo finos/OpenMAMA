@@ -242,7 +242,7 @@ void MamaFieldCacheFieldPrice::set(MamaFieldCacheField& field, const MamaPrice& 
 {
     checkType(field);
     mamaFieldCacheField_setPrice(field.getCValue(), value.getCValue());
-}    
+}
 const MamaPrice& MamaFieldCacheFieldPrice::get(const MamaFieldCacheField& field) const
 {
     checkType(field);
@@ -260,7 +260,7 @@ void MamaFieldCacheFieldDateTime::set(MamaFieldCacheField& field, const MamaDate
 {
     checkType(field);
     mamaFieldCacheField_setDateTime(field.getCValue(), value.getCValue());
-}    
+}
 const MamaDateTime& MamaFieldCacheFieldDateTime::get(const MamaFieldCacheField& field) const
 {
     checkType(field);

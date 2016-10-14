@@ -28,12 +28,12 @@ namespace Wombat
 	/// <summary>
 	/// This sample application demonstrates how to send mamaMsg's from an inbox,
 	/// and receive the reply.
-	/// 
-	/// It accepts the following command line arguments: 
+	///
+	/// It accepts the following command line arguments:
 	/// [-s topic]         The topic on which to send the request. Default value
 	/// is "MAMA_INBOUND_TOPIC".
 	/// [-tport name]      The transport parameters to be used from
-	/// mama.properties. 
+	/// mama.properties.
 	/// [-q]               Quiet mode. Suppress output.
 	/// </summary>
 	class EntryPoint
@@ -296,12 +296,12 @@ namespace Wombat
 This sample application demonstrates how to send mamaMsg's from an inbox,
 and receive the reply.
 
-It accepts the following command line arguments: 
+It accepts the following command line arguments:
      [-s topic]         The topic on which to send the request. Default value
                         is ""MAMA_INBOUND_TOPIC"".
      [-m name]          The middleware to be used, default value is ""wmw"".
      [-tport name]      The transport parameters to be used from
-                        mama.properties. 
+                        mama.properties.
      [-q]               Quiet mode. Suppress output.
 ";
 	}

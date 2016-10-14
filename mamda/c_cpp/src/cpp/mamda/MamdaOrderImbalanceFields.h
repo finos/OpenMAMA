@@ -43,20 +43,20 @@ namespace Wombat
     {
     public:
        static const MamaFieldDescriptor* HIGH_INDICATION_PRICE;
-       static const MamaFieldDescriptor* LOW_INDICATION_PRICE; 
-       static const MamaFieldDescriptor* INDICATION_PRICE; 
+       static const MamaFieldDescriptor* LOW_INDICATION_PRICE;
+       static const MamaFieldDescriptor* INDICATION_PRICE;
        static const MamaFieldDescriptor* BUY_VOLUME;
        static const MamaFieldDescriptor* SELL_VOLUME;
        static const MamaFieldDescriptor* MATCH_VOLUME;
        static const MamaFieldDescriptor* SECURITY_STATUS_QUAL;
        static const MamaFieldDescriptor* INSIDE_MATCH_PRICE;
        static const MamaFieldDescriptor* FAR_CLEARING_PRICE;
-       static const MamaFieldDescriptor* NEAR_CLEARING_PRICE; 
-       static const MamaFieldDescriptor* NO_CLEARING_PRICE; 
+       static const MamaFieldDescriptor* NEAR_CLEARING_PRICE;
+       static const MamaFieldDescriptor* NO_CLEARING_PRICE;
        static const MamaFieldDescriptor* PRICE_VAR_IND;
        static const MamaFieldDescriptor* CROSS_TYPE;
        static const MamaFieldDescriptor* SRC_TIME;
-       static const MamaFieldDescriptor* ACTIVITY_TIME;    
+       static const MamaFieldDescriptor* ACTIVITY_TIME;
        static const MamaFieldDescriptor* MSG_TYPE;
        static const MamaFieldDescriptor* ISSUE_SYMBOL;
        static const MamaFieldDescriptor* PART_ID;
@@ -66,7 +66,7 @@ namespace Wombat
        static const MamaFieldDescriptor* AUCTION_TIME;
        static const MamaFieldDescriptor* LINE_TIME;
        static const MamaFieldDescriptor* SEND_TIME;
-        
+
        // calling setDictionary will also set the Common Fields
        static void setDictionary (const MamaDictionary&  dictionary);
 

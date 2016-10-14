@@ -205,9 +205,10 @@ public:
         const MamdaTradeClosing&        event,
         const MamdaTradeRecap&          recap)
     {
-        cout << "Option trade closing: " 
-             << event.getClosePrice().getAsString() << " - " 
+        cout << "Option trade closing: "
+             << event.getClosePrice().getAsString() << " - "
              << event.getIsIndicative () << "\n";
+        flush (cout);
     }
 
     void onTradeOutOfSequence (
@@ -215,27 +216,9 @@ public:
         MamdaTradeListener&             listener,
         const MamaMsg&                  msg,
         const MamdaTradeOutOfSequence&  event,
-        const MamdaTradeRecap&          recap) 
+        const MamdaTradeRecap&          recap)
     {
-        cout << "Option out of sequence trade (" 
-             << subscription->getSymbol ()
-             << " / "                    << event.getMsgQual().getAsString()
-             << "("                      << event.getMsgQual().getValue()
-             << ")): underlying trade: " << event.getTradeVolume ()
-             << " @ "                    << event.getTradePrice().getAsString()
-             << " (seq#: "               << event.getEventSeqNum()
-             << "; time: "               << event.getEventTime().getAsString()
-             << ")\n";        
-    }
-
-    void onTradePossiblyDuplicate (
-        MamdaSubscription*                  subscription,
-        MamdaTradeListener&                 listener,
-        const MamaMsg&                      msg,
-        const MamdaTradePossiblyDuplicate&  event,
-        const MamdaTradeRecap&              recap) 
-    {        
-        cout << "Option possibly duplicate trade (" 
+        cout << "Option out of sequence trade ("
              << subscription->getSymbol ()
              << " / "                    << event.getMsgQual().getAsString()
              << "("                      << event.getMsgQual().getValue()
@@ -244,6 +227,26 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
+    }
+
+    void onTradePossiblyDuplicate (
+        MamdaSubscription*                  subscription,
+        MamdaTradeListener&                 listener,
+        const MamaMsg&                      msg,
+        const MamdaTradePossiblyDuplicate&  event,
+        const MamdaTradeRecap&              recap)
+    {
+        cout << "Option possibly duplicate trade ("
+             << subscription->getSymbol ()
+             << " / "                    << event.getMsgQual().getAsString()
+             << "("                      << event.getMsgQual().getValue()
+             << ")): underlying trade: " << event.getTradeVolume ()
+             << " @ "                    << event.getTradePrice().getAsString()
+             << " (seq#: "               << event.getEventSeqNum()
+             << "; time: "               << event.getEventTime().getAsString()
+             << ")\n";
+        flush (cout);
     }
 
     void onQuoteRecap (
@@ -286,6 +289,7 @@ public:
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
              << recap.getAskSize () << "\n";
+        flush (cout);
     }
 
     void onQuoteOutOfSequence (
@@ -293,7 +297,7 @@ public:
         MamdaQuoteListener&             listener,
         const MamaMsg&                  msg,
         const MamdaQuoteOutOfSequence&  event,
-        const MamdaQuoteRecap&          recap) 
+        const MamdaQuoteRecap&          recap)
     {
         cout << "Option quote out of sequence: ("
              << event.getMsgQual().getAsString() << "("
@@ -301,10 +305,11 @@ public:
              << recap.getBidSize() << "x"
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
-             << recap.getAskSize () 
+             << recap.getAskSize ()
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuotePossiblyDuplicate (
@@ -312,7 +317,7 @@ public:
         MamdaQuoteListener&                 listener,
         const MamaMsg&                      msg,
         const MamdaQuotePossiblyDuplicate&  event,
-        const MamdaQuoteRecap&              recap) 
+        const MamdaQuoteRecap&              recap)
     {
         cout << "Option quote possibly duplicate: ("
              << event.getMsgQual().getAsString() << "("
@@ -320,10 +325,11 @@ public:
              << recap.getBidSize() << "x"
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
-             << recap.getAskSize () 
+             << recap.getAskSize ()
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
-             << ")\n";        
+             << ")\n";
+        flush (cout);
     }
 
     void onFundamentals (
@@ -335,6 +341,7 @@ public:
         cout << "Underlying Fundamentals: "
              << fundas.getHistoricalVolatility () << " | "
              << fundas.getRiskFreeRate () << "\n";
+        flush (cout);
     }
 
 private:
@@ -374,6 +381,7 @@ public:
     {
         cout << "Underlying trade: " << trade.getTradeVolume ()
              << " @ " << trade.getTradePrice().getAsString() << "\n";
+        flush (cout);
     }
     void onTradeGap (
         MamdaSubscription*              subscription,
@@ -403,19 +411,20 @@ public:
         const MamdaTradeClosing&        event,
         const MamdaTradeRecap&          recap)
     {
-        cout << "Underlying trade closing: " 
-             << event.getClosePrice().getAsString() << " - " 
+        cout << "Underlying trade closing: "
+             << event.getClosePrice().getAsString() << " - "
              << event.getIsIndicative() << "\n";
-    } 
+        flush (cout);
+    }
 
     void onTradeOutOfSequence (
         MamdaSubscription*              subscription,
         MamdaTradeListener&             listener,
         const MamaMsg&                  msg,
         const MamdaTradeOutOfSequence&  event,
-        const MamdaTradeRecap&          recap) 
+        const MamdaTradeRecap&          recap)
     {
-        cout << "Underlying out of sequence trade (" 
+        cout << "Underlying out of sequence trade ("
              << subscription->getSymbol ()
              << " / "                    << event.getMsgQual().getAsString()
              << "("                      << event.getMsgQual().getValue()
@@ -424,6 +433,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onTradePossiblyDuplicate (
@@ -431,9 +441,9 @@ public:
         MamdaTradeListener&                 listener,
         const MamaMsg&                      msg,
         const MamdaTradePossiblyDuplicate&  event,
-        const MamdaTradeRecap&              recap) 
+        const MamdaTradeRecap&              recap)
     {
-        cout << "Underlying possibly duplicate trade (" 
+        cout << "Underlying possibly duplicate trade ("
              << subscription->getSymbol ()
              << " / "                    << event.getMsgQual().getAsString()
              << "("                      << event.getMsgQual().getValue()
@@ -442,6 +452,7 @@ public:
              << " (seq#: "               << event.getEventSeqNum()
              << "; time: "               << event.getEventTime().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuoteRecap (
@@ -471,6 +482,7 @@ public:
         else
             cout << "  strikes within 15%: " << *strikeSet.begin ()
                  << " " << *strikeSet.rbegin () << "\n";
+        flush (cout);
     }
 
     void onQuoteGap (
@@ -492,6 +504,7 @@ public:
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
              << recap.getAskSize () << "\n";
+        flush (cout);
     }
 
     void onQuoteOutOfSequence (
@@ -507,10 +520,11 @@ public:
              << recap.getBidSize() << "x"
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
-             << recap.getAskSize () 
+             << recap.getAskSize ()
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onQuotePossiblyDuplicate (
@@ -526,10 +540,11 @@ public:
              << recap.getBidSize() << "x"
              << recap.getBidPrice().getAsString() << "   "
              << recap.getAskPrice().getAsString() << "x"
-             << recap.getAskSize () 
+             << recap.getAskSize ()
              << " (seq#: " << event.getEventSeqNum ()
              << "; time: " << event.getEventTime ().getAsString()
              << ")\n";
+        flush (cout);
     }
 
     void onFundamentals (
@@ -541,6 +556,7 @@ public:
         cout << "Underlying Fundamentals: "
              << fundas.getDividendPayDate() << " - "
              << fundas.getDividendPrice() << "\n";
+        flush (cout);
     }
 
 private:
@@ -559,6 +575,7 @@ public:
     {
         Mama::stop (mBridge);
         cout << "Scheduled shutdown using -duration cmdline option" << endl;
+        flush (cout);
         exit (0);
     }
 
@@ -590,7 +607,7 @@ int main (int argc, const char **argv)
         if ((throttleRate > 100.0) || (throttleRate <= 0.0))
         {
             // We don't really want to swamp the FHs with these types of
-            // subscriptions.  
+            // subscriptions.
             throttleRate = 100.0;
         }
         source->getTransport()->setOutboundThrottle (throttleRate,
@@ -643,9 +660,9 @@ int main (int argc, const char **argv)
 
             // Create our handlers (the UnderlyingTicker and
             // OptionChainDisplay could be a single class).
-            UnderlyingTicker*   aBaseTicker = 
+            UnderlyingTicker*   aBaseTicker =
                 new UnderlyingTicker (*anOptionChain);
-            OptionChainDisplay*  aDisplay = 
+            OptionChainDisplay*  aDisplay =
                 new OptionChainDisplay (*anOptionChain);
 
             // Create subscriptions for underlying and option chain:
@@ -655,7 +672,7 @@ int main (int argc, const char **argv)
             aBaseTradeListener->addHandler (aBaseTicker);
             aBaseQuoteListener->addHandler (aBaseTicker);
             aFundamentalListener->addHandler (aBaseTicker);
- 
+
 
 
             // Register for underlying option events.
@@ -663,7 +680,7 @@ int main (int argc, const char **argv)
 
             // The timeout defaults to 1 for this example because we
             // currently use the timeout feature to determine when
-            // to say that we have received all of the initials.     
+            // to say that we have received all of the initials.
             anOptionSubscription->setTimeout (timeout);
             anOptionSubscription->addMsgListener (anOptionListener);
             anOptionSubscription->addQualityListener (aDisplay);
@@ -674,20 +691,20 @@ int main (int argc, const char **argv)
             anOptionSubscription->getMamaSubscription ()->
                 setDebugLevel (subscLogLevel);
         }
-        
+
         ShutdownTimer shutdownCallback (bridge);
         MamaTimer     shutdownTimer;
         if (duration > 0)
         {
-            shutdownTimer.create (Mama::getDefaultEventQueue (bridge), 
-                                  &shutdownCallback, duration, 
+            shutdownTimer.create (Mama::getDefaultEventQueue (bridge),
+                                  &shutdownCallback, duration,
                                   queues.getNextQueue());
         }
         Mama::start(bridge);
     }
     catch (MamaStatus &e)
     {
-        
+
         // This exception can be thrown from Mama::start (),
         // Mama::createTransport (transportName) and from
         // MamdaSubscription constructor when entitlements is enabled.
@@ -722,7 +739,7 @@ void OptionChainDisplay::onOptionContractCreate (
 {
     // (Optional: create a trade/quote handler for the individual
     // option contract.)
-    OptionContractTicker* aTicker = 
+    OptionContractTicker* aTicker =
         new OptionContractTicker (contract, chain, *this);
     contract.addQuoteHandler (aTicker);
     contract.addTradeHandler (aTicker);
@@ -766,6 +783,7 @@ void OptionChainDisplay::printChain (const MamdaOptionChain&  chain)
         cout << "\n";
         ++i;
     }
+    flush (cout);
 }
 
 void OptionChainDisplay::printContract (const MamdaOptionContract&  contract)
@@ -789,7 +807,7 @@ void OptionChainDisplay::printContract (const MamdaOptionContract&  contract)
 
     printf ("%c%c%c%c%c%c%c %6g (%-6s %5s) | %6g | %6g | %6g | \
             %6d | %6g | %6g | oi",
-            expireDate[0], expireDate[1], expireDate[2], expireDate[3], 
+            expireDate[0], expireDate[1], expireDate[2], expireDate[3],
             expireDate[4], expireDate[5], expireDate[6],
             strikePrice,
             symbol, exchange,
@@ -799,6 +817,7 @@ void OptionChainDisplay::printContract (const MamdaOptionContract&  contract)
             (int)accVolume,
             histVola,
             riskFreeRate);
+    flush (cout);
 }
 
 void OptionChainDisplay::printlnContract (const MamdaOptionContract&  contract)
@@ -807,4 +826,5 @@ void OptionChainDisplay::printlnContract (const MamdaOptionContract&  contract)
         return;
     printContract (contract);
     cout << "\n";
+    flush (cout);
 }

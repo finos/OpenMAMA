@@ -66,7 +66,6 @@ noopEntitlementBridge_createSubscription(mamaEntitlementBridge mamaEntBridge, Su
     /* Although this is a no-op bridge, some mama functionality assumes that an entitlementSubscription
      * exists as long as an entitlementBridge has been loaded
      */
-
     mama_status                         status;
     mamaEntitlementSubscription         mamaEntSub    = NULL;
 
@@ -100,7 +99,7 @@ mama_status
 noopEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle handle, int isSnapshot)
 {
     mama_log(MAMA_LOG_LEVEL_FINEST, "noopEntitlementBridge_setIsSnapShot():");
-    return MAMA_STATUS_OK;
+	return MAMA_STATUS_OK;
 }
 
 int

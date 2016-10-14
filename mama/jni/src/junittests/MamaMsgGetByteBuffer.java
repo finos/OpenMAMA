@@ -65,7 +65,7 @@ public class MamaMsgGetByteBuffer extends TestCase
         mSecondMessage = new MamaMsg();
 
         // Add some data to it
-        mSecondMessage.addString(null, 1, mStringData);       
+        mSecondMessage.addString(null, 1, mStringData);
     }
 
     @Override

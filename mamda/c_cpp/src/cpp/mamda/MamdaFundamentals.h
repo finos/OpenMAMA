@@ -30,8 +30,8 @@ namespace Wombat
 {
 
     /**
-     * MamdaFundamentals is an interface that provides access to the 
-     * fundamental equity pricing/analysis attributes, indicators and ratios.  
+     * MamdaFundamentals is an interface that provides access to the
+     * fundamental equity pricing/analysis attributes, indicators and ratios.
      */
 
     class MAMDAExpDLL MamdaFundamentals : public MamdaBasicRecap
@@ -41,9 +41,9 @@ namespace Wombat
         virtual double            getDividendPrice()                  const = 0;
         virtual const char*       getDividendFrequency()              const = 0;
         virtual const char*       getDividendExDate()                 const = 0;
-        virtual const char*       getDividendPayDate()                const = 0;  
-        virtual const char*       getDividendRecordDate()             const = 0;  
-        virtual const char*       getDividendCurrency()               const = 0;  
+        virtual const char*       getDividendPayDate()                const = 0;
+        virtual const char*       getDividendRecordDate()             const = 0;
+        virtual const char*       getDividendCurrency()               const = 0;
 
         /**
          * @brief getSharesOut return the number of shares.
@@ -88,7 +88,7 @@ namespace Wombat
         virtual const char*       getMarketSectorNative()             const = 0;
         virtual const char*       getMarketSegment()                  const = 0;
         virtual const char*       getMarketSector()                   const = 0;
-        virtual double            getHistoricalVolatility()           const = 0;  
+        virtual double            getHistoricalVolatility()           const = 0;
         virtual double            getRiskFreeRate()                   const = 0;
 
         /**
@@ -126,9 +126,9 @@ namespace Wombat
         virtual MamdaFieldState   getDividendPriceFieldState()        const = 0;
         virtual MamdaFieldState   getDividendFrequencyFieldState()    const = 0;
         virtual MamdaFieldState   getDividendExDateFieldState()       const = 0;
-        virtual MamdaFieldState   getDividendPayDateFieldState()      const = 0;  
-        virtual MamdaFieldState   getDividendRecordDateFieldState()   const = 0;  
-        virtual MamdaFieldState   getDividendCurrencyFieldState()     const = 0;  
+        virtual MamdaFieldState   getDividendPayDateFieldState()      const = 0;
+        virtual MamdaFieldState   getDividendRecordDateFieldState()   const = 0;
+        virtual MamdaFieldState   getDividendCurrencyFieldState()     const = 0;
         virtual MamdaFieldState   getSharesOutFieldState()            const = 0;
         virtual MamdaFieldState   getSharesFloatFieldState()          const = 0;
         virtual MamdaFieldState   getSharesAuthorizedFieldState()     const = 0;
@@ -140,7 +140,7 @@ namespace Wombat
         virtual MamdaFieldState   getMarketSectorNativeFieldState()   const = 0;
         virtual MamdaFieldState   getMarketSegmentFieldState()        const = 0;
         virtual MamdaFieldState   getMarketSectorFieldState()         const = 0;
-        virtual MamdaFieldState   getHistoricalVolatilityFieldState() const = 0;  
+        virtual MamdaFieldState   getHistoricalVolatilityFieldState() const = 0;
         virtual MamdaFieldState   getRiskFreeRateFieldState()         const = 0;
 
         virtual ~MamdaFundamentals() {};

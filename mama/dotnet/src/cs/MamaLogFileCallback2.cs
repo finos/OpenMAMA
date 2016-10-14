@@ -27,7 +27,7 @@ namespace Wombat
 	/// Callbacks associated with logging
 	/// </summary>
 	public interface MamaLogFileCallback2 : MamaLogFileCallback
-	{   
+	{
         /// <summary>
         /// This function will be called every time a mama log is written.
         /// </summary>
@@ -37,6 +37,6 @@ namespace Wombat
         /// <param name="message">
         /// The message to be logged.
         /// </param>
-        void onLog(MamaLogLevel level, string message);  
+        void onLog(MamaLogLevel level, string message);
 	}
 }

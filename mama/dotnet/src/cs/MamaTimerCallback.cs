@@ -38,7 +38,7 @@ namespace Wombat
 
         /// <summary>
         /// This method is invoked when a timer has been completely destroyed,
-        /// the client can have confidence that no further events will be placed 
+        /// the client can have confidence that no further events will be placed
         /// on the queue for this timer.
         /// </summary>
         /// <param name="mamaTimer">

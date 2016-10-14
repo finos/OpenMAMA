@@ -51,15 +51,15 @@ typedef vector<const char*>      SymbolList;
 class MamdaPublisher : public MamaTimerCallback, MamaDQPublisherManagerCallback
 {
 public:
-    MamdaPublisher (); 
+    MamdaPublisher ();
     ~MamdaPublisher () {};
-       
+
     void                onTimer                  (MamaTimer* timer);
-    void                createMsg                (const char* sym, 
+    void                createMsg                (const char* sym,
                                                   const char* partId);
     void                createPublisherTransport (mamaBridge bridge,
                                                   const char* pubTport);
-    void                createPublisherManager   (const char* pubSource, 
+    void                createPublisherManager   (const char* pubSource,
                                                   mamaBridge bridge);
     void                createTimer              (const char* symbol,
                                                   mamaBridge bridge);
@@ -69,7 +69,7 @@ public:
     MamaQueueGroup*     getQueueGroup            ();
     void                onCreate                 (MamaDQPublisherManager*  publisher);
     bool                publishingSymbol         (const char * symbol);
-    
+
     void                setRecapFields      (MamaMsg& msg );
     void                setUpdateFields     (MamaMsg& msg);
 
@@ -77,26 +77,26 @@ public:
                                              short            msgType,
                                              mamaMdMsgType    appMsgType,
                                              short            msgStatus);
-    
+
     void onNewRequest (MamaDQPublisherManager* publisherManager,
                        const char*             symbol,
                        short                   subType,
                        short                   msgType,
                        MamaMsg&                msg);
-      
-        
+
+
     void onRequest  (MamaDQPublisherManager* publisherManager,
                      const MamaPublishTopic& publishTopicInfo,
                      short                   subType,
                      short                   msgType,
                      MamaMsg&                msg);
-    
+
     void onRefresh (MamaDQPublisherManager* publisherManager,
                     const MamaPublishTopic& publishTopicInfo,
                     short                   subType,
                     short                   msgType,
-                    MamaMsg&                msg) { } 
-        
+                    MamaMsg&                msg) { }
+
      void onError (MamaDQPublisherManager* publisher,
                    const MamaStatus&       status,
                    const char*             errortxt,
@@ -104,14 +104,14 @@ public:
 
 
     void                acquireLock              ();
-    void                releaseLock              ();                   
+    void                releaseLock              ();
 
 private:
     MamaDQPublisherManager*     mPublisherManager;
     MamaTransport*              mPubTransport;
     MamaDateTime                mPublishTime;
     MamaMsg                     mPublishMsg;
-    MamaDQPublisher*            mPublisher; 
+    MamaDQPublisher*            mPublisher;
     MamaTimer*                  mTimer;
     MamdaLock                   mLock;
     MamaQueueGroup*             mQueueGroup;
@@ -127,9 +127,9 @@ class TransportCallback : public MamaTransportCallback
 {
 public:
     TransportCallback          () {}
-    virtual ~TransportCallback () {} 
+    virtual ~TransportCallback () {}
 
-    virtual void onDisconnect (MamaTransport *tport) 
+    virtual void onDisconnect (MamaTransport *tport)
     {
         if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
         cout << "TRANSPORT DISCONNECTED\n";
@@ -153,6 +153,7 @@ public:
             cout << "QUALITY - " << mamaQuality_convertToString (quality);
             cout << "\n";
         }
+        flush (cout);
     }
 
 private:
@@ -170,18 +171,18 @@ int main (int argc, const char **argv)
 
         // Initialise the MAMA API
         mamaBridge bridge = cmdLine.getBridge();
-       
+
         Mama::open ();
-        
+
         const char* symbol      = cmdLine.getOptString("s");
         const char* partId      = cmdLine.getOptString("p");
         const char* pubSource   = cmdLine.getOptString("SP");
         const char* pubTport    = cmdLine.getOptString("tportp");
-        MamaSource* source      = cmdLine.getSource();   
-        
+        MamaSource* source      = cmdLine.getSource();
+
         MamaQueueGroup   queues (cmdLine.getNumThreads(), bridge);
         mMamdaPublisher->setQueueGroup(&queues);;
-        
+
         mMamdaPublisher->createPublisherTransport(bridge, pubTport);
         mMamdaPublisher->createPublisherManager(pubSource, bridge);
 
@@ -194,13 +195,13 @@ int main (int argc, const char **argv)
 
         //create publisher and also set up MamaTimer to process order and publish changes
         mMamdaPublisher->createTimer(symbol, bridge);
-       
+
         mMamdaPublisher->createMsg(symbol, partId);
-               
+
         Mama::start (bridge);
     }
     catch (MamaStatus &e)
-    {  
+    {
         // This exception can be thrown from Mama.open ()
         // Mama::createTransport (transportName) and from
         // MamdaSubscription constructor when entitlements is enabled.
@@ -217,15 +218,15 @@ int main (int argc, const char **argv)
         cerr << "Unknown Exception in main ()." << endl;
         exit (1);
     }
-    exit (1);    
+    exit (1);
 }
 
 void MamdaPublisher::onTimer (MamaTimer* timer)
-{  
+{
     if (!mPublishing) return;
-    
+
     mPublishTime.setToNow();
-    
+
     acquireLock();
     addMamaHeaderFields (mPublishMsg,
                          MAMA_MSG_TYPE_QUOTE,
@@ -239,8 +240,8 @@ void MamdaPublisher::onTimer (MamaTimer* timer)
 }
 
 
-void MamdaPublisher::createMsg (const char* symbol, const char* partId) 
-{ 
+void MamdaPublisher::createMsg (const char* symbol, const char* partId)
+{
     mSymbol = symbol;
     mPartId = partId;
     mPublishTime.setToNow();
@@ -250,7 +251,7 @@ void MamdaPublisher::createMsg (const char* symbol, const char* partId)
                          MAMA_MSG_STATUS_OK);
 
     setRecapFields (mPublishMsg);
-    
+
     mSymbolList.push_back (symbol);
 }
 
@@ -285,17 +286,18 @@ void MamdaPublisher::onCreate (MamaDQPublisherManager*  publisher)
     {
         cout << "Created publisher subscription.\n";
     }
+    flush (cout);
 }
 
 void MamdaPublisher::onError (
         MamaDQPublisherManager*  publisher,
         const MamaStatus&        status,
         const char*              errortxt,
-        MamaMsg*                 msg) 
+        MamaMsg*                 msg)
 {
     if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
     {
-        if (msg) 
+        if (msg)
         {
             cout << "Unhandled Msg:"
                  <<  status.toString ()
@@ -311,6 +313,7 @@ void MamdaPublisher::onError (
                  << "\n";
         }
     }
+    flush (cout);
 }
 
 void MamdaPublisher::onNewRequest (
@@ -322,13 +325,13 @@ void MamdaPublisher::onNewRequest (
 {
 
     MamaMsg*     request = NULL;
-    
-    if (publishingSymbol(symbol))  
+
+    if (publishingSymbol(symbol))
     {
         mPublisher = mPublisherManager->createPublisher(symbol, this);
         mPublishing = true;
         if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
-        {        
+        {
             cout << "Received New request: " <<  symbol << endl;
         }
         bool publish = false;
@@ -338,18 +341,19 @@ void MamdaPublisher::onNewRequest (
             case MAMA_SUBSC_SNAPSHOT:
                 acquireLock();
                 publishMessage(&msg);
-                releaseLock();          
-                break;           
+                releaseLock();
+                break;
             default:
                 acquireLock();
                 publishMessage(&msg);
-                releaseLock();          
+                releaseLock();
                 break;
         }
     }
     else
         if (gExampleLogLevel > EXAMPLE_LOG_LEVEL_NORMAL)
             cout << "Received request for unknown symbol: " <<  symbol << endl;
+    flush (cout);
 }
 void MamdaPublisher::onRequest (
     MamaDQPublisherManager*  publisherManager,
@@ -357,7 +361,7 @@ void MamdaPublisher::onRequest (
     short                    subType,
     short                    msgType,
     MamaMsg&                 msg)
-{  
+{
     MamaMsg*     request = NULL;
     const char* symbol = publishTopicInfo.mSymbol;
     bool publish = false;
@@ -367,16 +371,16 @@ void MamdaPublisher::onRequest (
              << symbol
              << "\n";
     }
-    
+
     switch (msgType)
-    {      
+    {
         case MAMA_SUBSC_SUBSCRIBE:
         case MAMA_SUBSC_SNAPSHOT:
             acquireLock();
             publishMessage(&msg);
             releaseLock();
             break;
-            
+
         case MAMA_SUBSC_DQ_SUBSCRIBER :
         case MAMA_SUBSC_DQ_PUBLISHER:
         case MAMA_SUBSC_DQ_NETWORK:
@@ -392,6 +396,7 @@ void MamdaPublisher::onRequest (
         default:
             break;
     }
+    flush (cout);
 }
 
 void MamdaPublisher::createPublisherTransport (mamaBridge bridge, const char* pubTport)
@@ -399,19 +404,19 @@ void MamdaPublisher::createPublisherTransport (mamaBridge bridge, const char* pu
     mPubTransport = new MamaTransport;
     mPubTransport->create (pubTport, bridge);
     mPubTransport->setTransportCallback (new TransportCallback ());
-}        
+}
 
 void MamdaPublisher::createPublisherManager (const char* pubSource, mamaBridge bridge)
 {
     mPublisherManager = new MamaDQPublisherManager();
 
     //create pub
-    mPublisherManager->create (mPubTransport, 
+    mPublisherManager->create (mPubTransport,
                                mQueueGroup->getNextQueue(),
                                this,
                                pubSource);
 }
- 
+
 void MamdaPublisher::createTimer (const char* symbol, mamaBridge bridge)
 {
     //create timer, on next queue, for publishing trades every 1s
@@ -420,29 +425,29 @@ void MamdaPublisher::createTimer (const char* symbol, mamaBridge bridge)
 }
 
 MamaMsg& MamdaPublisher::getPublishMsg()
-{   
+{
     return mPublishMsg;
 }
 
 void MamdaPublisher::acquireLock ()
-{ 
-    ACQUIRE_WLOCK(mLock); 
+{
+    ACQUIRE_WLOCK(mLock);
 }
 
 void MamdaPublisher::releaseLock ()
-{ 
-    RELEASE_WLOCK(mLock); 
-}    
+{
+    RELEASE_WLOCK(mLock);
+}
 
 void MamdaPublisher::setQueueGroup (MamaQueueGroup* queues)
 {
     mQueueGroup = queues;
 }
 
-bool MamdaPublisher::publishingSymbol (const char * symbol) 
+bool MamdaPublisher::publishingSymbol (const char * symbol)
 {
     SymbolList::const_iterator i;
-    
+
     for (i = mSymbolList.begin (); i != mSymbolList.end (); i++)
     {
         if  (strcmp(*i,symbol)==0)
@@ -458,29 +463,29 @@ MamaQueueGroup* MamdaPublisher::getQueueGroup()
     return mQueueGroup;
 }
 
-//This function adds the Mama Header fields setting the msgType, msgStatus, seqNum (updating every tick) and the senderID. 
-void 
+//This function adds the Mama Header fields setting the msgType, msgStatus, seqNum (updating every tick) and the senderID.
+void
 MamdaPublisher::addMamaHeaderFields (MamaMsg&         msg,
                                      short            msgType,
                                      mamaMdMsgType    appMsgType,
                                      short            msgStatus)
-{  
+{
     msg.addU8  (NULL, 1, msgType);
     msg.addU8  (NULL, 2, msgStatus);
     msg.addU32 (NULL, 10, mSeqNum);
     msg.addU32 (NULL, 17, appMsgType);
     msg.addU64 (NULL, 20, 1);
-    msg.addU64 ("MamaSenderId", 20, 6847160); 
+    msg.addU64 ("MamaSenderId", 20, 6847160);
     mSeqNum++;
 }
 
 
 void MamdaPublisher::setRecapFields(MamaMsg& msg)
-{     
+{
     msg.addDateTime ("wLineTime", 1174, mPublishTime);
-    msg.addDateTime ("wSrcTime", 465, mPublishTime);  
+    msg.addDateTime ("wSrcTime", 465, mPublishTime);
     msg.addString   ("wIssueSymbol", 305, mSymbol);
-    
+
     msg.addI32      ("wQuoteCount",1034, mSeqNum);
     msg.addI32      ("wTradeSeqNum",483,mSeqNum);
     msg.addString   ("wTradeId",477,"A");
@@ -498,15 +503,15 @@ void MamdaPublisher::setRecapFields(MamaMsg& msg)
     msg.addDateTime ("wQuoteTime",442,mPublishTime);
     msg.addI32      ("wQuoteSeqNum",441,18);
     msg.addI32      ("wQuoteCount",1034,469136);
-    msg.addString   ("wCondition",243, "R");      
-    msg.addU16      ("wMsgQual",21,1);    
+    msg.addString   ("wCondition",243, "R");
+    msg.addU16      ("wMsgQual",21,1);
 
 }
 
 void MamdaPublisher::setUpdateFields(MamaMsg& msg)
-{      
+{
     msg.addDateTime ("wLineTime", 1174, mPublishTime);
-    msg.addDateTime ("wSrcTime", 465, mPublishTime);  
+    msg.addDateTime ("wSrcTime", 465, mPublishTime);
     msg.addString   ("wIssueSymbol", 305, mSymbol);
     msg.addI32      ("wQuoteCount",1034, mSeqNum);
 

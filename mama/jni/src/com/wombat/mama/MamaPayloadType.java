@@ -59,7 +59,7 @@ public class MamaPayloadType
     public static final char MAMA_PAYLOAD_VULCAN        =   'V';
     /** Wombat Message */
     public static final char MAMA_PAYLOAD_WOMBAT_MSG    =   'W';
-    /** Wombat Message */
+    /** Wombat Exegy  */
     public static final char MAMA_PAYLOAD_EXEGY         =   'X';
     /** Unknown type */
     public static final char MAMA_PAYLOAD_UNKNOWN       =   'U';

@@ -38,7 +38,7 @@ namespace Wombat
           /// Everything OK
           /// </summary>
           MAMA_STATUS_OK                          = 0,
-          
+
           /// <summary>
           /// System error, out of memory
           /// </summary>
@@ -58,7 +58,7 @@ namespace Wombat
           /// One or more arguments were invalid
           /// </summary>
           MAMA_STATUS_INVALID_ARG                 = 4,
-          
+
           /// <summary>
           /// A NULL argument was unexpectedly encountered
           /// </summary>
@@ -73,7 +73,7 @@ namespace Wombat
           /// Timer-related error
           /// </summary>
           MAMA_STATUS_TIMER_FAILURE               = 7,
-          
+
           /// <summary>
           /// IP address not found
           /// </summary>
@@ -81,19 +81,19 @@ namespace Wombat
 
           /// <summary>
           /// A timeout occurred while waiting for a response
-          /// </summary>          
+          /// </summary>
           MAMA_STATUS_TIMEOUT                     = 9,
-          
+
           /// <summary>
           /// Client is not entitled for the symbol
           /// </summary>
           MAMA_STATUS_NOT_ENTITLED                = 10,
-          
+
           /// <summary>
           /// Property value exceeds the maximum allowed length
           /// </summary>
           MAMA_STATUS_PROPERTY_TOO_LONG           = 11,
-          
+
           /// <summary>
           /// MD not opened
           /// </summary>
@@ -118,12 +118,12 @@ namespace Wombat
           /// IO type is not supported on the middleware
           /// </summary>
           MAMA_STATUS_UNSUPPORTED_IO_TYPE         = 16,
-          
+
           /// <summary>
           /// Maximum number of dispatchers per queue was exceeded
           /// </summary>
           MAMA_STATUS_TOO_MANY_DISPATCHERS        = 17,
-          
+
           /// <summary>
           /// The desired feature is not implemented
           /// </summary>
@@ -133,7 +133,7 @@ namespace Wombat
           /// Incompatible field types
           /// </summary>
           MAMA_STATUS_WRONG_FIELD_TYPE            = 19,
-          
+
           /// <summary>
           /// Invalid symbol
           /// </summary>
@@ -193,17 +193,17 @@ namespace Wombat
           /// Subscription is in an invalid state.
           /// </summary>
           MAMA_STATUS_SUBSCRIPTION_INVALID_STATE = 5001,
-          
+
           /// <summary>
           /// Queue has open objects.
           /// </summary>
           MAMA_STATUS_QUEUE_OPEN_OBJECTS = 5002,
-          
+
           /// <summary>
           /// The function isn't supported for this type of subscription.
           /// </summary>
           MAMA_STATUS_SUBSCRIPTION_INVALID_TYPE = 5003,
-          
+
           /// <summary>
           /// The underlying transport saw a gap.
           /// </summary>
@@ -238,142 +238,142 @@ namespace Wombat
           /// Entitlements: Invalid parameter.
           /// </summary>
           MAMA_ENTITLE_STATUS_BAD_PARAM = 9002,
-          
+
           /// <summary>
           /// Entitlements: The XML returned from entitlement server was invalid.
           /// </summary>
           MAMA_ENTITLE_STATUS_BAD_DATA = 9003,
-          
+
           /// <summary>
           /// Entitlements: Invalid URL.
           /// </summary>
           MAMA_ENTITLE_STATUS_URL_ERROR = 9004,
-          
+
           /// <summary>
           /// Entitlements: Unable to determine OS ID of account process is running under.
           /// </summary>
           MAMA_ENTITLE_STATUS_OS_LOGIN_ID_UNAVAILABLE = 9005,
-          
+
           /// <summary>
           /// Entitlements: When an attempt is made to get entitlements after a successful attempt has already been made
           /// </summary>
           MAMA_ENTITLE_STATUS_ALREADY_ENTITLED = 9006,
-          
+
           /// <summary>
           /// Entitlements: A user has exceeded concurrent access limit
           /// </summary>
           MAMA_ENTITLE_STATUS_CAC_LIMIT_EXCEEDED = 9007,
-          
+
           /// <summary>
           /// Entitlements: Failed to create OEP listener that processes inbound messages from site server.  Required for concurrent access control and/or dynamic entitlements update.
           /// </summary>
           MAMA_ENTITLE_STATUS_OEP_LISTENER_CREATION_FAILURE = 9008,
-          
+
           /// <summary>
           /// Entitlements: No such host.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRHOST = 9010,
-          
+
           /// <summary>
           /// Entitlements: Can't create socket.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRSOCK = 9011,
-          
+
           /// <summary>
           /// Entitlements: Can't connect to host.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRCONN = 9012,
-          
+
           /// <summary>
           /// Entitlements: Write error on socket while writing header.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRWRHD = 9013,
-          
+
           /// <summary>
           /// Entitlements: Write error on socket while writing data.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRWRDT = 9014,
-          
+
           /// <summary>
           /// Entitlements: Read error on socket while reading result.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRRDHD = 9015,
-          
+
           /// <summary>
           /// Entitlements: Invalid answer from data server.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRPAHD = 9016,
-          
+
           /// <summary>
           /// Entitlements: Null data pointer.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRNULL = 9017,
-          
+
           /// <summary>
           /// Entitlements: No/Bad length in header.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRNOLG = 9018,
-          
+
           /// <summary>
           /// Entitlements: Can't allocate memory.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRMEM = 9019,
-          
+
           /// <summary>
           /// Entitlements: Read error while reading data.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRRDDT = 9020,
-          
+
           /// <summary>
           /// Entitlements: Invalid url - must start with 'http://'.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRURLH = 9021,
-          
+
           /// <summary>
           /// Entitlements: Invalid port in url.
           /// </summary>
           MAMA_ENTITLE_HTTP_ERRURLP = 9022,
-         
+
           /// <summary>
           /// Entitlements: Invalid QUERY HTTP RESULT 400.
           /// </summary>
           MAMA_ENTITLE_HTTP_BAD_QUERY = 9023,
-          
+
           /// <summary>
           /// Entitlements: FORBIDDEN HTTP RESULT 403.
           /// </summary>
           MAMA_ENTITLE_HTTP_FORBIDDEN = 9024,
-          
+
           /// <summary>
           /// Entitlements: Request Timeout HTTP RESULT 403.
           /// </summary>
           MAMA_ENTITLE_HTTP_TIMEOUT = 9025,
-          
+
           /// <summary>
           /// Entitlements: Server Error HTTP RESULT 500.
           /// </summary>
           MAMA_ENTITLE_HTTP_SERVER_ERR = 9026,
-          
+
           /// <summary>
           /// Entitlements: Not Implemented HTTP RESULT 501.
           /// </summary>
           MAMA_ENTITLE_HTTP_NO_IMPL = 9027,
-          
+
           /// <summary>
           /// Entitlements: Overloaded HTTP RESULT 503.
           /// </summary>
           MAMA_ENTITLE_HTTP_OVERLOAD = 9028,
-          
+
           /// <summary>
           /// Entitlements: No user specified.
           /// </summary>
           MAMA_ENTITLE_NO_USER = 9029,
-          
+
           /// <summary>
           /// Entitlements: No servers specified.
           /// </summary>
           MAMA_ENTITLE_NO_SERVERS_SPECIFIED = 9030,
-          
+
           /// <summary>
           /// Entitlements: No site specified.
           /// </summary>
@@ -382,7 +382,7 @@ namespace Wombat
 
       [DllImport(Mama.DllName)]
       private static extern string mamaStatus_stringForStatus (int status);
-		
+
       /// <summary>
       /// Return status code as a string
       /// </summary>
@@ -391,5 +391,5 @@ namespace Wombat
 		  return String.Format("mamaStatus: ({0})", status);
       }
 
-	}  
+	}
 }

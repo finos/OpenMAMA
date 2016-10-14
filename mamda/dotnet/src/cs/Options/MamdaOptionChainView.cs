@@ -303,7 +303,7 @@ namespace Wombat
 			// To be completed.
 			return true;
 		}
-		
+
 		private class UnderlyingQuoteHandler : MamdaQuoteHandler
 		{
 			public void onQuoteRecap(

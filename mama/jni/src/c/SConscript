@@ -24,11 +24,11 @@ else:
 
 
 sources = \
-    Split(""" 
+    Split("""
     version.c
     mamajni.c
 	mamaconnectionjni.c
-    mamatransportjni.c 
+    mamatransportjni.c
     mamabridgejni.c
     mamasubscriptionjni.c
     mamabasicsubscriptionjni.c

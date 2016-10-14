@@ -31,25 +31,25 @@ namespace Wombat.Containers
 			mSortedMap = m;
 			mKeySet = m.keySet();
 		}
-		
+
 		public TreeSet() : this(new TreeMap())
 		{
 		}
-		
+
 		public TreeSet(Comparator c) : this(new TreeMap(c))
 		{
 		}
-		
+
 		public TreeSet(Collection c) : this()
 		{
 			addAll(c);
 		}
-		
+
 		public TreeSet(SortedSet s) : this(s.comparator())
 		{
 			addAll(s);
 		}
-		
+
 		#region SortedSet Members
 
 		public Comparator comparator()
@@ -182,7 +182,7 @@ namespace Wombat.Containers
 		}
 
 		#endregion
-	
+
 		#region ICloneable Members
 
 		/// <summary>
@@ -191,7 +191,7 @@ namespace Wombat.Containers
 		/// <returns></returns>
 		public object Clone()
 		{
-			// the cast to Map is necessary, otherwise TreeMap will just 
+			// the cast to Map is necessary, otherwise TreeMap will just
 			// get backed by the original map, instead of copying it
 			TreeSet copy = new TreeSet(new TreeMap((Map)mSortedMap));
 			return copy;

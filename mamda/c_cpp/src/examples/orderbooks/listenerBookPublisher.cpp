@@ -58,7 +58,7 @@ class BookTicker : public MamdaOrderBookHandler
 public:
     BookTicker () {}
     virtual ~BookTicker () {}
-    
+
 void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
 {
     try
@@ -69,7 +69,7 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
         {
             MamdaMsgListener* listener = msgListeners[i];
             listener->onMsg (sub, msg, (short)msg.getType());
-        }  
+        }
     }
     catch (std::exception &e)
     {
@@ -93,8 +93,9 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Recap \n");
         book.dump(std::cout);
+        flush (cout);
     }
-    
+
     void onBookDelta (
         MamdaSubscription*                 subscription,
         MamdaOrderBookListener&            listener,
@@ -104,8 +105,9 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Delta \n");
         book.dump(std::cout);
+        flush (cout);
     }
-    
+
    void onBookComplexDelta (
         MamdaSubscription*                 subscription,
         MamdaOrderBookListener&            listener,
@@ -115,6 +117,7 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Complex Delta \n");
         book.dump(std::cout);
+        flush (cout);
     }
     void onBookClear (
         MamdaSubscription*          subscription,
@@ -125,6 +128,7 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Clear \n");
         book.dump(std::cout);
+        flush (cout);
     }
 
     void onBookGap (
@@ -136,6 +140,7 @@ void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {
         printf("\n Book Gap \n");
         book.dump(std::cout);
+        flush (cout);
     }
 };
 
@@ -145,16 +150,16 @@ class SubscriptionHandler;
 class BookPublisher : public MamaTimerCallback
 {
 public:
-    BookPublisher (); 
+    BookPublisher ();
     ~BookPublisher () {};
-       
+
     void                onTimer              (MamaTimer*  timer);
     void                subscribeToSymbols   ();
-    void                acquireLock          (const char* symbol);                               
+    void                acquireLock          (const char* symbol);
     void                releaseLock          (const char* symbol);
     void                createPublisher      ();
     void                createTimer          ();
-    void                publishMessage       (MamaMsg*    request, 
+    void                publishMessage       (MamaMsg*    request,
                                               const char* symbol);
     void                start                ();
     void                initializeMama       ();
@@ -165,7 +170,7 @@ public:
     void                setSubTport          (const char* tport);
     void                setPubTport          (const char* tport);
     void                setMiddleware        (const char* middleware);
-    void                setProcessEntries    (bool        process);  
+    void                setProcessEntries    (bool        process);
     MamdaSubscription*  getMamdaSubscription (const char* symbol);
     mamaBridge          getBridge            ();
     SubscriptionHandler* getCb               ();
@@ -180,7 +185,7 @@ private:
     MamdaOrderBook*             mBook;
     MamaDateTime                mBookTime;
     MamaMsg                     mPublishMsg;
-    MamaDQPublisher*            mPublisher; 
+    MamaDQPublisher*            mPublisher;
     MamaTimer*                  mTimer;
     mamaBridge                  mBridge;
     const char*                 mMiddleware;
@@ -200,9 +205,9 @@ class TransportCallback : public MamaTransportCallback
 {
 public:
     TransportCallback          () {}
-    virtual ~TransportCallback () {} 
+    virtual ~TransportCallback () {}
 
-    virtual void onDisconnect (MamaTransport *tport) 
+    virtual void onDisconnect (MamaTransport *tport)
     {
         printf ("TRANSPORT DISCONNECTED\n");
     }
@@ -226,37 +231,37 @@ private:
     TransportCallback& operator= (const TransportCallback& rhs);
 };
 
-   
+
 class SubscriptionHandler : public MamaDQPublisherManagerCallback
 {
 public:
     SubscriptionHandler (BookPublisher* bookPublisher) {mBookPublisher = bookPublisher;}
     ~SubscriptionHandler() {}
     void onCreate (MamaDQPublisherManager*  publisher);
-    
-    
+
+
     void onNewRequest (
         MamaDQPublisherManager*  publisherManager,
         const char*              symbol,
         short                    subType,
         short                    msgType,
         MamaMsg&                 msg);
-      
-        
+
+
     void onRequest (
         MamaDQPublisherManager*  publisherManager,
         const MamaPublishTopic&  publishTopicInfo,
         short                    subType,
         short                    msgType,
         MamaMsg&                 msg);
-    
+
     void onRefresh (
         MamaDQPublisherManager*  publisherManager,
         const MamaPublishTopic&  publishTopicInfo,
         short                    subType,
         short                    msgType,
         MamaMsg&                 msg);
-        
+
      void onError (
         MamaDQPublisherManager*  publisher,
         const MamaStatus&        status,
@@ -274,15 +279,15 @@ int main (int argc, const char **argv)
     {
         BookPublisher* mBookPublisher = new BookPublisher;
         CommonCommandLineParser cmdLine (argc, argv);
-        
+
         mBookPublisher->setSymbolList       (cmdLine.getSymbolList());
         mBookPublisher->setSubSourceName    (cmdLine.getOptString ("SS"));
         mBookPublisher->setPubSourceName    (cmdLine.getOptString ("SP"));
         mBookPublisher->setSubTport         (cmdLine.getOptString ("tports"));
         mBookPublisher->setPubTport         (cmdLine.getOptString ("tportp"));
         mBookPublisher->setMiddleware       (cmdLine.getOptString ("m"));
-        mBookPublisher->setProcessEntries   (cmdLine.getOptBool   ('e'));  
-    
+        mBookPublisher->setProcessEntries   (cmdLine.getOptBool   ('e'));
+
         mBookPublisher->initializeMama();
         mBookPublisher->createSources();
 
@@ -291,21 +296,21 @@ int main (int argc, const char **argv)
         dictRequester.requestDictionary     (cmdLine.getDictSource());
         MamdaCommonFields::setDictionary    (*dictRequester.getDictionary());
         MamdaOrderBookFields::setDictionary (*dictRequester.getDictionary ());
-        
+
         mBookPublisher->createPublisher();
-    
+
         mBookPublisher->getPublishMsg().create();
-    
-        mBookPublisher->subscribeToSymbols();          
-      
+
+        mBookPublisher->subscribeToSymbols();
+
         //create publisher and also set up MamaTimer to process order and publish changes
         mBookPublisher->createTimer();
-       
-        //set up new Book and enable order book publishing              
+
+        //set up new Book and enable order book publishing
         mBookPublisher->start();
     }
     catch (MamaStatus &e)
-    {  
+    {
         // This exception can be thrown from Mama.open ()
         // Mama::createTransport (transportName) and from
         // MamdaSubscription constructor when entitlements is enabled.
@@ -323,12 +328,12 @@ int main (int argc, const char **argv)
         exit (1);
     }
 
-    exit (1);    
+    exit (1);
 }
 
 void usage (int exitStatus)
 {
-    std::cerr << "Usage: bookpublisher [-SP publisher source]  [-SS subscribe source]\n " 
+    std::cerr << "Usage: bookpublisher [-SP publisher source]  [-SS subscribe source]\n "
               << "[-DT dict tport] -s symbol [-s symbol ...] \n"
               << "[-tportp publish transport] [-tports subscribe transport] [-m middleware]\n";
     exit (exitStatus);
@@ -345,13 +350,13 @@ void SubscriptionHandler::onError (
     MamaDQPublisherManager*  publisher,
     const MamaStatus&        status,
     const char*              errortxt,
-    MamaMsg*                 msg) 
+    MamaMsg*                 msg)
 {
-    if (msg) 
-        printf ("Unhandled Msg: %s (%s) %s\n", 
+    if (msg)
+        printf ("Unhandled Msg: %s (%s) %s\n",
             status.toString (), msg->toString (), errortxt);
     else
-        printf ("Unhandled Msg: %s %s\n", 
+        printf ("Unhandled Msg: %s %s\n",
             status.toString (), errortxt);
     flush (cout);
 }
@@ -365,16 +370,16 @@ void SubscriptionHandler::onNewRequest (
     MamaMsg&                 msg)
 {
     MamaMsg*     request = NULL;
-    
+
     MamdaSubscription* mamdaSub = mBookPublisher->getMamdaSubscription(symbol);
-    
+
     if (mamdaSub)
     {
         MamaSubscription*  mSub = mamdaSub->getMamaSubscription();
-        MamaDQPublisher*   mPub = publisherManager->createPublisher (symbol, mBookPublisher->getCb());   
-        
+        MamaDQPublisher*   mPub = publisherManager->createPublisher (symbol, mBookPublisher->getCb());
+
         printf ("Received New request: %s\n",  symbol);
-        
+
         switch (msgType)
         {
             case MAMA_SUBSC_SUBSCRIBE:
@@ -382,7 +387,7 @@ void SubscriptionHandler::onNewRequest (
                 request = msg.detach();
                 mBookPublisher->publishMessage (request, symbol);
                 break;
-            
+
             default:
                 mBookPublisher->publishMessage (NULL, symbol);
                 break;
@@ -390,28 +395,28 @@ void SubscriptionHandler::onNewRequest (
     }
     else
         printf ("Received request for unknown symbol: %s\n",  symbol);
-        
+
     flush (cout);
 }
-  
+
 void SubscriptionHandler::onRequest (
     MamaDQPublisherManager*  publisherManager,
     const MamaPublishTopic&  publishTopicInfo,
     short                    subType,
     short                    msgType,
     MamaMsg&                 msg)
-{  
+{
     MamaMsg* request = NULL;
     printf ("Received request: %s\n",  publishTopicInfo.mSymbol);
     const char* symbol = publishTopicInfo.mSymbol;
-    
+
     mBookPublisher->acquireLock(symbol);
     switch (msgType)
-    {      
+    {
         case MAMA_SUBSC_SUBSCRIBE:
         case MAMA_SUBSC_SNAPSHOT:
         {
-            request = msg.detach();  
+            request = msg.detach();
             mBookPublisher->getPublishMsg().clear();
             mBookPublisher->getBook()->populateRecap (mBookPublisher->getPublishMsg());
             mBookPublisher->publishMessage (request, symbol);
@@ -444,10 +449,10 @@ void SubscriptionHandler::onRefresh (
     short                    subType,
     short                    msgType,
     MamaMsg&                 msg)
-{  
+{
     printf ("Received Refresh: %s\n",  publishTopicInfo.mSymbol);
     flush (cout);
-} 
+}
 
 void BookPublisher::acquireLock (const char* symbol)
 {
@@ -463,7 +468,7 @@ void BookPublisher::acquireLock (const char* symbol)
         {
             MamdaMsgListener* listener = msgListeners[i];
             bookListener = (MamdaOrderBookListener*)listener;
-        }  
+        }
     }
     catch (std::exception &e)
     {
@@ -473,7 +478,7 @@ void BookPublisher::acquireLock (const char* symbol)
     {
         std::cerr << "Exception: Unknown" << std::endl;
     }
-    
+
     bookListener->acquireWriteLock();
     printf ("\n Listener book lock acquired \n");
 }
@@ -492,7 +497,7 @@ void BookPublisher::releaseLock(const char* symbol)
         {
             MamdaMsgListener* listener = msgListeners[i];
             bookListener = (MamdaOrderBookListener*)listener;
-        }  
+        }
     }
     catch (std::exception &e)
     {
@@ -502,13 +507,13 @@ void BookPublisher::releaseLock(const char* symbol)
     {
       std::cerr << "Exception: Unknown" << std::endl;
     }
-    
+
     bookListener->releaseWriteLock();
     printf("\n Listener book lock released \n");
 }
 
 void BookPublisher::onTimer (MamaTimer* timer)
-{  
+{
     // need to clear publishMsg after every update
     const char* symbol;
     for (vector<const char*>::const_iterator i = mSymbolList.begin ();
@@ -523,20 +528,20 @@ void BookPublisher::onTimer (MamaTimer* timer)
             publishMessage (NULL, symbol);
             printf ("\n Publishing Message:- %s \n", mPublishMsg.toString());
 
-        }       
+        }
         else printf ("\n Not publishing from Empty State \n");
         releaseLock (symbol);
     }
 
 }
 
-void BookPublisher::subscribeToSymbols () 
-{ 
+void BookPublisher::subscribeToSymbols ()
+{
 
     for (vector<const char*>::const_iterator i = mSymbolList.begin ();
          i != mSymbolList.end ();
          ++i)
-    {   
+    {
         const char* symbol = *i;
         mBook = new MamdaOrderBook();
         // Turn on delta generation
@@ -548,7 +553,7 @@ void BookPublisher::subscribeToSymbols ()
 
         BookTicker* aTicker = new BookTicker;
         aBookListener->addHandler (aTicker);
-       
+
         aSubscription->setType (MAMA_SUBSC_TYPE_BOOK);
         aSubscription->setMdDataType (MAMA_MD_DATA_TYPE_ORDER_BOOK);
         mSubscriptionList.push_back (aSubscription);
@@ -561,16 +566,16 @@ void BookPublisher::subscribeToSymbols ()
 void BookPublisher::publishMessage (MamaMsg* request, const char* symbol)
 {
     if (!mPublisher)
-    {    
+    {
         MamdaSubscription* mamdaSub = getMamdaSubscription(symbol);
-        
+
         if (mamdaSub)
         {
             MamaSubscription* mSub = mamdaSub->getMamaSubscription();
-            mPublisher = mPubManager->createPublisher (symbol, managerCallback);   
+            mPublisher = mPubManager->createPublisher (symbol, managerCallback);
         }
     }
-    
+
     try
     {
         if (request)
@@ -591,10 +596,10 @@ void BookPublisher::publishMessage (MamaMsg* request, const char* symbol)
     }
 }
 
-MamdaSubscription* BookPublisher::getMamdaSubscription (const char * symbol) 
+MamdaSubscription* BookPublisher::getMamdaSubscription (const char * symbol)
 {
     SubscriptionList::const_iterator i;
-    
+
     for (i = mSubscriptionList.begin (); i != mSubscriptionList.end (); i++)
     {
         if  (strcmp(((MamdaSubscription*)*i)->getSymbol() , symbol)==0)
@@ -602,8 +607,8 @@ MamdaSubscription* BookPublisher::getMamdaSubscription (const char * symbol)
             return (MamdaSubscription*)*i;
         }
     }
-    return NULL; 
-}   
+    return NULL;
+}
 
 void BookPublisher::createTimer()
 {
@@ -616,41 +621,41 @@ void BookPublisher::initializeMama ()
 {
     if (!mMiddleware) mMiddleware = "wmw";
     mBridge = Mama::loadBridge (mMiddleware);
-    
+
     Mama::open ();
-        
+
     mSubTransport = new MamaTransport;
     mSubTransport->create (mSubTport, mBridge);
     mSubTransport->setTransportCallback (new TransportCallback ());
-        
+
     mPubTransport = new MamaTransport;
     mPubTransport->create (mPubTport, mBridge);
-    mPubTransport->setTransportCallback (new TransportCallback ());    
+    mPubTransport->setTransportCallback (new TransportCallback ());
 }
 
 void BookPublisher::createPublisher ()
 {
     managerCallback =  new SubscriptionHandler(this);
     srand ( time(NULL) );
-    
+
     mPubManager = new MamaDQPublisherManager();
-  
-    mPubManager->create (mPubTransport, 
+
+    mPubManager->create (mPubTransport,
                          Mama::getDefaultEventQueue(mBridge),
                          managerCallback,
                          mPubSourceName);
 }
-      
+
 void BookPublisher::createSources()
-{                                
-    mSubSource = new MamaSource ("default", 
-                                 mSubTport, 
+{
+    mSubSource = new MamaSource ("default",
+                                 mSubTport,
                                  mSubSourceName,
                                  mBridge);
-                                  
+
     mSubSource->getTransport()->setOutboundThrottle (
-                                    500, 
-                                    MAMA_THROTTLE_DEFAULT);                                      
+                                    500,
+                                    MAMA_THROTTLE_DEFAULT);
 }
 
 void BookPublisher::setSymbolList(const vector<const char*>& list)
@@ -682,24 +687,24 @@ void BookPublisher::setMiddleware(const char* middleware)
 {
     mMiddleware = middleware;
 }
- 
+
 void BookPublisher::setProcessEntries(bool process)
 {
     mProcessEntries = process;
 }
-    
+
 mamaBridge BookPublisher::getBridge()
 {
     return mBridge;
 }
- 
+
 MamdaOrderBook* BookPublisher::getBook()
-{   
+{
     return mBook;
 }
 
 MamaMsg& BookPublisher::getPublishMsg()
-{   
+{
     return mPublishMsg;
 }
 

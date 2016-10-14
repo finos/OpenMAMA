@@ -36,7 +36,7 @@ namespace Wombat
 		/// <param name="subscription">The subscription which received this update.</param>
 		/// <param name="listener">The listener which invoked this callback.</param>
 		/// <param name="msg">The MamaMsg that triggered this invocation.</param>
-		void onOrderImbalance( 
+		void onOrderImbalance(
 			MamdaSubscription			subscription,
 			MamdaOrderImbalanceListener	listener,
 			MamaMsg						msg);
@@ -53,7 +53,7 @@ namespace Wombat
 			MamaMsg						msg);
 
 		/// <summary>
-		/// Method invoked when the current order imbalance information 
+		/// Method invoked when the current order imbalance information
 		/// is available.  The reason for the invocation may be
 		/// any of the following:
 		/// - Initial image.
@@ -68,6 +68,6 @@ namespace Wombat
 			MamdaSubscription			subscription,
 			MamdaOrderImbalanceListener	listener,
 			MamaMsg						msg);
-    
+
 	}
 }

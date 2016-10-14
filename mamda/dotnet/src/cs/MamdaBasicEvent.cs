@@ -28,7 +28,7 @@ namespace Wombat
 	/// common event related fields.  Events types include trades, quotes,
 	/// order book updates, closing summaries, etc.  See the individual
 	/// subclasses for specific information about each event type.
-	/// 
+	///
 	/// Note: Different types of time stamps are available representing the
 	/// time that the event (trade ,quote,etc) actually occurred, the time
 	/// the data source/exchange reported it, and the time the Wombat feed
@@ -47,7 +47,7 @@ namespace Wombat
 		/// * because many feeds do not distinguish between the actual event
 		/// * time and when the exchange sent the message.</returns>
 		DateTime getSrcTime();
-        
+
         /// <summary>
         /// Returns the field state.
         /// </summary>

@@ -119,7 +119,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// Whether to ADD, UPDATE or DELETE the entry. 
+		/// Whether to ADD, UPDATE or DELETE the entry.
 		/// </summary>
 		/// <returns>The action.</returns>
 		public Actions getAction ()

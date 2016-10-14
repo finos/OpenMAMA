@@ -53,8 +53,8 @@ class OrderImbalanceTicker : public MamdaOrderImbalanceHandler
 {
 public:
     virtual ~OrderImbalanceTicker () {}
-    
-    void onOrderImbalance ( 
+
+    void onOrderImbalance (
         MamdaSubscription*           subscription,
         MamdaOrderImbalanceListener& listener,
         const MamaMsg&               msg,
@@ -71,10 +71,10 @@ public:
          << "; NearClPrice:" << listener.getNearClearingPrice().getValue()
          << "; HighIndPrice:" <<  listener.getHighIndicationPrice().getValue()
          << "; LowIndPrice:" <<  listener.getLowIndicationPrice().getValue() << ")\n"
-         << flush;  
+         << flush;
     }
-        
-        
+
+
     void onNoOrderImbalance (
         MamdaSubscription*           subscription,
         MamdaOrderImbalanceListener& listener,
@@ -92,19 +92,19 @@ public:
          << "; NearClPrice: " << listener.getNearClearingPrice().getValue()
          << "; HighIndPrice: " <<  listener.getHighIndicationPrice().getValue()
          << "; LowIndPrice: " <<  listener.getLowIndicationPrice().getValue() << ")\n"
-         << flush;  
+         << flush;
     }
-        
+
     void onOrderImbalanceRecap (
         MamdaSubscription*           subscription,
         MamdaOrderImbalanceListener& listener,
         const MamaMsg&               msg,
         MamdaOrderImbalanceRecap&    imbalance)
     {
-         cout << "OrderImbalance Recap (" 
-         << subscription->getSymbol () 
+         cout << "OrderImbalance Recap ("
+         << subscription->getSymbol ()
          << ") \n"
-         << flush;         
+         << flush;
 
     }
 
@@ -115,6 +115,7 @@ public:
         const char*          errorStr)
     {
         cout << "Error (" << subscription->getSymbol () << ")";
+        flush (cout);
     }
 
     void onQuality (
@@ -122,8 +123,9 @@ public:
         mamaQuality          quality)
     {
         cout << "Quality (" << subscription->getSymbol () << "): " << quality;
+        flush (cout);
     }
-    
+
 };
 
 
@@ -144,7 +146,7 @@ int main (int argc, const char **argv)
 
         MamdaOrderImbalanceFields::setDictionary (*dictRequester.getDictionary ());
         MamdaCommonFields::setDictionary (*dictRequester.getDictionary());
-        
+
         const char* symbolMapFile = cmdLine.getSymbolMapFile ();
         if (symbolMapFile)
         {
@@ -163,12 +165,12 @@ int main (int argc, const char **argv)
             MamdaSubscription* aSubscription = new MamdaSubscription;
             MamdaOrderImbalanceListener* aListener = new MamdaOrderImbalanceListener();
             OrderImbalanceTicker* aTicker = new OrderImbalanceTicker();
-            
+
             aListener->addHandler (aTicker);
             aSubscription->addMsgListener   (aListener);
             aSubscription->addQualityListener (aTicker);
             aSubscription->addErrorListener (aTicker);
-            aSubscription->create (queues.getNextQueue(), source, symbol);   
+            aSubscription->create (queues.getNextQueue(), source, symbol);
         }
 
         Mama::start(bridge);

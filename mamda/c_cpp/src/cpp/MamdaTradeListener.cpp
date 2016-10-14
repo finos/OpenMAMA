@@ -54,71 +54,71 @@ namespace Wombat
         // The following fields are used for caching the offical last
         // price and related fields.  These fields can be used by
         // applications for reference and will be passed for recaps.
-        string                mSymbol;                    MamdaFieldState  mSymbolFieldState;   
-        string                mPartId;                    MamdaFieldState  mPartIdFieldState;  
-        MamaDateTime          mSrcTime;                   MamdaFieldState  mSrcTimeFieldState; 
-        MamaDateTime          mActTime;                   MamdaFieldState  mActTimeFieldState; 
+        string                mSymbol;                    MamdaFieldState  mSymbolFieldState;
+        string                mPartId;                    MamdaFieldState  mPartIdFieldState;
+        MamaDateTime          mSrcTime;                   MamdaFieldState  mSrcTimeFieldState;
+        MamaDateTime          mActTime;                   MamdaFieldState  mActTimeFieldState;
         MamaDateTime          mLineTime;                  MamdaFieldState  mLineTimeFieldState;
         MamaDateTime          mSendTime;                  MamdaFieldState  mSendTimeFieldState;
-        string                mPubId;                     MamdaFieldState  mPubIdFieldState;   
-        bool                  mIsIrregular;               MamdaFieldState  mIsIrregularFieldState; 
+        string                mPubId;                     MamdaFieldState  mPubIdFieldState;
+        bool                  mIsIrregular;               MamdaFieldState  mIsIrregularFieldState;
         bool                  mWasIrregular;              MamdaFieldState  mWasIrregularFieldState;
-        MamaPrice             mLastPrice;                 MamdaFieldState  mLastPriceFieldState; 
+        MamaPrice             mLastPrice;                 MamdaFieldState  mLastPriceFieldState;
         mama_quantity_t       mLastVolume;                MamdaFieldState  mLastVolumeFieldState;
         string                mLastPartId;                MamdaFieldState  mLastPartIdFieldState;
-        MamaDateTime          mLastTime;                  MamdaFieldState  mLastTimeFieldState;   
-        MamaDateTime          mTradeDate;                 MamdaFieldState  mTradeDateFieldState; 
-        MamdaTradeSide        mTmpSide;              
+        MamaDateTime          mLastTime;                  MamdaFieldState  mLastTimeFieldState;
+        MamaDateTime          mTradeDate;                 MamdaFieldState  mTradeDateFieldState;
+        MamdaTradeSide        mTmpSide;
 	    string                mSide;                      MamdaFieldState  mSideFieldState;
-        MamaPrice             mIrregPrice;                MamdaFieldState  mIrregPriceFieldState; 
-        mama_quantity_t       mIrregVolume;               MamdaFieldState  mIrregVolumeFieldState; 
-        string                mIrregPartId;               MamdaFieldState  mIrregPartIdFieldState; 
-        MamaDateTime          mIrregTime;                 MamdaFieldState  mIrregTimeFieldState;   
-        mama_quantity_t       mAccVolume;                 MamdaFieldState  mAccVolumeFieldState;   
+        MamaPrice             mIrregPrice;                MamdaFieldState  mIrregPriceFieldState;
+        mama_quantity_t       mIrregVolume;               MamdaFieldState  mIrregVolumeFieldState;
+        string                mIrregPartId;               MamdaFieldState  mIrregPartIdFieldState;
+        MamaDateTime          mIrregTime;                 MamdaFieldState  mIrregTimeFieldState;
+        mama_quantity_t       mAccVolume;                 MamdaFieldState  mAccVolumeFieldState;
         mama_quantity_t       mOffExAccVolume;            MamdaFieldState  mOffExAccVolumeFieldState;
-        mama_quantity_t       mOnExAccVolume;             MamdaFieldState  mOnExAccVolumeFieldState; 
+        mama_quantity_t       mOnExAccVolume;             MamdaFieldState  mOnExAccVolumeFieldState;
         MamdaTradeDirection   mTradeDirection;            MamdaFieldState  mTradeDirectionFieldState;
-        MamaPrice             mNetChange;                 MamdaFieldState  mNetChangeFieldState;     
-        double                mPctChange;                 MamdaFieldState  mPctChangeFieldState;     
-        MamaPrice             mOpenPrice;                 MamdaFieldState  mOpenPriceFieldState;     
-        MamaPrice             mHighPrice;                 MamdaFieldState  mHighPriceFieldState;     
-        MamaPrice             mLowPrice;                  MamdaFieldState  mLowPriceFieldState;      
-        MamaPrice             mClosePrice;                MamdaFieldState  mClosePriceFieldState;    
+        MamaPrice             mNetChange;                 MamdaFieldState  mNetChangeFieldState;
+        double                mPctChange;                 MamdaFieldState  mPctChangeFieldState;
+        MamaPrice             mOpenPrice;                 MamdaFieldState  mOpenPriceFieldState;
+        MamaPrice             mHighPrice;                 MamdaFieldState  mHighPriceFieldState;
+        MamaPrice             mLowPrice;                  MamdaFieldState  mLowPriceFieldState;
+        MamaPrice             mClosePrice;                MamdaFieldState  mClosePriceFieldState;
         MamaPrice             mPrevClosePrice;            MamdaFieldState  mPrevClosePriceFieldState;
-        MamaDateTime          mPrevCloseDate;             MamdaFieldState  mPrevCloseDateFieldState; 
-        MamaPrice             mAdjPrevClose;              MamdaFieldState  mAdjPrevCloseFieldState;  
-        mama_u32_t            mTradeCount;                MamdaFieldState  mTradeCountFieldState;    
-        mama_quantity_t       mBlockVolume;               MamdaFieldState  mBlockVolumeFieldState;   
+        MamaDateTime          mPrevCloseDate;             MamdaFieldState  mPrevCloseDateFieldState;
+        MamaPrice             mAdjPrevClose;              MamdaFieldState  mAdjPrevCloseFieldState;
+        mama_u32_t            mTradeCount;                MamdaFieldState  mTradeCountFieldState;
+        mama_quantity_t       mBlockVolume;               MamdaFieldState  mBlockVolumeFieldState;
         mama_u32_t            mBlockCount;                MamdaFieldState  mBlockCountFieldState;
-        double                mVwap;                      MamdaFieldState  mVwapFieldState;      
-        double                mOffExVwap;                 MamdaFieldState  mOffExVwapFieldState; 
-        double                mOnExVwap;                  MamdaFieldState  mOnExVwapFieldState;  
+        double                mVwap;                      MamdaFieldState  mVwapFieldState;
+        double                mOffExVwap;                 MamdaFieldState  mOffExVwapFieldState;
+        double                mOnExVwap;                  MamdaFieldState  mOnExVwapFieldState;
         double                mTotalValue;                MamdaFieldState  mTotalValueFieldState;
         double                mOffExTotalValue;           MamdaFieldState  mOffExTotalValueFieldState;
-        double                mOnExTotalValue;            MamdaFieldState  mOnExTotalValueFieldState; 
-        double                mStdDev;                    MamdaFieldState  mStdDevFieldState;  
-        mama_u64_t            mOrderId;                   MamdaFieldState  mOrderIdFieldState; 
+        double                mOnExTotalValue;            MamdaFieldState  mOnExTotalValueFieldState;
+        double                mStdDev;                    MamdaFieldState  mStdDevFieldState;
+        mama_u64_t            mOrderId;                   MamdaFieldState  mOrderIdFieldState;
         bool                  mLastGenericMsgWasTrade;
-        bool                  mGotTradeTime; 
+        bool                  mGotTradeTime;
         bool                  mGotTradePrice;
-        bool                  mGotTradeSize; 
+        bool                  mGotTradeSize;
         bool                  mGotTradeCount;
-        double                mStdDevSum;                 MamdaFieldState  mStdDevSumFieldState;      
+        double                mStdDevSum;                 MamdaFieldState  mStdDevSumFieldState;
         double                mStdDevSumSquares;          MamdaFieldState  mStdDevSumSquaresFieldState;
-        string                mTradeUnits;                MamdaFieldState  mTradeUnitsFieldState;  
-        mama_seqnum_t         mLastSeqNum;                MamdaFieldState  mLastSeqNumFieldState;  
-        mama_seqnum_t         mHighSeqNum;                MamdaFieldState  mHighSeqNumFieldState;  
-        mama_seqnum_t         mLowSeqNum;                 MamdaFieldState  mLowSeqNumFieldState;   
-        mama_seqnum_t         mTotalVolumeSeqNum;         MamdaFieldState  mTotalVolumeSeqNumFieldState; 
-        string                mCurrencyCode;              MamdaFieldState  mCurrencyCodeFieldState; 
-        string                mUniqueId;                  MamdaFieldState  mUniqueIdFieldState;    
+        string                mTradeUnits;                MamdaFieldState  mTradeUnitsFieldState;
+        mama_seqnum_t         mLastSeqNum;                MamdaFieldState  mLastSeqNumFieldState;
+        mama_seqnum_t         mHighSeqNum;                MamdaFieldState  mHighSeqNumFieldState;
+        mama_seqnum_t         mLowSeqNum;                 MamdaFieldState  mLowSeqNumFieldState;
+        mama_seqnum_t         mTotalVolumeSeqNum;         MamdaFieldState  mTotalVolumeSeqNumFieldState;
+        string                mCurrencyCode;              MamdaFieldState  mCurrencyCodeFieldState;
+        string                mUniqueId;                  MamdaFieldState  mUniqueIdFieldState;
         string                mCorrTradeId;               MamdaFieldState  mCorrTradeIdFieldState;
-        string                mTradeAction;               MamdaFieldState  mTradeActionFieldState;  
+        string                mTradeAction;               MamdaFieldState  mTradeActionFieldState;
         bool                  mIsSnapshot;
-        MamaPrice             mSettlePrice;               MamdaFieldState  mSettlePriceFieldState;  
-        MamaDateTime          mSettleDate;                MamdaFieldState  mSettleDateFieldState;   
-        MamaPrice             mOffExchangeTradePrice;     MamdaFieldState  mOffExchangeTradePriceFieldState; 
-        MamaPrice             mOnExchangeTradePrice;      MamdaFieldState  mOnExchangeTradePriceFieldState;  
+        MamaPrice             mSettlePrice;               MamdaFieldState  mSettlePriceFieldState;
+        MamaDateTime          mSettleDate;                MamdaFieldState  mSettleDateFieldState;
+        MamaPrice             mOffExchangeTradePrice;     MamdaFieldState  mOffExchangeTradePriceFieldState;
+        MamaPrice             mOnExchangeTradePrice;      MamdaFieldState  mOnExchangeTradePriceFieldState;
         string                mTradeId;                   MamdaFieldState  mTradeIdFieldState;
         string                mOrigTradeId;               MamdaFieldState  mOrigTradeIdFieldState;
         bool                  mGenericFlag;               MamdaFieldState  mGenericFlagFieldState;
@@ -128,40 +128,40 @@ namespace Wombat
         // caching these values is to allow a configuration that passes
         // the minimum amount of data  (unchanged fields not sent).
         mama_seqnum_t         mEventSeqNum;               MamdaFieldState  mEventSeqNumFieldState;
-        MamaDateTime          mEventTime;                 MamdaFieldState  mEventTimeFieldState;  
-        MamaPrice             mTradePrice;                MamdaFieldState  mTradePriceFieldState; 
+        MamaDateTime          mEventTime;                 MamdaFieldState  mEventTimeFieldState;
+        MamaPrice             mTradePrice;                MamdaFieldState  mTradePriceFieldState;
         mama_quantity_t       mTradeVolume;               MamdaFieldState  mTradeVolumeFieldState;
         string                mTradePartId;               MamdaFieldState  mTradePartIdFieldState;
-        string                mTradeQualStr;              MamdaFieldState  mTradeQualStrFieldState; 
+        string                mTradeQualStr;              MamdaFieldState  mTradeQualStrFieldState;
         string                mTradeQualNativeStr;        MamdaFieldState  mTradeQualNativeStrFieldState;
-        mama_u32_t            mSellersSaleDays;           MamdaFieldState  mSellersSaleDaysFieldState; 
+        mama_u32_t            mSellersSaleDays;           MamdaFieldState  mSellersSaleDaysFieldState;
         char                  mStopStockInd;              MamdaFieldState  mStopStockIndFieldState;
         mama_u32_t            mTmpTradeCount;             MamdaFieldState  mTmpTradeCountFieldState;
         MamdaTradeExecVenue   mTradeExecVenue;            MamdaFieldState  mTradeExecVenueFieldState;
 
         // Additional fields for cancels/error/corrections:
-        bool                  mIsCancel;                  
+        bool                  mIsCancel;
         mama_seqnum_t         mOrigSeqNum;                MamdaFieldState  mOrigSeqNumFieldState;
-        MamaPrice             mOrigPrice;                 MamdaFieldState  mOrigPriceFieldState; 
+        MamaPrice             mOrigPrice;                 MamdaFieldState  mOrigPriceFieldState;
         mama_quantity_t       mOrigVolume;                MamdaFieldState  mOrigVolumeFieldState;
         string                mOrigPartId;                MamdaFieldState  mOrigPartIdFieldState;
         string                mOrigQualStr;               MamdaFieldState  mOrigQualStrFieldState;
         string                mOrigQualNativeStr;         MamdaFieldState  mOrigQualNativeStrFieldState;
         mama_u32_t            mOrigSellersSaleDays;       MamdaFieldState  mOrigSellersSaleDaysFieldState;
-        char                  mOrigStopStockInd;          MamdaFieldState  mOrigStopStockIndFieldState; 
-        MamaPrice             mCorrPrice;                 MamdaFieldState  mCorrPriceFieldState; 
-        mama_quantity_t       mCorrVolume;                MamdaFieldState  mCorrVolumeFieldState; 
-        string                mCorrPartId;                MamdaFieldState  mCorrPartIdFieldState; 
+        char                  mOrigStopStockInd;          MamdaFieldState  mOrigStopStockIndFieldState;
+        MamaPrice             mCorrPrice;                 MamdaFieldState  mCorrPriceFieldState;
+        mama_quantity_t       mCorrVolume;                MamdaFieldState  mCorrVolumeFieldState;
+        string                mCorrPartId;                MamdaFieldState  mCorrPartIdFieldState;
         string                mCorrQualStr;               MamdaFieldState  mCorrQualStrFieldState;
         string                mCorrQualNativeStr;         MamdaFieldState  mCorrQualNativeStrFieldState;
         mama_u32_t            mCorrSellersSaleDays;       MamdaFieldState  mCorrSellersSaleDaysFieldState;
         char                  mCorrStopStockInd;          MamdaFieldState  mCorrStopStockIndFieldState;
         MamaDateTime          mCancelTime;                MamdaFieldState  mCancelTimeFieldState;
         MamaDateTime          mCorrTime;                  MamdaFieldState  mCorrTimeFieldState;
-        char                  mShortSaleCircuitBreaker;   MamdaFieldState  mShortSaleCircuitBreakerFieldState;  
-        char                  mOrigShortSaleCircuitBreaker;   MamdaFieldState  mOrigShortSaleCircuitBreakerFieldState;  
-        char                  mCorrShortSaleCircuitBreaker;   MamdaFieldState  mCorrShortSaleCircuitBreakerFieldState;  
-        
+        char                  mShortSaleCircuitBreaker;   MamdaFieldState  mShortSaleCircuitBreakerFieldState;
+        char                  mOrigShortSaleCircuitBreaker;   MamdaFieldState  mOrigShortSaleCircuitBreakerFieldState;
+        char                  mCorrShortSaleCircuitBreaker;   MamdaFieldState  mCorrShortSaleCircuitBreakerFieldState;
+
 
         // Additional fields for gaps:
         mama_seqnum_t         mGapBegin;                  MamdaFieldState  mGapBeginFieldState;
@@ -237,7 +237,7 @@ namespace Wombat
         MamdaTradeListener&   mListener;
         MamdaTradeHandler*    mHandler;
 
-        // Message Qualifier - holds information provides in formation 
+        // Message Qualifier - holds information provides in formation
         // regarding duplicate and delayed status of message.
         MamaMsgQual    mMsgQual;          MamdaFieldState mMsgQualFieldState;
 
@@ -247,24 +247,24 @@ namespace Wombat
         // persist during to next update.
         bool           mProcessPosDupAndOutOfSeqAsTransient;
 
-        // If mResolvePossiblyDuplicate is set then the listen will atempt, 
+        // If mResolvePossiblyDuplicate is set then the listen will atempt,
         // based upon sequence number and event times, to determine whether
         // a trade marked as "possibly duplicate" is definately a duplicate,
         // in which case it is dropped.
         bool           mResolvePossiblyDuplicate;
 
 
-        // The mUsePosDupAndOutOfSeqHandlers is used to determine whether or not the 
+        // The mUsePosDupAndOutOfSeqHandlers is used to determine whether or not the
         // duplicate and out of sequence handlers should be invoked for a message
         bool           mUsePosDupAndOutOfSeqHandlers;
 
-        // Used to record whether or not a message has been 
+        // Used to record whether or not a message has been
         // determined to be transient.
         bool           mIsTransientMsg;
 
         // The Quote Listener Data Caches
         TradeCache     mRegularCache;     // Regular update cache
-        TradeCache*    mTransientCache;   // Transient cache 
+        TradeCache*    mTransientCache;   // Transient cache
         TradeCache&    mTradeCache;       // Current cache in use
         bool           mIgnoreUpdate;
 
@@ -372,10 +372,12 @@ namespace Wombat
         struct FieldUpdateSettleDate;
         struct FieldUpdateOffExchangeTradePrice;
         struct FieldUpdateOnExchangeTradePrice;
+        struct FieldUpdateTradeId;
+        struct FieldUpdateOrigTradeId;
         struct FieldUpdateGenericFlag;
-        struct FieldUpdateShortSaleCircuitBreaker;    
-        struct FieldUpdateOrigShortSaleCircuitBreaker;    
-        struct FieldUpdateCorrShortSaleCircuitBreaker;    
+        struct FieldUpdateShortSaleCircuitBreaker;
+        struct FieldUpdateOrigShortSaleCircuitBreaker;
+        struct FieldUpdateCorrShortSaleCircuitBreaker;
     };
 
 
@@ -388,8 +390,8 @@ namespace Wombat
     MamdaTradeListener::~MamdaTradeListener()
     {
         wthread_mutex_destroy (&mImpl.mTradeUpdateLock.mTradeUpdateLockMutex);
-	    /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.  
-	       If we do, it will not be initialized again if another listener is created 
+	    /* Do not call wthread_mutex_destroy for the FieldUpdaterLockMutex here.
+	       If we do, it will not be initialized again if another listener is created
 	       after the first is destroyed. */
         /* wthread_mutex_destroy (&mImpl.mTradeFieldUpdaterLockMutex); */
         delete &mImpl;
@@ -926,7 +928,7 @@ namespace Wombat
     }
 
     MamdaFieldState MamdaTradeListener::getPubIdFieldState() const
-    {  
+    {
         return mImpl.mTradeCache.mPubIdFieldState;
     }
 
@@ -1387,7 +1389,7 @@ namespace Wombat
         }
 
         mImpl.mTradeCache.mIsSnapshot = false;
-        
+
         switch (msgType)
         {
             case MAMA_MSG_TYPE_SNAPSHOT:
@@ -1453,7 +1455,7 @@ namespace Wombat
         tradeCache.mPrevCloseDate.clear();
         tradeCache.mAdjPrevClose.clear();
         tradeCache.mTradeCount               = 0;
-        tradeCache.mTmpSide                  = TRADE_SIDE_UNKNOWN;    
+        tradeCache.mTmpSide                  = TRADE_SIDE_UNKNOWN;
         tradeCache.mSide                     = "";
         tradeCache.mBlockVolume              = 0;
         tradeCache.mBlockCount               = 0;
@@ -1511,8 +1513,8 @@ namespace Wombat
         tradeCache.mGotTradeSize             = false;
         tradeCache.mGotTradeCount            = false;
         tradeCache.mLastGenericMsgWasTrade   = false;
-        tradeCache.mUniqueId                 = "";   
-        tradeCache.mCorrTradeId              = "";   
+        tradeCache.mUniqueId                 = "";
+        tradeCache.mCorrTradeId              = "";
         tradeCache.mTradeAction              = "";
         tradeCache.mTradeExecVenue           = TRADE_EXEC_VENUE_UNKNOWN;
         tradeCache.mIsSnapshot               = false;
@@ -1578,15 +1580,15 @@ namespace Wombat
         tradeCache.mLowSeqNumFieldState             = NOT_INITIALISED;
         tradeCache.mTotalVolumeSeqNumFieldState     = NOT_INITIALISED;
         tradeCache.mCurrencyCodeFieldState          = NOT_INITIALISED;
-        tradeCache.mUniqueIdFieldState              = NOT_INITIALISED;  
+        tradeCache.mUniqueIdFieldState              = NOT_INITIALISED;
         tradeCache.mCorrTradeIdFieldState           = NOT_INITIALISED;
         tradeCache.mTradeActionFieldState           = NOT_INITIALISED;
         tradeCache.mSettlePriceFieldState           = NOT_INITIALISED;
         tradeCache.mSettleDateFieldState            = NOT_INITIALISED;
         tradeCache.mOffExchangeTradePriceFieldState = NOT_INITIALISED;
-        tradeCache.mOnExchangeTradePriceFieldState  = NOT_INITIALISED; 
+        tradeCache.mOnExchangeTradePriceFieldState  = NOT_INITIALISED;
         tradeCache.mEventSeqNumFieldState           = NOT_INITIALISED;
-        tradeCache.mEventTimeFieldState             = NOT_INITIALISED; 
+        tradeCache.mEventTimeFieldState             = NOT_INITIALISED;
         tradeCache.mTradePriceFieldState            = NOT_INITIALISED;
         tradeCache.mTradeVolumeFieldState           = NOT_INITIALISED;
         tradeCache.mTradePartIdFieldState           = NOT_INITIALISED;
@@ -1598,7 +1600,7 @@ namespace Wombat
         tradeCache.mTradeExecVenueFieldState        = NOT_INITIALISED;
         tradeCache.mGapBeginFieldState              = NOT_INITIALISED;
         tradeCache.mGapEndFieldState                = NOT_INITIALISED;
-        
+
         tradeCache.mOrigSeqNumFieldState            = NOT_INITIALISED;
         tradeCache.mOrigPriceFieldState             = NOT_INITIALISED;
         tradeCache.mOrigVolumeFieldState            = NOT_INITIALISED;
@@ -1626,274 +1628,274 @@ namespace Wombat
 
     void MamdaTradeListener::MamdaTradeListenerImpl::updateFieldStates()
     {
-        if (mTradeCache.mSymbolFieldState == MODIFIED)        
+        if (mTradeCache.mSymbolFieldState == MODIFIED)
             mTradeCache.mSymbolFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mPartIdFieldState == MODIFIED)        
-            mTradeCache.mPartIdFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mPartIdFieldState == MODIFIED)
+            mTradeCache.mPartIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mSrcTimeFieldState == MODIFIED)       
-            mTradeCache.mSrcTimeFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mSrcTimeFieldState == MODIFIED)
+            mTradeCache.mSrcTimeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mActTimeFieldState == MODIFIED)       
-            mTradeCache.mActTimeFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mActTimeFieldState == MODIFIED)
+            mTradeCache.mActTimeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mLineTimeFieldState == MODIFIED)      
+        if (mTradeCache.mLineTimeFieldState == MODIFIED)
             mTradeCache.mLineTimeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mSendTimeFieldState == MODIFIED)      
+        if (mTradeCache.mSendTimeFieldState == MODIFIED)
             mTradeCache.mSendTimeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mPubIdFieldState == MODIFIED)         
-            mTradeCache.mPubIdFieldState = NOT_MODIFIED;   
+        if (mTradeCache.mPubIdFieldState == MODIFIED)
+            mTradeCache.mPubIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mIsIrregularFieldState == MODIFIED)   
-            mTradeCache.mIsIrregularFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mIsIrregularFieldState == MODIFIED)
+            mTradeCache.mIsIrregularFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mWasIrregularFieldState == MODIFIED)  
+        if (mTradeCache.mWasIrregularFieldState == MODIFIED)
             mTradeCache.mWasIrregularFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mLastPriceFieldState == MODIFIED)     
-            mTradeCache.mLastPriceFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mLastPriceFieldState == MODIFIED)
+            mTradeCache.mLastPriceFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mLastVolumeFieldState == MODIFIED)    
+        if (mTradeCache.mLastVolumeFieldState == MODIFIED)
             mTradeCache.mLastVolumeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mLastPartIdFieldState == MODIFIED)    
+        if (mTradeCache.mLastPartIdFieldState == MODIFIED)
             mTradeCache.mLastPartIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mLastTimeFieldState == MODIFIED)      
-            mTradeCache.mLastTimeFieldState = NOT_MODIFIED;   
+        if (mTradeCache.mLastTimeFieldState == MODIFIED)
+            mTradeCache.mLastTimeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradeDateFieldState == MODIFIED)     
-            mTradeCache.mTradeDateFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mTradeDateFieldState == MODIFIED)
+            mTradeCache.mTradeDateFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mSideFieldState == MODIFIED)     
-            mTradeCache.mSideFieldState = NOT_MODIFIED;    
-     
-        if (mTradeCache.mIrregPriceFieldState == MODIFIED)      
-            mTradeCache.mIrregPriceFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mSideFieldState == MODIFIED)
+            mTradeCache.mSideFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mIrregVolumeFieldState == MODIFIED)   
-            mTradeCache.mIrregVolumeFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mIrregPriceFieldState == MODIFIED)
+            mTradeCache.mIrregPriceFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mIrregPartIdFieldState == MODIFIED)   
-            mTradeCache.mIrregPartIdFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mIrregVolumeFieldState == MODIFIED)
+            mTradeCache.mIrregVolumeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mIrregTimeFieldState == MODIFIED)     
-            mTradeCache.mIrregTimeFieldState = NOT_MODIFIED;   
+        if (mTradeCache.mIrregPartIdFieldState == MODIFIED)
+            mTradeCache.mIrregPartIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mAccVolumeFieldState == MODIFIED)       
-            mTradeCache.mAccVolumeFieldState = NOT_MODIFIED;  
-     
+        if (mTradeCache.mIrregTimeFieldState == MODIFIED)
+            mTradeCache.mIrregTimeFieldState = NOT_MODIFIED;
+
+        if (mTradeCache.mAccVolumeFieldState == MODIFIED)
+            mTradeCache.mAccVolumeFieldState = NOT_MODIFIED;
+
         if (mTradeCache.mOffExAccVolumeFieldState == MODIFIED)
             mTradeCache.mOffExAccVolumeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOnExAccVolumeFieldState == MODIFIED)   
-            mTradeCache.mOnExAccVolumeFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mOnExAccVolumeFieldState == MODIFIED)
+            mTradeCache.mOnExAccVolumeFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mTradeDirectionFieldState == MODIFIED)
             mTradeCache.mTradeDirectionFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mNetChangeFieldState == MODIFIED)     
-            mTradeCache.mNetChangeFieldState = NOT_MODIFIED;    
-     
-        if (mTradeCache.mPctChangeFieldState == MODIFIED)     
+        if (mTradeCache.mNetChangeFieldState == MODIFIED)
+            mTradeCache.mNetChangeFieldState = NOT_MODIFIED;
+
+        if (mTradeCache.mPctChangeFieldState == MODIFIED)
             mTradeCache.mPctChangeFieldState = NOT_MODIFIED;
-         
-        if (mTradeCache.mOpenPriceFieldState == MODIFIED)     
-            mTradeCache.mOpenPriceFieldState = NOT_MODIFIED; 
-        
-        if (mTradeCache.mHighPriceFieldState == MODIFIED)     
-            mTradeCache.mHighPriceFieldState = NOT_MODIFIED;  
-       
-        if (mTradeCache.mLowPriceFieldState == MODIFIED)      
-            mTradeCache.mLowPriceFieldState = NOT_MODIFIED; 
-         
-        if (mTradeCache.mClosePriceFieldState == MODIFIED)    
-            mTradeCache.mClosePriceFieldState = NOT_MODIFIED;  
-      
+
+        if (mTradeCache.mOpenPriceFieldState == MODIFIED)
+            mTradeCache.mOpenPriceFieldState = NOT_MODIFIED;
+
+        if (mTradeCache.mHighPriceFieldState == MODIFIED)
+            mTradeCache.mHighPriceFieldState = NOT_MODIFIED;
+
+        if (mTradeCache.mLowPriceFieldState == MODIFIED)
+            mTradeCache.mLowPriceFieldState = NOT_MODIFIED;
+
+        if (mTradeCache.mClosePriceFieldState == MODIFIED)
+            mTradeCache.mClosePriceFieldState = NOT_MODIFIED;
+
         if (mTradeCache.mPrevClosePriceFieldState == MODIFIED)
             mTradeCache.mPrevClosePriceFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mPrevCloseDateFieldState == MODIFIED) 
-            mTradeCache.mPrevCloseDateFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mPrevCloseDateFieldState == MODIFIED)
+            mTradeCache.mPrevCloseDateFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mAdjPrevCloseFieldState == MODIFIED)  
-            mTradeCache.mAdjPrevCloseFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mAdjPrevCloseFieldState == MODIFIED)
+            mTradeCache.mAdjPrevCloseFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradeCountFieldState == MODIFIED)    
-            mTradeCache.mTradeCountFieldState = NOT_MODIFIED;    
+        if (mTradeCache.mTradeCountFieldState == MODIFIED)
+            mTradeCache.mTradeCountFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mBlockVolumeFieldState == MODIFIED)   
-            mTradeCache.mBlockVolumeFieldState = NOT_MODIFIED;   
+        if (mTradeCache.mBlockVolumeFieldState == MODIFIED)
+            mTradeCache.mBlockVolumeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mBlockCountFieldState == MODIFIED)    
+        if (mTradeCache.mBlockCountFieldState == MODIFIED)
             mTradeCache.mBlockCountFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mVwapFieldState == MODIFIED)          
-            mTradeCache.mVwapFieldState = NOT_MODIFIED;  
-        
-        if (mTradeCache.mOffExVwapFieldState == MODIFIED)     
-            mTradeCache.mOffExVwapFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mVwapFieldState == MODIFIED)
+            mTradeCache.mVwapFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOnExVwapFieldState == MODIFIED)      
-            mTradeCache.mOnExVwapFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mOffExVwapFieldState == MODIFIED)
+            mTradeCache.mOffExVwapFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTotalValueFieldState == MODIFIED)    
+        if (mTradeCache.mOnExVwapFieldState == MODIFIED)
+            mTradeCache.mOnExVwapFieldState = NOT_MODIFIED;
+
+        if (mTradeCache.mTotalValueFieldState == MODIFIED)
             mTradeCache.mTotalValueFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mOffExTotalValueFieldState == MODIFIED)
             mTradeCache.mOffExTotalValueFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOnExTotalValueFieldState == MODIFIED) 
-            mTradeCache.mOnExTotalValueFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mOnExTotalValueFieldState == MODIFIED)
+            mTradeCache.mOnExTotalValueFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mStdDevFieldState == MODIFIED)    
-            mTradeCache.mStdDevFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mStdDevFieldState == MODIFIED)
+            mTradeCache.mStdDevFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrderIdFieldState == MODIFIED)   
+        if (mTradeCache.mOrderIdFieldState == MODIFIED)
             mTradeCache.mOrderIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mStdDevSumFieldState == MODIFIED)      
-            mTradeCache.mStdDevSumFieldState = NOT_MODIFIED;    
-      
-        if (mTradeCache.mStdDevSumSquaresFieldState == MODIFIED)   
+        if (mTradeCache.mStdDevSumFieldState == MODIFIED)
+            mTradeCache.mStdDevSumFieldState = NOT_MODIFIED;
+
+        if (mTradeCache.mStdDevSumSquaresFieldState == MODIFIED)
             mTradeCache.mStdDevSumSquaresFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradeUnitsFieldState == MODIFIED)          
-            mTradeCache.mTradeUnitsFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mTradeUnitsFieldState == MODIFIED)
+            mTradeCache.mTradeUnitsFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mLastSeqNumFieldState == MODIFIED)      
-            mTradeCache.mLastSeqNumFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mLastSeqNumFieldState == MODIFIED)
+            mTradeCache.mLastSeqNumFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mHighSeqNumFieldState == MODIFIED)      
-            mTradeCache.mHighSeqNumFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mHighSeqNumFieldState == MODIFIED)
+            mTradeCache.mHighSeqNumFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mLowSeqNumFieldState == MODIFIED)       
-            mTradeCache.mLowSeqNumFieldState = NOT_MODIFIED;   
+        if (mTradeCache.mLowSeqNumFieldState == MODIFIED)
+            mTradeCache.mLowSeqNumFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mTotalVolumeSeqNumFieldState == MODIFIED)
-            mTradeCache.mTotalVolumeSeqNumFieldState = NOT_MODIFIED; 
+            mTradeCache.mTotalVolumeSeqNumFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCurrencyCodeFieldState == MODIFIED)        
-            mTradeCache.mCurrencyCodeFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mCurrencyCodeFieldState == MODIFIED)
+            mTradeCache.mCurrencyCodeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mUniqueIdFieldState == MODIFIED)         
-            mTradeCache.mUniqueIdFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mUniqueIdFieldState == MODIFIED)
+            mTradeCache.mUniqueIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradeIdFieldState == MODIFIED)         
+        if (mTradeCache.mTradeIdFieldState == MODIFIED)
             mTradeCache.mTradeIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCorrTradeIdFieldState == MODIFIED)         
+        if (mTradeCache.mCorrTradeIdFieldState == MODIFIED)
             mTradeCache.mCorrTradeIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrigTradeIdFieldState == MODIFIED)         
+        if (mTradeCache.mOrigTradeIdFieldState == MODIFIED)
             mTradeCache.mOrigTradeIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradeActionFieldState == MODIFIED)      
-            mTradeCache.mTradeActionFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mTradeActionFieldState == MODIFIED)
+            mTradeCache.mTradeActionFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mSettlePriceFieldState == MODIFIED)      
-            mTradeCache.mSettlePriceFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mSettlePriceFieldState == MODIFIED)
+            mTradeCache.mSettlePriceFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mSettleDateFieldState == MODIFIED)       
-            mTradeCache.mSettleDateFieldState = NOT_MODIFIED;   
+        if (mTradeCache.mSettleDateFieldState == MODIFIED)
+            mTradeCache.mSettleDateFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mOffExchangeTradePriceFieldState == MODIFIED)
             mTradeCache.mOffExchangeTradePriceFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOnExchangeTradePriceFieldState == MODIFIED) 
-            mTradeCache.mOnExchangeTradePriceFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mOnExchangeTradePriceFieldState == MODIFIED)
+            mTradeCache.mOnExchangeTradePriceFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mEventSeqNumFieldState == MODIFIED)          
+        if (mTradeCache.mEventSeqNumFieldState == MODIFIED)
             mTradeCache.mEventSeqNumFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mEventTimeFieldState == MODIFIED)      
-            mTradeCache.mEventTimeFieldState = NOT_MODIFIED;  
+        if (mTradeCache.mEventTimeFieldState == MODIFIED)
+            mTradeCache.mEventTimeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradePriceFieldState == MODIFIED)     
-            mTradeCache.mTradePriceFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mTradePriceFieldState == MODIFIED)
+            mTradeCache.mTradePriceFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradeVolumeFieldState == MODIFIED)       
+        if (mTradeCache.mTradeVolumeFieldState == MODIFIED)
             mTradeCache.mTradeVolumeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradePartIdFieldState == MODIFIED)    
+        if (mTradeCache.mTradePartIdFieldState == MODIFIED)
             mTradeCache.mTradePartIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradeQualStrFieldState == MODIFIED)   
-            mTradeCache.mTradeQualStrFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mTradeQualStrFieldState == MODIFIED)
+            mTradeCache.mTradeQualStrFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mTradeQualNativeStrFieldState == MODIFIED)
             mTradeCache.mTradeQualNativeStrFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mSellersSaleDaysFieldState == MODIFIED)   
-            mTradeCache.mSellersSaleDaysFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mSellersSaleDaysFieldState == MODIFIED)
+            mTradeCache.mSellersSaleDaysFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mStopStockIndFieldState == MODIFIED)      
+        if (mTradeCache.mStopStockIndFieldState == MODIFIED)
             mTradeCache.mStopStockIndFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTmpTradeCountFieldState == MODIFIED)   
+        if (mTradeCache.mTmpTradeCountFieldState == MODIFIED)
             mTradeCache.mTmpTradeCountFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mTradeExecVenueFieldState == MODIFIED)   
+        if (mTradeCache.mTradeExecVenueFieldState == MODIFIED)
             mTradeCache.mTradeExecVenueFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrigSeqNumFieldState == MODIFIED)   
+        if (mTradeCache.mOrigSeqNumFieldState == MODIFIED)
             mTradeCache.mOrigSeqNumFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrigPriceFieldState == MODIFIED)     
-            mTradeCache.mOrigPriceFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mOrigPriceFieldState == MODIFIED)
+            mTradeCache.mOrigPriceFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrigVolumeFieldState == MODIFIED)    
+        if (mTradeCache.mOrigVolumeFieldState == MODIFIED)
             mTradeCache.mOrigVolumeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrigPartIdFieldState == MODIFIED)    
+        if (mTradeCache.mOrigPartIdFieldState == MODIFIED)
             mTradeCache.mOrigPartIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrigQualStrFieldState == MODIFIED)   
+        if (mTradeCache.mOrigQualStrFieldState == MODIFIED)
             mTradeCache.mOrigQualStrFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrigQualNativeStrFieldState == MODIFIED) 
+        if (mTradeCache.mOrigQualNativeStrFieldState == MODIFIED)
             mTradeCache.mOrigQualNativeStrFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrigSellersSaleDaysFieldState == MODIFIED)  
+        if (mTradeCache.mOrigSellersSaleDaysFieldState == MODIFIED)
             mTradeCache.mOrigSellersSaleDaysFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mOrigStopStockIndFieldState == MODIFIED)   
-            mTradeCache.mOrigStopStockIndFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mOrigStopStockIndFieldState == MODIFIED)
+            mTradeCache.mOrigStopStockIndFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCorrPriceFieldState == MODIFIED)          
-            mTradeCache.mCorrPriceFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mCorrPriceFieldState == MODIFIED)
+            mTradeCache.mCorrPriceFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCorrVolumeFieldState == MODIFIED)    
-            mTradeCache.mCorrVolumeFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mCorrVolumeFieldState == MODIFIED)
+            mTradeCache.mCorrVolumeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCorrPartIdFieldState == MODIFIED)     
-            mTradeCache.mCorrPartIdFieldState = NOT_MODIFIED; 
+        if (mTradeCache.mCorrPartIdFieldState == MODIFIED)
+            mTradeCache.mCorrPartIdFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCorrQualStrFieldState == MODIFIED)    
+        if (mTradeCache.mCorrQualStrFieldState == MODIFIED)
             mTradeCache.mCorrQualStrFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCorrQualNativeStrFieldState == MODIFIED) 
+        if (mTradeCache.mCorrQualNativeStrFieldState == MODIFIED)
             mTradeCache.mCorrQualNativeStrFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mCorrSellersSaleDaysFieldState == MODIFIED)
             mTradeCache.mCorrSellersSaleDaysFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCorrStopStockIndFieldState == MODIFIED)   
+        if (mTradeCache.mCorrStopStockIndFieldState == MODIFIED)
             mTradeCache.mCorrStopStockIndFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCorrTimeFieldState == MODIFIED)          
+        if (mTradeCache.mCorrTimeFieldState == MODIFIED)
             mTradeCache.mCorrTimeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mCancelTimeFieldState == MODIFIED)          
+        if (mTradeCache.mCancelTimeFieldState == MODIFIED)
             mTradeCache.mCancelTimeFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mGapBeginFieldState == MODIFIED)         
+        if (mTradeCache.mGapBeginFieldState == MODIFIED)
             mTradeCache.mGapBeginFieldState = NOT_MODIFIED;
 
-        if (mTradeCache.mGapEndFieldState == MODIFIED)         
+        if (mTradeCache.mGapEndFieldState == MODIFIED)
             mTradeCache.mGapEndFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mTradeIdFieldState == MODIFIED)
@@ -1906,27 +1908,27 @@ namespace Wombat
             mTradeCache.mGenericFlagFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mShortSaleCircuitBreakerFieldState == MODIFIED)
-            mTradeCache.mShortSaleCircuitBreakerFieldState = NOT_MODIFIED; 
+            mTradeCache.mShortSaleCircuitBreakerFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mOrigShortSaleCircuitBreakerFieldState == MODIFIED)
-            mTradeCache.mOrigShortSaleCircuitBreakerFieldState = NOT_MODIFIED; 
+            mTradeCache.mOrigShortSaleCircuitBreakerFieldState = NOT_MODIFIED;
 
         if (mTradeCache.mCorrShortSaleCircuitBreakerFieldState == MODIFIED)
-            mTradeCache.mCorrShortSaleCircuitBreakerFieldState = NOT_MODIFIED; 
+            mTradeCache.mCorrShortSaleCircuitBreakerFieldState = NOT_MODIFIED;
     }
-       
+
     void MamdaTradeListener::MamdaTradeListenerImpl::handleTradeMessage (
         MamdaSubscription*  subscription,
         const MamaMsg&      msg,
         short               msgType)
-    {   
+    {
         // Ensure that the field handling is set up (once for all
         // MamdaTradeListener instances).
 
         if (!mUpdatersComplete)
         {
             wthread_static_mutex_lock (&mTradeFieldUpdaterLockMutex);
-        
+
             if (!mUpdatersComplete)
             {
                 if (!MamdaTradeFields::isSet())
@@ -1937,7 +1939,7 @@ namespace Wombat
                      wthread_static_mutex_unlock (&mTradeFieldUpdaterLockMutex);
                      return;
                 }
-        
+
                 try
                 {
                     initFieldUpdaters ();
@@ -1952,14 +1954,14 @@ namespace Wombat
                 }
                 mUpdatersComplete = true;
             }
-        
+
             wthread_static_mutex_unlock (&mTradeFieldUpdaterLockMutex);
         }
-        
+
         // Determine if this message is a duplicate or a tranient record
         // which should not update the regular cache.
         bool isDuplicateMsg = evaluateMsgQual (subscription, msg);
-        
+
         if (!isDuplicateMsg)
         {
             if (mIsTransientMsg && mProcessPosDupAndOutOfSeqAsTransient)
@@ -1971,11 +1973,11 @@ namespace Wombat
                 }
                 mTradeCache = *mTransientCache;
             }
-        
+
             // Copy IsIrregular value as it needs to be reset for recaps
             mTradeCache.mWasIrregular = mTradeCache.mIsIrregular;
             mTradeCache.mWasIrregularFieldState = MODIFIED;
-        
+
             // Process fields in message:
             updateFieldStates ();
             updateTradeFields (msg);
@@ -2058,8 +2060,8 @@ namespace Wombat
             mMsgQual.setValue(msgQualVal);
 
             // If qualifier indicates messages is possbily duplicate
-            // and the listener has been configure to attempt to 
-            // resolve the ambiguity regarding the duplicate 
+            // and the listener has been configure to attempt to
+            // resolve the ambiguity regarding the duplicate
             // status of the message.
             if (mMsgQual.getIsPossiblyDuplicate() && mResolvePossiblyDuplicate)
             {
@@ -2067,13 +2069,13 @@ namespace Wombat
                 MamaDateTime  eventTime;
 
                 if (msg.tryU32 (MamdaTradeFields::TRADE_SEQNUM, seqNum) &&
-                    msg.tryDateTime (MamdaTradeFields::TRADE_TIME, eventTime)) 
+                    msg.tryDateTime (MamdaTradeFields::TRADE_TIME, eventTime))
                 {
                     // Only make a determination as to wheither or
                     // not a PossiblyDuplicate msg is an actual duplicate
-                    // if the msg contains both a sequence number 
+                    // if the msg contains both a sequence number
                     // and event time.
-                    if ((seqNum < mRegularCache.mEventSeqNum) && 
+                    if ((seqNum < mRegularCache.mEventSeqNum) &&
                         (eventTime < mRegularCache.mEventTime))
                     {
                         mMsgQual.setIsDefinatelyDuplicate (true);
@@ -2084,10 +2086,10 @@ namespace Wombat
 
             if (!(isDuplicateMsg = mMsgQual.getIsDefinatelyDuplicate()))
             {
-                // If the message is possibly a duplicate or is 
+                // If the message is possibly a duplicate or is
                 // out of sequence then is does not (on the whole)
                 // qualify to update the regular record cache.
-                mIsTransientMsg = (mMsgQual.getIsOutOfSequence() || 
+                mIsTransientMsg = (mMsgQual.getIsOutOfSequence() ||
                                    mMsgQual.getIsPossiblyDuplicate());
             }
         }
@@ -2119,9 +2121,9 @@ namespace Wombat
             }
             else
             {
-                mHandler->onTradeRecap (subscription, 
-                                        mListener, 
-                                        msg, 
+                mHandler->onTradeRecap (subscription,
+                                        mListener,
+                                        msg,
                                         mListener);
             }
         }
@@ -2159,10 +2161,10 @@ namespace Wombat
             }
             else
             {
-                mHandler->onTradeReport (subscription, 
-                                         mListener, 
-                                         msg, 
-                                         mListener, 
+                mHandler->onTradeReport (subscription,
+                                         mListener,
+                                         msg,
+                                         mListener,
                                          mListener);
             }
         }
@@ -2210,10 +2212,10 @@ namespace Wombat
             }
             else
             {
-                mHandler->onTradeCancelOrError (subscription, 
-                                                mListener, 
-                                                msg, 
-                                                mListener, 
+                mHandler->onTradeCancelOrError (subscription,
+                                                mListener,
+                                                msg,
+                                                mListener,
                                                 mListener);
             }
         }
@@ -2257,10 +2259,10 @@ namespace Wombat
             }
             else
             {
-                mHandler->onTradeCorrection (subscription, 
-                                             mListener, 
-                                             msg, 
-                                             mListener, 
+                mHandler->onTradeCorrection (subscription,
+                                             mListener,
+                                             msg,
+                                             mListener,
                                              mListener);
             }
         }
@@ -2290,10 +2292,10 @@ namespace Wombat
             }
             else
             {
-                mHandler->onTradeClosing (subscription, 
-                                          mListener, 
-                                          msg, 
-                                          mListener, 
+                mHandler->onTradeClosing (subscription,
+                                          mListener,
+                                          msg,
+                                          mListener,
                                           mListener);
             }
         }
@@ -2322,7 +2324,7 @@ namespace Wombat
                            contractSymbol,
                            subscription->getSource (),
                            subscription->getSymbol (),
-                           mTradeCache.mTradeCount, 
+                           mTradeCache.mTradeCount,
                            mTradeCache.mTmpTradeCount);
         }
 
@@ -2339,10 +2341,10 @@ namespace Wombat
                 {
                     /* We just received a new sequential trade -
                        but not marked as a trade. */
-                    mHandler->onTradeReport (subscription, 
-                                             mListener, 
+                    mHandler->onTradeReport (subscription,
+                                             mListener,
                                              msg,
-                                             mListener, 
+                                             mListener,
                                              mListener);
                 }
             }
@@ -2357,19 +2359,19 @@ namespace Wombat
          if (mMsgQual.getIsOutOfSequence())
          {
              handled = true;
-             mHandler->onTradeOutOfSequence (subscription, 
-                                             mListener, 
-                                             msg, 
-                                             mListener, 
+             mHandler->onTradeOutOfSequence (subscription,
+                                             mListener,
+                                             msg,
+                                             mListener,
                                              mListener);
          }
          if (mMsgQual.getIsPossiblyDuplicate())
          {
              handled = true;
-             mHandler->onTradePossiblyDuplicate (subscription, 
-                                                 mListener, 
-                                                 msg, 
-                                                 mListener, 
+             mHandler->onTradePossiblyDuplicate (subscription,
+                                                 mListener,
+                                                 msg,
+                                                 mListener,
                                                  mListener);
          }
          if (!handled)
@@ -2395,13 +2397,13 @@ namespace Wombat
 
         getSymbolAndPartId (msg, symbol, partId);
 
-        if (symbol) 
+        if (symbol)
         {
           mTradeCache.mSymbol           = symbol;
           mTradeCache.mSymbolFieldState = MODIFIED;
-        }      
+        }
 
-        if (partId) 
+        if (partId)
         {
           mTradeCache.mPartId           = partId;
           mTradeCache.mPartIdFieldState = MODIFIED;
@@ -2511,7 +2513,7 @@ namespace Wombat
 
         if (checkForGap && mTradeCache.mGotTradeCount)
         {
-            if ((mTradeCache.mTradeCount > 0) && 
+            if ((mTradeCache.mTradeCount > 0) &&
                 (tradeCount > (mTradeCache.mTradeCount+conflateCount)))
             {
                 mTradeCache.mGapBegin   = mTradeCache.mTradeCount+conflateCount;
@@ -2535,16 +2537,16 @@ namespace Wombat
                                        subscription->getSymbol (),
                                        contractSymbol);
                     }
-                    mHandler->onTradeGap (subscription, 
-                                          mListener, 
+                    mHandler->onTradeGap (subscription,
+                                          mListener,
                                           msg,
-                                          mListener, 
+                                          mListener,
                                           mListener);
                 }
             }
         }
 
-        /* Check for duplicates.  Only check if the trade count is in the latest message */ 
+        /* Check for duplicates.  Only check if the trade count is in the latest message */
         if (mTradeCache.mGotTradeCount &&
             tradeCount > 0
             && (tradeCount == mTradeCache.mTradeCount) )
@@ -2600,7 +2602,7 @@ namespace Wombat
         return TRADE_EXEC_VENUE_UNKNOWN;
     }
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLastPrice 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLastPrice
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2616,7 +2618,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLastVolume 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLastVolume
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2632,7 +2634,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLastPartId 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLastPartId
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2647,7 +2649,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLastTime 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLastTime
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2677,10 +2679,10 @@ namespace Wombat
 
     struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeSide
         : public TradeFieldUpdate
-    {      
+    {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
                        const MamaMsgField&                          field)
-        {  
+        {
 	     	switch (field.getType())
 		    {
 			    case MAMA_FIELD_TYPE_I8:
@@ -2689,12 +2691,12 @@ namespace Wombat
 			    case MAMA_FIELD_TYPE_U16:
 			    case MAMA_FIELD_TYPE_I32:
 			    case MAMA_FIELD_TYPE_U32:
-				    impl.mTradeCache.mSide.assign (toString ((MamdaTradeSide) field.getU32()));              
-				    impl.mTradeCache.mSideFieldState = MODIFIED; 
+				    impl.mTradeCache.mSide.assign (toString ((MamdaTradeSide) field.getU32()));
+				    impl.mTradeCache.mSideFieldState = MODIFIED;
                     break;
 			    case MAMA_FIELD_TYPE_STRING:
 				    impl.mTradeCache.mSide = field.getString();
-				    impl.mTradeCache.mSideFieldState = MODIFIED; 
+				    impl.mTradeCache.mSideFieldState = MODIFIED;
                     break;
 			    default:
 				    break;
@@ -2707,14 +2709,14 @@ namespace Wombat
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
                        const MamaMsgField&                          field)
-        {  
+        {
 		    impl.mTradeCache.mSide.clear();
             impl.mTradeCache.mSide.push_back(field.getChar());
-            impl.mTradeCache.mSideFieldState = MODIFIED;         
+            impl.mTradeCache.mSideFieldState = MODIFIED;
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeQualifier 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeQualifier
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2725,7 +2727,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeQualifierNative 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeQualifierNative
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2736,7 +2738,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateSellersSaleDays 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateSellersSaleDays
         : public TradeFieldUpdate
     {
 
@@ -2748,7 +2750,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateStopStockInd 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateStopStockInd
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2772,7 +2774,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIsIrregular 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIsIrregular
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2783,7 +2785,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIrregPrice 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIrregPrice
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2802,7 +2804,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIrregVolume 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIrregVolume
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2821,7 +2823,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIrregPartId 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIrregPartId
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2839,7 +2841,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIrregTime 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateIrregTime
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2858,7 +2860,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrderId 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrderId
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2869,7 +2871,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeSrcTime 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeSrcTime
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2880,7 +2882,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeActTime 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeActTime
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2903,7 +2905,7 @@ namespace Wombat
     };
 
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeLineTime 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeLineTime
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2914,7 +2916,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradePubId 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradePubId
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2925,7 +2927,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeEventSeqNum 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeEventSeqNum
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2936,7 +2938,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTmpTradeCount 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTmpTradeCount
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2948,7 +2950,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateAccVolume 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateAccVolume
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2959,7 +2961,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOffExAccVolume 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOffExAccVolume
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2970,7 +2972,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOnExAccVolume 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOnExAccVolume
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2981,7 +2983,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeDirection 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTradeDirection
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -2992,7 +2994,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOpenPrice 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOpenPrice
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3003,7 +3005,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateHighPrice 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateHighPrice
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3014,7 +3016,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLowPrice 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLowPrice
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3025,7 +3027,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateNetChange 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateNetChange
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3036,7 +3038,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdatePctChange 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdatePctChange
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3047,7 +3049,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateBlockCount 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateBlockCount
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3058,7 +3060,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateBlockVolume 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateBlockVolume
         : public TradeFieldUpdate
     {
 
@@ -3070,7 +3072,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateVwap 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateVwap
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3103,7 +3105,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTotalValue 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateTotalValue
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3136,7 +3138,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateStdDev 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateStdDev
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3201,7 +3203,7 @@ namespace Wombat
             impl.mTradeCache.mHighSeqNumFieldState = MODIFIED;
         }
     };
-     
+
     struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateLowSeqNum
         : public TradeFieldUpdate
     {
@@ -3235,7 +3237,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateClosePrice 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateClosePrice
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3246,7 +3248,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdatePrevClosePrice 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdatePrevClosePrice
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3257,7 +3259,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdatePrevCloseDate 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdatePrevCloseDate
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3268,7 +3270,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateAdjPrevClose 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateAdjPrevClose
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3279,7 +3281,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigSeqNum 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigSeqNum
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3290,7 +3292,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigPrice 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigPrice
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3301,7 +3303,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigVolume 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigVolume
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3312,7 +3314,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigPartId 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigPartId
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3323,7 +3325,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigQualifier 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigQualifier
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3334,7 +3336,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigQualifierNative 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigQualifierNative
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3345,7 +3347,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigSaleDays 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigSaleDays
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3357,7 +3359,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigStopStockInd 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateOrigStopStockInd
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3381,7 +3383,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCancelTime 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCancelTime
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3392,7 +3394,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrPrice 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrPrice
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3403,7 +3405,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrVolume 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrVolume
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3414,7 +3416,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrPartId 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrPartId
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3425,7 +3427,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrQualifier 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrQualifier
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3436,7 +3438,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrQualifierNative 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrQualifierNative
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3447,7 +3449,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrSaleDays 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrSaleDays
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3458,7 +3460,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrStopStockInd 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrStopStockInd
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3482,7 +3484,7 @@ namespace Wombat
         }
     };
 
-    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrTime 
+    struct MamdaTradeListener::MamdaTradeListenerImpl::FieldUpdateCorrTime
         : public TradeFieldUpdate
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
@@ -3591,9 +3593,9 @@ namespace Wombat
             {
                 case MAMA_FIELD_TYPE_STRING:
                     impl.mTradeCache.mTradeId           = field.getString();
-                    impl.mTradeCache.mTradeIdFieldState = MODIFIED;            
+                    impl.mTradeCache.mTradeIdFieldState = MODIFIED;
                     break;
-                default: 
+                default:
                     char tradeId[64];
                     field.getAsString (tradeId, sizeof(tradeId));
                     impl.mTradeCache.mTradeId           = tradeId;
@@ -3613,9 +3615,9 @@ namespace Wombat
             {
                 case MAMA_FIELD_TYPE_STRING:
                     impl.mTradeCache.mOrigTradeId           = field.getString();
-                    impl.mTradeCache.mOrigTradeIdFieldState = MODIFIED;            
+                    impl.mTradeCache.mOrigTradeIdFieldState = MODIFIED;
                     break;
-                default: 
+                default:
                     char origTradeId[64];
                     field.getAsString (origTradeId, sizeof(origTradeId));
                     impl.mTradeCache.mOrigTradeId           = origTradeId;
@@ -3641,12 +3643,12 @@ namespace Wombat
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
                        const MamaMsgField&                          field)
-        {       
+        {
             if (field.getChar() != impl.mTradeCache.mShortSaleCircuitBreaker)
             {
                 impl.mTradeCache.mShortSaleCircuitBreaker           = field.getChar();
                 impl.mTradeCache.mShortSaleCircuitBreakerFieldState = MODIFIED;
-            } 
+            }
         }
     };
 
@@ -3655,12 +3657,12 @@ namespace Wombat
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
                        const MamaMsgField&                          field)
-        {       
+        {
             if (field.getChar() != impl.mTradeCache.mOrigShortSaleCircuitBreaker)
             {
                 impl.mTradeCache.mOrigShortSaleCircuitBreaker           = field.getChar();
                 impl.mTradeCache.mOrigShortSaleCircuitBreakerFieldState = MODIFIED;
-            } 
+            }
         }
     };
 
@@ -3669,12 +3671,12 @@ namespace Wombat
     {
         void onUpdate (MamdaTradeListener::MamdaTradeListenerImpl&  impl,
                        const MamaMsgField&                          field)
-        {       
+        {
             if (field.getChar() != impl.mTradeCache.mCorrShortSaleCircuitBreaker)
             {
                 impl.mTradeCache.mCorrShortSaleCircuitBreaker           = field.getChar();
                 impl.mTradeCache.mCorrShortSaleCircuitBreakerFieldState = MODIFIED;
-            } 
+            }
         }
     };
 
@@ -3694,7 +3696,7 @@ namespace Wombat
     {
         if (!mFieldUpdaters)
         {
-            mFieldUpdaters = 
+            mFieldUpdaters =
                 new TradeFieldUpdate* [MamdaTradeFields::getMaxFid() +1];
 
             mFieldUpdatersSize = MamdaTradeFields::getMaxFid();
@@ -3736,12 +3738,12 @@ namespace Wombat
 
         initFieldUpdater (MamdaTradeFields::TRADE_SIDE,
                           new MamdaTradeListener::
-                          MamdaTradeListenerImpl::FieldUpdateTradeSide); 
-      
+                          MamdaTradeListenerImpl::FieldUpdateTradeSide);
+
         initFieldUpdater (MamdaTradeFields::AGGRESSOR_SIDE,
                           new MamdaTradeListener::
-                          MamdaTradeListenerImpl::FieldUpdateAggressorSide); 
-            
+                          MamdaTradeListenerImpl::FieldUpdateAggressorSide);
+
         initFieldUpdater (MamdaTradeFields::TRADE_TIME,
                           new MamdaTradeListener::
                           MamdaTradeListenerImpl::FieldUpdateLastTime);
@@ -3976,8 +3978,8 @@ namespace Wombat
 
         initFieldUpdater (MamdaTradeFields::CORR_TRADE_ID,
                           new MamdaTradeListener::
-                          MamdaTradeListenerImpl::FieldUpdateCorrTradeId);   
-        
+                          MamdaTradeListenerImpl::FieldUpdateCorrTradeId);
+
         initFieldUpdater (MamdaTradeFields::TRADE_ID,
                           new MamdaTradeListener::
                           MamdaTradeListenerImpl::FieldUpdateTradeId);
@@ -4006,7 +4008,7 @@ namespace Wombat
                           new MamdaTradeListener::
                           MamdaTradeListenerImpl::FieldUpdateUniqueId);
 
-        initFieldUpdater (MamdaTradeFields::TRADE_ACTION, 
+        initFieldUpdater (MamdaTradeFields::TRADE_ACTION,
                           new MamdaTradeListener::
                           MamdaTradeListenerImpl::FieldUpdateTradeAction);
 
@@ -4036,15 +4038,15 @@ namespace Wombat
 
         initFieldUpdater (MamdaTradeFields::SHORT_SALE_CIRCUIT_BREAKER,
                           new MamdaTradeListener::
-                          MamdaTradeListenerImpl::FieldUpdateShortSaleCircuitBreaker); 
-               
+                          MamdaTradeListenerImpl::FieldUpdateShortSaleCircuitBreaker);
+
         initFieldUpdater (MamdaTradeFields::ORIG_SHORT_SALE_CIRCUIT_BREAKER,
                           new MamdaTradeListener::
-                          MamdaTradeListenerImpl::FieldUpdateOrigShortSaleCircuitBreaker);  
+                          MamdaTradeListenerImpl::FieldUpdateOrigShortSaleCircuitBreaker);
 
         initFieldUpdater (MamdaTradeFields::CORR_SHORT_SALE_CIRCUIT_BREAKER,
                           new MamdaTradeListener::
-                          MamdaTradeListenerImpl::FieldUpdateCorrShortSaleCircuitBreaker);               
+                          MamdaTradeListenerImpl::FieldUpdateCorrShortSaleCircuitBreaker);
     }
 
     void MamdaTradeListener::MamdaTradeListenerImpl::initFieldUpdater (
@@ -4156,13 +4158,13 @@ namespace Wombat
         }
 
         if (mTradeCache.mSide != rhs.mTradeCache.mSide)
-        {       
+        {
             char msg[256];
             snprintf (msg, 256, "different Side (%s != %s)",
                      mTradeCache.mSide.c_str(),
                      rhs.mTradeCache.mSide.c_str());
-            throw MamdaDataException (msg);      
-        }    
+            throw MamdaDataException (msg);
+        }
 
         if (mTradeCache.mIrregPrice != rhs.mTradeCache.mIrregPrice)
         {
@@ -4543,7 +4545,7 @@ namespace Wombat
         }
 
         if (mTradeCache.mTradeExecVenue != rhs.mTradeCache.mTradeExecVenue)
-        {   
+        {
             char msg[256];
             snprintf (msg, 256, "different TradeExecVenue (%s != %s)",
                       toString(mTradeCache.mTradeExecVenue),

@@ -237,6 +237,7 @@
     <ClCompile Include="windows\strptime.c" />
     <ClCompile Include="strutils.c" />
     <ClCompile Include="timers.c" />
+    <ClCompile Include="thread.c" />
     <ClCompile Include="wlock.c" />
     <ClCompile Include="wMessageStats.c" />
     <ClCompile Include="windows\wSemaphore.c" />

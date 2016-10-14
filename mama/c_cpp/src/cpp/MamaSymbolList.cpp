@@ -29,16 +29,16 @@
 
 using std::list;
 
-namespace Wombat 
+namespace Wombat
 {
 
     typedef list<MamaSymbolListMembershipHandler*>  MembershipHandlerList;
 
     struct MamaSymbolList::MamaSymbolListImpl
     {
-        MamaSymbolListImpl (MamaSymbolList &owner) 
-            : myClosure    (NULL) 
-            , myOwner      (owner) 
+        MamaSymbolListImpl (MamaSymbolList &owner)
+            : myClosure    (NULL)
+            , myOwner      (owner)
         {}
 
         void*                   myClosure;
@@ -60,11 +60,11 @@ namespace Wombat
             symbolList.removeMember (member);
         }
         virtual void onComplete (MamaSymbolList&        symbolList,
-                                 void*                  iterateClosure) 
+                                 void*                  iterateClosure)
         {}
     };
 
-    void 
+    void
     MamaSymbolList::MamaSymbolListImpl::invokeMemberAddHandlers (MamaSymbolListMember *member)
     {
         MembershipHandlerList::iterator end = myMembershipHandlers.end();
@@ -77,7 +77,7 @@ namespace Wombat
         }
     }
 
-    void 
+    void
     MamaSymbolList::MamaSymbolListImpl::invokeMemberRemoveHandlers (MamaSymbolListMember *member)
     {
         MembershipHandlerList::iterator end = myMembershipHandlers.end();
@@ -90,7 +90,7 @@ namespace Wombat
         }
     }
 
-    void 
+    void
     MamaSymbolList::MamaSymbolListImpl::invokeOrderChangeHandlers (void)
     {
         MembershipHandlerList::iterator end = myMembershipHandlers.end();
@@ -107,13 +107,13 @@ namespace Wombat
     {
 
         /**
-         * The add callback for the C API 
+         * The add callback for the C API
          */
-        static mama_status MAMACALLTYPE 
+        static mama_status MAMACALLTYPE
         addMemberHandler (mamaSymbolListMember member, void *closure)
         {
             MamaSymbolList::MamaSymbolListImpl *impl =
-                static_cast<MamaSymbolList::MamaSymbolListImpl*>(closure);  
+                static_cast<MamaSymbolList::MamaSymbolListImpl*>(closure);
 
             /**
              * Sets member's closure to be cppMember. We delete this in remove handler
@@ -122,7 +122,7 @@ namespace Wombat
 
             /* If added through C++ API closure will be cpp Wrapper */
             mamaSymbolListMember_getClosure (member, (void**)(&cppMember));
-            
+
             if (cppMember == NULL)
             {
                 /* has not been created yet (added through the C API) */
@@ -134,7 +134,7 @@ namespace Wombat
         }
 
         /**
-         * The remove callback for the C API 
+         * The remove callback for the C API
          */
         static mama_status MAMACALLTYPE
         removeMemberHandler (mamaSymbolListMember member, void *closure)
@@ -151,7 +151,7 @@ namespace Wombat
         }
 
         /**
-         * The orderChange callback for the C API 
+         * The orderChange callback for the C API
          */
         /*
         static mama_status MAMACALLTYPE
@@ -186,7 +186,7 @@ namespace Wombat
     {
         if (myPimpl != NULL)
         {
-            mamaSymbolList_deallocate (myList); 
+            mamaSymbolList_deallocate (myList);
             delete myPimpl;
         }
 
@@ -194,7 +194,7 @@ namespace Wombat
     }
 
     void MamaSymbolList::addMembershipHandler (MamaSymbolListMembershipHandler* handler)
-    { 
+    {
         myPimpl->myMembershipHandlers.push_back(handler);
     }
 
@@ -236,7 +236,7 @@ namespace Wombat
                                               source,
                                               transport,
                                               &cMemberImpl));
-        if (cMemberImpl)                                          
+        if (cMemberImpl)
         {
             //Note: the closure to the C implementation is the C++ object.
             MamaSymbolListMember* member = NULL;
@@ -253,7 +253,7 @@ namespace Wombat
     }
 
     void MamaSymbolList::removeMemberAll (void)
-    { 
+    {
         RemoveMemberIteratorHandler i;
         iterate (i);
     }
@@ -290,7 +290,7 @@ namespace Wombat
     {
         unsigned long size;
         mamaTry (mamaSymbolList_getSize (myList, &size));
-        return size;    
+        return size;
     }
 
     void MamaSymbolList::setClosure (void*   closure)
@@ -355,8 +355,8 @@ namespace Wombat
     void MamaSymbolList::iterate (MamaSymbolListIteratorHandler&  handler,
                                   void*                           iterateClosure)
     {
-        iteratorWrapperParams params (*this, 
-                                      handler, 
+        iteratorWrapperParams params (*this,
+                                      handler,
                                       iterateClosure);
 
         mamaSymbolList_iterate       (myList,

@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  *
- * 
- * mamalistencachedc - Example Mama API market data subscriber. 
+ *
+ * mamalistencachedc - Example Mama API market data subscriber.
  *
  * <pre>
  * Illustrates the following MAMA API features:
@@ -45,7 +45,7 @@
  * 3. Subscribing to top-of-book MSFT & ORCL from Island ITCH feed
  *    (specific fields):
  *
- *    mamalistencachedc -S ORDER -s MSFT.ISLD -s MSFT.ISLD wBidPrice wBidSize wAskPrice 
+ *    mamalistencachedc -S ORDER -s MSFT.ISLD -s MSFT.ISLD wBidPrice wBidSize wAskPrice
  *
  * 4. Subscribing to a list of symbols from a file (all fields) and
  *    report updates quietly (an additional -q would eliminate printing
@@ -105,7 +105,7 @@ NULL
  */
 typedef struct VerificationData
 {
-    /* The queue the subscription was created on. */    
+    /* The queue the subscription was created on. */
     mamaQueue m_queue;
 
     /* The symbol name. */
@@ -113,7 +113,7 @@ typedef struct VerificationData
 
     /* The timer being used to verify the data. */
     mamaTimer m_timer;
-    
+
     /* The index of the subscription/cache */
     int mIndex;
 
@@ -223,13 +223,13 @@ subscriptionOnQuality (mamaSubscription subsc,
                        void*            closure);
 
 static void MAMACALLTYPE
-subscriptionOnError (mamaSubscription    subscription, 
+subscriptionOnError (mamaSubscription    subscription,
                      mama_status         status,
                      void*               platformError,
                      const char*         subject,
                      void*               closure);
 static void MAMACALLTYPE
-subscriptionOnCreate (mamaSubscription    subscription, 
+subscriptionOnCreate (mamaSubscription    subscription,
                       void*               closure);
 
 static void displayFields       (mamaMsg             msg,
@@ -266,13 +266,13 @@ displayCb                  (const mamaMsg       msg,
 /*Callback for event queue high watermark monitoring.*/
 static void MAMACALLTYPE
 highWaterMarkCallback (mamaQueue     queue,
-                       size_t        size, 
+                       size_t        size,
                        void*         closure);
 
 /*Callback for event queue low watermark monitoring.*/
 static void MAMACALLTYPE
 lowWaterMarkCallback  (mamaQueue     queue,
-                       size_t        size, 
+                       size_t        size,
                        void*         closure);
 
 static void MAMACALLTYPE
@@ -282,7 +282,7 @@ shutdownTimerCallback(mamaTimer timer, void *closure)
 	mama_stop(gMamaBridge);
 }
 
-                        
+
 void usage                 (int                 exitStatus);
 
 
@@ -332,7 +332,7 @@ int main (int argc, const char **argv)
     }
 
     initializeMama ();
-   
+
     buildDataDictionary ();
     dumpDataDictionary ();
     loadSymbolMap ();
@@ -397,7 +397,7 @@ static void subscribeToSymbols (void)
     callbacks.onCreate  = subscriptionOnCreate;
     callbacks.onError   = subscriptionOnError;
     callbacks.onMsg     = subscriptionOnMsg;
-    callbacks.onQuality = subscriptionOnQuality;    
+    callbacks.onQuality = subscriptionOnQuality;
     callbacks.onGap     = NULL;
     callbacks.onRecapRequest = NULL;
     /*
@@ -406,9 +406,9 @@ static void subscribeToSymbols (void)
     */
     if ((gThreads > 0) && (gHasCreatedThreads == 0))
     {
-        gQueues      = (mamaQueue*)calloc 
+        gQueues      = (mamaQueue*)calloc
                             (gThreads, sizeof (mamaQueue));
-        gDispatchers = (mamaDispatcher*)calloc 
+        gDispatchers = (mamaDispatcher*)calloc
                             (gThreads, sizeof (mamaDispatcher));
 
         for (i = 0; i < gThreads; i++)
@@ -423,8 +423,8 @@ static void subscribeToSymbols (void)
 
             /*Set up queue monitors if specified.*/
             setQueueMonitors (gQueues[i], i);
-            
-            status = mamaDispatcher_create (&gDispatchers[i] , gQueues[i]); 
+
+            status = mamaDispatcher_create (&gDispatchers[i] , gQueues[i]);
 
             if (status != MAMA_STATUS_OK)
             {
@@ -439,16 +439,16 @@ static void subscribeToSymbols (void)
     for (i = 0; i < gNumSymbols; i++)
     {
         /*If there is more than one queue round robin accross them*/
-        mamaQueue queue = gQueues == 
+        mamaQueue queue = gQueues ==
                 NULL ? gMamaDefaultQueue : gQueues[i % gThreads];
 
         {
-        
+
             mamaSubscription_allocate (&gSubscriptionList[howMany]);
-    
+
             mamaSubscription_setTimeout (gSubscriptionList[howMany],
                                         gTimeout);
-    
+
             if (gSnapshot)
             {
                 /* Create a snapshot subscription */
@@ -471,7 +471,7 @@ static void subscribeToSymbols (void)
                 mamaSubscription_setRequiresInitial (gSubscriptionList[howMany],
                                                     gRequireInitial);
             }
-    
+
             /*
                 Logging at the individual subscription level can be controlled
                 independantly from the global logging level.
@@ -481,7 +481,7 @@ static void subscribeToSymbols (void)
 
             /* Create a verification timer for this subscription and queue. */
             createVerificationTimer(queue, gSymbolList[i], i);
-    
+
             /*
             The subscription is not created immediately here. Rather an action
             to create the subscription is placed on the throttle queue.
@@ -493,7 +493,7 @@ static void subscribeToSymbols (void)
                                             gSubscriptionSource,
                                             gSymbolList[i],
                                             (void*)&gFieldCacheIndexes[i]);
-        
+
         }
 
         if (status != MAMA_STATUS_OK)
@@ -536,7 +536,7 @@ static void dumpDataDictionary (void)
     if (gDumpDataDict)
     {
         size_t size = 0;
-        
+
         mamaDictionary_getSize (gDictionary, &size);
 
         printf ("Number of fields in dictionary: %d\n", (unsigned int)size );
@@ -665,7 +665,7 @@ static void buildDataDictionary (void)
             fprintf (stderr, "Could not create dictionary.\n" );
             exit(1);
         }
-        
+
 
     }
     else if (gDictFromFile)
@@ -679,7 +679,7 @@ static void buildDataDictionary (void)
 static void mamashutdown (void)
 {
     int i;
-    
+
     /* Stop all the queues. */
     if (gQueues != NULL)
     {
@@ -690,14 +690,14 @@ static void mamashutdown (void)
         }
         free (gDispatchers);
     }
-    
+
     fprintf(stderr, "mamashutdown: free-ing symbol and field lists\n");
     for (i = 0; i < gNumSymbols; i++)
     {
         free ((char *)gSymbolList[i]);
     }
     free ((void*)gSymbolList);
-    
+
     for (i = 0; i < gNumFields; i++)
     {
         free ((char *)gFieldList[i]);
@@ -708,7 +708,7 @@ static void mamashutdown (void)
     fprintf(stderr, "mamashutdown: destroying subscriptions\n");
 
     {
-    
+
         for (i = 0; i < gNumSymbols; i++)
         {
             if (gSubscriptionList[i])
@@ -719,13 +719,13 @@ static void mamashutdown (void)
         }
         free (gSubscriptionList);
     }
-    
+
     /* Destroy the source. */
     if(NULL != gSubscriptionSource)
     {
         mamaSource_destroy(gSubscriptionSource);
     }
-    
+
     if (gQueues != NULL)
     {
         fprintf(stderr, "mamashutdown: destroying queues\n");
@@ -742,19 +742,19 @@ static void mamashutdown (void)
         fprintf(stderr, "mamashutdown: destroying dictionary\n");
         mamaDictionary_destroy(gDictionary);
     }
-    
+
     /* Destroy the dictionary source. */
     if(NULL != gDictSource)
     {
         mamaSource_destroy(gDictSource);
     }
-    
+
     if (gTransport != NULL)
     {
         fprintf(stderr, "mamashutdown: destroying transport\n");
         mamaTransport_destroy (gTransport);
     }
-    
+
     mama_close ();
 }
 
@@ -772,16 +772,16 @@ transportCb (mamaTransport      tport,
 void initializeMama (void)
 {
     mama_status               status  =   MAMA_STATUS_OK;
-  
+
     /*
         mama_setApplicationName should be called before mama_open().
     */
     if (gAppName)
     {
-        mama_setApplicationName (gAppName); 
+        mama_setApplicationName (gAppName);
     }
 
-    status = mama_loadBridge (&gMamaBridge, gMiddleware); 
+    status = mama_loadBridge (&gMamaBridge, gMiddleware);
 
     if (gPrintVersionAndExit)
     {
@@ -801,8 +801,8 @@ void initializeMama (void)
 
     /*
         mama_open() should be the first MAMA API call made in an
-        application, with the exception of mama_loadBridge, 
-        mama_setApplicationName(), mama_setApplicationClassName() 
+        application, with the exception of mama_loadBridge,
+        mama_setApplicationName(), mama_setApplicationClassName()
         and mama_setProperty().
         It is reference counted. mama_close() must be called a
         corresponding number of times.
@@ -838,7 +838,7 @@ void initializeMama (void)
     /*The default throttle rate is 500 msg/sec*/
     if (gThrottle != -1)
     {
-        if (MAMA_STATUS_OK!=(status=mamaTransport_setOutboundThrottle (gTransport, 
+        if (MAMA_STATUS_OK!=(status=mamaTransport_setOutboundThrottle (gTransport,
                                            MAMA_THROTTLE_DEFAULT,
                                            gThrottle)))
         {
@@ -850,7 +850,7 @@ void initializeMama (void)
     /*The default recap throttle rate is 250 msg/sec*/
     if (gRecapThrottle != -1)
     {
-        if (MAMA_STATUS_OK!=(status=mamaTransport_setOutboundThrottle (gTransport, 
+        if (MAMA_STATUS_OK!=(status=mamaTransport_setOutboundThrottle (gTransport,
                                            MAMA_THROTTLE_RECAP,
                                            gRecapThrottle)))
         {
@@ -858,7 +858,7 @@ void initializeMama (void)
                       "rate [%s]\n", mamaStatus_stringForStatus (status));
         }
     }
-    
+
     /* Create the transport after any properties have been set. */
     if (MAMA_STATUS_OK!=
        (status=mamaTransport_create (gTransport, gTport, gMamaBridge)))
@@ -873,14 +873,14 @@ void initializeMama (void)
     {
         mamaTransport_setInvokeQualityForAllSubscs (gTransport, 0);
     }
-    
+
     /*
         The mamaSource replaces the individual specifying of the
         symbolNameSpace and the transport. The mamaSource acts as a unique
         identifier for a source of data. Multiple subscriptions will typically
         be created using a single mamaSource instance.
     */
-    
+
     /*The mamaSource used for all subscription creation*/
     if (MAMA_STATUS_OK!=(status=mamaSource_create (&gSubscriptionSource)))
     {
@@ -889,11 +889,11 @@ void initializeMama (void)
                  status, mamaStatus_stringForStatus (status));
         exit(1);
     }
-    
+
     mamaSource_setId (gSubscriptionSource, "Subscription_Source");
     mamaSource_setTransport (gSubscriptionSource, gTransport);
     mamaSource_setSymbolNamespace (gSubscriptionSource, gSymbolNamespace);
-    
+
     /*Specify a separate transport on which to retreive the dictioanry*/
     if (gDictTport != NULL)
     {
@@ -901,7 +901,7 @@ void initializeMama (void)
                  "Creating data dictionary transport using name: %s\n",
                  gDictTport);
         if (strlen(gDictTport)==0) gDictTport = NULL;
-        
+
         status = mamaTransport_allocate (&gDictTransport);
         status = mamaTransport_create (gDictTransport, gDictTport, gMamaBridge);
         if (status != MAMA_STATUS_OK)
@@ -924,14 +924,14 @@ void initializeMama (void)
                  "Failed to create dictionary mamaSource STATUS: %d %s\n",
                  status, mamaStatus_stringForStatus (status));
         exit(1);
-    }       
+    }
 
     mamaSource_setId (gDictSource, "Dictionary_Source");
     mamaSource_setTransport (gDictSource, gDictTransport);
     mamaSource_setSymbolNamespace (gDictSource, gDictSymbolNamespace);
 }
 
-static void readSymbolsFromFile (void) 
+static void readSymbolsFromFile (void)
 {
     /* get subjects from file or interactively */
     FILE* fp = NULL;
@@ -963,10 +963,10 @@ static void readSymbolsFromFile (void)
             break;
 
         /* replace newlines with NULLs */
-        while ((*c != '\0') && (*c != '\n')) 
+        while ((*c != '\0') && (*c != '\n'))
             c++;
         *c = '\0';
-        
+
         gSymbolList[gNumSymbols++] = strdup (charbuf);
         if (isatty(fileno (fp)))
             printf ("Symbol> ");
@@ -986,7 +986,7 @@ static void loadSymbolMap (void)
 
         if (status != MAMA_STATUS_OK)
         {
-            fprintf (stderr, 
+            fprintf (stderr,
                      "Failed to initialize symbol map file: %s\n",
                      gMapFilename);
             exit (1);
@@ -1002,7 +1002,7 @@ static void loadSymbolMap (void)
 static void parseCommandLine (int argc, const char** argv)
 {
     int i = 1;
-    
+
     for (i = 1; i < argc; )
     {
         if ((strcmp (argv[i], "-S") == 0) ||
@@ -1070,7 +1070,7 @@ static void parseCommandLine (int argc, const char** argv)
         else if (strcmp ("-m", argv[i]) == 0)
         {
             gMiddleware = argv[i+1];
-            i += 2;               
+            i += 2;
         }
         else if (strcmp (argv[i], "-r") == 0)
         {
@@ -1178,12 +1178,12 @@ static void parseCommandLine (int argc, const char** argv)
         }
         else if (strcmp( argv[i], "-hw" ) == 0)
         {
-            gHighWaterMark = atoi (argv [i+1]);    
+            gHighWaterMark = atoi (argv [i+1]);
             i += 2;
         }
         else if (strcmp( argv[i], "-lw" ) == 0)
         {
-            gLowWaterMark = atoi (argv [i+1]);    
+            gLowWaterMark = atoi (argv [i+1]);
             i += 2;
         }
         else if ( strcmp( argv[i], "-V" ) == 0 )
@@ -1220,7 +1220,7 @@ static void parseCommandLine (int argc, const char** argv)
             gDictFile = strdup (argv[i+1]);
             i+=2;
         }
-        
+
         else if (strcmp ("-shutdown", argv[i]) == 0)
         {
             gShutdownTime = atoi (argv[i + 1]);
@@ -1260,7 +1260,7 @@ static void parseCommandLine (int argc, const char** argv)
     This callback is invoked for each message received by the API.
 */
 void MAMACALLTYPE
-subscriptionOnMsg  (mamaSubscription subscription, 
+subscriptionOnMsg  (mamaSubscription subscription,
                     mamaMsg msg,
                     void *closure,
                     void *itemClosure)
@@ -1271,7 +1271,7 @@ subscriptionOnMsg  (mamaSubscription subscription,
     mamaFieldCache fieldCache = NULL;
 
     int subscriptionIndex = 0;
-    
+
     if (closure)
     {
         subscriptionIndex = *(int*)closure;
@@ -1279,7 +1279,7 @@ subscriptionOnMsg  (mamaSubscription subscription,
         /* Get the field cache for this symbol. */
         fieldCache = gFieldCaches[subscriptionIndex];
     }
-    
+
     gNumMsg++;
 
     /*
@@ -1288,10 +1288,10 @@ subscriptionOnMsg  (mamaSubscription subscription,
     */
     switch (mamaMsgType_typeForMsg (msg))
     {
-    case MAMA_MSG_TYPE_SNAPSHOT:    
+    case MAMA_MSG_TYPE_SNAPSHOT:
         {
             checkSnapshotIntegrity(fieldCache, msg);
-            return; 
+            return;
         }
     case MAMA_MSG_TYPE_DELETE:
     case MAMA_MSG_TYPE_EXPIRE:
@@ -1305,7 +1305,7 @@ subscriptionOnMsg  (mamaSubscription subscription,
                      "Symbol deleted or expired. No more subscriptions\n");
             exit(1);
         }
-        return; 
+        return;
     default:
         break;
     }
@@ -1318,7 +1318,7 @@ subscriptionOnMsg  (mamaSubscription subscription,
         mamaSubscription_destroy (subscription);
         mamaSubscription_deallocate (subscription);
         gSubscriptionList[subscriptionIndex] = 0;
-        
+
         if (--gNumSubscriptions == 0)
         {
             fprintf (stderr, "Bad or expired symbol.\n" );
@@ -1328,7 +1328,7 @@ subscriptionOnMsg  (mamaSubscription subscription,
     default:
         break;
     }
-    
+
     /* Apply the message to the field cache. */
     mamaFieldCache_applyMessage(fieldCache, msg, gDictionary);
 
@@ -1425,7 +1425,7 @@ void displayFields(mamaFieldCache fieldCache)
     int fieldIndex = 0;
     mamaFieldDescriptor descriptor = NULL;
 
-    while((ret == MAMA_STATUS_OK) && (fieldIndex < gNumFields))    
+    while((ret == MAMA_STATUS_OK) && (fieldIndex < gNumFields))
     {
         ret = mamaDictionary_getFieldDescriptorByName(gDictionary,
                                                       &descriptor,
@@ -1845,14 +1845,14 @@ void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
 
 void MAMACALLTYPE
 subscriptionOnCreate (mamaSubscription subscription, void* closure)
-{   
+{
     const char* source = NULL;
     const char* symbol = NULL;
     mamaQueue queue;
 
     gNumSubscriptions++;
     mamaSubscription_getSource (subscription, &source);
-    mamaSubscription_getSymbol (subscription, &symbol); 
+    mamaSubscription_getSymbol (subscription, &symbol);
 
     mamaSubscription_getQueue(subscription, &queue);
 
@@ -1865,7 +1865,7 @@ subscriptionOnCreate (mamaSubscription subscription, void* closure)
 }
 
 static void MAMACALLTYPE
-subscriptionOnError (mamaSubscription subscription, 
+subscriptionOnError (mamaSubscription subscription,
                      mama_status      status,
                      void*            platformError,
                      const char*      subject,
@@ -1962,7 +1962,7 @@ void setQueueMonitors (mamaQueue queue, int queueIndex)
         char                      queueNameBuf[10];
         mama_status               status = MAMA_STATUS_OK;
 
-        snprintf (queueNameBuf, 10, "QUEUE %d", queueIndex);    
+        snprintf (queueNameBuf, 10, "QUEUE %d", queueIndex);
 
         mamaQueue_setQueueName (queue, queueNameBuf);
 
@@ -1970,17 +1970,17 @@ void setQueueMonitors (mamaQueue queue, int queueIndex)
             highWaterMarkCallback;
         queueCallbacks.onQueueLowWatermark  =   lowWaterMarkCallback;
 
-        mamaQueue_setQueueMonitorCallbacks (queue, 
-                                            &queueCallbacks, 
+        mamaQueue_setQueueMonitorCallbacks (queue,
+                                            &queueCallbacks,
                                             NULL);
 
         if (gHighWaterMark>0)
         {
-            if (MAMA_STATUS_OK!=(status=mamaQueue_setHighWatermark 
+            if (MAMA_STATUS_OK!=(status=mamaQueue_setHighWatermark
                         (queue, gHighWaterMark)))
             {
                 fprintf (stderr,
-                         "Could not set high water mark for queue %s. [%s]", 
+                         "Could not set high water mark for queue %s. [%s]",
                          queueNameBuf,
                          mamaStatus_stringForStatus (status));
             }
@@ -1992,7 +1992,7 @@ void setQueueMonitors (mamaQueue queue, int queueIndex)
                         (queue, gLowWaterMark)))
             {
                 fprintf (stderr,
-                         "Could not set low water mark for queue %s. [%s]", 
+                         "Could not set low water mark for queue %s. [%s]",
                          queueNameBuf,
                          mamaStatus_stringForStatus (status));
             }
@@ -2064,7 +2064,7 @@ mama_status checkFieldIntegrityIds(mamaMsgField field, mamaFieldCache fieldCache
                         }
                         break;
                     }
-                    case MAMA_FIELD_TYPE_U8:         
+                    case MAMA_FIELD_TYPE_U8:
                     {
                         mama_u8_t cacheVal = 1, msgVal;
                         mamaMsgField_getU8(field, &msgVal);
@@ -2074,7 +2074,7 @@ mama_status checkFieldIntegrityIds(mamaMsgField field, mamaFieldCache fieldCache
                             printf ("\nThe Failed Field is %s and the values are %d, %d",
                                 fieldName,msgVal,cacheVal);
                             localTest = 0;
-                        }            
+                        }
                         break;
                     }
                     case MAMA_FIELD_TYPE_I16:
@@ -2181,7 +2181,7 @@ mama_status checkFieldIntegrityIds(mamaMsgField field, mamaFieldCache fieldCache
                         }
                         break;
                     }
-                    case MAMA_FIELD_TYPE_STRING:                           
+                    case MAMA_FIELD_TYPE_STRING:
                     {
                         const char *cacheVal = NULL, *msgVal = NULL;
                         mama_size_t len = 0;
@@ -2212,7 +2212,7 @@ mama_status checkFieldIntegrityIds(mamaMsgField field, mamaFieldCache fieldCache
                         break;
                     }
                     case MAMA_FIELD_TYPE_PRICE:
-                    {  
+                    {
                         mamaPrice cacheVal = NULL, msgVal = NULL;
                         double msgValNumber, cacheValNumber;
                         mamaMsgField_getPrice(field, &msgVal);
@@ -2251,7 +2251,7 @@ mama_status checkFieldIntegrityIds(mamaMsgField field, mamaFieldCache fieldCache
     if(ret != MAMA_STATUS_OK)
     {
         localTest = 0;
-    }    
+    }
 
     *test = localTest;
 
@@ -2259,7 +2259,7 @@ mama_status checkFieldIntegrityIds(mamaMsgField field, mamaFieldCache fieldCache
 }
 
 mama_status checkSnapshotIntegrity(mamaFieldCache fieldCache, mamaMsg message)
-{    
+{
     /* Create a new iterator. */
     mamaMsgIterator iterator = NULL;
     mama_status ret = mamaMsgIterator_create(&iterator, gDictionary);
@@ -2276,7 +2276,7 @@ mama_status checkSnapshotIntegrity(mamaFieldCache fieldCache, mamaMsg message)
             mamaMsgField nextField = mamaMsgIterator_next(iterator);
 
             printf("Field cache integrity check start.\n");
-    
+
             /* Enumerate all the fields. */
             while((nextField != NULL) && (ret == MAMA_STATUS_OK) && (test == 1))
             {
@@ -2298,8 +2298,8 @@ mama_status checkSnapshotIntegrity(mamaFieldCache fieldCache, mamaMsg message)
             {
                 printf ("\ncheckSnapshotIntegrity: SUCCESSFUL");
             }
-            printf("\nField cache integrity check end.\n");            
-        } 
+            printf("\nField cache integrity check end.\n");
+        }
 
         /* Destroy the iterator. */
         {
@@ -2327,7 +2327,7 @@ mama_status createFieldCaches(void)
         /* Enumerate the array and create each one in turn. */
         cacheIndex = 0;
         ret = MAMA_STATUS_OK;
-        while((ret == MAMA_STATUS_OK) && (cacheIndex<gNumSymbols))        
+        while((ret == MAMA_STATUS_OK) && (cacheIndex<gNumSymbols))
         {
             /* Create the cache with typical values and ensure that auto string format is on. */
             ret = mamaFieldCache_create(&gFieldCaches[cacheIndex]);
@@ -2368,7 +2368,7 @@ mama_status createVerificationTimer(mamaQueue queue, const char *symbol, int ind
             data->m_symbol   = strdup(symbol);
             data->mIndex     = index;
             {
-                /* Create the timer. */            
+                /* Create the timer. */
                 ret = mamaTimer_create(&data->m_timer, queue, verifyTimerCallback, gVerifyInterval, data);
 
                 /* If it didn't work then delete the data object. */
@@ -2378,7 +2378,7 @@ mama_status createVerificationTimer(mamaQueue queue, const char *symbol, int ind
                 }
             }
         }
-    }   
+    }
 
     return ret;
 }
@@ -2403,7 +2403,7 @@ mama_status destroyFieldCaches(void)
     /* Free the array itself. */
     free(gFieldCaches);
     gFieldCaches = NULL;
-    
+
     free(gFieldCacheIndexes);
     gFieldCacheIndexes = NULL;
 
@@ -2443,14 +2443,14 @@ mama_status displayHeader(mamaMsg message, mamaSubscription subscription)
         if(ret == MAMA_STATUS_OK)
         {
             const char* symbol = NULL;
-            ret = mamaSubscription_getSymbol(subscription, &symbol); 
+            ret = mamaSubscription_getSymbol(subscription, &symbol);
             if(ret == MAMA_STATUS_OK)
             {
                 const char* issueSymbol = NULL;
                 ret = mamaMsg_getString(message, NULL, 305, &issueSymbol);
                 if(ret == MAMA_STATUS_OK)
                 {
-                    printf ("%s.%s.%s Type: %s Status %s \n", 
+                    printf ("%s.%s.%s Type: %s Status %s \n",
                            issueSymbol,
                            source,
                            symbol,
@@ -2474,14 +2474,14 @@ mama_status printAllCacheFields(mamaFieldCache fieldCache)
 
     mamaFieldCache_getSize(fieldCache, &size);
     printf("Cache size: %" PRI_MAMA_SIZE_T "\n", size);
-    
+
     ret = mamaFieldCacheIterator_create(&cacheIterator, fieldCache);
     while (mamaFieldCacheIterator_hasNext(cacheIterator))
     {
         field = mamaFieldCacheIterator_next(cacheIterator);
         printField(field);
     }
-    
+
     mamaFieldCacheIterator_destroy(cacheIterator);
     return ret;
 }
@@ -2491,19 +2491,19 @@ mama_status printAllMessageFields(mamaFieldCache fieldCache, mamaMsg message)
     mama_status ret = MAMA_STATUS_OK;
     mamaMsgIterator iterator = NULL;
     mamaMsgField field = NULL;
-    
+
     if (gPrintUsingName)
     {
         return MAMA_STATUS_INVALID_ARG;
     }
-        
+
     ret = mamaMsgIterator_create(&iterator, gDictionary);
     ret = mamaMsgIterator_associate(iterator, message);
     field = mamaMsgIterator_next(iterator);
     while((field != NULL) && (ret == MAMA_STATUS_OK))
     {
         ret = printFieldUsingId(field, fieldCache);
-        field = mamaMsgIterator_next(iterator);                
+        field = mamaMsgIterator_next(iterator);
     }
 
     mamaMsgIterator_destroy(iterator);
@@ -2532,16 +2532,16 @@ void printField(mamaFieldCacheField field)
     const char *fieldName = "";
     mamaFieldDescriptor fieldDesc;
     mama_bool_t modified = 0;
-    
+
     if(gQuietness < 1)
     {
         char fieldBuffer[256] = "";
 
         mamaFieldCacheField_getType(field, &type);
         typeName = mamaFieldTypeToString(type);
-        
+
         mamaFieldCacheField_getFid(field, &fid);
-        
+
         mamaFieldCacheField_isModified(field, &modified);
 
         if(gDictionary != NULL)
@@ -2834,7 +2834,7 @@ mama_status printFieldUsingId(mamaMsgField field, mamaFieldCache fieldCache)
 
 static void MAMACALLTYPE
 verifyTimerCallback(mamaTimer timer, void *closure)
-{   
+{
     /* Cast the closure to a data structure. */
     PVerificationData verificationData = (PVerificationData)closure;
 
@@ -2851,15 +2851,15 @@ verifyTimerCallback(mamaTimer timer, void *closure)
         callbacks.onCreate          = subscriptionOnCreate;
         callbacks.onError           = subscriptionOnError;
         callbacks.onMsg             = subscriptionOnMsg;
-        callbacks.onQuality         = subscriptionOnQuality;    
+        callbacks.onQuality         = subscriptionOnQuality;
         callbacks.onGap             = NULL;
         callbacks.onRecapRequest    = NULL;
-        
+
         /* Set properties. */
         mamaSubscription_setTimeout(snapShotSubscription, 10.0);
         mamaSubscription_setRetries(snapShotSubscription, 3);
         mamaSubscription_setRequiresInitial(snapShotSubscription, 1);
-        
+
         /* Create the subscription, note that it will be deleted whenever it expires. */
         mamaSubscription_createSnapshot(snapShotSubscription, verificationData->m_queue, &callbacks,
                     gSubscriptionSource, verificationData->m_symbol, &verificationData->mIndex);

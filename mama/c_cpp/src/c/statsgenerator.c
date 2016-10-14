@@ -76,20 +76,20 @@ mamaStatsGenerator_destroy (mamaStatsGenerator statsGenerator)
 
     if(impl)
     {
-    impl->mStatsLogger = NULL;
+        impl->mStatsLogger = NULL;
 
-    if (impl->mStatMsg != NULL)
-    {
-        mamaMsg_destroy (impl->mStatMsg);
-        impl->mStatMsg = NULL;
-    }
+        if (impl->mStatMsg != NULL)
+        {
+            mamaMsg_destroy (impl->mStatMsg);
+            impl->mStatMsg = NULL;
+        }
 
-    if (impl->mStatsCollectors != NULL)
-    {
-        list_destroy (impl->mStatsCollectors, NULL, NULL);
-    }
+        if (impl->mStatsCollectors != NULL)
+        {
+            list_destroy (impl->mStatsCollectors, NULL, NULL);
+        }
 
-    free (impl);
+        free (impl);
 
     }
     return MAMA_STATUS_OK;

@@ -29,12 +29,12 @@ namespace Wombat.Mamda.Examples
 	/// to the underlying security.  This example just prints
 	/// individual trades and quotes.
 	/// </summary>
-    class UnderlyingTicker : 
-		MamdaTradeHandler, 
+    class UnderlyingTicker :
+		MamdaTradeHandler,
         MamdaQuoteHandler
     {
         public UnderlyingTicker(
-			MamdaOptionChain chain, 
+			MamdaOptionChain chain,
 			bool printStrikes)
         {
             myChain = chain;
@@ -112,7 +112,7 @@ namespace Wombat.Mamda.Examples
             MamdaQuoteRecap     recap)
         {
             Console.WriteLine(
-                "Underlying quote: " + 
+                "Underlying quote: " +
                 quote.getBidSize () + "x" + quote.getBidPrice () + "   " +
                 quote.getAskPrice () + "x" + quote.getAskSize () + "   " +
                 "mid=" + recap.getQuoteMidPrice ());

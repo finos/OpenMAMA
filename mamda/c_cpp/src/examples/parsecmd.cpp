@@ -45,7 +45,7 @@ ExampleLogLevel gExampleLogLevel = EXAMPLE_LOG_LEVEL_NORMAL;
 
 struct CommonCommandLineParser::CommonCommandLineParserImpl
 {
-    CommonCommandLineParserImpl (int          argc, 
+    CommonCommandLineParserImpl (int          argc,
                                  const char*  argv[]);
 
     const char*          mSourceName;
@@ -88,7 +88,7 @@ struct CommonCommandLineParser::CommonCommandLineParserImpl
 };
 
 CommonCommandLineParser::CommonCommandLineParser (
-    int          argc, 
+    int          argc,
     const char*  argv[])
     : mImpl (*new CommonCommandLineParserImpl (argc,argv))
 {
@@ -108,14 +108,14 @@ MamaSource*  CommonCommandLineParser::getSource ()
 {
     if (!mImpl.mSource)
     {
-        mImpl.mSource = new MamaSource ("default", 
-                                          mImpl.mTportName, 
+        mImpl.mSource = new MamaSource ("default",
+                                          mImpl.mTportName,
                                           mImpl.mSourceName,
                                           mImpl.mBridge);
         mImpl.mSource->getTransport()->setOutboundThrottle (
-                                        mImpl.mThrottleRate, 
+                                        mImpl.mThrottleRate,
                                         MAMA_THROTTLE_DEFAULT);
-    }    
+    }
     return mImpl.mSource;
 }
 
@@ -123,9 +123,9 @@ MamaSource*  CommonCommandLineParser::getDictSource ()
 {
     if (!mImpl.mDictSource)
     {
-        mImpl.mDictSource = new MamaSource ("dict", 
-                                              mImpl.mDictTportName 
-                                                ? mImpl.mDictTportName 
+        mImpl.mDictSource = new MamaSource ("dict",
+                                              mImpl.mDictTportName
+                                                ? mImpl.mDictTportName
                                                 : mImpl.mTportName,
                                               mImpl.mDictSourceName,
                                               mImpl.mBridge);
@@ -137,17 +137,17 @@ MamaSource*  CommonCommandLineParser::getOptionSource ()
 {
     if (!mImpl.mOptionSource)
     {
-        mImpl.mOptionSource = new MamaSource ("options", 
-                                          mImpl.mOptionTportName 
+        mImpl.mOptionSource = new MamaSource ("options",
+                                          mImpl.mOptionTportName
                                             ? mImpl.mOptionTportName
-                                            : mImpl.mTportName, 
+                                            : mImpl.mTportName,
                                           mImpl.mOptionSourceName,
-                                          mImpl.mBridge);    
+                                          mImpl.mBridge);
         mImpl.mOptionSource->getTransport()->setOutboundThrottle (
-                                        mImpl.mThrottleRate, 
+                                        mImpl.mThrottleRate,
                                         MAMA_THROTTLE_DEFAULT);
     }
-    return mImpl.mOptionSource;    
+    return mImpl.mOptionSource;
 }
 
 const char*  CommonCommandLineParser::getSymbolMapFile ()
@@ -299,47 +299,47 @@ double CommonCommandLineParser::getTimerInterval ()
 
 const char* CommonCommandLineParser::getLogFileName ()
 {
-    return mImpl.mLogFileName;    
+    return mImpl.mLogFileName;
 }
 
 const char*  CommonCommandLineParser::getQueryArg1 ()
 {
-    return mImpl.mQueryArg1;  
+    return mImpl.mQueryArg1;
 }
 
 const char* CommonCommandLineParser::getQueryArg2 ()
 {
-    return mImpl.mQueryArg2;  
+    return mImpl.mQueryArg2;
 }
 
 const char* CommonCommandLineParser::getQueryArg3 ()
 {
-    return mImpl.mQueryArg3;  
+    return mImpl.mQueryArg3;
 }
 
 const char* CommonCommandLineParser::getQueryArg4 ()
 {
-    return mImpl.mQueryArg4;  
+    return mImpl.mQueryArg4;
 }
 
 int CommonCommandLineParser::getQuery ()
 {
-    return mImpl.mQuery;  
+    return mImpl.mQuery;
 }
 
 int CommonCommandLineParser::getQueryType ()
 {
-    return mImpl.mQueryType;  
+    return mImpl.mQueryType;
 }
 
 
 int CommonCommandLineParser::getQueries ()
 {
-    return mImpl.mQueryCycles;  
+    return mImpl.mQueryCycles;
 }
 
 CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImpl (
-    int          argc, 
+    int          argc,
     const char*  argv[])
 {
     mSource        = NULL;
@@ -359,7 +359,7 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
     mBridge        = NULL;
     int i          = 1;
     mUseWorldView  = false;
-    
+
     mTportName        = NULL;
     mDictTportName    = NULL;
     mOptionTportName  = NULL;
@@ -376,7 +376,7 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
     mQuery       = 0;
     mQueryType   = 0;
     mQueryCycles = 1;
-    
+
     while (i < argc)
     {
         bool handled = false;
@@ -444,7 +444,7 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
         }
         else if (strcmp (argv[i], "-t") == 0)
         {
-            mTimeout = strtod (argv[i + 1], NULL); 
+            mTimeout = strtod (argv[i + 1], NULL);
             handled = true;
         }
         else if (strcmp (argv[i], "-mp") == 0)
@@ -472,8 +472,8 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
         }
         else if (strcmp ("-shutdown", argv[i]) == 0)
         {
-            mShutdownTime = atoi (argv[i + 1]);           
-        }        
+            mShutdownTime = atoi (argv[i + 1]);
+        }
         else if (strcmp (argv[i], "-deltas") == 0)
         {
             mShowDeltas = true;
@@ -567,23 +567,23 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
         else if (strcmp (argv[i], "-W") == 0)
         {
             mUseWorldView = true;
-            handled = true;     
+            handled = true;
         }
         else if (strcmp (argv[i], "-L") == 0)
         {
             mLogReqResp = true;
-            handled = true;     
+            handled = true;
         }
         else if (strcmp (argv[i], "-Y") == 0)
         {
             mSymbology = argv[i+1];
-            handled = true;     
+            handled = true;
         }
         else if ((strcmp (argv[i], "-?") == 0) ||
                  (strcmp (argv[i], "--help") == 0))
         {
             usage(1);
-            handled = true;     
+            handled = true;
         }
         else if (strcmp (argv[i], "-PR") == 0)
         {
@@ -592,15 +592,15 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
         else if (strcmp (argv[i], "-1") == 0)
         {
             mSnapShot = true;
-            handled = true;     
+            handled = true;
         }
         else if (strcmp (argv[i], "-Q") == 0)
         {
-            mQuery = strtol (argv[i + 1], NULL, 10);     
+            mQuery = strtol (argv[i + 1], NULL, 10);
         }
         else if (strcmp (argv[i], "-QT") == 0)
         {
-            mQueryType = strtol (argv[i + 1], NULL, 10);     
+            mQueryType = strtol (argv[i + 1], NULL, 10);
         }
         else if (strcmp (argv[i], "-A1") == 0)
         {
@@ -620,7 +620,7 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
         }
         else if (strcmp (argv[i], "-QC") == 0)
         {
-            mQueryCycles =strtol (argv[i + 1], NULL, 10);     
+            mQueryCycles =strtol (argv[i + 1], NULL, 10);
         }
         if (argv[i][0] == '-')
         {
@@ -649,6 +649,6 @@ CommonCommandLineParser::CommonCommandLineParserImpl::CommonCommandLineParserImp
             usage (1);
         }
     }
-    
+
     mBridge = Mama::loadBridge (mMiddleware);
 }

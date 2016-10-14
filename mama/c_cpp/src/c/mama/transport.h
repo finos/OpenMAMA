@@ -225,7 +225,7 @@ mamaTransport_getTransportCallbackQueue (mamaTransport transport, mamaQueue* que
  * MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK and
  * MAMA_TRANSPORT_WRITE_QUEUE_HIGH_WATER_MARK events will be delivered though
  * the transport callback when the respective number of items are outstanding on
- * a clients write queue. 
+ * a clients write queue.
  */
 MAMAExpDLL
 extern mama_status
@@ -625,7 +625,7 @@ mamaTransport_getStatsCollector (mamaTransport transport);
 
 /**
  * Return the closure.
- * 
+ *
  * @param transport The transport.
  * @param closure holds the result.
  */
@@ -636,12 +636,12 @@ mamaTransport_getClosure (mamaTransport transport,
 
 /**
  * Set a closure.
- * 
+ *
  * @param transport The transport.
  * @param closure holds the closure to be added.
  */
 MAMAExpDLL
-extern mama_status 
+extern mama_status
 mamaTransport_setClosure (mamaTransport transport,
                           void*         closure);
 

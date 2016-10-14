@@ -28,14 +28,14 @@ if 'static' in env['build']:
 	if 'oea' in env['entitlements']:
 		libs.append( posixpath.join( env['oea_home'], 'lib/%s/liboeac%s' % ( env['build'],env['suffix'])) )
 
-env.Append( 
+env.Append(
 	LIBS 		= libs,
 	LIBPATH 	= libpath,
 	CPPPATH	= incpath,
 )
 
 for b in binaries:
-	example = env.Program(b, '%s.cpp' % (b) ) 
+	example = env.Program(b, '%s.cpp' % (b) )
 	if env['vsver'] >= 8:
 		env.AddPostAction( example, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;1')
 	InstBin.append( example )

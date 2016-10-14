@@ -25,7 +25,7 @@
 #include <mama/reservedfields.h>
 
 
-mamaMsgType 
+mamaMsgType
 mamaMsgType_typeForMsg (const mamaMsg msg)
 {
     int32_t result = MAMA_MSG_TYPE_UNKNOWN;
@@ -39,14 +39,14 @@ mamaMsgType_typeForMsg (const mamaMsg msg)
     return (mamaMsgType) result;
 }
 
-const char* 
+const char*
 mamaMsgType_stringForMsg (const mamaMsg msg)
 {
     return mamaMsgType_stringForType (mamaMsgType_typeForMsg (msg)) ;
 }
 
 
-const char* 
+const char*
 mamaMsgType_stringForType (mamaMsgType type)
 {
     switch  (type)
@@ -84,7 +84,7 @@ mamaMsgType_stringForType (mamaMsgType type)
     case MAMA_MSG_TYPE_REFRESH:              return "REFRESH";
     case MAMA_MSG_TYPE_WORLD_VIEW:           return "WORLD_VIEW";
     case MAMA_MSG_TYPE_NEWS_QUERY:           return "NEWS_QUERY";
-    case MAMA_MSG_TYPE_NULL:                 return "NULL";    
+    case MAMA_MSG_TYPE_NULL:                 return "NULL";
     case MAMA_MSG_TYPE_ENTITLEMENTS_REFRESH: return "ENTITLEMENTS_REFRESH";
     case MAMA_MSG_TYPE_UNKNOWN:              return "UNKNOWN";
     default:                                 return "error";

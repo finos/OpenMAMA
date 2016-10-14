@@ -22,16 +22,16 @@
 /*----------------------------------------------------------------------------
  *
  * This sample application demonstrates how to publish mama messages, and
- * respond to requests from a clients inbox. 
+ * respond to requests from a clients inbox.
  *
- * It accepts the following command line arguments: 
+ * It accepts the following command line arguments:
  *      [-s topic]         The topic on which to send messages. Default value
  *                         is "MAMA_TOPIC".
  *      [-l topic]         The topic on which to listen for inbound requests.
  *                         Default is "MAMA_INBOUND_TOPIC".
  *      [-i interval]      The interval between messages .Default, 0.5.
  *      [-tport name]      The transport parameters to be used from
- *                         mama.properties. 
+ *                         mama.properties.
  *      [-q]               Quiet mode. Suppress output.
  *      [-c number]        How many messages to publish (default infinite).
  *
@@ -77,7 +77,7 @@ static const char *  gUsageString[] =
     "      [-l topic]         The topic on which to listen for inbound requests.",
     "                         Default is \"MAMA_INBOUND_TOPIC\".",
     "      [-i interval]      The interval between messages .Default, 0.5.",
-    "      [-m middleware]    The middleware to use [wmw/lbm/tibrv]. Default is wmw.", 
+    "      [-m middleware]    The middleware to use [wmw/lbm/tibrv]. Default is wmw.",
     "      [-tport name]      The transport parameters to be used from",
     "                         mama.properties. Default is pub",
     "      [-q]               Quiet mode. Suppress output.",
@@ -92,7 +92,7 @@ public:
     MamaProxy  ();
     ~MamaProxy () {};
 
-    void       parseCommandLine       (int argc, const char* argv[]);   
+    void       parseCommandLine       (int argc, const char* argv[]);
     void       initializeMama         ();
     void       start                  ();
     void       createPublisher        ();
@@ -116,7 +116,7 @@ public:
 
     mamaBridge getMamaBridge          ();
     int        getQuietness           ()  {return mQuietness;}
-    void*      getDisplayCallback     ();        
+    void*      getDisplayCallback     ();
     MamaSubscription* getMamaSubscription (const char * symbol);
 
 
@@ -184,28 +184,28 @@ public:
     SubscriptionHandler (MamaProxy* mamaProxy) {mMsg.create(); mMamaProxy = mamaProxy;}
     ~SubscriptionHandler() {}
     void onCreate (MamaDQPublisherManager*  publisher);
-    
+
     void onNewRequest (
         MamaDQPublisherManager*  publisherManager,
         const char*              symbol,
         short                    subType,
         short                    msgType,
         MamaMsg&                 msg);
-      
+
     void onRequest (
         MamaDQPublisherManager*  publisherManager,
         const MamaPublishTopic&  publishTopicInfo,
         short                    subType,
         short                    msgType,
         MamaMsg&                 msg);
-    
+
     void onRefresh (
         MamaDQPublisherManager*  publisherManager,
         const MamaPublishTopic&  publishTopicInfo,
         short                    subType,
         short                    msgType,
         MamaMsg&                 msg);
-        
+
     void onError (
         MamaDQPublisherManager*  publisher,
         const MamaStatus&        status,
@@ -218,11 +218,11 @@ private:
 };
 
 class CacheCallback : public MamaSubscriptionCallback, MamaQueueEventCallback
-                    
+
 {
 public:
     virtual ~CacheCallback      (void);
-    
+
     CacheCallback (MamaProxy* mamaProxy, MamaQueue*  queue);
 
 
@@ -239,19 +239,19 @@ public:
                                    mamaQuality        quality,
                                    const char*        symbol,
                                    short              cause,
-                                   const void*        platformInfo);   
+                                   const void*        platformInfo);
 
     virtual void onGap            (MamaSubscription*  subscription);
 
-    virtual void onRecapRequest   (MamaSubscription*  subscription);            
+    virtual void onRecapRequest   (MamaSubscription*  subscription);
 
     virtual void onEvent          (MamaQueue& queue,
                                    void* closure);
-     
+
     void setPublisher (MamaDQPublisher* pub) {mpublisher = pub;}
     void sendRecap    ();
     void sendRecap    (MamaMsg*     msg);
-    
+
 private:
     MamaProxy*        mMamaProxy;
     CacheCallback     (const CacheCallback& copy);
@@ -270,11 +270,11 @@ CacheCallback::CacheCallback (MamaProxy* mamaProxy, MamaQueue*  queue)
 }
 
 CacheCallback::~CacheCallback ()
-{   
+{
 
 }
 
-void CacheCallback::onMsg (MamaSubscription* subscription, 
+void CacheCallback::onMsg (MamaSubscription* subscription,
                            MamaMsg&          msg)
 {
     bool detached = false;
@@ -317,7 +317,7 @@ void CacheCallback::onMsg (MamaSubscription* subscription,
              cachedMsg->applyMsg(msg);
          }
          break;
-    default: 
+    default:
     	 cachedMsg->applyMsg(msg);
          break;
     }
@@ -342,16 +342,16 @@ void CacheCallback::onEvent(MamaQueue& queue, void* closure)
     {
         if (closure)
         {
-        	try 
+        	try
             {
-                cachedMsg->updateU8 (NULL, 
-                                     MamaFieldMsgType.mFid, 
+                cachedMsg->updateU8 (NULL,
+                                     MamaFieldMsgType.mFid,
                                      MAMA_MSG_TYPE_INITIAL);
             }
             catch (MamaStatus &status)
             {
-                cachedMsg->updateI16 (NULL, 
-                                      MamaFieldMsgType.mFid, 
+                cachedMsg->updateI16 (NULL,
+                                      MamaFieldMsgType.mFid,
                                       MAMA_MSG_TYPE_INITIAL);
             }
 
@@ -361,32 +361,32 @@ void CacheCallback::onEvent(MamaQueue& queue, void* closure)
         }
         else
         {
-        	try 
+        	try
             {
-                cachedMsg->updateU8 (NULL, 
-                                     MamaFieldMsgType.mFid, 
+                cachedMsg->updateU8 (NULL,
+                                     MamaFieldMsgType.mFid,
                                      MAMA_MSG_TYPE_RECAP);
             }
             catch (MamaStatus &status)
             {
-                cachedMsg->updateI16 (NULL, 
-                                      MamaFieldMsgType.mFid, 
+                cachedMsg->updateI16 (NULL,
+                                      MamaFieldMsgType.mFid,
                                       MAMA_MSG_TYPE_RECAP);
             }
             mpublisher->send (cachedMsg);
         }
     }
-            
+
 }
 
 void CacheCallback::sendRecap ()
 {
-    mQueue->enqueueEvent  (this, NULL);                        
+    mQueue->enqueueEvent  (this, NULL);
 }
 
 void CacheCallback::sendRecap (MamaMsg* request)
 {
-    mQueue->enqueueEvent  (this, request);                        
+    mQueue->enqueueEvent  (this, request);
 }
 
 void CacheCallback::onCreate (MamaSubscription* subscriber)
@@ -409,7 +409,7 @@ void CacheCallback::onRecapRequest (MamaSubscription*  subscription)
     flush (cout);
 }
 
-void CacheCallback::onError (MamaSubscription* subscriber, 
+void CacheCallback::onError (MamaSubscription* subscriber,
                              const MamaStatus& status,
                              const char*       subject)
 {
@@ -425,38 +425,38 @@ void CacheCallback::onQuality (MamaSubscription*  subscription,
                                short              cause,
                                const void*        platformInfo)
 {
-    printf ("Quality change: %s\n", 
+    printf ("Quality change: %s\n",
             mamaQuality_convertToString(quality));
     flush (cout);
 }
-                                   
-                                   
+
+
 void MamaProxy::createPublisher ()
 {
     managerCallback =  new SubscriptionHandler(this);
     srand ( time(NULL) );
-    
+
     mPubManager = new MamaDQPublisherManager();
-  
-    mPubManager->create (mPubTransport, 
+
+    mPubManager->create (mPubTransport,
                          Mama::getDefaultEventQueue(mPubBridge),
                          managerCallback,
                          mPubSource);
-          
+
 	mPubManager->setSeqNum (0);
 	mPubManager->setSenderId (0);
- 
+
     if (sendSync)
     {
         syncTimer = new MamaTimer();
-        syncTimer->create(Mama::getDefaultEventQueue (mPubBridge), 
+        syncTimer->create(Mama::getDefaultEventQueue (mPubBridge),
                           this,
                           15,
-                          NULL);         
-    }                                   
+                          NULL);
+    }
 }
 
-    
+
 void MamaProxy::start ()
 {
     if (mPubBridge != mSubBridge)
@@ -476,7 +476,7 @@ void MamaProxy::subscribeToSymbols ()
 {
     MamaSubscription* sub = NULL;
     CacheCallback*    cb  = NULL;
-    
+
     SymbolList::iterator i;
     for (i=mSymbolList.begin(); i != mSymbolList.end(); i++)
     {
@@ -497,18 +497,18 @@ void MamaProxy::initializeMama ()
 {
     mPubBridge = Mama::loadBridge (mPubMiddleware);
     mSubBridge = Mama::loadBridge (mSubMiddleware);
-    
+
     Mama::open ();
-        
+
     mSubTransport = new MamaTransport;
     mSubTransport->create (mSubTport, mSubBridge);
     mSubTransport->setTransportCallback (new TransportCallback ());
-        
+
     mPubTransport = new MamaTransport;
     mPubTransport->create (mPubTport, mPubBridge);
     mPubTransport->setTransportCallback (new TransportCallback ());
 }
-    
+
 void MamaProxy::onTimer (MamaTimer* timer)
 {
     timer->destroy();
@@ -525,7 +525,7 @@ void MamaProxy::onDestroy(MamaTimer* timer, void* closure)
 
 void MamaProxy::shutdownMama ()
 {
-   
+
 }
 
 int main (int argc, const char **argv)
@@ -533,7 +533,7 @@ int main (int argc, const char **argv)
     MamaProxy  mMamaProxy;
     setbuf (stdout, NULL);
     mMamaProxy.parseCommandLine (argc, argv);
-    
+
     try
     {
         mMamaProxy.initializeMama ();
@@ -558,19 +558,19 @@ void SubscriptionHandler::onCreate (MamaDQPublisherManager*  publisher)
 void SubscriptionHandler::onError (MamaDQPublisherManager*  publisher,
                                    const MamaStatus&        status,
                                    const char*              errortxt,
-                                   MamaMsg*                 msg) 
+                                   MamaMsg*                 msg)
 {
     if (msg)
     {
-        printf ("Unhandled Msg: %s (%s) %s\n", 
-                status.toString (), 
-                msg->toString (), 
+        printf ("Unhandled Msg: %s (%s) %s\n",
+                status.toString (),
+                msg->toString (),
                 errortxt);
     }
     else
     {
-        printf ("Unhandled Msg: %s %s\n", 
-                status.toString (), 
+        printf ("Unhandled Msg: %s %s\n",
+                status.toString (),
                 errortxt);
     }
     flush (cout);
@@ -582,18 +582,18 @@ void SubscriptionHandler::onNewRequest (MamaDQPublisherManager*  publisherManage
                                         short                    msgType,
                                         MamaMsg&                 msg)
 {
-    MamaMsg*          request = NULL;	
+    MamaMsg*          request = NULL;
     MamaSubscription* mSub    = mMamaProxy->getMamaSubscription (symbol);
-    
-    if (mSub)	
+
+    if (mSub)
     {
         CacheCallback* cb     = (CacheCallback*) mSub->getCallback ();
-        MamaDQPublisher *mPub = publisherManager->createPublisher (symbol, cb);   
-		
+        MamaDQPublisher *mPub = publisherManager->createPublisher (symbol, cb);
+
         printf ("Received New request: %s\n",  symbol);
 
         cb->setPublisher(mPub);
-		
+
         switch (msgType)
         {
         case MAMA_SUBSC_SUBSCRIBE:
@@ -627,11 +627,11 @@ void SubscriptionHandler::onNewRequest (MamaDQPublisherManager*  publisherManage
 
             if (numSymbols>49)
             {
-                aMsg->addString (NULL, 
-                                 MamaFieldSymbolList.mFid, 
+                aMsg->addString (NULL,
+                                 MamaFieldSymbolList.mFid,
                                  symbols.c_str());
-                aMsg->addU8     (NULL, 
-                                 MamaFieldMsgType.mFid, 
+                aMsg->addU8     (NULL,
+                                 MamaFieldMsgType.mFid,
                                  MAMA_MSG_TYPE_INITIAL);
                 mPub->sendReply(msg, aMsg);
                 aMsg->clear();
@@ -653,16 +653,16 @@ void SubscriptionHandler::onNewRequest (MamaDQPublisherManager*  publisherManage
     }
     flush (cout);
 }
-  
+
 void SubscriptionHandler::onRequest (MamaDQPublisherManager*  publisherManager,
                                      const MamaPublishTopic&  publishTopicInfo,
                                      short                    subType,
                                      short                    msgType,
                                      MamaMsg&                 msg)
-{  
+{
     MamaMsg* request = NULL;
     printf ("Received request: %s\n",  publishTopicInfo.mSymbol);
-    
+
     if (subType == MAMA_SUBSC_TYPE_SYMBOL_LIST_NORMAL || subType == MAMA_SUBSC_TYPE_SYMBOL_LIST)
     {
 
@@ -685,11 +685,11 @@ void SubscriptionHandler::onRequest (MamaDQPublisherManager*  publisherManager,
 
             if (numSymbols>49)
             {
-                aMsg->addString (NULL, 
-                                 MamaFieldSymbolList.mFid, 
+                aMsg->addString (NULL,
+                                 MamaFieldSymbolList.mFid,
                                  symbols.c_str());
-                aMsg->addU8     (NULL, 
-                                 MamaFieldMsgType.mFid, 
+                aMsg->addU8     (NULL,
+                                 MamaFieldMsgType.mFid,
                                  MAMA_MSG_TYPE_INITIAL);
 
                 publishTopicInfo.mPub->sendReply(msg, aMsg);
@@ -701,11 +701,11 @@ void SubscriptionHandler::onRequest (MamaDQPublisherManager*  publisherManager,
 
         if (numSymbols > 0)
         {
-            aMsg->addString (NULL, 
-                             MamaFieldSymbolList.mFid, 
+            aMsg->addString (NULL,
+                             MamaFieldSymbolList.mFid,
                              symbols.c_str());
-            aMsg->addU8     (NULL, 
-                             MamaFieldMsgType.mFid, 
+            aMsg->addU8     (NULL,
+                             MamaFieldMsgType.mFid,
                              MAMA_MSG_TYPE_INITIAL);
             publishTopicInfo.mPub->sendReply(msg, aMsg);
             aMsg->clear();
@@ -714,7 +714,7 @@ void SubscriptionHandler::onRequest (MamaDQPublisherManager*  publisherManager,
     }
 
     switch (msgType)
-    {      
+    {
         case MAMA_SUBSC_SUBSCRIBE:
         case MAMA_SUBSC_SNAPSHOT:
              request = msg.detach();
@@ -743,15 +743,15 @@ void SubscriptionHandler::onRefresh (MamaDQPublisherManager*  publisherManager,
                                      short                    subType,
                                      short                    msgType,
                                      MamaMsg&                 msg)
-{  
+{
     printf ("Received Refresh: %s\n",  publishTopicInfo.mSymbol);
 	flush (cout);
-} 
-    
-MamaSubscription* MamaProxy::getMamaSubscription (const char * symbol) 
+}
+
+MamaSubscription* MamaProxy::getMamaSubscription (const char * symbol)
 {
     SubscriptionList::const_iterator i;
-    
+
     for (i = mSubscriptionList.begin (); i != mSubscriptionList.end (); i++)
     {
         if  (strcmp(((MamaSubscription*)*i)->getSymbol() , symbol) == 0)
@@ -762,7 +762,7 @@ MamaSubscription* MamaProxy::getMamaSubscription (const char * symbol)
     return NULL;
 }
 
-void MamaProxy::readSymbolsFromFile (void) 
+void MamaProxy::readSymbolsFromFile (void)
 {
     /* Get subjects from file or interactively */
     FILE* fp = NULL;
@@ -831,7 +831,7 @@ void MamaProxy::parseCommandLine (int argc, const char **argv)
         else if (strcmp (argv[i], "-s") == 0)
         {
             mSymbolList.push_back (argv[i + 1]);
-            i += 2; 
+            i += 2;
         }
         else if (strcmp (argv[i], "-f") == 0)
         {
@@ -841,7 +841,7 @@ void MamaProxy::parseCommandLine (int argc, const char **argv)
         else if ((strcmp (argv[i], "-h") == 0) ||
                  (strcmp (argv[i], "-?") == 0))
         {
-            usage (0); 
+            usage (0);
             i++;
         }
         else if (strcmp ("-tports", argv[i]) == 0)
@@ -857,12 +857,12 @@ void MamaProxy::parseCommandLine (int argc, const char **argv)
         else if (strcmp ("-ms", argv[i]) == 0)
         {
             mSubMiddleware = argv[i+1];
-            i += 2;              
+            i += 2;
         }
         else if (strcmp ("-mp", argv[i]) == 0)
         {
             mPubMiddleware = argv[i+1];
-            i += 2;                 
+            i += 2;
         }
         else if (strcmp ("-q", argv[i]) == 0)
         {
@@ -879,12 +879,12 @@ void MamaProxy::parseCommandLine (int argc, const char **argv)
             if (mMamaLogLevel == MAMA_LOG_LEVEL_WARN)
             {
                 mMamaLogLevel = MAMA_LOG_LEVEL_NORMAL;
-                mama_enableLogging (stderr, MAMA_LOG_LEVEL_NORMAL); 
+                mama_enableLogging (stderr, MAMA_LOG_LEVEL_NORMAL);
             }
             else if (mMamaLogLevel == MAMA_LOG_LEVEL_NORMAL)
             {
                 mMamaLogLevel = MAMA_LOG_LEVEL_FINE;
-                mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINE); 
+                mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINE);
             }
             else if (mMamaLogLevel == MAMA_LOG_LEVEL_FINE)
             {
@@ -902,10 +902,10 @@ void MamaProxy::parseCommandLine (int argc, const char **argv)
         else
         {
             printf ("Unknown arg %s\n", argv[i]);
-            usage (0); 
+            usage (0);
         }
     }
-    
+
     if (mSymbolList.empty ())
     {
         readSymbolsFromFile ();

@@ -39,7 +39,7 @@ import java.util.LinkedList;
  * modified fields.
  */
 
-public class MamdaSecurityStatusListener implements MamdaMsgListener, 
+public class MamdaSecurityStatusListener implements MamdaMsgListener,
                                                     MamdaSecurityStatusRecap,
                                                     MamdaSecurityStatusUpdate
 {
@@ -62,7 +62,7 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
     // status.  These fields can be used by applications for reference
     // and will be passed for recaps.
 
-    private class MamdaSecurityStatusCache 
+    private class MamdaSecurityStatusCache
     {
         public MamaDateTime    mSrcTime         = new MamaDateTime();
         public MamaDateTime    mActTime         = new MamaDateTime();
@@ -86,7 +86,7 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
         public char            mLuldIndicator   = ' ';
         public MamaPrice       mLuldHighLimit   = new MamaPrice();
         public MamaPrice       mLuldLowLimit    = new MamaPrice();
-        
+
         public MamdaFieldState    mSrcTimeFieldState           = new MamdaFieldState();
         public MamdaFieldState    mActTimeFieldState           = new MamdaFieldState();
         public MamdaFieldState    mSendTimeFieldState          = new MamdaFieldState();
@@ -162,18 +162,18 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
         cache.mLuldIndicator   = ' ';
         cache.mLuldHighLimit.clear();
         cache.mLuldLowLimit.clear();
-        
+
         cache.mSrcTimeFieldState.setState           (MamdaFieldState.NOT_INITIALISED);
-        cache.mActTimeFieldState.setState           (MamdaFieldState.NOT_INITIALISED); 
+        cache.mActTimeFieldState.setState           (MamdaFieldState.NOT_INITIALISED);
         cache.mSendTimeFieldState.setState          (MamdaFieldState.NOT_INITIALISED);
         cache.mLineTimeFieldState.setState          (MamdaFieldState.NOT_INITIALISED);
-        cache.mEventSeqNumFieldState.setState       (MamdaFieldState.NOT_INITIALISED); 
+        cache.mEventSeqNumFieldState.setState       (MamdaFieldState.NOT_INITIALISED);
         cache.mEventTimeFieldState.setState         (MamdaFieldState.NOT_INITIALISED);
         cache.mSecStatusFieldState.setState         (MamdaFieldState.NOT_INITIALISED);
         cache.mSecStatusQualFieldState.setState     (MamdaFieldState.NOT_INITIALISED);
-        cache.mSecStatusStrFieldState.setState      (MamdaFieldState.NOT_INITIALISED); 
-        cache.mSecStatusQualStrFieldState.setState  (MamdaFieldState.NOT_INITIALISED); 
-        cache.mSecStatusOrigStrFieldState.setState  (MamdaFieldState.NOT_INITIALISED); 
+        cache.mSecStatusStrFieldState.setState      (MamdaFieldState.NOT_INITIALISED);
+        cache.mSecStatusQualStrFieldState.setState  (MamdaFieldState.NOT_INITIALISED);
+        cache.mSecStatusOrigStrFieldState.setState  (MamdaFieldState.NOT_INITIALISED);
         cache.mShortSaleCircuitBreakerFieldState.setState(MamdaFieldState.NOT_INITIALISED);
         cache.mPartIdFieldState.setState            (MamdaFieldState.NOT_INITIALISED);
         cache.mSymbolFieldState.setState            (MamdaFieldState.NOT_INITIALISED);
@@ -267,7 +267,7 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
     }
 
     public String getSecurityStatusOrigStr()
-    {    
+    {
         return securityStatusCache.mSecStatusOrigStr;
     }
 
@@ -297,7 +297,7 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
     }
 
     /*      Field State Accessors       */
-    
+
     public short getSrcTimeFieldState()
     {
         return securityStatusCache.mSrcTimeFieldState.getState();
@@ -317,9 +317,9 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
     {
         return securityStatusCache.mLineTimeFieldState.getState();
     }
-        
+
     public short getShortSaleCircuitBreakerFieldState()
-    {          
+    {
         return securityStatusCache.mShortSaleCircuitBreakerFieldState.getState();
     }
 
@@ -404,7 +404,7 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
     {
       return securityStatusCache.mLuldLowLimitFieldState.getState();
     }
- 
+
     /**
      * Implementation of MamdaListener interface.
      */
@@ -481,7 +481,7 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
                                        MamaMsg            msg)
     {
         if (securityStatusCache.mUpdated)
-        {            
+        {
             Iterator i = mHandlers.iterator();
             while (i.hasNext())
             {
@@ -495,30 +495,30 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
 
     private void updateFieldStates()
     {
-        if (securityStatusCache.mSrcTimeFieldState.getState() == MamdaFieldState.MODIFIED) 
+        if (securityStatusCache.mSrcTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             securityStatusCache.mSrcTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-        if (securityStatusCache.mActTimeFieldState.getState() == MamdaFieldState.MODIFIED) 
-            securityStatusCache.mActTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED); 
+        if (securityStatusCache.mActTimeFieldState.getState() == MamdaFieldState.MODIFIED)
+            securityStatusCache.mActTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
         if (securityStatusCache.mSendTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             securityStatusCache.mSendTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
         if (securityStatusCache.mLineTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             securityStatusCache.mLineTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
         if (securityStatusCache.mEventSeqNumFieldState.getState() == MamdaFieldState.MODIFIED)
-            securityStatusCache.mEventSeqNumFieldState.setState(MamdaFieldState.NOT_MODIFIED); 
-        if (securityStatusCache.mEventTimeFieldState.getState() == MamdaFieldState.MODIFIED)   
+            securityStatusCache.mEventSeqNumFieldState.setState(MamdaFieldState.NOT_MODIFIED);
+        if (securityStatusCache.mEventTimeFieldState.getState() == MamdaFieldState.MODIFIED)
             securityStatusCache.mEventTimeFieldState.setState(MamdaFieldState.NOT_MODIFIED);
         if (securityStatusCache.mSecStatusFieldState.getState() == MamdaFieldState.MODIFIED)
             securityStatusCache.mSecStatusFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-        if (securityStatusCache.mSecStatusQualFieldState.getState() == MamdaFieldState.MODIFIED) 
+        if (securityStatusCache.mSecStatusQualFieldState.getState() == MamdaFieldState.MODIFIED)
             securityStatusCache.mSecStatusQualFieldState.setState(MamdaFieldState.NOT_MODIFIED);
-        if (securityStatusCache.mSecStatusStrFieldState.getState() == MamdaFieldState.MODIFIED) 
-            securityStatusCache.mSecStatusStrFieldState.setState(MamdaFieldState.NOT_MODIFIED); 
-        if (securityStatusCache.mSecStatusQualStrFieldState.getState() == MamdaFieldState.MODIFIED)  
-            securityStatusCache.mSecStatusQualStrFieldState.setState(MamdaFieldState.NOT_MODIFIED); 
-        if (securityStatusCache.mSecStatusOrigStrFieldState.getState() == MamdaFieldState.MODIFIED) 
-            securityStatusCache.mSecStatusOrigStrFieldState.setState(MamdaFieldState.NOT_MODIFIED); 
-        if (securityStatusCache.mShortSaleCircuitBreakerFieldState.getState() == MamdaFieldState.MODIFIED) 
-            securityStatusCache.mShortSaleCircuitBreakerFieldState.setState(MamdaFieldState.NOT_MODIFIED); 
+        if (securityStatusCache.mSecStatusStrFieldState.getState() == MamdaFieldState.MODIFIED)
+            securityStatusCache.mSecStatusStrFieldState.setState(MamdaFieldState.NOT_MODIFIED);
+        if (securityStatusCache.mSecStatusQualStrFieldState.getState() == MamdaFieldState.MODIFIED)
+            securityStatusCache.mSecStatusQualStrFieldState.setState(MamdaFieldState.NOT_MODIFIED);
+        if (securityStatusCache.mSecStatusOrigStrFieldState.getState() == MamdaFieldState.MODIFIED)
+            securityStatusCache.mSecStatusOrigStrFieldState.setState(MamdaFieldState.NOT_MODIFIED);
+        if (securityStatusCache.mShortSaleCircuitBreakerFieldState.getState() == MamdaFieldState.MODIFIED)
+            securityStatusCache.mShortSaleCircuitBreakerFieldState.setState(MamdaFieldState.NOT_MODIFIED);
         if (securityStatusCache.mPartIdFieldState.getState() == MamdaFieldState.MODIFIED)
             securityStatusCache.mPartIdFieldState.setState(MamdaFieldState.NOT_MODIFIED);
         if (securityStatusCache.mSymbolFieldState.getState() == MamdaFieldState.MODIFIED)
@@ -606,7 +606,7 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
                 return field.getString();
             default:
                 mLogger.fine ("Unhandled type " + field.getType() +
-                              " for " + field.getName() + 
+                              " for " + field.getName() +
                               ".  Expected string or integer.");
                 break;
         }
@@ -713,15 +713,15 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
     {
         public void onUpdate (MamdaSecurityStatusListener listener,
                               MamaMsgField                field)
-        {  
-         
+        {
+
             if (listener.securityStatusCache.mShortSaleCircuitBreaker == field.getChar())
             {
                 return;
             }
-            listener.securityStatusCache.mShortSaleCircuitBreaker = field.getChar(); 
-            listener.securityStatusCache.mShortSaleCircuitBreakerFieldState.setState (MamdaFieldState.MODIFIED);  
-            listener.securityStatusCache.mUpdated = true;   
+            listener.securityStatusCache.mShortSaleCircuitBreaker = field.getChar();
+            listener.securityStatusCache.mShortSaleCircuitBreakerFieldState.setState (MamdaFieldState.MODIFIED);
+            listener.securityStatusCache.mUpdated = true;
         }
     }
 
@@ -741,7 +741,7 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
                               MamaMsgField                field)
         {
             String status = listener.getFieldAsString(field);
-            
+
             if (listener.securityStatusCache.mSecStatusStr != null)
             {
                 if  (listener.securityStatusCache.mSecStatusStr.equals(status))
@@ -812,8 +812,8 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
     {
         public void onUpdate (MamdaSecurityStatusListener listener,
                               MamaMsgField                field)
-        {  
-         
+        {
+
             if (listener.securityStatusCache.mLuldIndicator != field.getChar() ||
                 listener.securityStatusCache.mLuldIndicatorFieldState.getState() == MamdaFieldState.NOT_INITIALISED)
             {

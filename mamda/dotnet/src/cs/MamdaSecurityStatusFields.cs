@@ -89,7 +89,7 @@ namespace Wombat
 		{
 			return mInitialised;
 		}
-        
+
         public static void reset ()
         {
             if (MamdaCommonFields.isSet())

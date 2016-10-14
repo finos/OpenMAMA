@@ -69,6 +69,7 @@ typedef struct oeaEntitlementSubscriptionHandle_
  *
  * @param ctx Pointer to the SubscriptionContext to be populated.
  */
+MAMAExpDLL
 mama_status
 oeaEntitlementBridge_registerSubjectContext(SubjectContext* ctx);
 
@@ -80,6 +81,7 @@ oeaEntitlementBridge_registerSubjectContext(SubjectContext* ctx);
  * @param ctx The subscription SubjectContext to be populated with a pointer to
  *            the entitlement subscription object.
  */
+MAMAExpDLL
 mama_status
 oeaEntitlementBridge_createSubscription(mamaEntitlementBridge entBridge, SubjectContext* ctx);
 
@@ -88,6 +90,7 @@ oeaEntitlementBridge_createSubscription(mamaEntitlementBridge entBridge, Subject
  *
  * @param handle The subscription object to free.
  */
+MAMAExpDLL
 mama_status
 oeaEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle);
 
@@ -97,6 +100,7 @@ oeaEntitlementBridge_destroySubscription(entitlementSubscriptionHandle handle);
  * @param handle Entitlement subscription object to update.
  * @param isSnapshot Value to update object to.
  */
+MAMAExpDLL
 mama_status
 oeaEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle handle, int isSnapshot);
 
@@ -107,6 +111,7 @@ oeaEntitlementBridge_setIsSnapshot(entitlementSubscriptionHandle handle, int isS
  * @param handle The entitlement subscription objec tto check against
  * @param subject The topic to check.
  */
+MAMAExpDLL
 int
 oeaEntitlementBridge_isAllowed(entitlementSubscriptionHandle handle, char* subject);
 
@@ -117,6 +122,7 @@ oeaEntitlementBridge_isAllowed(entitlementSubscriptionHandle handle, char* subje
  *
  * @param bridge The bridge object to destroy.
  */
+MAMAExpDLL
 mama_status
 oeaEntitlementBridge_destroy(mamaEntitlementBridge bridge);
 
@@ -128,6 +134,7 @@ oeaEntitlementBridge_destroy(mamaEntitlementBridge bridge);
  * @param bridge The (preallocated by mama) bridge level object to be
  *               initilized.
  */
+MAMAExpDLL
 mama_status
 oeaEntitlementBridge_init(entitlementBridge* bridge);
 

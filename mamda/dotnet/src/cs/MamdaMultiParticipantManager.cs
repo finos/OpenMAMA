@@ -32,12 +32,12 @@ namespace Wombat
 	/// Developers are notified of each element available for the
 	/// consolidated security, including the national best bid and offer,
 	/// and each regional exchange (Market Maker).  Developers can pick
-	/// and choose which elements they wish to provide handling for 
+	/// and choose which elements they wish to provide handling for
 	/// (e.g., BBO-only, certain regional exchanges, etc.).
-	/// 
+	///
 	/// Specialized Listeners can be added to the
 	/// <code>MamdaMultiParticipantManager</code> in response to the callbacks
-	/// on the <code>MamdaMultiParticipantHandler</code> being invoked. 
+	/// on the <code>MamdaMultiParticipantHandler</code> being invoked.
 	/// Alternatively, the Listeners can be added up front if the participants
 	/// are known in advance.
 	/// </summary>
@@ -64,7 +64,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Add a specialized handler for notifications about the
-		/// multi-participant security.  
+		/// multi-participant security.
 		/// </summary>
 		/// <param name="handler">Concrete instance of the MamdaMultiParticipantHandler
 		/// interface.</param>
@@ -76,7 +76,7 @@ namespace Wombat
 		/// <summary>
 		/// Add a specialized message listener (e.g., a MamdaQuoteListener,
 		/// MamdaTradeListener, etc.) for the consolidated data.
-		/// 
+		///
 		/// Multiple listeners can be added.
 		/// </summary>
 		/// <param name="listener">Concrete instance of the MamdaMsgListener interface.</param>
@@ -88,7 +88,7 @@ namespace Wombat
 		/// <summary>
 		/// Add a specialized message listener (e.g., a MamdaQuoteListener,
 		/// MamdaTradeListener, etc.) for a participant.
-		/// 
+		///
 		/// Multiple listeners for each participant can be added.
 		/// </summary>
 		/// <param name="listener">Concrete instance of the MamdaMsgListener interface.</param>
@@ -100,7 +100,7 @@ namespace Wombat
 			ParticipantInfo  participantInfo = getParticipantInfo(partId);
 			participantInfo.mParticipantListeners.Add(listener);
 		}
-		
+
 		/// <summary>
 		/// Implementation of the MamdaMsgListener Interface.
 		/// </summary>
@@ -172,7 +172,7 @@ namespace Wombat
 			}
 			return partInfo;
 		}
-    
+
 		private void checkParticipantCreateNotify(
 			MamdaSubscription subscription,
 			string            partId,
@@ -184,7 +184,7 @@ namespace Wombat
 			   not have already notified them of the first update for this
 			   participant.
 			 */
-			if (!partInfo.mNotifiedPartCreate) 
+			if (!partInfo.mNotifiedPartCreate)
 			{
 				foreach (MamdaMultiParticipantHandler handler in mHandlers)
 				{
@@ -212,7 +212,7 @@ namespace Wombat
 				mNotifiedConsolidatedCreate = true;
 			}
 		}
-    
+
 		private void forwardMsg(
 			MamdaSubscription  subscription,
 			MamaMsg            msg,
@@ -230,7 +230,7 @@ namespace Wombat
 				checkParticipantCreateNotify(subscription, partId, partInfo);
 
 				/* We may have a ParticipantInfo entry for the partId but there is
-				   still no guarantee that any listeners have been registered. 
+				   still no guarantee that any listeners have been registered.
 				   This is quite acceptable as users may not be interested in all
 				   participants. */
 				if (partInfo.mParticipantListeners.Count > 0)
@@ -246,7 +246,7 @@ namespace Wombat
 
 				/* Forward the message if we have any listeners*/
 				if (mConsolidatedListeners.Count > 0)
-				{   
+				{
 					forwardMsg(mConsolidatedListeners, subscription, msg, msgType);
 				}
 			}
@@ -284,13 +284,13 @@ namespace Wombat
 		{
 			string partId = null;
 			string symbol = null;
-            
+
             if (msg.tryString(MamdaCommonFields.PART_ID, ref partId))
             {
                 if (partId != String.Empty)
                     return partId;
             }
-            
+
             if (!msg.tryString(MamdaCommonFields.ISSUE_SYMBOL, ref symbol))
             {
                 if (!msg.tryString(MamdaCommonFields.INDEX_SYMBOL, ref symbol))
@@ -301,9 +301,9 @@ namespace Wombat
                     }
                 }
             }
-            
-       
-			int lastDotIndex = symbol.LastIndexOf('.');           
+
+
+			int lastDotIndex = symbol.LastIndexOf('.');
             if (lastDotIndex != -1)
             {
                 lastDotIndex++;

@@ -80,7 +80,7 @@ static void MAMACALLTYPE subscriptionMsgCB (
         mamaMsg             msg,
         void*               closure,
         void*               itemClosure);
-                                                                                                                       
+
 /*Invoked in response to errors*/
 static void MAMACALLTYPE subscriptionErrorCB  (
         mamaSubscription    subscription,
@@ -88,7 +88,7 @@ static void MAMACALLTYPE subscriptionErrorCB  (
         void*               platformError,
         const char*         subject,
         void*               closure );
-                                                                                                                       
+
 /*Invoked when a subscription is first created*/
 static void MAMACALLTYPE subscriptionCreateCB (
         mamaSubscription    subscription,
@@ -100,21 +100,21 @@ static void MAMACALLTYPE subscriptionQualityCB (mamaSubscription    subscription
                        const char*         symbol,
                        short               cause,
                        const void*         platformInfo,
-                       void*               closure);    
-  
+                       void*               closure);
+
 /*Invoked when a subscription is first created*/
 static void MAMACALLTYPE subscriptionGapCB (mamaSubscription    subscription,
                    void*               closure);
 
 /*Invoked to indicate a data quality event*/
 static void MAMACALLTYPE subscriptionRecapCB (mamaSubscription    subscription,
-                     void*               closure); 
-                                
+                     void*               closure);
+
 /*Invoked to indicate a subscription destroyed event*/
 static void MAMACALLTYPE subscriptionDestroyCB (mamaSubscription    subscription,
-                     void*               closure); 
+                     void*               closure);
 
-                                
+
 /*The following three are callback functions for dictionary */
 static void MAMACALLTYPE dictTimeoutCB( mamaDictionary dict, void *closure );
 static void MAMACALLTYPE dictErrorCB( mamaDictionary dict, const char *errMsg, void *closure );
@@ -132,15 +132,15 @@ static void MAMACALLTYPE dictCompleteCB( mamaDictionary dict, void *closure );
 JNIEXPORT void JNICALL
 Java_com_wombat_mama_MamaSubscription_setRequiresInitial
   (JNIEnv* env, jobject this, jboolean requiresInitial)
-{   
+{
     mama_status     status              =   MAMA_STATUS_OK;
     jlong           subscriptionPointer =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     subscriptionPointer = (*env)->GetLongField(env,this,
                                                subscriptionPointerFieldId_g);
-    
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer, 
+
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
     "MamaSubscription.setRequiresInitial(): Null parameter, subscription may have already been destroyed.");
 
     assert(0!=subscriptionPointer);
@@ -155,7 +155,7 @@ Java_com_wombat_mama_MamaSubscription_setRequiresInitial
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Could not set requires initial for mamaSubscription.",
                 status);
-        utils_throwWombatException(env,errorString);   
+        utils_throwWombatException(env,errorString);
     }
 
     return;
@@ -177,7 +177,7 @@ Java_com_wombat_mama_MamaSubscription_getRequiresInitital
 
     subscriptionPointer = (*env)->GetLongField(env,this,
                                                subscriptionPointerFieldId_g);
-    
+
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaSubscription.getRequiresInitital(): Null parameter, subscription may have been destroyed.", 0);
 
@@ -192,9 +192,9 @@ Java_com_wombat_mama_MamaSubscription_getRequiresInitital
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Could not get requires initial for mamaSubscription.",
                 status);
-        utils_throwWombatException(env,errorString);   
+        utils_throwWombatException(env,errorString);
     }
-    
+
     return (jboolean)requiresInitial;
 }
 
@@ -217,7 +217,7 @@ Java_com_wombat_mama_MamaSubscription_getReceivedInitial
 
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaSubscription.getReceivedInitial(): Null parameter, subscription may have been destroyed.", 0);
-    
+
     assert(0!=subscriptionPointer);
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_getReceivedInitial(
@@ -250,7 +250,7 @@ Java_com_wombat_mama_MamaSubscription_activate
 
     subscriptionPointer = (*env)->GetLongField(env,this,
                                                subscriptionPointerFieldId_g);
-    
+
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
     "MamaSubscription.activate(): Null parameter, subscription may have been destroyed.");
 
@@ -386,14 +386,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setTimeout
     jlong           subscriptionPointer =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
     "MamaSubscription.setTimeout(): Null parameter, subcription may have been destroyed.");
-    
+
     assert(0!=subscriptionPointer);
-    
+
     if(MAMA_STATUS_OK!=(status=mamaSubscription_setTimeout
                 (CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
                  (double)timeout)))
@@ -422,7 +422,7 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaSubscription_getTimeout
     double          timeout             =   0.0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
@@ -438,7 +438,7 @@ JNIEXPORT jdouble JNICALL Java_com_wombat_mama_MamaSubscription_getTimeout
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Could not get timeout for mamaSubscription.",
                 status);
-        utils_throwWombatException(env,errorString);       
+        utils_throwWombatException(env,errorString);
     }
 
     return (jdouble)timeout;
@@ -456,11 +456,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setServiceLevel
     jlong                subscriptionPointer =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
     "MamaSubscription.setServiceLevel(): Null parameter, subcription may have been destroyed.");
-    
+
     assert(0!=subscriptionPointer);
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_setServiceLevel(
@@ -475,7 +475,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setServiceLevel
                 status);
         utils_throwWombatException (env,errorString);
     }
-    
+
     return;
 }
 
@@ -492,12 +492,12 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaSubscription_getServiceLevel
     mamaServiceLevel     serviceLevel        =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
-    
+
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaSubscription.getServiceLevel(): Null parameter, subcription may have been destroyed.", 0);
-    
+
     assert(0!=subscriptionPointer);
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_getServiceLevel(
@@ -511,7 +511,7 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaSubscription_getServiceLevel
                 status);
         utils_throwWombatException (env,errorString);
     }
-    
+
     return (jshort)serviceLevel;
 }
 
@@ -529,12 +529,12 @@ Java_com_wombat_mama_MamaSubscription_getServiceLevelOptions
     long                 serviceLevelOpt     =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
-    
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer, 
+
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaSubscription.getServiceLevelOptions(): Null parameter, subcription may have been destroyed.", 0);
-    
+
     assert(0!=subscriptionPointer);
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_getServiceLevelOpt(
@@ -548,7 +548,7 @@ Java_com_wombat_mama_MamaSubscription_getServiceLevelOptions
                 status);
         utils_throwWombatException (env,errorString);
     }
-    
+
     return (jlong)serviceLevelOpt;
 }
 
@@ -590,14 +590,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setRetries
     jlong           subscriptionPointer =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer, 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
     "MamaSubscription.setRetries(): Null parameter, subcription may have been destroyed.");
-    
+
     assert(0!=subscriptionPointer);
-    
+
     if(MAMA_STATUS_OK!=(status=mamaSubscription_setRetries
                 (CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
                  (int)retries)))
@@ -625,10 +625,10 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getRetries
     int             retries             =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer, 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaSubscription.getRetries(): Null parameter, subcription may have been destroyed.", 0);
 
     assert(0!=subscriptionPointer);
@@ -661,8 +661,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_destroy
     subscriptionPointer =
             (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer, 
-    "MamaSubscription.destroy(): Null parameter, subscription may have already been destroyed."); 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
+    "MamaSubscription.destroy(): Null parameter, subscription may have already been destroyed.");
 
     assert(0!=subscriptionPointer);
 
@@ -683,8 +683,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_destroyEx
     subscriptionPointer =
             (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer, 
-    "MamaSubscription.destroy(): Null parameter, subscription may have already been destroyed."); 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
+    "MamaSubscription.destroy(): Null parameter, subscription may have already been destroyed.");
 
     assert(0!=subscriptionPointer);
 
@@ -704,7 +704,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setRecoverGaps
     jlong           subscriptionPointer =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
      MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
@@ -723,7 +723,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setRecoverGaps
                 status);
         utils_throwWombatException(env,errorString);
     }
-    
+
     return;
 }
 
@@ -740,10 +740,10 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaSubscription_getRecoverGaps
     int             recoverGaps         =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer, 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaSubscription.getRecoverGaps(): Null parameter, subcription may have been destroyed.",0);
     assert(0!=subscriptionPointer);
 
@@ -775,12 +775,12 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaSubscription_getItemClosure
     void*           itemClosure         =   NULL;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer, 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaSubscription.getItemClosure(): Null parameter, subcription may have been destroyed.", NULL);
-    
+
     assert(0!=subscriptionPointer);
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_getItemClosure(
@@ -794,7 +794,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaSubscription_getItemClosure
                 status);
         utils_throwWombatException(env,errorString);
     }
-    
+
     return (jobject)itemClosure;
 }
 
@@ -811,12 +811,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setItemClosure
     jobject         itemClosureGlobal   =   NULL;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-    subscriptionPointer = 
+    subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer, 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(subscriptionPointer,
     "MamaSubscription.setItemClosure(): Null parameter, subcription may have been destroyed.");
-    
+
     assert(0!=subscriptionPointer);
 
     /*This needs to be global otherwise it will go out of scope once this cal
@@ -835,7 +835,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setItemClosure
                 status);
         utils_throwWombatException(env,errorString);
     }
-    
+
     return;
 }
 
@@ -863,7 +863,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_createNativeSubscri
     jlong               queuePointer        =   0;
     mamaMsgCallbacks    c_callback;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     callbackClosure* closureImpl = (callbackClosure*)calloc(1,
             sizeof(callbackClosure));
     if (!closureImpl)
@@ -872,7 +872,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_createNativeSubscri
                 " Could not allocate.");
         return;
     }
-    
+
     closureImpl->mUserData      =   NULL;
     closureImpl->mClientCB      =   NULL;
     closureImpl->mSubscription  =   NULL;
@@ -900,7 +900,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_createNativeSubscri
 
     sourcePointer = (*env)->GetLongField(env, source,
                                             sourcePointerFieldId_g);
-    
+
     closureImpl->mClientCB = (*env)->NewGlobalRef(env, callback);
 
     /*If the client supplied a Java closeure add it to ours*/
@@ -908,7 +908,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_createNativeSubscri
 
     /*Check if a queue was specified.*/
     if(queue)
-    {  
+    {
         /*Get the queue pointer value from the MamaQueue java object*/
         queuePointer = (*env)->GetLongField(env, queue, queuePointerFieldId_g);
         queue_c = CAST_JLONG_TO_POINTER(mamaQueue, queuePointer);
@@ -931,17 +931,17 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_createNativeSubscri
     subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    /*Add the Java Subscription to the closure - we need it in the 
+    /*Add the Java Subscription to the closure - we need it in the
      async callbacks so it can be passed to the Java callback*/
     closureImpl->mSubscription = (*env)->NewGlobalRef(env,this);
-        
+
     if(MAMA_STATUS_OK != (status = mamaSubscription_create(
-                    CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer), 
+                    CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
                     queue_c,
                     &c_callback,
                     CAST_JLONG_TO_POINTER(mamaSource,sourcePointer),
                     c_symbol,
-                    closureImpl)))    
+                    closureImpl)))
     {
         if(c_symbol)(*env)->ReleaseStringUTFChars(env,symbol, c_symbol);
         if(closure)(*env)->DeleteGlobalRef(env,closureImpl->mUserData);
@@ -985,7 +985,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setupNativeSubscrip
     jlong               queuePointer        =   0;
     mamaMsgCallbacks    c_callback;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     callbackClosure* closureImpl = (callbackClosure*)calloc(1,
             sizeof(callbackClosure));
     if (!closureImpl)
@@ -994,7 +994,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setupNativeSubscrip
                 " Could not allocate.");
         return;
     }
-    
+
     closureImpl->mUserData      =   NULL;
     closureImpl->mClientCB      =   NULL;
     closureImpl->mSubscription  =   NULL;
@@ -1022,7 +1022,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setupNativeSubscrip
 
     sourcePointer = (*env)->GetLongField(env, source,
                                             sourcePointerFieldId_g);
-    
+
     closureImpl->mClientCB = (*env)->NewGlobalRef(env, callback);
 
     /*If the client supplied a Java closeure add it to ours*/
@@ -1030,7 +1030,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setupNativeSubscrip
 
     /*Check if a queue was specified.*/
     if(queue)
-    {  
+    {
         /*Get the queue pointer value from the MamaQueue java object*/
         queuePointer = (*env)->GetLongField(env, queue, queuePointerFieldId_g);
         queue_c = CAST_JLONG_TO_POINTER(mamaQueue, queuePointer);
@@ -1053,17 +1053,17 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setupNativeSubscrip
     subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    /*Add the Java Subscription to the closure - we need it in the 
+    /*Add the Java Subscription to the closure - we need it in the
      async callbacks so it can be passed to the Java callback*/
     closureImpl->mSubscription = (*env)->NewGlobalRef(env,this);
-        
+
     if(MAMA_STATUS_OK != (status = mamaSubscription_setup(
-                    CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer), 
+                    CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
                     queue_c,
                     &c_callback,
                     CAST_JLONG_TO_POINTER(mamaSource,sourcePointer),
                     c_symbol,
-                    closureImpl)))    
+                    closureImpl)))
     {
         if(c_symbol)(*env)->ReleaseStringUTFChars(env,symbol, c_symbol);
         if(closure)(*env)->DeleteGlobalRef(env,closureImpl->mUserData);
@@ -1092,7 +1092,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setupNativeSubscrip
 JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaSubscription_createNativeDictionarySubscription
   (JNIEnv* env,         jobject this,
    jobject callback,    jobject queue,
-   jobject source,      jdouble timeout,     
+   jobject source,      jdouble timeout,
    jint    retries)
 {
     mama_status                 status              =   MAMA_STATUS_OK;
@@ -1125,7 +1125,7 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaSubscription_createNativeDict
 
     /*Check if a queue was specified.*/
     if (queue)
-    {  
+    {
         /*Get the queue pointer value from the MamaQueue java object*/
         queuePointer = (*env)->GetLongField(env, queue, queuePointerFieldId_g);
         queue_c = CAST_JLONG_TO_POINTER(mamaQueue, queuePointer);
@@ -1193,14 +1193,14 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_initIDs
 {
     jclass   subscriptionCallbackClass  =   NULL;
     jclass   dictionaryCallbackClass    =   NULL;
-    
+
     subscriptionPointerFieldId_g = (*env)->GetFieldID(env,
                                  class, "subscriptionPointer_i",
                                  UTILS_JAVA_POINTER_TYPE_SIGNATURE);
     if (!subscriptionPointerFieldId_g) return;/*Exception auto thrown*/
 
     /*Get a reference to the subscription Callback class*/
-    subscriptionCallbackClass = (*env)->FindClass(env, 
+    subscriptionCallbackClass = (*env)->FindClass(env,
             "com/wombat/mama/MamaSubscriptionCallback");
     if (!subscriptionCallbackClass) return;/*Exception auto thrown*/
 
@@ -1212,7 +1212,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_initIDs
         (*env)->DeleteLocalRef(env, subscriptionCallbackClass);
         return;/*Exception auto thrown*/
     }
-    
+
     /*MamaSubscriptionCallback.onMsg()*/
     subCallbackonMsgId_g = (*env)->GetMethodID(env, subscriptionCallbackClass,
             "onMsg", "(Lcom/wombat/mama/MamaSubscription;"
@@ -1235,7 +1235,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_initIDs
 
     /*MamaSubscriptionCallback.onQuality*/
     subCallbackonQualityId_g =  (*env)->GetMethodID(env, subscriptionCallbackClass,
-            "onQuality", 
+            "onQuality",
             "(Lcom/wombat/mama/MamaSubscription;SSLjava/lang/Object;)V" );
     if(!subCallbackonQualityId_g)
     {
@@ -1245,34 +1245,34 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_initIDs
 
     /*MamaSubscriptionCallback.onQuality*/
     subCallbackonGapId_g =  (*env)->GetMethodID(env, subscriptionCallbackClass,
-           "onGap", 
+           "onGap",
            "(Lcom/wombat/mama/MamaSubscription;)V" );
     if(!subCallbackonGapId_g)
     {
         (*env)->DeleteLocalRef(env, subscriptionCallbackClass);
         return;/*Exception auto thrown*/
     }
-    
+
     /*MamaSubscriptionCallback.onRecap*/
     subCallbackonRecapId_g =  (*env)->GetMethodID(env, subscriptionCallbackClass,
-            "onRecapRequest", 
+            "onRecapRequest",
             "(Lcom/wombat/mama/MamaSubscription;)V" );
     if(!subCallbackonRecapId_g)
     {
         (*env)->DeleteLocalRef(env, subscriptionCallbackClass);
         return;/*Exception auto thrown*/
     }
-    
+
     /* Get the destroy callback. */
     subCallbackonDestroyId_g =  (*env)->GetMethodID(env, subscriptionCallbackClass,
-            "onDestroy", 
+            "onDestroy",
             "(Lcom/wombat/mama/MamaSubscription;)V" );
     if(!subCallbackonDestroyId_g)
     {
         (*env)->DeleteLocalRef(env, subscriptionCallbackClass);
         return;/*Exception auto thrown*/
     }
-    
+
     /*********************************************************
      * Dictionary fields/methods
      *********************************************************/
@@ -1314,7 +1314,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_initIDs
     /*Tidy up local refs*/
     (*env)->DeleteLocalRef(env, dictionaryCallbackClass);
     (*env)->DeleteLocalRef(env, subscriptionCallbackClass);
-    
+
     return;
 }
 
@@ -1329,7 +1329,7 @@ Java_com_wombat_mama_MamaSubscription_allocateSubscription(JNIEnv* env, jobject 
     mamaSubscription subscription       = NULL;
     mama_status      status             = MAMA_STATUS_OK;
     char             errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-   
+
     if(MAMA_STATUS_OK!=(status = mamaSubscription_allocate(&subscription)))
     {
         utils_buildErrorStringForStatus(
@@ -1337,14 +1337,14 @@ Java_com_wombat_mama_MamaSubscription_allocateSubscription(JNIEnv* env, jobject 
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Could not allocate mamaSubscriptoin.",
                 status);
-        utils_throwMamaException(env,errorString); 
+        utils_throwMamaException(env,errorString);
         return;
     }
 
     /*Add the subscription pointer to the Java object field*/
     (*env)->SetLongField(env, this, subscriptionPointerFieldId_g,
                          CAST_POINTER_TO_JLONG(subscription));
-    
+
     return;
 }
 
@@ -1500,15 +1500,15 @@ void MAMACALLTYPE dictCompleteCB( mamaDictionary dict, void *closure )
  * Method:    createSubscription
  * Signature: (Lcom/wombat/mama/MamaQueue;Lcom/wombat/mama/MamaSubscriptionCallback;Lcom/wombat/mama/MamaSource;Ljava/lang/String;Ljava/lang/Object;)V
  */
-JNIEXPORT 
+JNIEXPORT
 void JNICALL Java_com_wombat_mama_MamaSubscription_createSubscription__Lcom_wombat_mama_MamaQueue_2Lcom_wombat_m\
 ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Ljava_lang_Object_2
-     (JNIEnv * env, 
-      jobject this, 
-      jobject queue, 
-      jobject callback, 
+     (JNIEnv * env,
+      jobject this,
+      jobject queue,
+      jobject callback,
       jobject source,
-      jstring symbol, 
+      jstring symbol,
       jobject closure)
 {
     mama_status         status              =   MAMA_STATUS_OK;
@@ -1520,7 +1520,7 @@ ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Lj
     jlong               sourcePointer       =   0;
     mamaMsgCallbacks    c_callback;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-    
+
     callbackClosure* closureImpl = (callbackClosure*)calloc(1,
             sizeof(callbackClosure));
     if (!closureImpl)
@@ -1529,7 +1529,7 @@ ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Lj
                 " Could not allocate.");
         return;
     }
-    
+
     closureImpl->mUserData      =   NULL;
     closureImpl->mClientCB      =   NULL;
     closureImpl->mSubscription  =   NULL;
@@ -1537,17 +1537,17 @@ ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Lj
 
     /*Setup the callback structure*/
     memset(&c_callback, 0, sizeof(c_callback));
-    c_callback.onCreate         = 
+    c_callback.onCreate         =
         (wombat_subscriptionCreateCB)subscriptionCreateCB;
-    c_callback.onError          = 
+    c_callback.onError          =
         (wombat_subscriptionErrorCB)subscriptionErrorCB;
-    c_callback.onMsg            = 
+    c_callback.onMsg            =
         (wombat_subscriptionOnMsgCB)subscriptionMsgCB;
-    c_callback.onQuality        = 
+    c_callback.onQuality        =
         (wombat_subscriptionQualityCB)subscriptionQualityCB;
-    c_callback.onGap            = 
+    c_callback.onGap            =
         (wombat_subscriptionGapCB)subscriptionGapCB;
-    c_callback.onRecapRequest   = 
+    c_callback.onRecapRequest   =
         (wombat_subscriptionRecapCB)subscriptionRecapCB;
 
     if(symbol)
@@ -1570,7 +1570,7 @@ ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Lj
 
     /*Check if a queue was specified.*/
     if(queue)
-    {  
+    {
         /*Get the queue pointer value from the MamaQueue java object*/
         queuePointer = (*env)->GetLongField(env, queue, queuePointerFieldId_g);
         queue_c = CAST_JLONG_TO_POINTER(mamaQueue, queuePointer);
@@ -1594,10 +1594,10 @@ ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Lj
     subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    /*Add the Java Subscription to the closure - we need it in the 
+    /*Add the Java Subscription to the closure - we need it in the
      async callbacks so it can be passed to the Java callback*/
     closureImpl->mSubscription = (*env)->NewGlobalRef(env,this);
-        
+
     if(MAMA_STATUS_OK != (status = mamaSubscription_create(
                     CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
                     queue_c,
@@ -1605,7 +1605,7 @@ ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Lj
                     CAST_JLONG_TO_POINTER(mamaSource,sourcePointer),
                     c_symbol,
                     closureImpl)))
-       
+
     {
         if(c_symbol)(*env)->ReleaseStringUTFChars(env,symbol, c_symbol);
         if(closure)(*env)->DeleteGlobalRef(env,closureImpl->mUserData);
@@ -1667,12 +1667,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setPreInitialCacheS
     mama_status status                  = MAMA_STATUS_OK;
     jlong           subscriptionPointer =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-   
+
     subscriptionPointer =
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
     assert(0!=subscriptionPointer);
 
-    
+
     if (MAMA_STATUS_OK!=(status=mamaSubscription_setPreIntitialCacheSize(
                              CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
                              (int)value)))
@@ -1705,7 +1705,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getPreInitialCacheS
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
     assert(0!=subscriptionPointer);
 
-    
+
     if (MAMA_STATUS_OK!=(status=mamaSubscription_getPreIntitialCacheSize(
                              CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
                              &cacheSize)))
@@ -1736,9 +1736,9 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getSubscriptionStat
 
     subscriptionPointer = (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer, 
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
     "MamaSubscription.getSubscriptionState(): Null parameter, subcription may have been destroyed.", NULL);
-    
+
     assert(0!=subscriptionPointer);
 
     if (MAMA_STATUS_OK!=(status=mamaSubscription_getState(
@@ -1752,7 +1752,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getSubscriptionStat
                 status);
         utils_throwWombatException(env,errorString);
     }
-    
+
     return state;
 }
 
@@ -1774,7 +1774,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_deallocate(JNIEnv *
             /* Clear the subscription reference in the java class. */
             (*env)->SetLongField(env, this, subscriptionPointerFieldId_g, 0);
         }
-        
+
         /* Otherwise throw an error. */
         else
         {
@@ -1787,7 +1787,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_deallocate(JNIEnv *
                 msd);
 
             /* Throw the exception. */
-            utils_throwMamaException(env, errorString); 
+            utils_throwMamaException(env, errorString);
         }
     }
 }

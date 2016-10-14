@@ -1261,7 +1261,7 @@ static void initializePublishers
     if (gUsePlayback)
     {
     	gPublisherTable = wtable_create ("PublisherTable", gNumPubs/10);
-		mamaMsg_create(&gCachedMsg); 
+		mamaMsg_create(&gCachedMsg);
     }
     else
     {
@@ -1383,7 +1383,7 @@ static void initializePublishers
                                                       &callbacks,
                                                       "_MD.REPLAY",
                                                       NULL));
-        
+
         MAMA_CHECK(mamaMsg_create(&gInitialMsg));
         MAMA_CHECK(mamaMsg_addU8(gInitialMsg, NULL,  MamaFieldMsgType.mFid, MAMA_MSG_TYPE_RECAP));
 		MAMA_CHECK(mamaMsg_addI32(gInitialMsg, NULL, MamaFieldMsgStatus.mFid, MAMA_MSG_STATUS_OK));
@@ -1401,9 +1401,9 @@ static void initializePublishers
 static mama_status initilizeFlatMessage(void)
 {
     mama_status status = MAMA_STATUS_OK;
-    
+
     mamaMsg_create(&gFlatMsg);
-   
+
     status = mamaMsg_addU8  (gFlatMsg, "MdMsgType", 1, 13);
     status = mamaMsg_addU8  (gFlatMsg, "MdMsgStatus", 2, 0);
     status = mamaMsg_addU32 (gFlatMsg, "MdSeqNum", 10, 2);
@@ -1598,7 +1598,7 @@ static void publishMessage
                                   pub->mMsgNum++))
 	{
 		printf ("INFO - update seqnum failed - %s \n", mamaMsg_toString(msg));
-		return;		
+		return;
 	}
 
     pthread_mutex_lock(&gMutex);
@@ -1612,7 +1612,7 @@ static void publishMessage
 	{
 		printf ("INFO - update sendtime failed - %s\n", mamaMsg_toString(msg));
     pthread_mutex_unlock(&gMutex);
-		return;		
+		return;
 	}
 
 	/*Publish the message*/
@@ -1629,7 +1629,7 @@ static void publishMessageRdtsc
 {
     mamaMsg msg = NULL;
     publisher* pub = &gPublisherList[pubIndex];
-    
+
     if (gFlat)
     {
         msg=gFlatMsg;
@@ -1638,7 +1638,7 @@ static void publishMessageRdtsc
     {
         msg=pub->mMamaMsgs[msgSample];
     }
-    
+
     MAMA_CHECK(mamaMsg_updateU32 (msg,
                                   "NULL",
                                   SEQ_NUM_FID,
@@ -1837,7 +1837,7 @@ static void parseCommandLine
 				const char * filename = argv[i+1];
 				if ((fp = fopen(filename, "r")) == (FILE*)NULL)
 					exit(1);
-				
+
 				while (fgets (charbuf, 1023, fp))
 				{
 					char *c= charbuf;
@@ -1867,7 +1867,7 @@ static void parseCommandLine
 
 					*c = '\0';
 
-					
+
                 	gSymbolList[gNumSymbols] = strdup (charbuf);
                 	gNumSymbols++;
 				}

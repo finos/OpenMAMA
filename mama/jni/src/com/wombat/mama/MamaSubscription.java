@@ -83,7 +83,7 @@ public class MamaSubscription
      */
     protected void finalize() throws Throwable
     {
-        try 
+        try
         {
             // Only deallocate the subscription if the native pointer is valid
             if(subscriptionPointer_i != 0)
@@ -107,7 +107,7 @@ public class MamaSubscription
      * Create and activate subscription. This is effectively a pair of
      * calls to mamaSubscription_setup() and mamaSubscription_activate().
      *
-     * @param callback      The object implementing the callback functions. 
+     * @param callback      The object implementing the callback functions.
      * @param queue         The MamaQueue.
      * @param source        The MamaSource identifying the publisher for this symbol.
      * @param symbol        The symbol name.
@@ -234,7 +234,7 @@ public class MamaSubscription
     {
         return myClosure;
     }
-    
+
     /**
      * This function returns the pointer to the underlying C subscription.
      * @return The pointer.
@@ -303,7 +303,7 @@ public class MamaSubscription
             symbol,
             null);
     }
-    
+
     public void setAppDataType (MamaMdDataType type)
     {
           // Set the MD Data Type as an integer
@@ -335,7 +335,7 @@ public class MamaSubscription
         final String METHOD_NAME = "getMessageQualifierFilter(): ";
         throw new MamaException(METHOD_NAME+"Not yet supported");
     }
-    
+
     public void setSubscriptionType (MamaSubscriptionType type)
     {
         mySubType = type;
@@ -481,8 +481,8 @@ public class MamaSubscription
 
     /* ************************************************** */
     /* Private Native Functions. */
-    /* ************************************************** */       
-    
+    /* ************************************************** */
+
     private native void allocateSubscription();
     private native MamaDictionary createNativeDictionarySubscription(
         MamaDictionaryCallback  callback,

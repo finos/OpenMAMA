@@ -496,7 +496,7 @@ mamaDictionary_getDictionaryMessage (
 }
 
 mama_status
-    mamaDictionary_fillDictionaryMessage (
+mamaDictionary_fillDictionaryMessage (
     mamaDictionary dictionary,
     mamaMsg* msg)
 {

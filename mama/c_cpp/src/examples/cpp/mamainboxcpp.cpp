@@ -24,11 +24,11 @@
  * This sample application demonstrates how to send mamaMsg's from an inbox,
  * and receive the reply.
  *
- * It accepts the following command line arguments: 
+ * It accepts the following command line arguments:
  *      [-s topic]         The topic on which to send the request. Default value
  *                         is "MAMA_INBOUND_TOPIC".
  *      [-tport name]      The transport parameters to be used from
- *                         mama.properties. 
+ *                         mama.properties.
  *      [-q]               Quiet mode. Suppress output.
  *
  *
@@ -64,7 +64,7 @@ static void sendRequest         (void);
 
 int main (int argc, const char **argv)
 {
-    int i = 0; 
+    int i = 0;
     setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
 
@@ -85,7 +85,7 @@ void initializeMama (void)
     try
     {
         gBridge = Mama::loadBridge (gMiddleware);
-        
+
         Mama::open ();
 
         gDefaultQueue = Mama::getDefaultEventQueue (gBridge);
@@ -95,7 +95,7 @@ void initializeMama (void)
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error initializing mama or creating transport: " 
+        cerr << "Error initializing mama or creating transport: "
              << status.toString () << endl;
         exit (1);
     }
@@ -130,7 +130,7 @@ static void sendRequest (void)
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error sending request: " 
+        cerr << "Error sending request: "
              << status.toString () << endl;
         exit (1);
     }
@@ -148,7 +148,7 @@ public:
 
     virtual void onError (MamaInbox *inbox, const MamaStatus &status)
     {
-        printf ("Error creating inbox: %s\n", 
+        printf ("Error creating inbox: %s\n",
                 status.toString ());
         exit (1);
     }
@@ -170,7 +170,7 @@ static void createInbox (void)
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error creating inbox: " 
+        cerr << "Error creating inbox: "
              << status.toString () << endl;
         exit (1);
     }
@@ -182,11 +182,11 @@ static void createPublisher (void)
     try
     {
         gPublisher = new MamaPublisher;
-        gPublisher->create (gTransport, gTopic); 
+        gPublisher->create (gTransport, gTopic);
     }
     catch (MamaStatus &status)
     {
-        cerr << "Error creating publisher: " 
+        cerr << "Error creating publisher: "
              << status.toString () << endl;
         exit (1);
     }
@@ -215,7 +215,7 @@ void parseCommandLine (int argc, const char **argv)
         else if (strcmp ("-m", argv[i]) == 0)
         {
             gMiddleware = argv[i+1];
-            i += 2;               
+            i += 2;
         }
         else if ( strcmp( argv[i], "-v" ) == 0 )
         {

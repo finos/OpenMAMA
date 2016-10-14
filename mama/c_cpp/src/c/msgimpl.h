@@ -34,7 +34,7 @@ do                                                                              
 {                                                                                         \
     if (!owner && !mamaInternal_getAllowMsgModify()) return MAMA_STATUS_NOT_MODIFIABLE;   \
 }                                                                                         \
-while(0);   
+while(0);
 
 #if defined(__cplusplus)
 extern "C" {

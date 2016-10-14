@@ -84,7 +84,7 @@ namespace Wombat
         vector<MamdaErrorListener*>    mErrorListeners;
         vector<MamdaQualityListener*>  mQualityListeners;
         const MamaMsg*                 mLatestMsg;
-        MamaSubscription*              mMamaSubscription;  
+        MamaSubscription*              mMamaSubscription;
         bool*                          implValid;
     };
 
@@ -127,8 +127,8 @@ namespace Wombat
         const char*  symbol,
         void*        closure)
     {
-        mImpl.mMamaSubscription = new MamaSubscription;  
-     
+        mImpl.mMamaSubscription = new MamaSubscription;
+
         setSource (source);
         setSymbol (symbol);
         setQueue  (queue);
@@ -154,7 +154,7 @@ namespace Wombat
         {
             return mImpl.mMamaSubscription->isActive();
         }
-        
+
         return false;
     }
 
@@ -164,7 +164,7 @@ namespace Wombat
         {
             return mImpl.mMamaSubscription->checkDebugLevel (level);
         }
-        
+
         return false;
     }
 
@@ -174,7 +174,7 @@ namespace Wombat
         {
             return mImpl.mMamaSubscription->getItemClosure ();
         }
-        
+
         return NULL;
     }
 
@@ -250,7 +250,7 @@ namespace Wombat
         {
             mImpl.mMamaSubscription->setGroupSizeHint (groupSizeHint);
         }
-    }    
+    }
 
     void MamdaSubscription::addMsgListener (MamdaMsgListener*  listener)
     {
@@ -283,7 +283,7 @@ namespace Wombat
         {
             return;
         }
-                                                            
+
         if (!mImpl.mMamaSubscription)
         {
             mImpl.mMamaSubscription = new MamaSubscription();
@@ -300,10 +300,10 @@ namespace Wombat
                 return;
             }
         }
-          
+
         mImpl.mMamaSubscription->setAppDataType      (mImpl.mMdDataType);
         mImpl.mMamaSubscription->setSubscriptionType (mImpl.mType);
-        mImpl.mMamaSubscription->setServiceLevel     (mImpl.mServiceLevel, 
+        mImpl.mMamaSubscription->setServiceLevel     (mImpl.mServiceLevel,
                                                       mImpl.mServiceLevelOpt);
         mImpl.mMamaSubscription->setRequiresInitial  (mImpl.mRequireInitial);
         mImpl.mMamaSubscription->setRetries          (mImpl.mRetries);
@@ -324,7 +324,7 @@ namespace Wombat
             mImpl.mMamaSubscription->destroy();
             delete mImpl.mMamaSubscription;
             mImpl.mMamaSubscription = NULL;
-        }    
+        }
     }
 
     void MamdaSubscription::requestRecap ()
@@ -346,7 +346,7 @@ namespace Wombat
         if (mImpl.mMamaSubscription)
         {
             return mImpl.mMamaSubscription->getSubscSource();
-        }    
+        }
         else
         {
             return NULL;
@@ -425,7 +425,7 @@ namespace Wombat
 
     uint32_t MamdaSubscription::getSeqNum() const
     {
-        if (mImpl.mLatestMsg) 
+        if (mImpl.mLatestMsg)
             return mImpl.mLatestMsg->getSeqNum ();
         else
             return 0;
@@ -492,7 +492,7 @@ namespace Wombat
         {
            const char* contentSymbol = "N/A";
            msg.tryString (MamdaCommonFields::ISSUE_SYMBOL, contentSymbol);
-           
+
            mama_forceLog (MAMA_LOG_LEVEL_FINE,
                           "MamdaSubscription (%s.%s(%s)) received msg. type: %s status %s\n",
                           mSource->getPublisherSourceName(),
@@ -564,15 +564,15 @@ namespace Wombat
         // is set to false if the callback destroys the subscription.
         bool mValid = true;
         implValid   = &mValid;
-        
+
         unsigned long size = mMsgListeners.size();
 
         for (unsigned long i = 0; i < size; ++i)
         {
             MamdaMsgListener* listener = mMsgListeners[i];
 
-            listener->onMsg (&mSubscription, 
-                             msg, 
+            listener->onMsg (&mSubscription,
+                             msg,
                              msgType);
 
             if (!mValid)
@@ -596,7 +596,7 @@ namespace Wombat
         const char*        subject)
     {
         MamdaErrorCode      errorCode     = MAMDA_ERROR_NO_ERROR;
-            
+
         if (subscription->checkDebugLevel (MAMA_LOG_LEVEL_FINE))
         {
             mama_forceLog (MAMA_LOG_LEVEL_FINE,
@@ -607,22 +607,22 @@ namespace Wombat
         }
 
         errorCode = errorCodeForMamaStatus (status);
-        
+
         /* The error handler wiil destroy any
            failed subscription .
         */
         bool mValid = true;
         implValid   = &mValid;
-        
-        
+
+
         unsigned long size = mErrorListeners.size();
 
         for (unsigned long i = 0; i < size; ++i)
         {
             MamdaErrorListener* listener = mErrorListeners[i];
 
-            listener->onError (&mSubscription, 
-                               severityForErrorCode(errorCode), 
+            listener->onError (&mSubscription,
+                               severityForErrorCode(errorCode),
                                errorCode, stringForErrorCode(errorCode));
 
             if (!mValid)
@@ -651,15 +651,15 @@ namespace Wombat
 
         bool mValid = true;
         implValid   = &mValid;
-        
+
         unsigned long size = mQualityListeners.size();
 
         for (unsigned long i = 0; i < size; ++i)
         {
             MamdaQualityListener* listener = mQualityListeners[i];
 
-            listener->onQuality (&mSubscription, 
-                                 quality); 
+            listener->onQuality (&mSubscription,
+                                 quality);
 
             if (!mValid)
             {

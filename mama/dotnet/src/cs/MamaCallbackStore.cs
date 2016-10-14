@@ -62,7 +62,7 @@ namespace Wombat
         /// <summary>
         /// Default constructor initialises all member variables.
         /// </summary>
-        internal MamaCallbackStore()            
+        internal MamaCallbackStore()
         {
             // Create the store
             mStore = new Dictionary<long, MamaCallbackWrapper<TCallback, TDelegate>>();
@@ -125,7 +125,7 @@ namespace Wombat
                         disposable.Dispose();
                     }
 
-                    // Clear the store                    
+                    // Clear the store
                     mStore.Clear();
                     mStore = null;
                 }
@@ -221,7 +221,7 @@ namespace Wombat
                 ret = mNextId;
 
                 // Add the wrapper to the store using the Id as the key
-                mStore.Add(ret, wrapper);                
+                mStore.Add(ret, wrapper);
             }
 
             finally

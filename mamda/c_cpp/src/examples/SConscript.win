@@ -98,5 +98,3 @@ if not Media.has_key('mamda/c_cpp/src/examples'):
   env.Install('$prefix/examples/mamda', Glob('news/*.cpp'))
 
   Media['mamda/c_cpp/src/examples'] = 1
-
-

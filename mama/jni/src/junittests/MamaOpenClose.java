@@ -33,19 +33,19 @@ public class MamaOpenClose extends TestCase
     /* ****************************************************** */
     /* Protected Member Variables. */
     /* ****************************************************** */
-    
+
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
 
     @Override
     protected void setUp()
-    {        
+    {
     }
 
     @Override
     protected void tearDown()
-    {        
+    {
     }
 
     /* ****************************************************** */
@@ -56,7 +56,7 @@ public class MamaOpenClose extends TestCase
     {
         // Load the bridge
         Mama.loadBridge(Main.GetBridgeName());
-        
+
         // Open mama
         Mama.open();
 

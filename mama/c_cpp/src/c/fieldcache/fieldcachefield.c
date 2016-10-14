@@ -745,8 +745,9 @@ mama_status mamaFieldCacheField_getDateTime(const mamaFieldCacheField field,
 }
 
 mama_status mamaFieldCacheField_getBoolVector(const mamaFieldCacheField field,
-                                            const mama_bool_t** values,
-                                            mama_size_t* size)
+                                              const mama_bool_t** values,
+                                              mama_size_t* size)
+
 {
     if (!field || !values || !size)
     {
@@ -762,8 +763,9 @@ mama_status mamaFieldCacheField_getBoolVector(const mamaFieldCacheField field,
 }
 
 mama_status mamaFieldCacheField_getCharVector(const mamaFieldCacheField field,
-                                            const char** values,
-                                            mama_size_t* size)
+                                              const char** values,
+                                              mama_size_t* size)
+
 {
     if (!field || !values || !size)
     {
@@ -1274,8 +1276,8 @@ mama_status mamaFieldCacheField_setDateTime(const mamaFieldCacheField field,
 }
 
 mama_status mamaFieldCacheField_setBoolVector(const mamaFieldCacheField field,
-                                            const mama_bool_t* values,
-                                            mama_size_t size)
+                                              const mama_bool_t* values,
+                                              mama_size_t size)
 {
     if (!field || !values)
     {
@@ -1290,8 +1292,8 @@ mama_status mamaFieldCacheField_setBoolVector(const mamaFieldCacheField field,
 }
 
 mama_status mamaFieldCacheField_setCharVector(const mamaFieldCacheField field,
-                                            const char* values,
-                                            mama_size_t size)
+                                              const char* values,
+                                              mama_size_t size)
 {
     if (!field || !values)
     {
