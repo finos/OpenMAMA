@@ -1,0 +1,11 @@
+OpenMAMA is now installed!
+
+For information on what to do next, please see:
+
+http://www.openmama.org/content/quick-start-guide
+
+If you are struggling with anything, you are welcome to get in touch:
+
+http://www.openmama.org/contact
+
+Good hunting!
