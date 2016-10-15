@@ -275,29 +275,6 @@ wthread_key_create(wthread_key_t* key, void* val)
  */
 static wthread_static_mutex_t envLock = WSTATIC_MUTEX_INITIALIZER;
 
-time_t wtimegm (struct tm *tm) 
-{
-    time_t ret;
-    char *tz;
-    
-    /* Used since the timezone setting needs to be atomic */
-    wthread_static_mutex_lock(&envLock);
-
-    tz = environment_getVariable("TZ");
-    environment_setVariable("TZ", "UTC");
-    tzset();
-    ret = mktime(tm);
-    if (tz)
-        environment_setVariable("TZ", tz);
-    else
-        environment_deleteVariable("TZ");
-    tzset();
-
-    wthread_static_mutex_unlock(&envLock);
-
-    return ret;
-}
-
 int wnanosleep (struct wtimespec* ts, struct timnespec* remain)
 {
     DWORD millis = ts->tv_sec * 1000 + ts->tv_nsec/1000;

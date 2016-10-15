@@ -300,10 +300,8 @@ COMMONExpDLL    void wthread_mutexattr_settype (int* attr, int);
         }                           \
     } while (0)
 
-
-/* time gm not available on Windows */
-COMMONExpDLL
-time_t wtimegm (struct tm *tm);
+/* In windows, _mkgmtime has been around since VS 2005 */
+#define wtimegm(x) _mkgmtime(x);
 
 struct wtimespec
 {
