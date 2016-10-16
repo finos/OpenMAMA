@@ -30,40 +30,11 @@ class Windows:
         if optsEnv['product'] == 'mamdaall':
             tools.append( 'csharp' )
 
-        if 'qpid' in optsEnv['middleware']:
-            if not optsEnv.has_key('qpid_home'):
-                print 'ERROR: Qpid home must be specified'
-                Exit(1)
-
-            if not optsEnv.has_key('libevent_home'):
-                print 'ERROR: In order to build the QPID bridge, '\
-                      'Libevent home must be specified'
-                Exit(1)
-
-        if optsEnv['with_unittest'] == True:
-            if not optsEnv.has_key('gtest_home'):
-                print 'ERROR: GTest Home must be specified'
-                Exit(1)
-            elif not posixpath.exists(optsEnv['gtest_home']):
-                print 'ERROR: GTest Home must exist'
-                Exit(1)
-            if optsEnv['product'] == 'mamdaall':
-                if not optsEnv.has_key('nunit_home'):
-                    print 'ERROR: Nunit Home must be specified'
-                    Exit(1)
-                elif not posixpath.exists(optsEnv['nunit_home']):
-                    print 'ERROR: Nunit Home must exist'
-                    Exit(1)
-
-        try:
-            subprocess.check_call("flex --version", shell=True, stdout=None, stderr=None)
-        except:
-            print "Could not execute flex - is it in your environment PATH?"
-
-        try:
-            subprocess.check_call("flex --version", shell=True, stdout=None, stderr=None)
-        except:
-            print "Could not execute flex - is it in your environment PATH?"
+        # Select which default program files based directory to use
+        if optsEnv['target_arch'] == 'x86':
+            programfiles = os.environ['ProgramFiles(x86)']
+        else:
+            programfiles = os.environ['ProgramFiles']
 
         if optsEnv['product'] == 'mamdajni' or optsEnv['product'] == 'mamajni' or optsEnv['product'] == 'mamdaall':
             if not optsEnv.get('java_home'):
@@ -92,6 +63,48 @@ class Windows:
 
         else:
             env = Environment(ENV={'PATH': '%s' % (os.environ['PATH'])}, MSVC_VERSION = optsEnv['vsver'], MSVS_VERSION = optsEnv['vsver'], tools = tools, TARGET_ARCH = optsEnv['target_arch'])
+
+        if 'qpid' in optsEnv['middleware']:
+            if optsEnv.has_key('qpid_home'):
+                env['qpid_home'] = optsEnv['qpid_home']
+            else:
+                env['qpid_home'] = "%s/Proton" % programfiles
+
+            if optsEnv.has_key('libevent_home'):
+                env['libevent_home'] = optsEnv['libevent_home']
+            else:
+                env['libevent_home'] = "%s/libevent" % programfiles
+
+            if not posixpath.exists(env['libevent_home']):
+                print 'ERROR: Libevent Home (%s) (required for qpid) must exist' % env['libevent_home']
+                Exit(1)
+            if not posixpath.exists(env['qpid_home']):
+                print 'ERROR: Qpid Home (%s) must exist' % env['qpid_home']
+                Exit(1)
+
+        if optsEnv['with_unittest'] == True:
+            if optsEnv.has_key('gtest_home'):
+                env['gtest_home'] = optsEnv['gtest_home']
+            else:
+                env['gtest_home'] = "%s/googletest-distribution" % programfiles
+
+            if not posixpath.exists(env['gtest_home']):
+                print 'ERROR: GTest Home (%s) must exist' % env['gtest_home'] 
+                Exit(1)
+
+            if optsEnv['product'] == 'mamdaall':
+                if optsEnv.has_key('nunit_home'):
+                    env['nunit_home'] = optsEnv['nunit_home'] 
+                else:
+                    env['nunit_home'] = "%s/nunit" % programfiles
+
+                if not posixpath.exists(env['nunit_home']):
+                    print 'ERROR: Nunit Home (%s) must exist' % env['nunit_home']
+                    Exit(1)
+        try:
+            subprocess.check_call("flex --version", shell=True, stdout=None, stderr=None)
+        except:
+            print "Could not execute flex - is it in your environment PATH?"
 
         env['SPAWN'] = logger.log_output
         env['PRINT_CMD_LINE_FUNC'] = logger.log_command

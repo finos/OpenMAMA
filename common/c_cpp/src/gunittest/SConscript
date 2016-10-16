@@ -10,15 +10,8 @@ incpath.append('$gtest_home/include')
 libpath = []
 libs = []
 
-if env['PLATFORM'] == "win32":
-    libpath.append(os.path.join(env['gtest_home'], 'msvc', env['win_arch_path'], env['win_type_path']))
-    if 'debug' in env['build']:
-        libs = ['gtestd', 'gtest_maind']
-    else:
-        libs = ['gtest', 'gtest_main']
-else:
-    libpath.append('$gtest_home/lib')
-    libs = ['gtest', 'gtest_main']
+libpath.append('$gtest_home/lib')
+libs = ['gtest', 'gtest_main']
 
 env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=libs)
 

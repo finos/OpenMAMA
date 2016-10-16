@@ -69,7 +69,7 @@ void*
 qpidBridgeMamaIoImpl_dispatchThread (void* closure);
 
 void
-qpidBridgeMamaIoImpl_libeventIoCallback (int fd, short type, void* closure);
+qpidBridgeMamaIoImpl_libeventIoCallback (intptr_t fd, short type, void* closure);
 
 
 /*=========================================================================
@@ -262,7 +262,7 @@ qpidBridgeMamaIoImpl_dispatchThread (void* closure)
 }
 
 void
-qpidBridgeMamaIoImpl_libeventIoCallback (int fd, short type, void* closure)
+qpidBridgeMamaIoImpl_libeventIoCallback (intptr_t  fd, short type, void* closure)
 {
     qpidIoEventImpl* impl = (qpidIoEventImpl*) closure;
 

@@ -9,7 +9,7 @@ target = 'libmamaqpidmsgimpl'
 env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H'] )
 
 includePath = []
-includePath.append('$qpid_home/proton-c/include')
+includePath.append('$qpid_home/include')
 includePath.append('#common/c_cpp/src/c')
 
 libPath = []
@@ -30,7 +30,7 @@ else:
   libs.append('qpid-proton')
   buildType = "Release"
 
-libPath.append('%s/proton-c/%s/%s' % (env['qpid_home'], archPath, buildType))
+libPath.append('%s/lib' % env['qpid_home'])
 
 env['CCFLAGS'].append(['/TP', '/WX-'])
 env.Append(LIBS=libs, LIBPATH=libPath, CPPPATH=[includePath])

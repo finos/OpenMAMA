@@ -21,6 +21,7 @@ libyywrap.c
 fileparser.c
 mempool.c
 memnode.c
+thread.c
 windows/strpcasecmp.c
 windows/strptime.c
 windows/platform.c
