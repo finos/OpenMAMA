@@ -14,7 +14,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        # install folder, can remove whole tree
        PathVariable('prefix', 'Installation prefix', '#openmama_install_%s' % (VERSIONS['mama']['releaseString']),
                     PathVariable.PathAccept),
-       PathVariable('blddir', 'Object directory', '#objdir',
+       PathVariable('blddir', 'Object directory', 'objdir',
                     PathVariable.PathAccept),
        PathVariable('java_home', 'JAVA Home folder', os.environ.get('JAVA_HOME',None) , PathVariable.PathAccept),
        PathVariable('logfile', 'Output Log File', 'scons.log', PathVariable.PathAccept),
