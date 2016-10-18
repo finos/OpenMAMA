@@ -42,6 +42,7 @@ subscriptiontype.c
 listenermsgcallback.c
 log.c
 mama.c
+mamautils.c
 middleware.c
 msgfield.c
 msg.c

@@ -19,6 +19,7 @@ InstMamaInclude = \
 	mama/io.h 
 	mama/log.h 
 	mama/mama.h 
+	mama/mamautils.h 
 	mama/marketdata.h 
     mama/middleware.h 
 	mama/msg.h 
@@ -99,6 +100,7 @@ libmama_sources = \
 	listenermsgcallback.c
 	log.c
     mama.c
+    mamautils.c
     mamaStrUtils.c
 	marketdata.c
     plugin.c

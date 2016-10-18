@@ -19,11 +19,16 @@
  * 02110-1301 USA
  */
 #include <mama/mama.h>
+#include <mama/mamautils.h>
 #include <mama/msg.h>
 #include <playback/playbackFileParser.h>
 #include <playback/playbackcapture.h>
 
 #include <string.h>
+#include <wombat/strutils.h>
+#include <wombat/wtable.h>
+
+#define MAX_SUBSCRIPTIONS 250000
 
 #define MAMA_FIELD_COPY(SUFFIX, MAMATYPE)                                      \
 do {                                                                           \
@@ -85,6 +90,8 @@ static const char* gInputFilename = NULL;
 static const char* gInputPayloadType = NULL;
 static const char* gOutputFilename = NULL;
 static const char* gOutputPayloadType = NULL;
+static const const char** gSymbolList = NULL;
+static wtable_t gSymbolTable = NULL;
 
 static const char* gUsageString[] =
         { " CaptureConvert -  Application for converting a previously captured",
@@ -98,6 +105,7 @@ static const char* gUsageString[] =
           " -input-payload    The payload type of the input file.",
           " -output-file      The path of the output file.",
           " -output-payload   The payload type of the output file.",
+          " -f                If provided, only symbols in this newline delimited file will be parsed.",
           " -v                Increase verbosity of MAMA logging. May be passed multiple times. Optional.",
           "", NULL };
 
@@ -141,6 +149,34 @@ static void parseCommandLine (int argc, const char** argv)
         else if (strcmp (argv[i], "-output-payload") == 0)
         {
             gOutputPayloadType = argv[i + 1];
+            i += 2;
+        }
+        else if (strcmp (argv[i], "-f") == 0)
+        {
+            mama_size_t symbolsFound = 0;
+            mama_size_t symIdx       = 0;
+
+            gSymbolList = (const char**)calloc (MAX_SUBSCRIPTIONS, sizeof (char*));
+            gSymbolTable = wtable_create ("symbols", 1024);
+
+            mamaUtils_readSymbolFile (argv[i + 1],
+                                           gSymbolList,
+                                           MAX_SUBSCRIPTIONS,
+                                           &symbolsFound,
+                                           NULL,
+                                           0,
+                                           NULL);
+            for (symIdx = 0; symIdx < symbolsFound; symIdx++)
+            {
+                const char* symbol = gSymbolList[symIdx];
+                
+                if (NULL != symbol)
+                {
+                    /* Add symbol to symbol table */
+                    wtable_insert (gSymbolTable, symbol, (void*)strdup(symbol));
+                }
+            }
+
             i += 2;
         }
         else if (strcmp (argv[i], "-help") == 0)
@@ -290,9 +326,11 @@ int main (int argc, const char **argv)
     {
         if (mamaPlaybackFileParser_getNextMsg (fileParser, &sourceMsg))
         {
-            char 	temp[64];
+            char 	temp[MAMA_MAX_TOTAL_SYMBOL_LEN];
             char*	start = headerString;
             char*	end = strchr (headerString,':');
+
+            /* headerString e.g. = OPENMAMA:sub:NL0009906148.EUR.XAMS:539 */
 
             strncpy (temp, start, end - start);
             temp[end - start] = '\0';
@@ -307,11 +345,17 @@ int main (int argc, const char **argv)
             end++;
 
             start = end;
-            end = strchr (start, '\0');
+            end = strchr (start, ':');
             strncpy (temp, start, end - start);
             temp[end - start] = '\0';
             mamaCapture_setSymbol (&fileCapture, temp);
 
+
+            /* If there is a symbol whitelist but this isn't on it, move along */
+            if (NULL != gSymbolTable && NULL == wtable_lookup (gSymbolTable, temp))
+            {
+                continue;
+            }
             copyMamaMsg (sourceMsg, &targetMsg, outputPayloadBridge);
 
             mamaCapture_saveMamaMsg (&fileCapture, &targetMsg);
@@ -322,6 +366,23 @@ int main (int argc, const char **argv)
     mamaCapture_deallocate (fileCapture);
     mamaPlaybackFileParser_closeFile(fileParser);
     mamaPlaybackFileParser_deallocate (fileParser);
+
+    if (gSymbolTable)
+    {
+        mama_size_t i = 0;
+        /* Clean up the whitelist */
+        wtable_free_all (gSymbolTable);
+        wtable_destroy (gSymbolTable);
+        /* These strings are strdup'd - clean up */
+        for (i = 0; i < MAX_SUBSCRIPTIONS; i++)
+        {
+            if (NULL != gSymbolList[i])
+            {
+                free ((void*)gSymbolList[i]);
+            }
+        }
+        free ((void*)gSymbolList);
+    }
 
     /* Successfully converted file. */
     return 0;

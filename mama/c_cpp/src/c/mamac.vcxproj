@@ -247,6 +247,7 @@
     <ClCompile Include="listenermsgcallback.c" />
     <ClCompile Include="log.c" />
     <ClCompile Include="mama.c" />
+    <ClCompile Include="mamautils.c" />
     <ClCompile Include="mamaStrUtils.c" />
     <ClCompile Include="conflation\manager.c" />
     <ClCompile Include="marketdata.c" />
@@ -334,6 +335,7 @@
     <ClInclude Include="listenermsgcallback.h" />
     <ClInclude Include="mama\log.h" />
     <ClInclude Include="mama\mama.h" />
+    <ClInclude Include="mama\mamautils.h" />
     <ClInclude Include="mamainternal.h" />
     <ClInclude Include="mamaStrUtils.h" />
     <ClInclude Include="mama\conflation\manager.h" />
