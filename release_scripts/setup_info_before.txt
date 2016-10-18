@@ -1,0 +1,8 @@
+Thank you for taking a look at OpenMAMA!
+
+Note that this installation will attempt to install contents to your Program
+Files directories. If you would prefer to install the contents somewhere else,
+you should simply use one of the zip releases instead.
+
+This installation includes the libraries, the compiled example applications
+(e.g. mamalistenc), and the complete suite of unit tests compiled for windows.
