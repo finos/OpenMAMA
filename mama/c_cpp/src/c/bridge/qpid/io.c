@@ -60,6 +60,10 @@ typedef struct qpidIoEventImpl
  */
 static qpidIoImpl       gQpidIoContainer;
 
+#ifndef evutil_socket_t
+#define evutil_socket_t int
+#endif
+
 
 /*=========================================================================
   =                  Private implementation prototypes                    =

@@ -77,15 +77,14 @@ install_dir = [d for d in os.listdir('.') if os.path.isdir(d) and d.startswith("
 
 # Set up environment for unit tests
 if os.name != 'nt':
-    env_var["LD_LIBRARY_PATH"] = "%s:%s:%s:%s:%s:%s:%s:%s:%s" % (
+    env_var["LD_LIBRARY_PATH"] = "%s:%s:%s:%s:%s:%s:%s" % (
                                      os.path.join(os.getcwd(), install_dir, 'lib'),
                                      os.path.join(middleware_home, 'lib'),
                                      os.path.join(middleware_home, 'lib64'),
                                      os.path.join(libevent_home, 'lib'),
                                      os.path.join(libevent_home, 'lib64'),
                                      '/usr/local/lib',
-                                     '/usr/local/lib64',
-                                     gtest_home)
+                                     '/usr/local/lib64')
 
 env_var["WOMBAT_PATH"] = os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'examples') + ":" + os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'gunittest', 'c')
 
