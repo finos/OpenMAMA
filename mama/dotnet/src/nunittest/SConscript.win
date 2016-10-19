@@ -23,11 +23,7 @@ releaseString = versions['releaseString']
 env.AddMethod(install_dotnet_library, "InstallDotNetLibrary")
 env.AddMethod(build_ndoc, "BuildNDoc")
 
-if env['target_arch'] == 'x86_64':
-    odir = 'objdir_64'
-else:
-    odir = 'objdir_32'
-
+odir = env['blddir']
 framework_dir = env['dotnet_framework']
 
 env['CSC'] = posixpath.join(framework_dir,'csc.exe')

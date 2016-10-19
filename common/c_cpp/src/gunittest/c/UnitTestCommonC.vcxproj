@@ -55,15 +55,19 @@
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\..\..\msvc\PropertySheetGtestWin32Release.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\..\..\msvc\PropertySheetGtestWin32Debug.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\..\..\msvc\PropertySheetGtestWin64Release.props" />
   </ImportGroup>
   <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\..\..\msvc\PropertySheetGtestWin64Debug.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -84,7 +88,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\gunittest;$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(GTEST_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\gunittest;$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GTEST_HAS_TR1_TUPLE=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -97,8 +101,8 @@
       <AdditionalOptions>/FS</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(GTEST_HOME)\msvc\gtest\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX86</TargetMachine>
@@ -110,7 +114,7 @@
     </Midl>
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\gunittest;$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(GTEST_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\gunittest;$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GTEST_HAS_TR1_TUPLE=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -123,8 +127,8 @@
       <AdditionalOptions>/FS</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gtestd.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(GTEST_HOME)\msvc\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
@@ -132,7 +136,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\gunittest;$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(GTEST_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\gunittest;$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GTEST_HAS_TR1_TUPLE=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -143,8 +147,8 @@
       <AdditionalOptions>/FS</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(GTEST_HOME)\msvc\gtest\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>
@@ -157,7 +161,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\gunittest;$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(GTEST_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\gunittest;$(SOLUTIONDIR)\common\c_cpp\src\gunittest\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>GTEST_HAS_TR1_TUPLE=0;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <PrecompiledHeader>
@@ -168,8 +172,8 @@
       <AdditionalOptions>/FS</AdditionalOptions>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>gtest.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(GTEST_HOME)\msvc\$(Platform)\$(Configuration)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
       <OptimizeReferences>true</OptimizeReferences>

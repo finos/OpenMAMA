@@ -79,7 +79,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
-      <Command>"$(ANT_HOME)\bin\ant" -f "$(SOLUTIONDIR)\mama\jni\build.xml" headers</Command>
+      <Command>ant -f "$(SOLUTIONDIR)\mama\jni\build.xml" headers</Command>
     </PreBuildEvent>
     <ClCompile>
       <Optimization>Disabled</Optimization>
@@ -103,7 +103,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <PreBuildEvent>
-      <Command>"$(ANT_HOME)\bin\ant" -f "$(SOLUTIONDIR)\mama\jni\build.xml" headers</Command>
+      <Command>ant -f "$(SOLUTIONDIR)\mama\jni\build.xml" headers</Command>
     </PreBuildEvent>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;$(JAVA_HOME)\include\win32;$(JAVA_HOME)\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -126,7 +126,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <PreBuildEvent>
-      <Command>"$(ANT_HOME)\bin\ant" -f "$(SOLUTIONDIR)\mama\jni\build.xml" headers</Command>
+      <Command>ant -f "$(SOLUTIONDIR)\mama\jni\build.xml" headers</Command>
     </PreBuildEvent>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>
@@ -153,7 +153,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <PreBuildEvent>
-      <Command>"$(ANT_HOME)\bin\ant" -f "$(SOLUTIONDIR)\mama\jni\build.xml" headers</Command>
+      <Command>ant -f "$(SOLUTIONDIR)\mama\jni\build.xml" headers</Command>
     </PreBuildEvent>
     <Midl>
       <TargetEnvironment>X64</TargetEnvironment>

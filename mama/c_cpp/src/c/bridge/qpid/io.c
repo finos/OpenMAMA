@@ -60,6 +60,10 @@ typedef struct qpidIoEventImpl
  */
 static qpidIoImpl       gQpidIoContainer;
 
+#ifndef evutil_socket_t
+#define evutil_socket_t int
+#endif
+
 
 /*=========================================================================
   =                  Private implementation prototypes                    =
@@ -69,7 +73,7 @@ void*
 qpidBridgeMamaIoImpl_dispatchThread (void* closure);
 
 void
-qpidBridgeMamaIoImpl_libeventIoCallback (int fd, short type, void* closure);
+qpidBridgeMamaIoImpl_libeventIoCallback (evutil_socket_t fd, short type, void* closure);
 
 
 /*=========================================================================
@@ -262,7 +266,7 @@ qpidBridgeMamaIoImpl_dispatchThread (void* closure)
 }
 
 void
-qpidBridgeMamaIoImpl_libeventIoCallback (int fd, short type, void* closure)
+qpidBridgeMamaIoImpl_libeventIoCallback (evutil_socket_t fd, short type, void* closure)
 {
     qpidIoEventImpl* impl = (qpidIoEventImpl*) closure;
 

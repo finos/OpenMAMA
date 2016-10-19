@@ -13,18 +13,13 @@ libpath.append('$gtest_home/lib')
 ccflags = []
 
 if env['PLATFORM'] == "win32":
-    libpath.append(os.path.join(env['gtest_home'], 'msvc', env['win_arch_path'], env['win_type_path']))
-    if 'debug' in env['build']:
-        libs = ['gtestd', 'gtest_maind']
-    else:
-        libs = ['gtest', 'gtest_main']
+    libs = ['gtest', 'gtest_main']
     libs.append('libmamac%s' % ( env['suffix'] ))
     libs.append('libwombatcommon%s' % ( env['suffix'] ))
     ccflags.append('/DGTEST_USE_OWN_TR1_TUPLE=0')
     ccflags.append('/D_VARIADIC_MAX=10')
 else:
     ccflags.append('-Wno-sign-compare')
-    libpath.append('$gtest_home/lib')
     libs = ['gtest', 'gtest_main', 'dl', 'wombatcommon', 'mama', 'pthread']
 
 env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=libs, CCFLAGS=ccflags)
