@@ -34,7 +34,7 @@ class Windows:
         if optsEnv['target_arch'] == 'x86':
             programfiles = os.environ['ProgramFiles(x86)']
         else:
-            programfiles = os.environ['ProgramFiles']
+            programfiles = os.environ['ProgramW6432']
 
         if optsEnv['product'] == 'mamdajni' or optsEnv['product'] == 'mamajni' or optsEnv['product'] == 'mamdaall':
             if not optsEnv.get('java_home'):
