@@ -21,6 +21,7 @@
 
 
 #include <gtest/gtest.h>
+#include <wombat/fileutils.h>
 #include "MainUnitTestC.h"
 #include "wombat/wConfig.h"
 #include "mama/mama.h"
@@ -77,14 +78,13 @@ TEST_F (MamaDictionaryTestC, LoadFromFileAndWriteToMsg)
     mamaDictionary dictionary;
     mamaMsg msg;
     char buf[1024];
-    const char* path = getenv("WOMBAT_PATH");
     size_t dictionarySize;
     size_t msgSize;
     
     ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_create(&dictionary));
 
-    ASSERT_NE (path, (const char*) NULL);
-    snprintf(buf, sizeof(buf), "%s/dictionary1.txt", path);
+    ASSERT_EQ (1, fileUtils_findFileInPathList(buf, sizeof(buf), "dictionary1.txt", getenv("WOMBAT_PATH"), NULL));
+
     ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_populateFromFile(dictionary, buf));
 
     ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_getDictionaryMessage(dictionary, &msg));
