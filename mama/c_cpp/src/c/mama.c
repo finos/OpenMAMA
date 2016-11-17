@@ -105,7 +105,7 @@ mamaStat                gPublisherSend;
 mamaStat                gPublisherInboxSend;
 mamaStat                gPublisherReplySend;
 
-mama_bool_t gAllowMsgModify = 0;
+mama_bool_t gAllowMsgModify = 1;
 
 mama_status mama_statsInit (void);
 mama_status mama_setupStatsGenerator (void);
@@ -926,10 +926,10 @@ mama_openWithPropertiesCount (const char* path,
     }
 
     prop = properties_Get (gProperties, "mama.message.allowmodify");
-    if (prop && strtobool (prop))
+    if (prop && (!strtobool (prop)))
     {
-        gAllowMsgModify = 1;
-        mama_log (MAMA_LOG_LEVEL_FINE, "mama.message.allowmodify: true");
+        gAllowMsgModify = 0;
+        mama_log (MAMA_LOG_LEVEL_FINE, "mama.message.allowmodify: false");
     }
 
     if (strlen( (char*) gEntitlementBridges))
