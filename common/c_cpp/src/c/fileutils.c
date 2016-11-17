@@ -22,6 +22,7 @@
 #include <wombat/fileutils.h>
 #include <wombat/environment.h>
 #include <stdio.h>
+#include <string.h>
 
 int
 fileUtils_findFileInPathList (char*         buffer,
