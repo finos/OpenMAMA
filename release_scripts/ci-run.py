@@ -50,7 +50,6 @@ else:
     #product = 'mamdajni'
     product = 'mamda'
 
-gtest_home = os.path.join(dep_base, 'gtest', 'default')
 middleware = env_var["MW"].lower()
 payload = env_var["PAYLOAD"].lower()
 middleware_home = os.path.join(dep_base, middleware, env_var["MWVER"])
@@ -63,7 +62,6 @@ scons_cmd = ["scons",
             ]
 
 if os.name != 'nt':
-    scons_cmd.append("gtest_home=%s" % gtest_home)
     scons_cmd.append("middleware=%s" % middleware)
     scons_cmd.append("%s_home=%s" % (middleware, middleware_home))
     scons_cmd.append("java_home=/usr/java/default")
