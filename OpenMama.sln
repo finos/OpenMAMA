@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "c", "c", "{F02CD330-5AFF-424D-B58C-5E875224AADB}"
 EndProject
@@ -66,6 +66,9 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "dotnet", "dotnet", "{34321A46-A7F4-42C5-A743-B1EBE3FA69EE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamac", "mama\c_cpp\src\c\mamac.vcxproj", "{7F64D11F-C002-4271-BDEC-A82C614403EF}"
+	ProjectSection(ProjectDependencies) = postProject
+		{1231A373-C9B9-4914-BE64-F5760F0E2D27} = {1231A373-C9B9-4914-BE64-F5760F0E2D27}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "mamacpp", "mama\c_cpp\src\cpp\mamacpp.vcxproj", "{66CB8ABC-8EA3-4FF6-B715-D878B37CCCB3}"
 EndProject
@@ -269,6 +272,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "capturec", "mama\c_cpp\src\testtools\capturereplay\c\capturec.vcxproj", "{23AAC519-29F2-4AED-A2F2-2E22A47C4451}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "captureconvert", "mama\c_cpp\src\testtools\capturereplay\c\captureconvert.vcxproj", "{C490299D-18E7-4833-BE4F-E1A5B529B67E}"
+	ProjectSection(ProjectDependencies) = postProject
+		{45F0CC89-C5CD-4AF6-9911-DDF0557F788A} = {45F0CC89-C5CD-4AF6-9911-DDF0557F788A}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "capturereplayc", "mama\c_cpp\src\testtools\capturereplay\c\capturereplayc.vcxproj", "{576070A7-A30B-4EDA-ACB2-A2B878EA6E98}"
 EndProject

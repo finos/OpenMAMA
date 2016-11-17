@@ -158,6 +158,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\..\common\c_cpp\src\c\commonc.vcxproj">
+      <Project>{45f0cc89-c5cd-4af6-9911-ddf0557f788a}</Project>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\c\mamac.vcxproj">
       <Project>{7f64d11f-c002-4271-bdec-a82c614403ef}</Project>
       <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>

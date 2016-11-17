@@ -29,6 +29,6 @@ echo "generating %BUILD_DIR%/entitlementlibraries.c"
 
 echo /* This file was automatically generated */ > %BUILD_DIR%\entitlementlibraries.c
 echo #include ^<mamainternal.h^> >> %BUILD_DIR%\entitlementlibraries.c
-echo const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {"noop, NULL"}; >> %BUILD_DIR%\entitlementlibraries.c
+echo const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = {"noop", NULL}; >> %BUILD_DIR%\entitlementlibraries.c
 
 echo "complete" 
