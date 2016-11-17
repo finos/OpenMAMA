@@ -130,6 +130,12 @@ TEST_F (MamaMsgTestCPP, TempCopyNotOwnerTest)
     const char* testString      = "test";
     short owner;
 
+    // If no bridges have marked messages as immutable, this test is irrelevant
+    if (mamaInternal_getAllowMsgModify())
+    {
+        SUCCEED();
+    }
+
     msg->create();
     msg->addString (NULL, 101, testString);
     msg->getByteBuffer (buffer, bufferLength);
