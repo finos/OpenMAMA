@@ -1140,13 +1140,11 @@ protected:
 
 TEST_F(FieldVectorSubMsgTests, GetVectorSubMsg)
 {
-    char             testName;
-
     m_status = m_payloadBridge->msgPayloadAddVectorMsg(m_msg, NULL, 1, m_in, VECTOR_SIZE);
     ASSERT_EQ (MAMA_STATUS_OK, m_status);
 
     // The following is to populate impl->mWombatField
-    m_status = m_payloadBridge->msgPayloadGetField(m_msg, &testName, 1, &m_field);
+    m_status = m_payloadBridge->msgPayloadGetField(m_msg, NULL, 1, &m_field);
 
     m_status = m_payloadBridge->msgFieldPayloadGetVectorMsg(m_field, &m_out, &m_size);
     ASSERT_EQ (MAMA_STATUS_OK, m_status);

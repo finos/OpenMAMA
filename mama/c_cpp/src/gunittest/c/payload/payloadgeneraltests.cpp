@@ -1274,7 +1274,6 @@ TEST_F(PayloadGeneralTests, GetNativeMsgInValidNativeMsg)
 TEST_F(PayloadGeneralTests, GetFieldAsStringValid)
 {
     msgPayload          testPayload = NULL;
-    char                testName;
     mama_fid_t          testFid = 105;
     char                testBuf[256];
     mama_size_t         testLen = 10;
@@ -1287,7 +1286,7 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringValid)
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
     
-    result = aBridge->msgPayloadGetFieldAsString(testPayload, &testName, testFid, testBuf, testLen);
+    result = aBridge->msgPayloadGetFieldAsString(testPayload, NULL, testFid, testBuf, testLen);
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadDestroy(testPayload);
@@ -1296,7 +1295,6 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringValid)
 TEST_F(PayloadGeneralTests, GetFieldAsStringInValidPayload)
 {
     msgPayload          testPayload = NULL;
-    char                testName;
     mama_fid_t          testFid = 0;
     char                testBuf;
     mama_size_t         testLen = 0;
@@ -1304,7 +1302,7 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidPayload)
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
     
-    result = aBridge->msgPayloadGetFieldAsString(NULL, &testName, testFid, &testBuf, testLen);
+    result = aBridge->msgPayloadGetFieldAsString(NULL, NULL, testFid, &testBuf, testLen);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
 
     aBridge->msgPayloadDestroy(testPayload);
@@ -1331,33 +1329,9 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidName)
     aBridge->msgPayloadDestroy(testPayload);
 }
 
-TEST_F(PayloadGeneralTests, GetFieldAsStringInValidFid)
-{
-    /*
-     * 0 is a valid fid so this test is  not necessary
-    msgPayload          testPayload = NULL;
-    char                testName;
-    mama_fid_t          testFid = 105;
-    char                testBuf;
-    mama_size_t         testLen = 10;
-
-    result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
-    
-    aBridge->msgPayloadAddString (testPayload, "name2", 102, "Unit");
-    aBridge->msgPayloadAddString (testPayload, "name3", 103, "Testing");
-    aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
-    aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
-    
-    result = aBridge->msgPayloadGetFieldAsString(testPayload, &testName, 0, &testBuf, testLen);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
-    */
-}
-
 TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBuffer)
 {
     msgPayload          testPayload = NULL;
-    char                testName;
     mama_fid_t          testFid = 105;
     mama_size_t         testLen = 10;
 
@@ -1369,7 +1343,7 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBuffer)
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
     
-    result = aBridge->msgPayloadGetFieldAsString(testPayload, &testName, testFid, NULL, testLen);
+    result = aBridge->msgPayloadGetFieldAsString(testPayload, NULL, testFid, NULL, testLen);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
     aBridge->msgPayloadDestroy(testPayload);
 }
@@ -1377,7 +1351,6 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBuffer)
 TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBufferLength)
 {
     msgPayload          testPayload = NULL;
-    char                testName;
     mama_fid_t          testFid = 105;
     char                testBuf[256];
 
@@ -1389,7 +1362,7 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBufferLength)
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
-    result = aBridge->msgPayloadGetFieldAsString(testPayload, &testName, testFid, testBuf, 0);
+    result = aBridge->msgPayloadGetFieldAsString(testPayload, NULL, testFid, testBuf, 0);
     EXPECT_EQ (MAMA_STATUS_INVALID_ARG, result);
 
     aBridge->msgPayloadDestroy(testPayload);
@@ -1398,7 +1371,6 @@ TEST_F(PayloadGeneralTests, GetFieldAsStringInValidBufferLength)
 TEST_F(PayloadGeneralTests, GetFieldValid)
 {
     msgPayload          testPayload = NULL;
-    char                testName;
     mama_fid_t          testFid = 105;
     msgFieldPayload     testResult = NULL;
 
@@ -1410,7 +1382,7 @@ TEST_F(PayloadGeneralTests, GetFieldValid)
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
-    result = aBridge->msgPayloadGetField(testPayload, &testName, testFid, &testResult);
+    result = aBridge->msgPayloadGetField(testPayload, NULL, testFid, &testResult);
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
     aBridge->msgPayloadDestroy(testPayload);
@@ -1419,14 +1391,13 @@ TEST_F(PayloadGeneralTests, GetFieldValid)
 TEST_F(PayloadGeneralTests, GetFieldInValidPayload)
 {
     msgPayload          testPayload = NULL;
-    char                testName;
     mama_fid_t          testFid = 0;
     msgFieldPayload     testResult = NULL;
 
     result = aBridge->msgPayloadCreate(&testPayload);
     EXPECT_EQ (MAMA_STATUS_OK, result);
 
-    result = aBridge->msgPayloadGetField(NULL, &testName, testFid, &testResult);
+    result = aBridge->msgPayloadGetField(NULL, NULL, testFid, &testResult);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
 
     aBridge->msgPayloadDestroy(testPayload);
@@ -1452,34 +1423,9 @@ TEST_F(PayloadGeneralTests, GetFieldInValidName)
     aBridge->msgPayloadDestroy(testPayload);
 }
 
-TEST_F(PayloadGeneralTests, GetFieldInValidFid)
-{
-    /*
-     * 0 is a valid FID so this test is not necessary
-    msgPayload          testPayload = NULL;
-    char                testName;
-    msgFieldPayload     testResult = NULL;
-
-    result = aBridge->msgPayloadCreate(&testPayload);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
-    
-    aBridge->msgPayloadAddString (testPayload, "name2", 102, "Unit");
-    aBridge->msgPayloadAddString (testPayload, "name3", 103, "Testing");
-    aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
-    aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
-
-    result = aBridge->msgFieldPayloadCreate(&testResult);
-    EXPECT_EQ (MAMA_STATUS_OK, result);
-
-    result = aBridge->msgPayloadGetField(testPayload, &testName, 0, &testResult);
-	EXPECT_EQ (MAMA_STATUS_OK, result);
-    */
-}
-
 TEST_F(PayloadGeneralTests, GetFieldInValidResult)
 {
     msgPayload          testPayload = NULL;
-    char                testName;
     mama_fid_t          testFid = 105;
 
     result = aBridge->msgPayloadCreate(&testPayload);
@@ -1490,7 +1436,7 @@ TEST_F(PayloadGeneralTests, GetFieldInValidResult)
     aBridge->msgPayloadAddString (testPayload, "name4", 104, "Is");
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
-    result = aBridge->msgPayloadGetField(testPayload, &testName, testFid, NULL);
+    result = aBridge->msgPayloadGetField(testPayload, NULL, testFid, NULL);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, result);
     aBridge->msgPayloadDestroy(testPayload);
 }
