@@ -216,6 +216,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="destroyHandle.c" />
+    <ClCompile Include="fileutils.c" />
     <ClCompile Include="windows\environment.c" />
     <ClCompile Include="lex.yy.c" />
     <ClCompile Include="libyywrap.c" />
@@ -247,6 +248,8 @@
   <ItemGroup>
     <ClInclude Include="windows\wombat\port.h" />
     <ClInclude Include="property.h" />
+    <ClInclude Include="wombat\environment.h" />
+    <ClInclude Include="wombat\fileutils.h" />
     <ClInclude Include="wombat\wtable.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

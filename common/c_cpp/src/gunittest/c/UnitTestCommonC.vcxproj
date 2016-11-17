@@ -180,6 +180,9 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <TargetMachine>MachineX64</TargetMachine>
     </Link>
+    <PostBuildEvent>
+      <Command>copy "$(GTEST_HOME)\lib\gtest.dll" $(OutDir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\c\commonc.vcxproj">
@@ -190,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\MainUnitTestC.cpp" />
+    <ClCompile Include="utiltest.cpp" />
     <ClInclude Include="..\MainUnitTestC.h" />
     <ClCompile Include="port.cpp" />
     <ClCompile Include="queuetest.cpp" />

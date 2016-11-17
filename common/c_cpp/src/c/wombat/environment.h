@@ -24,6 +24,10 @@
 
 #include "wombat/wConfig.h"
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 /**
  * This function will delete an environment varible.
  *
@@ -58,5 +62,9 @@ extern int
 environment_setVariable(
     const char *name,
     const char *value);
+
+#if defined (__cplusplus)
+}
+#endif
 
 #endif /* _WOMBAT_ENVIRONMENT_H */
