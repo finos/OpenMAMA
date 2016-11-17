@@ -1,0 +1,27 @@
+language: c
+
+before_install:
+  - export SOURCE_DIR=`pwd`
+  - sudo apt-get update -qq
+  - sudo apt-get install -y scons git flex uuid-dev libevent-dev cmake git libzmq3-dev openjdk-8-jdk ncurses-dev ant unzip
+  - cd
+  - wget "https://github.com/apache/qpid-proton/archive/0.15.0.zip"
+  - unzip 0.15.0.zip
+  - cd qpid-proton-0.15.0
+  - mkdir build
+  - cd build
+  - cmake -DBUILD_TESTING:BOOL=OFF -DBUILD_JAVA:BOOL=OFF -DCMAKE_INSTALL_PREFIX=/usr ..
+  - make
+  - sudo make install
+  - wget "https://github.com/google/googletest/archive/release-1.8.0.zip"
+  - unzip release-1.8.0.zip
+  - cd googletest-release-1.8.0
+  - mkdir build
+  - cd build
+  - cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+  - make
+  - sudo make install
+
+script:
+ - cd $SOURCE_DIR
+ - python release_scripts/ci-run.py
