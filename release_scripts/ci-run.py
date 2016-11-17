@@ -71,7 +71,7 @@ install_dir = [d for d in os.listdir('.') if os.path.isdir(d) and d.startswith("
 
 # Set up environment for unit tests
 if os.name != 'nt':
-    env_var["LD_LIBRARY_PATH"] = "%s:%s:%s:%s:%s:%s:%s" % (
+    env_var["LD_LIBRARY_PATH"] = "%s:%s:%s" % (
                                      os.path.join(os.getcwd(), install_dir, 'lib'),
                                      '/usr/local/lib',
                                      '/usr/local/lib64')
