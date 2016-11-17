@@ -121,6 +121,13 @@ TEST_F (MamaMsgTestCPP, TempCopyNotOwnerTest)
     // getTempCopy: when the message cannot be modified, getTempCopy returns
     // a copy of the message and always the same copy.
 
+    // If no bridges have marked messages as immutable, this test is irrelevant
+    if (mamaInternal_getAllowMsgModify())
+    {
+        SUCCEED();
+        return;
+    }
+
     const void*       buffer          = NULL;
     size_t            bufferLength    = 0;
     MamaMsg*          msg             = new MamaMsg;
@@ -129,12 +136,6 @@ TEST_F (MamaMsgTestCPP, TempCopyNotOwnerTest)
     MamaMsg* copy2 = NULL;
     const char* testString      = "test";
     short owner;
-
-    // If no bridges have marked messages as immutable, this test is irrelevant
-    if (mamaInternal_getAllowMsgModify())
-    {
-        SUCCEED();
-    }
 
     msg->create();
     msg->addString (NULL, 101, testString);
