@@ -142,6 +142,8 @@ class Linux:
             env.Append(LINKFLAGS = Split( os.environ['LINKFLAGS'] ) )
 
         if env['with_unittest'] == True:
+            if not env.has_key('gtest_home') or not env['gtest_home']:
+                env['gtest_home'] = "/usr"
             if not Dir(env['gtest_home']).exists():
                 print 'GTest Home not found: ' + env['gtest_home']
                 Exit(0)
