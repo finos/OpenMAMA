@@ -76,7 +76,7 @@ if os.name != 'nt':
                                      '/usr/local/lib',
                                      '/usr/local/lib64')
 
-env_var["WOMBAT_PATH"] = os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'examples') + ":" + os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'gunittest', 'c')
+env_var["WOMBAT_PATH"] = os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'examples') + os.pathsep + os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'gunittest', 'c')
 
 
 found_tests = []
