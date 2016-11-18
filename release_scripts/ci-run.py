@@ -78,6 +78,11 @@ if os.name != 'nt':
 
 env_var["WOMBAT_PATH"] = os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'examples') + os.pathsep + os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'gunittest', 'c')
 
+if "JOB_NAME" in env_var:
+    test_failure_fatal = False
+else:
+    test_failure_fatal = True
+
 
 found_tests = []
 for root, dirs, files in os.walk(install_dir):
@@ -95,7 +100,7 @@ for root, dirs, files in os.walk(install_dir):
                                   payload_id,
                                   "--gtest_output=xml:%s.xml" % file[0:-4]
                                  ],
-                            fatal_error=False,
+                            fatal_error=test_failure_fatal,
                             shell=shell,
                             env=env_var)
             else:
@@ -117,6 +122,7 @@ for root, dirs, files in os.walk(install_dir):
                                   payload_id,
                                   "--gtest_output=xml:%s.xml" % file
                                  ],
-                            fatal_error=False,
+                            fatal_error=test_failure_fatal,
                             shell=shell,
                             env=env_var)
+
