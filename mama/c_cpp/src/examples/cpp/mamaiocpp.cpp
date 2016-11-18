@@ -223,12 +223,20 @@ static void createIOHandlers (void)
                                gFD,
                                MAMA_IO_WRITE);
 
-        /* Handles exceptional events like out of band data */
-        gExceptHandler = new MamaIo;
-        gExceptHandler->create (gDefaultQueue,
-                                new IOCallback (),
-                                gFD,
-                                MAMA_IO_EXCEPT);
+        /* Not all middlewares can support MAMA_IO_EXCEPT */
+        try
+        {
+            /* Handles exceptional events like out of band data */
+            gExceptHandler = new MamaIo;
+            gExceptHandler->create (gDefaultQueue,
+                                    new IOCallback (),
+                                    gFD,
+                                    MAMA_IO_EXCEPT);
+        }
+        catch (MamaStatus &status)
+        {
+            cerr << "Warning: Cannot create IO Handler for MAMA_IO_EXCEPT: not supported on current middleware " << endl;
+        }
     }
     catch (MamaStatus &status)
     {

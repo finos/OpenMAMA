@@ -142,8 +142,15 @@ namespace Wombat
 				readHandler.create(defaultQueue, new ReadIoCallback(this), descriptor, mamaIoType.MAMA_IO_READ);
 				writeHandler = new MamaIo();
 				writeHandler.create(defaultQueue, new WriteIoCallback(this), descriptor, mamaIoType.MAMA_IO_WRITE);
-				exceptHandler = new MamaIo();
-				exceptHandler.create(defaultQueue, new ExceptIoCallback(this), descriptor, mamaIoType.MAMA_IO_EXCEPT);
+                try
+                {
+				    exceptHandler = new MamaIo();
+				    exceptHandler.create(defaultQueue, new ExceptIoCallback(this), descriptor, mamaIoType.MAMA_IO_EXCEPT);
+                }
+                catch (MamaException e)
+                {
+                    Console.WriteLine("Warning: Cannot create IO Handler for MAMA_IO_EXCEPT: not supported on current middleware");
+                }
 			}
 			catch (MamaException e)
 			{
