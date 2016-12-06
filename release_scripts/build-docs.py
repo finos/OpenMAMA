@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import subprocess, os
+import subprocess
+import os
+from dirsync import sync
 
 def run_command(args, relpath, shell=True):
     print ("Starting to run command {}".format(" ".join(args)))
@@ -19,21 +21,28 @@ def run_command(args, relpath, shell=True):
         raise subprocess.CalledProcessError(p.returncode, subprocess.list2cmdline(args))
     print ("Finished running command {}".format(" ".join(args)))
 
-# Will output to mama/c_cpp/doc/c
+# Will output to mama/c_cpp/doc/c/html
 run_command(args=["doxygen", "doxyconfig-c.in"], relpath=os.path.join("mama", "c_cpp"))
-# Will output to mama/c_cpp/doc/cpp
+sync("mama/c_cpp/doc/c/html", "./aggregated_generated_docs/mama/c", "sync", create=True)
+# Will output to mama/c_cpp/doc/cpp/html
 run_command(args=["doxygen", "doxyconfig-cpp.in"], relpath=os.path.join("mama", "c_cpp"))
-# Will output to mamda/c_cpp/doc/cpp
+sync("mama/c_cpp/doc/cpp/html", "./aggregated_generated_docs/mama/cpp", "sync", create=True)
+# Will output to mamda/c_cpp/doc/cpp/html
 run_command(args=["doxygen", "doxyconfig-cpp.in"], relpath=os.path.join("mamda", "c_cpp"))
+sync("mamda/c_cpp/doc/cpp/html", "./aggregated_generated_docs/mamda/cpp", "sync", create=True)
 
 ## Below are the new doxygen generated output, hence the different conventions. We will
 ## merge these eventually
 
-# Will output to mama/jni/generated_docs
+# Will output to mama/jni/generated_docs/html
 run_command(args=["doxygen", "doxyconfig-java.in"], relpath=os.path.join("mama", "jni"))
-# Will output to mamda/java/generated_docs
+sync("mama/jni/generated_docs/html", "./aggregated_generated_docs/mama/java", "sync", create=True)
+# Will output to mamda/java/generated_docs/html
 run_command(args=["doxygen", "doxyconfig-java.in"], relpath=os.path.join("mamda", "java"))
-# Will output to mama/dotnet/generated_docs
+sync("mamda/java/generated_docs/html", "./aggregated_generated_docs/mamda/java", "sync", create=True)
+# Will output to mama/dotnet/generated_docs/html
 run_command(args=["doxygen", "doxyconfig-cs.in"], relpath=os.path.join("mama", "dotnet"))
-# Will output to mamda/dotnet/generated_docs
+sync("mama/dotnet/generated_docs/html", "./aggregated_generated_docs/mama/cs", "sync", create=True)
+# Will output to mamda/dotnet/generated_docs/html
 run_command(args=["doxygen", "doxyconfig-cs.in"], relpath=os.path.join("mamda", "dotnet"))
+sync("mamda/dotnet/generated_docs/html", "./aggregated_generated_docs/mamda/cs", "sync", create=True)
