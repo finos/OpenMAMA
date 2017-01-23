@@ -982,7 +982,11 @@ mamaSubscription_initialize (mamaSubscription subscription)
         configureForMultipleTopics (subscription);
     }
 
-    self->mLockHandle = mamaQueue_incrementObjectCount(self->mQueue, subscription);
+    if (self->mSubscMsgType != MAMA_SUBSC_DDICT_SNAPSHOT &&
+        self->mSubscMsgType != MAMA_SUBSC_SNAPSHOT)
+    {
+        self->mLockHandle = mamaQueue_incrementObjectCount(self->mQueue, subscription);
+    }
 
     if (gGenerateQueueStats)
     {
