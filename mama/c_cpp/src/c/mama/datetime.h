@@ -660,6 +660,17 @@ mamaDateTime_getStructTimeValWithTz(const mamaDateTime dateTime,
                                     const mamaTimeZone tz);
 
 /**
+ * Set the date/time from a "struct timeval".
+ *
+ * @param dateTime      The dateTime to update.
+ * @param inputTimeVal  The timeval struct to be used to update the dateTime.
+ */
+MAMAExpDLL
+extern mama_status
+mamaDateTime_setFromStructTimeVal(const mamaDateTime dateTime,
+                                  struct timeval*    inputTimeVal);
+
+/**
  * Get the date/time as a "struct tm".
  *
  * @param dateTime The dateTime to set.

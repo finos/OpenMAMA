@@ -85,7 +85,7 @@ typedef void*       mamaPluginInfo;
 /**
  * Flexible date/time format
  */
-typedef   mama_u64_t*   mamaDateTime;
+typedef   void*         mamaDateTime;
 
 /**
  * Time zone utility type

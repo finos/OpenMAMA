@@ -26,70 +26,82 @@
 extern "C" {
 #endif
 
-typedef uint64_t mama_time_t;
+typedef struct mama_time_t_
+{
+    mama_i64_t              mSeconds;
+    long                    mNanoseconds;
+    mamaDateTimePrecision   mPrecision;
+    mamaDateTimeHints       mHints;
+} mama_time_t;
 
 
-#define MAMA_TIME_IMPL_NULL               ((uint64_t)0x0ULL)
-#define MAMA_TIME_IMPL_MASK_SECONDS       ((uint64_t)0xffffffff00000000ULL)
-#define MAMA_TIME_IMPL_MASK_MICROSECONDS  ((uint64_t)0x00000000000fffffULL)
-#define MAMA_TIME_IMPL_MASK_PRECISION     ((uint64_t)0x00000000f0000000ULL)
-#define MAMA_TIME_IMPL_MASK_HINT          ((uint64_t)0x000000000f000000ULL)
-#define MAMA_TIME_IMPL_BIT_HAS_DATE       ((uint64_t)0x0000000001000000ULL)
-#define MAMA_TIME_IMPL_BIT_HAS_TIME       ((uint64_t)0x0000000002000000ULL)
-#define MAMA_TIME_IMPL_BIT_NO_TIMEZONE    ((uint64_t)0x0000000004000000ULL)
-#define MAMA_TIME_IMPL_MASK_TIME_ONLY     ((uint64_t)0xffffffff000fffffULL)
+#define mamaDateTimeImpl_clear(t) \
+    ((t)->mSeconds = 0, (t)->mNanoseconds = 0, (t)->mPrecision = MAMA_DATE_TIME_PREC_UNKNOWN, (t)->mHints = 0)
 
-#define mamaDateTimeImpl_clear(t)             ((t) =  MAMA_TIME_IMPL_NULL)
-#define mamaDateTimeImpl_copy(d,s)            ((d) =  (s))
-#define mamaDateTimeImpl_empty(t)             ((t) == MAMA_TIME_IMPL_NULL)
-#define mamaDateTimeImpl_equal(l,r)           ((l) == (r))
+#define mamaDateTimeImpl_copy(d,s) \
+    ((d)->mSeconds = (s)->mSeconds, (d)->mNanoseconds = (s)->mNanoseconds, (d)->mPrecision = (s)->mPrecision, (d)->mHints = (s)->mHints)
+
+#define mamaDateTimeImpl_empty(t) \
+    ((t)->mSeconds == 0, (t)->mNanoseconds == 0, (t)->mPrecision == MAMA_DATE_TIME_PREC_UNKNOWN, (t)->mHints == 0)
+
+#define mamaDateTimeImpl_equal(l,r) \
+    ((l)->mSeconds == (r)->mSeconds && (l)->mNanoseconds == (r)->mNanoseconds)
+
 
 #define mamaDateTimeImpl_clearSeconds(t) \
-      ((t) &= ~MAMA_TIME_IMPL_MASK_SECONDS)
+    ((t)->mSeconds = 0)
 #define mamaDateTimeImpl_clearMicroSeconds(t) \
-      ((t) &= ~MAMA_TIME_IMPL_MASK_MICROSECONDS)
+    ((t)->mNanoseconds = 0)
 #define mamaDateTimeImpl_clearPrecision(t) \
-      ((t) &= ~MAMA_TIME_IMPL_MASK_PRECISION)
+    ((t)->mPrecision = MAMA_DATE_TIME_PREC_UNKNOWN)
 #define mamaDateTimeImpl_clearHint(t) \
-      ((t) &= ~MAMA_TIME_IMPL_MASK_HINT)
-#define mamaDateTimeImpl_clearHasDate(t) \
-      ((t) &= ~MAMA_TIME_IMPL_BIT_HAS_DATE)
-#define mamaDateTimeImpl_clearHasTime(t) \
-      ((t) &= ~MAMA_TIME_IMPL_BIT_HAS_TIME)
-#define mamaDateTimeImpl_clearNoTimezone(t) \
-      ((t) &= ~MAMA_TIME_IMPL_NO_TIMEZONE)
+    ((t)->mHints = 0)
 
-#define mamaDateTimeImpl_getSeconds(t) \
-      (uint32_t) (((t) & MAMA_TIME_IMPL_MASK_SECONDS)   >> 32)
-#define mamaDateTimeImpl_getMicroSeconds(t) \
-      (uint32_t) ((t) & MAMA_TIME_IMPL_MASK_MICROSECONDS)
-#define mamaDateTimeImpl_getPrecision(t) \
-      (uint32_t) (((t) & MAMA_TIME_IMPL_MASK_PRECISION) >> 28)
-#define mamaDateTimeImpl_getHint(t) \
-      (uint32_t) (((t) & MAMA_TIME_IMPL_MASK_HINT)      >> 24)
+#define mamaDateTimeImpl_clearHasDate(t) \
+    ((t)->mHints &= ~MAMA_DATE_TIME_HAS_DATE)
+#define mamaDateTimeImpl_clearHasTime(t) \
+    ((t)->mHints &= ~MAMA_DATE_TIME_HAS_TIME)
+#define mamaDateTimeImpl_clearNoTimezone(t) \
+    ((t)->mHints &= ~MAMA_DATE_TIME_NO_TIMEZONE)
+
+
+#define mamaDateTimeImpl_getSeconds(t)      ((t)->mSeconds)
+
+#define mamaDateTimeImpl_getMicroSeconds(t) ((t)->mNanoseconds / 1000)
+
+#define mamaDateTimeImpl_getNanoSeconds(t)  ((t)->mNanoseconds)
+
+#define mamaDateTimeImpl_getPrecision(t)    ((t)->mPrecision)
+
+#define mamaDateTimeImpl_getHint(t)         ((t)->mHints)
+
 #define mamaDateTimeImpl_getHasDate(t) \
-      (uint8_t) (((t) & MAMA_TIME_IMPL_BIT_HAS_DATE) >> 24)
+      (((t)->mHints & MAMA_DATE_TIME_HAS_DATE) == MAMA_DATE_TIME_HAS_DATE)
 #define mamaDateTimeImpl_getHasTime(t) \
-      (uint8_t) (((t) & MAMA_TIME_IMPL_BIT_HAS_TIME) >> 24)
+      (((t)->mHints & MAMA_DATE_TIME_HAS_TIME) == MAMA_DATE_TIME_HAS_TIME)
 #define mamaDateTimeImpl_getNoTimezone(t) \
-      (uint8_t) (((t) & MAMA_TIME_IMPL_NO_TIMEZONE) >> 24)
-#define mamaDateTimeImpl_getTimeOnly(t) \
-      ((t) & MAMA_TIME_IMPL_MASK_TIME_ONLY)
+      (((t)->mHints & MAMA_DATE_TIME_NO_TIMEZONE) == MAMA_DATE_TIME_NO_TIMEZONE)
+
 
 #define mamaDateTimeImpl_setSeconds(t,s) \
-      ((t) = ((t) & ~MAMA_TIME_IMPL_MASK_SECONDS)      | ((uint64_t)(s) << 32))
+      ((t)->mSeconds = (mama_i64_t)(s))
 #define mamaDateTimeImpl_setMicroSeconds(t,us) \
-      ((t) = ((t) & ~MAMA_TIME_IMPL_MASK_MICROSECONDS) | ((uint64_t)(us)))
+      ((t)->mNanoseconds = (long)(us) * 1000)
+#define mamaDateTimeImpl_setNanoSeconds(t,ns) \
+      ((t)->mNanoseconds = (long)(ns))
 #define mamaDateTimeImpl_setPrecision(t,p) \
-      ((t) = ((t) & ~MAMA_TIME_IMPL_MASK_PRECISION)    | ((uint64_t)(p) << 28))
+      ((t)->mPrecision = (p))
 #define mamaDateTimeImpl_setHint(t,p) \
-      ((t) = ((t) & ~MAMA_TIME_IMPL_MASK_HINT)         | ((uint64_t)(p) << 24))
+      ((t)->mHints = (p))
+
+
 #define mamaDateTimeImpl_setHasDate(t) \
-      ((t) |= MAMA_TIME_IMPL_BIT_HAS_DATE)
+      ((t)->mHints |= MAMA_DATE_TIME_HAS_DATE)
 #define mamaDateTimeImpl_setHasTime(t) \
-      ((t) |= MAMA_TIME_IMPL_BIT_HAS_TIME)
+      ((t)->mHints |= MAMA_DATE_TIME_HAS_TIME)
 #define mamaDateTimeImpl_setNoTimezone(t) \
-      ((t) |= MAMA_TIME_IMPL_NO_TIMEZONE)
+      ((t)->mHints |= MAMA_DATE_TIME_NO_TIMEZONE)
+
 
 #define MAMA_TIME_IMPL_SECONDS_IN_DAY  (24*60*60)
 
