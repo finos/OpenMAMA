@@ -140,13 +140,13 @@ public class MamaDateTime implements Comparable
                               long                  microseconds,
                               MamaDateTimePrecision precision)
     {
-        _setEpochTime (secondsSinceEpoch, microseconds, precision.getShortValue());                                  
+        _setFromStructTimeVal (secondsSinceEpoch, microseconds, precision.getShortValue());
     }
 
     public void setEpochTime (long secondsSinceEpoch,
                               long microseconds)
     {
-        _setEpochTime (secondsSinceEpoch, microseconds, MamaDateTimePrecision.PREC_UNKNOWN.getShortValue());
+        _setFromStructTimeVal (secondsSinceEpoch, microseconds, MamaDateTimePrecision.PREC_UNKNOWN.getShortValue());
     }
 
 
@@ -164,7 +164,7 @@ public class MamaDateTime implements Comparable
         /**
          * This is not actually implemented in C/C++. The hints field is ignored.
          */
-        _setEpochTime (secondsSinceEpoch, microseconds, precision.getShortValue());
+        _setFromStructTimeVal (secondsSinceEpoch, microseconds, precision.getShortValue());
     }
 
     void setPrecision (MamaDateTimePrecision precision) 
@@ -333,15 +333,11 @@ public class MamaDateTime implements Comparable
     }
 
     public native void destroy ();
-    
-    private native void _create ();  
-    
-    public native void copy (MamaDateTime copy); 
-    
-    private native void _setEpochTime (long secondsSinceEpoch, 
-                                       long microseconds, 
-                                       short precision);
-    
+
+    private native void _create ();
+
+    public native void copy (MamaDateTime copy);
+
     private native void _setPrecision (short precision);
     
     private native int  _getPrecision ();
@@ -357,8 +353,12 @@ public class MamaDateTime implements Comparable
                                   long microsecond,
                                   short precision,
                                   String tz);
-                                  
-  
+
+    private native void _setFromStructTimeVal (long second,
+                                               long microsecond,
+                                               short precision);
+
+
     private native short _getDayOfWeek();
     
     private native long _getEpochTimeMicroseconds (String tz);
