@@ -64,7 +64,7 @@ MamaDateTimeTestC::TearDown(void)
     mama_close();
 }
 
-// Test Create function will valid and NULL parameters
+// Test Create function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestCreate)
 {
     mamaDateTime t = NULL;
@@ -73,7 +73,7 @@ TEST_F (MamaDateTimeTestC, TestCreate)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-// Test Destroy function will valid and NULL parameters
+// Test Destroy function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestDestroy)
 {
     mamaDateTime t, nullTime = NULL; 
@@ -83,7 +83,7 @@ TEST_F (MamaDateTimeTestC, TestDestroy)
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_destroy(nullTime) );
 }
 
-// Test Clear function will valid and NULL parameters
+// Test Clear function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestClear)
 {
     mamaDateTime t, nullTime = NULL; 
@@ -96,7 +96,7 @@ TEST_F (MamaDateTimeTestC, TestClear)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-// Test ClearDate function will valid and NULL parameters
+// Test ClearDate function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestClearDate)
 {
     mamaDateTime t, nullTime = NULL; 
@@ -109,7 +109,7 @@ TEST_F (MamaDateTimeTestC, TestClearDate)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-// Test ClearTime function will valid and NULL parameters
+// Test ClearTime function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestClearTime)
 {
     mamaDateTime t, nullTime = NULL; 
@@ -122,7 +122,7 @@ TEST_F (MamaDateTimeTestC, TestClearTime)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-// Test Copy function will valid and NULL parameters
+// Test Copy function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestCopy)
 {
     mamaDateTime t,u, nullTime = NULL; 
@@ -144,7 +144,7 @@ TEST_F (MamaDateTimeTestC, TestCopy)
 }
 
 
-// Test Empty function will valid and NULL parameters
+// Test Empty function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestEmpty)
 {
     mamaDateTime t, nullTime = NULL; 
@@ -159,7 +159,7 @@ TEST_F (MamaDateTimeTestC, TestEmpty)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
-// Test Equal function will valid and NULL parameters
+// Test Equal function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestEqual)
 {
     mamaDateTime t, u, nullTime = NULL; 
@@ -228,8 +228,9 @@ TEST_F (MamaDateTimeTestC, TestCompare)
     // t is less than u
 
     EXPECT_EQ ( -1, mamaDateTime_compare(t,u) );
-    ASSERT_NE ( 1, mamaDateTime_compare(t,u) );
+    EXPECT_EQ ( 1, mamaDateTime_compare(u,t) );
     EXPECT_EQ ( 0, mamaDateTime_compare(t, t) );
+    EXPECT_EQ ( 0, mamaDateTime_compare(u, u) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(u) );
@@ -491,7 +492,7 @@ TEST_F (MamaDateTimeTestC, TestCopyTime)
     
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setTime(t2, hour, minute, second, microsecond) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_copyTime(t1,t2) );
-    EXPECT_EQ ( 0, mamaDateTime_equal(t1,t2) );
+    EXPECT_EQ ( 1, mamaDateTime_equal(t1,t2) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t1) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) ); 
@@ -1394,6 +1395,31 @@ TEST_F (MamaDateTimeTestC, TestDiffMicroseconds)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) );
 }
 
+TEST_F (MamaDateTimeTestC, TestDiffMicrosecondsMixedValues)
+{
+    mamaDateTime t1, t2, nullTime = NULL;
+
+    std::string szTime1 = "2013-07-04 10:03:21.123",
+                szTime2 = "2012-07-04 10:03:21.123";
+
+    mama_i64_t mics = 1000000, dd = UINT_MAX, hh = -24, mm = 60, ss = 60;
+    mama_i64_t act, expected =  dd * hh * mm * ss * mics;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t1) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t2) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromString(t1, szTime1.c_str()) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromString(t2, szTime2.c_str()) );
+
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_diffMicroseconds(nullTime, nullTime, NULL) );
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_diffMicroseconds(t1, nullTime, NULL) );
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_diffMicroseconds(t1, t2, NULL) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_diffMicroseconds(t1, t2, &act) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t1) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) );
+}
+
 /*  Description:     Get the current time since epoch by passing: 
  *                       1) NULL date-time & valid seconds
  *                       2) Valid date-time & NULL seconds
@@ -1409,28 +1435,28 @@ TEST_F (MamaDateTimeTestC, NullArguments)
     mamaDateTime    m_DateTime = NULL;
     
     /* Call with a NULL date time */
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, 
                mamaDateTime_getEpochTimeSecondsWithCheck (NULL, &seconds));
 
     /* NULL seconds */
-    mamaDateTime_create (&m_DateTime);
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&m_DateTime));
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, 
                mamaDateTime_getEpochTimeSecondsWithCheck (m_DateTime, NULL));
 
     /* NULL for both */
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG, 
                mamaDateTime_getEpochTimeSecondsWithCheck (NULL, NULL));
 
-    mamaDateTime_destroy (m_DateTime);
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (m_DateTime));
 }
 
 /*  Description:     Get the number of seconds since epoch from:
  *                       1) A string representation of a time
- *                       2) A string representation of a time and the current 
+ *                       2) A string representation of a time and the current
  *                          date
  *                   Compare these strings.
  *
- *  Expected Result: completeDateSeconds = timeSeconds 
+ *  Expected Result: completeDateSeconds = timeSeconds
  */
 TEST_F (MamaDateTimeTestC, CompareDates)
 {
@@ -1443,41 +1469,467 @@ TEST_F (MamaDateTimeTestC, CompareDates)
     mama_f64_t   timeSeconds           = 0;
     
     /* Get todays date in a date time */
-    ASSERT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK, 
                mamaDateTime_create (&today));
 
-    ASSERT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK, 
                mamaDateTime_setToNow (today));
 
     /* Get the string representation of the data */
-    ASSERT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK, 
                mamaDateTime_getAsFormattedString (today, stringDate, 100, "%Y-%m-%d"));
 
     /* Destroy the date */
-    ASSERT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK, 
                mamaDateTime_destroy (today));
 
     /* Format a string using today's date and a time, 
      * this should be as "2010-07-04 10:00:00.000" */
-    mamaDateTime_create (&m_cDateTime);
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&m_cDateTime));
     sprintf (completeDateTime, "%s %s", stringDate, time);
 
     /* Set the date from this string */
-    ASSERT_EQ (MAMA_STATUS_OK,
+    EXPECT_EQ (MAMA_STATUS_OK,
                mamaDateTime_setFromString (m_cDateTime, completeDateTime));
 
     /* Get the number of seconds */
-    ASSERT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK, 
                mamaDateTime_getEpochTimeSecondsWithCheck (m_cDateTime, &completeDateSeconds));
 
     /* Set the date using just the time string */
-    ASSERT_EQ (MAMA_STATUS_OK, mamaDateTime_clear (m_cDateTime));
-    ASSERT_EQ (MAMA_STATUS_OK, mamaDateTime_setFromString (m_cDateTime, time));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_clear (m_cDateTime));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_setFromString (m_cDateTime, time));
 
     /* Get the number of seconds from this */
-    ASSERT_EQ (MAMA_STATUS_OK, mamaDateTime_getEpochTimeSecondsWithCheck (m_cDateTime, &timeSeconds));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_getEpochTimeSecondsWithCheck (m_cDateTime, &timeSeconds));
     
     /* These must be the same */
-    ASSERT_EQ (completeDateSeconds, timeSeconds);
-    ASSERT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (m_cDateTime));
+    EXPECT_EQ (completeDateSeconds, timeSeconds);
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (m_cDateTime));
 }
+
+/*  Description:     Set the number of seconds since epoch from a timeval.
+ *                   Compare these strings.
+ *
+ *  Expected Result: timeStr = stringBuffer
+ */
+TEST_F (MamaDateTimeTestC, TestSetStructTimeVal)
+{
+    struct timeval          tVal;
+    mamaDateTime            t, nullTime = NULL;
+    const char*             timeStr     = "2017-01-17 17:31:47.123000";
+    char                    stringBuffer[50];
+    mama_u32_t              secs        = 0;
+    mama_u32_t              uSecs       = 0;
+    mamaDateTimePrecision   precision;
+
+    /* The following timeval represents the time - "2017-01-17 17:31:47.123" */
+    tVal.tv_sec = 1484674307;
+    tVal.tv_usec = 123000;
+
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setFromStructTimeVal(nullTime, NULL) );
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setFromStructTimeVal(nullTime, &tVal) );
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setFromStructTimeVal(t, NULL) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50) );
+    EXPECT_STREQ (timeStr, stringBuffer);
+
+    /* Precision was set to 6 dp so should be MAMA_DATE_TIME_PREC_MICROSECONDS */
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getEpochTime(t, &secs, &uSecs, &precision) );
+    EXPECT_EQ ( precision, MAMA_DATE_TIME_PREC_MICROSECONDS );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeExtended)
+{
+    struct timeval          tVal1, tVal2;
+    mamaDateTime            t           = NULL;
+    mama_u32_t              secs        = 0;
+    mama_u32_t              uSecs       = 0;
+    mamaDateTimePrecision   precision;
+
+    /* The following timeval represents the time - "2106-02-07 06:28:16.123000"
+        1 second more than a uint32_t can hold */
+    tVal1.tv_sec = 4294967296;
+    tVal1.tv_usec = 123000;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getEpochTime(t, &secs, &uSecs, &precision) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeExtendedNegativeValues)
+{
+    struct timeval          tVal1, tVal2;
+    mamaDateTime            t           = NULL;
+    mama_u32_t              secs        = 0;
+    mama_u32_t              uSecs       = 0;
+    mamaDateTimePrecision   precision;
+    char                    stringBuffer[50];
+    const char*             expectedDate = "1969-12-31 23:59:55";
+
+    /* The following timeval represents the time - "1969-12-31 23:59:55" */
+    tVal1.tv_sec = -5;
+    tVal1.tv_usec = -1;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getEpochTime(t, &secs, &uSecs, &precision) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedDate, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetStructTimeValExtended)
+{
+    struct timeval          tVal1, tVal2;
+    mamaDateTime            t           = NULL;
+    mama_u32_t              secs        = 0;
+    mama_u32_t              uSecs       = 0;
+    mamaDateTimePrecision   precision;
+
+    /* The following timeval represents the time - "4375-02-26 15:38:40.123000" */
+    tVal1.tv_sec = 75899345920;
+    tVal1.tv_usec = 123000;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetStructTimeValExtendedNegativeValues)
+{
+    struct timeval          tVal1, tVal2;
+    mamaDateTime            t           = NULL;
+    mama_u32_t              secs        = 0;
+    mama_u32_t              uSecs       = 0;
+    mamaDateTimePrecision   precision;
+    char                    stringBuffer[50];
+    const char*             expectedDate = "1969-12-31 23:59:55";
+
+    /* The following timeval represents the time - "1969-12-31 23:59:55" */
+    tVal1.tv_sec = -5;
+    tVal1.tv_usec = -1;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedDate, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeWithTzExtended)
+{
+    struct timeval          tVal1, tVal2;
+    mamaDateTime            t           = NULL;
+    mama_u32_t              secs        = 0;
+    mama_u32_t              uSecs       = 0;
+    mamaDateTimePrecision   precision;
+    mamaTimeZone            tz          = mamaTimeZone_utc();
+
+    /* The following timeval represents the time - "2106-02-07 06:28:16.123000"
+        1 second more than a uint32_t can hold */
+    tVal1.tv_sec = 4294967296;
+    tVal1.tv_usec = 123000;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getEpochTimeWithTz(t, &secs, &uSecs, &precision, tz) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeMicrosecondsExtended)
+{
+    struct timeval  tVal1, tVal2;
+    mamaDateTime    t       = NULL;
+    mama_u64_t      uSecs   = 0;
+
+    /* The following timeval represents the time - "4375-02-26 15:38:40.123000" */
+    tVal1.tv_sec = 75899345920;
+    tVal1.tv_usec = 123000;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getEpochTimeMicroseconds(t, &uSecs) );
+
+    EXPECT_EQ ( uSecs, (tVal1.tv_sec * 1000000) + tVal1.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetWithHintsExtended)
+{
+    struct timeval          tVal1, tVal2;
+    mamaDateTime            t           = NULL;
+    mama_u32_t              secs        = 0;
+    mama_u32_t              uSecs       = 0;
+    mamaDateTimePrecision   precision;
+    mamaDateTimeHints       hints;
+
+    /* The following timeval represents the time - "2106-02-07 06:28:16.123000"
+        1 second more than a uint32_t can hold */
+    tVal1.tv_sec = 4294967296;
+    tVal1.tv_usec = 123000;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getWithHints(t, &secs, &uSecs, &precision, &hints) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetMicrosecondExtended)
+{
+    struct timeval  tVal1, tVal2;
+    mamaDateTime    t       = NULL;
+    mama_u32_t      uSec    = 0;
+
+    /* The following timeval represents the time - "2106-02-07 06:28:16"
+        But the microseconds will be 1 microsecond more than a uint32_t can hold */
+    tVal1.tv_sec = 4294967295;
+    tVal1.tv_usec = 4294967296;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getMicrosecond(t, &uSec) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestSetTimeExTest)
+{
+    mamaDateTime    t1   = NULL;
+    mama_u32_t      hour = 9, minute = 21, second = 12, microsecond = 500;
+    mama_u32_t      year = 2500, month = 12, day = 15;
+    char            dateTimeString[56];
+
+    const char*     expectedResult = "2500-12-15 09:21:12.000";
+
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t1) );
+
+    // Add a date beyond the current limit, 2106
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setTime(t1, hour, minute, second, microsecond));
+
+    // Add a date beyond the current limit, 2106
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setDate(t1, year, month, day));
+
+    // Get the date as a string for comparing
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getAsString (t1, dateTimeString, 56));
+
+    EXPECT_STREQ ( dateTimeString, expectedResult );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t1) );
+}
+
+TEST_F (MamaDateTimeTestC, GetAsFormattedStringWithTzTest)
+{
+    mamaDateTime t1                    = NULL;
+    char         stringDate[100]       = "";
+    const char*  time                  = "2013-07-04 10:03:21.123000";
+    char         completeDateTime[100] = "";
+    mamaDateTime m_cDateTime           = NULL;
+    mama_f64_t   completeDateSeconds   = 0;
+    mama_f64_t   timeSeconds           = 0;
+
+    /* Get todays date in a date time */
+    EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&t1));
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromString(t1, time) );
+
+    /* Get the string representation of the data */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_getAsFormattedString (t1, stringDate, 100, "%Y-%m-%d %H:%M:%S"));
+
+    /* Get the string representation of the data */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_getAsFormattedStringWithTz (t1, completeDateTime, 100, "%Y-%m-%d %H:%M:%S", mamaTimeZone_utc()));
+
+    EXPECT_STREQ ( stringDate, completeDateTime );
+
+    /* Test some of the seconds / sub-seconds options */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_getAsFormattedStringWithTz (t1, completeDateTime, 100, "%Y-%m-%d %H:%M:%S.%.", mamaTimeZone_utc()));
+
+    EXPECT_STREQ ( time, completeDateTime );
+
+    // %, should add the "." before the sub seconds
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_getAsFormattedStringWithTz (t1, completeDateTime, 100, "%Y-%m-%d %H:%M:%S%,", mamaTimeZone_utc()));
+
+    EXPECT_STREQ ( time, completeDateTime );
+
+    /* Destroy the date */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_destroy (t1));
+}
+
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeMicrosecondsExtendedNegativeValues)
+{
+    struct timeval  tVal1, tVal2;
+    mamaDateTime    t       = NULL;
+    mama_u64_t      uSecs   = 0;
+    char            stringBuffer[50];
+    const char*     expectedDate = "1969-12-31 23:59:55";
+
+    /* The following timeval represents the time - "1969-12-31 23:59:55" */
+    tVal1.tv_sec = -5;
+    tVal1.tv_usec = -1;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getEpochTimeMicroseconds(t, &uSecs) );
+
+    EXPECT_EQ ( uSecs, (tVal1.tv_sec * 1000000) + tVal1.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedDate, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetWithHintsExtendedNegativeValues)
+{
+    struct timeval          tVal1, tVal2;
+    mamaDateTime            t           = NULL;
+    mama_u32_t              secs        = 0;
+    mama_u32_t              uSecs       = 0;
+    mamaDateTimePrecision   precision;
+    mamaDateTimeHints       hints;
+    char                    stringBuffer[50];
+    const char*             expectedDate = "1969-12-31 23:59:55";
+
+    /* The following timeval represents the time - "1969-12-31 23:59:55" */
+    tVal1.tv_sec = -5;
+    tVal1.tv_usec = -1;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getWithHints(t, &secs, &uSecs, &precision, &hints) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedDate, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetMicrosecondExtendedNegativeValues)
+{
+    struct timeval  tVal1, tVal2;
+    mamaDateTime    t       = NULL;
+    mama_u32_t      uSec    = 0;
+    char            stringBuffer[50];
+    const char*     expectedDate = "1969-12-31 23:59:55";
+
+    /* The following timeval represents the time - "1969-12-31 23:59:55" */
+    tVal1.tv_sec = -5;
+    tVal1.tv_usec = -1;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getMicrosecond(t, &uSec) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedDate, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestVeryLargeValues)
+{
+    struct timeval          tVal1, tVal2;
+    mamaDateTime            t           = NULL;
+
+    /* The following timeval represents the largest possible valule for an int64" */
+    mama_i64_t int64_max = 9223372036854775807;
+    tVal1.tv_sec = int64_max;
+    tVal1.tv_usec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeVal(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_usec, tVal2.tv_usec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
