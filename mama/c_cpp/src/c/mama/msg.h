@@ -1698,6 +1698,23 @@ mamaMsg_getDateTimeMSec(
     mama_u64_t*    milliseconds);
 
 /**
+ * Get the value of a MAMA date/time field in seconds as a double
+ *
+ * @param msg The message.
+ * @param name The name
+ * @param fid  The field identifier
+ * @param seconds (out) Pointer to the value in seconds as a double
+ */
+MAMAExpDLL
+extern
+mama_status
+mamaMsg_getDateTimeSeconds(
+    const mamaMsg  msg,
+    const char*    name,
+    mama_fid_t     fid,
+    mama_f64_t*    seconds);
+
+/**
  * Get a MAMA price field.
  *
  * @param msg The message.

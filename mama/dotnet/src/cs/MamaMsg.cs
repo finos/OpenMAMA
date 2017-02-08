@@ -625,21 +625,22 @@ namespace Wombat
             
             return result;
         }
+
 		private ulong convertToMamaDateTime (DateTime val)
 		{
-			ulong dateTimeMsec = (ulong)((val.Ticks - 621355968000000000) / TimeSpan.TicksPerMillisecond);
+			double dateTimeSec = (((double)val.Ticks - 621355968000000000.0) / TimeSpan.TicksPerSecond);
 			ulong dateTime = 0;
-			int code = NativeMethods.mamaDateTime_setEpochTimeMilliseconds (ref dateTime, dateTimeMsec);
+			int code = NativeMethods.mamaDateTime_setEpochTimeF64 (ref dateTime, dateTimeSec);
 			CheckResultCode(code);
 			return dateTime;
 		}
 
 		private long convertFromMamaDateTime (ulong val)
 		{
-			ulong dateTimeMsec = 0;
-			int code = NativeMethods.mamaDateTime_getEpochTimeMilliseconds (ref val, ref dateTimeMsec);
+			double dateTimeSec = 0;
+			int code = NativeMethods.mamaDateTime_getEpochTimeSeconds (ref val, ref dateTimeSec);
 			CheckResultCode(code);
-			return ((long)dateTimeMsec * TimeSpan.TicksPerMillisecond) + 621355968000000000;
+			return (long)((dateTimeSec * (double)TimeSpan.TicksPerSecond) + 621355968000000000.0);
 		}
 
 		/// <summary>
@@ -4870,8 +4871,8 @@ namespace Wombat
 			bool throwOnError)
 		{
 			EnsurePeerCreated();
-			ulong dateTimeMsec = 0;
-			int code = NativeMethods.mamaMsg_getDateTimeMSec(nativeHandle, name, fid, ref dateTimeMsec);
+			double dateTimeSec = 0;
+			int code = NativeMethods.mamaMsg_getDateTimeSeconds(nativeHandle, name, fid, ref dateTimeSec);
 			if ((MamaStatus.mamaStatus)code != MamaStatus.mamaStatus.MAMA_STATUS_OK)
 			{
 				if (throwOnError)
@@ -4883,8 +4884,8 @@ namespace Wombat
 					return false;
 				}
 			}
-            
-            long ret = ((long)dateTimeMsec * TimeSpan.TicksPerMillisecond) + 621355968000000000;
+
+			long ret = (long)((dateTimeSec * (double)TimeSpan.TicksPerSecond) + 621355968000000000.0);
 			result = new DateTime(ret);
 			return true;
 		}
@@ -5617,6 +5618,11 @@ namespace Wombat
 				ushort fid,
 				ref ulong result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern int mamaMsg_getDateTimeSeconds(IntPtr mamaMsg,
+				string name,
+				ushort fid,
+				ref double result);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_getPrice(IntPtr mamaMsg,
 				string name,
 				ushort fid,
@@ -5759,8 +5765,14 @@ namespace Wombat
 			public static extern int mamaDateTime_setEpochTimeMilliseconds(ref ulong dateTime,
 				ulong milliseconds);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern int mamaDateTime_setEpochTimeF64(ref ulong dateTime,
+				double seconds);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaDateTime_getEpochTimeMilliseconds(ref ulong dateTime,
 				ref ulong milliseconds);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern int mamaDateTime_getEpochTimeSeconds(ref ulong dateTime,
+				ref double seconds);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaPrice_create(ref IntPtr nativeHandle);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
