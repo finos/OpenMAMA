@@ -115,7 +115,7 @@ public:
      * Set the underlying C mamaDateTime from a TimeVal Struct.
      *  This will allow for extended date ranges.
      */
-    void          set             (struct timeval      inputTimeVal);
+    void set (struct timeval inputTimeVal);
 
     /**
      * Set the entire date and time for the MamaDateTime.  The year,
