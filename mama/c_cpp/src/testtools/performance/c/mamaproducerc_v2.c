@@ -177,7 +177,6 @@ static long int             gRewindCount    = 0;
 static char*          gPlaybackFilename   = NULL;
 static mamaPlaybackFileParser gFileParser		= NULL;
 static wtable_t 			gPublisherTable		= NULL;
-static mamaMsg				gCachedMsg			= NULL;
 
 static int                  gFlat               = 0;
 static mamaMsg              gFlatMsg            = NULL;
@@ -1261,7 +1260,6 @@ static void initializePublishers
     if (gUsePlayback)
     {
     	gPublisherTable = wtable_create ("PublisherTable", gNumPubs/10);
-		mamaMsg_create(&gCachedMsg);
     }
     else
     {
@@ -1573,7 +1571,6 @@ static void publishMessage
 			return;
 		}
 
-		mamaMsg_applyMsg(gCachedMsg, msg);
 	}
 	else
 	{
