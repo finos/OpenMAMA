@@ -1448,7 +1448,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setFromStructTimeVal 
         utils_throwExceptionForMamaStatus(env,status,errorString);
     }
 
-    /* Now set the percision */
+    /* Now set the precision */
     if(MAMA_STATUS_OK!=(status=mamaDateTime_setPrecision(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
                             (mamaDateTimePrecision) precision)))

@@ -113,6 +113,16 @@ typedef struct mama_time_t_
        mamaDateTimeImpl_setMicroSeconds(t,0), \
        mamaDateTimeImpl_clearHasTime(t))
 
+#define mamaDateTimeImpl_compare(l,r) \
+    do { \
+        if ((l)->mSeconds > (r)->mSeconds) \
+            return 1; \
+        else if (((l)->mSeconds == (r)->mSeconds) && ((l)->mNanoseconds == (r)->mNanoseconds)) \
+            return 0; \
+        else \
+            return -1; \
+    } while (0)
+
 #if defined(__cplusplus)
 }
 #endif

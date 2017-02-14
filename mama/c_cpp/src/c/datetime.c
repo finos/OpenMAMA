@@ -148,23 +148,10 @@ int mamaDateTime_equal (const mamaDateTime lhs,
 int mamaDateTime_compare (const mamaDateTime lhs,
                           const mamaDateTime rhs)
 {
-    mama_i64_t      lhsSecsOnly, rhsSecsOnly = 0;
-    long            lhsMicrosOnly, rhsMicrosOnly = 0;
-
     if (NULL == lhs || NULL == rhs)
         return 0;
 
-    lhsSecsOnly = mamaDateTimeImpl_getSeconds((mama_time_t*)lhs);
-    lhsMicrosOnly = mamaDateTimeImpl_getMicroSeconds((mama_time_t*)lhs);
-    rhsSecsOnly = mamaDateTimeImpl_getSeconds((mama_time_t*)rhs);
-    rhsMicrosOnly = mamaDateTimeImpl_getMicroSeconds((mama_time_t*)rhs);
-
-    if (lhsSecsOnly > rhsSecsOnly)
-        return 1;
-    else if ((lhsSecsOnly == rhsSecsOnly) && (lhsMicrosOnly == rhsMicrosOnly))
-        return 0;
-    else
-        return -1 ;
+    mamaDateTimeImpl_compare((mama_time_t*)lhs, (mama_time_t*)rhs);
 }
 
 mama_status
@@ -646,7 +633,7 @@ mamaDateTime_addSeconds(mamaDateTime dateTime,
 
         mamaDateTime_addWholeSeconds (dateTime, wholeSeconds);
         mamaDateTime_addMicroseconds (dateTime, microseconds);
-        mamaDateTimeImpl_setHasTime            ((mama_time_t*)dateTime);
+        mamaDateTimeImpl_setHasTime  ((mama_time_t*)dateTime);
     }
     return MAMA_STATUS_OK;
 }
@@ -727,7 +714,8 @@ mamaDateTime_getEpochTimeWithTz(const mamaDateTime     dateTime,
         mama_i32_t  offset   = 0;
         mamaTimeZone_getOffset (tz, &offset);
 
-        if ((mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) + offset) > UINT32_MAX)
+        if (((mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) + offset) > UINT32_MAX) ||
+            ((mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) + offset) < 0))
         {
             return MAMA_STATUS_INVALID_ARG;
         }
@@ -736,7 +724,8 @@ mamaDateTime_getEpochTimeWithTz(const mamaDateTime     dateTime,
     }
     else
     {
-        if (mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) > UINT32_MAX)
+        if ((mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) > UINT32_MAX) ||
+            (mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) < 0))
         {
             return MAMA_STATUS_INVALID_ARG;
         }
@@ -744,7 +733,8 @@ mamaDateTime_getEpochTimeWithTz(const mamaDateTime     dateTime,
         *seconds = (mama_u32_t)mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime);
     }
 
-    if (mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) > UINT32_MAX)
+    if ((mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) > UINT32_MAX) ||
+        (mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) < 0))
     {
         return MAMA_STATUS_INVALID_ARG;
     }
@@ -937,14 +927,16 @@ mamaDateTime_getWithHints(const mamaDateTime     dateTime,
     if (!dateTime || !seconds || !microseconds)
         return MAMA_STATUS_INVALID_ARG;
 
-    if (mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) > UINT32_MAX)
+    if ((mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) > UINT32_MAX) ||
+        (mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) < 0))
     {
         return MAMA_STATUS_INVALID_ARG;
     }
 
     *seconds = mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime);
 
-    if (mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) > UINT32_MAX)
+    if ((mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) > UINT32_MAX) ||
+        (mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) < 0))
     {
         return MAMA_STATUS_INVALID_ARG;
     }
@@ -1043,20 +1035,21 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
                                       char*              buf,
                                       mama_size_t        bufMaxLen)
 {
-    time_t    seconds;
-    struct tm tmValue;
+    time_t          seconds;
+    struct tm       tmValue;
+    mama_time_t*    aDateTime   = (mama_time_t*)dateTime;
 
-    if (!dateTime || !buf)
+    if (!aDateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
 
-    seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_time_t*)dateTime);
+    seconds = (time_t) mamaDateTimeImpl_getSeconds(aDateTime);
     utcTm (&tmValue, seconds);
     buf[0] = '\0';
-    if (mamaDateTimeImpl_getHasTime ((mama_time_t*)dateTime))
+    if (mamaDateTimeImpl_getHasTime (aDateTime))
     {
         size_t    bytesUsed = 0;
         size_t    precision = 0;
-        if (mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+        if (mamaDateTimeImpl_getHasDate(aDateTime))
         {
             bytesUsed = strftime (buf, bufMaxLen, "%Y-%m-%d %H:%M:%S", &tmValue);
         }
@@ -1069,13 +1062,13 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
             buf       += bytesUsed;
             bufMaxLen -= bytesUsed;
         }
-        precision = mamaDateTimeImpl_getPrecision((mama_time_t*)dateTime);
+        precision = mamaDateTimeImpl_getPrecision(aDateTime);
         /* for unknown we print all the digits */
         precision = precision == MAMA_DATE_TIME_PREC_UNKNOWN ? 3 : precision;
         if (precision > 0)
         {
             size_t i;
-            long digits = mamaDateTimeImpl_getMicroSeconds((mama_time_t*)dateTime);
+            long digits = mamaDateTimeImpl_getMicroSeconds(aDateTime);
             for (i = 6; i > precision; i--)
             {
                 digits /= 10;
@@ -1089,7 +1082,7 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
             snprintf (buf, bufMaxLen, ".%0*d", (int)precision, digits);
         }
     }
-    else if (mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+    else if (mamaDateTimeImpl_getHasDate(aDateTime))
     {
         strftime (buf, bufMaxLen, "%Y-%m-%d", &tmValue);
     }
@@ -1635,7 +1628,8 @@ mamaDateTime_getMicrosecond(const mamaDateTime dateTime,
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    if ((mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime)) > UINT32_MAX)
+    if (((mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime)) > UINT32_MAX) ||
+        ((mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime)) < 0))
     {
         return MAMA_STATUS_INVALID_ARG;
     }
