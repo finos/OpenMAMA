@@ -112,6 +112,12 @@ public:
     void          setToMidnightToday (const MamaTimeZone*    tz = NULL);
 
     /**
+     * Set the underlying C mamaDateTime from a TimeVal Struct.
+     *  This will allow for extended date ranges.
+     */
+    void set (struct timeval inputTimeVal);
+
+    /**
      * Set the entire date and time for the MamaDateTime.  The year,
      * month and day parameters must all be integers greater than
      * zero.
@@ -298,7 +304,7 @@ public:
     const mamaDateTime  getCValue() const;
 
 private:
-    mama_u64_t      mDateTime;
+    mamaDateTime    mDateTime;
     mutable char*   mStrRep;
 };
 

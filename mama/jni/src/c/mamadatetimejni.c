@@ -1248,37 +1248,6 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime_copy
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
- * Method:    _setEpochTime
- * Signature: (JJS)V
- */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setEpochTime
-  (JNIEnv* env, jobject this, jlong seconds, jlong microseconds, jshort precision)
-{
-    jlong       pDateTime   = 0;
-    mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-
-    pDateTime = (*env)->GetLongField(env,this,dateTimePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
-		"Null parameter, MamaDateTime may have already been destroyed.") ;
-
-    if(MAMA_STATUS_OK!=(status=mamaDateTime_setEpochTime(
-                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
-                            (mama_u32_t) seconds,
-                            (mama_u32_t) microseconds,
-                            (mamaDateTimePrecision) precision)))
-    {
-         utils_buildErrorStringForStatus(
-                errorString,
-                UTILS_MAX_ERROR_STRING_LENGTH,
-                "Error calling MamaDateTime.setEpochTime().",
-                status);
-        utils_throwExceptionForMamaStatus(env,status,errorString);
-    }
-}
-
-/*
- * Class:     com_wombat_mama_MamaDateTime
  * Method:    _setPrecision
  * Signature: (S)V
  */
@@ -1440,6 +1409,54 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setTime (JNIEnv* env,
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
                 "Error calling MamaDateTime.setToMidnightToday().",
+                status);
+        utils_throwExceptionForMamaStatus(env,status,errorString);
+    }
+}
+
+/*
+ * Class:     com_wombat_mama_MamaDateTime
+ * Method:    _setFromStructTimeVal
+ * Signature: (JJS)V
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setFromStructTimeVal (JNIEnv* env, jobject this,
+                                                    jlong second, jlong microsecond, jshort precision)
+{
+    jlong               pDateTime   = 0;
+    jlong               pTimeZone   = 0;
+    mama_status         status      = MAMA_STATUS_OK;
+    char                errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+    struct timeval      aTimeVal;
+
+    pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
+		"Null parameter, MamaDateTime may have already been destroyed.") ;
+
+    /* Build the timeval as its is not natively available in Java */
+    aTimeVal.tv_sec = (time_t)second;
+    aTimeVal.tv_usec = (long)microsecond;
+
+    if (MAMA_STATUS_OK!=(status=mamaDateTime_setFromStructTimeVal(
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
+                            &aTimeVal)))
+    {
+         utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Error calling mamaDateTime_setFromStructTimeVal().",
+                status);
+        utils_throwExceptionForMamaStatus(env,status,errorString);
+    }
+
+    /* Now set the precision */
+    if(MAMA_STATUS_OK!=(status=mamaDateTime_setPrecision(
+                            CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
+                            (mamaDateTimePrecision) precision)))
+    {
+         utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Error calling mamaDateTime_setPrecision().",
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
     }

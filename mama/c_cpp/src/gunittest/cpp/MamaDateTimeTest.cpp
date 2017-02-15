@@ -153,3 +153,65 @@ TEST_F(MamaDateTimeTest, SetDateTimezoneCheck)
     ASSERT_EQ(dt1.getEpochTimeMicroseconds(), dt2.getEpochTimeMicroseconds());
 }
 
+TEST_F(MamaDateTimeTest, GetFromStructTimeVal)
+{
+    struct timeval          tVal;
+    MamaDateTime            dt1;
+    mamaDateTimePrecision   precision   = MAMA_DATE_TIME_PREC_MICROSECONDS;
+    mamaDateTimeHints       hints       =  MAMA_DATE_TIME_HAS_DATE;
+
+    mama_u32_t secs      = 43219, mSecs = 123, uSecs = (mSecs * 1000) + 456;
+
+    dt1.setWithHints(secs, uSecs, precision, hints);
+
+    dt1.getAsStructTimeVal(tVal);
+
+    ASSERT_EQ ( tVal.tv_sec, secs );
+    ASSERT_EQ ( tVal.tv_usec, uSecs );
+}
+
+TEST_F(MamaDateTimeTest, SetFromStructTimeVal)
+{
+    struct timeval  tVal;
+    MamaDateTime    dt1;
+    const char*     timeStr     = "2017-01-17 17:31:47.123000";
+    char            stringBuffer[50];
+
+    /* The following timeval represents the time - "2017-01-17 17:31:47.123000" */
+    tVal.tv_sec = 1484674307;
+    tVal.tv_usec = 123000;
+
+    dt1.set(tVal);
+    dt1.getAsString(stringBuffer, 50);
+
+    ASSERT_STREQ (timeStr, stringBuffer);
+}
+
+TEST_F(MamaDateTimeTest, GetMicrosecondExtended)
+{
+    struct timeval      tVal;
+    MamaDateTime        dt1;
+    mama_u32_t          uSecs   = 0;
+    const MamaStatus&   status  = MAMA_STATUS_OK;
+
+    /* The following timeval represents the time - "2106-02-07 06:28:16"
+        But the microseconds will be 1 microsecond more than a uint32_t can hold */
+    tVal.tv_sec = 1484674307;
+    tVal.tv_usec = 4294967296;
+
+    dt1.set(tVal);
+
+    try
+    {
+        uSecs = dt1.getMicrosecond();
+    }
+    catch (MamaStatus mamaStatus)
+    {
+        EXPECT_EQ ( mamaStatus.getStatus(), MAMA_STATUS_INVALID_ARG );
+        return;
+    }
+
+    // If we get here there is a problem as this scenario should throw an exception
+    ASSERT_TRUE(0);
+}
+

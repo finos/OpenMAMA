@@ -1885,6 +1885,26 @@ mamaMsg_getDateTimeMSec(
 }
 
 mama_status
+mamaMsg_getDateTimeSeconds(
+    const mamaMsg  msg,
+    const char*    name,
+    mama_fid_t     fid,
+    mama_f64_t*    seconds)
+{
+    mama_status status = MAMA_STATUS_OK;
+    mamaMsgImpl*     impl   = (mamaMsgImpl*)msg;
+
+    if (!impl->mCurrentDateTime)
+        mamaDateTime_create(&impl->mCurrentDateTime);
+
+    status = mamaMsg_getDateTime (msg, name, fid, impl->mCurrentDateTime);
+    if (status == MAMA_STATUS_OK)
+        status = mamaDateTime_getEpochTimeSeconds (impl->mCurrentDateTime, seconds);
+
+    return status;
+}
+
+mama_status
 mamaMsg_getDateTime(
     const mamaMsg  msg,
     const char*    name,
