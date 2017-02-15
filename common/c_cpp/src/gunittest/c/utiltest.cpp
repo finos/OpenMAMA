@@ -23,6 +23,7 @@
 #include <gtest/gtest.h>
 #include "MainUnitTestC.h"
 #include <wombat/fileutils.h>
+#include <wombat/strutils.h>
 #include <wombat/environment.h>
 #include <stdio.h>
 
@@ -84,3 +85,52 @@ TEST_F(CommonUtilTestC, findFileInPathNotExist)
             environment_getVariable("WOMBAT_PATH"),
             NULL));
 }
+
+TEST_F(CommonUtilTestC, getVerInfoFromString)
+{
+    versionInfo v;
+    EXPECT_EQ(1, strToVersionInfo("1.2.3extra", &v));
+    EXPECT_EQ(1, v.mMajor);
+    EXPECT_EQ(2, v.mMinor);
+    EXPECT_EQ(3, v.mRelease);
+    EXPECT_STREQ("extra", v.mExtra);
+}
+
+TEST_F(CommonUtilTestC, getVersionInfoFromInvalidString)
+{
+    versionInfo v;
+    EXPECT_EQ(0, strToVersionInfo("stringwithnonumbers", &v));
+}
+
+TEST_F(CommonUtilTestC, getVersionInfoFromNullString)
+{
+    versionInfo v;
+    EXPECT_EQ(0, strToVersionInfo(NULL, &v));
+}
+
+TEST_F(CommonUtilTestC, getVersionInfoFromNullVersion)
+{
+    EXPECT_EQ(0, strToVersionInfo("1.2.3", NULL));
+}
+
+TEST_F(CommonUtilTestC, getVersionInfoFromPrefixedString)
+{
+    versionInfo v;
+    EXPECT_EQ(1, strToVersionInfo("somestuff1.2.3extra", &v));
+    EXPECT_EQ(1, v.mMajor);
+    EXPECT_EQ(2, v.mMinor);
+    EXPECT_EQ(3, v.mRelease);
+    EXPECT_STREQ("extra", v.mExtra);
+
+}
+
+TEST_F(CommonUtilTestC, getVersionInfoFromSuffixedString)
+{
+    versionInfo v;
+    EXPECT_EQ(1, strToVersionInfo("1.2.3extra but. not this", &v));
+    EXPECT_EQ(1, v.mMajor);
+    EXPECT_EQ(2, v.mMinor);
+    EXPECT_EQ(3, v.mRelease);
+    EXPECT_STREQ("extra but", v.mExtra);
+}
+

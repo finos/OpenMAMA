@@ -566,11 +566,19 @@ int strToVersionInfo(const char* s, versionInfo* version)
     int         j         = 0;
     int         retVal    = 0;
     char        copy[VERSION_INFO_STR_MAX];
+    char*       verStart  = NULL;
+    size_t      verStrLen = 0;
+
+    if (NULL == version)
+    {
+        return retVal;
+    }
 
     /* Zero set version so all versions are guaranteed NULL */
     memset (version, 0, sizeof(versionInfo));
 
-    if (strlenEx(s) == 0 || strlenEx(s) > VERSION_INFO_STR_MAX)
+    verStrLen = strlenEx(s);
+    if (verStrLen == 0 || verStrLen > VERSION_INFO_STR_MAX)
     {
         return retVal;
     }
@@ -578,9 +586,23 @@ int strToVersionInfo(const char* s, versionInfo* version)
     /* Operate on copy of input as we want to get destructive */
     strcpy (copy, s);
 
+    /* Skip past any non-numeric values at the start */
+    for (i = 0; i < verStrLen; i++)
+    {
+        if (isdigit(copy[i]))
+        {
+            verStart = copy + i;
+            break;
+        }
+    }
+    /* If no numeric information was found, exit */
+    if (NULL == verStart)
+    {
+        return retVal;
+    }
 
     /* Only iterate 3 times for major / minor / release while tokens exist */
-    token = strtok((char*)copy, delim);
+    token = strtok((char*)verStart, delim);
     for (i = 0; i < 3; i++)
     {
         /* There are no more tokens - break out */
