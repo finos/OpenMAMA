@@ -76,7 +76,7 @@ int strncasecmp(const char *str1, const char *str2, int n)
 const char *
 mystrcasestr(const char *s, const char *pattern)
 {
-    int length = strlen(pattern);
+    int length = (int)strlen(pattern);
 
     while (*s)
     {

@@ -63,7 +63,7 @@ properties_Load( const char* path, const char* fileName )
 {
     int i             = 0, j=0;
     int pointer       = 0;
-    int length        = 0;
+    size_t length     = 0;
     const char* tempPath    = NULL;
     char subPath[256] = "";
     char newPath[256] = "";
@@ -158,7 +158,7 @@ char* propertiesImpl_ReplaceEnvironmentVariable( const char* value )
 		    {
                 /* Obtain the length of the value string, this must be done
                  * before any replacements. */
-			    int valueLength = strlen( value );
+			    size_t valueLength = strlen( value );
 
 			    /* Save the character at the end of the string */
 			    char endChar = *envEnd;
@@ -181,7 +181,7 @@ char* propertiesImpl_ReplaceEnvironmentVariable( const char* value )
                          * that wrap the environment variable name plus 1 for
                          * the null terminator.
 					     */
-					    int newStringLength = (valueLength -
+					    size_t newStringLength = (valueLength -
                                 strlen(variableStart) + strlen(envValue) - 2);
 
 					    /* Allocate a buffer to contain the new string */
@@ -500,7 +500,7 @@ properties_AddEscapes (const char* src, const char chars[], int num)
 {
    int i = 0, j = 0, retIdx = 0, matches = 0;
    char* retStr;
-   int strln = 0;
+   size_t strln = 0;
 
    if (!src)
       return NULL;

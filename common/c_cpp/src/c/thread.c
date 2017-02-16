@@ -165,6 +165,7 @@ wombatThread_getDefinedThreadAffinity(wombatThread thread, CPU_AFFINITY_SET* aff
     {
         ((char*) affinity)[i] = ((char*) &(impl->mCpuSet))[i];
     }
+    return WOMBAT_THREAD_OK;
 }
 
 wombatThreadStatus
