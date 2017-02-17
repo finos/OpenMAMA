@@ -1891,11 +1891,17 @@ mamaMsg_getDateTimeSeconds(
     mama_fid_t     fid,
     mama_f64_t*    seconds)
 {
-    mama_status status = MAMA_STATUS_OK;
-    mamaMsgImpl*     impl   = (mamaMsgImpl*)msg;
+    mama_status  status = MAMA_STATUS_OK;
+    mamaMsgImpl* impl   = (mamaMsgImpl*)msg;
 
     if (!impl->mCurrentDateTime)
-        mamaDateTime_create(&impl->mCurrentDateTime);
+    {
+        status = mamaDateTime_create(&impl->mCurrentDateTime);
+        if (status != MAMA_STATUS_OK)
+        {
+            return status;
+        }
+    }
 
     status = mamaMsg_getDateTime (msg, name, fid, impl->mCurrentDateTime);
     if (status == MAMA_STATUS_OK)

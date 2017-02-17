@@ -921,6 +921,27 @@ mamaDateTime_diffMicroseconds(const mamaDateTime t1,
                               const mamaDateTime t0,
                               mama_i64_t*        result);
 
+/**
+* Set the date/time from a "struct timespec".
+*
+* @param dateTime      The dateTime to update.
+* @param inputTimeVal  The timespec struct to be used to update the dateTime.
+*/
+MAMAExpDLL
+extern mama_status
+mamaDateTime_setFromStructTimeSpec(const mamaDateTime dateTime,
+                                   struct timespec*   inputTimeVal);
+
+/**
+* Get the date/time as a "struct timespec".
+*
+* @param dateTime The dateTime to set.
+* @param result   The struct timespec to fill in.
+*/
+MAMAExpDLL
+extern mama_status
+mamaDateTime_getStructTimeSpec(const mamaDateTime dateTime,
+                               struct timespec*   result);
 
 #if defined(__cplusplus)
 }
