@@ -140,13 +140,13 @@ public class MamaDateTime implements Comparable
                               long                  microseconds,
                               MamaDateTimePrecision precision)
     {
-        _setFromStructTimeVal (secondsSinceEpoch, microseconds, precision.getShortValue());
+        _setFromStructTimeSpec (secondsSinceEpoch, microseconds, precision.getShortValue());
     }
 
     public void setEpochTime (long secondsSinceEpoch,
                               long microseconds)
     {
-        _setFromStructTimeVal (secondsSinceEpoch, microseconds, MamaDateTimePrecision.PREC_UNKNOWN.getShortValue());
+        _setFromStructTimeSpec (secondsSinceEpoch, microseconds, MamaDateTimePrecision.PREC_UNKNOWN.getShortValue());
     }
 
 
@@ -164,7 +164,7 @@ public class MamaDateTime implements Comparable
         /**
          * This is not actually implemented in C/C++. The hints field is ignored.
          */
-        _setFromStructTimeVal (secondsSinceEpoch, microseconds, precision.getShortValue());
+        _setFromStructTimeSpec (secondsSinceEpoch, microseconds, precision.getShortValue());
     }
 
     void setPrecision (MamaDateTimePrecision precision)
@@ -354,9 +354,9 @@ public class MamaDateTime implements Comparable
                                   short precision,
                                   String tz);
 
-    private native void _setFromStructTimeVal (long second,
-                                               long microsecond,
-                                               short precision);
+    private native void _setFromStructTimeSpec (long second,
+                                                long microsecond,
+                                                short precision);
 
 
     private native short _getDayOfWeek();

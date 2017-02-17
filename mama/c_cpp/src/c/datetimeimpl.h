@@ -26,13 +26,13 @@
 extern "C" {
 #endif
 
-typedef struct mama_time_t_
+typedef struct mama_datetime_t_
 {
-    mama_i64_t              mSeconds;
+    time_t                  mSeconds;
     long                    mNanoseconds;
     mamaDateTimePrecision   mPrecision;
     mamaDateTimeHints       mHints;
-} mama_time_t;
+} mama_datetime_t;
 
 
 #define mamaDateTimeImpl_clear(t) \

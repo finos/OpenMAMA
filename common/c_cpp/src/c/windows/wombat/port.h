@@ -187,6 +187,18 @@ const char *index( const char *str, char c );
         ( *(_result) = *gmtime( (_clock) ), \
                 (_result) )
 
+/* Define timespec if it is not already defined (is defined in 2015+ */
+#if (_MSC_VER >= 1900)
+#define HAVE_STRUCT_TIMESPEC
+#endif
+#if !defined(HAVE_STRUCT_TIMESPEC)
+struct timespec
+{
+    time_t tv_sec;  // Seconds - >= 0
+    long   tv_nsec; // Nanoseconds - [0, 999999999]
+};
+#endif
+
 #define CPU_SET(i,affinity) \
     *affinity |= 1 << i
 

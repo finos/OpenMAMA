@@ -1416,34 +1416,34 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setTime (JNIEnv* env,
 
 /*
  * Class:     com_wombat_mama_MamaDateTime
- * Method:    _setFromStructTimeVal
- * Signature: (JJS)V
+ * Method:    _setFromStructTimeSpec
+ * Signature: (JJS)V etc
  */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setFromStructTimeVal (JNIEnv* env, jobject this,
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDateTime__1setFromStructTimeSpec (JNIEnv* env, jobject this,
                                                     jlong second, jlong microsecond, jshort precision)
 {
     jlong               pDateTime   = 0;
     jlong               pTimeZone   = 0;
     mama_status         status      = MAMA_STATUS_OK;
     char                errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-    struct timeval      aTimeVal;
+    struct timespec     aTimeSpec;
 
     pDateTime = (*env)->GetLongField (env,this,dateTimePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pDateTime,
 		"Null parameter, MamaDateTime may have already been destroyed.") ;
 
-    /* Build the timeval as its is not natively available in Java */
-    aTimeVal.tv_sec = (time_t)second;
-    aTimeVal.tv_usec = (long)microsecond;
+    /* Build the timespec as its is not natively available in Java */
+    aTimeSpec.tv_sec = (time_t)second;
+    aTimeSpec.tv_nsec = (long)(microsecond * 1000L);
 
-    if (MAMA_STATUS_OK!=(status=mamaDateTime_setFromStructTimeVal(
+    if (MAMA_STATUS_OK!=(status=mamaDateTime_setFromStructTimeSpec(
                             CAST_JLONG_TO_POINTER (mamaDateTime,pDateTime),
-                            &aTimeVal)))
+                            &aTimeSpec)))
     {
          utils_buildErrorStringForStatus(
                 errorString,
                 UTILS_MAX_ERROR_STRING_LENGTH,
-                "Error calling mamaDateTime_setFromStructTimeVal().",
+                "Error calling mamaDateTime_setFromStructTimeSpec().",
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
     }

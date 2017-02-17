@@ -42,7 +42,7 @@ static void
 utcTm (struct tm*   result,
        time_t       secSinceEpoch);
 
-static unsigned long
+static time_t
 makeTime (int           year,
           int           mon,
           int           day,
@@ -64,7 +64,7 @@ mamaDateTime_addTodayToDateTime (mamaDateTime destination);
 mama_status
 mamaDateTime_create (mamaDateTime* dateTime)
 {
-    *dateTime = (mamaDateTime) malloc (sizeof(mama_time_t));
+    *dateTime = (mamaDateTime) malloc (sizeof(mama_datetime_t));
 
     if (*dateTime == NULL)
     {
@@ -72,7 +72,7 @@ mamaDateTime_create (mamaDateTime* dateTime)
     }
     else
     {
-        mamaDateTimeImpl_clear((mama_time_t*)*dateTime);
+        mamaDateTimeImpl_clear((mama_datetime_t*)*dateTime);
         return MAMA_STATUS_OK;
     }
 }
@@ -83,7 +83,7 @@ mamaDateTime_destroy (mamaDateTime dateTime)
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    free ((mama_time_t*)dateTime);
+    free ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -93,7 +93,7 @@ mamaDateTime_clear (mamaDateTime dateTime)
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_clear((mama_time_t*)dateTime);
+    mamaDateTimeImpl_clear((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -103,7 +103,7 @@ mamaDateTime_clearDate (mamaDateTime dateTime)
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_clearDate((mama_time_t*)dateTime);
+    mamaDateTimeImpl_clearDate((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -113,7 +113,7 @@ mamaDateTime_clearTime (mamaDateTime dateTime)
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_clearTime((mama_time_t*)dateTime);
+    mamaDateTimeImpl_clearTime((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -124,7 +124,7 @@ mamaDateTime_copy (mamaDateTime       dest,
     if (!src || !dest)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_copy((mama_time_t*)dest,(const mama_time_t*)src);
+    mamaDateTimeImpl_copy((mama_datetime_t*)dest,(const mama_datetime_t*)src);
     return MAMA_STATUS_OK;
 }
 
@@ -132,7 +132,7 @@ int mamaDateTime_empty (const mamaDateTime dateTime)
 {
     if (!dateTime)
         return 1;
-    return mamaDateTimeImpl_empty((mama_time_t*)dateTime);
+    return mamaDateTimeImpl_empty((mama_datetime_t*)dateTime);
 }
 
 int mamaDateTime_equal (const mamaDateTime lhs,
@@ -142,7 +142,7 @@ int mamaDateTime_equal (const mamaDateTime lhs,
         return 1;
     if (!lhs || !rhs)
         return 0;
-    return mamaDateTimeImpl_equal ((mama_time_t*)lhs,(mama_time_t*)rhs);
+    return mamaDateTimeImpl_equal ((mama_datetime_t*)lhs,(mama_datetime_t*)rhs);
 }
 
 int mamaDateTime_compare (const mamaDateTime lhs,
@@ -151,7 +151,7 @@ int mamaDateTime_compare (const mamaDateTime lhs,
     if (NULL == lhs || NULL == rhs)
         return 0;
 
-    mamaDateTimeImpl_compare((mama_time_t*)lhs, (mama_time_t*)rhs);
+    mamaDateTimeImpl_compare((mama_datetime_t*)lhs, (mama_datetime_t*)rhs);
 }
 
 mama_status
@@ -163,13 +163,13 @@ mamaDateTime_setEpochTime(mamaDateTime           dateTime,
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_clear           ((mama_time_t*)dateTime);
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dateTime, seconds);
-    mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dateTime, microseconds);
-    mamaDateTimeImpl_setPrecision    ((mama_time_t*)dateTime, precision);
-    mamaDateTimeImpl_setHasTime      ((mama_time_t*)dateTime);
+    mamaDateTimeImpl_clear           ((mama_datetime_t*)dateTime);
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, seconds);
+    mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, microseconds);
+    mamaDateTimeImpl_setPrecision    ((mama_datetime_t*)dateTime, precision);
+    mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dateTime);
     if (seconds > SECONDS_IN_A_DAY)
-        mamaDateTimeImpl_setHasDate ((mama_time_t*)dateTime);
+        mamaDateTimeImpl_setHasDate ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -186,19 +186,19 @@ mamaDateTime_setEpochTimeF64(mamaDateTime dateTime,
         double  wholeSeconds = floor(seconds+0.0000001);
         long    microseconds =
             (long) (1000000.0 * (seconds - wholeSeconds));
-        mamaDateTimeImpl_clear           ((mama_time_t*)dateTime);
-        mamaDateTimeImpl_setSeconds      ((mama_time_t*)dateTime, seconds);
-        mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dateTime, microseconds);
-        mamaDateTimeImpl_setHasTime      ((mama_time_t*)dateTime);
+        mamaDateTimeImpl_clear           ((mama_datetime_t*)dateTime);
+        mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, seconds);
+        mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, microseconds);
+        mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dateTime);
         if (seconds > SECONDS_IN_A_DAY)
-            mamaDateTimeImpl_setHasDate ((mama_time_t*)dateTime);
+            mamaDateTimeImpl_setHasDate ((mama_datetime_t*)dateTime);
         if (microseconds > 0)
         {
-            mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, 6);
+            mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, 6);
         }
         else
         {
-            mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, 0);
+            mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, 0);
         }
         return MAMA_STATUS_OK;
     }
@@ -213,19 +213,19 @@ mamaDateTime_setEpochTimeMilliseconds(mamaDateTime dateTime,
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_clear           ((mama_time_t*)dateTime);
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dateTime, seconds);
-    mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dateTime, milliseconds * 1000);
-    mamaDateTimeImpl_setHasTime      ((mama_time_t*)dateTime);
+    mamaDateTimeImpl_clear           ((mama_datetime_t*)dateTime);
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, seconds);
+    mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, milliseconds * 1000);
+    mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dateTime);
     if (seconds > SECONDS_IN_A_DAY)
-        mamaDateTimeImpl_setHasDate ((mama_time_t*)dateTime);
+        mamaDateTimeImpl_setHasDate ((mama_datetime_t*)dateTime);
     if (milliseconds > 0)
     {
-        mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, 3);
+        mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, 3);
     }
     else
     {
-        mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, 0);
+        mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, 0);
     }
     return MAMA_STATUS_OK;
 }
@@ -240,19 +240,19 @@ mamaDateTime_setEpochTimeMicroseconds(mamaDateTime dateTime,
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_clear           ((mama_time_t*)dateTime);
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dateTime, seconds);
-    mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dateTime, microseconds);
-    mamaDateTimeImpl_setHasTime      ((mama_time_t*)dateTime);
+    mamaDateTimeImpl_clear           ((mama_datetime_t*)dateTime);
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, seconds);
+    mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, microseconds);
+    mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dateTime);
     if (seconds > SECONDS_IN_A_DAY)
-        mamaDateTimeImpl_setHasDate ((mama_time_t*)dateTime);
+        mamaDateTimeImpl_setHasDate ((mama_datetime_t*)dateTime);
     if (microseconds > 0)
     {
-        mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, 6);
+        mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, 6);
     }
     else
     {
-        mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, 0);
+        mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, 0);
     }
     return MAMA_STATUS_OK;
 }
@@ -267,14 +267,14 @@ mamaDateTime_setWithHints(mamaDateTime           dateTime,
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_clear           ((mama_time_t*)dateTime);
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dateTime, seconds);
-    mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dateTime, microseconds);
-    mamaDateTimeImpl_setPrecision    ((mama_time_t*)dateTime, precision);
-    mamaDateTimeImpl_setHasTime      ((mama_time_t*)dateTime);
-    mamaDateTimeImpl_setHint         ((mama_time_t*)dateTime, hints);
+    mamaDateTimeImpl_clear           ((mama_datetime_t*)dateTime);
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, seconds);
+    mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, microseconds);
+    mamaDateTimeImpl_setPrecision    ((mama_datetime_t*)dateTime, precision);
+    mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dateTime);
+    mamaDateTimeImpl_setHint         ((mama_datetime_t*)dateTime, hints);
     if (seconds > SECONDS_IN_A_DAY)
-        mamaDateTimeImpl_setHasDate ((mama_time_t*)dateTime);
+        mamaDateTimeImpl_setHasDate ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -284,7 +284,7 @@ mamaDateTime_setPrecision(mamaDateTime           dateTime,
 {
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
-    mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, precision);
+    mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, precision);
     return MAMA_STATUS_OK;
 }
 
@@ -321,7 +321,7 @@ mamaDateTime_setFromStringWithTz(mamaDateTime        dateTime,
         unsigned long microsecs = 0;
         int           precision = 0;
 
-        unsigned long epochSeconds = 0;
+        time_t epochSeconds = 0;
 
         if (slash1)
         {
@@ -333,7 +333,7 @@ mamaDateTime_setFromStringWithTz(mamaDateTime        dateTime,
             slash2 = slash1 ? strchr (slash1+1, '-') : NULL;
         }
 
-        mamaDateTimeImpl_clear ((mama_time_t*)dateTime);
+        mamaDateTimeImpl_clear ((mama_datetime_t*)dateTime);
 
         if (slash1)
         {
@@ -350,7 +350,7 @@ mamaDateTime_setFromStringWithTz(mamaDateTime        dateTime,
                 month = strtoul (str,  NULL, 10);
                 day   = strtoul (slash1+1, NULL, 10);
             }
-            mamaDateTimeImpl_setHasDate ((mama_time_t*)dateTime);
+            mamaDateTimeImpl_setHasDate ((mama_datetime_t*)dateTime);
         }
 
         if (colon1)
@@ -380,10 +380,10 @@ mamaDateTime_setFromStringWithTz(mamaDateTime        dateTime,
                     }
                 }
             }
-            mamaDateTimeImpl_setHasTime ((mama_time_t*)dateTime);
+            mamaDateTimeImpl_setHasTime ((mama_datetime_t*)dateTime);
         }
 
-        epochSeconds = makeTime (year, month, day, hour, minute, second);
+        epochSeconds = makeTime ((int)year, (int)month, (int)day, (int)hour, (int)minute, (int)second);
         if (tz)
         {
             /* adjust to UTC */
@@ -391,12 +391,12 @@ mamaDateTime_setFromStringWithTz(mamaDateTime        dateTime,
             mama_status tzStatus = mamaTimeZone_getOffset (tz, &offset);
             if (MAMA_STATUS_OK != tzStatus)
                 return tzStatus;
-            epochSeconds -= offset;
+            epochSeconds -= (time_t) offset;
         }
 
-        mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, precision);
-        mamaDateTimeImpl_setSeconds ((mama_time_t*)dateTime, epochSeconds);
-        mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dateTime, microsecs);
+        mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, precision);
+        mamaDateTimeImpl_setSeconds ((mama_datetime_t*)dateTime, epochSeconds);
+        mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, microsecs);
 
         return MAMA_STATUS_OK;
     }
@@ -434,16 +434,16 @@ mamaDateTime_setToNow(mamaDateTime dateTime)
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_clear ((mama_time_t*)dateTime);
+    mamaDateTimeImpl_clear ((mama_datetime_t*)dateTime);
     if (gettimeofday (&now, NULL) != 0)
     {
         return MAMA_STATUS_SYSTEM_ERROR;
     }
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dateTime, now.tv_sec);
-    mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dateTime, now.tv_usec);
-    mamaDateTimeImpl_setPrecision    ((mama_time_t*)dateTime, 6);
-    mamaDateTimeImpl_setHasDate      ((mama_time_t*)dateTime);
-    mamaDateTimeImpl_setHasTime      ((mama_time_t*)dateTime);
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, now.tv_sec);
+    mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, now.tv_usec);
+    mamaDateTimeImpl_setPrecision    ((mama_datetime_t*)dateTime, 6);
+    mamaDateTimeImpl_setHasDate      ((mama_datetime_t*)dateTime);
+    mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -456,7 +456,7 @@ mamaDateTime_setToMidnightToday(mamaDateTime       dateTime,
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_clear ((mama_time_t*)dateTime);
+    mamaDateTimeImpl_clear ((mama_datetime_t*)dateTime);
     secondsSinceEpoch = time(NULL);
 
     if (tz)
@@ -467,11 +467,11 @@ mamaDateTime_setToMidnightToday(mamaDateTime       dateTime,
     }
 
     tmpSeconds = (secondsSinceEpoch / SECONDS_IN_A_DAY) * SECONDS_IN_A_DAY;
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dateTime, tmpSeconds);
-    mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dateTime, 0);
-    mamaDateTimeImpl_setPrecision    ((mama_time_t*)dateTime, 0);
-    mamaDateTimeImpl_setHasDate      ((mama_time_t*)dateTime);
-    mamaDateTimeImpl_setHasTime      ((mama_time_t*)dateTime);
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, tmpSeconds);
+    mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, 0);
+    mamaDateTimeImpl_setPrecision    ((mama_datetime_t*)dateTime, 0);
+    mamaDateTimeImpl_setHasDate      ((mama_datetime_t*)dateTime);
+    mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -527,7 +527,7 @@ mamaDateTime_setTimeWithPrecisionAndTz(mamaDateTime           dateTime,
         return MAMA_STATUS_INVALID_ARG;
 
     /* Get existing number of seconds and remove any intraday-seconds. */
-    tmpSeconds = (mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) / SECONDS_IN_A_DAY) *
+    tmpSeconds = (mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) / SECONDS_IN_A_DAY) *
                                                   SECONDS_IN_A_DAY;
     tmpSeconds += second + (60 * (minute + (60 * hour)));
     if (tz)
@@ -537,10 +537,10 @@ mamaDateTime_setTimeWithPrecisionAndTz(mamaDateTime           dateTime,
         mamaTimeZone_getOffset (tz, &offset);
         tmpSeconds -= offset;
     }
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dateTime, tmpSeconds);
-    mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dateTime, microsecond);
-    mamaDateTimeImpl_setPrecision    ((mama_time_t*)dateTime, precision);
-    mamaDateTimeImpl_setHasTime      ((mama_time_t*)dateTime);
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, tmpSeconds);
+    mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, microsecond);
+    mamaDateTimeImpl_setPrecision    ((mama_datetime_t*)dateTime, precision);
+    mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -555,10 +555,11 @@ mamaDateTime_setDate(mamaDateTime dateTime,
         return MAMA_STATUS_INVALID_ARG;
 
     /* Get existing number of seconds and remove any full-day seconds. */
-    tmpSeconds = mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) % SECONDS_IN_A_DAY;
-    tmpSeconds += makeTime (year, month, day, 0, 0, 0);
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dateTime, tmpSeconds);
-    mamaDateTimeImpl_setHasDate      ((mama_time_t*)dateTime);
+    tmpSeconds = mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) % SECONDS_IN_A_DAY;
+    tmpSeconds += (mama_i64_t) makeTime (year, month, day, 0, 0, 0);
+
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, tmpSeconds);
+    mamaDateTimeImpl_setHasDate      ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -572,13 +573,13 @@ mamaDateTime_copyTime(mamaDateTime       dest,
         return MAMA_STATUS_INVALID_ARG;
 
     /* Get existing number of seconds and remove any intraday-seconds. */
-    tmpSeconds =  (mamaDateTimeImpl_getSeconds ((mama_time_t*)dest) / SECONDS_IN_A_DAY) *
+    tmpSeconds =  (mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dest) / SECONDS_IN_A_DAY) *
                                                          SECONDS_IN_A_DAY;
-    tmpSeconds += mamaDateTimeImpl_getSeconds ((const mama_time_t*)src)  % SECONDS_IN_A_DAY;
-    tmpMicroseconds = mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)src);
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dest, tmpSeconds);
-    mamaDateTimeImpl_setMicroSeconds ((mama_time_t*)dest, tmpMicroseconds);
-    mamaDateTimeImpl_setHasTime      ((mama_time_t*)dest);
+    tmpSeconds += mamaDateTimeImpl_getSeconds ((const mama_datetime_t*)src)  % SECONDS_IN_A_DAY;
+    tmpMicroseconds = mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)src);
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dest, tmpSeconds);
+    mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dest, tmpMicroseconds);
+    mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dest);
     return MAMA_STATUS_OK;
 }
 
@@ -591,11 +592,11 @@ mamaDateTime_copyDate(mamaDateTime       dest,
         return MAMA_STATUS_INVALID_ARG;
 
     /* Get existing number of seconds and remove any full-day seconds. */
-    tmpSeconds =  mamaDateTimeImpl_getSeconds ((mama_time_t*)dest) % SECONDS_IN_A_DAY;
-    tmpSeconds += (mamaDateTimeImpl_getSeconds ((mama_time_t*)src)  / SECONDS_IN_A_DAY) *
+    tmpSeconds =  mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dest) % SECONDS_IN_A_DAY;
+    tmpSeconds += (mamaDateTimeImpl_getSeconds ((mama_datetime_t*)src)  / SECONDS_IN_A_DAY) *
                                                          SECONDS_IN_A_DAY;
-    mamaDateTimeImpl_setSeconds      ((mama_time_t*)dest, tmpSeconds);
-    mamaDateTimeImpl_setHasDate      ((mama_time_t*)dest);
+    mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dest, tmpSeconds);
+    mamaDateTimeImpl_setHasDate      ((mama_datetime_t*)dest);
     return MAMA_STATUS_OK;
 }
 
@@ -605,7 +606,7 @@ mamaDateTime_hasTime(const mamaDateTime dateTime,
 {
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
-    *result = mamaDateTimeImpl_getHasTime ((mama_time_t*)dateTime);
+    *result = mamaDateTimeImpl_getHasTime ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -615,7 +616,7 @@ mamaDateTime_hasDate(const mamaDateTime dateTime,
 {
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
-    *result = mamaDateTimeImpl_getHasDate ((mama_time_t*)dateTime);
+    *result = mamaDateTimeImpl_getHasDate ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -633,7 +634,7 @@ mamaDateTime_addSeconds(mamaDateTime dateTime,
 
         mamaDateTime_addWholeSeconds (dateTime, wholeSeconds);
         mamaDateTime_addMicroseconds (dateTime, microseconds);
-        mamaDateTimeImpl_setHasTime  ((mama_time_t*)dateTime);
+        mamaDateTimeImpl_setHasTime  ((mama_datetime_t*)dateTime);
     }
     return MAMA_STATUS_OK;
 }
@@ -646,10 +647,10 @@ mamaDateTime_addWholeSeconds(mamaDateTime dateTime,
         return MAMA_STATUS_INVALID_ARG;
     if (addSeconds != 0)
     {
-        mama_i64_t seconds = mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime);
-        mamaDateTimeImpl_clearSeconds ((mama_time_t*)dateTime);
-        mamaDateTimeImpl_setSeconds   ((mama_time_t*)dateTime, seconds + addSeconds);
-        mamaDateTimeImpl_setHasTime   ((mama_time_t*)dateTime);
+        mama_i64_t seconds = mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime);
+        mamaDateTimeImpl_clearSeconds ((mama_datetime_t*)dateTime);
+        mamaDateTimeImpl_setSeconds   ((mama_datetime_t*)dateTime, seconds + addSeconds);
+        mamaDateTimeImpl_setHasTime   ((mama_datetime_t*)dateTime);
     }
     return MAMA_STATUS_OK;
 }
@@ -663,7 +664,7 @@ mamaDateTime_addMicroseconds(mamaDateTime dateTime,
     if (addMicroseconds != 0)
     {
         /*Add to account for current microSeconds*/
-        addMicroseconds += mamaDateTimeImpl_getMicroSeconds((mama_time_t*)dateTime);
+        addMicroseconds += mamaDateTimeImpl_getMicroSeconds((mama_datetime_t*)dateTime);
         if (addMicroseconds >= 1000000)
         {
             mamaDateTime_addWholeSeconds (dateTime, addMicroseconds/1000000);
@@ -682,9 +683,9 @@ mamaDateTime_addMicroseconds(mamaDateTime dateTime,
             addMicroseconds %= 1000000;
             if(addMicroseconds < 0) addMicroseconds += 1000000;
         }
-        mamaDateTimeImpl_clearMicroSeconds ((mama_time_t*)dateTime);
-        mamaDateTimeImpl_setMicroSeconds   ((mama_time_t*)dateTime, addMicroseconds);
-        mamaDateTimeImpl_setHasTime        ((mama_time_t*)dateTime);
+        mamaDateTimeImpl_clearMicroSeconds ((mama_datetime_t*)dateTime);
+        mamaDateTimeImpl_setMicroSeconds   ((mama_datetime_t*)dateTime, addMicroseconds);
+        mamaDateTimeImpl_setHasTime        ((mama_datetime_t*)dateTime);
     }
     return MAMA_STATUS_OK;
 }
@@ -706,43 +707,47 @@ mamaDateTime_getEpochTimeWithTz(const mamaDateTime     dateTime,
                                 mamaDateTimePrecision* precision,
                                 const mamaTimeZone     tz)
 {
+    mama_i64_t timeSeconds      = 0;
+    long       timeMicroSeconds = 0;
+
     if (!dateTime || !seconds || !microseconds)
         return MAMA_STATUS_INVALID_ARG;
+
+    timeSeconds = mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
+    timeMicroSeconds = mamaDateTimeImpl_getMicroSeconds((mama_datetime_t*)dateTime);
 
     if (tz)
     {
         mama_i32_t  offset   = 0;
         mamaTimeZone_getOffset (tz, &offset);
+        timeSeconds += offset;
 
-        if (((mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) + offset) > UINT32_MAX) ||
-            ((mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) + offset) < 0))
+        if (timeSeconds > UINT32_MAX || timeSeconds < 0)
         {
             return MAMA_STATUS_INVALID_ARG;
         }
 
-        *seconds = (mama_u32_t)mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) + offset;
+        *seconds = (mama_u32_t)timeSeconds;
     }
     else
     {
-        if ((mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) > UINT32_MAX) ||
-            (mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) < 0))
+        if (timeSeconds > UINT32_MAX || timeSeconds < 0)
         {
             return MAMA_STATUS_INVALID_ARG;
         }
 
-        *seconds = (mama_u32_t)mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime);
+        *seconds = (mama_u32_t)timeSeconds;
     }
 
-    if ((mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) > UINT32_MAX) ||
-        (mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) < 0))
+    if (timeMicroSeconds > UINT32_MAX || timeMicroSeconds < 0)
     {
         return MAMA_STATUS_INVALID_ARG;
     }
 
-    *microseconds = (mama_u32_t)mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
+    *microseconds = (mama_u32_t)timeMicroSeconds;
 
     if (precision)
-        *precision = mamaDateTimeImpl_getPrecision ((mama_time_t*)dateTime);
+        *precision = mamaDateTimeImpl_getPrecision ((mama_datetime_t*)dateTime);
 
     return MAMA_STATUS_OK;
 }
@@ -768,13 +773,13 @@ mamaDateTime_getEpochTimeMicrosecondsWithTz(const mamaDateTime dateTime,
         mama_i32_t  offset   = 0;
         mamaTimeZone_getOffset (tz, &offset);
 
-        *microseconds = 1000000 * ((mama_u64_t)mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) + offset) +
-                            mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
+        *microseconds = 1000000 * ((mama_u64_t)mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) + offset) +
+                            mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime);
     }
     else
     {
-        *microseconds = 1000000 * (mama_u64_t)mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) +
-                            mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
+        *microseconds = 1000000 * (mama_u64_t)mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) +
+                            mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime);
     }
 
     return MAMA_STATUS_OK;
@@ -801,13 +806,13 @@ mamaDateTime_getEpochTimeMillisecondsWithTz(const mamaDateTime dateTime,
         mama_i32_t  offset   = 0;
         mamaTimeZone_getOffset (tz, &offset);
 
-        *milliseconds = 1000 * ((mama_u64_t)mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) + offset) +
-                         mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) / 1000;
+        *milliseconds = 1000 * ((mama_u64_t)mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) + offset) +
+                         mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime) / 1000;
     }
     else
     {
-        *milliseconds = 1000 * (mama_u64_t)mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) +
-                           mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) / 1000;
+        *milliseconds = 1000 * (mama_u64_t)mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) +
+                           mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime) / 1000;
     }
 
     return MAMA_STATUS_OK;
@@ -825,7 +830,7 @@ mama_status mamaDateTime_addTodayToDateTime(mamaDateTime destination)
     mama_status ret = MAMA_STATUS_SYSTEM_ERROR;
 
     /* Create a new date time. */
-    mama_time_t time;
+    mama_datetime_t time;
     mamaDateTimeImpl_clear(&time);
     {
         /* Get the current time of day. */
@@ -843,14 +848,14 @@ mama_status mamaDateTime_addTodayToDateTime(mamaDateTime destination)
                 /* Get existing number of seconds and remove any full-day seconds
                  * from the destination.
                  */
-                mama_i64_t tmpSeconds =  mamaDateTimeImpl_getSeconds((mama_time_t*)destination) % SECONDS_IN_A_DAY;
+                mama_i64_t tmpSeconds =  mamaDateTimeImpl_getSeconds((mama_datetime_t*)destination) % SECONDS_IN_A_DAY;
 
                 /* Append the date from today. */
                 tmpSeconds += (mamaDateTimeImpl_getSeconds(&time) / SECONDS_IN_A_DAY) * SECONDS_IN_A_DAY;
 
                 /* Set the result in the destination. */
-                mamaDateTimeImpl_setSeconds((mama_time_t*)destination, tmpSeconds);
-                mamaDateTimeImpl_setHasDate((mama_time_t*)destination);
+                mamaDateTimeImpl_setSeconds((mama_datetime_t*)destination, tmpSeconds);
+                mamaDateTimeImpl_setHasDate((mama_datetime_t*)destination);
 
                 /* Function succeeded. */
                 ret = MAMA_STATUS_OK;
@@ -869,7 +874,7 @@ mamaDateTime_getEpochTimeSecondsWithCheck(const mamaDateTime dateTime,
     if((dateTime != NULL) && (seconds != NULL))
     {
         /* Check to see if the date time has got a date value set. */
-        uint8_t hasDate = mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime);
+        uint8_t hasDate = mamaDateTimeImpl_getHasDate((mama_datetime_t*)dateTime);
 
         /* No date value present, add today's date to the time value. */
         if(hasDate == 0)
@@ -905,13 +910,13 @@ mamaDateTime_getEpochTimeSecondsWithTz(const mamaDateTime dateTime,
         mama_i32_t  offset   = 0;
         mamaTimeZone_getOffset (tz, &offset);
 
-        *seconds = mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) + offset +
-            ((double)mamaDateTimeImpl_getMicroSeconds((mama_time_t*)dateTime)) / 1000000.0;
+        *seconds = mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) + offset +
+            ((double)mamaDateTimeImpl_getMicroSeconds((mama_datetime_t*)dateTime)) / 1000000.0;
     }
     else
     {
-        *seconds = mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) +
-        ((double)mamaDateTimeImpl_getMicroSeconds((mama_time_t*)dateTime)) / 1000000.0;
+        *seconds = mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) +
+        ((double)mamaDateTimeImpl_getMicroSeconds((mama_datetime_t*)dateTime)) / 1000000.0;
     }
 
     return MAMA_STATUS_OK;
@@ -927,26 +932,26 @@ mamaDateTime_getWithHints(const mamaDateTime     dateTime,
     if (!dateTime || !seconds || !microseconds)
         return MAMA_STATUS_INVALID_ARG;
 
-    if ((mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) > UINT32_MAX) ||
-        (mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime) < 0))
+    if ((mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) > UINT32_MAX) ||
+        (mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) < 0))
     {
         return MAMA_STATUS_INVALID_ARG;
     }
 
-    *seconds = mamaDateTimeImpl_getSeconds ((mama_time_t*)dateTime);
+    *seconds = mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime);
 
-    if ((mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) > UINT32_MAX) ||
-        (mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime) < 0))
+    if ((mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime) > UINT32_MAX) ||
+        (mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime) < 0))
     {
         return MAMA_STATUS_INVALID_ARG;
     }
 
-    *microseconds = mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
+    *microseconds = mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime);
 
     if (precision)
-        *precision = mamaDateTimeImpl_getPrecision   ((mama_time_t*)dateTime);
+        *precision = mamaDateTimeImpl_getPrecision   ((mama_datetime_t*)dateTime);
     if (hints)
-        *hints = mamaDateTimeImpl_getHint            ((mama_time_t*)dateTime);
+        *hints = mamaDateTimeImpl_getHint            ((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 
@@ -965,8 +970,8 @@ mamaDateTime_getStructTimeValWithTz(const mamaDateTime dateTime,
     if (!dateTime || !result)
         return MAMA_STATUS_INVALID_ARG;
 
-    result->tv_sec  = mamaDateTimeImpl_getSeconds      ((mama_time_t*)dateTime);
-    result->tv_usec = mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
+    result->tv_sec  = mamaDateTimeImpl_getSeconds      ((mama_datetime_t*)dateTime);
+    result->tv_usec = mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime);
 
     if (tz)
     {
@@ -979,24 +984,65 @@ mamaDateTime_getStructTimeValWithTz(const mamaDateTime dateTime,
 }
 
 mama_status
+mamaDateTime_setFromStructTimeSpec(const mamaDateTime dateTime,
+                                   struct timespec*   inputTimeVal)
+{
+    mama_datetime_t* impl = (mama_datetime_t*) dateTime;
+
+    if (!dateTime || !inputTimeVal)
+        return MAMA_STATUS_INVALID_ARG;
+
+    impl->mSeconds = (mama_i64_t)inputTimeVal->tv_sec;
+    impl->mNanoseconds = (long)inputTimeVal->tv_nsec;
+
+    mamaDateTimeImpl_setHasTime((mama_datetime_t*)dateTime);
+    mamaDateTimeImpl_setHasDate((mama_datetime_t*)dateTime);
+
+    if (inputTimeVal->tv_nsec > 0)
+    {
+        mamaDateTimeImpl_setPrecision((mama_datetime_t*)dateTime, 6);
+    }
+    else
+    {
+        mamaDateTimeImpl_setPrecision((mama_datetime_t*)dateTime, 0);
+    }
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaDateTime_getStructTimeSpec(const mamaDateTime dateTime,
+                               struct timespec*   result)
+{
+    mama_datetime_t* impl = (mama_datetime_t*)dateTime;
+    if (!dateTime || !result)
+        return MAMA_STATUS_INVALID_ARG;
+
+    result->tv_sec = impl->mSeconds;
+    result->tv_nsec = impl->mNanoseconds;
+
+    return MAMA_STATUS_OK;
+}
+
+mama_status
 mamaDateTime_setFromStructTimeVal(const mamaDateTime dateTime,
                                   struct timeval*    inputTimeVal)
 {
     if (!dateTime || !inputTimeVal)
         return MAMA_STATUS_INVALID_ARG;
 
-    mamaDateTimeImpl_setSeconds         ((mama_time_t*)dateTime, inputTimeVal->tv_sec);
-    mamaDateTimeImpl_setMicroSeconds    ((mama_time_t*)dateTime, inputTimeVal->tv_usec);
-    mamaDateTimeImpl_setHasTime         ((mama_time_t*)dateTime);
-    mamaDateTimeImpl_setHasDate         ((mama_time_t*)dateTime);
+    mamaDateTimeImpl_setSeconds         ((mama_datetime_t*)dateTime, inputTimeVal->tv_sec);
+    mamaDateTimeImpl_setMicroSeconds    ((mama_datetime_t*)dateTime, inputTimeVal->tv_usec);
+    mamaDateTimeImpl_setHasTime         ((mama_datetime_t*)dateTime);
+    mamaDateTimeImpl_setHasDate         ((mama_datetime_t*)dateTime);
 
     if (inputTimeVal->tv_usec > 0)
     {
-        mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, 6);
+        mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, 6);
     }
     else
     {
-        mamaDateTimeImpl_setPrecision ((mama_time_t*)dateTime, 0);
+        mamaDateTimeImpl_setPrecision ((mama_datetime_t*)dateTime, 0);
     }
 
     return MAMA_STATUS_OK;
@@ -1021,11 +1067,11 @@ mamaDateTime_getStructTmWithTz(const mamaDateTime dateTime,
     {
         mama_i32_t  offset   = 0;
         mamaTimeZone_getOffset (tz, &offset);
-        utcTm (result, (time_t)mamaDateTimeImpl_getSeconds((mama_time_t*)dateTime) + offset);
+        utcTm (result, (time_t)mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime) + offset);
     }
     else
     {
-         utcTm (result, (time_t)mamaDateTimeImpl_getSeconds((mama_time_t*)dateTime));
+         utcTm (result, (time_t)mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime));
     }
 
     return MAMA_STATUS_OK;
@@ -1035,9 +1081,9 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
                                       char*              buf,
                                       mama_size_t        bufMaxLen)
 {
-    time_t          seconds;
-    struct tm       tmValue;
-    mama_time_t*    aDateTime   = (mama_time_t*)dateTime;
+    time_t           seconds;
+    struct tm        tmValue;
+    mama_datetime_t* aDateTime   = (mama_datetime_t*)dateTime;
 
     if (!aDateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
@@ -1101,10 +1147,10 @@ mama_status mamaDateTime_getTimeAsString (const mamaDateTime dateTime,
     if (!dateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
 
-    seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_time_t*)dateTime);
+    seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
     utcTm (&tmValue, seconds);
     buf[0] = '\0';
-    if (mamaDateTimeImpl_getHasTime((mama_time_t*)dateTime))
+    if (mamaDateTimeImpl_getHasTime((mama_datetime_t*)dateTime))
     {
         bytesUsed = strftime (buf, bufMaxLen, "%H:%M:%S", &tmValue);
         if (bytesUsed > 0)
@@ -1112,13 +1158,13 @@ mama_status mamaDateTime_getTimeAsString (const mamaDateTime dateTime,
             buf       += bytesUsed;
             bufMaxLen -= bytesUsed;
         }
-        precision = mamaDateTimeImpl_getPrecision((mama_time_t*)dateTime);
+        precision = mamaDateTimeImpl_getPrecision((mama_datetime_t*)dateTime);
         /* for unknown we print all the digits */
         precision = precision == MAMA_DATE_TIME_PREC_UNKNOWN ? 3 : precision;
         if (precision > 0)
         {
             size_t i;
-            uint32_t digits = mamaDateTimeImpl_getMicroSeconds((mama_time_t*)dateTime);
+            uint32_t digits = mamaDateTimeImpl_getMicroSeconds((mama_datetime_t*)dateTime);
             for (i = 6; i > precision; i--)
             {
                 digits /= 10;
@@ -1139,10 +1185,10 @@ mama_status mamaDateTime_getDateAsString (const mamaDateTime dateTime,
     if (!dateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
 
-    seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_time_t*)dateTime);
+    seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
     utcTm (&tmValue, seconds);
     buf[0] = '\0';
-    if (mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+    if (mamaDateTimeImpl_getHasDate((mama_datetime_t*)dateTime))
     {
         strftime (buf, bufMaxLen, "%Y-%m-%d", &tmValue);
     }
@@ -1187,10 +1233,11 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
                                          const char*        fmt,
                                          const mamaTimeZone tz)
 {
-    struct tm    tmTime;
-    const char*  fmtChar  = NULL;
-    mama_size_t  resLen   = 0;
-    mama_i32_t   offset   = 0;
+    struct tm        tmTime;
+    const char*      fmtChar  = NULL;
+    mama_size_t      resLen   = 0;
+    mama_i32_t       offset   = 0;
+    mama_datetime_t* impl     = (mama_datetime_t*)dateTime;
 
     if (!dateTime || !result)
         return MAMA_STATUS_INVALID_ARG;
@@ -1202,13 +1249,13 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
 
     if (offset != 0)
     {
-        mamaDateTime  tmpDateTime = (mama_time_t*)dateTime;
+        mamaDateTime  tmpDateTime = (mama_datetime_t*)dateTime;
         mamaDateTime_addWholeSeconds (tmpDateTime, offset);
-        utcTm (&tmTime, (time_t)mamaDateTimeImpl_getSeconds((mama_time_t*)tmpDateTime));
+        utcTm (&tmTime, (time_t)impl->mSeconds);
     }
     else
     {
-        utcTm (&tmTime, (time_t)mamaDateTimeImpl_getSeconds((mama_time_t*)dateTime));
+        utcTm (&tmTime, (time_t)impl->mSeconds);
     }
 
     for (fmtChar = fmt;
@@ -1228,7 +1275,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'Y':
         {
             /* %Y = 4-digit year */
-            if (!mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasDate(impl))
             {
                 printString (result, &resLen, maxLen, "    ");
             }
@@ -1246,7 +1293,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'y':
         {
             /* %y = 2-digit year */
-            if (!mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasDate(impl))
             {
                 printString (result, &resLen, maxLen, "  ");
             }
@@ -1262,7 +1309,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'm':
         {
             /* %m = 2-digit month */
-            if (!mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasDate(impl))
             {
                 printString (result, &resLen, maxLen, "  ");
             }
@@ -1278,7 +1325,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'd':
         {
             /* %m = 2-digit day of month */
-            if (!mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasDate(impl))
             {
                 printString (result, &resLen, maxLen, "  ");
             }
@@ -1294,7 +1341,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'F':
         {
             /* %F = %Y-%m-%d */
-            if (!mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasDate(impl))
             {
                 printString (result, &resLen, maxLen, "    -  -  ");
             }
@@ -1320,7 +1367,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'T':
         {
             /* %T = %H:%M:%S */
-            if (!mamaDateTimeImpl_getHasTime((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasTime(impl))
             {
                 printString (result, &resLen, maxLen, "  :  :  ");
             }
@@ -1344,7 +1391,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'D':
         {
             /* %D = %m/%d/%y */
-            if (!mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasDate(impl))
             {
                 printString (result, &resLen, maxLen, "    -  -  ");
             }
@@ -1368,7 +1415,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'H':
         {
             /* %H = 2-digit hour (24-hour clock) */
-            if (!mamaDateTimeImpl_getHasTime((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasTime(impl))
             {
                 printString (result, &resLen, maxLen, "  ");
             }
@@ -1384,7 +1431,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'M':
         {
             /* %M = 2-digit minute */
-            if (!mamaDateTimeImpl_getHasTime((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasTime(impl))
             {
                 printString (result, &resLen, maxLen, "  ");
             }
@@ -1400,7 +1447,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'S':
         {
             /* %H = 2-digit second */
-            if (!mamaDateTimeImpl_getHasTime((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasTime(impl))
             {
                 printString (result, &resLen, maxLen, "  ");
             }
@@ -1416,13 +1463,13 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case ':':
         {
             /* %: = subsecond */
-            if (!mamaDateTimeImpl_getHasTime((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasTime(impl))
             {
                 printString (result, &resLen, maxLen, "   ");
             }
             else
             {
-                long us = mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
+                long us = mamaDateTimeImpl_getMicroSeconds (impl);
                 printSubseconds (result, &resLen, maxLen,
                                  MAMA_DATE_TIME_PREC_MILLISECONDS, us);
             }
@@ -1432,8 +1479,8 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case ';':
         {
             /* %; = (if subsec > 0) add dot and subsecond */
-            long us = mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
-            if (mamaDateTimeImpl_getHasTime((mama_time_t*)dateTime) && (us > 0))
+            long us = mamaDateTimeImpl_getMicroSeconds (impl);
+            if (mamaDateTimeImpl_getHasTime(impl) && (us > 0))
             {
                 if (resLen < maxLen)
                 {
@@ -1448,15 +1495,15 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case '.':
         {
             /* %: = subsecond */
-            if (!mamaDateTimeImpl_getHasTime((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasTime(impl))
             {
                 printString (result, &resLen, maxLen, "   ");
             }
             else
             {
-                long us = mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
+                long us = mamaDateTimeImpl_getMicroSeconds (impl);
                 printSubseconds (result, &resLen, maxLen,
-                                 mamaDateTimeImpl_getPrecision ((mama_time_t*)dateTime), us);
+                                 mamaDateTimeImpl_getPrecision (impl), us);
             }
             ++fmtChar; /* skip the extra character in the fmt */
             break;
@@ -1464,15 +1511,15 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case ',':
         {
             /* %; = (if subsec > 0) add dot and subsecond */
-            long us = mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
-            if (mamaDateTimeImpl_getHasTime((mama_time_t*)dateTime) && (us > 0))
+            long us = mamaDateTimeImpl_getMicroSeconds (impl);
+            if (mamaDateTimeImpl_getHasTime(impl) && (us > 0))
             {
                 if (resLen < maxLen)
                 {
                     result[resLen++] = '.';
                 }
                 printSubseconds (result, &resLen, maxLen,
-                                 mamaDateTimeImpl_getPrecision ((mama_time_t*)dateTime), us);
+                                 mamaDateTimeImpl_getPrecision (impl), us);
             }
             ++fmtChar; /* skip the extra character in the fmt */
             break;
@@ -1480,7 +1527,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'B':
         {
             /* %B = full month (first letter capitalized) */
-            if (!mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasDate(impl))
             {
                 printString (result, &resLen, maxLen, "     ");
             }
@@ -1495,7 +1542,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'b':
         {
             /* %b = 3-char abbreviated month (first letter capitalized) */
-            if (!mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasDate(impl))
             {
                 printString (result, &resLen, maxLen, "   ");
             }
@@ -1510,7 +1557,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
         case 'h':
         {
             /* %h = 3-char abbreviated month (all letters capitalized) */
-            if (!mamaDateTimeImpl_getHasDate((mama_time_t*)dateTime))
+            if (!mamaDateTimeImpl_getHasDate(impl))
             {
                 printString (result, &resLen, maxLen, "   ");
             }
@@ -1628,13 +1675,13 @@ mamaDateTime_getMicrosecond(const mamaDateTime dateTime,
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
-    if (((mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime)) > UINT32_MAX) ||
-        ((mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime)) < 0))
+    if (((mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime)) > UINT32_MAX) ||
+        ((mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime)) < 0))
     {
         return MAMA_STATUS_INVALID_ARG;
     }
 
-    *result = mamaDateTimeImpl_getMicroSeconds ((mama_time_t*)dateTime);
+    *result = mamaDateTimeImpl_getMicroSeconds ((mama_datetime_t*)dateTime);
 
     return MAMA_STATUS_OK;
 }
@@ -1661,9 +1708,9 @@ mamaDateTime_diffSeconds(const mamaDateTime t1,
     if (!t1 || !t0 || !result)
         return MAMA_STATUS_INVALID_ARG;
 
-    *result = difftime (mamaDateTimeImpl_getSeconds((mama_time_t*)t1), mamaDateTimeImpl_getSeconds((mama_time_t*)t0)) +
-              ((double)mamaDateTimeImpl_getMicroSeconds((mama_time_t*)t1) -
-               (double)mamaDateTimeImpl_getMicroSeconds((mama_time_t*)t0)) / 1000000.0;
+    *result = difftime (mamaDateTimeImpl_getSeconds((mama_datetime_t*)t1), mamaDateTimeImpl_getSeconds((mama_datetime_t*)t0)) +
+              ((double)mamaDateTimeImpl_getMicroSeconds((mama_datetime_t*)t1) -
+               (double)mamaDateTimeImpl_getMicroSeconds((mama_datetime_t*)t0)) / 1000000.0;
     return MAMA_STATUS_OK;
 }
 
@@ -1677,10 +1724,10 @@ mamaDateTime_diffSecondsSameDay(const mamaDateTime t1,
     if (!t1 || !t0 || !result)
         return MAMA_STATUS_INVALID_ARG;
 
-    *result = difftime ((mamaDateTimeImpl_getSeconds((mama_time_t*)t1) % T24_HOURS),
-                        mamaDateTimeImpl_getSeconds((mama_time_t*)t0) % T24_HOURS) +
-              ((double)mamaDateTimeImpl_getMicroSeconds((mama_time_t*)t1) -
-               (double)mamaDateTimeImpl_getMicroSeconds((mama_time_t*)t0)) / 1000000.0;
+    *result = difftime ((mamaDateTimeImpl_getSeconds((mama_datetime_t*)t1) % T24_HOURS),
+                        mamaDateTimeImpl_getSeconds((mama_datetime_t*)t0) % T24_HOURS) +
+              ((double)mamaDateTimeImpl_getMicroSeconds((mama_datetime_t*)t1) -
+               (double)mamaDateTimeImpl_getMicroSeconds((mama_datetime_t*)t0)) / 1000000.0;
     return MAMA_STATUS_OK;
 }
 
@@ -1712,7 +1759,7 @@ mamaDateTime_diffMicroseconds(const mamaDateTime t1,
 }
 
 
-unsigned long  makeTime (
+time_t makeTime (
     int year,
     int mon,
     int day,
