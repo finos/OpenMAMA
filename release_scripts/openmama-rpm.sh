@@ -215,9 +215,9 @@ if [ $CLONE_SOURCE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try cd ${SOURCE_DIR}
 
     # Read only clone, depth 1
-    try git clone -q https://github.com/OpenMAMA/OpenMAMA.git
+    try git clone -q https://github.com/OpenMAMA/OpenMAMA.git > ${BUILD_DIR}/git-clone.log 2>&1
     try cd OpenMAMA
-    try git checkout ${BRANCH}
+    try git checkout ${BRANCH} > ${BUILD_DIR}/git-checkout.log 2>&1
     try cd ${SOURCE_DIR}
 
     # Remove the .git folder (for packaging)
@@ -233,7 +233,7 @@ if [ $CLONE_DATA -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
         try rm -rf ${DATA_DIR}
     fi
 
-    try git clone -q --depth=1 https://github.com/OpenMAMA/OpenMAMA-testdata.git
+    try git clone -q --depth=1 https://github.com/OpenMAMA/OpenMAMA-testdata.git > ${BUILD_DIR}/git-sampledata.log 2>&1
     try mv OpenMAMA-testdata ${DATA_DIR}
     try rm -rf ${DATA_DIR}/.git
     next
@@ -259,16 +259,19 @@ if [ $RPM_BUILD -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
 fi
 
 if [ $MOCK_BUILD -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
-    step "Build multiplatform RPMs"
     try cd ${BUILD_DIR}/SRPMS
-    try /usr/bin/mock -r epel-6-i386 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-el6-i386.log 2>&1
-    try /usr/bin/mock -r epel-6-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-el6-x64.log 2>&1
-    try /usr/bin/mock -r epel-7-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-el7-x64.log 2>&1
-    try /usr/bin/mock -r fedora-22-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f22-x64.log 2>&1
-    try /usr/bin/mock -r fedora-23-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f23-x64.log 2>&1
-    try /usr/bin/mock -r fedora-24-x86_64 --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-f24-x64.log 2>&1
-    next
-    RETURN_CODE=$?
+    for mockcfg in /etc/mock/epel-{6,7}*x86* /etc/mock/fedora-[0-9]*86_64*
+    do
+        step "Build multiplatform RPMs for $(basename $mockcfg)"
+        try /usr/bin/mock -r $mockcfg --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-$(basename $mockcfg).log 2>&1
+        next
+        rc=$?
+        # Only set return code if still zero
+        if [ 0 = $RETURN_CODE ]
+        then
+            RETURN_CODE=$rc
+        fi
+    done
 fi
 
 if [ $PACKAGE_RELEASE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
