@@ -214,7 +214,7 @@ register ub4  initval;    /* the previous hash, or an arbitrary value */
    c = initval;           /* the previous hash value */
 
    /*---------------------------------------- handle most of the key */
-   if (((ub4)k)&3)
+   if ((uintptr_t)k & 3)
    {
       while (len >= 12)    /* unaligned */
       {
