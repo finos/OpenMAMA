@@ -90,6 +90,9 @@
 /*  *********************************************************************** */
 
 using std::list;
+using std::cout;
+using std::cerr;
+using std::flush;
 
 using namespace Wombat;
 

@@ -25,8 +25,6 @@
 #include <mamda/MamdaOptionalConfig.h>
 #include <mamda/MamdaFields.h>
 
-using namespace Wombat;
-
 namespace Wombat
 {
 

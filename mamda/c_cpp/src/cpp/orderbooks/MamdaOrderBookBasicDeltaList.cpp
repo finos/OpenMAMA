@@ -353,7 +353,7 @@ namespace Wombat
         mImpl.mProcessEntries = process;
     }
 
-    void MamdaOrderBookBasicDeltaList::dump (ostream&  output) const
+    void MamdaOrderBookBasicDeltaList::dump (std::ostream&  output) const
     {
         output << "ComplexUpdate:\n";
 

@@ -45,6 +45,7 @@ using  std::endl;
 using  std::vector;
 using  std::cerr;
 using  std::cout;
+using  std::flush;
 
 
 using namespace Wombat;
@@ -222,7 +223,7 @@ public:
         cout << "\nLEVEL | " << symbol << " | ";
 
         // price is printed with 2 d.p.
-        cout << setiosflags(ios::fixed) << setprecision(2) << price << setprecision(0) << " | ";
+        cout << std::setiosflags(std::ios::fixed) << std::setprecision(2) << price << std::setprecision(0) << " | ";
 
         cout << size << " | " << action << " | " << side << " | " << numEntries << " | " << time << endl;
         flush (cout);

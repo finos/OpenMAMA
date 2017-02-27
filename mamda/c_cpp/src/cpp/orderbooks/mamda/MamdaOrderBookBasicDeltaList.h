@@ -26,8 +26,6 @@
 #include <mamda/MamdaOrderBookBasicDelta.h>
 #include <iosfwd>
 
-using std::ostream;
-
 namespace Wombat
 {
 
@@ -145,7 +143,7 @@ namespace Wombat
          *
          * @param output The <code>ostream</code> to write the update to.
          */
-        void dump (ostream& output) const;
+        void dump (std::ostream& output) const;
 
         /**
          * The MamdaOrderBookBasicDeltaList's iterator provides access to

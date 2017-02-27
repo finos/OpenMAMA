@@ -26,8 +26,6 @@
 #include <mamda/MamdaOptionAtTheMoneyCompareType.h>
 #include <set>
 
-using std::set;
-
 namespace Wombat
 {
 
@@ -36,7 +34,7 @@ namespace Wombat
     class MamdaQuoteListener;
     class MamdaTradeListener;
 
-    typedef set<double>   StrikeSet;
+    typedef std::set<double>   StrikeSet;
 
     /**
      * MamdaOptionChain is a specialized class to represent market data

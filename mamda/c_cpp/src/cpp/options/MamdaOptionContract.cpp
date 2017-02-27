@@ -40,26 +40,26 @@ namespace Wombat
     struct MamdaOptionContract::MamdaOptionContractImpl
     {
         MamdaOptionContractImpl();
-        char                       mSymbol [MAX_SYMBOL_LEN];
-        char                       mExchange [MAX_PART_ID_LEN];
-        MamaDateTime               mExpireDate;
-        bool                       mGotExpireDate;
-        double                     mStrikePrice;
-        bool                       mGotStrikePrice;
-        MamdaOptionPutCall         mPutCall;
-        bool                       mGotPutCall;
-        uint32_t                   mOpenInterest;
-        bool                       mGotOpenInterest;
-        MamdaOptionExerciseStyle   mExerciseStyle;
-        bool                       mGotExerciseStyle;
-        bool                       mRecapRequired;
-        bool                       mInScope;
-        vector<MamdaMsgListener*>  mMsgListeners;
-        MamdaTradeListener         mTradeListener;
-        MamdaQuoteListener         mQuoteListener;
-        MamdaFundamentalListener   mFundamentalListener;
-        void*                      mCustomObject;
-        int64_t                    mSeqNum;
+        char                            mSymbol [MAX_SYMBOL_LEN];
+        char                            mExchange [MAX_PART_ID_LEN];
+        MamaDateTime                    mExpireDate;
+        bool                            mGotExpireDate;
+        double                          mStrikePrice;
+        bool                            mGotStrikePrice;
+        MamdaOptionPutCall              mPutCall;
+        bool                            mGotPutCall;
+        uint32_t                        mOpenInterest;
+        bool                            mGotOpenInterest;
+        MamdaOptionExerciseStyle        mExerciseStyle;
+        bool                            mGotExerciseStyle;
+        bool                            mRecapRequired;
+        bool                            mInScope;
+        std::vector<MamdaMsgListener*>  mMsgListeners;
+        MamdaTradeListener              mTradeListener;
+        MamdaQuoteListener              mQuoteListener;
+        MamdaFundamentalListener        mFundamentalListener;
+        void*                           mCustomObject;
+        int64_t                         mSeqNum;
     };
 
     /* MLS Temporary Hack */
@@ -281,7 +281,7 @@ namespace Wombat
         return mImpl.mCustomObject;
     }
 
-    vector<MamdaMsgListener*>& MamdaOptionContract::getMsgListeners ()
+    std::vector<MamdaMsgListener*>& MamdaOptionContract::getMsgListeners ()
     {
         return mImpl.mMsgListeners;
     }

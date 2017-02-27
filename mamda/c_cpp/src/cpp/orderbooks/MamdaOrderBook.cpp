@@ -1245,7 +1245,7 @@ namespace Wombat
         return mImpl.addDelta(entry, level, plDeltaSize, plAction, entryAction);
     }
 
-    void MamdaOrderBook::dump(ostream& output) const
+    void MamdaOrderBook::dump(std::ostream& output) const
     {
         output << "Dump: " << getSymbol() << "\n";
 

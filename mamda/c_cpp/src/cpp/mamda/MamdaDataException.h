@@ -26,23 +26,20 @@
 #include <stdexcept>
 #include <string>
 
-using std::string;
-using std::invalid_argument;
-
 namespace Wombat
 {
 
     /**
      * MAMDA data exceptions.
      */
-    class MAMDAExpDLL MamdaDataException : public invalid_argument
+    class MAMDAExpDLL MamdaDataException : public std::invalid_argument
     {
     public:
         /**
          * Constructs a new exception with the specified detail message.
          */
-        MamdaDataException (const string& message)
-            : invalid_argument (message)
+        MamdaDataException (const std::string& message)
+            : std::invalid_argument (message)
         {
         }
 

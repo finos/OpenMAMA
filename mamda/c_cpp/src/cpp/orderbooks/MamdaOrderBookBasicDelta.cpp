@@ -67,7 +67,7 @@ namespace Wombat
             return NULL;
     }
 
-    void MamdaOrderBookBasicDelta::dump (ostream&  output) const
+    void MamdaOrderBookBasicDelta::dump (std::ostream&  output) const
     {
         output << "Price="           << mPriceLevel->getPrice()
                << ", Side="          << (char)mPriceLevel->getSide()

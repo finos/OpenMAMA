@@ -34,7 +34,7 @@
 namespace Wombat
 {
 
-    typedef  map<string,MamaSource*>  SourceMap;
+    typedef  std::map<std::string, MamaSource*>  SourceMap;
 
     struct MamaSourceManager::MamaSourceManagerImpl
     {

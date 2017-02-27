@@ -28,8 +28,6 @@
 #include <functional>
 
 
-using namespace std;
-
 namespace Wombat 
 {
 

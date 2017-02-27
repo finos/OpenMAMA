@@ -659,7 +659,7 @@ namespace Wombat
         }
         if (sStrictChecking)
         {
-            string errStr = string("attempted to update a non-existent entry: ") +
+            std::string errStr = std::string("attempted to update a non-existent entry: ") +
                 entry.getId();
             throw MamdaOrderBookException(errStr);
         }
@@ -685,7 +685,7 @@ namespace Wombat
         }
         if (sStrictChecking)
         {
-            string errStr = string("attempted to delete a non-existent entry: ") +
+            std::string errStr = std::string("attempted to delete a non-existent entry: ") +
                 entry.getId();
             throw MamdaOrderBookException(errStr);
         }
@@ -713,7 +713,7 @@ namespace Wombat
 
         if (sStrictChecking)
         {
-            string errStr = string("attempted to delete a non-existent entry: ") +
+            std::string errStr = std::string("attempted to delete a non-existent entry: ") +
                 entry->getId();
             throw MamdaOrderBookException(errStr);
         }
@@ -753,7 +753,7 @@ namespace Wombat
             if (existingEntry->equalId(entry.getId()))
             {
                 // Found it, but it was not supposed to be here!
-                string errStr = string("attempted to add an existent entry: ") +
+                std::string errStr = std::string("attempted to add an existent entry: ") +
                     entry.getId();
                 throw MamdaOrderBookException(errStr);
             }

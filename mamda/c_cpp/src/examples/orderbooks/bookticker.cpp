@@ -49,6 +49,7 @@ using std::endl;
 using std::vector;
 using std::cerr;
 using std::cout;
+using std::flush;
 
 using namespace Wombat;
 
@@ -60,7 +61,7 @@ public:
     PrettyPrint () : mShowEntries (false) {}
     virtual ~PrettyPrint () {}
 
-    void prettyPrint (string const &symbol, const MamdaOrderBook&  book)
+    void prettyPrint (std::string const &symbol, const MamdaOrderBook&  book)
     {
         cout << "Book for: " << symbol << endl;
 

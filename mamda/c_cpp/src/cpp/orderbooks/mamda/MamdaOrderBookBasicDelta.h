@@ -28,8 +28,6 @@
 #include <mamda/MamdaOrderBookEntry.h>
 #include <iosfwd>
 
-using std::ostream;
-
 namespace Wombat
 {
 
@@ -159,7 +157,7 @@ namespace Wombat
          *
          * @param output The <code>ostream</code> to write the update to.
          */
-        void dump(ostream&  output) const;
+        void dump(std::ostream&  output) const;
 
     protected:
         MamdaOrderBookPriceLevel*         mPriceLevel;
