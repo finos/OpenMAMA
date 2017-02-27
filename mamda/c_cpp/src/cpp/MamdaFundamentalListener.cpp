@@ -784,7 +784,7 @@ namespace Wombat
                 return MamdaFundamentalFields::DIV_FREQ_INVALID;
                 break;
             default:
-                ostringstream stringbuilder;
+                std::ostringstream stringbuilder;
                 stringbuilder << divFreq;
                 return stringbuilder.str();
         }
@@ -1099,7 +1099,7 @@ namespace Wombat
                     }
                     else
                     {
-                        ostringstream stringbuilder;
+                        std::ostringstream stringbuilder;
                         stringbuilder << segment;
                         impl.mMarketSegment = stringbuilder.str();
                         impl.mMarketSegmentFieldState = MODIFIED;
@@ -1155,7 +1155,7 @@ namespace Wombat
                     }
                     else
                     {
-                        ostringstream stringbuilder;
+                        std::ostringstream stringbuilder;
                         stringbuilder << sector;
                         impl.mMarketSector = stringbuilder.str();
                         impl.mMarketSectorFieldState = MODIFIED;

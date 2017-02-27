@@ -40,6 +40,7 @@ using std::exception;
 using std::vector;
 using std::cerr;
 using std::cout;
+using std::flush;
 
 using namespace Wombat;
 

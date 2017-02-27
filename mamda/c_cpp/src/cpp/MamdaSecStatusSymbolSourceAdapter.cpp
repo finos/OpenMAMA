@@ -45,9 +45,9 @@ public:
         const MamaMsg&            msg);
 
 
-    MamdaSecStatusSymbolSourceAdapter&  mAdapter;
-    vector<MamdaSymbolSourceHandler*>   mSymbolSourceHandlers;
-    string                              mSourcedSymbol;
+    MamdaSecStatusSymbolSourceAdapter&      mAdapter;
+    std::vector<MamdaSymbolSourceHandler*>  mSymbolSourceHandlers;
+    std::string                             mSourcedSymbol;
 };
 
 MamdaSecStatusSymbolSourceAdapter::MamdaSecStatusSymbolSourceAdapter ()

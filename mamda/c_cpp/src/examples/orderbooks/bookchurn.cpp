@@ -42,6 +42,7 @@ using std::endl;
 using std::vector;
 using std::cerr;
 using std::cout;
+using std::flush;
 using std::list;
 
 using namespace Wombat;
@@ -61,7 +62,7 @@ unsigned int gUpdateStats    = 0;
 unsigned int gBookGapStats   = 0;
 unsigned int gQualityStats   = 0;
 
-fstream gMyFile;
+std::fstream gMyFile;
 
 class ListenerCallback : public MamdaOrderBookHandler
                        , public MamdaErrorListener
@@ -313,7 +314,7 @@ void BookChurn::initialize (CommonCommandLineParser& cmdLine, mamaBridge bridge)
 
     if (logFileName != NULL)
     {
-        gMyFile.open (logFileName,ios::out);
+        gMyFile.open (logFileName,std::ios::out);
 
         if (gMyFile.is_open())
         {

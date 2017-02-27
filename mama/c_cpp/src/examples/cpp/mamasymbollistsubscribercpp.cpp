@@ -30,6 +30,11 @@
 using namespace Wombat;
 
 using std::list;
+using std::vector;
+using std::string;
+using std::cout;
+using std::cerr;
+using std::endl;
 
 
 typedef list<MamaSubscription *> SubscriptionList;
@@ -628,4 +633,3 @@ void MamaSymbolListSubscriber::setDictionaryComplete (bool complete)
 {
     mDictionaryComplete  = complete;
 }
-

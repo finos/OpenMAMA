@@ -26,9 +26,6 @@
 #include <string>
 #include <mamda/MamdaOptionalConfig.h>
 
-using std::invalid_argument;
-using std::string;
-
 namespace Wombat
 {
 
@@ -41,11 +38,11 @@ class MamdaOrderBookEntry;
  * undetected lost messages over the middleware.
  */
 
-class MAMDAOPTExpDLL MamdaOrderBookException : public invalid_argument
+class MAMDAOPTExpDLL MamdaOrderBookException : public std::invalid_argument
 {
 public:
-    MamdaOrderBookException (const string& msg)
-        : invalid_argument (msg)
+    MamdaOrderBookException (const std::string& msg)
+        : std::invalid_argument (msg)
         {}
     virtual ~MamdaOrderBookException() throw () {}
 };
@@ -83,7 +80,7 @@ private:
 class MAMDAOPTExpDLL MamdaOrderBookMissingEntry : public MamdaOrderBookException
 {
 public:
-    MamdaOrderBookMissingEntry (const string&  missingEntryId)
+    MamdaOrderBookMissingEntry (const std::string&  missingEntryId)
         : MamdaOrderBookException ("missing entry ID")
         , mMissingId (missingEntryId)
         {}
@@ -91,7 +88,7 @@ public:
     const char*  getMissingEntryId() { return mMissingId.c_str(); }
 
 private:
-    string mMissingId;
+    std::string mMissingId;
 };
 
 
@@ -105,7 +102,7 @@ class MAMDAOPTExpDLL MamdaOrderBookInvalidEntry : public MamdaOrderBookException
 {
 public:
     MamdaOrderBookInvalidEntry (const MamdaOrderBookEntry*  entry,
-                                const string&               msg)
+                                const std::string&          msg)
         : MamdaOrderBookException (msg)
         , mEntry (entry)
         {}

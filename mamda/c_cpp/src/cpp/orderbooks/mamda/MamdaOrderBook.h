@@ -31,8 +31,6 @@
 #include <mama/MamaSourceDerivative.h>
 #include <iosfwd>
 
-using std::ostream;
-
 namespace Wombat
 {
 
@@ -724,7 +722,7 @@ namespace Wombat
          *
          * @param output The <code>ostream</code> to write the orderbook to.
          */
-        void dump (ostream&  output) const;
+        void dump (std::ostream&  output) const;
 
         /**
          * Enforce strict checking of order book modifications (at the

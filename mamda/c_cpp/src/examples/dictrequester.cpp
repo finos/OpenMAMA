@@ -23,13 +23,13 @@
 
 void DictRequester::onTimeout (void)
 {
-    cerr << "Timed out waiting for data dictionary" << endl;
+    std::cerr << "Timed out waiting for data dictionary" << std::endl;
     Mama::stop (mBridge);
 }
                                                                                                                     
 void DictRequester::onError (const char* errMsg)
 {
-    cerr << "Error getting dictionary: " << errMsg << endl;
+    std::cerr << "Error getting dictionary: " << errMsg << std::endl;
     Mama::stop (mBridge);
 }
                                                                                                                     

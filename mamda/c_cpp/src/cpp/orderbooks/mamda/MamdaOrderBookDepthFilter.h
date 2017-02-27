@@ -28,8 +28,6 @@
 #include <mamda/MamdaOrderBookHandler.h>
 #include <mamda/MamdaFieldState.h>
 
-using namespace Wombat;
-
 class MamdaOrderBookDepthFilterImpl;
 
 class MamdaOrderBookDepthFilter : public MamdaOrderBookListener

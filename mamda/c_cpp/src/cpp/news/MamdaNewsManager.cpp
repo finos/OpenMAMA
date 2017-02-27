@@ -983,10 +983,10 @@ namespace Wombat
     void MamdaNewsManager::MamdaNewsManagerImpl::removeSubscription (
         MamdaSubscription* subscription)
     {
-        vector<MamdaMsgListener*> mMsgListeners = subscription->getMsgListeners();
+        std::vector<MamdaMsgListener*> mMsgListeners = subscription->getMsgListeners();
         delete subscription;
             
-        for (vector<MamdaMsgListener*>::iterator j = mMsgListeners.begin();
+        for (std::vector<MamdaMsgListener*>::iterator j = mMsgListeners.begin();
          j != mMsgListeners.end(); ++j)
         {
             MamdaMsgListener* listener = *j;
