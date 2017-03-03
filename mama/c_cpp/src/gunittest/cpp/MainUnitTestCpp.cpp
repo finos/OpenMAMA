@@ -43,6 +43,7 @@ static const char*  gTransport = "test_tport";
 static const char*  gSource = "SRC";
 static const char*  gSymbol = "SYM";
 static const char*  gBadSource = "BADSRC";
+static const char*  gPayload = "wmsg";
 
 const char* getMiddleware (void) { return gMiddleware; }
 const char* getTransport (void) { return gTransport; }
@@ -50,6 +51,7 @@ const char* getSource (void) { return gSource; }
 const char* getSymbol (void) { return gSymbol; }
 const char* getTopic (void) { return gSymbol; }
 const char* getBadSource (void) { return gBadSource; }
+const char* getPayload (void) { return gPayload; }
 
 static void parseCommandLine (int argc, char** argv)
 {
@@ -80,6 +82,11 @@ static void parseCommandLine (int argc, char** argv)
         else if (strcmp ("-s", argv[i]) == 0)
         {
             gSymbol = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-p", argv[i]) == 0)
+        {
+            gPayload = argv[i+1];
             i += 2;
         }
         else

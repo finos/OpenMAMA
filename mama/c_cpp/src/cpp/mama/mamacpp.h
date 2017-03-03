@@ -192,7 +192,6 @@ public:
      * "tibrv".
      * @return mama_status Whether the call was successful or not.
      */
-
     static mamaBridge loadBridge (const char* middleware);
 
 
@@ -205,8 +204,19 @@ public:
      * @param path The path to the bridge library
      * @return mama_status Whether the call was successful or not.
      */
-
     static mamaBridge loadBridge (const char* middleware, const char* path);
+    
+    /** Load the payload bridge specified by payload string.
+     * 
+     * If the bridge has already been loaded then the existing bridge instance
+     * will be returned.
+     * 
+     * @param payload The payload to be loaded.
+     * 
+     * @return mamaPayloadBridge The payload bridge loaded.
+     */
+    static mamaPayloadBridge loadPayloadBridge (const char* payload);
+
     /**
      * Returns the version of the mama binary. The version of the underlying
      * transport is also returned in parens after the mama version.

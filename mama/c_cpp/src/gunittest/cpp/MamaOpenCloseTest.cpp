@@ -168,3 +168,10 @@ TEST_F(MamaOpenCloseTest, StartStopDifferentThreads)
     // Cleanup
     delete startBackgroundCB;
 }
+
+TEST_F(MamaOpenCloseTest, LoadPayloadBridge)
+{
+    mamaPayloadBridge payload = Mama::loadPayloadBridge(getPayload ());
+
+    ASSERT_TRUE (NULL != payload);
+}
