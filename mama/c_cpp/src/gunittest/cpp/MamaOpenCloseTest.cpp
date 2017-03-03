@@ -175,3 +175,49 @@ TEST_F(MamaOpenCloseTest, LoadPayloadBridge)
 
     ASSERT_TRUE (NULL != payload);
 }
+
+TEST_F(MamaOpenCloseTest, GetMiddlewareBridge)
+{
+    mamaBridge bridge      = NULL;
+    mamaBridge foundBridge = NULL;
+
+    bridge      = Mama::loadBridge (getMiddleware ());
+    foundBridge = Mama::getMiddlewareBridge (getMiddleware ());
+
+    ASSERT_EQ(bridge, foundBridge);
+}
+
+TEST_F(MamaOpenCloseTest, GetNoMiddlewareBridge)
+{
+    mamaBridge bridge      = NULL;
+    mamaBridge foundBridge = NULL;
+
+    bridge      = Mama::loadBridge (getMiddleware ());
+    foundBridge = Mama::getMiddlewareBridge ("pizza");
+
+    ASSERT_NE(bridge, foundBridge);
+    ASSERT_TRUE(NULL == foundBridge);
+}
+
+TEST_F(MamaOpenCloseTest, GetPayloadBridge)
+{
+    mamaPayloadBridge bridge      = NULL;
+    mamaPayloadBridge foundBridge = NULL;
+
+    bridge      = Mama::loadPayloadBridge (getPayload ());
+    foundBridge = Mama::getPayloadBridge (getPayload ());
+
+    ASSERT_EQ(bridge, foundBridge);
+}
+
+TEST_F(MamaOpenCloseTest, GetNoPayloadBridge)
+{
+    mamaPayloadBridge bridge      = NULL;
+    mamaPayloadBridge foundBridge = NULL;
+
+    bridge      = Mama::loadPayloadBridge (getPayload ());
+    foundBridge = Mama::getPayloadBridge ("pizza");
+
+    ASSERT_NE(bridge, foundBridge);
+    ASSERT_TRUE(NULL == foundBridge);
+}
