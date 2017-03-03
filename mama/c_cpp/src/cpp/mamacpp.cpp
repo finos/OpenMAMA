@@ -59,6 +59,13 @@ namespace Wombat
         return (bridge);
     }
 
+    mamaPayloadBridge Mama::loadPayloadBridge (const char* payload)
+    {
+        mamaPayloadBridge payloadBridge = NULL;
+        mamaTry (mama_loadPayloadBridge (&payloadBridge, payload));
+        return (payloadBridge);
+    }
+
     void Mama::open ()
     {
         openCount (NULL, NULL);
