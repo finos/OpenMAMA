@@ -665,6 +665,33 @@ extern "C"
     extern mama_status
     mama_removeStatsCollector (mamaStatsCollector  statsCollector);
 
+    /** 
+     * Get Middleware Bridge by middleware name
+     *
+     * @param bridge Pointer to a mamaBridge object.
+     * @param middlewareName String denoting the middleware to return
+     * @return mama_status MAMA_STATUS_OK if successful. 
+     *                     MAMA_STATUS_NULL_ARG if one of the arguments is NULL.
+     *                     MAMA_STATUS_NOT_FOUND if no bridge available.
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_getMiddlewareBridge (mamaBridge *bridge, const char *middlewareName);
+
+    /**
+     * Get Payload bridge by payload name
+     * 
+     * @param payloadBridge Pointer to the mamaPayloadBridge object.
+     * @param payloadName String denoting the payload to return
+     * @return mama_status MAMA_STATUS_OK if successful
+     *                     MAMA_STATUS_NULL_ARG if one of the arguments is NULL.
+     *                     MAMA_STATUS_NOT_FOUND if no payload available.
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_getPayloadBridge (mamaPayloadBridge *payloadBridge,
+                           const char        *payloadName);
+
 #if defined(__cplusplus)
 }
 #endif
