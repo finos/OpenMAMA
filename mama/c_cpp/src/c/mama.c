@@ -3201,3 +3201,122 @@ void mama_normalizeMamaBridgeInterfaceVersionInternal (versionInfo* version)
     /* This is irrelevant at this point so blank for clarity */
     version->mRelease = 0;
 }
+
+/** 
+ * Get Middleware Bridge by middleware name
+ *
+ * @param bridge Pointer to a mamaBridge object.
+ * @param middlewareName String denoting the middleware to return
+ * @return mama_status MAMA_STATUS_OK if successful. 
+ *                     MAMA_STATUS_NOT_FOUND if no bridge available.
+ */
+MAMAExpDLL
+extern mama_status
+mama_getMiddlewareBridge (mamaBridge *bridge, const char *middlewareName)
+{
+    mama_status        status         = MAMA_STATUS_OK;
+    mamaMiddlewareLib *middlewareLib  = NULL;
+
+
+    if (NULL == bridge || NULL == middlewareName)
+    {
+        status = MAMA_STATUS_NULL_ARG;
+        return status;
+    }
+
+    /* Locking here so we don't accidentally try and grab a bridge while we're
+     * in the middle of loading another.
+     */
+    wthread_static_mutex_lock (&gImpl.myLock);
+
+    mama_log (MAMA_LOG_LEVEL_FINEST,
+             "mama_getMiddlewareBridge (): "
+             "Searching for existing bridge [%s]",
+             middlewareName);
+    
+    middlewareLib = (mamaMiddlewareLib*)wtable_lookup (
+                                     gImpl.middlewares.table,
+                                     middlewareName);
+    
+    if (middlewareLib && middlewareLib->bridge)
+    {
+        status = MAMA_STATUS_OK;
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "mama_getMiddlewareBridge (): "
+                  "Middleware bridge [%s] found.",
+                  middlewareName);
+
+        /* Return the existing middleware implementation. */
+        *bridge = middlewareLib->bridge;
+    } else {
+        status = MAMA_STATUS_NOT_FOUND;
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "mama_getMiddlewareBridge (): "
+                  "Middleware bridge [%s] not found.",
+                  middlewareName);
+
+        /* Set the point to NULL incase clients use it to check. Or don't */
+        *bridge = NULL;
+    }
+
+    wthread_static_mutex_unlock (&gImpl.myLock);
+    return status;
+}
+
+/**
+ * Get Payload bridge by payload name
+ * 
+ * @param payloadBridge Pointer to the mamaPayloadBridge object.
+ * @param payloadName String denoting the payload to return
+ * @return mama_status MAMA_STATUS_OK if successful
+ *                     MAMA_STATUS_NOT_FOUND if no payload available.
+ */
+MAMAExpDLL
+extern mama_status
+mama_getPayloadBridge (mamaPayloadBridge *payloadBridge, 
+                       const char        *payloadName)
+{
+    mama_status status         = MAMA_STATUS_OK;
+    mamaPayloadLib *payloadLib = NULL;
+
+    if (NULL == payloadBridge || NULL == payloadName)
+    {
+        status = MAMA_STATUS_NULL_ARG;
+        return status;
+    }
+
+    /* Lock here to avoid accidentally grabbing a payload mid load. */
+    wthread_static_mutex_lock (&gImpl.myLock);
+
+    mama_log (MAMA_LOG_LEVEL_FINEST, 
+              "mama_getPayloadBridge ():"
+              "Searching for existing payload [%s]",
+              payloadName);
+
+    payloadLib = (mamaPayloadLib*)wtable_lookup (gImpl.payloads.table,
+                                                 payloadName);
+
+    if (payloadLib && payloadLib->bridge)
+    {
+        status = MAMA_STATUS_OK;
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "mama_getPayloadBridge (): "
+                  "Payload bridge [%s] found.",
+                  payloadName);
+
+        /* Return the existing payload bridge implementation */
+        *payloadBridge = payloadLib->bridge;
+    } else {
+        status = MAMA_STATUS_NOT_FOUND;
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "mama_getPayloadBridge ():"
+                  "Payload bridge [%s] not found.",
+                  payloadName);
+
+        /* Set the point to NULL incase clients use it to check. Or don't */
+        *payloadBridge = NULL;
+    }
+
+    wthread_static_mutex_unlock (&gImpl.myLock);
+    return status;
+}

@@ -178,3 +178,106 @@ TEST_F (MamaOpenCloseTestC, StartStopDifferentThreads)
     ASSERT_EQ (MAMA_STATUS_OK, mama_close());
 }
 
+/* Description:     Load the middleware bridge, search for the same bridge.  
+ */
+TEST_F (MamaOpenCloseTestC, GetBridge)
+{
+    mamaBridge bridge;
+    mamaBridge foundBridge;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, getMiddleware ()));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_getMiddlewareBridge (&foundBridge, getMiddleware ()));
+    ASSERT_EQ (bridge, foundBridge);
+    ASSERT_TRUE (NULL != foundBridge);
+}
+
+/* Description:     Load the middleware bridge, search for a different bridge.  
+ */
+TEST_F (MamaOpenCloseTestC, GetNotFoundBridge)
+{
+    mamaBridge bridge;
+    mamaBridge foundBridge;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, getMiddleware ()));
+
+    /* Using "pizza"" as an example, in case someone decides "test" is a good name. */
+    ASSERT_EQ (MAMA_STATUS_NOT_FOUND, mama_getMiddlewareBridge (&foundBridge, "pizza"));
+    ASSERT_NE (bridge, foundBridge);
+    ASSERT_TRUE (NULL == foundBridge);
+}
+
+/* Description:     Load the middleware bridge, pass a NULL bridge.  
+ */
+TEST_F (MamaOpenCloseTestC, GetNullBridge)
+{
+    mamaBridge bridge;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, getMiddleware ()));
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, mama_getMiddlewareBridge (NULL, getMiddleware ()));
+}
+
+/* Description:     Load the middleware bridge, search for a different bridge.  
+ */
+TEST_F (MamaOpenCloseTestC, GetNullBridgeName)
+{
+    mamaBridge bridge;
+    mamaBridge foundBridge;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, getMiddleware ()));
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, mama_getMiddlewareBridge (&foundBridge, NULL));
+}
+
+/* Description:     Load the payload bridge, search for the same bridge.
+ */
+TEST_F (MamaOpenCloseTestC, GetPayload)
+{
+    mamaPayloadBridge bridge;
+    mamaPayloadBridge foundBridge;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadPayloadBridge (&bridge, getPayload ()));
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_getPayloadBridge (&foundBridge, getPayload ()));
+    ASSERT_EQ (bridge, foundBridge);
+    ASSERT_TRUE (NULL   != foundBridge);
+}
+
+/* Description:     Load the payload bridge, search for the same bridge.
+ */
+TEST_F (MamaOpenCloseTestC, GetNotFoundPayload)
+{
+    mamaPayloadBridge bridge;
+    mamaPayloadBridge foundBridge;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadPayloadBridge (&bridge, getPayload ()));
+
+    /* Use "pizza" in case someone decides to use a "test" payload */ 
+    ASSERT_EQ (MAMA_STATUS_NOT_FOUND, mama_getPayloadBridge (&foundBridge, "pizza"));
+    ASSERT_NE (bridge, foundBridge);
+    ASSERT_TRUE (NULL   == foundBridge);
+}
+
+/* Description:     Load the payload bridge, pass a NULL bridge.  
+ */
+TEST_F (MamaOpenCloseTestC, GetNullPayload)
+{
+    mamaPayloadBridge bridge;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadPayloadBridge (&bridge, getPayload ()));
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, mama_getPayloadBridge (NULL, getPayload ()));
+}
+
+/* Description:     Load the payload bridge, pass a null bridge name.  
+ */
+TEST_F (MamaOpenCloseTestC, GetNullPayloadBridge)
+{
+    mamaPayloadBridge bridge;
+    mamaPayloadBridge foundBridge;
+
+    ASSERT_EQ (MAMA_STATUS_OK, mama_loadPayloadBridge (&bridge, getPayload ()));
+
+    ASSERT_EQ (MAMA_STATUS_NULL_ARG, mama_getPayloadBridge (&foundBridge, NULL));
+}
