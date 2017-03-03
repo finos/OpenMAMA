@@ -66,6 +66,59 @@ namespace Wombat
         return (payloadBridge);
     }
 
+    /** Return a middleware bridge which matches the middleware string.
+     * 
+     * @param middleware The middleware to be returned
+     *
+     * @return mamaBridge The middleware bridge to be returned. Returns NULL
+     * if none available. 
+     */
+    mamaBridge Mama::getMiddlewareBridge (const char* middleware)
+    {
+        mamaBridge bridge = NULL;
+        mama_status status = MAMA_STATUS_OK; 
+
+        if (NULL == middleware)
+        {
+            return bridge;
+        }
+
+        /* We could check the status here, but we know the bridge and
+         * middleware can't be NULL. Clients can infer that a bridge isn't
+         * available from a NULL return.
+         */
+        status = mama_getMiddlewareBridge (&bridge, middleware);
+        
+        return bridge;
+    }
+
+    /** Return a payload bridge which matches the payload string.
+     * 
+     * @param payload The payload to be returned
+     *
+     * @return mamaBridge The payload bridge to be returned. Returns NULL
+     * if none available. 
+     */
+    mamaPayloadBridge Mama::getPayloadBridge (const char* payload)
+    {
+        mamaPayloadBridge payloadBridge = NULL;
+        mama_status       status = MAMA_STATUS_OK;
+
+        if (NULL == payload)
+        {
+            return payloadBridge;
+        }
+
+        /* We could check the status here, but we know the bridge and
+         * payload can't be NULL. Clients can infer that a bridge isn't
+         * available from a NULL return.
+         */
+        status = mama_getPayloadBridge (&payloadBridge, payload);
+
+        return payloadBridge;
+    }
+
+
     void Mama::open ()
     {
         openCount (NULL, NULL);

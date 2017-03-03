@@ -217,6 +217,24 @@ public:
      */
     static mamaPayloadBridge loadPayloadBridge (const char* payload);
 
+    /** Return a middleware bridge which matches the middleware string.
+     * 
+     * @param middleware The middleware to be returned
+     *
+     * @return mamaBridge The middleware bridge to be returned. Returns NULL
+     * if none available.
+     */
+    static mamaBridge getMiddlewareBridge (const char* middleware);
+
+    /** Return a payload bridge which matches the payload string.
+     * 
+     * @param payload The payload to be returned
+     *
+     * @return mamaBridge The payload bridge to be returned. Returns NULL
+     * if none available.
+     */
+    static mamaPayloadBridge getPayloadBridge (const char* payload);
+
     /**
      * Returns the version of the mama binary. The version of the underlying
      * transport is also returned in parens after the mama version.
