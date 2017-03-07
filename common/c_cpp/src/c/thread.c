@@ -123,6 +123,9 @@ wombatThread_destroy (const char* name)
 
     wthread_static_mutex_unlock(&gWombatThreadsMutex);
 
+    // Attempt to join the thread to ensure it has terminated
+    wthread_join (impl->mThread, NULL);
+
     if (impl)
     {
         free (impl->mThreadName);

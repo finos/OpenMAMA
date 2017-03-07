@@ -1992,7 +1992,7 @@ TEST_F(PayloadGeneralTests, IterAssociateTwiceValid)
     testField = aBridge->msgPayloadIterNext(testIter,testField,testPayload);
 
     result = aBridge->msgFieldPayloadGetFid(testField,NULL,NULL, &test_fid);
-    EXPECT_NE (pl1_fids.find(test_fid), pl1_fids.end());
+    EXPECT_FALSE (pl1_fids.find(test_fid) == pl1_fids.end());
 
     // reuse iterator with new payload
     result = aBridge->msgPayloadIterAssociate(testIter, testPayload2);
@@ -2007,7 +2007,7 @@ TEST_F(PayloadGeneralTests, IterAssociateTwiceValid)
     testField = aBridge->msgPayloadIterNext(testIter,testField,testPayload2); 
 
     result = aBridge->msgFieldPayloadGetFid(testField,NULL,NULL, &test_fid);
-    EXPECT_NE (pl2_fids.find(test_fid), pl2_fids.end());
+    EXPECT_FALSE (pl2_fids.find(test_fid) == pl2_fids.end());
 
     result = aBridge->msgPayloadIterDestroy(testIter);
     EXPECT_EQ (MAMA_STATUS_OK, result);

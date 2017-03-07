@@ -242,7 +242,7 @@ namespace Wombat
         msg.addI16 (NULL, MamdaOrderBookFields::NUM_LEVELS->getFid(),
                     (mama_i16_t)1);
 
-        if ((size_t)defaultNumAttachedEntries != entryCount)
+        if ((mama_i16_t)defaultNumAttachedEntries != entryCount)
         {
             msg.addI16 (NULL,
                         MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
@@ -375,7 +375,8 @@ namespace Wombat
 
             }
 
-            if (defaultNumAttachedEntries != entryCount)
+
+            if (defaultNumAttachedEntries != (int)entryCount)
                 plMsg.addI16 (NULL,
                             MamdaOrderBookFields::PL_NUM_ATTACH->getFid(),
                             (mama_i16_t) entryCount);

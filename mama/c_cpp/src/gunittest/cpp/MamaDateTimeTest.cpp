@@ -192,7 +192,6 @@ TEST_F(MamaDateTimeTest, GetMicrosecondExtended)
     struct timeval      tVal;
     MamaDateTime        dt1;
     mama_u32_t          uSecs   = 0;
-    const MamaStatus&   status  = MAMA_STATUS_OK;
 
     /* The following timeval represents the time - "2106-02-07 06:28:16"
         But the microseconds will be 1 microsecond more than a uint32_t can hold */
