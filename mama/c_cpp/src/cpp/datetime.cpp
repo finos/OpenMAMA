@@ -458,9 +458,7 @@ namespace Wombat
 
     mama_u32_t MamaDateTime::getMicrosecond() const
     {
-        mama_status status = MAMA_STATUS_OK;
         mama_u32_t  result = 0;
-
         mamaTry (mamaDateTime_getMicrosecond (const_cast<const mamaDateTime>(mDateTime),
                                               &result));
 

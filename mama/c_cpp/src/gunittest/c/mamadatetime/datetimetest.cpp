@@ -1402,8 +1402,7 @@ TEST_F (MamaDateTimeTestC, TestDiffMicrosecondsMixedValues)
     std::string szTime1 = "2013-07-04 10:03:21.123",
                 szTime2 = "2012-07-04 10:03:21.123";
 
-    mama_i64_t mics = 1000000, dd = UINT_MAX, hh = -24, mm = 60, ss = 60;
-    mama_i64_t act, expected =  dd * hh * mm * ss * mics;
+    mama_i64_t act;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t1) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t2) );
@@ -1613,9 +1612,6 @@ TEST_F (MamaDateTimeTestC, TestGetStructTimeSpecExtended)
 {
     struct timespec         tVal1, tVal2;
     mamaDateTime            t           = NULL;
-    mama_u32_t              secs        = 0;
-    mama_u32_t              uSecs       = 0;
-    mamaDateTimePrecision   precision;
     time_t                  inSecs      = 75899345920;
     long                    inNSecs     = 123000000;
 
@@ -1640,9 +1636,6 @@ TEST_F (MamaDateTimeTestC, TestGetStructTimeSpecExtendedNegativeValues)
 {
     struct timespec         tVal1, tVal2;
     mamaDateTime            t           = NULL;
-    mama_u32_t              secs        = 0;
-    mama_u32_t              uSecs       = 0;
-    mamaDateTimePrecision   precision;
     char                    stringBuffer[50];
     const char*             expectedDate = "1969-12-31 23:59:55";
     time_t                  inSecs = -5;
@@ -1789,9 +1782,6 @@ TEST_F (MamaDateTimeTestC, GetAsFormattedStringWithTzTest)
     char         stringDate[100]       = "";
     const char*  time                  = "2013-07-04 10:03:21.123000";
     char         completeDateTime[100] = "";
-    mamaDateTime m_cDateTime           = NULL;
-    mama_f64_t   completeDateSeconds   = 0;
-    mama_f64_t   timeSeconds           = 0;
 
     /* Get todays date in a date time */
     EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&t1));

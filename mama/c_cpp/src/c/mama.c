@@ -1376,8 +1376,6 @@ mama_closeCount (unsigned int* count)
             if (middlewareLib && middlewareLib->bridge)
             {
                 mamaBridgeImpl_stopInternalEventQueue (middlewareLib->bridge);
-                snprintf (threadname, 256, "mama_%s_default", middlewareLib->bridge->bridgeGetName());
-                wombatThread_destroy (threadname);
             }
         }
 
@@ -1561,7 +1559,9 @@ mama_closeCount (unsigned int* count)
                     /* If there was a background thread, clean it up */
                     if (middlewareLib->bridge->mStartBackgroundThread)
                     {
-                        wthread_join (middlewareLib->bridge->mStartBackgroundThread, NULL);
+                        // Get name of start background thread and destroy it
+                        const char* threadName = wombatThread_getThreadName(middlewareLib->bridge->mStartBackgroundThread);
+                        wombatThread_destroy (threadName);
                     }
 
                     free (middlewareLib->bridge);
@@ -1705,8 +1705,9 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
                             void*        closure)
 {
     struct startBackgroundClosure*  closureData;
-    wombatThread        thread;
+    mamaBridgeImpl*     impl         = (mamaBridgeImpl*)bridgeImpl;
     wombatThreadStatus  threadStatus = WOMBAT_THREAD_OK;
+    wombatThread        thread;
     char                threadname[256];
 
     if (!bridgeImpl)
@@ -1743,7 +1744,7 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
     snprintf (threadname, 256, "mama_%s_default", bridgeImpl->bridgeGetName());
 
     threadStatus = wombatThread_create(threadname,
-                            &thread,
+                            &impl->mStartBackgroundThread,
                             NULL,
                             mamaStartThread,
                             (void*) closureData);

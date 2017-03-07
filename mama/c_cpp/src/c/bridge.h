@@ -29,6 +29,7 @@
 #include "mamainternal.h"
 #include "conflation/manager_int.h"
 #include "wlock.h"
+#include <wombat/thread.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -512,7 +513,7 @@ typedef struct mamaBridgeImpl_
     wLock     mLock;
 
     /* Track background thread for join if startBackground is used */
-    wthread_t mStartBackgroundThread;
+    wombatThread mStartBackgroundThread;
 
     /* The set of methods used to access/populate a message in native format */
     mamaPayloadBridge mNativeMsgBridge;
