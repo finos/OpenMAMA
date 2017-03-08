@@ -46,7 +46,3 @@ Contributing
 --------------------------------------------------------------------------------
 Information on contributing on the project can be found on our [Get Involved](http://www.openmama.org/get-involved) page.
 
-License
---------------------------------------------------------------------------------
-The OpenMAMA library is distributed under the terms of the GNU Lesser General Public license version 2.
-Please see COPYING for full licence text. 
