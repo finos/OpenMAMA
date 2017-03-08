@@ -45,8 +45,8 @@ binary = []
 
 for b in bins:
     binary.append(env.Program(b, ['%s.cpp' % b, 
-        '$blddir/{0}/mamda/c_cpp/src/examples/parsecmd.obj'.format(env['build']) , 
-        '$blddir/{0}/mamda/c_cpp/src/examples/dictrequester.obj'.format(env['build'])
+        '../examples/parsecmd.obj', 
+        '../examples/dictrequester.obj'
         ]))
 
 Alias('install', env.Install('$bindir', binary))
