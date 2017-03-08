@@ -1,34 +1,46 @@
-OpenMAMA - The Open Middleware Agnostic Messaging API
+The Open Middleware Agnostic Messaging API
 ================================================================================
 
-[![Join the chat at https://gitter.im/OpenMAMA/OpenMAMA](https://badges.gitter.im/OpenMAMA/OpenMAMA.svg)](https://gitter.im/OpenMAMA/OpenMAMA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
-| Branch          | CI Status |
-|-----------------|---------------|
-| master (stable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA%20Master%20Branch%20with%20Qpid%20Proton/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA%20Master%20Branch%20with%20Qpid%20Proton/)|
-| next (unstable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA%20Next%20Branch%20with%20Qpid%20Proton/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA%20Next%20Branch%20with%20Qpid%20Proton/)|
-
-OpenMAMA is a vendor neutral lightweight wrapper that provides a common API interface to different middleware and messaging solutions across a variety of platforms and languages.
+OpenMAMA is a high performance vendor neutral lightweight wrapper that provides a common API interface
+to different middleware and messaging solutions across a variety of platforms and languages.
 
 OpenMAMDA is a framework that adds Market Data functionality, such as order book handling on top of MAMA.
 
-Please see the [project page](http://www.openmama.org) above for more information, as well as the mailing list for questions, discussions, and development.
+The [project's homepage](http://www.openmama.org) provides a good overview of the project.
+
+You can also pop into our gitter channel to have a chat if you just want quick answers:
+
+[![Join the chat at https://gitter.im/OpenMAMA/OpenMAMA](https://badges.gitter.im/OpenMAMA/OpenMAMA.svg)](https://gitter.im/OpenMAMA/OpenMAMA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+Build Status
+--------------------------------------------------------------------------------
+
+We currently use travis for smoke testing of pull requests and our own Jenkins install for generating release artifacts.
+
+| Branch          | Linux         | Windows       | Travis        |
+|-----------------|---------------|---------------|---------------|
+| master (stable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Linux/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Linux/)|[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Windows/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Windows/)|[![Build Status](https://travis-ci.org/OpenMAMA/OpenMAMA.svg?branch=master)](https://travis-ci.org/OpenMAMA/OpenMAMA)|
+| next (unstable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Linux/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Linux/)|[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Windows/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Windows/)|[![Build Status](https://travis-ci.org/OpenMAMA/OpenMAMA.svg?branch=next)](https://travis-ci.org/OpenMAMA/OpenMAMA)|
 
 Supported Platforms
 --------------------------------------------------------------------------------
-Currently C, C++, C# and Java are all supported languages.
+Currently C, C++, C# and Java are all supported languages and Linux and Windows are supported platforms.
 
-Supported distributions are listed [here](https://github.com/OpenMAMA/OpenMAMA/wiki/Platforms)
+You can find more details on supported platforms here [here](https://github.com/OpenMAMA/OpenMAMA/wiki/Platforms)
+
+Downloading the Software
+--------------------------------------------------------------------------------
+You can find the latest stable releases [on the our github releases page](https://github.com/OpenMAMA/OpenMAMA/releases)
+or if you're looking for something a little more bleeding edge, you can check out our
+[latest "next" snapshot RPM builds](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_RPM/lastSuccessfulBuild/artifact/release_scripts/release/)
 
 Getting Started
 --------------------------------------------------------------------------------
-OpenMAMA is designed to have minimal build requirements. 
-Full instructions for [Linux](https://github.com/OpenMAMA/OpenMAMA/wiki/Building-on-Linux) and [Windows](https://github.com/OpenMAMA/OpenMAMA/wiki/Building-on-Windows) can be found on the wiki.
+If you want to dive in, take a look at [our quick start guide](https://github.com/OpenMAMA/OpenMAMA/wiki/Quick-Start-Guide)
 
 Documentation
 --------------------------------------------------------------------------------
-Currently, our [wiki](https://github.com/OpenMAMA/OpenMAMA/wiki) contains the most up-to-date information on using OpenMAMA.
-Developer's Guides are also hosted on our [Documentation](http://www.openmama.org/documentation) page.
+We host the latest OpenMAMA Technical documentation on [http://openmama.github.io](http://openmama.github.io)
 
 Contributing
 --------------------------------------------------------------------------------
