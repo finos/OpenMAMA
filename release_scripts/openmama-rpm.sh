@@ -20,7 +20,7 @@ usage: `basename $0` [-n|--next] [-v|--version <version>]
                        [-s|--source-dir <source directory>]
                        [-r|--release-dir <release directory>]
                        [--env-only] [--clone-src-only] [--clone-data-only]
-                       [--tar-source-only] [--rpm-only] [--mock-only]
+                       [--src-rpm-only] [--mock-only]
                        [--package-only] [-h|-?|--help]
 
     -n|--next           Build the next branch.
@@ -36,8 +36,7 @@ usage: `basename $0` [-n|--next] [-v|--version <version>]
     --env-only          Only prepare a new RPM build environment.
     --clone-src-only    Only clone down the OpenMAMA source. (Assumes the environment already exists.)
     --clone-data-only   Only clone down the sample data. (Assumes the environment already exists.)
-    --tar-source-only   Only tar up the source code. (Assumes the source is already available.)
-    --rpm-only          Only run the RPM build commands. (Assumes the source and env are available.)
+    --src-rpm-only      Only run the Source RPM build commands. (Assumes the source and env are available.)
     --mock-only         Only run the mock build commands. (Assumes the source RPM is available.)
     --package-only      Only package the build artifacts. (Assumes the RPMs, mock builds etc, are available.)
     -h|-?|--help        Displays this help text.
@@ -48,13 +47,12 @@ EOF
 BUILD_ENV=1
 CLONE_SOURCE=1
 CLONE_DATA=1
-TAR_SOURCE=1
-RPM_BUILD=1
+SRC_RPM_BUILD=1
 MOCK_BUILD=1
 PACKAGE_RELEASE=1
 
 # Set the default values
-VERSION="nightly"
+VERSION="snapshot"
 BRANCH="next"
 BUILD_NUMBER=1
 
@@ -76,7 +74,7 @@ shift
 case $key in
     -n|--next)
     NEXT=YES
-    VERSION="nightly"
+    VERSION="snapshot"
     BRANCH="next"
     ;;
     -v|--version)
@@ -108,8 +106,7 @@ case $key in
     BUILD_ENV=1
     CLONE_SOURCE=0
     CLONE_DATA=0
-    TAR_SOURCE=0
-    RPM_BUILD=0
+    SRC_RPM_BUILD=0
     MOCK_BUILD=0
     PACKAGE_RELEASE=0
     ;;
@@ -117,8 +114,7 @@ case $key in
     BUILD_ENV=0
     CLONE_SOURCE=1
     CLONE_DATA=0
-    TAR_SOURCE=0
-    RPM_BUILD=0
+    SRC_RPM_BUILD=0
     MOCK_BUILD=0
     PACKAGE_RELEASE=0
     ;;
@@ -126,26 +122,15 @@ case $key in
     BUILD_ENV=0
     CLONE_SOURCE=0
     CLONE_DATA=1
-    TAR_SOURCE=0
-    RPM_BUILD=0
+    SRC_RPM_BUILD=0
     MOCK_BUILD=0
     PACKAGE_RELEASE=0
     ;;
-    --tar-source-only)
+    --src-rpm-only)
     BUILD_ENV=0
     CLONE_SOURCE=0
     CLONE_DATA=0
-    TAR_SOURCE=1
-    RPM_BUILD=0
-    MOCK_BUILD=0
-    PACKAGE_RELEASE=0
-    ;;
-    --rpm-only)
-    BUILD_ENV=0
-    CLONE_SOURCE=0
-    CLONE_DATA=0
-    TAR_SOURCE=0
-    RPM_BUILD=1
+    SRC_RPM_BUILD=1
     MOCK_BUILD=0
     PACKAGE_RELEASE=0
     ;;
@@ -153,8 +138,7 @@ case $key in
     BUILD_ENV=0
     CLONE_SOURCE=0
     CLONE_DATA=0
-    TAR_SOURCE=0
-    RPM_BUILD=0
+    SRC_RPM_BUILD=0
     MOCK_BUILD=1
     PACKAGE_RELEASE=0
     ;;
@@ -162,8 +146,7 @@ case $key in
     BUILD_ENV=0
     CLONE_SOURCE=0
     CLONE_DATA=0
-    TAR_SOURCE=0
-    RPM_BUILD=0
+    SRC_RPM_BUILD=0
     MOCK_BUILD=0
     PACKAGE_RELEASE=1
     ;;
@@ -179,12 +162,25 @@ case $key in
 esac
 done
 
-echo BUILD DIR       = "${BUILD_DIR}"
-echo SRC_DIR         = "${SOURCE_DIR}"
-echo DATA_DIR        = "${DATA_DIR}"
-echo VERSION         = "${VERSION}"
-echo BRANCH          = "${BRANCH}"
-echo BUILD NUMBER    = "${BUILD_NUMBER}"
+# Mock directory to pull the tarball release out of
+MOCK_ROOT=/var/lib/mock
+MOCK_CFG_RELEASE=epel-6-x86_64
+# Extracts all mock configs
+ALL_MOCK_CFG=$(echo /etc/mock/epel-{6,7}*86* /etc/mock/fedora-[0-9]*86_64* | sed  -e "s#[^ ]*/##g" -e "s#.cfg##g")
+
+# If this is a snapshot build and no build number has been specified
+if [ "$VERSION" = "snapshot" ] && [ $BUILD_NUMBER -eq 1 ]; then
+    BUILD_NUMBER=$(date +%Y%m%d%H%M%S)
+fi
+
+echo BUILD DIR        = "${BUILD_DIR}"
+echo SRC_DIR          = "${SOURCE_DIR}"
+echo DATA_DIR         = "${DATA_DIR}"
+echo VERSION          = "${VERSION}"
+echo BRANCH           = "${BRANCH}"
+echo BUILD NUMBER     = "${BUILD_NUMBER}"
+echo MOCK_ROOT        = "${MOCK_ROOT}"
+echo MOCK_CFG_RELEASE = "${MOCK_CFG_RELEASE}"
 
 if [ $BUILD_ENV -eq 1 ]; then
     step "Setup build environment. "
@@ -214,7 +210,7 @@ if [ $CLONE_SOURCE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try mkdir -p ${SOURCE_DIR}
     try cd ${SOURCE_DIR}
 
-    # Read only clone, depth 1
+    # Read only clone
     try git clone -q https://github.com/OpenMAMA/OpenMAMA.git > ${BUILD_DIR}/git-clone.log 2>&1
     try cd OpenMAMA
     try git checkout ${BRANCH} > ${BUILD_DIR}/git-checkout.log 2>&1
@@ -240,30 +236,27 @@ if [ $CLONE_DATA -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     RETURN_CODE=$?
 fi
 
-if [ $TAR_SOURCE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
+if [ $SRC_RPM_BUILD -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     step "Create the source tarball"
     try mv OpenMAMA openmama-${VERSION}
     try cp -r ${DATA_DIR} openmama-${VERSION}
     try tar -zcf openmama-${VERSION}.tgz openmama-${VERSION}
     try cp openmama-${VERSION}.tgz ${BUILD_DIR}/SOURCES/
     next
-    RETURN_CODE=$?
-fi
-
-if [ $RPM_BUILD -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
-    step "Perform the RPM Build"
+    step "Perform the Source RPM Build"
     try cd ${BUILD_DIR}/SPECS
-    try rpmbuild -ba --define "BUILD_VERSION "${VERSION} --define "BUILD_NUMBER "${BUILD_NUMBER} openmama.spec > ${BUILD_DIR}/rpmbuild.log 2>&1
+    try rpmbuild -bs --define "BUILD_VERSION "${VERSION} --define "BUILD_NUMBER "${BUILD_NUMBER} openmama.spec > ${BUILD_DIR}/rpmbuild.log 2>&1
     next
     RETURN_CODE=$?
 fi
 
 if [ $MOCK_BUILD -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try cd ${BUILD_DIR}/SRPMS
-    for mockcfg in /etc/mock/epel-{6,7}*x86* /etc/mock/fedora-[0-9]*86_64*
+
+    for mockcfg in $ALL_MOCK_CFG
     do
-        step "Build multiplatform RPMs for $(basename $mockcfg)"
-        try /usr/bin/mock -r $mockcfg --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-$(basename $mockcfg).log 2>&1
+        step "Build multiplatform RPMs for $mockcfg"
+        try /usr/bin/mock -r /etc/mock/$mockcfg.cfg --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-$(basename $mockcfg).log 2>&1
         next
         rc=$?
         # Only set return code if still zero
@@ -283,20 +276,15 @@ if [ $PACKAGE_RELEASE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
 
     try mkdir -p ${RELEASE_DIR}
 
-    # Copy in and rename the source tarball
-    #try cp ${SOURCE_DIR}/openmama-${VERSION}.tgz ${RELEASE_DIR}/openmama-${VERSION}-src.tar.gz
-
     # Copy in the Source RPM
     try cp ${BUILD_DIR}/SRPMS/openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm ${RELEASE_DIR}
 
     # These paths are hard coded, since they should always remain there. We need
     # to update these periodically.
-    try cp /var/lib/mock/epel-6-i386/result/openmama-${VERSION}-${BUILD_NUMBER}.el6.i686.rpm ${RELEASE_DIR}
-    try cp /var/lib/mock/epel-6-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.el6.x86_64.rpm ${RELEASE_DIR}
-    try cp /var/lib/mock/epel-7-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.el7.*.x86_64.rpm ${RELEASE_DIR}
-    try cp /var/lib/mock/fedora-22-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc22.x86_64.rpm ${RELEASE_DIR}
-    try cp /var/lib/mock/fedora-23-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc23.x86_64.rpm ${RELEASE_DIR}
-    try cp /var/lib/mock/fedora-24-x86_64/result/openmama-${VERSION}-${BUILD_NUMBER}.fc24.x86_64.rpm ${RELEASE_DIR}
+    for mockcfg in $ALL_MOCK_CFG
+    do
+        try cp $MOCK_ROOT/$mockcfg/result/openmama-${VERSION}-${BUILD_NUMBER}.*.rpm ${RELEASE_DIR}
+    done
 
     # Build and tar the binary release
     if [ -d ${BUILD_DIR}/binary ]; then
@@ -304,15 +292,16 @@ if [ $PACKAGE_RELEASE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     fi
 
     BINARY_DIR=${BUILD_DIR}/binary/openmama-${VERSION}
+    MOCK_BIN_TARBALL_DIR=$MOCK_ROOT/$MOCK_CFG_RELEASE/root/builddir/build/BUILD/openmama-${VERSION}
     try mkdir -p ${BINARY_DIR}
     try mkdir ${BINARY_DIR}/data
     try mkdir ${BINARY_DIR}/config
-    try cp -r ${BUILD_DIR}/BUILD/openmama-${VERSION}/data/* ${BINARY_DIR}/data/
-    try cp -r ${BUILD_DIR}/BUILD/openmama-${VERSION}/openmama_install*/* ${BINARY_DIR}/
-    try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/data/profiles/profile.openmama ${BINARY_DIR}/config/
-    try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/README.md ${BINARY_DIR}/README
-    try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/COPYING ${BINARY_DIR}/
-    try cp ${BUILD_DIR}/BUILD/openmama-${VERSION}/mama/c_cpp/src/examples/mama.properties ${BINARY_DIR}/config/
+    try cp -r ${MOCK_BIN_TARBALL_DIR}/data/* ${BINARY_DIR}/data/
+    try cp -r ${MOCK_BIN_TARBALL_DIR}/openmama_install*/* ${BINARY_DIR}/
+    try cp    ${MOCK_BIN_TARBALL_DIR}/data/profiles/profile.openmama ${BINARY_DIR}/config/
+    try cp    ${MOCK_BIN_TARBALL_DIR}/README.md ${BINARY_DIR}/README
+    try cp    ${MOCK_BIN_TARBALL_DIR}/COPYING ${BINARY_DIR}/
+    try cp    ${MOCK_BIN_TARBALL_DIR}/mama/c_cpp/src/examples/mama.properties ${BINARY_DIR}/config/
 
     try cd ${BUILD_DIR}/binary/
     try tar -zcf ${RELEASE_DIR}/openmama-${VERSION}.linux.x86_64.tar.gz openmama-${VERSION}
