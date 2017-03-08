@@ -187,30 +187,3 @@ TEST_F(MamaDateTimeTest, SetFromStructTimeVal)
     ASSERT_STREQ (timeStr, stringBuffer);
 }
 
-TEST_F(MamaDateTimeTest, GetMicrosecondExtended)
-{
-    struct timeval      tVal;
-    MamaDateTime        dt1;
-    mama_u32_t          uSecs   = 0;
-
-    /* The following timeval represents the time - "2106-02-07 06:28:16"
-        But the microseconds will be 1 microsecond more than a uint32_t can hold */
-    tVal.tv_sec = 1484674307;
-    tVal.tv_usec = 4294967296;
-
-    dt1.set(tVal);
-
-    try
-    {
-        uSecs = dt1.getMicrosecond();
-    }
-    catch (MamaStatus mamaStatus)
-    {
-        EXPECT_EQ ( mamaStatus.getStatus(), MAMA_STATUS_INVALID_ARG );
-        return;
-    }
-
-    // If we get here there is a problem as this scenario should throw an exception
-    ASSERT_TRUE(0);
-}
-

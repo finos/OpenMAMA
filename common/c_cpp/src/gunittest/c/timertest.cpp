@@ -56,6 +56,7 @@ CommonTimerTestC::~CommonTimerTestC()
 
 void CommonTimerTestC::SetUp(void)
 {	
+    wsocketstartup();
 }
 
 void CommonTimerTestC::TearDown(void)
