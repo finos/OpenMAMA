@@ -30,24 +30,28 @@
 #include "playback/playbackFileParser.h"
 #include "string.h"
 #include "wombat/port.h"
+#include "mama/mamautils.h"
 
 static const char *gUsageString[] = {
-    " capturereplay - Sample application demonstrates how to publish mama "
+    " capturereplay - Sample application demonstrates how to publish mama ",
     " messages, and respond to requests from a client inbox.",
     "",
     " It accepts the following command line arguments:",
-    "      [-S source]       The source name to use for publisher Default is "
+    "      [-S source]       The source name to use for publisher Default is ",
     "                        WOMBAT.",
+    "      [-s symbol file]  A file listing the symbols which capturereplay",
+    "                        expects to publish. If not specified, capturereplay",
+    "                        will parse a symbol list from the capture file.",
     "      [-i interval]     The interval between messages .Default in  0.5.",
     "      [-f filename]     The capture filename",
     "      [-m middleware]   The middleware to use for publisher",
     "                        Default is wmw.",
     "      [-tport name]     The transport parameters to be used from",
     "                        mama.properties. Default is pub",
-    "      [-dictionary]     The dictionary file which is sent in response to "
+    "      [-dictionary]     The dictionary file which is sent in response to ",
     "                        client requests. Required.",
     "      [-q]              Quiet mode. Suppress output.",
-    "      [-rewind|-r]      Rewind symbols when they reach the end of the "
+    "      [-rewind|-r]      Rewind symbols when they reach the end of the ",
     "                        file.",
     "      [-v]              Increase logging verbosity.",
     NULL};
@@ -75,6 +79,7 @@ static int                    gQuietness              = 0;
 static const char *           gFilename               = NULL;
 static const char *           gPubSource              = "WOMBAT";
 static const char **          gSymbolList             = NULL;
+static const char *           gSymbolListFile         = NULL;
 static mamaTransport          gPubTransport           = NULL;
 static mamaDQPublisherManager gDQPubManager           = NULL;
 static pubCache *             gSubscriptionList       = NULL;
@@ -118,7 +123,9 @@ subscriptionHandlerOnErrorCb (mamaDQPublisherManager manager,
 static void createDQPublisherManager (void);
 static void initializeMama (void);
 static void usage (int exitStatus);
-static void readSymbolsFromFile (void);
+static void prepareSymbolList (void);
+static void readSymbolsFromCaptureFile (void);
+static void readSymbolsFromSymbolFile (void);
 
 /* Methods for managing dictionary requests: */
 static void prepareDictionaryListener (void);
@@ -439,9 +446,6 @@ static void initializeMama ( )
 
 int main (int argc, const char **argv)
 {
-    /* Allocate a symbol list, up to a maximum size of 'MAX_SUBSCRIPTIONS' */
-    gSymbolList = (const char **)calloc (MAX_SUBSCRIPTIONS, sizeof (char *));
-
     /* Enabling 'Normal' MAMA Logging, to provide feedback to users regarding
      * processing.
      */
@@ -457,10 +461,8 @@ int main (int argc, const char **argv)
     /* Create the Dictionary listener. */
     prepareDictionaryListener ( );
 
-    /* Read all the symbols available in the playback file, storing each
-     * in the 'symbols' array.
-     */
-    readSymbolsFromFile ( );
+    /* Populate the symbol list */
+    prepareSymbolList ( );
 
     /* Create the publisher manager. */
     createDQPublisherManager ( );
@@ -732,7 +734,86 @@ subscriptionHandlerOnRefreshCb (mamaDQPublisherManager publisherManager,
               publishTopicInfo->symbol);
 }
 
-static void readSymbolsFromFile (void)
+static void prepareSymbolList (void)
+{
+    /* Allocate a symbol list, up to a maximum size of 'MAX_SUBSCRIPTIONS' */
+    gSymbolList = (const char **)calloc (MAX_SUBSCRIPTIONS, sizeof (char *));
+
+    /* Populate the 'symbols' array with instruments which capturereplay
+     * is going to allow subsription to.
+     * This can be generated either from the capture file being loaded,
+     * or from a MAMA symbol list file if one is supplied.
+     */
+    gSubscriptionList = (pubCache *)calloc (MAX_SUBSCRIPTIONS, sizeof (pubCache));
+    if (gSymbolListFile) {
+        readSymbolsFromSymbolFile ();
+    }
+
+    /* If the symbol list file is not supplied, or the symbol count as a
+     * result is '0', load from the capture file itself.
+     */
+    if (!gSymbolListFile || 0 == gNumSymbols) {
+        /* Read all the symbols available in the playback file, storing each
+         * in the 'symbols' array.
+         */
+        readSymbolsFromCaptureFile ( );
+    }
+}
+
+static void readSymbolsFromSymbolFile (void)
+{
+    mama_size_t l1SymbolCount = 0;
+    mama_size_t l2SymbolCount = 0;
+    size_t      symbolLen     = 0;
+    size_t      i             = 0;
+    mama_status status        = MAMA_STATUS_OK;
+
+    /* Use the MAMA Utility function to read symbols from a file. 
+     * We don't expect to use the L2 symbol functionality, so we
+     * don't pass data into it.
+     */
+    status = mamaUtils_readSymbolFile (gSymbolListFile,
+                                       gSymbolList,
+                                       MAX_SUBSCRIPTIONS,
+                                       &l1SymbolCount,
+                                       NULL,
+                                       0,
+                                       NULL);
+    
+    /* If the number of symbols returned is 0, or if there's been a problem
+     * drop out now so we can use the capture file. 
+     */
+    if (0 == l1SymbolCount || MAMA_STATUS_OK != status) {
+        mama_log (MAMA_LOG_LEVEL_WARN,
+                  "Failed to load symbols from symbol "
+                  "file [%s], falling back to loading "
+                  "from capture file.");
+        
+        /* Set num symbols to zero to force the capture load */
+        gNumSymbols = 0;
+    } else {
+        /* Populate the pubcache list with the symbol list information */
+        for (i = 0; i < l1SymbolCount; i++) {
+            printf ("Count %d, symbol %s/n", i, gSymbolList[i]);
+            symbolLen = strlen (gSymbolList[i]);
+
+            /* Allocate memory for the symbol name, then copy across. */
+            gSubscriptionList[i].symbol =
+                (char *)calloc (symbolLen, sizeof (char));
+            strncpy (gSubscriptionList[i].symbol, gSymbolList[i], symbolLen);
+            gSubscriptionList[i].index = i;
+        }
+
+        /* Set the total number of instruments available */
+        gNumSymbols = l1SymbolCount;
+
+        mama_log (MAMA_LOG_LEVEL_NORMAL,
+                  "Symbols read from symbol file. Total symbols:\t%d",
+                  gNumSymbols);
+    }
+}
+
+static void readSymbolsFromCaptureFile (void)
 {
     mama_status            status       = MAMA_STATUS_OK;
     mamaPlaybackFileParser fileParser;
@@ -743,9 +824,6 @@ static void readSymbolsFromFile (void)
     int                    i            = 0;
     int                    iterations   = 0;
     mamaMsg                newMessage;
-
-    gSubscriptionList =
-        (pubCache *)calloc (MAX_SUBSCRIPTIONS, sizeof (pubCache));
 
     /* Allocate a Playback file parser, and open the file. */
     status = mamaPlaybackFileParser_allocate (&fileParser);
@@ -844,13 +922,13 @@ static void readSymbolsFromFile (void)
     if (MAMA_STATUS_OK != status) {
         mama_log (
             MAMA_LOG_LEVEL_ERROR,
-            "readSymbolsFromFile (): Failed to close playback file. Exiting.");
+            "readSymbolsFromCaptureFile (): Failed to close playback file. Exiting.");
         exit (1);
     }
 
     status = mamaPlaybackFileParser_deallocate (fileParser);
     if (MAMA_STATUS_OK != status) {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "readSymbolsFromFile (): Failed to "
+        mama_log (MAMA_LOG_LEVEL_ERROR, "readSymbolsFromCaptureFile (): Failed to "
                                         "deallocate playback file parser "
                                         "memory. Exiting.");
         exit (1);
@@ -870,6 +948,11 @@ static void parseCommandLine (int argc, const char **argv)
         /* Playback file to load */
         } else if (strcmp (argv[i], "-f") == 0) {
             gFilename = argv[i + 1];
+            i += 2;
+
+        /* Symbol list file to load. */
+        } else if (strcmp (argv[i], "-s") == 0) {
+            gSymbolListFile = argv[i+1];
             i += 2;
 
         /* Print help text and exit */
