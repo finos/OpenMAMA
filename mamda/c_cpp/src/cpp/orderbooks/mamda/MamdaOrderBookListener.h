@@ -240,6 +240,17 @@ namespace Wombat
         virtual void  setConflationInterval (double interval);
 
         /**
+         * Trigger callbacks for top of book price changes even when they
+         * would normally not be triggered due to happening inside a conflation
+         * interval. If a callback for a book update is triggered in this
+         * scenario, a new conflation interval will begin.
+         *
+         * @param flush Flush conflated updates when a top of book price
+         * change occurs.
+         */
+        virtual void flushConflationOnTopOfBookChange (bool flush);
+
+        /**
          * Invoke delta handlers immediately if there is a conflated delta
          * pending 
          */
