@@ -197,6 +197,7 @@ int clock_gettime (int type, struct timespec * ts);
 /* net work utility functions */
 const char* getIpAddress (void);
 const char* getHostName (void);
+struct in_addr wresolve_ip (const char * arg);
 
 #define COMMONDeprecated(MSG)            __attribute__((deprecated(#MSG)))
 #define COMMONExpDeprecatedDLL(MSG)      __attribute__((deprecated(#MSG)))

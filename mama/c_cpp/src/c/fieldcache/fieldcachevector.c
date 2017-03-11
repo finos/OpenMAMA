@@ -102,7 +102,7 @@ mamaFieldCacheVector_getSize(mamaFieldCacheVector vector, mama_size_t* size)
 mama_status
 mamaFieldCacheVector_grow(mamaFieldCacheVector vector, mama_size_t newAllocSize)
 {
-    int i;
+    mama_size_t i;
     
     if (vector->mSize > newAllocSize)
     {

@@ -166,6 +166,7 @@ int wsem_getvalue (wsem_t*, int* items);
 #if _MSC_VER >= 1900
 #define daylight _daylight
 #define tzname _tzname
+#define open(x,y) _open(x,y)
 #endif
 
 #define strdup _strdup
@@ -217,6 +218,7 @@ struct timespec
 /* Macro for managing the printing of mama_size_t values. */
 #define PRI_MAMA_SIZE_T "Iu"
 
+#ifndef _STDINT
 #ifndef INT8_MIN
 #define INT8_MIN SCHAR_MIN
 #endif
@@ -253,6 +255,7 @@ struct timespec
 #ifndef UINT64_MAX
 #define UINT64_MAX ULLONG_MAX
 #endif
+#endif /* _STDINT */
 
 #define wthread_detach( h )           /* noop */
 #define wthread_self                 GetCurrentThread

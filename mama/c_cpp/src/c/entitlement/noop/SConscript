@@ -12,6 +12,8 @@ includePath.append('.')
 
 sources = Glob('*.c')
 
+env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL'] )
+
 if env['PLATFORM'] == "win32":
     libs = []
     libs.append('libwombatcommon%s.lib' % ( env['suffix'] ))

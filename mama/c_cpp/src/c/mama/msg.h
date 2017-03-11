@@ -41,6 +41,7 @@ extern "C" {
 
 struct wombatMsg_;
 
+MAMAIgnoreDeprecatedOpen
 /**
  Enum to reference the available MAMA message payloads. */
 MAMATypeDeprecated(mamaPayloadType,
@@ -70,6 +71,7 @@ typedef enum mamaPayloadType_
     MAMA_PAYLOAD_UNKNOWN    = 'U',
     MAMA_PAYLOAD_NULL       = MAMA_PAYLOAD_ID_NULL
 } mamaPayloadType;
+MAMAIgnoreDeprecatedClose
 
 /**
  * Convert a mamaPayloadType value to a string.  Do no attempt to free the

@@ -164,7 +164,10 @@
     <ClCompile Include="codec.c" />
     <ClCompile Include="endpointpool.c" />
     <ClCompile Include="inbox.c" />
-    <ClCompile Include="io.c" />
+    <ClCompile Include="io.c">
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
     <ClCompile Include="msg.c" />
     <ClCompile Include="publisher.c" />
     <ClCompile Include="qpidcommon.c" />
