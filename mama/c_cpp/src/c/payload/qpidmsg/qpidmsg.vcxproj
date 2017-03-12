@@ -79,7 +79,6 @@
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>HAVE_QPID_PROTON_VERSION_H;MAMA_DLL;BRIDGE;WIN32;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <WarningLevel>Level3</WarningLevel>
       <CompileAs>CompileAsCpp</CompileAs>
       <ShowIncludes>false</ShowIncludes>
     </ClCompile>

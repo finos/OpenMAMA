@@ -87,7 +87,6 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
       <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -104,7 +103,6 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -129,7 +127,6 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -149,7 +146,6 @@
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
