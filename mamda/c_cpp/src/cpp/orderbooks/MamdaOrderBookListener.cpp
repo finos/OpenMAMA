@@ -1002,48 +1002,68 @@ namespace Wombat
                 if (mConflateDeltas &&
                     !MamdaOrderBookComplexDelta::getSendImmediately())
                 {
-                    if (mConflationTimer)
+                    if (mFlushConflationIntervalFlag)
                     {
-                        if (mFlushConflationIntervalFlag)
+                        /* Detect if this is new top-of-book and get current and new Bid and Ask PriceLevels.
+                           If there's any change, invokeDeltaHandlers. */
+
+                        MamdaOrderBook* book = getOrderBook();
+                        double newBidPrice   = 0.0;
+                        double newAskPrice   = 0.0;
+                        const MamdaOrderBookPriceLevel* bidLevel = NULL;
+                        const MamdaOrderBookPriceLevel* askLevel = NULL;
+
+                        MamdaOrderBook::constBidIterator bidIter = book->bidBegin ();
+                        MamdaOrderBook::constAskIterator askIter = book->askBegin ();
+
+                        if (bidIter != book->bidEnd())
                         {
-                            /* Detect if this is new top-of-book and get current and new Bid and Ask PriceLevels.
-                               If there's any change, invokeDeltaHandlers and destroy the conflation timer. */
+                            bidLevel = *bidIter;
+                        }
+                        if (askIter != book->askEnd())
+                        {
+                            askLevel = *askIter;
+                        }
 
-                            MamdaOrderBook* book = getOrderBook();
-                            double newBidPrice   = 0.0;
-                            double newAskPrice   = 0.0;
-
-                            MamdaOrderBook::constBidIterator bidIter = book->bidBegin ();
-                            MamdaOrderBook::constAskIterator askIter = book->askBegin ();
-
-                            const MamdaOrderBookPriceLevel* bidLevel = *bidIter;
-                            const MamdaOrderBookPriceLevel* askLevel = *askIter;
-
+                        if (bidLevel)
+                        {
                             newBidPrice = bidLevel->getPrice ();
+                        }
+                        if (askLevel)
+                        {
                             newAskPrice = askLevel->getPrice ();
+                        }
 
-                            /* Compare if new values are different compared to old ones. */
-                            if ( fabs (newBidPrice - mBidTopOfBookPrice) > MAMA_PRICE_EPSILON ||
-                                 fabs (newAskPrice - mAskTopOfBookPrice) > MAMA_PRICE_EPSILON )
+                        if ( fabs (newBidPrice - mBidTopOfBookPrice) > MAMA_PRICE_EPSILON ||
+                             fabs (newAskPrice - mAskTopOfBookPrice) > MAMA_PRICE_EPSILON )
+                        {
+                            mBidTopOfBookPrice = newBidPrice;
+                            mAskTopOfBookPrice = newAskPrice;
+
+                            invokeDeltaHandlers (subscription, &msg);
+                            if (mConflationTimer)
                             {
-                                mBidTopOfBookPrice = newBidPrice;
-                                mAskTopOfBookPrice = newAskPrice;
-
-                                invokeDeltaHandlers (subscription, &msg);
                                 mConflationTimer->destroy();
                                 delete (mConflationTimer);
                                 mConflationTimer = NULL;
+                                releaseLock();
+                                return;
                             }
                         }
-
-                        return;
                     }
 
-                    mConflationTimer = new MamaTimer ();
-                    mConflationTimer->create (subscription->getQueue(),
-                                               this,
-                                               mConflationInterval,
-                                               (void*) subscription);
+                    if (!mConflationTimer)
+                    {
+                        mConflationTimer = new MamaTimer ();
+                        mConflationTimer->create (subscription->getQueue(),
+                                                  this,
+                                                  mConflationInterval,
+                                                  (void*) subscription);
+                    }
+                    else
+                    {
+                        return;
+                    }
                 }
                 else
                 {
