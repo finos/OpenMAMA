@@ -74,18 +74,21 @@ class TestCallback : public MamaPublisherCallback
 private:
     int onCreateCount;
     int onErrorCount;
+    int onSuccessCount;
     int onDestroyCount;
 
 public:
 
     int getOnCreateCount() { return onCreateCount; }
     int getOnErrorCount() { return onErrorCount; }
+    int getOnSuccessCount() { return onSuccessCount; }
     int getOnDestroyCount() { return onDestroyCount; }
     
        TestCallback()
        {
         onCreateCount = 0;
         onErrorCount = 0;
+        onSuccessCount = 0;
         onDestroyCount = 0;
        }
 
@@ -103,6 +106,15 @@ public:
            void*             closure)
        {
          onErrorCount++;
+       }
+
+       virtual void onSuccess (
+           MamaPublisher*    publisher,
+           const MamaStatus& status,
+           const char*       info,
+           void*             closure)
+       {
+         ++onSuccessCount;
        }
 
        virtual void onDestroy (
@@ -205,6 +217,7 @@ TEST_F(MamaPublisherTest, PublishWithCallbacks)
 
     ASSERT_EQ(1, testCallback->getOnCreateCount());
     ASSERT_EQ(0, testCallback->getOnErrorCount());
+    ASSERT_EQ(0, testCallback->getOnSuccessCount()); // this should be 1 but no bridge calls onSuccess yet
 
     delete testCallback;
 }
@@ -262,6 +275,7 @@ TEST_F(MamaPublisherTest, DISABLED_PublishWithCallbacksBadSource)
 
     ASSERT_EQ(1, testCallback->getOnCreateCount());
     ASSERT_EQ(numPublishes, testCallback->getOnErrorCount());
+    ASSERT_EQ(0, testCallback->getOnSuccessCount());
 }
 
 /**

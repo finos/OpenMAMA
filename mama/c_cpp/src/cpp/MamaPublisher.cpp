@@ -295,7 +295,8 @@ namespace Wombat
         {
            onPublisherCreate,
            onPublisherError,
-           onPublisherDestroy
+           onPublisherDestroy,
+           onPublisherSuccess
         };
 
         mamaTry (mamaPublisher_createWithCallbacks (&mPublisher,
@@ -480,15 +481,28 @@ namespace Wombat
    }
 
    void MAMACALLTYPE MamaPublisherImpl::onPublisherError (mamaPublisher publisher,
-                                                   mama_status status,
-                                                   const char* info,
-                                                   void*       closure)
+                                                          mama_status   status,
+                                                          const char*   info,
+                                                          void*         closure)
    {
        MamaPublisherImpl* i = (MamaPublisherImpl*) closure;
        if (NULL != i && NULL != i->mCallback)
        {
            MamaStatus cppstatus(status);
            i->mCallback->onError(i->mParent, cppstatus, info, i->mClosure);
+       }
+   }
+
+   void MAMACALLTYPE MamaPublisherImpl::onPublisherSuccess (mamaPublisher publisher,
+                                                            mama_status   status,
+                                                            const char*   info,
+                                                            void*         closure)
+    {
+       MamaPublisherImpl* i = (MamaPublisherImpl*)closure;
+       if (NULL != i && NULL != i->mCallback)
+       {
+           MamaStatus cppstatus(status);
+           i->mCallback->onSuccess(i->mParent, cppstatus, info, i->mClosure);
        }
    }
 

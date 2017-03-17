@@ -47,6 +47,13 @@ namespace Wombat
         /// <summary>
         /// See interface remarks for details
         /// </summary>
+        void onSuccess(MamaPublisher publisher,
+                       MamaStatus.mamaStatus status,
+                       string topic);
+
+        /// <summary>
+        /// See interface remarks for details
+        /// </summary>
         void onDestroy(MamaPublisher publisher);
     }
 }

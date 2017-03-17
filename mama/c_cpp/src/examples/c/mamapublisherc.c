@@ -223,6 +223,21 @@ static void MAMACALLTYPE publisherOnErrorCb (
     }
 }
 
+static void MAMACALLTYPE publisherOnSuccessCb (
+                         mamaPublisher publisher,
+                         mama_status   status,
+                         const char*   info,
+                         void*         closure)
+{
+    if (gQuietLevel < 1)
+    {
+        const char* symbol = "";
+        mamaPublisher_getSymbol(publisher, &symbol);
+        mama_log(MAMA_LOG_LEVEL_FINEST, "publisherOnSuccessCb: %s status=%d/%s info=%s",
+            symbol, status, mamaStatus_stringForStatus(status), info);
+    }
+}
+
 static void createPublisher (void)
 {
     mama_status status;
@@ -233,6 +248,7 @@ static void createPublisher (void)
         mamaPublisherCallbacks_allocate (&cb);
         cb->onCreate = publisherOnCreateCb;
         cb->onError = publisherOnErrorCb;
+        cb->onSuccess = publisherOnSuccessCb;
         cb->onDestroy = publisherOnDestroyCb;
         status = mamaPublisher_createWithCallbacks (&gPublisher,
                                                     gTransport,
