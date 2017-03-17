@@ -45,6 +45,12 @@ namespace Wombat
             const MamaStatus& status,
             const char* info,
             void* closure) = 0;
+
+        virtual void onSuccess(
+            MamaPublisher* publisher,
+            const MamaStatus& status,
+            const char* info,
+            void* closure) = 0;
     };
 
 } // namespace Wombat

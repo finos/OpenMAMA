@@ -48,6 +48,7 @@
 #include "../dictrequester.h"
 #include <sstream>
 
+using namespace std;
 using namespace Wombat;
 
 typedef list<MamdaSubscription*> SubscriptionList;

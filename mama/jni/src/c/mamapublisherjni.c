@@ -75,6 +75,7 @@ static jmethodID    sendCallbackMethod_g               = NULL;
 static jmethodID    publisherCallbackMethoOnCreate_g   = NULL;
 static jmethodID    publisherCallbackMethoOnDestroy_g  = NULL;
 static jmethodID    publisherCallbackMethoOnError_g    = NULL;
+static jmethodID    publisherCallbackMethoOnSuccess_g  = NULL;
 
 extern  JavaVM*     javaVM_g;
 
@@ -122,9 +123,9 @@ static void MAMACALLTYPE publisherOnDestroyCb (mamaPublisher publisher, void* cl
 }
 
 static void MAMACALLTYPE publisherOnErrorCb (mamaPublisher publisher,
-                                mama_status status,
-                                const char*   info,
-                                void* closure)
+                                             mama_status   status,
+                                             const char*   info,
+                                             void*         closure)
 {
     JNIEnv* env = utils_getENV(javaVM_g);
     pubCallbackClosure* closureImpl = (pubCallbackClosure*) closure;
@@ -137,6 +138,24 @@ static void MAMACALLTYPE publisherOnErrorCb (mamaPublisher publisher,
                            status,
                            jmsg);
      (*env)->DeleteLocalRef(env, jmsg);        /* delete this since this thread is not from the JVM */
+}
+
+static void MAMACALLTYPE publisherOnSuccessCb (mamaPublisher publisher,
+                                               mama_status   status,
+                                               const char*   info,
+                                               void*         closure)
+{
+    JNIEnv* env = utils_getENV(javaVM_g);
+    pubCallbackClosure* closureImpl = (pubCallbackClosure*)closure;
+
+    /* Invoke the onSuccess() callback method */
+    jstring jmsg = (*env)->NewStringUTF(env, info);
+    (*env)->CallVoidMethod(env, closureImpl->mClientCb,
+        publisherCallbackMethoOnSuccess_g,
+        closureImpl->mPublisher,
+        status,
+        jmsg);
+    (*env)->DeleteLocalRef(env, jmsg);        /* delete this since this thread is not from the JVM */
 }
 
 /******************************************************************************
@@ -244,6 +263,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1create
         cb->onCreate = publisherOnCreateCb;
         cb->onDestroy = publisherOnDestroyCb;
         cb->onError = publisherOnErrorCb;
+        cb->onSuccess = publisherOnSuccessCb;
 
         status = mamaPublisher_createWithCallbacks(
                     &cPublisher,
@@ -836,6 +856,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher_initIDs
         "onDestroy", "(Lcom/wombat/mama/MamaPublisher;)V");
     publisherCallbackMethoOnError_g = (*env)->GetMethodID(env, publisherCallbackClass,
         "onError", "(Lcom/wombat/mama/MamaPublisher;SLjava/lang/String;)V");
+    publisherCallbackMethoOnSuccess_g = (*env)->GetMethodID(env, publisherCallbackClass,
+        "onSuccess", "(Lcom/wombat/mama/MamaPublisher;SLjava/lang/String;)V");
 
     /* ----------------------------*/
     /* get our send callback class */

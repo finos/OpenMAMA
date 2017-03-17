@@ -160,6 +160,7 @@ _createByIndex (mamaPublisher*              result,
     {
         impl->mUserCallbacks.onCreate = publisherCallbacks->onCreate;
         impl->mUserCallbacks.onError = publisherCallbacks->onError;
+        impl->mUserCallbacks.onSuccess = publisherCallbacks->onSuccess;
         impl->mUserCallbacks.onDestroy = publisherCallbacks->onDestroy;
     }
     impl->mQueue      = queue;
@@ -193,6 +194,7 @@ _createByIndex (mamaPublisher*              result,
     mamaPublisherCallbacks_allocate(&cb);
     cb->onCreate = publisherCallbacks ? impl->mUserCallbacks.onCreate : NULL;
     cb->onError = publisherCallbacks ? impl->mUserCallbacks.onError : NULL;
+    cb->onSuccess = publisherCallbacks ? impl->mUserCallbacks.onSuccess : NULL;
     cb->onDestroy = mamaPublisher_onPublisherDestroyed;        /* intercept onDestroy always to track state */
 
     if (NULL != bridgeImpl->bridgeMamaPublisherSetUserCallbacks)
@@ -751,6 +753,7 @@ mamaPublisher_getUserCallbacks (mamaPublisher publisher,
 
     cb->onCreate = impl->mUserCallbacks.onCreate;
     cb->onError = impl->mUserCallbacks.onError;
+    cb->onSuccess = impl->mUserCallbacks.onSuccess;
     cb->onDestroy = impl->mUserCallbacks.onDestroy;
 
     return MAMA_STATUS_OK;

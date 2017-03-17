@@ -582,6 +582,22 @@ namespace Wombat
             }
         }
 
+        private static void onSuccess(IntPtr nativeHandle, short status, string topic, IntPtr closure)
+        {
+            // Obtain the handle from the closure
+            GCHandle handle = (GCHandle)closure;
+
+            // Extract the impl from the handle
+            MamaPublisher pub = (MamaPublisher)handle.Target;
+
+            // Use the impl to invoke the success callback
+            if (null != pub)
+            {
+                // Invoke the callback
+                pub.mCallback.onSuccess(pub, (MamaStatus.mamaStatus)status, topic);
+            }
+        }
+
         private static void onDestroy(IntPtr nativeHandle, IntPtr closure)
         {
             // Obtain the handle from the closure
@@ -613,11 +629,14 @@ namespace Wombat
             mCallbackDelegates.mCreate    = new OnPublisherCreateDelegate(MamaPublisher.onCreate);
             mCallbackDelegates.mDestroy   = new OnPublisherDestroyDelegate(MamaPublisher.onDestroy);
             mCallbackDelegates.mError     = new OnPublisherErrorDelegate(MamaPublisher.onError);
+            mCallbackDelegates.mSuccess   = new OnPublisherSuccessDelegate(MamaPublisher.onSuccess);
         }
 
         private delegate void OnPublisherCreateDelegate(IntPtr nativeHandle, IntPtr closure);
 
         private delegate void OnPublisherErrorDelegate(IntPtr nativeHandle, short status, string topic, IntPtr closure);
+
+        private delegate void OnPublisherSuccessDelegate(IntPtr nativeHandle, short status, string topic, IntPtr closure);
 
         private delegate void OnPublisherDestroyDelegate(IntPtr nativeHandle, IntPtr closure);
         // =====================================================================================
@@ -630,6 +649,7 @@ namespace Wombat
             {
                 public OnPublisherCreateDelegate mCreate;
                 public OnPublisherErrorDelegate mError;
+                public OnPublisherSuccessDelegate mSuccess;
                 public OnPublisherDestroyDelegate mDestroy;
                 public IntPtr mReserved;
             }
