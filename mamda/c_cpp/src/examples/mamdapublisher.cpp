@@ -44,6 +44,7 @@
 #include <list>
 using std::list;
 
+using namespace std;
 using namespace Wombat;
 
 typedef vector<const char*>      SymbolList;

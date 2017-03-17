@@ -102,9 +102,14 @@ namespace Wombat
                                                      void*         closure);
 
         static void MAMACALLTYPE onPublisherError (mamaPublisher publisher,
-                                                   mama_status status,
-                                                   const char* info,
-                                                   void*       closure);
+                                                   mama_status   status,
+                                                   const char*   info,
+                                                   void*         closure);
+
+        static void MAMACALLTYPE onPublisherSuccess (mamaPublisher publisher,
+                                                     mama_status   status,
+                                                     const char*   info,
+                                                     void*         closure);
 
         mamaPublisher mPublisher;
         MamaPublisherCallback* mCallback;

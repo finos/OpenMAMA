@@ -197,10 +197,17 @@ namespace Wombat
         }
 
         public void onError(MamaPublisher publisher,
-                     MamaStatus.mamaStatus status,
-                     string topic)
+                            MamaStatus.mamaStatus status,
+                            string topic)
         {
             Console.WriteLine("onPublishError: " + topic + " " + status.ToString());
+        }
+
+        public void onSuccess(MamaPublisher publisher,
+                              MamaStatus.mamaStatus status,
+                              string topic)
+        {
+            Console.WriteLine("onPublishSuccess: " + topic + " " + status.ToString());
         }
 
         public void onDestroy(MamaPublisher publisher)

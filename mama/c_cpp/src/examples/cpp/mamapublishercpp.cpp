@@ -123,6 +123,12 @@ public:
         const char* info,
         void* closure);
 
+    void onSuccess (
+        MamaPublisher* publisher,
+        const MamaStatus& status,
+        const char* info,
+        void* closure);
+
 private:
     int msgNumber;
 
@@ -336,6 +342,16 @@ void MamaPublisherSample::onError (
     void* closure)
 {
     mama_log(MAMA_LOG_LEVEL_ERROR, "onPublishError: %s.%s %s %s",
+        publisher->getSource(), publisher->getSymbol(), status.toString(), info);
+}
+
+void MamaPublisherSample::onSuccess(
+    MamaPublisher* publisher,
+    const MamaStatus& status,
+    const char* info,
+    void* closure)
+{
+    mama_log(MAMA_LOG_LEVEL_FINEST, "onPublishSuccess: %s.%s %s %s",
         publisher->getSource(), publisher->getSymbol(), status.toString(), info);
 }
 

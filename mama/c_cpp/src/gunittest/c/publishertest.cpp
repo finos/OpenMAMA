@@ -80,6 +80,7 @@ void MamaPublisherTestC::TearDown(void)
  */
 int pubOnCreateCount = 0;
 int pubOnErrorCount = 0;
+int pubOnSuccessCount = 0;
 int pubOnDestroyCount = 0;
 
 /**
@@ -101,6 +102,15 @@ void pubOnError (mamaPublisher publisher,
                  void*         closure)
 {
     pubOnErrorCount++;
+}
+
+
+void pubOnSuccess (mamaPublisher publisher,
+                   mama_status   status,
+                   const char*   info,
+                   void*         closure)
+{
+    ++pubOnSuccessCount;
 }
 
 /**
@@ -136,6 +146,7 @@ TEST_F (MamaPublisherTestC, CreateDestroy)
    
     pubOnCreateCount = 0;
     pubOnErrorCount = 0;
+    pubOnSuccessCount = 0;
     pubOnDestroyCount = 0;
 
     ASSERT_EQ (MAMA_STATUS_OK,
@@ -186,6 +197,7 @@ TEST_F (MamaPublisherTestC, GetTransportImpl)
 
     ASSERT_EQ (0, pubOnCreateCount);
     ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (0, pubOnSuccessCount);
     ASSERT_EQ (0, pubOnDestroyCount);
 }
 
@@ -204,6 +216,7 @@ TEST_F (MamaPublisherTestC, Send)
 
     pubOnCreateCount = 0;
     pubOnErrorCount = 0;
+    pubOnSuccessCount = 0;
     pubOnDestroyCount = 0;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
@@ -238,6 +251,7 @@ TEST_F (MamaPublisherTestC, Send)
 
     ASSERT_EQ (0, pubOnCreateCount);
     ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (0, pubOnSuccessCount);
     ASSERT_EQ (0, pubOnDestroyCount);
 }
 
@@ -260,10 +274,12 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacks)
 
     pubOnCreateCount = 0;
     pubOnErrorCount = 0;
+    pubOnSuccessCount = 0;
     pubOnDestroyCount = 0;
 
     mamaPublisherCallbacks_allocate(&cb);
     cb->onError = (mama_publisherOnErrorCb) pubOnError;
+    cb->onSuccess = (mama_publisherOnSuccessCb) pubOnSuccess;
     cb->onCreate = (mama_publisherOnCreateCb) pubOnCreate;
     cb->onDestroy = (mama_publisherOnDestroyCb) pubOnDestroy;
 
@@ -308,6 +324,7 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacks)
 
     ASSERT_EQ (1, pubOnCreateCount);
     ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (0, pubOnSuccessCount); // this should be numPublishers but no bridge calls onSuccess yet 
     ASSERT_EQ (1, pubOnDestroyCount);
 
     mamaPublisherCallbacks_deallocate(cb);
@@ -333,10 +350,12 @@ TEST_F (MamaPublisherTestC, DISABLED_EventSendWithCallbacksBadSource)
 
     pubOnCreateCount = 0;
     pubOnErrorCount = 0;
+    pubOnSuccessCount = 0;
     pubOnDestroyCount = 0;
 
     mamaPublisherCallbacks_allocate(&cb);
     cb->onError = (mama_publisherOnErrorCb) pubOnError;
+    cb->onSuccess = (mama_publisherOnSuccessCb) pubOnSuccess;
     cb->onCreate = (mama_publisherOnCreateCb) pubOnCreate;
     cb->onDestroy = (mama_publisherOnDestroyCb) pubOnDestroy;
 
@@ -379,6 +398,7 @@ TEST_F (MamaPublisherTestC, DISABLED_EventSendWithCallbacksBadSource)
 
     ASSERT_EQ (1, pubOnCreateCount);
     ASSERT_EQ (numErrors, pubOnErrorCount);
+    ASSERT_EQ (0, pubOnSuccessCount);
     ASSERT_EQ (1, pubOnDestroyCount);
 
     mamaPublisherCallbacks_deallocate(cb);
@@ -405,12 +425,14 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoErrorCallback)
 
     pubOnCreateCount = 0;
     pubOnErrorCount = 0;
+    pubOnSuccessCount = 0;
     pubOnDestroyCount = 0;
 
     mamaPublisherCallbacks_allocate(&cb);
     cb->onError = NULL;
     cb->onCreate = (mama_publisherOnCreateCb) pubOnCreate;    /* No error callback */
     cb->onDestroy = (mama_publisherOnDestroyCb) pubOnDestroy;
+    cb->onSuccess = (mama_publisherOnSuccessCb) pubOnSuccess;
 
     ASSERT_EQ (MAMA_STATUS_OK, mama_open());
 
@@ -453,6 +475,7 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoErrorCallback)
 
     ASSERT_EQ (1, pubOnCreateCount);
     ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (0, pubOnSuccessCount);
     ASSERT_EQ (1, pubOnDestroyCount);
 
     mamaPublisherCallbacks_deallocate(cb);
@@ -479,10 +502,12 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoCallbacks)
 
     pubOnCreateCount = 0;
     pubOnErrorCount = 0;
+    pubOnSuccessCount = 0;
     pubOnDestroyCount = 0;
 
     mamaPublisherCallbacks_allocate(&cb);
     cb->onError = NULL;
+    cb->onSuccess = NULL;
     cb->onCreate = NULL;
     cb->onDestroy = NULL;
 
@@ -527,6 +552,7 @@ TEST_F (MamaPublisherTestC, EventSendWithCallbacksNoCallbacks)
 
     ASSERT_EQ (0, pubOnCreateCount);
     ASSERT_EQ (0, pubOnErrorCount);
+    ASSERT_EQ (0, pubOnSuccessCount);
     ASSERT_EQ (0, pubOnDestroyCount);
 
     mamaPublisherCallbacks_deallocate(cb);
