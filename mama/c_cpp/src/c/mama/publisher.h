@@ -97,6 +97,12 @@ typedef void (MAMACALLTYPE *mama_publisherOnErrorCb) (
     const char*   info,
     void*         closure);
 
+typedef void (MAMACALLTYPE *mama_publisherOnSuccessCb) (
+    mamaPublisher publisher,
+    mama_status   status,
+    const char*   info,
+    void*         closure);
+
 /**
  * Callbacks for publisher events.
  * If any cb is NULL then the callback will not be made.
@@ -106,6 +112,7 @@ typedef struct mamaPublisherCallbacks
     mama_publisherOnCreateCb     onCreate;
     mama_publisherOnErrorCb      onError;
     mama_publisherOnDestroyCb    onDestroy;
+    mama_publisherOnSuccessCb    onSuccess;
 } mamaPublisherCallbacks;
 
 
