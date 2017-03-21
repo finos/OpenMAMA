@@ -356,7 +356,9 @@ namespace Wombat
         double                      mConflationInterval;
         MamaTimer*                  mConflationTimer;
         MamdaSubscription*          mSubscription;
-
+        bool                        mFlushConflationIntervalFlag;
+        double                      mBidTopOfBookPrice;
+        double                      mAskTopOfBookPrice;
 
         BookMsgFields  mBookMsgFields;
 
@@ -775,6 +777,11 @@ namespace Wombat
         mImpl.mConflationInterval = interval;
     }
 
+    void MamdaOrderBookListener::flushConflationOnTopOfBookChange (bool flush)
+    {
+        mImpl.mFlushConflationIntervalFlag = flush;
+    }
+
     MamdaOrderBookListener::MamdaOrderBookListenerImpl::MamdaOrderBookListenerImpl(
         MamdaOrderBookListener&  listener,
         MamdaOrderBook*          fullBook)
@@ -806,6 +813,9 @@ namespace Wombat
         , mConflationInterval (0.5)
         , mConflationTimer (NULL)
         , mSubscription (NULL)
+        , mFlushConflationIntervalFlag (false)
+        , mBidTopOfBookPrice (0.0)
+        , mAskTopOfBookPrice (0.0)
     {
         if (!mFullBook)
         {
@@ -993,7 +1003,41 @@ namespace Wombat
                     !MamdaOrderBookComplexDelta::getSendImmediately())
                 {
                     if (mConflationTimer)
+                    {
+                        if (mFlushConflationIntervalFlag)
+                        {
+                            /* Detect if this is new top-of-book and get current and new Bid and Ask PriceLevels.
+                               If there's any change, invokeDeltaHandlers and destroy the conflation timer. */
+
+                            MamdaOrderBook* book = getOrderBook();
+                            double newBidPrice   = 0.0;
+                            double newAskPrice   = 0.0;
+
+                            MamdaOrderBook::constBidIterator bidIter = book->bidBegin ();
+                            MamdaOrderBook::constAskIterator askIter = book->askBegin ();
+
+                            const MamdaOrderBookPriceLevel* bidLevel = *bidIter;
+                            const MamdaOrderBookPriceLevel* askLevel = *askIter;
+
+                            newBidPrice = bidLevel->getPrice ();
+                            newAskPrice = askLevel->getPrice ();
+
+                            /* Compare if new values are different compared to old ones. */
+                            if ( fabs (newBidPrice - mBidTopOfBookPrice) > MAMA_PRICE_EPSILON ||
+                                 fabs (newAskPrice - mAskTopOfBookPrice) > MAMA_PRICE_EPSILON )
+                            {
+                                mBidTopOfBookPrice = newBidPrice;
+                                mAskTopOfBookPrice = newAskPrice;
+
+                                invokeDeltaHandlers (subscription, &msg);
+                                mConflationTimer->destroy();
+                                delete (mConflationTimer);
+                                mConflationTimer = NULL;
+                            }
+                        }
+
                         return;
+                    }
 
                     mConflationTimer = new MamaTimer ();
                     mConflationTimer->create (subscription->getQueue(),
