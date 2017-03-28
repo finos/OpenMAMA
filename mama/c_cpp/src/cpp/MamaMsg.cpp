@@ -48,8 +48,6 @@ namespace Wombat
         , mVectorMsg            (NULL)
         , mVectorMsgSize        (0)
         , mVectorMsgAllocSize   (0)
-        , mCvectorMsg           (NULL)
-        , mCvectorMsgAllocSize  (0)
         , mTmpMsg               (NULL)
         , mString               (NULL)
         , mMsgField             (new MamaMsgField)
@@ -63,8 +61,6 @@ namespace Wombat
         , mVectorMsg            (NULL)
         , mVectorMsgSize        (0)
         , mVectorMsgAllocSize   (0)
-        , mCvectorMsg           (NULL)
-        , mCvectorMsgAllocSize  (0)
         , mTmpMsg               (NULL)
         , mString               (NULL)
         , mMsgField             (new MamaMsgField)
@@ -141,19 +137,6 @@ namespace Wombat
     void MamaMsg::clear (void)
     {
         if (mMsg) mamaTry (mamaMsg_clear (mMsg));
-
-        if (mCvectorMsg)
-        {
-            for (size_t i = 0; i < mCvectorMsgAllocSize; ++i)
-            {
-                mamaMsg msg = NULL;
-                msg = mCvectorMsg[i];
-                mamaTry (mamaMsg_clear (msg));
-            }
-            delete [] mCvectorMsg;
-            mCvectorMsg = NULL;
-            mCvectorMsgAllocSize = 0;
-        }
     }
 
     void MamaMsg::setMsg (mamaMsg msg)
@@ -1856,15 +1839,11 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         MamaMsg*          vectorValues[],
         size_t            vectorLen)
     {
-        growCvector (vectorLen);
-
-        for (size_t i = 0; i < vectorLen; i++)
-        {
-            mCvectorMsg[i] = vectorValues[i]->mMsg;
-            vectorValues[i]->setDestroyCMsg (false);
+        std::vector<mamaMsg> cVectorMsg(vectorLen);
+        for (size_t i=0; i < vectorLen; ++i) {
+            cVectorMsg[i] = vectorValues[i]->mMsg;
         }
-
-        mamaTry (mamaMsg_addVectorMsg (mMsg, name, fid, mCvectorMsg, vectorLen));
+        mamaTry (mamaMsg_addVectorMsg (mMsg, name, fid, &cVectorMsg[0], vectorLen));
     }
 
     #define ExpandAddVectorScalar(method,fType,cFunc)                       \
@@ -2337,32 +2316,6 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
         }
     }
 
-    void MamaMsg::growCvector (size_t newSize) const
-    {
-        if (newSize > mCvectorMsgAllocSize)
-        {
-            mamaMsg* newVector = new mamaMsg[newSize];
-            size_t i;
-
-            /* Copy elements from old vector. */
-            for (i = 0; i < mCvectorMsgAllocSize; i++)
-            {
-                newVector[i] = mCvectorMsg[i];
-            }
-
-            for (; i < newSize; i++)
-            {
-                newVector[i] = NULL;
-            }
-
-            if (mCvectorMsg)
-                delete [] mCvectorMsg;
-
-            mCvectorMsg = newVector;
-            mCvectorMsgAllocSize = newSize;
-        }
-    }
-
     void MamaMsg::cleanup ()
     {
         if (mDestroy && mMsg)
@@ -2382,19 +2335,6 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
             delete[] mVectorMsg;
             mVectorMsg = NULL;
             mVectorMsgAllocSize = 0;
-        }
-
-        if (mCvectorMsg)
-        {
-            for (size_t i = 0; i < mCvectorMsgAllocSize; ++i)
-            {
-                mamaMsg msg = mCvectorMsg[i];
-                mamaTry (mamaMsg_destroy (msg));
-            }
-
-            delete[] mCvectorMsg;
-            mCvectorMsg = NULL;
-            mCvectorMsgAllocSize = 0;
         }
 
         if (mTmpMsg)
