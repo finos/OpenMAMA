@@ -214,3 +214,26 @@ TEST_F (MamaMsgTestCPP, IteratorTest)
     }
     ASSERT_EQ(4, counter);
 }
+
+TEST_F (MamaMsgTestCPP, MemoryLeakTest)
+{
+    MamaMsg* msgs[10];
+    MamaMsg* mainMsg = new MamaMsg();
+
+    for (int i=0; i < 1000000; ++i) {
+        for (int j=0; j < 10; ++j) {
+            msgs[j] = new MamaMsg();
+            msgs[j]->create();
+        }
+
+        mainMsg = new MamaMsg();
+        mainMsg->create();
+        mainMsg->addVectorMsg("foo", 1000, msgs, 10);
+        mainMsg->clear();
+        delete mainMsg;
+
+        for (int j=0; j < 10; ++j) {
+            delete msgs[j];
+        }
+    }
+}
