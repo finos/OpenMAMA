@@ -2930,8 +2930,6 @@ namespace Wombat
         mutable MamaMsg**      mVectorMsg;
         mutable size_t         mVectorMsgSize;
         mutable size_t         mVectorMsgAllocSize;
-        mutable mamaMsg*       mCvectorMsg;
-        mutable size_t         mCvectorMsgAllocSize;
         mutable MamaMsg*       mTmpMsg;
         mutable const char*    mString;
         mutable MamaMsgField*  mMsgField;
