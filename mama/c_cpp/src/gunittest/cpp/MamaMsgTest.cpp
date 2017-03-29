@@ -215,25 +215,25 @@ TEST_F (MamaMsgTestCPP, IteratorTest)
     ASSERT_EQ(4, counter);
 }
 
+// This test executes a sequence that was known to leak memory.  There's no
+// ASSERT here to pass/fail, but the intent of the test is to let a valgrind
+// run on the unit test expose a leak if there is one.
 TEST_F (MamaMsgTestCPP, MemoryLeakTest)
 {
     MamaMsg* msgs[10];
     MamaMsg* mainMsg = new MamaMsg();
 
-    for (int i=0; i < 1000000; ++i) {
-        for (int j=0; j < 10; ++j) {
-            msgs[j] = new MamaMsg();
-            msgs[j]->create();
-        }
+    for (int j=0; j < 10; ++j) {
+        msgs[j] = new MamaMsg();
+        msgs[j]->create();
+    }
 
-        mainMsg = new MamaMsg();
-        mainMsg->create();
-        mainMsg->addVectorMsg("foo", 1000, msgs, 10);
-        mainMsg->clear();
-        delete mainMsg;
+    mainMsg->create();
+    mainMsg->addVectorMsg("foo", 1000, msgs, 10);
+    mainMsg->clear();
+    delete mainMsg;
 
-        for (int j=0; j < 10; ++j) {
-            delete msgs[j];
-        }
+    for (int j=0; j < 10; ++j) {
+        delete msgs[j];
     }
 }
