@@ -82,13 +82,18 @@ mama_status mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport
 
 
 mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
-{     
+{
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
     mamaMsg modifableMsg = NULL;
 
     if (impl->mSeqNum != 0)
     {
         mamaMsg_getTempCopy (msg, &modifableMsg);
+
+        mamaMsg_updateU32(modifableMsg, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
+                impl->mSeqNum);
+        impl->mSeqNum++;
+
         switch (mamaMsgType_typeForMsg (modifableMsg))
         {
             case MAMA_MSG_TYPE_REFRESH :
@@ -97,19 +102,6 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
             case MAMA_MSG_TYPE_NOT_PERMISSIONED :
             case MAMA_MSG_TYPE_NOT_FOUND : 
                 break;
-            case MAMA_MSG_TYPE_INITIAL      :
-            case MAMA_MSG_TYPE_BOOK_INITIAL :
-            case MAMA_MSG_TYPE_RECAP        :
-            case MAMA_MSG_TYPE_BOOK_RECAP   :
-                if(MAMA_STATUS_OK !=
-                        mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus))
-                {
-                    mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus);
-                }
-                break;
-
             default:
                 if(MAMA_STATUS_OK !=
                         mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
@@ -118,13 +110,10 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
                    mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
                            MamaFieldMsgStatus.mFid, impl->mStatus);
                 }
-                impl->mSeqNum++;
                 break;
         }
-        mamaMsg_updateU32(modifableMsg, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
-                impl->mSeqNum);
     }
-    
+
     if (impl->mSenderId != 0)
     {
         mamaMsg_getTempCopy (msg, &modifableMsg);
@@ -141,7 +130,7 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
         return (mamaPublisher_send (impl->mPublisher, modifableMsg));
     else
         return (mamaPublisher_send (impl->mPublisher, msg));
-} 
+}
 
 mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
                                        mamaMsg request,
