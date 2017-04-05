@@ -176,7 +176,7 @@ memoryPool_iterate (memoryPool* pool, memoryPoolIteratorCb callback)
     tracker = (memoryNode**)pool->mAllocatedNodes.mNodeBuffer;
     for (i = 0; i < pool->mNumNodesTotal; i++)
     {
-        node = tracker[pool->mNumNodesTotal];
+        node = tracker[i];
         if (NULL != node)
         {
             if (NULL != callback)
