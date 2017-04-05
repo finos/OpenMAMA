@@ -1483,7 +1483,13 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                 {
                     tmpNode = memoryPool_getNode (impl->mQpidMsgPool,
                                                   sizeof(qpidMsgNode));
-                    tmpMsgNode = (qpidMsgNode*) tmpNode;
+                    tmpMsgNode = (qpidMsgNode*) tmpNode->mNodeBuffer;
+
+                    /* Create the message if it has not already been initialized */
+                    if (NULL == tmpMsgNode->mMsg)
+                    {
+                        tmpMsgNode->mMsg = pn_message ();
+                    }
 
                     /*
                      * Copy the original msg node to a new one. Note that
@@ -1502,7 +1508,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                     qpidBridgeMamaQueue_enqueueEvent (
                             (queueBridge) subscription->mQpidQueue,
                             qpidBridgeMamaTransportImpl_queueCallback,
-                            tmpMsgNode);
+                            tmpNode);
                 }
                 /*
                  * If this is the last (or only) element and all copies are
