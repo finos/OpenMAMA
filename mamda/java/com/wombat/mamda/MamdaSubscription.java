@@ -468,7 +468,7 @@ public class MamdaSubscription
 
     private class MamdaSubscriptionCallback implements MamaSubscriptionCallback
     {
-        MamdaSubscription  mSubscription = null;
+        private final MamdaSubscription mSubscription = null;
 
         public MamdaSubscriptionCallback (MamdaSubscription  subscription)
         {
@@ -483,12 +483,11 @@ public class MamdaSubscription
             mLatestMsg      = msg;
             short mywombatStatus  = 17;
             int myplatformError  = 0;
-            Exception  myException     = new Exception();
 
             switch (msgType)
             {
                 case MamaMsgType.TYPE_DELETE:
-                    onError (subscription, mywombatStatus, myplatformError, "Message Type Delete", myException);
+                    onError (subscription, mywombatStatus, myplatformError, "Message Type Delete", new Exception());
                     return;
                 case MamaMsgType.TYPE_EXPIRE:
                     subscription.destroy();
@@ -515,12 +514,12 @@ public class MamdaSubscription
                 return;
             }
 
+            if (mSubscription == null)
+            {
+                return;
+            }
             for (int i = 0; i < size; ++i)
             {
-                if(mSubscription == null)
-                {
-                    return;
-                }
                 if (mValid)
                 {
                     MamdaMsgListener listener = (MamdaMsgListener)listeners.elementAt(i);
