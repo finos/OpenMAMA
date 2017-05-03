@@ -127,11 +127,6 @@ if not env.GetOption('help'):
 
     buildWrapper.build(env, modules)
 
-    if env['package'] == True:
-        env.Tar('%s/%s' % (Dir( env['blddir'] ).abspath,env['tarball']),'$prefix')
-        env.Command( '$prefix/openmama.tgz', [], generate_source_tarball )
-        Clean( '.', ['openmama.tgz'] )
-
     #if env['with_docs'] == True:
     #    env.Command( '$prefix/VERSIONS', [], write_versions_file )
     #    env.Command( '$prefix/RELEASE_NOTES/',[], generate_release_notes )
