@@ -29,6 +29,8 @@
 #include <assert.h>
 #include <time.h>
 
+#include <apr_time.h>
+
 #include "datetimeimpl.h"
 #include "mamaStrUtils.h"
 
@@ -37,10 +39,6 @@
                                  /* YYYY-mm-dd HH:MM:SS.mmmmmm */
 #define MAX_DATE_TIME_STR_LEN (10 + 1 + 15 + 1)
 #define SECONDS_IN_A_DAY      (24 * 60 * 60)
-
-static void
-utcTm (struct tm*   result,
-       time_t       secSinceEpoch);
 
 static time_t
 makeTime (int           year,
@@ -1060,6 +1058,9 @@ mamaDateTime_getStructTmWithTz(const mamaDateTime dateTime,
                                struct tm*         result,
                                const mamaTimeZone tz)
 {
+    apr_time_t       time_apr;
+    apr_time_exp_t   time_apr_exploded;
+
     if (!dateTime || !result)
         return MAMA_STATUS_INVALID_ARG;
 
@@ -1067,12 +1068,26 @@ mamaDateTime_getStructTmWithTz(const mamaDateTime dateTime,
     {
         mama_i32_t  offset   = 0;
         mamaTimeZone_getOffset (tz, &offset);
-        utcTm (result, (time_t)mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime) + offset);
+        // Convert time into an Apache APR exploded time
+        apr_time_ansi_put(&time_apr, (time_t)mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime));
+        apr_time_exp_tz(&time_apr_exploded, time_apr, (apr_int32_t)offset);
     }
     else
     {
-         utcTm (result, (time_t)mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime));
+        // Convert time into an Apache APR exploded time
+        apr_time_ansi_put(&time_apr, (time_t)mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime));
+        apr_time_exp_gmt(&time_apr_exploded, time_apr);
     }
+
+    result->tm_sec = time_apr_exploded.tm_sec;
+    result->tm_min = time_apr_exploded.tm_min;
+    result->tm_hour = time_apr_exploded.tm_hour;
+    result->tm_mday = time_apr_exploded.tm_mday;
+    result->tm_mon = time_apr_exploded.tm_mon;
+    result->tm_year = time_apr_exploded.tm_year;
+    result->tm_wday = time_apr_exploded.tm_wday;
+    result->tm_yday = time_apr_exploded.tm_yday;
+    result->tm_isdst = time_apr_exploded.tm_isdst;
 
     return MAMA_STATUS_OK;
 }
@@ -1082,26 +1097,30 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
                                       mama_size_t        bufMaxLen)
 {
     time_t           seconds;
-    struct tm        tmValue;
-    mama_datetime_t* aDateTime   = (mama_datetime_t*)dateTime;
+    apr_time_t       time_apr;
+    apr_time_exp_t   time_apr_exploded;
+    mama_datetime_t* aDateTime           = (mama_datetime_t*)dateTime;
+    size_t           bytesUsed           = 0;
 
     if (!aDateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
 
     seconds = (time_t) mamaDateTimeImpl_getSeconds(aDateTime);
-    utcTm (&tmValue, seconds);
+    // Convert time into an Apache APR exploded time
+    apr_time_ansi_put(&time_apr, seconds);
+    apr_time_exp_gmt(&time_apr_exploded, time_apr);
+
     buf[0] = '\0';
     if (mamaDateTimeImpl_getHasTime (aDateTime))
     {
-        size_t    bytesUsed = 0;
         size_t    precision = 0;
         if (mamaDateTimeImpl_getHasDate(aDateTime))
         {
-            bytesUsed = strftime (buf, bufMaxLen, "%Y-%m-%d %H:%M:%S", &tmValue);
+            apr_strftime(buf, &bytesUsed, bufMaxLen, "%Y-%m-%d %H:%M:%S", &time_apr_exploded);
         }
         else
         {
-            bytesUsed = strftime (buf, bufMaxLen, "%H:%M:%S", &tmValue);
+            apr_strftime(buf, &bytesUsed, bufMaxLen, "%H:%M:%S", &time_apr_exploded);
         }
         if (bytesUsed > 0)
         {
@@ -1130,7 +1149,7 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
     }
     else if (mamaDateTimeImpl_getHasDate(aDateTime))
     {
-        strftime (buf, bufMaxLen, "%Y-%m-%d", &tmValue);
+        apr_strftime(buf, &bytesUsed, bufMaxLen, "%Y-%m-%d", &time_apr_exploded);
     }
     return MAMA_STATUS_OK;
 }
@@ -1139,20 +1158,24 @@ mama_status mamaDateTime_getTimeAsString (const mamaDateTime dateTime,
                                           char*              buf,
                                           mama_size_t        bufMaxLen)
 {
-    time_t    seconds;
-    struct tm tmValue;
-    size_t    bytesUsed;
-    size_t    precision;
+    time_t           seconds;
+    size_t           bytesUsed;
+    size_t           precision;
+    apr_time_t       time_apr;
+    apr_time_exp_t   time_apr_exploded;
 
     if (!dateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
 
     seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
-    utcTm (&tmValue, seconds);
+    // Convert time into an Apache APR exploded time
+    apr_time_ansi_put(&time_apr, seconds);
+    apr_time_exp_gmt(&time_apr_exploded, time_apr);
+
     buf[0] = '\0';
     if (mamaDateTimeImpl_getHasTime((mama_datetime_t*)dateTime))
     {
-        bytesUsed = strftime (buf, bufMaxLen, "%H:%M:%S", &tmValue);
+        apr_strftime(buf, &bytesUsed, bufMaxLen, "%H:%M:%S", &time_apr_exploded);
         if (bytesUsed > 0)
         {
             buf       += bytesUsed;
@@ -1179,18 +1202,23 @@ mama_status mamaDateTime_getDateAsString (const mamaDateTime dateTime,
                                           char*              buf,
                                           mama_size_t        bufMaxLen)
 {
-    time_t    seconds;
-    struct tm tmValue;
+    time_t           seconds;
+    size_t           bytesUsed;
+    apr_time_t       time_apr;
+    apr_time_exp_t   time_apr_exploded;
 
     if (!dateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
 
     seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
-    utcTm (&tmValue, seconds);
+    // Convert time into an Apache APR exploded time
+    apr_time_ansi_put(&time_apr, seconds);
+    apr_time_exp_gmt(&time_apr_exploded, time_apr);
+
     buf[0] = '\0';
     if (mamaDateTimeImpl_getHasDate((mama_datetime_t*)dateTime))
     {
-        strftime (buf, bufMaxLen, "%Y-%m-%d", &tmValue);
+        apr_strftime(buf, &bytesUsed, bufMaxLen, "%Y-%m-%d", &time_apr_exploded);
     }
     return MAMA_STATUS_OK;
 }
@@ -1233,11 +1261,12 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
                                          const char*        fmt,
                                          const mamaTimeZone tz)
 {
-    struct tm        tmTime;
     const char*      fmtChar  = NULL;
     mama_size_t      resLen   = 0;
     mama_i32_t       offset   = 0;
     mama_datetime_t* impl     = (mama_datetime_t*)dateTime;
+    apr_time_t       time_apr;
+    apr_time_exp_t   time_apr_exploded;
 
     if (!dateTime || !result)
         return MAMA_STATUS_INVALID_ARG;
@@ -1251,11 +1280,15 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
     {
         mamaDateTime  tmpDateTime = (mama_datetime_t*)dateTime;
         mamaDateTime_addWholeSeconds (tmpDateTime, offset);
-        utcTm (&tmTime, (time_t)impl->mSeconds);
+        // Convert time into an Apache APR exploded time
+        apr_time_ansi_put(&time_apr, (time_t)impl->mSeconds);
+        apr_time_exp_tz(&time_apr_exploded, time_apr, (apr_int32_t)offset);
     }
     else
     {
-        utcTm (&tmTime, (time_t)impl->mSeconds);
+        // Convert time into an Apache APR exploded time
+        apr_time_ansi_put(&time_apr, (time_t)impl->mSeconds);
+        apr_time_exp_gmt(&time_apr_exploded, time_apr);
     }
 
     for (fmtChar = fmt;
@@ -1281,7 +1314,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t year = tmTime.tm_year+1900;
+                mama_u32_t year = time_apr_exploded.tm_year+1900;
                 printDigit (result, &resLen, maxLen, year/1000); year %= 1000;
                 printDigit (result, &resLen, maxLen, year/100);  year %= 100;
                 printDigit (result, &resLen, maxLen, year/10);   year %= 10;
@@ -1299,7 +1332,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t year = tmTime.tm_year % 100;
+                mama_u32_t year = time_apr_exploded.tm_year % 100;
                 printDigit (result, &resLen, maxLen, year/10);   year %= 10;
                 printDigit (result, &resLen, maxLen, year);
             }
@@ -1315,7 +1348,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t month = tmTime.tm_mon+1;
+                mama_u32_t month = time_apr_exploded.tm_mon+1;
                 printDigit (result, &resLen, maxLen, month/10);  month %= 10;
                 printDigit (result, &resLen, maxLen, month);
             }
@@ -1331,7 +1364,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t mday = tmTime.tm_mday;
+                mama_u32_t mday = time_apr_exploded.tm_mday;
                 printDigit (result, &resLen, maxLen, mday/10);   mday %= 10;
                 printDigit (result, &resLen, maxLen, mday);
             }
@@ -1347,9 +1380,9 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t year   = tmTime.tm_year + 1900;
-                mama_u32_t month  = tmTime.tm_mon  + 1;
-                mama_u32_t mday   = tmTime.tm_mday;
+                mama_u32_t year   = time_apr_exploded.tm_year + 1900;
+                mama_u32_t month  = time_apr_exploded.tm_mon  + 1;
+                mama_u32_t mday   = time_apr_exploded.tm_mday;
                 printDigit (result, &resLen, maxLen, year/1000); year %= 1000;
                 printDigit (result, &resLen, maxLen, year/100);  year %= 100;
                 printDigit (result, &resLen, maxLen, year/10);   year %= 10;
@@ -1373,9 +1406,9 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t hour   = tmTime.tm_hour;
-                mama_u32_t minute = tmTime.tm_min;
-                mama_u32_t second = tmTime.tm_sec;
+                mama_u32_t hour   = time_apr_exploded.tm_hour;
+                mama_u32_t minute = time_apr_exploded.tm_min;
+                mama_u32_t second = time_apr_exploded.tm_sec;
                 printDigit (result, &resLen, maxLen, hour/10);   hour %= 10;
                 printDigit (result, &resLen, maxLen, hour);
                 printChar  (result, &resLen, maxLen, ':');
@@ -1397,9 +1430,9 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t year   = tmTime.tm_year;
-                mama_u32_t month  = tmTime.tm_mon  + 1;
-                mama_u32_t mday   = tmTime.tm_mday;
+                mama_u32_t year   = time_apr_exploded.tm_year;
+                mama_u32_t month  = time_apr_exploded.tm_mon  + 1;
+                mama_u32_t mday   = time_apr_exploded.tm_mday;
                 printDigit (result, &resLen, maxLen, month/10);  month %= 10;
                 printDigit (result, &resLen, maxLen, month);
                 printChar  (result, &resLen, maxLen, '/');
@@ -1421,7 +1454,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t hour = tmTime.tm_hour;
+                mama_u32_t hour = time_apr_exploded.tm_hour;
                 printDigit (result, &resLen, maxLen, hour/10);   hour %= 10;
                 printDigit (result, &resLen, maxLen, hour);
             }
@@ -1437,7 +1470,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t minute = tmTime.tm_min;
+                mama_u32_t minute = time_apr_exploded.tm_min;
                 printDigit (result, &resLen, maxLen, minute/10); minute %= 10;
                 printDigit (result, &resLen, maxLen, minute);
             }
@@ -1453,7 +1486,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                mama_u32_t second = tmTime.tm_sec;
+                mama_u32_t second = time_apr_exploded.tm_sec;
                 printDigit (result, &resLen, maxLen, second/10); second %= 10;
                 printDigit (result, &resLen, maxLen, second);
             }
@@ -1533,7 +1566,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                const char* month = gMonthsFull[tmTime.tm_mon];
+                const char* month = gMonthsFull[time_apr_exploded.tm_mon];
                 printString (result, &resLen, maxLen, month);
             }
             ++fmtChar; /* skip the extra character in the fmt */
@@ -1548,7 +1581,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                const char* month = gMonthsAbbrev[tmTime.tm_mon];
+                const char* month = gMonthsAbbrev[time_apr_exploded.tm_mon];
                 printString (result, &resLen, maxLen, month);
             }
             ++fmtChar; /* skip the extra character in the fmt */
@@ -1563,7 +1596,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
             }
             else
             {
-                const char* month = gMonthsAbbrevAllCap[tmTime.tm_mon];
+                const char* month = gMonthsAbbrevAllCap[time_apr_exploded.tm_mon];
                 printString (result, &resLen, maxLen, month);
             }
             ++fmtChar; /* skip the extra character in the fmt */
@@ -1794,14 +1827,6 @@ time_t makeTime (
     timeInfo.tm_isdst = 0;
 
     return wtimegm (&timeInfo);
-}
-
-void utcTm (
-    struct tm*     result,
-    time_t         secSinceEpoch)
-{
-    const time_t tmp = secSinceEpoch;
-    gmtime_r (&tmp, result);
 }
 
 static void

@@ -1926,3 +1926,291 @@ TEST_F (MamaDateTimeTestC, TestVeryLargeValues)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
+TEST_F (MamaDateTimeTestC, TestGetAsStringLargeExtendedNegativeValues)
+{
+    struct timespec         tVal1, tVal2;
+    char                    stringBuffer[50];
+    mamaDateTime            t            = NULL;
+    const char*             expectedDate = "1969-12-02 00:00:00";
+
+    /* The following timeval represents the time - "1969-12-02 00:00:00" */
+    tVal1.tv_sec = -2592000;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedDate, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetAsStringLargeExtendedValues)
+{
+    struct timespec         tVal1, tVal2;
+    char                    stringBuffer[50];
+    mamaDateTime            t            = NULL;
+    const char*             expectedDate = "3001-01-01 00:00:00";
+
+    /* The following timeval represents the time - "3001-01-01 00:00:00" */
+    tVal1.tv_sec = 32535216000;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getAsString (t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedDate, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetTimeAsStringLargeExtendedNegativeValues)
+{
+    struct timespec         tVal1, tVal2;
+    char                    stringBuffer[50];
+    mamaDateTime            t            = NULL;
+    const char*             expectedTime = "00:00:00";
+
+    /* The following timeval represents the time - "1969-12-02 00:00:00" */
+    tVal1.tv_sec = -2592000;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getTimeAsString(t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedTime, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetTimeAsStringLargeExtendedValues)
+{
+    struct timespec         tVal1, tVal2;
+    char                    stringBuffer[50];
+    mamaDateTime            t            = NULL;
+    const char*             expectedTime = "00:00:00";
+
+    /* The following timeval represents the time - "3001-01-01 00:00:00" */
+    tVal1.tv_sec = 32535216000;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getTimeAsString(t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedTime, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetDateAsStringLargeExtendedNegativeValues)
+{
+    struct timespec         tVal1, tVal2;
+    char                    stringBuffer[50];
+    mamaDateTime            t            = NULL;
+    const char*             expectedDate = "1969-12-02";
+
+    /* The following timeval represents the time - "1969-12-02 00:00:00" */
+    tVal1.tv_sec = -2592000;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getDateAsString(t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedDate, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+
+TEST_F (MamaDateTimeTestC, TestGetDateAsStringLargeExtendedValues)
+{
+    struct timespec         tVal1, tVal2;
+    char                    stringBuffer[50];
+    mamaDateTime            t            = NULL;
+    const char*             expectedDate = "3001-01-01";
+
+    /* The following timeval represents the time - "3001-01-01 00:00:00" */
+    tVal1.tv_sec = 32535216000;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getDateAsString(t, stringBuffer, 50) );
+    EXPECT_STREQ (expectedDate, stringBuffer);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F (MamaDateTimeTestC, TestGetAsFormattedStringWithTzLargeExtendedNegativeValues)
+{
+    struct timespec  tVal1, tVal2;
+    mamaDateTime     t                     = NULL;
+    char             stringDate[100]       = "";
+    char             completeDateTime[100] = "";
+
+    /* The following timeval represents the time - "1969-12-02 00:00:00" */
+    tVal1.tv_sec = -2592000;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    /* Get the string representation of the data */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_getAsFormattedString (t, stringDate, 100, "%Y-%m-%d %H:%M:%S"));
+
+    /* Get the string representation of the data */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_getAsFormattedStringWithTz (t, completeDateTime, 100, "%Y-%m-%d %H:%M:%S", mamaTimeZone_utc()));
+
+    EXPECT_STREQ ( stringDate, completeDateTime );
+
+    /* Destroy the date */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_destroy (t));
+}
+
+TEST_F (MamaDateTimeTestC, TestGetAsFormattedStringWithTzLargeExtendedValues)
+{
+    struct timespec  tVal1, tVal2;
+    mamaDateTime     t                     = NULL;
+    char             stringDate[100]       = "";
+    char             completeDateTime[100] = "";
+
+    /* The following timeval represents the time - "3001-01-01 00:00:00" */
+    tVal1.tv_sec = 32535216000;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    /* Get the string representation of the data */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_getAsFormattedString (t, stringDate, 100, "%Y-%m-%d %H:%M:%S"));
+
+    /* Get the string representation of the data */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_getAsFormattedStringWithTz (t, completeDateTime, 100, "%Y-%m-%d %H:%M:%S", mamaTimeZone_utc()));
+
+    EXPECT_STREQ ( stringDate, completeDateTime );
+
+    /* Destroy the date */
+    EXPECT_EQ (MAMA_STATUS_OK,
+               mamaDateTime_destroy (t));
+}
+
+TEST_F (MamaDateTimeTestC, TestGetStructTmWithTzLargeExtendedNegativeValues)
+{
+    struct timespec  tVal1, tVal2;
+    struct tm 	     tM;
+    mamaDateTime     t 	= NULL;
+    mamaTimeZone     tz = mamaTimeZone_utc();
+
+    int sec = 21, min = 3, hour = 10, mday = 2, mon = 11, year = 69, wday = 2, yday = 335;
+
+    /* The following timeval represents the time - "1969-12-02 10:03:21" */
+    tVal1.tv_sec = -2555799;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTmWithTz(t, &tM, tz) );
+    EXPECT_EQ ( sec, tM.tm_sec );
+    EXPECT_EQ ( min, tM.tm_min );
+    EXPECT_EQ ( hour, tM.tm_hour );
+    EXPECT_EQ ( mday, tM.tm_mday );
+    EXPECT_EQ ( mon, tM.tm_mon );
+    EXPECT_EQ ( year, tM.tm_year );
+    EXPECT_EQ ( wday, tM.tm_wday );
+    EXPECT_EQ ( yday, tM.tm_yday );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+
+TEST_F (MamaDateTimeTestC, TestGetStructTmWithTzLargeExtendedValues)
+{
+    struct timespec  tVal1, tVal2;
+    struct tm 	     tM;
+    mamaDateTime     t 	= NULL;
+    mamaTimeZone     tz = mamaTimeZone_utc();
+
+    int sec = 21, min = 3, hour = 10, mday = 1, mon = 0, year = 1101, wday = 4, yday = 0;
+
+    /* The following timeval represents the time - "3001-01-01 10:03:21" */
+    tVal1.tv_sec = 32535252201;
+    tVal1.tv_nsec = 0;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setFromStructTimeSpec(t, &tVal1) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeSpec(t, &tVal2) );
+    EXPECT_EQ ( tVal1.tv_sec, tVal2.tv_sec );
+    EXPECT_EQ ( tVal1.tv_nsec, tVal2.tv_nsec );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTmWithTz(t, &tM, tz) );
+    EXPECT_EQ ( sec, tM.tm_sec );
+    EXPECT_EQ ( min, tM.tm_min );
+    EXPECT_EQ ( hour, tM.tm_hour );
+    EXPECT_EQ ( mday, tM.tm_mday );
+    EXPECT_EQ ( mon, tM.tm_mon );
+    EXPECT_EQ ( year, tM.tm_year );
+    EXPECT_EQ ( wday, tM.tm_wday );
+    EXPECT_EQ ( yday, tM.tm_yday );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
