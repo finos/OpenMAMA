@@ -72,13 +72,9 @@ InstFieldCacheInclude = Split("""
 
 includePath = []
 includePath.append('$apr_home/include')
-includePath.append('$apr_home/include/apr-1')
 includePath.append('#mama/c_cpp/src/c')
 includePath.append('$prefix/include')
 includePath.append('#common/c_cpp/src/c')
-
-aprLibName = "libapr-1"
-aprInstLib = '%s/lib/%s.so' % (env['apr_home'], aprLibName)
 
 libPath = []
 libPath.append('$libdir')
@@ -217,7 +213,6 @@ lib.append(env.SharedLibrary('.libs/libmama', shared_objects))
 lib.append(env.StaticLibrary('.libs/libmama', [StaticLibs['libmama'], StaticLibs['libwombatcommon'] ]))
 
 Alias('install', env.Install('$libdir', lib))
-Alias('install', env.Install('$libdir', aprInstLib))
 Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))
 Alias('install', env.Install('$prefix/include/mama/conflation',
       InstConflInclude))

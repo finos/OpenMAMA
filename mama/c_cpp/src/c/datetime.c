@@ -29,7 +29,7 @@
 #include <assert.h>
 #include <time.h>
 
-#include <apr_time.h>
+#include <apr-1/apr_time.h>
 
 #include "datetimeimpl.h"
 #include "mamaStrUtils.h"
