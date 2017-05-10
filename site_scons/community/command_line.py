@@ -76,7 +76,7 @@ def get_command_line_opts( host, products, VERSIONS ):
             EnumVariable( 'compiler', 'Compiler to use for building OpenMAMA',
                          'default', allowed_values=('default', 'gcc', 'clang', 'clang-analyzer')),
             PathVariable('apr_home', 'Path to Apache APR Libraries',
-                '/usr/local/apr', PathVariable.PathIsDir),
+                '/usr', PathVariable.PathIsDir),
         )
 
     if host['os'] == 'Darwin':
@@ -94,7 +94,7 @@ def get_command_line_opts( host, products, VERSIONS ):
             PathVariable('libevent_home', 'Path to libevent Libraries',
                           '/usr/', PathVariable.PathAccept),
             PathVariable('apr_home', 'Path to Apache APR Libraries',
-                '/usr/local/apr', PathVariable.PathIsDir),
+                '/usr', PathVariable.PathIsDir),
             )
 
     return opts

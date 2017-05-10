@@ -148,13 +148,6 @@ class Linux:
                 print 'GTest Home not found: ' + env['gtest_home']
                 Exit(0)
 
-        if env['apr_home'] == True:
-            if not env.has_key('apr_home') or not env['apr_home']:
-                env['apr_home'] = "/usr/local/apr"
-            if not Dir(env['apr_home']).exists():
-                print 'Apache APR Home not found: ' + env['apr_home']
-                Exit(0)
-
     def build(self, env, modules):
         for m in modules:
             vdir = os.path.join('$blddir', m)
