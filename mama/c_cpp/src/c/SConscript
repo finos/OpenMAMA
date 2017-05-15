@@ -88,11 +88,11 @@ libPath.append(os.path.join(env['apr_home'], 'lib64'))
 if env['host']['os'] == 'Darwin':
     env.Append(LIBS=['m', 'wombatcommon', 'dl', 'pthread'],
                LIBPATH=libPath, CPPPATH=[includePath], CCFLAGS=apr_ccflags,
-               LINKFLAGS=apr_link_ld)
+               SHLINKFLAGS=apr_link_ld)
 else:
     env.Append(LIBS=['m', 'rt', 'wombatcommon', 'dl', 'pthread'],
                LIBPATH=libPath, CPPPATH=[includePath], CCFLAGS=apr_ccflags,
-               LINKFLAGS=apr_link_ld)
+               SHLINKFLAGS=apr_link_ld)
 
 libmama_sources = \
     Split("""
