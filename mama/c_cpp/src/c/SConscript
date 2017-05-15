@@ -70,8 +70,12 @@ InstFieldCacheInclude = Split("""
     mama/fieldcache/fieldcachetypes.h
 """)
 
+apr_include_dir = os.popen(env.subst('apr-1-config --includedir')).read().strip()
+apr_lib = os.popen(env.subst('apr-1-config --link-ld')).read().strip()
+apr_ccflags = os.popen(env.subst('apr-1-config --cflags --cppflags')).read().strip()
+
 includePath = []
-includePath.append('$apr_home/include')
+includePath.append(apr_include_dir)
 includePath.append('#mama/c_cpp/src/c')
 includePath.append('$prefix/include')
 includePath.append('#common/c_cpp/src/c')
@@ -82,11 +86,11 @@ libPath.append(os.path.join(env['apr_home'], 'lib'))
 libPath.append(os.path.join(env['apr_home'], 'lib64'))
 
 if env['host']['os'] == 'Darwin':
-    env.Append(LIBS=['m', 'wombatcommon', 'dl', 'pthread', 'apr-1'],
-               LIBPATH=libPath, CPPPATH=[includePath])
+    env.Append(LIBS=['m', 'wombatcommon', 'dl', 'pthread', apr_lib],
+               LIBPATH=libPath, CPPPATH=[includePath], CCFLAGS=apr_ccflags)
 else:
-    env.Append(LIBS=['m', 'rt', 'wombatcommon', 'dl', 'pthread', 'apr-1'],
-               LIBPATH=libPath, CPPPATH=[includePath])
+    env.Append(LIBS=['m', 'rt', 'wombatcommon', 'dl', 'pthread', apr_lib],
+               LIBPATH=libPath, CPPPATH=[includePath], CCFLAGS=apr_ccflags)
 
 libmama_sources = \
     Split("""
