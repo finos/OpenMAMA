@@ -70,9 +70,9 @@ InstFieldCacheInclude = Split("""
     mama/fieldcache/fieldcachetypes.h
 """)
 
-apr_include_dir = os.popen(env.subst('apr-1-config --includedir')).read().strip()
-apr_link_ld = os.popen(env.subst('apr-1-config --link-ld')).read().strip()
-apr_ccflags = os.popen(env.subst('apr-1-config --cflags --cppflags')).read().strip()
+apr_include_dir = os.popen(env.subst('$apr_home/bin/apr-1-config --includedir')).read().strip()
+apr_link_ld = os.popen(env.subst('$apr_home/bin/apr-1-config --link-ld')).read().strip()
+apr_ccflags = os.popen(env.subst('$apr_home/bin/apr-1-config --cflags --cppflags')).read().strip()
 
 includePath = []
 includePath.append(apr_include_dir)
@@ -86,11 +86,11 @@ libPath.append(os.path.join(env['apr_home'], 'lib'))
 libPath.append(os.path.join(env['apr_home'], 'lib64'))
 
 if env['host']['os'] == 'Darwin':
-    env.Append(LIBS=['m', 'wombatcommon', 'dl', 'pthread'],
+    env.Append(LIBS=['m', 'wombatcommon', 'dl', 'pthread', 'apr-1'],
                LIBPATH=libPath, CPPPATH=[includePath], CCFLAGS=apr_ccflags,
                SHLINKFLAGS=apr_link_ld)
 else:
-    env.Append(LIBS=['m', 'rt', 'wombatcommon', 'dl', 'pthread'],
+    env.Append(LIBS=['m', 'rt', 'wombatcommon', 'dl', 'pthread', 'apr-1'],
                LIBPATH=libPath, CPPPATH=[includePath], CCFLAGS=apr_ccflags,
                SHLINKFLAGS=apr_link_ld)
 
