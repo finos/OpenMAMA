@@ -167,6 +167,7 @@ MOCK_ROOT=/var/lib/mock
 MOCK_CFG_RELEASE=epel-6-x86_64
 # Extracts all mock configs
 ALL_MOCK_CFG=$(echo /etc/mock/epel-{6,7}*86* /etc/mock/fedora-[0-9]*86_64* | sed  -e "s#[^ ]*/##g" -e "s#.cfg##g")
+LOG_STEPS=$BUILD_DIR/steps.log
 
 # If this is a snapshot build and no build number has been specified
 if [ "$VERSION" = "snapshot" ] && [ $BUILD_NUMBER -eq 1 ]; then

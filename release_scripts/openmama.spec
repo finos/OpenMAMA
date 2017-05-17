@@ -8,8 +8,8 @@ Group:      Development/Libraries
 Source:     %{name}-%{version}.tgz
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: libtool autoconf automake ant libuuid-devel flex doxygen qpid-proton-c-devel scons libevent-devel ncurses-devel
-Requires: libuuid qpid-proton-c libevent ncurses
+BuildRequires: libtool autoconf automake ant libuuid-devel flex doxygen qpid-proton-c-devel scons libevent-devel ncurses-devel apr-devel
+Requires: libuuid qpid-proton-c libevent ncurses apr
 
 %if 0%{?fedora}
 BuildRequires: java-1.8.0-openjdk-devel

@@ -468,7 +468,7 @@ public class MamdaSubscription
 
     private class MamdaSubscriptionCallback implements MamaSubscriptionCallback
     {
-        private final MamdaSubscription mSubscription = null;
+        private MamdaSubscription mSubscription = null;
 
         public MamdaSubscriptionCallback (MamdaSubscription  subscription)
         {
