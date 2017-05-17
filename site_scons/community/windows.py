@@ -82,6 +82,15 @@ class Windows:
                 print 'ERROR: Qpid Home (%s) must exist' % env['qpid_home']
                 Exit(1)
 
+        if optsEnv.has_key('apr_home'):
+            env['apr_home'] = optsEnv['apr_home']
+        else:
+            env['apr_home'] = "%s/APR" % programfiles
+
+        if not posixpath.exists(env['apr_home']):
+            print 'ERROR: Apache APR Home (%s) must exist' % env['apr_home']
+            Exit(1)
+
         if optsEnv['with_unittest'] == True:
             if optsEnv.has_key('gtest_home'):
                 env['gtest_home'] = optsEnv['gtest_home']
@@ -244,7 +253,6 @@ class Windows:
             env['bit_suffix'] = '_x64'
             env['win_arch_path'] = 'x64'
         else:
-            env.Append( CPPDEFINES = ['_USE_32BIT_TIME_T'] )
             env['bit_suffix'] = ''
             env['win_arch_path'] = ''
 
