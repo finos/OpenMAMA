@@ -188,7 +188,7 @@ mamaDateTime_setEpochTimeF64(mamaDateTime dateTime,
         mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, seconds);
         mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, microseconds);
         mamaDateTimeImpl_setHasTime      ((mama_datetime_t*)dateTime);
-        if (seconds > SECONDS_IN_A_DAY)
+        if (seconds > SECONDS_IN_A_DAY || seconds < 0)
             mamaDateTimeImpl_setHasDate ((mama_datetime_t*)dateTime);
         if (microseconds > 0)
         {
@@ -549,12 +549,20 @@ mamaDateTime_setDate(mamaDateTime dateTime,
                      mama_u32_t   day)
 {
     mama_i64_t  tmpSeconds = 0;
-    if (!dateTime)
+    mama_i64_t  dateSeconds = 0;
+    /* This method can only represent dates after 1970 */
+    if (!dateTime || year < 1970)
         return MAMA_STATUS_INVALID_ARG;
 
     /* Get existing number of seconds and remove any full-day seconds. */
     tmpSeconds = mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) % SECONDS_IN_A_DAY;
-    tmpSeconds += (mama_i64_t) makeTime (year, month, day, 0, 0, 0);
+    dateSeconds = (mama_i64_t) makeTime (year, month, day, 0, 0, 0);
+
+    /* Could not make sense of provided time */
+    if (-1 == dateSeconds)
+        return MAMA_STATUS_INVALID_ARG;
+
+    tmpSeconds += dateSeconds;
 
     mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, tmpSeconds);
     mamaDateTimeImpl_setHasDate      ((mama_datetime_t*)dateTime);
@@ -1016,7 +1024,7 @@ mamaDateTime_getStructTimeSpec(const mamaDateTime dateTime,
     if (!dateTime || !result)
         return MAMA_STATUS_INVALID_ARG;
 
-    result->tv_sec = impl->mSeconds;
+    result->tv_sec = (time_t) impl->mSeconds;
     result->tv_nsec = impl->mNanoseconds;
 
     return MAMA_STATUS_OK;
@@ -1060,8 +1068,14 @@ mamaDateTime_getStructTmWithTz(const mamaDateTime dateTime,
 {
     apr_time_t       time_apr;
     apr_time_exp_t   time_apr_exploded;
+    time_t           seconds           = 0;
 
     if (!dateTime || !result)
+        return MAMA_STATUS_INVALID_ARG;
+
+    // If time_t cannot represent the time, return error
+    seconds = mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime))
         return MAMA_STATUS_INVALID_ARG;
 
     if (tz)
@@ -1105,7 +1119,11 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
     if (!aDateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
 
+    // If time_t cannot represent the time, return error
     seconds = (time_t) mamaDateTimeImpl_getSeconds(aDateTime);
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds(aDateTime))
+        return MAMA_STATUS_INVALID_ARG;
+
     // Convert time into an Apache APR exploded time
     apr_time_ansi_put(&time_apr, seconds);
     apr_time_exp_gmt(&time_apr_exploded, time_apr);
@@ -1167,7 +1185,11 @@ mama_status mamaDateTime_getTimeAsString (const mamaDateTime dateTime,
     if (!dateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
 
+    // If time_t isn't precise enough, modulus to get just the time
     seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime))
+        seconds = (time_t) (mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime) % SECONDS_IN_A_DAY);
+
     // Convert time into an Apache APR exploded time
     apr_time_ansi_put(&time_apr, seconds);
     apr_time_exp_gmt(&time_apr_exploded, time_apr);
@@ -1210,7 +1232,11 @@ mama_status mamaDateTime_getDateAsString (const mamaDateTime dateTime,
     if (!dateTime || !buf)
         return MAMA_STATUS_INVALID_ARG;
 
+    // If time_t cannot represent the time, return error
     seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime))
+        return MAMA_STATUS_INVALID_ARG;
+
     // Convert time into an Apache APR exploded time
     apr_time_ansi_put(&time_apr, seconds);
     apr_time_exp_gmt(&time_apr_exploded, time_apr);
@@ -1264,6 +1290,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
     const char*      fmtChar  = NULL;
     mama_size_t      resLen   = 0;
     mama_i32_t       offset   = 0;
+    time_t           seconds  = 0;
     mama_datetime_t* impl     = (mama_datetime_t*)dateTime;
     apr_time_t       time_apr;
     apr_time_exp_t   time_apr_exploded;
@@ -1275,6 +1302,11 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
     {
         mamaTimeZone_getOffset (tz, &offset);
     }
+
+    // If time_t cannot represent the time, return error
+    seconds = mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime))
+        return MAMA_STATUS_INVALID_ARG;
 
     if (offset != 0)
     {
