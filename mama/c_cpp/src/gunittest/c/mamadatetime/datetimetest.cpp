@@ -88,11 +88,14 @@ MamaDateTimeTestC::~MamaDateTimeTestC(void)
 void
 MamaDateTimeTestC::SetUp(void)
 {
+    mama_loadBridge (&mBridge, getMiddleware());
+    mama_open();
 }
 
 void
 MamaDateTimeTestC::TearDown(void)
 {
+    mama_close();
 }
 
 // Test Create function with valid and NULL parameters
