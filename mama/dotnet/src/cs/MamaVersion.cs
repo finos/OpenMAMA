@@ -25,8 +25,8 @@ namespace Wombat
 public class MamaVersion 
 { 
 public static int MAMADOTNET_VERSION_MAJOR = 6; 
-public static int MAMADOTNET_VERSION_MINOR = 0; 
-public static string MAMADOTNET_VERSION_RELEASE = "0rc9"; 
-public static string MAMADOTNET_VERSION = "mamadotnet 6.0.0rc9"; 
+public static int MAMADOTNET_VERSION_MINOR = 2; 
+public static string MAMADOTNET_VERSION_RELEASE = "1"; 
+public static string MAMADOTNET_VERSION = "mamadotnet 6.2.1"; 
 } 
 } 
