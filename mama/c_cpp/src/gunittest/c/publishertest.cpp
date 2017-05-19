@@ -86,17 +86,17 @@ int pubOnDestroyCount = 0;
 /**
  * Publisher event callbacks
  */
-void pubOnCreate (mamaPublisher publisher, void* closure)
+static void MAMACALLTYPE pubOnCreate (mamaPublisher publisher, void* closure)
 {
     pubOnCreateCount++;
 }
 
-void pubOnDestroy (mamaPublisher publisher, void* closure)
+static void MAMACALLTYPE pubOnDestroy (mamaPublisher publisher, void* closure)
 {
     pubOnDestroyCount++;
 }
 
-void pubOnError (mamaPublisher publisher,
+static void MAMACALLTYPE pubOnError (mamaPublisher publisher,
                  mama_status   status,
                  const char*   info,
                  void*         closure)
@@ -105,7 +105,7 @@ void pubOnError (mamaPublisher publisher,
 }
 
 
-void pubOnSuccess (mamaPublisher publisher,
+static void MAMACALLTYPE pubOnSuccess (mamaPublisher publisher,
                    mama_status   status,
                    const char*   info,
                    void*         closure)
@@ -116,7 +116,7 @@ void pubOnSuccess (mamaPublisher publisher,
 /**
  * Publisher event callbacks via transport topic callbacks
  */
-void transportTopicCb (mamaTransport tport,
+static void MAMACALLTYPE transportTopicCb (mamaTransport tport,
                        mamaTransportTopicEvent event,
                        const char* topic,
                        const void* platformInfo,
