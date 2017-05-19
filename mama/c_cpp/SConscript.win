@@ -34,7 +34,7 @@ verH.write("""/* This file was automatically generated */
 #define MamaVersionH
 #define MAMA_VERSION_MAJOR %s
 #define MAMA_VERSION_MINOR %s
-#define MAMA_VERSION_RELEASE %s
+#define MAMA_VERSION_RELEASE "%s"
 #define MAMA_VERSION "mama %s"
 #define RC_VERSION_NUMERICAL %s
 #define RC_VERSION_STRING %s
