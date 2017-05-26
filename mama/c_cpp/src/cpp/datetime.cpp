@@ -182,6 +182,12 @@ namespace Wombat
                                            &inputTimeVal);
     }
 
+    void MamaDateTime::setFromStructTimeSpec(struct timespec& inputTimeSpec)
+    {
+        mamaDateTime_setFromStructTimeSpec(mDateTime,
+                                           &inputTimeSpec);
+    }
+
     void MamaDateTime::set (mama_u32_t             year,
                             mama_u32_t             month,
                             mama_u32_t             day,
@@ -328,6 +334,12 @@ namespace Wombat
     {
         mamaDateTime_getStructTimeValWithTz (const_cast<const mamaDateTime>(mDateTime),
                                              &result, tz.getCValue());
+    }
+
+    void MamaDateTime::getAsStructTimeSpec(struct timespec&  result) const
+    {
+        mamaDateTime_getStructTimeSpec(const_cast<const mamaDateTime>(mDateTime),
+                                       &result);
     }
 
     void MamaDateTime::getAsStructTm (struct tm&  result) const
