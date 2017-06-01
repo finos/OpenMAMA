@@ -112,6 +112,12 @@ public:
     void          setToMidnightToday (const MamaTimeZone*    tz = NULL);
 
     /**
+    * Set the underlying C mamaDateTime from a TimeSpec Struct.
+    *  This will allow for extended date ranges.
+    */
+    void          setFromStructTimeSpec (struct timespec& inputTimeSpec);
+
+    /**
      * Set the underlying C mamaDateTime from a TimeVal Struct.
      *  This will allow for extended date ranges.
      */
@@ -276,7 +282,9 @@ public:
     void          getAsStructTimeVal (struct timeval&       result) const;
     void          getAsStructTimeVal (struct timeval&       result,
                                       const MamaTimeZone&   tz) const;
-                                      
+
+    void          getAsStructTimeSpec(struct timespec&       result) const;
+
     void          getAsStructTm      (struct tm&            result) const;
     void          getAsStructTm      (struct tm&            result,
                                       const MamaTimeZone&   tz) const;
