@@ -522,8 +522,7 @@ protected:
     mamaMsgField    mField;
 
     FieldPriceTestsC()
-         : mOut    (NULL)
-         , mField  (NULL)
+         : mField  (NULL)
     {
         mIn = NULL;
         mamaPrice_create(&mIn);
@@ -531,12 +530,16 @@ protected:
         mUpdate = NULL;
         mamaPrice_create(&mUpdate);
         mamaPrice_setValue(mUpdate, 13.45);
+        mOut = NULL;
+        mamaPrice_create(&mOut);
+        mamaPrice_clear(mOut);
     }
 
     ~FieldPriceTestsC()
     {
         mamaPrice_destroy(mIn);
         mamaPrice_destroy(mUpdate);
+        mamaPrice_destroy(mOut);
     }
 
 };
@@ -560,12 +563,12 @@ TEST_F (FieldPriceTestsC, getPriceValid)
 {
     ASSERT_EQ (mamaMsg_addPrice(mMsg, "Gary", 10101, mIn), MAMA_STATUS_OK);
     ASSERT_EQ (mamaMsg_getField(mMsg, "Gary", 10101, &mField), MAMA_STATUS_OK);
-    ASSERT_EQ (mamaMsgField_getPrice(mField, &mOut), MAMA_STATUS_OK);
+    ASSERT_EQ (mamaMsgField_getPrice(mField, mOut), MAMA_STATUS_OK);
 }
 
 TEST_F (FieldPriceTestsC, getPriceInValidField)
 {
-    ASSERT_EQ (mamaMsgField_getPrice(NULL, &mOut), MAMA_STATUS_INVALID_ARG);
+    ASSERT_EQ (mamaMsgField_getPrice(NULL, mOut), MAMA_STATUS_INVALID_ARG);
 }
 
 
