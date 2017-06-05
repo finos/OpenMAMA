@@ -1029,7 +1029,12 @@ mamaDateTime_getStructTimeValWithTz(const mamaDateTime dateTime,
                                     struct timeval*    result,
                                     const mamaTimeZone tz)
 {
+    time_t seconds = 0;
     if (!dateTime || !result)
+        return MAMA_STATUS_INVALID_ARG;
+
+    seconds = (time_t)mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime))
         return MAMA_STATUS_INVALID_ARG;
 
     result->tv_sec  = mamaDateTimeImpl_getSeconds      ((mama_datetime_t*)dateTime);
@@ -1076,11 +1081,17 @@ mama_status
 mamaDateTime_getStructTimeSpec(const mamaDateTime dateTime,
                                struct timespec*   result)
 {
-    mama_datetime_t* impl = (mama_datetime_t*)dateTime;
+    mama_datetime_t* impl    = (mama_datetime_t*)dateTime;
+    time_t           seconds = 0;
+
     if (!dateTime || !result)
         return MAMA_STATUS_INVALID_ARG;
 
-    result->tv_sec = (time_t) impl->mSeconds;
+    seconds = (time_t) mamaDateTimeImpl_getSeconds(impl);
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds(impl))
+        return MAMA_STATUS_INVALID_ARG;
+
+    result->tv_sec = (time_t)seconds;
     result->tv_nsec = impl->mNanoseconds;
 
     return MAMA_STATUS_OK;
