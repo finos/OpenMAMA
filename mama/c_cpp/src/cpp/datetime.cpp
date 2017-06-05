@@ -132,9 +132,28 @@ namespace Wombat
                                    hints);
     }
 
+    mamaDateTimePrecision MamaDateTime::getPrecision()
+    {
+        mamaDateTimePrecision precision;
+        mamaDateTime_getPrecision(mDateTime, &precision);
+        return precision;
+    }
+
     void MamaDateTime::setPrecision (mamaDateTimePrecision  precision)
     {
         mamaDateTime_setPrecision (mDateTime, precision);
+    }
+
+    mamaDateTimeHints MamaDateTime::getHints()
+    {
+        mamaDateTimeHints hints;
+        mamaDateTime_getHints(mDateTime, &hints);
+        return hints;
+    }
+
+    void MamaDateTime::setHints(mamaDateTimeHints  hints)
+    {
+        mamaDateTime_setHints(mDateTime, hints);
     }
 
     void MamaDateTime::setFromString (const char*           str,
@@ -321,6 +340,27 @@ namespace Wombat
         mamaDateTime_getEpochTimeSecondsWithCheck (
             const_cast<const mamaDateTime>(mDateTime), &result);
         return result;
+    }
+
+    mama_i64_t MamaDateTime::getEpochTimeExtSeconds() const
+    {
+        mama_i64_t  seconds = 0;
+        uint32_t    nanoseconds = 0;
+        mamaDateTime_getEpochTimeExt(const_cast<const mamaDateTime>(mDateTime), &seconds, &nanoseconds);
+        return seconds;
+    }
+
+    uint32_t MamaDateTime::getEpochTimeExtNanoseconds() const
+    {
+        mama_i64_t  seconds = 0;
+        uint32_t    nanoseconds = 0;
+        mamaDateTime_getEpochTimeExt(const_cast<const mamaDateTime>(mDateTime), &seconds, &nanoseconds);
+        return nanoseconds;
+    }
+
+    void MamaDateTime::setEpochTimeExt(mama_i64_t seconds, uint32_t nanoseconds) const
+    {
+        mamaDateTime_setEpochTimeExt(mDateTime, seconds, nanoseconds);
     }
 
     void MamaDateTime::getAsStructTimeVal (struct timeval&  result) const

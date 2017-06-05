@@ -2262,3 +2262,34 @@ TEST_F (MamaDateTimeTestC, TestGetStructTmWithTzLargeExtendedValues)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
+
+TEST_F (MamaDateTimeTestC, TestGetEpochTimeExtGranularFunctions)
+{
+    /* The following test represents the time - "3001-01-01 10:03:21" */
+    mamaDateTime          t            = NULL;
+    int64_t               inSecs       = 32535252201;
+    uint32_t              inNSecs      = 123456789;
+    mamaDateTimeHints     inHints      = MAMA_DATE_TIME_HAS_DATE;
+    mamaDateTimePrecision inPrecision  = MAMA_DATE_TIME_PREC_NANOSECONDS;
+    int64_t               outSecs      = 0;
+    uint32_t              outNSecs     = 0;
+    mamaDateTimeHints     outHints     = 0;
+    mamaDateTimePrecision outPrecision = MAMA_DATE_TIME_PREC_UNKNOWN;
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setEpochTimeExt(t, inSecs, inNSecs) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setHints(t, inHints) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setPrecision(t, inPrecision) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getEpochTimeExt(t, &outSecs, &outNSecs) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getHints(t, &outHints) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getPrecision(t, &outPrecision) );
+
+    EXPECT_EQ ( inSecs, outSecs );
+    EXPECT_EQ ( inNSecs, outNSecs );
+    EXPECT_EQ ( inHints, outHints );
+    EXPECT_EQ ( inPrecision, outPrecision );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
