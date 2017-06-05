@@ -28,11 +28,7 @@ extern "C" {
 
 typedef struct mama_datetime_t_
 {
-#if defined(__i386__) && (defined(unix) || defined(__unix__) || defined(__unix))
     int64_t                 mSeconds;
-#else
-    time_t                  mSeconds;
-#endif
     long                    mNanoseconds;
     mamaDateTimePrecision   mPrecision;
     mamaDateTimeHints       mHints;

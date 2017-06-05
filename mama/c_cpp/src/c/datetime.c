@@ -153,6 +153,32 @@ int mamaDateTime_compare (const mamaDateTime lhs,
 }
 
 mama_status
+mamaDateTime_getEpochTimeExt(const mamaDateTime     dateTime,
+                             mama_i64_t*            seconds,
+                             mama_u32_t*            nanoseconds)
+{
+    if (!dateTime || !seconds || !nanoseconds)
+        return MAMA_STATUS_NULL_ARG;
+
+    *seconds = mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
+    *nanoseconds = (mama_u32_t) mamaDateTimeImpl_getNanoSeconds((mama_datetime_t*)dateTime);
+    return MAMA_STATUS_OK;
+}
+
+extern mama_status
+mamaDateTime_setEpochTimeExt(mamaDateTime           dateTime,
+                             mama_i64_t             seconds,
+                             mama_u32_t             nanoseconds)
+{
+    if (!dateTime)
+        return MAMA_STATUS_NULL_ARG;
+
+    mamaDateTimeImpl_setSeconds((mama_datetime_t*)dateTime, seconds);
+    mamaDateTimeImpl_setNanoSeconds((mama_datetime_t*)dateTime, (long)nanoseconds);
+    return MAMA_STATUS_OK;
+}
+
+mama_status
 mamaDateTime_setEpochTime(mamaDateTime           dateTime,
                           mama_u32_t             seconds,
                           mama_u32_t             microseconds,
@@ -273,6 +299,36 @@ mamaDateTime_setWithHints(mamaDateTime           dateTime,
     mamaDateTimeImpl_setHint         ((mama_datetime_t*)dateTime, hints);
     if (seconds > SECONDS_IN_A_DAY)
         mamaDateTimeImpl_setHasDate ((mama_datetime_t*)dateTime);
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaDateTime_getHints(const mamaDateTime     dateTime,
+                      mamaDateTimeHints*     hints)
+{
+    if (!dateTime || !hints)
+        return MAMA_STATUS_NULL_ARG;
+    *hints = mamaDateTimeImpl_getHint((mama_datetime_t*)dateTime);
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaDateTime_setHints(mamaDateTime           dateTime,
+                      mamaDateTimeHints      hints)
+{
+    if (!dateTime)
+        return MAMA_STATUS_NULL_ARG;
+    mamaDateTimeImpl_setHint((mama_datetime_t*)dateTime, hints);
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaDateTime_getPrecision(const mamaDateTime     dateTime,
+                          mamaDateTimePrecision* precision)
+{
+    if (!dateTime || !precision)
+        return MAMA_STATUS_NULL_ARG;
+    *precision = mamaDateTimeImpl_getPrecision((mama_datetime_t*)dateTime);
     return MAMA_STATUS_OK;
 }
 

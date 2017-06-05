@@ -102,7 +102,12 @@ public:
                                    mamaDateTimePrecision  precision =
                                                   MAMA_DATE_TIME_PREC_UNKNOWN,
                                    mamaDateTimeHints      hints = 0);
+    mamaDateTimePrecision
+                  getPrecision    ();
     void          setPrecision    (mamaDateTimePrecision  precision);
+    mamaDateTimeHints
+                  getHints        ();
+    void          setHints        (mamaDateTimeHints      hints);
     void          setFromString   (const char*            str,
                                    const MamaTimeZone*    tz = NULL);
     void          setFromString   (const char*            str,
@@ -243,15 +248,41 @@ public:
     mama_f64_t    getEpochTimeSeconds      () const;
     mama_f64_t    getEpochTimeSeconds      (const MamaTimeZone&  tz) const;
 
-	/**
-	 * Get the date and time as seconds since the Epoch, (using the UTC timezone). 
-	 * If no date value is contained in the dateTime then it will be set to today's date
-	 * and the calculation made.
-	 *	 
-	 * @return The number of seconds, (including partial seconds), since the Epoch.
-	 */
-	mama_f64_t    getEpochTimeSecondsWithCheck() const;	
-    
+    /**
+     * Get the extended datetime value in whole seconds since the
+     * Epoch (UTC).
+     *
+     * @return The number of whole seconds since the Epoch.
+     */
+    mama_i64_t    getEpochTimeExtSeconds() const;
+
+    /**
+     * Get the extended datetime subsecond portion of the datetime
+     * value in nanoseconds.
+     *
+     * @return The nanosecond portion of the datetime value.
+     */
+    uint32_t      getEpochTimeExtNanoseconds() const;
+
+    /**
+     * Set the extended datetime values expressed in seconds since the
+     * Epoch (UTC) and nanoseconds since this epoch time.
+     *
+     * @param seconds       The number of seconds since the Epoch.
+     * @param nanoseconds   The number of nanoseconds since the seconds
+     *                      parameter.
+     */
+    void          setEpochTimeExt(mama_i64_t  seconds, uint32_t  nanoseconds) const;
+
+    /**
+     * Get the date and time as seconds since the Epoch, (using the UTC timezone). 
+     * If no date value is contained in the dateTime then it will be set to today's date
+     * and the calculation made.
+     *
+     * @return The number of seconds, (including partial seconds), since the Epoch.
+     */
+    mama_f64_t    getEpochTimeSecondsWithCheck() const;
+
     void          getAsString     (char*        result,
                                    mama_size_t  maxLen) const;
     void          getTimeAsString (char*        result,
