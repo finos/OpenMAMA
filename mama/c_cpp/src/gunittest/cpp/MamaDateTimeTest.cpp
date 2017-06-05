@@ -187,3 +187,31 @@ TEST_F(MamaDateTimeTest, SetFromStructTimeVal)
     ASSERT_STREQ (timeStr, stringBuffer);
 }
 
+TEST_F (MamaDateTimeTest, TestGetEpochTimeExtGranularFunctions)
+{
+    /* The following test represents the time - "3001-01-01 10:03:21" */
+	MamaDateTime          dt1;
+    int64_t               inSecs       = 32535252201;
+    uint32_t              inNSecs      = 123456789;
+    mamaDateTimeHints     inHints      = MAMA_DATE_TIME_HAS_DATE;
+    mamaDateTimePrecision inPrecision  = MAMA_DATE_TIME_PREC_NANOSECONDS;
+    int64_t               outSecs      = 0;
+    uint32_t              outNSecs     = 0;
+    mamaDateTimeHints     outHints     = 0;
+    mamaDateTimePrecision outPrecision = MAMA_DATE_TIME_PREC_UNKNOWN;
+
+    dt1.setEpochTimeExt(inSecs, inNSecs);
+    dt1.setHints(inHints);
+    dt1.setPrecision(inPrecision);
+
+    outSecs = dt1.getEpochTimeExtSeconds();
+    outNSecs = dt1.getEpochTimeExtNanoseconds();
+    outHints = dt1.getHints();
+    outPrecision = dt1.getPrecision();
+
+    EXPECT_EQ ( inSecs, outSecs );
+    EXPECT_EQ ( inNSecs, outNSecs );
+    EXPECT_EQ ( inHints, outHints );
+    EXPECT_EQ ( inPrecision, outPrecision );
+
+}
