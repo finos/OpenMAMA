@@ -42,6 +42,7 @@ typedef enum mamaDateTimePrecision_
     MAMA_DATE_TIME_PREC_CENTISECONDS = 2,
     MAMA_DATE_TIME_PREC_MILLISECONDS = 3,
     MAMA_DATE_TIME_PREC_MICROSECONDS = 6,
+    MAMA_DATE_TIME_PREC_NANOSECONDS  = 9,
     MAMA_DATE_TIME_PREC_DAYS         = 10,
     MAMA_DATE_TIME_PREC_MINUTES      = 12,
     MAMA_DATE_TIME_PREC_UNKNOWN      = 15
@@ -139,6 +140,35 @@ mamaDateTime_compare (const mamaDateTime lhs,
                       const mamaDateTime rhs);
 
 /**
+* Get the extended datetime values expressed in seconds since the
+* Epoch (UTC) and nanoseconds since this epoch time.
+*
+* @param dateTime      The dateTime to use.
+* @param seconds       The number of seconds since the Epoch.
+* @param nanoseconds   The number of nanoseconds since the seconds
+*                      parameter.
+*/
+MAMAExpDLL
+extern mama_status
+mamaDateTime_getEpochTimeExt(const mamaDateTime     dateTime,
+                             mama_i64_t*            seconds,
+                             mama_u32_t*            nanoseconds);
+
+/**
+* Set the extended datetime from seconds since the Epoch (UTC)
+* and nanoseconds since this epoch time.
+*
+* @param dateTime      The dateTime to use.
+* @param seconds       The number of seconds since the Epoch.
+* @param microseconds  The number of microseconds.
+* @param precision     The precision of the time stamp.
+*/
+MAMAExpDLL
+extern mama_status
+mamaDateTime_setEpochTimeExt(mamaDateTime           dateTime,
+                             mama_i64_t             seconds,
+                             mama_u32_t             nanoseconds);
+/**
  * Set the date and time as seconds and microseconds since the Epoch
  * (UTC time zone) with an option to designate the accuracy of the
  * time.
@@ -210,8 +240,42 @@ mamaDateTime_setWithHints(mamaDateTime           dateTime,
                           mamaDateTimePrecision  precision,
                           mamaDateTimeHints      hints);
 
+
 /**
- * Set the precision hint.
+* Get the hints flags.
+*
+* @param dateTime      The dateTime to use.
+* @param precision     The output precision of the date/time stamp.
+*/
+MAMAExpDLL
+extern mama_status
+mamaDateTime_getHints(const mamaDateTime     dateTime,
+                      mamaDateTimeHints*     hints);
+
+/**
+* Set the hints flags.
+*
+* @param dateTime      The dateTime to set.
+* @param precision     The precision of the date/time stamp.
+*/
+MAMAExpDLL
+extern mama_status
+mamaDateTime_setHints(mamaDateTime           dateTime,
+                      mamaDateTimeHints      hints);
+
+/**
+* Get the precision.
+*
+* @param dateTime      The dateTime to use.
+* @param precision     The output precision of the date/time stamp.
+*/
+MAMAExpDLL
+extern mama_status
+mamaDateTime_getPrecision(const mamaDateTime     dateTime,
+                          mamaDateTimePrecision* precision);
+
+/**
+ * Set the precision.
  *
  * @param dateTime      The dateTime to set.
  * @param precision     The precision of the date/time stamp.
