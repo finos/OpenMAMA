@@ -42,8 +42,7 @@ mkdir %{buildroot}/opt/openmama/data
 mkdir %{buildroot}/opt/openmama/config
 cp -r %{_builddir}/%{name}-%{version}/data/* %{buildroot}/opt/openmama/data/
 cp -r %{_builddir}/%{name}-%{version}/openmama_install_*/* %{buildroot}/opt/openmama
-cp %{_builddir}/%{name}-%{version}/data/profiles/profile.openmama %{buildroot}/opt/openmama/config/
-cp %{_builddir}/%{name}-%{version}/mama/c_cpp/src/examples/mama.properties %{buildroot}/opt/openmama/config
+cp %{_builddir}/%{name}-%{version}/data/profiles/profile.openmama %{buildroot}/opt/openmama/
 
 %clean
 rm -rf %{buildroot}

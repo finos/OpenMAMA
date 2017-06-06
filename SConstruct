@@ -145,4 +145,5 @@ if not env.GetOption('help'):
         Test.run( env )
 
     Alias ('install', env.Install('$prefix', ["LICENSE-3RD-PARTY.txt", "LICENSE.md", "README.md"]))
+    Alias ('install', env.Install('$prefix/config/', "mama/c_cpp/src/examples/mama.properties"))
 
