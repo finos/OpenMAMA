@@ -64,6 +64,7 @@ rm -rf %{buildroot}
 /opt/openmama/include/wombat
 /opt/openmama/include/mama
 /opt/openmama/include/mamda
+/opt/openmama/profile.openmama
 /opt/openmama/README.md
 /opt/openmama/LICENSE.md
 /opt/openmama/LICENSE-3RD-PARTY.txt
