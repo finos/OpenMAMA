@@ -300,7 +300,6 @@ if [ $PACKAGE_RELEASE -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     try cp -r ${MOCK_BIN_TARBALL_DIR}/data/* ${BINARY_DIR}/data/
     try cp -r ${MOCK_BIN_TARBALL_DIR}/openmama_install*/* ${BINARY_DIR}/
     try cp    ${MOCK_BIN_TARBALL_DIR}/data/profiles/profile.openmama ${BINARY_DIR}/config/
-    try cp    ${MOCK_BIN_TARBALL_DIR}/*.md ${MOCK_BIN_TARBALL_DIR}/LICENSE-3RD-PARTY.txt ${BINARY_DIR}/
     try cp    ${MOCK_BIN_TARBALL_DIR}/mama/c_cpp/src/examples/mama.properties ${BINARY_DIR}/config/
 
     try cd ${BUILD_DIR}/binary/
