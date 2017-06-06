@@ -225,6 +225,11 @@ Alias('install', env.Install('$prefix/include/mama/conflation',
 Alias('install', env.Install('$prefix/include/mama/fieldcache',
       InstFieldCacheInclude))
 
+if env['target_arch'] == "x86_64":
+    Alias ('install', env.Install('$libdir', Glob('%s/lib64/libapr-1.so*' % env['apr_home'])))
+else:
+    Alias ('install', env.Install('$libdir', Glob('%s/lib/libapr-1.so*' % env['apr_home'])))
+
 env.SConscript('bridge/SConscript', 'env')
 env.SConscript('payload/SConscript', 'env')
 env.SConscript('entitlement/SConscript', 'env')
