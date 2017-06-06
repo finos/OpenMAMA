@@ -42,6 +42,11 @@ Documentation
 --------------------------------------------------------------------------------
 We host the latest OpenMAMA Technical documentation on [http://openmama.github.io](http://openmama.github.io)
 
+Licensing
+--------------------------------------------------------------------------------
+This software is licensed under LGPL 2.1. Full terms are included in the `LICENSE.md` file. This software also
+depends on several third party libraries, the licenses for which are listed in the `LICENSE-3RD-PARTY.txt` file.
+
 Contributing
 --------------------------------------------------------------------------------
 Information on contributing on the project can be found on our [Get Involved](http://www.openmama.org/get-involved) page.

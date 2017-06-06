@@ -64,7 +64,7 @@ def get_command_line_opts( host, products, VERSIONS ):
     if host['os'] == 'Linux':
         opts.AddVariables(
             PathVariable('qpid_home','Path to QPID Proton Libraries',
-                '/usr/local/', PathVariable.PathIsDir),
+                '/usr/', PathVariable.PathIsDir),
             PathVariable('cache_dir','Path to object cache', None, PathVariable.PathIsDir),
             EnumVariable('product', 'Product to be built', 'mamda',
                          #mamda all is a windows only build
