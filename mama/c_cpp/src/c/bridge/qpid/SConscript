@@ -52,3 +52,12 @@ lib.append(env.SharedLibrary(target, sources))
 lib.append(env.StaticLibrary(target, [sources]))
 
 Alias('install', env.Install('$libdir', lib))
+
+# Install the qpid proton and libevent shared objects
+if env['target_arch'] == "x86_64":
+    Alias ('install', env.Install('$libdir', Glob('%s/lib64/libqpid-proton.so*' % env['qpid_home'])))
+    Alias ('install', env.Install('$libdir', Glob('%s/lib64/libevent.so*' % env['libevent_home'])))
+else:
+    Alias ('install', env.Install('$libdir', Glob('%s/lib/libqpid-proton.so*' % env['qpid_home'])))
+    Alias ('install', env.Install('$libdir', Glob('%s/lib/libevent.so*' % env['libevent_home'])))
+
