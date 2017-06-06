@@ -144,3 +144,5 @@ if not env.GetOption('help'):
     if env.get('test',None) == True:
         Test.run( env )
 
+    Alias ('install', env.Install('$prefix', ["LICENSE-3RD-PARTY.txt", "LICENSE.md", "README.md"]))
+
