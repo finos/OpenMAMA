@@ -45,6 +45,7 @@ cp -r %{_builddir}/%{name}-%{version}/openmama_install_*/* %{buildroot}/opt/open
 cp %{_builddir}/%{name}-%{version}/data/profiles/profile.openmama %{buildroot}/opt/openmama/config/
 cp %{_builddir}/%{name}-%{version}/README.md %{buildroot}/opt/openmama/
 cp %{_builddir}/%{name}-%{version}/LICENSE.md %{buildroot}/opt/openmama/
+cp %{_builddir}/%{name}-%{version}/LICENSE-3RD-PARTY.txt %{buildroot}/opt/openmama/
 cp %{_builddir}/%{name}-%{version}/mama/c_cpp/src/examples/mama.properties %{buildroot}/opt/openmama/config
 
 %clean
@@ -69,5 +70,6 @@ rm -rf %{buildroot}
 /opt/openmama/include/mamda
 /opt/openmama/README.md
 /opt/openmama/LICENSE.md
+/opt/openmama/LICENSE-3RD-PARTY.txt
 
 %changelog
