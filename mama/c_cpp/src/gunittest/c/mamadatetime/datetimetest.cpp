@@ -2293,3 +2293,30 @@ TEST_F (MamaDateTimeTestC, TestGetEpochTimeExtGranularFunctions)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
+
+TEST_F (MamaDateTimeTestC, TestGetEpochTimePreWindowsEpoch)
+{
+    /* The following test represents the time - "April 15, 1017 2:42:09" */
+    mamaDateTime          t            = NULL;
+    int64_t               inSecs       = -30064771071LL;
+    uint32_t              inNSecs      = 0;
+    mamaDateTimeHints     inHints      = MAMA_DATE_TIME_HAS_DATE;
+    struct tm             resultTm;
+    char                  buf[64];
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setEpochTimeExt(t, inSecs, inNSecs) );
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setHints(t, MAMA_DATE_TIME_HAS_TIME) );
+
+    ASSERT_EQ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getAsFormattedString(t, buf, sizeof(buf), "%Y") );
+    ASSERT_EQ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getStructTm(t, &resultTm) );
+    ASSERT_EQ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getAsString(t, buf, sizeof(buf)) );
+    ASSERT_EQ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getDateAsString(t, buf, sizeof(buf)) );
+
+    // This method should work since it does arithmetic to extract time if necessary
+    ASSERT_EQ( MAMA_STATUS_OK, mamaDateTime_getTimeAsString(t, buf, sizeof(buf)) );
+    EXPECT_STREQ("02:42:09.000", buf);
+
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
