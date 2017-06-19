@@ -2300,7 +2300,6 @@ TEST_F (MamaDateTimeTestC, TestGetEpochTimePreWindowsEpoch)
     mamaDateTime          t            = NULL;
     int64_t               inSecs       = -30064771071LL;
     uint32_t              inNSecs      = 0;
-    mamaDateTimeHints     inHints      = MAMA_DATE_TIME_HAS_DATE;
     struct tm             resultTm;
     char                  buf[64];
 
