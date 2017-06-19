@@ -869,7 +869,7 @@ mamaDateTime_getAsFormattedStringWithTz(const mamaDateTime dateTime,
                                         const mamaTimeZone tz);
 
 /**
- * Get the year (1970 onwards).
+ * Get the year (1601 onwards).
  *
  * @param dateTime      The dateTime from which to get the result.
  * @param result        The result of the get method.
