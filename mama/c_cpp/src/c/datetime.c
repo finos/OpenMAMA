@@ -36,9 +36,11 @@
 
 #include "wombat/wincompat.h"
 
-                                 /* YYYY-mm-dd HH:MM:SS.mmmmmm */
-#define MAX_DATE_TIME_STR_LEN (10 + 1 + 15 + 1)
-#define SECONDS_IN_A_DAY      (24 * 60 * 60)
+                                    /* YYYY-mm-dd HH:MM:SS.mmmmmm */
+#define MAX_DATE_TIME_STR_LEN       (10 + 1 + 15 + 1)
+#define SECONDS_IN_A_DAY            (24 * 60 * 60)
+                                    /* January 1, 1601 */
+#define WINDOWS_GREGORIAN_EPOCH     (-11644473600LL)
 
 static time_t
 makeTime (int           year,
@@ -1142,7 +1144,7 @@ mamaDateTime_getStructTmWithTz(const mamaDateTime dateTime,
 
     // If time_t cannot represent the time, return error
     seconds = mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
-    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime))
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime) || seconds < WINDOWS_GREGORIAN_EPOCH)
         return MAMA_STATUS_INVALID_ARG;
 
     if (tz)
@@ -1188,7 +1190,7 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
 
     // If time_t cannot represent the time, return error
     seconds = (time_t) mamaDateTimeImpl_getSeconds(aDateTime);
-    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds(aDateTime))
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds(aDateTime) || seconds < WINDOWS_GREGORIAN_EPOCH)
         return MAMA_STATUS_INVALID_ARG;
 
     // Convert time into an Apache APR exploded time
@@ -1254,8 +1256,20 @@ mama_status mamaDateTime_getTimeAsString (const mamaDateTime dateTime,
 
     // If time_t isn't precise enough, modulus to get just the time
     seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
-    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime))
-        seconds = (time_t) (mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime) % SECONDS_IN_A_DAY);
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime) || seconds < WINDOWS_GREGORIAN_EPOCH)
+    {
+        time_t timeOnly = (time_t)(mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime) % SECONDS_IN_A_DAY);
+        // If seconds are positive, modulus time is seconds after midnight
+        if (timeOnly >= 0)
+        {
+            seconds = timeOnly;
+        }
+        // If seconds are negative, modulus time is seconds before midnight
+        else
+        {
+            seconds = SECONDS_IN_A_DAY + timeOnly;
+        }
+    }
 
     // Convert time into an Apache APR exploded time
     apr_time_ansi_put(&time_apr, seconds);
@@ -1301,7 +1315,7 @@ mama_status mamaDateTime_getDateAsString (const mamaDateTime dateTime,
 
     // If time_t cannot represent the time, return error
     seconds = (time_t) mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
-    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime))
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime) || seconds < WINDOWS_GREGORIAN_EPOCH)
         return MAMA_STATUS_INVALID_ARG;
 
     // Convert time into an Apache APR exploded time
@@ -1372,7 +1386,7 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
 
     // If time_t cannot represent the time, return error
     seconds = mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime);
-    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime))
+    if ((int64_t)seconds != mamaDateTimeImpl_getSeconds((mama_datetime_t*)dateTime) || seconds < WINDOWS_GREGORIAN_EPOCH)
         return MAMA_STATUS_INVALID_ARG;
 
     if (offset != 0)
