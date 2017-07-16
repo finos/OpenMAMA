@@ -62,6 +62,7 @@ common/c_cpp/src/c/properties.c
 common/c_cpp/src/c/version.h
 common/c_cpp/src/c/lex.yy.c
 common/c_cpp/stamp-h1
+common/c_cpp/build
 mama/c_cpp/aclocal.m4
 mama/c_cpp/autom4te.cache/
 mama/c_cpp/config.h
