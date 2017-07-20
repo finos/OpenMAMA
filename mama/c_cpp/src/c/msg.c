@@ -2253,10 +2253,14 @@ mamaMsg_updateSubMsg (
     if (!impl || !impl->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
     CHECK_MODIFY (impl->mMessageOwner);
 
+    // need to pass in payload, not mamaMsg
+    mamaMsgImpl*    impl2    = (mamaMsgImpl*)value;
+    if (!impl2 || !impl2->mPayloadBridge) return MAMA_STATUS_NULL_ARG;
+
     return impl->mPayloadBridge->msgPayloadUpdateSubMsg (impl->mPayload,
                                                          name,
                                                          fid,
-                                                         value);
+                                                         impl2->mPayload);
 }
 
 mama_status
