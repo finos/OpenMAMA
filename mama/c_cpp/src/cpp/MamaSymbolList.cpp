@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mama/MamaSymbolList.h>
 #include <mama/symbollist.h>
 #include <mama/symbollistmember.h>

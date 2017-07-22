@@ -166,7 +166,6 @@ int wsem_getvalue (wsem_t*, int* items);
 #if _MSC_VER >= 1900
 #define daylight _daylight
 #define tzname _tzname
-#define open(x,y) _open(x,y)
 #endif
 
 #define strdup _strdup

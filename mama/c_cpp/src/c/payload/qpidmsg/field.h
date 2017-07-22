@@ -29,12 +29,6 @@
 
 #include "qpidcommon.h"
 
-
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
-
 /*=========================================================================
   =                   Public implementation prototypes                    =
   =========================================================================*/
@@ -67,10 +61,5 @@ qpidmsgFieldPayloadImpl_setDataVectorSize (qpidmsgFieldPayloadImpl* impl,
 mama_status
 qpidmsgFieldPayloadImpl_setDataArraySize (qpidmsgFieldPayloadImpl* impl,
                                           mama_size_t size);
-
-
-#if defined(__cplusplus)
-}
-#endif
 
 #endif /* MAMA_PAYLOAD_QPIDMSG_FIELD_H__ */

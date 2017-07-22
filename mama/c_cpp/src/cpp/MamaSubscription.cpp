@@ -22,6 +22,7 @@
 /* *************************************************** */
 /* Includes. */
 /* *************************************************** */
+#include <stdint.h>
 #include "mama/MamaSource.h"
 #include "mama/MamaSourceDerivative.h"
 #include "mama/MamaSubscriptionCallback.h"

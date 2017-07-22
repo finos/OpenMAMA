@@ -37,9 +37,6 @@
 #include "payloadbridge.h"
 #include "msgfieldimpl.h"
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
 
 /*=========================================================================
   =                              Macros                                   =
@@ -277,9 +274,5 @@ qpidmsgPayloadInternal_elementToString (pn_data_t*  payload,
                                         pn_atom_t   atom,
                                         char*       dest,
                                         mama_size_t len);
-
-#if defined(__cplusplus)
-}
-#endif
 
 #endif /* MAMA_PAYLOAD_QPIDMSG_QPIDMSG_H__ */

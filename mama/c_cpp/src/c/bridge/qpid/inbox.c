@@ -24,6 +24,7 @@
   =                             Includes                                  =
   =========================================================================*/
 
+#include <stdint.h>
 #include <string.h>
 #include <wombat/wUuid.h>
 #include <wombat/port.h>
@@ -190,6 +191,7 @@ qpidBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
     }
 
     // NB: uuid_generate is very expensive, so we use cheaper uuid_generate_time
+    wUuid_clear             (tempUuid);
     wUuid_generate_time     (tempUuid);
     wUuid_unparse           (tempUuid, uuidStringBuffer);
 
