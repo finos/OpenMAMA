@@ -26,5 +26,3 @@ propertiesImpl_AddProperty( propertiesImpl this,
                             const char* name, 
                             const char* value );
 
-char* propertiesImpl_ReplaceEnvironmentVariable(const char* value);
-
