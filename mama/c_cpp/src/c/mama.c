@@ -54,6 +54,7 @@
 #define WOMBAT_PATH_ENV "WOMBAT_PATH"
 #define MAMA_PROPERTY_BRIDGE "mama.bridge.provider"
 #define MAMA_PROPERTY_THREAD_AFFINITY "mama.thread_affinity."
+#define MAMA_PROPERTY_PAYLOAD_AUTOLOAD "mama.payload.autoload."
 #define MAMA_ENTITLEMENT_LIB_FILEPATTERN "mamaent%s"
 #define DEFAULT_STATS_INTERVAL 60
 
@@ -260,6 +261,13 @@ mama_normalizeMamaBridgeInterfaceVersionInternal (versionInfo* version);
 MAMAExpDLL
 void
 mama_setWrapperGetVersion(fpWrapperGetVersion value);
+
+mama_status mamaInternal_autoloadPayloadBridges (void);
+
+static void autoloadPayloadPropertiesCb (const char *name,
+                                         const char *value,
+                                         void *      closure);
+
 
 /*  Description :   This function will free any memory associated with a
  *                  mamaApplicationContext object but will not free the
@@ -886,6 +894,11 @@ mama_openWithPropertiesCount (const char* path,
             }
         }
     }
+
+    /* Read any payload bridge names from the properties file, and load 
+     * them before any of the other middleware bridges.
+     */
+    result = mamaInternal_autoloadPayloadBridges ( );
 
     /* Iterate the loaded middleware bridges, check for their default payloads,
      * and make sure they have been loaded.
@@ -3321,3 +3334,76 @@ mama_getPayloadBridge (mamaPayloadBridge *payloadBridge,
     wthread_static_mutex_unlock (&gImpl.myLock);
     return status;
 }
+
+/**
+ * Automatically load any payload bridges specified in the configuration
+ * files using the "mama.payload.autoload.*" property.
+ *
+ * @return mama_status Always returns MAMA_STATUS_OK. Logs indicate failure. 
+ */
+mama_status mamaInternal_autoloadPayloadBridges (void)
+{
+    mama_status status = MAMA_STATUS_OK;
+
+    mama_log (MAMA_LOG_LEVEL_FINE,
+                "mamaInternal_autoloadPayloadBridges (): "
+                "Attempting to autoload payload bridges.");
+
+    /* Ensure that we have loaded the properties file before we start
+     * loading values. 
+     */
+    if (!gProperties) {
+        mamaInternal_loadProperties (NULL, NULL);
+    }
+
+    /* Gather global named thread properties. */
+    properties_ForEach (
+        mamaInternal_getProperties ( ), autoloadPayloadPropertiesCb, NULL);
+
+    return status;
+}
+
+static void
+autoloadPayloadPropertiesCb (const char *name, const char *value, void *closure)
+{
+    mama_status status = MAMA_STATUS_OK;
+
+    if (strncmp (name,
+                 MAMA_PROPERTY_PAYLOAD_AUTOLOAD,
+                 strlen (MAMA_PROPERTY_PAYLOAD_AUTOLOAD)) == 0) {
+        const char *payloadBridgeName =
+            name + strlen (MAMA_PROPERTY_PAYLOAD_AUTOLOAD);
+        int payloadAutoload = properties_GetPropertyValueAsBoolean (value);
+
+        /* We don't use this here, simply allocate on the stack to complete the
+         * loading process.
+         */
+        mamaPayloadBridge loadedBridge = NULL;
+
+        if ((0 != strcmp (payloadBridgeName, "")) && payloadAutoload) {
+            mama_log (MAMA_LOG_LEVEL_FINE,
+                      "autoloadPayloadPropertiesCb (): "
+                      "Attempting to autoload payload bridge %s (autoload=%s).",
+                      payloadBridgeName,
+                      value);
+            status = mama_loadPayloadBridge (&loadedBridge, payloadBridgeName);
+
+            if (MAMA_STATUS_OK != status) {
+                mama_log (MAMA_LOG_LEVEL_FINE,
+                          "autoloadPayloadPropertiesCb (): "
+                          "Failed to autoload payload bridge %s (autoload=%s).",
+                          payloadBridgeName,
+                          value);
+            } else {
+                mama_log (
+                    MAMA_LOG_LEVEL_FINE,
+                    "autoloadPayloadPropertiesCb (): "
+                    "Successful automatic loading of the payload bridge %s "
+                    "(autoload=%s).",
+                    payloadBridgeName,
+                    value);
+            }
+        }
+    }
+}
+
