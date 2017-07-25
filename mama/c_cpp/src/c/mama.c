@@ -1743,6 +1743,9 @@ mama_startBackgroundHelper (mamaBridge   bridgeImpl,
 
     snprintf (threadname, 256, "mama_%s_default", bridgeImpl->bridgeGetName());
 
+    mama_log (MAMA_LOG_LEVEL_FINER, "mama_startBackgroundHelper (): "
+              "Creating new background thread (name=%s).", threadname);
+
     threadStatus = wombatThread_create(threadname,
                             &impl->mStartBackgroundThread,
                             NULL,
