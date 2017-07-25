@@ -384,8 +384,8 @@ endpointPool_getRegistered (endpointPool_t  endpoints,
                      (void*)impl);
 
     /* Populate the return values */
-	*count  = impl->mBufferIndex;
-   *opaque = (void**)impl->mBuffer;
+    *count  = impl->mBufferIndex;
+    *opaque = (void**)impl->mBuffer;
 
     return MAMA_STATUS_OK;
 }
