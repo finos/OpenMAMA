@@ -377,7 +377,7 @@ endpointPool_getRegistered (endpointPool_t  endpoints,
     }
 
     /* Reset the offset for iteration */
-	impl->mBufferIndex = 0;
+    impl->mBufferIndex = 0;
 
     /* Iterate over the table, appending the results to the buffer */
     wtable_for_each (registeredTable, endpointPoolImpl_appendEachEndpoint,
@@ -385,7 +385,7 @@ endpointPool_getRegistered (endpointPool_t  endpoints,
 
     /* Populate the return values */
 	*count  = impl->mBufferIndex;
-    *opaque = (void**)impl->mBuffer;
+   *opaque = (void**)impl->mBuffer;
 
     return MAMA_STATUS_OK;
 }
