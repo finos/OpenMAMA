@@ -1989,6 +1989,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     char                    payloadImplName [256];
     char                    initFuncName    [256];
     char                    payloadVersion  [MAX_INTERNAL_PROP_LEN];
+    const char*             suppressLoadFailLogging;
     msgPayload_init         initFunc        = NULL;
     void*                   vp              = NULL;
 
@@ -2057,11 +2058,25 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     if (!payloadLibHandle)
     {
         status = MAMA_STATUS_NO_BRIDGE_IMPL;
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                "mama_loadPayloadBridge(): "
-                "Could not open payload bridge library [%s] [%s]",
-                 payloadImplName,
-                 getLibError());
+
+        /* In some instances middleware's attempt to load payloads that may
+         * not be available to all clients. As this results in an 'ERROR' logged
+         * we want to be able to suppress this where it's an understood problem.
+         *
+         * Note: We don't want to suppress the other logs, as they would
+         * indicate real problems that need fixed.
+         */
+        suppressLoadFailLogging = mama_getProperty ("mama.payload.suppress_load_failure_logging");
+
+        if (NULL == suppressLoadFailLogging ||
+            (!strtobool (suppressLoadFailLogging)))
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                     "mama_loadPayloadBridge(): "
+                      "Could not open payload bridge library [%s] [%s]",
+                      payloadImplName,
+                      getLibError());
+        }
         goto error_handling_unlock;
     }
 
