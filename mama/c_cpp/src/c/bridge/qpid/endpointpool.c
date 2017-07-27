@@ -441,36 +441,34 @@ endpointPool_isRegistedByContent (endpointPool_t    endpoints,
 {
     endpointPoolImpl*       impl             = (endpointPoolImpl*) endpoints;
     wtable_t                registeredTable  = NULL;
-
-    /* The existNode will be used during wtable iteration to store the result */
-    endpointExistNode       existNode;
+    int                     ret              = 0;
 
     if (NULL == impl || NULL == topic || NULL == content)
     {
-        return MAMA_STATUS_NULL_ARG;
+        return 0;
     }
 
     wlock_lock(impl->mLock);
 
     /* Get the wtable representing the endpoints associated with this topic */
-    int ret;
     registeredTable = wtable_lookup (impl->mContainer, topic);
-    if (registeredTable == NULL)
+    if (registeredTable != NULL)
     {
-        ret = 0;
-    }
-    else {
-       /* Iterate over the table, appending the results to the buffer */
+       /* The existNode will be used during wtable iteration to store the result */
+       endpointExistNode       existNode;
        existNode.mMatchWith   = content;
        existNode.mResult      = 0;
+
+       /* Iterate over the table, updating existNode on a match */
        wtable_for_each (registeredTable,
                         endpointPoolImpl_checkEndpointExists,
                         (void*) &existNode);
 
-       ret =  1;
+       ret =  existNode.mResult;
     }
 
    wlock_unlock(impl->mLock);
+
    return ret;
 }
 
