@@ -95,6 +95,8 @@ def get_command_line_opts( host, products, VERSIONS ):
                           '/usr/', PathVariable.PathAccept),
             PathVariable('apr_home', 'Path to Apache APR Libraries',
                 '/usr', PathVariable.PathIsDir),
+            EnumVariable('target_arch', 'Specifies if the build should target 32 or 64 bit architectures.',
+                          host['arch'], allowed_values=['i386', 'i586', 'i686', 'x86', 'x86_64']),
             )
 
     return opts
