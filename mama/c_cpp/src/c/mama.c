@@ -264,9 +264,9 @@ mama_setWrapperGetVersion(fpWrapperGetVersion value);
 
 mama_status mamaInternal_autoloadPayloadBridges (void);
 
-static void autoloadPayloadPropertiesCb (const char *name,
-                                         const char *value,
-                                         void *      closure);
+static void autoloadPayloadPropertiesCb (const char* name,
+                                         const char* value,
+                                         void*      closure);
 
 
 /*  Description :   This function will free any memory associated with a
@@ -3364,7 +3364,7 @@ mama_status mamaInternal_autoloadPayloadBridges (void)
 }
 
 static void
-autoloadPayloadPropertiesCb (const char *name, const char *value, void *closure)
+autoloadPayloadPropertiesCb (const char* name, const char* value, void* closure)
 {
     mama_status status = MAMA_STATUS_OK;
 
