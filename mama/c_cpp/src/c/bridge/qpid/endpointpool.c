@@ -48,8 +48,8 @@ typedef struct endpointPoolImpl
     char*       mName;
     wtable_t    mContainer;
     void*       mBuffer;
-    size_t      mBufferOffset;
-    size_t      mBufferLimit;
+    size_t      mBufferIndex;       // 0-relative
+    size_t      mBufferSize;
     wLock       mLock;
 } endpointPoolImpl;
 
@@ -169,7 +169,7 @@ endpointPool_create (endpointPool_t* endpoints, const char* name)
     }
 
     /* On successful memory allocation, update the current limit */
-    newEndpoints->mBufferLimit = ENDPOINT_POOL_BUFFER_CHUNK_SIZE;
+    newEndpoints->mBufferSize = ENDPOINT_POOL_BUFFER_CHUNK_SIZE;
 
     /* Create the top level endpoints table */
     newEndpoints->mContainer = wtable_create (name,
@@ -396,14 +396,14 @@ endpointPool_getRegistered (endpointPool_t  endpoints,
     }
     else {
        /* Reset the offset for iteration */
-       impl->mBufferOffset = 0;
+       impl->mBufferIndex = 0;
 
        /* Iterate over the table, appending the results to the buffer */
        wtable_for_each (registeredTable, endpointPoolImpl_appendEachEndpoint,
                         (void*)impl);
 
        /* Populate the return values */
-       *count  = impl->mBufferOffset;
+       *count  = impl->mBufferIndex;
        *opaque = (void**)impl->mBuffer;
     }
 
@@ -527,13 +527,13 @@ endpointPoolImpl_extendBuffer (endpointPoolImpl* impl, size_t size)
     }
 
     /* Don't need to do anything if buffer is already allocated */
-    if (size <= impl->mBufferLimit)
+    if (size <= impl->mBufferSize)
     {
         return MAMA_STATUS_OK;
     }
 
     /* Increment upfront by products of chunk size */
-    newSize = impl->mBufferLimit;
+    newSize = impl->mBufferSize;
     while (newSize < size)
     {
         newSize += ENDPOINT_POOL_BUFFER_CHUNK_SIZE;
@@ -548,7 +548,7 @@ endpointPoolImpl_extendBuffer (endpointPoolImpl* impl, size_t size)
     }
     else
     {
-        impl->mBufferLimit = newSize;
+        impl->mBufferSize = newSize;
         impl->mBuffer = newBuffer;
         status = MAMA_STATUS_OK;
     }
@@ -567,10 +567,10 @@ endpointPoolImpl_appendEachEndpoint (wtable_t      table,
 {
     endpointPoolImpl*   impl        = (endpointPoolImpl*) closure;
 
-    size_t              required    = sizeof(void*) * (impl->mBufferOffset +1);
+    size_t              required    = sizeof(void*) * (impl->mBufferIndex +1);
 
     /* Get more space if required */
-    if (required > impl->mBufferLimit)
+    if (required > impl->mBufferSize)
     {
         endpointPoolImpl_extendBuffer (impl, required);
     }
@@ -585,10 +585,10 @@ endpointPoolImpl_appendEachEndpoint (wtable_t      table,
     }
 
     /* Update the next offset with the data */
-    ((void**)impl->mBuffer)[impl->mBufferOffset] = data;
+    ((void**)impl->mBuffer)[impl->mBufferIndex] = data;
 
     /* Increment the offset */
-    impl->mBufferOffset++;
+    impl->mBufferIndex++;
 }
 
 void
