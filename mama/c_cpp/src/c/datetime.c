@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <apr_time.h>
 #include <mama/log.h>
 #include <mama/datetime.h>
 #include <mama/timezone.h>
@@ -28,8 +29,6 @@
 #include <math.h>
 #include <assert.h>
 #include <time.h>
-
-#include <apr_time.h>
 
 #include "datetimeimpl.h"
 #include "mamaStrUtils.h"

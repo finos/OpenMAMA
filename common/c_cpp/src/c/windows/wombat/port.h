@@ -169,8 +169,10 @@ int wsem_getvalue (wsem_t*, int* items);
 #endif
 
 #define strdup _strdup
-#define strncasecmp _strnicmp
-#define strcasecmp  _stricmp
+#ifndef APR_GENERAL_H
+    #define strncasecmp _strnicmp
+    #define strcasecmp  _stricmp
+#endif
 #define wread(x,y,z) recv((x),(y),(z),0)
 #define wwrite(x,y,z) send((x),(y),(z),0)
 #define close _close
