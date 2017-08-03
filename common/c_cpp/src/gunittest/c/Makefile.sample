@@ -58,7 +58,8 @@ all: UnitTestCommonC
 
 UnitTestCommonC: ../MainUnitTestC.o \
                       timertest.o \
-                      queuetest.o
+                      queuetest.o \
+					  strutilstest.o
 	$(LINK.C) -o $@ $^ $(LIBS) $(SYS_LIBS)
 
 timertest: ../MainUnitTestC.o timertest.o
@@ -67,4 +68,6 @@ timertest: ../MainUnitTestC.o timertest.o
 queuetest: ../MainUnitTestC.o queuetest.o
 	$(LINK.C) -o $@ $^ $(LIBS) $(SYS_LIBS)
 
+strutilstest: ../MainUnitTestC.o strutilstest.o
+	$(LINK.C) -o $@ $^ $(LIBS) $(SYS_LIBS)
 
