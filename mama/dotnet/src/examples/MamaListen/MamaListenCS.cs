@@ -155,6 +155,11 @@ namespace MamaListen
         private ArrayList m_subscriptions;
 
         /// <summary>
+        /// To track the number of subscriptions created.
+        /// </summary>
+        public int m_numberSubscriptions;
+
+        /// <summary>
         /// Contains all the symbols for which subscriptions must be established.
         /// </summary>
         private ArrayList m_symbols;
@@ -173,6 +178,12 @@ namespace MamaListen
         /// The name of the transport to use, note that there is no default.
         /// </summary>
         private string m_transportName;
+
+        /// <summary>
+        /// Semaphore object that guards the outer class from calling mama.close until
+        /// all subscription callbacks are recieved
+        /// </summary>
+        public Semaphore m_subscriptionSemaphore;
 
         #endregion
 
@@ -465,6 +476,11 @@ namespace MamaListen
             private MamaDictionary m_dictionary;
 
             /// <summary>
+            /// Reference to the outer class
+            /// </summary>
+            private MamaListen m_listener;
+
+            /// <summary>
             /// Whether to use the iterator when parsing through the message.
             /// </summary>
             private bool m_iterator;
@@ -473,11 +489,6 @@ namespace MamaListen
             /// A reusable iterator for the message.
             /// </summary>
             private MamaMsgIterator m_messageIterator;
-
-            /// <summary>
-            /// To track the number of subscriptions created.
-            /// </summary>
-            private int m_numberSubscriptions;
 
             /// <summary>
             /// The quietness level.
@@ -489,13 +500,14 @@ namespace MamaListen
             /// </summary>
             private int m_totalSubscriptions;
 
-            internal ListenerSubscriptionCallback(MamaDictionary dictionary, bool iterator, int quietness, int totalSubscriptions)
+            internal ListenerSubscriptionCallback(MamaListen listener, MamaDictionary dictionary, bool iterator, int quietness, int totalSubscriptions)
             {
                 // Save arguments in member variables
                 m_dictionary = dictionary;
                 m_iterator = iterator;
                 m_quietness = quietness;
                 m_totalSubscriptions = totalSubscriptions;
+                m_listener = listener;
 
                 // Create the message iterator
                 if (iterator)
@@ -507,7 +519,7 @@ namespace MamaListen
             public void onCreate(MamaSubscription subscription)
             {
                 // Increment the number of subscriptions
-                int totalSubscriptions = Interlocked.Increment(ref m_numberSubscriptions);
+                int totalSubscriptions = Interlocked.Increment(ref m_listener.m_numberSubscriptions);
 
                 // Log a message if we've got them all
                 if (totalSubscriptions == m_totalSubscriptions)
@@ -519,6 +531,7 @@ namespace MamaListen
             public void onError(MamaSubscription subscription, MamaStatus.mamaStatus status, string subject)
             {
                 Console.WriteLine("Subscription error:" + subject);
+                subscription.destroy();
             }
 
             public void onGap(MamaSubscription subscription)
@@ -538,6 +551,11 @@ namespace MamaListen
 
             public void onDestroy(MamaSubscription subscription)
             {
+                Interlocked.Decrement(ref m_listener.m_numberSubscriptions);
+                if (m_listener.m_numberSubscriptions <= 0)
+                {
+                    m_listener.m_subscriptionSemaphore.Release(1);
+                }
             }
 
             public void onMsg(MamaSubscription subscription, MamaMsg msg)
@@ -737,6 +755,8 @@ namespace MamaListen
             m_subscriptions             = new ArrayList();
             m_symbols                   = new ArrayList();
             m_throttleRate              = -1;
+            m_numberSubscriptions       = 0;
+            m_subscriptionSemaphore     = new Semaphore(0,1);
         }
 
         #endregion
@@ -779,7 +799,10 @@ namespace MamaListen
 
                     finally
                     {
-                        destroySubscriptions();
+                        if (m_numberThreads > 0)
+                        {
+                            m_queueGroup.stop();
+                        }
                     }
                 }
                 finally
@@ -918,7 +941,7 @@ namespace MamaListen
                 throw new ApplicationException("There are no symbols to subscribe to.");
             }
 
-            ListenerSubscriptionCallback subscriptionCallback = new ListenerSubscriptionCallback(m_dictionary, m_iterator, m_quietness, m_symbols.Count);
+            ListenerSubscriptionCallback subscriptionCallback = new ListenerSubscriptionCallback(this, m_dictionary, m_iterator, m_quietness, m_symbols.Count);
 
             // Enumerate all the symbol names and create a subscription for each one
             foreach (string symbol in m_symbols)
@@ -994,7 +1017,7 @@ namespace MamaListen
             foreach (MamaSubscription subscription in m_subscriptions)
             {
                 // We can destroy the subscription on a different thread as the bridge has been stopped
-                subscription.destroy();
+                subscription.destroyEx();
             }
 
             // Clear the array
@@ -1044,6 +1067,12 @@ namespace MamaListen
             // Check for Ctrl C
             if (consoleEvent == NativeMethods.ConsoleEvent.CTRL_C)
             {
+                destroySubscriptions();
+                if (m_numberSubscriptions > 0)
+                {
+                    m_subscriptionSemaphore.WaitOne();
+                }
+
                 Mama.stop(m_bridge);
 
                 // The event has been handled
