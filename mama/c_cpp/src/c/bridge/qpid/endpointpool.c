@@ -566,7 +566,6 @@ endpointPoolImpl_appendEachEndpoint (wtable_t      table,
                                      void*         closure)
 {
     endpointPoolImpl*   impl        = (endpointPoolImpl*) closure;
-
     size_t              required    = sizeof(void*) * (impl->mBufferIndex +1);
 
     /* Get more space if required */

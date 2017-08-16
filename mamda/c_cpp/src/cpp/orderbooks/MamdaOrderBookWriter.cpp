@@ -486,7 +486,8 @@ namespace Wombat
         msg.addU32  (NULL, MamdaOrderBookFields::PL_SIZE_CHANGE->getFid(),
                      (mama_u32_t)level->getSizeChange());
 
-        if ((NULL == bookTime || (bookTime->compare (level->getTime())!=0)))
+        if ((NULL == bookTime || (bookTime->compare (level->getTime())!=0))
+                    || bookTime->empty() != level->getTime().empty())
         {
             msg.addDateTime (NULL, MamdaOrderBookFields::PL_TIME->getFid(),
                              level->getTime());
