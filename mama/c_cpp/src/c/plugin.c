@@ -367,6 +367,9 @@ mama_shutdownPlugins (void)
             }
         }
     }
+    
+    gPluginNo = 0;
+
     return status;
 }
 
