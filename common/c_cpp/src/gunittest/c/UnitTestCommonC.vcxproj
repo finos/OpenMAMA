@@ -193,6 +193,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\MainUnitTestC.cpp" />
+    <ClCompile Include="strutilstest.cpp" />
     <ClCompile Include="utiltest.cpp" />
     <ClInclude Include="..\MainUnitTestC.h" />
     <ClCompile Include="port.cpp" />
