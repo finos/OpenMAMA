@@ -947,14 +947,13 @@ mama_openWithPropertiesCount (const char* path,
 
     if (strlen( (char*) gEntitlementBridges))
     {
-        mama_log (MAMA_LOG_LEVEL_FINE, "%s (entitled)",mama_version);
+        mama_log (MAMA_LOG_LEVEL_WARN, "%s (entitled)",mama_version);
     }
     else
     {
-        mama_log (MAMA_LOG_LEVEL_FINE, "%s (non entitled)",mama_version);
+        mama_log (MAMA_LOG_LEVEL_WARN, "%s (non entitled)",mama_version);
     }
-
-
+    
     /* Iterate the currently loaded middleware bridges, log their version, and
      * increment the count of open bridges.
      */
@@ -965,7 +964,7 @@ mama_openWithPropertiesCount (const char* path,
 
         if (middlewareLib)
         {
-            mama_log (MAMA_LOG_LEVEL_FINE,
+            mama_log (MAMA_LOG_LEVEL_WARN,
                     middlewareLib->bridge->bridgeGetVersion());
 
             /* Increment the reference count for each bridge loaded */
