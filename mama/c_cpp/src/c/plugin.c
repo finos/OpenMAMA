@@ -367,7 +367,9 @@ mama_shutdownPlugins (void)
             }
         }
     }
-    
+
+    free(gPlugins);
+    gPlugins = NULL;
     gPluginNo = 0;
 
     return status;
@@ -456,7 +458,7 @@ mamaPlugin_findPlugin (const char* name)
 {
     int plugin = 0;
 
-    for (plugin = 0; plugin <= gPluginNo; plugin++)
+    for (plugin = 0; plugin < gPluginNo; plugin++)
     {
         if (gPlugins[plugin])
         {
@@ -467,4 +469,24 @@ mamaPlugin_findPlugin (const char* name)
         }
     }
     return NULL;
+}
+
+static void pluginPropertiesCb(const char* name, const char* value, void* closure)
+{
+    if(name)
+    {
+        if(strstr(name, PLUGIN_PROPERTY) != NULL)
+        {
+            gNumPlugins++;
+            if(gNumPlugins > gCurrentPluginSize)
+            {
+                gCurrentPluginSize *= 2;
+                gPlugins = (mamaPluginImpl**) realloc (gPlugins,  sizeof(mamaPluginImpl*) * gCurrentPluginSize);
+            }
+
+            mama_log (MAMA_LOG_LEVEL_FINE, "mama_initPlugins(): Initialising %s", value);
+            mama_loadPlugin (value);
+
+        }
+    }
 }
