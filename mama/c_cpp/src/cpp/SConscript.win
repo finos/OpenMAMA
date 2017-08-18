@@ -9,11 +9,8 @@ target = 'libmamacpp'
 env.Append( CPPDEFINES = ['MAMACPP'] )
 env.Append( LIBS = ['libmamac%s.lib' % ( env['suffix'] ) ] )
 
-versionRes = env.RES('version.rc')
-
 sources = Split( """
 mamacpp.cpp
-version.res
 MamaQueueGroup.cpp
 datetime.cpp
 MamaSymbolMapFile.cpp

@@ -11,8 +11,6 @@ sources = []
 
 target = 'libmamac'
 
-versionRes = env.RES('version.rc')
-
 libPath = []
 libPath.append('$libdir')
 
@@ -34,7 +32,6 @@ env['CPPPATH'] = incPath
 env.Append(LIBS = libs, LIBPATH=libPath)
 
 sources = Split( """
-version.res
 version.c
 bridge.c
 dictionary.c

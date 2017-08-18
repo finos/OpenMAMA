@@ -277,9 +277,6 @@
     <ClInclude Include="MsgFieldImpl.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="version.rc" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="datetime.cpp" />
     <ClCompile Include="MamaBasicSubscription.cpp" />
     <ClCompile Include="MamaBasicWildCardSubscription.cpp" />
