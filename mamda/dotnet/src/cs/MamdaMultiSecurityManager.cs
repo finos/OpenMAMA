@@ -113,7 +113,7 @@ namespace Wombat
 				// Now pass to other listeners (if any)
 				forwardMsg(subscription, msg, msgType, symbol);
 			}
-			catch (MamdaDataException ex)
+			catch (MamdaDataException)
 			{
 			}
 		}

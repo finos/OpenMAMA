@@ -38,6 +38,7 @@
  *
  *---------------------------------------------------------------------------*/
 
+#include <stdint.h>
 #include "wombat/port.h"
 #include <iostream>
 #include <stdio.h>

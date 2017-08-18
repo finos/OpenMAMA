@@ -30,7 +30,6 @@ namespace Wombat.Mamda.Examples
 	/// </summary>
 	public class MamdaSecStatusTicker
 	{
-		private static int myQuietModeLevel = 0;
 		public static void Main(string[] args)
 		{
 			MamaTransport        transport          = null;

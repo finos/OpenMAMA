@@ -19,12 +19,13 @@
  * 02110-1301 USA
  */
 
+
 #include <mamda/MamdaCheckerType.h>
 
 namespace Wombat
 {
 
-    const char* mamdaCheckTypeToString (MamdaCheckerType type)
+    extern const char* mamdaCheckTypeToString (MamdaCheckerType type)
     {
         switch (type)
         {

@@ -203,7 +203,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// <see cref="MamdaBasicEvent.getSrcTime"/>
+		///
 		/// </summary>
 		/// <returns></returns>
 		public DateTime getSrcTime ()
@@ -212,7 +212,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// <see cref="MamdaBasicEvent.getLineTime"/>
+		///
 		/// </summary>
 		/// <returns></returns>
 		public DateTime getLineTime ()
@@ -221,7 +221,7 @@ namespace Wombat
 		}
 
 		/// <summary>
-		/// <see cref="MamdaBasicEvent.getSendTime"/>
+		///
 		/// </summary>
 		/// <returns></returns>
 		public DateTime getSendTime ()
@@ -457,7 +457,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getLineTimeFieldState"/>
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getLineTimeFieldState()
@@ -466,7 +466,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getSendTimeFieldState"/>
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getSendTimeFieldState()

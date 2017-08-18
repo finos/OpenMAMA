@@ -23,6 +23,7 @@
 #define __STDC_FORMAT_MACROS
 #endif
 
+#include <stdint.h>
 #include <wombat/port.h>
 #include <mamda/MamdaTradeListener.h>
 #include <mamda/MamdaTradeFields.h>

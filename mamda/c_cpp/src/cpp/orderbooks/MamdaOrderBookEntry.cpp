@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mamda/MamdaOrderBookEntry.h>
 #include <mamda/MamdaOrderBookExceptions.h>
 #include <mamda/MamdaOrderBookPriceLevel.h>

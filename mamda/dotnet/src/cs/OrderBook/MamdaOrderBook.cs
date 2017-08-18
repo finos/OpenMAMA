@@ -69,10 +69,10 @@ namespace Wombat
 			return mSymbol;
 		}
 
-   		/// <summary>
-		/// </summary>
-		/// <param name="symbol">The order book subscription symbol.</param>
-		public void setBookTime(DateTime time)
+        /// <summary>
+        /// </summary>
+        /// <param name="time">The order book update time.</param>
+        public void setBookTime(DateTime time)
 		{
 			mBookTime = time;
 		}
