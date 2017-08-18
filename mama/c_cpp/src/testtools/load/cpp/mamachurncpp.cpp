@@ -257,7 +257,7 @@ void LifetimeCallback::onTimer (MamaTimer* timer)
 
 void RecreateCallback::onEvent (MamaQueue& queue, void* closure)
 {
-	unsigned long churnIndex  = (unsigned long)closure;
+	unsigned long churnIndex  = (unsigned long)(intptr_t)closure;
     destroySubscription(churnIndex);
     createSubscription(churnIndex);
 }
@@ -279,7 +279,7 @@ void ChurnCallback::onTimer (MamaTimer* timer)
             printf("Churning symbol: %s\n", gSymbolArray[churnIndex].symbol);
 
         interval = ((double)rand() / ((double)(RAND_MAX)+(double)(1)) );
-        gSymbolArray[churnIndex].queue->enqueueEvent(recreateCallback, (void*)churnIndex);
+        gSymbolArray[churnIndex].queue->enqueueEvent(recreateCallback, (void*)(intptr_t)churnIndex);
         churnCount++;
     }
 
