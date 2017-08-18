@@ -4,7 +4,7 @@
  * This file contains a hash alogorith by Bob Jenkins. It is used unchanged,
  * except for the commenting out of "#define SELF_TEST", below.
  */
-
+#include <stdint.h>
 
 /*
 --------------------------------------------------------------------
