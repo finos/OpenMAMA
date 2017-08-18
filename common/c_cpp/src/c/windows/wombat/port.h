@@ -155,8 +155,6 @@ int wsem_getvalue (wsem_t*, int* items);
 #define bzero( x, y ) ZeroMemory( ((void *)(x)), (y) )
 #define strtok_r(x, y, z) strtok((x),(y))
 
-#define strncpy(dest, format, size) strncpy_s(dest, size, format, size)
-
 /* VS 2015 introduces native snprintf */
 #if (_MSC_VER < 1900)
 #define snprintf _snprintf
