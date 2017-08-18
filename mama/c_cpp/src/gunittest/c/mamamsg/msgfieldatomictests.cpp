@@ -91,9 +91,10 @@ TEST_F (MsgFieldBoolTests, updateBoolInvalid)
 
 TEST_F (MsgFieldBoolTests, getBoolValid)
 {
+    mama_bool_t expected = 1;
     mamaMsg_getField( mMsg, "name", 1, &mMsgField );
     ASSERT_EQ( mamaMsgField_getBool( mMsgField, &mOut ), MAMA_STATUS_OK );
-    ASSERT_EQ( mOut, true );
+    ASSERT_EQ(expected, mOut );
 }
 
 
@@ -101,7 +102,7 @@ TEST_F (MsgFieldBoolTests, getBoolInvalid)
 {
     mamaMsg_getField( mMsg, "name", 1, &mMsgField );
     ASSERT_EQ( mamaMsgField_getBool( NULL, &mOut ), MAMA_STATUS_NULL_ARG );
-    ASSERT_EQ( mOut, false );
+    ASSERT_EQ( mOut, 0 );
 }
 
 TEST_F (MsgFieldBoolTests, getBoolInvalidBool)

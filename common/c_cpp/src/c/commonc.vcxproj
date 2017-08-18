@@ -245,6 +245,7 @@
     <ClCompile Include="windows\wUuid.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="propertyinternal.h" />
     <ClInclude Include="windows\wombat\port.h" />
     <ClInclude Include="property.h" />
     <ClInclude Include="wombat\environment.h" />

@@ -22,9 +22,10 @@
  *               fields within a mamaMsg.
  */
 
+#include <gtest/gtest.h>
+#include <stdint.h>
 #include "mama/mama.h"
 #include "mama/msg.h"
-#include <gtest/gtest.h>
 #include <cstdlib>
 #include <stdlib.h>
 #include "MainUnitTestC.h"
