@@ -209,6 +209,9 @@ namespace Wombat
 		/// <param name="nativeHandle"></param>
 		internal MamaMsgField(IntPtr nativeHandle) : base(nativeHandle)
 		{
+			int code;
+			code = NativeMethods.mamaDateTime_create(ref dateTime_);
+			CheckResultCode(code);
 		}
 
         public MamaMsgField()
@@ -220,6 +223,9 @@ namespace Wombat
 		/// </summary>
 		public void destroy()
 		{
+			int code;
+			code = NativeMethods.mamaDateTime_destroy(dateTime_);
+			CheckResultCode(code);
 			Dispose();
 		}
 
@@ -491,12 +497,13 @@ namespace Wombat
 		{
 			EnsurePeerCreated();
 			int code;
-			ulong dateTime = 0;
-			code = NativeMethods.mamaMsgField_getDateTime(nativeHandle,ref dateTime);
+			code = NativeMethods.mamaDateTime_clear(dateTime_);
+			CheckResultCode(code);
+			code = NativeMethods.mamaMsgField_getDateTime(nativeHandle, dateTime_);
 			CheckResultCode(code);
 
 			ulong dateTimeMsec = 0;
-			code = NativeMethods.mamaDateTime_getEpochTimeMilliseconds (ref dateTime, ref dateTimeMsec);
+			code = NativeMethods.mamaDateTime_getEpochTimeMilliseconds (dateTime_, ref dateTimeMsec);
 			CheckResultCode(code);
 			DateTime ret = new DateTime(((long)dateTimeMsec * TimeSpan.TicksPerMillisecond) + 621355968000000000);
 
@@ -841,10 +848,11 @@ namespace Wombat
 		}
 
 
-        private MamaPrice price_ = null;
-        private MamaMsg msg_ = null;
+        private MamaPrice price_    = null;
+        private MamaMsg   msg_      = null;
+        private IntPtr    dateTime_ = IntPtr.Zero;
 
-		#region Implementation details
+        #region Implementation details
 
 		private struct NativeMethods
 		{
@@ -909,7 +917,7 @@ namespace Wombat
 				ref uint size);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsgField_getDateTime(IntPtr nativeHandle,
-				ref ulong result);
+				IntPtr result);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsgField_getPrice(IntPtr nativeHandle,
 				IntPtr result);
@@ -977,10 +985,16 @@ namespace Wombat
 				StringBuilder  buf,
 				int length);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mamaDateTime_getEpochTimeMilliseconds(ref ulong dateTime,
+			public static extern int mamaDateTime_getEpochTimeMilliseconds(IntPtr dateTime_,
 				ref ulong milliseconds);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaPrice_destroy(IntPtr  nativeHandle);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaDateTime_create(ref IntPtr dateTime_);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaDateTime_clear(IntPtr dateTime_);
+            [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern int mamaDateTime_destroy(IntPtr dateTime_);
         }
 
 		#endregion // Implementation details

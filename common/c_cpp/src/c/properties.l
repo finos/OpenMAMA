@@ -27,6 +27,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "wombat/strutils.h"
 #include "wombat/wincompat.h"
 
 #define YY_NO_INPUT ()
@@ -131,7 +132,7 @@ WS                  [ \t]
 
 <value>{NEWLINE}                 { /* value is complete. start over.*/
                                    replaceValue = 
-                                       propertiesImpl_ReplaceEnvironmentVariable(curValue);
+                                       strReplaceEnvironmentVariable(curValue);
                                    if(replaceValue != NULL)
                                    {
                                         /* Delete the original value */
@@ -163,7 +164,7 @@ WS                  [ \t]
                                     if ( curKey && curValue )
                                     {
                                         replaceValue = 
-                                            propertiesImpl_ReplaceEnvironmentVariable(curValue);
+                                            strReplaceEnvironmentVariable(curValue);
                                         if(replaceValue != NULL)
                                         {
                                              /* Delete the original value */

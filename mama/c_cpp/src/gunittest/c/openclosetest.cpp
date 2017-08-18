@@ -281,3 +281,28 @@ TEST_F (MamaOpenCloseTestC, GetNullPayloadBridge)
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, mama_getPayloadBridge (&foundBridge, NULL));
 }
+
+/*  Description:     Load the middleware bridge, open and close
+ *                   150 times, then ensure that you can continue
+ *                   to open and close without errors due to limit
+ *                   of plugins having been reached.
+ *
+ *  Expected Result: MAMA_STATUS_OK
+ */
+
+TEST_F(MamaOpenCloseTestC, OpenCloseReopenManyTimes)
+{
+    mamaBridge bridge;
+
+    for(int i = 0; i < 150; i++)
+    {
+        mama_loadBridge (&bridge, getMiddleware());
+        mama_open();
+        mama_close();
+
+    }
+        ASSERT_EQ (MAMA_STATUS_OK, mama_loadBridge (&bridge, getMiddleware()));
+        ASSERT_EQ(MAMA_STATUS_OK, mama_open());
+        ASSERT_EQ(MAMA_STATUS_OK, mama_close());
+}
+

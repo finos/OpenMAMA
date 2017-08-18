@@ -251,7 +251,7 @@ properties_AddString( wproperty_t handle, const char* propString )
 		propertiesImpl_ *impl = (propertiesImpl_ *)handle;
 
 		/* Replace any environment variables in the properties string. */
-		char* localString = propertiesImpl_ReplaceEnvironmentVariable(propString);
+		char* localString = strReplaceEnvironmentVariable(propString);
 		if(NULL == localString)
 		{
 			/* No variables were replaced, just make a straight copy. */
@@ -381,7 +381,7 @@ properties_setProperty (wproperty_t handle,
     name_c  =   strdup (name);
 
     /* The value will need to have any environment variables replaced. */
-    value_c = (const char* )propertiesImpl_ReplaceEnvironmentVariable(value);
+    value_c = (const char* )strReplaceEnvironmentVariable(value);
     if(NULL == value_c)
     {
         value_c = strdup(value);

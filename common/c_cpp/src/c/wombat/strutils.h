@@ -156,6 +156,18 @@ int strtobool(const char* s);
 COMMONExpDLL
 int strToVersionInfo(const char* s, versionInfo* version);
 
+/* 
+ * Replace any environment variables with their
+ * equivalents in the string passed in.
+ *
+ * @param value [I] The string that may contain environment variables.
+ *
+ * @return NULL if the value string did not containing any environment variables.
+ * A valid string if variables were replaced.  This string must be freed with free().
+ */
+COMMONExpDLL
+char* strReplaceEnvironmentVariable(const char* value);
+
 #if defined(__cplusplus)
 }
 #endif

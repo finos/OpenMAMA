@@ -1339,6 +1339,10 @@ mamaDispatcher_create (mamaDispatcher *result,
     impl->mQueue = queue;
 
     snprintf (impl->mThreadName, 256, "%s%s", MAMAQUEUE_THREAD_PREFIX, qImpl->mQueueName);
+
+    mama_log (MAMA_LOG_LEVEL_FINER, "mamaDispatcher_create (): "
+              "Creating new background thread (name=%s).", impl->mThreadName);
+
     threadStatus = wombatThread_create(impl->mThreadName,
                             &thread,
                             NULL,
