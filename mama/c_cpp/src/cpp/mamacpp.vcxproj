@@ -206,6 +206,7 @@
     <ClInclude Include="BasicSubscriptionImpl.h" />
     <ClInclude Include="BasicWildCardSubscriptionImpl.h" />
     <ClInclude Include="FieldDescriptorImpl.h" />
+    <ClInclude Include="MamaStatImpl.h" />
     <ClInclude Include="mama\MamaBasicSubscription.h" />
     <ClInclude Include="mama\MamaBasicSubscriptionCallback.h" />
     <ClInclude Include="mama\MamaBasicWildCardSubscription.h" />
@@ -311,6 +312,7 @@
     <ClCompile Include="MamaSourceGroup.cpp" />
     <ClCompile Include="MamaSourceGroupManager.cpp" />
     <ClCompile Include="MamaSourceManager.cpp" />
+    <ClCompile Include="MamaStat.cpp" />
     <ClCompile Include="MamaStatsCollector.cpp" />
     <ClCompile Include="MamaStatus.cpp" />
     <ClCompile Include="MamaSubscription.cpp" />
