@@ -48,7 +48,6 @@ MamaSymbolListMember.cpp
 MamaMsgQual.cpp
 MamaReservedFields.cpp
 MamaFt.cpp
-MamaReservedFields.cpp
 conflation\MamaConnection.cpp
 conflation\MamaServerConnection.cpp
 fieldcache\MamaFieldCacheField.cpp

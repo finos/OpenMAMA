@@ -45,6 +45,7 @@ libPath.append('%s/lib' % env['libevent_home'])
 qpidInstLibs = '%s/bin/%s.dll' % (env['qpid_home'], qpidLibName)
 
 env['CCFLAGS'].append(['/TP', '/WX-'])
+#env['LINKFLAGS'].append(['/NODEFAULTLIB:LIBCMTD', '/NODEFAULTLIB:MSVCRT'])
 env['CPPPATH'] = incPath
 env.Append(LIBS = libs, LIBPATH=libPath) 
 
