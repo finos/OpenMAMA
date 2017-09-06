@@ -1,0 +1,27 @@
+cmake_minimum_required (VERSION 2.8.3)
+
+string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
+
+set(WOMBAT_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../common/c_cpp/src)
+set(WOMBAT_INCLUDES
+	${WOMBAT_SOURCE_DIR}/c
+	${WOMBAT_SOURCE_DIR}/c/wombat
+	${WOMBAT_SOURCE_DIR}/c/${system}
+	${WOMBAT_SOURCE_DIR}/c/${system}/wombat
+)
+
+function (get_component_version DIR COMPONENT)
+	 file(STRINGS ${DIR}/VERSION.scons CONTENT)
+
+	 string(REPLACE " " ";" COMPONENT_VERSION ${CONTENT})
+	 list(GET COMPONENT_VERSION 1 VERSION)
+ 	 string(REPLACE "." ";" VERSION_LIST ${VERSION})
+
+	 list(GET VERSION_LIST 0 MAJOR)
+	 list(GET VERSION_LIST 1 MINOR)
+	 list(GET VERSION_LIST 2 RELEASE)
+
+	 set(${COMPONENT}_VERSION_MAJOR ${MAJOR} PARENT_SCOPE)
+	 set(${COMPONENT}_VERSION_MINOR ${MINOR} PARENT_SCOPE)
+	 set(${COMPONENT}_VERSION_RELEASE ${RELEASE} PARENT_SCOPE)
+endfunction(get_component_version)
