@@ -16,10 +16,21 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${WOMBAT_INCLUDES}
 	${APR_INCLUDE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR} # for generated files like version.h etc
 )
 
-configure_file(version.h.in "${CMAKE_CURRENT_BINARY_DIR}/version.h" @ONLY)
+set(ENTITLEMENT_BRIDGES "")
+if(DEFINED ENTITLEMENTS)
+	string(REPLACE "," ";" ENT_LIST ${ENTITLEMENTS})
+	foreach(ENT ${ENT_LIST})
+		    set(ENTITLEMENT_BRIDGES "${ENTITLEMENT_BRIDGES}\"${ENT}\", ")
+	endforeach()
+endif()
+set(ENTITLEMENT_BRIDGES "${ENTITLEMENT_BRIDGES}NULL")
+
+configure_file(version.h.in "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" @ONLY)
 configure_file(version.c.in "${CMAKE_CURRENT_BINARY_DIR}/version.c" @ONLY)
+configure_file(entitlementlibraries.c.in "${CMAKE_CURRENT_BINARY_DIR}/entitlementlibraries.c" @ONLY)
 
 set(sources
 	bridge.c
@@ -30,7 +41,7 @@ set(sources
 	dqpublishermanager.c
 	dqstrategy.c
 	entitlement.c
-	entitlementlibraries.c
+	${CMAKE_CURRENT_BINARY_DIR}/entitlementlibraries.c
 	error.c
 	fielddesc.c
 	fileutils.c
@@ -83,6 +94,22 @@ set(sources
 	timezone.c
 	transport.c
 	${CMAKE_CURRENT_BINARY_DIR}/version.c
+	playback/playbackFileParser.c
+	playback/playbackpublisher.c
+	playback/playbackcapture.c
+	conflation/connection.c
+	conflation/serverconnection.c
+	conflation/manager.c
+	fieldcache/fieldcache.c
+	fieldcache/fieldcachefieldimpl.c
+ 	fieldcache/fieldcacheiterator.c
+	fieldcache/fieldcachemaparray.c
+	fieldcache/fieldcachemap.c
+	fieldcache/fieldcacherecord.c
+	fieldcache/fieldcachefield.c
+	fieldcache/fieldcacheimpl.c
+	fieldcache/fieldcachelist.c
+	fieldcache/fieldcachevector.c
 )
 
 list(APPEND sources ${SYSTEM_SOURCES})
