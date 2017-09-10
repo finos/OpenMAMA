@@ -17,7 +17,7 @@ include_directories(
 	${WOMBAT_INCLUDES}
 	${APR_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR} # for generated files like version.h etc
-)
+)	
 
 set(ENTITLEMENT_BRIDGES "")
 if(DEFINED ENTITLEMENTS)
