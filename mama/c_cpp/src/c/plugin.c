@@ -39,10 +39,13 @@
 #define PLUGIN_PROPERTY "mama.plugin.name_"
 #define PLUGIN_NAME "mamaplugin"
 
-#define MAX_PLUGINS 100
+#define INITIAL_PLUGIN_ARRAY_SIZE 1
 #define MAX_PLUGIN_STRING 1024
 
 #define MAX_FUNC_STRING 256
+
+int gNumPlugins = 0;
+int gCurrentPluginSize = INITIAL_PLUGIN_ARRAY_SIZE;
 
 /**
  * @brief Mechanism for registering required plugin functions.
@@ -118,7 +121,7 @@ typedef struct mamaPluginImpl_
 
 } mamaPluginImpl;
 
-static mamaPluginImpl*      gPlugins[MAX_PLUGINS];
+static mamaPluginImpl**      gPlugins;
 static volatile int         gPluginNo = 0;
 
 /**
@@ -159,6 +162,11 @@ mamaPlugin_findPlugin (const char* name);
 mama_status
 mama_loadPlugin (const char* pluginName);
 
+/**
+*   Reallocate space for plugins when current limit is reached
+*/
+static void
+pluginPropertiesCb(const char* name, const char* value, void* closure);
 
 /**
  * Register function pointers associated with a specific plugin.
@@ -202,19 +210,17 @@ mama_initPlugins(void)
     const char*     prop             = NULL;
     char            propString[MAX_PLUGIN_STRING];
 
-    for (pluginCount = 0; pluginCount < MAX_PLUGINS; pluginCount++)
+    if(!gPlugins)
     {
-        snprintf(propString, MAX_PLUGIN_STRING,
-            PLUGIN_PROPERTY"%d",
-            pluginCount);
-
-        prop = properties_Get (mamaInternal_getProperties (), propString);
-        if (prop != NULL && strlen(prop)!= 0)
-        {
-            mama_log (MAMA_LOG_LEVEL_FINE, "mama_initPlugins(): Initialising [%s] %s", propString, prop);
-            mama_loadPlugin (prop);
-        }
+        gPlugins = calloc (INITIAL_PLUGIN_ARRAY_SIZE, sizeof(mamaPluginImpl*));
     }
+
+    properties_ForEach (mamaInternal_getProperties(), pluginPropertiesCb, NULL);
+
+#ifdef WITH_ENTERPRISE
+    mama_log (MAMA_LOG_LEVEL_FINE, "mama_initPlugins(): Initialising mamacenterprise");
+    mama_loadPlugin ("mamacenterprise");
+#endif /* WITH_ENTERPRISE */
 
     return MAMA_STATUS_OK;
 }
@@ -240,10 +246,17 @@ mama_loadPlugin (const char* pluginName)
     if (pluginImpl == NULL)
     {
        /* The plugin name should be of the format mamaplugin<name> */
-        snprintf(loadPluginName, MAX_PLUGIN_STRING,
-            "%s%s",
-            PLUGIN_NAME,
-            pluginName);
+#ifdef WITH_ENTERPRISE
+        if (strncmp(pluginName, "mamacenterprise", MAX_PLUGIN_STRING) == 0)
+            snprintf(loadPluginName, MAX_PLUGIN_STRING,
+                "%s",
+                pluginName);
+        else
+#endif /* WITH_ENTERPRISE */
+            snprintf(loadPluginName, MAX_PLUGIN_STRING,
+                "%s%s",
+                PLUGIN_NAME,
+                pluginName);
 
         pluginLib = openSharedLib (loadPluginName, NULL);
 
@@ -335,7 +348,7 @@ mama_shutdownPlugins (void)
     int          plugin = 0;
     int          ret    = 0;
 
-    for (plugin = 0; plugin <= gPluginNo; plugin++)
+    for (plugin = 0; plugin < gPluginNo; plugin++)
     {
         if (gPlugins[plugin] != NULL)
         {
@@ -381,7 +394,7 @@ mamaPlugin_firePublisherPreSendHook (mamaPublisher publisher, mamaMsg message)
     mama_status  status = MAMA_STATUS_OK;
     int          plugin = 0;
 
-    for (plugin = 0; plugin <= gPluginNo; plugin++)
+    for (plugin = 0; plugin < gPluginNo; plugin++)
     {
         if (gPlugins[plugin] != NULL)
         {
@@ -407,7 +420,7 @@ mamaPlugin_fireTransportPostCreateHook (mamaTransport transport)
     mama_status  status = MAMA_STATUS_OK;
     int          plugin = 0;
 
-    for (plugin = 0; plugin <= gPluginNo; plugin++)
+    for (plugin = 0; plugin < gPluginNo; plugin++)
     {
         if (gPlugins[plugin] != NULL)
         {
