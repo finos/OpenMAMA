@@ -2,10 +2,14 @@ cmake_minimum_required (VERSION 2.8)
 project (libwombatcommonc)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake)
-include(mama-common)
 include(${CMAKE_C_COMPILER_ID})
 
-include_directories(${WOMBAT_INCLUDES})
+string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
+include_directories(
+	${CMAKE_CURRENT_SOURCE_DIR}
+	wombat
+	${system}
+	${system}/wombat)
 
 find_package(FLEX)
 FLEX_TARGET(properties properties.l  ${CMAKE_CURRENT_BINARY_DIR}/properties.c)

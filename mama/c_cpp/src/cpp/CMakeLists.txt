@@ -6,7 +6,6 @@ list(APPEND CMAKE_MODULE_PATH
 	    ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake
 )
 
-include(mama-common)
 include(${CMAKE_C_COMPILER_ID})
 
 get_target_property(MAMA_INCLUDES mamac INCLUDE_DIRECTORIES)

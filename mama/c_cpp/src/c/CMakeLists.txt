@@ -6,11 +6,12 @@ list(APPEND CMAKE_MODULE_PATH
 	    ${CMAKE_CURRENT_SOURCE_DIR}/../../cmake
 )
 
-include(mama-common)
 include(${CMAKE_C_COMPILER_ID})
 include(FindAPR)
 
 find_package(APR)
+
+get_target_property(WOMBAT_INCLUDES wombatcommonc INCLUDE_DIRECTORIES)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}

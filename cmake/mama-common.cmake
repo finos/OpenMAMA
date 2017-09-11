@@ -1,15 +1,5 @@
 cmake_minimum_required (VERSION 2.8.3)
 
-string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
-
-set(WOMBAT_SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/../common/c_cpp/src)
-set(WOMBAT_INCLUDES
-	${WOMBAT_SOURCE_DIR}/c
-	${WOMBAT_SOURCE_DIR}/c/wombat
-	${WOMBAT_SOURCE_DIR}/c/${system}
-	${WOMBAT_SOURCE_DIR}/c/${system}/wombat
-)
-
 function (get_component_version DIR COMPONENT)
 	 file(STRINGS ${DIR}/VERSION.scons CONTENT)
 
