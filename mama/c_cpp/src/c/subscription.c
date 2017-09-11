@@ -1239,7 +1239,7 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
                 mamaSubscription_getTransport(subscription, &tport);
                 mamaTransportImpl_getEntitlementBridge(tport, &entBridge);
 
-                entBridge->createSubscription (entBridge, &(self->mSubjectContext));
+                entBridge->createSubscription (entBridge, context);
             }
         }
 
