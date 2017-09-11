@@ -23,6 +23,7 @@
 #include "MainUnitTestC.h"
 #include "wombat/strutils.h"
 #include "stdlib.h"
+#include <wombat/environment.h>
 
 class CommonStrutilsTestC : public ::testing::Test
 {
@@ -63,7 +64,7 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableValidBrackets)
     char        inputString[30];
     char        expectedStr[30];
 
-    setenv ("TMPDIR", baseDir, 1);
+    environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
     strncat (inputString, envVar, 9);
@@ -89,7 +90,7 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableValidBracketsAlternative)
     char        inputString[30];
     char        expectedStr[30];
 
-    setenv ("TMPDIR", baseDir, 1);
+    environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
     strncat (inputString, envVar, 9);
@@ -114,7 +115,7 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableValidMixedBrackets)
     char*       outputStr   = NULL;
     char        inputString[30];
 
-    setenv ("TMPDIR", baseDir, 1);
+    environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
     strncat (inputString, envVar, 9);
@@ -135,7 +136,7 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableValidMixedBracketsReverse
     char*       outputStr   = NULL;
     char        inputString[30];
 
-    setenv ("TMPDIR", baseDir, 1);
+    environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
     strncat (inputString, envVar, 9);
@@ -173,7 +174,7 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableLargeLogfileStr)
     char        inputString[810];
     char        expectedStr[810];
 
-    setenv ("TMPDIR", baseDir, 1);
+    environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
     strncat (inputString, envVar, 9);
@@ -199,7 +200,7 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableLargePathStr)
     char        inputString[540];
     char        expectedStr[540];
 
-    setenv ("TMPDIR", baseDir, 1);
+    environment_setVariable ("TMPDIR", baseDir);
 
     inputString[0] = '\0';
     strncat (inputString, envVar, 9);
@@ -224,8 +225,8 @@ TEST_F (CommonStrutilsTestC, replaceMultipleEnvironmentVariableValid)
     char*       outputStr   = NULL;
     char        expectedStr[30];
 
-    setenv ("TMPDIR", baseDir, 1);
-    setenv ("TMPLOGFILE", logfileName, 1);
+    environment_setVariable("TMPDIR", baseDir);
+    environment_setVariable("TMPLOGFILE", logfileName);
 
     outputStr = strReplaceEnvironmentVariable (envVar);
 
@@ -248,9 +249,9 @@ TEST_F (CommonStrutilsTestC, replaceMultipleEmbeddedEnvironmentVariableValid)
     char*       outputStr   = NULL;
     char        expectedStr[30];
 
-    setenv ("TMPDIR", baseDirEx, 1);
-    setenv ("TMPSECONDDIR", secondDir, 1);
-    setenv ("TMPLOGFILE", logfileName, 1);
+    environment_setVariable("TMPDIR", baseDirEx);
+    environment_setVariable("TMPSECONDDIR", secondDir);
+    environment_setVariable("TMPLOGFILE", logfileName);
 
     outputStr = strReplaceEnvironmentVariable (envVar);
 
