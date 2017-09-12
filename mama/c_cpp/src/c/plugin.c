@@ -375,6 +375,7 @@ mama_shutdownPlugins (void)
     }
 
     free(gPlugins);
+    gPlugins  = NULL;
     gPluginNo = 0;
 
     return status;
