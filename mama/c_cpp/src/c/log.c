@@ -77,7 +77,7 @@ static PMRSWLock g_lock = NULL;
 
 FILE*        gMamaLogFile               = NULL;
 FILE*        gMamaControlledLogFile     = NULL;
-MamaLogLevel gMamaLogLevel              = MAMA_LOG_LEVEL_WARN;
+MamaLogLevel gMamaLogLevel              = MAMA_LOG_LEVEL_NORMAL;
 mamaLogCb    gMamaLogFunc               = mama_logDefault;
 mamaLogCb    gMamaForceLogFunc          = mama_forceLogDefault;
 mamaLogCb3   gMamaForceLogPrefixFunc    = mama_forceLogPrefixDefault;
