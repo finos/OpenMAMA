@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include "mama/MamaTransportMap.h"
 #include "mama/MamaTransport.h"
 #include "mamacppinternal.h"

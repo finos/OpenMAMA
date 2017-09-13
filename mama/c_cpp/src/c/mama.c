@@ -1269,8 +1269,6 @@ mama_status
 mama_setPropertiesFromFile (const char *path,
                             const char *filename)
 {
-    wproperty_t fileProperties;
-
     if (!path || !filename)
     {
         return MAMA_STATUS_NULL_ARG;
@@ -2296,7 +2294,6 @@ error_handling_impl_allocated:
     free (*impl);
 error_handling_impl:
     *impl = NULL;
-error_handling_close_and_unlock:
     closeSharedLib (payloadLibHandle);
 error_handling_unlock:
     wthread_static_mutex_unlock (&gImpl.myLock);
@@ -2833,7 +2830,6 @@ error_handling_impl_allocated:
     free (*impl);
 error_handling_impl:
     *impl = NULL;
-error_handling_close_and_unlock:
     closeSharedLib (middlewareLibHandle);
 error_handling_unlock:
     wthread_static_mutex_unlock (&gImpl.myLock);
@@ -2972,7 +2968,7 @@ mamaInternal_initialiseTable (wtable_t* table,
 
     if (!(*table))
     {
-       *table = wtable_create (name, size);
+       *table = wtable_create (name, (unsigned long) size);
 
        if (!(*table))
        {

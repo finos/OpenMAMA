@@ -167,7 +167,7 @@ int wmFastPrintU64 (
             ++extra;
             --minWidth;
         }
-        result[0] = (value/100) + '0';
+        result[0] = (char)((value/100) + '0');
         wmMemCpy (result+1, gLeadingZeroIntegerStrings[value%100], 3);
         return extra + 3;
     }
@@ -186,8 +186,8 @@ int wmFastPrintU64 (
     }
     if ((value < 100000) && (maxLen > 5))
     {
-        int leading = value/10000;
-        int residual = value - (leading*10000);
+        w_u64_t leading = value/10000;
+        w_u64_t residual = value - (leading*10000);
         while (minWidth > 5)
         {   
             result[0] = '0';
@@ -203,8 +203,8 @@ int wmFastPrintU64 (
 
     if ((value < 1000000) && (maxLen > 6))
     {
-        int leading = value/10000;
-        int residual = value - (leading*10000);
+        w_u64_t leading = value/10000;
+        w_u64_t residual = value - (leading*10000);
         while (minWidth > 6)
         {   
             result[0] = '0';
@@ -232,11 +232,11 @@ int wmFastPrintU64 (
                 ++extra;
                 --minWidth;
             }
-            return extra + snprintf (result, maxLen, "%" PRIu64, (long unsigned int)value);
+            return extra + snprintf (result, maxLen, "%" PRIu64, value);
         }
     }
     /*  last resort */
-    return snprintf (result, maxLen, "%"PRIu64, (long unsigned int)value);
+    return snprintf (result, maxLen, "%"PRIu64, value);
 }
 
 int wmFastPrintI64 (
@@ -359,7 +359,7 @@ int wmFastPrintF64 (
     }
     tmpResult[maxlen-1] = '\0';
     result  = tmpResult;
-    return actualMaxLen - maxlen;
+    return (int)(actualMaxLen - maxlen);
 }
 
 size_t wmStrSizeCpy (char* dst, const char* src, size_t siz)
@@ -488,7 +488,7 @@ int
 strcatAlloc(char** s, const char* ct)
 {
   size_t blockSize = 100;
-  int currentBlocks, requiredBlocks;
+  size_t currentBlocks, requiredBlocks;
   void* p;
 
   if (NULL==ct) return 0; /* nothing to do! */
@@ -527,7 +527,7 @@ int strlenEx(const char* s)
   if (NULL==s)
     return 0;
   else
-    return strlen(s);
+    return (int)strlen(s);
 }
 
 /* Could probably make this a lot faster... */

@@ -207,7 +207,7 @@ wsocketpair (int domain, int type, int protocol, int* pair)
     int len = sizeof(addr);
     int l; 
 
-    l = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    l = (int)socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (INVALID_SOCKET == l) 
         return -1;
 
@@ -235,7 +235,7 @@ wsocketpair (int domain, int type, int protocol, int* pair)
         return -1;
     }
     
-    pair[0] = socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
+    pair[0] = (int) socket (AF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (INVALID_SOCKET == pair[0]) 
     {
         _close (l);
@@ -249,7 +249,7 @@ wsocketpair (int domain, int type, int protocol, int* pair)
         return -1;
     }
 
-    pair[1] = accept (l, NULL, NULL);
+    pair[1] = (int)accept (l, NULL, NULL);
     if (INVALID_SOCKET == pair[1])
     {
         _close (l);
@@ -277,7 +277,7 @@ static wthread_static_mutex_t envLock = WSTATIC_MUTEX_INITIALIZER;
 
 int wnanosleep (struct wtimespec* ts, struct timnespec* remain)
 {
-    DWORD millis = ts->tv_sec * 1000 + ts->tv_nsec/1000;
+    DWORD millis = (DWORD) (ts->tv_sec * 1000 + ts->tv_nsec/1000);
     /* if tv_nsec > 0 add at least 1 milli */
     if (ts->tv_nsec > 0 && ts->tv_nsec < 1000) 
         millis += 1;

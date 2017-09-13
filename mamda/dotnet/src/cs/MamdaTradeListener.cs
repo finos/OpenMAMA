@@ -279,7 +279,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getPartId()" />
+        ///
         /// </summary>
         public String getPartId()
         {
@@ -303,7 +303,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getLineTime()" />
+        ///
         /// </summary>
         public DateTime getLineTime()
         {
@@ -311,7 +311,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getSendTime()" />
+        ///
         /// </summary>
         public DateTime getSendTime()
         {
@@ -319,7 +319,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getPubId()" />
+        ///
         /// </summary>
         public String getPubId()
         {
@@ -1006,7 +1006,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getPartIdFieldState()" />
+        ///
         /// </summary>
         public MamdaFieldState getPartIdFieldState()
         {
@@ -1030,7 +1030,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getLineTimeFieldState()" />
+        ///
         /// </summary>
         public MamdaFieldState getLineTimeFieldState()
         {
@@ -1038,7 +1038,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getSendTimeFieldState()" />
+        ///
         /// </summary>
         public MamdaFieldState getSendTimeFieldState()
         {
@@ -1046,7 +1046,7 @@ namespace Wombat
         }
 
         /// <summary>
-        /// <see cref="MamdaBasicEvent.getPubIdFieldState()" />
+        ///
         /// </summary>
         public MamdaFieldState getPubIdFieldState()
         {
@@ -3151,7 +3151,6 @@ namespace Wombat
             {
                 long tempTradeCount = field.getI64();
                 listener.mTmpTradeCount.Value = tempTradeCount;
-                listener.mTmpTradeCountFieldState = MamdaFieldState.MODIFIED;
                 listener.mTradeCache.mGotTradeCount = true;
             }
         }
@@ -3888,7 +3887,6 @@ namespace Wombat
         internal NullableLong mTmpTradeCount = new NullableLong();
 
         private MamdaFieldState mIsIndicativeFieldState = new MamdaFieldState();
-        private MamdaFieldState mTmpTradeCountFieldState = new MamdaFieldState();
 
         #endregion State
 

@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mamda/MamdaErrorListener.h>
 #include <mamda/MamdaTradeChecker.h>
 #include <mamda/MamdaTradeFields.h>

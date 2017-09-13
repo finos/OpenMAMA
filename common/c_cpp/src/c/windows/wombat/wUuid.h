@@ -29,6 +29,8 @@ typedef char* wUuid;
 extern "C" {
 #endif
 
+#define wUuid_clear(uuid) uuid = NULL;
+
 COMMONExpDLL
 void wUuid_generate_time (wUuid myUuid);
 

@@ -24,6 +24,7 @@
   =                             Includes                                  =
   =========================================================================*/
 
+#include <stdint.h>
 #include <wombat/port.h>
 #include <property.h>
 #include <mama/mama.h>
@@ -795,6 +796,7 @@ qpidBridgeMamaTransportImpl_getUuid (transportBridge transport)
         wUuid                tempUuid;
         char                 uuidStringBuffer[UUID_STRING_BUF_SIZE];
 
+        wUuid_clear          (tempUuid);
         wUuid_generate_time  (tempUuid);
         wUuid_unparse        (tempUuid, uuidStringBuffer);
         impl->mUuid = strdup (uuidStringBuffer);

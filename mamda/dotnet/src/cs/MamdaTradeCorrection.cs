@@ -277,7 +277,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Get the ShortSaleCircuitBreaker.
-		/// <see>MamdaTradeReport.getCorrShortSaleCircuitBreaker()
+		/// <see>MamdaTradeReport.getCorrShortSaleCircuitBreaker()</see>
 		/// </summary>
 		/// <returns></returns>
          char getCorrShortSaleCircuitBreaker();

@@ -1388,5 +1388,5 @@ mamaQueue_pollQueueSizeCb (void* closure)
 
     mamaQueue_getEventCount (queue, &count);
 
-    return count;
+    return (int)count;
 }

@@ -22,6 +22,7 @@
 /* *************************************************** */
 /* Includes. */
 /* *************************************************** */
+#include <stdint.h>
 #include "mama/mama.h"
 #include "mama/MamaBasicWildCardSubscription.h"
 #include "mama/MamaBasicWildCardSubscriptionCallback.h"

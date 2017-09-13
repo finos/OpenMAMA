@@ -666,7 +666,6 @@ namespace Wombat
         {
             mPriceLevelEntryAction     = (sbyte) MamdaOrderBookEntry.Actions.Delete;
             mPriceLevelEntrySize       = 0;
-            mPriceLevelEntryId         = "";
             mPriceLevelEntryTime		= DateTime.MinValue;
         }
 
@@ -695,7 +694,6 @@ namespace Wombat
         private double			mPriceLevelNumEntries    = 1.0;
         private long			mPriceLevelActNumEntries = 0;
         private sbyte			mPriceLevelEntryAction   = (sbyte) MamdaOrderBookEntry.Actions.Delete; // char field
-        private string			mPriceLevelEntryId       = "";
         private IntPtr			mPriceLevelEntryIdIntPtr = IntPtr.Zero;
         private long			mPriceLevelEntrySize     = 0;
         private DateTime		mPriceLevelEntryTime     = DateTime.MinValue;

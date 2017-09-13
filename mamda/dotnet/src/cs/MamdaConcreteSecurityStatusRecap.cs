@@ -117,7 +117,7 @@ namespace Wombat
 		/// <summary>
 		/// <see cref="MamdaSecurityStatusUpdate.getSecurityStatusEnum()"/>
 		/// </summary>
-		/// <returns</returns>
+		/// <returns></returns>
 		public void setSecurityStatusEnum(MamdaSecurityStatus.mamdaSecurityStatus secStatus)
 		{
 			mSecurityStatusEnum = secStatus;
@@ -256,7 +256,7 @@ namespace Wombat
 				mSecurityStatusQualifierStr = securityStatusQualifierStr;
 		}
 
-        ///< summary>
+        ///<summary>
         /// Returns the security status reason
         /// <see cref="MamdaSecurityStatusRecap.getReason()"/>
         /// </summary>
@@ -331,7 +331,7 @@ namespace Wombat
         {
           return MamdaFieldState.MODIFIED;
         }
-		///< summary>
+		/// <summary>
         /// Returns the security status Luld Time
         /// </summary>
         /// <returns></returns>
@@ -348,7 +348,7 @@ namespace Wombat
           return MamdaFieldState.MODIFIED;
         }
 
-                ///< summary>
+        /// <summary>
         /// Returns the security status Luld Indicator
         /// </summary>
         /// <returns></returns>
@@ -365,7 +365,7 @@ namespace Wombat
           return MamdaFieldState.MODIFIED;
         }
 
-        ///< summary>
+        /// <summary>
         /// Returns the security status Luld High Limit
         /// </summary>
         /// <returns></returns>
@@ -382,7 +382,7 @@ namespace Wombat
           return MamdaFieldState.MODIFIED;
         }
 
-        ///< summary>
+        /// <summary>
         /// Returns the security status Luld LowLimit
         /// </summary>
         /// <returns></returns>
@@ -402,7 +402,7 @@ namespace Wombat
         /// <summary>
         /// Set the Limit Up Limit Down Time
         /// </summary>
-        /// <param name="LuldTime"></param>
+        /// <param name="luldTime"></param>
 
         public void setLuldTime(DateTime luldTime)
         {
@@ -413,7 +413,7 @@ namespace Wombat
         /// <summary>
         /// Set the Limit Up Limit Down Indicator
         /// </summary>
-        /// <param name="LuldIndicator"></param>
+        /// <param name="luldIndicator"></param>
 
         public void setLuldIndicator(char luldIndicator)
         {
@@ -423,7 +423,7 @@ namespace Wombat
         /// <summary>
         /// Set the Limit Up Limit Down High Limit
         /// </summary>
-        /// <param name="LuldHighLimit"></param>
+        /// <param name="luldHighLimit"></param>
 
         public void setLuldHighLimit(MamaPrice luldHighLimit)
         {
@@ -433,7 +433,7 @@ namespace Wombat
         /// <summary>
         /// Set the Limit Up Limit Down Low Limit
         /// </summary>
-        /// <param name="LuldHighLimit"></param>
+        /// <param name="luldLowLimit"></param>
 
         public void setLuldLowLimit(MamaPrice luldLowLimit)
         {

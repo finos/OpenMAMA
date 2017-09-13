@@ -266,7 +266,7 @@ mama_status mamaDQPublisherManager_create (
     impl->mTransport = transport;
     impl->mQueue = queue;
     impl->mClosure = closure;
-    length = strlen(root) + 1 + (strlen(sourcename) + 1);
+    length = (int)(strlen(root) + 1 + (strlen(sourcename) + 1));
     topic = calloc(length, sizeof(char));
 
     strcpy(topic, root);
@@ -432,7 +432,7 @@ mama_status mamaDQPublisherManager_createPublisher (
             mamaDQPublisher_setSeqNum(*newPublisher, impl->mSeqNum);
             mamaDQPublisher_enableSendTime(*newPublisher, impl->mEnableSendTime);
 
-            length = strlen(impl->mNameSpace) + 1 + (strlen(symbol) + 1);
+            length = (int)(strlen(impl->mNameSpace) + 1 + (strlen(symbol) + 1));
             topic = calloc(length, sizeof(char));
             strcpy (topic, impl->mNameSpace);
             strcat (topic, ".");

@@ -110,7 +110,7 @@ namespace Wombat
 		/// <summary>
 		///
 		/// </summary>
-		/// <param name="actTime"></param>
+		/// <param name="lineTime"></param>
 		public void setLineTime(DateTime lineTime)
 		{
 			if (lineTime != DateTime.MinValue)
@@ -134,11 +134,11 @@ namespace Wombat
           return MamdaFieldState.MODIFIED;
         }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="actTime"></param>
-		public void setSendTime(DateTime sendTime)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="sendTime"></param>
+        public void setSendTime(DateTime sendTime)
 		{
 			if (sendTime != DateTime.MinValue)
 				this.mSendTime = sendTime;
@@ -154,7 +154,7 @@ namespace Wombat
 		}
 
         /// <summary>
-        /// <see cref="MamdaBasicRecap.FieldState"/>
+        ///
         /// </summary>
         /// <returns></returns>
         public MamdaFieldState getAuctionTimeFieldState()
@@ -430,11 +430,11 @@ namespace Wombat
           return MamdaFieldState.MODIFIED;
         }
 
-		/// <summary>
-		///
-		/// </summary>
-		/// <param name="issueSymbol"></param>
-		public void setSymbol(String symbol)
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="symbol"></param>
+        public void setSymbol(String symbol)
 		{
 			if (symbol != null)
 				this.mSymbol = symbol;

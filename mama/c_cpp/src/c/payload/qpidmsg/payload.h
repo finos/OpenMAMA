@@ -30,10 +30,6 @@
 #include "qpidcommon.h"
 
 
-#if defined(__cplusplus)
-extern "C" {
-#endif
-
 /*=========================================================================
   =                   Public implementation prototypes                    =
   =========================================================================*/
@@ -102,10 +98,5 @@ qpidmsgPayloadImpl_moveDataToContentLocation (pn_data_t*               buffer);
 mama_status
 qpidmsgPayloadImpl_moveDataToInsertLocation  (pn_data_t*                buffer,
                                               qpidmsgPayloadImpl*       impl);
-
-
-#if defined(__cplusplus)
-}
-#endif
 
 #endif /* MAMA_PAYLOAD_QPIDMSG_PAYLOAD_H */

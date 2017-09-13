@@ -157,7 +157,7 @@ namespace Wombat
         /// Set the retries for this subscription.  Do this
         /// before calling activate(). Default is 10 seconds.
         /// </summary>
-        /// <param name="timeout"></param>
+        /// <param name="retries"></param>
         public void setRetries(int retries)
         {
             mRetries = retries;
@@ -187,7 +187,6 @@ namespace Wombat
         /// <summary>
         /// get a listener for regular messages.
         /// </summary>
-        /// <param name="listener"></param>
         public ArrayList getMsgListeners()
         {
           return mMsgListeners;

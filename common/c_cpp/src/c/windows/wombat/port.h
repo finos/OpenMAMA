@@ -103,6 +103,8 @@ wsetnonblock (int s);
 
 #define shutdown(x, y) closesocket((x))
 
+#define itoa(x, y, z) _itoa(x, y, z)
+
 /* net work utility functions */
 COMMONExpDLL const char* getIpAddress (void);
 COMMONExpDLL const char* getHostName (void);
@@ -165,8 +167,10 @@ int wsem_getvalue (wsem_t*, int* items);
 #endif
 
 #define strdup _strdup
-#define strncasecmp _strnicmp
-#define strcasecmp  _stricmp
+#ifndef APR_GENERAL_H
+    #define strncasecmp _strnicmp
+    #define strcasecmp  _stricmp
+#endif
 #define wread(x,y,z) recv((x),(y),(z),0)
 #define wwrite(x,y,z) send((x),(y),(z),0)
 #define close _close
@@ -213,6 +217,7 @@ struct timespec
 /* Macro for managing the printing of mama_size_t values. */
 #define PRI_MAMA_SIZE_T "Iu"
 
+#ifndef _STDINT
 #ifndef INT8_MIN
 #define INT8_MIN SCHAR_MIN
 #endif
@@ -249,6 +254,7 @@ struct timespec
 #ifndef UINT64_MAX
 #define UINT64_MAX ULLONG_MAX
 #endif
+#endif /* _STDINT */
 
 #define wthread_detach( h )           /* noop */
 #define wthread_self                 GetCurrentThread

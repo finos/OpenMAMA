@@ -44,6 +44,8 @@ winheaders = Split ("""
                         windows/mman.h
                     """)
 
+env.Append( CPPDEFINES = ['YY_NO_UNISTD_H', 'COMMON_DLL', 'WIN32'] )
+
 env.InstallLibrary(sources, target)
 
 if ( env['build'] == 'dynamic' or len( env['buildtype'] ) == 1 ):

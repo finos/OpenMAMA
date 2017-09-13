@@ -852,7 +852,7 @@ static void readSymbolsFromSymbolFile (void)
         /* Populate the pubcache list with the symbol list information */
         for (i = 0; i < l1SymbolCount; i++)
         {
-            printf ("Count %d, symbol %s/n", i, gSymbolList[i]);
+            printf ("Count %d, symbol %s/n", (int)i, gSymbolList[i]);
             symbolLen = strlen (gSymbolList[i]);
 
             /* Allocate memory for the symbol name, then copy across. */

@@ -188,6 +188,7 @@ struct wtimespec
 /* net work utility functions */
 const char* getIpAddress (void);
 const char* getHostName (void);
+struct in_addr wresolve_ip (const char * arg);
 
 /* GCC and compatible compilers (except ICC) */
 #if (defined (__GNUC__) && (!defined (__ICC)))

@@ -90,7 +90,7 @@ static const char* gInputFilename = NULL;
 static const char* gInputPayloadType = NULL;
 static const char* gOutputFilename = NULL;
 static const char* gOutputPayloadType = NULL;
-static const const char** gSymbolList = NULL;
+static const char** gSymbolList = NULL;
 static wtable_t gSymbolTable = NULL;
 
 static const char* gUsageString[] =

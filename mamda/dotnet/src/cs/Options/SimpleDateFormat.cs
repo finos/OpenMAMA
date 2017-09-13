@@ -39,7 +39,7 @@ namespace Wombat
 
 		/// <summary>
 		/// Creates a date format, using the specified date/time format and culture (format provider)
-		/// <seealso cref="System.DateTime.ToString(System.String, System.Globalization.IFormatProvider)"/>
+		/// <seealso cref="System.DateTime.ToString(System.String, System.IFormatProvider)"/>
 		/// </summary>
 		public SimpleDateFormat(string format, IFormatProvider formatProvider)
 		{
