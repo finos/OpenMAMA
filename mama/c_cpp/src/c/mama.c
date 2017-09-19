@@ -1566,6 +1566,14 @@ mama_closeCount (unsigned int* count)
                         wlock_destroy(middlewareLib->bridge->mLock);
                     }
 
+                    /* If there was a background thread, clean it up */
+                    if (middlewareLib->bridge->mStartBackgroundThread)
+                    {
+                        // Get name of start background thread and destroy it
+                        const char* threadName = wombatThread_getThreadName(middlewareLib->bridge->mStartBackgroundThread);
+                        wombatThread_destroy (threadName);
+                    }
+
                     free (middlewareLib->bridge);
                     middlewareLib->bridge = NULL;
                 }
@@ -1823,15 +1831,6 @@ mama_stop (mamaBridge bridgeImpl)
         }
     }
     wthread_static_mutex_unlock(&gImpl.myLock);
-
-    /* If there was a background thread, clean it up */
-    if (impl->mStartBackgroundThread)
-    {
-        // Get name of start background thread and destroy it
-        const char* threadName = wombatThread_getThreadName(impl->mStartBackgroundThread);
-        wombatThread_destroy(threadName);
-    }
-
     return rval;
 }
 
