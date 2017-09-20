@@ -59,6 +59,7 @@
     <Compile Include="MamaMsgVectorMsgTest.cs" />
     <Compile Include="MamaMsgVectorPriceTest.cs" />
     <Compile Include="MamaMsgVectorStringTest.cs" />
+    <Compile Include="MamaPublisherTest.cs" />
     <Compile Include="MamaSetLogCallbackTest.cs" />
     <Compile Include="MamaSetLogFilePolicyTest.cs" />
     <Compile Include="MamaSetLogLevelTest.cs" />

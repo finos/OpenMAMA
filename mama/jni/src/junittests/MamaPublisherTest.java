@@ -207,11 +207,6 @@ public class MamaPublisherTest extends TestCase implements MamaStartBackgroundCa
     }
 
     @Override
-    public void onSuccess(MamaPublisher pub, short status, String info)
-    {
-    }
-
-    @Override
     public void onStartComplete(int status)
     {
     }

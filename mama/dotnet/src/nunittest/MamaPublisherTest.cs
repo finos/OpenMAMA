@@ -120,7 +120,14 @@ namespace NUnitTest
             destroyCount++;
             Mama.log(MamaLogLevel.MAMA_LOG_LEVEL_FINE, "MamaPublisherTest.onDestroy: ");
         }
-    
+
+        public void onSuccess(MamaPublisher publisher,
+                     MamaStatus.mamaStatus status,
+                     string topic)
+        {
+            // Do nothing
+        }
+
         #endregion
 
         #region Tests
