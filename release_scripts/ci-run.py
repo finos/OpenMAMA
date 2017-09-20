@@ -42,8 +42,7 @@ if "MSVSVER" not in env_var:
 if os.name is 'nt':
     dep_base = os.path.join("C:\\", "Deps", env_var["MSVSVER"])
     shell = True
-    #product = 'mamdaall'
-    product = 'mamda'
+    product = 'mamdaall'
 else:
     dep_base = '/opt'
     shell = False
