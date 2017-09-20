@@ -63,7 +63,7 @@ properties_Load( const char* path, const char* fileName )
 {
     int i             = 0, j=0;
     int pointer       = 0;
-    int length        = 0;
+    size_t length     = 0;
     const char* tempPath    = NULL;
     char subPath[256] = "";
     char newPath[256] = "";
@@ -418,7 +418,7 @@ properties_AddEscapes (const char* src, const char chars[], int num)
 {
    int i = 0, j = 0, retIdx = 0, matches = 0;
    char* retStr;
-   int strln = 0;
+   size_t strln = 0;
 
    if (!src)
       return NULL;

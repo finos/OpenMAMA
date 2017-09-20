@@ -399,7 +399,6 @@ namespace Wombat
 		}
 
 		private readonly MamdaOptionChain			mChain;
-		private MamdaOptionChainViewRangeHandler	mRangeHandler;
 
 		private const double DEFAULT_JITTER_MARGIN = 0.5; /* percent */
 

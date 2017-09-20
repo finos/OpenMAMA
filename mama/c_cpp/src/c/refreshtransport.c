@@ -212,7 +212,7 @@ refreshTransport_startStaleRecapTimer (struct refreshTransportImpl_ *impl)
 static mama_status
 init (refreshTransportImpl *impl)
 {
-    srand (time (NULL));
+    srand ((unsigned int) time (NULL));
     refreshTransport_startRefreshTimer (impl);
 
 
@@ -244,7 +244,7 @@ refreshTransport_addSubscription (refreshTransport transport,
 {
     refreshTransportImpl *impl = (refreshTransportImpl*)transport;
 
-    info->mNextRefreshTime = time (NULL) + MAMA_REFRESHINTERVALRAND * 60;
+    info->mNextRefreshTime = time (NULL) + (time_t)(MAMA_REFRESHINTERVALRAND * 60);
     list_push_back (impl->mNewListeners, info);
 
     return;
@@ -269,7 +269,7 @@ refreshTransportImpl_processNewSubscriptions (refreshTransportImpl *impl)
      * MAMA_REFRESHINTERVALRAND.
      */
     time_t dontRefreshBefore =
-        curTime + (MAMA_REFRESHINTERVALRAND - MAMA_REFRESHINTERVALMIN)*60;
+        (time_t)(curTime + (MAMA_REFRESHINTERVALRAND - MAMA_REFRESHINTERVALMIN)*60);
 
     if (impl->mMamaTransport)
         throttle = mamaTransportImpl_getThrottle (impl->mMamaTransport,
@@ -298,7 +298,7 @@ refreshTransportImpl_processNewSubscriptions (refreshTransportImpl *impl)
      * use this value to compute the number of messages required/interval, and
      * then choose a random value.
      */
-    intervals = (last->mNextRefreshTime - curTime)/REFRESH_GRANULARITY;
+    intervals = (int)((last->mNextRefreshTime - curTime)/REFRESH_GRANULARITY);
 
     /*Just in case the interval is 0 due to truncation when
      last->mNextRefreshTime - curTime < REFRESH_GRANULARITY*/
@@ -316,8 +316,8 @@ refreshTransportImpl_processNewSubscriptions (refreshTransportImpl *impl)
      /*
      * Multiply by 2 so on average we send the correct number of messages.
      */
-    maxMessages = 2*( 1 + ((double)rand ()/(double)RAND_MAX) *
-                      messagesPerInterval);
+    maxMessages = (int)(2*( 1 + ((double)rand ()/(double)RAND_MAX) *
+                      messagesPerInterval));
 
     mama_log (MAMA_LOG_LEVEL_FINER, "Sending some refreshes");
 
@@ -347,7 +347,7 @@ refreshTransportImpl_processNewSubscriptions (refreshTransportImpl *impl)
 
         /* Take it off the new list and put it on the main list */
         list_pop_front (impl->mNewListeners);
-        cur->mNextRefreshTime = time (NULL) + MAMA_REFRESHINTERVALRAND * 60;
+        cur->mNextRefreshTime = time (NULL) + (time_t)(MAMA_REFRESHINTERVALRAND * 60);
         cur->mIsInMainList = 1;
         list_push_back (impl->mListeners, cur);
     }
@@ -370,7 +370,7 @@ void refreshTransportImpl_doRefresh (refreshTransportImpl *impl)
     /* We must send refreshes for all messages with mNextRefreshTime <=
      * this value.
      */
-    time_t refreshUntil = curTime + REFRESH_GRANULARITY;
+    time_t refreshUntil = curTime + (time_t) REFRESH_GRANULARITY;
 
     mama_log (MAMA_LOG_LEVEL_FINER, "Starting refresh message mini-cycle");
 
@@ -410,7 +410,7 @@ void refreshTransportImpl_doRefresh (refreshTransportImpl *impl)
 
         /* Move to the end */
         list_pop_front (impl->mListeners);
-        cur->mNextRefreshTime = time (NULL) + MAMA_REFRESHINTERVALRAND * 60;
+        cur->mNextRefreshTime = (time_t)(time (NULL) + MAMA_REFRESHINTERVALRAND * 60);
         list_push_back (impl->mListeners, cur);
     }
 
@@ -434,7 +434,7 @@ refreshTransport_resetRefreshForListener (refreshTransportImpl* impl, void* hand
 
     info->mIsInMainList = 1;
     list_lock (impl->mListeners);
-    info->mNextRefreshTime =  time (NULL) + MAMA_REFRESHINTERVALRAND * 60 -1;
+    info->mNextRefreshTime =  time (NULL) + (time_t)(MAMA_REFRESHINTERVALRAND * 60) - 1;
     list_push_back (impl->mListeners, handle);
     list_unlock (impl->mListeners);
 }

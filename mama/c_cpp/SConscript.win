@@ -60,7 +60,7 @@ libpath.append( os.path.join( objdir, 'mama\\c_cpp\\src\\c' ) )
 env.Append(
     LIBS        = ['ws2_32','advapi32','kernel32','secur32','pdh','Psapi'],
     LIBPATH     = [ libpath ],
-    RCFLAGS     = ['-d"_UNICODE"', '-d "UNICODE"','-I%s' % os.path.join( env.Dir('#').abspath, "mama\\c_cpp\\src\\c")],
+    RCFLAGS     = ['/nologo', '-d"_UNICODE"', '-d "UNICODE"','-I%s' % os.path.join( env.Dir('#').abspath, "mama\\c_cpp\\src\\c")],
     LINKFLAGS   = ['/MAP'],
     CPPDEFINES  = ['XML_STATIC','FD_SETSIZE=1024','NOWINMESSAGES','HAVE_WOMBAT_MSG','REFRESH_TRANSPORT','VERSION=%s' % (releaseString)],
     CPPPATH     = includePath,

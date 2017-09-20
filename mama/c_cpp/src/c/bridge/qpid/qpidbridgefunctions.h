@@ -51,7 +51,7 @@ extern "C" {
  * @param result The function will populate this mamaBridge* with a reference
  *               to the middleware bridge just created.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern void
 qpidBridge_createImpl (mamaBridge* result);
 
@@ -68,7 +68,7 @@ qpidBridge_createImpl (mamaBridge* result);
  * @return A mama_status indicating the success or failure of the bridge
  *         initialisation.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridge_init (mamaBridge bridgeImpl);
 
@@ -87,7 +87,7 @@ qpidBridge_init (mamaBridge bridgeImpl);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridge_open (mamaBridge bridgeImpl);
 
@@ -103,7 +103,7 @@ qpidBridge_open (mamaBridge bridgeImpl);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridge_close (mamaBridge bridgeImpl);
 
@@ -121,7 +121,7 @@ qpidBridge_close (mamaBridge bridgeImpl);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridge_start (mamaQueue defaultEventQueue);
 
@@ -139,7 +139,7 @@ qpidBridge_start (mamaQueue defaultEventQueue);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridge_stop (mamaQueue defaultEventQueue);
 
@@ -152,7 +152,7 @@ qpidBridge_stop (mamaQueue defaultEventQueue);
  *
  * @return const char* indicating the required version information.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern const char*
 qpidBridge_getVersion (void);
 
@@ -163,7 +163,7 @@ qpidBridge_getVersion (void);
  *
  * @return const char* representing the name of this bridge.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern const char*
 qpidBridge_getName (void);
 
@@ -182,7 +182,7 @@ qpidBridge_getName (void);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 mama_status
 qpidBridge_getDefaultPayloadId (char*** name, char** id);
 
@@ -209,7 +209,7 @@ qpidBridge_getDefaultPayloadId (char*** name, char** id);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_create (queueBridge *queue, mamaQueue parent);
 
@@ -233,7 +233,7 @@ qpidBridgeMamaQueue_create (queueBridge *queue, mamaQueue parent);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_create_usingNative (queueBridge *queue, mamaQueue parent,
                                         void* nativeQueue);
@@ -250,7 +250,7 @@ qpidBridgeMamaQueue_create_usingNative (queueBridge *queue, mamaQueue parent,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_destroy (queueBridge queue);
 
@@ -265,7 +265,7 @@ qpidBridgeMamaQueue_destroy (queueBridge queue);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_getEventCount (queueBridge queue, size_t* count);
 
@@ -281,7 +281,7 @@ qpidBridgeMamaQueue_getEventCount (queueBridge queue, size_t* count);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_dispatch (queueBridge queue);
 
@@ -301,7 +301,7 @@ qpidBridgeMamaQueue_dispatch (queueBridge queue);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout);
 
@@ -316,7 +316,7 @@ qpidBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_dispatchEvent (queueBridge queue);
 
@@ -335,7 +335,7 @@ qpidBridgeMamaQueue_dispatchEvent (queueBridge queue);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_enqueueEvent (queueBridge        queue,
                                   mamaQueueEnqueueCB callback,
@@ -351,7 +351,7 @@ qpidBridgeMamaQueue_enqueueEvent (queueBridge        queue,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_stopDispatch (queueBridge queue);
 
@@ -371,7 +371,7 @@ qpidBridgeMamaQueue_stopDispatch (queueBridge queue);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
                                         mamaQueueEnqueueCB callback,
@@ -387,7 +387,7 @@ qpidBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_removeEnqueueCallback (queueBridge queue);
 
@@ -404,7 +404,7 @@ qpidBridgeMamaQueue_removeEnqueueCallback (queueBridge queue);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_getNativeHandle (queueBridge queue,
                                      void**      nativeHandle);
@@ -421,7 +421,7 @@ qpidBridgeMamaQueue_getNativeHandle (queueBridge queue,
  *
  * @return mama_status  indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_setHighWatermark (queueBridge queue,
                                       size_t      highWatermark);
@@ -438,7 +438,7 @@ qpidBridgeMamaQueue_setHighWatermark (queueBridge queue,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaQueue_setLowWatermark (queueBridge queue,
                                      size_t      lowWatermark);
@@ -458,7 +458,7 @@ qpidBridgeMamaQueue_setLowWatermark (queueBridge queue,
  *
  * @return int equal to 1 if the transport is valid, otherwise it will return 0.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern int
 qpidBridgeMamaTransport_isValid (transportBridge transport);
 
@@ -472,7 +472,7 @@ qpidBridgeMamaTransport_isValid (transportBridge transport);
  *
  * @return int equal to 1 if the transport is valid, otherwise it will return 0.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_destroy (transportBridge transport);
 
@@ -492,7 +492,7 @@ qpidBridgeMamaTransport_destroy (transportBridge transport);
  *
  * @return mama_status  indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_create (transportBridge* result,
                                 const char*      name,
@@ -503,7 +503,7 @@ qpidBridgeMamaTransport_create (transportBridge* result,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_forceClientDisconnect (
                                 transportBridge* transports,
@@ -516,7 +516,7 @@ qpidBridgeMamaTransport_forceClientDisconnect (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_findConnection (transportBridge* transports,
                                         int              numTransports,
@@ -529,7 +529,7 @@ qpidBridgeMamaTransport_findConnection (transportBridge* transports,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_getAllConnections (transportBridge* transports,
                                            int              numTransports,
@@ -541,7 +541,7 @@ qpidBridgeMamaTransport_getAllConnections (transportBridge* transports,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_getAllConnectionsForTopic (transportBridge* transports,
                                                    int              numTransports,
@@ -554,7 +554,7 @@ qpidBridgeMamaTransport_getAllConnectionsForTopic (transportBridge* transports,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_requestConflation (transportBridge* transports,
                                            int              numTransports);
@@ -564,7 +564,7 @@ qpidBridgeMamaTransport_requestConflation (transportBridge* transports,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_requestEndConflation (transportBridge* transports,
                                               int              numTransports);
@@ -574,7 +574,7 @@ qpidBridgeMamaTransport_requestEndConflation (transportBridge* transports,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_getAllServerConnections (
                                 transportBridge*       transports,
@@ -587,7 +587,7 @@ qpidBridgeMamaTransport_getAllServerConnections (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_freeAllServerConnections (
                                 transportBridge*        transports,
@@ -600,7 +600,7 @@ qpidBridgeMamaTransport_freeAllServerConnections (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_freeAllConnections (transportBridge* transports,
                                             int              numTransports,
@@ -612,7 +612,7 @@ qpidBridgeMamaTransport_freeAllConnections (transportBridge* transports,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_getNumLoadBalanceAttributes (
                                 const char* name,
@@ -623,7 +623,7 @@ qpidBridgeMamaTransport_getNumLoadBalanceAttributes (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_getLoadBalanceSharedObjectName (
                                 const char*  name,
@@ -634,7 +634,7 @@ qpidBridgeMamaTransport_getLoadBalanceSharedObjectName (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_getLoadBalanceScheme (
                                 const char*    name,
@@ -645,7 +645,7 @@ qpidBridgeMamaTransport_getLoadBalanceScheme (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_sendMsgToConnection (
                                 transportBridge transport,
@@ -658,7 +658,7 @@ qpidBridgeMamaTransport_sendMsgToConnection (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_isConnectionIntercepted (
                                 mamaConnection connection,
@@ -669,7 +669,7 @@ qpidBridgeMamaTransport_isConnectionIntercepted (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_installConnectConflateMgr (
                                 transportBridge       transport,
@@ -683,7 +683,7 @@ qpidBridgeMamaTransport_installConnectConflateMgr (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_uninstallConnectConflateMgr (
                                 transportBridge       transport,
@@ -695,7 +695,7 @@ qpidBridgeMamaTransport_uninstallConnectConflateMgr (
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_startConnectionConflation (
                                 transportBridge        transport,
@@ -714,7 +714,7 @@ qpidBridgeMamaTransport_startConnectionConflation (
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_getNativeTransport (transportBridge transport,
                                             void**          result);
@@ -724,7 +724,7 @@ qpidBridgeMamaTransport_getNativeTransport (transportBridge transport,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTransport_getNativeTransportNamingCtx (transportBridge transport,
                                                      void**          result);
@@ -760,7 +760,7 @@ qpidBridgeMamaTransport_getNativeTransportNamingCtx (transportBridge transport,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status qpidBridgeMamaSubscription_create
                                (subscriptionBridge* subscriber,
                                 const char*         source,
@@ -776,7 +776,7 @@ extern mama_status qpidBridgeMamaSubscription_create
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaSubscription_createWildCard (
                                 subscriptionBridge* subsc_,
@@ -798,7 +798,7 @@ qpidBridgeMamaSubscription_createWildCard (
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaSubscription_mute (subscriptionBridge subscriber);
 
@@ -812,7 +812,7 @@ qpidBridgeMamaSubscription_mute (subscriptionBridge subscriber);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern  mama_status
 qpidBridgeMamaSubscription_destroy (subscriptionBridge subscriber);
 
@@ -826,7 +826,7 @@ qpidBridgeMamaSubscription_destroy (subscriptionBridge subscriber);
  *
  * @return int equal to 1 if valid, otherwise it will return 0.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern int
 qpidBridgeMamaSubscription_isValid (subscriptionBridge bridge);
 
@@ -835,7 +835,7 @@ qpidBridgeMamaSubscription_isValid (subscriptionBridge bridge);
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern int
 qpidBridgeMamaSubscription_hasWildcards (subscriptionBridge subscriber);
 
@@ -844,7 +844,7 @@ qpidBridgeMamaSubscription_hasWildcards (subscriptionBridge subscriber);
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaSubscription_getPlatformError (subscriptionBridge subsc,
                                              void** error);
@@ -854,7 +854,7 @@ qpidBridgeMamaSubscription_getPlatformError (subscriptionBridge subsc,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern int
 qpidBridgeMamaSubscription_isTportDisconnected (subscriptionBridge subsc);
 
@@ -863,7 +863,7 @@ qpidBridgeMamaSubscription_isTportDisconnected (subscriptionBridge subsc);
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaSubscription_setTopicClosure (subscriptionBridge subsc,
                                             void* closure);
@@ -873,7 +873,7 @@ qpidBridgeMamaSubscription_setTopicClosure (subscriptionBridge subsc,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaSubscription_muteCurrentTopic (subscriptionBridge subsc);
 
@@ -903,7 +903,7 @@ qpidBridgeMamaSubscription_muteCurrentTopic (subscriptionBridge subsc);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTimer_create (timerBridge* timer,
                             void*        nativeQueueHandle,
@@ -923,7 +923,7 @@ qpidBridgeMamaTimer_create (timerBridge* timer,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTimer_destroy (timerBridge timer);
 
@@ -938,7 +938,7 @@ qpidBridgeMamaTimer_destroy (timerBridge timer);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTimer_reset (timerBridge timer);
 
@@ -953,7 +953,7 @@ qpidBridgeMamaTimer_reset (timerBridge timer);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTimer_setInterval (timerBridge timer, mama_f64_t interval);
 
@@ -967,7 +967,7 @@ qpidBridgeMamaTimer_setInterval (timerBridge timer, mama_f64_t interval);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaTimer_getInterval (timerBridge timer, mama_f64_t* interval);
 
@@ -981,7 +981,7 @@ qpidBridgeMamaTimer_getInterval (timerBridge timer, mama_f64_t* interval);
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaIo_create (ioBridge*       result,
                          void*           nativeQueueHandle,
@@ -996,7 +996,7 @@ qpidBridgeMamaIo_create (ioBridge*       result,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaIo_getDescriptor (ioBridge io, uint32_t* result);
 
@@ -1005,7 +1005,7 @@ qpidBridgeMamaIo_getDescriptor (ioBridge io, uint32_t* result);
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaIo_destroy (ioBridge io);
 
@@ -1032,7 +1032,7 @@ qpidBridgeMamaIo_destroy (ioBridge io);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaPublisher_createByIndex (
                                publisherBridge*  result,
@@ -1053,7 +1053,7 @@ qpidBridgeMamaPublisher_createByIndex (
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaPublisher_destroy (publisherBridge publisher);
 
@@ -1067,7 +1067,7 @@ qpidBridgeMamaPublisher_destroy (publisherBridge publisher);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg);
 
@@ -1086,7 +1086,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge publisher,
                                           mamaMsg         request,
@@ -1099,7 +1099,7 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge publisher,
  *
  * Requirement:         Optional
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge publisher,
                                                 void*           wmwReply,
@@ -1123,7 +1123,7 @@ qpidBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge publisher,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
                                               int               tportIndex,
@@ -1147,7 +1147,7 @@ qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaPublisher_sendFromInbox (publisherBridge publisher,
                                        mamaInbox       inbox,
@@ -1171,7 +1171,7 @@ qpidBridgeMamaPublisher_sendFromInbox (publisherBridge publisher,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaPublisher_setUserCallbacks (publisherBridge         publisher,
                                           mamaQueue               queue,
@@ -1207,7 +1207,7 @@ qpidBridgeMamaPublisher_setUserCallbacks (publisherBridge         publisher,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaInbox_create (
             inboxBridge*                bridge,
@@ -1244,7 +1244,7 @@ qpidBridgeMamaInbox_create (
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaInbox_createByIndex (
             inboxBridge*                bridge,
@@ -1267,7 +1267,7 @@ qpidBridgeMamaInbox_createByIndex (
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaInbox_destroy (inboxBridge inbox);
 
@@ -1294,7 +1294,7 @@ qpidBridgeMamaInbox_destroy (inboxBridge inbox);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent);
 
@@ -1311,7 +1311,7 @@ qpidBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern int
 qpidBridgeMamaMsg_isFromInbox (msgBridge msg);
 
@@ -1330,7 +1330,7 @@ qpidBridgeMamaMsg_isFromInbox (msgBridge msg);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_destroy (msgBridge msg, int destroyMsg);
 
@@ -1345,7 +1345,7 @@ qpidBridgeMamaMsg_destroy (msgBridge msg, int destroyMsg);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_destroyMiddlewareMsg (msgBridge msg);
 
@@ -1363,7 +1363,7 @@ qpidBridgeMamaMsg_destroyMiddlewareMsg (msgBridge msg);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_detach (msgBridge msg);
 
@@ -1384,7 +1384,7 @@ qpidBridgeMamaMsg_detach (msgBridge msg);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_getPlatformError (msgBridge msg, void** error);
 
@@ -1407,7 +1407,7 @@ qpidBridgeMamaMsg_getPlatformError (msgBridge msg, void** error);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_setSendSubject (msgBridge   msg,
                                   const char* symbol,
@@ -1426,7 +1426,7 @@ qpidBridgeMamaMsg_setSendSubject (msgBridge   msg,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result);
 
@@ -1448,7 +1448,7 @@ qpidBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result);
 
@@ -1472,7 +1472,7 @@ qpidBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_copyReplyHandle (void* src, void** dest);
 
@@ -1493,7 +1493,7 @@ qpidBridgeMamaMsg_copyReplyHandle (void* src, void** dest);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsgImpl_setReplyHandle (msgBridge msg, void* handle);
 
@@ -1516,7 +1516,7 @@ qpidBridgeMamaMsgImpl_setReplyHandle (msgBridge msg, void* handle);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsgImpl_setReplyHandleAndIncrement (msgBridge msg, void* handle);
 
@@ -1535,7 +1535,7 @@ qpidBridgeMamaMsgImpl_setReplyHandleAndIncrement (msgBridge msg, void* handle);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-MAMAExpDLL
+MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaMsg_destroyReplyHandle (void* handle);
 

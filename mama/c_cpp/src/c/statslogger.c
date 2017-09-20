@@ -941,7 +941,7 @@ mama_status mamaStatsLoggerImpl_addEvent (
                 mamaStatsLoggerImpl*  impl,
                 mamaMsg               eventMsg)
 {
-    int i = 0;
+    mama_size_t i = 0;
     if (!impl)
             return MAMA_STATUS_INVALID_ARG;
     wlock_lock (impl->mLock);

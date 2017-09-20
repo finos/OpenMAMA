@@ -32,6 +32,8 @@
 
 #define YY_NO_INPUT ()
 
+#define YY_NEVER_INTERACTIVE 1
+
 extern int gPropertyDebug;
 wthread_static_mutex_t lexerLock = WSTATIC_MUTEX_INITIALIZER;
 

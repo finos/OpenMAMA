@@ -34,7 +34,7 @@ namespace Wombat
         MAMDA_CHECK_TYPE_APPLY_DELTA
     };
 
-    MAMAExpDLL
+    MAMDAExpDLL
     extern const char* mamdaCheckTypeToString (
         MamdaCheckerType type);
     

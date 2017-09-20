@@ -24,6 +24,7 @@
  * round robin. This class creates dispatchers for the queues as well.
  */
 
+#include <stdint.h>
 #include "mama/mamacpp.h"
 #include "mama/MamaQueueGroup.h"
 

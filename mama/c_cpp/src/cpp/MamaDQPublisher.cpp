@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mama/mamacpp.h>
 #include "mamacppinternal.h"
 #include "mama/senderId.h"
@@ -29,12 +30,6 @@
 
 namespace Wombat
 {
-
- 
-
-
-
-
 
 MamaDQPublisher::~MamaDQPublisher (void) 
 {

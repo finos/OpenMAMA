@@ -189,8 +189,7 @@
 #define WCOMMONFORCEINLINE __forceinline
 
 #define MAMATypeDeprecated(NAME, MSG)   \
-        __pragma(deprecated(##NAME))    \
-        __pragma(message(##MSG))
+        __pragma(deprecated(##NAME))
 
 
 /* Special tags to allow for disabling deprecation messages for code between
@@ -200,7 +199,7 @@
 #if (_MSC_VER >= 1400)
 #define MAMAIgnoreDeprecatedOpen        \
         __pragma(warning(push))         \
-        __pragma(warning(disable: 4996))
+        __pragma(warning(disable: 4995 4996))
 
 /* Renable previous deprecations. */
 #define MAMAIgnoreDeprecatedClose       \

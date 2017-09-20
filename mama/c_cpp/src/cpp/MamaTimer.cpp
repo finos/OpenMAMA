@@ -22,6 +22,7 @@
 /* *************************************************** */
 /* Includes. */
 /* *************************************************** */
+#include <stdint.h>
 #include "mama/mamacpp.h"
 #include "mamacppinternal.h"
 #include "mamainternal.h"

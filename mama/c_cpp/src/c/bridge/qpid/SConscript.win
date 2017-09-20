@@ -6,7 +6,7 @@ env = env.Clone()
 
 target = 'libmamaqpidimpl'
 
-env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H'] )
+env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H', 'PN_NOINCLUDE_STDINT'] )
 
 libPath = []
 libPath.append('$libdir')
@@ -33,6 +33,7 @@ libs.append('event')
 if 'debug' in env['build']:
   qpidLibName = "qpid-protond"
   buildType = "Debug"
+  env['LINKFLAGS'].append(['/NODEFAULTLIB:LIBCMTD', '/NODEFAULTLIB:MSVCRT'])
 else:
   qpidLibName = "qpid-proton"
   buildType = "Release"

@@ -371,7 +371,7 @@ mama_status mamaFieldCache_getFullMessage(
         mamaFieldCacheField_getPublish(field, &publish);
         if (publish)
         {
-            mamaFieldCache_updateMsgField(fieldCache, field, message, numFields);
+            mamaFieldCache_updateMsgField(fieldCache, field, message, (mama_bool_t)numFields);
         }
     }
     FIELD_CACHE_UNLOCK(fieldCache);
@@ -408,7 +408,7 @@ mama_status mamaFieldCache_getDeltaMessage(
         mamaFieldCacheList_get(fieldCache->mAlwaysPublishFields, i, &tmpField);
         assert(tmpField);
         field = (mamaFieldCacheField)tmpField;
-        mamaFieldCache_updateMsgField(fieldCache, field, message, numMsgFields);
+        mamaFieldCache_updateMsgField(fieldCache, field, message, (mama_bool_t)numMsgFields);
         field->mIsModified = 0;
     }
 
@@ -419,7 +419,7 @@ mama_status mamaFieldCache_getDeltaMessage(
         mamaFieldCacheList_get(fieldCache->mModifiedFields, i, &tmpField);
         assert(tmpField);
         field = (mamaFieldCacheField)tmpField;
-        mamaFieldCache_updateMsgField(fieldCache, field, message, numMsgFields);
+        mamaFieldCache_updateMsgField(fieldCache, field, message, (mama_bool_t)numMsgFields);
         field->mIsModified = 0;
     }
     mamaFieldCacheList_clear(fieldCache->mModifiedFields);

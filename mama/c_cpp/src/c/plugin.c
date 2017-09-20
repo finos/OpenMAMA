@@ -382,7 +382,7 @@ mama_shutdownPlugins (void)
     }
 
     free(gPlugins);
-    gPlugins = NULL;
+    gPlugins  = NULL;
     gPluginNo = 0;
 
     return status;

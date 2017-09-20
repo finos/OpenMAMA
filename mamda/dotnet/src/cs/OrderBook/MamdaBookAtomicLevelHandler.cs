@@ -31,17 +31,17 @@ namespace Wombat
      */
     public interface MamdaBookAtomicLevelHandler
     {
-		///<summary> Method invoked when a full refresh of the order book for the
-		///security is available.  The reason for the invocation may be
-		///any of the following:
-		///- Initial image.
-		///- Recap update (e.g., after server fault tolerant event or data
-		///quality event.)
-		///- After stale status removed.</summary>
-		///<param name = "subscription"></param>//The MamdaSubscription handle.
-		///<param name = "listener"></param>	//The listener handling the recap. 
-		///<param name = "msg"></param>			//The MamaMsg that triggered this invocation.
-		///<param name = "levelEntry"></param>	//The Price Level recap.
+        ///<summary> Method invoked when a full refresh of the order book for the
+        ///security is available.  The reason for the invocation may be
+        ///any of the following:
+        ///- Initial image.
+        ///- Recap update (e.g., after server fault tolerant event or data
+        ///quality event.)
+        ///- After stale status removed.</summary>
+        ///<param name = "subscription"></param>//The MamdaSubscription handle.
+        ///<param name = "listener"></param>	//The listener handling the recap. 
+        ///<param name = "msg"></param>			//The MamaMsg that triggered this invocation.
+        ///<param name = "level"></param>	//The Price Level recap.
         void onBookAtomicLevelRecap (
             MamdaSubscription           subscription,
             MamdaBookAtomicListener     listener,
@@ -53,7 +53,7 @@ namespace Wombat
 		///<param name = "subscription"></param>//The MamdaSubscription handle.
 		///<param name = "listener"></param>	//The listener handling the recap. 
 		///<param name = "msg"></param>			//The MamaMsg that triggered this invocation.
-		///<param name = "levelEntry"></param>	//The Price Level update.
+		///<param name = "level"></param>	//The Price Level update.
         void onBookAtomicLevelDelta (
             MamdaSubscription           subscription,
             MamdaBookAtomicListener     listener,

@@ -33,7 +33,7 @@
  *
  *---------------------------------------------------------------------------*/
 
-
+#include <stdint.h>
 #include "wombat/port.h"
 #include <iostream>
 #include <errno.h>

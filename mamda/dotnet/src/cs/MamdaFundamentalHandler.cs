@@ -31,20 +31,20 @@ namespace Wombat
 	/// </summary>
 	public interface MamdaFundamentalHandler
 	{
-		/// <summary>
-		///  Access to data from updates containing fundamental data.
-		///  Method invoked when one or more of the Fundamental fields have
-		///  been updated by one of the following market data events:
-		///  - Initial image.
-		///  - Recap update (e.g., after server fault tolerant event or data
-		///    quality event.)
-		///  - Generic update..
-		/// </summary>
-		/// <param name="subscription">The subscription which received the update.</param>
-		/// <param name="listener">The listener which invoked this callback.</param>
-		/// <param name="msg">The MamaMsg that triggered this invocation.</param>
-		/// <param name="fundas">Access to the fundamental details in the update.</param>
-		void onFundamentals (
+        /// <summary>
+        ///  Access to data from updates containing fundamental data.
+        ///  Method invoked when one or more of the Fundamental fields have
+        ///  been updated by one of the following market data events:
+        ///  - Initial image.
+        ///  - Recap update (e.g., after server fault tolerant event or data
+        ///    quality event.)
+        ///  - Generic update..
+        /// </summary>
+        /// <param name="subscription">The subscription which received the update.</param>
+        /// <param name="listener">The listener which invoked this callback.</param>
+        /// <param name="msg">The MamaMsg that triggered this invocation.</param>
+        /// <param name="fundamentals">Access to the fundamental details in the update.</param>
+        void onFundamentals (
 			MamdaSubscription         subscription,
 			MamdaFundamentalListener  listener,
 			MamaMsg                   msg,

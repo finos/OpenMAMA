@@ -1080,7 +1080,7 @@ mamaMsgField_updateI64 (
 
 mama_status
 mamaMsgField_updateU64 (
-    const mamaMsgField  field,
+    mamaMsgField        field,
     mama_u64_t          value)
 {
     mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;
@@ -1107,7 +1107,7 @@ mamaMsgField_updateU64 (
 
 mama_status
 mamaMsgField_updateF32 (
-            const mamaMsgField  field,
+            mamaMsgField        field,
             mama_f32_t          value)
 {
     mamaMsgFieldImpl* impl    = (mamaMsgFieldImpl*)field;

@@ -34,7 +34,7 @@ namespace Wombat
         MAMDA_BOOK_CHECK_TYPE_APPLY_DELTA = 2
     };
 
-    MAMAExpDLL
+	MAMDAOPTExpDLL
     extern const char* mamdaOrderBookCheckTypeToString (
         MamdaOrderBookCheckType  type);
 

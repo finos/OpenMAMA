@@ -68,20 +68,20 @@
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
     <IgnoreImportLibrary Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</IgnoreImportLibrary>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)\</OutDir>
     <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
     <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libwombatcommonc</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">libwombatcommonc</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libwombatcommonc</TargetName>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libwombatcommonc</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libwombatcommonmdd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">libwombatcommonmdd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libwombatcommonmd</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libwombatcommonmd</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <PreBuildEvent>
@@ -90,13 +90,12 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>YY_NO_UNISTD_H;WIN32;_DEBUG;COMMON_DLL;_USE_32BIT_TIME_T</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;YY_NO_UNISTD_H;WIN32;_DEBUG;COMMON_DLL;_USE_32BIT_TIME_T</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -129,13 +128,12 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>YY_NO_UNISTD_H;WIN32;_DEBUG;COMMON_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;YY_NO_UNISTD_H;WIN32;_DEBUG;COMMON_DLL</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -164,11 +162,10 @@
     </PreBuildEvent>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>YY_NO_UNISTD_H;WIN32;NDEBUG;COMMON_DLL;_USE_32BIT_TIME_T</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;YY_NO_UNISTD_H;WIN32;NDEBUG;COMMON_DLL;_USE_32BIT_TIME_T</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <CompileAs>Default</CompileAs>
       <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
@@ -195,11 +192,10 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\common\c_cpp\src\c\windows\wombat;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>YY_NO_UNISTD_H;WIN32;NDEBUG;_WINDOWS;_USRDLL;COMMON_DLL</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;_WINSOCK_DEPRECATED_NO_WARNINGS;YY_NO_UNISTD_H;WIN32;NDEBUG;_WINDOWS;_USRDLL;COMMON_DLL</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
-      <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
       <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
     </ClCompile>
@@ -218,7 +214,10 @@
     <ClCompile Include="destroyHandle.c" />
     <ClCompile Include="fileutils.c" />
     <ClCompile Include="windows\environment.c" />
-    <ClCompile Include="lex.yy.c" />
+    <ClCompile Include="lex.yy.c">
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">TurnOffAllWarnings</WarningLevel>
+      <WarningLevel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">TurnOffAllWarnings</WarningLevel>
+    </ClCompile>
     <ClCompile Include="libyywrap.c" />
     <ClCompile Include="list.c" />
     <ClCompile Include="lookup2.c" />
@@ -246,6 +245,7 @@
     <ClCompile Include="windows\wUuid.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="propertyinternal.h" />
     <ClInclude Include="windows\wombat\port.h" />
     <ClInclude Include="property.h" />
     <ClInclude Include="wombat\environment.h" />

@@ -36,9 +36,7 @@ namespace MamaSymbolListSubscriber
 		private static MamaBridge       myBridge            = null;
 		private static MamaQueue        myDefaultQueue      = null;
 
-		private static MamaDictionary   dictionary;
 		private static string           dictSource          = "WOMBAT";
-		private static bool				dictionaryComplete  = false;
 
 		private static string           transportName       = "internal";
 		private static string           myDictTportName     = null;

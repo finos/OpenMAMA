@@ -378,15 +378,16 @@ MamaPriceRangeTestC::NegateAndIsZeroTest(const mamaPrice& price)
 
 
    // Test of the price object is ZERO
-   mama_bool_t isZero;   
+   mama_bool_t isZero;
+   mama_bool_t expected = origVal == 0 ? 1 : 0;
 
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_isZero(tmp, &isZero) );
-   EXPECT_EQ ( origVal == 0, isZero );
+   EXPECT_EQ ( expected, isZero );
 
    // Set the value to Zero 
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setValue(tmp, 0.0) );
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_isZero(tmp, &isZero) );
-   EXPECT_EQ ( true, isZero );
+   EXPECT_EQ ( 1, isZero );
 
    // Destroy the temp price Object
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_destroy(tmp) );

@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mamda/MamdaBookAtomicListener.h>
 #include <mamda/MamdaBookAtomicBookHandler.h>
 #include <mamda/MamdaBookAtomicLevelHandler.h>
@@ -1067,7 +1068,7 @@ namespace Wombat
         const MamaMsg&      plMsg,
         bool                isRecap)
     {
-        bool negate = false;
+        mama_i64_t negate = false;
 
         clearLevelEntryFields();
 
@@ -1116,7 +1117,7 @@ namespace Wombat
          * Negate the entry size to get the price level size change
          * if the entry action is delete. Avoid branch using XOR
          */
-        negate = (mPriceLevelEntryAction == 'D');
+        negate = mPriceLevelEntryAction == 'D' ? 1 : 0;
         mPriceLevelSizeChange = (((mama_i64_t)mPriceLevelEntrySize) ^ -negate ) + negate;
 
         if (mLevelHandler)

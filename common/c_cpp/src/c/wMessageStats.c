@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include "wombat/port.h"
 #include "wombat/machine.h"
 #include "wombat/wMessageStats.h"
 #include "wombat/wtable.h"
@@ -234,7 +235,6 @@ void startCpuTimer(void)
 int createStatisticsCache(statsCache** sCache,int numMsgCategories,
                                  FILE* outfile,int header)
 {
-    int mysCacheStatus;
     struct timeval sTime;
     /*create statsCache struct*/
     statsCache* mysCache = (statsCache*)calloc(1,sizeof(statsCache));
@@ -595,8 +595,8 @@ latencyVals calcLatency1TimeStamp(const char* timeStamp,
     int mins=0;
 #endif
 
-    lenTimeFormat = ((NULL == timeFormat) ? 0 : strlen(timeFormat));
-    lenTimeStamp = ((NULL == timeStamp) ? 0 : strlen(timeStamp));
+    lenTimeFormat = (int)((NULL == timeFormat) ? 0 : strlen(timeFormat));
+    lenTimeStamp = (int)((NULL == timeStamp) ? 0 : strlen(timeStamp));
     if ((lenTimeFormat == 0) || (lenTimeStamp == 0))
     {
       fprintf(stderr,"Error - calcLatency\n");
@@ -719,6 +719,7 @@ void getCpuTimeVals(cpuVals* cpuV, int isUpdate)
     double diff = 1234.0;
     struct tms CurrentProcTime;
     double CurrentRealTime = 0.0;
+    memset(&CurrentProcTime, 0, sizeof(CurrentProcTime));
 
 #ifndef WIN32
     CurrentRealTime = (double)times(&CurrentProcTime)/gCpuClockTicksPerSecond;
@@ -889,7 +890,7 @@ void calcPerfData(perfData* mPData, double interval,
         myPerformanceData->mTotalTime = mPData->mTotalTime;
         myPerformanceData->mMsgCountP = mPData->mMsgCountP;
         myPerformanceData->mMsgPerSecP = mPData->mMsgPerSecP;
-        myPerformanceData->mByteCountP = mPData->mByteCountP/1000;
+        myPerformanceData->mByteCountP = (long) mPData->mByteCountP/1000;
         myPerformanceData->mBytePerSecP = mPData->mBytePerSecP/1000;
         myPerformanceData->mMinLatencyP = mPData->mMinLatencyP;
         myPerformanceData->mMaxLatencyP = mPData->mMaxLatencyP;

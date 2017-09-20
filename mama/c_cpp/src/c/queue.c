@@ -168,6 +168,7 @@ mamaQueue_createReuseableMsg (mamaQueueImpl*  impl)
 		return status;
 	}
 
+   // NOTE: this is superfluous -- earlier call to mamaMsgImpl_createForPayload sets owner to 0
 	/*We don't want to destroy the bridge message when the mamamsg is
 	 * destroyed as we won't own it*/
 	if (MAMA_STATUS_OK!=(status=mamaMsgImpl_setMessageOwner (impl->mMsg, 0)))
@@ -1201,43 +1202,12 @@ mamaQueueImpl_detachMsg (mamaQueue queue,
 
     if (msg == impl->mMsg)
     {
-        if (MAMA_STATUS_OK!=(status=mamaMsg_create (&(impl->mMsg))))
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaQueueImpl_detachMsg():"
-                      " Could not create new message.");
-            impl->mMsg = msg;
-            return status;
-        }
-
-        /*We now have to set the bridge and queue on this new message*/
-        if (MAMA_STATUS_OK!=(status=mamaMsgImpl_setBridgeImpl (impl->mMsg,
-                        impl->mBridgeImpl)))
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaQueueImpl_detachMsg():"
-                      " Could not set bridge on new message.");
-            mamaMsg_destroy (impl->mMsg);
-            impl->mMsg = msg;
-            return status;
-        }
-
-        /*We don't want to destroy the bridge message when the mamamsg is
-         * destroyed as we won't own it*/
-        if (MAMA_STATUS_OK!=(status=mamaMsgImpl_setMessageOwner (impl->mMsg, 0)))
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaQueueImpl_detachMsg():"
-                      " Could not set owner on new message.");
-            return status;
-        }
-
-        if (MAMA_STATUS_OK!=(status=mamaMsgImpl_setQueue (impl->mMsg, queue)))
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR, "mamaQueueImpl_detachMsg():"
-                      " Could not set queue on new message.");
-            mamaMsg_destroy (impl->mMsg);
-            impl->mMsg = msg;
-            return status;
-        }
+       // set queue's msg to NULL -- will be re-created (properly) when needed
+       // (mamaQueueImpl_getMsg -> mamaQueue_createReuseableMsg)
+       // this resolves a leak of payload when calling detach
+       impl->mMsg = 0;
     }
+
     return MAMA_STATUS_OK;
 }
 
@@ -1398,7 +1368,7 @@ mamaDispatcher_destroy (mamaDispatcher dispatcher)
     wombatThread_destroy (impl->mThreadName);
 
     impl->mQueue->mDispatcher = NULL;
-    impl->mThread = 0; 
+    impl->mThread = 0;
     free (impl);
     return MAMA_STATUS_OK;
 }
@@ -1418,5 +1388,5 @@ mamaQueue_pollQueueSizeCb (void* closure)
 
     mamaQueue_getEventCount (queue, &count);
 
-    return count;
+    return (int)count;
 }

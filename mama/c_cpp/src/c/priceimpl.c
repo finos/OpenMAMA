@@ -146,9 +146,9 @@ void mamaPriceImpl_getAsStringSpecFraction (double    value,
 {
     int32_t  integer   = (int32_t)value;
     double   fraction1 = value - (double)integer;
-    int32_t  numer1    = (double)denom1 * fraction1;
+    int32_t  numer1    = (int32_t)((double)denom1 * fraction1);
     double   fraction2 = fraction1 - ((double)numer1/(double)denom1);
-    int32_t  numer2    = 10 * (double)denom1 * fraction2;
+    int32_t  numer2    = (int32_t)(10 * (double)denom1 * fraction2);
 
     if (value < 0)
     {

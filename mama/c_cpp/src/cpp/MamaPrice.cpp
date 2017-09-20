@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include "mama/MamaPrice.h"
 #include "mamacppinternal.h"
 
