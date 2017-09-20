@@ -246,10 +246,17 @@ mama_loadPlugin (const char* pluginName)
     if (pluginImpl == NULL)
     {
        /* The plugin name should be of the format mamaplugin<name> */
-        snprintf(loadPluginName, MAX_PLUGIN_STRING,
-            "%s%s",
-            PLUGIN_NAME,
-            pluginName);
+#ifdef WITH_ENTERPRISE
+        if (strncmp(pluginName, "mamacenterprise", MAX_PLUGIN_STRING) == 0)
+            snprintf(loadPluginName, MAX_PLUGIN_STRING,
+                "%s",
+                pluginName);
+        else
+#endif /* WITH_ENTERPRISE */
+            snprintf(loadPluginName, MAX_PLUGIN_STRING,
+                "%s%s",
+                PLUGIN_NAME,
+                pluginName);
 
         pluginLib = openSharedLib (loadPluginName, NULL);
 
@@ -464,7 +471,7 @@ mamaPlugin_findPlugin (const char* name)
 {
     int plugin = 0;
 
-    for (plugin = 0; plugin <= gPluginNo; plugin++)
+    for (plugin = 0; plugin < gPluginNo; plugin++)
     {
         if (gPlugins[plugin])
         {
@@ -487,7 +494,6 @@ static void pluginPropertiesCb(const char* name, const char* value, void* closur
             if(gNumPlugins > gCurrentPluginSize)
             {
                 gCurrentPluginSize *= 2;
-                printf("current plugin size realloced, now: %d \n ",gCurrentPluginSize);
                 gPlugins = (mamaPluginImpl**) realloc (gPlugins,  sizeof(mamaPluginImpl*) * gCurrentPluginSize);
             }
 
