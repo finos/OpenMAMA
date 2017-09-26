@@ -338,7 +338,7 @@ do                                                                          \
     if(name)                                                                \
     {                                                                       \
         c_name = (*env)->GetStringUTFChars(env,name,0);                     \
-        if(!c_name) return NULL;                                            \
+        if(!c_name) return JNI_FALSE;                                       \
     }                                                                       \
                                                                             \
     status=mamaTryIgnoreNotFound(env, mamaMsg_get ## CFUNC (                \
@@ -346,7 +346,7 @@ do                                                                          \
                     c_name, fid, &cResult), "Could not get " #CFUNC " from mamaMsg.");                   \
                                                                             \
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);              \
-}                                                                     \
+}                                                                           \
 while(0)
 
 
@@ -467,8 +467,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1setNewBuffer(JNIEnv *env, 
 
 					/* Call the native function. */
 					status = mamaMsg_setNewBuffer (
-						&messagePointer,
-						(const void*)newBuffer,
+						messagePointer,
+						newBuffer,
 						(mama_size_t)arrayLength);
 
 					/* If something went wrong then delete the global array. */
@@ -1588,7 +1588,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsDefinitelyDuplicate
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.",NULL);
+        "Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsDefinitelyDuplicate(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -1620,7 +1620,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsPossiblyDuplicate
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.",NULL);
+        "Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsPossiblyDuplicate(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -1652,7 +1652,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsPossiblyDelayed
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.",NULL);
+        "Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsPossiblyDelayed(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -1684,7 +1684,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsDefinitelyDelayed
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.",NULL);
+        "Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsDefinitelyDelayed(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -1716,7 +1716,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_getIsOutOfSequence
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.",NULL);
+        "Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getIsOutOfSequence(
                     CAST_JLONG_TO_POINTER(mamaMsg,msgPointer), &cResult)))
@@ -3634,7 +3634,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_isFromInbox
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
-		"Null parameter, MamaMsg may have already been destroyed.", 0);
+		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
 
 
     cResult = mamaMsg_isFromInbox(CAST_JLONG_TO_POINTER(mamaMsg,msgPointer));
@@ -3686,12 +3686,12 @@ JNIEXPORT jchar JNICALL Java_com_wombat_mama_MamaMsg_getPayloadType
 {
     mama_status status          =   MAMA_STATUS_OK;
     jlong       msgPointer      =   0;
-    char        cResult         =   MAMA_PAYLOAD_UNKNOWN;
+    mamaPayloadType cResult     =   MAMA_PAYLOAD_UNKNOWN;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
-        "Null parameter, MamaMsg may have already been destroyed.",NULL);
+        "Null parameter, MamaMsg may have already been destroyed.", 0);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getPayloadType(
                         CAST_JLONG_TO_POINTER(mamaMsg, msgPointer), &cResult)));
@@ -3704,7 +3704,7 @@ JNIEXPORT jchar JNICALL Java_com_wombat_mama_MamaMsg_getPayloadType
         utils_throwWombatException(env,errorString);
     }
 
-    return cResult;
+    return (jchar)cResult;
 }
 
 /*
@@ -4002,11 +4002,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_createForPayloadBridge
 
     payloadBridgePointer = (*env)->GetLongField (env,
                                                  payloadBridge,
-                                                 payloadBridgePointer);
+                                                 payloadBridgePointerFieldId_g);
     assert (0!=payloadBridgePointer);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_createForPayloadBridge(
-                    &cMessage, payloadBridgePointer)))
+			&cMessage, CAST_JLONG_TO_POINTER(mamaPayloadBridge, payloadBridgePointer))))
     {
         utils_buildErrorStringForStatus(
                 errorString,
@@ -4125,7 +4125,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI8
    (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    mama_i8_t       cResult         =   NULL;
+    mama_i8_t       cResult         = 0;
     TryFieldWithType (I8, mama_i8_t);
 
     if  (status == MAMA_STATUS_OK)
@@ -4169,7 +4169,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI16
    (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    mama_i16_t       cResult         =   NULL;
+    mama_i16_t      cResult         = 0;
     TryFieldWithType (I16, mama_i16_t);
 
     if  (status == MAMA_STATUS_OK)
@@ -4213,7 +4213,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI32
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    mama_i32_t       cResult         =   NULL;
+    mama_i32_t      cResult         = 0;
     TryFieldWithType (I32, mama_i32_t);
 
     if  (status == MAMA_STATUS_OK)
@@ -4235,7 +4235,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryU32
    (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    mama_u32_t       cResult         =   NULL;
+    mama_u32_t      cResult         = 0;
     TryFieldWithType (U32, mama_u32_t);
 
     if  (status == MAMA_STATUS_OK)
@@ -4257,7 +4257,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI64
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    mama_i64_t       cResult         =   NULL;
+    mama_i64_t      cResult         = 0;
     TryFieldWithType (I64, mama_i64_t);
 
     if  (status == MAMA_STATUS_OK)
@@ -4279,7 +4279,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryU64
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    mama_u64_t       cResult         =   NULL;
+    mama_u64_t      cResult         = 0;
     TryFieldWithType (U64, mama_u64_t);
 
     if  (status == MAMA_STATUS_OK)
@@ -4302,7 +4302,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryF32
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
-    mama_f32_t       cResult        =   0;
+    mama_f32_t      cResult         = 0;
     TryFieldWithType (F32, mama_f32_t);
 
     if  (status == MAMA_STATUS_OK)
@@ -4362,7 +4362,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryDateTime
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
-        if(!c_name) return NULL;
+        if(!c_name) return JNI_FALSE;
     }
 
     if(MAMA_STATUS_OK==(mamaTryIgnoreNotFound(env, mamaMsg_getDateTime(
@@ -4395,7 +4395,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryPrice
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
-        if(!c_name) return NULL;
+        if(!c_name) return JNI_FALSE;
     }
 
     /* Get the pointer to the underlying message*/
@@ -4433,7 +4433,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryString
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
-        if(!c_name) return NULL;
+        if(!c_name) return JNI_FALSE;
     }
 
     /* Get the pointer to the underlying message*/
@@ -4483,7 +4483,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryArrayMsg
     if(name)
     {
         c_name = (*env)->GetStringUTFChars(env,name,0);
-        if(!c_name)return NULL;/*Exception thrown*/
+        if(!c_name) return JNI_FALSE;/*Exception thrown*/
     }
 
     /*Get the vector of messages from the C mesage*/

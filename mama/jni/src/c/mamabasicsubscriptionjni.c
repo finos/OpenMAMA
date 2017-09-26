@@ -645,7 +645,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaBasicSubscription_getSubscriptio
         (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
-    "MamaBasicSubscription.getItemClosure(): Null parameter, subcription may have been destroyed.", NULL);
+    "MamaBasicSubscription.getItemClosure(): Null parameter, subcription may have been destroyed.", MAMA_SUBSCRIPTION_UNKNOWN);
 
     assert(0!=subscriptionPointer);
 

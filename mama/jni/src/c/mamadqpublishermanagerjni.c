@@ -527,7 +527,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1setStatus
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
 
-    mamaDQPublisher_setStatus(
+    mamaDQPublisherManager_setStatus(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer),
                     status);
 
@@ -607,7 +607,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1setSeqNum
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
 
-    mamaDQPublisher_setSeqNum(
+    mamaDQPublisherManager_setSeqNum(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer),
                     seqnum);
 
@@ -628,7 +628,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaDQPublisherManager__1setSenderId
     publisherPointer = (*env)->GetLongField(env,this,dqPublisherManagerPointerFieldId_g);
     assert(publisherPointer!=0);
 
-    mamaDQPublisher_setSenderId(
+    mamaDQPublisherManager_setSenderId(
                     CAST_JLONG_TO_POINTER(mamaDQPublisherManager,publisherPointer),
                     (uint64_t)senderId);
 

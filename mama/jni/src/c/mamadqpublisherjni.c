@@ -28,6 +28,7 @@
 *******************************************************************************/
 #include "mamajniutils.h"
 #include "mamajni/com_wombat_mama_MamaDQPublisher.h"
+#include <mama/dqpublisher.h>
 
 
 #include <assert.h>
