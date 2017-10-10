@@ -148,6 +148,7 @@
     <!-- JUnit Tests -->
     <target name="junitdirs" description="Build junitdirs" if="withUnitTests">
        <mkdir dir="${build}/junittests"></mkdir>
+       <mkdir dir="${build}/junittests/fieldcache"></mkdir>
     </target>   
     <target name="compile.junittests" depends="dist.base, junitdirs" if="withUnitTests">
         <!-- JUnit jar must already be on the classpath -->
