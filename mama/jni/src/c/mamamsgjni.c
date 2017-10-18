@@ -409,11 +409,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1createFromByteBuffer(JNIEn
 					if(NULL != g_byteBuffer)
 					{
 						/* The address of the message pointer must be passed to this function. */
-						mamaMsg messagePointer = CAST_JLONG_TO_POINTER(mamaMsg,msgPointer);
+						mamaMsg cMessage = CAST_JLONG_TO_POINTER(mamaMsg,msgPointer);
 
 						/* Call the native function. */
 						status = mamaMsg_createFromByteBuffer (
-							&messagePointer,
+							&cMessage,
 							(const void*)g_byteBuffer,
 							(mama_size_t)arrayLength);
 
@@ -422,6 +422,12 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1createFromByteBuffer(JNIEn
 						{
 							free(g_byteBuffer);
 							g_byteBuffer = NULL;
+						}
+						else
+						{
+						    (*env)->SetLongField(env, this,
+                                                 messagePointerFieldId_g,
+                                                 CAST_POINTER_TO_JLONG (cMessage));
 						}
 					}
 

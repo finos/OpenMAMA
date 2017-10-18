@@ -37,6 +37,9 @@ public class MamaMsgTryMethods extends TestCase
     // The message under test
     protected MamaMsg mMsg;
 
+    // The bridge
+    MamaBridge mBridge;
+
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
@@ -44,6 +47,9 @@ public class MamaMsgTryMethods extends TestCase
     @Override
     protected void setUp()
     {
+        mBridge = Mama.loadBridge(Main.GetBridgeName());
+        Mama.open();
+
         // Create the mama message
         mMsg = new MamaMsg();
 
@@ -78,6 +84,8 @@ public class MamaMsgTryMethods extends TestCase
     {
         // Reset all member variables
         mMsg = null;
+        // Close mama
+        Mama.close();
     }
 
     /* ****************************************************** */

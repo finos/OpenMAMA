@@ -47,7 +47,6 @@ public class MamaMsgVectorFields extends TestCase
          // Load the bridge
         mBridge = Mama.loadBridge(Main.GetBridgeName());
         Mama.open();
-
     }
 
     @Override
