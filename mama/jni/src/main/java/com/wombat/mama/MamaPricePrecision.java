@@ -52,6 +52,16 @@ public class MamaPricePrecision
         new MamaPricePrecision ((byte) 0x09, "1000000000");
     public static final MamaPricePrecision PRECISION_10000000000 =
         new MamaPricePrecision ((byte) 0x0a, "10000000000");
+    public static final MamaPricePrecision PRECISION_100000000000 =
+        new MamaPricePrecision ((byte) 0x0b, "100000000000");
+    public static final MamaPricePrecision PRECISION_1000000000000 =
+        new MamaPricePrecision ((byte) 0x0c, "1000000000000");
+    public static final MamaPricePrecision PRECISION_10000000000000 =
+        new MamaPricePrecision ((byte) 0x0d, "10000000000000");
+    public static final MamaPricePrecision PRECISION_100000000000000 =
+        new MamaPricePrecision ((byte) 0x0e, "100000000000000");
+    public static final MamaPricePrecision PRECISION_1000000000000000 =
+        new MamaPricePrecision ((byte) 0x0f, "1000000000000000");
     public static final MamaPricePrecision PRECISION_INT =
         new MamaPricePrecision ((byte) 0x10, "INT");
     public static final MamaPricePrecision PRECISION_DIV_2 =
@@ -82,34 +92,42 @@ public class MamaPricePrecision
         new MamaPricePrecision ((byte) 0x1d, "TICK_64");
     public static final MamaPricePrecision PRECISION_HALF_64 =
         new MamaPricePrecision ((byte) 0x1e, "HALF_64");
+    public static final MamaPricePrecision PRECISION_10000000000000000 =
+        new MamaPricePrecision ((byte) 0x1f, "10000000000000000");
 
 
-    private static final byte BYTE_UNKNOWN     = 0x00;
-    private static final byte BYTE_10          = 0x01;
-    private static final byte BYTE_100         = 0x02;
-    private static final byte BYTE_1000        = 0x03;
-    private static final byte BYTE_10000       = 0x04;
-    private static final byte BYTE_100000      = 0x05;
-    private static final byte BYTE_1000000     = 0x06;
-    private static final byte BYTE_10000000    = 0x07;
-    private static final byte BYTE_100000000   = 0x08;
-    private static final byte BYTE_1000000000  = 0x09;
-    private static final byte BYTE_10000000000 = 0x0a;
-    private static final byte BYTE_INT         = 0x10;
-    private static final byte BYTE_DIV_2       = 0x11;
-    private static final byte BYTE_DIV_8       = 0x13;
-    private static final byte BYTE_DIV_4       = 0x12;
-    private static final byte BYTE_DIV_16      = 0x14;
-    private static final byte BYTE_DIV_32      = 0x15;
-    private static final byte BYTE_DIV_64      = 0x16;
-    private static final byte BYTE_DIV_128     = 0x17;
-    private static final byte BYTE_DIV_256     = 0x18;
-    private static final byte BYTE_DIV_512     = 0x19;
-    private static final byte BYTE_TICK_32     = 0x1a;
-    private static final byte BYTE_HALF_32     = 0x1b;
-    private static final byte BYTE_QUARTER_32  = 0x1c;
-    private static final byte BYTE_TICK_64     = 0x1d;
-    private static final byte BYTE_HALF_64     = 0x1e;
+    private static final byte BYTE_UNKNOWN          = 0x00;
+    private static final byte BYTE_10               = 0x01;
+    private static final byte BYTE_100              = 0x02;
+    private static final byte BYTE_1000             = 0x03;
+    private static final byte BYTE_10000            = 0x04;
+    private static final byte BYTE_100000           = 0x05;
+    private static final byte BYTE_1000000          = 0x06;
+    private static final byte BYTE_10000000         = 0x07;
+    private static final byte BYTE_100000000        = 0x08;
+    private static final byte BYTE_1000000000       = 0x09;
+    private static final byte BYTE_10000000000      = 0x0a;
+    private static final byte BYTE_100000000000     = 0x0b;
+    private static final byte BYTE_1000000000000    = 0x0c;
+    private static final byte BYTE_10000000000000   = 0x0d;
+    private static final byte BYTE_100000000000000  = 0x0e;
+    private static final byte BYTE_1000000000000000 = 0x0f;
+    private static final byte BYTE_INT              = 0x10;
+    private static final byte BYTE_DIV_2            = 0x11;
+    private static final byte BYTE_DIV_8            = 0x13;
+    private static final byte BYTE_DIV_4            = 0x12;
+    private static final byte BYTE_DIV_16           = 0x14;
+    private static final byte BYTE_DIV_32           = 0x15;
+    private static final byte BYTE_DIV_64           = 0x16;
+    private static final byte BYTE_DIV_128          = 0x17;
+    private static final byte BYTE_DIV_256          = 0x18;
+    private static final byte BYTE_DIV_512          = 0x19;
+    private static final byte BYTE_TICK_32          = 0x1a;
+    private static final byte BYTE_HALF_32          = 0x1b;
+    private static final byte BYTE_QUARTER_32       = 0x1c;
+    private static final byte BYTE_TICK_64          = 0x1d;
+    private static final byte BYTE_HALF_64          = 0x1e;
+    private static final byte BYTE_10000000000000000 = 0x1f;
 
     byte myPrecision; /* Package level visibility */
     private String myText;
@@ -221,6 +239,16 @@ public class MamaPricePrecision
             return PRECISION_1000000000;
         case BYTE_10000000000:
             return PRECISION_10000000000;
+        case BYTE_100000000000:
+            return PRECISION_100000000000;
+        case BYTE_1000000000000:
+            return PRECISION_1000000000000;
+        case BYTE_10000000000000:
+            return PRECISION_10000000000000;
+        case BYTE_100000000000000:
+            return PRECISION_100000000000000;
+        case BYTE_1000000000000000:
+            return PRECISION_1000000000000000;
         case BYTE_INT:
             return PRECISION_INT;
         case BYTE_DIV_2:
@@ -251,6 +279,8 @@ public class MamaPricePrecision
             return PRECISION_TICK_64;
         case BYTE_HALF_64:
             return PRECISION_HALF_64;
+        case BYTE_10000000000000000:
+            return PRECISION_10000000000000000;
         }
     }
 }

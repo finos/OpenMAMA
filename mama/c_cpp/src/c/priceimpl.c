@@ -52,6 +52,15 @@ void  mamaPriceImpl_getAsString (const mama_price_t*  price,
     if (mamaPriceImpl_isDecimal(precision))
     {
         uint8_t dp = mamaPriceImpl_getDecimals (precision);
+
+        /* The following is a workaround for the 16th decimal place
+            which is due to the way its has been split to maintain
+            backward compatibility */
+        if ( 31 == dp )
+        {
+            dp = 16;
+        }
+
         mamaPriceImpl_getAsStringDecimal (value, dp, buf, bufMaxLen);
     }
     else if (mamaPriceImpl_isInteger (precision))
