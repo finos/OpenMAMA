@@ -50,6 +50,12 @@ namespace Wombat
         MamaMsgField  (
             mamaMsgField  field);
 
+	MamaMsgField (
+	    const MamaMsgField& field);
+
+	MamaMsgField& operator= (
+	    const MamaMsgField& field);
+
         /**
          * Clear the field.
          */

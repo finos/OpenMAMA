@@ -48,6 +48,21 @@ namespace Wombat
     {
     }
 
+    MamaMsgField::MamaMsgField (const MamaMsgField& field)
+        : mField               (field.mField)
+        , mFieldDesc           (NULL)
+        , mLastVectorMsg       (NULL)
+        , mLastVectorMsgLen    (0)
+    {
+    }
+
+    MamaMsgField& MamaMsgField::operator= (const MamaMsgField& field)
+    {
+        clear();
+        mField = field.mField;
+        return *this;
+    }
+
     void MamaMsgField::clear ()
     {
         if (mFieldDesc)
