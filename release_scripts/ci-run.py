@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 
-import subprocess, os
+import subprocess
+import os
+import urllib
 
 def run_command(args, fatal_error=True, env=None, shell=True):
     # Run the command
@@ -38,6 +40,10 @@ if "MWVER" not in env_var:
 if "MSVSVER" not in env_var:
     env_var["MSVSVER"] = 'VS2015'
 
+# Go download junit
+urllib.urlretrieve ("http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar", "junit.jar")
+junit_home = os.getcwd()
+
 # Set up derived values
 if os.name is 'nt':
     dep_base = os.path.join("C:\\", "Deps", env_var["MSVSVER"])
@@ -55,12 +61,12 @@ payload_id = payload[0].upper()
 
 scons_cmd = ["scons",
              "with_unittest=yes",
-             "product=%s" % product
+             "product=%s" % product,
+             "junit_home=%s" % junit_home
             ]
 
 if os.name != 'nt':
     scons_cmd.append("java_home=/usr/java/default")
-    scons_cmd.append("junit_home=/usr/share/java")
 
 # Fire off the build
 run_command(args=scons_cmd, env=env_var, shell=shell)
@@ -74,6 +80,9 @@ if os.name != 'nt':
                                      os.path.join(os.getcwd(), install_dir, 'lib'),
                                      '/usr/local/lib',
                                      '/usr/local/lib64')
+    mama_jni_jar = os.path.join(os.getcwd(), install_dir, 'lib', 'mamajni.jar')
+else:
+    mama_jni_jar = os.path.join(os.getcwd(), install_dir, 'lib', 'dynamic', 'mamajni.jar')
 
 env_var["WOMBAT_PATH"] = os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'examples') + os.pathsep + os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'gunittest', 'c')
 
@@ -81,7 +90,6 @@ if "JOB_NAME" in env_var:
     test_failure_fatal = False
 else:
     test_failure_fatal = True
-
 
 found_tests = []
 for root, dirs, files in os.walk(install_dir):
@@ -125,3 +133,17 @@ for root, dirs, files in os.walk(install_dir):
                             shell=shell,
                             env=env_var)
 
+# Doesn't generate proper xml with this runner so just mark as error code
+# (will look like a build failure but at least CI will know it's broken)
+run_command(args=["java",
+                  "-cp",
+                  mama_jni_jar + os.pathsep + os.path.join(junit_home, "junit.jar"),
+                  "com.wombat.mama.junittests.Main",
+                  "-m",
+                  middleware,
+                  "-tport",
+                  "pub"
+                 ],
+            fatal_error=True,
+            shell=shell,
+            env=env_var)
