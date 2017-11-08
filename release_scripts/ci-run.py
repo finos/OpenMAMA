@@ -82,6 +82,7 @@ if os.name != 'nt':
                                      '/usr/local/lib64')
     mama_jni_jar = os.path.join(os.getcwd(), install_dir, 'lib', 'mamajni.jar')
 else:
+    env_var["PATH"] = os.path.join(os.getcwd(), install_dir, 'bin', 'dynamic') + os.pathsep + env_var["PATH"]
     mama_jni_jar = os.path.join(os.getcwd(), install_dir, 'lib', 'dynamic', 'mamajni.jar')
 
 env_var["WOMBAT_PATH"] = os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'examples') + os.pathsep + os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'gunittest', 'c')
