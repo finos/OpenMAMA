@@ -156,7 +156,7 @@ if os.name == "nt":
     env_var["middlewareName"] = middleware
     env_var["transportName"] = "pub"
     run_command(args=[
-                  "C:\Program Files (x86)\NUnit 2.6.4\bin\nunit-console.exe",
+                  "C:\\Program Files (x86)\\NUnit 2.6.4\\bin\\nunit-console.exe",
                   mama_nunit_dll
                 ],
             fatal_error=True,
