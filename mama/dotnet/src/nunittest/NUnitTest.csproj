@@ -53,13 +53,11 @@
     <Compile Include="MamaEnqueueEventTest.cs" />
     <Compile Include="MamaGetLogLevelTest.cs" />
     <Compile Include="MamaLogCallbackTest.cs" />
-    <Compile Include="MamaLogMessageTest.cs" />
     <Compile Include="MamaLogTest.cs" />
     <Compile Include="MamaLogToFileTest.cs" />
     <Compile Include="MamaMsgVectorMsgTest.cs" />
     <Compile Include="MamaMsgVectorPriceTest.cs" />
     <Compile Include="MamaMsgVectorStringTest.cs" />
-    <Compile Include="MamaPublisherTest.cs" />
     <Compile Include="MamaSetLogCallbackTest.cs" />
     <Compile Include="MamaSetLogFilePolicyTest.cs" />
     <Compile Include="MamaSetLogLevelTest.cs" />

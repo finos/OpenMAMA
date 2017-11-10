@@ -84,6 +84,7 @@ if os.name != 'nt':
 else:
     env_var["PATH"] = os.path.join(os.getcwd(), install_dir, 'bin', 'dynamic') + os.pathsep + env_var["PATH"]
     mama_jni_jar = os.path.join(os.getcwd(), install_dir, 'lib', 'dynamic', 'mamajni.jar')
+    mama_nunit_dll = os.path.join(os.getcwd(), install_dir, 'bin', 'dynamic', 'DOTNET_UNITTESTS.dll')
 
 env_var["WOMBAT_PATH"] = os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'examples') + os.pathsep + os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'gunittest', 'c')
 
@@ -134,8 +135,9 @@ for root, dirs, files in os.walk(install_dir):
                             shell=shell,
                             env=env_var)
 
-# Doesn't generate proper xml with this runner so just mark as error code
-# (will look like a build failure but at least CI will know it's broken)
+# These test runners don't generate proper xml with this runner so just
+# mark as error code (will look like a build failure but at least CI
+# will know it's broken)
 run_command(args=["java",
                   "-cp",
                   mama_jni_jar + os.pathsep + os.path.join(junit_home, "junit.jar"),
@@ -145,6 +147,17 @@ run_command(args=["java",
                   "-tport",
                   "pub"
                  ],
+            fatal_error=True,
+            shell=shell,
+            env=env_var)
+
+
+if os.name == "nt":
+    env_var["middlewareName"] = middleware
+    env_var["transportName"] = "pub"
+    run_command(args=["nunit-console",
+                  mama_nunit_dll
+                ],
             fatal_error=True,
             shell=shell,
             env=env_var)
