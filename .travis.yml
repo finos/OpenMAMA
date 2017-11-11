@@ -2,7 +2,7 @@ language: c
 
 before_install:
   - export SOURCE_DIR=`pwd`
-  - export JAVA_HOME=/usr/lib/jvm/default-java
+  - export JAVA_HOME=/usr/lib/jvm/java-8-oracle
   - sudo apt-get update -qq
   - sudo apt-get install -y scons git flex uuid-dev libevent-dev cmake git libzmq3-dev openjdk-7-jdk ncurses-dev ant unzip valgrind libapr1-dev
   - cd
