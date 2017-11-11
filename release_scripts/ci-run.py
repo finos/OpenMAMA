@@ -52,8 +52,7 @@ if os.name is 'nt':
 else:
     dep_base = '/opt'
     shell = False
-    #product = 'mamdajni'
-    product = 'mamda'
+    product = 'mamdajni'
 
 middleware = env_var["MW"].lower()
 payload = env_var["PAYLOAD"].lower()

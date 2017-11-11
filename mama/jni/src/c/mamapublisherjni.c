@@ -727,7 +727,8 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaPublisher_getState
 
     publisherPointer = (*env)->GetLongField(env, this, publisherPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(publisherPointer,
-        "MamaPublisher.getState: Null parameter, publisher may have been destroyed.", NULL);
+        "MamaPublisher.getState: Null parameter, publisher may have been destroyed.",
+        (jshort)MAMA_PUBLISHER_UNKNOWN);
 
     if (MAMA_STATUS_OK != (status = mamaPublisher_getState(
                     CAST_JLONG_TO_POINTER(mamaPublisher, publisherPointer),

@@ -59,9 +59,9 @@ static  jobject     mStartBackgroundCallback		=   NULL;
 /******************************************************************************
 * Local function declarations
 *******************************************************************************/
-static  void        logSizeCallback ();
-static	void MAMACALLTYPE	onMamaLog(MamaLogLevel level, const char *format, va_list argumentList);
-static	void MAMACALLTYPE	startBackgroundCallback(int status);
+static  void MAMACALLTYPE       logSizeCallback (void);
+static  void MAMACALLTYPE       onMamaLog(MamaLogLevel level, const char *format, va_list argumentList);
+static  void MAMACALLTYPE       startBackgroundCallback(mama_status status);
 
 /******************************************************************************
 * Public function implementation
@@ -260,8 +260,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_open__Ljava_lang_String_2Ljava_
      * being held. Initialisation should only be performed the first time.
      */
     /* Convert the strings to ANSI. */
-    char *convertedFile = NULL;
-    char *convertedPath = NULL;
+    const char *convertedFile = NULL;
+    const char *convertedPath = NULL;
     if(NULL != filename)
     {
         convertedFile = (*env)->GetStringUTFChars(env, filename, 0);
@@ -1009,7 +1009,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_initIDs
 	(*env)->DeleteLocalRef(env, mamaLogCallbackClass);
 }
 
-void logSizeCallback()
+void logSizeCallback(void)
 {
     JNIEnv* env = NULL;
     env = utils_getENV(javaVM_g);
@@ -1113,7 +1113,7 @@ void MAMACALLTYPE onMamaLog(MamaLogLevel level, const char *format, va_list argu
     return;
 }
 
-void MAMACALLTYPE startBackgroundCallback(int status)
+void MAMACALLTYPE startBackgroundCallback(mama_status status)
 {
 	JNIEnv* env = NULL;
     env = utils_getENV(javaVM_g);

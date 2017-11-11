@@ -1737,7 +1737,8 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getSubscriptionStat
     subscriptionPointer = (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
-    "MamaSubscription.getSubscriptionState(): Null parameter, subcription may have been destroyed.", NULL);
+        "MamaSubscription.getSubscriptionState(): Null parameter, subcription may have been destroyed.",
+        (jint)MAMA_STATUS_NULL_ARG);
 
     assert(0!=subscriptionPointer);
 
@@ -1822,13 +1823,14 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getTheAppDataType (
 {
     mama_status     status              =   MAMA_STATUS_OK;
     jlong           subscriptionPointer =   0;
-    jint            appdatatype         =   0;
+    uint8_t         appdatatype         =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     subscriptionPointer = (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
-    "MamaSubscription.getAppDataType(): Null parameter, subcription may have been destroyed.", NULL);
+        "MamaSubscription.getAppDataType(): Null parameter, subcription may have been destroyed.",
+        0);
 
     assert(0!=subscriptionPointer);
 
@@ -1844,5 +1846,5 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getTheAppDataType (
         utils_throwWombatException(env,errorString);
     }
 
-    return appdatatype;
+    return (jint)appdatatype;
 }
