@@ -29,8 +29,11 @@
 #include <assert.h>
 #include <limits.h>
 
+#include <wombat/port.h>
+
 #include "mamajniutils.h"
 #include "mamajni/com_wombat_mama_MamaMsg.h"
+#include "mamajni/com_wombat_mama_MamaMsgIterator.h"
 
 /******************************************************************************
 * Local data structures
@@ -354,6 +357,8 @@ while(0)
 /******************************************************************************
 * Public function implementation
 *******************************************************************************/
+
+char *CopyBuffer(jbyte *buffer, jsize len);
 
 char *CopyBuffer(jbyte *buffer, jsize len)
 {
@@ -3969,6 +3974,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_create
  * Method:    createForPayload
  * Signature: (C)V
  */
+MAMAIgnoreDeprecatedOpen
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_createForPayload
   (JNIEnv* env, jobject this, jchar payloadId)
 {
@@ -3993,6 +3999,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_createForPayload
                          CAST_POINTER_TO_JLONG (cMessage));
     return;
 }
+MAMAIgnoreDeprecatedClose
 
 /*
  * Class:     com_wombat_mama_MamaMsg
@@ -4465,54 +4472,6 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryString
         if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
     return JNI_FALSE;
 }
-
- /*
- * Class:     com_wombat_mama_MamaMsg
- * Method:    tryI64
- * Signature: (Ljava/lang/String;ILcom/wombat/mama/MamaLong;)Z
- */
-JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryArrayMsg
-  (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
-{
-    const char*     c_name          =   NULL;
-    jlong           msgPointer      =   0;
-    mama_status     status          =   MAMA_STATUS_OK;
-    jlong           jMsgArrayPointer=   0;
-    jint            jMsgArraySize   =   0;
-
-    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
-		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
-
-    jMsgArrayPointer = (*env)->GetLongField(env,result,jMsgArrayFieldId_g);
-    jMsgArraySize = (*env)->GetIntField(env,result,jMsgArraySizeFieldId_g);
-
-    if(name)
-    {
-        c_name = (*env)->GetStringUTFChars(env,name,0);
-        if(!c_name)return JNI_FALSE;/*Exception thrown*/
-    }
-
-    /*Get the vector of messages from the C mesage*/
-    if(MAMA_STATUS_OK==(
-        mamaTryIgnoreNotFound(
-            env,
-            mamaMsg_getVectorMsg(
-                CAST_JLONG_TO_POINTER(mamaMsg, msgPointer),
-                c_name,(mama_fid_t)fid,
-                (const mamaMsg**)&jMsgArrayPointer,
-                (mama_size_t*)&jMsgArraySize),
-            "Could not get vectormsg from mamaMsg.")))
-    {
-        if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
-        return JNI_TRUE;
-    }
-
-    if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
-
-    return  JNI_FALSE;
-}
-
 
 /*
  * Class:     com_wombat_mama_MamaMsg

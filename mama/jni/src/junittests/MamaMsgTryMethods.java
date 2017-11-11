@@ -21,8 +21,9 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.*;
 import com.wombat.mama.*;
+import junit.framework.TestCase;
+import org.junit.Assert;
 
 /**
  *
@@ -232,7 +233,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertFalse(mMsg.tryF32(null, 111, result));
 
         // Verify that the result is valid
-        Assert.assertEquals(result.getValue(), (float)6.4);
+        Assert.assertEquals(result.getValue(), (float)6.4, 0.001);
     }
 
     public void testF64()
@@ -245,7 +246,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertFalse(mMsg.tryF64(null, 112, result));
 
         // Verify that the result is valid
-        Assert.assertEquals(result.getValue(), 196.4);
+        Assert.assertEquals(result.getValue(), 196.4, 0.001);
     }
 
     public void testString()

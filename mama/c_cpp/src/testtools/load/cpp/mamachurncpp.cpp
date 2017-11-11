@@ -569,7 +569,6 @@ static void signalHandler(int sgnl)
 
 int main (int argc, const char **argv)
 {
-    mama_status status;
     int         numToChurn    = 0;
     const char* symbolfile    = NULL;
     const char* sourceName    = NULL;

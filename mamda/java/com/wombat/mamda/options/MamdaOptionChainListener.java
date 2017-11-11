@@ -27,6 +27,7 @@ import java.util.logging.*;
 import java.text.SimpleDateFormat;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.LinkedList;
 
@@ -64,7 +65,7 @@ public class MamdaOptionChainListener implements MamdaMsgListener,
     private MamaLong                 openInterest              = new MamaLong();
     private MamaDateTime             expireDateField           = new MamaDateTime ("00:00:00");
     private MamaString               contractSymbol            = new MamaString();
-    private Date                     expireDate                = new Date(0,0,0);
+    private Date                     expireDate                = new GregorianCalendar(1900, 0, 0, 0, 0).getTime();
     private boolean                  gotExpireDate             = true;
     
     

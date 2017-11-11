@@ -495,7 +495,7 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_Mama_logToFile
  * Method:    _disableLogging
  * Signature: ()I
  */
-JNIEXPORT jint JNICALL Java_com_wombat_mama_Mama__1disableLoggingJni
+JNIEXPORT jint JNICALL Java_com_wombat_mama_Mama__1disableLogging
   (JNIEnv* env, jclass class)
 {
     mama_status status = MAMA_STATUS_OK;
