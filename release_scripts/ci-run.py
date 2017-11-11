@@ -64,8 +64,11 @@ scons_cmd = ["scons",
              "junit_home=%s" % junit_home
             ]
 
-if os.name != 'nt':
+if os.name != "nt" and "JAVA_HOME" not in env_var:
     scons_cmd.append("java_home=/usr/java/default")
+
+if "JAVA_HOME" in env_var:
+    scons_cmd.append("java_home=%s" % env_var["JAVA_HOME"])
 
 # Fire off the build
 run_command(args=scons_cmd, env=env_var, shell=shell)
