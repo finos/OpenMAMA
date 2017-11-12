@@ -32,6 +32,26 @@ AssemblyRefs.append(posixpath.join( framework_dir, 'mscorlib.dll'))
 AssemblyRefs.append(posixpath.join( framework_dir, 'system.dll'))
 AssemblyRefs.append(os.path.join( Dir('#').abspath, '%s\\%s\\mama\\dotnet\\MAMA.dll' ) % (odir, env['build']))
 
+ai = os.path.join( Dir('#').abspath, 'mama\\dotnet\\src\\cs\\AssemblyInfo.cs' )
+assembly = open( ai , "w" )
+assembly.write("""
+using System.Reflection;
+using System.Runtime.CompilerServices;
+[assembly: AssemblyTitle("OpenMAMDA")]
+[assembly: AssemblyDescription("OpenMAMDA API C#")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("OpenMAMA.org")]
+[assembly: AssemblyProduct("OpenMAMDA")]
+[assembly: AssemblyCopyright("Copyright 2009 OpenMAMA.org")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+[assembly: AssemblyDelaySign(false)]
+[assembly: AssemblyKeyName("")]
+[assembly: AssemblyVersion("%s.%s.%s")]
+[assembly: AssemblyKeyFile("")]
+""" % ( major, minor, winrelease ) )
+assembly.close()
+
 env.Append(
     CSCFLAGS        = ['/nostdlib+'],
     ASSEMBLYREFS    = AssemblyRefs

@@ -29,7 +29,9 @@
 *******************************************************************************/
 #include "mamajniutils.h"
 #include "mamajni/com_wombat_mama_MamaConnection.h"
+#include "mamajni/com_wombat_mama_MamaSource.h"
 #include <mama/conflation/connection.h>
+#include <conflation/connection_int.h>
 #include <assert.h>
 
 /******************************************************************************
@@ -259,7 +261,7 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaConnection_getIpAddress
 JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaConnection_getPort
 (JNIEnv * env, jobject this)
 {
-    int          retVal_c        = 0;
+    uint16_t     retVal_c        = 0;
     jlong        connection      = 0;
     mama_status  status          = MAMA_STATUS_OK;
     char         errorString [UTILS_MAX_ERROR_STRING_LENGTH];
@@ -349,102 +351,6 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaConnection_getAppName
 
 /*
  * Class:     com_wombat_mama_MamaConnection
- * Method:    getMaxQueueSize
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSource_getMaxQueueSize
-(JNIEnv * env, jobject this)
-{
-    uint32_t     retVal_c   = 0;
-    jlong        connection = 0;
-    mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-
-    connection = (*env)->GetLongField (env,this,connectionPointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(connection,
-        "Null parameter, MamaConnection may have already been destroyed.", 0);
-   
-    if(MAMA_STATUS_OK!=(status=mamaConnection_getMaxQueueSize (
-                            CAST_JLONG_TO_POINTER(mamaConnection,connection),
-                            &retVal_c)))
-    {
-        utils_buildErrorStringForStatus(
-            errorString,
-            UTILS_MAX_ERROR_STRING_LENGTH,
-            "mamaConnection_getMaxQueueSize() failed",
-            status);
-        utils_throwWombatException(env,errorString);
-    }
-   
-    return (jint) retVal_c;
-}
-
-/*
- * Class:     com_wombat_mama_MamaConnection
- * Method:    getQueueSize
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSource_getQueueSize
-(JNIEnv * env, jobject this)
-{
-    uint32_t     retVal_c    = 0;
-    jlong        connection  = 0;
-    mama_status  status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-
-    connection = (*env)->GetLongField (env,this,connectionPointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(connection,
-        "Null parameter, MamaConnection may have already been destroyed.", 0);
-   
-    if(MAMA_STATUS_OK!=(status=mamaConnection_getQueueSize (
-                            CAST_JLONG_TO_POINTER(mamaConnection,connection),
-                            &retVal_c)))
-    {
-        utils_buildErrorStringForStatus(
-            errorString,
-            UTILS_MAX_ERROR_STRING_LENGTH,
-            "mamaConnection_getQueueSize() failed",
-            status);
-        utils_throwWombatException(env,errorString);
-    }
-
-    return (jint) retVal_c;
-}
-
-/*
- * Class:     com_wombat_mama_MamaConnection
- * Method:    getMsgCount
- * Signature: ()I
- */
-JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSource_getMsgCount
-(JNIEnv * env, jobject this)
-{
-    uint32_t    retVal_c        = 0;
-    jlong       connection      = 0;
-    mama_status status          = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-
-    connection = (*env)->GetLongField (env,this,connectionPointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(connection,
-        "Null parameter, MamaConnection may have already been destroyed.", 0);
-   
-    if(MAMA_STATUS_OK!=(status=mamaConnection_getMsgCount (
-                            CAST_JLONG_TO_POINTER(mamaConnection,connection),
-                            &retVal_c)))
-    {
-        utils_buildErrorStringForStatus(
-            errorString,
-            UTILS_MAX_ERROR_STRING_LENGTH,
-            "mamaConnection_getMsgCount() failed",
-            status);
-        utils_throwWombatException(env,errorString);
-    }
-
-    return (jshort) retVal_c;
-}
-
-/*
- * Class:     com_wombat_mama_MamaConnection
  * Method:    getBytesSent
  * Signature: ()I
  */
@@ -503,14 +409,14 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaConnection_toString
 JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaConnection_isIntercepted
 (JNIEnv * env, jobject this)
 {
-    const char*  name_c      = NULL;
+    uint8_t      name_c      = 0;
     jlong        connection  = 0;
     mama_status  status      = MAMA_STATUS_OK;
     char         errorString [UTILS_MAX_ERROR_STRING_LENGTH];
 
     connection = (*env)->GetLongField (env,this,connectionPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(connection,
-        "Null parameter, MamaConnection may have already been destroyed.", NULL);
+        "Null parameter, MamaConnection may have already been destroyed.", 0);
     if(MAMA_STATUS_OK!=(status=mamaConnection_isIntercepted (
                             CAST_JLONG_TO_POINTER(mamaConnection,connection),
                             &name_c)))
@@ -521,10 +427,10 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaConnection_isIntercepted
             "mamaConnection_isIntercepted() failed",
             status);
         utils_throwWombatException(env,errorString);
-        return NULL;
+        return 0;
     }
 
-    return (*env)->NewStringUTF(env, name_c);
+    return name_c;
 }
 
 /*

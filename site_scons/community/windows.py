@@ -30,9 +30,10 @@ class Windows:
         if optsEnv['product'] == 'mamdaall':
             tools.append( 'csharp' )
 
+        programfiles_x86 = os.environ['ProgramFiles(x86)']
         # Select which default program files based directory to use
         if optsEnv['target_arch'] == 'x86':
-            programfiles = os.environ['ProgramFiles(x86)']
+            programfiles = programfiles_x86
         else:
             programfiles = os.environ['ProgramW6432']
 
@@ -105,7 +106,7 @@ class Windows:
                 if optsEnv.has_key('nunit_home'):
                     env['nunit_home'] = optsEnv['nunit_home'] 
                 else:
-                    env['nunit_home'] = "%s/nunit" % programfiles
+                    env['nunit_home'] = "%s/NUnit 2.6.4" % programfiles_x86
 
                 if not posixpath.exists(env['nunit_home']):
                     print 'ERROR: Nunit Home (%s) must exist' % env['nunit_home']

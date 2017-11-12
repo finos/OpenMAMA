@@ -28,7 +28,7 @@ namespace NUnitTest
         public override void Setup()
         {
             // Load a bridge to allow mama to be opened
-            Mama.loadBridge("lbm");
+            Mama.loadBridge(MamaCommon.middlewareName);
 
             // Open mama to initialise logging
             Mama.open();
@@ -53,7 +53,10 @@ namespace NUnitTest
 
             // Close mama to close the log file
             Mama.close();
-            
+
+            // Close the mama log file handles from native layer
+            Mama.logDestroy();
+
             // Delete the file
             File.Delete(m_tempFile);
         }

@@ -65,8 +65,8 @@ public class MamaTimerCallbacks extends TestCase
 
     public class TestTimerCallback implements MamaTimerCallback
     {
-        // Private member variables
-        private MamaBridge mBridge;
+         // Private member variables
+         private MamaBridge mBridge;
 
          public TestTimerCallback(MamaBridge bridge)
          {
@@ -86,9 +86,9 @@ public class MamaTimerCallbacks extends TestCase
 
     public class TestTimerCallback_RecreateOnTick implements MamaTimerCallback
     {
-        // Private member variables
-        private MamaBridge mBridge;
-        private TestTimerCallback mTestCallback;
+         // Private member variables
+         private MamaBridge mBridge;
+         private TestTimerCallback mTestCallback;
 
 
          public TestTimerCallback_RecreateOnTick(MamaBridge bridge)
@@ -118,9 +118,9 @@ public class MamaTimerCallbacks extends TestCase
 
     public class TestTimerCallback_RecreateOnDestroy implements MamaTimerCallback
     {
-        // Private member variables
-        private MamaBridge mBridge;
-        private TestTimerCallback mTestCallback;
+         // Private member variables
+         private MamaBridge mBridge;
+         private TestTimerCallback mTestCallback;
 
          public TestTimerCallback_RecreateOnDestroy(MamaBridge bridge)
          {
@@ -169,9 +169,6 @@ public class MamaTimerCallbacks extends TestCase
 
         // Destroy the timer
         timer.destroy();
-
-        // Process messages until the destroy is received
-        Mama.start(mBridge);
     }
 
     public void testTimerRecreateOnDestroy()

@@ -561,7 +561,8 @@ mama_logForceRollLogFiles(void);
 /**
  * @brief Destroy memory held by the logging.
  */
-void
+MAMAExpDLL
+extern void
 mama_logDestroy(void);
 
 /**

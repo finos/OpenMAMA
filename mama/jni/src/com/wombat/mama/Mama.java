@@ -189,9 +189,10 @@ public class Mama
         /* Enable Java logging */
         myLogHandler.setLevel (level);
 
-        removeHandlers (Logger.global);
-        Logger.global.addHandler (myLogHandler);
-        Logger.global.setLevel (level);
+        Logger globalLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+        removeHandlers (globalLogger);
+        globalLogger.addHandler (myLogHandler);
+        globalLogger.setLevel (level);
 
         final Logger logger = Logger.getLogger ("com.wombat");
         logger.setLevel (level);
@@ -292,9 +293,10 @@ public class Mama
             myLogHandler = new MamaLogHandler();
             myLogHandler.setLevel( level );
 
-            removeHandlers (Logger.global);
-            Logger.global.addHandler( myLogHandler );
-            Logger.global.setLevel( level );
+            Logger globalLogger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+            removeHandlers (globalLogger);
+            globalLogger.addHandler( myLogHandler );
+            globalLogger.setLevel( level );
 
             final Logger logger = Logger.getLogger( "com.wombat" );
             logger.setLevel( level );

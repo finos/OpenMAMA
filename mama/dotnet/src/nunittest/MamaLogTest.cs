@@ -134,7 +134,7 @@ namespace NUnitTest
             Mama.log(MamaLogLevel.MAMA_LOG_LEVEL_WARN, largeString);
 
             // Verify that the length is correct
-            if (m_callback.Buffer.Length != 4095)
+            if (m_callback.Buffer.Length != 4094)
             {
                 throw new InvalidOperationException();
             }

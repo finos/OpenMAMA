@@ -44,7 +44,7 @@ ver = open( cs , "w" )
 ver.write("""
 namespace Wombat
 {
-    /// ^<summary^>MAMA version information^</summary^>
+    /// <summary>MAMA version information</summary>
     public class MamaVersion
     {
         public static int MAMADOTNET_VERSION_MAJOR = %s;
@@ -57,23 +57,22 @@ namespace Wombat
 ver.close()
 
 assembly = open( ai , "w" )
-#TODO Strong naming (keyfile) is not implemented
 assembly.write("""
 using System.Reflection;
 using System.Runtime.CompilerServices;
-[assembly: AssemblyTitle("MAMA")]
-[assembly: AssemblyDescription("MAMA API C#")]
+[assembly: AssemblyTitle("OpenMAMA")]
+[assembly: AssemblyDescription("OpenMAMA API C#")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("NYSE Technologies")]
-[assembly: AssemblyProduct("NYSE Technologies MAMA")]
-[assembly: AssemblyCopyright("Copyright 2009 NYSE Technologies")]
+[assembly: AssemblyCompany("OpenMAMA.org")]
+[assembly: AssemblyProduct("OpenMAMA")]
+[assembly: AssemblyCopyright("Copyright 2009 OpenMAMA.org")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 [assembly: AssemblyDelaySign(false)]
 [assembly: AssemblyKeyName("")]
-[assembly: AssemblyVersion("%s.%s.%s.%s")]
+[assembly: AssemblyVersion("%s.%s.%s")]
 [assembly: AssemblyKeyFile("")]
-""" % ( major, minor, winrelease, buildNum ) )
+""" % ( major, minor, winrelease ) )
 assembly.close()
 
 build = env['build']
