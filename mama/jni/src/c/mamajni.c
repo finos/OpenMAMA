@@ -98,6 +98,9 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_Mama_loadBridge
     const char* path_c          = NULL;
     jclass      bridgeClass     =
                     (*env)->FindClass(env,"com/wombat/mama/MamaBridge");
+
+    if(!bridgeClass) return NULL;/*Exception auto thrown*/
+
     if (middleware)
     {
         middleware_c = (*env)->GetStringUTFChars (env,middleware,0);
@@ -160,6 +163,9 @@ JNIEXPORT jobject JNICALL Java_com_wombat_mama_Mama_loadPayloadBridge
     jobject             result             = NULL;
     jclass              payloadBridgeClass =
                     (*env)->FindClass(env,"com/wombat/mama/MamaPayloadBridge");
+
+    if(!payloadBridgeClass) return NULL;/*Exception auto thrown*/
+
     if (name)
     {
         name_c = (*env)->GetStringUTFChars (env,name,0);

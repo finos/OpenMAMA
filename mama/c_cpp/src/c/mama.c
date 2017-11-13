@@ -384,7 +384,7 @@ mamaInternal_loadProperties (const char *path,
      * non-defaults were specified */
     if( fileProperties == 0 && (!usingDefaults || 0 == properties_Count(gProperties)))
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open properties file.\n");
+        mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open properties file.");
         return;
     }
 
@@ -2098,6 +2098,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
 
     if (NULL == initFunc)
     {
+        status = MAMA_STATUS_INVALID_ARG;
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadPayloadBridgeInternal (): "
                   "Failed to initialise payload bridge [%s]. "
@@ -2159,6 +2160,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
             mamaInternal_getMetaProperty (payloadVersion),
             &bridgeMamaVersion))
     {
+        status = MAMA_STATUS_INVALID_ARG;
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadBridge (): "
                   "Failed to initialise middleware bridge [%s]. "
@@ -2170,6 +2172,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     /* Fail to load if bridge and API versions are incompatible */
     if (! mama_areVersionsCompatibleInternal (gImpl.version, bridgeMamaVersion))
     {
+        status = MAMA_STATUS_INVALID_ARG;
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadPayloadBridgeInternal (): "
                   "Failed to initialise payload bridge [%s]. "
@@ -2609,6 +2612,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
 
     if (NULL == initFunc)
     {
+        status = MAMA_STATUS_INVALID_ARG;
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadBridge (): "
                   "Failed to initialise middleware bridge [%s]. "
@@ -2678,6 +2682,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
             mamaBridgeImpl_getMetaProperty (*impl, MAMA_PROP_BARE_COMPILE_TIME_VER),
             &bridgeMamaVersion))
     {
+        status = MAMA_STATUS_INVALID_ARG;
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadBridge (): "
                   "Failed to initialise middleware bridge [%s]. "
@@ -2689,6 +2694,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     /* Fail to load if bridge and API versions are incompatible */
     if (! mama_areVersionsCompatibleInternal (gImpl.version, bridgeMamaVersion))
     {
+        status = MAMA_STATUS_INVALID_ARG;
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadBridge (): "
                   "Failed to initialise middleware bridge [%s]. "
