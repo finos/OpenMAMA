@@ -48,7 +48,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPayloadBridge_initIDs
   (JNIEnv* env, jclass class)
 {
     payloadBridgePointerFieldId_g = (*env)->GetFieldID(
-            env, class,"bridgePointer_i",
+            env, class,"payloadBridgePointer_i",
             UTILS_JAVA_POINTER_TYPE_SIGNATURE);
     if (!payloadBridgePointerFieldId_g) return;/*Exception auto thrown*/
 
