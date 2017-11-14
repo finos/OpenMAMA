@@ -4016,11 +4016,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_createForPayloadBridge
 
     payloadBridgePointer = (*env)->GetLongField (env,
                                                  payloadBridge,
-                                                 (jfieldID)payloadBridgePointer);
+                                                 payloadBridgePointerFieldId_g);
     assert (0!=payloadBridgePointer);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_createForPayloadBridge(
-                    &cMessage, (mamaPayloadBridge)payloadBridgePointer)))
+                    &cMessage, CAST_JLONG_TO_POINTER(mamaPayloadBridge, payloadBridgePointer))))
     {
         utils_buildErrorStringForStatus(
                 errorString,
