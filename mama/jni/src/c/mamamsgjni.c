@@ -478,8 +478,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1setNewBuffer(JNIEnv *env, 
 
 					/* Call the native function. */
 					status = mamaMsg_setNewBuffer (
-						(mamaMsg)&messagePointer,
-						(void*)newBuffer,
+						messagePointer,
+						newBuffer,
 						(mama_size_t)arrayLength);
 
 					/* If something went wrong then delete the global array. */
