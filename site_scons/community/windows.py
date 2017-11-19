@@ -65,6 +65,9 @@ class Windows:
         else:
             env = Environment(ENV={'PATH': '%s' % (os.environ['PATH'])}, MSVC_VERSION = optsEnv['vsver'], MSVS_VERSION = optsEnv['vsver'], tools = tools, TARGET_ARCH = optsEnv['target_arch'])
 
+        # Set up any potential flex overrides
+        env['LEX'] = optsEnv['lex']
+
         if 'qpid' in optsEnv['middleware']:
             if optsEnv.has_key('qpid_home'):
                 env['qpid_home'] = optsEnv['qpid_home']
@@ -112,9 +115,9 @@ class Windows:
                     print 'ERROR: Nunit Home (%s) must exist' % env['nunit_home']
                     Exit(1)
         try:
-            subprocess.check_call("flex --version", shell=True, stdout=None, stderr=None)
+            subprocess.check_call("%s --version" % env['LEX'], shell=True, stdout=None, stderr=None)
         except:
-            print "Could not execute flex - is it in your environment PATH?"
+            print "Could not execute %s - is it in your environment PATH?" % env['LEX']
 
         env['SPAWN'] = logger.log_output
         env['PRINT_CMD_LINE_FUNC'] = logger.log_command
