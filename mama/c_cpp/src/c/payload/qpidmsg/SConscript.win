@@ -31,6 +31,7 @@ else:
   buildType = "Release"
 
 libPath.append('%s/lib' % env['qpid_home'])
+libPath.append('%s/debug/lib' % env['qpid_home'])
 
 env['CCFLAGS'].append(['/TP', '/WX-'])
 env.Append(LIBS=libs, LIBPATH=libPath, CPPPATH=[includePath])
