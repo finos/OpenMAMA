@@ -19,7 +19,7 @@ class Windows:
         optsEnv = Environment()
         opts.Update( optsEnv )
 
-        tools = [ 'default' ]
+        tools = [ 'default', 'lex' ]
 
         logger = Logger(optsEnv)
 
