@@ -147,4 +147,5 @@ if ( env['build'] == 'dynamic' or len(env['buildtype']) == 1):
     env.Install('$prefix/include/mama/conflation','mama/conflation/connection.h')
     env.Install('$prefix/include/mama/playback', playbackHeaders)
     env.Install('$prefix/include/mama/fieldcache', fieldcacheHeaders)
-    env.Install('$bindir', aprInstLibs)
+    if env['with_dependency_runtimes']:
+        env.Install('$bindir', aprInstLibs)

@@ -41,6 +41,7 @@ else:
 libs.append(qpidLibName)
 
 libPath.append('%s/lib' % env['qpid_home'])
+libPath.append('%s/debug/lib' % env['qpid_home'])
 libPath.append('%s/lib' % env['libevent_home'])
 
 qpidInstLibs = '%s/bin/%s.dll' % (env['qpid_home'], qpidLibName)
@@ -53,5 +54,5 @@ sources = Glob('*.c')
 
 env.InstallLibrary(sources, target)
 
-if 'dynamic' in env['build']:
+if 'dynamic' in env['build'] and env['with_dependency_runtimes']:
     Alias ('install', env.Install('$bindir', qpidInstLibs))

@@ -31,6 +31,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        PathVariable('junit_home','Path to Junit home',None, PathVariable.PathIsDir),
        ListVariable('middleware','Middleware(s) to be compiled in', 'qpid', names = ['qpid'] ),
        ('jobs', 'Number of scons threads to spawn, if n is passed the number of availabe cores is calculated and used', '1'),
+       BoolVariable('with_dependency_runtimes','Whether or not to include dependency runtimes in the installation', True),
 
     )
 
