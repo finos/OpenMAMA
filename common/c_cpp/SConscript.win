@@ -9,7 +9,7 @@ incPaths.append( '#common/c_cpp/src/c/windows/wombat' )
 
 env.Append(
     LIBS        = ['ws2_32','advapi32','kernel32','Pdh','shlwapi'],
-    CPPDEFINES  = ['COMMON_DLL'],
+    CPPDEFINES  = ['COMMON_DLL', 'YY_NO_UNISTD_H'],
     CPPPATH     = incPaths,
 )
 

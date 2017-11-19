@@ -59,6 +59,8 @@ def get_command_line_opts( host, products, VERSIONS ):
                          allowed_values=('default', 'gcc', 'clang', 'clang-analyzer')),
             PathVariable('apr_home', 'Path to Apache APR Libraries', None,
                          PathVariable.PathAccept),
+            PathVariable('lex', 'Path to preferred lexical analyzer generator (flex)', "flex",
+                         PathVariable.PathAccept),
         )
 
     if host['os'] == 'Linux':
