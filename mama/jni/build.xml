@@ -49,6 +49,12 @@
         <javac source="1.5" srcdir="src/main/java" destdir="${build}" debug="true" deprecation="on">
             <!-- All the JNI Java files required -->
             <patternset refid="src.base"></patternset>
+            <!-- Will include any Common java files required for the build (searched by javac) -->
+            <sourcepath location="${basedir}/../../common/jni/src">
+                <fileset dir=".">
+                    <include name="**/*.java"></include>
+                </fileset>
+            </sourcepath>
         </javac>
     </target>
 
@@ -70,6 +76,7 @@
         <copy flatten="true" todir="${dist}/examples">
             <fileset dir="${basedir}/../jni/src/main/java">
                 <include name="com/**/MamaListen.java"></include>
+                <include name="com/**/MamaListenCached.java"></include>
                 <include name="com/**/MamaTest.java"></include>
                 <include name="com/**/MamaTestJava.java"></include>
                 <include name="com/**/MamaPublisherJava.java"></include>
@@ -154,6 +161,11 @@
         <!-- JUnit jar must already be on the classpath -->
         <javac source="1.5" srcdir="src/test/java" destdir="${build}/junittests" debug="true" deprecation="on">
             <patternset refid="src.junittests"></patternset>
+            <classpath>
+            <fileset dir="../../../thirdparty/junit">
+                    <include name="junit-4.10.jar"></include>
+            </fileset>
+            </classpath>
             <classpath>
                 <fileset dir="${dist}/lib/">
                     <include name="${base}.jar"></include>
