@@ -22,6 +22,7 @@
 #define MsgUtilsH__
 
 #include "mama/subscmsgtype.h"
+#include <mama/integration/msgutils.h>
 
 #if defined(__cplusplus)
 extern "C" {
