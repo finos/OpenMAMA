@@ -23,13 +23,11 @@
 #define MamaStatsCollectorInternalH__
 
 #include "mama/statscollector.h"
+#include <mama/integration/statscollector.h>
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-typedef void (
-*collectorPollStatCb) (mamaStatsCollector statsCollector, void* closure);
 
 #define MAMA_STAT_MAX_STATS    		35
 
@@ -43,30 +41,9 @@ typedef struct mamaStatsCollectorImpl__
     void*       			mPollClosure;
     int         			mPublishStats;
     int         			mLogStats;
-     int         			mOffset;
+    int         			mOffset;
     void*          			mHandle;
 } mamaStatsCollectorImpl;
-
-MAMAExpDLL
-extern mama_status
-mamaStatsCollector_setPollCallback (mamaStatsCollector statsCollector, collectorPollStatCb cb, void* closure);
-
-/**
- * Populate a reusable message to be published via the stats logger,
- * and a string to be logged via MAMA logging
- *
- * @param statscollector  The stats collector object to gather stats from
- * @param statsStr        A reusable string for MAMA logging
- * @param msg             A reusable message to be published via the Stats Logger
- * @param wasLogged       Whether or not any stats were logged
- */
-MAMAExpDLL
-extern void
-mamaStatsCollector_populateMsg (mamaStatsCollector statsCollector, mamaMsg msg, int* wasLogged);
-
-MAMAExpDLL
-extern mama_status
-mamaStatsCollector_setStatIntervalValueFromTotal (mamaStatsCollector statsCollector, mama_fid_t identifier, mama_u32_t value);
 
 #if defined(__cplusplus)
 }

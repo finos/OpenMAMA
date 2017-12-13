@@ -4,7 +4,7 @@ Import('*')
 env = env.Clone()
 
 env.Append( 
-	CPPDEFINES 	= ['MAMA'],
+	CPPDEFINES 	= ['MAMA', 'OPENMAMA_INTEGRATION'],
 )
 
 sources = []

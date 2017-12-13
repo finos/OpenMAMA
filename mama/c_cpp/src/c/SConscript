@@ -94,6 +94,10 @@ else:
                LIBPATH=libPath, CPPPATH=[includePath], CCFLAGS=apr_ccflags,
                SHLINKFLAGS=apr_link_ld)
 
+env.Append( 
+	CPPDEFINES 	= ['MAMA', 'OPENMAMA_INTEGRATION'],
+)
+
 libmama_sources = \
     Split("""
     bridge.c
