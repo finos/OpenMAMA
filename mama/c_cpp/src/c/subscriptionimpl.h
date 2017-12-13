@@ -61,20 +61,6 @@ typedef enum
     NOT_ENTITLED   = 2
 } EntitleStatus;
 
-
-/* For Wildcard subscriptions. The wc_transport type is likely only available
- * for LDMA/RDMA WDF transports. It is a subscription to every message on the
- * transport that bypasses the naming service. Other implementations may
- * ingore this.
- */
-typedef enum
-{
-    wc_none      = 0,   /* Not wildcard subsc */
-    wc_transport = 1,   /* "Transport" wildcard */
-    wc_wildcard  = 2    /* normal wildcard */
-
-} wildCardType;
-
 /* *************************************************** */
 /* Structures. */
 /* *************************************************** */
