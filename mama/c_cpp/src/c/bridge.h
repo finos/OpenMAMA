@@ -47,7 +47,9 @@ typedef struct  transportBridge_*   transportBridge;
 typedef struct  timerBridge_*       timerBridge;
 typedef struct  ioBridge_*          ioBridge;
 typedef struct  publisherBridge_*   publisherBridge;
+#ifndef OPENMAMA_INTEGRATION_INBOX_H__
 typedef struct  inboxBridge_*       inboxBridge;
+#endif
 typedef struct  msgBridge_*         msgBridge;
 
 /* ******************************************************************************** */
