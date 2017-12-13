@@ -22,6 +22,7 @@
 #ifndef MamaMsgFieldImplH__
 #define MamaMsgFieldImplH__
 
+#include <mama/integration/msgfield.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -41,23 +42,6 @@ typedef struct mamaMsgFieldImpl_
     mamaMsg              myMsg;
     mamaPayloadBridge    myPayloadBridge;
 } mamaMsgFieldImpl;
-
-
-MAMAExpDLL
-extern mama_status
-mamaMsgFieldImpl_setmamaPayloadBridge (mamaMsgField         msgField,
-                                   mamaPayloadBridgeImpl*   mamaPayloadBridge);
-
-MAMAExpDLL
-extern mama_status
-mamaMsgFieldImpl_setPayload       (mamaMsgField         msgField,
-                                   msgFieldPayload      payload);
-
-MAMAExpDLL
-extern mama_status
-mamaMsgFieldImpl_setFieldDesc     (mamaMsgField         msgField,
-                                   mamaFieldDescriptor  descriptor);
-
 
 #if defined(__cplusplus)
 }

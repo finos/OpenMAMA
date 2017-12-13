@@ -30,6 +30,7 @@
 #include "conflation/manager_int.h"
 #include "wlock.h"
 #include <wombat/thread.h>
+#include <mama/integration/bridge.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -652,63 +653,6 @@ typedef struct mamaBridgeImpl_
     bridgeMamaMsgImpl_setReplyHandle        bridgeMamaMsgSetReplyHandleAndIncrement;
     bridgeMamaMsg_destroyReplyHandle        bridgeMamaMsgDestroyReplyHandle;
 } mamaBridgeImpl;
-
-/*Functions for internal use only. Will be used from the C++ layer.*/
-
-/**
- * This function will return the timeout value to be used when destroying the default queue.
- * The value is read from the properties file, (MAMA_BRIDGE_DEFAULT_QUEUE_TIMEOUT_PROPERTY),
- * but will default to MAMA_BRIDGE_DEFAULT_QUEUE_DEFAULT_TIMEOUT if the property is missing.
- *
- * @return The timeout value.
- */
-MAMAExpDLL
-extern int
-mamaBridgeImpl_getDefaultQueueTimeout(void);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_setClosure (mamaBridge bridgeImpl, void* closure);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_setCppCallback (mamaBridge bridgeImpl, void* cppCallback);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_getClosure (mamaBridge bridgeImpl, void** closure);
-
-MAMAExpDLL
-mama_status
-mamaBridgeImpl_getInternalEventQueue (mamaBridge bridgeImpl, mamaQueue* internalQueue);
-
-MAMAExpDLL
-mama_status
-mamaBridgeImpl_stopInternalEventQueue (mamaBridge bridgeImpl);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_setReadOnlyProperty (mamaBridge bridgeImpl, const char* property, const char* value);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_setProperty (mamaBridge bridgeImpl, const char* property, const char* value);
-
-MAMAExpDLL
-extern const char*
-mamaBridgeImpl_getProperty (mamaBridge bridgeImpl, const char* property);
-
-MAMAExpDLL
-extern mama_bool_t
-mamaBridgeImpl_areEntitlementsDeferred (mamaBridge bridgeImpl);
-
-MAMAExpDLL
-const char*
-mamaBridgeImpl_getMetaProperty (mamaBridge bridgeImpl, const char* property);
-
-MAMAExpDLL
-extern void
-mamaBridgeImpl_populateBridgeMetaData (mamaBridge bridgeImpl);
 
 #if defined(__cplusplus)
 }
