@@ -23,6 +23,11 @@
 #define MamaQueueImplH__
 
 #include "bridge.h"
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/queue.h>
 
 #endif /* MamaQueueImplH__ */

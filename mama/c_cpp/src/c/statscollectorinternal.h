@@ -23,6 +23,11 @@
 #define MamaStatsCollectorInternalH__
 
 #include "mama/statscollector.h"
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/statscollector.h>
 
 #if defined(__cplusplus)

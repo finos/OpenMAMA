@@ -28,6 +28,11 @@
 #include "bridge.h"
 #include "dqstrategy.h"
 #include "mama/mama.h"
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/subscription.h>
 
 #if defined(__cplusplus)

@@ -23,6 +23,11 @@
 #define MamaPublisherImplH__
 
 #include "bridge.h"
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/publisher.h>
 
 #endif /* MamaPublishermplH__ */

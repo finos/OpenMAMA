@@ -30,7 +30,13 @@
 #include "conflation/manager_int.h"
 #include "wlock.h"
 #include <wombat/thread.h>
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/bridge.h>
+#include <mama/integration/inbox.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -47,9 +53,6 @@ typedef struct  transportBridge_*   transportBridge;
 typedef struct  timerBridge_*       timerBridge;
 typedef struct  ioBridge_*          ioBridge;
 typedef struct  publisherBridge_*   publisherBridge;
-#ifndef OPENMAMA_INTEGRATION_INBOX_H__
-typedef struct  inboxBridge_*       inboxBridge;
-#endif
 typedef struct  msgBridge_*         msgBridge;
 
 /* ******************************************************************************** */

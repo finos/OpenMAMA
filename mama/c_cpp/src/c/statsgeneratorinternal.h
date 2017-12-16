@@ -24,6 +24,11 @@
 
 #include "mama/status.h"
 #include "mama/types.h"
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/statsgenerator.h>
 
 #endif /* MamaStatsGeneratorInternalH__ */

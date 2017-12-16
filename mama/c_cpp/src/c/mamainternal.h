@@ -30,6 +30,11 @@
 #include "mama/mama.h"
 #include "wombat/strutils.h"
 #include <mama/version.h>
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/mama.h>
 
 #if defined(__cplusplus)

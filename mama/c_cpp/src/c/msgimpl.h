@@ -26,6 +26,11 @@
 #include "bridge.h"
 #include "payloadbridge.h"
 #include "dqstrategy.h"
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/msg.h>
 
 #define MAX_SUBJECT 256

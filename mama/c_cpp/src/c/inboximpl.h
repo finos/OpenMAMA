@@ -19,4 +19,8 @@
  * 02110-1301 USA
  */
 
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/inbox.h>

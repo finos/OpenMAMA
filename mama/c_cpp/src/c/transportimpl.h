@@ -30,6 +30,11 @@
 #include "throttle.h"
 #include "list.h"
 #include "mama/entitlement.h"
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/transport.h>
 
 #if defined(__cplusplus)

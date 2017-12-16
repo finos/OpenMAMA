@@ -22,6 +22,10 @@
 #ifndef MamaMsgFieldImplH__
 #define MamaMsgFieldImplH__
 
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/msgfield.h>
 
 #if defined(__cplusplus)

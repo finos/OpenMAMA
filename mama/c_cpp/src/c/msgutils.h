@@ -22,6 +22,11 @@
 #define MsgUtilsH__
 
 #include "mama/subscmsgtype.h"
+
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
 #include <mama/integration/msgutils.h>
 
 #if defined(__cplusplus)
