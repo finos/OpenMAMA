@@ -20,9 +20,7 @@ extern "C"
 {
 #endif
 
-#ifndef MamaBridgeH__
 typedef struct  inboxBridge_*       inboxBridge;
-#endif
 
 MAMAExpDLL 
 extern inboxBridge
