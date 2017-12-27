@@ -62,6 +62,7 @@ def get_command_line_opts( host, products, VERSIONS ):
                          PathVariable.PathAccept),
             PathVariable('lex', 'Path to preferred lexical analyzer generator (flex)', "flex",
                          PathVariable.PathAccept),
+            BoolVariable('vcpkg_build', 'Use the vcpkg dependency directory structure', False),
         )
 
     if host['os'] == 'Linux':

@@ -25,8 +25,12 @@ libs = []
 aprLibName = "libapr-1"
 libs.append(aprLibName)
 
-libPath.append('%s/lib' % env['apr_home'])
-aprInstLibs = '%s/bin/%s.dll' % (env['apr_home'], aprLibName)
+if env['vcpkg_build'] and 'debug' in env['build']:
+    libPath.append('%s/debug/lib' % env['apr_home'])
+    aprInstLibs = '%s/debug/bin/%s.dll' % (env['apr_home'], aprLibName)
+else:
+    libPath.append('%s/lib' % env['apr_home'])
+    aprInstLibs = '%s/bin/%s.dll' % (env['apr_home'], aprLibName)
 
 env['CPPPATH'] = incPath
 env.Append(LIBS = libs, LIBPATH=libPath)
@@ -147,5 +151,6 @@ if ( env['build'] == 'dynamic' or len(env['buildtype']) == 1):
     env.Install('$prefix/include/mama/conflation','mama/conflation/connection.h')
     env.Install('$prefix/include/mama/playback', playbackHeaders)
     env.Install('$prefix/include/mama/fieldcache', fieldcacheHeaders)
-    if env['with_dependency_runtimes']:
-        env.Install('$bindir', aprInstLibs)
+
+if 'dynamic' in env['build'] and env['with_dependency_runtimes']:
+    env.Install('$bindir', aprInstLibs)

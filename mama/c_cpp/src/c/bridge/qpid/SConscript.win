@@ -40,11 +40,14 @@ else:
 
 libs.append(qpidLibName)
 
-libPath.append('%s/lib' % env['qpid_home'])
-libPath.append('%s/debug/lib' % env['qpid_home'])
-libPath.append('%s/lib' % env['libevent_home'])
-
-qpidInstLibs = '%s/bin/%s.dll' % (env['qpid_home'], qpidLibName)
+if env['vcpkg_build'] and 'debug' in env['build']:
+  libPath.append('%s/debug/lib' % env['qpid_home'])
+  libPath.append('%s/debug/lib' % env['libevent_home'])
+  qpidInstLibs = '%s/debug/bin/%s.dll' % (env['qpid_home'], qpidLibName)
+else:
+  libPath.append('%s/lib' % env['qpid_home'])
+  libPath.append('%s/lib' % env['libevent_home'])
+  qpidInstLibs = '%s/bin/%s.dll' % (env['qpid_home'], qpidLibName)
 
 env['CCFLAGS'].append(['/TP', '/WX-'])
 env['CPPPATH'] = incPath

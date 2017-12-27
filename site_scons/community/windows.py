@@ -91,6 +91,8 @@ class Windows:
         else:
             env['apr_home'] = "%s/APR" % programfiles
 
+        env['vcpkg_build'] = optsEnv['vcpkg_build']
+
         if not posixpath.exists(env['apr_home']):
             print 'ERROR: Apache APR Home (%s) must exist' % env['apr_home']
             Exit(1)
