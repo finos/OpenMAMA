@@ -14,13 +14,12 @@
 #define OPENMAMA_INTEGRATION_INBOX_H__
 
 #include <mama/mama.h>
+#include <mama/integration/types.h>
 
 #if defined (__cplusplus)
 extern "C"
 {
 #endif
-
-typedef struct  inboxBridge_*       inboxBridge;
 
 MAMAExpDLL 
 extern inboxBridge

@@ -14,6 +14,7 @@
 #define OPENMAMA_INTEGRATION_PUBLISHER_H__
 
 #include <mama/mama.h>
+#include <mama/integration/types.h>
 
 #if defined (__cplusplus)
 extern "C"

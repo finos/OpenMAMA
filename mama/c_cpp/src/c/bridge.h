@@ -35,8 +35,14 @@
   #define OPENMAMA_INTEGRATION
 #endif
 
+#include <mama/integration/types.h>
 #include <mama/integration/bridge.h>
 #include <mama/integration/inbox.h>
+#include <mama/integration/queue.h>
+#include <mama/integration/subscription.h>
+#include <mama/integration/transport.h>
+#include <mama/integration/publisher.h>
+#include <mama/integration/msg.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -46,14 +52,6 @@ extern "C" {
 #define XSTR(s) STR(s)
 #define STR(s) #s
 
-/***** The types used to identify the bridge specific implementations ******/
-typedef struct  queueBridge_*       queueBridge;
-typedef struct  subscriptonBridge_* subscriptionBridge;
-typedef struct  transportBridge_*   transportBridge;
-typedef struct  timerBridge_*       timerBridge;
-typedef struct  ioBridge_*          ioBridge;
-typedef struct  publisherBridge_*   publisherBridge;
-typedef struct  msgBridge_*         msgBridge;
 
 /* ******************************************************************************** */
 /* Definitions. */

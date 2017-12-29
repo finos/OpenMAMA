@@ -14,24 +14,12 @@
 #define OPENMAMA_INTEGRATION_SUBSCRIPTION_H__
 
 #include <mama/mama.h>
+#include <mama/integration/types.h>
 
 #if defined (__cplusplus)
 extern "C"
 {
 #endif
-
-/* For Wildcard subscriptions. The wc_transport type is likely only available
- * for LDMA/RDMA WDF transports. It is a subscription to every message on the
- * transport that bypasses the naming service. Other implementations may
- * ingore this.
- */
-typedef enum
-{
-    wc_none      = 0,   /* Not wildcard subsc */
-    wc_transport = 1,   /* "Transport" wildcard */
-    wc_wildcard  = 2    /* normal wildcard */
-
-} wildCardType;
 
 /**
  * This function returns the bridge from the subscription.
@@ -41,7 +29,7 @@ typedef enum
  * @return The bridge.
  */
 MAMAExpDLL
-extern mamaBridgeImpl*
+extern mamaBridge
 mamaSubscription_getBridgeImpl(
     mamaSubscription subscription);
 

@@ -14,6 +14,7 @@
 #define OPENMAMA_INTEGRATION_MSG_H__
 
 #include <mama/mama.h>
+#include <mama/integration/types.h>
 
 #if defined (__cplusplus)
 extern "C"
@@ -23,7 +24,7 @@ extern "C"
 MAMAExpDLL extern mama_status
 mamaMsgImpl_createForPayload (mamaMsg*               msg,
                               msgPayload             payload,
-                              mamaPayloadBridgeImpl* payloadBridge,
+                              mamaPayloadBridge      payloadBridge,
                               short                  noDeletePayload);
 
 /*Used by each bridge to set the incoming data on an existing message */
@@ -45,11 +46,11 @@ mamaMsgImpl_setQueue (mamaMsg msg, mamaQueue queue);
 /*Associate a subscription context with a message - this is needed to
  inform the cache if a cache message has been detached*/
 MAMAExpDLL extern mama_status
-mamaMsgImpl_setDqStrategyContext (mamaMsg msg, mamaDqContext* dqStrategyContext);
+mamaMsgImpl_setDqStrategyContext (mamaMsg msg, void* dqStrategyContext);
 
 /*Set the bridge struct of function pointers on the message*/
 MAMAExpDLL extern mama_status
-mamaMsgImpl_setBridgeImpl (mamaMsg msg, mamaBridgeImpl* bridgeImpl);
+mamaMsgImpl_setBridgeImpl (mamaMsg msg, mamaBridge bridgeImpl);
 
 /*Get the bridge msg impl from the parent mamaMsg. This will have been set
  * when the mamaMsg called BridgeMamaMsg_create. It can only do this when it
@@ -69,12 +70,12 @@ mamaMsgImpl_getPayload (const mamaMsg msg, msgPayload* payload);
 
 MAMAExpDLL
 extern mama_status
-mamaMsgImpl_setPayloadBridge (mamaMsg msg, mamaPayloadBridgeImpl* payloadBridge);
+mamaMsgImpl_setPayloadBridge (mamaMsg msg, mamaPayloadBridge payloadBridge);
 
 /*Use the native payload format of the bridge, if any */
 MAMAExpDLL
 extern mama_status
-mamaMsgImpl_useBridgePayload (mamaMsg msg, mamaBridgeImpl* bridgeImpl);
+mamaMsgImpl_useBridgePayload (mamaMsg msg, mamaBridge bridgeImpl);
 
 
 MAMAExpDLL

@@ -36,7 +36,7 @@
 #include <proton/version.h>
 #include <proton/messenger.h>
 
-#include "endpointpool.h"
+#include "mama/integration/endpointpool.h"
 
 #if defined(__cplusplus)
 extern "C" {

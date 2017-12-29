@@ -30,13 +30,10 @@ extern "C" {
 #include <mama/mama.h>
 #include <mamainternal.h>
 #include <mama/subscmsgtype.h>
+#include <mama/integration/msg.h>
 
 #define XSTR(s) STR(s)
 #define STR(s) #s
-
-typedef void* msgPayload;
-typedef void* msgFieldPayload;
-typedef void* msgPayloadIter;
 
 
 /*===================================================================

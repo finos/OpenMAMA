@@ -14,14 +14,12 @@
 #define OPENMAMA_INTEGRATION_QUEUE_H__
 
 #include <mama/mama.h>
+#include <mama/integration/types.h>
 
 #if defined (__cplusplus)
 extern "C"
 {
 #endif
-
-/* This typedef is used when locking and unlocking the queue. */
-typedef void * mamaQueueLockHandle;
 
 /*
    Decrements the count of open objects against the queue. Note that the
@@ -56,7 +54,7 @@ mamaQueue_incrementObjectCount(mamaQueue queue, void *owner);
    @return A pointer to a valid mamaBridgeImpl object.
 */
 MAMAExpDLL
-extern mamaBridgeImpl*
+extern mamaBridge
 mamaQueueImpl_getBridgeImpl (mamaQueue queue);
 
 /*

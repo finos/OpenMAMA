@@ -37,7 +37,7 @@
 #include "qpidcommon.h"
 #include "qpiddefs.h"
 #include "publisher.h"
-#include "endpointpool.h"
+#include "mama/integration/endpointpool.h"
 
 
 /*=========================================================================

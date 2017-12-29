@@ -37,6 +37,7 @@ bridge.c
 dictionary.c
 dqstrategy.c
 datetime.c
+endpointpool.c
 entitlement.c
 entitlementlibraries.c
 timezone.c

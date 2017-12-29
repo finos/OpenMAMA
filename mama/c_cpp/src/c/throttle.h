@@ -25,6 +25,12 @@
 #include "mama/status.h"
 #include "list.h"
 
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
+#include <mama/integration/types.h>
+
 /**
  * processes messages at a specified rate (msgs/sec). if the rate is 0 the 
  * messages are sent as quickly as possible.
@@ -36,13 +42,6 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-typedef struct wombatThrottle_* wombatThrottle;
-
-typedef void (*throttleCb)(void *closure1, void *closure2 );
-
-typedef struct actionHandle* wombatThrottleAction;
-
 
 
 /**

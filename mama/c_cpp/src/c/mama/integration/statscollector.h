@@ -14,13 +14,12 @@
 #define OPENMAMA_INTEGRATION_STATSCOLLECTOR_H__
 
 #include <mama/mama.h>
+#include <mama/integration/types.h>
 
 #if defined (__cplusplus)
 extern "C"
 {
 #endif
-
-typedef void (*collectorPollStatCb) (mamaStatsCollector statsCollector, void* closure);
 
 MAMAExpDLL
 extern mama_status

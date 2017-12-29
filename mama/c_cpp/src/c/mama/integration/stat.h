@@ -14,13 +14,12 @@
 #define OPENMAMA_INTEGRATION_STAT_H__
 
 #include <mama/mama.h>
+#include <mama/integration/types.h>
 
 #if defined (__cplusplus)
 extern "C"
 {
 #endif
-
-typedef int (MAMACALLTYPE *pollStatCb) (void* closure);
 
 MAMAExpDLL
 extern mama_status

@@ -19,31 +19,14 @@
  * 02110-1301 USA
  */
 
-#ifndef COMMON_ENDPOINT_POOL_H__
-#define COMMON_ENDPOINT_POOL_H__
+#if defined (OPENMAMA_INTEGRATION) && ! defined (OPENMAMA_INTEGRATION_ENDPOINT_POOL_H__)
+#define OPENMAMA_INTEGRATION_ENDPOINT_POOL_H__
 
-
-/*=========================================================================
-  =                             Includes                                  =
-  =========================================================================*/
-
-#include "../../bridge.h"
-
-
-/*=========================================================================
-  =                Typedefs, structs, enums and globals                   =
-  =========================================================================*/
-
-/* Opaque types dereferenced in the implementation */
-typedef void* endpointPool_t;
-typedef void* endpoint_t;
-
+#include <mama/integration/types.h>
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-typedef void (*endpointDestroyCb)(endpoint_t endpoint);
 
 /*=========================================================================
   =                  Public implementation functions                      =
@@ -59,7 +42,7 @@ typedef void (*endpointDestroyCb)(endpoint_t endpoint);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-mama_status
+MAMAExpDLL extern mama_status
 endpointPool_create                     (endpointPool_t*    endpoints,
                                          const char*        name);
 
@@ -72,7 +55,7 @@ endpointPool_create                     (endpointPool_t*    endpoints,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-mama_status
+MAMAExpDLL extern mama_status
 endpointPool_destroy                    (endpointPool_t     endpoints);
 
 /**
@@ -87,7 +70,7 @@ endpointPool_destroy                    (endpointPool_t     endpoints);
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-mama_status
+MAMAExpDLL extern mama_status
 endpointPool_destroyWithCallback        (endpointPool_t     endpoints,
                                          endpointDestroyCb  callback);
 /**
@@ -104,7 +87,7 @@ endpointPool_destroyWithCallback        (endpointPool_t     endpoints,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-mama_status
+MAMAExpDLL extern mama_status
 endpointPool_registerWithIdentifier     (endpointPool_t     endpoints,
                                          const char*        topic,
                                          const char*        identifier,
@@ -125,7 +108,7 @@ endpointPool_registerWithIdentifier     (endpointPool_t     endpoints,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-mama_status
+MAMAExpDLL extern mama_status
 endpointPool_registerWithoutIdentifier  (endpointPool_t     endpoints,
                                          const char*        topic,
                                          const char**       identifier,
@@ -143,7 +126,7 @@ endpointPool_registerWithoutIdentifier  (endpointPool_t     endpoints,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-mama_status
+MAMAExpDLL extern mama_status
 endpointPool_unregister                 (endpointPool_t     endpoints,
                                          const char*        topic,
                                          const char*        identifier);
@@ -160,7 +143,7 @@ endpointPool_unregister                 (endpointPool_t     endpoints,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-mama_status
+MAMAExpDLL extern mama_status
 endpointPool_getRegistered              (endpointPool_t     endpoints,
                                          const char*        topic,
                                          endpoint_t*        opaque[],
@@ -175,7 +158,7 @@ endpointPool_getRegistered              (endpointPool_t     endpoints,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-mama_status
+MAMAExpDLL extern mama_status
 endpointPool_getName                    (endpointPool_t     endpoints,
                                          const char**       name);
 
@@ -190,7 +173,7 @@ endpointPool_getName                    (endpointPool_t     endpoints,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-int
+MAMAExpDLL extern int
 endpointPool_isRegistedByContent        (endpointPool_t     endpoints,
                                          const char*        topic,
                                          void*              content);
@@ -206,7 +189,7 @@ endpointPool_isRegistedByContent        (endpointPool_t     endpoints,
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-mama_status
+MAMAExpDLL extern mama_status
 endpointPool_getEndpointByIdentifiers   (endpointPool_t     endpoints,
                                          const char*        topic,
                                          const char*        identifier,
@@ -216,4 +199,4 @@ endpointPool_getEndpointByIdentifiers   (endpointPool_t     endpoints,
 }
 #endif
 
-#endif /* COMMON_ENDPOINT_POOL_H__ */
+#endif /* OPENMAMA_INTEGRATION_ENDPOINT_POOL_H__ */

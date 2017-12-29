@@ -14,6 +14,8 @@
 #define OPENMAMA_INTEGRATION_TRANSPORT_H__
 
 #include <mama/mama.h>
+#include <mama/integration/types.h>
+#include "list.h"
 
 #if defined (__cplusplus)
 extern "C"
@@ -146,7 +148,7 @@ mamaTransportImpl_getAdvisoryCauseAndPlatformInfo (mamaTransport tport,
    @return A pointer to a valid mamaBridgeImpl object.
 */
 MAMAExpDLL
-extern mamaBridgeImpl*
+extern mamaBridge
 mamaTransportImpl_getBridgeImpl (mamaTransport transport);
 
 MAMAExpDLL

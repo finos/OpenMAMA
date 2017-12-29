@@ -20,7 +20,7 @@ extern "C"
 {
 #endif
 
-	MAMAExpDLL
+MAMAExpDLL
 extern mama_status
 mamaStatsGenerator_create (mamaStatsGenerator* statsGenerator, mama_f64_t reportInterval);
 

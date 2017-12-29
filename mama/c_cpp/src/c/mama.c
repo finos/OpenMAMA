@@ -50,6 +50,12 @@
 #include <mama/statscollector.h>
 #include "transportimpl.h"
 
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
+#include <mama/integration/mama.h>
+
 #define PROPERTY_FILE "mama.properties"
 #define WOMBAT_PATH_ENV "WOMBAT_PATH"
 #define MAMA_PROPERTY_BRIDGE "mama.bridge.provider"
@@ -1891,6 +1897,30 @@ mama_getDefaultEventQueue (mamaBridge bridgeImpl,
     }
 
     *defaultQueue = impl->mDefaultEventQueue;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaImpl_setDefaultEventQueue (mamaBridge bridgeImpl,
+                               mamaQueue defaultQueue)
+{
+    mamaBridgeImpl* impl =  (mamaBridgeImpl*)bridgeImpl;
+
+    if (NULL == impl)
+    {
+        mama_log (MAMA_LOG_LEVEL_WARN, "mama_setDefaultEventQueue(): "
+                  "No bridge implementation specified");
+        return MAMA_STATUS_NO_BRIDGE_IMPL;
+    }
+
+    if (NULL == defaultQueue)
+    {
+        mama_log (MAMA_LOG_LEVEL_WARN, "mama_setDefaultEventQueue (): "
+                  "NULL default queue for bridge impl provided.");
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    impl->mDefaultEventQueue = defaultQueue;
     return MAMA_STATUS_OK;
 }
 

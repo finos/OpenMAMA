@@ -42,49 +42,6 @@ extern "C"
 {
 #endif
 
-#define MAMA_PAYLOAD_MAX        CHAR_MAX
-#define MAMA_MAX_MIDDLEWARES    CHAR_MAX
-#define MAMA_MAX_ENTITLEMENTS   CHAR_MAX
-#define MAX_ENTITLEMENT_BRIDGES CHAR_MAX
-
-/* Maximum internal property length */
-#define MAX_INTERNAL_PROP_LEN   1024
-
-/* These are the bare parameters which may be reused in other properties */
-#define MAMA_PROP_BARE_ENT_DEFERRED        "entitlements.deferred"
-#define MAMA_PROP_BARE_COMPILE_TIME_VER    "compile_version"
-
-/* These properties will be set by MAMA */
-#define MAMA_PROP_MAMA_RUNTIME_VER         "mama.runtime_version"
-
-/* %s = Bridge Name - these properties may be populated by bridge */
-#define MAMA_PROP_BRIDGE_ENT_DEFERRED      "mama.%s." MAMA_PROP_BARE_ENT_DEFERRED
-#define MAMA_PROP_BRIDGE_COMPILE_TIME_VER  "mama.%s." MAMA_PROP_BARE_COMPILE_TIME_VER
-
-#define MAMA_SET_BRIDGE_COMPILE_TIME_VERSION(bridgeName)                       \
-do                                                                             \
-{                                                                              \
-    char valString[MAX_INTERNAL_PROP_LEN];                                     \
-    char propString[MAX_INTERNAL_PROP_LEN];                                    \
-                                                                               \
-    /* Advise MAMA which version of MAMA the bridge was compiled against */    \
-    snprintf (propString,                                                      \
-              sizeof(propString),                                              \
-              MAMA_PROP_BRIDGE_COMPILE_TIME_VER,                               \
-              bridgeName);                                                     \
-    /* Advise MAMA which version of MAMA the bridge was compiled against */    \
-    snprintf (valString,                                                       \
-              sizeof(valString),                                               \
-              "%d.%d.%s",                                                      \
-              MAMA_VERSION_MAJOR,                                              \
-              MAMA_VERSION_MINOR,                                              \
-              MAMA_VERSION_RELEASE);                                           \
-    mamaInternal_setMetaProperty (                                             \
-              propString,                                                      \
-              valString);                                                      \
-}                                                                              \
-while(0)
-
 /**
  * @brief Structure for storing combined mamaPayloadBridge and LIB_HANDLE data.
  */
