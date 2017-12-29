@@ -46,7 +46,7 @@ mamaMsgImpl_setQueue (mamaMsg msg, mamaQueue queue);
 /*Associate a subscription context with a message - this is needed to
  inform the cache if a cache message has been detached*/
 MAMAExpDLL extern mama_status
-mamaMsgImpl_setDqStrategyContext (mamaMsg msg, void* dqStrategyContext);
+mamaMsgImpl_setDqStrategyContext (mamaMsg msg, mamaDqContext* dqStrategyContext);
 
 /*Set the bridge struct of function pointers on the message*/
 MAMAExpDLL extern mama_status

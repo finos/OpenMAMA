@@ -79,6 +79,52 @@ typedef void * mamaQueueLockHandle;
  */
 typedef mamaMsg (*conflateGetMsgCb) (mamaConflationManager mgr); 
 
+typedef struct imageReqImpl_* imageRequest;
+typedef struct SubjectContext_ SubjectContext;
+
+typedef enum dqState_
+{
+
+    DQ_STATE_OK = 0,
+    /**
+     * No Sequence Number Established Yet.
+     */
+    DQ_STATE_NOT_ESTABLISHED  = 1,
+
+    /**
+     * Received a stale message and are waiting for a recap.
+     */
+    DQ_STATE_WAITING_FOR_RECAP = 2,
+    DQ_STATE_POSSIBLY_STALE    = 3,
+    /**
+     * Received a message with duplicate sequence number
+     */ 
+    DQ_STATE_DUPLICATE         = 4,
+
+    /** 
+     * In the case of a stale initial, we do not want
+     * a recap because it may also be stale data.
+     */
+    DQ_STATE_STALE_NO_RECAP    = 5,
+
+    DQ_STATE_WAITING_FOR_RECAP_AFTER_FT    = 6
+} dqState;
+    
+typedef struct 
+{
+    mama_seqnum_t mSeqNum;
+    dqState       mDQState;
+
+    mamaMsg*      mCache;
+    int           mCurCacheIdx;
+    int           mCacheSize;
+    imageRequest  mRecapRequest;
+    mama_u64_t    mSenderId;
+
+    uint8_t       mDoNotForward;
+    mama_bool_t   mSetCacheMsgStale;
+} mamaDqContext;
+
 #if defined (__cplusplus)
 }
 #endif

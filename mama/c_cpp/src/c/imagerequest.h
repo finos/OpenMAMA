@@ -27,12 +27,15 @@
 #include "wombat/wincompat.h"
 #include "throttle.h"
 
+#ifndef OPENMAMA_INTEGRATION
+#define OPENMAMA_INTEGRATION
+#endif
+
+#include <mama/integration/types.h>
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-typedef struct imageReqImpl_* imageRequest;
-typedef struct SubjectContext_ SubjectContext;
 
 mama_status
 imageRequest_create (
