@@ -220,6 +220,7 @@
     <ClCompile Include="bridge.c" />
     <ClCompile Include="clientmanageresponder.c" />
     <ClCompile Include="conflation\connection.c" />
+    <ClCompile Include="endpointpool.c" />
     <ClCompile Include="fieldcache\fieldcache.c" />
     <ClCompile Include="fieldcache\fieldcachefield.c" />
     <ClCompile Include="fieldcache\fieldcachefieldimpl.c" />
@@ -332,6 +333,7 @@
     <ClInclude Include="mama\inbox.h" />
     <ClInclude Include="inboximpl.h" />
     <ClInclude Include="mama\integration\bridge.h" />
+    <ClInclude Include="mama\integration\endpointpool.h" />
     <ClInclude Include="mama\integration\inbox.h" />
     <ClInclude Include="mama\integration\mama.h" />
     <ClInclude Include="mama\integration\msg.h" />
@@ -344,6 +346,7 @@
     <ClInclude Include="mama\integration\statsgenerator.h" />
     <ClInclude Include="mama\integration\subscription.h" />
     <ClInclude Include="mama\integration\transport.h" />
+    <ClInclude Include="mama\integration\types.h" />
     <ClInclude Include="mama\io.h" />
     <ClInclude Include="listenermsgcallback.h" />
     <ClInclude Include="mama\log.h" />

@@ -278,8 +278,8 @@
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
+    <PreBuildEvent>IF NOT EXIST  $(SolutionDir)\$(ConfigurationName) mkdir  $(SolutionDir)\$(ConfigurationName)
+IF NOT EXIST  $(SolutionDir)\x64\$(ConfigurationName) mkdir  $(SolutionDir)\x64\$(ConfigurationName)</PreBuildEvent>
     <PostBuildEvent>copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\$(ConfigurationName)
 copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\x64\$(ConfigurationName)
 </PostBuildEvent>
