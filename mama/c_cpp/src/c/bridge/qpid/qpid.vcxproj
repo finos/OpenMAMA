@@ -175,7 +175,6 @@
   <ItemGroup>
     <ClCompile Include="bridge.c" />
     <ClCompile Include="codec.c" />
-    <ClCompile Include="endpointpool.c" />
     <ClCompile Include="inbox.c" />
     <ClCompile Include="io.c">
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">%(PreprocessorDefinitions)</PreprocessorDefinitions>
@@ -191,7 +190,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="codec.h" />
-    <ClInclude Include="endpointpool.h" />
     <ClInclude Include="inbox.h" />
     <ClInclude Include="io.h" />
     <ClInclude Include="msg.h" />

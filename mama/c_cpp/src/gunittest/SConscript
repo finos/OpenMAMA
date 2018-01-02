@@ -22,7 +22,7 @@ else:
     ccflags.append('-Wno-sign-compare')
     libs = ['gtest', 'gtest_main', 'dl', 'wombatcommon', 'mama', 'pthread']
 
-env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=libs, CCFLAGS=ccflags)
+env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=libs, CCFLAGS=ccflags, CPPDEFINES=[ 'OPENMAMA_INTEGRATION' ])
 
 env.SConscript('c/SConscript', 'env')
 env.SConscript('cpp/SConscript', 'env')

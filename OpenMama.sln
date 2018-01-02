@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "c", "c", "{F02CD330-5AFF-424D-B58C-5E875224AADB}"
 EndProject
@@ -164,9 +164,7 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mamadotnet", "mama\dotnet\src\cs\mamadotnet.csproj", "{B4483E45-D484-49D0-8477-18CC80CC9766}"
 	ProjectSection(ProjectDependencies) = postProject
 		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {7F64D11F-C002-4271-BDEC-A82C614403EF}
-		{B58FB672-1BBC-4889-BBDD-9DE5012140E2} = {B58FB672-1BBC-4889-BBDD-9DE5012140E2}
 		{45F0CC89-C5CD-4AF6-9911-DDF0557F788A} = {45F0CC89-C5CD-4AF6-9911-DDF0557F788A}
-		{66CB8ABC-8EA3-4FF6-B715-D878B37CCCB3} = {66CB8ABC-8EA3-4FF6-B715-D878B37CCCB3}
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "mamdadotnet", "mamda\dotnet\src\cs\mamdadotnet.csproj", "{2B6B0518-89A5-40F2-B2C2-9EC3D8B11F3B}"

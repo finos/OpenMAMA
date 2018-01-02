@@ -4,7 +4,7 @@ Import('*')
 env = env.Clone()
 
 env.Append( 
-	CPPDEFINES 	= ['MAMA'],
+	CPPDEFINES 	= ['MAMA', 'OPENMAMA_INTEGRATION'],
 )
 
 sources = []
@@ -41,6 +41,7 @@ bridge.c
 dictionary.c
 dqstrategy.c
 datetime.c
+endpointpool.c
 entitlement.c
 entitlementlibraries.c
 timezone.c
@@ -134,6 +135,7 @@ fp.close()
 headers = Glob("mama/*.h")
 playbackHeaders = Glob("mama/playback/*.h")
 fieldcacheHeaders = Glob("mama/fieldcache/*.h")
+integrationHeaders = Glob("mama/integration/*.h")
 
 if 'oea' in env['entitlements']:
     EntLIB = posixpath.join( env['oea_home'], 'lib/%s/liboeac%s.lib' % ( env['build'],env['suffix']))
@@ -151,6 +153,6 @@ if ( env['build'] == 'dynamic' or len(env['buildtype']) == 1):
     env.Install('$prefix/include/mama/conflation','mama/conflation/connection.h')
     env.Install('$prefix/include/mama/playback', playbackHeaders)
     env.Install('$prefix/include/mama/fieldcache', fieldcacheHeaders)
-
-if 'dynamic' in env['build'] and env['with_dependency_runtimes']:
-    env.Install('$bindir', aprInstLibs)
+    env.Install('$prefix/include/mama/integration', integrationHeaders)
+    if env['with_dependency_runtimes']:
+        env.Install('$bindir', aprInstLibs)

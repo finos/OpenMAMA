@@ -23,6 +23,12 @@
 
 #include "mama/subscmsgtype.h"
 
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
+#include <mama/integration/msgutils.h>
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -33,100 +39,6 @@ extern "C" {
 #define DQ_UNKNOWN      10
 #define DQ_DISCONNECT   12
 #define DQ_CONNECT      13
-
-MAMAExpDLL
-mama_status
-msgUtils_getIssueSymbol            (mamaMsg msg, const char** result);
-
-MAMAExpDLL
-mama_status
-msgUtils_setStatus                 (mamaMsg msg, short status);
-
-MAMAExpDLL
-mama_status
-msgUtils_msgTotal                  (mamaMsg msg, short* result);
-
-MAMAExpDLL
-mama_status 
-msgUtils_msgNum                    (mamaMsg msg, short* result);
-
-MAMAExpDLL
-mama_status
-msgUtils_msgSubscMsgType           (mamaMsg msg, short* result);
-
-MAMAExpDLL
-mama_status 
-msgUtils_createSubscriptionMessage (mamaSubscription  subscription,
-                                    mamaSubscMsgType  subscMsgType,
-                                    mamaMsg*          msg,
-                                    const char*       issueSymbol);
-
-/**
- * Create a message requesting a  subscription to the specified subject
- *
- * @param subsc
- * @return the subscribe message.
- */
-MAMAExpDLL
-mama_status
-msgUtils_createSubscribeMsg        (mamaSubscription subsc, mamaMsg* result);
-
-/**
- * Create a RESUBSCRIBE message  in response to a sync request.
- * @return  the resubscribe message.
- */
-MAMAExpDLL
-mama_status
-msgUtils_createResubscribeMessage  (mamaMsg* result);
-
-MAMAExpDLL
-mama_status
-msgUtils_createRefreshMsg          (mamaSubscription subsc, mamaMsg* result);
-
-MAMAExpDLL
-mama_status
-msgUtils_createTimeoutMsg          (mamaMsg* msg);
-
-MAMAExpDLL
-mama_status
-msgUtils_createEndOfInitialsMsg    (mamaMsg* msg);
-
-/**
- * Create a recovery message in when required to attempt recovery
- * of an item..
- * @return the recover request message.
- */
-MAMAExpDLL
-mama_status
-msgUtils_createRecoveryRequestMsg  (mamaSubscription subsc, 
-                                    short            reason,
-                                    mamaMsg*         result, 
-                                    const char*      issueSymbol);
-
-MAMAExpDLL
-mama_status
-msgUtils_setSubscSubject           (mamaMsg msg, const char* sendSubject);
-
-MAMAExpDLL
-mama_status 
-msgUtils_createUnsubscribeMsg      (mamaSubscription subsc, mamaMsg* msg);
-
-MAMAExpDLL
-mama_status
-msgUtils_createDictionarySubscribe (mamaSubscription subscription, 
-                                    mamaMsg*         msg);
-
-MAMAExpDLL
-mama_status
-msgUtils_createSnapshotSubscribe   (mamaSubscription subsc, mamaMsg* msg);
-
-MAMAExpDLL
-mama_status
-msgUtils_msgTotal                  (mamaMsg msg, short* result);
-
-MAMAExpDLL
-mama_status
-msgUtils_msgNum                    (mamaMsg msg, short* result);
 
 #if defined(__cplusplus)
 }

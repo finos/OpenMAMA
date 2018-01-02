@@ -6,7 +6,7 @@ sources = []
 
 target = 'libmamacpp'
 
-env.Append( CPPDEFINES = ['MAMACPP'] )
+env.Append( CPPDEFINES = ['MAMACPP', 'OPENMAMA_INTEGRATION'] )
 env.Append( LIBS = ['libmamac%s.lib' % ( env['suffix'] ) ] )
 
 sources = Split( """

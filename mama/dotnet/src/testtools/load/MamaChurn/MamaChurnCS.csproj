@@ -20,7 +20,7 @@
     <DelaySign>false</DelaySign>
     <OutputType>Exe</OutputType>
     <RootNamespace>MamaChurn</RootNamespace>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+    <RunPostBuildEvent>OnOutputUpdated</RunPostBuildEvent>
     <StartupObject>MamaChurnCS.MamaChurnCS</StartupObject>
     <FileUpgradeFlags>
     </FileUpgradeFlags>

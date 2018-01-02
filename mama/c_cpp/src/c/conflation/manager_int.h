@@ -24,26 +24,9 @@
  * per/connection conflation.
  */
 
-#ifndef MAMA_MANAGER_INT_H__
-#define MAMA_MANAGER_INT_H__
-#include "wombat/port.h"
-
-#include "mama/conflation/manager.h"
-
-#if defined(__cplusplus)
-extern "C" {
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
 #endif
 
-typedef mama_status (*conflateProcessCb) (mamaConflationManager mgr, 
-                                          mamaMsg               msg,
-                                          const char*           topic);
+#include <mama/integration/types.h>
 
-/**
- * Return the message wrapper used by this manager.
- */
-typedef mamaMsg (*conflateGetMsgCb) (mamaConflationManager mgr); 
-
-#if defined(__cplusplus)
-}
-#endif
-#endif /* MAMA_CONNECTION_INT_H__ */

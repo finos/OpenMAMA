@@ -38,14 +38,25 @@ lex.yy.o
 if env.get('with_enterprise',None) == True:
     sources.append('../enterprise/c/path.c')
 
-headers = Glob('windows/wombat/*.h')
+headers = Glob('windows/wombat/*.h') + Glob('wombat/*.h')
 winheaders = Split ("""
                         windows/lock.h
                         windows/mman.h
                     """)
+instHeaders = \
+    Split("""
+                destroyHandle.h
+                list.h
+                lookup2.h
+                platform.h
+                property.h
+                wlock.h
+                timers.h
+          """)
 
 env.InstallLibrary(sources, target)
 
 if ( env['build'] == 'dynamic' or len( env['buildtype'] ) == 1 ):
     env.Install( '$incdir/wombat', headers )
     env.Install( '$incdir/windows', winheaders )
+    env.Install( '$incdir', instHeaders )

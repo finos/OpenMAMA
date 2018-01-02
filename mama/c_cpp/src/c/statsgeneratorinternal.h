@@ -25,60 +25,10 @@
 #include "mama/status.h"
 #include "mama/types.h"
 
-#if defined (__cplusplus)
-extern "C" {
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
 #endif
 
-MAMAExpDLL
-extern mama_status
-mamaStatsGenerator_create (mamaStatsGenerator* statsGenerator, mama_f64_t reportInterval);
-
-/**
- * This function should be called to stop the stats report timer before the internal event
- * queue has been destroyed.
- *
- * @param[in] statsGenerator The stats generator.
- * @returns mama_status can be one of
- *              MAMA_STATUS_NULL_ARG
- *              MAMA_STATUS_OK
- */
-MAMAExpDLL
-extern mama_status
-mamaStatsGenerator_stopReportTimer(mamaStatsGenerator statsGenerator);
-MAMAExpDLL
-extern mama_status
-mamaStatsGenerator_destroy (mamaStatsGenerator statsGenerator);
-
-MAMAExpDLL
-extern mama_status
-mamaStatsGenerator_removeStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector statsCollector);
-
-MAMAExpDLL
-extern mama_status
-mamaStatsGenerator_setLogStats (mamaStatsGenerator statsGenerator, int logStats);
-
-MAMAExpDLL
-extern mama_status
-mamaStatsGenerator_setStatsLogger (mamaStatsGenerator statsGenerator, mamaStatsLogger* statsLogger);
-
-MAMAExpDLL
-extern void
-mamaStatsGenerator_generateStats (mamaStatsGenerator statsgenerator);
-
-MAMAExpDLL
-extern mama_status
-mamaStatsGenerator_setQueue (mamaStatsGenerator statsgenerator, mamaQueue queue);
-
-MAMAExpDLL
-extern void*
-mamaStatsGenerator_allocateStatsCollector (mamaStatsGenerator statsGenerator);
-
-MAMAExpDLL
-extern mama_status
-mamaStatsGenerator_addStatsCollector (mamaStatsGenerator statsGenerator, mamaStatsCollector statsCollector);
-
-#if defined (__cplusplus)
-}
-#endif
+#include <mama/integration/statsgenerator.h>
 
 #endif /* MamaStatsGeneratorInternalH__ */

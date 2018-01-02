@@ -31,6 +31,19 @@
 #include "wlock.h"
 #include <wombat/thread.h>
 
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
+#endif
+
+#include <mama/integration/types.h>
+#include <mama/integration/bridge.h>
+#include <mama/integration/inbox.h>
+#include <mama/integration/queue.h>
+#include <mama/integration/subscription.h>
+#include <mama/integration/transport.h>
+#include <mama/integration/publisher.h>
+#include <mama/integration/msg.h>
+
 #if defined(__cplusplus)
 extern "C" {
 #endif
@@ -39,15 +52,6 @@ extern "C" {
 #define XSTR(s) STR(s)
 #define STR(s) #s
 
-/***** The types used to identify the bridge specific implementations ******/
-typedef struct  queueBridge_*       queueBridge;
-typedef struct  subscriptonBridge_* subscriptionBridge;
-typedef struct  transportBridge_*   transportBridge;
-typedef struct  timerBridge_*       timerBridge;
-typedef struct  ioBridge_*          ioBridge;
-typedef struct  publisherBridge_*   publisherBridge;
-typedef struct  inboxBridge_*       inboxBridge;
-typedef struct  msgBridge_*         msgBridge;
 
 /* ******************************************************************************** */
 /* Definitions. */
@@ -652,63 +656,6 @@ typedef struct mamaBridgeImpl_
     bridgeMamaMsgImpl_setReplyHandle        bridgeMamaMsgSetReplyHandleAndIncrement;
     bridgeMamaMsg_destroyReplyHandle        bridgeMamaMsgDestroyReplyHandle;
 } mamaBridgeImpl;
-
-/*Functions for internal use only. Will be used from the C++ layer.*/
-
-/**
- * This function will return the timeout value to be used when destroying the default queue.
- * The value is read from the properties file, (MAMA_BRIDGE_DEFAULT_QUEUE_TIMEOUT_PROPERTY),
- * but will default to MAMA_BRIDGE_DEFAULT_QUEUE_DEFAULT_TIMEOUT if the property is missing.
- *
- * @return The timeout value.
- */
-MAMAExpDLL
-extern int
-mamaBridgeImpl_getDefaultQueueTimeout(void);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_setClosure (mamaBridge bridgeImpl, void* closure);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_setCppCallback (mamaBridge bridgeImpl, void* cppCallback);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_getClosure (mamaBridge bridgeImpl, void** closure);
-
-MAMAExpDLL
-mama_status
-mamaBridgeImpl_getInternalEventQueue (mamaBridge bridgeImpl, mamaQueue* internalQueue);
-
-MAMAExpDLL
-mama_status
-mamaBridgeImpl_stopInternalEventQueue (mamaBridge bridgeImpl);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_setReadOnlyProperty (mamaBridge bridgeImpl, const char* property, const char* value);
-
-MAMAExpDLL
-extern mama_status
-mamaBridgeImpl_setProperty (mamaBridge bridgeImpl, const char* property, const char* value);
-
-MAMAExpDLL
-extern const char*
-mamaBridgeImpl_getProperty (mamaBridge bridgeImpl, const char* property);
-
-MAMAExpDLL
-extern mama_bool_t
-mamaBridgeImpl_areEntitlementsDeferred (mamaBridge bridgeImpl);
-
-MAMAExpDLL
-const char*
-mamaBridgeImpl_getMetaProperty (mamaBridge bridgeImpl, const char* property);
-
-MAMAExpDLL
-extern void
-mamaBridgeImpl_populateBridgeMetaData (mamaBridge bridgeImpl);
 
 #if defined(__cplusplus)
 }

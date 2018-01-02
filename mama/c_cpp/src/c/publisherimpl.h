@@ -24,39 +24,10 @@
 
 #include "bridge.h"
 
-#if defined(__cplusplus)
-extern "C" {
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
 #endif
 
-MAMAExpDLL
-extern mama_status
-mamaPublisherImpl_createByIndex (mamaPublisher*    result,
-                                 mamaTransport     tport,
-                                 int               tportIndex,
-                                 mamaQueue         queue,
-                                 mamaPublisherCallbacks* cb,
-                                 const char*       symbol,
-                                 const char*       source,
-                                 const char*       root,
-                                 void*             closure);
-
-MAMAExpDLL
-extern mama_status
-mamaPublisherImpl_sendFromInboxByIndex (mamaPublisher publisher,
-                                        int           tportIndex,
-                                        mamaInbox     inbox,
-                                        mamaMsg       msg);
-
-MAMAExpDLL
-extern mama_status
-mamaPublisherImpl_clearTransport (mamaPublisher publisher);
-
-MAMAExpDLL
-extern mamaTransport
-mamaPublisherImpl_getTransportImpl (mamaPublisher publisher);
-
-#if defined(__cplusplus)
-}
-#endif
+#include <mama/integration/publisher.h>
 
 #endif /* MamaPublishermplH__ */

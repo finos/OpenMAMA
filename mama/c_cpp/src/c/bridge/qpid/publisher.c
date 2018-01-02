@@ -39,7 +39,7 @@
 #include "codec.h"
 #include "inbox.h"
 #include "publisher.h"
-#include "endpointpool.h"
+#include "mama/integration/endpointpool.h"
 #include "qpidcommon.h"
 #include <proton/connection.h>
 

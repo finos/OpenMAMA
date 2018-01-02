@@ -25,22 +25,10 @@
 #include "mama/status.h"
 #include "mama/types.h"
 
-#if defined (__cplusplus)
-extern "C" {
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
 #endif
 
-typedef int (MAMACALLTYPE *pollStatCb) (void* closure);
-
-MAMAExpDLL
-extern mama_status
-mamaStat_setIntervalValueFromTotal (mamaStat stat, mama_u32_t value);
-
-MAMAExpDLL
-extern mama_status
-mamaStat_setPollCallback (mamaStat stat, pollStatCb callback, void* closure);
-
-#if defined (__cplusplus)
-}
-#endif
+#include <mama/integration/stat.h>
 
 #endif /* MamaStatInternalH__ */

@@ -91,7 +91,7 @@
       <AdditionalOptions>/D "_CRTDBG_MAP_ALLOC" /FI "stdlib.h" /FI "crtdbg.h"  %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;MAMA_DLL;MAMA;FD_SETSIZE=1024;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPENMAMA_INTEGRATION;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;MAMA_DLL;MAMA;FD_SETSIZE=1024;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -124,7 +124,7 @@
     <ClCompile>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;MAMA_DLL;MAMA;FD_SETSIZE=1024;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPENMAMA_INTEGRATION;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_DEBUG;_WINDOWS;_USRDLL;MAMA_DLL;MAMA;FD_SETSIZE=1024;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
@@ -153,7 +153,7 @@
     </PreBuildEvent>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;MAMA_DLL;MAMA;FD_SETSIZE=1024;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPENMAMA_INTEGRATION;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;MAMA_DLL;MAMA;FD_SETSIZE=1024;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -188,7 +188,7 @@
     </Midl>
     <ClCompile>
       <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;MAMA_DLL;MAMA;FD_SETSIZE=1024;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>OPENMAMA_INTEGRATION;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;NDEBUG;_WINDOWS;_USRDLL;MAMA_DLL;MAMA;FD_SETSIZE=1024;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
       <PrecompiledHeader>
       </PrecompiledHeader>
@@ -220,6 +220,7 @@
     <ClCompile Include="bridge.c" />
     <ClCompile Include="clientmanageresponder.c" />
     <ClCompile Include="conflation\connection.c" />
+    <ClCompile Include="endpointpool.c" />
     <ClCompile Include="fieldcache\fieldcache.c" />
     <ClCompile Include="fieldcache\fieldcachefield.c" />
     <ClCompile Include="fieldcache\fieldcachefieldimpl.c" />
@@ -331,6 +332,21 @@
     <ClInclude Include="imagerequest.h" />
     <ClInclude Include="mama\inbox.h" />
     <ClInclude Include="inboximpl.h" />
+    <ClInclude Include="mama\integration\bridge.h" />
+    <ClInclude Include="mama\integration\endpointpool.h" />
+    <ClInclude Include="mama\integration\inbox.h" />
+    <ClInclude Include="mama\integration\mama.h" />
+    <ClInclude Include="mama\integration\msg.h" />
+    <ClInclude Include="mama\integration\msgfield.h" />
+    <ClInclude Include="mama\integration\msgutils.h" />
+    <ClInclude Include="mama\integration\publisher.h" />
+    <ClInclude Include="mama\integration\queue.h" />
+    <ClInclude Include="mama\integration\stat.h" />
+    <ClInclude Include="mama\integration\statscollector.h" />
+    <ClInclude Include="mama\integration\statsgenerator.h" />
+    <ClInclude Include="mama\integration\subscription.h" />
+    <ClInclude Include="mama\integration\transport.h" />
+    <ClInclude Include="mama\integration\types.h" />
     <ClInclude Include="mama\io.h" />
     <ClInclude Include="listenermsgcallback.h" />
     <ClInclude Include="mama\log.h" />

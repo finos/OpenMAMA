@@ -27,7 +27,9 @@
 #include <mama/mama.h>
 #include <string.h>
 #include <wombat/wtable.h>
-#include "endpointpool.h"
+#include <wombat/port.h>
+#include "mama/integration/endpointpool.h"
+#include "wlock.h"
 
 
 /*=========================================================================

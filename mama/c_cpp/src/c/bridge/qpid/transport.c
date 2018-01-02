@@ -48,7 +48,7 @@
 #include "qpidcommon.h"
 #include "msg.h"
 #include "codec.h"
-#include "endpointpool.h"
+#include "mama/integration/endpointpool.h"
 
 /*=========================================================================
   =                              Macros                                   =

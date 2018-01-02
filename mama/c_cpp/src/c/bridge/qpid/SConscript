@@ -29,6 +29,7 @@ else:
 
 env.Append(CFLAGS=['-Werror'])
 
+env.Append( CPPDEFINES 	= ['OPENMAMA_INTEGRATION'] )
 
 conf = Configure(env, config_h='./config.h', log_file='./config.log')
 

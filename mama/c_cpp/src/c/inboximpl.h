@@ -19,42 +19,8 @@
  * 02110-1301 USA
  */
 
-#ifndef MamaInboxImplH__
-#define MamaInboxImplH__
-
-#include "bridge.h"
-
-#if defined(__cplusplus)
-extern "C" {
+#ifndef OPENMAMA_INTEGRATION
+  #define OPENMAMA_INTEGRATION
 #endif
 
-MAMAExpDLL 
-extern inboxBridge
-mamaInboxImpl_getInboxBridge (mamaInbox inbox);
-
-MAMAExpDLL 
-extern mama_status 
-mamaInbox_createByIndex (mamaInbox*             inbox,
-                         mamaTransport          tport,
-                         int                    tportIndex,
-                         mamaQueue              queue,
-                         mamaInboxMsgCallback   msgCB,
-                         mamaInboxErrorCallback errorCB,
-                         void*                  closure);
-
-MAMAExpDLL 
-extern mama_status 
-mamaInbox_createByIndex2 (mamaInbox*             inbox,
-                         mamaTransport          tport,
-                         int                    tportIndex,
-                         mamaQueue              queue,
-                         mamaInboxMsgCallback   msgCB,
-                         mamaInboxErrorCallback errorCB,
-                         mamaInboxDestroyCallback onInboxDestroyed,
-                         void*                  closure);
-
-#if defined(__cplusplus)
-}
-#endif
-
-#endif /* MamaInboxmplH__ */
+#include <mama/integration/inbox.h>

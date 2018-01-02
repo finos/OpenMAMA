@@ -6,7 +6,7 @@ env = env.Clone()
 
 target = 'libmamaqpidimpl'
 
-env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H', 'PN_NOINCLUDE_STDINT'] )
+env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H', 'PN_NOINCLUDE_STDINT', 'OPENMAMA_INTEGRATION'] )
 
 libPath = []
 libPath.append('$libdir')

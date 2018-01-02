@@ -695,7 +695,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_setLogSizeCb
 
     mLogSizeCallback = (*env)->NewGlobalRef (env, callback);
 
-    if (MAMA_STATUS_OK != (status = mama_setLogSizeCb(logSizeCallback)))
+    if (MAMA_STATUS_OK != (status = mama_setLogSizeCb((logSizeCbType)logSizeCallback)))
     {
         (*env)->DeleteGlobalRef(env,mLogSizeCallback);
         utils_buildErrorStringForStatus(
@@ -1015,7 +1015,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_initIDs
 	(*env)->DeleteLocalRef(env, mamaLogCallbackClass);
 }
 
-void logSizeCallback(void)
+void MAMACALLTYPE logSizeCallback(void)
 {
     JNIEnv* env = NULL;
     env = utils_getENV(javaVM_g);

@@ -70,6 +70,8 @@ InstFieldCacheInclude = Split("""
     mama/fieldcache/fieldcachetypes.h
 """)
 
+integrationHeaders = Glob("mama/integration/*.h")
+
 apr_include_dir = os.popen(env.subst('$apr_home/bin/apr-1-config --includedir')).read().strip()
 apr_link_ld = os.popen(env.subst('$apr_home/bin/apr-1-config --link-ld')).read().strip()
 apr_ccflags = os.popen(env.subst('$apr_home/bin/apr-1-config --cflags --cppflags')).read().strip()
@@ -93,6 +95,10 @@ else:
     env.Append(LIBS=['m', 'rt', 'wombatcommon', 'dl', 'pthread', 'apr-1'],
                LIBPATH=libPath, CPPPATH=[includePath], CCFLAGS=apr_ccflags,
                SHLINKFLAGS=apr_link_ld)
+
+env.Append( 
+	CPPDEFINES 	= ['MAMA', 'OPENMAMA_INTEGRATION'],
+)
 
 libmama_sources = \
     Split("""
@@ -123,6 +129,7 @@ libmama_sources = \
     publisher.c
     dqpublisher.c
     dqpublishermanager.c
+    endpointpool.c
     inbox.c
 	quality.c
 	registerfunctions.c
@@ -206,6 +213,9 @@ for s in libmama_sources:
         # 4.6 so turning off deprecated warnings for this particular file
         static_obj = env.Object(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
         shared_obj = env.SharedObject(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
+    elif s == "endpointpool.c":
+        static_obj = env.Object(s, CCFLAGS=[x for x in env['CCFLAGS'] if x != '-pedantic-errors'])
+        shared_obj = env.SharedObject(s, CCFLAGS=[x for x in env['CCFLAGS'] if x != '-pedantic-errors'])
     else:
         static_obj = env.Object(s)
         shared_obj = env.SharedObject(s)
@@ -220,10 +230,9 @@ lib.append(env.StaticLibrary('.libs/libmama', [StaticLibs['libmama'], StaticLibs
 
 Alias('install', env.Install('$libdir', lib))
 Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))
-Alias('install', env.Install('$prefix/include/mama/conflation',
-      InstConflInclude))
-Alias('install', env.Install('$prefix/include/mama/fieldcache',
-      InstFieldCacheInclude))
+Alias('install', env.Install('$prefix/include/mama/conflation', InstConflInclude))
+Alias('install', env.Install('$prefix/include/mama/fieldcache', InstFieldCacheInclude))
+Alias('install', env.Install('$prefix/include/mama/integration', integrationHeaders))
 
 if env['with_dependency_runtimes']:
     if env['target_arch'] == "x86_64":
