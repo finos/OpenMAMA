@@ -23,42 +23,42 @@ symboliclinks = []
 if not env.GetOption('help') and not env.GetOption('clean'):
     symboliclinks = env.SymLinkFiles([ ( 'mamda/java/temp/MamdaLock.java' , 'mamda/java/com/wombat/mamda/locks/MamdaLock15.java') ])
 
-base_sources    = [ 'com/wombat/mamda' ]
-example_sources = [ 'com/wombat/mamda/examples' ]
-options_sources = [ 'com/wombat/mamda/options' ]
-ob_sources      = [ 'com/wombat/mamda/orderbook' ]
+base_sources    = [ 'src/main/java/com/wombat/mamda' ]
+example_sources = [ 'src/main/java/com/wombat/mamda/examples' ]
+options_sources = [ 'src/main/java/com/wombat/mamda/options' ]
+ob_sources      = [ 'src/main/java/com/wombat/mamda/orderbook' ]
 
 optionsExamples = Split("""
-com/wombat/mamda/examples/MamdaOptionChainExample.java
-com/wombat/mamda/examples/MamdaOptionChainViewExample.java
+src/main/java/com/wombat/mamda/examples/MamdaOptionChainExample.java
+src/main/java/com/wombat/mamda/examples/MamdaOptionChainViewExample.java
 """)
 
 orderbookExamples = Split("""
-com/wombat/mamda/examples/MamdaBookTicker.java
-com/wombat/mamda/examples/MamdaBookPublisher.java
-com/wombat/mamda/examples/MamdaAtomicBookBuilder.java
-com/wombat/mamda/examples/MamdaAtomicBookTicker.java
-com/wombat/mamda/examples/MamdaBookSelfTest.java
-com/wombat/mamda/examples/MamdaBookChurn.java
+src/main/java/com/wombat/mamda/examples/MamdaBookTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaBookPublisher.java
+src/main/java/com/wombat/mamda/examples/MamdaAtomicBookBuilder.java
+src/main/java/com/wombat/mamda/examples/MamdaAtomicBookTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaBookSelfTest.java
+src/main/java/com/wombat/mamda/examples/MamdaBookChurn.java
 """)
 
 if env['with_testtools'] == True:
-    orderbookExamples.append( 'com/wombat/mamda/examples/MamdaBookChurn.java' )
+    orderbookExamples.append( 'src/main/java/com/wombat/mamda/examples/MamdaBookChurn.java' )
 
 if env['with_unittest'] == True:
-    orderbookExamples.append('com/wombat/mamda/examples/MamdaListenerBookPublisher.java')
+    orderbookExamples.append('src/main/java/com/wombat/mamda/examples/MamdaListenerBookPublisher.java')
 
 baseExamples = Split("""
-com/wombat/mamda/examples/MamdaComboTicker.java
-com/wombat/mamda/examples/MamdaQuoteTicker.java
-com/wombat/mamda/examples/MamdaOrderImbalanceTicker.java
-com/wombat/mamda/examples/MamdaTradeTicker.java
-com/wombat/mamda/examples/MamdaMultiPartTicker.java
-com/wombat/mamda/examples/MamdaMultiSecurityTicker.java
-com/wombat/mamda/examples/MamdaListen.java
-com/wombat/mamda/examples/MamdaSecStatusTicker.java
-com/wombat/mamda/examples/MamdaFundamentalTicker.java
-com/wombat/mamda/examples/MamdaAuctionTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaComboTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaQuoteTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaOrderImbalanceTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaTradeTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaMultiPartTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaMultiSecurityTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaListen.java
+src/main/java/com/wombat/mamda/examples/MamdaSecStatusTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaFundamentalTicker.java
+src/main/java/com/wombat/mamda/examples/MamdaAuctionTicker.java
 """)
 
 env.Append(
@@ -76,7 +76,7 @@ base_classes    = env.Java('classes', base_sources )
 options_classes = env.Java('classes_options', options_sources )
 ob_classes      = env.Java('classes_orderbook', ob_sources )
 
-commandLineProc = env.Java('classes','com/wombat/mamda/examples/CommandLineProcessor.java')
+commandLineProc = env.Java('classes','src/main/java/com/wombat/mamda/examples/CommandLineProcessor.java')
 
 base_ex = []
 for ex in baseExamples:

@@ -13,9 +13,9 @@ java_classdir_builder = CreateJavaClassDirBuilder( env)
 java_classdir_builder.emitter = emit_java_classes_norecurse
 
 testtools_source = Split("""
-            #mama/jni/src/com/wombat/mama/testtools/load/MamaChurnTest.java
-            #mama/jni/src/com/wombat/mama/testtools/performance/MamaProducerJava.java
-            #mama/jni/src/com/wombat/mama/testtools/performance/MamaConsumerJava.java
+            #mama/jni/src/main/java/com/wombat/mama/testtools/load/MamaChurnTest.java
+            #mama/jni/src/main/java/com/wombat/mama/testtools/performance/MamaProducerJava.java
+            #mama/jni/src/main/java/com/wombat/mama/testtools/performance/MamaConsumerJava.java
 """) 
 
 testtools = []
@@ -23,7 +23,7 @@ testtools = []
 unittest_source = Glob('src/junittests')
 unittest = []
 
-jExamples = Glob('src/com/wombat/mama/examples/*java')
+jExamples = Glob('src/main/java/com/wombat/mama/examples/*java')
 
 version = env['versions']['mama']['releaseString']
 
@@ -33,13 +33,11 @@ verFile.write("""const char mamajni_version[] = "@(#) openmamajni %s";"""
                % version)
 verFile.close()
 
-common_source   = [ '#common/jni/src/com/wombat/common/' ]
-mama_source     = [ '#mama/jni/src/com/wombat/mama' ]
+mama_source     = [ '#mama/jni/src/main/java/com/wombat/mama', '#mama/jni/src/main/java/com/wombat/common' ]
 
 env.Append( JAVACFLAGS=['-Xlint:deprecation'], 
     JAVACLASSPATH = Dir('classes').path )
 
-common_classes  = env.Java('classes',common_source)
 mama_classes    = env.Java('classes',mama_source)
 
 if env['with_testtools'] == True:
@@ -51,15 +49,14 @@ if env['with_unittest'] == True:
         unittest.append( env.Java( 'classes', t ) )
         env.Append(JAVACLASSPATH = ('$junit_home/junit.jar'))
 
-env.Depends( mama_classes, common_classes )
 env.Depends( testtools, mama_classes )
 env.Depends( unittest, mama_classes )
 
 # Builds all of the header files which is unnecessary but no reason not to
 # do this
-headers = env.JavaH(target=Dir('src/c/mamajni').abspath,source= [ mama_classes, common_classes ])
+headers = env.JavaH(target=Dir('src/c/mamajni').abspath,source= [ mama_classes ])
 
-env.Depends( headers, [ mama_classes, common_classes, testtools, unittest ] )
+env.Depends( headers, [ mama_classes, testtools, unittest ] )
 
 jar = env.Jar(target='mamajni.jar', source='classes', JARCHDIR = Dir('classes').abspath  )
 
@@ -82,4 +79,4 @@ if env['with_docs'] == True:
         PROJECT_HEADER          = "<img src='./resources/nyse_technologies.png' alt='NYSE Technologies' /><br/><b>MAMA JNI</b><br><font size='-1'>version %s</font>" % (version),
     )
 
-    env.JavaDocBuilder( '$prefix/doc/mama/jni/html','#mama/jni/src' )
+    env.JavaDocBuilder( '$prefix/doc/mama/jni/html','#mama/jni/src/main/java' )

@@ -25,7 +25,8 @@
     <!-- The definition of the source files to compile -->
     <target name="source.defs" description="Define some groups of source files">
         <patternset id="src.base">
-            <include name="com/wombat/mama/*.java"></include> 
+            <include name="com/wombat/mama/*.java"></include>
+            <include name="com/wombat/common/*.java"></include>
             <include name="com/wombat/mama/examples/*.java"></include>
             <include name="com/wombat/mama/testtools/load/MamaChurnTest.java" if="withTestBed"></include>
             <include name="com/wombat/mama/testtools/performance/MamaProducerJava.java" if="withTestBed"></include>
@@ -39,22 +40,15 @@
         </patternset>
         <!-- JUnitTests sources -->
         <patternset id="src.junittests" description="JUnit test source files">
-            <include name="junittests/*.java"></include>
+            <include name="com/wombat/mama/junittests/*.java"></include>
         </patternset> 
     </target>
 
     <!-- Compiles the main java classes as well as any other dependancies -->
     <target name="compile.base" depends="init, source.defs" description="Compile the base MAMA jni src">
-        <javac source="1.5" srcdir="src" destdir="${build}" debug="true" deprecation="on">
+        <javac source="1.5" srcdir="src/main/java" destdir="${build}" debug="true" deprecation="on">
             <!-- All the JNI Java files required -->
             <patternset refid="src.base"></patternset>
-
-            <!-- Will include any Common java files required for the build (searched by javac) -->
-            <sourcepath location="${basedir}/../../common/jni/src">
-                <fileset dir=".">
-                    <include name="**/*.java"></include>
-                </fileset>
-            </sourcepath>
         </javac>
     </target>
 
@@ -74,7 +68,7 @@
         <copy file="${dist}/lib/${base.release}.jar" tofile="${dist}/lib/${base}.jar"></copy>
 
         <copy flatten="true" todir="${dist}/examples">
-            <fileset dir="${basedir}/../jni/src">
+            <fileset dir="${basedir}/../jni/src/main/java">
                 <include name="com/**/MamaListen.java"></include>
                 <include name="com/**/MamaTest.java"></include>
                 <include name="com/**/MamaTestJava.java"></include>
@@ -130,7 +124,7 @@
     </target> 
     <target name="compile.testtools" depends="dist.base, testtooldirs" if="withTestBed">
         <!-- JUnit jar must already be on the classpath -->
-        <javac source="1.5" srcdir="src" destdir="${build}/testtools" debug="true" deprecation="on">
+        <javac source="1.5" srcdir="src/main/java" destdir="${build}/testtools" debug="true" deprecation="on">
             <patternset refid="src.testtools"></patternset>
             <classpath>
                 <fileset dir="${dist}/lib/">
@@ -157,7 +151,7 @@
     </target>   
     <target name="compile.junittests" depends="dist.base, junitdirs" if="withUnitTests">
         <!-- JUnit jar must already be on the classpath -->
-        <javac source="1.5" srcdir="src" destdir="${build}/junittests" debug="true" deprecation="on">
+        <javac source="1.5" srcdir="src/test/java" destdir="${build}/junittests" debug="true" deprecation="on">
             <patternset refid="src.junittests"></patternset>
             <classpath>
                 <fileset dir="${dist}/lib/">
