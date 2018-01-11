@@ -20,7 +20,7 @@ testtools_source = Split("""
 
 testtools = []
 
-unittest_source = Glob('src/junittests')
+unittest_source = Glob('src/test/java/com/wombat/mama/junittests')
 unittest = []
 
 jExamples = Glob('src/main/java/com/wombat/mama/examples/*java')

@@ -24,6 +24,11 @@ package com.wombat.mama.junittests;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 import com.wombat.mama.*;
+import org.junit.runner.JUnitCore;
+import org.junit.runner.Result;
+import org.junit.runner.notification.Failure;
+
+import java.util.logging.Level;
 
 /**
  *
@@ -31,36 +36,9 @@ import com.wombat.mama.*;
  */
 public class Main
 {
-    private static String bridgeName = "";
-    private static String transportName = "";
-    private static String symbol = "";
-    private static String source = "";
-    private static String badsource = "BADSRC";
+    private static String bridgeName = "qpid";
 
     public static String GetBridgeName() { return bridgeName; }
-    public static String GetTransportName() { return transportName; }
-    public static String GetSymbol() { return symbol; }
-    public static String GetSource() { return source; }
-    public static String GetBadSource() { return badsource; }
-
-    public static Test suite()
-    {
-        // Create a new test suite
-        TestSuite suite = new TestSuite();
-
-        // Add all tests
-        suite.addTestSuite(MamaDateTimeSetTimeZone.class);
-        suite.addTestSuite(MamaMsgAddArrayMsgWithLength.class);
-        suite.addTestSuite(MamaMsgGetByteBuffer.class);
-        suite.addTestSuite(MamaMsgTryMethods.class);
-        suite.addTestSuite(MamaMsgVectorFields.class);
-        suite.addTestSuite(MamaOpenClose.class);
-        suite.addTestSuite(MamaPriceGetRoundedPrice.class);
-        suite.addTestSuite(MamaSetLogCallback.class);
-        suite.addTestSuite(MamaTimerCallbacks.class);
-
-        return suite;
-    }
 
     /**
      * @param args the command line arguments
@@ -75,39 +53,34 @@ public class Main
             {
                 bridgeName = ++i < args.length ? args[i++] : "";
             }
-            else if (args[i].equalsIgnoreCase("-tport"))
-            {
-                transportName = ++i < args.length ? args[i++] : "";
-            }
-            else if (args[i].equals("-s"))
-            {
-                symbol = ++i < args.length ? args[i++] : "";
-            }
-            else if (args[i].equals("-S"))
-            {
-                source = ++i < args.length ? args[i++] : "";
-            }
-            else if (args[i].equals("-badsource"))
-            {
-                badsource = ++i < args.length ? args[i++] : "";
-            }
             else
             {
                 ok = false;            // error
                 break;
             }
         }
-        if (!ok || bridgeName.isEmpty() || transportName.isEmpty())
+        if (!ok || bridgeName.isEmpty())
         {
-            System.err.println("Usage: Main -m bridgeName -tport transportName");
+            System.err.println("Usage: Main -m bridgeName");
             System.exit(1);
         }
 
         // Each test will load/unload Mama as needed
-        java.util.logging.Level level = Mama.getLogLevel();            // force load of the shared libs
+        Level level = Mama.getLogLevel();            // force load of the shared libs
 
         // Run the test suite
-        junit.textui.TestRunner.run(suite());
+        Result result = JUnitCore.runClasses(MamaDateTimeSetTimeZone.class, MamaMsgAddArrayMsgWithLength.class,
+                MamaMsgGetByteBuffer.class,
+                MamaMsgTryMethods.class,
+                MamaMsgVectorFields.class,
+                MamaOpenClose.class,
+                MamaPriceGetRoundedPrice.class,
+                MamaSetLogCallback.class,
+                MamaTimerCallbacks.class);
+        for (Failure failure : result.getFailures()) {
+            System.out.println(failure.toString());
+        }
+        System.out.println("Result=="+result.wasSuccessful());
 
         System.exit(0);                                                // TODO temporary - not exiting JVM - daemon thread?
     }

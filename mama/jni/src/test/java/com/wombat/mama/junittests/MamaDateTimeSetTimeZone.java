@@ -24,6 +24,8 @@ package com.wombat.mama.junittests;
 import junit.framework.*;
 import com.wombat.mama.*;
 
+import java.util.logging.Level;
+
 /**
  *
  * This class will test setting a timezone on MamaDateTime and the setLogCallback function.
@@ -46,6 +48,7 @@ public class MamaDateTimeSetTimeZone extends TestCase
     @Override
     protected void setUp()
     {
+        Level level = Mama.getLogLevel();
         // Create the date time
         mDateTime = new MamaDateTime();
 
