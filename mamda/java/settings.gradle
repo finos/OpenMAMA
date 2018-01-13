@@ -1,0 +1,3 @@
+rootProject.name = 'mamda'
+include ':mamajni'
+project(':mamajni').projectDir = new File('../../mama/jni')

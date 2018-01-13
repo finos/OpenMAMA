@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile project(':mamajni')
+    testCompile "junit:junit:4.12"  // Or whatever version
+}
+
+test {
+    systemProperties = [
+            dictionary: System.getProperty('dictionary')
+    ]
+}
+

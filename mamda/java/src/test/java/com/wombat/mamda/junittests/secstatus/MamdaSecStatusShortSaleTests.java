@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package junittests.secstatus;
+package com.wombat.mamda.junittests.secstatus;
 
 import java.util.Vector;
 import java.util.Iterator;
@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.io.*;
 
+import com.wombat.mamda.junittests.Main;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -71,12 +72,12 @@ public class MamdaSecStatusShortSaleTests  extends TestCase
     {   
         try
         {
-            bridge = Mama.loadBridge("wmw");
+            bridge = Mama.loadBridge(Main.getMiddleware());
             Mama.open();
           /*mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);*/
             mDictionary = new MamaDictionary();
             mDictionary.create();            
-            mDictionary._populateFromFile("dictionary.txt");
+            mDictionary._populateFromFile(Main.getDictionaryFile());
 
             MamdaCommonFields.setDictionary (mDictionary,null);
             MamdaSecurityStatusFields.reset();
@@ -99,23 +100,6 @@ public class MamdaSecStatusShortSaleTests  extends TestCase
             e.printStackTrace ();
             System.exit (1);
         }
-    }    
-
-    public static Test suite() {      
-
-//         //Run single tests.
-//         TestSuite suite= new TestSuite();
-//         suite.addTest(
-//             new MamdaOrderImbalanceCallBackTests() 
-//             {
-//                  protected void runTest() { testCrossType_onNoOrdImbal_Test(); }
-//             }
-//            );   
-//         
-//         return suite; 
-
-//         Run all tests.
-        return  new TestSuite(MamdaSecStatusShortSaleTests.class);
     }
   
     public void testNotInEffect()
@@ -194,10 +178,5 @@ public class MamdaSecStatusShortSaleTests  extends TestCase
         msg.addU8  (null, 2, msgStatus);
         msg.addU32(null, 10, seqNum);             
         msg.addU64 (null, 20,(short)1); 
-    }    
-
-    public static void main (String[] args) 
-    {  
-        junit.textui.TestRunner.run(suite());
     }
 }    

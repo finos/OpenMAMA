@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-package junittests.Trades;
+package com.wombat.mamda.junittests.trades;
 
 import java.util.Vector;
 import java.util.Iterator;
@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.io.*;
 
+import com.wombat.mamda.junittests.Main;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -51,12 +52,12 @@ public class MamdaTradeSideTests extends TestCase
     {   
         try
         {
-            bridge = Mama.loadBridge("wmw");
+            bridge = Mama.loadBridge(Main.getMiddleware());
             Mama.open();
 /*                mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);*/
             mDictionary = new MamaDictionary();
             mDictionary.create();            
-            mDictionary._populateFromFile("dictionary.txt");
+            mDictionary._populateFromFile(Main.getDictionaryFile());
 
             MamdaCommonFields.setDictionary (mDictionary,null);
             MamdaTradeFields.reset();
@@ -94,23 +95,6 @@ public class MamdaTradeSideTests extends TestCase
             e.printStackTrace ();
             System.exit (1);
         }
-    }
-
-    public static Test suite() {      
-
-//         //Run single tests.
-//         TestSuite suite= new TestSuite();
-//         suite.addTest(
-//             new MamdaTradeSideTests() 
-//             {
-//                  protected void runTest() { testMamdaTradeSide(); }
-//             }
-//            );   
-//         
-//         return suite; 
-
-//         Run all tests.
-        return  new TestSuite(MamdaTradeSideTests.class);
     }
 
     public void testMamdaTradeSide()
@@ -170,11 +154,6 @@ public class MamdaTradeSideTests extends TestCase
         assertEquals("Buy",mTradeListener.getSide());
         assertEquals(MamdaFieldState.MODIFIED,mTradeListener.getSideFieldState());   
     }
-
-    public static void main (String[] args) 
-    {  
-        junit.textui.TestRunner.run(suite());
-    }  
     
      public void addMamaHeaderFields (
                             MamaMsg           msg,

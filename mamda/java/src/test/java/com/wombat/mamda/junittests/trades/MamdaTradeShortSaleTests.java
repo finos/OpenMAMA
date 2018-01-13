@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
  * 02110-1301 USA
  */
-package junittests.trades;
+package com.wombat.mamda.junittests.trades;
 
 import java.util.Vector;
 import java.util.Iterator;
@@ -27,6 +27,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.io.*;
 
+import com.wombat.mamda.junittests.Main;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -153,12 +154,12 @@ public class MamdaTradeShortSaleTests extends TestCase
     {   
         try
         {
-            bridge = Mama.loadBridge("wmw");
+            bridge = Mama.loadBridge(Main.getMiddleware());
             Mama.open();
             //mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);
             mDictionary = new MamaDictionary();
             mDictionary.create();            
-            mDictionary._populateFromFile("dictionary.txt");
+            mDictionary._populateFromFile(Main.getDictionaryFile());
 
             MamdaCommonFields.setDictionary (mDictionary,null);
             MamdaTradeFields.reset();
@@ -176,23 +177,6 @@ public class MamdaTradeShortSaleTests extends TestCase
             e.printStackTrace ();
             System.exit (1);
         }
-    }
-
-    public static Test suite() {      
-
-//         //Run single tests.
-//         TestSuite suite= new TestSuite();
-//         suite.addTest(
-//             new MamdaOrderImbalanceCallBackTests() 
-//             {
-//                  protected void runTest() { Mamda1424(); }
-//             }
-//            );   
-//         
-//         return suite; 
-
-//         Run all tests.
-        return  new TestSuite(MamdaTradeShortSaleTests.class);
     }
   
     public void testShortSaleCircuitBreaker()
@@ -231,12 +215,6 @@ public class MamdaTradeShortSaleTests extends TestCase
         ticker.callMamdaOnMsg(mSubscription,mMsg);
         assertEquals('C',ticker.myCorrShortSaleCircuitBreaker);        
     }
-    
-  
-    public static void main (String[] args) 
-    {  
-        junit.textui.TestRunner.run(suite());
-    }      
 
     public void addMamaHeaderFields (                           
                             MamaMsg           msg,

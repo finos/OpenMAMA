@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-package junittests.orderBooks;
+package com.wombat.mamda.junittests.orderBooks;
 
 import java.util.Vector;
 import java.util.Iterator;
@@ -28,6 +28,7 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.io.*;
 
+import com.wombat.mamda.junittests.Main;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -49,7 +50,7 @@ public class MamdaBookPublisherTests extends TestCase
     {   
         //Initialise Mama
         MamaBridge bridge;
-        bridge = Mama.loadBridge("wmw");
+        bridge = Mama.loadBridge(Main.getMiddleware());
         Mama.open();  
         
 //         finest = true;
@@ -61,7 +62,7 @@ public class MamdaBookPublisherTests extends TestCase
 
         myImpl.dictionary = new MamaDictionary();
         myImpl.dictionary.create();
-        myImpl.dictionary._populateFromFile("dictionary.txt");
+        myImpl.dictionary._populateFromFile(Main.getDictionaryFile());
         MamdaCommonFields.reset();
         MamdaCommonFields.setDictionary(myImpl.dictionary,null);
         MamdaOrderBookFields.reset();
@@ -74,7 +75,7 @@ public class MamdaBookPublisherTests extends TestCase
         myImpl.mySubscription.setType( MamaSubscriptionType.BOOK);
         myImpl.myBook = new MamdaOrderBook();
         myImpl.myBook.generateDeltaMsgs(true);
-        myImpl.myPublishMsg = new MamaMsg();       
+        myImpl.myPublishMsg = new MamaMsg();
 
         addMamaHeaderFields(myImpl,
                             myImpl.myPublishMsg,
@@ -86,298 +87,6 @@ public class MamdaBookPublisherTests extends TestCase
         myImpl.myTicker = new BookTicker();
         myImpl.myBookTime = new MamaDateTime();
         myImpl.myBookTime.setToNow();        
-    }
-
-    public static Test suite() 
-    {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String myLogging = null;
-        int myTest =0;
-        String str = null;
-
-        try
-        {
-            System.out.println("MamaLogging: ");
-            myLogging = br.readLine();
-          
-            if(myLogging != null)
-            {
-                if(myLogging.equals("yes"))
-                {
-                    finest = true;
-                }                
-            }
-            if((myLogging != null) && (!myLogging.equals("yes")) && (!myLogging.equals("no")) )
-            {
-                System.out.print("To enable MamaLogging type yes\n");
-            }
-        } 
-        catch (IOException ioe)
-        {
-            System.out.println("error trying to enableMamaLogging");
-            System.exit(1);
-        }           
-
-       try
-        {          
-            String menu = new String(" 1 testFindOrCreateLevel\n" + " 2 testAddEntry\n" + " 3 testAddEntryAtLevel\n" + " 4 testAddLevel\n" +
-                                     " 5 testFindOrCreateLevel\n" + " 6 testFindOrCreateEntry\n" + " 7 testUpdateEntryAtLevel\n" +
-                                     " 8 testUpdateEntry\n" + " 9 testUpdateLevel\n" + "10 testOneLevelTwoEntries\n" +
-                                     "11 testFlattenEntryInfo\n" + "12 testFlattenTwoEntriesOneLevel\n" + "13 testFlattenOneEntry\n" +
-                                     "14 testRemoveEntryFromLevel\n" + "15 testRemoveEntryByIdFromLevel\n" + "16 testDeleteEntryFromLevel\n" +
-                                     "17 testpopulateDeltaEmptyState\n" + "18 testpopulateRecapEmptyState\n" + "19 testMultipleLevelsAndEntries\n" + 
-                                     "20 testUpdateMultipleEntries\n" + "21 testDisablePublishing\n" + "22 testUpdateMultipleLevels\n" + 
-                                     "23 testPopulateRecapSimpleCpuTest\n" + "24 testPopulateRecapComplexCpu\n" + "25 testPopulateDeltaSimpleCpuTest\n" +
-                                     "26 testPopulateDeltaComplexCpuTest\n" + "27 testPopulateLargeDeltaCpuTest\n" + "28 testPopulateDeltaGrowOnceCpuTest\n" +
-                                     "0  AllTests\n");
-
-            System.out.println("Select a test to run: \n" + menu + "run test(s) number: ");
-            str = br.readLine();
-
-            if( str != null)
-            {
-                myTest = Integer.parseInt(str);
-            }       
-        }
-        catch (IOException ioe)
-        {
-            System.out.println("Selection not found\n");
-            System.exit(1);
-        } 
-      
-        TestSuite suite= new TestSuite();
-
-        switch (myTest)
-        {
-            case 1:                   
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testFindOrCreateLevel(); }
-                        }
-                    );   
-                    
-                    return suite;   
-            case 2:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testAddEntry(); }
-                        }
-                    );   
-                    return suite; 
-            case 3:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testAddEntryAtLevel(); }
-                        }
-                    );
-                    return suite; 
-            case 4:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testAddLevel(); }
-                        }
-                    );
-                    return suite;        
-            case 5:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testFindOrCreateLevel(); }
-                        }
-                    );
-                    return suite;   
-            case 6:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testFindOrCreateEntry(); }
-                        }
-                    );
-                    return suite;     
-            case 7:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testUpdateEntryAtLevel(); }
-                        }
-                    );
-                    return suite;     
-            case 8:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testUpdateEntry(); }
-                        }
-                    );
-                    return suite;     
-            case 9:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testUpdateLevel(); }
-                        }
-                    );
-                    return suite;     
-            case 10:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testOneLevelTwoEntries(); }
-                        }
-                    );
-                    return suite;
-            case 11:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testFlattenEntryInfo(); }
-                        }
-                    );
-                    return suite;          
-            case 12:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testFlattenTwoEntriesOneLevel(); }
-                        }
-                    );
-                    return suite;     
-            case 13:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testFlattenOneEntry(); }
-                        }
-                    );
-                    return suite;     
-            case 14:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testRemoveEntryFromLevel(); }
-                        }
-                    );
-                    return suite;     
-            case 15:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testRemoveEntryByIdFromLevel(); }
-                        }
-                    );
-                    return suite;     
-            case 16:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testDeleteEntryFromLevel(); }
-                        }
-                    );
-                    return suite;   
-            case 17:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testpopulateDeltaEmptyState(); }
-                        }
-                    );
-                    return suite;     
-            case 18:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testpopulateRecapEmptyState(); }
-                        }
-                    );
-                    return suite;  
-            case 19:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testMultipleLevelsAndEntries(); }
-                        }
-                    );
-                    return suite; 
-            case 20:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testUpdateMultipleEntries(); }
-                        }
-                    );
-                    return suite;  
-            case 21:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testDisablePublishing(); }
-                        }
-                    );
-                    return suite;
-            case 22:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testUpdateMultipleLevels(); }
-                        }
-                    );
-                    return suite;  
-            case 23:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testPopulateRecapSimpleCpuTest(); }
-                        }
-                    );
-                    return suite;  
-            case 24:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testPopulateRecapComplexCpu(); }
-                        }
-                    );
-                    return suite;  
-            case 25:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testPopulateDeltaSimpleCpuTest(); }
-                        }
-                    );
-                    return suite;  
-            case 26:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testPopulateDeltaComplexCpuTest(); }
-                        }
-                    );
-                    return suite;  
-            case 27:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testPopulateLargeDeltaCpuTest(); }
-                        }
-                    );
-                    return suite;  
-            
-            case 28:  
-                    suite.addTest(
-                        new MamdaBookPublisherTests() 
-                        {
-                            protected void runTest() { testPopulateDeltaGrowOnceCpuTest(); }
-                        }
-                    );
-                    return suite;  
-            default:
-                    return  new TestSuite(MamdaBookPublisherTests.class);            
-        }   
     }
 
     public void testDisablePublishing()
@@ -1795,7 +1504,7 @@ public class MamdaBookPublisherTests extends TestCase
 
         long Delta = (t1-t0)/1000;
 
-        assertTrue(testdescription, Delta<1000);
+        assertTrue(testdescription, Delta<3000);
     }
 
     //Test grows vector msg holder at beginning and sucessive updates never need larger vector
@@ -1853,7 +1562,9 @@ public class MamdaBookPublisherTests extends TestCase
 
         long Delta = (t1-t0)/1000;
 
-        assertTrue(testdescription,Delta<800);
+        System.out.println("Delta = " + Delta);
+
+        assertTrue(testdescription,Delta<3000);
     } 
 
     public static class BookTicker implements MamdaOrderBookHandler
@@ -2233,10 +1944,5 @@ public class MamdaBookPublisherTests extends TestCase
             myImpl.myBookListener.getOrderBook().dump();
             System.out.print("\n **********************************************************\n");      
     }
-
-    public static void main (String[] args) 
-    {  
-        junit.textui.TestRunner.run(suite());
-    }  
 
 }
