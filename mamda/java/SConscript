@@ -19,11 +19,7 @@ java_classdir_builder = CreateJavaClassDirBuilder( env)
 # change to the emitter was to use the topDown option for os.walk.
 java_classdir_builder.emitter = emit_java_classes_norecurse
 
-symboliclinks = []
-if not env.GetOption('help') and not env.GetOption('clean'):
-    symboliclinks = env.SymLinkFiles([ ( 'mamda/java/temp/MamdaLock.java' , 'mamda/java/com/wombat/mamda/locks/MamdaLock15.java') ])
-
-base_sources    = [ 'src/main/java/com/wombat/mamda' ]
+base_sources    = [ 'src/main/java/com/wombat/mamda', 'src/main/java/com/wombat/mamda/locks' ]
 example_sources = [ 'src/main/java/com/wombat/mamda/examples' ]
 options_sources = [ 'src/main/java/com/wombat/mamda/options' ]
 ob_sources      = [ 'src/main/java/com/wombat/mamda/orderbook' ]
@@ -70,8 +66,6 @@ env.Append(
                       ],
 )
 
-lock_classes = env.Java('classes_orderbook',symboliclinks)
-
 base_classes    = env.Java('classes', base_sources )
 options_classes = env.Java('classes_options', options_sources )
 ob_classes      = env.Java('classes_orderbook', ob_sources )
@@ -103,15 +97,13 @@ Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', order
 Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', optionsExamples))
 
 
-Clean(lock_classes, symboliclinks)
-
 ## Explicit Java Dependencies
 #
 # SCons does not handle Java dependencies particularly well so it is necessary
 # to explicitly set the dependencies. This ensures that parallel processing 
 # occurs without issue. This should not need to change often
 env.Depends( base_classes, Jars['mamajni.jar'] )
-env.Depends( ob_classes, [ Jars['mamajni.jar'], [ base_classes, lock_classes ] ] )
+env.Depends( ob_classes, [ Jars['mamajni.jar'], [ base_classes ] ] )
 env.Depends( options_classes, [ Jars['mamajni.jar'], base_classes ] )
 
 env.Depends( commandLineProc, base_classes )
