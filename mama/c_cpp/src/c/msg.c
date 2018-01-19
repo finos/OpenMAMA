@@ -4274,6 +4274,11 @@ mamaMsg_setNewBuffer (mamaMsg msg, void* buffer,
 
     if (impl->mPayloadBridge)
     {
+        if(impl->mPayloadBridge->msgPayloadDeserialize != NULL)
+        {
+            return impl->mPayloadBridge->msgPayloadDeserialize (impl->mPayloadBridge, impl->mPayload, buffer,size);
+        }
+
         return impl->mPayloadBridge->msgPayloadUnSerialize (impl->mPayload,
                                                             buffer,
                                                             size);
