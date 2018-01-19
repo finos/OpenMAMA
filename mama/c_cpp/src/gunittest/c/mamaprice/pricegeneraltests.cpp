@@ -837,12 +837,74 @@ TEST_F (MamaPriceTestC, testSetWithHintsMamaPrice)
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_destroy(price) );
 }
 
+TEST_F (MamaPriceTestC, testSetFromStringMamaPriceNullPrice)
+{
+
+   mamaPrice    nullPrice   = NULL;
+   const char*  value       = "123.45";
+
+   EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaPrice_setFromString(nullPrice, value) );
+}
+
+TEST_F (MamaPriceTestC, testSetFromStringMamaPriceNullStr)
+{
+
+   mamaPrice    price   = NULL;
+
+   ASSERT_EQ ( MAMA_STATUS_OK, mamaPrice_create(&price) );
+
+   EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaPrice_setFromString(price, NULL) );
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_destroy(price) );
+}
+
 TEST_F (MamaPriceTestC, testSetFromStringMamaPrice)
 {
 
-   mamaPrice nullPrice = NULL;
+   mamaPrice    price   = NULL;
+   const char*  value   = "123.45";
+   double       val;
 
-   EXPECT_EQ ( MAMA_STATUS_NOT_IMPLEMENTED, mamaPrice_setFromString(nullPrice, "SOME STRING") );
+   ASSERT_EQ ( MAMA_STATUS_OK, mamaPrice_create(&price) );
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setFromString(price, value) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getValue(price, &val) );
+
+   EXPECT_EQ ( val, atof(value));
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_destroy(price) );
+}
+
+TEST_F (MamaPriceTestC, testSetFromStringMamaPriceInvalidPrice)
+{
+
+   mamaPrice    price   = NULL;
+   const char*  value   = "MY PRICE";
+   double       val;
+
+   ASSERT_EQ ( MAMA_STATUS_OK, mamaPrice_create(&price) );
+
+   EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaPrice_setFromString(price, value) );
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_destroy(price) );
+}
+
+TEST_F (MamaPriceTestC, testSetFromStringMamaPriceLargeValue)
+{
+
+   mamaPrice    price   = NULL;
+   const char*  value   = "1.2345678901234567";
+   double       val;
+
+   ASSERT_EQ ( MAMA_STATUS_OK, mamaPrice_create(&price) );
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setFromString(price, value) );
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getValue(price, &val) );
+
+   EXPECT_EQ ( val, atof(value));
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_destroy(price) );
 }
 
 TEST_F (MamaPriceTestC, testGetValueMamaPrice)

@@ -103,6 +103,50 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_setValue
 
 /*
  * Class:     com_wombat_mama_MamaPrice
+ * Method:    setFromString
+ * Signature: (Ljava/lang/String;)V
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_setFromString
+  (JNIEnv* env, jobject this, jstring value)
+{
+    jlong       pPrice      = 0;
+    mama_status status      = MAMA_STATUS_OK;
+    const char* c_value     = NULL;
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
+    pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,
+		"Null parameter, MamaPrice may have already been destroyed.");
+
+    if(value)
+    {
+        c_value = (*env)->GetStringUTFChars(env,value,0);
+        if(!c_value)return;
+    }
+    else
+    {
+        return;
+    }
+
+    if(MAMA_STATUS_OK!=(status=mamaPrice_setFromString(
+                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice), c_value)))
+    {
+        if(c_value)(*env)->ReleaseStringUTFChars(env, value, c_value);
+         utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Error calling MamaPrice.setFromString().",
+                status);
+        utils_throwExceptionForMamaStatus(env,status,errorString);
+    }
+
+    /*Tidy up all local refs*/
+    if(c_value)(*env)->ReleaseStringUTFChars(env, value, c_value);
+
+}
+
+/*
+ * Class:     com_wombat_mama_MamaPrice
  * Method:    getValue
  * Signature: ()D
  */
