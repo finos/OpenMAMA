@@ -218,6 +218,7 @@ mamaInternal_registerPayloadFunctions (LIB_HANDLE         bridgeLib,
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (Payload_addVectorMsg, msgPayloadAddVectorMsg, msgPayload_addVectorMsg);
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (Payload_addVectorDateTime, msgPayloadAddVectorDateTime, msgPayload_addVectorDateTime);
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (Payload_addVectorPrice, msgPayloadAddVectorPrice, msgPayload_addVectorPrice);
+    REGISTER_OPTIONAL_BRIDGE_FUNCTION (Payload_deserialize, msgPayloadDeserialize, msgPayload_deserialize);
 
     /* Update methods */
     REGISTER_BRIDGE_FUNCTION (Payload_updateBool, msgPayloadUpdateBool, msgPayload_updateBool);

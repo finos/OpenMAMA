@@ -93,6 +93,12 @@ typedef mama_status
                                 mama_size_t*        bufferLength);
 
 typedef mama_status
+(*msgPayload_deserialize)      (mamaPayloadBridge   payloadBridge,
+                                const msgPayload    msg,
+                                const void*         buffer,
+                                mama_size_t         bufferLength);
+
+typedef mama_status
 (*msgPayload_unSerialize)      (const msgPayload    msg,
                                 const void*         buffer,
                                 mama_size_t         bufferLength);
@@ -942,6 +948,7 @@ typedef struct mamaPayloadBridgeImpl_
     msgPayload_toString                 msgPayloadToString;
     msgPayload_iterateFields            msgPayloadIterateFields;
     msgPayload_serialize                msgPayloadSerialize;
+    msgPayload_deserialize              msgPayloadDeserialize;
     msgPayload_unSerialize              msgPayloadUnSerialize;
     msgPayload_getByteBuffer            msgPayloadGetByteBuffer;
     msgPayload_setByteBuffer            msgPayloadSetByteBuffer;
