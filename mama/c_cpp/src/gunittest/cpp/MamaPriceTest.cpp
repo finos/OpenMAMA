@@ -530,3 +530,48 @@ TEST_F(MamaPriceTest, SetPrecisionDiv512)
     // Compare the strings
     ASSERT_STREQ(stringValue, doubleString);    
 }
+
+TEST_F(MamaPriceTest, SetFromString)
+{
+    MamaPrice*  m_price;
+    const char* value       = "123.45";
+    double      doubleValue = 0.0;
+
+    m_price = new MamaPrice();
+
+    m_price->setFromString(value);
+
+    doubleValue = m_price->getValue();
+
+    ASSERT_EQ(doubleValue, atof(value));
+}
+
+TEST_F(MamaPriceTest, SetFromStringLargeValue)
+{
+    MamaPrice*  m_price;
+    const char* value       = "123.456789012345";
+    double      doubleValue = 0.0;
+
+    m_price = new MamaPrice();
+
+    m_price->setFromString(value);
+
+    doubleValue = m_price->getValue();
+
+    ASSERT_EQ(doubleValue, atof(value));
+}
+
+TEST_F(MamaPriceTest, SetFromStringInvalidPrice)
+{
+    MamaPrice*  m_price;
+    const char* value       = "MY PRICE";
+    double      doubleValue = 0.0;
+
+    m_price = new MamaPrice();
+
+    m_price->setFromString(value);
+
+    doubleValue = m_price->getValue();
+
+    ASSERT_EQ(doubleValue, atof(value));
+}

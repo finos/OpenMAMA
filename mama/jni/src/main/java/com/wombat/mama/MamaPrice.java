@@ -138,6 +138,8 @@ public class MamaPrice implements Comparable
 
     public native void setValue (double value);
 
+    public native void setFromString (String value);
+
     public void setPrecision (MamaPricePrecision precision)
     {
         _setPrecision(precision.myPrecision);    
