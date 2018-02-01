@@ -42,6 +42,7 @@ if "MSVSVER" not in env_var:
 
 # Go download junit
 urllib.urlretrieve ("http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar", "junit.jar")
+urllib.urlretrieve ("http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar", "hamcrest-core.jar")
 junit_home = os.getcwd()
 
 # Set up derived values
@@ -142,12 +143,10 @@ for root, dirs, files in os.walk(install_dir):
 # will know it's broken)
 run_command(args=["java",
                   "-cp",
-                  mama_jni_jar + os.pathsep + os.path.join(junit_home, "junit.jar"),
+                  mama_jni_jar + os.pathsep + os.path.join(junit_home, "junit.jar") + os.pathsep + os.path.join(junit_home, "hamcrest-core.jar"),
                   "com.wombat.mama.junittests.Main",
                   "-m",
-                  middleware,
-                  "-tport",
-                  "pub"
+                  middleware
                  ],
             fatal_error=True,
             shell=shell,

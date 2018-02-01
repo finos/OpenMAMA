@@ -30,7 +30,7 @@
        
    
     <!-- Location of MAMA Jar mama.jar. -->
-    <property name="mama.dir" location="${user.dir}/../../mama/jni/mamajni"></property>
+    <property name="mama.dir" location="${user.dir}/../../mamajni"></property>
 
     <target name="init">
         <tstamp></tstamp>
@@ -41,45 +41,13 @@
         <mkdir dir="${build}"></mkdir>
         <mkdir dir="${build}_options"></mkdir>
         <mkdir dir="${build}_orderbook"></mkdir>
-        
-        <mkdir dir="${user.dir}/temp/"></mkdir>
-        <!-- Copy all the java files we need to a temp dir for compiling!! arrgggggg -->
-        
-        <copy todir="${user.dir}/temp">
-          <fileset dir="${basedir}">
-            <include name="com/wombat/mamda/locks/MamdaLock15.java"></include>
-            <include name="com/wombat/mamda/locks/MamdaLock14.java"></include>
-          </fileset>
-        </copy>   
-    </target>       
+
+    </target>
     
     <target name="junitdirs" description="Build junitdirs" if="withUnitTests">
        <mkdir dir="${build}_junittests"></mkdir>
        <mkdir dir="${build}_utils"></mkdir>    
     </target>      
-  
-    <target name="copyJava4File" depends="javaCheckVersionNumber" if="isJava4">
-      <copy todir="${user.dir}/temp">
-        <fileset dir="${user.dir}">
-              <include name="MamdaLock14.java"></include>
-          </fileset>
-        </copy>
-        <copy file="${user.dir}/temp/com/wombat/mamda/locks/MamdaLock14.java" tofile="${user.dir}/temp/com/wombat/mamda/locks/MamdaLock.java" overwrite="true"></copy>
-        
-        <delete file="${user.dir}/temp/com/wombat/mamda/locks/MamdaLock14.java"></delete>
-        <delete file="${user.dir}/temp/com/wombat/mamda/locks/MamdaLock15.java"></delete>
-        </target>
-        
-        <target name="copyJava5File" depends="javaCheckVersionNumber" if="isJava5or6">
-          <copy todir="${user.dir}/temp">
-            <fileset dir="${user.dir}/temp">
-              <include name="MamdaLock15.java"></include>
-            </fileset>
-          </copy>
-          <copy file="${user.dir}/temp/com/wombat/mamda/locks/MamdaLock15.java" tofile="${user.dir}/temp/com/wombat/mamda/locks/MamdaLock.java" overwrite="true"></copy>
-          <delete file="${user.dir}/temp/com/wombat/mamda/locks/MamdaLock14.java"></delete>
-          <delete file="${user.dir}/temp/com/wombat/mamda/locks/MamdaLock15.java"></delete>
-        </target>    
         
     <target name="dist" depends="dist.base, dist.orderbook, dist.options, dist.junittests, dist.utils"></target>
     
@@ -142,14 +110,8 @@
     </target>        
 <!--     depends="init, source.defs" -->    
     
-    <target name="compile.locks" description="Compile the Mamda Locks classes">
-        <javac source="1.5" destdir="${build}_orderbook" debug="true">
-          <src path="${user.dir}/temp/"></src>
-      </javac>
-    </target>
-    
-    <target name="compile.base" depends="init, copyJava4File, copyJava5File, source.defs, compile.locks, cleanUpLocks" description="Compile the base MAMDA src">
-          <javac source="1.5" srcdir="${top}" destdir="${build}" debug="true">
+    <target name="compile.base" depends="init, source.defs" description="Compile the base MAMDA src">
+          <javac source="1.5" srcdir="${top}/src/main/java" destdir="${build}" debug="true">
             <patternset refid="src.base"></patternset>
             <classpath>
               <fileset dir="${mama.dir}/lib">
@@ -164,7 +126,7 @@
     </target>
     
     <target name="compile.options" depends="compile.base" description="Compile the MAMDA option chain classes">
-        <javac source="1.5" srcdir="${top}" destdir="${build}_options" debug="true">
+        <javac source="1.5" srcdir="${top}/src/main/java" destdir="${build}_options" debug="true">
             <patternset refid="src.options"></patternset>
             <classpath>
                 <fileset dir="${build}_options"></fileset>
@@ -179,8 +141,8 @@
         </javac>
     </target>
 
-    <target name="compile.orderbook" depends=" compile.locks, compile.base" description="Compile the MAMDA order book classes">
-        <javac source="1.5" srcdir="${top}" destdir="${build}_orderbook" debug="true">
+    <target name="compile.orderbook" depends="compile.base" description="Compile the MAMDA order book classes">
+        <javac source="1.5" srcdir="${top}/src/main/java" destdir="${build}_orderbook" debug="true">
             <patternset refid="src.orderbook"></patternset>
             <classpath>
                 <fileset dir="${mama.dir}/lib">
@@ -195,7 +157,7 @@
     </target>     
      
      <target name="compile.utils" depends="compile.base,junitdirs" description="Compile the utils classes" if="withUnitTests">
-        <javac source="1.5" srcdir="${top}" destdir="${build}_utils" debug="true">
+        <javac source="1.5" srcdir="${top}/src/main/java" destdir="${build}_utils" debug="true">
             <patternset refid="src.utils"></patternset>
             <classpath>
                 <fileset dir="${mama.dir}/lib">
@@ -209,19 +171,9 @@
         </javac>
     </target>        
     
-     <target name="compile.junittests" depends="compile.orderbook,compile.locks,dist.orderbook,compile.utils,junitdirs" description="Compile the MAMDA junittests" if="withUnitTests">
-        <javac source="1.5" srcdir="${top}" destdir="${build}_junittests" debug="true">
-            <patternset refid="src.junittests"></patternset>                    
-            <classpath>
-            <fileset dir="../../../thirdparty/junit">
-                    <include name="junit-4.8.1.jar"></include>
-            </fileset>
-            </classpath>             
-           <classpath>
-            <fileset dir="${dist}/lib">
-                    <include name="${product}_book.jar"></include>
-            </fileset>
-            </classpath>
+     <target name="compile.junittests" depends="compile.orderbook,dist.orderbook,compile.utils,junitdirs" description="Compile the MAMDA junittests" if="withUnitTests">
+        <javac source="1.5" srcdir="${top}/src/test/java" destdir="${build}_junittests" debug="true">
+            <patternset refid="src.junittests"></patternset>
             <classpath>
                 <fileset dir="${mama.dir}/lib">
                     <include name="mama.jar"></include>
@@ -230,6 +182,9 @@
                     <include name="mamajni.jar"></include>
                     <include name="wombatmsg.jar"></include>
                 </fileset>
+                <dirset dir="${build}"></dirset>
+                <dirset dir="${build}_options"></dirset>
+                <dirset dir="${build}_orderbook"></dirset>
             </classpath>
         </javac>
     </target>  
@@ -238,13 +193,13 @@
         <mkdir dir="${dist}/doc/java"></mkdir>
 
         <javadoc access="public" source="1.5" destdir="${dist}/doc/java" Overview="overview.html" doctitle="MAMDA (Middleware Agnostic Market Data API) specification, v${version}" Header="&lt;b&gt;MAMDA&lt;/b&gt;&lt;br&gt;&lt;font size='-1'&gt;version ${version}&lt;/font&gt;" Bottom="Copyright 2007 Wombat Financial Software, Inc." Windowtitle="MAMDA ${version}">
-            <fileset dir="${top}">
+            <fileset dir="${top}/src/main/java">
                 <patternset refid="src.base"></patternset>
             </fileset>
-            <fileset dir="${top}">
+            <fileset dir="${top}/src/main/java">
                 <patternset refid="src.options"></patternset>
             </fileset>
-            <fileset dir="${top}">
+            <fileset dir="${top}/src/main/java">
                 <patternset refid="src.orderbook"></patternset>
             </fileset>
             <classpath>
@@ -275,7 +230,7 @@
         <copy file="${top}/mamdalistenj.bat" todir="${dist}/bin"></copy>
         <chmod perm="a+x" file="${dist}/bin/mamdalistenj"></chmod>
         <copy todir="${dist}/examples">
-            <fileset dir="${top}">
+            <fileset dir="${top}/src/main/java">
                 <include name="com/**/CommandLineProcessor.java"></include>
                 <include name="com/**/MamdaListen.java"></include>
                 <include name="com/**/MamdaTradeTicker.java"></include>
@@ -305,7 +260,7 @@
         </jar>
         <copy file="${dist}/lib/${release}_options.jar" tofile="${dist}/lib/${product}_options.jar"></copy>
         <copy todir="${dist}/examples">
-            <fileset dir="${top}">
+            <fileset dir="${top}/src/main/java">
                 <include name="com/**/MamdaOptionChainExample.java"></include>
                 <include name="com/**/MamdaOptionChainViewExample.java"></include>
             </fileset>
@@ -319,7 +274,7 @@
         </jar>
         <copy file="${dist}/lib/${release}_book.jar" tofile="${dist}/lib/${product}_book.jar"></copy>
         <copy todir="${dist}/examples">
-            <fileset dir="${top}">
+            <fileset dir="${top}/src/main/java">
                 <include name="com/**/MamdaBookTicker.java"></include>
                 <include name="com/**/MamdaLocksTest.java"></include>
                 <include name="com/**/MamdaBookPublisher.java"></include>
@@ -331,14 +286,14 @@
         </copy>
     </target>
     
-    <target name="dist.junittests" depends="compile.junittests, compile.orderbook, compile.locks" description="build a jar and put it int the dist directory" if="withUnitTests">
+    <target name="dist.junittests" depends="compile.junittests, compile.orderbook" description="build a jar and put it int the dist directory" if="withUnitTests">
         <jar jarfile="${dist}/lib/${release}_junittests.jar">
             <fileset dir="${build}_junittests">            
             </fileset>
         </jar>        
         <copy file="${dist}/lib/${release}_junittests.jar" tofile="${dist}/lib/${product}_junittests.jar"></copy>
         <copy todir="${dist}">
-            <fileset dir="${top}">
+            <fileset dir="${top}/src/test/java">
                 <include name="junittests/orderBooks/MamdaBookIssueRelatedTests.java"></include>
                 <include name="junittests/orderBooks/MamdaBookPublisherTests.java"></include>
                 <include name="junittests/orderImbalances/MamdaOrderImbalanceCallBackTests.java"></include>
@@ -359,12 +314,8 @@
         </jar>
         <copy file="${dist}/lib/${release}_utils.jar" tofile="${dist}/lib/${product}_utils.jar"></copy>    
     </target>  
-    
-    <target name="cleanUpLocks" description="Clean up Locks Temp File">
-      <delete dir="${user.dir}/temp/"></delete>
-    </target>
       
-    <target name="clean" depends="cleanUpLocks" description="remove all generated files">
+    <target name="clean" description="remove all generated files">
         <delete dir="${build}"></delete>
         <delete dir="${dist}"></delete>
         <delete dir="${noent_dist}"></delete>
