@@ -1,7 +1,6 @@
 {
    Known leak for https://github.com/OpenMAMA/OpenMAMA/issues/264
    Memcheck:Leak
-   match-leak-kinds: definite
    fun:calloc
    obj:*
    fun:mamaMsg_create
