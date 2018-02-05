@@ -1,0 +1,38 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('env')
+env = env.Clone()
+
+# Can't Glob because of bookviewer.cpp,  listenerBookPublisher.cpp
+
+examples = \
+    Split("""
+atomicbookbuilder.cpp
+atomicbookticker.cpp
+bookchurn.cpp
+bookpublisher.cpp
+bookticker.cpp
+bookviewer.cpp
+""")
+
+examples.append('Makefile.sample')
+examples.append('../dictrequester.cpp')
+examples.append('../dictrequester.h')
+examples.append('../parsecmd.cpp')
+examples.append('../parsecmd.h')
+
+env.Append(LIBS=['mamdabook'])
+
+bins = ['atomicbookbuilder', 'atomicbookticker', 'bookticker',
+        'bookpublisher', 'bookviewer']
+
+binary = []
+
+for b in bins:
+    binary.append(env.Program(b, ['%s.cpp' % b, '../parsecmd.o',
+                  '../dictrequester.o']))
+
+Alias('install', env.Install('$bindir', binary))
+Alias('install', env.Install('$prefix/examples/mamda/cpp/orderbook',
+      examples))

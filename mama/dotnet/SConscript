@@ -1,0 +1,138 @@
+import os
+import posixpath
+import platform
+
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+Import('env')
+env = env.Clone()
+versions = env['versions']['mama']
+major = versions['major']
+minor = versions['minor']
+release = versions['release']
+buildNum = versions['build']
+winrelease = versions['winrelease']
+releaseString = versions['releaseString']
+
+dotnet = Environment( tools = ['default','csharp'] )
+
+framework_dir = env['dotnet_framework']
+
+env['CSC'] = posixpath.join(framework_dir,'csc.exe')
+dotnet.Append(
+	CSCFLAGS 		= ['/nostdlib+'],
+	ASSEMBLYREFS 	= [posixpath.join( framework_dir, 'mscorlib.dll' ), posixpath.join( framework_dir, 'system.dll' )],
+)
+
+cs = os.path.join( Dir('#').abspath, 'mama\\dotnet\\src\\cs\\MamaVersion.cs' )
+ai = os.path.join( Dir('#').abspath, 'mama\\dotnet\\src\\cs\\AssemblyInfo.cs' )
+
+ver = open( cs , "w" )
+ver.write("""
+namespace Wombat
+{
+	/// ^<summary^>MAMA version information^</summary^>
+	public class MamaVersion
+	{
+		public static int MAMADOTNET_VERSION_MAJOR = %s;
+		public static int MAMADOTNET_VERSION_MINOR = %s;
+		public static string MAMADOTNET_VERSION_RELEASE = "%s";
+		public static string MAMADOTNET_VERSION = "mamadotnet %s";
+	}
+}
+""" % ( major,minor,release, releaseString ) )
+ver.close()
+
+assembly = open( ai , "w" )
+assembly.write("""
+using System.Reflection;
+using System.Runtime.CompilerServices;
+[assembly: AssemblyTitle("MAMA")]
+[assembly: AssemblyDescription("MAMA API C#")]
+[assembly: AssemblyConfiguration("")]
+[assembly: AssemblyCompany("NYSE Technologies")]
+[assembly: AssemblyProduct("NYSE Technologies MAMA")]
+[assembly: AssemblyCopyright("Copyright 2009 NYSE Technologies")]
+[assembly: AssemblyTrademark("")]
+[assembly: AssemblyCulture("")]
+[assembly: AssemblyDelaySign(false)]
+[assembly: AssemblyKeyName("")]
+[assembly: AssemblyVersion("%s.%s.%s.%s")]
+""" % ( major, minor, winrelease, buildNum ) )
+assembly.close()
+
+build = env['build']
+
+sources = Split("""
+src/cs/MamaVersion.cs
+src/cs/AssemblyInfo.cs
+src/cs/ISourceManager.cs
+src/cs/MAMA.cs
+src/cs/MamaBasicSubscription.cs
+src/cs/MamaBasicSubscriptionCallback.cs
+src/cs/MamaBridge.cs
+src/cs/MamaCallbackStore.cs
+src/cs/MamaCallbackWrapper.cs
+src/cs/MamaClientProfile.cs
+src/cs/MamaDictionary.cs
+src/cs/MamaDictionaryCallback.cs
+src/cs/MamaException.cs
+src/cs/MamaFieldDescriptor.cs
+src/cs/MamaFtMember.cs
+src/cs/MamaFtMemberCallback.cs
+src/cs/MamaInbox.cs
+src/cs/MamaInboxCallback.cs
+src/cs/MamaIo.cs
+src/cs/MamaIoCallback.cs
+src/cs/MamaIoType.cs
+src/cs/MamaLogFileCallback.cs
+src/cs/MamaLogFileCallback2.cs
+src/cs/MamaMsg.cs
+src/cs/MamaMsgField.cs
+src/cs/MamaMsgFieldIterator.cs
+src/cs/MamaPayloadBridge.cs
+src/cs/MamaPrice.cs
+src/cs/MamaPublisher.cs
+src/cs/MamaPublisherCallback.cs
+src/cs/MamaQueue.cs
+src/cs/MamaQueueEnqueueCallback.cs
+src/cs/MamaQueueEventCallback.cs
+src/cs/MamaQueueGroup.cs
+src/cs/MamaQueueMonitorCallback.cs
+src/cs/MamaReservedFields.cs
+src/cs/MamaSendCompleteCallback.cs
+src/cs/MamaSource.cs
+src/cs/MamaSourceGroup.cs
+src/cs/MamaSourceGroupManager.cs
+src/cs/MamaSourceManager.cs
+src/cs/MamaSourceState.cs
+src/cs/MamaSourceStateChangeCallback.cs
+src/cs/MamaStartBackgroundCallback.cs
+src/cs/MamaStatus.cs
+src/cs/MamaSubscription.cs
+src/cs/MamaSubscriptionCallback.cs
+src/cs/MamaSubscriptionState.cs
+src/cs/MamaSymbolMapCallback.cs
+src/cs/MamaSymbolMapFile.cs
+src/cs/MamaTimer.cs
+src/cs/MamaTimerCallback.cs
+src/cs/MamaTransport.cs
+src/cs/MamaTransportCallback.cs
+src/cs/MamaTransportTopicCallback.cs
+src/cs/MamaWeightedSource.cs
+src/cs/MamaWrapper.cs
+src/cs/NullableTypes\NullableBool.cs
+src/cs/NullableTypes\NullableInt.cs
+src/cs/NullableTypes\NullableLong.cs
+""")
+
+if 'dynamic-debug'  in env['build']:
+	dotnet.Append( CSCFLAGS = ['/debug','/define:DEBUG;TRACE'] )
+elif 'dynamic' in env['build']:
+	dotnet.Append( CSCFLAGS = ['/optimize','/define:TRACE'] )
+
+if 'dynamic' in env['build']:
+	lib = dotnet.CLILibrary( 'MAMA',sources )
+	Alias('install',env.Install('$libdir',lib ) )

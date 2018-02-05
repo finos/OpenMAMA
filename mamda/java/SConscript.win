@@ -1,0 +1,118 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+from SCons.Tool import CreateJavaClassDirBuilder
+import os,re
+Import('*')
+env = env.Clone()
+
+java_classdir_builder = CreateJavaClassDirBuilder( env)
+# The default SCons Java Builder emitter is fully recusive using python
+# os.walkdirs. This is probelmatic with this source structure as specifying
+# the mamda directory will then pull in all files including those in options
+# and orderbooks.
+#
+# The modified emitter is in the site_scons/site_init.py file. The only
+# change to the emitter was to use the topDown option for os.walk.
+java_classdir_builder.emitter = emit_java_classes_norecurse
+
+symboliclinks = []
+if not env.GetOption('help'):
+    symboliclinks = env.SymLinkFiles([ ('mamda\\java\\temp\\MamdaLock.java' ,
+                                        'mamda\\java\\com\\wombat\\mamda\\locks\\MamdaLock15.java') ])
+base_sources    = [ 'com/wombat/mamda' ]
+example_sources = [ 'com/wombat/mamda/examples' ]
+options_sources = [ 'com/wombat/mamda/options' ]
+ob_sources      = [ 'com/wombat/mamda/orderbook' ]
+
+optionsExamples = Split("""
+com/wombat/mamda/examples/MamdaOptionChainExample.java
+com/wombat/mamda/examples/MamdaOptionChainViewExample.java
+""")
+
+orderbookExamples = Split("""
+com/wombat/mamda/examples/MamdaBookTicker.java
+com/wombat/mamda/examples/MamdaBookPublisher.java
+com/wombat/mamda/examples/MamdaAtomicBookBuilder.java
+com/wombat/mamda/examples/MamdaAtomicBookTicker.java
+com/wombat/mamda/examples/MamdaBookSelfTest.java
+com/wombat/mamda/examples/MamdaBookChurn.java
+""")
+
+if env['with_testtools'] == True and 'dynamic' in env['build']:
+    orderbookExamples.append( 'com/wombat/mamda/examples/MamdaBookChurn.java' )
+
+if env['with_unittest'] == True:
+    orderbookExamples.append('com/wombat/mamda/examples/MamdaListenerBookPublisher.java')
+
+baseExamples = Split("""
+com/wombat/mamda/examples/MamdaComboTicker.java
+com/wombat/mamda/examples/MamdaQuoteTicker.java
+com/wombat/mamda/examples/MamdaOrderImbalanceTicker.java
+com/wombat/mamda/examples/MamdaTradeTicker.java
+com/wombat/mamda/examples/MamdaMultiPartTicker.java
+com/wombat/mamda/examples/MamdaMultiSecurityTicker.java
+com/wombat/mamda/examples/MamdaListen.java
+com/wombat/mamda/examples/MamdaSecStatusTicker.java
+com/wombat/mamda/examples/MamdaFundamentalTicker.java
+com/wombat/mamda/examples/MamdaAuctionTicker.java
+""")
+
+env.Append(
+    JAVACFLAGS      = [ '-Xlint:deprecation'],
+    JAVACLASSPATH   = [ Jars['mamajni.jar'][0].abspath,
+                        Dir('classes').path,
+                        Dir('classes_orderbook').path,
+                        Dir('classes_options').path,
+                      ],
+)
+
+lock_classes = env.Java('classes_orderbook',symboliclinks)
+
+base_classes    = env.Java('classes', base_sources )
+options_classes = env.Java('classes_options', options_sources )
+ob_classes      = env.Java('classes_orderbook', ob_sources )
+
+commandLineProc = env.Java('classes','com/wombat/mamda/examples/CommandLineProcessor.java')
+
+base_ex = []
+for ex in baseExamples:
+    base_ex.append ( env.Java('classes',ex) )
+
+options_ex = []
+for op in optionsExamples:
+    options_ex.append( env.Java('classes_options',op) )
+
+orderbook_ex = []
+for ob in orderbookExamples:
+    orderbook_ex.append( env.Java('classes_orderbook', ob) )
+
+mamda_base = env.Jar(target='mamda.jar', source='classes', JARCHDIR = Dir('classes').abspath )
+mamda_orderbook = env.Jar(target='mamda_orderbook.jar', source='classes_orderbook', JARCHDIR = Dir('classes_orderbook').abspath )
+mamda_options = env.Jar(target='mamda_options.jar', source='classes_options', JARCHDIR = Dir('classes_options').abspath )
+
+Alias('install', env.Install('$libdir', mamda_base))
+Alias('install', env.Install('$libdir', mamda_orderbook))
+Alias('install', env.Install('$libdir', mamda_options))
+
+if 'inc_example_src' in env and env['inc_example_src']:
+    Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', baseExamples))
+    Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', orderbookExamples))
+    Alias('install', env.Install('$prefix/examples/com/wombat/mamda/examples', optionsExamples))
+
+
+Clean(lock_classes, symboliclinks)
+
+## Explicit Java Dependencies
+#
+# SCons does not handle Java dependencies particularly well so it is necessary
+# to explicitly set the dependencies. This ensures that parallel processing
+# occurs without issue. This should not need to change often
+env.Depends( base_classes, Jars['mamajni.jar'] )
+env.Depends( ob_classes, [ Jars['mamajni.jar'], [ base_classes, lock_classes ] ] )
+env.Depends( options_classes, [ Jars['mamajni.jar'], base_classes ] )
+
+env.Depends( commandLineProc, base_classes )
+
+env.Depends( base_ex, [ base_classes, commandLineProc ] )
+env.Depends( orderbook_ex, [ base_ex, ob_classes ] )
+env.Depends( options_ex, [ base_ex, options_classes ] )

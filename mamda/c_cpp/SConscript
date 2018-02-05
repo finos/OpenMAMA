@@ -1,0 +1,64 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('env')
+env = env.Clone()
+versions = env['versions']['mama']
+
+modules = []
+modules.append('src/cpp')
+
+conf = Configure(env, config_h='./config.h', log_file='./config.mamda.log')
+
+h = os.path.join( Dir('#').abspath, 'mamda/c_cpp/src/cpp/version.h' )
+c = os.path.join( Dir('#').abspath, 'mamda/c_cpp/src/cpp/version.c' )
+
+major = versions['major']
+minor = versions['minor']
+release = versions['release']
+winrelease = versions['winrelease']
+buildNum = versions['build']
+releaseString = versions['releaseString']
+
+verH = open( h , "w" )
+verH.write("""/* This file was automatically generated */
+#ifndef MamdaVersionHH
+#define MamdaVersionHH
+#define MAMDA_VERSION_MAJOR %s
+#define MAMDA_VERSION_MINOR %s
+#define MAMDA_VERSION_RELEASE %s
+#define MAMDA_VERSION "mamda %s"
+extern const char* mamda_version;
+#endif
+""" % ( major, minor, release, releaseString ) )
+verH.close()
+
+verC = open( c , "w" )
+verC.write("""/* This file was automatically generated */
+const char* mamda_version = "mamda %s";
+""" % ( releaseString ) )
+verC.close()
+
+if not env.GetOption('clean'):
+    if not conf.CheckLib('ncurses'):
+        print '+- Warning: ncurses not found...'
+
+env = conf.Finish()
+
+if env['with_testtools'] == True:
+    modules.append('src/testtools')
+if env['with_examples'] == True:
+    modules.append('src/examples')
+#if env['with_unittest'] == True:
+#    modules.append('src/gunittest')
+
+for m in modules:
+    env.SConscript(os.path.join(m, 'SConscript'), 'env')
+
+if env['with_docs'] == True:
+   cppdoc = env.Doxygen('doxyconfig-cpp.in')
+
+   env.Command( '$prefix/doc/mamda/images', cppdoc, 'mkdir -p $TARGET; cp -rf %s/mamda/c_cpp/doc/images/* $TARGET' % ( env['TOPLEVEL'] ) )
+   env.Command( '$prefix/doc/mamda/cpp/html', cppdoc, 'mkdir -p $TARGET; cp -rf %s/mamda/c_cpp/doc/cpp/html/* $TARGET' % ( env['TOPLEVEL'] ) )
+
+   env.Clean( cppdoc, '%s/mamda/c_cpp/doc/cpp' % (env['TOPLEVEL']) )

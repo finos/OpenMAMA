@@ -1,0 +1,117 @@
+import os
+import sys
+import posixpath
+Import('*')
+env = env.Clone()
+versions = env['versions']['mama']
+
+libpath = []
+
+includePath = []
+includePath.append( '.' )
+includePath.append( '#common/c_cpp/src/c' )
+includePath.append( '#common/c_cpp/src/c/windows' )
+includePath.append( '#common/c_cpp/src/c/windows/wombat' )
+includePath.append( '#common/c_cpp/src/c/wombat' )
+includePath.append( '#mama/c_cpp/src/c' )
+includePath.append( '#mama/c_cpp/src/cpp' )
+includePath.append( '#mama/c_cpp/src/enterprise/c' )
+includePath.append( '#mama/c_cpp/src/enterprise/cpp' )
+includePath.append( '#mamda/c_cpp/src/cpp' )
+includePath.append( '#mamda/c_cpp/src/cpp/options' )
+
+h = os.path.join( Dir('#').abspath, 'mamda\\c_cpp\\src\\cpp\\version.h' )
+c = os.path.join( Dir('#').abspath, 'mamda\\c_cpp\\src\\cpp\\version.c' )
+
+major = versions['major']
+minor = versions['minor']
+release = versions['release']
+winrelease = versions['winrelease']
+buildNum = versions['build']
+releaseString = versions['releaseString']
+
+verH = open( h , "w" )
+verH.write("""/* This file was automatically generated */
+#ifndef MamdaVersionHH
+#define MamdaVersionHH
+#define MAMDA_VERSION_MAJOR %s
+#define MAMDA_VERSION_MINOR %s
+#define MAMDA_VERSION_RELEASE %s
+#define MAMDA_VERSION "mamda %s"
+extern "C" const char* mamda_version;
+#endif
+""" % ( major, minor, release, releaseString ) )
+verH.close()
+
+verC = open( c , "w" )
+verC.write("""/* This file was automatically generated */
+const char* mamda_version = "mamda %s";""" % ( releaseString ) )
+verC.close()
+
+build = env['build']
+
+libpath.append('$libdir')
+#libpath.append('$blddir/$build/common/c_cpp/src/c')
+
+env.Append(
+	LIBS 			= ['ws2_32','advapi32','kernel32'],
+	LIBPATH		= [ libpath ],
+	RCFLAGS 		= ['-d"_UNICODE"', '-d "UNICODE"','-I%s' % os.path.join( env.Dir('#').abspath, "mama\\c_cpp\\src\\c")],
+	LINKFLAGS	= ['/MAP','/NODEFAULTLIB:libc.lib'],
+	CPPPATH		= includePath,
+	CPPDEFINES	= ['MAMDA','VERSION=%s' % releaseString ],
+)
+
+if env.get('with_enterprise',None) == True:
+	env.Append( CPPDEFINES = ['WITH_ENTERPRISE'] )
+
+if env['vsver_maj'] >= 8:
+    # For some reason MamdaOptionChain does not compile on vc 10
+    # It is not this flag though it is needed anyway to stop cores
+    # on other vsvers
+    env.Append(CPPDEFINES = ['_HAS_ITERATOR_DEBUGGING=0'])
+
+if build == 'dynamic':
+	env.Append(
+		CPPDEFINES	= ['MAMDA_DLL'],
+		CCFLAGS		= ['/MD','/Ox'],
+        #LINKFLAGS   = ['MSVCRT.LIB']
+	)
+
+elif build == 'static':
+	env.Append(
+		CPPDEFINES 	= ['MAMA_STATIC'],
+		CCFLAGS		= ['/MT','/Ox'],
+	)
+
+elif build == 'dynamic-debug':
+	env.Append(
+		LINKFLAGS 	= ['/DEBUG'],
+		CPPDEFINES 	= ['MAMDA_DLL'],
+		CCFLAGS		= ['/MDd'],
+	)
+
+elif build == 'static-debug':
+	env.Append(
+		LINKFLAGS 	= ['/DEBUG'],
+		CPPDEFINES 	= ['MAMA_STATIC'],
+		CCFLAGS		= ['/MTd'],
+	)
+
+
+env.SConscript('src/cpp/SConscript.win','env')
+
+if env['with_examples'] == True and 'dynamic' in env['build']:
+    env.SConscript('src/examples/SConscript.win','env')
+
+if env['with_testtools'] == True and 'dynamic' in env['build']:
+    env.SConscript('src/testtools/SConscript.win','env')
+
+if ( env['with_docs'] == True and not Media.has_key('mamda/c_cpp/docs') and env['build'] == 'dynamic' and not env.GetOption('clean') ):
+   cppdoc = env.Doxygen('doxyconfig-cpp.in')
+
+   env.Command( '$prefix/doc/mamda', cppdoc, 'mkdir $TARGET && xcopy /q /s /e /y  %s\mamda\c_cpp\doc\* $TARGET' % ( env['TOPLEVEL'] ) )
+
+   env.Clean( cppdoc, '%s/mamda/c_cpp/doc/cpp' % (env['TOPLEVEL']) )
+
+   Media['mamda/c_cpp/docs'] = 1

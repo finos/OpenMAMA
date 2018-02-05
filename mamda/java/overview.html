@@ -1,0 +1,37 @@
+<body>
+API specification for MAMDA (Middleware Agnostic Market Data API).
+<p>
+To date, virtually every application programming interface (API)
+used in conjunction with market data distribution software provides
+an anonymous field and/or record based interface.  Applications
+must iterate over fields and provide internal logic to determine
+what type of message the collection of fields actually represents.
+For some types of applications, such as graphical display
+applications (GUIs), it is not necessary for the application to
+understand the content of the collection of fields; it only needs
+to display each field on a particular part of the screen.  Other
+types of applications, such as program trading, tick capture,
+analytical, and smart order routing applications, need a deeper
+understanding of the meaning of each field in the message and,
+indeed, what type of message the update as a whole
+represents.
+</p>
+<p>
+Classification of market data messages is not just restricted to
+high level message types, such as quotes, trades, order book
+updates, security status updates, fundamental data, etc., but also
+to subtypes of these messages types: regional vs. consolidated
+quotes, regional vs. consolidated trades, trade
+cancels/errors/corrections, out of order trades, etc.  The field
+based approach to accessing market data requires a great deal of
+logic to classify data correctly.
+</p>
+<p>
+Wombat's Middleware Agnostic Market Data API (MAMDA) provides a
+rich set of market data related data structures to address these
+shortcomings of field based APIs.  This object oriented (C++ and
+Java) API does the tedious work of deciphering field based data
+into various types of messages and provides convenient interfaces
+for applications to process the different types of data.
+</p>
+</body>

@@ -1,0 +1,85 @@
+#==============================================================================
+# To build MAMA examples set the following:
+#   API_HOME: Path to API installation
+#   API_PLATFORM: tibrv/lbm/qpid
+#   tibrv_HOME: Path to TIBRV installation (TIBRV only)
+#   qpid_HOME: Path to QPID installation (QPID only)
+#   lbm_HOME: Path to LBM installation (LBM only - usually same as API home)
+#   wmw_HOME: Path to WMW installation (WMW only)
+#=============================================================================
+# Example:
+#    make -f Makefile.sample API_HOME=/home/wombat/apis
+#=============================================================================
+# SOLARIS/Forte: The makefile will need modified to use the Solaris compiler.
+#                See example below.
+#=============================================================================
+API_HOME=../../../
+
+## Solaris/Forte compiler:
+#CXX      = CC
+#CC       = cc
+#BSTATIC  = -Bstatic
+#BDYNAMIC = -Bdynamic
+
+# GNU compiler:
+ifeq (,$(CXX))
+  CXX = g++
+endif
+ifeq (,$(CC))
+  CC = gcc
+endif
+BSTATIC  = -Xlinker -Bstatic
+BDYNAMIC = -Xlinker -Bdynamic
+
+## Solaris system libraries:
+#SYS_LIBS = -lsocket -lgen -lnsl -ldl
+
+# Standard defines:
+CPPFLAGS     = \
+    -I$(API_HOME)/include
+    
+LDFLAGS      = -rdynamic \
+    -L$(API_HOME)/lib
+
+
+MAMA_LIBS    = $(BDYNAMIC) -lmama \
+               $(BDYNAMIC) $($(API_PLATFORM)_libs) -lrt -lpthread -lm -ldl
+
+# Targets:
+
+all: mamalistenc mamainboxc \
+ 	mamapublisherc mamasubscriberc \
+ 	mamasymbollistsubscriberc \
+	mamaproxyc mamaio \
+	mamamultisubscriberc mamaftmemberc \
+	mamalistencachedc
+
+mamalistenc: mamalistenc.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamapublisherc: mamapublisherc.o
+	$(LINK.c) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamasubscriberc: mamasubscriberc.o
+	$(LINK.c) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamainboxc: mamainboxc.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamaio: mamaio.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamamultisubscriberc: mamamultisubscriberc.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamaproxyc: mamaproxyc.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamasymbollistsubscriberc: mamasymbollistsubscriberc.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamaftmemberc: mamaftmemberc.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+mamalistencachedc: mamalistencachedc.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)

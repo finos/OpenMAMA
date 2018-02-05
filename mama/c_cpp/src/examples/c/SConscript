@@ -1,0 +1,35 @@
+import os
+Import('env')
+env = env.Clone()
+
+includePath = []
+includePath.append('.')
+includePath.append('../../../c')
+includePath.append('#common/c_cpp/src/c')
+includePath.append('$prefix/include')
+
+examples = Glob('*.c')
+examples.append('Makefile.sample')
+
+libPath = []
+libPath.append('$prefix/lib')
+
+env.Append( LIBPATH = libPath )
+env.Append( CPPPATH = [ includePath ] )
+if env['host']['os'] == 'Darwin':
+    env.Append( LIBS = [ 'mama','pthread','m','wombatcommon'] )
+else:
+    env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','rt' ] )
+
+bins = [ 'mamalistenc','mamaproxyc','mamapublisherc','mamasubscriberc','mamainboxc','mamaio','mamasymbollistsubscriberc','mamamultisubscriberc','mamaftmemberc','mamasymbollistsubscriberc',
+'mamalistencachedc' ]
+
+binary = []
+
+for b in bins:
+   binary.append( env.Program( b, '%s.c' % (b) ) )
+
+Alias('install',env.Install('$bindir',binary))
+Alias('install',env.Install('$prefix/examples/mama/c',examples))
+
+env.SConscript('plugin/SConscript','env')

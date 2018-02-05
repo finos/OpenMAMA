@@ -1,0 +1,74 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('env')
+env.Clone()
+
+modules = \
+    Split("""
+common
+orderbooks
+orderImbalances
+quotes
+secstatus
+trades
+""")
+
+incpath = []
+incpath.append('$gtest_home/include')
+incpath.append('#mamda/c_cpp/src/cpp')
+incpath.append('#mamda/c_cpp/src/cpp/mamda')
+incpath.append('#mamda/c_cpp/src/gunittest')
+incpath.append('#mama/c_cpp/src/c')
+incpath.append('#mama/c_cpp/src/cpp')
+incpath.append('#common/c_cpp/src/c')
+incpath.append('$prefix/include')
+
+libpath = []
+libpath.append('$gtest_home/lib')
+libpath.append('$libdir')
+
+env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
+
+if env['host']['os'] == 'Darwin':
+    env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=[
+                                                       'gtest',
+                                                       'gtest_main',
+                                                       'mama',
+                                                       'mamacpp',
+                                                       'mamda',
+                                                       'mamdabook',
+                                                       'wombatcommon',
+                                                       ])
+else:
+    env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=[
+                                                       'gtest',
+                                                       'gtest_main',
+                                                       'mama',
+                                                       'mamacpp',
+                                                       'mamda',
+                                                       'mamdabook',
+                                                       'rt',
+                                                       'wombatcommon',
+                                                       ])
+
+#conf = Configure(env, config_h='./config.h', log_file='./config.log')
+#
+#if not env.GetOption('clean'):
+#    if not conf.CheckCHeader('valgrind/memcheck.h'):
+#        print '+- libuuid-devel required'
+#        Exit(1)
+#    if not conf.CheckCHeader('valgrind/callgrind.h'):
+#        print '+- libuuid-devel required'
+#        Exit(1)
+#    if not conf.CheckLib('libgtest'):
+#        print '+- libgtest required'
+#        Exit(1)
+#    if not conf.CheckLib('libgtest_main'):
+#        print '+- libgtest_main required'
+#        Exit(1)
+#
+#env = conf.Finish()
+
+for m in modules:
+    env.SConscript(os.path.join(m, 'SConscript'), 'env')

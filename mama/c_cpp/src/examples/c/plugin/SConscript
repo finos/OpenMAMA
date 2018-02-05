@@ -1,0 +1,27 @@
+import os
+Import('env')
+env = env.Clone()
+
+lib_target  = "mamaplugintemplate"
+
+lib_sources = ["mamaPluginTemplate.c"]
+lib_install_files = ["mamaPluginTemplate.h", "Makefile.sample"]
+lib_install_files.extend(lib_sources)
+
+includePath = []
+includePath.append('.')
+includePath.append('../../../../c')
+# includePath.append('#common/c_cpp/src/c')
+# includePath.append('$prefix/include')
+
+libPath = []
+libPath.append('$prefix/lib')
+
+env.Append( LIBPATH = libPath )
+env.Append( CPPPATH = [ includePath ] )
+env.Append( LIBS = [ 'mama' ] )	
+
+pluginso = env.SharedLibrary(target = lib_target, source = lib_sources)
+
+Alias('install',env.Install('$libdir', pluginso))
+Alias('install',env.Install('$prefix/examples/mama/c/plugin', lib_install_files))

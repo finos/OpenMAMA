@@ -1,0 +1,30 @@
+Import('env')
+env = env.Clone()
+
+includePath = []
+includePath.append('.')
+includePath.append('../c')
+includePath.append('../..')
+
+InstWomHeaders = Split("""
+wombat/Lock.h
+""")
+
+if env['host']['os'] == 'Darwin':
+    env.Append(LIBS=['dl', 'rt', 'wombatcommon'])
+else:
+    env.Append(LIBS=['dl', 'm', 'wombatcommon'])
+
+env.Append(CFLAGS=['-fPIC', '-pedantic-errors', '-Wmissing-prototypes',
+           '-Wstrict-prototypes'])
+env.Append(CXXFLAGS=['-fPIC', '-pedantic-errors', '-Wall',
+           '-Wno-long-long'])
+
+env.Append(CPPPATH=includePath)
+
+sources = Glob('*.cpp')
+
+lwombatcommoncpp = env.StaticLibrary('libwombatcommoncpp', sources)
+
+Alias('install', env.Install('$libdir', lwombatcommoncpp))
+Alias('install', env.Install('$incdir/wombat', InstWomHeaders))

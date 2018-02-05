@@ -1,0 +1,36 @@
+import os
+Import('env')
+env = env.Clone()
+
+sources = []
+
+target = 'libmamdaoptions'
+
+env['CPPDEFINES'] = [ x for x in env['CPPDEFINES'] if x != 'MAMDA' ]
+
+env.Append(
+    LIBS = ['libmamda%s.lib' % ( env['suffix'] ) ] ,
+    CPPDEFINES	= ['MAMDAOPT'],
+)
+
+
+sources = Split( """
+  MamdaOptionChainView.cpp
+  MamdaOptionChainListener.cpp
+  MamdaOptionSeriesUpdate.cpp
+  MamdaOptionExpirationDateSet.cpp
+  MamdaOptionContract.cpp
+  MamdaOptionContractSet.cpp
+  MamdaOptionFields.cpp
+  MamdaOptionExchangeUtils.cpp
+  MamdaOptionStrikeSet.cpp
+  MamdaOptionExpirationStrikes.cpp
+  MamdaOptionChain.cpp
+""")
+
+headers = Glob('mamda/*.h')
+
+env.InstallLibrary(sources, target)
+
+if ( 'dynamic' == env['build'] or len(env['buildtype']) == 1 ):
+    env.Install('$incdir/mamda/options',headers)

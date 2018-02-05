@@ -1,0 +1,15 @@
+﻿---
+BasedOnStyle: LLVM
+AlignAfterOpenBracket: Align
+AlignConsecutiveAssignments: 'true'
+AlignConsecutiveDeclarations: 'true'
+AlignOperands: 'true'
+BinPackArguments: 'false'
+BinPackParameters: 'false'
+BreakBeforeBraces: Linux
+ColumnLimit: '80'
+IndentWidth: 4
+ReflowComments: 'true'
+SpaceBeforeParens: Always
+SpaceInEmptyParentheses: 'true'
+SpacesInSquareBrackets: 'false'

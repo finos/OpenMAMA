@@ -1,0 +1,70 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+Import('*')
+env = env.Clone()
+
+target = 'mamajni'
+#target = 'libmamajni%s' % (env['suffix'])
+#targetLIB = 'libmamajni%s.lib' % (env['suffix'])
+#targetDLL = 'libmamajni%s.dll' % (env['suffix'])
+
+
+incPath = []
+incPath.append('.')
+incPath.append('../../../jni/jni')
+incPath.append('#common/c_cpp/src/c')
+incPath.append('#common/c_cpp/src/c/windows')
+incPath.append('#mama/c_cpp/src/c')
+
+libPath = []
+libPath.append('$libdir')
+
+env.Append(LIBS=['libmamac%s' % (env['suffix']),
+                 'libmamacpp%s' % (env['suffix'])],
+           LIBPATH=libPath, CPPPATH=incPath)
+
+sources = \
+    Split("""
+    mamabasicsubscriptionjni.c
+    mamaconnectionjni.c
+    mamadatetimejni.c
+    mamadictionaryjni.c
+    mamadispatcherjni.c
+    mamainboxjni.c
+    mamajni.c
+    mamabridgejni.c
+    mamajniutils.c
+    mamamsgfieldjni.c
+    mamamsgjni.c
+    mamapayloadbridgejni.c
+    mamaftmemberjni.c
+    mamapricejni.c
+    mamapublisherjni.c
+    mamadqpublisherjni.c
+    mamadqpublishermanagerjni.c
+    mamaqueuejni.c
+    mamasubscriptionjni.c
+    mamasourcejni.c
+    mamatimerjni.c
+    mamatransportjni.c
+    subscriptioncommon.c
+    mamaloghandler.c
+""")
+
+# Java, when loading the mamajni dll, expects it to be called mamajni.dll, without
+# the lib prefix or 'md/mdd' suffix. Therefore, we cannot use the InstallLibrary
+# method used elsewhere.
+if 'dynamic' in env['build']:
+    dll, pdb, lib, exp = env.SharedLibrary(target, sources)
+    library = [ dll, pdb, lib, exp ]
+    env.Alias('install', env.Install('$bindir', dll ))
+    env.Alias('install', env.Install('$bindir', pdb ))
+
+    if env['vsver_maj'] >= 8:
+        env.AddPostAction( library, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;2')
+
+elif 'static' in env['build']:
+    lib = env.StaticLibrary(target, source)
+    library = [ lib ]
+
+env.Alias('install', env.Install('$libdir', lib )) #Always install the .lib

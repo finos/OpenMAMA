@@ -1,0 +1,61 @@
+import os
+Import('env')
+env = env.Clone()
+
+versions = env['versions']['mama']
+
+major = versions['major']
+minor = versions['minor']
+release = versions['release']
+releaseString = versions['releaseString']
+
+h = os.path.join( Dir('#').abspath, 'mama/c_cpp/src/c/mama/version.h' )
+c = os.path.join( Dir('#').abspath, 'mama/c_cpp/src/c/version.c' )
+
+verFile = open( c, "w" )
+verFile.write("""const char* mama_version = "mama %s";
+""" % ( releaseString))
+verFile.close()
+
+verH = open( h, "w" )
+verH.write("""
+/* This file was automatically generated */
+#ifndef MamaVersionH
+#define MamaVersionH
+
+#define MAMA_VERSION_MAJOR %s
+#define MAMA_VERSION_MINOR %s
+#define MAMA_VERSION_RELEASE "%s"
+#define MAMA_VERSION "mama %s"
+extern const char* mama_version;
+#endif
+""" % (major,minor,release,releaseString) )
+
+modules = []
+modules.append( 'src/c' )
+modules.append( 'src/cpp' )
+
+
+if env.get('with_enterprise',None) == True:
+   modules.append('src/enterprise')
+
+if env['with_testtools'] == True:
+   modules.append('src/testtools')
+if env['with_examples'] == True:
+   modules.append('src/examples')
+if env['with_unittest'] == True:
+   modules.append('src/gunittest')
+
+for m in modules:
+   env.SConscript( os.path.join(m,'SConscript'), 'env' )
+
+if env['with_docs'] == True and not env.GetOption('clean'):
+   cdoc = env.Doxygen('doxyconfig-c.in')
+   cppdoc = env.Doxygen('doxyconfig-cpp.in')
+
+   env.Command( '$prefix/doc/mama/images', cdoc, 'mkdir -p $TARGET; cp -rf %s/mama/c_cpp/doc/images/* $TARGET' % ( env['TOPLEVEL'] ) )
+   env.Command( '$prefix/doc/mama/c/html', cdoc, 'mkdir -p $TARGET; cp -rf %s/mama/c_cpp/doc/c/html/* $TARGET' % ( env['TOPLEVEL'] ) )
+   env.Command( '$prefix/doc/mama/cpp/html', cppdoc, 'mkdir -p $TARGET; cp -rf %s/mama/c_cpp/doc/cpp/html/* $TARGET' % ( env['TOPLEVEL'] ) )
+
+   env.Clean( cdoc, '%s/mama/c_cpp/doc/c' % (env['TOPLEVEL']) )
+   env.Clean( cppdoc, '%s/mama/c_cpp/doc/cpp' % (env['TOPLEVEL']) )

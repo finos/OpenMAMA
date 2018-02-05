@@ -1,0 +1,332 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{66CB8ABC-8EA3-4FF6-B715-D878B37CCCB3}</ProjectGuid>
+    <RootNamespace>mamacpp</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(SolutionDir)$(Platform)\$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(SolutionDir)$(Platform)\$(Configuration)</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</LinkIncremental>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">libmamacpp</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">libmamacpp</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">libmamacpp</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">libmamacpp</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\cpp;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MAMACPP;MAMA_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <ProjectReference>
+      <UseLibraryDependencyInputs>false</UseLibraryDependencyInputs>
+    </ProjectReference>
+    <Link>
+      <OutputFile>$(OutDir)libmamacppmdd.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\cpp;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;_USRDLL;MAMACPP;MAMA_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <CallingConvention>Cdecl</CallingConvention>
+      <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+      <OmitDefaultLibName>false</OmitDefaultLibName>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <OutputFile>$(OutDir)libmamacppmdd.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\cpp;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MAMACPP;MAMA_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <OutputFile>$(OutDir)libmamacppmd.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\common\c_cpp\src\c\windows;$(SOLUTIONDIR)\common\c_cpp\src\c;$(SOLUTIONDIR)\mama\c_cpp\src\cpp;$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;_USRDLL;MAMACPP;MAMA_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ForcedIncludeFiles>wombat/targetsxs.h;%(ForcedIncludeFiles)</ForcedIncludeFiles>
+    </ClCompile>
+    <ResourceCompile>
+      <AdditionalIncludeDirectories>$(SOLUTIONDIR)\mama\c_cpp\src\c;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <Link>
+      <OutputFile>$(OutDir)libmamacppmd.dll</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>
+      </OptimizeReferences>
+      <EnableCOMDATFolding>
+      </EnableCOMDATFolding>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\c\mamac.vcxproj">
+      <Project>{7f64d11f-c002-4271-bdec-a82c614403ef}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\common\c_cpp\src\cpp\commoncpp.vcxproj">
+      <Project>{b58fb672-1bbc-4889-bbdd-9de5012140e2}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\common\c_cpp\src\c\commonc.vcxproj">
+      <Project>{45f0cc89-c5cd-4af6-9911-ddf0557f788a}</Project>
+      <CopyLocalSatelliteAssemblies>true</CopyLocalSatelliteAssemblies>
+      <ReferenceOutputAssembly>true</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="BasicSubscriptionImpl.h" />
+    <ClInclude Include="BasicWildCardSubscriptionImpl.h" />
+    <ClInclude Include="FieldDescriptorImpl.h" />
+    <ClInclude Include="mama\MamaBasicSubscription.h" />
+    <ClInclude Include="mama\MamaBasicSubscriptionCallback.h" />
+    <ClInclude Include="mama\MamaBasicWildCardSubscription.h" />
+    <ClInclude Include="mama\MamaBasicWildCardSubscriptionCallback.h" />
+    <ClInclude Include="mama\MamaBridgeCallback.h" />
+    <ClInclude Include="mama\conflation\MamaConnection.h" />
+    <ClInclude Include="mama\mamacpp.h" />
+    <ClInclude Include="mamacppinternal.h" />
+    <ClInclude Include="mama\MamaDateTime.h" />
+    <ClInclude Include="mama\MamaDictionary.h" />
+    <ClInclude Include="mama\MamaDictionaryCallback.h" />
+    <ClInclude Include="mama\MamaDispatcher.h" />
+    <ClInclude Include="mama\MamaDQPublisher.h" />
+    <ClInclude Include="MamaDQPublisherImpl.h" />
+    <ClInclude Include="mama\MamaDQPublisherManager.h" />
+    <ClInclude Include="mama\MamaDQPublisherManagerCallback.h" />
+    <ClInclude Include="mama\MamaFieldDescriptor.h" />
+    <ClInclude Include="mama\MamaFt.h" />
+    <ClInclude Include="mama\MamaInbox.h" />
+    <ClInclude Include="mama\MamaInboxCallback.h" />
+    <ClInclude Include="mama\MamaIo.h" />
+    <ClInclude Include="mama\MamaIoCallback.h" />
+    <ClInclude Include="mama\MamaLogFile.h" />
+    <ClInclude Include="mama\MamaMsg.h" />
+    <ClInclude Include="mama\MamaMsgField.h" />
+    <ClInclude Include="mama\MamaMsgFieldIterator.h" />
+    <ClInclude Include="mama\MamaMsgQual.h" />
+    <ClInclude Include="mama\MamaPrice.h" />
+    <ClInclude Include="mama\MamaPublisher.h" />
+    <ClInclude Include="MamaPublisherImpl.h" />
+    <ClInclude Include="mama\MamaQueue.h" />
+    <ClInclude Include="mama\MamaQueueEnqueueCallback.h" />
+    <ClInclude Include="mama\MamaQueueEventCallback.h" />
+    <ClInclude Include="mama\MamaQueueGroup.h" />
+    <ClInclude Include="mama\MamaQueueMonitorCallback.h" />
+    <ClInclude Include="mama\MamaReservedFields.h" />
+    <ClInclude Include="mama\MamaSendCompleteCallback.h" />
+    <ClInclude Include="mama\conflation\MamaServerConnection.h" />
+    <ClInclude Include="mama\fieldcache\MamaFieldCacheField.h" />
+    <ClInclude Include="mama\fieldcache\MamaFieldCacheFieldTypes.h" />
+    <ClInclude Include="mama\fieldcache\MamaFieldCache.h" />
+    <ClInclude Include="mama\fieldcache\MamaFieldCacheRecord.h" />
+    <ClInclude Include="mama\MamaSource.h" />
+    <ClInclude Include="mama\MamaSourceDerivative.h" />
+    <ClInclude Include="mama\MamaSourceGroup.h" />
+    <ClInclude Include="mama\MamaSourceGroupManager.h" />
+    <ClInclude Include="mama\MamaSourceManager.h" />
+    <ClInclude Include="mama\MamaSourceStateChangeCallback.h" />
+    <ClInclude Include="mama\MamaStatsCollector.h" />
+    <ClInclude Include="mama\MamaStatus.h" />
+    <ClInclude Include="mama\MamaSubscription.h" />
+    <ClInclude Include="mama\MamaSubscriptionCallback.h" />
+    <ClInclude Include="MamaSubscriptionImpl.h" />
+    <ClInclude Include="mama\MamaSymbolList.h" />
+    <ClInclude Include="mama\MamaSymbolListFile.h" />
+    <ClInclude Include="mama\MamaSymbolListHandlerTypes.h" />
+    <ClInclude Include="mama\MamaSymbolListMember.h" />
+    <ClInclude Include="mama\MamaSymbolMap.h" />
+    <ClInclude Include="mama\MamaSymbolMapFile.h" />
+    <ClInclude Include="mama\MamaSymbolSource.h" />
+    <ClInclude Include="mama\MamaSymbolSourceCallback.h" />
+    <ClInclude Include="mama\MamaSymbolStoreSaveCallback.h" />
+    <ClInclude Include="mama\MamaTimer.h" />
+    <ClInclude Include="mama\MamaTimerCallback.h" />
+    <ClInclude Include="mama\MamaTimeZone.h" />
+    <ClInclude Include="mama\MamaTransport.h" />
+    <ClInclude Include="mama\MamaTransportMap.h" />
+    <ClInclude Include="MsgFieldImpl.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="version.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="datetime.cpp" />
+    <ClCompile Include="MamaBasicSubscription.cpp" />
+    <ClCompile Include="MamaBasicWildCardSubscription.cpp" />
+    <ClCompile Include="conflation\MamaConnection.cpp" />
+    <ClCompile Include="fieldcache\MamaFieldCache.cpp" />
+    <ClCompile Include="fieldcache\MamaFieldCacheField.cpp" />
+    <ClCompile Include="fieldcache\MamaFieldCacheFieldTypes.cpp" />
+    <ClCompile Include="fieldcache\MamaFieldCacheRecord.cpp" />
+    <ClCompile Include="mamacpp.cpp" />
+    <ClCompile Include="MamaDictionary.cpp" />
+    <ClCompile Include="MamaDispatcher.cpp" />
+    <ClCompile Include="MamaDQPublisher.cpp" />
+    <ClCompile Include="MamaDQPublisherManager.cpp" />
+    <ClCompile Include="MamaFieldDescriptor.cpp" />
+    <ClCompile Include="MamaFt.cpp" />
+    <ClCompile Include="MamaInbox.cpp" />
+    <ClCompile Include="MamaIo.cpp" />
+    <ClCompile Include="MamaLogFile.cpp" />
+    <ClCompile Include="MamaMsg.cpp" />
+    <ClCompile Include="MamaMsgField.cpp" />
+    <ClCompile Include="MamaMsgQual.cpp" />
+    <ClCompile Include="MamaPrice.cpp" />
+    <ClCompile Include="MamaPublisher.cpp" />
+    <ClCompile Include="MamaQueue.cpp" />
+    <ClCompile Include="MamaQueueGroup.cpp" />
+    <ClCompile Include="MamaReservedFields.cpp" />
+    <ClCompile Include="conflation\MamaServerConnection.cpp" />
+    <ClCompile Include="MamaSource.cpp" />
+    <ClCompile Include="MamaSourceDerivative.cpp" />
+    <ClCompile Include="MamaSourceGroup.cpp" />
+    <ClCompile Include="MamaSourceGroupManager.cpp" />
+    <ClCompile Include="MamaSourceManager.cpp" />
+    <ClCompile Include="MamaStatsCollector.cpp" />
+    <ClCompile Include="MamaStatus.cpp" />
+    <ClCompile Include="MamaSubscription.cpp" />
+    <ClCompile Include="MamaSymbolList.cpp" />
+    <ClCompile Include="MamaSymbolListFile.cpp" />
+    <ClCompile Include="MamaSymbolListMember.cpp" />
+    <ClCompile Include="MamaSymbolMapFile.cpp" />
+    <ClCompile Include="MamaTimer.cpp" />
+    <ClCompile Include="MamaTimeZone.cpp" />
+    <ClCompile Include="MamaTransport.cpp" />
+    <ClCompile Include="MamaTransportMap.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

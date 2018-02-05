@@ -1,0 +1,44 @@
+import os
+import posixpath
+Import('env')
+env = env.Clone()
+
+InstBin = []
+InstExamples = []
+InstExamples.append('Makefile.sample')
+
+binaries = Split("""
+	mamaftmemberc
+	mamainboxc
+	mamalistenc
+	mamamultisubscriberc
+	mamapublisherc
+	mamaproxyc
+	mamasubscriberc
+	mamasymbollistsubscriberc
+	mamalistencachedc
+""")
+
+libs = []
+libs.append('libmamac%s' % ( env['suffix'] ))
+
+libpath = []
+libpath.append('%s/%s/wombatmsg/c_cpp/src/c' % ( env['blddir'], env['build'] ))
+libpath.append('$libdir')
+
+env.Append(
+	LIBS 		= libs,
+	LIBPATH 	= libpath,
+)
+
+for b in binaries:
+	examplesrc = '%s.c' % (b)
+	example = env.Program(b, examplesrc)
+	if env['vsver'] >= 8:
+		env.AddPostAction( example, 'mt.exe -nologo -manifest ${TARGET}.manifest -outputresource:$TARGET;1')
+	InstBin.append( example )
+	InstExamples.append( examplesrc )
+
+Alias( 'install', env.Install('$bindir',InstBin) )
+if 'inc_example_src' in env and env['inc_example_src']:
+    Alias( 'install', env.Install('$prefix/examples/mama/c', InstExamples) )

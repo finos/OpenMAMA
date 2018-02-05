@@ -1,0 +1,28 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('env')
+env = env.Clone()
+
+incpath = []
+incpath.append('$gtest_home/include')
+
+libpath = []
+libpath.append('$gtest_home/lib')
+
+ccflags = []
+
+if env['PLATFORM'] == "win32":
+    libs = ['gtest', 'gtest_main']
+    libs.append('libmamac%s' % ( env['suffix'] ))
+    libs.append('libwombatcommon%s' % ( env['suffix'] ))
+    ccflags.append('/DGTEST_USE_OWN_TR1_TUPLE=0')
+    ccflags.append('/D_VARIADIC_MAX=10')
+else:
+    ccflags.append('-Wno-sign-compare')
+    libs = ['gtest', 'gtest_main', 'dl', 'wombatcommon', 'mama', 'pthread']
+
+env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=libs, CCFLAGS=ccflags)
+
+env.SConscript('c/SConscript', 'env')
+env.SConscript('cpp/SConscript', 'env')

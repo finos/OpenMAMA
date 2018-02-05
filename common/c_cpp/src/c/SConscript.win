@@ -1,0 +1,51 @@
+Import('env')
+env = env.Clone()
+
+target = 'libwombatcommon'
+
+sources = Split("""
+list.c
+destroyHandle.c
+wtable.c
+wlock.c
+MRSWLock.c
+timers.c
+lookup2.c
+queue.c
+machine.c
+strutils.c
+windows/wUuid.c
+property.c
+wMessageStats.c
+libyywrap.c
+fileparser.c
+mempool.c
+memnode.c
+thread.c
+fileutils.c
+windows/strpcasecmp.c
+windows/strptime.c
+windows/platform.c
+windows/mman.c
+windows/wSemaphore.c
+windows/network.c
+windows/environment.c
+windows/machine_win.c
+windows/port.c
+lex.yy.o
+""")
+
+if env.get('with_enterprise',None) == True:
+    sources.append('../enterprise/c/path.c')
+
+headers = Glob('windows/wombat/*.h')
+winheaders = Split ("""
+                        windows/lock.h
+                        windows/mman.h
+                    """)
+
+env.InstallLibrary(sources, target)
+
+if ( env['build'] == 'dynamic' or len( env['buildtype'] ) == 1 ):
+    env.Install( '$incdir/wombat', headers )
+    env.Install( '$incdir/windows', winheaders )

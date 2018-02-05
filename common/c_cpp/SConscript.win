@@ -1,0 +1,49 @@
+Import('env')
+env = env.Clone()
+
+incPaths = []
+incPaths.append( '#common/c_cpp/src/c' )
+incPaths.append( '#common/c_cpp/src/enterprise/c' )
+incPaths.append( '#common/c_cpp/src/c/windows/' )
+incPaths.append( '#common/c_cpp/src/c/windows/wombat' )
+
+env.Append(
+    LIBS        = ['ws2_32','advapi32','kernel32','Pdh','shlwapi'],
+    CPPDEFINES  = ['COMMON_DLL'],
+    CPPPATH     = incPaths,
+)
+
+env.Object( 'src/c/lex.yy.o', 'src/c/properties.l' )
+
+build = env['build']
+
+if build == 'dynamic':
+    env.Append(
+        CCFLAGS       = ['/MD','/Ox'],
+        LINKFLAGS     = ['/NODEFAULTLIB:libcmt.lib'],
+    )
+elif build == 'static':
+    env.Append(
+        CCFLAGS        = ['/MT','/Ox'],
+    )
+
+elif build == 'dynamic-debug':
+    env.Append(
+        CCFLAGS       = ['/MDd'],
+        LINKFLAGS     = ['/NODEFAULTLIB:libcmt.lib'],
+    )
+
+elif build == 'static-debug':
+    env.Append(
+        CCFLAGS        = ['/MTd'],
+    )
+
+env.SConscript('src/c/SConscript.win','env')
+
+# cpp lib is not built on windows
+
+if env.get('with_enterprise',None) == True:
+    env.SConscript('src/enterprise/SConscript.win', 'env')
+
+if env['with_unittest'] == True and 'dynamic' in env['build']:
+    env.SConscript('src/gunittest/SConscript', 'env')
