@@ -35,6 +35,11 @@
 #include <property.h>
 #include <plugin.h>
 #include <platform.h>
+#include <dqstrategy.h>
+#include <subscriptionimpl.h>
+#include <mama/transport.h>
+#include "transportimpl.h"
+
 
 #define PLUGIN_PROPERTY "mama.plugin.name_"
 #define PLUGIN_NAME "mamaplugin"
@@ -44,9 +49,9 @@
 
 #define MAX_FUNC_STRING 256
 
-int gNumPlugins = 0;
+int gNumPlugins        = 0;
 int gCurrentPluginSize = INITIAL_PLUGIN_ARRAY_SIZE;
-
+int isUsingDq          = 1;
 /**
  * @brief Mechanism for registering required plugin functions.
  *
@@ -108,19 +113,6 @@ do {                                                                            
     }                                                                           \
 } while (0)
 
-typedef struct mamaPluginImpl_
-{
-    LIB_HANDLE          mPluginHandle;
-    char*               mPluginName;
-    mamaPluginInfo      mPluginInfo;
-
-    mamaPlugin_publisherPreSendHook     mamaPluginPublisherPreSendHook;
-    mamaPlugin_transportPostCreateHook  mamaPluginTransportPostCreateHook;
-    mamaPlugin_shutdownHook             mamaPluginShutdownHook;
-    mamaPlugin_initHook                 mamaPluginInitHook;
-
-} mamaPluginImpl;
-
 static mamaPluginImpl**      gPlugins;
 static volatile int         gPluginNo = 0;
 
@@ -140,27 +132,6 @@ mamaPlugin_registerFunctions   (LIB_HANDLE      pluginLib,
                                 const char*     name,
                                 mamaPluginInfo  pluginInfo,
                                 mamaPluginImpl* pluginImpl);
-
-/**
- * @brief Used find a plugin using the library name
- *
- * param[in] name
- *
- * @return a valid mamaPluginImpl if found
- */
-mamaPluginImpl*
-mamaPlugin_findPlugin (const char* name);
-
-/**
- * @brief Used find a plugin using the library name
- *
- * param[in] pluginName
- *
- * @return mama_status return code can be one of:
- *          MAMA_STATUS_OK
- */
-mama_status
-mama_loadPlugin (const char* pluginName);
 
 /**
 *   Reallocate space for plugins when current limit is reached
@@ -199,7 +170,12 @@ mamaPlugin_registerFunctions (LIB_HANDLE      pluginLib,
                                        mamaPlugin_publisherPreSendHook);
     REGISTER_OPTIONAL_PLUGIN_FUNCTION (MamaPlugin_transportPostCreateHook, mamaPluginTransportPostCreateHook,
                                        mamaPlugin_transportPostCreateHook);
-
+    REGISTER_OPTIONAL_PLUGIN_FUNCTION (MamaPlugin_subscriptionPostCreateHook, mamaPluginSubscriptionPostCreateHook,
+                                       mamaPlugin_subscriptionPostCreateHook);
+    REGISTER_OPTIONAL_PLUGIN_FUNCTION (MamaPlugin_subscriptionPreMsgHook, mamaPluginSubscriptionPreMsgHook,
+                                       mamaPlugin_subscriptionPreMsgHook);
+    REGISTER_OPTIONAL_PLUGIN_FUNCTION (MamaPlugin_transportEventHook, mamaPluginTransportEventHook,
+                                       mamaPlugin_transportEventHook);
    return status;
 }
 
@@ -209,6 +185,7 @@ mama_initPlugins(void)
     int             pluginCount      = 0;
     const char*     prop             = NULL;
     char            propString[MAX_PLUGIN_STRING];
+    const char*     propVal;
 
     if(!gPlugins)
     {
@@ -221,6 +198,17 @@ mama_initPlugins(void)
     mama_log (MAMA_LOG_LEVEL_FINE, "mama_initPlugins(): Initialising mamacenterprise");
     mama_loadPlugin ("mamacenterprise");
 #endif /* WITH_ENTERPRISE */
+    
+    if((propVal = mama_getProperty("mama.dqstrategy.enabled")) != NULL)
+    {
+        isUsingDq = strtobool(propVal);
+    }
+
+    if(isUsingDq)
+    {
+        mama_loadPlugin ("dqstrategy");
+    }
+
 
     return MAMA_STATUS_OK;
 }
@@ -344,9 +332,11 @@ mama_loadPlugin (const char* pluginName)
 mama_status
 mama_shutdownPlugins (void)
 {
-    mama_status  status = MAMA_STATUS_OK;
-    int          plugin = 0;
-    int          ret    = 0;
+    mama_status      status           = MAMA_STATUS_OK;
+    int              plugin           = 0;
+    int              ret              = 0;
+    mamaPluginImpl** transportPlugins = NULL;
+    int              tPluginNo        = 0;
 
     for (plugin = 0; plugin < gPluginNo; plugin++)
     {
@@ -391,8 +381,10 @@ mama_shutdownPlugins (void)
 mama_status
 mamaPlugin_firePublisherPreSendHook (mamaPublisher publisher, mamaMsg message)
 {
-    mama_status  status = MAMA_STATUS_OK;
-    int          plugin = 0;
+    mama_status      status           = MAMA_STATUS_OK;
+    int              plugin           = 0;
+    mamaPluginImpl** transportPlugins = NULL;
+    int              tPluginNo        = 0;
 
     for (plugin = 0; plugin < gPluginNo; plugin++)
     {
@@ -417,8 +409,10 @@ mamaPlugin_firePublisherPreSendHook (mamaPublisher publisher, mamaMsg message)
 mama_status
 mamaPlugin_fireTransportPostCreateHook (mamaTransport transport)
 {
-    mama_status  status = MAMA_STATUS_OK;
-    int          plugin = 0;
+    mama_status      status           = MAMA_STATUS_OK;
+    int              plugin           = 0;
+    mamaPluginImpl** transportPlugins = NULL;
+    int              tPluginNo        = 0;
 
     for (plugin = 0; plugin < gPluginNo; plugin++)
     {
@@ -437,6 +431,28 @@ mamaPlugin_fireTransportPostCreateHook (mamaTransport transport)
             }
         }
     }
+
+    mamaTransportImpl_getPlugins(transport, &transportPlugins);
+    
+    if(transportPlugins != NULL)
+    {
+        mamaTransportImpl_getPluginNo(transport, &tPluginNo);
+    
+        for (plugin = 0; plugin < tPluginNo; plugin++)
+        {
+            if (transportPlugins[plugin]->mamaPluginTransportPostCreateHook != NULL)
+            {
+                    status = transportPlugins[plugin]->mamaPluginTransportPostCreateHook (transportPlugins[plugin]->mPluginInfo, transport);
+            }
+                if (MAMA_STATUS_OK != status)
+                {
+                    mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mamaPlugin_transportPostCreateHook()Transport post create hook failed for mama plugin [%s]",
+                                transportPlugins[plugin]->mPluginName);
+                }
+        }
+    }
+
     return status;
 }
 
@@ -461,6 +477,162 @@ mamaPlugin_fireShutdownHook (void)
                                 gPlugins[plugin]->mPluginName);
                 }
             }
+        }
+    }
+    return status;
+}
+
+mama_status
+mamaPlugin_fireSubscriptionPostCreateHook (mamaSubscription subscription)
+{ 
+    mama_status      status           = MAMA_STATUS_OK;
+    int              plugin           = 0;
+    mamaTransport    transport        = NULL;
+    mamaPluginImpl** transportPlugins = NULL;
+    int              tPluginNo        = 0;
+    for (plugin = 0; plugin < gPluginNo; plugin++)
+    {
+        if (gPlugins[plugin] != NULL)
+        {
+            if (gPlugins[plugin]->mamaPluginSubscriptionPostCreateHook != NULL)
+            {
+                status = gPlugins[plugin]->mamaPluginSubscriptionPostCreateHook (gPlugins[plugin]->mPluginInfo, subscription);
+
+                if (MAMA_STATUS_OK != status)
+                {
+                     mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mamaPlugin_subscriptionPostCreateHook(): Subscription post create hook failed for mama plugin [%s]",
+                                gPlugins[plugin]->mPluginName);
+                }
+            }
+        }
+    }
+
+    mamaSubscription_getTransport(subscription, &transport);
+
+    mamaTransportImpl_getPlugins(transport, &transportPlugins);
+
+    if(transportPlugins != NULL)
+    {
+        mamaTransportImpl_getPluginNo(transport, &tPluginNo);
+
+        for (plugin = 0; plugin < tPluginNo; plugin++)
+        {
+            if (transportPlugins[plugin]->mamaPluginSubscriptionPostCreateHook != NULL)
+            {
+                    status = transportPlugins[plugin]->mamaPluginSubscriptionPostCreateHook (transportPlugins[plugin]->mPluginInfo, subscription);
+            }
+                if (MAMA_STATUS_OK != status)
+                {
+                     mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mamaPlugin_subscriptionPostCreateHook(): Subscription post create hook failed for mama plugin [%s]",
+                                transportPlugins[plugin]->mPluginName);
+                }
+        }
+    }
+
+    return status;
+}
+
+mama_status
+mamaPlugin_fireSubscriptionPreMsgHook      (mamaSubscription subscription, int msgType, mamaMsg msg)
+{
+
+    mamaDqContext *ctx      = mamaSubscription_getDqContext(subscription);
+
+    mama_status  status = MAMA_STATUS_OK;
+    int          plugin = 0;
+    mamaTransport    transport        = NULL;
+    mamaPluginImpl** transportPlugins = NULL;
+    int              tPluginNo        = 0;
+
+    for (plugin = 0; plugin < gPluginNo; plugin++)
+    {
+        if (gPlugins[plugin] != NULL)
+        {
+            if (gPlugins[plugin]->mamaPluginSubscriptionPreMsgHook != NULL)
+            {
+                status = gPlugins[plugin]->mamaPluginSubscriptionPreMsgHook (gPlugins[plugin]->mPluginInfo, subscription, msgType, msg);
+
+                if (MAMA_STATUS_OK != status)
+                {
+                     mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mamaPlugin_subscriptionPreMsgHook      (): Subscription pre msg hook failed for mama plugin [%s]",
+                                gPlugins[plugin]->mPluginName);
+                }
+            }
+        }
+    }
+    
+    mamaSubscription_getTransport(subscription, &transport);
+
+    mamaTransportImpl_getPlugins(transport, &transportPlugins);
+
+    if(transportPlugins != NULL)
+    {
+        mamaTransportImpl_getPluginNo(transport, &tPluginNo);
+
+        for (plugin = 0; plugin < tPluginNo; plugin++)
+        {
+            if (transportPlugins[plugin]->mamaPluginSubscriptionPreMsgHook != NULL)
+            {
+                    status = transportPlugins[plugin]->mamaPluginSubscriptionPreMsgHook (transportPlugins[plugin]->mPluginInfo, subscription, msgType, msg);
+            }
+                if (MAMA_STATUS_OK != status)
+                {
+                     mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mamaPlugin_subscriptionPreMsgHook(): Subscription pre msg hook failed for mama plugin [%s]",
+                                transportPlugins[plugin]->mPluginName);
+                }
+        }
+    }
+    return status;
+}
+
+mama_status
+mamaPlugin_fireTransportEventHook(mamaTransport transport, int setStale, mamaTransportEvent tportEvent)
+{
+    mama_status  status = MAMA_STATUS_OK;
+    int          plugin = 0;
+    mamaPluginImpl** transportPlugins = NULL;
+    int              tPluginNo        = 0;
+
+    for (plugin = 0; plugin < gPluginNo; plugin++)
+    {
+        if (gPlugins[plugin] != NULL)
+        {
+            if (gPlugins[plugin]->mamaPluginTransportEventHook       != NULL)
+            {
+                status = gPlugins[plugin]->mamaPluginTransportEventHook(gPlugins[plugin]->mPluginInfo, transport, setStale, tportEvent);
+
+                if (MAMA_STATUS_OK != status)
+                {
+                     mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mamaPlugin_transportEventHook      (): Transport event hook failed for mama plugin [%s]",
+                                gPlugins[plugin]->mPluginName);
+                }
+            }
+        }
+    }
+
+    mamaTransportImpl_getPlugins(transport, &transportPlugins);
+
+    if(transportPlugins != NULL)
+    {
+        mamaTransportImpl_getPluginNo(transport, &tPluginNo);
+
+        for (plugin = 0; plugin < tPluginNo; plugin++)
+        {
+            if (transportPlugins[plugin]->mamaPluginTransportEventHook  != NULL)
+            {
+                    status = transportPlugins[plugin]->mamaPluginTransportEventHook (transportPlugins[plugin]->mPluginInfo, transport, setStale, tportEvent);
+            }
+                if (MAMA_STATUS_OK != status)
+                {
+                     mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mamaPlugin_transportEventHook(): Transport event hook failed for mama plugin [%s]",
+                                transportPlugins[plugin]->mPluginName);
+                }
         }
     }
     return status;
@@ -502,4 +674,10 @@ static void pluginPropertiesCb(const char* name, const char* value, void* closur
 
         }
     }
+}
+
+int
+mamaPlugin_isUsingDq (void)
+{
+    return isUsingDq;
 }

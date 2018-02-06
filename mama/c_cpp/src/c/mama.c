@@ -84,7 +84,7 @@ int gGenerateQueueStats     = 0;
 int gGenerateTransportStats = 0;
 int gGenerateGlobalStats    = 0;
 int gGenerateLbmStats       = 0;
-int gGenerateUserStats       = 0;
+int gGenerateUserStats      = 0;
 
 int gPublishQueueStats      = 0;
 int gPublishTransportStats  = 0;
@@ -3263,6 +3263,11 @@ void mama_normalizeMamaBridgeInterfaceVersionInternal (versionInfo* version)
 
     /* This is irrelevant at this point so blank for clarity */
     version->mRelease = 0;
+}
+
+int mama_getTransportStats()
+{
+    return gGenerateTransportStats;
 }
 
 /** 

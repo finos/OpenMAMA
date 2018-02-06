@@ -21,7 +21,7 @@
 
 #ifndef PluginH__
 #define PluginH__
-
+#include "dqstrategyplugin.h"
 
 /**
  * @brief Containers used within the mama plugin
@@ -30,6 +30,65 @@ typedef mama_status (*mamaPlugin_publisherPreSendHook) (mamaPluginInfo pluginInf
 typedef mama_status (*mamaPlugin_transportPostCreateHook) (mamaPluginInfo pluginInfo, mamaTransport transport);
 typedef mama_status (*mamaPlugin_shutdownHook) (mamaPluginInfo pluginInfo);
 typedef mama_status (*mamaPlugin_initHook) (mamaPluginInfo* pluginInfo);
+typedef mama_status (*mamaPlugin_subscriptionPostCreateHook) (mamaPluginInfo pluginInfo, mamaSubscription subscription);
+typedef mama_status (*mamaPlugin_subscriptionPreMsgHook) (mamaPluginInfo pluginInfo, mamaSubscription subscription, int msgType, mamaMsg msg);
+typedef mama_status (*mamaPlugin_transportEventHook) (mamaPluginInfo pluginInfo, mamaTransport transport, int setStale, mamaTransportEvent tportEvent);
+
+typedef struct mamaPluginImpl_
+{
+    LIB_HANDLE          mPluginHandle;
+    char*               mPluginName;
+    mamaPluginInfo      mPluginInfo;
+
+    mamaPlugin_publisherPreSendHook                 mamaPluginPublisherPreSendHook;
+    mamaPlugin_transportPostCreateHook              mamaPluginTransportPostCreateHook;
+    mamaPlugin_shutdownHook                         mamaPluginShutdownHook;
+    mamaPlugin_initHook                             mamaPluginInitHook;
+    mamaPlugin_subscriptionPostCreateHook           mamaPluginSubscriptionPostCreateHook;
+    mamaPlugin_subscriptionPreMsgHook               mamaPluginSubscriptionPreMsgHook;
+    mamaPlugin_transportEventHook                   mamaPluginTransportEventHook;
+
+} mamaPluginImpl;
+
+ /**
+ * @brief Used find a plugin using the library name
+ *
+ * param[in] pluginName
+ *
+ * @return mama_status return code can be one of:
+ *          MAMA_STATUS_OK
+ */
+mama_status
+mama_loadPlugin (const char* pluginName);
+
+/**
+ * @brief Used find a plugin using the library name
+ *
+ * param[in] name
+ *
+ * @return a valid mamaPluginImpl if found
+ */
+mamaPluginImpl*
+mamaPlugin_findPlugin (const char* name);
+
+/**
+ * @brief Used to load register all possible plugin functions to be
+ *        used within Mama.
+ *
+ * param[in] pluginLib
+ * param[in] name
+ * param[in] pluginImpl The plugin impl to be used
+ *
+ * @return mama_status return code can be one of:
+ *          MAMA_STATUS_OK
+ */
+mama_status
+mamaPlugin_registerFunctions   (LIB_HANDLE      pluginLib,
+                                const char*     name,
+                                mamaPluginInfo  pluginInfo,
+                                mamaPluginImpl* pluginImpl);
+int 
+mamaPlugin_isUsingDq(void);
 
 /**
  * Initialize the internal plugin interface
@@ -55,5 +114,14 @@ mamaPlugin_fireTransportPostCreateHook (mamaTransport transport);
 
 extern mama_status
 mamaPlugin_fireShutdownHook (void);
+
+extern mama_status
+mamaPlugin_fireSubscriptionPostCreateHook (mamaSubscription subscription);
+
+extern mama_status
+mamaPlugin_fireSubscriptionPreMsgHook (mamaSubscription subscription, int msgType, mamaMsg msg);
+
+extern mama_status
+mamaPlugin_fireTransportEventHook (mamaTransport transport, int setStale, mamaTransportEvent tportEvent);
 
 #endif /* PluginH__ */
