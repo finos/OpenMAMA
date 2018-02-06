@@ -28,6 +28,14 @@ extern "C" {
 
 #define REFRESH_GRANULARITY        13.99 /* Seconds */
 
+typedef struct SubscriptionInfo_
+{
+    mamaSubscription mSubscription;
+
+    time_t mNextRefreshTime;
+    int    mIsInMainList;
+} SubscriptionInfo;
+
 typedef struct refreshTransportImpl_* refreshTransport;
 
 extern mama_status 
@@ -61,6 +69,7 @@ void refreshTransport_iterateListeners(refreshTransport transport,
 SubscriptionInfo* 
 refreshTransport_allocateSubscInfo (refreshTransport transport);
 
+MAMAExpDLL
 extern void
 refreshTransport_startStaleRecapTimer (struct refreshTransportImpl_ *impl);
 

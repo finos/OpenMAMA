@@ -563,7 +563,7 @@ static void setDeactivateOnError (mamaTransport transport)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "Setting %s=%s",
                   propNameBuf, propValue);
-        self->mDeactivateSubscriptionOnError = (int) strtod (propValue, NULL);
+        self->mDeactivateSubscriptionOnError = strtod (propValue, NULL);
     }
     else
         self->mDeactivateSubscriptionOnError = 1;
