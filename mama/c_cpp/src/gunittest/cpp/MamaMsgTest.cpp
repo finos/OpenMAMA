@@ -237,24 +237,3 @@ TEST_F (MamaMsgTestCPP, MemoryLeakTest)
         delete msgs[j];
     }
 }
-
-TEST_F (MamaMsgTestCPP, TestDestroyAfterClose)
-{
-    // Close the instance opened in setUp
-    Mama::close();
-
-    // Load the bridge fresh
-    m_bridge = Mama::loadBridge(getMiddleware());
-    Mama::open();
-
-    // Will create a qpid message
-    MamaMsg* mainMsg = new MamaMsg();
-    mainMsg->create();
-    mainMsg->addI32("test", 4, (mama_i32_t)123);
-
-    // Close the bridge
-    Mama::close();
-
-    // Destroy the message via destructor - will throw exception on fail
-    delete mainMsg;
-}

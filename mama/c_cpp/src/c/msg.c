@@ -71,7 +71,6 @@ typedef struct mamaMsgImpl_
     msgPayload              mPayloads[MAMA_PAYLOAD_MAX];
     /* Set of get/set/update methods to use for a non wmsg payload */
     mamaPayloadBridgeImpl*  mPayloadBridge;
-    char                    mPayloadId;
 
     mamaMsg*                mLastVectorMsg;
     mama_size_t             mLastVectorMsgLen;
@@ -125,19 +124,13 @@ mamaMsg_destroy (mamaMsg msg)
 
     if (impl->mPayloadBridge && impl->mMessageOwner)
     {
-        if (NULL == mamaInternal_findPayload(impl->mPayloadId))
-        {
-            mama_log(MAMA_LOG_LEVEL_WARN, "mamaMsg_destroy(): "
-                "Could not clean up MAMA message as payload bridge has already been closed. Possible leak.");
-        }
-        else if (MAMA_STATUS_OK != impl->mPayloadBridge->msgPayloadDestroy (impl->mPayload))
+        if (MAMA_STATUS_OK != impl->mPayloadBridge->msgPayloadDestroy (impl->mPayload))
         {
             mama_log (MAMA_LOG_LEVEL_ERROR, "mamaMsg_destroy(): "
                      "Could not clear message payload.");
         }
 
         impl->mPayloadBridge = NULL;
-        impl->mPayloadId = '\0';
 
         /*set mMessageOwner to zero now the payload has been destroyed to prevent
           us destroying the underlying message again in the bridge specific function*/
@@ -461,8 +454,7 @@ mamaMsgImpl_setPayloadBridge (mamaMsg msg, mamaPayloadBridgeImpl* payloadBridge)
 {
     mamaMsgImpl*    impl    =   (mamaMsgImpl*)msg;
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    impl->mPayloadBridge  = payloadBridge;
-    impl->mPayloadId      = payloadBridge->payloadLib->id;
+    impl->mPayloadBridge  =   payloadBridge;
     return MAMA_STATUS_OK;
 }
 
@@ -598,11 +590,9 @@ mamaMsgImpl_setMsgBuffer(mamaMsg     msg,
         id = (char) ((const char*)data) [0];
 
     impl->mPayloadBridge = mamaInternal_findPayload(id);
+    impl->mPayload = impl->mPayloads[(uint8_t)id];
 
     if (!impl->mPayloadBridge) return MAMA_STATUS_NO_BRIDGE_IMPL;
-
-    impl->mPayloadId     = id;
-    impl->mPayload       = impl->mPayloads[(uint8_t)id];
 
     if (!impl->mPayload)
     {
@@ -661,7 +651,6 @@ mamaMsgImpl_createNestedForPayload (mamaMsg*        result,
     mamaMsgField_create (&impl->mCurrentField);
     impl->mCurrentField->myPayloadBridge = parent->mPayloadBridge;
     impl->mPayloadBridge    = parent->mPayloadBridge;
-    impl->mPayloadId        = parent->mPayloadId;
     impl->mPayload          = payload;
     impl->mParent           = parent;
     impl->mPayloadBridge->msgPayloadSetParent (impl->mPayload, impl);
@@ -726,7 +715,6 @@ mamaMsgImpl_createForPayload (mamaMsg*                  msg,
 
     impl->mPayload                =  payload;
     impl->mPayloadBridge          =  payloadBridge;
-    impl->mPayloadId              =  payloadBridge->payloadLib->id;
     /*These will be set later if necessary*/
     impl->mBridgeImpl             =  NULL;
     impl->mBridgeMessage          =  NULL;
@@ -785,7 +773,6 @@ mamaMsg_copy (mamaMsg src, mamaMsg* copy)
         {
             mamaMsgImpl_setPayloadBridge (*copy, source->mPayloadBridge);
             mamaMsgImpl_setPayload       (*copy, payload, 1);
-            (*copy)->mPayloadId = source->mPayloadId;
         }
     }
 
@@ -3331,12 +3318,10 @@ mamaMsg_setNewBuffer (mamaMsg msg, void* buffer,
                       mama_size_t size)
 {
     mamaMsgImpl*    impl        =   (mamaMsgImpl*)msg;
-    char            id          =   '\0';
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
-    impl->mPayloadId = (char)((const char*)buffer)[0];
-    impl->mPayloadBridge = mamaInternal_findPayload(impl->mPayloadId);
+    impl->mPayloadBridge = mamaInternal_findPayload( (char) ((const char*)buffer) [0]);
 
     if (impl->mPayloadBridge)
     {
