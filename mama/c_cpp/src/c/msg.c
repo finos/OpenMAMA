@@ -726,7 +726,6 @@ mamaMsgImpl_createForPayload (mamaMsg*                  msg,
 
     impl->mPayload                =  payload;
     impl->mPayloadBridge          =  payloadBridge;
-    impl->mPayloadId              =  payloadBridge->payloadLib->id;
     /*These will be set later if necessary*/
     impl->mBridgeImpl             =  NULL;
     impl->mBridgeMessage          =  NULL;
@@ -737,6 +736,7 @@ mamaMsgImpl_createForPayload (mamaMsg*                  msg,
     if (payloadBridge)
     {
         impl->mPayloadBridge->msgPayloadSetParent (impl->mPayload, impl);
+        impl->mPayloadId = payloadBridge->payloadLib->id;
     }
 
     return status;
