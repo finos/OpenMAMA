@@ -107,6 +107,7 @@ libmama_sources = \
     datetime.c
 	dictionary.c
 	dqstrategy.c
+    dqstrategyplugin.c
     error.c
     entitlement.c
     entitlementlibraries.c

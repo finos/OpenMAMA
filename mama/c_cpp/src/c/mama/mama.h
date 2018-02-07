@@ -665,7 +665,8 @@ extern "C"
     extern mama_status
     mama_removeStatsCollector (mamaStatsCollector  statsCollector);
 
-    mamaExpDLL int mama_getGenerateTransportStats(void);
+    MAMAExpDLL 
+    int mama_getGenerateTransportStats(void);
 
     /** 
      * Get Middleware Bridge by middleware name

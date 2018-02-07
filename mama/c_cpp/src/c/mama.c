@@ -3460,4 +3460,8 @@ autoloadPayloadPropertiesCb (const char* name, const char* value, void* closure)
         }
     }
 }
+int mama_getGenerateTransportStats()
+{
+    return gGenerateTransportStats;
+}
 
