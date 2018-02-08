@@ -23,7 +23,11 @@
 #define DqStrategyH__
 #include "imagerequest.h"
 #include "mama/msg.h"
+#ifndef OPENMAMA_INTEGRATION
+#define OPENMAMA_INTEGRATION
+#endif
 
+#include <mama/integration/types.h>
 #if defined(__cplusplus)
 extern "C" {
 #endif
