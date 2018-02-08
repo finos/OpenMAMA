@@ -3265,11 +3265,10 @@ void mama_normalizeMamaBridgeInterfaceVersionInternal (versionInfo* version)
     version->mRelease = 0;
 }
 
-int mama_getTransportStats()
+int mama_getGenerateTransportStats()
 {
     return gGenerateTransportStats;
 }
-
 /** 
  * Get Middleware Bridge by middleware name
  *
@@ -3460,8 +3459,3 @@ autoloadPayloadPropertiesCb (const char* name, const char* value, void* closure)
         }
     }
 }
-int mama_getGenerateTransportStats()
-{
-    return gGenerateTransportStats;
-}
-
