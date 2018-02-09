@@ -1716,5 +1716,5 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getTheAppDataType (
         utils_throwWombatException(env,errorString);
     }
 
-    return (jint)appdatatype;
+    return (jint) appdatatype;
 }

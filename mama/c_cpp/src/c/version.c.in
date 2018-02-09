@@ -1,0 +1,1 @@
+const char* mama_version = "mama @MAMA_VERSION_MAJOR@.@MAMA_VERSION_MINOR@.@MAMA_VERSION_RELEASE@";

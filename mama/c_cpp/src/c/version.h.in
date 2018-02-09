@@ -1,0 +1,10 @@
+/* This file was automatically generated */
+#ifndef MamaVersionH
+#define MamaVersionH
+
+#define MAMA_VERSION_MAJOR @MAMA_VERSION_MAJOR@
+#define MAMA_VERSION_MINOR @MAMA_VERSION_MINOR@
+#define MAMA_VERSION_RELEASE "@MAMA_VERSION_RELEASE@"
+#define MAMA_VERSION "mama @MAMA_VERSION_MAJOR@.@MAMA_VERSION_MINOR@.@MAMA_VERSION_RELEASE@"
+extern const char* mama_version;
+#endif

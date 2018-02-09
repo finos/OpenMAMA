@@ -1,0 +1,3 @@
+#include <mamainternal.h>
+
+const char* gEntitlementBridges [MAX_ENTITLEMENT_BRIDGES] = { @ENTITLEMENT_BRIDGES@ };

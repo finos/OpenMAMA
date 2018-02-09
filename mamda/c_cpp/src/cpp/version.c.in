@@ -1,0 +1,1 @@
+const char* mamda_version = "mamda @MAMDA_VERSION_MAJOR@.@MAMDA_VERSION_MINOR@.@MAMDA_VERSION_RELEASE@";

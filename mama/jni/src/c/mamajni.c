@@ -341,16 +341,16 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_start
 JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_startBackground
   (JNIEnv* env, jclass class, jobject bridge, jobject callback)
 {
-	mama_status status = MAMA_STATUS_OK;
+    mama_status status = MAMA_STATUS_OK;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
-	/* Get the bridge pointer. */
+    /* Get the bridge pointer. */
     jlong  bridgeFieldPointer =
         (*env)->GetLongField(env,bridge,bridgePointerFieldId_g);
     assert(0!=bridgeFieldPointer);
 
-	/* Save the callback object. */
-	mStartBackgroundCallback = (*env)->NewGlobalRef (env, callback);
+    /* Save the callback object. */
+    mStartBackgroundCallback = (*env)->NewGlobalRef (env, callback);
 
 	/* Call the C mama_startBackground function. */
     if (MAMA_STATUS_OK != (status =

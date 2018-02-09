@@ -349,7 +349,7 @@ do                                                                          \
                     c_name, fid, &cResult), "Could not get " #CFUNC " from mamaMsg.");                   \
                                                                             \
     if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);              \
-}                                                                     \
+}                                                                           \
 while(0)
 
 
@@ -3645,7 +3645,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_isFromInbox
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
-		"Null parameter, MamaMsg may have already been destroyed.", 0);
+		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
 
 
     cResult = mamaMsg_isFromInbox(CAST_JLONG_TO_POINTER(mamaMsg,msgPointer));
@@ -3695,15 +3695,25 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaMsg_toString
 JNIEXPORT jchar JNICALL Java_com_wombat_mama_MamaMsg_getPayloadType
   (JNIEnv* env, jobject this)
 {
+<<<<<<< HEAD
     mama_status      status          =   MAMA_STATUS_OK;
     jlong            msgPointer      =   0;
     mamaPayloadType  payloadType     =   MAMA_PAYLOAD_UNKNOWN;
+=======
+    mama_status status          =   MAMA_STATUS_OK;
+    jlong       msgPointer      =   0;
+    mamaPayloadType cResult     =   MAMA_PAYLOAD_UNKNOWN;
+>>>>>>> vitya-maleyev/master
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+<<<<<<< HEAD
         "Null parameter, MamaMsg may have already been destroyed.",
         MAMA_PAYLOAD_UNKNOWN);
+=======
+        "Null parameter, MamaMsg may have already been destroyed.", 0);
+>>>>>>> vitya-maleyev/master
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_getPayloadType(
                         CAST_JLONG_TO_POINTER(mamaMsg, msgPointer), &payloadType)));
@@ -3716,7 +3726,11 @@ JNIEXPORT jchar JNICALL Java_com_wombat_mama_MamaMsg_getPayloadType
         utils_throwWombatException(env,errorString);
     }
 
+<<<<<<< HEAD
     return (jchar)payloadType;
+=======
+    return (jchar)cResult;
+>>>>>>> vitya-maleyev/master
 }
 
 /*
@@ -4020,7 +4034,11 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_createForPayloadBridge
     assert (0!=payloadBridgePointer);
 
     if(MAMA_STATUS_OK!=(status=mamaMsg_createForPayloadBridge(
+<<<<<<< HEAD
                     &cMessage, CAST_JLONG_TO_POINTER(mamaPayloadBridge, payloadBridgePointer))))
+=======
+			&cMessage, CAST_JLONG_TO_POINTER(mamaPayloadBridge, payloadBridgePointer))))
+>>>>>>> vitya-maleyev/master
     {
         utils_buildErrorStringForStatus(
                 errorString,
@@ -4140,7 +4158,11 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI8
 {
     mama_status     status          = MAMA_STATUS_OK;
     mama_i8_t       cResult         = 0;
+<<<<<<< HEAD
     TryFieldWithType (I8, mama_i8_t, JNI_FALSE);
+=======
+    TryFieldWithType (I8, mama_i8_t);
+>>>>>>> vitya-maleyev/master
 
     if  (status == MAMA_STATUS_OK)
     {
@@ -4183,8 +4205,13 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI16
    (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
+<<<<<<< HEAD
     mama_i16_t       cResult        = 0;
     TryFieldWithType (I16, mama_i16_t, JNI_FALSE);
+=======
+    mama_i16_t      cResult         = 0;
+    TryFieldWithType (I16, mama_i16_t);
+>>>>>>> vitya-maleyev/master
 
     if  (status == MAMA_STATUS_OK)
     {
@@ -4227,8 +4254,13 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI32
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
+<<<<<<< HEAD
     mama_i32_t       cResult        = 0;
     TryFieldWithType (I32, mama_i32_t, 0);
+=======
+    mama_i32_t      cResult         = 0;
+    TryFieldWithType (I32, mama_i32_t);
+>>>>>>> vitya-maleyev/master
 
     if  (status == MAMA_STATUS_OK)
     {
@@ -4250,7 +4282,11 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryU32
 {
     mama_status     status          = MAMA_STATUS_OK;
     mama_u32_t      cResult         = 0;
+<<<<<<< HEAD
     TryFieldWithType (U32, mama_u32_t, 0);
+=======
+    TryFieldWithType (U32, mama_u32_t);
+>>>>>>> vitya-maleyev/master
 
     if  (status == MAMA_STATUS_OK)
     {
@@ -4272,7 +4308,11 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryI64
 {
     mama_status     status          = MAMA_STATUS_OK;
     mama_i64_t      cResult         = 0;
+<<<<<<< HEAD
     TryFieldWithType (I64, mama_i64_t, 0);
+=======
+    TryFieldWithType (I64, mama_i64_t);
+>>>>>>> vitya-maleyev/master
 
     if  (status == MAMA_STATUS_OK)
     {
@@ -4293,8 +4333,13 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryU64
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
+<<<<<<< HEAD
     mama_u64_t       cResult        = 0;
     TryFieldWithType (U64, mama_u64_t, 0);
+=======
+    mama_u64_t      cResult         = 0;
+    TryFieldWithType (U64, mama_u64_t);
+>>>>>>> vitya-maleyev/master
 
     if  (status == MAMA_STATUS_OK)
     {
@@ -4316,8 +4361,13 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryF32
   (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
 {
     mama_status     status          = MAMA_STATUS_OK;
+<<<<<<< HEAD
     mama_f32_t       cResult        = 0.0;
     TryFieldWithType (F32, mama_f32_t, JNI_FALSE);
+=======
+    mama_f32_t      cResult         = 0;
+    TryFieldWithType (F32, mama_f32_t);
+>>>>>>> vitya-maleyev/master
 
     if  (status == MAMA_STATUS_OK)
     {
@@ -4473,6 +4523,53 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryString
     return JNI_FALSE;
 }
 
+<<<<<<< HEAD
+=======
+ /*
+ * Class:     com_wombat_mama_MamaMsg
+ * Method:    tryI64
+ * Signature: (Ljava/lang/String;ILcom/wombat/mama/MamaLong;)Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_tryArrayMsg
+  (JNIEnv * env, jobject this, jstring name, jint fid, jobject result)
+{
+    const char*     c_name          =   NULL;
+    jlong           msgPointer      =   0;
+    mama_status     status          =   MAMA_STATUS_OK;
+    jlong           jMsgArrayPointer=   0;
+    jint            jMsgArraySize   =   0;
+
+    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+		"Null parameter, MamaMsg may have already been destroyed.", JNI_FALSE);
+
+    jMsgArrayPointer = (*env)->GetLongField(env,result,jMsgArrayFieldId_g);
+    jMsgArraySize = (*env)->GetIntField(env,result,jMsgArraySizeFieldId_g);
+
+    if(name)
+    {
+        c_name = (*env)->GetStringUTFChars(env,name,0);
+        if(!c_name) return JNI_FALSE;/*Exception thrown*/
+    }
+
+    /*Get the vector of messages from the C mesage*/
+     if(MAMA_STATUS_OK==(mamaTryIgnoreNotFound(env, mamaMsg_getVectorMsg(
+                    CAST_JLONG_TO_POINTER(mamaMsg,msgPointer),
+                    c_name, (mama_fid_t)fid,
+                    &jMsgArrayPointer,
+                    &jMsgArraySize), "Could not get vectormsg from mamaMsg.")))
+    {
+        if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
+        return JNI_TRUE;
+    }
+
+    if(c_name)(*env)->ReleaseStringUTFChars(env,name, c_name);
+
+    return  JNI_FALSE;
+}
+
+
+>>>>>>> vitya-maleyev/master
 /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    initIDs
