@@ -7,3 +7,7 @@ include(mama-common)
 get_component_version(${CMAKE_CURRENT_LIST_DIR}/.. MAMDA)
 
 add_subdirectory (src/cpp)
+
+if (WITH_EXAMPLES)
+    add_subdirectory (src/examples)
+endif()
