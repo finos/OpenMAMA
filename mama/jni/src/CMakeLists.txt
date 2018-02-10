@@ -2,12 +2,20 @@ cmake_minimum_required (VERSION 2.8.3)
 project (mamajni)
 
 find_package(Java)
-include(UseJava)
+include(ExternalProject)
+
+if (WIN32)
+    find_program(BIN_GRADLE gradle)
+else()
+    find_program(BIN_GRADLE gradle)
+endif()
 
 file(GLOB sources 
-	../../../common/jni/src/com/wombat/common/*.java
-	com/wombat/mama/*.java
+	main/java/com/wombat/mama/*.java
+	main/java/com/wombat/common/*.java
 )
+
+set(MAMAJNI_JAVA_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/java_build")
 
 set(CLASSES "")
 foreach(file ${sources})
@@ -19,13 +27,15 @@ foreach(file ${sources})
 	list(APPEND CLASSES ${classname})
 endforeach()
 
-set(CMAKE_JAVA_COMPILE_FLAGS -source 1.5 -target 1.5)
-add_jar(mamajnijava ${sources} OUTPUT_NAME mamajni)
-
-get_target_property(MAMAJAR mamajnijava JAR_FILE)
+ExternalProject_Add(mamajnijava
+        SOURCE_DIR "."
+        BUILD_COMMAND ""
+        CONFIGURE_COMMAND ${BIN_GRADLE} -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/../build.gradle jar
+        INSTALL_COMMAND ""
+        LOG_BUILD 1)
 
 add_custom_target(mamajnijavah DEPENDS mamajnijava
-	COMMAND "${Java_JAVAH_EXECUTABLE}" -jni -classpath "${MAMAJAR}" -d mamajni ${CLASSES}
+	COMMAND "${Java_JAVAH_EXECUTABLE}" -jni -classpath "${MAMAJNI_JAVA_BUILD_DIR}/libs/mamajni.jar" -d mamajni ${CLASSES}
 	COMMENT "Updating JNI headers for mamajni" VERBATIM
 )
 
