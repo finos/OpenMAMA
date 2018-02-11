@@ -15,6 +15,11 @@ set(sources
 	MamdaOptionExpirationDateSet.cpp
 	MamdaOptionExpirationStrikes.cpp
 	MamdaOptionFields.cpp
-	MamdaOptionStrikeSet.cpp											
+	MamdaOptionStrikeSet.cpp
 )
+
 add_library(mamdaoptions SHARED ${sources})
+
+install(TARGETS mamdaoptions
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

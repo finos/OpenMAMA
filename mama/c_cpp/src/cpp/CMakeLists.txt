@@ -8,7 +8,7 @@ list(APPEND CMAKE_MODULE_PATH
 
 include(${CMAKE_C_COMPILER_ID})
 
-get_target_property(MAMA_INCLUDES mamac INCLUDE_DIRECTORIES)
+get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -63,3 +63,8 @@ set(sources
 )
 
 add_library(mamacpp SHARED ${sources})
+
+install(TARGETS mamacpp
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+install(DIRECTORY mama/ DESTINATION include/mama)

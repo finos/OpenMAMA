@@ -12,4 +12,9 @@ set(sources
 	MamdaNewsStory.cpp
 	MamdaNewsUtils.cpp
 )
+
 add_library(mamdanews SHARED ${sources})
+
+install(TARGETS mamdanews
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

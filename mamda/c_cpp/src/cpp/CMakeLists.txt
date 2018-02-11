@@ -60,6 +60,13 @@ set(sources
 
 add_library(mamda SHARED ${sources})
 
+install(TARGETS mamda
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
 add_subdirectory(news)
 add_subdirectory(options)
 add_subdirectory(orderbooks)
+
+install(DIRECTORY mamda/ DESTINATION include/mamda)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/version.h" DESTINATION include/mamda)

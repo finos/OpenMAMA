@@ -11,7 +11,7 @@ include(FindAPR)
 
 find_package(APR)
 
-get_target_property(WOMBAT_INCLUDES wombatcommonc INCLUDE_DIRECTORIES)
+get_target_property(WOMBAT_INCLUDES wombatcommon INCLUDE_DIRECTORIES)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
@@ -115,4 +115,11 @@ set(sources
 
 list(APPEND sources ${SYSTEM_SOURCES})
 
-add_library(mamac SHARED ${sources})
+add_library(mama SHARED ${sources})
+
+install(TARGETS mama
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
+install(DIRECTORY mama/ DESTINATION include/mama)
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" DESTINATION include/mama)

@@ -41,4 +41,22 @@ set(sources
 
 list(APPEND sources ${SYSTEM_SOURCES})
 
-add_library(wombatcommonc SHARED ${sources})
+add_library(wombatcommon SHARED ${sources})
+
+install(TARGETS wombatcommon
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
+
+file(GLOB WOMBATCOMMON_INCLUDES wombat/*)
+install(FILES ${WOMBATCOMMON_INCLUDES} DESTINATION include/wombat)
+
+if(CMAKE_SYSTEM_NAME MATCHES "Linux")
+  file(GLOB WOMBATCOMMON_LINUX_INCLUDES linux/wombat/*.h)
+  install(FILES ${WOMBATCOMMON_LINUX_INCLUDES} DESTINATION include/wombat)
+elseif(CMAKE_SYSTEM_NAME MATCHES "Windows")
+  file(GLOB WOMBATCOMMON_WINDOWS_INCLUDES windows/wombat/*.h)
+  install(FILES ${WOMBATCOMMON_WINDOWS_INCLUDES} DESTINATION include/wombat)
+elseif(CMAKE_SYSTEM_NAME MATCHES "Darwin")
+  file(GLOB WOMBATCOMMON_DARWIN_INCLUDES darwin/wombat/*.h)
+  install(FILES ${WOMBATCOMMON_DARWIN_INCLUDES} DESTINATION include/wombat)
+endif()
