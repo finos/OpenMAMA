@@ -87,8 +87,6 @@ mamaPlugin_registerFunctions   (LIB_HANDLE      pluginLib,
                                 const char*     name,
                                 mamaPluginInfo  pluginInfo,
                                 mamaPluginImpl* pluginImpl);
-int 
-mamaPlugin_isUsingDq(void);
 
 /**
  * Initialize the internal plugin interface

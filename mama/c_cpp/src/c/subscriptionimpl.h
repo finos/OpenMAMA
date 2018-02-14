@@ -411,6 +411,14 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
 MAMAExpDLL
 mama_status
 mamaSubscription_setDqContext (mamaSubscription subscription, mamaDqContext dqContext);
+
+MAMAExpDLL
+mama_status
+mamaSubscription_setRecapRequest(mamaSubscription subscription, imageRequest request);
+
+MAMAExpDLL
+mama_status
+mamaSubscription_getRecapRequest(mamaSubscription subscription, imageRequest request);
 #if defined(__cplusplus)
 }
 #endif

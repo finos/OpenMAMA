@@ -156,7 +156,6 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     mamaStatsCollector tportStatsCollector  = NULL;
     const char*        userSymbol           = NULL;
 	dqState            state                = DQ_STATE_NOT_ESTABLISHED;
-    int                pluginArrayNo        = 0;
 
     mamaSubscription_getTransport (subscription, &transport);
 
@@ -376,16 +375,18 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
              default : break;
         }
         
-    mamaTransportImpl_getPluginNo(transport, &pluginArrayNo);
+//    mamaTransportImpl_getPluginNo(transport, &pluginArrayNo); //STUTEST
 
-    if(pluginArrayNo > 0)
-    {
-        mamaPlugin_fireSubscriptionPreMsgHook(subscription, msgType, msg);
-    }
-    else
-    {
-        mamaSubscription_forwardMsg(subscription, msg);
-    }
+//    if(pluginArrayNo > 0)
+//    {
+    mamaPlugin_fireSubscriptionPreMsgHook(subscription, msgType, msg);
+  //  }
+ //   else
+ //   {
+  //      mamaSubscription_forwardMsg(subscription, msg);
+ //   }
+ //
+    //STUTEST - Aaron fix for forward if !DQ needs to go in here - now can just check if dqPlugin is NULL
 
     switch (msgType)
     {

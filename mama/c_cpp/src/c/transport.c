@@ -61,10 +61,6 @@ extern const char*  gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 #define PROP_NAME_DISABLE_DISCONNECT_CB     "disable_disconnect_callbacks"
 /* A value of 10 will be passed to wtable_create in subscription code */
 #define DEFAULT_GROUP_SIZE_HINT             100
-#define INITIAL_PLUGIN_ARRAY_SIZE 1
-#define PLUGIN_PROPERTY "mama.plugin.name_"
-#define PLUGIN_NAME "mamaplugin"
-#define MAX_PLUGIN_STRING 1024
 
 static void
 roundRobin (int         curTransportIndex,
@@ -131,10 +127,7 @@ typedef struct transportImpl_
     char                     mName[MAX_TPORT_NAME_LEN];
     mamaCmResponder          mCmResponder;
     char*                    mDescription;
-    mamaPluginImpl**         mPlugins;
-    int                      mPluginNo;
-    int                      mNumPlugins;
-    int                      mCurrentPluginSize;
+    mamaPluginImpl*          mDqPlugin;
     int                      mDeactivateSubscriptionOnError;
     mamaStatsCollector       mStatsCollector;
     mamaStat                 mRecapStat;
@@ -195,11 +188,12 @@ typedef struct transportImpl_
 static mama_status
 init (transportImpl* transport, int createResponder)
 {
-    int         isUsingDq;
-    const char* findplugin_name;  
-    char        dqplugin_name[256];
-    char        defaultplugin_name[256];
-    const char* middleware               = NULL;
+//    const char* findplugin_name;                  //STUTEST don't need any of this anymore
+//    char        dqplugin_name[256];
+//    char        defaultplugin_name[256];
+//    const char* middleware               = NULL;
+    //if the user provides a DQ plugin, dont load default
+///    int     skipDefault = 0;
 
     mama_status rval                     = MAMA_STATUS_OK;
     self->mListeners                     = list_create (sizeof (SubscriptionInfo));
@@ -227,7 +221,7 @@ init (transportImpl* transport, int createResponder)
     }
 
 
-
+#if 0 //STUTEST
     if(!self->mPlugins)
     {
         self->mPlugins = calloc (INITIAL_PLUGIN_ARRAY_SIZE, sizeof(mamaPluginImpl*));
@@ -240,32 +234,34 @@ init (transportImpl* transport, int createResponder)
     
     if(findplugin_name != NULL)
     {
+        printf("found new dq plugin, loading\n\n\n");
         self->mPlugins[self->mPluginNo] = mamaPlugin_findPlugin(findplugin_name);
     }
     
     if(self->mPlugins[self->mPluginNo] != NULL)
     {
         self->mPluginNo++;
+        skipDefault = 1;
     }
     else
     {
+        printf("custom dq not found \n\n\n");
         isUsingDq = mamaPlugin_isUsingDq();
 
-        if(isUsingDq)
+        if(isUsingDq && skipDefault == 0)
         {
+            printf("is using dq\n\n\n");
             //load mama default
             self->mPlugins[self->mPluginNo] = mamaPlugin_findPlugin("dqstrategy");
 
             if(self->mPlugins[self->mPluginNo] != NULL)
             {
+                printf("loaded dqstrategy default \n\n");
                self->mPluginNo++;
             }
         }
     }
-
-
-
-
+#endif
 
     return MAMA_STATUS_OK;
 }
@@ -343,135 +339,6 @@ mamaTransport_allocate (mamaTransport* result)
 
     return MAMA_STATUS_OK;
 }
-
-mamaPluginImpl*
-mamaTransportInternal_findPlugin (const char* name, transportImpl *impl)
-{
-    int plugin = 0;
-
-    for (plugin = 0; plugin < impl->mPluginNo; plugin++)
-    {
-        if (impl->mPlugins[plugin])
-        {
-            if ((strncmp(impl->mPlugins[plugin]->mPluginName, name, MAX_PLUGIN_STRING) == 0))
-            {
-                return impl->mPlugins[plugin];
-            }
-        }
-    }
-    return NULL;
-}
-
-mama_status
-mamaTransportInternal_loadPlugin(const char* pluginName, transportImpl *impl)
-{
-    LIB_HANDLE              pluginLib       = NULL;
-    mamaPluginImpl*         pluginImpl      = NULL;
-    mama_status             status          = MAMA_STATUS_OK;
-    mamaPluginInfo          pluginInfo      = NULL;
-    char                    loadPluginName  [MAX_PLUGIN_STRING];
-    mamaPluginImpl*         aPluginImpl     = NULL;
-
-    if (!impl)
-        return MAMA_STATUS_NULL_ARG;
-
-    pluginImpl = mamaTransportInternal_findPlugin(pluginName, impl);
-
-    /*
-     * Check to see if pluginImpl has already been loaded
-     */
-    if (pluginImpl == NULL)
-    {
-       /* The plugin name should be of the format mamaplugin<name> */
-            snprintf(loadPluginName, MAX_PLUGIN_STRING,
-                "%s%s",
-                PLUGIN_NAME,
-                pluginName);
-
-        pluginLib = openSharedLib (loadPluginName, NULL);
-
-        if (!pluginLib)
-        {
-
-           mama_log (MAMA_LOG_LEVEL_ERROR,
-                    "mama_loadPlugin(): "
-                    "Could not open plugin library [%s] [%s]",
-                    pluginName,
-                    getLibError());
-            return MAMA_STATUS_PLATFORM;
-        }
-
-        /* Create structure to hold plugin information */
-        aPluginImpl = (mamaPluginImpl*)calloc (1, sizeof(mamaPluginImpl));
-
-        status = mamaPlugin_registerFunctions (pluginLib,
-                                               pluginName,
-                                               pluginInfo,
-                                               aPluginImpl);
-
-        if (MAMA_STATUS_OK == status)
-        {
-            mama_log (MAMA_LOG_LEVEL_NORMAL,
-                     "mama_loadPlugin(): "
-                     "Sucessfully registered plugin functions for [%s]",
-                     pluginName);
-
-        }
-        else
-        {
-            mama_log (MAMA_LOG_LEVEL_WARN,
-                     "mama_loadPlugin(): "
-                     "Failed to register plugin functions for [%s]",
-                     pluginName);
-
-            closeSharedLib (aPluginImpl->mPluginHandle);
-
-            free ((char*)aPluginImpl->mPluginName);
-            free ((mamaPluginImpl*)aPluginImpl);
-
-            return status;
-        }
-
-        /* Invoke the init function */
-        status = aPluginImpl->mamaPluginInitHook (aPluginImpl->mPluginInfo);
-
-        if (MAMA_STATUS_OK == status)
-        {
-            mama_log (MAMA_LOG_LEVEL_NORMAL,
-                      "mama_loadPlugin(): Successfully run the init hook for mama plugin [%s]",
-                       aPluginImpl->mPluginName);
-        }
-        else
-        {
-            mama_log (MAMA_LOG_LEVEL_WARN,
-                      "mama_loadPlugin(): Init hook failed for mama plugin [%s]",
-                       aPluginImpl->mPluginName);
-
-            closeSharedLib (aPluginImpl->mPluginHandle);
-
-            free ((char*)aPluginImpl->mPluginName);
-            free ((mamaPluginImpl*)aPluginImpl);
-
-            return status;
-        }
-
-        /* Save off the plugin impl and increment the plugin counter */
-        impl->mPlugins[impl->mPluginNo] = aPluginImpl;
-        impl->mPluginNo++;
-
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_NORMAL,
-                 "mama_loadPlugin(): "
-                 "Plugin [%s] has already been loaded and initialised",
-                 pluginName);
-    }
-
-    return MAMA_STATUS_OK;
-
-}
-
 
 /**
  * Check property which determines whether to create a cmresponder object
@@ -2984,24 +2851,36 @@ mama_status mamaTransportImpl_setQuality(mamaTransport transport, mamaQuality qu
     return MAMA_STATUS_NULL_ARG;
 }
 
-mama_status mamaTransportImpl_getPlugins(mamaTransport transport, mamaPluginImpl*** result)
+mama_status mamaTransportImpl_setDqPlugin (mamaTransport transport, mamaPluginImpl* dqPlugin)
 {
-    if(transport != NULL)
+    if (NULL != transport)
     {
-      *result = self->mPlugins;
-      return MAMA_STATUS_OK;
+        self->mDqPlugin = dqPlugin;
+        return MAMA_STATUS_OK;   
     }
 
     return MAMA_STATUS_NULL_ARG;
 }
 
-mama_status mamaTransportImpl_getPluginNo(mamaTransport transport, int* result)
+mama_status mamaTransportImpl_getDqPlugin (mamaTransport transport, mamaPluginImpl** dqPlugin)
 {
-    if(transport != NULL)
+    if (NULL != transport)
     {
-        *result = self->mPluginNo;
+        *dqPlugin = self->mDqPlugin;
         return MAMA_STATUS_OK;
     }
-    
+
     return MAMA_STATUS_NULL_ARG;
 }
+
+mama_status mamaTransportImpl_getBridge (mamaTransport transport, mamaBridgeImpl** bridge)
+{
+    if (NULL != transport)
+    {
+        *bridge = self->mBridgeImpl;
+        return MAMA_STATUS_OK;
+    }
+
+    return MAMA_STATUS_NULL_ARG;
+}
+
