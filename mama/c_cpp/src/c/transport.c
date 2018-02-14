@@ -98,7 +98,7 @@ typedef struct transportImpl_
     uint32_t                 mWriteQueueLowWatermark;
     /* These members are only needed for the market data transport */
     wList                    mListeners;
-
+    int                      mDQDisabled;
     /* This list contains all of the publishers using the transport. */
     wList                    mPublishers;
 
@@ -194,7 +194,10 @@ init (transportImpl* transport, int createResponder)
 //    const char* middleware               = NULL;
     //if the user provides a DQ plugin, dont load default
 ///    int     skipDefault = 0;
-
+    char        searchName[256];
+    const char* searchResult;
+    int         dqDisabled               = 0;
+    const char* middleware               = NULL;
     mama_status rval                     = MAMA_STATUS_OK;
     self->mListeners                     = list_create (sizeof (SubscriptionInfo));
     self->mPublishers                    = list_create (sizeof (mamaPublisher));
@@ -208,6 +211,8 @@ init (transportImpl* transport, int createResponder)
     self->mFTStratScheme                 = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
     self->mClosure                       = NULL;
 
+    middleware = self->mBridgeImpl->bridgeGetName ();
+
     mama_log (MAMA_LOG_LEVEL_FINEST,
              "%screating CmResponder for transport [%s]",
               createResponder ? "" : "Not ", self->mName ? self->mName : "");
@@ -220,7 +225,20 @@ init (transportImpl* transport, int createResponder)
           if (rval != MAMA_STATUS_OK) return rval;
     }
 
+    snprintf(searchName, sizeof(searchName), "mama.%s.dq.disabled", middleware);
 
+    dqDisabled = strtobool(mama_getProperty(searchName));
+
+    if(!dqDisabled)
+    {
+        snprintf(searchName, sizeof(searchName), "mama.%s.transport.%s.dq.disabled", middleware, self->mName);
+        dqDisabled = strtobool(mama_getProperty(searchName));
+    }
+
+    if(dqDisabled)
+    {
+        self->mDQDisabled = 1;
+    }
 #if 0 //STUTEST
     if(!self->mPlugins)
     {
@@ -2883,4 +2901,13 @@ mama_status mamaTransportImpl_getBridge (mamaTransport transport, mamaBridgeImpl
 
     return MAMA_STATUS_NULL_ARG;
 }
-
+mama_status mamaTransportImpl_getDQDisabled(mamaTransport transport, int* result)
+{
+    if(transport != NULL)
+    {
+        *result = self->mDQDisabled;
+        return MAMA_STATUS_OK;
+    }
+    
+    return MAMA_STATUS_NULL_ARG;
+}

@@ -1217,12 +1217,14 @@ void
 mamaSubscription_stopWaitForResponse (mamaSubscription subscription,
                                       SubjectContext* ctx)
 {
-    imageRequest_stopWaitForResponse (self->mInitialRequest);
-    if(self->mInitialRequest == NULL)
-        printf("everybody shout FUCK \n\n\n\n\n");
-    if(ctx->mDqContext.mRecapRequest == NULL)
-        printf("everybody shout FUCK2 \n\n\n\n\n");
-    imageRequest_stopWaitForResponse (ctx->mDqContext.mRecapRequest);
+    if(self->mInitialRequest != NULL)
+    {
+        imageRequest_stopWaitForResponse (self->mInitialRequest);
+    }
+    if(ctx->mDqContext.mRecapRequest != NULL)
+    {
+        imageRequest_stopWaitForResponse (ctx->mDqContext.mRecapRequest);
+    }
 }
 
 int

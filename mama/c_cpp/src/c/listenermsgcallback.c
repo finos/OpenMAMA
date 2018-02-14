@@ -156,7 +156,8 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     mamaStatsCollector tportStatsCollector  = NULL;
     const char*        userSymbol           = NULL;
 	dqState            state                = DQ_STATE_NOT_ESTABLISHED;
-
+    int                isDQDisabled         = 0;
+    mamaTransportImpl_getDQDisabled(transport, &isDQDisabled);
     mamaSubscription_getTransport (subscription, &transport);
 
     if (!ctx)
@@ -375,21 +376,23 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
              default : break;
         }
         
-//    mamaTransportImpl_getPluginNo(transport, &pluginArrayNo); //STUTEST
-
-//    if(pluginArrayNo > 0)
-//    {
     mamaPlugin_fireSubscriptionPreMsgHook(subscription, msgType, msg);
-  //  }
- //   else
- //   {
-  //      mamaSubscription_forwardMsg(subscription, msg);
- //   }
- //
-    //STUTEST - Aaron fix for forward if !DQ needs to go in here - now can just check if dqPlugin is NULL
 
     switch (msgType)
     {
+        case MAMA_MSG_TYPE_INITIAL:
+        case MAMA_MSG_TYPE_RECAP:
+        case MAMA_MSG_TYPE_SNAPSHOT:
+        case  MAMA_MSG_TYPE_DDICT_SNAPSHOT:
+        case MAMA_MSG_TYPE_BOOK_INITIAL:
+        case MAMA_MSG_TYPE_BOOK_SNAPSHOT:
+        case MAMA_MSG_TYPE_BOOK_RECAP:
+            if(isDQDisabled)
+            {
+               mamaSubscription_stopWaitForResponse (subscription, ctx);
+               mamaSubscription_forwardMsg(subscription, msg);
+            }
+            break;
         case MAMA_MSG_TYPE_REFRESH:
             mamaSubscription_respondToRefreshMessage(subscription);
             break;
@@ -425,6 +428,13 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                             userSymbolFormatted, ctxSymbolFormatted,
                             msgType, mamaMsg_toString(msg), ctx);
             break;
+        default:
+            if(!isDQDisabled)
+            {
+                mamaSubscription_forwardMsg(subscription, msg);
+            }
+            break;
+
     }
 }
 

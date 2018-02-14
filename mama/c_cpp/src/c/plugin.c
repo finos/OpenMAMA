@@ -197,9 +197,9 @@ mama_initPlugins(void)
     mama_log (MAMA_LOG_LEVEL_FINE, "mama_initPlugins(): Initialising mamacenterprise");
     mama_loadPlugin ("mamacenterprise");
 #endif /* WITH_ENTERPRISE */
-
-    //STUTEST still load dq plugin??
     
+    mama_loadPlugin("dqstrategy");
+
     return MAMA_STATUS_OK;
 }
 

@@ -93,20 +93,21 @@ MAMAExpDLL
 mama_status
 mamaTransportImpl_getRefreshTransport(mamaTransport transport, refreshTransport *rTransport);
 
-//STUTEST
 MAMAExpDLL
 mama_status
 mamaTransportImpl_setDqPlugin (mamaTransport transport, mamaPluginImpl* dqPlugin);
 
-//STUTEST
 MAMAExpDLL
 mama_status
 mamaTransportImpl_getDqPlugin (mamaTransport transport, mamaPluginImpl** dqPlugin);
 
-//STUTEST
 MAMAExpDLL
 mama_status
 mamaTransportImpl_getBridge (mamaTransport transport, mamaBridgeImpl** bridge);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_getDQDisabled(mamaTransport transport, int* result);
 
 #if defined(__cplusplus)
 }

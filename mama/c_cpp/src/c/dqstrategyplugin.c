@@ -245,7 +245,6 @@ dqstrategyMamaPlugin_initHook (mamaPluginInfo* pluginInfo)
     pluginImpl = mamaPlugin_findPlugin (DQSTRATEGY_PLUGIN_NAME);
     if (!pluginImpl)
     {
-        //STUTEST error log 
         return MAMA_STATUS_NOT_FOUND;
     }
 
@@ -264,12 +263,12 @@ dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTra
     const char*     pluginName = NULL;
     mamaBridgeImpl* bridgeImpl = NULL;
     char            propName[256];
+    int             dqDisabled = 0;
+    
+    mamaTransportImpl_getDQDisabled(transport, &dqDisabled);
     printf("transport post hook called\n\n\n");
 
-    //STUTEST
     mamaPluginImpl* pluginImpl = (mamaPluginImpl*)pluginInfo;
-
-//    mamaTransport_getDqPlugin (transport, &plugin); //STUTEST actually wait, do we want to do this for this hook?
 
     mamaTransportImpl_getBridge (transport, &bridgeImpl);
     middleware = bridgeImpl->bridgeGetName ();
@@ -280,18 +279,10 @@ dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTra
     snprintf(propName, sizeof (propName), "mama.%s.transport.%s.%s", middleware, tportName, DQ_PLUGIN_PROPERTY);
     pluginName = mama_getProperty(propName);
     
-//    if(pluginName != NULL)
-//    {
-//        printf("found new dq plugin, loading\n\n\n");
-//        pluginImpl = mamaPlugin_findPlugin (pluginName);
-        //STUTEST error check
-//        mamaTransportImpl_setDqPlugin (transport, pluginImpl);
-//    }
-//
-    
-    if (!pluginName)    //STUTEST ALSO if pluginName = dqStrategy and !dq_disabled... in otherwords, use this default plugin if a) dq is enabled b) it hasn't been overridden and also c) allow them to explicitly set this as the DQ plugin if they wanna
+    if (!dqDisabled && (strcmp(pluginName , "dqstrategy") == 0 || !pluginName))
     {
-        mamaTransportImpl_setDqPlugin (transport, pluginImpl);
+       mamaTransportImpl_setDqPlugin (transport, pluginImpl);
+
     }
     
     mama_status status = MAMA_STATUS_OK;
