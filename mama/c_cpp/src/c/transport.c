@@ -61,7 +61,7 @@ extern const char*  gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 #define PROP_NAME_DISABLE_DISCONNECT_CB     "disable_disconnect_callbacks"
 /* A value of 10 will be passed to wtable_create in subscription code */
 #define DEFAULT_GROUP_SIZE_HINT             100
-#define DQ_DISABLED                         "dq_enabled"
+#define DQ_ENABLED_PROP                     "dq_enabled"
 static void
 roundRobin (int         curTransportIndex,
             int         numTransports,
@@ -219,13 +219,13 @@ init (transportImpl* transport, int createResponder)
           if (rval != MAMA_STATUS_OK) return rval;
     }
 
-    snprintf(searchName, sizeof(searchName), "mama.%s.dq.enabled", middleware);
+    snprintf(searchName, sizeof(searchName), "mama.%s.%s", middleware, DQ_ENABLED_PROP);
 
     dqEnabled = strtobool(mama_getProperty(searchName));
 
     if(dqEnabled)
     {
-        snprintf(searchName, sizeof(searchName), "mama.%s.transport.%s.dq.enabled", middleware, self->mName);
+        snprintf(searchName, sizeof(searchName), "mama.%s.transport.%s.%s", middleware, self->mName, DQ_ENABLED_PROP);
         dqEnabled = strtobool(mama_getProperty(searchName));
     }
 
