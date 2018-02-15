@@ -1924,7 +1924,55 @@ mamaTransportImpl_preRecapCacheEnabled (mamaTransport transport)
     return 0;
 }
 
+/* Process an advisory message and invokes callbacks
+ *                    on all listeners.
+ * @param transport The transport.
+ * @param cause Cause for the advisory.
+ * @param platformInfo Additional bridge specific information that will
+ *                     be passed to all listeners.
+ */
+void
+mamaTransportImpl_processAdvisory (mamaTransport transport,
+                                   short         cause,
+                                   const void*   platformInfo)
+{
+    if (!self)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                "mamaTransportImpl_processAdvisory (): Could not process.");
+        return;
+    }
 
+    /* Save the platforminfo and the cause in member variables, this avoids
+     * having to pass them around iterators when invoking callback functions
+     * on the listeners.
+     */
+    self->mCause        = cause;
+    self->mPlatformInfo = (void*)platformInfo;
+
+    if (self->mSetPossiblyStaleForAll)
+    {
+        mamaTransportImpl_setPossiblyStaleForListeners (transport);
+        if ( self->mRefreshTransport )
+            refreshTransport_startStaleRecapTimer (self->mRefreshTransport );
+    }
+
+    self->mQuality = MAMA_QUALITY_MAYBE_STALE;
+
+    if (self->mTportCb != NULL)
+    {
+        self->mTportCb (transport, MAMA_TRANSPORT_QUALITY,
+                        self->mCause, self->mPlatformInfo,
+                        self->mTportClosure);
+    }
+    
+    mamaPlugin_fireTransportEventHook (transport, 1, MAMA_TRANSPORT_QUALITY);
+
+    /* Clear the platforminfo and cause, these should not be used after this
+     * point. */
+    self->mCause        = 0;
+    self->mPlatformInfo = NULL;
+}
 struct topicsForSourceClosure
 {
     int curIdx;

@@ -293,24 +293,26 @@ dqstrategyMamaPlugin_transportEventHook(mamaPluginInfo pluginInfo, mamaTransport
     {
         return MAMA_STATUS_OK;
     }
-    
-    if (setStale)
-    {
-        mamaTransportImpl_setQuality(transport, MAMA_QUALITY_MAYBE_STALE);
-        return MAMA_STATUS_OK;
-    }
-    else
-    {
-        mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
+   
 
-        if (possiblyStaleForAll)
-        {
-            mamaTransportImpl_setPossiblyStaleForListeners (transport);
-        }
+    switch (tportEvent)
+    {
+        case MAMA_TRANSPORT_DISCONNECT:
+            if (setStale)
+            {
+                mamaTransportImpl_setQuality(transport, MAMA_QUALITY_MAYBE_STALE);
+                mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
 
-        mamaTransportImpl_setQuality(transport, MAMA_QUALITY_MAYBE_STALE);
-        return MAMA_STATUS_OK;
-    }
+                if (possiblyStaleForAll)
+                {
+                    mamaTransportImpl_setPossiblyStaleForListeners (transport);
+                }
+
+                mamaTransportImpl_setQuality(transport, MAMA_QUALITY_MAYBE_STALE);
+
+                return MAMA_STATUS_OK;
+            }
+      }
 }
 
 mama_status
