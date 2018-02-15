@@ -280,7 +280,7 @@ mama_loadPlugin (const char* pluginName)
             return status;
         }
 
-        /* Invoke the init function */  //STUTEST this fixes a bug, function signature is pluginInfo*
+        /* Invoke the init function */
         status = aPluginImpl->mamaPluginInitHook (&aPluginImpl->mPluginInfo);
 
         if (MAMA_STATUS_OK == status)
@@ -325,7 +325,6 @@ mama_shutdownPlugins (void)
     mama_status      status           = MAMA_STATUS_OK;
     int              plugin           = 0;
     int              ret              = 0;
-    mamaPluginImpl** transportPlugins = NULL;
     int              tPluginNo        = 0;
 
     for (plugin = 0; plugin < gPluginNo; plugin++)
@@ -373,7 +372,6 @@ mamaPlugin_firePublisherPreSendHook (mamaPublisher publisher, mamaMsg message)
 {
     mama_status      status           = MAMA_STATUS_OK;
     int              plugin           = 0;
-    mamaPluginImpl** transportPlugins = NULL;
     int              tPluginNo        = 0;
 
     for (plugin = 0; plugin < gPluginNo; plugin++)
@@ -396,12 +394,11 @@ mamaPlugin_firePublisherPreSendHook (mamaPublisher publisher, mamaMsg message)
     return status;
 }
 
-mama_status                     //STUTEST
+mama_status
 mamaPlugin_fireTransportPostCreateHook (mamaTransport transport)
 {
     mama_status      status           = MAMA_STATUS_OK;
     int              plugin           = 0;
-    mamaPluginImpl** transportPlugins = NULL;
     int              tPluginNo        = 0;
 
     for (plugin = 0; plugin < gPluginNo; plugin++)
@@ -451,13 +448,11 @@ mamaPlugin_fireShutdownHook (void)
     return status;
 }
 
-mama_status                 //STUTEST
+mama_status
 mamaPlugin_fireSubscriptionPostCreateHook (mamaSubscription subscription)
 { 
     mama_status      status           = MAMA_STATUS_OK;
     int              plugin           = 0;
-    mamaTransport    transport        = NULL;
-    mamaPluginImpl** transportPlugins = NULL;
     int              tPluginNo        = 0;
     for (plugin = 0; plugin < gPluginNo; plugin++)
     {
@@ -480,7 +475,7 @@ mamaPlugin_fireSubscriptionPostCreateHook (mamaSubscription subscription)
     return status;
 }
 
-mama_status             //STUTEST
+mama_status
 mamaPlugin_fireSubscriptionPreMsgHook (mamaSubscription subscription, int msgType, mamaMsg msg)
 {
 
@@ -489,7 +484,6 @@ mamaPlugin_fireSubscriptionPreMsgHook (mamaSubscription subscription, int msgTyp
     mama_status  status = MAMA_STATUS_OK;
     int          plugin = 0;
     mamaTransport    transport        = NULL;
-    mamaPluginImpl** transportPlugins = NULL;
     int              tPluginNo        = 0;
 
     for (plugin = 0; plugin < gPluginNo; plugin++)
@@ -513,12 +507,11 @@ mamaPlugin_fireSubscriptionPreMsgHook (mamaSubscription subscription, int msgTyp
     return status;
 }
 
-mama_status //STUTEST
+mama_status
 mamaPlugin_fireTransportEventHook(mamaTransport transport, int setStale, mamaTransportEvent tportEvent)
 {
     mama_status  status = MAMA_STATUS_OK;
     int          plugin = 0;
-    mamaPluginImpl** transportPlugins = NULL;
     int              tPluginNo        = 0;
 
     for (plugin = 0; plugin < gPluginNo; plugin++)

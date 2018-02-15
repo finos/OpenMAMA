@@ -21,7 +21,6 @@
 
 #ifndef PluginH__
 #define PluginH__
-#include "dqstrategyplugin.h"
 
 /**
  * @brief Containers used within the mama plugin

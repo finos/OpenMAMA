@@ -22,7 +22,6 @@
 #ifndef DqStrategyH__
 #define DqStrategyH__
 #include "imagerequest.h"
-#include "mama/msg.h"
 #ifndef OPENMAMA_INTEGRATION
 #define OPENMAMA_INTEGRATION
 #endif

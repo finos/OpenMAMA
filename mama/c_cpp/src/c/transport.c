@@ -98,7 +98,7 @@ typedef struct transportImpl_
     uint32_t                 mWriteQueueLowWatermark;
     /* These members are only needed for the market data transport */
     wList                    mListeners;
-    int                      mDQDisabled;
+    int                      mDqDisabled;
     /* This list contains all of the publishers using the transport. */
     wList                    mPublishers;
 
@@ -127,7 +127,7 @@ typedef struct transportImpl_
     char                     mName[MAX_TPORT_NAME_LEN];
     mamaCmResponder          mCmResponder;
     char*                    mDescription;
-    mamaPluginImpl*          mDqPlugin;
+    mamaPluginInfo           mDqPluginInfo;
     int                      mDeactivateSubscriptionOnError;
     mamaStatsCollector       mStatsCollector;
     mamaStat                 mRecapStat;
@@ -188,12 +188,6 @@ typedef struct transportImpl_
 static mama_status
 init (transportImpl* transport, int createResponder)
 {
-//    const char* findplugin_name;                  //STUTEST don't need any of this anymore
-//    char        dqplugin_name[256];
-//    char        defaultplugin_name[256];
-//    const char* middleware               = NULL;
-    //if the user provides a DQ plugin, dont load default
-///    int     skipDefault = 0;
     char        searchName[256];
     const char* searchResult;
     int         dqDisabled               = 0;
@@ -237,50 +231,9 @@ init (transportImpl* transport, int createResponder)
 
     if(dqDisabled)
     {
-        self->mDQDisabled = 1;
-    }
-#if 0 //STUTEST
-    if(!self->mPlugins)
-    {
-        self->mPlugins = calloc (INITIAL_PLUGIN_ARRAY_SIZE, sizeof(mamaPluginImpl*));
-    }
-    middleware = self->mBridgeImpl->bridgeGetName ();
-
-    //e.g.mama.wmw.transport.tcp_sub.mama.plugin.name_=dqpluginexample 
-    snprintf(dqplugin_name, sizeof(dqplugin_name), "mama.%s.transport.%s.%s", middleware, self->mName, PLUGIN_PROPERTY);
-    findplugin_name = mama_getProperty(dqplugin_name);
-    
-    if(findplugin_name != NULL)
-    {
-        printf("found new dq plugin, loading\n\n\n");
-        self->mPlugins[self->mPluginNo] = mamaPlugin_findPlugin(findplugin_name);
+        self->mDqDisabled = 1;
     }
     
-    if(self->mPlugins[self->mPluginNo] != NULL)
-    {
-        self->mPluginNo++;
-        skipDefault = 1;
-    }
-    else
-    {
-        printf("custom dq not found \n\n\n");
-        isUsingDq = mamaPlugin_isUsingDq();
-
-        if(isUsingDq && skipDefault == 0)
-        {
-            printf("is using dq\n\n\n");
-            //load mama default
-            self->mPlugins[self->mPluginNo] = mamaPlugin_findPlugin("dqstrategy");
-
-            if(self->mPlugins[self->mPluginNo] != NULL)
-            {
-                printf("loaded dqstrategy default \n\n");
-               self->mPluginNo++;
-            }
-        }
-    }
-#endif
-
     return MAMA_STATUS_OK;
 }
 
@@ -626,7 +579,7 @@ static void setDeactivateOnError (mamaTransport transport)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "Setting %s=%s",
                   propNameBuf, propValue);
-        self->mDeactivateSubscriptionOnError = strtod (propValue, NULL);
+        self->mDeactivateSubscriptionOnError = (int) strtod (propValue, NULL);
     }
     else
         self->mDeactivateSubscriptionOnError = 1;
@@ -664,7 +617,7 @@ static void setGroupSizeHint (mamaTransport transport, const char* middleware)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "Setting %s=%s",
                   propNameBuf, propValue);
-        self->mGroupSizeHint = strtod (propValue, NULL);
+        self->mGroupSizeHint = (int)  strtod (propValue, NULL);
     }
     else
         self->mGroupSizeHint = DEFAULT_GROUP_SIZE_HINT;
@@ -701,7 +654,6 @@ mamaTransport_create (mamaTransport transport,
     if (!transport) return MAMA_STATUS_NULL_ARG;
     if (!bridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
 
-    mamaPlugin_fireTransportPostCreateHook(transport);
 
     mama_log(MAMA_LOG_LEVEL_FINER, "Entering mamaTransport_create for transport (%p) with name %s", transport, name);
 
@@ -985,7 +937,7 @@ mamaTransport_create (mamaTransport transport,
         propValue = properties_Get (mamaInternal_getProperties (), propNameBuf);
         if (NULL != propValue)
         {
-            mama_log(MAMA_LOG_LEVEL_FINE, 
+            mama_log(MAMA_LOG_LEVEL_FINE,
                      "mamaTransport_create(): got property: %s = %s",
                      propNameBuf,
                      propValue);
@@ -993,7 +945,7 @@ mamaTransport_create (mamaTransport transport,
         }
         else
         {
-            mama_log(MAMA_LOG_LEVEL_WARN, 
+            mama_log(MAMA_LOG_LEVEL_WARN,
                      "mamaTransport_create(): No entitlement bridge specified for transport %s. Defaulting to %s.",
                      self->mName,
                      gEntitlementBridges[0]);
@@ -1003,16 +955,18 @@ mamaTransport_create (mamaTransport transport,
         status = mamaInternal_getEntitlementBridgeByName(&self->mEntitlementBridge, entBridgeName);
         if (MAMA_STATUS_OK != status)
         {
-            mama_log(MAMA_LOG_LEVEL_ERROR, 
+            mama_log(MAMA_LOG_LEVEL_ERROR,
                      "mamaTransport_create(): Could not set entitlement bridge for transport %s.",
                      self->mName);
             return MAMA_STATUS_NO_BRIDGE_IMPL;
         }
-        mama_log(MAMA_LOG_LEVEL_FINE, 
+        mama_log(MAMA_LOG_LEVEL_FINE,
                  "mamaTransport_create(): Entitlement bridge set to %s [%s].",
                  entBridgeName,
                  self->mName);
     }
+
+    mamaPlugin_fireTransportPostCreateHook(transport);
 
     return MAMA_STATUS_OK;
 }
@@ -1747,7 +1701,7 @@ mamaTransport_addSubscription (mamaTransport    transport,
     if (self->mRefreshTransport)
         refreshTransport_addSubscription (self->mRefreshTransport, handle);
     else
-        list_push_back (self->mListeners, handle);    
+        list_push_back (self->mListeners, handle);
 
     return MAMA_STATUS_OK;
 }
@@ -2035,7 +1989,7 @@ mamaTransportImpl_getTopicsAndTypesForSource (mamaTransport transport,
     if (self->mRefreshTransport)
         size = refreshTransport_numListeners (self->mRefreshTransport);
     else
-        size = list_size (self->mListeners); 
+        size = list_size (self->mListeners);
 
     closure.topics =
         (const char**) calloc (sizeof (char*), size);
@@ -2715,7 +2669,7 @@ mamaTransport_setClosure (mamaTransport transport, void* closure)
 mama_status
 mamaTransport_getClosure (mamaTransport transport, void** closure)
 {
-    if ((!self) || (!closure)) 
+    if ((!self) || (!closure))
         return MAMA_STATUS_NULL_ARG;
 
     *closure = self->mClosure;
@@ -2764,7 +2718,12 @@ void mamaTransportImpl_clearTransportWithListeners (transportImpl* impl)
     /* Otherwise iterate the local list of subscriptions. */
     else
     {
-        list_for_each (impl->mListeners, mamaTransportImpl_clearTransportCallback, NULL);
+        if (impl->mListeners != NULL)
+        {
+            list_for_each (impl->mListeners,
+                           mamaTransportImpl_clearTransportCallback,
+                           NULL);
+        }
     }
 }
 
@@ -2869,45 +2828,36 @@ mama_status mamaTransportImpl_setQuality(mamaTransport transport, mamaQuality qu
     return MAMA_STATUS_NULL_ARG;
 }
 
-mama_status mamaTransportImpl_setDqPlugin (mamaTransport transport, mamaPluginImpl* dqPlugin)
+mama_status mamaTransportImpl_getDqDisabled(mamaTransport transport, int* result)
+{
+    if(transport != NULL && result != NULL)
+    {
+        *result = self->mDqDisabled;
+        return MAMA_STATUS_OK;
+    }
+    
+    return MAMA_STATUS_NULL_ARG;
+}
+
+mama_status mamaTransportImpl_setDqPluginInfo (mamaTransport transport, mamaPluginInfo  pluginInfo)
 {
     if (NULL != transport)
     {
-        self->mDqPlugin = dqPlugin;
+        self->mDqPluginInfo = pluginInfo;
         return MAMA_STATUS_OK;   
     }
 
     return MAMA_STATUS_NULL_ARG;
 }
 
-mama_status mamaTransportImpl_getDqPlugin (mamaTransport transport, mamaPluginImpl** dqPlugin)
+mama_status mamaTransportImpl_getDqPluginInfo (mamaTransport transport, mamaPluginInfo* pluginInfo)
 {
     if (NULL != transport)
     {
-        *dqPlugin = self->mDqPlugin;
+        *pluginInfo = self->mDqPluginInfo;
         return MAMA_STATUS_OK;
     }
 
     return MAMA_STATUS_NULL_ARG;
 }
 
-mama_status mamaTransportImpl_getBridge (mamaTransport transport, mamaBridgeImpl** bridge)
-{
-    if (NULL != transport)
-    {
-        *bridge = self->mBridgeImpl;
-        return MAMA_STATUS_OK;
-    }
-
-    return MAMA_STATUS_NULL_ARG;
-}
-mama_status mamaTransportImpl_getDQDisabled(mamaTransport transport, int* result)
-{
-    if(transport != NULL)
-    {
-        *result = self->mDQDisabled;
-        return MAMA_STATUS_OK;
-    }
-    
-    return MAMA_STATUS_NULL_ARG;
-}

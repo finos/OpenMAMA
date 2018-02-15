@@ -157,8 +157,9 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     const char*        userSymbol           = NULL;
 	dqState            state                = DQ_STATE_NOT_ESTABLISHED;
     int                isDQDisabled         = 0;
-    mamaTransportImpl_getDQDisabled(transport, &isDQDisabled);
+    
     mamaSubscription_getTransport (subscription, &transport);
+    mamaTransportImpl_getDqDisabled(transport, &isDQDisabled);
 
     if (!ctx)
     {
@@ -429,7 +430,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                             msgType, mamaMsg_toString(msg), ctx);
             break;
         default:
-            if(!isDQDisabled)
+            if(isDQDisabled)
             {
                 mamaSubscription_forwardMsg(subscription, msg);
             }

@@ -294,15 +294,25 @@ mama_status dqStrategyImpl_detachMsg (mamaDqContext* ctx, mamaMsg msg)
 MAMAExpDLL
 mama_status dqStrategy_setRecoverGaps(dqStrategy strategy, int newValue)
 {
-    self->mRecoverGaps = newValue;
-    return MAMA_STATUS_OK;
+    if (NULL != strategy)
+    {
+        self->mRecoverGaps = newValue;
+        return MAMA_STATUS_OK;
+    }
+
+    return MAMA_STATUS_NULL_ARG;
 }
 
 MAMAExpDLL
 mama_status dqStrategy_getRecoverGaps(dqStrategy strategy, int *result)
 {
-    *result = self->mRecoverGaps;
-    return MAMA_STATUS_OK;
+    if (NULL != strategy)
+    {
+        *result = self->mRecoverGaps;
+        return MAMA_STATUS_OK;
+    }
+
+    return MAMA_STATUS_NULL_ARG;
 }
 
 mama_status

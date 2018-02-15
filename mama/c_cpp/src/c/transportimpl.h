@@ -103,11 +103,15 @@ mamaTransportImpl_getDqPlugin (mamaTransport transport, mamaPluginImpl** dqPlugi
 
 MAMAExpDLL
 mama_status
-mamaTransportImpl_getBridge (mamaTransport transport, mamaBridgeImpl** bridge);
+mamaTransportImpl_getDqDisabled(mamaTransport transport, int* result);
 
 MAMAExpDLL
 mama_status
-mamaTransportImpl_getDQDisabled(mamaTransport transport, int* result);
+mamaTransportImpl_setDqPluginInfo (mamaTransport transport, mamaPluginInfo pluginInfo);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_getDqPluginInfo (mamaTransport transport, mamaPluginInfo* pluginInfo);
 
 #if defined(__cplusplus)
 }

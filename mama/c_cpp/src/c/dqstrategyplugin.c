@@ -33,9 +33,11 @@
 #define strategyImpl ((dqStrategyImpl*)(strategy))
 #define DQSTRATEGY_PLUGIN_NAME "dqstrategy"
 
-static int handleEvent (mamaPluginInfo pluginInfo, mamaTransport transport);
+static int 
+handleEvent (mamaPluginInfo pluginInfo, mamaTransport transport);
 
-static int isInitialMessageOrRecap(int msgType);
+static int 
+isInitialMessageOrRecap(int msgType);
 
 static int
 fillGap (mamaDqContext *ctx,
@@ -43,10 +45,10 @@ fillGap (mamaDqContext *ctx,
                    mamaSubscription subscription);
 
 static mama_status
-checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx);
+checkSeqNum (dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx);
 
 static mama_status
-applyPreInitialCache(mamaDqContext *ctx, mamaSubscription subscription);
+applyPreInitialCache (mamaDqContext *ctx, mamaSubscription subscription);
 
 static void
 resetDqContext (mamaDqContext* ctx, mama_seqnum_t seqNum,
@@ -239,16 +241,7 @@ static void processPointToPointMessage (mamaMsg         msg,
 mama_status
 dqstrategyMamaPlugin_initHook (mamaPluginInfo* pluginInfo)
 {
-    mamaPluginImpl* pluginImpl = NULL;
-    printf("init hook called\n\n\n");
-
-    pluginImpl = mamaPlugin_findPlugin (DQSTRATEGY_PLUGIN_NAME);
-    if (!pluginImpl)
-    {
-        return MAMA_STATUS_NOT_FOUND;
-    }
-
-    *pluginInfo = pluginImpl;
+    *pluginInfo = calloc (1, sizeof (mamaPluginInfo));
 
     mama_status status = MAMA_STATUS_OK;
 
@@ -262,29 +255,30 @@ dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTra
     const char*     tportName  = NULL;
     const char*     pluginName = NULL;
     mamaBridgeImpl* bridgeImpl = NULL;
-    char            propName[256];
     int             dqDisabled = 0;
-    
-    mamaTransportImpl_getDQDisabled(transport, &dqDisabled);
-    printf("transport post hook called\n\n\n");
+    mamaPluginImpl* pluginImpl;
+    char            propName[256];
 
-    mamaPluginImpl* pluginImpl = (mamaPluginImpl*)pluginInfo;
+    mamaTransportImpl_getDqDisabled(transport, &dqDisabled);
 
-    mamaTransportImpl_getBridge (transport, &bridgeImpl);
+    pluginImpl = (mamaPluginImpl*)pluginInfo;
+
+    bridgeImpl = mamaTransportImpl_getBridgeImpl (transport);
     middleware = bridgeImpl->bridgeGetName ();
     
     mamaTransport_getName (transport, &tportName);
 
-    //e.g.mama.wmw.transport.tcp_sub.mama.plugin.name_=dqpluginexample
     snprintf(propName, sizeof (propName), "mama.%s.transport.%s.%s", middleware, tportName, DQ_PLUGIN_PROPERTY);
     pluginName = mama_getProperty(propName);
-    
-    if (!dqDisabled && (strcmp(pluginName , "dqstrategy") == 0 || !pluginName))
+    //Load the default DQ plugin if no other DQ plugin is specified, but also allow it to be explicitly specified
+    if (!dqDisabled)
     {
-       mamaTransportImpl_setDqPlugin (transport, pluginImpl);
-
+        if(!pluginName || (0 == strcmp(pluginName , "dqstrategy")))
+        {
+            mamaTransportImpl_setDqPluginInfo (transport, pluginInfo);
+        }
     }
-    
+
     mama_status status = MAMA_STATUS_OK;
 
     return status;
@@ -293,7 +287,6 @@ dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTra
 mama_status
 dqstrategyMamaPlugin_transportEventHook(mamaPluginInfo pluginInfo, mamaTransport transport, int setStale, mamaTransportEvent tportEvent)
 {
-    printf("transport event hook called\n\n\n");
     int possiblyStaleForAll;
 
     if (!(handleEvent (pluginInfo, transport)))
@@ -325,7 +318,6 @@ dqstrategyMamaPlugin_subscriptionPostCreateHook (mamaPluginInfo pluginInfo, mama
 {
     mamaTransport   transport = NULL;
     dqStrategyImpl* strategy  = NULL;
-    printf("subscription post hook called\n\n\n");
 
     mamaSubscription_getTransport (subscription, &transport);
 
@@ -350,7 +342,6 @@ dqstrategyMamaPlugin_subscriptionPostCreateHook (mamaPluginInfo pluginInfo, mama
 mama_status
 dqstrategyMamaPlugin_subscriptionPreMsgHook(mamaPluginInfo pluginInfo, mamaSubscription subscription, int msgType, mamaMsg msg)
 {
-    printf("subscription pre hook called\n\n\n");
     mamaDqContext   *ctx             = mamaSubscription_getDqContext(subscription);
     SubjectContext* subjectContext   = mamaSubscription_getSubjectContext(subscription, msg);
     dqStrategy      strategy         = mamaSubscription_getDqStrategy(subscription);
@@ -832,7 +823,7 @@ checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx)
 mama_status
 dqstrategyMamaPlugin_shutdownHook (mamaPluginInfo pluginInfo)
 {
-    printf("shutdown hook called\n\n\n");
+    free(pluginInfo);
     mama_status status = MAMA_STATUS_OK;
 
     return status;
@@ -902,7 +893,8 @@ fillGap (mamaDqContext *ctx, mama_seqnum_t end, mamaSubscription subscription)
     return 0;
 }
 
-static int isInitialMessageOrRecap (int msgType)
+static int 
+isInitialMessageOrRecap (int msgType)
 {
     return msgType == MAMA_MSG_TYPE_INITIAL        ||
            msgType == MAMA_MSG_TYPE_SNAPSHOT       ||
@@ -913,12 +905,13 @@ static int isInitialMessageOrRecap (int msgType)
            msgType == MAMA_MSG_TYPE_BOOK_RECAP;
 }
 
-static int handleEvent (mamaPluginInfo pluginInfo, mamaTransport transport)
+static int 
+handleEvent (mamaPluginInfo pluginInfo, mamaTransport transport)
 {
-    mamaPluginImpl* pluginImpl = NULL;
+    mamaPluginInfo dqPluginInfo = NULL;
 
-    mamaTransportImpl_getDqPlugin (transport, &pluginImpl);
-    if (pluginImpl != (mamaPluginImpl*)pluginInfo)
+    mamaTransportImpl_getDqPluginInfo (transport, &dqPluginInfo);
+    if (dqPluginInfo != pluginInfo)
     {
         return 0;
     }

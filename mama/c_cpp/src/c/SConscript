@@ -263,8 +263,7 @@ for s in libdq_sources:
     shared_objects.append(shared_obj)
 
 lib = []
-lib.append(env.SharedLibrary('.libs/libdqstrategyplguin', shared_objects))
-lib.append(env.StaticLibrary('.libs/libdqstrategyplugin', [StaticLibs['libdqstrategyplugin'], StaticLibs['libwombatcommon'] ]))
+lib.append(env.SharedLibrary('.libs/libmamaplugindqstrategy', shared_objects))
 
 Alias('install', env.Install('$libdir', lib))
 Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))

@@ -30,10 +30,10 @@ extern "C" {
 
 typedef struct SubscriptionInfo_
 {
-    mamaSubscription mSubscription;
-
-    time_t mNextRefreshTime;
-    int    mIsInMainList;
+   mamaSubscription mSubscription;
+   
+   time_t mNextRefreshTime;
+   int    mIsInMainList;
 } SubscriptionInfo;
 
 typedef struct refreshTransportImpl_* refreshTransport;
