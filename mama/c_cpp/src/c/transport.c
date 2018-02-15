@@ -219,13 +219,13 @@ init (transportImpl* transport, int createResponder)
           if (rval != MAMA_STATUS_OK) return rval;
     }
 
-    snprintf(searchName, sizeof(searchName), "mama.%s.dq.disabled", middleware);
+    snprintf(searchName, sizeof(searchName), "mama.%s.dq.enabled", middleware);
 
     dqEnabled = strtobool(mama_getProperty(searchName));
 
     if(dqEnabled)
     {
-        snprintf(searchName, sizeof(searchName), "mama.%s.transport.%s.dq.disabled", middleware, self->mName);
+        snprintf(searchName, sizeof(searchName), "mama.%s.transport.%s.dq.enabled", middleware, self->mName);
         dqEnabled = strtobool(mama_getProperty(searchName));
     }
 

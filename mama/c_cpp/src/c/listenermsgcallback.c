@@ -388,7 +388,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         case MAMA_MSG_TYPE_BOOK_INITIAL:
         case MAMA_MSG_TYPE_BOOK_SNAPSHOT:
         case MAMA_MSG_TYPE_BOOK_RECAP:
-            if(isDqEnabled)
+            if(!isDqEnabled)
             {
                mamaSubscription_stopWaitForResponse (subscription, ctx);
                mamaSubscription_forwardMsg(subscription, msg);
@@ -430,7 +430,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                             msgType, mamaMsg_toString(msg), ctx);
             break;
         default:
-            if(isDqEnabled)
+            if(!isDqEnabled)
             {
                 mamaSubscription_forwardMsg(subscription, msg);
             }
