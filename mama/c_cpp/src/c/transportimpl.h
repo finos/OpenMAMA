@@ -103,7 +103,7 @@ mamaTransportImpl_getDqPlugin (mamaTransport transport, mamaPluginImpl** dqPlugi
 
 MAMAExpDLL
 mama_status
-mamaTransportImpl_getDqDisabled(mamaTransport transport, int* result);
+mamaTransportImpl_getDqEnabled(mamaTransport transport, int* result);
 
 MAMAExpDLL
 mama_status

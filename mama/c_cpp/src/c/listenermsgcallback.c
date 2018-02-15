@@ -156,10 +156,10 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     mamaStatsCollector tportStatsCollector  = NULL;
     const char*        userSymbol           = NULL;
 	dqState            state                = DQ_STATE_NOT_ESTABLISHED;
-    int                isDQDisabled         = 0;
+    int                isDqEnabled          = 0;
     
     mamaSubscription_getTransport (subscription, &transport);
-    mamaTransportImpl_getDqDisabled(transport, &isDQDisabled);
+    mamaTransportImpl_getDqEnabled(transport, &isDqEnabled);
 
     if (!ctx)
     {
@@ -388,7 +388,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         case MAMA_MSG_TYPE_BOOK_INITIAL:
         case MAMA_MSG_TYPE_BOOK_SNAPSHOT:
         case MAMA_MSG_TYPE_BOOK_RECAP:
-            if(isDQDisabled)
+            if(isDqEnabled)
             {
                mamaSubscription_stopWaitForResponse (subscription, ctx);
                mamaSubscription_forwardMsg(subscription, msg);
@@ -430,7 +430,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                             msgType, mamaMsg_toString(msg), ctx);
             break;
         default:
-            if(isDQDisabled)
+            if(isDqEnabled)
             {
                 mamaSubscription_forwardMsg(subscription, msg);
             }

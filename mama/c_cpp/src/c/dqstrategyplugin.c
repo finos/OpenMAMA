@@ -255,11 +255,11 @@ dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTra
     const char*     tportName  = NULL;
     const char*     pluginName = NULL;
     mamaBridgeImpl* bridgeImpl = NULL;
-    int             dqDisabled = 0;
+    int             dqEnabled  = 0;
     mamaPluginImpl* pluginImpl;
     char            propName[256];
 
-    mamaTransportImpl_getDqDisabled(transport, &dqDisabled);
+    mamaTransportImpl_getDqEnabled(transport, &dqEnabled);
 
     pluginImpl = (mamaPluginImpl*)pluginInfo;
 
@@ -271,7 +271,7 @@ dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTra
     snprintf(propName, sizeof (propName), "mama.%s.transport.%s.%s", middleware, tportName, DQ_PLUGIN_PROPERTY);
     pluginName = mama_getProperty(propName);
     //Load the default DQ plugin if no other DQ plugin is specified, but also allow it to be explicitly specified
-    if (!dqDisabled)
+    if (dqEnabled)
     {
         if(!pluginName || (0 == strcmp(pluginName , "dqstrategy")))
         {
@@ -824,9 +824,7 @@ mama_status
 dqstrategyMamaPlugin_shutdownHook (mamaPluginInfo pluginInfo)
 {
     free(pluginInfo);
-    mama_status status = MAMA_STATUS_OK;
-
-    return status;
+    return MAMA_STATUS_OK;
 }
 
 static int

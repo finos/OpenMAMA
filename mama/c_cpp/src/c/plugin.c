@@ -322,11 +322,9 @@ mama_loadPlugin (const char* pluginName)
 mama_status
 mama_shutdownPlugins (void)
 {
-    mama_status      status           = MAMA_STATUS_OK;
-    int              plugin           = 0;
-    int              ret              = 0;
-    int              tPluginNo        = 0;
-
+    mama_status status  = MAMA_STATUS_OK;
+    int         plugin  = 0;
+    int         ret     = 0;
     for (plugin = 0; plugin < gPluginNo; plugin++)
     {
         if (gPlugins[plugin] != NULL)
@@ -370,10 +368,9 @@ mama_shutdownPlugins (void)
 mama_status
 mamaPlugin_firePublisherPreSendHook (mamaPublisher publisher, mamaMsg message)
 {
-    mama_status      status           = MAMA_STATUS_OK;
-    int              plugin           = 0;
-    int              tPluginNo        = 0;
-
+    mama_status status  = MAMA_STATUS_OK;
+    int         plugin  = 0;
+    int         ret     = 0;
     for (plugin = 0; plugin < gPluginNo; plugin++)
     {
         if (gPlugins[plugin] != NULL)
@@ -478,14 +475,9 @@ mamaPlugin_fireSubscriptionPostCreateHook (mamaSubscription subscription)
 mama_status
 mamaPlugin_fireSubscriptionPreMsgHook (mamaSubscription subscription, int msgType, mamaMsg msg)
 {
-
-    mamaDqContext *ctx      = mamaSubscription_getDqContext(subscription);
-
-    mama_status  status = MAMA_STATUS_OK;
-    int          plugin = 0;
-    mamaTransport    transport        = NULL;
-    int              tPluginNo        = 0;
-
+    mama_status status  = MAMA_STATUS_OK;
+    int         plugin  = 0;
+    int         ret     = 0;
     for (plugin = 0; plugin < gPluginNo; plugin++)
     {
         if (gPlugins[plugin] != NULL)
@@ -510,10 +502,9 @@ mamaPlugin_fireSubscriptionPreMsgHook (mamaSubscription subscription, int msgTyp
 mama_status
 mamaPlugin_fireTransportEventHook(mamaTransport transport, int setStale, mamaTransportEvent tportEvent)
 {
-    mama_status  status = MAMA_STATUS_OK;
-    int          plugin = 0;
-    int              tPluginNo        = 0;
-
+    mama_status status  = MAMA_STATUS_OK;
+    int         plugin  = 0;
+    int         ret     = 0;
     for (plugin = 0; plugin < gPluginNo; plugin++)
     {
         if (gPlugins[plugin] != NULL)

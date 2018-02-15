@@ -736,7 +736,6 @@ mamaMsgImpl_createForPayload (mamaMsg*                  msg,
     if (payloadBridge)
     {
         impl->mPayloadBridge->msgPayloadSetParent (impl->mPayload, impl);
-        impl->mPayloadId = payloadBridge->payloadLib->id;
     }
 
     return status;

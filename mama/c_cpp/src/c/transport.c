@@ -61,7 +61,7 @@ extern const char*  gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 #define PROP_NAME_DISABLE_DISCONNECT_CB     "disable_disconnect_callbacks"
 /* A value of 10 will be passed to wtable_create in subscription code */
 #define DEFAULT_GROUP_SIZE_HINT             100
-
+#define DQ_DISABLED                         "dq_enabled"
 static void
 roundRobin (int         curTransportIndex,
             int         numTransports,
@@ -98,7 +98,7 @@ typedef struct transportImpl_
     uint32_t                 mWriteQueueLowWatermark;
     /* These members are only needed for the market data transport */
     wList                    mListeners;
-    int                      mDqDisabled;
+    int                      mDqEnabled;
     /* This list contains all of the publishers using the transport. */
     wList                    mPublishers;
 
@@ -190,7 +190,7 @@ init (transportImpl* transport, int createResponder)
 {
     char        searchName[256];
     const char* searchResult;
-    int         dqDisabled               = 0;
+    int         dqEnabled                = 0;
     const char* middleware               = NULL;
     mama_status rval                     = MAMA_STATUS_OK;
     self->mListeners                     = list_create (sizeof (SubscriptionInfo));
@@ -221,17 +221,17 @@ init (transportImpl* transport, int createResponder)
 
     snprintf(searchName, sizeof(searchName), "mama.%s.dq.disabled", middleware);
 
-    dqDisabled = strtobool(mama_getProperty(searchName));
+    dqEnabled = strtobool(mama_getProperty(searchName));
 
-    if(!dqDisabled)
+    if(dqEnabled)
     {
         snprintf(searchName, sizeof(searchName), "mama.%s.transport.%s.dq.disabled", middleware, self->mName);
-        dqDisabled = strtobool(mama_getProperty(searchName));
+        dqEnabled = strtobool(mama_getProperty(searchName));
     }
 
-    if(dqDisabled)
+    if(dqEnabled)
     {
-        self->mDqDisabled = 1;
+        self->mDqEnabled = 1;
     }
     
     return MAMA_STATUS_OK;
@@ -2828,11 +2828,11 @@ mama_status mamaTransportImpl_setQuality(mamaTransport transport, mamaQuality qu
     return MAMA_STATUS_NULL_ARG;
 }
 
-mama_status mamaTransportImpl_getDqDisabled(mamaTransport transport, int* result)
+mama_status mamaTransportImpl_getDqEnabled(mamaTransport transport, int* result)
 {
     if(transport != NULL && result != NULL)
     {
-        *result = self->mDqDisabled;
+        *result = self->mDqEnabled;
         return MAMA_STATUS_OK;
     }
     

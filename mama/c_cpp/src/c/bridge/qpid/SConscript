@@ -37,8 +37,8 @@ if not env.GetOption('clean'):
     if not conf.CheckCHeader('uuid/uuid.h'):
         print '+- libuuid-devel required'
         Exit(1)
-    if not conf.CheckCHeader('proton/engine.h'):
-        print '+- could not find engine.h in ${QPID_HOME}/include/proton'
+    if not conf.CheckCHeader('proton/parser.h'):
+        print '+- could not find parser.h in ${QPID_HOME}/include/proton'
         Exit(1)
     if not conf.CheckCHeader('proton/version.h'):
         print '+- proton release does not have ${QPID_HOME}/include/proton/version.h - too old!'

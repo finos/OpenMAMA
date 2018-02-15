@@ -1463,7 +1463,7 @@ mamaSubscription_cleanup (mamaSubscription subscription)
             self->mSubjectContext.mEntitlementSubscription = NULL;
         }
     }
-// destroy & cleanup
+    
     dqContext_cleanup (&self->mSubjectContext.mDqContext);
     self->mDqStrategy   = NULL;
     self->mRecapRequest = NULL;
