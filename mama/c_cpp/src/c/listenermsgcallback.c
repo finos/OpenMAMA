@@ -156,7 +156,7 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
     mamaStatsCollector tportStatsCollector  = NULL;
     const char*        userSymbol           = NULL;
 	dqState            state                = DQ_STATE_NOT_ESTABLISHED;
-    int                isDqEnabled          = 0;
+    int                isDqEnabled          = 1;
     
     mamaSubscription_getTransport (subscription, &transport);
     mamaTransportImpl_getDqEnabled(transport, &isDqEnabled);

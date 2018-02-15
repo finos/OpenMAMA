@@ -190,7 +190,7 @@ init (transportImpl* transport, int createResponder)
 {
     char        searchName[256];
     const char* searchResult;
-    int         dqEnabled                = 0;
+    int         dqEnabled                = 1;
     const char* middleware               = NULL;
     mama_status rval                     = MAMA_STATUS_OK;
     self->mListeners                     = list_create (sizeof (SubscriptionInfo));

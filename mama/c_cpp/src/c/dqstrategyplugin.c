@@ -255,7 +255,7 @@ dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTra
     const char*     tportName  = NULL;
     const char*     pluginName = NULL;
     mamaBridgeImpl* bridgeImpl = NULL;
-    int             dqEnabled  = 0;
+    int             dqEnabled  = 1;
     mamaPluginImpl* pluginImpl;
     char            propName[256];
 
