@@ -299,6 +299,7 @@ dqstrategyMamaPlugin_transportEventHook(mamaPluginInfo pluginInfo, mamaTransport
     switch (tportEvent)
     {
         case MAMA_TRANSPORT_DISCONNECT:
+            
             if (setStale)
             {
                 mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
@@ -316,7 +317,7 @@ dqstrategyMamaPlugin_transportEventHook(mamaPluginInfo pluginInfo, mamaTransport
 
         case MAMA_TRANSPORT_QUALITY:
 
-                mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
+            mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
 
             if (possiblyStaleForAll)
             {
