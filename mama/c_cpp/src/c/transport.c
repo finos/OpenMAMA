@@ -1950,14 +1950,7 @@ mamaTransportImpl_processAdvisory (mamaTransport transport,
     self->mCause        = cause;
     self->mPlatformInfo = (void*)platformInfo;
 
-    if (self->mSetPossiblyStaleForAll)
-    {
-        mamaTransportImpl_setPossiblyStaleForListeners (transport);
-        if ( self->mRefreshTransport )
-            refreshTransport_startStaleRecapTimer (self->mRefreshTransport );
-    }
-
-    self->mQuality = MAMA_QUALITY_MAYBE_STALE;
+    mamaPlugin_fireTransportEventHook (transport, 1, MAMA_TRANSPORT_QUALITY);
 
     if (self->mTportCb != NULL)
     {
@@ -1966,7 +1959,6 @@ mamaTransportImpl_processAdvisory (mamaTransport transport,
                         self->mTportClosure);
     }
     
-    mamaPlugin_fireTransportEventHook (transport, 1, MAMA_TRANSPORT_QUALITY);
 
     /* Clear the platforminfo and cause, these should not be used after this
      * point. */
