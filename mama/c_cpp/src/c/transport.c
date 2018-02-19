@@ -190,8 +190,8 @@ init (transportImpl* transport, int createResponder)
 {
     char        searchName[256];
     const char* searchResult;
-    int         dqEnabled                = 1;
     const char* middleware               = NULL;
+    const char* propertyVal              = NULL;
     mama_status rval                     = MAMA_STATUS_OK;
     self->mListeners                     = list_create (sizeof (SubscriptionInfo));
     self->mPublishers                    = list_create (sizeof (mamaPublisher));
@@ -204,6 +204,7 @@ init (transportImpl* transport, int createResponder)
     self->mDQStratScheme                 = DQ_SCHEME_DELIVER_ALL;
     self->mFTStratScheme                 = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
     self->mClosure                       = NULL;
+    self->mDqEnabled                     = 1;
 
     middleware = self->mBridgeImpl->bridgeGetName ();
 
@@ -220,18 +221,22 @@ init (transportImpl* transport, int createResponder)
     }
 
     snprintf(searchName, sizeof(searchName), "mama.%s.%s", middleware, DQ_ENABLED_PROP);
-
-    dqEnabled = strtobool(mama_getProperty(searchName));
-
-    if(dqEnabled)
+    propertyVal = mama_getProperty(searchName);
+    
+    if(NULL != propertyVal)
+    {
+        self->mDqEnabled = strtobool(mama_getProperty(searchName));
+    }
+    else
     {
         snprintf(searchName, sizeof(searchName), "mama.%s.transport.%s.%s", middleware, self->mName, DQ_ENABLED_PROP);
-        dqEnabled = strtobool(mama_getProperty(searchName));
-    }
 
-    if(dqEnabled)
-    {
-        self->mDqEnabled = 1;
+        propertyVal = mama_getProperty(searchName);
+
+        if(NULL != propertyVal)
+        {
+            self->mDqEnabled = strtobool(mama_getProperty(searchName));
+        }
     }
     
     return MAMA_STATUS_OK;
