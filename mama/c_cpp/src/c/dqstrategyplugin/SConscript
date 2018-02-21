@@ -1,0 +1,18 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+import os
+Import('*')
+env = env.Clone()
+
+target = 'libmamaplugindqstrategy'
+
+includePath = []
+includePath.append('#mama/c_cpp/src/c/')
+includePath.append('.')
+
+sources = ("""dqstrategyplugin.c""")
+
+lib = []
+lib.append(env.SharedLibrary(target, sources))
+env.Append(LIBS=['mama', ], CPPPATH=[includePath])
+Alias('install', env.Install('$libdir', lib))
