@@ -292,7 +292,6 @@ dqstrategyMamaPlugin_transportEventHook(mamaPluginInfo pluginInfo, mamaTransport
 
     if (!(handleEvent (pluginInfo, transport)))
     {
-        printf("!handle event, returning\n");
         return MAMA_STATUS_OK;
     }
    
@@ -300,38 +299,32 @@ dqstrategyMamaPlugin_transportEventHook(mamaPluginInfo pluginInfo, mamaTransport
     {
         case MAMA_TRANSPORT_DISCONNECT:
             
-            printf("tportevent was: disconnect\n");
             if (setStale)
             {
-                printf("set stale \n");
                 mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
 
                 if (possiblyStaleForAll)
                 {
-                    printf("possibly stale was true\n");
                     mamaTransportImpl_setPossiblyStaleForListeners (transport);
                 }
 
                 mamaTransportImpl_setQuality(transport, MAMA_QUALITY_MAYBE_STALE);
 
             }
-            
+
             break;
 
         case MAMA_TRANSPORT_QUALITY:
 
-            printf("tportevent was: quality");
             mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
 
             if (possiblyStaleForAll)
             {
-                printf("possibly stale was troo\n");
                  mamaTransportImpl_setPossiblyStaleForListeners (transport);
                  mamaTransportImpl_getRefreshTransport(transport, &refreshTransport);
 
                 if (refreshTransport)
                 {
-                    printf("refresh transport \n");
                     refreshTransport_startStaleRecapTimer (refreshTransport);
                 }
             }
