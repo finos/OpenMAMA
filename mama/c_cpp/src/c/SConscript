@@ -100,10 +100,6 @@ env.Append(
 	CPPDEFINES 	= ['MAMA', 'OPENMAMA_INTEGRATION'],
 )
 
-libdq_sources = \
-    Split("""
-    dqstrategyplugin.c
-""")
 
 libmama_sources = \
     Split("""
@@ -248,31 +244,5 @@ if env['with_dependency_runtimes']:
 env.SConscript('bridge/SConscript', 'env')
 env.SConscript('payload/SConscript', 'env')
 env.SConscript('entitlement/SConscript', 'env')
-
-Clean(lib, 'version.c')
-
-static_objects = []
-shared_objects = []
-StaticLibs['libdqstrategyplugin'] = []
-
-for s in libdq_sources:
-    static_obj = env.Object(s)
-    shared_obj = env.SharedObject(s)
-    StaticLibs['libdqstrategyplugin'].append(static_obj)
-    static_objects.append(static_obj)
-    shared_objects.append(shared_obj)
-
-lib = []
-lib.append(env.SharedLibrary('.libs/libmamaplugindqstrategy', shared_objects))
-
-Alias('install', env.Install('$libdir', lib))
-Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))
-Alias('install', env.Install('$prefix/include/mama/integration', integrationHeaders))
-
-if env['with_dependency_runtimes']:
-    if env['target_arch'] == "x86_64":
-        Alias ('install', env.Install('$libdir', Glob('%s/lib64/libapr-1.so*' % env['apr_home'])))
-    else:
-        Alias ('install', env.Install('$libdir', Glob('%s/lib/libapr-1.so*' % env['apr_home'])))
 
 Clean(lib, 'version.c')
