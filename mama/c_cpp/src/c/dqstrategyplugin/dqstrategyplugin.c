@@ -292,40 +292,46 @@ dqstrategyMamaPlugin_transportEventHook(mamaPluginInfo pluginInfo, mamaTransport
 
     if (!(handleEvent (pluginInfo, transport)))
     {
+        printf("!handle event, returning\n");
         return MAMA_STATUS_OK;
     }
    
-
     switch (tportEvent)
     {
         case MAMA_TRANSPORT_DISCONNECT:
             
+            printf("tportevent was: disconnect\n");
             if (setStale)
             {
+                printf("set stale \n");
                 mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
 
                 if (possiblyStaleForAll)
                 {
+                    printf("possibly stale was true\n");
                     mamaTransportImpl_setPossiblyStaleForListeners (transport);
                 }
 
                 mamaTransportImpl_setQuality(transport, MAMA_QUALITY_MAYBE_STALE);
 
             }
-
+            
             break;
 
         case MAMA_TRANSPORT_QUALITY:
 
+            printf("tportevent was: quality");
             mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
 
             if (possiblyStaleForAll)
             {
+                printf("possibly stale was troo\n");
                  mamaTransportImpl_setPossiblyStaleForListeners (transport);
                  mamaTransportImpl_getRefreshTransport(transport, &refreshTransport);
 
                 if (refreshTransport)
                 {
+                    printf("refresh transport \n");
                     refreshTransport_startStaleRecapTimer (refreshTransport);
                 }
             }
@@ -343,7 +349,7 @@ mama_status
 dqstrategyMamaPlugin_subscriptionPostCreateHook (mamaPluginInfo pluginInfo, mamaSubscription subscription)
 {
     mamaTransport   transport = NULL;
-    dqStrategyImpl* strategy  = NULL;
+    dqStrategy strategy  = NULL;
 
     mamaSubscription_getTransport (subscription, &transport);
 
@@ -352,7 +358,7 @@ dqstrategyMamaPlugin_subscriptionPostCreateHook (mamaPluginInfo pluginInfo, mama
         return MAMA_STATUS_OK;
     }
 
-    strategy = (dqStrategyImpl*)calloc (1, sizeof (dqStrategyImpl));
+    dqStrategy_create(&strategy, subscription);
 
     if (strategy == NULL)
     {
@@ -388,7 +394,7 @@ dqstrategyMamaPlugin_subscriptionPreMsgHook(mamaPluginInfo pluginInfo, mamaSubsc
         processPointToPointMessage (msg, msgType, subjectContext, subscription);
         return MAMA_STATUS_OK;
     }
-    
+
     /* If we're waiting on an initial for this subscription
         then we ignore all messages. Note that after the initial
         request timeout period individual symbols in a group
@@ -598,7 +604,6 @@ checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx)
     {
         return MAMA_STATUS_INVALID_ARG;
     }
-
     mamaSubscription_getTransport (strategyImpl->mSubscription, &transport);
 
     mamaMsg_getSeqNum (msg, &seqNum);
