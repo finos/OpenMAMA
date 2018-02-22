@@ -41,6 +41,7 @@ typedef struct dqStrategy_
 
 typedef struct dqStrategy_* dqStrategy;
 
+MAMAExpDLL
 mama_status
 dqStrategy_create (
     dqStrategy*         strategy,  
@@ -55,6 +56,7 @@ dqContext_initializeContext (
 mama_status
 dqContext_cleanup (mamaDqContext* ctx);
 
+MAMAExpDLL
 mama_status
 dqContext_cacheMsg (mamaDqContext *ctx, mamaMsg msg);
 
@@ -65,6 +67,7 @@ mama_status
 dqStrategy_destroy (
     dqStrategy          strategy);
 
+MAMAExpDLL
 mama_status
 dqStrategy_getDqState (
     mamaDqContext*       ctx,
@@ -74,6 +77,7 @@ mama_status
 dqStrategy_setPossiblyStale (
     mamaDqContext*      ctx);
 
+MAMAExpDLL
 mama_status
 dqContext_clearCache(mamaDqContext *ctx, int freeArray);
 

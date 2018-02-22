@@ -348,6 +348,7 @@ mamaSubscription_stopWaitForResponse(
  *
  * @param[in] subscription The subscription.
  */
+MAMAExpDLL
 extern void
 mamaSubscription_unsetAllPossiblyStale(
     mamaSubscription subscription);
