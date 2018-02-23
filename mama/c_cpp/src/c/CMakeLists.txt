@@ -123,3 +123,4 @@ install(TARGETS mama
 
 install(DIRECTORY mama/ DESTINATION include/mama)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" DESTINATION include/mama)
+
