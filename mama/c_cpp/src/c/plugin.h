@@ -31,6 +31,7 @@ typedef mama_status (*mamaPlugin_shutdownHook) (mamaPluginInfo pluginInfo);
 typedef mama_status (*mamaPlugin_initHook) (mamaPluginInfo* pluginInfo);
 typedef mama_status (*mamaPlugin_subscriptionPostCreateHook) (mamaPluginInfo pluginInfo, mamaSubscription subscription);
 typedef mama_status (*mamaPlugin_subscriptionPreMsgHook) (mamaPluginInfo pluginInfo, mamaSubscription subscription, int msgType, mamaMsg msg);
+typedef mama_status (*mamaPlugin_subscriptionDestroyHook) (mamaPluginInfo pluginInfo, mamaSubscription subscription);
 typedef mama_status (*mamaPlugin_transportEventHook) (mamaPluginInfo pluginInfo, mamaTransport transport, int setStale, mamaTransportEvent tportEvent);
 
 typedef struct mamaPluginImpl_
@@ -45,6 +46,7 @@ typedef struct mamaPluginImpl_
     mamaPlugin_initHook                             mamaPluginInitHook;
     mamaPlugin_subscriptionPostCreateHook           mamaPluginSubscriptionPostCreateHook;
     mamaPlugin_subscriptionPreMsgHook               mamaPluginSubscriptionPreMsgHook;
+    mamaPlugin_subscriptionDestroyHook              mamaPluginSubscriptionDestroyHook;
     mamaPlugin_transportEventHook                   mamaPluginTransportEventHook;
 
 } mamaPluginImpl;
@@ -117,6 +119,9 @@ mamaPlugin_fireSubscriptionPostCreateHook (mamaSubscription subscription);
 
 extern mama_status
 mamaPlugin_fireSubscriptionPreMsgHook (mamaSubscription subscription, int msgType, mamaMsg msg);
+
+extern mama_status
+mamaPlugin_fireSubscriptionDestroyHook (mamaSubscription subscription);
 
 extern mama_status
 mamaPlugin_fireTransportEventHook (mamaTransport transport, int setStale, mamaTransportEvent tportEvent);

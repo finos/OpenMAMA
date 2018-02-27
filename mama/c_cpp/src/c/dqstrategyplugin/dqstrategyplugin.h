@@ -35,10 +35,6 @@ dqstrategyMamaPlugin_publisherPreSendHook (mamaPluginInfo pluginInfo, mamaPublis
 
 PLUGINExpDLL
 mama_status
-dqstrategyMamaPlugin_shutdownHook (mamaPluginInfo pluginInfo);
-
-PLUGINExpDLL
-mama_status
 dqstrategyMamaPlugin_transportEventHook (mamaPluginInfo pluginInfo, mamaTransport transport, int setStale, mamaTransportEvent tportEvent);
 
 PLUGINExpDLL
@@ -48,6 +44,10 @@ dqstrategyMamaPlugin_subscriptionPostCreateHook (mamaPluginInfo pluginInfo, mama
 PLUGINExpDLL
 mama_status
 dqstrategyMamaPlugin_subscriptionPreMsgHook (mamaPluginInfo pluginInfo, mamaSubscription subscription, int msgType, mamaMsg msg);
+
+PLUGINExpDLL
+mama_status
+dqstrategyMamaPlugin_subscriptionDestroyHook (mamaPluginInfo pluginInfo, mamaSubscription subscription);
 
 PLUGINExpDLL
 mama_status

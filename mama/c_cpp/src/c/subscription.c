@@ -1429,6 +1429,8 @@ mamaSubscription_cleanup (mamaSubscription subscription)
      */
     self->mTransport = NULL;
 
+    mamaPlugin_fireSubscriptionDestroyHook (subscription);
+
     if (self->mSubscPublisher)
     {
         mamaPublisher_destroy (self->mSubscPublisher);

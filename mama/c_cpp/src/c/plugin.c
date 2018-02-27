@@ -173,6 +173,8 @@ mamaPlugin_registerFunctions (LIB_HANDLE      pluginLib,
                                        mamaPlugin_subscriptionPostCreateHook);
     REGISTER_OPTIONAL_PLUGIN_FUNCTION (MamaPlugin_subscriptionPreMsgHook, mamaPluginSubscriptionPreMsgHook,
                                        mamaPlugin_subscriptionPreMsgHook);
+    REGISTER_OPTIONAL_PLUGIN_FUNCTION (MamaPlugin_subscriptionDestroyHook, mamaPluginSubscriptionDestroyHook,
+                                       mamaPlugin_subscriptionDestroyHook);
     REGISTER_OPTIONAL_PLUGIN_FUNCTION (MamaPlugin_transportEventHook, mamaPluginTransportEventHook,
                                        mamaPlugin_transportEventHook);
    return status;
@@ -490,6 +492,33 @@ mamaPlugin_fireSubscriptionPreMsgHook (mamaSubscription subscription, int msgTyp
                 {
                      mama_log (MAMA_LOG_LEVEL_WARN,
                                 "mamaPlugin_subscriptionPreMsgHook      (): Subscription pre msg hook failed for mama plugin [%s]",
+                                gPlugins[plugin]->mPluginName);
+                }
+            }
+        }
+    }
+    
+    return status;
+}
+
+mama_status
+mamaPlugin_fireSubscriptionDestroyHook (mamaSubscription subscription)
+{
+    mama_status status  = MAMA_STATUS_OK;
+    int         plugin  = 0;
+    int         ret     = 0;
+    for (plugin = 0; plugin < gPluginNo; plugin++)
+    {
+        if (gPlugins[plugin] != NULL)
+        {
+            if (gPlugins[plugin]->mamaPluginSubscriptionPreMsgHook != NULL)
+            {
+                status = gPlugins[plugin]->mamaPluginSubscriptionDestroyHook (gPlugins[plugin]->mPluginInfo, subscription);
+
+                if (MAMA_STATUS_OK != status)
+                {
+                     mama_log (MAMA_LOG_LEVEL_WARN,
+                                "mamaPlugin_subscriptionDestroyHook      (): Subscription destroy failed for mama plugin [%s]",
                                 gPlugins[plugin]->mPluginName);
                 }
             }

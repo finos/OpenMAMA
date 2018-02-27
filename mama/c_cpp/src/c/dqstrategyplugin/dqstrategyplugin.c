@@ -243,9 +243,7 @@ dqstrategyMamaPlugin_initHook (mamaPluginInfo* pluginInfo)
 {
     *pluginInfo = calloc (1, sizeof (mamaPluginInfo));
 
-    mama_status status = MAMA_STATUS_OK;
-
-    return status;
+    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -279,9 +277,7 @@ dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTra
         }
     }
 
-    mama_status status = MAMA_STATUS_OK;
-
-    return status;
+    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -362,6 +358,22 @@ dqstrategyMamaPlugin_subscriptionPostCreateHook (mamaPluginInfo pluginInfo, mama
     mamaSubscription_setDqStrategy (subscription, strategy);
 
     return MAMA_STATUS_OK;
+}
+
+mama_status
+dqstrategyMamaPlugin_subscriptionDestroyHook (mamaPluginInfo pluginInfo, mamaSubscription subscription)
+{
+    
+    dqStrategy strategy = NULL;
+
+    strategy = mamaSubscription_getDqStrategy(subscription);
+
+    if ( MAMA_STATUS_OK == dqStrategy_destroy(strategy))
+    {
+        return MAMA_STATUS_OK;
+    }
+
+    return MAMA_STATUS_NULL_ARG;
 }
 
 mama_status
