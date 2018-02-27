@@ -654,11 +654,10 @@ mamaSubscription_setupBasic (
         return status;
     }
 
-    /*Create the DQ strategy - sequence number checking etc.*/
     if (MAMA_STATUS_OK!=(status=mamaPlugin_fireSubscriptionPostCreateHook (subscription)))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "Could not create DQ strategy. [%s]",
+                  "mamaSubscription_setupBasic: subscriptionPostCreateHook failed.",
                   mamaStatus_stringForStatus (status));
         return status;
     }
