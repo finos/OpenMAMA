@@ -657,7 +657,7 @@ mamaSubscription_setupBasic (
     if (MAMA_STATUS_OK!=(status=mamaPlugin_fireSubscriptionPostCreateHook (subscription)))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mamaSubscription_setupBasic: subscriptionPostCreateHook failed.",
+                  "mamaSubscription_setupBasic: SubscriptionPostCreateHook failed.",
                   mamaStatus_stringForStatus (status));
         return status;
     }
