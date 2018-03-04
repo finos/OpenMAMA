@@ -980,6 +980,152 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgSetNewBufferInValidSize)
     ASSERT_EQ (mamaMsg_setNewBuffer(mMsg, &buffer, 0), MAMA_STATUS_NULL_ARG);
 }
 
+TEST_F(MsgGeneralTestsC, msgToNormalizedString)
+{
+    const void*          buffer = NULL;
+    mama_size_t          size = 0;
+
+    //add fields to msg
+    mamaMsg_addBool(mMsg, "name01", 101, true);
+    mamaMsg_addChar(mMsg, "name02", 102, 'F');
+    mamaMsg_addU8(mMsg, "name03", 103, UINT8_MAX);
+    mamaMsg_addU16(mMsg, "name04", 104, UINT16_MAX);
+    mamaMsg_addU32(mMsg, "name05", 105, UINT32_MAX);
+    mamaMsg_addU64(mMsg, "name06", 106, UINT64_MAX);
+    mamaMsg_addI8(mMsg, "name07", 107, INT8_MAX);
+    mamaMsg_addI16(mMsg, "name08", 108, INT16_MAX);
+    mamaMsg_addI32(mMsg, "name09", 109, INT32_MAX);
+    mamaMsg_addI64(mMsg, "name10", 110, INT64_MAX);
+    mamaMsg_addF32(mMsg, "name11", 111, 0.0001F);
+    mamaMsg_addF64(mMsg, "name12", 112, 1000000.0L);
+    mamaMsg_addString(mMsg, "name13", 113, "banana");
+    mamaMsg_addOpaque(mMsg, "name14", 114, (void*)"banana", 7);
+
+    mamaPrice price;
+    mamaPrice_create(&price);
+    mamaPrice_setValue(price, 0.99F);
+    mamaMsg_addPrice(mMsg, "name15", 115, price);
+
+    mamaDateTime dateTime;
+    mamaDateTime_create(&dateTime);
+    mamaDateTime_setFromString(dateTime, "2013-07-04 10:03:21.123");
+    mamaMsg_addDateTime(mMsg, "name16", 116, dateTime);
+
+    mama_u8_t u8vector[2];
+    u8vector[0] = 0;
+    u8vector[1] = UINT8_MAX;
+    mamaMsg_addVectorU8(mMsg, "name17", 117, u8vector, 2);
+
+    mama_u16_t u16vector[2];
+    u16vector[0] = 0;
+    u16vector[1] = UINT16_MAX;
+    mamaMsg_addVectorU16(mMsg, "name18", 118, u16vector, 2);
+
+    mama_u32_t u32vector[2];
+    u32vector[0] = 0;
+    u32vector[1] = UINT32_MAX;
+    mamaMsg_addVectorU32(mMsg, "name19", 119, u32vector, 2);
+
+    mama_u64_t u64vector[2];
+    u64vector[0] = 0;
+    u64vector[1] = UINT64_MAX;
+    mamaMsg_addVectorU64(mMsg, "name20", 120, u64vector, 2);
+
+    mama_i8_t i8vector[2];
+    i8vector[0] = 0;
+    i8vector[1] = INT8_MAX;
+    mamaMsg_addVectorI8(mMsg, "name21", 121, i8vector, 2);
+
+    mama_i16_t i16vector[2];
+    i16vector[0] = 0;
+    i16vector[1] = INT16_MAX;
+    mamaMsg_addVectorI16(mMsg, "name22", 122, i16vector, 2);
+
+    mama_i32_t i32vector[2];
+    i32vector[0] = 0;
+    i32vector[1] = INT32_MAX;
+    mamaMsg_addVectorI32(mMsg, "name23", 123, i32vector, 2);
+
+    mama_i64_t i64vector[2];
+    i64vector[0] = 0;
+    i64vector[1] = INT64_MAX;
+    mamaMsg_addVectorI64(mMsg, "name24", 124, i64vector, 2);
+
+    mama_bool_t iboolvector[2];
+    iboolvector[0] = 0;
+    iboolvector[1] = 1;
+    mamaMsg_addVectorBool(mMsg, "name25", 125, iboolvector, 2);
+
+    char icharvector[4];
+    icharvector[0] = 'M';
+    icharvector[1] = 'A';
+    icharvector[2] = 'M';
+    icharvector[3] = 'A';
+    mamaMsg_addVectorChar(mMsg, "name26", 126, icharvector, 4);
+
+    mama_f32_t f32vector[2];
+    f32vector[0] = -0.04;
+    f32vector[1] = 1099.99;
+    mamaMsg_addVectorF32(mMsg, "name27", 127, f32vector, 2);
+
+    mama_f64_t f64vector[2];
+    f64vector[0] = -100.0;
+    f64vector[1] = 100.0;
+    mamaMsg_addVectorF64(mMsg, "name28", 128, f64vector, 2);
+
+    mamaMsg msg;
+    mamaMsg_create(&msg);
+    mamaMsg_addString(msg, "msg1", 1001, "val1");
+
+    mamaMsg_addMsg(mMsg, "name30", 130, msg);
+
+    mamaMsg msg2;
+    mamaMsg_create(&msg2);
+    mamaMsg_addString(msg2, "msg2", 1002, "val2");
+
+    mamaMsg msgVector[2];
+    msgVector[0] = msg;
+    msgVector[1] = msg2;
+    mamaMsg_addVectorMsg(mMsg, "name31", 131, msgVector, 2);
+
+    const char* actual = mamaMsg_toNormalizedString(mMsg);
+    printf(actual);
+    const char* expected =
+        "{"
+        "name01[101]=1,"
+        "name02[102]=F,"
+        "name03[103]=255,"
+        "name04[104]=65535,"
+        "name05[105]=4294967295,"
+        "name06[106]=18446744073709551615,"
+        "name07[107]=127,"
+        "name08[108]=32767,"
+        "name09[109]=2147483647,"
+        "name10[110]=9223372036854775807,"
+        "name11[111]=0.0001,"
+        "name12[112]=1000000.0000,"
+        "name13[113]=banana,"
+        "name14[114]=0x62 0x61 0x6e 0x61 0x6e 0x61,"
+        "name15[115]=0.990000,"
+        "name16[116]=2013-07-04 10:03:21.123,"
+        "name17[117]=[0,255],"
+        "name18[118]=[0,65535],"
+        "name19[119]=[0,4294967295],"
+        "name20[120]=[0,18446744073709551615],"
+        "name21[121]=[0,127],"
+        "name22[122]=[0,32767],"
+        "name23[123]=[0,2147483647],"
+        "name24[124]=[0,9223372036854775807],"
+        "name25[125]=[0,1],"
+        "name26[126]=[M,A,M,A],"
+        "name27[127]=[-0.0400,1099.9900],"
+        "name28[128]=[-100.0000,100.0000],"
+        "name30[130]={msg1[1001]=val1},"
+        "name31[131]=[{msg1[1001]=val1},{msg2[1002]=val2}]}";
+
+    ASSERT_STREQ(expected, actual);
+}
+
 /*
  * COPY TEST SUITE
  * ****************************************************************************

@@ -213,6 +213,9 @@ struct timespec
 #define PRId64 "I64d"
 #define PRIu64 "I64u"
 #define PRIi64 "I64i"
+#define PRId32 "I32d"
+#define PRIu32 "I32u"
+#define PRIi32 "I32i"
 
 /* Macro for managing the printing of mama_size_t values. */
 #define PRI_MAMA_SIZE_T "Iu"

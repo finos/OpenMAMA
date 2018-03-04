@@ -2080,6 +2080,18 @@ mamaMsg_toString(
     const mamaMsg msg);
 
 /**
+* Return a const char * representation the message. Memory is owned by the
+* mamaMsg. The string format will be standard across all payload types.
+*
+* @param msg The message.
+* @return A string representation of the message.
+*/
+MAMAExpDLL
+extern const char*
+mamaMsg_toNormalizedString(
+    const mamaMsg msg);
+
+/**
  * Free the memory allocated by mamaMsg_toString [deprecated].
  *
  * @param msg The message.
