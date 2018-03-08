@@ -3374,6 +3374,7 @@ mamaSubscription_getDqStrategy(mamaSubscription subscription)
         mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
         return impl->mDqStrategy;
     }
+        return NULL;
 }
 
 mama_status
