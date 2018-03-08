@@ -63,6 +63,7 @@ dqContext_cacheMsg (mamaDqContext *ctx, mamaMsg msg);
 mama_status
 dqStrategyImpl_detachMsg (mamaDqContext* ctx, mamaMsg msg);
 
+MAMAExpDLL
 mama_status
 dqStrategy_destroy (
     dqStrategy          strategy);
