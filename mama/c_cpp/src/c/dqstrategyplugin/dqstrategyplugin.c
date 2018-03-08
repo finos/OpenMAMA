@@ -33,145 +33,142 @@
 #define strategyImpl ((dqStrategyImpl*)(strategy))
 #define DQSTRATEGY_PLUGIN_NAME "dqstrategy"
 
-static int 
-handleEvent (mamaPluginInfo pluginInfo, mamaTransport transport);
+static int handleEvent(mamaPluginInfo pluginInfo, mamaTransport transport);
 
-static int 
-isInitialMessageOrRecap(int msgType);
+static int isInitialMessageOrRecap(int msgType);
 
-static int
-fillGap (mamaDqContext *ctx,
+static int fillGap(mamaDqContext* ctx,
                    mama_seqnum_t seqNum,
                    mamaSubscription subscription);
 
 static mama_status
-checkSeqNum (dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx);
+checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext* ctx);
 
-static mama_status
-applyPreInitialCache (mamaDqContext *ctx, mamaSubscription subscription);
+static mama_status applyPreInitialCache(mamaDqContext* ctx,
+                                        mamaSubscription subscription);
 
 static void
-resetDqContext (mamaDqContext* ctx, mama_seqnum_t seqNum,
-                               mama_u64_t senderId)
+resetDqContext(mamaDqContext* ctx, mama_seqnum_t seqNum, mama_u64_t senderId)
 {
-    ctx->mSeqNum  = seqNum;
+    ctx->mSeqNum = seqNum;
     ctx->mSenderId = senderId;
 }
 
-static void
-resetDqState (dqStrategy     strategy,
-              mamaDqContext* ctx)
+static void resetDqState(dqStrategy strategy, mamaDqContext* ctx)
 {
     if (ctx->mDQState != DQ_STATE_OK &&
         ctx->mDQState != DQ_STATE_NOT_ESTABLISHED)
     {
-        void*             closure   =   NULL;
-        mamaMsgCallbacks* cb        =   NULL;
+        void* closure = NULL;
+        mamaMsgCallbacks* cb = NULL;
 
-        mamaSubscription_getClosure (strategyImpl->mSubscription, &closure);
+        mamaSubscription_getClosure(strategyImpl->mSubscription, &closure);
 
         /* Callback last in the event that client destroys */
-        cb = mamaSubscription_getUserCallbacks (strategyImpl->mSubscription);
+        cb = mamaSubscription_getUserCallbacks(strategyImpl->mSubscription);
         if (cb != NULL && cb->onQuality != NULL)
         {
             const char* symbol = NULL;
-            short       cause;
+            short cause;
             const void* platformInfo = NULL;
-            mamaSubscription_getSymbol (strategyImpl->mSubscription, &symbol);
-            mamaSubscription_getAdvisoryCauseAndPlatformInfo (
-                                                        strategyImpl->mSubscription,
-                                                        &cause, &platformInfo);
-            cb->onQuality (strategyImpl->mSubscription, MAMA_QUALITY_OK, symbol,
-                           cause, platformInfo, closure);
+            mamaSubscription_getSymbol(strategyImpl->mSubscription, &symbol);
+            mamaSubscription_getAdvisoryCauseAndPlatformInfo(
+                strategyImpl->mSubscription, &cause, &platformInfo);
+            cb->onQuality(strategyImpl->mSubscription,
+                          MAMA_QUALITY_OK,
+                          symbol,
+                          cause,
+                          platformInfo,
+                          closure);
         }
     }
     ctx->mDQState = DQ_STATE_OK;
 }
 
 static mama_status
-handleStaleData (dqStrategy     strategy,
-                 mamaMsg        msg,
-                 mamaDqContext* ctx)
+handleStaleData(dqStrategy strategy, mamaMsg msg, mamaDqContext* ctx)
 {
-    const char*  symbol = NULL;
-    mamaSubscription_getSymbol (strategyImpl->mSubscription, &symbol);
+    const char* symbol = NULL;
+    mamaSubscription_getSymbol(strategyImpl->mSubscription, &symbol);
 
     if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINER)
     {
         symbol = symbol == NULL ? "" : symbol;
-        mama_log (MAMA_LOG_LEVEL_FINER, "%s : stale data", symbol);
+        mama_log(MAMA_LOG_LEVEL_FINER, "%s : stale data", symbol);
     }
 
-    msgUtils_setStatus (msg, MAMA_MSG_STATUS_STALE);
+    msgUtils_setStatus(msg, MAMA_MSG_STATUS_STALE);
 
     if (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP &&
         ctx->mDQState != DQ_STATE_POSSIBLY_STALE)
     {
-        void*               closure = NULL;
-        mamaMsgCallbacks*   cb      = NULL;
+        void* closure = NULL;
+        mamaMsgCallbacks* cb = NULL;
 
-        dqStrategy_sendRecapRequest (strategyImpl, msg, ctx);
+        dqStrategy_sendRecapRequest(strategyImpl, msg, ctx);
 
         /* Callback last in the event that client destroys */
-        mamaSubscription_getClosure (strategyImpl->mSubscription, &closure);
-        cb = mamaSubscription_getUserCallbacks (strategyImpl->mSubscription);
+        mamaSubscription_getClosure(strategyImpl->mSubscription, &closure);
+        cb = mamaSubscription_getUserCallbacks(strategyImpl->mSubscription);
 
         if (cb != NULL && cb->onQuality != NULL)
         {
-            short       cause;
+            short cause;
             const void* platformInfo = NULL;
-            mamaSubscription_getAdvisoryCauseAndPlatformInfo (
-                                                        strategyImpl->mSubscription,
-                                                        &cause, &platformInfo);
-            cb->onQuality (strategyImpl->mSubscription, MAMA_QUALITY_STALE, symbol,
-                           cause, platformInfo, closure);
+            mamaSubscription_getAdvisoryCauseAndPlatformInfo(
+                strategyImpl->mSubscription, &cause, &platformInfo);
+            cb->onQuality(strategyImpl->mSubscription,
+                          MAMA_QUALITY_STALE,
+                          symbol,
+                          cause,
+                          platformInfo,
+                          closure);
         }
     }
     else if (ctx->mDQState == DQ_STATE_POSSIBLY_STALE &&
              ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP)
     {
-        dqStrategy_sendRecapRequest (strategyImpl, msg, ctx);
+        dqStrategy_sendRecapRequest(strategyImpl, msg, ctx);
     }
 
     return MAMA_STATUS_OK;
 }
 
-static void processPointToPointMessage (mamaMsg         msg,
-                                        int             msgType,
-                                        SubjectContext  *ctx,
-                                        mamaSubscription subsc)
+static void processPointToPointMessage(mamaMsg msg,
+                                       int msgType,
+                                       SubjectContext* ctx,
+                                       mamaSubscription subsc)
 {
-    const char*    userSymbol  = NULL;
-    short          total       = 0;
-    short          msgNo       = 0;
-    mamaTransport  tport       = NULL;
-    dqStrategy     strategy;
+    const char* userSymbol = NULL;
+    short total = 0;
+    short msgNo = 0;
+    mamaTransport tport = NULL;
+    dqStrategy strategy;
     mamaDqContext* context;
 
-    mamaSubscription_getSymbol (subsc, &userSymbol);
-    mamaSubscription_getTransport (subsc, &tport);
+    mamaSubscription_getSymbol(subsc, &userSymbol);
+    mamaSubscription_getTransport(subsc, &tport);
 
     if ((gMamaLogLevel >= MAMA_LOG_LEVEL_FINER) ||
-        (mamaSubscription_checkDebugLevel (subsc,
-                                           MAMA_LOG_LEVEL_FINER)))
+        (mamaSubscription_checkDebugLevel(subsc, MAMA_LOG_LEVEL_FINER)))
     {
         const char* subscSymbol = NULL;
-        mamaSubscription_getSubscSymbol (subsc, &subscSymbol);
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                       "processPointToPointMessage(): Got unicast message(?) "
-                       "for %s (%s) (type=%d; subsc=%p) %p",
-                       subscSymbol == NULL ? "" : subscSymbol,
-                       userSymbol  == NULL ? "" : userSymbol,
-                       mamaMsgType_typeForMsg(msg),
-                       subsc,
-                       ctx);
+        mamaSubscription_getSubscSymbol(subsc, &subscSymbol);
+        mama_log(MAMA_LOG_LEVEL_FINER,
+                 "processPointToPointMessage(): Got unicast message(?) "
+                 "for %s (%s) (type=%d; subsc=%p) %p",
+                 subscSymbol == NULL ? "" : subscSymbol,
+                 userSymbol == NULL ? "" : userSymbol,
+                 mamaMsgType_typeForMsg(msg),
+                 subsc,
+                 ctx);
     }
 
     /* The caller should not see the inbox as the symbol. */
-    mamaMsgImpl_setSubscInfo (msg, NULL, NULL, userSymbol, 0);
+    mamaMsgImpl_setSubscInfo(msg, NULL, NULL, userSymbol, 0);
 
-    msgUtils_msgTotal (msg, &total);
-    msgUtils_msgNum (msg, &msgNo);
+    msgUtils_msgTotal(msg, &total);
+    msgUtils_msgNum(msg, &msgNo);
 
     /*Regular updates cannot stop the subscription waiting on a response.
      We will be receiving updates while waiting on a recap.*/
@@ -183,49 +180,56 @@ static void processPointToPointMessage (mamaMsg         msg,
          call stopWaitForResponse*/
         ctx->mInitialArrived = 1;
 
-
-        if( gMamaLogLevel >= MAMA_LOG_LEVEL_FINE )
+        if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINE)
         {
-            const char *msgString = mamaMsg_toString( msg );
-            mama_log (MAMA_LOG_LEVEL_FINE, "Received Initial: (%s) %s", userSymbol, msgString);
+            const char* msgString = mamaMsg_toString(msg);
+            mama_log(MAMA_LOG_LEVEL_FINE,
+                     "Received Initial: (%s) %s",
+                     userSymbol,
+                     msgString);
         }
-        if (!mamaSubscription_getAcceptMultipleInitials (subsc))
+        if (!mamaSubscription_getAcceptMultipleInitials(subsc))
         {
-            mamaSubscription_stopWaitForResponse (subsc, ctx);
+            mamaSubscription_stopWaitForResponse(subsc, ctx);
         }
     }
 
     strategy = mamaSubscription_getDqStrategy(subsc);
-    context  = mamaSubscription_getDqContext(subsc);
+    context = mamaSubscription_getDqContext(subsc);
     checkSeqNum(strategy, msg, msgType, context);
 
     /* Mark the subscription as inactive if we are not expecting
      * any more updates. */
-    if (!mamaSubscription_isExpectingUpdates (subsc) &&
-            !mamaSubscription_getAcceptMultipleInitials (subsc))
+    if (!mamaSubscription_isExpectingUpdates(subsc) &&
+        !mamaSubscription_getAcceptMultipleInitials(subsc))
     {
-        mamaSubscription_deactivate (subsc);
+        mamaSubscription_deactivate(subsc);
     }
 
     if (!ctx->mDqContext.mDoNotForward)
     {
-        mamaSubscription_forwardMsg (subsc, msg);
+        mamaSubscription_forwardMsg(subsc, msg);
     }
     else
     {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "Subscription for %s not forwarded as message seqnum is before seqnum expecting", userSymbol);
+        mama_log(MAMA_LOG_LEVEL_FINER,
+                 "Subscription for %s not forwarded as message seqnum is "
+                 "before seqnum expecting",
+                 userSymbol);
     }
 
     /*
        NB!!!  - can't destroy a subscription after an initial!!!!!
        After we forward this message we need to see if we should fill from
      the pre initial cache*/
-    if (PRE_INITIAL_SCHEME_ON_INITIAL==
-            mamaTransportImpl_getPreInitialScheme (tport))
+    if (PRE_INITIAL_SCHEME_ON_INITIAL ==
+        mamaTransportImpl_getPreInitialScheme(tport))
     {
-        if (msgType==MAMA_MSG_TYPE_INITIAL || msgType == MAMA_MSG_TYPE_BOOK_INITIAL ||
-           (mamaTransportImpl_preRecapCacheEnabled (tport) &&  (msgType == MAMA_MSG_TYPE_RECAP || msgType == MAMA_MSG_TYPE_BOOK_RECAP )))
+        if (msgType == MAMA_MSG_TYPE_INITIAL ||
+            msgType == MAMA_MSG_TYPE_BOOK_INITIAL ||
+            (mamaTransportImpl_preRecapCacheEnabled(tport) &&
+             (msgType == MAMA_MSG_TYPE_RECAP ||
+              msgType == MAMA_MSG_TYPE_BOOK_RECAP)))
         {
             applyPreInitialCache(&ctx->mDqContext, subsc);
             /*Clear the messages - no longer needed*/
@@ -233,47 +237,52 @@ static void processPointToPointMessage (mamaMsg         msg,
         }
     }
 
-
     /* Note: do NOT access the "strategyImpl" members because the subscription
      * may have been destroyed in the callback! */
 }
 
-mama_status
-dqstrategyMamaPlugin_initHook (mamaPluginInfo* pluginInfo)
+mama_status dqstrategyMamaPlugin_initHook(mamaPluginInfo* pluginInfo)
 {
-    *pluginInfo = calloc (1, sizeof (mamaPluginInfo));
+    *pluginInfo = calloc(1, sizeof(mamaPluginInfo));
 
     return MAMA_STATUS_OK;
 }
 
 mama_status
-dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTransport transport)
+dqstrategyMamaPlugin_transportPostCreateHook(mamaPluginInfo pluginInfo,
+                                             mamaTransport transport)
 {
-    const char*     middleware = NULL;
-    const char*     tportName  = NULL;
-    const char*     pluginName = NULL;
+    const char* middleware = NULL;
+    const char* tportName = NULL;
+    const char* pluginName = NULL;
     mamaBridgeImpl* bridgeImpl = NULL;
-    int             dqEnabled  = 1;
+    int dqEnabled = 1;
     mamaPluginImpl* pluginImpl;
-    char            propName[256];
+    char propName[256];
 
     mamaTransportImpl_getDqEnabled(transport, &dqEnabled);
 
     pluginImpl = (mamaPluginImpl*)pluginInfo;
 
-    bridgeImpl = mamaTransportImpl_getBridgeImpl (transport);
-    middleware = bridgeImpl->bridgeGetName ();
-    
-    mamaTransport_getName (transport, &tportName);
+    bridgeImpl = mamaTransportImpl_getBridgeImpl(transport);
+    middleware = bridgeImpl->bridgeGetName( );
 
-    snprintf(propName, sizeof (propName), "mama.%s.transport.%s.%s", middleware, tportName, DQ_PLUGIN_PROPERTY);
+    mamaTransport_getName(transport, &tportName);
+
+    snprintf(propName,
+             sizeof(propName),
+             "mama.%s.transport.%s.%s",
+             middleware,
+             tportName,
+             DQ_PLUGIN_PROPERTY);
     pluginName = mama_getProperty(propName);
-    //Load the default DQ plugin if no other DQ plugin is specified, but also allow it to be explicitly specified
+    // Load the default DQ plugin if no other DQ plugin is specified, but also
+    // allow it to be explicitly specified
     if (dqEnabled)
     {
-        if(!pluginName || (0 == strcmp(pluginName , "dqstrategy")))
+        if (!pluginName || (0 == strcmp(pluginName, "dqstrategy")))
         {
-            mamaTransportImpl_setDqPluginInfo (transport, pluginInfo);
+            mamaTransportImpl_setDqPluginInfo(transport, pluginInfo);
         }
     }
 
@@ -281,68 +290,72 @@ dqstrategyMamaPlugin_transportPostCreateHook (mamaPluginInfo pluginInfo, mamaTra
 }
 
 mama_status
-dqstrategyMamaPlugin_transportEventHook(mamaPluginInfo pluginInfo, mamaTransport transport, int setStale, mamaTransportEvent tportEvent)
+dqstrategyMamaPlugin_transportEventHook(mamaPluginInfo pluginInfo,
+                                        mamaTransport transport,
+                                        int setStale,
+                                        mamaTransportEvent tportEvent)
 {
     int possiblyStaleForAll;
     refreshTransport refreshTransport;
 
-    if (!(handleEvent (pluginInfo, transport)))
+    if (!(handleEvent(pluginInfo, transport)))
     {
         return MAMA_STATUS_OK;
     }
-   
+
     switch (tportEvent)
     {
-        case MAMA_TRANSPORT_DISCONNECT:
-            
-            if (setStale)
-            {
-                mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
+    case MAMA_TRANSPORT_DISCONNECT:
 
-                if (possiblyStaleForAll)
-                {
-                    mamaTransportImpl_setPossiblyStaleForListeners (transport);
-                }
-
-                mamaTransportImpl_setQuality(transport, MAMA_QUALITY_MAYBE_STALE);
-
-            }
-
-            break;
-
-        case MAMA_TRANSPORT_QUALITY:
-
-            mamaTransportImpl_getPossiblyStaleForAll(transport, &possiblyStaleForAll);
+        if (setStale)
+        {
+            mamaTransportImpl_getPossiblyStaleForAll(transport,
+                                                     &possiblyStaleForAll);
 
             if (possiblyStaleForAll)
             {
-                 mamaTransportImpl_setPossiblyStaleForListeners (transport);
-                 mamaTransportImpl_getRefreshTransport(transport, &refreshTransport);
-
-                if (refreshTransport)
-                {
-                    refreshTransport_startStaleRecapTimer (refreshTransport);
-                }
+                mamaTransportImpl_setPossiblyStaleForListeners(transport);
             }
-            
+
             mamaTransportImpl_setQuality(transport, MAMA_QUALITY_MAYBE_STALE);
+        }
 
-            break;
+        break;
 
+    case MAMA_TRANSPORT_QUALITY:
+
+        mamaTransportImpl_getPossiblyStaleForAll(transport,
+                                                 &possiblyStaleForAll);
+
+        if (possiblyStaleForAll)
+        {
+            mamaTransportImpl_setPossiblyStaleForListeners(transport);
+            mamaTransportImpl_getRefreshTransport(transport, &refreshTransport);
+
+            if (refreshTransport)
+            {
+                refreshTransport_startStaleRecapTimer(refreshTransport);
+            }
+        }
+
+        mamaTransportImpl_setQuality(transport, MAMA_QUALITY_MAYBE_STALE);
+
+        break;
     }
-    
+
     return MAMA_STATUS_OK;
 }
 
 mama_status
-dqstrategyMamaPlugin_subscriptionPostCreateHook (mamaPluginInfo pluginInfo, mamaSubscription subscription)
+dqstrategyMamaPlugin_subscriptionPostCreateHook(mamaPluginInfo pluginInfo,
+                                                mamaSubscription subscription)
 {
-    mamaTransport   transport = NULL;
-    dqStrategy strategy  = NULL;
+    mamaTransport transport = NULL;
+    dqStrategy strategy = NULL;
 
-    mamaSubscription_getTransport (subscription, &transport);
+    mamaSubscription_getTransport(subscription, &transport);
 
-    if (!handleEvent (pluginInfo, transport))
+    if (!handleEvent(pluginInfo, transport))
     {
         return MAMA_STATUS_OK;
     }
@@ -355,20 +368,21 @@ dqstrategyMamaPlugin_subscriptionPostCreateHook (mamaPluginInfo pluginInfo, mama
     }
 
     strategyImpl->mSubscription = subscription;
-    mamaSubscription_setDqStrategy (subscription, strategy);
+    mamaSubscription_setDqStrategy(subscription, strategy);
 
     return MAMA_STATUS_OK;
 }
 
 mama_status
-dqstrategyMamaPlugin_subscriptionDestroyHook (mamaPluginInfo pluginInfo, mamaSubscription subscription)
+dqstrategyMamaPlugin_subscriptionDestroyHook(mamaPluginInfo pluginInfo,
+                                             mamaSubscription subscription)
 {
-    
+
     dqStrategy strategy = NULL;
 
     strategy = mamaSubscription_getDqStrategy(subscription);
 
-    if ( MAMA_STATUS_OK == dqStrategy_destroy(strategy))
+    if (MAMA_STATUS_OK == dqStrategy_destroy(strategy))
     {
         return MAMA_STATUS_OK;
     }
@@ -377,26 +391,30 @@ dqstrategyMamaPlugin_subscriptionDestroyHook (mamaPluginInfo pluginInfo, mamaSub
 }
 
 mama_status
-dqstrategyMamaPlugin_subscriptionPreMsgHook(mamaPluginInfo pluginInfo, mamaSubscription subscription, int msgType, mamaMsg msg)
+dqstrategyMamaPlugin_subscriptionPreMsgHook(mamaPluginInfo pluginInfo,
+                                            mamaSubscription subscription,
+                                            int msgType,
+                                            mamaMsg msg)
 {
-    mamaDqContext   *ctx             = mamaSubscription_getDqContext(subscription);
-    SubjectContext* subjectContext   = mamaSubscription_getSubjectContext(subscription, msg);
-    dqStrategy      strategy         = mamaSubscription_getDqStrategy(subscription);
-    int             expectingInitial = 0;
-    dqState         state            = DQ_STATE_NOT_ESTABLISHED;
-    const char*     userSymbol       = NULL;
-    mamaTransport   transport;
-   
-    mamaSubscription_getTransport (subscription, &transport);
+    mamaDqContext* ctx = mamaSubscription_getDqContext(subscription);
+    SubjectContext* subjectContext =
+        mamaSubscription_getSubjectContext(subscription, msg);
+    dqStrategy strategy = mamaSubscription_getDqStrategy(subscription);
+    int expectingInitial = 0;
+    dqState state = DQ_STATE_NOT_ESTABLISHED;
+    const char* userSymbol = NULL;
+    mamaTransport transport;
 
-    if (!handleEvent (pluginInfo, transport))
+    mamaSubscription_getTransport(subscription, &transport);
+
+    if (!handleEvent(pluginInfo, transport))
     {
         return MAMA_STATUS_OK;
     }
 
     if (isInitialMessageOrRecap(msgType))
     {
-        processPointToPointMessage (msg, msgType, subjectContext, subscription);
+        processPointToPointMessage(msg, msgType, subjectContext, subscription);
         return MAMA_STATUS_OK;
     }
 
@@ -407,22 +425,23 @@ dqstrategyMamaPlugin_subscriptionPreMsgHook(mamaPluginInfo pluginInfo, mamaSubsc
         is ok. Also, we continue to process messages when waiting
         for recaps for in individual symbol
      */
-    mamaSubscription_getExpectingInitial (subscription, &expectingInitial);
-    dqStrategy_getDqState (&subjectContext->mDqContext, &state);
+    mamaSubscription_getExpectingInitial(subscription, &expectingInitial);
+    dqStrategy_getDqState(&subjectContext->mDqContext, &state);
 
     /*While we are waiting for initial values we also check whether we have an
      * initial for an individual context.
       If we are no longer waiting for initials we assume that it is ok to pass
      on the update - (probably a new symbol for a group)*/
     if ((expectingInitial && !subjectContext->mInitialArrived) ||
-        (state == DQ_STATE_WAITING_FOR_RECAP && mamaTransportImpl_preRecapCacheEnabled (transport)
-        && msgType != MAMA_MSG_TYPE_DELETE
-        && msgType != MAMA_MSG_TYPE_EXPIRE
-        && msgType != MAMA_MSG_TYPE_UNKNOWN))
+        (state == DQ_STATE_WAITING_FOR_RECAP &&
+         mamaTransportImpl_preRecapCacheEnabled(transport) &&
+         msgType != MAMA_MSG_TYPE_DELETE && msgType != MAMA_MSG_TYPE_EXPIRE &&
+         msgType != MAMA_MSG_TYPE_UNKNOWN))
     {
         /* If we are waiting for a recap and using the pre-recap cache, we
            want to pass on any cached updates as STALE when the recap arrives */
-        if (state == DQ_STATE_WAITING_FOR_RECAP && mamaTransportImpl_preRecapCacheEnabled (transport))
+        if (state == DQ_STATE_WAITING_FOR_RECAP &&
+            mamaTransportImpl_preRecapCacheEnabled(transport))
         {
             subjectContext->mDqContext.mSetCacheMsgStale = 1;
         }
@@ -432,16 +451,22 @@ dqstrategyMamaPlugin_subscriptionPreMsgHook(mamaPluginInfo pluginInfo, mamaSubsc
         dqContext_cacheMsg(ctx, msg);
         /* Response for initial value not yet received. */
         if ((gMamaLogLevel >= MAMA_LOG_LEVEL_FINE) ||
-            (mamaSubscription_checkDebugLevel (subscription,
-                                               MAMA_LOG_LEVEL_FINE)))
+            (mamaSubscription_checkDebugLevel(subscription,
+                                              MAMA_LOG_LEVEL_FINE)))
         {
-            mamaSubscription_getSymbol (subscription, &userSymbol);
+            mamaSubscription_getSymbol(subscription, &userSymbol);
 
-            mama_log (MAMA_LOG_LEVEL_FINE,
-                           "%s%s %s%s"
-                           " Subscription ignoring message received prior"
-                           " to initial or recap. Type: %d %s %p",
-                           userSymbol ? userSymbol : "", userSymbol ? ":" : "" , userSymbol ? userSymbol : "", subjectContext->mSymbol ? ":" : "", msgType, mamaMsg_toString(msg), subjectContext);
+            mama_log(MAMA_LOG_LEVEL_FINE,
+                     "%s%s %s%s"
+                     " Subscription ignoring message received prior"
+                     " to initial or recap. Type: %d %s %p",
+                     userSymbol ? userSymbol : "",
+                     userSymbol ? ":" : "",
+                     userSymbol ? userSymbol : "",
+                     subjectContext->mSymbol ? ":" : "",
+                     msgType,
+                     mamaMsg_toString(msg),
+                     subjectContext);
         }
 
         return MAMA_STATUS_OK;
@@ -449,46 +474,50 @@ dqstrategyMamaPlugin_subscriptionPreMsgHook(mamaPluginInfo pluginInfo, mamaSubsc
 
     switch (msgType)
     {
-        case MAMA_MSG_TYPE_REFRESH:
-        case MAMA_MSG_TYPE_DELETE:
-        case MAMA_MSG_TYPE_EXPIRE:
-        case MAMA_MSG_TYPE_NOT_PERMISSIONED:
-        case MAMA_MSG_TYPE_NOT_FOUND:
-        case MAMA_MSG_TYPE_UNKNOWN:
-            break; 
-        case MAMA_MSG_TYPE_QUOTE:
-        case MAMA_MSG_TYPE_TRADE:
-            checkSeqNum(strategy, msg, msgType, ctx);
-            if (!subjectContext->mDqContext.mDoNotForward)
-            {
-                mamaSubscription_forwardMsg(subscription, msg);
-            }
-            else
-            {
-                mamaSubscription_getSymbol (subscription, &userSymbol);
-                mama_log (MAMA_LOG_LEVEL_FINER, "Subscription for %s not forwarded"
-                        " as message seqnum is before seqnum expecting", userSymbol);
-            }
-            break;
-        default:
-            checkSeqNum(strategy, msg, msgType, ctx);
-            if (!subjectContext->mDqContext.mDoNotForward)
-            {
-                mamaSubscription_forwardMsg(subscription, msg);
-            }
-            else
-            {
-                mamaSubscription_getSymbol (subscription, &userSymbol);
-                mama_log (MAMA_LOG_LEVEL_FINER, "Subscription for %s not forwarded"
-                        " as message seqnum is before seqnum expecting", userSymbol);
-            }
+    case MAMA_MSG_TYPE_REFRESH:
+    case MAMA_MSG_TYPE_DELETE:
+    case MAMA_MSG_TYPE_EXPIRE:
+    case MAMA_MSG_TYPE_NOT_PERMISSIONED:
+    case MAMA_MSG_TYPE_NOT_FOUND:
+    case MAMA_MSG_TYPE_UNKNOWN:
+        break;
+    case MAMA_MSG_TYPE_QUOTE:
+    case MAMA_MSG_TYPE_TRADE:
+        checkSeqNum(strategy, msg, msgType, ctx);
+        if (!subjectContext->mDqContext.mDoNotForward)
+        {
+            mamaSubscription_forwardMsg(subscription, msg);
+        }
+        else
+        {
+            mamaSubscription_getSymbol(subscription, &userSymbol);
+            mama_log(MAMA_LOG_LEVEL_FINER,
+                     "Subscription for %s not forwarded"
+                     " as message seqnum is before seqnum expecting",
+                     userSymbol);
+        }
+        break;
+    default:
+        checkSeqNum(strategy, msg, msgType, ctx);
+        if (!subjectContext->mDqContext.mDoNotForward)
+        {
+            mamaSubscription_forwardMsg(subscription, msg);
+        }
+        else
+        {
+            mamaSubscription_getSymbol(subscription, &userSymbol);
+            mama_log(MAMA_LOG_LEVEL_FINER,
+                     "Subscription for %s not forwarded"
+                     " as message seqnum is before seqnum expecting",
+                     userSymbol);
+        }
     }
 
     return MAMA_STATUS_OK;
-} 
+}
 
-mama_status
-applyPreInitialCache(mamaDqContext *ctx, mamaSubscription subscription)
+mama_status applyPreInitialCache(mamaDqContext* ctx,
+                                 mamaSubscription subscription)
 {
     /*We looking for the next sequence number in the cache*/
     mama_seqnum_t expectedSeqNum = ctx->mSeqNum + 1;
@@ -496,39 +525,44 @@ applyPreInitialCache(mamaDqContext *ctx, mamaSubscription subscription)
     const char* symbol = NULL;
 
     /*Ensure we have a cahce to iterate*/
-    if (ctx->mCache == NULL) return MAMA_STATUS_OK;
+    if (ctx->mCache == NULL)
+        return MAMA_STATUS_OK;
 
-    mamaSubscription_getSymbol (subscription, &symbol);
+    mamaSubscription_getSymbol(subscription, &symbol);
 
-    mama_log (MAMA_LOG_LEVEL_NORMAL,
-              "%s: Attempting to apply pre initial cache after initial.",
-              symbol);
+    mama_log(MAMA_LOG_LEVEL_NORMAL,
+             "%s: Attempting to apply pre initial cache after initial.",
+             symbol);
 
     /*Loop from start to last added message - may have looped over*/
-    while (currentMessageindex<ctx->mCurCacheIdx)
+    while (currentMessageindex < ctx->mCurCacheIdx)
     {
         mama_seqnum_t cachedMessageSeqNum = 0;
-    
+
         /*just in case*/
-        if (!ctx->mCache[currentMessageindex]) return MAMA_STATUS_OK;
+        if (!ctx->mCache[currentMessageindex])
+            return MAMA_STATUS_OK;
 
-        mamaMsg_getSeqNum (ctx->mCache[currentMessageindex],
-                           &cachedMessageSeqNum);
-        mama_log (MAMA_LOG_LEVEL_NORMAL,
-                  "%s: Found cached msg withseqNum: %d Current [%d]",
-                  symbol, cachedMessageSeqNum, ctx->mSeqNum);
+        mamaMsg_getSeqNum(ctx->mCache[currentMessageindex],
+                          &cachedMessageSeqNum);
+        mama_log(MAMA_LOG_LEVEL_NORMAL,
+                 "%s: Found cached msg withseqNum: %d Current [%d]",
+                 symbol,
+                 cachedMessageSeqNum,
+                 ctx->mSeqNum);
 
-        if (expectedSeqNum==cachedMessageSeqNum)
+        if (expectedSeqNum == cachedMessageSeqNum)
         {
-            mama_log (MAMA_LOG_LEVEL_NORMAL,
-                      "%s: Applying cached message after initial", symbol);
+            mama_log(MAMA_LOG_LEVEL_NORMAL,
+                     "%s: Applying cached message after initial",
+                     symbol);
             /*Next expected - pass it on!*/
             mamaSubscription_forwardMsg(subscription,
                                         ctx->mCache[currentMessageindex]);
 
             /*this is now the latest sequence number for the context*/
-            ctx->mSeqNum   = cachedMessageSeqNum;
-            expectedSeqNum = cachedMessageSeqNum+1;
+            ctx->mSeqNum = cachedMessageSeqNum;
+            expectedSeqNum = cachedMessageSeqNum + 1;
 
             /*Lets see if there are any more in the cache*/
         }
@@ -536,16 +570,17 @@ applyPreInitialCache(mamaDqContext *ctx, mamaSubscription subscription)
         {
             /*Bomb out - we can't apply this or any subsequent messages
               as they are stored in arrival order*/
-            if (cachedMessageSeqNum>expectedSeqNum)
+            if (cachedMessageSeqNum > expectedSeqNum)
             {
-                mama_log (MAMA_LOG_LEVEL_NORMAL,
-                          "%s: Can't apply cached message", symbol);
+                mama_log(MAMA_LOG_LEVEL_NORMAL,
+                         "%s: Can't apply cached message",
+                         symbol);
                 break;
             }
         }
         currentMessageindex++;
     }
-    
+
     return MAMA_STATUS_OK;
 }
 
@@ -556,22 +591,26 @@ applyPreInitialCache(mamaDqContext *ctx, mamaSubscription subscription)
     We simply accept that this is the next expected message and reset the
     context state - all is OK
  */
-static mama_status
-handleFTTakeover (dqStrategy        strategy,
-                  mamaMsg           msg,
-                  int               msgType,
-                  mamaDqContext*    ctx,
-                  mama_seqnum_t     seqNum,
-                  mama_u64_t        senderId,
-                  int               recoverOnRecap)
+static mama_status handleFTTakeover(dqStrategy strategy,
+                                    mamaMsg msg,
+                                    int msgType,
+                                    mamaDqContext* ctx,
+                                    mama_seqnum_t seqNum,
+                                    mama_u64_t senderId,
+                                    int recoverOnRecap)
 {
-    const char*         symbol  = NULL;
-    mamaSubscription_getSymbol (strategyImpl->mSubscription, &symbol);
+    const char* symbol = NULL;
+    mamaSubscription_getSymbol(strategyImpl->mSubscription, &symbol);
 
-    mama_log (MAMA_LOG_LEVEL_NORMAL, "Detected FT takeover. "
-            "Original SenderId: %llu. New SenderId: %llu. "
-            "Previous SeqNum: %u. New SeqNum: %u. [%s]",
-            ctx->mSenderId, senderId, ctx->mSeqNum, seqNum, symbol);
+    mama_log(MAMA_LOG_LEVEL_NORMAL,
+             "Detected FT takeover. "
+             "Original SenderId: %llu. New SenderId: %llu. "
+             "Previous SeqNum: %u. New SeqNum: %u. [%s]",
+             ctx->mSenderId,
+             senderId,
+             ctx->mSeqNum,
+             seqNum,
+             symbol);
 
     if (recoverOnRecap)
     {
@@ -580,85 +619,90 @@ handleFTTakeover (dqStrategy        strategy,
     }
     else
     {
-        resetDqState (strategy, ctx);
+        resetDqState(strategy, ctx);
 
         /*In all cases we reset the data quality context*/
-        resetDqContext (ctx, seqNum, senderId);
+        resetDqContext(ctx, seqNum, senderId);
     }
 
     return MAMA_STATUS_OK;
 }
 
 mama_status
-checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx)
+checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext* ctx)
 {
-    mama_seqnum_t                seqNum                  = 0;
-    mama_seqnum_t                ctxSeqNum               = ctx->mSeqNum;
-    mama_u64_t                   senderId                = 0;
-    mama_u64_t                   ctxSenderId             = ctx->mSenderId;
-    dqState                      ctxDqState              = ctx->mDQState;
-    mamaSubscription             subscription            = strategyImpl->mSubscription;
-    mama_u16_t                   conflateCnt             = 1;
-    wombat_subscriptionGapCB     onGap                   = NULL;
-    mamaStatsCollector           transportStatsCollector = NULL;
-    wombat_subscriptionQualityCB onQuality               = NULL;
-    mamaMsgStatus                msgStatus               = MAMA_MSG_STATUS_UNKNOWN;
-    mamaTransport                transport               = NULL;
+    mama_seqnum_t seqNum = 0;
+    mama_seqnum_t ctxSeqNum = ctx->mSeqNum;
+    mama_u64_t senderId = 0;
+    mama_u64_t ctxSenderId = ctx->mSenderId;
+    dqState ctxDqState = ctx->mDQState;
+    mamaSubscription subscription = strategyImpl->mSubscription;
+    mama_u16_t conflateCnt = 1;
+    wombat_subscriptionGapCB onGap = NULL;
+    mamaStatsCollector transportStatsCollector = NULL;
+    wombat_subscriptionQualityCB onQuality = NULL;
+    mamaMsgStatus msgStatus = MAMA_MSG_STATUS_UNKNOWN;
+    mamaTransport transport = NULL;
 
-    if(strategy == NULL || !strategy->mRecoverGaps)
+    if (strategy == NULL || !strategy->mRecoverGaps)
     {
         return MAMA_STATUS_INVALID_ARG;
     }
-    mamaSubscription_getTransport (strategyImpl->mSubscription, &transport);
+    mamaSubscription_getTransport(strategyImpl->mSubscription, &transport);
 
-    mamaMsg_getSeqNum (msg, &seqNum);
+    mamaMsg_getSeqNum(msg, &seqNum);
 
     ctx->mDoNotForward = 0;
-    if (mamaMsg_getU64 (msg, MamaFieldSenderId.mName, MamaFieldSenderId.mFid,
-                        &senderId) != MAMA_STATUS_OK)
+    if (mamaMsg_getU64(
+            msg, MamaFieldSenderId.mName, MamaFieldSenderId.mFid, &senderId) !=
+        MAMA_STATUS_OK)
     {
         /* We just ignore it as we might be running against an older FH */
         senderId = 0;
     }
-    
+
     /*Special case for dealing with a fault tolerant takeover*/
     if (ctxSenderId != 0 && senderId != 0 && ctxSenderId != senderId)
     {
         /* Only record FT Takeovers per transport and globally */
-        if (mama_getGenerateTransportStats())
+        if (mama_getGenerateTransportStats( ))
         {
-            transportStatsCollector = mamaTransport_getStatsCollector (transport);
+            transportStatsCollector =
+                mamaTransport_getStatsCollector(transport);
 
-            mamaStatsCollector_incrementStat (transportStatsCollector,
-                                              MamaStatFtTakeovers.mFid);
+            mamaStatsCollector_incrementStat(transportStatsCollector,
+                                             MamaStatFtTakeovers.mFid);
         }
-        
-        if (mamaInternal_getGlobalStatsCollector() != NULL)
+
+        if (mamaInternal_getGlobalStatsCollector( ) != NULL)
         {
-            mamaStatsCollector_incrementStat (mamaInternal_getGlobalStatsCollector(),
-                                              MamaStatFtTakeovers.mFid);
+            mamaStatsCollector_incrementStat(
+                mamaInternal_getGlobalStatsCollector( ),
+                MamaStatFtTakeovers.mFid);
         }
-        
-        if (DQ_FT_WAIT_FOR_RECAP==mamaTransportImpl_getFtStrategyScheme(transport))
+
+        if (DQ_FT_WAIT_FOR_RECAP ==
+            mamaTransportImpl_getFtStrategyScheme(transport))
         {
             ctx->mDoNotForward = 1;
-            handleFTTakeover (strategy, msg, msgType, ctx, seqNum, senderId, 1);
+            handleFTTakeover(strategy, msg, msgType, ctx, seqNum, senderId, 1);
         }
         else
         {
-            return handleFTTakeover (strategy, msg, msgType, ctx, seqNum, senderId, 0);
+            return handleFTTakeover(
+                strategy, msg, msgType, ctx, seqNum, senderId, 0);
         }
     }
 
     if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINEST)
     {
-        const char*  symbol = NULL;
-        mamaSubscription_getSymbol (subscription, &symbol);
+        const char* symbol = NULL;
+        mamaSubscription_getSymbol(subscription, &symbol);
         symbol = symbol == NULL ? "" : symbol;
-        mama_log (MAMA_LOG_LEVEL_FINEST,
-                  "checkSeqNum(): %s : seq# %ld",
-                  symbol,
-                  seqNum);
+        mama_log(MAMA_LOG_LEVEL_FINEST,
+                 "checkSeqNum(): %s : seq# %ld",
+                 symbol,
+                 seqNum);
     }
 
     switch (msgType)
@@ -667,80 +711,88 @@ checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx)
     case MAMA_MSG_TYPE_TRADE:
     case MAMA_MSG_TYPE_UPDATE:
     default:
-         if (MAMA_STATUS_OK != mamaMsg_getU16 (msg,
-                          MamaFieldConflateCount.mName,
-                          MamaFieldConflateCount.mFid,
-                          &conflateCnt))
-         {
+        if (MAMA_STATUS_OK != mamaMsg_getU16(msg,
+                                             MamaFieldConflateCount.mName,
+                                             MamaFieldConflateCount.mFid,
+                                             &conflateCnt))
+        {
             /*Need to set conflateCnt=1 as mamaMsg_getU16 sets conflateCnt=0
               if not found */
             conflateCnt = 1;
-         }
+        }
     /* Deliberate fallthrough.  Only the types above can be conflated, so only
        try to extract the conflate count field for those types. */
     case MAMA_MSG_TYPE_SEC_STATUS:
     case MAMA_MSG_TYPE_BOOK_UPDATE:
-        if (((ctxDqState == DQ_STATE_NOT_ESTABLISHED) ||
-             (seqNum == 0) ||
+        if (((ctxDqState == DQ_STATE_NOT_ESTABLISHED) || (seqNum == 0) ||
              (seqNum == (ctxSeqNum + conflateCnt))) &&
-             ((ctxDqState != DQ_STATE_WAITING_FOR_RECAP) ||
+            ((ctxDqState != DQ_STATE_WAITING_FOR_RECAP) ||
              (ctxDqState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
         {
             /* No gap */
             if (strategyImpl->mTryToFillGap)
             {
                 strategyImpl->mTryToFillGap = 0;
-                dqContext_clearCache (ctx, 0);
+                dqContext_clearCache(ctx, 0);
             }
 
             /* It is no longer the case that all subscriptions are possibly
                stale. */
-            mamaSubscription_unsetAllPossiblyStale (subscription);
+            mamaSubscription_unsetAllPossiblyStale(subscription);
             /* If the sequence numbers for a message are correct then the
                subscription is OK. */
-            msgStatus = mamaMsgStatus_statusForMsg (msg);
+            msgStatus = mamaMsgStatus_statusForMsg(msg);
             /* Check the status of the message.  If it is stale,
                do not request a recap and do not set status OK. */
             if (msgStatus == MAMA_MSG_STATUS_OK)
             {
-                resetDqState (strategy, ctx);
+                resetDqState(strategy, ctx);
 
                 ctx->mSeqNum = seqNum;
                 return MAMA_STATUS_OK;
             }
         }
 
-        /* For late joins or middlewares that support a publish cache, it is possible that you will get old updates
+        /* For late joins or middlewares that support a publish cache, it is
+           possible that you will get old updates
            in this case take no action */
-        if (DQ_SCHEME_INGORE_DUPS == mamaTransportImpl_getDqStrategyScheme(transport))
+        if (DQ_SCHEME_INGORE_DUPS ==
+            mamaTransportImpl_getDqStrategyScheme(transport))
         {
-            if ((seqNum <= ctxSeqNum) && ((ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP) &&
-                                          (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
+            if ((seqNum <= ctxSeqNum) &&
+                ((ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP) &&
+                 (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
             {
                 ctx->mDoNotForward = 1;
                 return MAMA_STATUS_OK;
             }
         }
 
-        if ((seqNum == ctxSeqNum) && (ctxDqState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT))
+        if ((seqNum == ctxSeqNum) &&
+            (ctxDqState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT))
         {
-            /* Duplicate data - set DQQuality to DUPLICATE, invoke quality callback */
+            /* Duplicate data - set DQQuality to DUPLICATE, invoke quality
+             * callback */
             ctx->mDQState = DQ_STATE_DUPLICATE;
-            if ((onQuality = (mamaSubscription_getUserCallbacks (subscription))->onQuality))
+            if ((onQuality = (mamaSubscription_getUserCallbacks(subscription))
+                                 ->onQuality))
             {
-                void*       closure = NULL;
-                const char* symbol  = NULL;
-                short       cause;
+                void* closure = NULL;
+                const char* symbol = NULL;
+                short cause;
                 const void* platformInfo = NULL;
-                mamaSubscription_getClosure (subscription, &closure);
-                mamaSubscription_getSymbol (subscription, &symbol);
-                mamaSubscription_getAdvisoryCauseAndPlatformInfo (
-                                                            subscription,
-                                                            &cause, &platformInfo);
-                onQuality (subscription, MAMA_QUALITY_DUPLICATE, symbol,
-                           cause, platformInfo, closure);
+                mamaSubscription_getClosure(subscription, &closure);
+                mamaSubscription_getSymbol(subscription, &symbol);
+                mamaSubscription_getAdvisoryCauseAndPlatformInfo(
+                    subscription, &cause, &platformInfo);
+                onQuality(subscription,
+                          MAMA_QUALITY_DUPLICATE,
+                          symbol,
+                          cause,
+                          platformInfo,
+                          closure);
             }
-            msgUtils_setStatus (msg, MAMA_MSG_STATUS_DUPLICATE);
+            msgUtils_setStatus(msg, MAMA_MSG_STATUS_DUPLICATE);
             return MAMA_STATUS_OK;
         }
 
@@ -752,67 +804,75 @@ checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx)
         else
         {
             /* If we get here, we missed a sequence number. */
-             if ((PRE_INITIAL_SCHEME_ON_GAP==mamaTransportImpl_getPreInitialScheme(transport))
-                  &&(strategyImpl->mTryToFillGap))
-             {
+            if ((PRE_INITIAL_SCHEME_ON_GAP ==
+                 mamaTransportImpl_getPreInitialScheme(transport)) &&
+                (strategyImpl->mTryToFillGap))
+            {
                 strategyImpl->mTryToFillGap = 0;
-                if (fillGap (ctx, seqNum, subscription))
+                if (fillGap(ctx, seqNum, subscription))
                 {
                     /* we filled it */
-                    dqContext_clearCache (ctx, 0);
+                    dqContext_clearCache(ctx, 0);
                     ctx->mSeqNum = seqNum;
                     return MAMA_STATUS_OK;
                 }
-                dqContext_clearCache (ctx, 0);
+                dqContext_clearCache(ctx, 0);
             }
 
             if (gMamaLogLevel >= MAMA_LOG_LEVEL_FINE)
             {
-                const char*  symbol = NULL;
-                mamaSubscription_getSymbol (subscription, &symbol);
+                const char* symbol = NULL;
+                mamaSubscription_getSymbol(subscription, &symbol);
                 symbol = symbol == NULL ? "" : symbol;
-                mama_log (MAMA_LOG_LEVEL_FINE, "%s : SeqNum gap (%ld-%ld)",
-                          symbol, ctxSeqNum+1, seqNum-1);
+                mama_log(MAMA_LOG_LEVEL_FINE,
+                         "%s : SeqNum gap (%ld-%ld)",
+                         symbol,
+                         ctxSeqNum + 1,
+                         seqNum - 1);
             }
 
             if ((onGap =
-                (mamaSubscription_getUserCallbacks (subscription)->onGap)))
+                     (mamaSubscription_getUserCallbacks(subscription)->onGap)))
             {
                 void* closure = NULL;
-                mamaSubscription_getClosure (subscription, &closure);
-                onGap (subscription, closure);
+                mamaSubscription_getClosure(subscription, &closure);
+                onGap(subscription, closure);
             }
 
-            handleStaleData (strategyImpl, msg, ctx);
+            handleStaleData(strategyImpl, msg, ctx);
         }
         break;
-    case MAMA_MSG_TYPE_INITIAL      :
-    case MAMA_MSG_TYPE_BOOK_INITIAL :
+    case MAMA_MSG_TYPE_INITIAL:
+    case MAMA_MSG_TYPE_BOOK_INITIAL:
         msgStatus = MAMA_MSG_STATUS_UNKNOWN;
 
         strategyImpl->mTryToFillGap = 1;
 
-        msgStatus = mamaMsgStatus_statusForMsg (msg);
+        msgStatus = mamaMsgStatus_statusForMsg(msg);
         /* Check the status of the message.  If it is stale,
            do not request a recap and do not set status OK. */
         if ((msgStatus == MAMA_MSG_STATUS_POSSIBLY_STALE) ||
             (msgStatus == MAMA_MSG_STATUS_STALE))
         {
             ctx->mDQState = DQ_STATE_STALE_NO_RECAP;
-            resetDqContext (ctx, seqNum, senderId);
+            resetDqContext(ctx, seqNum, senderId);
             return MAMA_STATUS_OK;
         }
-    case MAMA_MSG_TYPE_RECAP        :
-    case MAMA_MSG_TYPE_BOOK_RECAP   :
-        /* For late joins or middlewares that support a publish cache, it is possible that you will get old updates
+    case MAMA_MSG_TYPE_RECAP:
+    case MAMA_MSG_TYPE_BOOK_RECAP:
+        /* For late joins or middlewares that support a publish cache, it is
+           possible that you will get old updates
            in this case take no action */
-        if (DQ_SCHEME_INGORE_DUPS == mamaTransportImpl_getDqStrategyScheme(transport))
+        if (DQ_SCHEME_INGORE_DUPS ==
+            mamaTransportImpl_getDqStrategyScheme(transport))
         {
             if (MAMA_MSG_TYPE_RECAP == msgType)
             {
-                /* Feed-handlers maintain sequence number for a Record FT Recap. */
-                if ((seqNum <= ctxSeqNum) && ((ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP) &&
-                                              (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
+                /* Feed-handlers maintain sequence number for a Record FT Recap.
+                 */
+                if ((seqNum <= ctxSeqNum) &&
+                    ((ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP) &&
+                     (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
                 {
                     ctx->mDoNotForward = 1;
                     return MAMA_STATUS_OK;
@@ -822,7 +882,8 @@ checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx)
             {
                 if (0 == seqNum && ctxSeqNum > 0)
                 {
-                    /* Special case of an FT Order Book Recap where a SeqNum of 0 is used. */
+                    /* Special case of an FT Order Book Recap where a SeqNum of
+                     * 0 is used. */
                     if (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)
                     {
                         ctx->mDoNotForward = 1;
@@ -831,8 +892,10 @@ checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx)
                 }
                 /* Solicited Recap from Feed-Handler or
                  * solicited / unsolicited Recap from mid-tier. */
-                else if ((seqNum <= ctxSeqNum) && ((ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP) &&
-                                                   (ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
+                else if ((seqNum <= ctxSeqNum) &&
+                         ((ctx->mDQState != DQ_STATE_WAITING_FOR_RECAP) &&
+                          (ctx->mDQState !=
+                           DQ_STATE_WAITING_FOR_RECAP_AFTER_FT)))
                 {
                     ctx->mDoNotForward = 1;
                     return MAMA_STATUS_OK;
@@ -840,33 +903,32 @@ checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext *ctx)
             }
         }
 
-        if (mamaTransportImpl_preRecapCacheEnabled (transport))
+        if (mamaTransportImpl_preRecapCacheEnabled(transport))
         {
             strategyImpl->mTryToFillGap = 1;
         }
-        mamaSubscription_unsetAllPossiblyStale (subscription);
-        resetDqState (strategy, ctx);
-        resetDqContext (ctx, seqNum, senderId);
+        mamaSubscription_unsetAllPossiblyStale(subscription);
+        resetDqState(strategy, ctx);
+        resetDqContext(ctx, seqNum, senderId);
         ctx->mDoNotForward = 0;
         return MAMA_STATUS_OK;
-    case MAMA_MSG_TYPE_DDICT_SNAPSHOT : /*No DQ checking for Datadictionary*/
+    case MAMA_MSG_TYPE_DDICT_SNAPSHOT: /*No DQ checking for Datadictionary*/
         return MAMA_STATUS_OK;
     }
 
     return MAMA_STATUS_OK;
 }
 
-mama_status
-dqstrategyMamaPlugin_shutdownHook (mamaPluginInfo pluginInfo)
+mama_status dqstrategyMamaPlugin_shutdownHook(mamaPluginInfo pluginInfo)
 {
     free(pluginInfo);
     return MAMA_STATUS_OK;
 }
 
 static int
-fillGap (mamaDqContext *ctx, mama_seqnum_t end, mamaSubscription subscription)
+fillGap(mamaDqContext* ctx, mama_seqnum_t end, mamaSubscription subscription)
 {
-    mama_log (MAMA_LOG_LEVEL_FINE, "Attempting to fill gap from cache.");
+    mama_log(MAMA_LOG_LEVEL_FINE, "Attempting to fill gap from cache.");
     if (ctx->mCache != NULL)
     {
         mama_seqnum_t begin = ctx->mSeqNum + 1;
@@ -891,25 +953,23 @@ fillGap (mamaDqContext *ctx, mama_seqnum_t end, mamaSubscription subscription)
                 break;
             }
 
-            mamaMsg_getSeqNum (ctx->mCache[cur], &curSeqNum);
+            mamaMsg_getSeqNum(ctx->mCache[cur], &curSeqNum);
 
-            mama_log (MAMA_LOG_LEVEL_FINE,
-                      "Found cached msg with seqNum: %d",
-                      curSeqNum);
+            mama_log(MAMA_LOG_LEVEL_FINE,
+                     "Found cached msg with seqNum: %d",
+                     curSeqNum);
             if (curSeqNum == nextSeqNum)
             {
-                mama_log (MAMA_LOG_LEVEL_FINE,
-                               "Found a message for gap.");
+                mama_log(MAMA_LOG_LEVEL_FINE, "Found a message for gap.");
                 if (ctx->mSetCacheMsgStale)
                 {
-                    msgUtils_setStatus (ctx->mCache[cur], MAMA_MSG_STATUS_STALE);
+                    msgUtils_setStatus(ctx->mCache[cur], MAMA_MSG_STATUS_STALE);
                 }
                 mamaSubscription_forwardMsg(subscription, ctx->mCache[cur]);
 
                 if (++nextSeqNum == end)
                 {
-                    mama_log (MAMA_LOG_LEVEL_FINE,
-                               "Filled gap.");
+                    mama_log(MAMA_LOG_LEVEL_FINE, "Filled gap.");
                     return 1;
                 }
             }
@@ -927,24 +987,22 @@ fillGap (mamaDqContext *ctx, mama_seqnum_t end, mamaSubscription subscription)
     return 0;
 }
 
-static int 
-isInitialMessageOrRecap (int msgType)
+static int isInitialMessageOrRecap(int msgType)
 {
-    return msgType == MAMA_MSG_TYPE_INITIAL        ||
-           msgType == MAMA_MSG_TYPE_SNAPSHOT       ||
+    return msgType == MAMA_MSG_TYPE_INITIAL ||
+           msgType == MAMA_MSG_TYPE_SNAPSHOT ||
            msgType == MAMA_MSG_TYPE_DDICT_SNAPSHOT ||
-           msgType == MAMA_MSG_TYPE_RECAP          ||
-           msgType == MAMA_MSG_TYPE_BOOK_INITIAL   ||
-           msgType == MAMA_MSG_TYPE_BOOK_SNAPSHOT  ||
+           msgType == MAMA_MSG_TYPE_RECAP ||
+           msgType == MAMA_MSG_TYPE_BOOK_INITIAL ||
+           msgType == MAMA_MSG_TYPE_BOOK_SNAPSHOT ||
            msgType == MAMA_MSG_TYPE_BOOK_RECAP;
 }
 
-static int 
-handleEvent (mamaPluginInfo pluginInfo, mamaTransport transport)
+static int handleEvent(mamaPluginInfo pluginInfo, mamaTransport transport)
 {
     mamaPluginInfo dqPluginInfo = NULL;
 
-    mamaTransportImpl_getDqPluginInfo (transport, &dqPluginInfo);
+    mamaTransportImpl_getDqPluginInfo(transport, &dqPluginInfo);
     if (dqPluginInfo != pluginInfo)
     {
         return 0;
