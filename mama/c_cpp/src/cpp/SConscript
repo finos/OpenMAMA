@@ -138,7 +138,7 @@ libmama_sources = \
 """)
 
 
-env.Append(LIBS=['mama'],CPPPATH=includePath, LIBPATH=libPath)
+env.Append(LIBS=['mama'],CPPPATH=includePath, LIBPATH=libPath, CPPDEFINES=['OPENMAMA_INTEGRATION'])
 
 lib = []
 lib.append(env.SharedLibrary(target, libmama_sources))

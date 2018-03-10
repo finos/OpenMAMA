@@ -5,30 +5,33 @@ env = env.Clone()
 
 target = 'libmamajni'
 
+osname = env['host']['os']
+
 incPath = []
 incPath.append('.')
 incPath.append('../../../jni/jni')
 incPath.append('#common/c_cpp/src/c')
-incPath.append('#common/c_cpp/src/c/' + env['host']['os'].lower())
+incPath.append('#common/c_cpp/src/c/' + osname.lower())
 incPath.append('#mama/c_cpp/src/c')
 
 libPath = []
 libPath.append('$libdir')
 
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
-if env['host']['os'] == 'Darwin':
+if osname == 'Darwin':
     env.Append(LIBS=['mama', 'wombatcommon'], LIBPATH=libPath,
                CPPPATH=incPath)
 else:
     env.Append(LIBS=['mama', 'wombatcommon', 'rt'], LIBPATH=libPath,
-               CPPPATH=incPath)
+               CPPPATH=incPath,
+               CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
 
 
 sources = \
     Split("""
     version.c
     mamajni.c
-	mamaconnectionjni.c
+    mamaconnectionjni.c
     mamatransportjni.c
     mamabridgejni.c
     mamasubscriptionjni.c
@@ -47,10 +50,10 @@ sources = \
     mamapricejni.c
     mamadatetimejni.c
     mamasourcejni.c
-	mamaftmemberjni.c
+    mamaftmemberjni.c
     subscriptioncommon.c
     mamaloghandler.c
-	mamapayloadbridgejni.c
+    mamapayloadbridgejni.c
 """)
 
 lib = []

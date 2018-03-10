@@ -32,6 +32,7 @@ port.cpp
 queuetest.cpp
 timertest.cpp
 utiltest.cpp
+strutilstest.cpp
 """)
 
 MainUnitTest = env.Object( '../MainUnitTestC.cpp' ) 
