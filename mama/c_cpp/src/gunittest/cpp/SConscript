@@ -8,6 +8,7 @@ target = 'UnitTestMamaCPP'
 incpath = []
 incpath.append('.')
 incpath.append('#common/c_cpp/src/c')
+incpath.append('#common/c_cpp/src/c/' + env['host']['os'].lower())
 incpath.append('#mama/c_cpp/src/c')
 incpath.append('#mama/c_cpp/src/cpp')
 

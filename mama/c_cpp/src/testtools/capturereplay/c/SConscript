@@ -6,6 +6,7 @@ includePath = []
 includePath.append('.')
 includePath.append('../../../c')
 includePath.append('#common/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/c/' + env['host']['os'].lower())
 includePath.append('$prefix/include')
 
 libPath = []

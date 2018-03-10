@@ -84,7 +84,8 @@ includePath = []
 includePath.append('.')
 includePath.append('../c')
 includePath.append('$prefix/include')
-includePath.append('#commmon/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/c/' + env['host']['os'].lower())
 
 libPath = []
 libPath.append('$libdir')
@@ -137,7 +138,7 @@ libmama_sources = \
 """)
 
 
-env.Append(LIBS=['mama'],CPPPATH=includePath, LIBPATH=libPath, CPPDEFINES=['OPENMAMA_INTEGRATION'])
+env.Append(LIBS=['mama'],CPPPATH=includePath, LIBPATH=libPath)
 
 lib = []
 lib.append(env.SharedLibrary(target, libmama_sources))

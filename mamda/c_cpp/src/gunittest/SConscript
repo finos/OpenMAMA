@@ -14,6 +14,8 @@ secstatus
 trades
 """)
 
+osname = env['host']['os']
+
 incpath = []
 incpath.append('$gtest_home/include')
 incpath.append('#mamda/c_cpp/src/cpp')
@@ -22,6 +24,7 @@ incpath.append('#mamda/c_cpp/src/gunittest')
 incpath.append('#mama/c_cpp/src/c')
 incpath.append('#mama/c_cpp/src/cpp')
 incpath.append('#common/c_cpp/src/c')
+incpath.append('#common/c_cpp/src/c/' + osname.lower())
 incpath.append('$prefix/include')
 
 libpath = []
@@ -30,7 +33,7 @@ libpath.append('$libdir')
 
 env['CCFLAGS'] = [x for x in env['CCFLAGS'] if x != '-pedantic-errors']
 
-if env['host']['os'] == 'Darwin':
+if osname == 'Darwin':
     env.Append(LIBPATH=libpath, CPPPATH=incpath, LIBS=[
                                                        'gtest',
                                                        'gtest_main',

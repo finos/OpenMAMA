@@ -27,7 +27,7 @@
  * variables.
  */
 
-#include "wCommon.h"
+#include "wombat/wCommon.h"
 
 /* *************************************************** */
 /* Linux implementation. */

@@ -11,6 +11,7 @@ incpath = []
 incpath.append('.')
 incpath.append('$incdir')
 incpath.append('#common/c_cpp/src/c')
+incpath.append('#common/c_cpp/src/c/' + env['host']['os'].lower())
 incpath.append('#common/c_cpp/src/gunittest')
 incpath.append('#mama/c_cpp/src/c')
 
@@ -31,7 +32,6 @@ port.cpp
 queuetest.cpp
 timertest.cpp
 utiltest.cpp
-strutilstest.cpp
 """)
 
 MainUnitTest = env.Object( '../MainUnitTestC.cpp' ) 

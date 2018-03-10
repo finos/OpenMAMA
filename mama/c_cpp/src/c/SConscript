@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os
+import sys
 Import('*')
 env = env.Clone()
 
@@ -13,7 +14,7 @@ InstMamaInclude = \
 	mama/datetime.h 
 	mama/dictionary.h 
 	mama/entitlement.h
-    mama/error.h 
+	mama/error.h 
 	mama/fielddesc.h 
 	mama/inbox.h 
 	mama/io.h 
@@ -21,7 +22,7 @@ InstMamaInclude = \
 	mama/mama.h 
 	mama/mamautils.h 
 	mama/marketdata.h 
-    mama/middleware.h 
+	mama/middleware.h 
 	mama/msg.h 
 	mama/msgfield.h 
 	mama/msgqualifier.h 
@@ -29,8 +30,8 @@ InstMamaInclude = \
 	mama/msgtype.h 
 	mama/price.h 
 	mama/publisher.h 
-    mama/dqpublisher.h 
-    mama/dqpublishermanager.h 
+	mama/dqpublisher.h 
+	mama/dqpublishermanager.h 
 	mama/quality.h 
 	mama/queue.h 
 	mama/reservedfields.h 
@@ -49,7 +50,7 @@ InstMamaInclude = \
 	mama/ft.h 
 	mama/symbollistmember.h 
 	mama/symbollisttypes.h 
-    mama/symbolmap.h 
+	mama/symbolmap.h 
 	mama/symbolmapfile.h 
 	mama/timer.h 
 	mama/timezone.h 
@@ -70,8 +71,6 @@ InstFieldCacheInclude = Split("""
     mama/fieldcache/fieldcachetypes.h
 """)
 
-integrationHeaders = Glob("mama/integration/*.h")
-
 apr_include_dir = os.popen(env.subst('$apr_home/bin/apr-1-config --includedir')).read().strip()
 apr_link_ld = os.popen(env.subst('$apr_home/bin/apr-1-config --link-ld')).read().strip()
 apr_ccflags = os.popen(env.subst('$apr_home/bin/apr-1-config --cflags --cppflags')).read().strip()
@@ -80,7 +79,7 @@ includePath = []
 includePath.append(apr_include_dir)
 includePath.append('#mama/c_cpp/src/c')
 includePath.append('$prefix/include')
-includePath.append('#common/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/c/' + env['host']['os'].lower())
 
 libPath = []
 libPath.append('$libdir')
@@ -96,56 +95,51 @@ else:
                LIBPATH=libPath, CPPPATH=[includePath], CCFLAGS=apr_ccflags,
                SHLINKFLAGS=apr_link_ld)
 
-env.Append( 
-	CPPDEFINES 	= ['MAMA', 'OPENMAMA_INTEGRATION'],
-)
-
 libmama_sources = \
     Split("""
-    bridge.c
+	bridge.c
 	clientmanageresponder.c
-    datetime.c
+	datetime.c
 	dictionary.c
 	dqstrategy.c
-    error.c
-    entitlement.c
-    entitlementlibraries.c
+	error.c
+	entitlement.c
+	entitlementlibraries.c
 	fielddesc.c
 	imagerequest.c
 	listenermsgcallback.c
 	log.c
-    mama.c
-    mamautils.c
-    mamaStrUtils.c
+	mama.c
+	mamautils.c
+	mamaStrUtils.c
 	marketdata.c
-    plugin.c
-    middleware.c
+	plugin.c
+	middleware.c
 	msg.c
 	msgfield.c
 	msgqualifier.c
 	msgstatus.c
 	msgtype.c
 	msgutils.c
-    publisher.c
-    dqpublisher.c
-    dqpublishermanager.c
-    endpointpool.c
-    inbox.c
+	publisher.c
+	dqpublisher.c
+	dqpublishermanager.c
+	inbox.c
 	quality.c
 	registerfunctions.c
 	reservedfields.c
 	senderId.c
 	servicelevel.c
-    queue.c
-    io.c
-    price.c
-    priceimpl.c
-    refreshtransport.c
-    timer.c
-    timezone.c
+	queue.c
+	io.c
+	price.c
+	priceimpl.c
+	refreshtransport.c
+	timer.c
+	timezone.c
 	source.c
 	sourceman.c
-    status.c
+	status.c
 	stat.c
 	statscollector.c
 	statfields.c
@@ -157,29 +151,29 @@ libmama_sources = \
 	statsloggerfields.c
 	symbollist.c
 	ft.c
-    version.c
+	version.c
 	symbollistmember.c
 	symbolmapfile.c
 	syncresponder.c
 	throttle.c
 	transport.c
-    fileutils.c
-    playback/playbackFileParser.c
-    playback/playbackpublisher.c
-    playback/playbackcapture.c
-    conflation/connection.c
-    conflation/serverconnection.c
-    conflation/manager.c
-    fieldcache/fieldcache.c
-    fieldcache/fieldcachefieldimpl.c
-    fieldcache/fieldcacheiterator.c
-    fieldcache/fieldcachemaparray.c
-    fieldcache/fieldcachemap.c
-    fieldcache/fieldcacherecord.c
-    fieldcache/fieldcachefield.c
-    fieldcache/fieldcacheimpl.c
-    fieldcache/fieldcachelist.c
-    fieldcache/fieldcachevector.c
+	fileutils.c
+	playback/playbackFileParser.c
+	playback/playbackpublisher.c
+	playback/playbackcapture.c
+	conflation/connection.c
+	conflation/serverconnection.c
+	conflation/manager.c
+	fieldcache/fieldcache.c
+	fieldcache/fieldcachefieldimpl.c
+	fieldcache/fieldcacheiterator.c
+	fieldcache/fieldcachemaparray.c
+	fieldcache/fieldcachemap.c
+	fieldcache/fieldcacherecord.c
+	fieldcache/fieldcachefield.c
+	fieldcache/fieldcacheimpl.c
+	fieldcache/fieldcachelist.c
+	fieldcache/fieldcachevector.c
 """)
 
 
@@ -213,9 +207,6 @@ for s in libmama_sources:
         # 4.6 so turning off deprecated warnings for this particular file
         static_obj = env.Object(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
         shared_obj = env.SharedObject(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
-    elif s == "endpointpool.c":
-        static_obj = env.Object(s, CCFLAGS=[x for x in env['CCFLAGS'] if x != '-pedantic-errors'])
-        shared_obj = env.SharedObject(s, CCFLAGS=[x for x in env['CCFLAGS'] if x != '-pedantic-errors'])
     else:
         static_obj = env.Object(s)
         shared_obj = env.SharedObject(s)
@@ -230,15 +221,15 @@ lib.append(env.StaticLibrary('.libs/libmama', [StaticLibs['libmama'], StaticLibs
 
 Alias('install', env.Install('$libdir', lib))
 Alias('install', env.Install('$prefix/include/mama', InstMamaInclude))
-Alias('install', env.Install('$prefix/include/mama/conflation', InstConflInclude))
-Alias('install', env.Install('$prefix/include/mama/fieldcache', InstFieldCacheInclude))
-Alias('install', env.Install('$prefix/include/mama/integration', integrationHeaders))
+Alias('install', env.Install('$prefix/include/mama/conflation',
+      InstConflInclude))
+Alias('install', env.Install('$prefix/include/mama/fieldcache',
+      InstFieldCacheInclude))
 
-if env['with_dependency_runtimes']:
-    if env['target_arch'] == "x86_64":
-        Alias ('install', env.Install('$libdir', Glob('%s/lib64/libapr-1.so*' % env['apr_home'])))
-    else:
-        Alias ('install', env.Install('$libdir', Glob('%s/lib/libapr-1.so*' % env['apr_home'])))
+if env['target_arch'] == "x86_64":
+    Alias ('install', env.Install('$libdir', Glob('%s/lib64/libapr-1.so*' % env['apr_home'])))
+else:
+    Alias ('install', env.Install('$libdir', Glob('%s/lib/libapr-1.so*' % env['apr_home'])))
 
 env.SConscript('bridge/SConscript', 'env')
 env.SConscript('payload/SConscript', 'env')
