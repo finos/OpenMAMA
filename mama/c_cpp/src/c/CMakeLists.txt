@@ -29,6 +29,8 @@ if(DEFINED ENTITLEMENTS)
 endif()
 set(ENTITLEMENT_BRIDGES "${ENTITLEMENT_BRIDGES}NULL")
 
+add_definitions(-DMAMA -DOPENMAMA_INTEGRATION)
+
 configure_file(version.h.in "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" @ONLY)
 configure_file(version.c.in "${CMAKE_CURRENT_BINARY_DIR}/version.c" @ONLY)
 configure_file(entitlementlibraries.c.in "${CMAKE_CURRENT_BINARY_DIR}/entitlementlibraries.c" @ONLY)
@@ -41,6 +43,7 @@ set(sources
 	dqpublisher.c
 	dqpublishermanager.c
 	dqstrategy.c
+	endpointpool.c
 	entitlement.c
 	${CMAKE_CURRENT_BINARY_DIR}/entitlementlibraries.c
 	error.c

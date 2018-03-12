@@ -1,13 +1,15 @@
+list(APPEND CMAKE_MODULE_PATH
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake
+)
+
+include(FindProton)
+find_package(Proton REQUIRED)
+
+include_directories(${PROTON_INCLUDE_DIR})
 include_directories(.)
 include_directories(../..)
 include_directories(../../../../../../common/c_cpp/src/c)
-include_directories(${EVENT_ROOT}/include)
-include_directories(${QPID_ROOT}/include)
-
 include_directories(../../../../../../common/c_cpp/src/c/linux)
-
-link_directories(${QPID_ROOT}/lib)
-link_directories(${EVENT_ROOT}/lib)
 
 add_definitions(-DBRIDGE -DMAMA_DLL -DOPENMAMA_INTEGRATION)
 
@@ -70,8 +72,7 @@ elseif(UNIX)
     target_link_libraries(mamaqpidimpl${MAMA_LIB_SUFFIX}
                           wombatcommon
                           mama
-                          qpid-proton${QPID_PROTON_LIB_SUFFIX}
-                          uuid
-                          event)
+                          ${PROTON_LIBRARIES}
+                          uuid)
     install(TARGETS mamaqpidimpl${MAMA_LIB_SUFFIX} DESTINATION lib)
 endif()
