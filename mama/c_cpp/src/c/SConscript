@@ -130,6 +130,7 @@ libmama_sources = \
 	publisher.c
 	dqpublisher.c
 	dqpublishermanager.c
+        endpointpool.c
 	inbox.c
 	quality.c
 	registerfunctions.c
