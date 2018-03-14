@@ -84,7 +84,8 @@ includePath = []
 includePath.append('.')
 includePath.append('../c')
 includePath.append('$prefix/include')
-includePath.append('#commmon/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/c/' + env['host']['os'].lower())
 
 libPath = []
 libPath.append('$libdir')

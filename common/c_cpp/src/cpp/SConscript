@@ -4,6 +4,7 @@ env = env.Clone()
 includePath = []
 includePath.append('.')
 includePath.append('../c')
+includePath.append('../c/' + env['host']['os'].lower())
 includePath.append('../..')
 
 InstWomHeaders = Split("""

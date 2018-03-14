@@ -14,6 +14,7 @@ includePath.append('../cpp/orderbooks')
 includePath.append('#mama/c_cpp/src/c')
 includePath.append('#mama/c_cpp/src/cpp')
 includePath.append('#common/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/c/' + env['host']['os'].lower())
 includePath.append('#common/c_cpp/src/cpp')
 includePath.append('$incdir')
 

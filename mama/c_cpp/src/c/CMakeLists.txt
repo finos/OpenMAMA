@@ -115,7 +115,13 @@ set(sources
 
 list(APPEND sources ${SYSTEM_SOURCES})
 
+list(APPEND MAMA_LINK_LIBRARIES ${APR_LIBRARY} wombatcommon)
+if(UNIX)
+	list(APPEND MAMA_LINK_LIBRARIES m)
+endif()
+
 add_library(mama SHARED ${sources})
+target_link_libraries(mama ${MAMA_LINK_LIBRARIES})
 
 install(TARGETS mama
         LIBRARY DESTINATION lib
