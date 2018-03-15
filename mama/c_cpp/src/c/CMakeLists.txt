@@ -9,7 +9,8 @@ list(APPEND CMAKE_MODULE_PATH
 include(${CMAKE_C_COMPILER_ID})
 include(FindAPR)
 
-find_package(APR)
+find_package(APR REQUIRED)
+find_package(Threads REQUIRED)
 
 get_target_property(WOMBAT_INCLUDES wombatcommon INCLUDE_DIRECTORIES)
 
@@ -118,7 +119,7 @@ set(sources
 
 list(APPEND sources ${SYSTEM_SOURCES})
 
-list(APPEND MAMA_LINK_LIBRARIES ${APR_LIBRARY} wombatcommon)
+list(APPEND MAMA_LINK_LIBRARIES ${APR_LIBRARY} wombatcommon ${CMAKE_THREAD_LIBS_INIT})
 if(UNIX)
 	list(APPEND MAMA_LINK_LIBRARIES m)
 endif()

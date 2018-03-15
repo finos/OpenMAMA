@@ -59,6 +59,7 @@ set(sources
 )
 
 add_library(mamda SHARED ${sources})
+target_link_libraries(mamda mamacpp)
 
 install(TARGETS mamda
         LIBRARY DESTINATION lib
