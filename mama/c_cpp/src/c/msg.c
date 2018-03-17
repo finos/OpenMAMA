@@ -48,7 +48,7 @@
 #define NOFID 0
 
 // Macro to print vectors as a string to a buffer
-#define PRINT_VECTOR_TO_BUFFER(FIELD,DATATYPE,METHOD,BUFFER,BUFFERLEN,OFFSET,FORMAT) \
+#define PRINT_VECTOR_TO_BUFFER(FIELD,DATATYPE,METHOD,BUFFER,BUFFERLEN,OFFSET,FORMAT,NODE) \
 {                                                                             \
     const DATATYPE* pvtb_result = NULL;                                       \
     mama_size_t  pvtb_size = 0;                                               \
@@ -59,6 +59,15 @@
     if (MAMA_STATUS_OK != pvtb_status)                                        \
     {                                                                         \
         return;                                                               \
+    }                                                                         \
+    if (BUFFERLEN - (pvtb_size * 22) < (MEMNODE_INITIAL_SIZE / 2)) {          \
+        if (0 == memoryNode_stretch(NODE, NODE->mNodeSize + MEMNODE_INITIAL_SIZE)) { \
+            BUFFERLEN += MEMNODE_INITIAL_SIZE;                                \
+            target = BUFFER + OFFSET;                          \
+        } else {                                                              \
+            mama_log(MAMA_LOG_LEVEL_ERROR,                                    \
+                     "Could not allocate string required for vector field - truncation is likely."); \
+        }                                                                     \
     }                                                                         \
     pvtb_written = snprintf(BUFFER, BUFFERLEN, "[");                          \
     BUFFER += pvtb_written;                                                   \
@@ -144,10 +153,15 @@ struct normalizedStringIterClosure {
 };
 
 /*================================================================
-  = Static function definition
+  = Function definition
   ===============================================================*/
 static mama_status
 mamaMsgImpl_destroyLastVectorMsg (mamaMsgImpl *impl);
+
+static void MAMACALLTYPE
+mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
+    const mamaMsgField  field,
+    void*               closure);
 
 /*=================================================================
   = Public functions - defined in mama/msg.h
@@ -162,6 +176,11 @@ mamaMsg_destroy (mamaMsg msg)
     if (impl->mLastVectorMsg != NULL || impl->mLastVectorPayloadMsg != NULL)
     {
         mamaMsgImpl_destroyLastVectorMsg (impl);
+    }
+
+    if (impl->mReusableMemoryNode != NULL)
+    {
+        memoryNode_destroy(impl->mReusableMemoryNode);
     }
 
     if (impl->mPayloadBridge && impl->mMessageOwner)
@@ -2841,6 +2860,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
                 "Could not allocate string required for string field - aborting for field %s[%u].",
                 name,
                 fid);
+            return;
         }
     }
 
@@ -2947,7 +2967,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
         if (remaining - valueLength < (MEMNODE_INITIAL_SIZE / 2)) {
             if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
-                target = memNode->mNodeBuffer + iterClosure->position;
+                target = (char*)memNode->mNodeBuffer + iterClosure->position;
             }
             else {
                 mama_log(MAMA_LOG_LEVEL_ERROR,
@@ -2970,7 +2990,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
         if (remaining - (valueLength * 5) < (MEMNODE_INITIAL_SIZE / 2)) {
             if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
-                target = memNode->mNodeBuffer + iterClosure->position;
+                target = (char*)memNode->mNodeBuffer + iterClosure->position;
             }
             else {
                 mama_log(MAMA_LOG_LEVEL_ERROR,
@@ -3006,6 +3026,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
         mamaMsgField_getPrice(field, value);
         mamaPrice_getAsString(value, priceString, sizeof(priceString));
         written = snprintf(target, remaining, "%s", priceString);
+        mamaPrice_destroy(value);
         break;
     }
     case MAMA_FIELD_TYPE_TIME:
@@ -3017,46 +3038,47 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
         mamaMsgField_getDateTime(field, value);
         mamaDateTime_getAsString(value, dateTimeString, sizeof(dateTimeString));
         written = snprintf(target, remaining, "%s", dateTimeString);
+        mamaDateTime_destroy(value);
         break;
     }
     case MAMA_FIELD_TYPE_VECTOR_U8:
-        PRINT_VECTOR_TO_BUFFER(field, mama_u8_t, mamaMsgField_getVectorU8, target, remaining, iterClosure->position, "%u");
+        PRINT_VECTOR_TO_BUFFER(field, mama_u8_t, mamaMsgField_getVectorU8, target, remaining, iterClosure->position, "%u", memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_BOOL:
-        PRINT_VECTOR_TO_BUFFER(field, mama_bool_t, mamaMsgField_getVectorBool, target, remaining, iterClosure->position, "%u");
+        PRINT_VECTOR_TO_BUFFER(field, mama_bool_t, mamaMsgField_getVectorBool, target, remaining, iterClosure->position, "%u", memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_CHAR:
-        PRINT_VECTOR_TO_BUFFER(field, char, mamaMsgField_getVectorChar, target, remaining, iterClosure->position, "%c");
+        PRINT_VECTOR_TO_BUFFER(field, char, mamaMsgField_getVectorChar, target, remaining, iterClosure->position, "%c", memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_I8:
-        PRINT_VECTOR_TO_BUFFER(field, mama_i8_t, mamaMsgField_getVectorI8, target, remaining, iterClosure->position, "%d");
+        PRINT_VECTOR_TO_BUFFER(field, mama_i8_t, mamaMsgField_getVectorI8, target, remaining, iterClosure->position, "%d", memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_U16:
-        PRINT_VECTOR_TO_BUFFER(field, mama_u16_t, mamaMsgField_getVectorU16, target, remaining, iterClosure->position, "%u");
+        PRINT_VECTOR_TO_BUFFER(field, mama_u16_t, mamaMsgField_getVectorU16, target, remaining, iterClosure->position, "%u", memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_I16:
-        PRINT_VECTOR_TO_BUFFER(field, mama_i16_t, mamaMsgField_getVectorI16, target, remaining, iterClosure->position, "%d");
+        PRINT_VECTOR_TO_BUFFER(field, mama_i16_t, mamaMsgField_getVectorI16, target, remaining, iterClosure->position, "%d", memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_U32:
-        PRINT_VECTOR_TO_BUFFER(field, mama_u32_t, mamaMsgField_getVectorU32, target, remaining, iterClosure->position, "%"PRIu32);
+        PRINT_VECTOR_TO_BUFFER(field, mama_u32_t, mamaMsgField_getVectorU32, target, remaining, iterClosure->position, "%"PRIu32, memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_I32:
-        PRINT_VECTOR_TO_BUFFER(field, mama_i32_t, mamaMsgField_getVectorI32, target, remaining, iterClosure->position, "%"PRId32);
+        PRINT_VECTOR_TO_BUFFER(field, mama_i32_t, mamaMsgField_getVectorI32, target, remaining, iterClosure->position, "%"PRId32, memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_U64:
-        PRINT_VECTOR_TO_BUFFER(field, mama_u64_t, mamaMsgField_getVectorU64, target, remaining, iterClosure->position, "%"PRIu64);
+        PRINT_VECTOR_TO_BUFFER(field, mama_u64_t, mamaMsgField_getVectorU64, target, remaining, iterClosure->position, "%"PRIu64, memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_I64:
-        PRINT_VECTOR_TO_BUFFER(field, mama_i64_t, mamaMsgField_getVectorI64, target, remaining, iterClosure->position, "%"PRId64);
+        PRINT_VECTOR_TO_BUFFER(field, mama_i64_t, mamaMsgField_getVectorI64, target, remaining, iterClosure->position, "%"PRId64, memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_F32:
-        PRINT_VECTOR_TO_BUFFER(field, mama_f32_t, mamaMsgField_getVectorF32, target, remaining, iterClosure->position, "%.4f");
+        PRINT_VECTOR_TO_BUFFER(field, mama_f32_t, mamaMsgField_getVectorF32, target, remaining, iterClosure->position, "%.4f", memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_F64:
-        PRINT_VECTOR_TO_BUFFER(field, mama_f64_t, mamaMsgField_getVectorF64, target, remaining, iterClosure->position, "%.4lf");
+        PRINT_VECTOR_TO_BUFFER(field, mama_f64_t, mamaMsgField_getVectorF64, target, remaining, iterClosure->position, "%.4lf", memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_STRING:
-        PRINT_VECTOR_TO_BUFFER(field, char*, mamaMsgField_getVectorString, target, remaining, iterClosure->position, "%s");
+        PRINT_VECTOR_TO_BUFFER(field, char*, mamaMsgField_getVectorString, target, remaining, iterClosure->position, "%s", memNode);
         break;
     case MAMA_FIELD_TYPE_VECTOR_PRICE:
     case MAMA_FIELD_TYPE_VECTOR_TIME:
@@ -3083,7 +3105,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
         if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
             if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
-                target = memNode->mNodeBuffer + iterClosure->position;
+                target = (char*)memNode->mNodeBuffer + iterClosure->position;
             }
             else {
                 mama_log(MAMA_LOG_LEVEL_ERROR,
@@ -3096,7 +3118,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
     }
     case MAMA_FIELD_TYPE_VECTOR_MSG:
     {
-        mamaMsg*       pvtb_result = NULL;
+        const mamaMsg* pvtb_result = NULL;
         mama_size_t    pvtb_size = 0;
         mama_size_t    pvtb_i = 0;
         mama_size_t    pvtb_written = 0;
@@ -3118,7 +3140,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
             if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
                 if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
                     remaining += MEMNODE_INITIAL_SIZE;
-                    target = memNode->mNodeBuffer + iterClosure->position;
+                    target = (char*)memNode->mNodeBuffer + iterClosure->position;
                 }
                 else {
                     mama_log(MAMA_LOG_LEVEL_ERROR,
@@ -3153,7 +3175,9 @@ mamaMsg_toNormalizedString(const mamaMsg msg)
     struct normalizedStringIterClosure closure;
     if (!impl || !impl->mPayloadBridge) return NULL;
 
-    impl->mReusableMemoryNode = memoryNode_create(MEMNODE_INITIAL_SIZE);
+    if (NULL == impl->mReusableMemoryNode) {
+        impl->mReusableMemoryNode = memoryNode_create(MEMNODE_INITIAL_SIZE);
+    }
 
     if (NULL == impl->mReusableMemoryNode) return NULL;
 

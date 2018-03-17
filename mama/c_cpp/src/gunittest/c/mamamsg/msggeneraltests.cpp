@@ -982,9 +982,6 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgSetNewBufferInValidSize)
 
 TEST_F(MsgGeneralTestsC, msgToNormalizedString)
 {
-    const void*          buffer = NULL;
-    mama_size_t          size = 0;
-
     //add fields to msg
     mamaMsg_addBool(mMsg, "name01", 101, true);
     mamaMsg_addChar(mMsg, "name02", 102, 'F');
@@ -1124,6 +1121,11 @@ TEST_F(MsgGeneralTestsC, msgToNormalizedString)
         "name31[131]=[{msg1[1001]=val1},{msg2[1002]=val2}]}";
 
     ASSERT_STREQ(expected, actual);
+
+    mamaMsg_destroy(msg);
+    mamaMsg_destroy(msg2);
+    mamaPrice_destroy(price);
+    mamaDateTime_destroy(dateTime);
 }
 
 /*
