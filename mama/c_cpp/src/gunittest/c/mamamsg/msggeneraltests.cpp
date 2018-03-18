@@ -1086,10 +1086,10 @@ TEST_F(MsgGeneralTestsC, msgToNormalizedString)
     mamaMsg_addVectorMsg(mMsg, "name31", 131, msgVector, 2);
 
     const char* actual = mamaMsg_toNormalizedString(mMsg);
-    printf(actual);
+
     const char* expected =
         "{"
-        "name01[101]=1,"
+        "name01[101]=true,"
         "name02[102]=F,"
         "name03[103]=255,"
         "name04[104]=65535,"
@@ -1105,20 +1105,20 @@ TEST_F(MsgGeneralTestsC, msgToNormalizedString)
         "name14[114]=0x62 0x61 0x6e 0x61 0x6e 0x61,"
         "name15[115]=0.990000,"
         "name16[116]=2013-07-04 10:03:21.123,"
-        "name17[117]=[0,255],"
-        "name18[118]=[0,65535],"
-        "name19[119]=[0,4294967295],"
-        "name20[120]=[0,18446744073709551615],"
-        "name21[121]=[0,127],"
-        "name22[122]=[0,32767],"
-        "name23[123]=[0,2147483647],"
-        "name24[124]=[0,9223372036854775807],"
-        "name25[125]=[0,1],"
-        "name26[126]=[M,A,M,A],"
-        "name27[127]=[-0.0400,1099.9900],"
-        "name28[128]=[-100.0000,100.0000],"
+        "name17[117]={0,255},"
+        "name18[118]={0,65535},"
+        "name19[119]={0,4294967295},"
+        "name20[120]={0,18446744073709551615},"
+        "name21[121]={0,127},"
+        "name22[122]={0,32767},"
+        "name23[123]={0,2147483647},"
+        "name24[124]={0,9223372036854775807},"
+        "name25[125]={false,true},"
+        "name26[126]={M,A,M,A},"
+        "name27[127]={-0.0400,1099.9900},"
+        "name28[128]={-100.0000,100.0000},"
         "name30[130]={msg1[1001]=val1},"
-        "name31[131]=[{msg1[1001]=val1},{msg2[1002]=val2}]}";
+        "name31[131]={{msg1[1001]=val1},{msg2[1002]=val2}}}";
 
     ASSERT_STREQ(expected, actual);
 
