@@ -18,6 +18,9 @@
 * 02110-1301 USA
 */
 #include <gtest/gtest.h>
+#ifndef __STDC_LIMIT_MACROS
+#define __STDC_LIMIT_MACROS
+#endif
 #include <stdint.h>
 #include "mama/mama.h"
 #include "mama/msg.h"
