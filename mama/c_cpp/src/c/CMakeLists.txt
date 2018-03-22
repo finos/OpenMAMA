@@ -9,7 +9,8 @@ list(APPEND CMAKE_MODULE_PATH
 include(${CMAKE_C_COMPILER_ID})
 include(FindAPR)
 
-find_package(APR)
+find_package(APR REQUIRED)
+find_package(Threads REQUIRED)
 
 get_target_property(WOMBAT_INCLUDES wombatcommon INCLUDE_DIRECTORIES)
 
@@ -29,6 +30,8 @@ if(DEFINED ENTITLEMENTS)
 endif()
 set(ENTITLEMENT_BRIDGES "${ENTITLEMENT_BRIDGES}NULL")
 
+add_definitions(-DMAMA -DOPENMAMA_INTEGRATION)
+
 configure_file(version.h.in "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" @ONLY)
 configure_file(version.c.in "${CMAKE_CURRENT_BINARY_DIR}/version.c" @ONLY)
 configure_file(entitlementlibraries.c.in "${CMAKE_CURRENT_BINARY_DIR}/entitlementlibraries.c" @ONLY)
@@ -41,6 +44,7 @@ set(sources
 	dqpublisher.c
 	dqpublishermanager.c
 	dqstrategy.c
+	endpointpool.c
 	entitlement.c
 	${CMAKE_CURRENT_BINARY_DIR}/entitlementlibraries.c
 	error.c
@@ -115,7 +119,7 @@ set(sources
 
 list(APPEND sources ${SYSTEM_SOURCES})
 
-list(APPEND MAMA_LINK_LIBRARIES ${APR_LIBRARY} wombatcommon)
+list(APPEND MAMA_LINK_LIBRARIES ${APR_LIBRARY} wombatcommon ${CMAKE_THREAD_LIBS_INIT})
 if(UNIX)
 	list(APPEND MAMA_LINK_LIBRARIES m)
 endif()

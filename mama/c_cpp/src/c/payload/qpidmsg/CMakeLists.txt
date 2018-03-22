@@ -1,7 +1,14 @@
+list(APPEND CMAKE_MODULE_PATH
+	${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake
+)
+
+include(FindProton)
+find_package(Proton REQUIRED)
+
+include_directories(${PROTON_INCLUDE_DIR})
 include_directories(.)
 include_directories(../..)
 include_directories(../../../../../../common/c_cpp/src/c)
-
 include_directories(../../../../../../common/c_cpp/src/c/linux)
 
 add_definitions(-DBRIDGE -DMAMA_DLL -DOPENMAMA_INTEGRATION)
@@ -38,6 +45,6 @@ if(WIN32)
             DESTINATION bin/dynamic-debug)
 
 elseif(UNIX)
-    target_link_libraries(mamaqpidmsgimpl wombatcommon mama)
+    target_link_libraries(mamaqpidmsgimpl wombatcommon mama ${PROTON_LIBRARIES})
     install(TARGETS mamaqpidmsgimpl DESTINATION lib)
 endif()

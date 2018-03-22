@@ -1,3 +1,4 @@
+
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 import os
@@ -214,9 +215,6 @@ for s in libmama_sources:
         # 4.6 so turning off deprecated warnings for this particular file
         static_obj = env.Object(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
         shared_obj = env.SharedObject(s, CFLAGS=(["-Wno-deprecated-declarations"] + env['CFLAGS']))
-    elif s == "endpointpool.c":
-        static_obj = env.Object(s, CCFLAGS=[x for x in env['CCFLAGS'] if x != '-pedantic-errors'])
-        shared_obj = env.SharedObject(s, CCFLAGS=[x for x in env['CCFLAGS'] if x != '-pedantic-errors'])
     else:
         static_obj = env.Object(s)
         shared_obj = env.SharedObject(s)

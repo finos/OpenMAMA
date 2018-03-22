@@ -49,7 +49,7 @@ typedef vector<const char*>      SymbolList;
 
 #define BUFFER_SIZE 256
 
-static  char* gUsageString[]=
+static const char* gUsageString[]=
 {
     "mamaentitlecpp -  Example MAMA API market data subscriber to demonstrate",
     "                  entitlements functionality.",
@@ -912,7 +912,7 @@ void MamaEntitle::onSessionDisconnect (const sessionDisconnectReason reason,
                                        const char* appName)
 {
     char disconnect_answer[1024];
-    char* reason_string = "reason unknown";
+    const char* reason_string = "reason unknown";
 
     fprintf(stderr, "reason=%d\n", reason);
     switch (reason)

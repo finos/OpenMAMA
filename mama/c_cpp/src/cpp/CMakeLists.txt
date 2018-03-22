@@ -63,6 +63,7 @@ set(sources
 )
 
 add_library(mamacpp SHARED ${sources})
+target_link_libraries(mamacpp mama)
 
 install(TARGETS mamacpp
         LIBRARY DESTINATION lib

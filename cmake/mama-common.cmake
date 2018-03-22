@@ -15,3 +15,13 @@ function (get_component_version DIR COMPONENT)
 	 set(${COMPONENT}_VERSION_MINOR ${MINOR} PARENT_SCOPE)
 	 set(${COMPONENT}_VERSION_RELEASE ${RELEASE} PARENT_SCOPE)
 endfunction(get_component_version)
+
+macro(mamac_binary name)
+	add_executable(${name} ${name}.c)
+	target_link_libraries(${name} mama)
+endmacro()
+
+macro(mamacpp_binary name)
+	add_executable(${name} ${name}.cpp)
+	target_link_libraries(${name} mamacpp mama)
+endmacro()
