@@ -18,6 +18,7 @@
 * 02110-1301 USA
 */
 #include <gtest/gtest.h>
+#include <stdint.h>
 #include "mama/mama.h"
 #include "mama/msg.h"
 #include "MainUnitTestC.h"
