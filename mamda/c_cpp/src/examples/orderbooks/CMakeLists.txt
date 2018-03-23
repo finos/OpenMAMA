@@ -1,8 +1,9 @@
 cmake_minimum_required (VERSION 2.8.3)
 project (mamda_examples_books)
 
-find_package(Curses REQUIRED)
-include_directories(${CURSES_INCLUDE_DIR})
+if(UNIX)
+	find_package(Curses REQUIRED)
+endif()
 
 get_target_property(MAMDA_BOOK_INCLUDES mamdabook INCLUDE_DIRECTORIES)
 
@@ -17,5 +18,8 @@ mamda_example(atomicbookticker mamdabook)
 mamda_example(bookchurn mamdabook)
 mamda_example(bookpublisher mamdabook)
 mamda_example(bookticker mamdabook)
-mamda_example(bookviewer mamdabook ${CURSES_LIBRARIES})
 mamda_example(listenerBookPublisher mamdabook)
+if(UNIX)
+	mamda_example(bookviewer mamdabook ${CURSES_LIBRARIES})
+endif()
+
