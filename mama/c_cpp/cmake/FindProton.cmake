@@ -1,8 +1,9 @@
 FIND_PATH(PROTON_INCLUDE_DIR proton/version.h
-	${QPID_ROOT}/include
-	${PROTON_ROOT}/include
-	/usr/local/include
-	/usr/include
+	PATHS
+		${QPID_ROOT}/include
+		${PROTON_ROOT}/include
+		/usr/local/include
+		/usr/include
 )
 
 FIND_LIBRARY(PROTON_LIBRARY qpid-proton
@@ -15,6 +16,7 @@ FIND_LIBRARY(PROTON_LIBRARY qpid-proton
 		${PROTON_ROOT}/lib
 		/usr/lib
 		/usr/local/lib
+	NO_DEFAULT_PATH
 )
 
 IF (PROTON_LIBRARY AND PROTON_INCLUDE_DIR)

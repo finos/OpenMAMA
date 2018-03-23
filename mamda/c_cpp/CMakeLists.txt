@@ -11,3 +11,7 @@ add_subdirectory (src/cpp)
 if (WITH_EXAMPLES)
     add_subdirectory (src/examples)
 endif()
+
+if (WITH_TESTTOOLS)
+    add_subdirectory (src/testtools)
+endif()
