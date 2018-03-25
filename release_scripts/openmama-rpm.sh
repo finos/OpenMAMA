@@ -257,7 +257,7 @@ if [ $MOCK_BUILD -eq 1 ] && [ $RETURN_CODE -eq 0 ]; then
     for mockcfg in $ALL_MOCK_CFG
     do
         step "Build multiplatform RPMs for $mockcfg"
-        try /usr/bin/mock -r /etc/mock/$mockcfg.cfg --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm > ${BUILD_DIR}/mock-$(basename $mockcfg).log 2>&1
+        try /usr/bin/mock -r /etc/mock/$mockcfg.cfg --enable-network --define 'BUILD_VERSION '${VERSION} --define 'BUILD_NUMBER '${BUILD_NUMBER} openmama-${VERSION}-${BUILD_NUMBER}.*.src.rpm >> ${BUILD_DIR}/mock-$(basename $mockcfg).log 2>&1
         next
         rc=$?
         # Only set return code if still zero
