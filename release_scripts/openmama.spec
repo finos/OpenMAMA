@@ -38,7 +38,7 @@ middlewares, where MAMA stands for Middleware Agnostic Messaging API.
 
 %prep
 %setup -q
-curl -Lq https://sourceforge.net/projects/scons/files/scons-local-3.0.1.tar.gz/download | tar zxf -
+curl -q https://netix.dl.sourceforge.net/project/scons/scons-local/3.0.1/scons-local-3.0.1.tar.gz | tar zxf -
 wget https://raw.githubusercontent.com/SCons/scons/master/src/engine/SCons/Tool/jar.py -O ./scons-local-3.0.1/SCons/Tool/jar.py
 
 %build
