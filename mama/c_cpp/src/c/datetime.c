@@ -175,6 +175,9 @@ mamaDateTime_setEpochTimeExt(mamaDateTime           dateTime,
     if (!dateTime)
         return MAMA_STATUS_NULL_ARG;
 
+    if (nanoseconds >= 1000000000)
+        return MAMA_STATUS_INVALID_ARG;
+
     mamaDateTimeImpl_setSeconds((mama_datetime_t*)dateTime, seconds);
     mamaDateTimeImpl_setNanoSeconds((mama_datetime_t*)dateTime, (long)nanoseconds);
     return MAMA_STATUS_OK;
@@ -187,6 +190,9 @@ mamaDateTime_setEpochTime(mamaDateTime           dateTime,
                           mamaDateTimePrecision  precision)
 {
     if (!dateTime)
+        return MAMA_STATUS_INVALID_ARG;
+
+    if (microseconds >= 1000000)
         return MAMA_STATUS_INVALID_ARG;
 
     mamaDateTimeImpl_clear           ((mama_datetime_t*)dateTime);
@@ -293,6 +299,9 @@ mamaDateTime_setWithHints(mamaDateTime           dateTime,
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
+    if (microseconds >= 1000000)
+        return MAMA_STATUS_INVALID_ARG;
+    
     mamaDateTimeImpl_clear           ((mama_datetime_t*)dateTime);
     mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, seconds);
     mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, microseconds);
@@ -582,6 +591,9 @@ mamaDateTime_setTimeWithPrecisionAndTz(mamaDateTime           dateTime,
     if (!dateTime)
         return MAMA_STATUS_INVALID_ARG;
 
+    if (microsecond >= 1000000)
+        return MAMA_STATUS_INVALID_ARG;
+    
     /* Get existing number of seconds and remove any intraday-seconds. */
     tmpSeconds = (mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) / SECONDS_IN_A_DAY) *
                                                   SECONDS_IN_A_DAY;
@@ -1061,6 +1073,9 @@ mamaDateTime_setFromStructTimeSpec(const mamaDateTime dateTime,
     if (!dateTime || !inputTimeVal)
         return MAMA_STATUS_INVALID_ARG;
 
+    if (inputTimeVal->tv_nsec >= 1000000000)
+        return MAMA_STATUS_INVALID_ARG;
+
     impl->mSeconds = (mama_i64_t)inputTimeVal->tv_sec;
     impl->mNanoseconds = (long)inputTimeVal->tv_nsec;
 
@@ -1104,6 +1119,9 @@ mamaDateTime_setFromStructTimeVal(const mamaDateTime dateTime,
                                   struct timeval*    inputTimeVal)
 {
     if (!dateTime || !inputTimeVal)
+        return MAMA_STATUS_INVALID_ARG;
+
+    if (inputTimeVal->tv_usec >= 1000000)
         return MAMA_STATUS_INVALID_ARG;
 
     mamaDateTimeImpl_setSeconds         ((mama_datetime_t*)dateTime, inputTimeVal->tv_sec);

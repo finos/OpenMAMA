@@ -629,7 +629,7 @@ int strToVersionInfo(const char* s, versionInfo* version)
                     {
                         /* From this point on is the extra string - grab it */
                         strncpy (version->mExtra, token + j, sizeof(version->mExtra));
-                        version->mExtra[VERSION_INFO_EXTRA_MAX] = '\0';
+                        version->mExtra[VERSION_INFO_EXTRA_MAX - 1] = '\0';
 
                         /* Chop the string where the numbers stop */
                         token[j] = '\0';
