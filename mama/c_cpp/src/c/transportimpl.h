@@ -30,6 +30,8 @@
 #include "throttle.h"
 #include "list.h"
 #include "mama/entitlement.h"
+#include "refreshtransport.h"
+#include "plugin.h"
 
 #ifndef OPENMAMA_INTEGRATION
   #define OPENMAMA_INTEGRATION
@@ -40,19 +42,6 @@
 #if defined(__cplusplus)
 extern "C" {
 #endif
-
-/**
- * Inner class for tracking refreshes. This is based on the C API. The
- * idea is that we want the refreshes to occur at random intervals but as
- * infrequently as possible.
- */
-typedef struct SubscriptionInfo_
-{
-    mamaSubscription mSubscription;
-
-    time_t mNextRefreshTime;
-    int    mIsInMainList;
-} SubscriptionInfo;
 
 typedef struct PublisherInfo_
 {
@@ -65,19 +54,64 @@ typedef struct PublisherInfo_
 
 mama_status mamaTransport_addPublisher(mamaTransport transport, mamaPublisher publisher, void **result);
 mama_status mamaTransport_removePublisher(mamaTransport transport, void *handle);
+
+MAMAExpDLL
 preInitialScheme mamaTransportImpl_getPreInitialScheme (mamaTransport transport);
 
+MAMAExpDLL
 dqStartegyScheme
 mamaTransportImpl_getDqStrategyScheme (mamaTransport transport);
 
+MAMAExpDLL
 dqftStrategyScheme
 mamaTransportImpl_getFtStrategyScheme (mamaTransport transport);
 
+MAMAExpDLL
 extern mama_bool_t
 mamaTransportImpl_preRecapCacheEnabled (mamaTransport transport);
 
 mama_status
 mamaTransportImpl_getEntitlementBridge(mamaTransport tport, mamaEntitlementBridge* entBridge);
+
+MAMAExpDLL
+mama_status
+getPossiblyStaleForAll(mamaTransport transport, int* possiblyStaleForAll);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_setQuality(mamaTransport transport, mamaQuality quality);
+
+MAMAExpDLL
+void
+mamaTransportImpl_setPossiblyStaleForListeners(mamaTransport transport);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_getPossiblyStaleForAll(mamaTransport transport, int* possiblyStale);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_getRefreshTransport(mamaTransport transport, refreshTransport *rTransport);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_setDqPlugin (mamaTransport transport, mamaPluginImpl* dqPlugin);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_getDqPlugin (mamaTransport transport, mamaPluginImpl** dqPlugin);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_getDqEnabled(mamaTransport transport, int* result);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_setDqPluginInfo (mamaTransport transport, mamaPluginInfo pluginInfo);
+
+MAMAExpDLL
+mama_status
+mamaTransportImpl_getDqPluginInfo (mamaTransport transport, mamaPluginInfo* pluginInfo);
 
 #if defined(__cplusplus)
 }

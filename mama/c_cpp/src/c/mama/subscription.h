@@ -745,23 +745,6 @@ mamaSubscription_getReceivedInitial(
     int *receivedInitial);
 
 /**
- * @brief Whether the specified subscription will attempt to recover from sequence
- * number gaps.
- *
- * @param[in] subscription The subscription
- * @param[out] doesRecover 0 - does not recover, 1 - does attempt to recover
- *
- * @return mama_status return code can be one of:
- *              MAMA_STATUS_NULL_ARG
- *              MAMA_STATUS_OK
- */
-MAMAExpDLL
-extern mama_status
-mamaSubscription_getRecoverGaps (
-    mamaSubscription subscription,
-    int *doesRecover);
-
-/**
  * @brief Returns a value of 1 or 0 indicating whether this subscription is
  * interested in initial values.
  *
@@ -1163,24 +1146,6 @@ extern mama_status
 mamaSubscription_setPreIntitialCacheSize(
     mamaSubscription subscription,
     int cacheSize);
-
-/**
- * @brief Whether a subscription should attempt to recover from
- * sequence number gaps.
- *
- * @param[in] subscription The subscription
- * @param[out] doesRecover 0 indicates not to recover. 1 The subscription will
- * attempt to recover via a recap request.
- *
- * @return mama_status return code can be one of:
- *              MAMA_STATUS_NULL_ARG
- *              MAMA_STATUS_OK
- */
-MAMAExpDLL
-extern mama_status
-mamaSubscription_setRecoverGaps (
-    mamaSubscription subscription,
-    int              doesRecover);
 
 /**
  * @brief Whether an initial value is required for the specified subscription.

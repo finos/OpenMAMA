@@ -20,7 +20,7 @@
 # SOLARIS/Forte: The makefile will need modified to use the Solaris compiler.
 #                See example below.
 #=============================================================================
-API_HOME=../../../../../../../install
+API_HOME=../../../../../openmama_install_6.2.1/
 
 ## Solaris/Forte compiler:
 #CXX      = CC
@@ -47,7 +47,7 @@ LDFLAGS = -rdynamic \
     -L$(GTEST_HOME)/lib
 
 
-MAMA_LIBS = -lmama -lwombatcommon -lgtest -lpthread -ldl
+MAMA_LIBS = -lmama -lwombatcommon -lgtest -lpthread -ldl -ldqstrategyplugin
 
 all: UnitTestMamaC
 
@@ -60,7 +60,8 @@ UnitTestMamaC: MainUnitTestC.o \
 				               subscriptiontest.o \
 				               timertest.o \
 				               publishertest.o \
-                               payloadmiddlewareidtest.o
+                               payloadmiddlewareidtest.o \
+							   dqstrategyplugintest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
 openclosetest: MainUnitTestC.o openclosetest.o
@@ -88,4 +89,7 @@ transporttest: MainUnitTestC.o transporttest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
 
 payloadmiddlewareidtest: MainUnitTestC.o payloadmiddlewareidtest.o
+	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)
+
+dqstrategyplugintest: MainUnitTestC.o dqstrategyplugintest.o
 	$(LINK.C) -o $@ $^ $(MAMA_LIBS) $(SYS_LIBS)

@@ -29,6 +29,8 @@
 #include "mamainternal.h"
 #include "mamacppinternal.h"
 #include "mama/subscription.h"
+#include "subscriptionimpl.h"
+#include "dqstrategy.h"
 
 namespace Wombat
 {
@@ -847,14 +849,14 @@ namespace Wombat
 
     void MamaSubscription::setRecoverGaps (bool recover)
     {
-        mamaTry (mamaSubscription_setRecoverGaps (mSubscription,
+        mamaTry (dqStrategy_setRecoverGaps (mamaSubscription_getDqStrategy(mSubscription),
                                                   recover ? 1 : 0));
     }
 
     bool MamaSubscription::getRecoverGaps (void) const
     {
         int result = 0;
-        mamaTry (mamaSubscription_getRecoverGaps (mSubscription,
+        mamaTry (dqStrategy_getRecoverGaps (mamaSubscription_getDqStrategy(mSubscription),
                                                   &result));
         return result != 0;
     }

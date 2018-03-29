@@ -361,7 +361,7 @@ mamaPublisher_send (mamaPublisher publisher,
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mamaPublisher_send(): PublisherPreSendHook failed. Not sending message.");
+                  "mamaPublisher_send: PublisherPreSendHook failed. Not sending message.");
         return status;
     }
 

@@ -100,6 +100,7 @@ env.Append(
 	CPPDEFINES 	= ['MAMA', 'OPENMAMA_INTEGRATION'],
 )
 
+
 libmama_sources = \
     Split("""
     bridge.c
@@ -243,5 +244,6 @@ if env['with_dependency_runtimes']:
 env.SConscript('bridge/SConscript', 'env')
 env.SConscript('payload/SConscript', 'env')
 env.SConscript('entitlement/SConscript', 'env')
+env.SConscript('dqstrategyplugin/SConscript', 'env')
 
 Clean(lib, 'version.c')

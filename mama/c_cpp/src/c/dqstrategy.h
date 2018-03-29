@@ -22,19 +22,26 @@
 #ifndef DqStrategyH__
 #define DqStrategyH__
 #include "imagerequest.h"
-
 #ifndef OPENMAMA_INTEGRATION
 #define OPENMAMA_INTEGRATION
 #endif
 
 #include <mama/integration/types.h>
-
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
+typedef struct dqStrategy_
+{
+    /* Data Quality Members */
+    mamaSubscription    mSubscription;
+    short               mTryToFillGap;
+    int                 mRecoverGaps;
+} dqStrategyImpl;
+
 typedef struct dqStrategy_* dqStrategy;
 
+MAMAExpDLL
 mama_status
 dqStrategy_create (
     dqStrategy*         strategy,  
@@ -49,46 +56,47 @@ dqContext_initializeContext (
 mama_status
 dqContext_cleanup (mamaDqContext* ctx);
 
-mama_status
-dqContext_applyPreInitialCache (mamaDqContext*      ctx,
-                                mamaSubscription    subscription);
-mama_status
-dqContext_clearCache (mamaDqContext *ctx, int freeArray);
-
+MAMAExpDLL
 mama_status
 dqContext_cacheMsg (mamaDqContext *ctx, mamaMsg msg);
 
 mama_status
 dqStrategyImpl_detachMsg (mamaDqContext* ctx, mamaMsg msg);
 
+MAMAExpDLL
 mama_status
 dqStrategy_destroy (
     dqStrategy          strategy);
 
-mama_status
-dqStrategy_checkSeqNum (
-    dqStrategy          strategy,
-    mamaMsg             msg,
-    int                 msgType,
-    mamaDqContext       *ctx);
-
+MAMAExpDLL
 mama_status
 dqStrategy_getDqState (
-    mamaDqContext       ctx,
+    mamaDqContext*       ctx,
     dqState*            state);
 
 mama_status
 dqStrategy_setPossiblyStale (
     mamaDqContext*      ctx);
 
-    
+MAMAExpDLL
+mama_status
+dqContext_clearCache(mamaDqContext *ctx, int freeArray);
 
+MAMAExpDLL
 mama_status
 dqStrategy_sendRecapRequest (
         dqStrategy strategy, 
         mamaMsg         srcMsg, 
         mamaDqContext*  ctx);
-        
+
+MAMAExpDLL
+mama_status
+dqStrategy_setRecoverGaps(dqStrategy strategy, int newValue);
+
+MAMAExpDLL
+mama_status
+dqStrategy_getRecoverGaps(dqStrategy strategy, int *result);
+
 #ifdef QLIMIT
 mama_status
 dqStrategy_setAdvisoryInterval (
@@ -106,6 +114,7 @@ dqStrategy_getAdvisoryInterval (
 protected synchronized  void queueLimitExceeded ( Object closure)
 
 private void startQueueLimitExceededTimer ()
+
 
 #endif /* QLIMIT */
 
