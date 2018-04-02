@@ -30,7 +30,7 @@ if(DEFINED ENTITLEMENTS)
 endif()
 set(ENTITLEMENT_BRIDGES "${ENTITLEMENT_BRIDGES}NULL")
 
-add_definitions(-DMAMA -DOPENMAMA_INTEGRATION)
+add_definitions(-DMAMA -DAPR_DECLARE_STATIC)
 
 configure_file(version.h.in "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" @ONLY)
 configure_file(version.c.in "${CMAKE_CURRENT_BINARY_DIR}/version.c" @ONLY)
@@ -122,6 +122,8 @@ list(APPEND sources ${SYSTEM_SOURCES})
 list(APPEND MAMA_LINK_LIBRARIES ${APR_LIBRARY} wombatcommon ${CMAKE_THREAD_LIBS_INIT})
 if(UNIX)
 	list(APPEND MAMA_LINK_LIBRARIES m)
+else()
+	list(APPEND MAMA_LINK_LIBRARIES rpcrt4)
 endif()
 
 add_library(mama SHARED ${sources})

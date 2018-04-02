@@ -9,6 +9,7 @@ include_directories(
 	${MAMDABOOK_INCLUDES}
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
+add_definitions(-DMAMDAOPT)
 
 macro(mamda_tool name)
 	add_executable(${name} ${name}.cpp $<TARGET_OBJECTS:mamdaexshared>)

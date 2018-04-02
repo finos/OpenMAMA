@@ -41,7 +41,10 @@ set(sources
 
 list(APPEND sources ${SYSTEM_SOURCES})
 
-add_library(wombatcommon STATIC ${sources})
+add_library(wombatcommon SHARED ${sources})
+if(WIN32)
+	target_link_libraries(wombatcommon ws2_32 advapi32 kernel32 Pdh shlwapi)
+endif()
 
 install(TARGETS wombatcommon
         LIBRARY DESTINATION lib

@@ -10,6 +10,8 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+add_definitions(-DMAMDAOPT)
+
 add_library(mamdaexshared OBJECT
 	dictrequester.cpp
 	parsecmd.cpp

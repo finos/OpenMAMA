@@ -9,7 +9,7 @@ find_package(JNI)
 
 get_target_property(MAMA_JAVAH_INCLUDES mamajnijava JAVAH_INCLUDES)
 
-if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 	add_definitions(-Wno-deprecated-declarations)
 endif()
 
@@ -49,6 +49,7 @@ set(sources
 )
 
 add_library(mamajni SHARED ${sources})
+target_link_libraries(mamajni mama)
 add_dependencies(mamajni mamajnijavah)
 
 install(TARGETS mamajni

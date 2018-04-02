@@ -5,6 +5,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+add_definitions(-DMAMDAOPT)
 set(sources
 	MamdaBookAtomicListener.cpp
 	MamdaOrderBook.cpp
@@ -24,4 +25,5 @@ set(sources
 	MamdaQuoteToBookListener.cpp
 )
 add_library(mamdabook SHARED ${sources})
+target_link_libraries(mamdabook mamda)
 						

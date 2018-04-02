@@ -11,7 +11,7 @@ include_directories(../..)
 include_directories(../../../../../../common/c_cpp/src/c)
 include_directories(../../../../../../common/c_cpp/src/c/linux)
 
-add_definitions(-DBRIDGE -DMAMA_DLL -DOPENMAMA_INTEGRATION)
+add_definitions(-DBRIDGE)
 
 add_library(mamaqpidmsgimpl
             MODULE field.c
@@ -33,8 +33,6 @@ if(WIN32)
                           libwombatcommon${MAMA_LIB_SUFFIX}
                           libmamac${MAMA_LIB_SUFFIX})
     set_target_properties(mamaqpidmsgimpl PROPERTIES PREFIX "lib")
-
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 
     # Windows Targets
     install(TARGETS mamaqpidmsgimpl

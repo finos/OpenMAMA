@@ -15,6 +15,8 @@ include_directories(
 	${MAMA_INCLUDES}
 )
 
+add_definitions(-DMAMACPP)
+
 set(sources
 	mamacpp.cpp
 	MamaDQPublisher.cpp
