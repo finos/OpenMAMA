@@ -30,6 +30,7 @@ FIND_PATH(APR_INCLUDE_DIR apr.h
   PATHS
     ${APR_ROOT}/include/apr-1
     ${APR_ROOT}/include/apr-1.0
+    ${APR_ROOT}/include
     /usr/local/include/apr-1
     /usr/local/include/apr-1.0
     /usr/include/apr-1

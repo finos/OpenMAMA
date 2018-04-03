@@ -5,6 +5,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+add_definitions(-DMAMDAOPT)
 set(sources
 	MamdaNewsFields.cpp
 	MamdaNewsHeadline.cpp
@@ -14,6 +15,7 @@ set(sources
 )
 
 add_library(mamdanews SHARED ${sources})
+target_link_libraries(mamdanews mamda)
 
 install(TARGETS mamdanews
         LIBRARY DESTINATION lib

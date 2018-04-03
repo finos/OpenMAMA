@@ -5,6 +5,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
+add_definitions(-DMAMDAOPT)
 set(sources
 	MamdaOptionChain.cpp
 	MamdaOptionChainListener.cpp
@@ -19,6 +20,7 @@ set(sources
 )
 
 add_library(mamdaoptions SHARED ${sources})
+target_link_libraries(mamdaoptions mamda)
 
 install(TARGETS mamdaoptions
         LIBRARY DESTINATION lib

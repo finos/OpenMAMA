@@ -6,6 +6,11 @@ include(mama-common)
 
 get_component_version(${CMAKE_CURRENT_LIST_DIR}/.. MAMDA)
 
+if(WIN32)
+	add_definitions(-DMAMDA_DLL)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /MAP /NODEFAULTLIB:libc.lib")
+endif()
+
 add_subdirectory (src/cpp)
 
 if (WITH_EXAMPLES)

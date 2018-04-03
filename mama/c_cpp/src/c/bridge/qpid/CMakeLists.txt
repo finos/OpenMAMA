@@ -11,7 +11,7 @@ include_directories(../..)
 include_directories(../../../../../../common/c_cpp/src/c)
 include_directories(../../../../../../common/c_cpp/src/c/linux)
 
-add_definitions(-DBRIDGE -DMAMA_DLL -DOPENMAMA_INTEGRATION)
+add_definitions(-DBRIDGE)
 
 if(WIN32)
     if (CMAKE_BUILD_TYPE MATCHES "Debug")
@@ -58,7 +58,6 @@ if(WIN32)
                           uuid
                           Ws2_32)
 
-    add_definitions(-D_CRT_SECURE_NO_WARNINGS)
     set_target_properties(mamaqpidimpl${MAMA_LIB_SUFFIX} PROPERTIES PREFIX "lib")
 
     # Windows Targets

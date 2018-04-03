@@ -4,11 +4,7 @@ project (mamajni)
 find_package(Java)
 include(ExternalProject)
 
-if (WIN32)
-    find_program(BIN_GRADLE gradle)
-else()
-    find_program(BIN_GRADLE gradle)
-endif()
+find_program(BIN_GRADLE gradle)
 
 file(GLOB sources 
 	main/java/com/wombat/mama/*.java

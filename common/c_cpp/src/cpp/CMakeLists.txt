@@ -15,6 +15,7 @@ set(sources
 )
 
 add_library(wombatcommoncpp SHARED ${sources})
+target_link_libraries(wombatcommoncpp wombatcommon)
 
 install(TARGETS wombatcommoncpp
         LIBRARY DESTINATION lib
