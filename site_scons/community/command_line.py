@@ -31,6 +31,7 @@ def get_command_line_opts( host, products, VERSIONS ):
        PathVariable('junit_home','Path to Junit home',None, PathVariable.PathIsDir),
        ListVariable('middleware','Middleware(s) to be compiled in', 'qpid', names = ['qpid'] ),
        ('jobs', 'Number of scons threads to spawn, if n is passed the number of availabe cores is calculated and used', '1'),
+       BoolVariable('with_dependency_runtimes','Whether or not to include dependency runtimes in the installation', True),
 
     )
 
@@ -42,7 +43,7 @@ def get_command_line_opts( host, products, VERSIONS ):
             PathVariable('qpid_home', 'Path to QPID Proton Libraries', None,
                          PathVariable.PathAccept),
             EnumVariable('vsver','Visual Studio Version to use', env['MSVC_VERSION'],
-                         allowed_values=('8.0','9.0','10.0','11.0','12.0', '14.0')),
+                         allowed_values=('8.0','9.0','10.0','11.0','12.0', '14.0', '14.1')),
             EnumVariable('product', 'Product to be built', 'mamda',
                          allowed_values=( products )),
             EnumVariable('dotnet_version', 'Dotnet Version used to determine framework directory', '4.0',
@@ -58,6 +59,8 @@ def get_command_line_opts( host, products, VERSIONS ):
             EnumVariable('compiler', 'Compiler to use for building OpenMAMA', 'default',
                          allowed_values=('default', 'gcc', 'clang', 'clang-analyzer')),
             PathVariable('apr_home', 'Path to Apache APR Libraries', None,
+                         PathVariable.PathAccept),
+            PathVariable('lex', 'Path to preferred lexical analyzer generator (flex)', "flex",
                          PathVariable.PathAccept),
         )
 
@@ -95,6 +98,8 @@ def get_command_line_opts( host, products, VERSIONS ):
                           '/usr/', PathVariable.PathAccept),
             PathVariable('apr_home', 'Path to Apache APR Libraries',
                 '/usr', PathVariable.PathIsDir),
+            EnumVariable('target_arch', 'Specifies if the build should target 32 or 64 bit architectures.',
+                          host['arch'], allowed_values=['i386', 'i586', 'i686', 'x86', 'x86_64']),
             )
 
     return opts

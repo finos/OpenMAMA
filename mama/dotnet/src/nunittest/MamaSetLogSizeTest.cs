@@ -43,7 +43,7 @@ namespace NUnitTest
             try
             {
                 // Load a bridge to allow mama to be opened
-                Mama.loadBridge("lbm");
+                Mama.loadBridge(MamaCommon.middlewareName);
 
                 // Open mama
                 Mama.open();
@@ -77,6 +77,9 @@ namespace NUnitTest
 
             finally
             {
+                // Close underlying log file handles
+                Mama.logDestroy();
+
                 // Delete the file
                 File.Delete(tempFile);
             }

@@ -1497,136 +1497,6 @@ void MAMACALLTYPE dictCompleteCB( mamaDictionary dict, void *closure )
 
 /*
  * Class:     com_wombat_mama_MamaSubscription
- * Method:    createSubscription
- * Signature: (Lcom/wombat/mama/MamaQueue;Lcom/wombat/mama/MamaSubscriptionCallback;Lcom/wombat/mama/MamaSource;Ljava/lang/String;Ljava/lang/Object;)V
- */
-JNIEXPORT
-void JNICALL Java_com_wombat_mama_MamaSubscription_createSubscription__Lcom_wombat_mama_MamaQueue_2Lcom_wombat_m\
-ama_MamaSubscriptionCallback_2Lcom_wombat_mama_MamaSource_2Ljava_lang_String_2Ljava_lang_Object_2
-     (JNIEnv * env,
-      jobject this,
-      jobject queue,
-      jobject callback,
-      jobject source,
-      jstring symbol,
-      jobject closure)
-{
-    mama_status         status              =   MAMA_STATUS_OK;
-    const char*         c_symbol            =   NULL;
-    jlong               subscriptionPointer =   0;
-    mamaQueue           queue_c             =   NULL;
-    jobject             messageImpl         =   NULL;
-    jlong               queuePointer        =   0;
-    jlong               sourcePointer       =   0;
-    mamaMsgCallbacks    c_callback;
-    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-
-    callbackClosure* closureImpl = (callbackClosure*)calloc(1,
-            sizeof(callbackClosure));
-    if (!closureImpl)
-    {
-        utils_throwMamaException(env,"createSubscription():"
-                " Could not allocate.");
-        return;
-    }
-
-    closureImpl->mUserData      =   NULL;
-    closureImpl->mClientCB      =   NULL;
-    closureImpl->mSubscription  =   NULL;
-    closureImpl->mMessage       =   NULL;
-
-    /*Setup the callback structure*/
-    memset(&c_callback, 0, sizeof(c_callback));
-    c_callback.onCreate         =
-        (wombat_subscriptionCreateCB)subscriptionCreateCB;
-    c_callback.onError          =
-        (wombat_subscriptionErrorCB)subscriptionErrorCB;
-    c_callback.onMsg            =
-        (wombat_subscriptionOnMsgCB)subscriptionMsgCB;
-    c_callback.onQuality        =
-        (wombat_subscriptionQualityCB)subscriptionQualityCB;
-    c_callback.onGap            =
-        (wombat_subscriptionGapCB)subscriptionGapCB;
-    c_callback.onRecapRequest   =
-        (wombat_subscriptionRecapCB)subscriptionRecapCB;
-
-    if(symbol)
-    {
-        c_symbol = (*env)->GetStringUTFChars(env,symbol,0);
-        if (!c_symbol)
-        {
-            free(closureImpl);
-            return;/*Exception thrown*/
-        }
-    }
-    sourcePointer = (*env)->GetLongField(env,source,
-                                         sourcePointerFieldId_g);
-    assert (0 != sourcePointer);
-
-    closureImpl->mClientCB = (*env)->NewGlobalRef(env, callback);
-
-    /*If the client supplied a Java closeure add it to ours*/
-    if(closure)closureImpl->mUserData = (*env)->NewGlobalRef(env,closure);
-
-    /*Check if a queue was specified.*/
-    if(queue)
-    {
-        /*Get the queue pointer value from the MamaQueue java object*/
-        queuePointer = (*env)->GetLongField(env, queue, queuePointerFieldId_g);
-        queue_c = CAST_JLONG_TO_POINTER(mamaQueue, queuePointer);
-    }
-
-    /*Create a reuseable message object to hang off the subscription*/
-    messageImpl = utils_createJavaMamaMsg(env);
-    if(NULL==messageImpl)
-    {
-        if(c_symbol)(*env)->ReleaseStringUTFChars(env,symbol, c_symbol);
-        if(closure)(*env)->DeleteGlobalRef(env,closureImpl->mUserData);
-        (*env)->DeleteGlobalRef(env,closureImpl->mClientCB);
-        free(closureImpl);
-        return;
-    }/*Exception will have been thrown*/
-
-    /*This global will be deleted when the subscription is destroyed*/
-    closureImpl->mMessage  = (*env)->NewGlobalRef(env,messageImpl);
-
-    /*Get the C pointer for the already allocated subscription*/
-    subscriptionPointer =
-        (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
-
-    /*Add the Java Subscription to the closure - we need it in the
-     async callbacks so it can be passed to the Java callback*/
-    closureImpl->mSubscription = (*env)->NewGlobalRef(env,this);
-
-    if(MAMA_STATUS_OK != (status = mamaSubscription_create(
-                    CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
-                    queue_c,
-                    &c_callback,
-                    CAST_JLONG_TO_POINTER(mamaSource,sourcePointer),
-                    c_symbol,
-                    closureImpl)))
-
-    {
-        if(c_symbol)(*env)->ReleaseStringUTFChars(env,symbol, c_symbol);
-        if(closure)(*env)->DeleteGlobalRef(env,closureImpl->mUserData);
-        (*env)->DeleteGlobalRef(env,closureImpl->mClientCB);
-        (*env)->DeleteGlobalRef(env,this);
-        free(closureImpl);
-        utils_buildErrorStringForStatus(
-                errorString,
-                UTILS_MAX_ERROR_STRING_LENGTH,
-                "Failed to create subscription.",
-                status);
-        utils_throwMamaException(env,errorString);
-        return;
-    }
-
-    /*Tidy up resources*/
-    if(c_symbol)(*env)->ReleaseStringUTFChars(env,symbol, c_symbol);
-    return;
-}
-/*
- * Class:     com_wombat_mama_MamaSubscription
  * Method:    _setSubscriptionType
  * Signature: (S)V
  */
@@ -1737,7 +1607,8 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getSubscriptionStat
     subscriptionPointer = (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
-    "MamaSubscription.getSubscriptionState(): Null parameter, subcription may have been destroyed.", NULL);
+        "MamaSubscription.getSubscriptionState(): Null parameter, subcription may have been destroyed.",
+        (jint)MAMA_STATUS_NULL_ARG);
 
     assert(0!=subscriptionPointer);
 
@@ -1822,13 +1693,14 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getTheAppDataType (
 {
     mama_status     status              =   MAMA_STATUS_OK;
     jlong           subscriptionPointer =   0;
-    jint            appdatatype         =   0;
+    uint8_t         appdatatype         =   0;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     subscriptionPointer = (*env)->GetLongField(env,this,subscriptionPointerFieldId_g);
 
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(subscriptionPointer,
-    "MamaSubscription.getAppDataType(): Null parameter, subcription may have been destroyed.", NULL);
+        "MamaSubscription.getAppDataType(): Null parameter, subcription may have been destroyed.",
+        0);
 
     assert(0!=subscriptionPointer);
 
@@ -1844,5 +1716,5 @@ JNIEXPORT jint JNICALL Java_com_wombat_mama_MamaSubscription_getTheAppDataType (
         utils_throwWombatException(env,errorString);
     }
 
-    return appdatatype;
+    return (jint)appdatatype;
 }

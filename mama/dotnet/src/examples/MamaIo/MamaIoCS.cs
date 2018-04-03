@@ -149,7 +149,7 @@ namespace Wombat
                 }
                 catch (MamaException e)
                 {
-                    Console.WriteLine("Warning: Cannot create IO Handler for MAMA_IO_EXCEPT: not supported on current middleware");
+                    Console.WriteLine("Warning: Cannot create IO Handler for MAMA_IO_EXCEPT: not supported on current middleware: {0}", e.ToString());
                 }
 			}
 			catch (MamaException e)

@@ -401,7 +401,7 @@ namespace Wombat
                 {
                     expireDate = mDateFormat.Parse(expireDateStr);
                 }
-                catch (FormatException e)
+                catch (FormatException)
                 {
                     throw new MamdaDataException (
                         String.Format("cannot parse expiration date: {0}", expireDateStr));

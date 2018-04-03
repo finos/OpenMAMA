@@ -19,6 +19,7 @@
  */
 
 #include "wombat/port.h"
+#include <stdio.h>
 
 struct in_addr wresolve_ip (const char * arg)
 {

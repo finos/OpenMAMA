@@ -25,6 +25,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.Collection;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Iterator;
 import com.wombat.mamda.*;
 import com.wombat.mamda.options.*;
@@ -44,7 +45,7 @@ public class MamdaOptionChainViewExample
 
     private static MamaSource   mMamaSource;
     private static MamaBridge   mBridge         = null;
-    private static Date         nullDate        = new Date (0,0,0);
+    private static Date         nullDate        = new GregorianCalendar(1900, 0, 0, 0, 0).getTime();
 
     private static MamaDictionary buildDataDictionary (MamaTransport transport,
                                                        String        dictSource)

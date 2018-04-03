@@ -563,7 +563,7 @@ static void setDeactivateOnError (mamaTransport transport)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "Setting %s=%s",
                   propNameBuf, propValue);
-        self->mDeactivateSubscriptionOnError = strtod (propValue, NULL);
+        self->mDeactivateSubscriptionOnError = (int) strtod (propValue, NULL);
     }
     else
         self->mDeactivateSubscriptionOnError = 1;
@@ -601,7 +601,7 @@ static void setGroupSizeHint (mamaTransport transport, const char* middleware)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "Setting %s=%s",
                   propNameBuf, propValue);
-        self->mGroupSizeHint = strtod (propValue, NULL);
+        self->mGroupSizeHint = (int) strtod (propValue, NULL);
     }
     else
         self->mGroupSizeHint = DEFAULT_GROUP_SIZE_HINT;

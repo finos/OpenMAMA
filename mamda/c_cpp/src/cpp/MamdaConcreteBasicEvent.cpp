@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mamda/MamdaConcreteBasicEvent.h>
 #include <mamda/MamdaCommonFields.h>
 #include <mamda/MamdaFieldState.h>

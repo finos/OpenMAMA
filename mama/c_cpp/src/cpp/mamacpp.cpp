@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mama/mamacpp.h>
 #include <bridge.h>
 #include <mama/timer.h>
@@ -76,7 +77,6 @@ namespace Wombat
     mamaBridge Mama::getMiddlewareBridge (const char* middleware)
     {
         mamaBridge bridge = NULL;
-        mama_status status = MAMA_STATUS_OK; 
 
         if (NULL == middleware)
         {
@@ -87,7 +87,7 @@ namespace Wombat
          * middleware can't be NULL. Clients can infer that a bridge isn't
          * available from a NULL return.
          */
-        status = mama_getMiddlewareBridge (&bridge, middleware);
+        mama_getMiddlewareBridge (&bridge, middleware);
         
         return bridge;
     }
@@ -102,7 +102,6 @@ namespace Wombat
     mamaPayloadBridge Mama::getPayloadBridge (const char* payload)
     {
         mamaPayloadBridge payloadBridge = NULL;
-        mama_status       status = MAMA_STATUS_OK;
 
         if (NULL == payload)
         {
@@ -113,7 +112,7 @@ namespace Wombat
          * payload can't be NULL. Clients can infer that a bridge isn't
          * available from a NULL return.
          */
-        status = mama_getPayloadBridge (&payloadBridge, payload);
+        mama_getPayloadBridge (&payloadBridge, payload);
 
         return payloadBridge;
     }

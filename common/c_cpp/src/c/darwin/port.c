@@ -1,7 +1,5 @@
-/* $Id$
- *
+/*
  * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -19,16 +17,23 @@
  * 02110-1301 USA
  */
 
-#include <stdint.h>
-#include <mamda/MamdaOrderBookSimpleDelta.h>
+#include "wombat/port.h"
 
-namespace Wombat
+/* OSX doesn't currently allow for specifying a specific core to bind
+ * a thread to. There is an affinity API 
+ * [https://developer.apple.com/library/content/releasenotes/Performance/RN-AffinityAPI/]
+ * but this has a focus on memory binding, which will provide a different result
+ * than most apps expect. As such leaving this as a no-op. 
+ */
+int wthread_set_affinity_mask (wthread_t         thread,
+                               size_t            cpu_set_size,
+                               CPU_AFFINITY_SET* cpu_set_mask)
 {
+    // Return a non-zero so we know it has not bound. 
+    return 1;
+}
 
-    MamdaOrderBookSimpleDelta::MamdaOrderBookSimpleDelta(
-        const MamdaOrderBookSimpleDelta&  copy)
-        : MamdaOrderBookBasicDelta (copy)
-    {
-    }
-
-} // namespace
+inline void CPU_SET (int i, cpu_set_t* affinity)
+{
+    affinity->count |= (1 << i);
+}

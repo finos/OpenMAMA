@@ -24,12 +24,16 @@
   =                             Includes                                  =
   =========================================================================*/
 
+#include <event.h>
+
 #include <mama/mama.h>
 #include <mama/io.h>
-#include <wombat/port.h>
 #include "qpidbridgefunctions.h"
 #include "io.h"
-#include <event.h>
+
+
+
+#include <wombat/port.h>
 
 /*=========================================================================
   =                Typedefs, structs, enums and globals                   =

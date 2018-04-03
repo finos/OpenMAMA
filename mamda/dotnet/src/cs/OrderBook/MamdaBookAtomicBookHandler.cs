@@ -49,8 +49,7 @@ namespace Wombat
 		///We invoke this method after the last entry for the level gets processed.
 		///The subscription may be destroyed from this callback.</summary>
 		///<param name = "subscription"></param>//The MamdaSubscription handle.
-		///<param name = "listener"></param>	//The listener handling the recap. 
-		///<param name = "isRecap"></param>		//Whether the first update was a recap.
+		///<param name = "listener"></param>	//The listener handling the recap.
         void onBookAtomicEndBook (
             MamdaSubscription           subscription,
             MamdaBookAtomicListener     listener);

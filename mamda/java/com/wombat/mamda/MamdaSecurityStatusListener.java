@@ -39,6 +39,7 @@ import java.util.LinkedList;
  * modified fields.
  */
 
+@SuppressWarnings("deprecation")
 public class MamdaSecurityStatusListener implements MamdaMsgListener,
                                                     MamdaSecurityStatusRecap,
                                                     MamdaSecurityStatusUpdate
@@ -230,7 +231,6 @@ public class MamdaSecurityStatusListener implements MamdaMsgListener,
     }
 
     // SecurityStatus recap fields access:
-
     public long getSecurityStatus()
     {
         return (long)MamdaSecurityStatus.mamdaSecurityStatusFromString (securityStatusCache.mSecStatusStr);

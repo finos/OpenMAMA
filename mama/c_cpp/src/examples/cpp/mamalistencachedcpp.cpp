@@ -1826,7 +1826,7 @@ void MsgAsserterCallback::onField (const MamaMsg&       msg,
     case MAMA_FIELD_TYPE_BOOL:
     {
         MamaFieldCacheFieldBool cachedBoolField;
-        bool val = cachedBoolField.get(*mFieldCache->find (field.getFid()));
+        mama_bool_t val = cachedBoolField.get(*mFieldCache->find (field.getFid()));
         if (val != field.getBool())
         {
             printf ("\nThe Failed Field is %s and the values are %d, %d",

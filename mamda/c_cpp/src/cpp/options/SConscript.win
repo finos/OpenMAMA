@@ -17,7 +17,6 @@ env.Append(
 sources = Split( """
   MamdaOptionChainView.cpp
   MamdaOptionChainListener.cpp
-  MamdaOptionSeriesUpdate.cpp
   MamdaOptionExpirationDateSet.cpp
   MamdaOptionContract.cpp
   MamdaOptionContractSet.cpp
@@ -27,6 +26,10 @@ sources = Split( """
   MamdaOptionExpirationStrikes.cpp
   MamdaOptionChain.cpp
 """)
+
+# Contains no symbols which static complains about
+if 'static' not in env['build']:
+    sources.append("MamdaOptionSeriesUpdate.cpp")
 
 headers = Glob('mamda/*.h')
 

@@ -556,13 +556,13 @@ mamaDictionary_setMaxFid (
      is big enough. I.e. a platform supplied data dictionary*/
     if (impl->mDict)
     {
-        ensureCapacity (impl, maxFid);
+        ensureCapacity (impl, (mama_fid_t)maxFid);
     }
     else
     {
         /*The dictionary array will be created on the first call to 
          addFieldDescriptor()*/
-        impl->mMaxFid = maxFid;
+        impl->mMaxFid = (mama_fid_t)maxFid;
     }
     return MAMA_STATUS_OK;
 }

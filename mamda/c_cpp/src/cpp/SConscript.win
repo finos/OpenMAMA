@@ -47,9 +47,6 @@ MamdaVersion.cpp
 MamdaQuery.cpp
 """)
 
-sources.append( env.Object('mamda_wtable','#common/c_cpp/src/c/wtable.c') )
-sources.append( env.Object('mamda_lookup2','#common/c_cpp/src/c/lookup2.c') )
-
 headers = Glob('mamda/*.h')
 
 if env['with_testtools'] == True:

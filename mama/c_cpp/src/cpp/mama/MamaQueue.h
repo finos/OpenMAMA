@@ -68,7 +68,11 @@ namespace Wombat
         virtual void dispatch ();
 
         /**
-         * Dispatch messages until timeout (see release notes for details)
+         * Dispatch messages from the queue until timeout has elapsed. Some
+         * middleware implementations will always block until timeout
+         * (dispatching multiple times), whereas others will always unblock
+         * once the first event is dispatched or the timeout has elapsed -
+         * whichever comes first.
          */
         virtual void timedDispatch (
             uint64_t  timeout);

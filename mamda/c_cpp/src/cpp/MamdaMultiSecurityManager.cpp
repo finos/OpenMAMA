@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mamda/MamdaMultiSecurityManager.h>
 #include <mamda/MamdaMultiSecurityHandler.h>
 #include <mamda/MamdaDataException.h>

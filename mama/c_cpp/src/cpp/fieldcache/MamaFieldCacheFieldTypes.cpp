@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mama/fieldcache/MamaFieldCacheFieldTypes.h>
 #include <mama/fieldcache/fieldcachefield.h>
 #include <mama/price.h>

@@ -227,6 +227,11 @@ public class MamaPublisherJava implements MamaPublisherCallback
         System.err.println("onPublishError: " + pub.getSymbol() + " " + status + " " + info);
     }
 
+    public void onSuccess(MamaPublisher pub, short status, String info)
+    {
+        System.err.println("onSuccess: " + pub.getSymbol() + " " + status + " " + info);
+    }
+
     private void parseCommandLine( String [] args )
     {
         for ( int i = 0; i < args.length; )

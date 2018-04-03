@@ -18,6 +18,11 @@
  * 02110-1301 USA
  */
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_12
+/* Doing nothing, since OSX now supports these */
+static void nothing(void) { }
+#else
+
 #include "wombat/port.h"
 
 #include <mach/mach.h>
@@ -120,3 +125,6 @@ int clock_gettime_process_cputime_id (struct timespec * ts)
 
     return GETTIME_SUCCESS;
 }
+
+#endif /* MAC_OS_X_VERSION_MIN_REQUIRED */
+

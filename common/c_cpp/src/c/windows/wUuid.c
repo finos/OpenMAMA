@@ -64,6 +64,6 @@ void wUuid_unparse (wUuid myUuid, char* out)
 		gGotroot	= 1;
 	}
 
-    srand (time (NULL));
-    snprintf (out, 49, "%d%d", gRoot, rand() % 10000);
+    srand ((unsigned int) time (NULL));
+    snprintf (out, 49, "%d%d", (int)gRoot, (int)rand() % 10000);
 }

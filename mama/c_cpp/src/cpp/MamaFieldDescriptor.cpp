@@ -20,6 +20,7 @@
  */
 
 #include <string.h>
+#include <stdint.h>
 
 #include "mama/mamacpp.h"
 #include "mama/MamaFieldDescriptor.h"

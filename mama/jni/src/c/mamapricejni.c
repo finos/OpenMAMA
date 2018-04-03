@@ -30,6 +30,7 @@
 #include <assert.h>
 
 #include "mamajniutils.h"
+#include "mamajni/com_wombat_mama_MamaPrice.h"
 
 /******************************************************************************
 * Global/Static variables

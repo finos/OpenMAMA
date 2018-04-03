@@ -63,7 +63,7 @@ properties_Load( const char* path, const char* fileName )
 {
     int i             = 0, j=0;
     int pointer       = 0;
-    int length        = 0;
+    size_t length     = 0;
     const char* tempPath    = NULL;
     char subPath[256] = "";
     char newPath[256] = "";
@@ -130,88 +130,6 @@ properties_Load( const char* path, const char* fileName )
     return NULL;
 }
 
-/* This function will replace any environment variables with their
- * equivalents in the string passed in.
- *
- * @param value [I] The string that may contain environment variables.
- *
- * @return NULL if the value string did not containing any environment variables.
- * A valid string is variables were replaced, delete the memory with free.
- */
-char* propertiesImpl_ReplaceEnvironmentVariable( const char* value )
-{
-	/* Returns */
-	char* ret = NULL;
-    if( value != NULL )
-    {
-	    /* Scan the property value for a $( which indicates an environment
-         * variable */
-	    char* envStart = strstr(value, "$(");
-	    if( envStart != NULL )
-	    {
-		    /* Get a pointer to the first character of the variable itself. */
-		    char* variableStart = (envStart + 2);
-
-		    /* Locate the end of the string */
-		    char* envEnd = strchr( variableStart, ')' );
-		    if( envEnd != NULL )
-		    {
-                /* Obtain the length of the value string, this must be done
-                 * before any replacements. */
-			    int valueLength = strlen( value );
-
-			    /* Save the character at the end of the string */
-			    char endChar = *envEnd;
-
-			    /* Replace it will a NULL to extract the variable name. */
-			    *envEnd = '\0';
-			    {
-				    /* Extract the variable name. */
-				    char* envValue = getenv( variableStart );
-
-                    /* If a value was returned then a new property value must
-                     * be formatted. */
-				    if(envValue != NULL)
-				    {
-                        /* Determine the number of characters needed to store
-                         * the new string. This is the length of the original
-                         * value plus the length of the environment variable
-                         * value minus the length of the environment variable
-                         * name.  The -2 at the end is due to the 3 characters
-                         * that wrap the environment variable name plus 1 for
-                         * the null terminator.
-					     */
-					    int newStringLength = (valueLength -
-                                strlen(variableStart) + strlen(envValue) - 2);
-
-					    /* Allocate a buffer to contain the new string */
-					    ret = (char* )calloc(newStringLength, sizeof(char));
-					    if(ret != NULL)
-					    {
-                            /* Write a temporary NULL into the input string
-                             * where the environment variable symbol starts.
-						     */
-						    char startChar = *envStart;
-						    *envStart = '\0';
-
-						    /* Format the buffer */
-						    sprintf(ret, "%s%s%s", value, envValue, (envEnd + 1));
-
-						    /* Restore the NULL at the start of the string. */
-						    *envStart = startChar;
-					    }
-				    }
-			    }
-
-			    /* Restore the NULL at the end of the string. */
-			    *envEnd = endChar;
-		    }
-	    }
-    }
-
-	return ret;
-}
-
 /**
  * Create an empty properties object.
  */
@@ -251,7 +169,7 @@ properties_AddString( wproperty_t handle, const char* propString )
 		propertiesImpl_ *impl = (propertiesImpl_ *)handle;
 
 		/* Replace any environment variables in the properties string. */
-		char* localString = propertiesImpl_ReplaceEnvironmentVariable(propString);
+		char* localString = strReplaceEnvironmentVariable(propString);
 		if(NULL == localString)
 		{
 			/* No variables were replaced, just make a straight copy. */
@@ -381,7 +299,7 @@ properties_setProperty (wproperty_t handle,
     name_c  =   strdup (name);
 
     /* The value will need to have any environment variables replaced. */
-    value_c = (const char* )propertiesImpl_ReplaceEnvironmentVariable(value);
+    value_c = (const char* )strReplaceEnvironmentVariable(value);
     if(NULL == value_c)
     {
         value_c = strdup(value);
@@ -500,7 +418,7 @@ properties_AddEscapes (const char* src, const char chars[], int num)
 {
    int i = 0, j = 0, retIdx = 0, matches = 0;
    char* retStr;
-   int strln = 0;
+   size_t strln = 0;
 
    if (!src)
       return NULL;

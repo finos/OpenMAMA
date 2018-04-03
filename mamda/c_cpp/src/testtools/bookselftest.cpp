@@ -26,7 +26,7 @@
 // MamdaOrderBookListener in real time.
 //
 
-
+#include <stdint.h>
 #include <mamda/MamdaSubscription.h>
 #include <mamda/MamdaOrderBookChecker.h>
 #include <mamda/MamdaOrderBookFields.h>

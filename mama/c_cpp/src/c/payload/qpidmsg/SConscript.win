@@ -6,7 +6,7 @@ env = env.Clone()
 
 target = 'libmamaqpidmsgimpl'
 
-env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H'] )
+env.Append( CPPDEFINES 	= ['BRIDGE', 'MAMA_DLL', 'HAVE_QPID_PROTON_VERSION_H', 'PN_NOINCLUDE_STDINT'] )
 
 includePath = []
 includePath.append('$qpid_home/include')
@@ -31,6 +31,7 @@ else:
   buildType = "Release"
 
 libPath.append('%s/lib' % env['qpid_home'])
+libPath.append('%s/debug/lib' % env['qpid_home'])
 
 env['CCFLAGS'].append(['/TP', '/WX-'])
 env.Append(LIBS=libs, LIBPATH=libPath, CPPPATH=[includePath])

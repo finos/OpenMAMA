@@ -327,7 +327,6 @@ void mamaPlaybackFileParser_saveMsgLength (mamaPlaybackFileParser
         (mamaPlaybackFileParserImpl*)fileParser;
     char  delim       = (char)':';
     char* temp        = NULL;
-    int   nPos;
     int   msgLength   = 0;
 
     temp = strrchr (msgHeader, delim);

@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mamda/MamdaBasicSubscription.h>
 #include <mamda/MamdaMsgListener.h>       // MamdaBasicMsgListener interface
 #include <mamda/MamdaErrorListener.h>     // MamdaBasicErrorListener interface

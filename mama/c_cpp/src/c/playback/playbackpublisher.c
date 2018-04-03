@@ -294,11 +294,11 @@ mamaPlayback_findOrCreatePublisher (mamaPlaybackPublisher mamaPlayback,
     {
         strcpy (keyCopy, keyName);
         temp = strrchr (keyName,delim);
-        nPos = temp - keyName;
+        nPos = (int)(temp - keyName);
         mamaPlayback_rightCopy (keyName,impl->mySymbol,nPos+1);
         keyName[nPos] = '\0';
         temp = strrchr (keyName,delim);
-        nPos = temp - keyName;
+        nPos = (int)(temp - keyName);
         mamaPlayback_rightCopy (keyName,impl->myTransportName,nPos+1);
         keyName[nPos] = '\0';
         strcpy (impl->mySource,keyName);
@@ -422,7 +422,7 @@ mama_bool_t mamaPlayback_publishFromFile (mamaPlaybackPublisher mamaPlayback,
         temp = strrchr (header,delim);
         if (temp != NULL)
         {
-            position = temp -header;
+            position = (int)(temp - header);
         }
         header[position]='\0';
         if (dateTime)
@@ -573,7 +573,7 @@ void mamaPlayback_rightCopy (char* input, char* output, int start)
 {
     int index  = 0;
     int i      = 0;
-    int length = strlen (input);
+    int length = (int) strlen (input);
     for (i = start; i<length; i++)
     {
         output[index]=input[i];
@@ -626,7 +626,7 @@ mamaPlayback_printConnectionsForTransport (wtable_t    t,
                                            const char* key,
                                            void*       closure)
 {
-    int             i;
+    uint32_t        i;
     mamaTransport   transport = NULL;
     mamaConnection* result = NULL;
     uint32_t        len;

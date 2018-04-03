@@ -591,10 +591,18 @@ namespace Wombat
         /// <summary>
         /// Disable logging.
         /// </summary>
-		public static void disableLogging()
-		{
-			MamaWrapper.CheckResultCode(NativeMethods.mama_disableLogging());
-		}
+        public static void disableLogging()
+        {
+            MamaWrapper.CheckResultCode(NativeMethods.mama_disableLogging());
+        }
+
+        /// <summary>
+        /// Close any underlying log resources.
+        /// </summary>
+        public static void logDestroy()
+        {
+            NativeMethods.mama_logDestroy();
+        }
 
         /// <summary>
         /// Set the log level.
@@ -880,7 +888,9 @@ namespace Wombat
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mama_logToFile(string fileName, int level);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
-			public static extern int mama_disableLogging();
+            public static extern int mama_disableLogging();
+            [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void mama_logDestroy();
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mama_setLogLevel(int level);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]

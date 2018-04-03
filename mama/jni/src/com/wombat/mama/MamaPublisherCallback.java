@@ -28,5 +28,6 @@ public interface MamaPublisherCallback
 	public void onCreate(MamaPublisher pub);
 	public void onDestroy(MamaPublisher pub);
 	public void onError(MamaPublisher pub, short status, String info);
+	public void onSuccess(MamaPublisher pub, short status, String info);
 }
 

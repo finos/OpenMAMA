@@ -31,4 +31,6 @@ typedef uuid_t wUuid;
 
 #define wUuid_unparse uuid_unparse
 
+#define wUuid_clear(UUID) uuid_clear(UUID);
+
 #endif /* WUUID_H__ */

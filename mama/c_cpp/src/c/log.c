@@ -77,7 +77,7 @@ static PMRSWLock g_lock = NULL;
 
 FILE*        gMamaLogFile               = NULL;
 FILE*        gMamaControlledLogFile     = NULL;
-MamaLogLevel gMamaLogLevel              = MAMA_LOG_LEVEL_WARN;
+MamaLogLevel gMamaLogLevel              = MAMA_LOG_LEVEL_NORMAL;
 mamaLogCb    gMamaLogFunc               = mama_logDefault;
 mamaLogCb    gMamaForceLogFunc          = mama_forceLogDefault;
 mamaLogCb3   gMamaForceLogPrefixFunc    = mama_forceLogPrefixDefault;
@@ -198,7 +198,7 @@ mamaLog_logLimitReached(void)
 	if(g_logFilePolicy != LOGFILE_UNBOUNDED)
 	{
 		/* Check to see if the log file has reached the maximum size. */
-		if(ftell(gMamaControlledLogFile) > g_maxLogSize)
+		if(ftell(gMamaControlledLogFile) > (long) g_maxLogSize)
 		{
 			/* Upgrade to a writer lock. */
 			MRSW_RESULT lu = MRSWLock_upgrade(g_lock);
@@ -207,7 +207,7 @@ mamaLog_logLimitReached(void)
 				/* Check the file size again under the writer lock in case another
 				 * thread has rolled the file while this one has been waiting.
 				 */
-				if(ftell(gMamaControlledLogFile) > g_maxLogSize)
+				if(ftell(gMamaControlledLogFile) > (long) g_maxLogSize)
 				{
 				printf("Logfile size has been reached.\n");
 				switch (g_logFilePolicy)

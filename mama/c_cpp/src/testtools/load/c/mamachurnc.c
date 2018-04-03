@@ -280,7 +280,7 @@ static void createSubscription(int index)
                                 &callbacks,
                                 gSource,
                                 item->symbol,
-                                (void*)index);
+                                (void*)(intptr_t)index);
 
 
   checkStatus("mamaSubscription_create()",status);
@@ -295,8 +295,8 @@ static void MAMACALLTYPE lifetimeCallback(mamaTimer timer, void *closure)
 static void MAMACALLTYPE recreateCallback(mamaTimer timer, void *closure)
 {
     /* try to destroy existing subscription */
-    destroySubscription((int)closure);
-    createSubscription((int)closure);
+    destroySubscription((int)(intptr_t)closure);
+    createSubscription((int)(intptr_t)closure);
 	mamaTimer_destroy(timer);
 }
 
@@ -317,7 +317,7 @@ static void MAMACALLTYPE churnCallback(mamaTimer timer, void *closure)
     churnIndex=rand() % gSymbolCount;
     interval = (   (double)rand() / ((double)(RAND_MAX)+(double)(1)) );
     status=mamaTimer_create(&destroytimer, gSymbolArray[churnIndex].queue,
-                                recreateCallback, interval, (void*)churnIndex);
+                                recreateCallback, interval, (void*)(intptr_t)churnIndex);
 
     churnCount++;
   }

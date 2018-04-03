@@ -6,9 +6,10 @@ AlignConsecutiveDeclarations: 'true'
 AlignOperands: 'true'
 BinPackArguments: 'false'
 BinPackParameters: 'false'
-BreakBeforeBraces: Linux
+BreakBeforeBraces: Allman
 ColumnLimit: '80'
 IndentWidth: 4
+PointerBindsToType: 'true'
 ReflowComments: 'true'
 SpaceBeforeParens: Always
 SpaceInEmptyParentheses: 'true'

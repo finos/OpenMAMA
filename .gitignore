@@ -76,6 +76,8 @@ mama/c_cpp/src/c/mama/version.h
 mama/c_cpp/src/c/version.c
 mama/c_cpp/stamp-h1
 mama/dotnet/src/cs/mama.xml
+mama/dotnet/src/cs/AssemblyInfo.cs
+mama/dotnet/src/cs/MamaVersion.cs
 mama/jni/src/c/mamajni/com_wombat_mama_*
 mama/c_cpp/src/c/entitlementlibraries.c
 mamda/c_cpp/src/cpp/version.c

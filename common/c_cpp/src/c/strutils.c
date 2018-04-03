@@ -167,7 +167,7 @@ int wmFastPrintU64 (
             ++extra;
             --minWidth;
         }
-        result[0] = (value/100) + '0';
+        result[0] = (char)((value/100) + '0');
         wmMemCpy (result+1, gLeadingZeroIntegerStrings[value%100], 3);
         return extra + 3;
     }
@@ -186,8 +186,8 @@ int wmFastPrintU64 (
     }
     if ((value < 100000) && (maxLen > 5))
     {
-        int leading = value/10000;
-        int residual = value - (leading*10000);
+        w_u64_t leading = value/10000;
+        w_u64_t residual = value - (leading*10000);
         while (minWidth > 5)
         {   
             result[0] = '0';
@@ -203,8 +203,8 @@ int wmFastPrintU64 (
 
     if ((value < 1000000) && (maxLen > 6))
     {
-        int leading = value/10000;
-        int residual = value - (leading*10000);
+        w_u64_t leading = value/10000;
+        w_u64_t residual = value - (leading*10000);
         while (minWidth > 6)
         {   
             result[0] = '0';
@@ -232,11 +232,11 @@ int wmFastPrintU64 (
                 ++extra;
                 --minWidth;
             }
-            return extra + snprintf (result, maxLen, "%" PRIu64, (long unsigned int)value);
+            return extra + snprintf (result, maxLen, "%" PRIu64, value);
         }
     }
     /*  last resort */
-    return snprintf (result, maxLen, "%"PRIu64, (long unsigned int)value);
+    return snprintf (result, maxLen, "%"PRIu64, value);
 }
 
 int wmFastPrintI64 (
@@ -359,7 +359,7 @@ int wmFastPrintF64 (
     }
     tmpResult[maxlen-1] = '\0';
     result  = tmpResult;
-    return actualMaxLen - maxlen;
+    return (int)(actualMaxLen - maxlen);
 }
 
 size_t wmStrSizeCpy (char* dst, const char* src, size_t siz)
@@ -488,7 +488,7 @@ int
 strcatAlloc(char** s, const char* ct)
 {
   size_t blockSize = 100;
-  int currentBlocks, requiredBlocks;
+  size_t currentBlocks, requiredBlocks;
   void* p;
 
   if (NULL==ct) return 0; /* nothing to do! */
@@ -527,7 +527,7 @@ int strlenEx(const char* s)
   if (NULL==s)
     return 0;
   else
-    return strlen(s);
+    return (int)strlen(s);
 }
 
 /* Could probably make this a lot faster... */
@@ -646,3 +646,124 @@ int strToVersionInfo(const char* s, versionInfo* version)
     }
     return retVal;
 }
+
+COMMONExpDLL
+char* strReplaceEnvironmentVariable(const char* value)
+{
+    /* Returns */
+    char* variableStart = NULL;
+    char* envValue      = NULL;
+    char* envStart      = NULL;
+    char* envEnd        = NULL;
+    char* startString   = "$(";
+    char* ret           = NULL;
+    char envVar[1024]   = "";
+    char startStr[4096] = "";
+    char endStr[4096]   = "";
+    char endChar        = ')';
+    int valueLength     = 0;
+    int startLength     = 0;
+    int newStringLength = 0;
+    size_t envVarLen    = 0;
+    
+    if (value != NULL && strchr(value, '$'))
+    {
+        ret = strdup(value);
+
+        /* Make sure strdup didn't fail */
+        if (NULL == ret)
+        {
+            goto out;
+        }
+
+        /* Scan the property for a $( which indicates an environment
+         * variable or set ${ as the environment variable notation */
+        if (NULL == strstr(ret, startString))
+        {
+            /* Change the start string */
+            startString = "${";
+            /* Change the end character */
+            endChar = '}';
+        }
+
+        while (envStart = strstr(ret, startString))
+        {
+
+            /* Get a pointer to the first character of the variable itself. */
+            variableStart = (envStart + 2);
+
+            /* Locate the end of the string */
+            envEnd = strchr( variableStart, endChar );
+
+            if (envEnd == NULL)
+            {
+                goto out;
+            }
+
+            /* Save off the end of the string as later we realloc the source of the string */
+            snprintf (endStr, strlen(envEnd)+1, "%s", envEnd);
+
+            /* Obtain the length of the ret string, this must be done
+             * before any replacements. */
+            valueLength = strlen( ret );
+
+            /* Obtain the length of the string before the $ variable */
+            startLength = valueLength - strlen(variableStart) - 1;
+
+            /* Make sure that we wouldn't overrun the buffer, otherwise return NULL */
+            if (startLength > sizeof(startStr))
+            {
+                goto out;
+            }
+
+            /* Save off the string up to the $ variable */
+            snprintf (startStr, startLength, "%s", ret);
+
+            /* Work out the length of the environment variable */
+            envVarLen = strlen(variableStart)-strlen(endStr)+1;
+
+            snprintf (envVar, envVarLen, "%s", variableStart);
+
+            /* Extract the variable name. */
+            envValue = getenv (envVar);
+
+            /* If a value was returned then a new property value must
+             * be formatted. */
+            if (envValue == NULL)
+            {
+                goto out;
+            }
+
+            /* Determine the number of characters needed to store
+             * the new string. This is the length of the original
+             * value plus the length of the environment variable
+             * value minus the length of the environment variable
+             * name.  The -2 at the end is due to the 3 characters
+             * that wrap the environment variable name plus 1 for
+             * the null terminator.
+             */
+            newStringLength = (valueLength -
+                    strlen(envVar) + strlen(envValue) - 2);
+
+            /* Reallocate a buffer to contain the new string if needed */
+            if (newStringLength > strlen(ret))
+            {
+                ret = (char* )realloc((char*)ret, newStringLength);
+            }
+
+            if (ret == NULL)
+            {
+                goto out;
+            }
+
+            snprintf(ret, newStringLength, "%s%s%s", startStr, envValue, (endStr + 1));
+        }
+    }
+
+    return ret;
+
+out:
+    free (ret);
+    return NULL;
+}
+

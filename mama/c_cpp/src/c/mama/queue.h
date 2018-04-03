@@ -318,11 +318,14 @@ extern mama_status
 mamaQueue_dispatch (mamaQueue queue);
 
 /**
- * Dispatch messages from the queue. This call blocks and dispatches
- * until timeout has elapsed.
+ * Dispatch messages from the queue until timeout has elapsed. Some
+ * middleware implementations will always block until timeout
+ * (dispatching multiple times), whereas others will always unblock
+ * once the first event is dispatched or the timeout has elapsed -
+ * whichever comes first.
  *
  * @param queue     The queue.
- * @param timeout   The number of milliseconds to block for before the function returns.
+ * @param timeout   The maximum number of milliseconds to block for before the function returns.
  * @return MAMA_STATUS_OK if the call is successful.
  */
 MAMAExpDLL

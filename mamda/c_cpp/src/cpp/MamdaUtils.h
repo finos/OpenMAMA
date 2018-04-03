@@ -22,6 +22,7 @@
 #ifndef MamdaUtilsH
 #define MamdaUtilsH
 
+#include <stdint.h>
 #include <mamda/MamdaConfig.h>
 #include <mama/mamacpp.h>
 #include <stdio.h>

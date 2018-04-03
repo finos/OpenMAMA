@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <wombat/port.h>
 #include <mamda/MamdaQuoteListener.h>
 #include <mamda/MamdaQuoteFields.h>
@@ -1966,7 +1967,7 @@ namespace Wombat
                        const MamaMsgField&                          field)
         {
             impl.mQuoteCache.mTmpQuoteCount = field.getU32();
-            impl.mQuoteCache.mGotQuoteCount = MODIFIED;
+            impl.mQuoteCache.mGotQuoteCount = (bool)MODIFIED;
             impl.mQuoteCache.mTmpQuoteCountFieldState = MODIFIED;
         }
     };

@@ -666,6 +666,7 @@ namespace Wombat
         ///<summary>
         /// Return the payload type
         ///</summary>
+        #pragma warning disable 0618
         public mamaPayloadType getPayloadType()
         {
             EnsurePeerCreated();
@@ -675,14 +676,15 @@ namespace Wombat
 
             return type;
         }
+        #pragma warning restore 0618
 
-		/// <summary>
-		/// Invoke the specified callback for each field in the message.
-		/// </summary>
-		/// <param name="iterator"></param>
-		/// <param name="dictionary"></param>
-		/// <param name="closure"></param>
-		public void iterateFields(
+        /// <summary>
+        /// Invoke the specified callback for each field in the message.
+        /// </summary>
+        /// <param name="iterator"></param>
+        /// <param name="dictionary"></param>
+        /// <param name="closure"></param>
+        public void iterateFields(
 			MamaMsgFieldIterator iterator,
 			MamaDictionary  dictionary,
 			object closure)
@@ -5156,8 +5158,10 @@ namespace Wombat
 
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_create(ref IntPtr mamaMsg);
+            #pragma warning disable 0618
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_createForPayload(ref IntPtr mamaMsg, mamaPayloadType id);
+            #pragma warning restore 0618
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_createForPayload(ref IntPtr mamaMsg, char id);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
@@ -5736,9 +5740,11 @@ namespace Wombat
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_getEntitleCode(IntPtr mamaMsg,
 				ref int code);
+            #pragma warning disable 0618
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mamaMsg_getPayloadType(IntPtr mamaMsg,
                 ref mamaPayloadType payload);
+            #pragma warning restore 0618
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_getSeqNum(IntPtr mamaMsg,
 				ref uint seqNum);

@@ -54,7 +54,6 @@ namespace Wombat
 		private MamaLogLevel		mamaLogLevel		= MamaLogLevel.MAMA_LOG_LEVEL_WARN;
 		private	ArrayList			mamaBridges			= new ArrayList();
 		private ArrayList			mamaTransports		= new ArrayList();
-		private MamaQueue			mamaDefaultQueue;
 		private ArrayList			mamaSubscriptions	= new ArrayList();
 
 		const string usage =

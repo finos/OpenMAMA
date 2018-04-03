@@ -31,15 +31,13 @@ class COMMONExpDLL Lock
 public:
     Lock       ();
     ~Lock      ();
-
     void lock   ();
     void unlock ();
 private:
     Lock (const Lock& copy);    // no copy
     Lock& operator= (const Lock& rhs); // no assignment
-
     struct LockImpl;
-    std::auto_ptr <LockImpl> mImpl;
+    struct LockImpl* mImpl;
 };
 
 // NoLock class is used a template parameter when unlocked access is required

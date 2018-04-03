@@ -1239,7 +1239,7 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
                 mamaSubscription_getTransport(subscription, &tport);
                 mamaTransportImpl_getEntitlementBridge(tport, &entBridge);
 
-                entBridge->createSubscription (entBridge, &(self->mSubjectContext));
+                entBridge->createSubscription (entBridge, context);
             }
         }
 
@@ -2108,7 +2108,7 @@ mamaSubscription_processErr (mamaSubscription subscription, int deactivate)
 
     callbacks->onError(subscription,
                         MAMA_STATUS_TIMEOUT,
-                        MAMA_MSG_STATUS_OK,
+                        (void*)MAMA_MSG_STATUS_OK,
                         symbol,
                         closure);
 
