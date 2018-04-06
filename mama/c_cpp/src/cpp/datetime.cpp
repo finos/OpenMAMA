@@ -121,7 +121,7 @@ namespace Wombat
                                      mama_u32_t             microseconds,
                                      mamaDateTimePrecision  precision)
     {
-        mamaDateTime_setEpochTime (mDateTime, seconds, microseconds, precision);
+        mamaTry(mamaDateTime_setEpochTime (mDateTime, seconds, microseconds, precision));
     }
 
     void MamaDateTime::setWithHints (mama_u32_t             seconds,
@@ -129,8 +129,8 @@ namespace Wombat
                                      mamaDateTimePrecision  precision,
                                      mamaDateTimeHints      hints)
     {
-        mamaDateTime_setWithHints (mDateTime, seconds, microseconds, precision,
-                                   hints);
+        mamaTry(mamaDateTime_setWithHints (mDateTime, seconds, microseconds, precision,
+                                   hints));
     }
 
     mamaDateTimePrecision MamaDateTime::getPrecision()
@@ -198,14 +198,14 @@ namespace Wombat
 
     void MamaDateTime::set (struct timeval  inputTimeVal)
     {
-        mamaDateTime_setFromStructTimeVal (mDateTime,
-                                           &inputTimeVal);
+        mamaTry(mamaDateTime_setFromStructTimeVal (mDateTime,
+                                           &inputTimeVal));
     }
 
     void MamaDateTime::setFromStructTimeSpec(struct timespec& inputTimeSpec)
     {
-        mamaDateTime_setFromStructTimeSpec(mDateTime,
-                                           &inputTimeSpec);
+        mamaTry(mamaDateTime_setFromStructTimeSpec(mDateTime,
+                                           &inputTimeSpec));
     }
 
     void MamaDateTime::set (mama_u32_t             year,
@@ -220,15 +220,15 @@ namespace Wombat
     {
         if (tz)
         {
-            mamaDateTime_setWithPrecisionAndTz (
+            mamaTry(mamaDateTime_setWithPrecisionAndTz (
                 mDateTime, year, month, day, hours, minutes, seconds,
-                microseconds, precision, tz->getCValue());
+                microseconds, precision, tz->getCValue()));
         }
         else
         {
-            mamaDateTime_setWithPrecisionAndTz (
+            mamaTry(mamaDateTime_setWithPrecisionAndTz (
                 mDateTime, year, month, day, hours, minutes, seconds,
-                microseconds, precision, NULL);
+                microseconds, precision, NULL));
         }
     }
 
@@ -241,15 +241,15 @@ namespace Wombat
     {
         if (tz)
         {
-            mamaDateTime_setTimeWithPrecisionAndTz (
+            mamaTry(mamaDateTime_setTimeWithPrecisionAndTz (
                 mDateTime, hours, minutes, seconds, microseconds, precision,
-                tz->getCValue());
+                tz->getCValue()));
         }
         else
         {
-            mamaDateTime_setTimeWithPrecisionAndTz (
+            mamaTry(mamaDateTime_setTimeWithPrecisionAndTz (
                 mDateTime, hours, minutes, seconds, microseconds, precision,
-                NULL);
+                NULL));
         }
     }
 
@@ -361,7 +361,7 @@ namespace Wombat
 
     void MamaDateTime::setEpochTimeExt(mama_i64_t seconds, uint32_t nanoseconds) const
     {
-        mamaDateTime_setEpochTimeExt(mDateTime, seconds, nanoseconds);
+        mamaTry(mamaDateTime_setEpochTimeExt(mDateTime, seconds, nanoseconds));
     }
 
     void MamaDateTime::getAsStructTimeVal (struct timeval&  result) const

@@ -222,7 +222,7 @@ TEST_F (MamaDateTimeTestC, TestSetEpochTime)
 {
     mamaDateTime t, nullTime = NULL;
     mama_u32_t secs    = 43200,  negSecs    = secs * -1,
-               micSecs = 500000, negMicSecs = micSecs * -1,
+               micSecs = 500000,
                secsPerDay = (24 * 60 * 60),
                secsPer2Days = secsPerDay * 2;
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
@@ -232,13 +232,9 @@ TEST_F (MamaDateTimeTestC, TestSetEpochTime)
     // Test with invalid arguments
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setEpochTime(nullTime, secs, micSecs, precision) );
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setEpochTime(nullTime, negSecs, micSecs, precision) );
-    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setEpochTime(nullTime, secs, negMicSecs, precision) );
-    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setEpochTime(nullTime, negSecs, negMicSecs, precision) );
 
     // Test with valid arguments
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setEpochTime(t, negSecs, negMicSecs, precision) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setEpochTime(t, negSecs, micSecs, precision) );
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setEpochTime(t, secs, negMicSecs, precision) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setEpochTime(t, secs, micSecs, precision) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setEpochTime(t, secsPerDay, micSecs, precision) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setEpochTime(t, secsPer2Days, micSecs, precision) );
@@ -345,7 +341,7 @@ TEST_F (MamaDateTimeTestC, TestSetWithHints)
 {
     mamaDateTime t, nullTime = NULL;
     mama_u64_t  secs = 43200, negSecs = secs * -1,
-               micSecs = 500 * 1000, negMicSecs = micSecs * -1,
+               micSecs = 500 * 1000,
                secsPerDay = (24 * 60 * 60),
                secsPer2Days = secsPerDay * 2;
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
@@ -358,11 +354,8 @@ TEST_F (MamaDateTimeTestC, TestSetWithHints)
 
     // Test with valid input arguments
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithHints(t, secs, micSecs, precision, hints) );
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithHints(t, secs, negMicSecs, precision, hints) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithHints(t, negSecs, micSecs, precision, hints) );
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithHints(t, negSecs, negMicSecs, precision, hints) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithHints(t, secsPerDay, micSecs, precision, hints) );
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithHints(t, secsPer2Days, negMicSecs, precision, hints) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
@@ -427,7 +420,7 @@ TEST_F (MamaDateTimeTestC, TestSetWithPrecisionAndTzTest)
     mama_u32_t year = 2013, month = 1, day = 7, hour = 9, minute = 21, second = 12, microsecond = 500;
 
    // These are valid values which will get converted by the underlying implementation.
-    mama_u32_t invyear = -2013, invmonth = 13, invday = 47, invhour = 29, invminute = 121, invsecond = 712, invmicrosecond = -500;
+    mama_u32_t invyear = -2013, invmonth = 13, invday = 47, invhour = 29, invminute = 121, invsecond = 712;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
 
@@ -437,7 +430,7 @@ TEST_F (MamaDateTimeTestC, TestSetWithPrecisionAndTzTest)
 
     // Test with valid argumetns
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithPrecisionAndTz(t, invyear, invmonth, invday, invhour, invminute, 
-                                                                            invsecond, invmicrosecond, precision, tz) );
+                                                                            invsecond, microsecond, precision, tz) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithPrecisionAndTz(t, year, month, day, hour, minute, 
                                                                    second, microsecond, precision, tz) );
@@ -452,7 +445,7 @@ TEST_F (MamaDateTimeTestC, TestSetTimeTest)
     mama_u32_t hour = 9, minute = 21, second = 12, microsecond = 500;
 
    // Larger values, which are converted by the implemenation.
-    mama_u32_t invhour = 29, invminute = 121, invsecond = 712, invmicrosecond = -500;
+    mama_u32_t invhour = 29, invminute = 121, invsecond = 712;
 
    
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
@@ -460,7 +453,6 @@ TEST_F (MamaDateTimeTestC, TestSetTimeTest)
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setTime(nullTime, hour, minute, second, microsecond) );
 
     // Test with valid arguments
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setTime(t, hour, minute, second, invmicrosecond) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setTime(t, hour, minute, invsecond, microsecond) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setTime(t, hour, invminute, second, microsecond) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setTime(t, invhour, minute, second, microsecond) );
@@ -2318,4 +2310,39 @@ TEST_F (MamaDateTimeTestC, TestGetEpochTimePreWindowsEpoch)
     EXPECT_STREQ("02:42:09.000", buf);
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
+}
+
+TEST_F(MamaDateTimeTestC, TestSetInvalidSubsecs)
+{
+    struct timeval          tVal;
+    struct timespec         tVal1;
+    mamaDateTime            t;
+
+    tVal.tv_sec = 1484674307;
+    tVal.tv_usec = 1000000;
+
+    tVal1.tv_sec = 1484674307;
+    tVal1.tv_nsec = 1000000000;
+
+
+    int64_t               inSecs = 1484674307;
+    uint32_t              inNSecs = 1000000000;
+
+    mama_u32_t secs = 43200, micSecs = 1000000;
+    mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
+    mamaDateTimeHints hints = MAMA_DATE_TIME_HAS_TIME;
+    mama_u32_t hour = 9, minute = 21, second = 12, microsecond = 1000000;
+    mamaTimeZone tz = mamaTimeZone_utc();
+
+    EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_create(&t));
+
+    EXPECT_EQ(MAMA_STATUS_INVALID_ARG, mamaDateTime_setFromStructTimeVal(t, &tVal));
+    EXPECT_EQ(MAMA_STATUS_INVALID_ARG, mamaDateTime_setEpochTimeExt(t, inSecs, inNSecs));
+    EXPECT_EQ(MAMA_STATUS_INVALID_ARG, mamaDateTime_setEpochTime(t, secs, micSecs, precision));
+    EXPECT_EQ(MAMA_STATUS_INVALID_ARG, mamaDateTime_setWithHints(t, secs, micSecs, precision, hints));
+    EXPECT_EQ(MAMA_STATUS_INVALID_ARG, mamaDateTime_setTimeWithPrecisionAndTz(t, hour, minute, second, microsecond, precision, tz));
+    EXPECT_EQ(MAMA_STATUS_INVALID_ARG, mamaDateTime_setFromStructTimeSpec(t, &tVal1));
+
+
+    EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_destroy(t));
 }
