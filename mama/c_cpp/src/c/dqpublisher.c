@@ -20,6 +20,7 @@
  */
 
 #include "mama/mama.h"
+#include "msgutils.h"
 #include "subscriptionimpl.h"
 
 #include "mama/dqpublisher.h"
@@ -30,16 +31,23 @@
 
 #define MAX_DATE_STR    50
 
+typedef struct publishCtx_          //STUTEST does anything except seqnum actually need to be here?  Status maybe??
+{
+    mama_seqnum_t mSeqNum;
+    mamaMsgStatus mStatus;
+} publishCtx;
+
 typedef struct mamaDQPublisherImpl_
 {
     mamaPublisher   mPublisher;
-    mamaMsgStatus   mStatus;
+//    mamaMsgStatus   mStatus;  //STUTEST
     uint64_t        mSenderId;
-    mama_seqnum_t   mSeqNum;
     void*           mClosure;
     void*           mCache;
     mamaDateTime    mSendTime;
     char*           mSendTimeFormat;
+    publishCtx      mPublishCtx;
+    wtable_t        mPublishCtxs;
 } mamaDQPublisherImpl;
 
 
@@ -54,8 +62,9 @@ mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
     if (!impl) return MAMA_STATUS_NOMEM;
         
     impl->mSenderId = mamaSenderId_getSelf ();
-    impl->mStatus = MAMA_MSG_STATUS_OK;
-    impl->mSeqNum = 1;
+//    impl->mStatus = MAMA_MSG_STATUS_OK;   //STUTEST
+    impl->mPublishCtx.mSeqNum = 1;
+    impl->mPublishCtx.mStatus = MAMA_MSG_STATUS_OK; //STUTEST
 
     impl->mSendTimeFormat = strdup("%T%;");
 
@@ -65,7 +74,7 @@ mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
 }
 
 mama_status mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport, 
-                                         const char* topic)
+                                    const char* topic)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
     mama_status status = MAMA_STATUS_OK;
@@ -80,13 +89,58 @@ mama_status mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport
     return status;
 }
 
+mama_status mamaDQPublisher_addTopic (mamaDQPublisher pub, const char* topic)
+{
+    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*)pub;
+    mama_status          status = MAMA_STATUS_OK;
+    publishCtx*          ctx    = NULL
+
+    status = mamaDQPublisher_create (pub, transport, topic);
+    if (status != MAMA_STATUS_OK)
+    {
+        return status;
+    }
+
+    if (!impl->mPublishCtxs)
+    {
+        impl->mPublishCtxs = wtable_create ("subjects", 100);   //STUTEST arbitrary number
+
+        if (impl->mPublishCtxs == NULL)
+        {
+            mamaDQPublisher_destroy (pub);
+            return MAMA_STATUS_NOMEM;
+        }
+    }
+
+    ctx = calloc (1, sizeof (publishCtx));
+
+    if (wtable_insert (impl->mPublishCtxs, (char*)topic, 
+
+    return status;
+}
+
 
 mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
 {     
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
     mamaMsg modifableMsg = NULL;
+    publishCtx* ctx      = NULL;;    //STUTEST
+    const char* subject  = NULL;
+    mama_status status   = MAMA_STATUS_OK; //STUTEST
 
-    if (impl->mSeqNum != 0)
+    if (impl->mPublishCtxs)
+    {
+        status = msgUtils_getIssueSymbol (msg, &subject);
+
+        //STUTEST status check stuff
+        ctx = wtable_lookup (impl->mPublishCtxs, (char*)subject);
+    }
+    else
+    {
+        ctx = &impl->mPublishCtx;    //STUTEST
+    }
+
+    if (ctx->mSeqNum != 0)
     {
         mamaMsg_getTempCopy (msg, &modifableMsg);
         switch (mamaMsgType_typeForMsg (modifableMsg))
@@ -103,26 +157,26 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
             case MAMA_MSG_TYPE_BOOK_RECAP   :
                 if(MAMA_STATUS_OK !=
                         mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus))
+                            MamaFieldMsgStatus.mFid, ctx->mStatus))
                 {
                     mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus);
+                            MamaFieldMsgStatus.mFid, ctx->mStatus);
                 }
                 break;
 
             default:
                 if(MAMA_STATUS_OK !=
                         mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus))
+                            MamaFieldMsgStatus.mFid, ctx->mStatus))
                 {
                    mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
-                           MamaFieldMsgStatus.mFid, impl->mStatus);
+                           MamaFieldMsgStatus.mFid, ctx->mStatus);
                 }
-                impl->mSeqNum++;
+                ctx->mSeqNum++;
                 break;
         }
         mamaMsg_updateU32(modifableMsg, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
-                impl->mSeqNum);
+                ctx->mSeqNum);
     }
     
     if (impl->mSenderId != 0)
@@ -148,20 +202,23 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
                                        mamaMsg reply)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+    publishCtx* ctx; //STUTEST
+
+    ctx = &impl->mPublishCtx;
 
     if (impl->mSenderId != 0)
         updateSenderId(impl, reply);
         
-    if (impl->mSeqNum != 0)
+    if (ctx->mSeqNum != 0)
     {
         mamaMsg_updateU32(reply, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
-                impl->mSeqNum);
+                ctx->mSeqNum);
 
         if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus))
+                MamaFieldMsgStatus.mFid, ctx->mStatus))
         {
             mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus);
+                MamaFieldMsgStatus.mFid, ctx->mStatus);
         }
     }
 
@@ -175,20 +232,23 @@ mama_status mamaDQPublisher_sendReplyWithHandle (mamaDQPublisher pub,
                                                 mamaMsg reply)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+    publishCtx* ctx;    //STUTEST
+
+    ctx = &impl->mPublishCtx;
 
     if (impl->mSenderId != 0)
         updateSenderId(impl, reply);
 
-    if (impl->mSeqNum != 0)
+    if (ctx->mSeqNum != 0)
     {
         mamaMsg_updateU32(reply, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
-                impl->mSeqNum);
+                ctx->mSeqNum);
 
         if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
-                    MamaFieldMsgStatus.mFid, impl->mStatus))
+                    MamaFieldMsgStatus.mFid, ctx->mStatus))
         {
             mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
-                    MamaFieldMsgStatus.mFid, impl->mStatus);
+                    MamaFieldMsgStatus.mFid, ctx->mStatus);
         }
     }
 
@@ -218,15 +278,20 @@ void mamaDQPublisher_destroy (mamaDQPublisher pub)
         impl->mSendTime = NULL;
     }
 
+    if (impl->mPublishCtxs)
+    {
+        //STUTEST destroy all AND table
+    }
+
     free(impl);
 }
 
 
-
+//STUTEST this also won't work for group pub :( - for FHSDK I don't think this matters that much, it's only used for pass through status... so actually probably better to not put status in ctx
 void mamaDQPublisher_setStatus (mamaDQPublisher pub, mamaMsgStatus  status)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-    impl->mStatus = status;
+    impl->mPublishCtx.mStatus = status;
 }
     
 void mamaDQPublisher_setSenderId (mamaDQPublisher pub, uint64_t  senderid)
@@ -235,10 +300,12 @@ void mamaDQPublisher_setSenderId (mamaDQPublisher pub, uint64_t  senderid)
     impl->mSenderId = senderid;
 }
    
+//STUTEST this is a bit more of a problem... Actually no it isn't.  It's only used for mOverwriteSeqNum case in FHSDK which frankly doesn't look like it does what it's intended to do anyway
 void mamaDQPublisher_setSeqNum (mamaDQPublisher pub, mama_seqnum_t num)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-    impl->mSeqNum=num;
+//    impl->mSeqNum=num;    //STUTEST
+    impl->mPublishCtx.mSeqNum = num; //STUTEST agggggggggggggggh this won't work for a group publisher though?????
 }
 
 void mamaDQPublisher_enableSendTime (mamaDQPublisher pub, mama_bool_t enable)

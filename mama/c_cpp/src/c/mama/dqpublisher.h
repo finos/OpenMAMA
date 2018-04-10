@@ -56,6 +56,10 @@ extern mama_status
 mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport,
                  	 	 const char* topic);
 
+//STUTEST
+mama_status mamaDQPPublisher_createGroupPublisher (mamaDQPublisher pub, mamaTransport transport,
+                                                   const char* topic);
+
 /**
  * Send a message.
  *
