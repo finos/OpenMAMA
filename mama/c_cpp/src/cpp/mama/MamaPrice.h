@@ -134,6 +134,9 @@ namespace Wombat
         mamaPriceHints      getHints        () const;
         bool                getIsValidPrice () const;
 
+        void                setIsPriceInvalid (bool     inValid);
+        bool                getIsPriceInvalid () const;
+
 
         void                setFromString   (const char*         str);
         void                getAsString     (char*               result,

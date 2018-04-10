@@ -87,4 +87,30 @@ public class MamaPriceGeneral extends TestCase
         {
             // Expected
         }
+    }
+
+    public void testSetIsPriceInvalidTestValid()
+    {
+        double mDouble = 1.123456789;
+
+    	mPrice.setValue(mDouble);
+
+    	mPrice.setIsPriceInvalid(false);
+
+    	assertEquals(mDouble, mPrice.getValue());
+    }
+
+    public void testSetIsPriceInvalidTestInValid()
+    {
+        double mDouble = 1.123456789;
+
+    	mPrice.setValue(mDouble);
+
+    	mPrice.setIsPriceInvalid(true);
+
+        if (mPrice.getIsPriceInvalid())
+        {
+            // Expected
+        }
+    }
 }
