@@ -112,6 +112,8 @@ mama_status mamaDQPublisher_addTopic (mamaDQPublisher pub, const char* topic)
     if (!ctx)
     {
         ctx = calloc (1, sizeof (topicCtx));
+        ctx->mSeqNum = 1;
+        ctx->mStatus = MAMA_MSG_STATUS_OK;
 
         if (wtable_insert (impl->mTopicCtxs, (char*)topic, ctx) != 1)
         {
@@ -206,7 +208,12 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
     topicCtx*            ctx    = NULL;
     mama_status          status = MAMA_STATUS_OK;
 
-    status = getTopicCtx (pub, request, &ctx);
+    status = getTopicCtx (pub, reply, &ctx);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        return status;
+    }
 
     if (impl->mSenderId != 0)
         updateSenderId(impl, reply);
@@ -238,6 +245,11 @@ mama_status mamaDQPublisher_sendReplyWithHandle (mamaDQPublisher pub,
     mama_status          status = MAMA_STATUS_OK;
 
     status = getTopicCtx (pub, reply, &ctx);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        return status;
+    }
 
     if (impl->mSenderId != 0)
         updateSenderId(impl, reply);
@@ -467,6 +479,7 @@ static mama_status getTopicCtx (mamaDQPublisher pub, mamaMsg msg, topicCtx** ctx
     }
     else
     {
+
         status = msgUtils_getIssueSymbol (msg, &symbol);
 
         if (status != MAMA_STATUS_OK)
