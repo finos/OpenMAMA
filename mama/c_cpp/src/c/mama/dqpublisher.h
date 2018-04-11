@@ -56,9 +56,18 @@ extern mama_status
 mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport,
                  	 	 const char* topic);
 
-//STUTEST
-mama_status mamaDQPPublisher_createGroupPublisher (mamaDQPublisher pub, mamaTransport transport,
-                                                   const char* topic);
+
+/**
+ * Add a new topic context to a mamaDQPublisher.
+ *
+ * Having topic contexts allows a single publisher to publish messages with
+ * different wIssueSymbol fields with sequence number and status tracked
+ * separately for each wIssueSymbol.
+ *
+ */
+MAMAExpDLL
+mama_status mamaDQPublisher_addTopic (mamaDQPublisher pub, const char* topic);
+
 
 /**
  * Send a message.

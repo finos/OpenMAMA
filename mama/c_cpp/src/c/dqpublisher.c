@@ -30,29 +30,31 @@
 
 
 #define MAX_DATE_STR    50
+#define TOPIC_TABLE_SIZE 100
 
-typedef struct publishCtx_          //STUTEST does anything except seqnum actually need to be here?  Status maybe??
+typedef struct topicCtx_
 {
     mama_seqnum_t mSeqNum;
     mamaMsgStatus mStatus;
-} publishCtx;
+} topicCtx;
 
 typedef struct mamaDQPublisherImpl_
 {
     mamaPublisher   mPublisher;
-//    mamaMsgStatus   mStatus;  //STUTEST
     uint64_t        mSenderId;
     void*           mClosure;
     void*           mCache;
     mamaDateTime    mSendTime;
     char*           mSendTimeFormat;
-    publishCtx      mPublishCtx;
-    wtable_t        mPublishCtxs;
+    topicCtx        mTopicCtx;
+    wtable_t        mTopicCtxs;
 } mamaDQPublisherImpl;
 
 
 mama_status updateSendTime (mamaDQPublisher pub, mamaMsg msg);
 mama_status updateSenderId (mamaDQPublisher pub, mamaMsg msg);
+static mama_status getTopicCtx (mamaDQPublisher pub, mamaMsg msg, topicCtx** ctx);
+static void destroyTopicCtxCb (wtable_t table, void* data, const char* key, void* closure);
 
 mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
 {
@@ -62,9 +64,8 @@ mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
     if (!impl) return MAMA_STATUS_NOMEM;
         
     impl->mSenderId = mamaSenderId_getSelf ();
-//    impl->mStatus = MAMA_MSG_STATUS_OK;   //STUTEST
-    impl->mPublishCtx.mSeqNum = 1;
-    impl->mPublishCtx.mStatus = MAMA_MSG_STATUS_OK; //STUTEST
+    impl->mTopicCtx.mSeqNum = 1;
+    impl->mTopicCtx.mStatus = MAMA_MSG_STATUS_OK;
 
     impl->mSendTimeFormat = strdup("%T%;");
 
@@ -91,30 +92,36 @@ mama_status mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport
 
 mama_status mamaDQPublisher_addTopic (mamaDQPublisher pub, const char* topic)
 {
-    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*)pub;
+    mamaDQPublisherImpl* impl   = (mamaDQPublisherImpl*)pub;
     mama_status          status = MAMA_STATUS_OK;
-    publishCtx*          ctx    = NULL
+    topicCtx*            ctx    = NULL;
 
-    status = mamaDQPublisher_create (pub, transport, topic);
-    if (status != MAMA_STATUS_OK)
+    if (!impl->mTopicCtxs)
     {
-        return status;
-    }
+        impl->mTopicCtxs = wtable_create ("topicCtxs", TOPIC_TABLE_SIZE);
 
-    if (!impl->mPublishCtxs)
-    {
-        impl->mPublishCtxs = wtable_create ("subjects", 100);   //STUTEST arbitrary number
-
-        if (impl->mPublishCtxs == NULL)
+        if (impl->mTopicCtxs == NULL)
         {
             mamaDQPublisher_destroy (pub);
             return MAMA_STATUS_NOMEM;
         }
     }
 
-    ctx = calloc (1, sizeof (publishCtx));
+    ctx = (topicCtx*)wtable_lookup (impl->mTopicCtxs, (char*)topic);
 
-    if (wtable_insert (impl->mPublishCtxs, (char*)topic, 
+    if (!ctx)
+    {
+        ctx = calloc (1, sizeof (topicCtx));
+
+        if (wtable_insert (impl->mTopicCtxs, (char*)topic, ctx) != 1)
+        {
+            return MAMA_STATUS_INVALID_ARG;
+        }
+    }
+    else
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
 
     return status;
 }
@@ -122,22 +129,16 @@ mama_status mamaDQPublisher_addTopic (mamaDQPublisher pub, const char* topic)
 
 mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
 {     
-    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-    mamaMsg modifableMsg = NULL;
-    publishCtx* ctx      = NULL;;    //STUTEST
-    const char* subject  = NULL;
-    mama_status status   = MAMA_STATUS_OK; //STUTEST
+    mamaDQPublisherImpl* impl           = (mamaDQPublisherImpl*) (pub);
+    mamaMsg              modifableMsg   = NULL;
+    topicCtx*            ctx            = NULL;
+    mama_status          status         = MAMA_STATUS_OK;
 
-    if (impl->mPublishCtxs)
-    {
-        status = msgUtils_getIssueSymbol (msg, &subject);
+    status = getTopicCtx (pub, msg, &ctx);
 
-        //STUTEST status check stuff
-        ctx = wtable_lookup (impl->mPublishCtxs, (char*)subject);
-    }
-    else
+    if (status != MAMA_STATUS_OK)
     {
-        ctx = &impl->mPublishCtx;    //STUTEST
+        return status;
     }
 
     if (ctx->mSeqNum != 0)
@@ -201,10 +202,11 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
                                        mamaMsg request,
                                        mamaMsg reply)
 {
-    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-    publishCtx* ctx; //STUTEST
+    mamaDQPublisherImpl* impl   = (mamaDQPublisherImpl*) (pub);
+    topicCtx*            ctx    = NULL;
+    mama_status          status = MAMA_STATUS_OK;
 
-    ctx = &impl->mPublishCtx;
+    status = getTopicCtx (pub, request, &ctx);
 
     if (impl->mSenderId != 0)
         updateSenderId(impl, reply);
@@ -228,13 +230,14 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
 }
 
 mama_status mamaDQPublisher_sendReplyWithHandle (mamaDQPublisher pub,
-                                                   mamaMsgReply  replyAddress,
-                                                mamaMsg reply)
+                                                 mamaMsgReply  replyAddress,
+                                                 mamaMsg reply)
 {
-    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-    publishCtx* ctx;    //STUTEST
+    mamaDQPublisherImpl* impl   = (mamaDQPublisherImpl*) (pub);
+    topicCtx*            ctx    = NULL;
+    mama_status          status = MAMA_STATUS_OK;
 
-    ctx = &impl->mPublishCtx;
+    status = getTopicCtx (pub, reply, &ctx);
 
     if (impl->mSenderId != 0)
         updateSenderId(impl, reply);
@@ -278,20 +281,20 @@ void mamaDQPublisher_destroy (mamaDQPublisher pub)
         impl->mSendTime = NULL;
     }
 
-    if (impl->mPublishCtxs)
+    if (impl->mTopicCtxs)
     {
-        //STUTEST destroy all AND table
+        wtable_for_each (impl->mTopicCtxs, destroyTopicCtxCb, NULL);
+        wtable_destroy (impl->mTopicCtxs);
     }
 
     free(impl);
 }
 
-
-//STUTEST this also won't work for group pub :( - for FHSDK I don't think this matters that much, it's only used for pass through status... so actually probably better to not put status in ctx
 void mamaDQPublisher_setStatus (mamaDQPublisher pub, mamaMsgStatus  status)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-    impl->mPublishCtx.mStatus = status;
+
+    impl->mTopicCtx.mStatus = status;
 }
     
 void mamaDQPublisher_setSenderId (mamaDQPublisher pub, uint64_t  senderid)
@@ -300,12 +303,10 @@ void mamaDQPublisher_setSenderId (mamaDQPublisher pub, uint64_t  senderid)
     impl->mSenderId = senderid;
 }
    
-//STUTEST this is a bit more of a problem... Actually no it isn't.  It's only used for mOverwriteSeqNum case in FHSDK which frankly doesn't look like it does what it's intended to do anyway
 void mamaDQPublisher_setSeqNum (mamaDQPublisher pub, mama_seqnum_t num)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-//    impl->mSeqNum=num;    //STUTEST
-    impl->mPublishCtx.mSeqNum = num; //STUTEST agggggggggggggggh this won't work for a group publisher though?????
+    impl->mTopicCtx.mSeqNum = num;
 }
 
 void mamaDQPublisher_enableSendTime (mamaDQPublisher pub, mama_bool_t enable)
@@ -453,3 +454,38 @@ mama_status updateSenderId (mamaDQPublisher pub, mamaMsg msg)
 
     return MAMA_STATUS_OK;
 }
+
+static mama_status getTopicCtx (mamaDQPublisher pub, mamaMsg msg, topicCtx** ctx)
+{
+    mamaDQPublisherImpl* impl   = (mamaDQPublisherImpl*)pub;
+    mama_status          status = MAMA_STATUS_OK;
+    const char*          symbol = NULL;
+
+    if (!impl->mTopicCtxs)
+    {
+        *ctx = &impl->mTopicCtx;
+    }
+    else
+    {
+        status = msgUtils_getIssueSymbol (msg, &symbol);
+
+        if (status != MAMA_STATUS_OK)
+        {
+            return status;
+        }
+
+        *ctx = wtable_lookup (impl->mTopicCtxs, (char*)symbol);
+        if (!*ctx)
+        {
+            return MAMA_STATUS_INVALID_ARG;
+        }
+    }
+
+    return MAMA_STATUS_OK;
+}
+
+static void destroyTopicCtxCb (wtable_t table, void* data, const char* key, void* closure)
+{
+    free (data);
+}
+
