@@ -194,7 +194,7 @@ mamaPrice_setPrecision (mamaPrice           price,
 /**
  * Set if price contains a valid value. (0 may be a valid value)
  *
- * @details Note that this function has been deprecated, use mamaPrice_setIsPriceInvalid instead.
+ * @deprecated This function has been deprecated, use mamaPrice_setIsInvalidPrice instead.
  *
  * @param price      The price to set.
  * @param valid      If price contains a valid value.
@@ -212,7 +212,7 @@ mamaPrice_setIsValidPrice (mamaPrice   price,
  */
 MAMAExpDLL
 extern mama_status
-mamaPrice_setIsPriceInvalid (mamaPrice   price,
+mamaPrice_setIsInvalidPrice (mamaPrice   price,
                              mama_bool_t inValid);
 
 
@@ -293,7 +293,7 @@ mamaPrice_getPrecision(const mamaPrice      price,
 /**
  * Check if price contains a valid value.
  *
- * @details Note that this function has been deprecated, use mamaPrice_getIsPriceInvalid instead.
+ * @deprecated This function has been deprecated, use mamaPrice_getIsInvalidPrice instead.
  *
  * @param price          The price to get.
  * @param valid          If the value is valid.
@@ -311,7 +311,7 @@ mamaPrice_getIsValidPrice (const mamaPrice price,
  */
 MAMAExpDLL
 extern mama_status
-mamaPrice_getIsPriceInvalid (const mamaPrice price,
+mamaPrice_getIsInvalidPrice (const mamaPrice price,
                              mama_bool_t*    inValid);
 
 /**

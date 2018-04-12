@@ -190,10 +190,10 @@ namespace Wombat
         return result;
     }
 
-    bool MamaPrice::getIsPriceInvalid () const
+    bool MamaPrice::getIsInvalidPrice () const
     {
         mama_bool_t result = 0;
-        mamaPrice_getIsPriceInvalid (mPrice, &result);
+        mamaPrice_getIsInvalidPrice (mPrice, &result);
         return result;
     }
 
@@ -202,9 +202,9 @@ namespace Wombat
         mamaPrice_setIsValidPrice (mPrice, valid);
     }
 
-    void MamaPrice::setIsPriceInvalid (bool inValid)
+    void MamaPrice::setIsInvalidPrice (bool inValid)
     {
-        mamaPrice_setIsPriceInvalid (mPrice, inValid);
+        mamaPrice_setIsInvalidPrice (mPrice, inValid);
     }
 
     bool MamaPrice::isZero () const

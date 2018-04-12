@@ -203,18 +203,18 @@ public class MamaPrice implements Comparable
     }
 
     /**
-     * @deprecated use setIsPriceInvalid(boolean inValid) instead.
+     * @deprecated use setIsInvalidPrice(boolean inValid) instead.
      **/
     @Deprecated public native void setIsValidPrice (boolean valid);
     
     /**
-     * @deprecated use getIsPriceInvalid() instead.
+     * @deprecated use getIsInvalidPrice() instead.
      **/
     @Deprecated public native boolean getIsValidPrice ();
     
-    public native void setIsPriceInvalid (boolean inValid);
+    public native void setIsInvalidPrice (boolean inValid);
     
-    public native boolean getIsPriceInvalid ();
+    public native boolean getIsInvalidPrice ();
     
     public native void copy (MamaPrice price);
     

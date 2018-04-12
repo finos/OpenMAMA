@@ -135,7 +135,7 @@ mamaPrice_setValue (mamaPrice           price,
     if (!price)
         return MAMA_STATUS_INVALID_ARG;
     mamaPriceImpl_setValue ((mama_price_t*)price, value);
-    mamaPrice_setIsPriceInvalid(price,0);
+    mamaPrice_setIsInvalidPrice(price,0);
     return MAMA_STATUS_OK;
 }
 
@@ -174,7 +174,7 @@ mamaPrice_setIsValidPrice (mamaPrice    price,
 }
 
 mama_status
-mamaPrice_setIsPriceInvalid (mamaPrice    price,
+mamaPrice_setIsInvalidPrice (mamaPrice    price,
                              mama_bool_t  inValid)
 {
     mama_price_hints_t hints = 0;
@@ -239,7 +239,7 @@ mamaPrice_setFromString(mamaPrice    price,
     }
 
     mamaPriceImpl_setWithHints ((mama_price_t*)price, value, hints);
-    mamaPrice_setIsPriceInvalid (price, 0);
+    mamaPrice_setIsInvalidPrice (price, 0);
     return MAMA_STATUS_OK;
 }
 
@@ -310,7 +310,7 @@ mamaPrice_getIsValidPrice(const mamaPrice      price,
 }
 
 mama_status
-mamaPrice_getIsPriceInvalid(const mamaPrice      price,
+mamaPrice_getIsInvalidPrice(const mamaPrice      price,
                             mama_bool_t*         inValid)
 {
     if (!price || !inValid)

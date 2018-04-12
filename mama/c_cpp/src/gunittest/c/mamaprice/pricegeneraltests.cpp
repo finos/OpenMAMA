@@ -801,7 +801,7 @@ TEST_F (MamaPriceTestC, testSetIsValidPriceMamaPrice)
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_destroy(price) );
 }
 
-TEST_F (MamaPriceTestC, testSetIsPriceInvalidMamaPrice)
+TEST_F (MamaPriceTestC, testSetIsInvalidPriceMamaPrice)
 {
 
    double x = 100.1;
@@ -815,14 +815,14 @@ TEST_F (MamaPriceTestC, testSetIsPriceInvalidMamaPrice)
    mamaPrice price = CreateTestPrice(x,hints),
              nullPrice = NULL;
 
-   EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaPrice_setIsPriceInvalid(nullPrice, t) );
-   EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaPrice_setIsPriceInvalid(nullPrice, f) );
+   EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaPrice_setIsInvalidPrice(nullPrice, t) );
+   EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaPrice_setIsInvalidPrice(nullPrice, f) );
 
-   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setIsPriceInvalid(price, t) );
-   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getIsPriceInvalid(price, &expected) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setIsInvalidPrice(price, t) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getIsInvalidPrice(price, &expected) );
    EXPECT_NE ( f, expected );
 
-   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setIsPriceInvalid(price, f) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setIsInvalidPrice(price, f) );
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getIsValidPrice(price, &expected) );
    EXPECT_EQ ( f, expected );
 
