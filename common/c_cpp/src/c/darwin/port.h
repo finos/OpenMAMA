@@ -174,6 +174,9 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 /* timegm() and nanosleep not available on Windows */
 #define wtimegm     timegm
 
+/* timegm supports post-1900 dates on Darwin */
+#define SETDATE_MIN_YEAR 1900
+
 struct wtimespec
 {
     time_t tv_sec;
