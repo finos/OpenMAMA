@@ -315,6 +315,9 @@ COMMONExpDLL    void wthread_mutexattr_settype (int* attr, int);
 /* In windows, _mkgmtime has been around since VS 2005 */
 #define wtimegm(x) _mkgmtime(x);
 
+/* mkgmtime supports post-1970 dates on Windows */
+#define SETDATE_MIN_YEAR 1970
+
 struct wtimespec
 {
     time_t tv_sec;
