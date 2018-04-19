@@ -197,6 +197,7 @@ public class MamaTransport
             }
         }
 
+        @SuppressWarnings("deprecation")
         public void onTopicSubscribe(short cause, final Object platformInfo)
         {
             /* Call the client topic listener if it has been provided. */
@@ -206,6 +207,7 @@ public class MamaTransport
             }
         }
 
+        @SuppressWarnings("deprecation")
         public void onTopicUnsubscribe(short cause, final Object platformInfo)
         {
             /* Call the client topic listener if it has been provided. */

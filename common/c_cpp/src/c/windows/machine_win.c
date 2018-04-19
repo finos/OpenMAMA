@@ -102,7 +102,7 @@ int getProcessInfo(int pid ,memVals *memV,cpuVals *cpuV,int childFlag)
         HQUERY      phQuery;            /* query Handle */
         PDH_FMT_COUNTERVALUE pValue={0};
 
-        snprintf(memCounterPath,64,"\\Process(%s)\\Private Bytes",buffer);
+        snprintf(memCounterPath,64,"\\Process(%s)\\Private Bytes", (char*)buffer);
 
         /* create query */
         pdhStatus = PdhOpenQuery(NULL,0,&phQuery);

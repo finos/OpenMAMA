@@ -48,8 +48,9 @@ typedef struct endpointPoolImpl
     char*       mName;
     wtable_t    mContainer;
     void*       mBuffer;
-    size_t      mBufferOffset;
-    size_t      mBufferLimit;
+    size_t      mBufferIndex;       // 0-relative
+    size_t      mBufferSize;
+    wLock       mLock;
 } endpointPoolImpl;
 
 typedef struct endpointExistNode
@@ -146,6 +147,8 @@ endpointPool_create (endpointPool_t* endpoints, const char* name)
         return MAMA_STATUS_NOMEM;
     }
 
+    newEndpoints->mLock = wlock_create();
+
     /* Take a copy of the name - could be a stack variable in caller */
     newEndpoints->mName = strdup (name);
     if (NULL == newEndpoints->mName)
@@ -166,7 +169,7 @@ endpointPool_create (endpointPool_t* endpoints, const char* name)
     }
 
     /* On successful memory allocation, update the current limit */
-    newEndpoints->mBufferLimit = ENDPOINT_POOL_BUFFER_CHUNK_SIZE;
+    newEndpoints->mBufferSize = ENDPOINT_POOL_BUFFER_CHUNK_SIZE;
 
     /* Create the top level endpoints table */
     newEndpoints->mContainer = wtable_create (name,
@@ -196,6 +199,8 @@ endpointPool_destroyWithCallback (endpointPool_t endpoints, endpointDestroyCb ca
         return MAMA_STATUS_NULL_ARG;
     }
 
+    wlock_lock(impl->mLock);
+
     /* Destroy the main wtable and all its contents */
     if (NULL != impl->mContainer)
     {
@@ -220,6 +225,9 @@ endpointPool_destroyWithCallback (endpointPool_t endpoints, endpointDestroyCb ca
     {
         free (impl->mName);
     }
+
+
+    wlock_destroy(impl->mLock);
 
     /* Destroy the implementation */
     free (impl);
@@ -246,6 +254,8 @@ mama_status endpointPool_registerWithIdentifier (endpointPool_t     endpoints,
     {
         return MAMA_STATUS_NULL_ARG;
     }
+
+    wlock_lock(impl->mLock);
 
     /* Get the wtable representing the endpoints associated with this topic */
     registeredTable = wtable_lookup (impl->mContainer, topic);
@@ -283,6 +293,9 @@ mama_status endpointPool_registerWithIdentifier (endpointPool_t     endpoints,
         }
 
     }
+
+    wlock_unlock(impl->mLock);
+
     return MAMA_STATUS_OK;
 }
 
@@ -333,17 +346,22 @@ endpointPool_unregister (endpointPool_t     endpoints,
         return MAMA_STATUS_NULL_ARG;
     }
 
+    wlock_lock(impl->mLock);
+
     /* Get the wtable representing the endpoints associated with this topic */
     registeredTable = wtable_lookup (impl->mContainer, topic);
 
-    /* Container must have been nuked - that means we do nothing */
     if (NULL == registeredTable)
     {
-        return MAMA_STATUS_OK;
+       /* Container must have been nuked - that means we do nothing */
+    }
+    else
+    {
+       /* This returns a pointer to the original object which we don't need */
+       wtable_remove (registeredTable, identifier);
     }
 
-    /* This returns a pointer to the original object which we don't need */
-    wtable_remove (registeredTable, identifier);
+    wlock_unlock(impl->mLock);
 
     return MAMA_STATUS_OK;
 }
@@ -362,6 +380,8 @@ endpointPool_getRegistered (endpointPool_t  endpoints,
         return MAMA_STATUS_NULL_ARG;
     }
 
+    wlock_lock(impl->mLock);
+
     /* Clear provided values */
     *count  = 0;
     *opaque = NULL;
@@ -369,23 +389,25 @@ endpointPool_getRegistered (endpointPool_t  endpoints,
     /* Get the wtable representing the endpoints associated with this topic */
     registeredTable = wtable_lookup (impl->mContainer, topic);
 
-    /* Container must have been nuked - nothing to return */
     if (registeredTable == NULL)
     {
+        /* Container must have been nuked - nothing to return */
         /* Already flagged to return count=0 results so this is not an error */
-        return MAMA_STATUS_OK;
+    }
+    else {
+       /* Reset the offset for iteration */
+       impl->mBufferIndex = 0;
+
+       /* Iterate over the table, appending the results to the buffer */
+       wtable_for_each (registeredTable, endpointPoolImpl_appendEachEndpoint,
+                        (void*)impl);
+
+       /* Populate the return values */
+       *count  = impl->mBufferIndex;
+       *opaque = (void**)impl->mBuffer;
     }
 
-    /* Reset the offset for iteration */
-    impl->mBufferOffset = 0;
-
-    /* Iterate over the table, appending the results to the buffer */
-    wtable_for_each (registeredTable, endpointPoolImpl_appendEachEndpoint,
-                     (void*)impl);
-
-    /* Populate the return values */
-    *count  = impl->mBufferOffset;
-    *opaque = (void**)impl->mBuffer;
+    wlock_unlock(impl->mLock);
 
     return MAMA_STATUS_OK;
 }
@@ -419,30 +441,35 @@ endpointPool_isRegistedByContent (endpointPool_t    endpoints,
 {
     endpointPoolImpl*       impl             = (endpointPoolImpl*) endpoints;
     wtable_t                registeredTable  = NULL;
-
-    /* The existNode will be used during wtable iteration to store the result */
-    endpointExistNode       existNode;
+    int                     ret              = 0;
 
     if (NULL == impl || NULL == topic || NULL == content)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-
-    /* Get the wtable representing the endpoints associated with this topic */
-    registeredTable = wtable_lookup (impl->mContainer, topic);
-    if (registeredTable == NULL)
     {
         return 0;
     }
 
-    /* Iterate over the table, appending the results to the buffer */
-    existNode.mMatchWith   = content;
-    existNode.mResult      = 0;
-    wtable_for_each (registeredTable,
-                     endpointPoolImpl_checkEndpointExists,
-                     (void*) &existNode);
+    wlock_lock(impl->mLock);
 
-    return 1;
+    /* Get the wtable representing the endpoints associated with this topic */
+    registeredTable = wtable_lookup (impl->mContainer, topic);
+    if (registeredTable != NULL)
+    {
+       /* The existNode will be used during wtable iteration to store the result */
+       endpointExistNode       existNode;
+       existNode.mMatchWith   = content;
+       existNode.mResult      = 0;
+
+       /* Iterate over the table, updating existNode on a match */
+       wtable_for_each (registeredTable,
+                        endpointPoolImpl_checkEndpointExists,
+                        (void*) &existNode);
+
+       ret =  existNode.mResult;
+    }
+
+   wlock_unlock(impl->mLock);
+
+   return ret;
 }
 
 mama_status
@@ -455,27 +482,39 @@ endpointPool_getEndpointByIdentifiers   (endpointPool_t     endpoints,
     wtable_t                registeredTable  = NULL;
     endpoint_t              existingEndpoint = NULL;
 
+    wlock_lock(impl->mLock);
+
+    mama_status status;
+
     /* Get the wtable representing the endpoints associated with this topic */
     registeredTable = wtable_lookup (impl->mContainer, topic);
 
     if (registeredTable == NULL)
     {
-        return MAMA_STATUS_NOT_FOUND;
+        status = MAMA_STATUS_NOT_FOUND;
+    }
+    else {
+       existingEndpoint = wtable_lookup (registeredTable, identifier);
+       if (existingEndpoint == NULL)
+       {
+           status = MAMA_STATUS_NOT_FOUND;
+       }
+       else {
+          *endpoint = existingEndpoint;
+          status = MAMA_STATUS_OK;
+       }
     }
 
-    existingEndpoint = wtable_lookup (registeredTable, identifier);
-    if (existingEndpoint == NULL)
-    {
-        return MAMA_STATUS_NOT_FOUND;
-    }
-    *endpoint = existingEndpoint;
-    return MAMA_STATUS_OK;
+    wlock_unlock(impl->mLock);
+
+    return status;
 }
 
 /*=========================================================================
   =                  Private implementation functions                     =
   =========================================================================*/
 
+// NOTE: lock acquired in caller
 mama_status
 endpointPoolImpl_extendBuffer (endpointPoolImpl* impl, size_t size)
 {
@@ -488,31 +527,38 @@ endpointPoolImpl_extendBuffer (endpointPoolImpl* impl, size_t size)
     }
 
     /* Don't need to do anything if buffer is already allocated */
-    if (size <= impl->mBufferLimit)
+    if (size <= impl->mBufferSize)
     {
         return MAMA_STATUS_OK;
     }
 
     /* Increment upfront by products of chunk size */
-    newSize = impl->mBufferLimit;
+    newSize = impl->mBufferSize;
     while (newSize < size)
     {
         newSize += ENDPOINT_POOL_BUFFER_CHUNK_SIZE;
     }
 
     /* Reallocate memory as required */
+    mama_status status;
     newBuffer = realloc (impl->mBuffer, newSize);
     if (NULL == newBuffer)
     {
-        return MAMA_STATUS_NOMEM;
+        status = MAMA_STATUS_NOMEM;
     }
     else
     {
+        impl->mBufferSize = newSize;
         impl->mBuffer = newBuffer;
-        return MAMA_STATUS_OK;
+        status = MAMA_STATUS_OK;
     }
+
+    return status;
 }
 
+
+
+// NOTE: lock acquired in caller
 void
 endpointPoolImpl_appendEachEndpoint (wtable_t      table,
                                      void*         data,
@@ -520,10 +566,10 @@ endpointPoolImpl_appendEachEndpoint (wtable_t      table,
                                      void*         closure)
 {
     endpointPoolImpl*   impl        = (endpointPoolImpl*) closure;
-    size_t              required    = sizeof(void*) * impl->mBufferOffset;
+    size_t              required    = sizeof(void*) * (impl->mBufferIndex +1);
 
     /* Get more space if required */
-    if (required > impl->mBufferLimit)
+    if (required > impl->mBufferSize)
     {
         endpointPoolImpl_extendBuffer (impl, required);
     }
@@ -538,10 +584,10 @@ endpointPoolImpl_appendEachEndpoint (wtable_t      table,
     }
 
     /* Update the next offset with the data */
-    ((void**)impl->mBuffer)[impl->mBufferOffset] = data;
+    ((void**)impl->mBuffer)[impl->mBufferIndex] = data;
 
     /* Increment the offset */
-    impl->mBufferOffset++;
+    impl->mBufferIndex++;
 }
 
 void
@@ -559,6 +605,7 @@ endpointPoolImpl_checkEndpointExists (wtable_t     table,
     }
 }
 
+// NOTE: lock acquired in caller
 void
 endpointPoolImpl_destroySubTable (wtable_t     table,
                                   void*        data,

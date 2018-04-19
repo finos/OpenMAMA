@@ -38,6 +38,8 @@ elif env['host']['os'] == 'Darwin':
     symlinks = [
         ('common/c_cpp/src/c/wombat/port.h',
          'common/c_cpp/src/c/darwin/port.h'),
+        ('common/c_cpp/src/c/port.c',
+         'common/c_cpp/src/c/darwin/port.c'),
         ('common/c_cpp/src/c/wombat/wMath.h',
          'common/c_cpp/src/c/linux/wMath.h'),
         ('common/c_cpp/src/c/wombat/wUuid.h',

@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mamda/MamdaOrderBookEntryManager.h>
 #include <wombat/wtable.h>
 #include <iostream>

@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mamda/MamdaOrderImbalanceSide.h>
 
 using namespace Wombat;

@@ -389,7 +389,7 @@ namespace Wombat
          /// <returns>Field State</returns>
          MamdaFieldState getLuldIndicatorFieldState();
 
-        // <summary>
+        /// <summary>
         /// <see cref="MamdaSecurityStatusUpdate.getLuldHighLimit()"/>
         /// </summary>
         /// <returns></returns>

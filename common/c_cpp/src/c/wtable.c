@@ -239,7 +239,7 @@ int wtable_insert (wtable_t table, const char* key, void* data)
             return -1;
         }
 
-        len = strlen(key);
+        len = (int)strlen(key);
         h = whash((unsigned char *)key, len, HASH_INITVAL);
         h = (h & hashmask(wtable->size));
         if (wtable_debug)
@@ -314,7 +314,7 @@ void* wtable_lookup (wtable_t table, const char* key)
             return NULL;
         }
 
-        len = strlen(key);
+        len = (int)strlen(key);
         h = whash((unsigned char *)key, len, HASH_INITVAL);
         h = (h & hashmask(wtable->size));
         if (wtable_debug)
@@ -384,7 +384,7 @@ void* wtable_remove (wtable_t table, const char* key)
             return NULL;
         }
 
-        len = strlen(key);
+        len = (int)strlen(key);
         h = whash((unsigned char *)key, len, HASH_INITVAL);
         h = (h & hashmask(wtable->size));
         if (wtable_debug)

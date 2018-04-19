@@ -24,6 +24,7 @@
   =                             Includes                                  =
   =========================================================================*/
 
+#include <stdint.h>
 #include <mama/mama.h>
 #include <msgimpl.h>
 #include "codec.h"

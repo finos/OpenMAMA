@@ -123,6 +123,13 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 
 #define CPU_AFFINITY_SET    cpu_set_t
 
+/* Creating a structure to store the CPU set - we're cheating a little bit
+ * and assuming we don't need more than 64 CPUs.
+ */
+typedef struct cpu_set {
+      uint64_t    count;
+} cpu_set_t;
+
 /* Use pthreads for Mac OS X */
 #define INVALID_THREAD (-1)
 
@@ -141,6 +148,16 @@ int wsem_timedwait (wsem_t* sem, unsigned int ts);
 #define wthread_join                pthread_join
 #define wthread_create              pthread_create
 #define wthread_exit                pthread_exit
+
+/* OSX doesn't really support this, but adding a method for future
+ * implementations.
+ */
+int wthread_set_affinity_mask (wthread_t         thread,
+                               size_t            cpu_set_size,
+                               CPU_AFFINITY_SET* cpu_set_mask);
+
+/* Implementation of CPU_SET method. */
+void CPU_SET (int i, cpu_set_t* affinity);
 
 #define wthread_cond_t              pthread_cond_t
 #define wthread_cond_init           pthread_cond_init
@@ -183,6 +200,9 @@ struct wtimespec
     long tv_nsec;
 };
 
+#if MAC_OS_X_VERSION_MIN_REQUIRED >= MAC_OS_X_VERSION_10_12
+/* Do nothing, since these are now available */
+#else
 /* Add fake clock_gettime function */
 #define CLOCK_REALTIME              0
 #define CLOCK_MONOTONIC             1
@@ -191,6 +211,7 @@ struct wtimespec
 #define GETTIME_FAIL                1
 typedef int clockid_t;
 int clock_gettime (int type, struct timespec * ts);
+#endif /* MAC_OS_X_VERSION_MIN_REQUIRED */
 
 #define wnanosleep(ts, remain)      nanosleep(((struct timespec*)(ts)),(remain))
 
@@ -200,6 +221,7 @@ int clock_gettime (int type, struct timespec * ts);
 /* net work utility functions */
 const char* getIpAddress (void);
 const char* getHostName (void);
+struct in_addr wresolve_ip (const char * arg);
 
 #define COMMONDeprecated(MSG)            __attribute__((deprecated(#MSG)))
 #define COMMONExpDeprecatedDLL(MSG)      __attribute__((deprecated(#MSG)))

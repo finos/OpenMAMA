@@ -1869,7 +1869,7 @@ TEST_F(PayloadGeneralTests, IterHasNextValid)
 	EXPECT_EQ (MAMA_STATUS_OK, result);
 
     output = aBridge->msgPayloadIterHasNext(testIter, testPayload);
-    EXPECT_EQ (true, output);
+    EXPECT_EQ (1, output);
     aBridge->msgPayloadIterDestroy(testIter);
     aBridge->msgPayloadDestroy(testPayload);
 }
@@ -1888,7 +1888,7 @@ TEST_F(PayloadGeneralTests, IterHasNextInValidIter)
     aBridge->msgPayloadAddString (testPayload, "name5", 105, "Fun");
 
     output = aBridge->msgPayloadIterHasNext(NULL, testPayload);
-    EXPECT_EQ (false, output);
+    EXPECT_EQ (0, output);
     aBridge->msgPayloadDestroy(testPayload);
 }
 

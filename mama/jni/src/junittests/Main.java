@@ -50,17 +50,14 @@ public class Main
 
         // Add all tests
         suite.addTestSuite(MamaDateTimeSetTimeZone.class);
-        suite.addTestSuite(MamaInboxCallbacks.class);
         suite.addTestSuite(MamaMsgAddArrayMsgWithLength.class);
         suite.addTestSuite(MamaMsgGetByteBuffer.class);
-        suite.addTestSuite(MamaMsgGetStringAsCharBuffer.class);
         suite.addTestSuite(MamaMsgTryMethods.class);
         suite.addTestSuite(MamaMsgVectorFields.class);
         suite.addTestSuite(MamaOpenClose.class);
         suite.addTestSuite(MamaPriceGetRoundedPrice.class);
         suite.addTestSuite(MamaSetLogCallback.class);
         suite.addTestSuite(MamaTimerCallbacks.class);
-        suite.addTestSuite(MamaPublisherTest.class);
 
         return suite;
     }

@@ -240,47 +240,6 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSource_setSymbolNamespace
 
 /*
  * Class:     com_wombat_mama_MamaSource
- * Method:    setTransportName
- * Signature: (Ljava/lang/String;)V
- */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSource_setTransportName
-(JNIEnv * env, jobject this, jstring transportName)
-{
-    jlong       pMamaSource = 0;
-    mama_status status      = MAMA_STATUS_OK;
-    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-    const char* transportName_c ;
-    
-    pMamaSource = (*env)->GetLongField (env,this,sourcePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pMamaSource,  
-		"Null parameter, MamaSource may have already been destroyed.");
-    if(transportName)
-    {
-        transportName_c = (*env)->GetStringUTFChars(env,transportName,0);
-        if(!transportName_c)return;/*Exception thrown*/
-    }
-    if(MAMA_STATUS_OK!=(mamaSource_setTransportName (
-                            CAST_JLONG_TO_POINTER (mamaSource, pMamaSource),
-                            transportName_c
-                            )))
-    {
-        if(transportName_c)(*env)->ReleaseStringUTFChars(env,
-                  transportName, transportName_c);
-        utils_buildErrorStringForStatus(
-            errorString,
-            UTILS_MAX_ERROR_STRING_LENGTH,
-            "mamaSource_setTransportName() Failed.",
-            status);
-        utils_throwMamaException(env,errorString);
-        return;
-    }
-    /*Tidy up all local refs*/
-    if(transportName_c)(*env)->ReleaseStringUTFChars(
-        env,transportName, transportName_c);
-}
-
-/*
- * Class:     com_wombat_mama_MamaSource
  * Method:    _setTransportName
  * Signature: (Ljava/lang/String;)V
  */
@@ -318,41 +277,6 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSource__1setTransportName
     /*Tidy up all local refs*/
     if(transportName_c)(*env)->ReleaseStringUTFChars(
         env,transportName, transportName_c);
-}
-
-/*
- * Class:     com_wombat_mama_MamaSource
- * Method:    setTransport
- * Signature: (Lcom/wombat/mama/MamaTransport;)V
- */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSource_setTransport
-(JNIEnv * env, jobject this, jobject transport)
-{
-     jlong         pMamaSource = 0;
-     jlong         pTransport  = 0;
-     mama_status   status      = MAMA_STATUS_OK;
-     char          errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-     
-     pMamaSource = (*env)->GetLongField (env,this,sourcePointerFieldId_g);
-     MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pMamaSource,  
-		 "Null parameter, MamaSource may have already been destroyed.");
-     
-     pTransport = (*env)->GetLongField (env,transport,
-                                        transportPointerFieldId_g);
-     assert(0!=pTransport);
-     if(MAMA_STATUS_OK!=(mamaSource_setTransport (
-                  CAST_JLONG_TO_POINTER (mamaSource, pMamaSource),
-                  CAST_JLONG_TO_POINTER (mamaTransport,pTransport)
-                  )))
-       {
-          utils_buildErrorStringForStatus(
-                  errorString,
-                  UTILS_MAX_ERROR_STRING_LENGTH,
-                  "mamaSource_setTransport() Failed.",
-                  status);
-          utils_throwMamaException(env,errorString);
-          return;
-       } 
 }
 
 /*
@@ -548,55 +472,6 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaSource_getSymbolNamespace
     }
     
     return (*env)->NewStringUTF(env, name_c);
-}
-
-/*
- * Class:     com_wombat_mama_MamaSource
- * Method:    getTransport
- * Signature: ()Lcom/wombat/mama/MamaTransport;
- */
-JNIEXPORT jobject JNICALL Java_com_wombat_mama_MamaSource_getTransport
-(JNIEnv * env , jobject this)
-{
-    mamaTransport transport  = NULL;
-
-    jobject      result;
-    jlong        pMamaSource = 0;
-    mama_status status      = MAMA_STATUS_OK;
-    char         errorString [UTILS_MAX_ERROR_STRING_LENGTH];
-    jclass       transportClass_g = (*env)->FindClass(env,
-                                                      "com/wombat/mama/MamaTransport");
-    if(!transportClass_g) return NULL;
-    
-    transportConstructorId_g = (*env)->GetMethodID(env, transportClass_g,
-                                                   "<init>", "()V" );
-    
-    pMamaSource = (*env)->GetLongField (env,this,sourcePointerFieldId_g);
-    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pMamaSource,  
-		"Null parameter, MamaSource may have already been destroyed.", NULL);
-    
-        
-    if(MAMA_STATUS_OK!=(status= mamaSource_getTransport(
-                            CAST_JLONG_TO_POINTER(mamaSource,pMamaSource),
-                            &transport)))
-    {
-        utils_buildErrorStringForStatus(
-                  errorString,
-                  UTILS_MAX_ERROR_STRING_LENGTH,
-                  "mamaSource_getTransport() failed",
-                  status);
-        utils_throwWombatException(env,errorString);
-          return NULL;
-    }
-    if (transport)
-    {
-        result = (*env)->NewObject(env, transportClass_g,
-                                   transportConstructorId_g);
-        (*env)->SetLongField(env, result, transportPointerFieldId_g,
-                             CAST_POINTER_TO_JLONG(transport));
-    }
-    return result;
-    
 }
 
 /*

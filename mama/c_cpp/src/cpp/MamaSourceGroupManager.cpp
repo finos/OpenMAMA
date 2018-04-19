@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mama/MamaSourceGroupManager.h>
 #include <mama/MamaSourceGroup.h>
 #include "mamacppinternal.h"

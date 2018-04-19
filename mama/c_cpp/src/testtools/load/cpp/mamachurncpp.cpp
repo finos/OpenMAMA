@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include "mamachurn.h"
 
 using namespace Wombat;
@@ -256,7 +257,7 @@ void LifetimeCallback::onTimer (MamaTimer* timer)
 
 void RecreateCallback::onEvent (MamaQueue& queue, void* closure)
 {
-	unsigned long churnIndex  = (unsigned long)closure;
+	unsigned long churnIndex  = (unsigned long)(intptr_t)closure;
     destroySubscription(churnIndex);
     createSubscription(churnIndex);
 }
@@ -278,7 +279,7 @@ void ChurnCallback::onTimer (MamaTimer* timer)
             printf("Churning symbol: %s\n", gSymbolArray[churnIndex].symbol);
 
         interval = ((double)rand() / ((double)(RAND_MAX)+(double)(1)) );
-        gSymbolArray[churnIndex].queue->enqueueEvent(recreateCallback, (void*)churnIndex);
+        gSymbolArray[churnIndex].queue->enqueueEvent(recreateCallback, (void*)(intptr_t)churnIndex);
         churnCount++;
     }
 
@@ -568,7 +569,6 @@ static void signalHandler(int sgnl)
 
 int main (int argc, const char **argv)
 {
-    mama_status status;
     int         numToChurn    = 0;
     const char* symbolfile    = NULL;
     const char* sourceName    = NULL;

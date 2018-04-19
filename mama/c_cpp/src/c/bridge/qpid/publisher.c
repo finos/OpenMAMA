@@ -23,6 +23,7 @@
  =                             Includes                                  =
  =========================================================================*/
 
+#include <stdint.h>
 #include <string.h>
 
 #include <mama/mama.h>

@@ -22,6 +22,7 @@
 /* *************************************************** */
 /* Includes. */
 /* *************************************************** */
+#include <stdint.h>
 #include "mama/MamaBasicSubscription.h"
 #include "mama/MamaQueue.h"
 #include "mamacppinternal.h"

@@ -300,7 +300,6 @@ namespace Wombat
 		private PutOrCall           mPutCall       = PutOrCall.Unknown;
 		private long                mOpenInterest;
 		private ExerciseStyle       mExerciseStyle;
-		private bool                mInScope;
 		private MamdaTradeListener  mTradeListener = new MamdaTradeListener();
 		private MamdaQuoteListener  mQuoteListener = new MamdaQuoteListener();
 		private MamdaFundamentalListener mFundamentalListeners = new MamdaFundamentalListener();

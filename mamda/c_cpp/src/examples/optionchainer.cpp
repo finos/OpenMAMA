@@ -29,6 +29,7 @@
  * deal with this properly. </p>
  */
 
+#include <stdint.h>
 #include <mama/mamacpp.h>
 #include <mamda/MamdaSubscription.h>
 #include <mamda/MamdaOptionChain.h>

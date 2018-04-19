@@ -40,8 +40,8 @@ namespace NUnitTest
         [SetUp]
         public void Setup()
         {
-			Mama.loadBridge ("lbm");
-			Mama.open ();
+            Mama.loadBridge (MamaCommon.middlewareName);
+            Mama.open ();
             // Create the message
             m_msg = new MamaMsg();
 

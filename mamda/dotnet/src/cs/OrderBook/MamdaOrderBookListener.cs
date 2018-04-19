@@ -769,7 +769,6 @@ namespace Wombat
         private NullableInt			   mMsgNum           			= new NullableInt();
 		private NullableInt            mMsgTotal         			= new NullableInt();
 		private NullableInt            mNumLevelFields   			= new NullableInt();
-		private NullableInt            mNumEntryAttached 			= new NullableInt();
 		private long                   mGapBegin                  	= 0;
 		private long                   mGapEnd                    	= 0;
 		private bool                   mGotInitial                	= false;

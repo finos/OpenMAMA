@@ -27,6 +27,7 @@
 #include <mama/ft.h>
 #include <mama/io.h>
 #include <wombat/wCommon.h>
+#include <wombat/port.h>
 
 #include <sys/types.h>
 
@@ -297,7 +298,7 @@ mamaFtMember_activate (
         return status;
 
     mama_getIpAddress(&ipaddress);
-    impl->myIP=inet_addr(ipaddress);
+    impl->myIP = (int) inet_addr(ipaddress);
     impl->myNextIncarnation = 1;
     impl->myHeartbeatTick = 0;
 
@@ -699,7 +700,7 @@ int mamaBetterCredentials (mamaFtMemberImpl*  impl, unsigned int weight,
         return 0;
     }
     else if ((weight == impl->myWeight) && (incarnation == impl->myIncarnation) &&
-             (ipAddr > impl->myIP))
+             ((int) ipAddr > impl->myIP))
     {
         /* This should not happen often. We have equal credentials
           so we use the ipAddr as an arbitrary tie-breaker */
@@ -929,9 +930,16 @@ multicastFt_setup (
     impl->mySymbol            = genSymbol (groupName);
     impl->myClosure           = closure;
     impl->myState             = MAMA_FT_STATE_UNKNOWN;
+
+    // This is platform dependent, so ignore
+    // warning on windows rather than
+    // complicating code
+    #pragma warning(push)
+    #pragma warning(disable: 4244)
     impl->mySendAddr.sin_addr.s_addr = inet_addr (ftNetwork);
     impl->mySendAddr.sin_port        = htons (service);
     impl->myRecvWindow          = iorecv;
+    #pragma warning(pop)
 
     if (!impl->myGroupName || !impl->myInstanceId || !impl->mySymbol)
         return MAMA_STATUS_NOMEM;
@@ -947,7 +955,7 @@ multicastFt_setup (
         memset(&stLocal, 0, sizeof(stLocal));
         memset(&stMreq, 0, sizeof(stMreq));
         /* get a datagram socket */
-        sock = socket(PF_INET, SOCK_DGRAM, 0);
+        sock = (int) socket(PF_INET, SOCK_DGRAM, 0);
         if (sock == -1)
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -991,8 +999,14 @@ multicastFt_setup (
 
         /* name the socket */
         stLocal.sin_family      = AF_INET;
+        // This is platform dependent, so ignore
+        // warning on windows rather than
+        // complicating code
+        #pragma warning(push)
+        #pragma warning(disable: 4244)
         stLocal.sin_addr.s_addr = htonl(INADDR_ANY);
         stLocal.sin_port        = htons(service);
+        #pragma warning(pop)
         iRet = bind(sock, (struct sockaddr*) &stLocal, sizeof(stLocal));
         if (iRet == -1)
         {
@@ -1023,11 +1037,17 @@ multicastFt_setup (
 
     /* Set up the heartbeat publisher. */
     {
-        impl->mySendSocket = socket(PF_INET, SOCK_DGRAM, 0);
+        impl->mySendSocket = (int) socket(PF_INET, SOCK_DGRAM, 0);
         memset(&(impl->mySendAddr), 0, sizeof(impl->mySendAddr));
+        // This is platform dependent, so ignore
+        // warning on windows rather than
+        // complicating code
+        #pragma warning(push)
+        #pragma warning(disable: 4244)
         impl->mySendAddr.sin_family      = AF_INET;
         impl->mySendAddr.sin_addr.s_addr = inet_addr(ftNetwork);
         impl->mySendAddr.sin_port        = htons (service);
+        #pragma warning(pop)
 
         memset(&iface, 0, sizeof(iface));
         iface.s_addr = cFtIfAddr.s_addr;
@@ -1120,7 +1140,7 @@ static void multicastFt_sendHeartbeat (void*  member)
                        htonl(impl->myIP), impl->myPid, impl->myWeight, impl->myIncarnation,
                        impl->myState, impl->myGroupName);
 
-    if (sendto (impl->mySendSocket, sendPacket, bytes+1, 0, (struct sockaddr*)&(impl->mySendAddr), sizeof (impl->mySendAddr)) < 0)
+    if (sendto (impl->mySendSocket, sendPacket, (int)bytes+1, 0, (struct sockaddr*)&(impl->mySendAddr), sizeof (impl->mySendAddr)) < 0)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "MAMA multicast FT: send failed");
     }

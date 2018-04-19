@@ -41,14 +41,12 @@ build = env['build']
 sources = Split("""
 Properties/AssemblyInfo.cs
 MamaCommon.cs
-MamaPublisherTest.cs
 MamaBaseLogTest.cs
 MamaDisableLoggingTest.cs
 MamaEnableLoggingTest.cs
 MamaEnqueueEventTest.cs
 MamaGetLogLevelTest.cs
 MamaLogCallbackTest.cs
-MamaLogMessageTest.cs
 MamaLogTest.cs
 MamaLogToFileTest.cs
 MamaMsgVectorMsgTest.cs
@@ -77,5 +75,6 @@ if 'dynamic' in env['build']:
         target = "DOTNET_UNITTESTS"
         lib = None
         lib, doc_xml2 = env.InstallDotNetLibrary(target, sources)
+        env.Install('$bindir', '%s/bin/nunit.framework.dll' % env['nunit_home'])
 
 # Clean(lib)

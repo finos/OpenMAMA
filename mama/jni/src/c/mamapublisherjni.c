@@ -486,103 +486,6 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1sendFromInbox
     return;
 }
 
-/*
- * Class:     com_wombat_mama_MamaPublisher
- * Method:    _sendFromInboxWithThrottle
- * Signature: (Lcom/wombat/mama/MamaInbox;Lcom/wombat/mama/MamaMsg;)V
- */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1sendFromInboxWithThrottle
-  (JNIEnv* env, jobject this, jobject inbox, jobject msg)
-{
-    jlong           messagePointer      =   0;
-    jlong           publisherPointer    =   0;
-    jlong           inboxPointer        =   0;
-    sendMsgCallbackClosure*    closureData         = NULL;
-    mama_status     status              =   MAMA_STATUS_OK;
-    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-
-    closureData = (sendMsgCallbackClosure*) calloc (1, sizeof (sendMsgCallbackClosure));
-    if (!closureData)
-    {
-        utils_throwMamaException(env,"sendWithThrottleWithCallback(): Could not allocate.");
-        return;
-    }
-
-    closureData->mClientClosure      = (*env)->NewGlobalRef(env,msg);
-
-    publisherPointer = (*env)->GetLongField(env,this,publisherPointerFieldId_g);
-    assert(publisherPointer!=0);
-
-    messagePointer = (*env)->GetLongField(env,msg,messagePointerFieldId_g);
-    assert(messagePointer!=0);
-
-    inboxPointer = (*env)->GetLongField(env,inbox,inboxPointerFieldId_g);
-    assert(inboxPointer!=0);
-
-     if (MAMA_STATUS_OK!=(mamaPublisher_sendFromInboxWithThrottle(
-                    CAST_JLONG_TO_POINTER(mamaPublisher,publisherPointer),
-                    CAST_JLONG_TO_POINTER(mamaInbox,inboxPointer),
-                    CAST_JLONG_TO_POINTER(mamaMsg,messagePointer),
-                    sendCompleteCB,
-                    closureData)))
-    {
-         utils_buildErrorStringForStatus(
-                errorString, UTILS_MAX_ERROR_STRING_LENGTH,
-                "Failed to send from inbox with throttle.", status);
-        utils_throwMamaException(env,errorString);
-    }
-    return;
-}
-
-/*
- * Class:     com_wombat_mama_MamaPublisher
- * Method:    _sendFromInboxWithThrottleWithCallback
- * Signature: (Lcom/wombat/mama/MamaInbox;Lcom/wombat/mama/MamaMsg;Lcom/wombat/mama/MamaThrottleCallback;)V
- */
-JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPublisher__1sendFromInboxWithThrottleWithCallback
-  (JNIEnv* env, jobject this, jobject inbox, jobject msg, jobject callback)
-{
-    jlong           messagePointer      =   0;
-    jlong           publisherPointer    =   0;
-    jlong           inboxPointer        =   0;
-    mama_status     status              =   MAMA_STATUS_OK;
-    sendMsgCallbackClosure*    closureData         = NULL;
-    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
-
-    closureData = (sendMsgCallbackClosure*) calloc (1, sizeof (sendMsgCallbackClosure));
-    if (!closureData)
-    {
-        utils_throwMamaException(env,"sendWithThrottleWithCallback(): Could not allocate.");
-        return;
-    }
-
-    closureData->mClientJavaCallback = (*env)->NewGlobalRef(env,callback);
-    closureData->mClientClosure      = (*env)->NewGlobalRef(env,msg);
-
-    publisherPointer = (*env)->GetLongField(env,this,publisherPointerFieldId_g);
-    assert(publisherPointer!=0);
-
-    messagePointer = (*env)->GetLongField(env,msg,messagePointerFieldId_g);
-    assert(messagePointer!=0);
-
-    inboxPointer = (*env)->GetLongField(env,inbox,inboxPointerFieldId_g);
-    assert(inboxPointer!=0);
-
-     if (MAMA_STATUS_OK!=(mamaPublisher_sendFromInboxWithThrottle(
-                    CAST_JLONG_TO_POINTER(mamaPublisher,publisherPointer),
-                    CAST_JLONG_TO_POINTER(mamaInbox,inboxPointer),
-                    CAST_JLONG_TO_POINTER(mamaMsg,messagePointer),
-                    sendCompleteCB,
-                    closureData)))
-    {
-         utils_buildErrorStringForStatus(
-                errorString, UTILS_MAX_ERROR_STRING_LENGTH,
-                "Failed to send from inbox with throttle.", status);
-        utils_throwMamaException(env,errorString);
-    }
-    return;
-}
-
 static void MAMACALLTYPE sendCompleteCB (mamaPublisher publisher,
                                          mamaMsg       msg,
                                          mama_status   status,
@@ -727,7 +630,8 @@ JNIEXPORT jshort JNICALL Java_com_wombat_mama_MamaPublisher_getState
 
     publisherPointer = (*env)->GetLongField(env, this, publisherPointerFieldId_g);
     MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(publisherPointer,
-        "MamaPublisher.getState: Null parameter, publisher may have been destroyed.", NULL);
+        "MamaPublisher.getState: Null parameter, publisher may have been destroyed.",
+        (jshort)MAMA_PUBLISHER_UNKNOWN);
 
     if (MAMA_STATUS_OK != (status = mamaPublisher_getState(
                     CAST_JLONG_TO_POINTER(mamaPublisher, publisherPointer),

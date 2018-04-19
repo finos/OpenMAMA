@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <mama/mamacpp.h>
 #include "mamacppinternal.h"
 #include "MsgFieldImpl.h"
@@ -45,6 +46,21 @@ namespace Wombat
         , mLastVectorMsg       (NULL)
         , mLastVectorMsgLen    (0)
     {
+    }
+
+    MamaMsgField::MamaMsgField (const MamaMsgField& field)
+        : mField               (field.mField)
+        , mFieldDesc           (NULL)
+        , mLastVectorMsg       (NULL)
+        , mLastVectorMsgLen    (0)
+    {
+    }
+
+    MamaMsgField& MamaMsgField::operator= (const MamaMsgField& field)
+    {
+        clear();
+        mField = field.mField;
+        return *this;
     }
 
     void MamaMsgField::clear ()

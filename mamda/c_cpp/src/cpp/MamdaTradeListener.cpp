@@ -23,6 +23,7 @@
 #define __STDC_FORMAT_MACROS
 #endif
 
+#include <stdint.h>
 #include <wombat/port.h>
 #include <mamda/MamdaTradeListener.h>
 #include <mamda/MamdaTradeFields.h>
@@ -372,8 +373,6 @@ namespace Wombat
         struct FieldUpdateSettleDate;
         struct FieldUpdateOffExchangeTradePrice;
         struct FieldUpdateOnExchangeTradePrice;
-        struct FieldUpdateTradeId;
-        struct FieldUpdateOrigTradeId;
         struct FieldUpdateGenericFlag;
         struct FieldUpdateShortSaleCircuitBreaker;
         struct FieldUpdateOrigShortSaleCircuitBreaker;

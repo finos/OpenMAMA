@@ -39,6 +39,9 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
     // The message under test
     private MamaMsg mMsg;
 
+    // The bridge
+    MamaBridge mBridge;
+
     /* ****************************************************** */
     /* Private Functions. */
     /* ****************************************************** */
@@ -81,6 +84,9 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
     @Override
     protected void setUp()
     {
+        mBridge = Mama.loadBridge(Main.GetBridgeName());
+        Mama.open();
+
         // Create a new mama msg
         mMsg = new MamaMsg();
 
@@ -100,6 +106,9 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
     @Override
     protected void tearDown()
     {
+        // Close mama
+        Mama.close();
+
         // Clear all variables
         mMsg = null;
         mArrayMsg = null;

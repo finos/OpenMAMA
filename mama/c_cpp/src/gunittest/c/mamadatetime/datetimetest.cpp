@@ -2346,20 +2346,3 @@ TEST_F(MamaDateTimeTestC, TestSetInvalidSubsecs)
 
     EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_destroy(t));
 }
-
-TEST_F(MamaDateTimeTestC, TestSetFromStringBufferWIthExtraDecimals)
-{
-    mamaTimeZone tz = mamaTimeZone_utc();
-    mamaDateTime            t;
-    char szBuff[50];
-
-    std::string szExtraDecimals = "2013-07-04 10:03:21.123456789";
-
-    EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_create(&t));
-
-    EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_setFromStringWithTz(t, szExtraDecimals.c_str(), tz));
-    EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_getAsString(t, szBuff, 50));
-    EXPECT_STREQ("2013-07-04 10:03:21.123456", szBuff);
-
-    EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_destroy(t));
-}

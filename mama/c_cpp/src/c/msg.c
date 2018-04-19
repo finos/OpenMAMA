@@ -2317,7 +2317,7 @@ mamaMsg_updatePrice(
 
 mama_status
 mamaMsg_updateVectorTime (
-    const mamaMsg         msg,
+    mamaMsg               msg,
     const char*           name,
     mama_fid_t            fid,
     const mamaDateTime    value[],
@@ -2337,7 +2337,7 @@ mamaMsg_updateVectorTime (
 
 mama_status
 mamaMsg_updateVectorPrice (
-    const mamaMsg         msg,
+    mamaMsg               msg,
     const char*           name,
     mama_fid_t            fid,
     const mamaPrice       value[],
@@ -3420,7 +3420,7 @@ mamaMsg_getSeqNum (const mamaMsg msg, mama_seqnum_t* rval)
                                          MamaFieldSeqNum.mName,
                                          MamaFieldSeqNum.mFid,
                                          &seqNum);
-    *rval = seqNum;
+    *rval = (mama_seqnum_t) seqNum;
     return status;
 }
 

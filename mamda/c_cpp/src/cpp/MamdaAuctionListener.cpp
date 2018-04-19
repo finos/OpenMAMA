@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <wombat/port.h>
 #include <mamda/MamdaAuctionListener.h>
 #include <mamda/MamdaAuctionHandler.h>

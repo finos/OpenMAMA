@@ -19,6 +19,7 @@
  * 02110-1301 USA
  */
 
+#include <apr_time.h>
 #include <mama/log.h>
 #include <mama/datetime.h>
 #include <mama/timezone.h>

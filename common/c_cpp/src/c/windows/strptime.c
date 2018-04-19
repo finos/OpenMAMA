@@ -91,7 +91,8 @@ strptime(const char *buf, const char *fmt, struct tm *tm)
 {
     char	c;
     const char	*ptr;
-    int	i, len = 0;
+    int	i;
+    size_t len = 0;
 
     ptr = fmt;
     while (*ptr != 0)

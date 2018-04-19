@@ -29,10 +29,10 @@ namespace Wombat
      */
     public interface MamdaBookAtomicGap : MamdaBasicEvent
     {
-        /// <summary>Beginning sequence number in a detected gap event.<\summary>
+        /// <summary>Beginning sequence number in a detected gap event.</summary>
         long   getBeginGapSeqNum();
 
-        /// <summary> Ending sequence number in a detected gap event.<\summary>
+        /// <summary> Ending sequence number in a detected gap event.</summary>
         long   getEndGapSeqNum();
     }
 }
