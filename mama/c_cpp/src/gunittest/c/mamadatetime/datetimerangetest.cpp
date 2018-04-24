@@ -101,7 +101,9 @@ DateTimeRangeTests::MakeDateTimeStrings()
    m_TestDateTimeStrings.push_back("2013-07-04 10:03:21.789");
    m_TestDateTimeStrings.push_back("2013-12-31 10:03:21.123");
    m_TestDateTimeStrings.push_back("2013-07-04 23:03:21.123");
+#ifndef WIN32
    m_TestDateTimeStrings.push_back("1900-07-04 10:03:21.123");
+#endif
    m_TestDateTimeStrings.push_back("2050-07-04 10:03:21.123");
    m_TestDateTimeStrings.push_back("2012-07-04 10:03:21.123");
    m_TestDateTimeStrings.push_back("2011-07-04 10:03:21.123");
@@ -441,4 +443,25 @@ TEST_F (DateTimeRangeTests, testGettersAndSetters)
 
       GettersTest(t, item);
    }
+}
+
+TEST_F(DateTimeRangeTests, testDateTimeSetFromString)
+{
+    DateTimeStringColl::iterator itr;
+
+    for (itr = m_TestDateTimeStrings.begin(); itr != m_TestDateTimeStrings.end(); ++itr)
+    {
+        std::string str = (*itr);
+        mamaDateTime t;
+        char stringBuffer[50];
+
+        EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_create(&t));
+        EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_setFromString(t, str.c_str()));
+
+        EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_getAsString(t, stringBuffer, 50));
+        EXPECT_STREQ(str.c_str(), stringBuffer);
+
+        EXPECT_EQ(MAMA_STATUS_OK, mamaDateTime_destroy(t));
+
+    }
 }

@@ -621,8 +621,8 @@ mamaDateTime_setDate(mamaDateTime dateTime,
 {
     mama_i64_t  tmpSeconds = 0;
     mama_i64_t  dateSeconds = 0;
-    /* This method can only represent dates after 1970 */
-    if (!dateTime || year < 1970)
+    /* This method can only represent dates after year SETDATE_MIN_YEAR (defined per platform) */
+    if (!dateTime || year < SETDATE_MIN_YEAR)
         return MAMA_STATUS_INVALID_ARG;
 
     /* Get existing number of seconds and remove any full-day seconds. */
@@ -1935,8 +1935,8 @@ time_t makeTime (
     struct tm timeInfo;
 
     /* tm_year stores the years since 1900
-     * must not be less than 70 */
-    if (year > 1970)
+    /* must not be less than SETDATE_MIN_YEAR (defined per platform) */
+    if (year >= SETDATE_MIN_YEAR)
         timeInfo.tm_year  = year - 1900;
     else
         timeInfo.tm_year  = 70;
