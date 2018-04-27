@@ -918,7 +918,7 @@ TEST_F(MamaSubscriptionTest, Subscription)
             subscription->create(m_transport, queue, testCallback, getSource(), getSymbol());
 
             // check if transport got stored correctly
-            ASSERT_TRUE(NULL != subscription->getTransport());
+            ASSERT_TRUE(m_transport == subscription->getTransport());
 
             // Process messages until the first message is received
             Mama::start(m_bridge);
