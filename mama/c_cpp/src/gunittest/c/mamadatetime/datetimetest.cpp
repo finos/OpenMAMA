@@ -342,8 +342,7 @@ TEST_F (MamaDateTimeTestC, TestSetWithHints)
     mamaDateTime t, nullTime = NULL;
     mama_u64_t  secs = 43200, negSecs = secs * -1,
                micSecs = 500 * 1000,
-               secsPerDay = (24 * 60 * 60),
-               secsPer2Days = secsPerDay * 2;
+               secsPerDay = (24 * 60 * 60);
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
     mamaDateTimeHints hints =  MAMA_DATE_TIME_HAS_DATE;
 

@@ -232,7 +232,7 @@ TEST_F(MamaDateTimeTest, SetInvalidSubsecs)
     mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
     mamaDateTimeHints hints = MAMA_DATE_TIME_HAS_TIME;
     mama_u32_t hour = 9, minute = 21, second = 12, microsecond = 1000000;
-    mamaTimeZone tz = mamaTimeZone_utc();
+    mamaTimeZone_utc();
 
     try
     {
