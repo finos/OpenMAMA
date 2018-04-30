@@ -899,6 +899,7 @@ TEST_F(MamaSubscriptionTest, BasicSubscriptionRecreateOnMsg)
 /* ************************************************************************* */
 /* Test Functions - Subscription */
 /* ************************************************************************* */
+#endif
 
 TEST_F(MamaSubscriptionTest, Subscription)
 {
@@ -914,7 +915,10 @@ TEST_F(MamaSubscriptionTest, Subscription)
             MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
 
             // Create the subscription
-            subscription->create(m_transport, queue, testCallback, getSource(), "IBM");
+            subscription->create(m_transport, queue, testCallback, getSource(), getSymbol());
+
+            // check if transport got stored correctly
+            ASSERT_TRUE(m_transport == subscription->getTransport());
 
             // Process messages until the first message is received
             Mama::start(m_bridge);
@@ -932,6 +936,8 @@ TEST_F(MamaSubscriptionTest, Subscription)
         delete testCallback;
     }
 }
+
+#if 0
 
 TEST_F(MamaSubscriptionTest, Subscription)
 {
