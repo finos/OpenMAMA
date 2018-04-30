@@ -264,6 +264,8 @@ public:
         const MamaStatus&  status,
         const char*        symbol)
      {
+         // Stop on error
+         Mama::stop(m_bridge);
      }
 
      virtual void onGap (
@@ -334,6 +336,7 @@ public:
         const MamaStatus&  status,
         const char*        symbol)
      {
+		 recreateSubscription(subscription);
      }
 
      virtual void onGap (
@@ -362,8 +365,14 @@ public:
      }
 
      virtual void onMsg (
-        MamaSubscription*  subscription, 
+        MamaSubscription*  subscription,
         MamaMsg&     msg)
+     {
+         recreateSubscription(subscription);
+     }
+
+     virtual void recreateSubscription(
+         MamaSubscription*  subscription)
      {
          // Destroy the subscription
          subscription->destroy();
@@ -429,6 +438,8 @@ public:
         const MamaStatus&  status,
         const char*        symbol)
      {
+        // Destroy the subscription
+        subscription->destroy();
      }
 
      virtual void onGap (
@@ -937,41 +948,6 @@ TEST_F(MamaSubscriptionTest, Subscription)
     }
 }
 
-#if 0
-
-TEST_F(MamaSubscriptionTest, Subscription)
-{
-    // Create a callback object
-    TestCallback *testCallback = new TestCallback(m_bridge);
-    if(NULL != testCallback)
-    {
-        // Allocate a subscription
-        MamaSubscription *subscription = new MamaSubscription();
-        if(NULL != subscription)
-        {        
-            // Get the default queue
-            MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
-
-            // Create the subscription
-            subscription->create(m_transport, queue, testCallback, getSource(), "IBM");
-
-            // Process messages until the first message is received
-            Mama::start(m_bridge);
-
-            // Destroy the subscription
-            subscription->destroy();            
-
-            // Process messages until the destroy is received
-            Mama::start(m_bridge);
-
-            // Delete the basic subscription
-            delete subscription;
-        }
-
-        delete testCallback;
-    }
-}
-
 TEST_F(MamaSubscriptionTest, Subscription_RecreateOnDestroy)
 {
     // Create a callback object
@@ -986,7 +962,7 @@ TEST_F(MamaSubscriptionTest, Subscription_RecreateOnDestroy)
             MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
 
             // Create the subscription
-            subscription->create(m_transport, queue, testCallback, getSource(), "IBM");
+            subscription->create(m_transport, queue, testCallback, getSource(), getSymbol());
 
             // Process messages until the first message is received
             Mama::start(m_bridge);
@@ -1019,7 +995,7 @@ TEST_F(MamaSubscriptionTest, Subscription_RecreateOnMsg)
             MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
 
             // Create the subscription
-            subscription->create(m_transport, queue, testCallback, getSource(), "IBM");
+            subscription->create(m_transport, queue, testCallback, getSource(), getSymbol());
 
             // Process messages until the first message is received
             Mama::start(m_bridge);
@@ -1037,6 +1013,8 @@ TEST_F(MamaSubscriptionTest, Subscription_RecreateOnMsg)
         delete testCallback;
     }
 }
+
+#if 0
 
 /* ************************************************************************* */
 /* Test Functions - Timer */
