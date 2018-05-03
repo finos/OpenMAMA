@@ -242,14 +242,14 @@ public:
 /* Private Classes - Subscription */
 /* ************************************************************************* */
 
-class TestCallback : public MamaSubscriptionCallback
+class TestSubscriptionCalback : public MamaSubscriptionCallback
 {
     // Private member variables
     mamaBridge m_bridge;
 
 public:
     
-    TestCallback(mamaBridge bridge)
+    TestSubscriptionCalback(mamaBridge bridge)
     {
         m_bridge = bridge;
     }
@@ -306,7 +306,7 @@ class TestCallback_RecreateOnMsg : public MamaSubscriptionCallback
 {
     // Private member variables
     mamaBridge m_bridge;
-    TestCallback *m_testCallback;
+    TestSubscriptionCalback *m_testCallback;
     MamaTransport *m_transport;
 
 public:
@@ -315,7 +315,7 @@ public:
      {
          m_bridge = bridge;
          m_transport = transport;
-         m_testCallback = new TestCallback(bridge);
+         m_testCallback = new TestSubscriptionCalback(bridge);
      }
 
      virtual ~TestCallback_RecreateOnMsg(void)
@@ -408,7 +408,7 @@ class TestCallback_RecreateOnDestroy : public MamaSubscriptionCallback
 {
     // Private member variables
     mamaBridge m_bridge;
-    TestCallback *m_testCallback;
+    TestSubscriptionCalback *m_testCallback;
     MamaTransport *m_transport;
 
 public:
@@ -417,7 +417,7 @@ public:
      {
          m_bridge = bridge;
          m_transport = transport;
-         m_testCallback = new TestCallback(bridge);
+         m_testCallback = new TestSubscriptionCalback(bridge);
      }
 
      virtual ~TestCallback_RecreateOnDestroy(void)
@@ -915,7 +915,7 @@ TEST_F(MamaSubscriptionTest, BasicSubscriptionRecreateOnMsg)
 TEST_F(MamaSubscriptionTest, Subscription)
 {
     // Create a callback object
-    TestCallback *testCallback = new TestCallback(m_bridge);
+    TestSubscriptionCalback *testCallback = new TestSubscriptionCalback(m_bridge);
     if(NULL != testCallback)
     {
         // Allocate a subscription
