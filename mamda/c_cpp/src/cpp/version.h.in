@@ -10,7 +10,7 @@
 extern "C" {
 #endif
 
-extern const char* mamda_version;
+const char* mamda_version;
 
 #ifdef __cplusplus
 }
