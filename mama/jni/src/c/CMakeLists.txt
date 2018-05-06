@@ -53,5 +53,6 @@ target_link_libraries(mamajni mama)
 add_dependencies(mamajni mamajnijavah)
 
 install(TARGETS mamajni
+        RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)

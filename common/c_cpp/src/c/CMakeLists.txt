@@ -47,9 +47,30 @@ if(WIN32)
 endif()
 
 install(TARGETS wombatcommon
+        RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
-file(GLOB WOMBATCOMMON_INCLUDES wombat/* ${system}/wombat/*.h)
+file(GLOB WOMBATCOMMON_SYSTEM_INCLUDES ${system}/wombat/*.h)
+set(WOMBATCOMMON_INCLUDES
+    wombat/environment.h
+    wombat/fileparser.h
+    wombat/fileutils.h
+    wombat/machine.h
+    wombat/memdefs.h
+    wombat/memnode.h
+    wombat/mempool.h
+    wombat/MRSWLock.h
+    wombat/queue.h
+    wombat/strutils.h
+    wombat/thread.h
+    wombat/wCommon.h
+    wombat/wincompat.h
+    wombat/wMessageStats.h
+    wombat/wSemaphore.h
+    wombat/wtable.h
+    ${WOMBATCOMMON_SYSTEM_INCLUDES}
+)
+
 install(FILES ${WOMBATCOMMON_INCLUDES} DESTINATION include/wombat)
 

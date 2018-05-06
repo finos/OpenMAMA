@@ -15,6 +15,10 @@ macro(UnitTestC bin)
 		MainUnitTestC.cpp
 	)
 	target_link_libraries(${bin} ${GTEST_BOTH_LIBRARIES} mama)
+	install(TARGETS ${bin}
+			RUNTIME DESTINATION bin
+			LIBRARY DESTINATION lib
+			ARCHIVE DESTINATION lib)
 endmacro()
 
 UnitTestC(UnitTestMamaC

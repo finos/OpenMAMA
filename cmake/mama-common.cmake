@@ -19,9 +19,17 @@ endfunction(get_component_version)
 macro(mamac_binary name)
 	add_executable(${name} ${name}.c)
 	target_link_libraries(${name} mama)
+	install(TARGETS ${name}
+			RUNTIME DESTINATION bin
+			LIBRARY DESTINATION lib
+			ARCHIVE DESTINATION lib)
 endmacro()
 
 macro(mamacpp_binary name)
 	add_executable(${name} ${name}.cpp)
 	target_link_libraries(${name} mamacpp mama)
+	install(TARGETS ${name}
+			RUNTIME DESTINATION bin
+			LIBRARY DESTINATION lib
+			ARCHIVE DESTINATION lib)
 endmacro()

@@ -130,6 +130,7 @@ add_library(mama SHARED ${sources})
 target_link_libraries(mama ${MAMA_LINK_LIBRARIES})
 
 install(TARGETS mama
+        RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 

@@ -8,7 +8,6 @@ include_directories(
 	${MAMACPP_INCLUDES}
 )
 
-mamacpp_binary(mamaentitlecpp)
 mamacpp_binary(mamaftmembercpp)
 mamacpp_binary(mamainboxcpp)
 mamacpp_binary(mamaiocpp)
@@ -20,3 +19,6 @@ mamacpp_binary(mamapublishercpp)
 mamacpp_binary(mamasubscribercpp)
 mamacpp_binary(mamasymbollistsubscribercpp)
 
+if (WIN32)
+    mamacpp_binary(mamaentitlecpp)
+endif ()

@@ -69,6 +69,7 @@ add_library(mamda SHARED ${sources})
 target_link_libraries(mamda mamacpp)
 
 install(TARGETS mamda
+        RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 

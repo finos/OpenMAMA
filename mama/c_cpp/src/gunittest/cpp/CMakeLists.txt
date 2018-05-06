@@ -20,3 +20,8 @@ add_executable(UnitTestMamaCPP
 	MamaTimerTest.cpp
 )
 target_link_libraries(UnitTestMamaCPP ${GTEST_BOTH_LIBRARIES} mamacpp mama)
+
+install(TARGETS UnitTestMamaCPP
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)

@@ -18,6 +18,7 @@ add_library(wombatcommoncpp SHARED ${sources})
 target_link_libraries(wombatcommoncpp wombatcommon)
 
 install(TARGETS wombatcommoncpp
+        RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 install(DIRECTORY wombat/ DESTINATION include/wombat)
