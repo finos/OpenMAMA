@@ -1,5 +1,0 @@
-if(WIN32)
-	add_definitions(-DMAMA_DLL)
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG /NODEFAULTLIB:libcmt.lib /NODEFAULTLIB:libc.lib")
-endif()
-add_definitions(-DOPENMAMA_INTEGRATION)

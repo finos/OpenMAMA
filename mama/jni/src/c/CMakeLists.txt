@@ -1,6 +1,12 @@
 cmake_minimum_required (VERSION 2.8)
 project (mamajnic)
 
+list(APPEND CMAKE_MODULE_PATH
+	    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake
+)
+
+include(${CMAKE_C_COMPILER_ID})
+
 get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
 
 configure_file(version.c.in "${CMAKE_CURRENT_BINARY_DIR}/version.c" @ONLY)

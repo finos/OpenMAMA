@@ -46,11 +46,6 @@ if(WIN32)
 	target_link_libraries(wombatcommon ws2_32 advapi32 kernel32 Pdh shlwapi)
 endif()
 
-install(TARGETS wombatcommon
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
-
 file(GLOB WOMBATCOMMON_SYSTEM_INCLUDES ${system}/wombat/*.h)
 set(WOMBATCOMMON_INCLUDES
     wombat/environment.h
@@ -72,5 +67,9 @@ set(WOMBATCOMMON_INCLUDES
     ${WOMBATCOMMON_SYSTEM_INCLUDES}
 )
 
+install(TARGETS wombatcommon
+        RUNTIME DESTINATION bin
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib)
 install(FILES ${WOMBATCOMMON_INCLUDES} DESTINATION include/wombat)
-
+install(FILES $<TARGET_PDB_FILE:wombatcommon> DESTINATION bin OPTIONAL)

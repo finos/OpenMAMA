@@ -3,7 +3,13 @@ project (mama)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/../cmake ${CMAKE_CURRENT_LIST_DIR}/c_cpp/cmake)
 include(mama-common)
-include(c-cpp-common)
+
+# Common flag setup
+if(WIN32)
+	add_definitions(-DMAMA_DLL)
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /DEBUG /NODEFAULTLIB:libcmt.lib /NODEFAULTLIB:libc.lib")
+endif()
+add_definitions(-DOPENMAMA_INTEGRATION)
 
 get_component_version(${CMAKE_CURRENT_LIST_DIR} MAMA)
 
