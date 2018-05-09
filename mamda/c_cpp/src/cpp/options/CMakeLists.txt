@@ -25,3 +25,4 @@ target_link_libraries(mamdaoptions mamda)
 install(TARGETS mamdaoptions
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
+install(FILES $<TARGET_PDB_FILE:mamdaoptions> DESTINATION bin OPTIONAL)

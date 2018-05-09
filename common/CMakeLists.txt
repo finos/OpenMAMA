@@ -1,8 +1,6 @@
 cmake_minimum_required (VERSION 2.8.3)
 project (libwombatcommon)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/../cmake)
-
 if(WIN32)
 	add_definitions(-DCOMMON_DLL -DYY_NO_UNISTD_H)
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} /NODEFAULTLIB:libcmt.lib")

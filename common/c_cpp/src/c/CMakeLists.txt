@@ -1,9 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
 project (libwombatcommonc)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake)
-include(${CMAKE_C_COMPILER_ID})
-
 string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}

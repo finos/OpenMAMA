@@ -26,4 +26,4 @@ set(sources
 )
 add_library(mamdabook SHARED ${sources})
 target_link_libraries(mamdabook mamda)
-						
+install(FILES $<TARGET_PDB_FILE:mamdabook> DESTINATION bin OPTIONAL)

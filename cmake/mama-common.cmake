@@ -23,6 +23,7 @@ macro(mamac_binary name)
 			RUNTIME DESTINATION bin
 			LIBRARY DESTINATION lib
 			ARCHIVE DESTINATION lib)
+	install(FILES $<TARGET_PDB_FILE:${name}> DESTINATION bin OPTIONAL)
 endmacro()
 
 macro(mamacpp_binary name)
@@ -32,4 +33,5 @@ macro(mamacpp_binary name)
 			RUNTIME DESTINATION bin
 			LIBRARY DESTINATION lib
 			ARCHIVE DESTINATION lib)
+	install(FILES $<TARGET_PDB_FILE:${name}> DESTINATION bin OPTIONAL)
 endmacro()

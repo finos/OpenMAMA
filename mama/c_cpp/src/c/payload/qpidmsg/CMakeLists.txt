@@ -1,9 +1,3 @@
-list(APPEND CMAKE_MODULE_PATH
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../cmake
-)
-
-include(${CMAKE_C_COMPILER_ID})
-
 include(FindProton)
 find_package(Proton REQUIRED)
 string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
@@ -28,18 +22,13 @@ add_library(mamaqpidmsgimpl
                    qpidpayloadfunctions.h)
 
 if(WIN32)
-    if (CMAKE_BUILD_TYPE MATCHES "Debug")
-        set(MAMA_LIB_SUFFIX "mdd")
-    else()
-        set(MAMA_LIB_SUFFIX "md")
-    endif()
     target_link_libraries(mamaqpidmsgimpl
-                          ${PROTON_LIBRARY}
+                          ${PROTON_LIBRARIES}
                           wombatcommon
                           mama)
-    set_target_properties(mamaqpidmsgimpl PROPERTIES PREFIX "lib")
 
     # Windows Targets
+    install(FILES $<TARGET_PDB_FILE:mamaqpidmsgimpl> DESTINATION bin OPTIONAL)
     install(TARGETS mamaqpidmsgimpl
             RUNTIME DESTINATION bin
             LIBRARY DESTINATION lib

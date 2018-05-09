@@ -24,7 +24,8 @@ macro(mamda_example name)
     install(TARGETS ${name}
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+		ARCHIVE DESTINATION lib)
+	install(FILES $<TARGET_PDB_FILE:${name}> DESTINATION bin OPTIONAL)
 endmacro()
 
 mamda_example(auctionticker)

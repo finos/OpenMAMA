@@ -1,11 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
 project (mamac)
 
-list(APPEND CMAKE_MODULE_PATH
-	    ${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake
-)
-
-include(${CMAKE_C_COMPILER_ID})
 include(FindAPR)
 
 find_package(APR REQUIRED)
@@ -132,7 +127,7 @@ install(TARGETS mama
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
-
+install(FILES $<TARGET_PDB_FILE:mama> DESTINATION bin OPTIONAL)
 install(DIRECTORY mama/ DESTINATION include/mama)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" DESTINATION include/mama)
 

@@ -2,12 +2,6 @@ enable_testing()
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-list(APPEND CMAKE_MODULE_PATH
-	    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../cmake
-)
-
-include(${CMAKE_C_COMPILER_ID})
-
 get_target_property(WOMBAT_INCLUDES wombatcommon INCLUDE_DIRECTORIES)
 
 include_directories(
@@ -27,7 +21,7 @@ add_executable(UnitTestCommonC
 )
 
 target_link_libraries(UnitTestCommonC ${GTEST_BOTH_LIBRARIES} wombatcommon)
-
+install(FILES $<TARGET_PDB_FILE:UnitTestCommonC> DESTINATION bin OPTIONAL)
 install(TARGETS UnitTestCommonC
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib

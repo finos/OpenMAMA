@@ -19,4 +19,5 @@ target_link_libraries(mamdanews mamda)
 
 install(TARGETS mamdanews
         LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+		ARCHIVE DESTINATION lib)
+install(FILES $<TARGET_PDB_FILE:mamdanews> DESTINATION bin OPTIONAL)

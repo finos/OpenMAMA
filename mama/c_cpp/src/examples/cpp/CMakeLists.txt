@@ -19,6 +19,6 @@ mamacpp_binary(mamapublishercpp)
 mamacpp_binary(mamasubscribercpp)
 mamacpp_binary(mamasymbollistsubscribercpp)
 
-if (WIN32)
+if (!WIN32)
     mamacpp_binary(mamaentitlecpp)
 endif ()

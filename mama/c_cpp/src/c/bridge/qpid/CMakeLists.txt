@@ -1,8 +1,3 @@
-list(APPEND CMAKE_MODULE_PATH
-	${CMAKE_CURRENT_SOURCE_DIR}/../../../../../../cmake
-)
-
-include(${CMAKE_C_COMPILER_ID})
 include(FindProton)
 find_package(Proton REQUIRED)
 
@@ -21,20 +16,7 @@ include_directories(../../../../../../common/c_cpp/src/c)
 
 add_definitions(-DBRIDGE)
 
-if(WIN32)
-    if (CMAKE_BUILD_TYPE MATCHES "Debug")
-        set(MAMA_LIB_SUFFIX "mdd")
-        set(QPID_PROTON_LIB_SUFFIX "d")
-    else()
-        set(MAMA_LIB_SUFFIX "md")
-        set(QPID_PROTON_LIB_SUFFIX "")
-    endif()
-else()
-    set(MAMA_LIB_SUFFIX "")
-    set(QPID_PROTON_LIB_SUFFIX "")
-endif()
-
-add_library(mamaqpidimpl${MAMA_LIB_SUFFIX}
+add_library(mamaqpidimpl
             MODULE bridge.c
                    codec.c
                    codec.h
@@ -58,7 +40,7 @@ add_library(mamaqpidimpl${MAMA_LIB_SUFFIX}
                    transport.h)
 
 if(WIN32)
-    target_link_libraries(mamaqpidimpl${MAMA_LIB_SUFFIX}
+    target_link_libraries(mamaqpidimpl
                           wombatcommon
                           mama
                           ${PROTON_LIBRARIES}
@@ -66,18 +48,17 @@ if(WIN32)
                           uuid
                           Ws2_32)
 
-    set_target_properties(mamaqpidimpl${MAMA_LIB_SUFFIX} PROPERTIES PREFIX "lib")
-
     # Windows Targets
-    install(TARGETS mamaqpidimpl${MAMA_LIB_SUFFIX}
+    install(FILES $<TARGET_PDB_FILE:mamaqpidimpl> DESTINATION bin OPTIONAL)
+    install(TARGETS mamaqpidimpl
             RUNTIME DESTINATION bin
             LIBRARY DESTINATION lib
             ARCHIVE DESTINATION lib)
 elseif(UNIX)
-    target_link_libraries(mamaqpidimpl${MAMA_LIB_SUFFIX}
+    target_link_libraries(mamaqpidimpl
                           wombatcommon
                           mama
                           ${PROTON_LIBRARIES}
                           uuid)
-    install(TARGETS mamaqpidimpl${MAMA_LIB_SUFFIX} DESTINATION lib)
+    install(TARGETS mamaqpidimpl DESTINATION lib)
 endif()

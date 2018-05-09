@@ -4,12 +4,6 @@ include_directories(${GTEST_INCLUDE_DIRS})
 
 get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
 
-list(APPEND CMAKE_MODULE_PATH
-	    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../../cmake
-)
-
-include(${CMAKE_C_COMPILER_ID})
-
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${MAMA_INCLUDES}
@@ -25,6 +19,7 @@ macro(UnitTestC bin)
 			RUNTIME DESTINATION bin
 			LIBRARY DESTINATION lib
 			ARCHIVE DESTINATION lib)
+	install(FILES $<TARGET_PDB_FILE:${bin}> DESTINATION bin OPTIONAL)
 endmacro()
 
 UnitTestC(UnitTestMamaC

@@ -8,7 +8,6 @@ include_directories(
 	${MAMACPP_INCLUDES}
 )
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/../../../../../../cmake)
 include(mama-common)
 
 mamacpp_binary(mamapingpong_replycpp)

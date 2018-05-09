@@ -1,11 +1,6 @@
 cmake_minimum_required (VERSION 2.8.3)
 project (mamdacpp)
 
-list(APPEND CMAKE_MODULE_PATH
-	    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake
-)
-include(${CMAKE_C_COMPILER_ID})
-
 get_target_property(MAMA_INCLUDES mamacpp INCLUDE_DIRECTORIES)
 include_directories(
 	${MAMA_INCLUDES}
@@ -72,6 +67,6 @@ install(TARGETS mamda
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
-
+install(FILES $<TARGET_PDB_FILE:mamda> DESTINATION bin OPTIONAL)
 install(DIRECTORY mamda/ DESTINATION include/mamda)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/version.h" DESTINATION include/mamda)

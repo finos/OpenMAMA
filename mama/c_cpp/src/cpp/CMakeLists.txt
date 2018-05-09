@@ -1,12 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
 project (mamacpp)
 
-list(APPEND CMAKE_MODULE_PATH
-	    ${CMAKE_CURRENT_SOURCE_DIR}/../../../../cmake
-)
-
-include(${CMAKE_C_COMPILER_ID})
-
 get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
 
 include_directories(
@@ -69,5 +63,6 @@ target_link_libraries(mamacpp mama)
 install(TARGETS mamacpp
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+		ARCHIVE DESTINATION lib)
+install(FILES $<TARGET_PDB_FILE:mamacpp> DESTINATION bin OPTIONAL)
 install(DIRECTORY mama/ DESTINATION include/mama)
