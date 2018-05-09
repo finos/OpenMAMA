@@ -369,10 +369,10 @@ public class MamaSubscriberJava
         {
             if( myQuietLevel < 2 )
             {
-                System.out.println ("Reveived msg: Topic=" +
-                                   msg.getString ("PublisherTopic",10002) +
-                                   ", Sequence Nunber="+msg.getU32 ("MdSeqNum", 10001));
-                System.out.println("Received msg:");
+                System.out.println ("Received msg: Topic=" +
+                                   msg.getString ("MdFeedHost",12) +
+                                   ", Sequence Nunber="+msg.getU32 ("MdSeqNum", 10));
+                System.out.println ("Received msg:");
                 displayAllFields(msg);
             }
         }
@@ -384,8 +384,8 @@ public class MamaSubscriberJava
 
         private synchronized void displayAllFields(final MamaMsg msg)
         {
-
 			msg.iterateFields(new FieldIterator(), null, "Closure");
+            System.out.println ();
         }
 
         private void displayMamaMsgField (MamaMsgField field)
