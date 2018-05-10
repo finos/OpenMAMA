@@ -1,0 +1,1 @@
+msbuild_project(mamdacs mamdadotnet.csproj MAMDA)

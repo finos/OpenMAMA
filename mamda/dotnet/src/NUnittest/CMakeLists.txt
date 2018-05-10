@@ -1,0 +1,1 @@
+msbuild_project(mamdacs_unittest NUnitTest.csproj NUnitTest)

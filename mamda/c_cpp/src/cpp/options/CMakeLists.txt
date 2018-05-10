@@ -22,7 +22,9 @@ set(sources
 add_library(mamdaoptions SHARED ${sources})
 target_link_libraries(mamdaoptions mamda)
 
+set_target_properties(mamdaoptions PROPERTIES OUTPUT_NAME "mamdaoptions${OPENMAMA_LIBRARY_SUFFIX}")
 install(TARGETS mamdaoptions
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
+		ARCHIVE DESTINATION lib)
 install(FILES $<TARGET_PDB_FILE:mamdaoptions> DESTINATION bin OPTIONAL)

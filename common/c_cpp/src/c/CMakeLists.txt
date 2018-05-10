@@ -64,6 +64,7 @@ set(WOMBATCOMMON_INCLUDES
     ${WOMBATCOMMON_SYSTEM_INCLUDES}
 )
 
+set_target_properties(wombatcommon PROPERTIES OUTPUT_NAME "wombatcommon${OPENMAMA_LIBRARY_SUFFIX}")
 install(TARGETS wombatcommon
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib

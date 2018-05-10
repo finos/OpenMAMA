@@ -14,16 +14,42 @@ add_definitions(
 string(REGEX REPLACE "/W3" "" CMAKE_C_FLAGS "${CMAKE_C_FLAGS}")
 string(REGEX REPLACE "/W3" "" CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS}")
 
+# Ensure PDB files are always created - even for release builds
+set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Zi")
+set(CMAKE_SHARED_LINKER_FLAGS_RELEASE "${CMAKE_SHARED_LINKER_FLAGS_RELEASE} /DEBUG /OPT:REF /OPT:ICF")
+
 set (CMAKE_SHARED_LIBRARY_PREFIX "lib")
 set (CMAKE_IMPORT_LIBRARY_PREFIX "lib")
 set (CMAKE_SHARED_MODULE_PREFIX "lib")
 
 if (CMAKE_BUILD_TYPE MATCHES DEBUG)
-	set (CMAKE_SHARED_LIBRARY_SUFFIX "mdd.dll")
-	set (CMAKE_IMPORT_LIBRARY_SUFFIX "mdd.lib")
-	set (CMAKE_SHARED_MODULE_SUFFIX "mdd.dll")
+	set (OPENMAMA_LIBRARY_SUFFIX "mdd")
+	set (OPENMAMA_MAMAJNI_TARGET_SUFFIX "d")
 else ()
-    set (CMAKE_SHARED_LIBRARY_SUFFIX "md.dll")
-	set (CMAKE_IMPORT_LIBRARY_SUFFIX "mdd.lib")
-	set (CMAKE_SHARED_MODULE_SUFFIX "mdd.dll")
+	set (OPENMAMA_LIBRARY_SUFFIX "md")
 endif ()
+
+set (OPENMAMA_MAMA_TARGET_SUFFIX "c")
+
+if(CMAKE_CL_64)
+	set(DEFAULT_INSTALL_PREFIX $ENV{ProgramW6432})
+else()
+	set(DEFAULT_INSTALL_PREFIX $ENV{PROGRAMFILES})
+endif()
+
+set (DEFAULT_LIBEVENT_ROOT "${DEFAULT_INSTALL_PREFIX}/libevent")
+set (DEFAULT_PROTON_ROOT   "${DEFAULT_INSTALL_PREFIX}/Proton")
+set (DEFAULT_APR_ROOT      "${DEFAULT_INSTALL_PREFIX}/APR")
+set (DEFAULT_GTEST_ROOT    "${DEFAULT_INSTALL_PREFIX}/googletest-distribution")
+
+include(ExternalProject)
+
+macro(msbuild_project target project output)
+	ExternalProject_Add(${target}
+			SOURCE_DIR "."
+			BUILD_COMMAND ""
+			CONFIGURE_COMMAND ${CMAKE_MAKE_PROGRAM} /p:PreBuildEvent= /p:PostBuildEvent= /p:OutputPath=${CMAKE_CURRENT_BINARY_DIR} /p:BuildPath=${CMAKE_CURRENT_BINARY_DIR}/build ${msbuild_project_assembly_flag} ${CMAKE_CURRENT_SOURCE_DIR}/${project}
+			INSTALL_COMMAND ""
+			LOG_BUILD 1)
+endmacro()
+	

@@ -17,7 +17,9 @@ set(sources
 add_library(mamdanews SHARED ${sources})
 target_link_libraries(mamdanews mamda)
 
+set_target_properties(mamdanews PROPERTIES OUTPUT_NAME "mamdanews${OPENMAMA_LIBRARY_SUFFIX}")
 install(TARGETS mamdanews
-        LIBRARY DESTINATION lib
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
 install(FILES $<TARGET_PDB_FILE:mamdanews> DESTINATION bin OPTIONAL)

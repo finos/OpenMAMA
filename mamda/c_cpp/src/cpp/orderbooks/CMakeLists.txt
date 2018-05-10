@@ -9,7 +9,7 @@ add_definitions(-DMAMDAOPT)
 set(sources
 	MamdaBookAtomicListener.cpp
 	MamdaOrderBook.cpp
-        MamdaOrderBookBasicDelta.cpp
+	MamdaOrderBookBasicDelta.cpp
 	MamdaOrderBookBasicDeltaList.cpp
 	MamdaOrderBookChecker.cpp
 	MamdaOrderBookCheckType.cpp
@@ -26,4 +26,9 @@ set(sources
 )
 add_library(mamdabook SHARED ${sources})
 target_link_libraries(mamdabook mamda)
+set_target_properties(mamdabook PROPERTIES OUTPUT_NAME "mamdabook${OPENMAMA_LIBRARY_SUFFIX}")
+install(TARGETS mamdabook
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
+		ARCHIVE DESTINATION lib)
 install(FILES $<TARGET_PDB_FILE:mamdabook> DESTINATION bin OPTIONAL)

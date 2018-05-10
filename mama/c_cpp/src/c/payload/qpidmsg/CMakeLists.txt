@@ -28,10 +28,13 @@ if(WIN32)
                           mama)
 
     # Windows Targets
-    install(FILES $<TARGET_PDB_FILE:mamaqpidmsgimpl> DESTINATION bin OPTIONAL)
+    set_target_properties(mamaqpidmsgimpl PROPERTIES OUTPUT_NAME "mamaqpidmsgimpl${OPENMAMA_LIBRARY_SUFFIX}")
+    install(FILES $<TARGET_PDB_FILE:mamaqpidmsgimpl>
+            DESTINATION bin
+            OPTIONAL)
     install(TARGETS mamaqpidmsgimpl
             RUNTIME DESTINATION bin
-            LIBRARY DESTINATION lib
+            LIBRARY DESTINATION bin
             ARCHIVE DESTINATION lib)
 
 elseif(UNIX)

@@ -14,10 +14,25 @@ add_subdirectory (c_cpp/src/cpp)
 
 if (WITH_EXAMPLES)
     add_subdirectory (c_cpp/src/examples)
+    if (WITH_CSHARP)
+        add_subdirectory (dotnet/src/examples)
+    endif()
 endif()
 
 if (WITH_TESTTOOLS)
     add_subdirectory (c_cpp/src/testtools)
 endif()
 
-add_subdirectory (java)
+if (WITH_UNITTEST)
+    if (WITH_CSHARP)
+        add_subdirectory (dotnet/src/NUnittest)
+    endif()
+endif()
+
+if (WITH_JAVA)
+    add_subdirectory (java)
+endif()
+
+if (WITH_CSHARP)
+    add_subdirectory (dotnet/src/cs)
+endif()

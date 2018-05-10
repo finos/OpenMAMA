@@ -14,6 +14,7 @@ set(sources
 add_library(wombatcommoncpp SHARED ${sources})
 target_link_libraries(wombatcommoncpp wombatcommon)
 
+set_target_properties(wombatcommoncpp PROPERTIES OUTPUT_NAME "wombatcommoncpp${OPENMAMA_LIBRARY_SUFFIX}")
 install(TARGETS wombatcommoncpp
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib

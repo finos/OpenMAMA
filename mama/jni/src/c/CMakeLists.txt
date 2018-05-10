@@ -52,7 +52,14 @@ add_library(mamajni SHARED ${sources})
 target_link_libraries(mamajni mama)
 add_dependencies(mamajni mamajnijavah)
 
+set_target_properties(mamajni PROPERTIES OUTPUT_NAME "mamajni${OPENMAMA_MAMAJNI_TARGET_SUFFIX}")
+
+if (WIN32)
+    set_target_properties(mamajni PROPERTIES PREFIX "")
+endif()
+
 install(TARGETS mamajni
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+		ARCHIVE DESTINATION lib)
+install(FILES $<TARGET_PDB_FILE:mamajni> DESTINATION bin OPTIONAL)

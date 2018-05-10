@@ -123,6 +123,9 @@ endif()
 add_library(mama SHARED ${sources})
 target_link_libraries(mama ${MAMA_LINK_LIBRARIES})
 
+# On windows this file has historically been named libmamac for some reason. Will conform in future.
+set_target_properties(mama PROPERTIES OUTPUT_NAME "mama${OPENMAMA_MAMA_TARGET_SUFFIX}${OPENMAMA_LIBRARY_SUFFIX}")
+
 install(TARGETS mama
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib

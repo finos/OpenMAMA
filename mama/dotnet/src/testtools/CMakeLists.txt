@@ -1,0 +1,1 @@
+msbuild_project(MamaChurn load/MamaChurn/MamaChurnCS.csproj MamaChurn)

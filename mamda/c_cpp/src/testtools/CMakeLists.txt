@@ -14,6 +14,11 @@ add_definitions(-DMAMDAOPT)
 macro(mamda_tool name)
 	add_executable(${name} ${name}.cpp $<TARGET_OBJECTS:mamdaexshared>)
 	target_link_libraries(${name} mamda ${ARGN})
+	install(TARGETS ${name}
+			RUNTIME DESTINATION bin
+			LIBRARY DESTINATION lib
+			ARCHIVE DESTINATION lib)
+	install(FILES $<TARGET_PDB_FILE:${name}> DESTINATION bin OPTIONAL)
 endmacro()
 
 mamda_tool(bookselftest mamdabook)

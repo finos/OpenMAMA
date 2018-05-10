@@ -49,10 +49,11 @@ if(WIN32)
                           Ws2_32)
 
     # Windows Targets
+    set_target_properties(mamaqpidimpl PROPERTIES OUTPUT_NAME "mamaqpidimpl${OPENMAMA_LIBRARY_SUFFIX}")
     install(FILES $<TARGET_PDB_FILE:mamaqpidimpl> DESTINATION bin OPTIONAL)
     install(TARGETS mamaqpidimpl
             RUNTIME DESTINATION bin
-            LIBRARY DESTINATION lib
+            LIBRARY DESTINATION bin
             ARCHIVE DESTINATION lib)
 elseif(UNIX)
     target_link_libraries(mamaqpidimpl
@@ -61,4 +62,13 @@ elseif(UNIX)
                           ${PROTON_LIBRARIES}
                           uuid)
     install(TARGETS mamaqpidimpl DESTINATION lib)
+endif()
+
+# Install any dependant libraries
+if (INSTALL_RUNTIME_DEPENDENCIES)
+    if (WIN32)
+        install (FILES ${PROTON_ROOT}/bin/qpid-proton${OPENMAMA_MAMAJNI_TARGET_SUFFIX}.dll DESTINATION bin)
+    else()
+        install (FILES ${PROTON_LIBRARIES} DESTINATION lib)
+    endif()
 endif()

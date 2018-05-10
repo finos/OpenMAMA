@@ -60,9 +60,13 @@ set(sources
 add_library(mamacpp SHARED ${sources})
 target_link_libraries(mamacpp mama)
 
+set_target_properties(mamacpp PROPERTIES OUTPUT_NAME "mamacpp${OPENMAMA_LIBRARY_SUFFIX}")
 install(TARGETS mamacpp
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
-install(FILES $<TARGET_PDB_FILE:mamacpp> DESTINATION bin OPTIONAL)
+install(FILES $<TARGET_PDB_FILE:mamacpp>
+		DESTINATION bin
+		RENAME libmamacpp${OPENMAMA_LIBRARY_SUFFIX}.pdb
+		OPTIONAL)
 install(DIRECTORY mama/ DESTINATION include/mama)

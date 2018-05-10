@@ -39,6 +39,7 @@ mamda_example(optionchainer mamdaoptions)
 mamda_example(optionview mamdaoptions)
 mamda_example(quoteticker)
 mamda_example(secstatuslisten)
+mamda_example(tradeticker)
 
 if (!WIN32)
     mamda_example(currencyticker)

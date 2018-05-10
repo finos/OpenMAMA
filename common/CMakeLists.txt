@@ -7,7 +7,10 @@ if(WIN32)
 endif()
 
 add_subdirectory (c_cpp/src/c)
-add_subdirectory (c_cpp/src/cpp)
+
+if (WITH_CPP)
+	add_subdirectory (c_cpp/src/cpp)
+endif()
 
 if (WITH_UNITTEST)
     add_subdirectory (c_cpp/src/gunittest/c)

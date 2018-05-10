@@ -66,7 +66,8 @@ target_link_libraries(mamda mamacpp)
 install(TARGETS mamda
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
+		ARCHIVE DESTINATION lib)
+set_target_properties(mamda PROPERTIES OUTPUT_NAME "mamda${OPENMAMA_LIBRARY_SUFFIX}")
 install(FILES $<TARGET_PDB_FILE:mamda> DESTINATION bin OPTIONAL)
 install(DIRECTORY mamda/ DESTINATION include/mamda)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/version.h" DESTINATION include/mamda)
