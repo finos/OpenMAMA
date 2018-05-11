@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-#include "wombat/port.h"
+#include <wombat/port.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
