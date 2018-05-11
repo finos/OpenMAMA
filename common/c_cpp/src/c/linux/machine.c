@@ -38,7 +38,7 @@
 /* Macros for extract VSIZE and RSS from /proc/pid/stats files */
 #define bytetok(x)      (((x) + 512) >> 10)
 
-#define MAXPROCSARRAY 1000     /* need to keep track of processes */
+#define MAXPROCSARRAY 32000     /* need to keep track of processes */
 
 extern int useLWP;
 static int numProc = 0;
