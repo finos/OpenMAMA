@@ -177,7 +177,7 @@ qpidBridgeMamaSubscription_create (subscriptionBridge* subscriber,
     else
     {
         if (pn_messenger_subscribe (transport->mIncoming,
-                                    impl->mUri) <= 0)
+                                    impl->mUri) == NULL)
         {
             mama_log (MAMA_LOG_LEVEL_ERROR, "qpidBridgeMamaSubscription_create(): "
                       "Error Subscribing to %s : %s",

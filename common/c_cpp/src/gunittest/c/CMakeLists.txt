@@ -20,7 +20,12 @@ add_executable(UnitTestCommonC
 	utiltest.cpp
 )
 
-target_link_libraries(UnitTestCommonC ${GTEST_BOTH_LIBRARIES} wombatcommon)
+if (WIN32)
+    target_link_libraries(UnitTestCommonC ${GTEST_BOTH_LIBRARIES} wombatcommon)
+else()
+    target_link_libraries(UnitTestCommonC ${GTEST_BOTH_LIBRARIES} wombatcommon pthread dl)
+endif()
+
 install(FILES $<TARGET_PDB_FILE:UnitTestCommonC> DESTINATION bin OPTIONAL)
 install(TARGETS UnitTestCommonC
         RUNTIME DESTINATION bin

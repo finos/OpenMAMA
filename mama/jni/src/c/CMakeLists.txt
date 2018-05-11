@@ -10,7 +10,7 @@ find_package(JNI)
 get_target_property(MAMA_JAVAH_INCLUDES mamajnijava JAVAH_INCLUDES)
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
-	add_definitions(-Wno-deprecated-declarations)
+	add_definitions(-Wno-deprecated-declarations -Wno-pointer-sign)
 endif()
 
 include_directories(

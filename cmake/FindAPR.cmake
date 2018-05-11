@@ -46,6 +46,7 @@ FIND_LIBRARY(APR_LIBRARY
     /usr/lib
     /usr/local/lib
     /usr/local/apr/lib
+    /usr/lib/x86_64-linux-gnu
   NO_DEFAULT_PATH
 )
 
@@ -97,6 +98,7 @@ FIND_LIBRARY(APRUTIL_LIBRARY
     /usr/lib
     /usr/local/lib
     /usr/local/apr/lib
+    /usr/lib/x86_64-linux-gnu
   NO_DEFAULT_PATH
 )
 
