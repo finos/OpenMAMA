@@ -1,6 +1,9 @@
 include(FindProton)
 find_package(Proton REQUIRED)
 
+include(FindUUID)
+find_package(UUID REQUIRED)
+
 include(FindLibevent)
 find_package(Libevent REQUIRED)
 
@@ -60,7 +63,8 @@ elseif(UNIX)
                           wombatcommon
                           mama
                           ${PROTON_LIBRARIES}
-                          uuid)
+                          ${LIBEVENT_LIBRARIES}
+                          ${UUID_LIBRARIES})
     install(TARGETS mamaqpidimpl DESTINATION lib)
 endif()
 
