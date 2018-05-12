@@ -175,6 +175,16 @@
         <javac source="1.5" srcdir="${top}/src/test/java" destdir="${build}_junittests" debug="true">
             <patternset refid="src.junittests"></patternset>
             <classpath>
+            <fileset dir="../../../thirdparty/junit">
+                    <include name="junit-4.10.jar"></include>
+            </fileset>
+            </classpath>             
+           <classpath>
+            <fileset dir="${dist}/lib">
+                    <include name="${product}_book.jar"></include>
+            </fileset>
+            </classpath>
+            <classpath>
                 <fileset dir="${mama.dir}/lib">
                     <include name="mama.jar"></include>
                     <include name="mama_noent.jar"></include>

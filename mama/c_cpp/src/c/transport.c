@@ -61,7 +61,7 @@ extern const char*  gEntitlementBridges[MAX_ENTITLEMENT_BRIDGES];
 #define PROP_NAME_DISABLE_DISCONNECT_CB     "disable_disconnect_callbacks"
 /* A value of 10 will be passed to wtable_create in subscription code */
 #define DEFAULT_GROUP_SIZE_HINT             100
-
+#define DQ_ENABLED_PROP                     "dq_enabled"
 static void
 roundRobin (int         curTransportIndex,
             int         numTransports,
@@ -98,7 +98,7 @@ typedef struct transportImpl_
     uint32_t                 mWriteQueueLowWatermark;
     /* These members are only needed for the market data transport */
     wList                    mListeners;
-
+    int                      mDqEnabled;
     /* This list contains all of the publishers using the transport. */
     wList                    mPublishers;
 
@@ -127,19 +127,19 @@ typedef struct transportImpl_
     char                     mName[MAX_TPORT_NAME_LEN];
     mamaCmResponder          mCmResponder;
     char*                    mDescription;
-
-    int                     mDeactivateSubscriptionOnError;
-    mamaStatsCollector      mStatsCollector;
-    mamaStat                mRecapStat;
-    mamaStat                mUnknownMsgStat;
-    mamaStat                mMessageStat;
-    mamaStat                mFtTakeoverStat;
-    mamaStat                mSubscriptionStat;
-    mamaStat                mTimeoutStat;
-    mamaStat                mInitialStat;
-    mamaStat                mWombatMsgsStat;
-    mamaStat                mFastMsgsStat;
-    mamaStat                mRvMsgsStat;
+    mamaPluginInfo           mDqPluginInfo;
+    int                      mDeactivateSubscriptionOnError;
+    mamaStatsCollector       mStatsCollector;
+    mamaStat                 mRecapStat;
+    mamaStat                 mUnknownMsgStat;
+    mamaStat                 mMessageStat;
+    mamaStat                 mFtTakeoverStat;
+    mamaStat                 mSubscriptionStat;
+    mamaStat                 mTimeoutStat;
+    mamaStat                 mInitialStat;
+    mamaStat                 mWombatMsgsStat;
+    mamaStat                 mFastMsgsStat;
+    mamaStat                 mRvMsgsStat;
     /* LBM stats.  */
     /*! Number of sent LBT-RM NAK packets */
     mamaStat                mNakPacketsSent;
@@ -179,7 +179,7 @@ typedef struct transportImpl_
 
     uint8_t                 mInternal;
     uint8_t                 mDisableDisconnectCb;
-    preInitialScheme        mPreInitialScheme;
+    preInitialScheme         mPreInitialScheme;
     mama_bool_t             mPreRecapCacheEnabled;
     void*                   mClosure;
     mamaEntitlementBridge   mEntitlementBridge;
@@ -188,20 +188,25 @@ typedef struct transportImpl_
 static mama_status
 init (transportImpl* transport, int createResponder)
 {
-    mama_status rval = MAMA_STATUS_OK;
+    char        searchName[256];
+    const char* searchResult;
+    const char* middleware               = NULL;
+    const char* propertyVal              = NULL;
+    mama_status rval                     = MAMA_STATUS_OK;
+    self->mListeners                     = list_create (sizeof (SubscriptionInfo));
+    self->mPublishers                    = list_create (sizeof (mamaPublisher));
+    self->mSetPossiblyStaleForAll        = 1;
+    self->mQuality                       = MAMA_QUALITY_OK;
+    self->mCause                         = 0;
+    self->mPlatformInfo                  = NULL;
+    self->mTopicPlatformInfo             = NULL;
+    self->mPreInitialScheme              = PRE_INITIAL_SCHEME_ON_GAP;
+    self->mDQStratScheme                 = DQ_SCHEME_DELIVER_ALL;
+    self->mFTStratScheme                 = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
+    self->mClosure                       = NULL;
+    self->mDqEnabled                     = 1;
 
-    self->mListeners     = list_create (sizeof (SubscriptionInfo));
-    self->mPublishers    = list_create (sizeof (mamaPublisher));
-    self->mSetPossiblyStaleForAll = 1;
-    self->mQuality       = MAMA_QUALITY_OK;
-    self->mCause         = 0;
-    self->mPlatformInfo  = NULL;
-    self->mTopicPlatformInfo = NULL;
-    self->mPreInitialScheme  = PRE_INITIAL_SCHEME_ON_GAP;
-    self->mDQStratScheme     = DQ_SCHEME_DELIVER_ALL;
-    self->mFTStratScheme     = DQ_FT_DO_NOT_WAIT_FOR_RECAP;
-
-    self->mClosure          = NULL;
+    middleware = self->mBridgeImpl->bridgeGetName ();
 
     mama_log (MAMA_LOG_LEVEL_FINEST,
              "%screating CmResponder for transport [%s]",
@@ -215,6 +220,25 @@ init (transportImpl* transport, int createResponder)
           if (rval != MAMA_STATUS_OK) return rval;
     }
 
+    snprintf(searchName, sizeof(searchName), "mama.%s.%s", middleware, DQ_ENABLED_PROP);
+    propertyVal = mama_getProperty(searchName);
+    
+    if(NULL != propertyVal)
+    {
+        self->mDqEnabled = strtobool(mama_getProperty(searchName));
+    }
+    else
+    {
+        snprintf(searchName, sizeof(searchName), "mama.%s.transport.%s.%s", middleware, self->mName, DQ_ENABLED_PROP);
+
+        propertyVal = mama_getProperty(searchName);
+
+        if(NULL != propertyVal)
+        {
+            self->mDqEnabled = strtobool(mama_getProperty(searchName));
+        }
+    }
+    
     return MAMA_STATUS_OK;
 }
 
@@ -246,9 +270,6 @@ void mamaTransportImpl_clearTransportWithPublishers (transportImpl *impl);
  *
  */
 void mamaTransportImpl_clearTransportWithListeners (transportImpl *impl);
-
-static void
-setPossiblyStaleForListeners (transportImpl* transport);
 
 mama_status
 mamaTransport_allocate (mamaTransport* result)
@@ -481,7 +502,7 @@ static void enablePreRecapCache (mamaTransport transport, const char* middleware
 
     mama_log (MAMA_LOG_LEVEL_NORMAL,
               "%s: Pre-Recap cache %s", self->mName, self->mPreRecapCacheEnabled ? "enabled" : "disabled");
-}
+}    
 void mamaTransport_disableRefresh(mamaTransport transport, uint8_t disable)
 {
     self->mDisableRefresh=disable;
@@ -601,7 +622,7 @@ static void setGroupSizeHint (mamaTransport transport, const char* middleware)
     {
         mama_log (MAMA_LOG_LEVEL_NORMAL, "Setting %s=%s",
                   propNameBuf, propValue);
-        self->mGroupSizeHint = (int) strtod (propValue, NULL);
+        self->mGroupSizeHint = (int)  strtod (propValue, NULL);
     }
     else
         self->mGroupSizeHint = DEFAULT_GROUP_SIZE_HINT;
@@ -638,7 +659,6 @@ mamaTransport_create (mamaTransport transport,
     if (!transport) return MAMA_STATUS_NULL_ARG;
     if (!bridgeImpl) return MAMA_STATUS_NO_BRIDGE_IMPL;
 
-    self->mListeners = NULL;
 
     mama_log(MAMA_LOG_LEVEL_FINER, "Entering mamaTransport_create for transport (%p) with name %s", transport, name);
 
@@ -950,6 +970,8 @@ mamaTransport_create (mamaTransport transport,
                  entBridgeName,
                  self->mName);
     }
+
+    mamaPlugin_fireTransportPostCreateHook(transport);
 
     return MAMA_STATUS_OK;
 }
@@ -1853,8 +1875,8 @@ setStaleListenerIterator (wList list, void* element, void* closure)
     }
 }
 
-static void
-setPossiblyStaleForListeners (transportImpl* transport)
+void
+mamaTransportImpl_setPossiblyStaleForListeners (mamaTransport transport)
 {
     if (self->mRefreshTransport)
     {
@@ -1933,14 +1955,7 @@ mamaTransportImpl_processAdvisory (mamaTransport transport,
     self->mCause        = cause;
     self->mPlatformInfo = (void*)platformInfo;
 
-    if (self->mSetPossiblyStaleForAll)
-    {
-        setPossiblyStaleForListeners (self);
-        if ( self->mRefreshTransport )
-            refreshTransport_startStaleRecapTimer (self->mRefreshTransport );
-    }
-
-    self->mQuality = MAMA_QUALITY_MAYBE_STALE;
+    mamaPlugin_fireTransportEventHook (transport, 1, MAMA_TRANSPORT_QUALITY);
 
     if (self->mTportCb != NULL)
     {
@@ -1948,13 +1963,13 @@ mamaTransportImpl_processAdvisory (mamaTransport transport,
                         self->mCause, self->mPlatformInfo,
                         self->mTportClosure);
     }
+    
 
     /* Clear the platforminfo and cause, these should not be used after this
      * point. */
     self->mCause        = 0;
     self->mPlatformInfo = NULL;
 }
-
 struct topicsForSourceClosure
 {
     int curIdx;
@@ -2061,7 +2076,7 @@ void mamaTransportImpl_disconnectNoStale (mamaTransport      transport,
 
     if (self->mQuality == MAMA_QUALITY_OK)
     {
-        self->mQuality = MAMA_QUALITY_MAYBE_STALE;
+        mamaPlugin_fireTransportEventHook (transport, 1, event);
 
         if (!self->mDisableDisconnectCb && self->mTportCb != NULL )
         {
@@ -2109,14 +2124,7 @@ void mamaTransportImpl_disconnect (mamaTransport      transport,
     self->mCause        = DQ_DISCONNECT;
     self->mPlatformInfo = (void*)platformInfo;
 
-
-    if (self->mSetPossiblyStaleForAll)
-    {
-        setPossiblyStaleForListeners (self);
-
-    }
-
-    self->mQuality = MAMA_QUALITY_MAYBE_STALE;
+    mamaPlugin_fireTransportEventHook (transport, 0, event);
 
     if (!self->mDisableDisconnectCb && self->mTportCb != NULL )
     {
@@ -2312,8 +2320,6 @@ mamaTransportImpl_unsetAllPossiblyStale (mamaTransport transport)
 
     if (self->mQuality != MAMA_QUALITY_OK)
     {
-        self->mQuality = MAMA_QUALITY_OK;
-
         if (self->mTportCb != NULL)
         {
             self->mTportCb (transport, MAMA_TRANSPORT_QUALITY,
@@ -2745,7 +2751,7 @@ void mamaTransportImpl_clearTransportPublisherCallback (wList list,
     }
 }
 
-void mamaTransportImpl_clearTransportWithListeners (transportImpl *impl)
+void mamaTransportImpl_clearTransportWithListeners (transportImpl* impl)
 {
 
     /* The refresh transport may still not be valid. */
@@ -2835,3 +2841,68 @@ mama_status mamaTransportImpl_getEntitlementBridge(mamaTransport transport, mama
     }
     return MAMA_STATUS_NOT_FOUND;
 }
+mama_status mamaTransportImpl_getPossiblyStaleForAll(mamaTransport transport, int* possiblyStaleForAll)
+{
+    if (NULL != transport )
+    {
+        *possiblyStaleForAll = self->mSetPossiblyStaleForAll;
+        return MAMA_STATUS_OK;
+    }
+
+    return MAMA_STATUS_NULL_ARG;
+}
+
+mama_status mamaTransportImpl_getRefreshTransport (mamaTransport transport, refreshTransport* rTransport)
+{
+    if(NULL != transport)
+    {
+        *rTransport = self->mRefreshTransport;
+        return MAMA_STATUS_OK;
+    }
+
+    return MAMA_STATUS_NULL_ARG;
+}
+
+mama_status mamaTransportImpl_setQuality(mamaTransport transport, mamaQuality quality)
+{
+    if (NULL != transport)
+    {
+        self->mQuality = quality;
+        return MAMA_STATUS_OK;
+    }
+    return MAMA_STATUS_NULL_ARG;
+}
+
+mama_status mamaTransportImpl_getDqEnabled(mamaTransport transport, int* result)
+{
+    if(transport != NULL && result != NULL)
+    {
+        *result = self->mDqEnabled;
+        return MAMA_STATUS_OK;
+    }
+    
+    return MAMA_STATUS_NULL_ARG;
+}
+
+mama_status mamaTransportImpl_setDqPluginInfo (mamaTransport transport, mamaPluginInfo  pluginInfo)
+{
+    if (NULL != transport)
+    {
+        self->mDqPluginInfo = pluginInfo;
+        return MAMA_STATUS_OK;   
+    }
+
+    return MAMA_STATUS_NULL_ARG;
+}
+
+mama_status mamaTransportImpl_getDqPluginInfo (mamaTransport transport, mamaPluginInfo* pluginInfo)
+{
+    if (NULL != transport)
+    {
+        *pluginInfo = self->mDqPluginInfo;
+        return MAMA_STATUS_OK;
+    }
+
+    return MAMA_STATUS_NULL_ARG;
+}
+

@@ -175,6 +175,12 @@ MamaPriceRangeTestC::MakePrecisionsTestData()
     m_TestPrecisions.push_back(MAMA_PRICE_PREC_100000000); 
     m_TestPrecisions.push_back(MAMA_PRICE_PREC_1000000000);
     m_TestPrecisions.push_back(MAMA_PRICE_PREC_10000000000); 
+    m_TestPrecisions.push_back(MAMA_PRICE_PREC_100000000000); 
+    m_TestPrecisions.push_back(MAMA_PRICE_PREC_1000000000000); 
+    m_TestPrecisions.push_back(MAMA_PRICE_PREC_10000000000000); 
+    m_TestPrecisions.push_back(MAMA_PRICE_PREC_100000000000000); 
+    m_TestPrecisions.push_back(MAMA_PRICE_PREC_1000000000000000); 
+    m_TestPrecisions.push_back(MAMA_PRICE_PREC_10000000000000000); 
     m_TestPrecisions.push_back(MAMA_PRICE_PREC_INT);        
     m_TestPrecisions.push_back(MAMA_PRICE_PREC_DIV_2);     
     m_TestPrecisions.push_back(MAMA_PRICE_PREC_DIV_4);    
@@ -211,6 +217,12 @@ MamaPriceRangeTestC::MakeHintsTestData()
    m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_100000000);   
    m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_1000000000); 
    m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_10000000000);
+   m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_100000000000);
+   m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_1000000000000);
+   m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_10000000000000);
+   m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_100000000000000);
+   m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_1000000000000000);
+   m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_10000000000000000);
    m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_INT);       
    m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_2);        
    m_TestHints.push_back(MAMA_PRICE_IMPL_HINT_PREC_4);       
@@ -505,6 +517,7 @@ MamaPriceRangeTestC::SetAndGetTestForStrings(const std::string& szExpected,
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_create(&tmp) );
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setValue(tmp, val) );
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setPrecision(tmp, precision) );
+
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getAsString(tmp, buff, size) );
    EXPECT_STREQ ( szExpected.c_str(), buff );
 
@@ -529,18 +542,30 @@ TEST_F (MamaPriceRangeTestC, testSetAndGetForString)
                szEightDP     = "1.12345679",
                szNineDP      = "1.123456789",
                szTenDP       = "1.1234567890",
+               szElevenDP    = "1.12345678901",
+               szTwelveDP    = "1.123456789012",
+               szThirteenDP  = "1.1234567890123",
+               szFourteenDP  = "1.12345678901235",
+               szFifteenDP   = "1.123456789012346",
+               szSixteenDP   = "1.1234567890123457",
                szUnknownDP   = "1.123457";
 
-   SetAndGetTestForStrings(szZeroDP,    MAMA_PRICE_PREC_INT, val); 
-   SetAndGetTestForStrings(szOneDP,     MAMA_PRICE_PREC_10, val); 
-   SetAndGetTestForStrings(szTwoDP,     MAMA_PRICE_PREC_100, val); 
-   SetAndGetTestForStrings(szThreeDP,   MAMA_PRICE_PREC_1000, val); 
-   SetAndGetTestForStrings(szFourDP,    MAMA_PRICE_PREC_10000, val); 
-   SetAndGetTestForStrings(szFiveDP,    MAMA_PRICE_PREC_100000, val); 
-   SetAndGetTestForStrings(szSixDP,     MAMA_PRICE_PREC_1000000, val); 
-   SetAndGetTestForStrings(szSevenDP,   MAMA_PRICE_PREC_10000000, val); 
-   SetAndGetTestForStrings(szEightDP,   MAMA_PRICE_PREC_100000000, val); 
-   SetAndGetTestForStrings(szNineDP,    MAMA_PRICE_PREC_1000000000, val); 
-   SetAndGetTestForStrings(szTenDP,     MAMA_PRICE_PREC_10000000000, val); 
-   SetAndGetTestForStrings(szUnknownDP, MAMA_PRICE_PREC_UNKNOWN, val);
+   SetAndGetTestForStrings(szZeroDP,     MAMA_PRICE_PREC_INT, val); 
+   SetAndGetTestForStrings(szOneDP,      MAMA_PRICE_PREC_10, val); 
+   SetAndGetTestForStrings(szTwoDP,      MAMA_PRICE_PREC_100, val); 
+   SetAndGetTestForStrings(szThreeDP,    MAMA_PRICE_PREC_1000, val); 
+   SetAndGetTestForStrings(szFourDP,     MAMA_PRICE_PREC_10000, val); 
+   SetAndGetTestForStrings(szFiveDP,     MAMA_PRICE_PREC_100000, val); 
+   SetAndGetTestForStrings(szSixDP,      MAMA_PRICE_PREC_1000000, val); 
+   SetAndGetTestForStrings(szSevenDP,    MAMA_PRICE_PREC_10000000, val); 
+   SetAndGetTestForStrings(szEightDP,    MAMA_PRICE_PREC_100000000, val); 
+   SetAndGetTestForStrings(szNineDP,     MAMA_PRICE_PREC_1000000000, val); 
+   SetAndGetTestForStrings(szTenDP,      MAMA_PRICE_PREC_10000000000, val); 
+   SetAndGetTestForStrings(szElevenDP,   MAMA_PRICE_PREC_100000000000, val); 
+   SetAndGetTestForStrings(szTwelveDP,   MAMA_PRICE_PREC_1000000000000, val); 
+   SetAndGetTestForStrings(szThirteenDP, MAMA_PRICE_PREC_10000000000000, val); 
+   SetAndGetTestForStrings(szFourteenDP, MAMA_PRICE_PREC_100000000000000, val); 
+   SetAndGetTestForStrings(szFifteenDP , MAMA_PRICE_PREC_1000000000000000, val); 
+   SetAndGetTestForStrings(szSixteenDP , MAMA_PRICE_PREC_10000000000000000, val); 
+   SetAndGetTestForStrings(szUnknownDP,  MAMA_PRICE_PREC_UNKNOWN, val);
 }

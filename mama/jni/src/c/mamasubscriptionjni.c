@@ -32,6 +32,8 @@
 #include "mamajni/com_wombat_mama_MamaSubscription.h"
 #include "mamajni/dictionaryimpl.h"
 #include "subscriptioncommon.h"
+#include "dqstrategy.h"
+#include "subscriptionimpl.h"
 
 #include <assert.h>
 
@@ -712,9 +714,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setRecoverGaps
 
     assert(0!=subscriptionPointer);
 
-    if (MAMA_STATUS_OK!=(status=mamaSubscription_setRecoverGaps(
-                    CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
-                    (int)recoverGaps)))
+    if (MAMA_STATUS_OK!=(status=dqStrategy_setRecoverGaps(mamaSubscription_getDqStrategy(CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer)),(int)recoverGaps)))
     {
         utils_buildErrorStringForStatus(
                 errorString,
@@ -747,9 +747,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaSubscription_getRecoverGaps
     "MamaSubscription.getRecoverGaps(): Null parameter, subcription may have been destroyed.",0);
     assert(0!=subscriptionPointer);
 
-    if (MAMA_STATUS_OK!=(status=mamaSubscription_getRecoverGaps(
-                    CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer),
-                    &recoverGaps)))
+    if (MAMA_STATUS_OK!=(status=dqStrategy_getRecoverGaps(mamaSubscription_getDqStrategy(CAST_JLONG_TO_POINTER(mamaSubscription,subscriptionPointer)),&recoverGaps)))
     {
         utils_buildErrorStringForStatus(
                 errorString,

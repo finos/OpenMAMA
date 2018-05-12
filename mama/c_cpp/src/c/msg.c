@@ -40,10 +40,53 @@
 #include "list.h"
 
 #include "wombat/wincompat.h"
+#include "wombat/memnode.h"
 
 #define MAX_SUBJECT 256
+#define MEMNODE_INITIAL_SIZE 1024
 
 #define NOFID 0
+
+// Macro to print vectors as a string to a buffer
+#define PRINT_VECTOR_TO_BUFFER(FIELD,DATATYPE,METHOD,BUFFER,BUFFERLEN,OFFSET,FORMAT,NODE,OBRACE,CBRACE) \
+{                                                                             \
+    const DATATYPE* pvtb_result = NULL;                                       \
+    mama_size_t  pvtb_size = 0;                                               \
+    mama_size_t  pvtb_i = 0;                                                  \
+    mama_size_t  pvtb_written = 0;                                            \
+    mama_status  pvtb_status = METHOD(FIELD, &pvtb_result, &pvtb_size);       \
+                                                                              \
+    if (MAMA_STATUS_OK != pvtb_status)                                        \
+    {                                                                         \
+        return;                                                               \
+    }                                                                         \
+    if (BUFFERLEN - (pvtb_size * 22) < (MEMNODE_INITIAL_SIZE / 2)) {          \
+        if (0 == memoryNode_stretch(NODE, NODE->mNodeSize + MEMNODE_INITIAL_SIZE)) { \
+            BUFFERLEN += MEMNODE_INITIAL_SIZE;                                \
+            target = BUFFER + OFFSET;                          \
+        } else {                                                              \
+            mama_log(MAMA_LOG_LEVEL_ERROR,                                    \
+                     "Could not allocate string required for vector field - truncation is likely."); \
+        }                                                                     \
+    }                                                                         \
+    pvtb_written = snprintf(BUFFER, BUFFERLEN, OBRACE);                       \
+    BUFFER += pvtb_written;                                                   \
+    BUFFERLEN -= pvtb_written;                                                \
+    OFFSET += pvtb_written;                                                   \
+                                                                              \
+    for (pvtb_i = 0; pvtb_i < pvtb_size; pvtb_i++)                            \
+    {                                                                         \
+        if (pvtb_i != (pvtb_size - 1))                                        \
+            pvtb_written = snprintf(BUFFER, BUFFERLEN, FORMAT",",             \
+                    pvtb_result[pvtb_i]);                                     \
+        else                                                                  \
+            pvtb_written = snprintf(BUFFER, BUFFERLEN, FORMAT CBRACE,         \
+                    pvtb_result[pvtb_i]);                                     \
+        BUFFER += pvtb_written;                                               \
+        BUFFERLEN -= pvtb_written;                                            \
+        OFFSET += pvtb_written;                                               \
+    }                                                                         \
+}
 
 static const int INCLUDE_FIELD_NAME = (1 << 4);
 static const int INCLUDE_FIELD_ID   = (1 << 2);
@@ -71,6 +114,7 @@ typedef struct mamaMsgImpl_
     msgPayload              mPayloads[MAMA_PAYLOAD_MAX];
     /* Set of get/set/update methods to use for a non wmsg payload */
     mamaPayloadBridgeImpl*  mPayloadBridge;
+    char                    mPayloadId;
 
     mamaMsg*                mLastVectorMsg;
     mama_size_t             mLastVectorMsgLen;
@@ -99,13 +143,31 @@ typedef struct mamaMsgImpl_
     mamaDqContext*          mDqStrategyContext;
     mamaMsgStatus           mStatus;
 
+    /* Memory node buffer to use for string generation */
+    memoryNode*             mReusableMemoryNode;
 } mamaMsgImpl;
 
+// Struct to use during toString iterator to track buffer positions
+struct normalizedStringIterClosure {
+    memoryNode* memNode;
+    size_t position;
+};
+
 /*================================================================
-  = Static function definition
+  = Function definition
   ===============================================================*/
 static mama_status
 mamaMsgImpl_destroyLastVectorMsg (mamaMsgImpl *impl);
+
+static void MAMACALLTYPE
+mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
+    const mamaMsgField  field,
+    void*               closure);
+
+static void MAMACALLTYPE
+mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
+    const mamaMsgField  field,
+    void*               closure);
 
 /*=================================================================
   = Public functions - defined in mama/msg.h
@@ -122,15 +184,26 @@ mamaMsg_destroy (mamaMsg msg)
         mamaMsgImpl_destroyLastVectorMsg (impl);
     }
 
+    if (impl->mReusableMemoryNode != NULL)
+    {
+        memoryNode_destroy(impl->mReusableMemoryNode);
+    }
+
     if (impl->mPayloadBridge && impl->mMessageOwner)
     {
-        if (MAMA_STATUS_OK != impl->mPayloadBridge->msgPayloadDestroy (impl->mPayload))
+        if (NULL == mamaInternal_findPayload(impl->mPayloadId))
+        {
+            mama_log(MAMA_LOG_LEVEL_WARN, "mamaMsg_destroy(): "
+                "Could not clean up MAMA message as payload bridge has already been closed. Possible leak.");
+        }
+        else if (MAMA_STATUS_OK != impl->mPayloadBridge->msgPayloadDestroy (impl->mPayload))
         {
             mama_log (MAMA_LOG_LEVEL_ERROR, "mamaMsg_destroy(): "
                      "Could not clear message payload.");
         }
 
         impl->mPayloadBridge = NULL;
+        impl->mPayloadId = '\0';
 
         /*set mMessageOwner to zero now the payload has been destroyed to prevent
           us destroying the underlying message again in the bridge specific function*/
@@ -454,7 +527,8 @@ mamaMsgImpl_setPayloadBridge (mamaMsg msg, mamaPayloadBridgeImpl* payloadBridge)
 {
     mamaMsgImpl*    impl    =   (mamaMsgImpl*)msg;
     if (!impl) return MAMA_STATUS_NULL_ARG;
-    impl->mPayloadBridge  =   payloadBridge;
+    impl->mPayloadBridge  = payloadBridge;
+    impl->mPayloadId      = payloadBridge->payloadLib->id;
     return MAMA_STATUS_OK;
 }
 
@@ -590,9 +664,11 @@ mamaMsgImpl_setMsgBuffer(mamaMsg     msg,
         id = (char) ((const char*)data) [0];
 
     impl->mPayloadBridge = mamaInternal_findPayload(id);
-    impl->mPayload = impl->mPayloads[(uint8_t)id];
 
     if (!impl->mPayloadBridge) return MAMA_STATUS_NO_BRIDGE_IMPL;
+
+    impl->mPayloadId     = id;
+    impl->mPayload       = impl->mPayloads[(uint8_t)id];
 
     if (!impl->mPayload)
     {
@@ -651,6 +727,7 @@ mamaMsgImpl_createNestedForPayload (mamaMsg*        result,
     mamaMsgField_create (&impl->mCurrentField);
     impl->mCurrentField->myPayloadBridge = parent->mPayloadBridge;
     impl->mPayloadBridge    = parent->mPayloadBridge;
+    impl->mPayloadId        = parent->mPayloadId;
     impl->mPayload          = payload;
     impl->mParent           = parent;
     impl->mPayloadBridge->msgPayloadSetParent (impl->mPayload, impl);
@@ -725,6 +802,7 @@ mamaMsgImpl_createForPayload (mamaMsg*                  msg,
     if (payloadBridge)
     {
         impl->mPayloadBridge->msgPayloadSetParent (impl->mPayload, impl);
+        impl->mPayloadId = payloadBridge->payloadLib->id;
     }
 
     return status;
@@ -773,6 +851,7 @@ mamaMsg_copy (mamaMsg src, mamaMsg* copy)
         {
             mamaMsgImpl_setPayloadBridge (*copy, source->mPayloadBridge);
             mamaMsgImpl_setPayload       (*copy, payload, 1);
+            (*copy)->mPayloadId = source->mPayloadId;
         }
     }
 
@@ -2750,6 +2829,874 @@ mamaMsg_toString (const mamaMsg msg)
     return NULL;
 }
 
+void MAMACALLTYPE
+mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
+    const mamaMsgField  field,
+    void*               closure)
+{
+    struct normalizedStringIterClosure* iterClosure = (struct normalizedStringIterClosure*)closure;
+    memoryNode*       memNode   = iterClosure->memNode;
+    char*             target    = NULL;
+    size_t            remaining = memNode->mNodeSize - iterClosure->position;
+    size_t            written   = 0;
+    const char*       name      = NULL;
+    mama_status       status;
+    mamaFieldType     type;
+    mama_fid_t        fid;
+
+    // After possible realloc
+    target = (char*) memNode->mNodeBuffer + iterClosure->position;
+
+    status = mamaMsgField_getType(field, &type);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log(MAMA_LOG_LEVEL_ERROR, "Failed to get type for msg.");
+        return;
+    }
+
+    status = mamaMsgField_getFid(field, &fid);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log(MAMA_LOG_LEVEL_ERROR, "Failed to get fid for msg.");
+        return;
+    }
+
+    status = mamaMsgField_getName(field, &name);
+    if (NULL == name)
+    {
+        // Default to empty string
+        name = "";
+    }
+
+    // Recommend at least this buffer size
+    if (remaining < (MEMNODE_INITIAL_SIZE / 2)) {
+        if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+            remaining += MEMNODE_INITIAL_SIZE;
+        }
+        else {
+            mama_log(MAMA_LOG_LEVEL_ERROR,
+                "Could not allocate string required for string field - aborting for field %s[%u].",
+                name,
+                fid);
+            return;
+        }
+    }
+
+
+    written = snprintf(target, remaining, "%s[%u]=", name, fid);
+    iterClosure->position += written;
+    target += written;
+    remaining -= written;
+
+    // Reset to zero for calculations later unless explicitly set in case statement
+    written = 0;
+
+    switch (type) {
+    case MAMA_FIELD_TYPE_CHAR:
+    {
+        char value;
+        mamaMsgField_getChar(field, &value);
+        written = snprintf(target, remaining, "%c", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_BOOL:
+    {
+        mama_bool_t value;
+        mamaMsgField_getBool(field, &value);
+        written = snprintf(target, remaining, "%s", value ? "true" : "false");
+        break;
+    }
+    case MAMA_FIELD_TYPE_U8:
+    {
+        mama_u8_t value;
+        mamaMsgField_getU8(field, &value);
+        written = snprintf(target, remaining, "%u", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_U16:
+    {
+        mama_u16_t value;
+        mamaMsgField_getU16(field, &value);
+        written = snprintf(target, remaining, "%u", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_U32:
+    {
+        mama_u32_t value;
+        mamaMsgField_getU32(field, &value);
+        written = snprintf(target, remaining, "%"PRIu32, value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_U64:
+    {
+        mama_u64_t value;
+        mamaMsgField_getU64(field, &value);
+        written = snprintf(target, remaining, "%"PRIu64, value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_I8:
+    {
+        mama_i8_t value;
+        mamaMsgField_getI8(field, &value);
+        written = snprintf(target, remaining, "%d", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_I16:
+    {
+        mama_i16_t value;
+        mamaMsgField_getI16(field, &value);
+        written = snprintf(target, remaining, "%d", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_I32:
+    {
+        mama_i32_t value;
+        mamaMsgField_getI32(field, &value);
+        written = snprintf(target, remaining, "%"PRId32, value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_I64:
+    {
+        mama_i64_t value;
+        mamaMsgField_getI64(field, &value);
+        written = snprintf(target, remaining, "%"PRId64, value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_F32:
+    {
+        mama_f32_t value;
+        mamaMsgField_getF32(field, &value);
+        written = snprintf(target, remaining, "%.4f", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_F64:
+    {
+        mama_f64_t value;
+        mamaMsgField_getF64(field, &value);
+        written = snprintf(target, remaining, "%.4lf", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_STRING:
+    {
+        const char* value;
+        size_t valueLength = 0;
+        mamaMsgField_getString(field, &value);
+        valueLength = strlen(value);
+        if (remaining - valueLength < (MEMNODE_INITIAL_SIZE / 2)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                remaining += MEMNODE_INITIAL_SIZE;
+                target = (char*)memNode->mNodeBuffer + iterClosure->position;
+            }
+            else {
+                mama_log(MAMA_LOG_LEVEL_ERROR,
+                    "Could not allocate string required for string field - truncation is likely.");
+            }
+        }
+        written = snprintf(target, remaining, "%s", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_OPAQUE:
+    {
+        const void* value;
+        mama_size_t valueLength;
+        mama_size_t i;
+        const char* bytePos = NULL;
+
+        mamaMsgField_getOpaque(field, &value, &valueLength);
+        valueLength = strlen(value);
+        // [0xaa ] = 5 bytes in string per byte of input
+        if (remaining - (valueLength * 5) < (MEMNODE_INITIAL_SIZE / 2)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                remaining += MEMNODE_INITIAL_SIZE;
+                target = (char*)memNode->mNodeBuffer + iterClosure->position;
+            }
+            else {
+                mama_log(MAMA_LOG_LEVEL_ERROR,
+                    "Could not allocate opaque string required for string field - truncation is likely.");
+            }
+        }
+        bytePos = (const char*)value;
+        for (i = 0; i < valueLength; i++)
+        {
+            if (0 == i)
+            {
+                written = sprintf(target, "%#x", *bytePos);
+            }
+            if (i == (valueLength - 1))
+            {
+                written = sprintf(target, "%x", *bytePos);
+            }
+            else if (0 != i)
+            {
+                written = sprintf(target, "%x", *bytePos);
+            }
+
+            target += written;
+            remaining -= written;
+            iterClosure->position += written;
+            bytePos++;
+        }
+        // We have already moved this so don't allow to move again outside of loop
+        written = 0;
+        break;
+    }
+    case MAMA_FIELD_TYPE_PRICE:
+    {
+        mamaPrice value;
+        char priceString[MAMA_PRICE_MAX_STR_LEN];
+        memset((void*)priceString, 0, sizeof(priceString));
+        mamaPrice_create(&value);
+        mamaMsgField_getPrice(field, value);
+        mamaPrice_getAsString(value, priceString, sizeof(priceString));
+        written = snprintf(target, remaining, "%s", priceString);
+        mamaPrice_destroy(value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_TIME:
+    {
+        mamaDateTime value;
+        char dateTimeString[MAMA_PRICE_MAX_STR_LEN];
+        memset((void*)dateTimeString, 0, sizeof(dateTimeString));
+        mamaDateTime_create(&value);
+        mamaMsgField_getDateTime(field, value);
+        mamaDateTime_getAsString(value, dateTimeString, sizeof(dateTimeString));
+        written = snprintf(target, remaining, "%s", dateTimeString);
+        mamaDateTime_destroy(value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_VECTOR_U8:
+        PRINT_VECTOR_TO_BUFFER(field, mama_u8_t, mamaMsgField_getVectorU8, target, remaining, iterClosure->position, "%u", memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_BOOL:
+        {
+            const mama_bool_t* pvtb_result = NULL;
+            mama_size_t  pvtb_size = 0;
+            mama_size_t  pvtb_i = 0;
+            mama_size_t  pvtb_written = 0;
+            mama_status  pvtb_status = mamaMsgField_getVectorBool(field, &pvtb_result, &pvtb_size);
+
+            if (MAMA_STATUS_OK != pvtb_status)
+            {
+                return;
+            }
+            if (remaining - (pvtb_size * 22) < (MEMNODE_INITIAL_SIZE / 2)) {
+                if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                    remaining += MEMNODE_INITIAL_SIZE;
+                    target = target + iterClosure->position;
+                } else {
+                    mama_log(MAMA_LOG_LEVEL_ERROR,
+                             "Could not allocate string required for vector field - truncation is likely.");
+                }
+            }
+            pvtb_written = snprintf(target, remaining, "{");
+            target += pvtb_written;
+            remaining -= pvtb_written;
+            iterClosure->position += pvtb_written;
+
+            for (pvtb_i = 0; pvtb_i < pvtb_size; pvtb_i++)
+            {
+                if (pvtb_i != (pvtb_size - 1))
+                    pvtb_written = snprintf(target, remaining, "%s,",
+                        pvtb_result[pvtb_i] ? "true" : "false");
+                else
+                    pvtb_written = snprintf(target, remaining, "%s}",
+                        pvtb_result[pvtb_i] ? "true" : "false");
+                target += pvtb_written;
+                remaining -= pvtb_written;
+                iterClosure->position += pvtb_written;
+            }
+        }
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        PRINT_VECTOR_TO_BUFFER(field, char, mamaMsgField_getVectorChar, target, remaining, iterClosure->position, "%c", memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_I8:
+        PRINT_VECTOR_TO_BUFFER(field, mama_i8_t, mamaMsgField_getVectorI8, target, remaining, iterClosure->position, "%d", memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_U16:
+        PRINT_VECTOR_TO_BUFFER(field, mama_u16_t, mamaMsgField_getVectorU16, target, remaining, iterClosure->position, "%u", memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_I16:
+        PRINT_VECTOR_TO_BUFFER(field, mama_i16_t, mamaMsgField_getVectorI16, target, remaining, iterClosure->position, "%d", memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_U32:
+        PRINT_VECTOR_TO_BUFFER(field, mama_u32_t, mamaMsgField_getVectorU32, target, remaining, iterClosure->position, "%"PRIu32, memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_I32:
+        PRINT_VECTOR_TO_BUFFER(field, mama_i32_t, mamaMsgField_getVectorI32, target, remaining, iterClosure->position, "%"PRId32, memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_U64:
+        PRINT_VECTOR_TO_BUFFER(field, mama_u64_t, mamaMsgField_getVectorU64, target, remaining, iterClosure->position, "%"PRIu64, memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_I64:
+        PRINT_VECTOR_TO_BUFFER(field, mama_i64_t, mamaMsgField_getVectorI64, target, remaining, iterClosure->position, "%"PRId64, memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_F32:
+        PRINT_VECTOR_TO_BUFFER(field, mama_f32_t, mamaMsgField_getVectorF32, target, remaining, iterClosure->position, "%.4f", memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_F64:
+        PRINT_VECTOR_TO_BUFFER(field, mama_f64_t, mamaMsgField_getVectorF64, target, remaining, iterClosure->position, "%.4lf", memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_STRING:
+        PRINT_VECTOR_TO_BUFFER(field, char*, mamaMsgField_getVectorString, target, remaining, iterClosure->position, "%s", memNode, "{", "}");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_PRICE:
+    case MAMA_FIELD_TYPE_VECTOR_TIME:
+        // These methods do not have field level accessors, so mark unsupported for now
+        written = snprintf(target, remaining, "NOT_SUPPORTED");
+        break;
+    case MAMA_FIELD_TYPE_MSG:
+    {
+        mamaMsg        pvtb_result = NULL;
+        const char*    subMsgString = NULL;
+        size_t         subMsgStringLen = 0;
+        mama_size_t    pvtb_size = 0;
+        mama_size_t    pvtb_i = 0;
+        mama_status    pvtb_status = mamaMsgField_getMsg(field, &pvtb_result);
+
+        if (MAMA_STATUS_OK != pvtb_status)
+        {
+            return;
+        }
+
+        subMsgString = mamaMsg_toNormalizedString(pvtb_result);
+        subMsgStringLen = strlenEx(subMsgString);
+
+        if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                remaining += MEMNODE_INITIAL_SIZE;
+                target = (char*)memNode->mNodeBuffer + iterClosure->position;
+            }
+            else {
+                mama_log(MAMA_LOG_LEVEL_ERROR,
+                    "Could not allocate opaque string required for string field - truncation is likely.");
+            }
+        }
+
+        written = snprintf(target, remaining, "%s", subMsgString == NULL ? "NULL" : subMsgString);
+        break;
+    }
+    case MAMA_FIELD_TYPE_VECTOR_MSG:
+    {
+        const mamaMsg* pvtb_result = NULL;
+        mama_size_t    pvtb_size = 0;
+        mama_size_t    pvtb_i = 0;
+        mama_size_t    pvtb_written = 0;
+        mama_status    pvtb_status = mamaMsgField_getVectorMsg(field, &pvtb_result, &pvtb_size);
+
+        if (MAMA_STATUS_OK != pvtb_status)
+        {
+            return;
+        }
+        pvtb_written = snprintf(target, remaining, "{");
+        target += pvtb_written;
+        remaining -= pvtb_written;
+        iterClosure->position += pvtb_written;
+
+        for (pvtb_i = 0; pvtb_i < pvtb_size; pvtb_i++)
+        {
+            const char* subMsgString = mamaMsg_toNormalizedString(pvtb_result[pvtb_i]);
+            size_t subMsgStringLen = strlen(subMsgString);
+            if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
+                if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                    remaining += MEMNODE_INITIAL_SIZE;
+                    target = (char*)memNode->mNodeBuffer + iterClosure->position;
+                }
+                else {
+                    mama_log(MAMA_LOG_LEVEL_ERROR,
+                        "Could not allocate opaque string required for string field - truncation is likely.");
+                }
+            }
+            if (pvtb_i != (pvtb_size - 1))
+                pvtb_written = snprintf(target, remaining, "%s,", subMsgString);
+            else
+                pvtb_written = snprintf(target, remaining, "%s}", subMsgString);
+            target += pvtb_written;
+            remaining -= pvtb_written;
+            iterClosure->position += pvtb_written;
+        }
+        break;
+    }
+    case MAMA_FIELD_TYPE_QUANTITY:
+    case MAMA_FIELD_TYPE_UNKNOWN:
+    default:
+        break;
+    }
+    target += written;
+    remaining -= written;
+    snprintf((char*)target, remaining, ",");
+    iterClosure->position += written + 1;
+}
+
+void MAMACALLTYPE
+mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
+    const mamaMsgField  field,
+    void*               closure)
+{
+    struct normalizedStringIterClosure* iterClosure = (struct normalizedStringIterClosure*)closure;
+    memoryNode*       memNode = iterClosure->memNode;
+    char*             target = NULL;
+    size_t            remaining = memNode->mNodeSize - iterClosure->position;
+    size_t            written = 0;
+    const char*       name = NULL;
+    mama_status       status;
+    mamaFieldType     type;
+    mama_fid_t        fid;
+
+    // After possible realloc
+    target = (char*)memNode->mNodeBuffer + iterClosure->position;
+
+    status = mamaMsgField_getType(field, &type);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log(MAMA_LOG_LEVEL_ERROR, "Failed to get type for msg.");
+        return;
+    }
+
+    status = mamaMsgField_getFid(field, &fid);
+    if (MAMA_STATUS_OK != status)
+    {
+        mama_log(MAMA_LOG_LEVEL_ERROR, "Failed to get fid for msg.");
+        return;
+    }
+
+    status = mamaMsgField_getName(field, &name);
+    if (NULL == name)
+    {
+        // Default to empty string
+        name = "";
+    }
+
+    // Recommend at least this buffer size
+    if (remaining < (MEMNODE_INITIAL_SIZE / 2)) {
+        if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+            remaining += MEMNODE_INITIAL_SIZE;
+        }
+        else {
+            mama_log(MAMA_LOG_LEVEL_ERROR,
+                "Could not allocate string required for string field - aborting for field %s[%u].",
+                name,
+                fid);
+            return;
+        }
+    }
+
+    if (NULL == name) {
+        written = snprintf(target, remaining, "\"%u\":", fid);
+    }
+    else {
+        written = snprintf(target, remaining, "\"%s\":", name);
+    }
+    
+    iterClosure->position += written;
+    target += written;
+    remaining -= written;
+
+    // Reset to zero for calculations later unless explicitly set in case statement
+    written = 0;
+
+    switch (type) {
+    case MAMA_FIELD_TYPE_CHAR:
+    {
+        char value;
+        mamaMsgField_getChar(field, &value);
+        written = snprintf(target, remaining, "\"%c\"", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_BOOL:
+    {
+        mama_bool_t value;
+        mamaMsgField_getBool(field, &value);
+        written = snprintf(target, remaining, "%s", value ? "true" : "false");
+        break;
+    }
+    case MAMA_FIELD_TYPE_U8:
+    {
+        mama_u8_t value;
+        mamaMsgField_getU8(field, &value);
+        written = snprintf(target, remaining, "%u", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_U16:
+    {
+        mama_u16_t value;
+        mamaMsgField_getU16(field, &value);
+        written = snprintf(target, remaining, "%u", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_U32:
+    {
+        mama_u32_t value;
+        mamaMsgField_getU32(field, &value);
+        written = snprintf(target, remaining, "%"PRIu32, value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_U64:
+    {
+        mama_u64_t value;
+        mamaMsgField_getU64(field, &value);
+        written = snprintf(target, remaining, "%"PRIu64, value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_I8:
+    {
+        mama_i8_t value;
+        mamaMsgField_getI8(field, &value);
+        written = snprintf(target, remaining, "%d", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_I16:
+    {
+        mama_i16_t value;
+        mamaMsgField_getI16(field, &value);
+        written = snprintf(target, remaining, "%d", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_I32:
+    {
+        mama_i32_t value;
+        mamaMsgField_getI32(field, &value);
+        written = snprintf(target, remaining, "%"PRId32, value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_I64:
+    {
+        mama_i64_t value;
+        mamaMsgField_getI64(field, &value);
+        written = snprintf(target, remaining, "%"PRId64, value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_F32:
+    {
+        mama_f32_t value;
+        mamaMsgField_getF32(field, &value);
+        written = snprintf(target, remaining, "%.4f", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_F64:
+    {
+        mama_f64_t value;
+        mamaMsgField_getF64(field, &value);
+        written = snprintf(target, remaining, "%.4lf", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_STRING:
+    {
+        const char* value;
+        size_t valueLength = 0;
+        mamaMsgField_getString(field, &value);
+        valueLength = strlen(value);
+        if (remaining - valueLength < (MEMNODE_INITIAL_SIZE / 2)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                remaining += MEMNODE_INITIAL_SIZE;
+                target = (char*)memNode->mNodeBuffer + iterClosure->position;
+            }
+            else {
+                mama_log(MAMA_LOG_LEVEL_ERROR,
+                    "Could not allocate string required for string field - truncation is likely.");
+            }
+        }
+        written = snprintf(target, remaining, "\"%s\"", value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_OPAQUE:
+    {
+        const void* value;
+        mama_size_t valueLength;
+        mama_size_t i;
+        const char* bytePos = NULL;
+
+        mamaMsgField_getOpaque(field, &value, &valueLength);
+        valueLength = strlen(value);
+        // [0xaa ] = 5 bytes in string per byte of input
+        if (remaining - (valueLength * 5) < (MEMNODE_INITIAL_SIZE / 2)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                remaining += MEMNODE_INITIAL_SIZE;
+                target = (char*)memNode->mNodeBuffer + iterClosure->position;
+            }
+            else {
+                mama_log(MAMA_LOG_LEVEL_ERROR,
+                    "Could not allocate opaque string required for string field - truncation is likely.");
+            }
+        }
+        bytePos = (const char*)value;
+        for (i = 0; i < valueLength; i++)
+        {
+            if (0 == i)
+            {
+                written = sprintf(target, "\"%#x", *bytePos);
+            }
+            if (i == (valueLength - 1))
+            {
+                written = sprintf(target, "%x\"", *bytePos);
+            }
+            else if (0 != i)
+            {
+                written = sprintf(target, "%x", *bytePos);
+            }
+
+            target += written;
+            remaining -= written;
+            iterClosure->position += written;
+            bytePos++;
+        }
+        // We have already moved this so don't allow to move again outside of loop
+        written = 0;
+        break;
+    }
+    case MAMA_FIELD_TYPE_PRICE:
+    {
+        mamaPrice value;
+        char priceString[MAMA_PRICE_MAX_STR_LEN];
+        memset((void*)priceString, 0, sizeof(priceString));
+        mamaPrice_create(&value);
+        mamaMsgField_getPrice(field, value);
+        mamaPrice_getAsString(value, priceString, sizeof(priceString));
+        written = snprintf(target, remaining, "%s", priceString);
+        mamaPrice_destroy(value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_TIME:
+    {
+        mamaDateTime value;
+        char dateTimeString[MAMA_PRICE_MAX_STR_LEN];
+        memset((void*)dateTimeString, 0, sizeof(dateTimeString));
+        mamaDateTime_create(&value);
+        mamaMsgField_getDateTime(field, value);
+        mamaDateTime_getAsString(value, dateTimeString, sizeof(dateTimeString));
+        written = snprintf(target, remaining, "\"%s\"", dateTimeString);
+        mamaDateTime_destroy(value);
+        break;
+    }
+    case MAMA_FIELD_TYPE_VECTOR_U8:
+        PRINT_VECTOR_TO_BUFFER(field, mama_u8_t, mamaMsgField_getVectorU8, target, remaining, iterClosure->position, "%u", memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_BOOL:
+    {
+        const mama_bool_t* pvtb_result = NULL;
+        mama_size_t  pvtb_size = 0;
+        mama_size_t  pvtb_i = 0;
+        mama_size_t  pvtb_written = 0;
+        mama_status  pvtb_status = mamaMsgField_getVectorBool(field, &pvtb_result, &pvtb_size);
+
+        if (MAMA_STATUS_OK != pvtb_status)
+        {
+            return;
+        }
+        if (remaining - (pvtb_size * 22) < (MEMNODE_INITIAL_SIZE / 2)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                remaining += MEMNODE_INITIAL_SIZE;
+                target = target + iterClosure->position;
+            }
+            else {
+                mama_log(MAMA_LOG_LEVEL_ERROR,
+                    "Could not allocate string required for vector field - truncation is likely.");
+            }
+        }
+        pvtb_written = snprintf(target, remaining, "[");
+        target += pvtb_written;
+        remaining -= pvtb_written;
+        iterClosure->position += pvtb_written;
+
+        for (pvtb_i = 0; pvtb_i < pvtb_size; pvtb_i++)
+        {
+            if (pvtb_i != (pvtb_size - 1))
+                pvtb_written = snprintf(target, remaining, "%s,",
+                    pvtb_result[pvtb_i] ? "true" : "false");
+            else
+                pvtb_written = snprintf(target, remaining, "%s]",
+                    pvtb_result[pvtb_i] ? "true" : "false");
+            target += pvtb_written;
+            remaining -= pvtb_written;
+            iterClosure->position += pvtb_written;
+        }
+    }
+    break;
+    case MAMA_FIELD_TYPE_VECTOR_CHAR:
+        PRINT_VECTOR_TO_BUFFER(field, char, mamaMsgField_getVectorChar, target, remaining, iterClosure->position, "\"%c\"", memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_I8:
+        PRINT_VECTOR_TO_BUFFER(field, mama_i8_t, mamaMsgField_getVectorI8, target, remaining, iterClosure->position, "%d", memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_U16:
+        PRINT_VECTOR_TO_BUFFER(field, mama_u16_t, mamaMsgField_getVectorU16, target, remaining, iterClosure->position, "%u", memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_I16:
+        PRINT_VECTOR_TO_BUFFER(field, mama_i16_t, mamaMsgField_getVectorI16, target, remaining, iterClosure->position, "%d", memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_U32:
+        PRINT_VECTOR_TO_BUFFER(field, mama_u32_t, mamaMsgField_getVectorU32, target, remaining, iterClosure->position, "%"PRIu32, memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_I32:
+        PRINT_VECTOR_TO_BUFFER(field, mama_i32_t, mamaMsgField_getVectorI32, target, remaining, iterClosure->position, "%"PRId32, memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_U64:
+        PRINT_VECTOR_TO_BUFFER(field, mama_u64_t, mamaMsgField_getVectorU64, target, remaining, iterClosure->position, "%"PRIu64, memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_I64:
+        PRINT_VECTOR_TO_BUFFER(field, mama_i64_t, mamaMsgField_getVectorI64, target, remaining, iterClosure->position, "%"PRId64, memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_F32:
+        PRINT_VECTOR_TO_BUFFER(field, mama_f32_t, mamaMsgField_getVectorF32, target, remaining, iterClosure->position, "%.4f", memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_F64:
+        PRINT_VECTOR_TO_BUFFER(field, mama_f64_t, mamaMsgField_getVectorF64, target, remaining, iterClosure->position, "%.4lf", memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_STRING:
+        PRINT_VECTOR_TO_BUFFER(field, char*, mamaMsgField_getVectorString, target, remaining, iterClosure->position, "\"%s\"", memNode, "[", "]");
+        break;
+    case MAMA_FIELD_TYPE_VECTOR_PRICE:
+    case MAMA_FIELD_TYPE_VECTOR_TIME:
+        // These methods do not have field level accessors, so mark unsupported for now
+        written = snprintf(target, remaining, "\"NOT_SUPPORTED\"");
+        break;
+    case MAMA_FIELD_TYPE_MSG:
+    {
+        mamaMsg        pvtb_result = NULL;
+        const char*    subMsgString = NULL;
+        size_t         subMsgStringLen = 0;
+        mama_size_t    pvtb_size = 0;
+        mama_size_t    pvtb_i = 0;
+        mama_status    pvtb_status = mamaMsgField_getMsg(field, &pvtb_result);
+
+        if (MAMA_STATUS_OK != pvtb_status)
+        {
+            return;
+        }
+
+        subMsgString = mamaMsg_toJsonString(pvtb_result);
+        subMsgStringLen = strlenEx(subMsgString);
+
+        if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                remaining += MEMNODE_INITIAL_SIZE;
+                target = (char*)memNode->mNodeBuffer + iterClosure->position;
+            }
+            else {
+                mama_log(MAMA_LOG_LEVEL_ERROR,
+                    "Could not allocate opaque string required for string field - truncation is likely.");
+            }
+        }
+
+        written = snprintf(target, remaining, "%s", subMsgString == NULL ? "NULL" : subMsgString);
+        break;
+    }
+    case MAMA_FIELD_TYPE_VECTOR_MSG:
+    {
+        const mamaMsg* pvtb_result = NULL;
+        mama_size_t    pvtb_size = 0;
+        mama_size_t    pvtb_i = 0;
+        mama_size_t    pvtb_written = 0;
+        mama_status    pvtb_status = mamaMsgField_getVectorMsg(field, &pvtb_result, &pvtb_size);
+
+        if (MAMA_STATUS_OK != pvtb_status)
+        {
+            return;
+        }
+        pvtb_written = snprintf(target, remaining, "[");
+        target += pvtb_written;
+        remaining -= pvtb_written;
+        iterClosure->position += pvtb_written;
+
+        for (pvtb_i = 0; pvtb_i < pvtb_size; pvtb_i++)
+        {
+            const char* subMsgString = mamaMsg_toJsonString(pvtb_result[pvtb_i]);
+            size_t subMsgStringLen = strlen(subMsgString);
+            if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
+                if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                    remaining += MEMNODE_INITIAL_SIZE;
+                    target = (char*)memNode->mNodeBuffer + iterClosure->position;
+                }
+                else {
+                    mama_log(MAMA_LOG_LEVEL_ERROR,
+                        "Could not allocate opaque string required for string field - truncation is likely.");
+                }
+            }
+            if (pvtb_i != (pvtb_size - 1))
+                pvtb_written = snprintf(target, remaining, "%s,", subMsgString);
+            else
+                pvtb_written = snprintf(target, remaining, "%s]", subMsgString);
+            target += pvtb_written;
+            remaining -= pvtb_written;
+            iterClosure->position += pvtb_written;
+        }
+        break;
+    }
+    case MAMA_FIELD_TYPE_QUANTITY:
+    case MAMA_FIELD_TYPE_UNKNOWN:
+    default:
+        break;
+    }
+    target += written;
+    remaining -= written;
+    snprintf((char*)target, remaining, ",");
+    iterClosure->position += written + 1;
+}
+
+const char*
+mamaMsg_toNormalizedString(const mamaMsg msg)
+{
+    mamaMsgImpl* impl = (mamaMsgImpl*)msg;
+    struct normalizedStringIterClosure closure;
+    if (!impl || !impl->mPayloadBridge) return NULL;
+
+    if (NULL == impl->mReusableMemoryNode) {
+        impl->mReusableMemoryNode = memoryNode_create(MEMNODE_INITIAL_SIZE);
+    }
+
+    if (NULL == impl->mReusableMemoryNode) return NULL;
+
+    closure.memNode = impl->mReusableMemoryNode;
+    ((char*)closure.memNode->mNodeBuffer)[0] = '{';
+    closure.position = 1;
+
+    mamaMsg_iterateFields(msg, mamaMsg_toNormalizedStringIterCb, NULL, (void*)&closure);
+
+    if (closure.position > 1)
+    {
+        ((char*)closure.memNode->mNodeBuffer)[closure.position - 1] = '}';
+    }
+    else
+    {
+        ((char*)closure.memNode->mNodeBuffer)[closure.position] = '}';
+    }
+    ((char*)closure.memNode->mNodeBuffer)[closure.position + 1] = '\0';
+
+    return (const char*)impl->mReusableMemoryNode->mNodeBuffer;
+}
+
+const char*
+mamaMsg_toJsonString(const mamaMsg msg)
+{
+    mamaMsgImpl* impl = (mamaMsgImpl*)msg;
+    struct normalizedStringIterClosure closure;
+    if (!impl || !impl->mPayloadBridge) return NULL;
+
+    if (NULL == impl->mReusableMemoryNode) {
+        impl->mReusableMemoryNode = memoryNode_create(MEMNODE_INITIAL_SIZE);
+    }
+
+    if (NULL == impl->mReusableMemoryNode) return NULL;
+
+    closure.memNode = impl->mReusableMemoryNode;
+    ((char*)closure.memNode->mNodeBuffer)[0] = '{';
+    closure.position = 1;
+
+    mamaMsg_iterateFields(msg, mamaMsg_toJsonStringIterCb, NULL, (void*)&closure);
+
+    if (closure.position > 1)
+    {
+        ((char*)closure.memNode->mNodeBuffer)[closure.position - 1] = '}';
+    }
+    else
+    {
+        ((char*)closure.memNode->mNodeBuffer)[closure.position] = '}';
+    }
+    ((char*)closure.memNode->mNodeBuffer)[closure.position + 1] = '\0';
+
+    return (const char*)impl->mReusableMemoryNode->mNodeBuffer;
+}
+
 MAMAIgnoreDeprecatedOpen
 void
 mamaMsg_freeString (const mamaMsg msg,  const char* msgString)
@@ -3318,13 +4265,20 @@ mamaMsg_setNewBuffer (mamaMsg msg, void* buffer,
                       mama_size_t size)
 {
     mamaMsgImpl*    impl        =   (mamaMsgImpl*)msg;
+    char            id          =   '\0';
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
-    impl->mPayloadBridge = mamaInternal_findPayload( (char) ((const char*)buffer) [0]);
+    impl->mPayloadId = (char)((const char*)buffer)[0];
+    impl->mPayloadBridge = mamaInternal_findPayload(impl->mPayloadId);
 
     if (impl->mPayloadBridge)
     {
+        if(impl->mPayloadBridge->msgPayloadDeserialize != NULL)
+        {
+            return impl->mPayloadBridge->msgPayloadDeserialize (impl->mPayloadBridge, impl->mPayload, buffer,size);
+        }
+
         return impl->mPayloadBridge->msgPayloadUnSerialize (impl->mPayload,
                                                             buffer,
                                                             size);

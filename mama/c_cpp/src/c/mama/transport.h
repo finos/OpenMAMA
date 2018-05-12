@@ -33,6 +33,8 @@ extern "C" {
 #include "mama/symbolmap.h"
 #include "mama/quality.h"
 
+#define DQ_PLUGIN_PROPERTY "dq_plugin"
+
 /**
  * MAMA passes this enumeration as a parameter to the mamaTransportCB if a
  * client installs one. The values passed depend on the underlying middleware:

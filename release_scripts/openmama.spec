@@ -8,13 +8,17 @@ Group:      Development/Libraries
 Source:     %{name}-%{version}.tgz
 BuildRoot:  %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires: libtool autoconf automake ant libuuid-devel flex doxygen qpid-proton-c-devel scons libevent-devel ncurses-devel apr-devel
+BuildRequires: libtool autoconf automake ant libuuid-devel flex doxygen qpid-proton-c-devel scons libevent-devel ncurses-devel apr-devel wget curl
 Requires: libuuid qpid-proton-c libevent ncurses apr
 
 %if 0%{?fedora}
 BuildRequires: java-1.8.0-openjdk-devel
 Requires: java-1.8.0-openjdk
 %define java_home /usr/lib/jvm/java/
+%if 0%{?fedora} != 25
+BuildRequires: libnsl2-devel
+Requires: libnsl2
+%endif
 %endif
 
 %if 0%{?rhel}
@@ -23,15 +27,22 @@ Requires: java
 %define java_home /usr/lib/jvm/java/
 %endif
 
+%define scons_cmd scons
+%if ( 0%{?fedora} && 0%{?fedora} != 25 ) || ( 0%{?rhel} && 0%{?rhel} == 7 )
+%define scons_cmd python ./scons.py
+%endif
+
 %description
 OpenMAMA is a high performance abstraction layer for message oriented
 middlewares, where MAMA stands for Middleware Agnostic Messaging API.
 
 %prep
 %setup -q
+curl -q https://netix.dl.sourceforge.net/project/scons/scons-local/3.0.1/scons-local-3.0.1.tar.gz | tar zxf -
+wget https://raw.githubusercontent.com/SCons/scons/master/src/engine/SCons/Tool/jar.py -O ./scons-local-3.0.1/SCons/Tool/jar.py
 
 %build
-scons middleware=qpid product=mamdajni java_home=%{java_home} with_testtools=yes jobs=n
+%{scons_cmd} middleware=qpid product=mamdajni java_home=%{java_home} with_testtools=yes jobs=n
 # prefix=%{buildroot}/opt/openmama/
 
 %install

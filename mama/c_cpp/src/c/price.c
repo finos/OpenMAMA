@@ -201,7 +201,26 @@ mama_status
 mamaPrice_setFromString(mamaPrice    price,
                         const char*  str)
 {
-    return MAMA_STATUS_NOT_IMPLEMENTED;
+    double          value;
+    char*           pEnd;
+    mamaPriceHints  hints = MAMA_PRICE_IMPL_HINT_PREC_UNKNOWN;
+
+    if (!price || !str)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+
+    value = strtod (str, &pEnd);
+
+    /* Check that value is valid */
+    if (str == pEnd)
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+
+    mamaPriceImpl_setWithHints ((mama_price_t*)price, value, hints);
+    mamaPrice_setIsValidPrice (price, 1);
+    return MAMA_STATUS_OK;
 }
 
 mama_status

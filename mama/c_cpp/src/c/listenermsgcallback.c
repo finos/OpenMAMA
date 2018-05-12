@@ -33,6 +33,7 @@
 #include "mama/statfields.h"
 #include "msgimpl.h"
 #include "queueimpl.h"
+#include "plugin.h"
 #include "mama/types.h"
 #include "mama/statscollector.h"
 
@@ -102,107 +103,6 @@ listenerMsgCallback_destroy( listenerMsgCallback callback )
     return MAMA_STATUS_OK;
 }
 
-
-static void processPointToPointMessage (msgCallback*    callback,
-                                        mamaMsg         msg,
-                                        int             msgType,
-                                        SubjectContext  *ctx)
-{
-    const char* userSymbol  = NULL;
-    short       total       = 0;
-    short       msgNo       = 0;
-    mamaTransport   tport       = NULL;
-
-    mamaSubscription_getSymbol (self->mSubscription, &userSymbol);
-
-    mamaSubscription_getTransport (self->mSubscription, &tport);
-
-    if ((gMamaLogLevel >= MAMA_LOG_LEVEL_FINER) ||
-        (mamaSubscription_checkDebugLevel (self->mSubscription,
-                                           MAMA_LOG_LEVEL_FINER)))
-    {
-        const char* subscSymbol = NULL;
-        mamaSubscription_getSubscSymbol (self->mSubscription, &subscSymbol);
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                       "processPointToPointMessage(): Got unicast message(?) "
-                       "for %s (%s) (type=%d; subsc=%p) %p",
-                       subscSymbol == NULL ? "" : subscSymbol,
-                       userSymbol  == NULL ? "" : userSymbol,
-                       mamaMsgType_typeForMsg(msg),
-                       self->mSubscription,
-                       ctx);
-    }
-
-    /* The caller should not see the inbox as the symbol. */
-    mamaMsgImpl_setSubscInfo (msg, NULL, NULL, userSymbol, 0);
-
-    msgUtils_msgTotal (msg, &total);
-    msgUtils_msgNum (msg, &msgNo);
-
-    /*Regular updates cannot stop the subscription waiting on a response.
-     We will be receiving updates while waiting on a recap.*/
-    if (total == 0 || msgNo == total)
-    {
-        mamaSubscription_incrementInitialCount(self->mSubscription);
-        ++ctx->mImageCount;
-        /*For group subs the timeout for the imagerequest will
-         call stopWaitForResponse*/
-        ctx->mInitialArrived = 1;
-
-
-        if( gMamaLogLevel >= MAMA_LOG_LEVEL_FINE )
-        {
-            const char *msgString = mamaMsg_toString( msg );
-            mama_log (MAMA_LOG_LEVEL_FINE, "Received Initial: (%s) %s", userSymbol, msgString);
-        }
-        if (!mamaSubscription_getAcceptMultipleInitials (self->mSubscription))
-        {
-            mamaSubscription_stopWaitForResponse (self->mSubscription, ctx);
-        }
-    }
-
-    mamaSubscription_checkSeqNum (self->mSubscription, msg, msgType, ctx);
-
-    /* Mark the subscription as inactive if we are not expecting
-     * any more updates. */
-    if (!mamaSubscription_isExpectingUpdates (self->mSubscription) &&
-            !mamaSubscription_getAcceptMultipleInitials (self->mSubscription))
-    {
-        mamaSubscription_deactivate (self->mSubscription);
-    }
-
-    if (!ctx->mDqContext.mDoNotForward)
-    {
-        mamaSubscription_forwardMsg (self->mSubscription, msg);
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "Subscription for %s not forwarded as message seqnum is before seqnum expecting", userSymbol);
-    }
-
-    /*
-       NB!!!  - can't destroy a subscription after an initial!!!!!
-       After we forward this message we need to see if we should fill from
-     the pre initial cache*/
-    if (PRE_INITIAL_SCHEME_ON_INITIAL==
-            mamaTransportImpl_getPreInitialScheme (tport))
-    {
-        if (msgType==MAMA_MSG_TYPE_INITIAL || msgType == MAMA_MSG_TYPE_BOOK_INITIAL ||
-           (mamaTransportImpl_preRecapCacheEnabled (tport) &&  (msgType == MAMA_MSG_TYPE_RECAP || msgType == MAMA_MSG_TYPE_BOOK_RECAP )))
-        {
-            dqContext_applyPreInitialCache (&ctx->mDqContext, self->mSubscription);
-
-            /*Clear the messages - no longer needed*/
-            dqContext_clearCache (&ctx->mDqContext, 0);
-        }
-    }
-
-
-    /* Note: do NOT access the "self" members because the subscription
-     * may have been destroyed in the callback! */
-}
-
 /* Description : This function will invoke the subscription's onError callback
  * passing in a particular error code.
  */
@@ -245,18 +145,21 @@ void
 listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
                                 SubjectContext *ctx)
 {
-    int               msgType           = mamaMsgType_typeForMsg (msg);
-    mamaMsgStatus     status            = mamaMsgImpl_getStatusFromMsg (msg);
-    msgCallback*      impl              = (msgCallback*)callback;
-    mamaSubscription  subscription      = impl->mSubscription;
-    int               expectingInitial  = 0;
-    mamaQueue           queue;
-    mamaTransport       transport;
-    mamaStatsCollector queueStatsCollector = NULL;
-    mamaStatsCollector tportStatsCollector = NULL;
-    const char* userSymbol = NULL;
-	dqState state = DQ_STATE_NOT_ESTABLISHED;
+    int                msgType              = mamaMsgType_typeForMsg (msg);
+    mamaMsgStatus      status               = mamaMsgImpl_getStatusFromMsg (msg);
+    msgCallback*       impl                 = (msgCallback*)callback;
+    mamaSubscription   subscription         = impl->mSubscription;
+    int                expectingInitial     = 0;
+    mamaQueue          queue;
+    mamaTransport      transport;
+    mamaStatsCollector queueStatsCollector  = NULL;
+    mamaStatsCollector tportStatsCollector  = NULL;
+    const char*        userSymbol           = NULL;
+	dqState            state                = DQ_STATE_NOT_ESTABLISHED;
+    int                isDqEnabled          = 1;
+    
     mamaSubscription_getTransport (subscription, &transport);
+    mamaTransportImpl_getDqEnabled(transport, &isDqEnabled);
 
     if (!ctx)
     {
@@ -473,125 +376,66 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
              break;
              default : break;
         }
-
-    if (isInitialMessageOrRecap(self, msgType))
-    {
-        processPointToPointMessage (impl, msg, msgType, ctx);
-        return;
-    }
-
-    /* If we're waiting on an initial for this subscription
-        then we ignore all messages. Note that after the initial
-        request timeout period individual symbols in a group
-        subscription may have not received an initial, but this
-        is ok. Also, we continue to process messages when waiting
-        for recaps for in individual symbol
-     */
-
-    mamaSubscription_getExpectingInitial (subscription, &expectingInitial);
-    dqStrategy_getDqState (ctx->mDqContext, &state);
-
-    /*While we are waiting for initial values we also check whether we have an
-     * initial for an individual context.
-      If we are no longer waiting for initials we assume that it is ok to pass
-     on the update - (probably a new symbol for a group)*/
-    if ((expectingInitial && !ctx->mInitialArrived) || 
-        (state == DQ_STATE_WAITING_FOR_RECAP && mamaTransportImpl_preRecapCacheEnabled (transport)
-        && msgType != MAMA_MSG_TYPE_DELETE
-        && msgType != MAMA_MSG_TYPE_EXPIRE
-        && msgType != MAMA_MSG_TYPE_UNKNOWN))
-    {
-        /* If we are waiting for a recap and using the pre-recap cache, we
-           want to pass on any cached updates as STALE when the recap arrives */
-        if (state == DQ_STATE_WAITING_FOR_RECAP && mamaTransportImpl_preRecapCacheEnabled (transport))
-        {
-            ctx->mDqContext.mSetCacheMsgStale = 1;
-        }
-        /*Add this message to the cache. If the message after the initial
-         * results in a gap we will attempt to fill the gap from this cache
-         * before asking for a recap.*/
-        dqContext_cacheMsg (&(ctx->mDqContext), msg);
-
-        /* Response for initial value not yet received. */
-        if ((gMamaLogLevel >= MAMA_LOG_LEVEL_FINE) ||
-            (mamaSubscription_checkDebugLevel (self->mSubscription,
-                                               MAMA_LOG_LEVEL_FINE)))
-        {
-            const char* userSymbol = NULL;
-            mamaSubscription_getSymbol (subscription, &userSymbol);
-            mama_log (MAMA_LOG_LEVEL_FINE,
-                           "%s%s %s%s"
-                           " Subscription ignoring message received prior"
-                           " to initial or recap. Type: %d %s %p",
-                           userSymbolFormatted, ctxSymbolFormatted,
-                           msgType, mamaMsg_toString(msg), ctx);
-        }
-        return;
-    }
+        
+    mamaPlugin_fireSubscriptionPreMsgHook(subscription, msgType, msg);
 
     switch (msgType)
     {
-    case MAMA_MSG_TYPE_QUOTE:
-    case MAMA_MSG_TYPE_TRADE:
-        mamaSubscription_checkSeqNum(subscription, msg, msgType, ctx);
-        if (!ctx->mDqContext.mDoNotForward)
-        {
-            mamaSubscription_forwardMsg(subscription, msg);
-        }
-        else
-        {
-            mamaSubscription_getSymbol (subscription, &userSymbol);
-            mama_log (MAMA_LOG_LEVEL_FINER, "Subscription for %s not forwarded"
-                    " as message seqnum is before seqnum expecting", userSymbol);
-        }
-        break;
-    case MAMA_MSG_TYPE_REFRESH:
-        mamaSubscription_respondToRefreshMessage(subscription);
-        break;
-    case MAMA_MSG_TYPE_DELETE:
-        mamaSubscription_stopWaitForResponse(subscription,ctx);
-        listenerMsgCallback_invokeErrorCallback(callback, ctx,
-                MAMA_STATUS_DELETE, subscription, userSymbol);
-        return;
-        break;
-    case MAMA_MSG_TYPE_EXPIRE:
-        mamaSubscription_stopWaitForResponse(subscription,ctx);
-        listenerMsgCallback_invokeErrorCallback(callback, ctx,
-                MAMA_STATUS_EXPIRED, subscription, userSymbol);
-        return;
-        break;
-    case MAMA_MSG_TYPE_NOT_PERMISSIONED:
-        mamaSubscription_stopWaitForResponse(subscription,ctx);
-        listenerMsgCallback_invokeErrorCallback(callback, ctx,
-                MAMA_STATUS_NOT_PERMISSIONED, subscription, userSymbol);
-        return;
-        break;
-    case MAMA_MSG_TYPE_NOT_FOUND:
-        mamaSubscription_stopWaitForResponse(subscription,ctx);
-        listenerMsgCallback_invokeErrorCallback(callback, ctx,
-                MAMA_STATUS_NOT_FOUND, subscription, userSymbol);
-        return;
-        break;
-    case MAMA_MSG_TYPE_UNKNOWN:
-        mama_log (MAMA_LOG_LEVEL_FINE,
-                           "%s%s %s%s"
-                           " Subscription ignoring message without type"
-                           ". Type: %d %s (%p)",
-                           userSymbolFormatted, ctxSymbolFormatted,
-                           msgType, mamaMsg_toString(msg), ctx);
-        break;
-    default:
-        mamaSubscription_checkSeqNum(subscription, msg, msgType, ctx);
-        if (!ctx->mDqContext.mDoNotForward)
-        {
-            mamaSubscription_forwardMsg(subscription, msg);
-        }
-        else
-        {
-            mamaSubscription_getSymbol (subscription, &userSymbol);
-            mama_log (MAMA_LOG_LEVEL_FINER, "Subscription for %s not forwarded"
-                    " as message seqnum is before seqnum expecting", userSymbol);
-        }
+        case MAMA_MSG_TYPE_INITIAL:
+        case MAMA_MSG_TYPE_RECAP:
+        case MAMA_MSG_TYPE_SNAPSHOT:
+        case  MAMA_MSG_TYPE_DDICT_SNAPSHOT:
+        case MAMA_MSG_TYPE_BOOK_INITIAL:
+        case MAMA_MSG_TYPE_BOOK_SNAPSHOT:
+        case MAMA_MSG_TYPE_BOOK_RECAP:
+            if(!isDqEnabled)
+            {
+               mamaSubscription_stopWaitForResponse (subscription, ctx);
+               mamaSubscription_forwardMsg(subscription, msg);
+            }
+            break;
+        case MAMA_MSG_TYPE_REFRESH:
+            mamaSubscription_respondToRefreshMessage(subscription);
+            break;
+        case MAMA_MSG_TYPE_DELETE:
+            mamaSubscription_stopWaitForResponse(subscription,ctx);
+            listenerMsgCallback_invokeErrorCallback(callback, ctx,
+            MAMA_STATUS_DELETE, subscription, userSymbol);
+            return;
+            break;
+        case MAMA_MSG_TYPE_EXPIRE:
+            mamaSubscription_stopWaitForResponse(subscription,ctx);
+            listenerMsgCallback_invokeErrorCallback(callback, ctx,
+            MAMA_STATUS_EXPIRED, subscription, userSymbol);
+            return;
+            break;
+        case MAMA_MSG_TYPE_NOT_PERMISSIONED:
+            mamaSubscription_stopWaitForResponse(subscription,ctx);
+            listenerMsgCallback_invokeErrorCallback(callback, ctx,
+            MAMA_STATUS_NOT_PERMISSIONED, subscription, userSymbol);
+            return;
+            break;
+        case MAMA_MSG_TYPE_NOT_FOUND:
+            mamaSubscription_stopWaitForResponse(subscription,ctx);
+            listenerMsgCallback_invokeErrorCallback(callback, ctx,
+            MAMA_STATUS_NOT_FOUND, subscription, userSymbol);
+            return;
+            break;
+        case MAMA_MSG_TYPE_UNKNOWN:
+            mama_log (MAMA_LOG_LEVEL_FINE,
+                            "%s%s %s%s"
+                            " Subscription ignoring message without type"
+                            ". Type: %d %s (%p)",
+                            userSymbolFormatted, ctxSymbolFormatted,
+                            msgType, mamaMsg_toString(msg), ctx);
+            break;
+        default:
+            if(!isDqEnabled)
+            {
+                mamaSubscription_forwardMsg(subscription, msg);
+            }
+            break;
+
     }
 }
 

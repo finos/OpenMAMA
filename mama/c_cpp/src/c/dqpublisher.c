@@ -20,6 +20,7 @@
  */
 
 #include "mama/mama.h"
+#include "msgutils.h"
 #include "subscriptionimpl.h"
 
 #include "mama/dqpublisher.h"
@@ -29,22 +30,31 @@
 
 
 #define MAX_DATE_STR    50
+#define TOPIC_TABLE_SIZE 100
+
+typedef struct topicCtx_
+{
+    mama_seqnum_t mSeqNum;
+    mamaMsgStatus mStatus;
+} topicCtx;
 
 typedef struct mamaDQPublisherImpl_
 {
     mamaPublisher   mPublisher;
-    mamaMsgStatus   mStatus;
     uint64_t        mSenderId;
-    mama_seqnum_t   mSeqNum;
     void*           mClosure;
     void*           mCache;
     mamaDateTime    mSendTime;
     char*           mSendTimeFormat;
+    topicCtx        mTopicCtx;
+    wtable_t        mTopicCtxs;
 } mamaDQPublisherImpl;
 
 
 mama_status updateSendTime (mamaDQPublisher pub, mamaMsg msg);
 mama_status updateSenderId (mamaDQPublisher pub, mamaMsg msg);
+static mama_status getTopicCtx (mamaDQPublisher pub, mamaMsg msg, topicCtx** ctx);
+static void destroyTopicCtxCb (wtable_t table, void* data, const char* key, void* closure);
 
 mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
 {
@@ -54,8 +64,8 @@ mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
     if (!impl) return MAMA_STATUS_NOMEM;
         
     impl->mSenderId = mamaSenderId_getSelf ();
-    impl->mStatus = MAMA_MSG_STATUS_OK;
-    impl->mSeqNum = 1;
+    impl->mTopicCtx.mSeqNum = 1;
+    impl->mTopicCtx.mStatus = MAMA_MSG_STATUS_OK;
 
     impl->mSendTimeFormat = strdup("%T%;");
 
@@ -65,7 +75,7 @@ mama_status mamaDQPublisher_allocate (mamaDQPublisher* result)
 }
 
 mama_status mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport, 
-                                         const char* topic)
+                                    const char* topic)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
     mama_status status = MAMA_STATUS_OK;
@@ -80,13 +90,60 @@ mama_status mamaDQPublisher_create (mamaDQPublisher pub, mamaTransport transport
     return status;
 }
 
+mama_status mamaDQPublisher_addTopic (mamaDQPublisher pub, const char* topic)
+{
+    mamaDQPublisherImpl* impl   = (mamaDQPublisherImpl*)pub;
+    mama_status          status = MAMA_STATUS_OK;
+    topicCtx*            ctx    = NULL;
+
+    if (!impl->mTopicCtxs)
+    {
+        impl->mTopicCtxs = wtable_create ("topicCtxs", TOPIC_TABLE_SIZE);
+
+        if (impl->mTopicCtxs == NULL)
+        {
+            mamaDQPublisher_destroy (pub);
+            return MAMA_STATUS_NOMEM;
+        }
+    }
+
+    ctx = (topicCtx*)wtable_lookup (impl->mTopicCtxs, (char*)topic);
+
+    if (!ctx)
+    {
+        ctx = calloc (1, sizeof (topicCtx));
+        ctx->mSeqNum = 1;
+        ctx->mStatus = MAMA_MSG_STATUS_OK;
+
+        if (wtable_insert (impl->mTopicCtxs, (char*)topic, ctx) != 1)
+        {
+            return MAMA_STATUS_INVALID_ARG;
+        }
+    }
+    else
+    {
+        return MAMA_STATUS_INVALID_ARG;
+    }
+
+    return status;
+}
+
 
 mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
 {     
-    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-    mamaMsg modifableMsg = NULL;
+    mamaDQPublisherImpl* impl           = (mamaDQPublisherImpl*) (pub);
+    mamaMsg              modifableMsg   = NULL;
+    topicCtx*            ctx            = NULL;
+    mama_status          status         = MAMA_STATUS_OK;
 
-    if (impl->mSeqNum != 0)
+    status = getTopicCtx (pub, msg, &ctx);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        return status;
+    }
+
+    if (ctx->mSeqNum != 0)
     {
         mamaMsg_getTempCopy (msg, &modifableMsg);
         switch (mamaMsgType_typeForMsg (modifableMsg))
@@ -103,26 +160,26 @@ mama_status mamaDQPublisher_send (mamaDQPublisher pub, mamaMsg msg)
             case MAMA_MSG_TYPE_BOOK_RECAP   :
                 if(MAMA_STATUS_OK !=
                         mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus))
+                            MamaFieldMsgStatus.mFid, ctx->mStatus))
                 {
                     mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus);
+                            MamaFieldMsgStatus.mFid, ctx->mStatus);
                 }
                 break;
 
             default:
                 if(MAMA_STATUS_OK !=
                         mamaMsg_updateU8(modifableMsg,MamaFieldMsgStatus.mName,
-                            MamaFieldMsgStatus.mFid, impl->mStatus))
+                            MamaFieldMsgStatus.mFid, ctx->mStatus))
                 {
                    mamaMsg_updateI16(modifableMsg,MamaFieldMsgStatus.mName,
-                           MamaFieldMsgStatus.mFid, impl->mStatus);
+                           MamaFieldMsgStatus.mFid, ctx->mStatus);
                 }
-                impl->mSeqNum++;
+                ctx->mSeqNum++;
                 break;
         }
         mamaMsg_updateU32(modifableMsg, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
-                impl->mSeqNum);
+                ctx->mSeqNum);
     }
     
     if (impl->mSenderId != 0)
@@ -147,21 +204,30 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
                                        mamaMsg request,
                                        mamaMsg reply)
 {
-    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+    mamaDQPublisherImpl* impl   = (mamaDQPublisherImpl*) (pub);
+    topicCtx*            ctx    = NULL;
+    mama_status          status = MAMA_STATUS_OK;
+
+    status = getTopicCtx (pub, reply, &ctx);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        return status;
+    }
 
     if (impl->mSenderId != 0)
         updateSenderId(impl, reply);
         
-    if (impl->mSeqNum != 0)
+    if (ctx->mSeqNum != 0)
     {
         mamaMsg_updateU32(reply, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
-                impl->mSeqNum);
+                ctx->mSeqNum);
 
         if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus))
+                MamaFieldMsgStatus.mFid, ctx->mStatus))
         {
             mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
-                MamaFieldMsgStatus.mFid, impl->mStatus);
+                MamaFieldMsgStatus.mFid, ctx->mStatus);
         }
     }
 
@@ -171,24 +237,33 @@ mama_status mamaDQPublisher_sendReply (mamaDQPublisher pub,
 }
 
 mama_status mamaDQPublisher_sendReplyWithHandle (mamaDQPublisher pub,
-                                                   mamaMsgReply  replyAddress,
-                                                mamaMsg reply)
+                                                 mamaMsgReply  replyAddress,
+                                                 mamaMsg reply)
 {
-    mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
+    mamaDQPublisherImpl* impl   = (mamaDQPublisherImpl*) (pub);
+    topicCtx*            ctx    = NULL;
+    mama_status          status = MAMA_STATUS_OK;
+
+    status = getTopicCtx (pub, reply, &ctx);
+
+    if (status != MAMA_STATUS_OK)
+    {
+        return status;
+    }
 
     if (impl->mSenderId != 0)
         updateSenderId(impl, reply);
 
-    if (impl->mSeqNum != 0)
+    if (ctx->mSeqNum != 0)
     {
         mamaMsg_updateU32(reply, MamaFieldSeqNum.mName, MamaFieldSeqNum.mFid,
-                impl->mSeqNum);
+                ctx->mSeqNum);
 
         if(MAMA_STATUS_OK != mamaMsg_updateU8(reply,MamaFieldMsgStatus.mName,
-                    MamaFieldMsgStatus.mFid, impl->mStatus))
+                    MamaFieldMsgStatus.mFid, ctx->mStatus))
         {
             mamaMsg_updateI16(reply,MamaFieldMsgStatus.mName,
-                    MamaFieldMsgStatus.mFid, impl->mStatus);
+                    MamaFieldMsgStatus.mFid, ctx->mStatus);
         }
     }
 
@@ -218,15 +293,20 @@ void mamaDQPublisher_destroy (mamaDQPublisher pub)
         impl->mSendTime = NULL;
     }
 
+    if (impl->mTopicCtxs)
+    {
+        wtable_for_each (impl->mTopicCtxs, destroyTopicCtxCb, NULL);
+        wtable_destroy (impl->mTopicCtxs);
+    }
+
     free(impl);
 }
-
-
 
 void mamaDQPublisher_setStatus (mamaDQPublisher pub, mamaMsgStatus  status)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-    impl->mStatus = status;
+
+    impl->mTopicCtx.mStatus = status;
 }
     
 void mamaDQPublisher_setSenderId (mamaDQPublisher pub, uint64_t  senderid)
@@ -238,7 +318,7 @@ void mamaDQPublisher_setSenderId (mamaDQPublisher pub, uint64_t  senderid)
 void mamaDQPublisher_setSeqNum (mamaDQPublisher pub, mama_seqnum_t num)
 {
     mamaDQPublisherImpl* impl = (mamaDQPublisherImpl*) (pub);
-    impl->mSeqNum=num;
+    impl->mTopicCtx.mSeqNum = num;
 }
 
 void mamaDQPublisher_enableSendTime (mamaDQPublisher pub, mama_bool_t enable)
@@ -386,3 +466,39 @@ mama_status updateSenderId (mamaDQPublisher pub, mamaMsg msg)
 
     return MAMA_STATUS_OK;
 }
+
+static mama_status getTopicCtx (mamaDQPublisher pub, mamaMsg msg, topicCtx** ctx)
+{
+    mamaDQPublisherImpl* impl   = (mamaDQPublisherImpl*)pub;
+    mama_status          status = MAMA_STATUS_OK;
+    const char*          symbol = NULL;
+
+    if (!impl->mTopicCtxs)
+    {
+        *ctx = &impl->mTopicCtx;
+    }
+    else
+    {
+
+        status = msgUtils_getIssueSymbol (msg, &symbol);
+
+        if (status != MAMA_STATUS_OK)
+        {
+            return status;
+        }
+
+        *ctx = wtable_lookup (impl->mTopicCtxs, (char*)symbol);
+        if (!*ctx)
+        {
+            return MAMA_STATUS_INVALID_ARG;
+        }
+    }
+
+    return MAMA_STATUS_OK;
+}
+
+static void destroyTopicCtxCb (wtable_t table, void* data, const char* key, void* closure)
+{
+    free (data);
+}
+

@@ -41,6 +41,7 @@ protected:
 
 	// The price under test
 	MamaPrice* m_price;
+	MamaPrice* m_priceDp;
 
 	// Member functions
 protected:

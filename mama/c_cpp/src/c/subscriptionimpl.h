@@ -114,23 +114,6 @@ mamaSubscription_cancel(
     mamaSubscription subscription);
 
 /**
- * This function will verify that the sequence number in the supplied message
- * is valid. If not the quality of the subscription will change and a recap
- * request will be issued.
- *
- * @param[in] subscription The subscription.
- * @param[in] msg The message containing the sequence number.
- * @param[in] msgType The type of message.
- * @param[in] ctx The subscription context.
- */
-void
-mamaSubscription_checkSeqNum(
-    mamaSubscription subscription,
-    mamaMsg msg,
-    int msgType,
-    SubjectContext *ctx);
-
-/**
  * This function will clear all references to the transport inside the subscription and its dependant
  * objects. This is used whenever the transport is destroyed before any subscriptions on it are fully
  * cleaned up.
@@ -147,6 +130,7 @@ void mamaSubscription_clearTransport(
  * @param[in] subscription The subscription.
  * @param[in] msg The mesage to deliver.
  */
+MAMAExpDLL
 void mamaSubscription_forwardMsg(
     mamaSubscription subscription,
     const mamaMsg msg);
@@ -159,6 +143,7 @@ void mamaSubscription_forwardMsg(
  *
  * @return 1 indicates that multiple initials are accepted else 0.
  */
+MAMAExpDLL
 extern int
 mamaSubscription_getAcceptMultipleInitials(
     mamaSubscription subscription);
@@ -171,6 +156,7 @@ mamaSubscription_getAcceptMultipleInitials(
  * @param[out] cause To return the cause.
  * @param[out] platformInfo to return the platform specific information.
  */
+MAMAExpDLL
 extern void
 mamaSubscription_getAdvisoryCauseAndPlatformInfo(
     mamaSubscription subscription,
@@ -251,6 +237,7 @@ mamaSubscription_hasWildcards(
  *
  * @param[in] subscription The subscription.
  */
+MAMAExpDLL
 extern void
 mamaSubscription_incrementInitialCount(
     mamaSubscription subscription);
@@ -263,6 +250,7 @@ mamaSubscription_incrementInitialCount(
  *
  * @return 1 if the subscription is expecting updated or else 0.
  */
+MAMAExpDLL
 extern int
 mamaSubscription_isExpectingUpdates(
     mamaSubscription subscription);
@@ -349,6 +337,7 @@ mamaSubscription_setExpectingInitial(
  * @param[in] subscription The subscription.
  * @param[in] ctx The subscription context.
  */
+MAMAExpDLL
 void
 mamaSubscription_stopWaitForResponse(
     mamaSubscription subscription,
@@ -359,6 +348,7 @@ mamaSubscription_stopWaitForResponse(
  *
  * @param[in] subscription The subscription.
  */
+MAMAExpDLL
 extern void
 mamaSubscription_unsetAllPossiblyStale(
     mamaSubscription subscription);
@@ -403,7 +393,33 @@ mamaSubscription_DestroyThroughQueueCB(
     mamaQueue Queue,
     void* closure);
 
+MAMAExpDLL
+mamaDqContext*
+mamaSubscription_getDqContext(mamaSubscription subscription);
 
+MAMAExpDLL
+dqStrategy
+mamaSubscription_getDqStrategy(mamaSubscription subscription);
+
+MAMAExpDLL
+mama_status
+mamaSubscription_setDqStrategy(mamaSubscription subscription, dqStrategy strategy);
+
+MAMAExpDLL
+SubjectContext *
+mamaSubscription_getSubjectContext (mamaSubscription subscription,
+                                        const mamaMsg msg);
+MAMAExpDLL
+mama_status
+mamaSubscription_setDqContext (mamaSubscription subscription, mamaDqContext dqContext);
+
+MAMAExpDLL
+mama_status
+mamaSubscription_setRecapRequest(mamaSubscription subscription, imageRequest request);
+
+MAMAExpDLL
+mama_status
+mamaSubscription_getRecapRequest(mamaSubscription subscription, imageRequest request);
 #if defined(__cplusplus)
 }
 #endif

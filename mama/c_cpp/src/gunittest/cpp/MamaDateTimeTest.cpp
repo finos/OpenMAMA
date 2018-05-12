@@ -215,3 +215,115 @@ TEST_F (MamaDateTimeTest, TestGetEpochTimeExtGranularFunctions)
     EXPECT_EQ ( inPrecision, outPrecision );
 
 }
+
+TEST_F(MamaDateTimeTest, SetInvalidSubsecs)
+{
+    struct timeval  tVal;
+    struct timespec         tVal1;
+    MamaDateTime    dt1;
+
+    tVal.tv_sec = 1484674307;
+    tVal.tv_usec = 1000000;
+
+    tVal1.tv_sec = 1484674307;
+    tVal1.tv_nsec = 1000000000;
+
+    mama_u32_t secs = 43200, micSecs = 1000000, nanoSecs = 1000000000;
+    mamaDateTimePrecision precision = MAMA_DATE_TIME_PREC_MICROSECONDS;
+    mamaDateTimeHints hints = MAMA_DATE_TIME_HAS_TIME;
+    mama_u32_t hour = 9, minute = 21, second = 12, microsecond = 1000000;
+    mamaTimeZone_utc();
+
+    try
+    {
+        dt1.set(tVal);
+        // if we get to this point test case failed - the previous line is supposed to throw an exception
+        FAIL();
+    }
+    catch (MamaStatus& status) {
+        if (status.getStatus() == MAMA_STATUS_INVALID_ARG) {
+        }
+        else {
+            FAIL();
+        }
+    }
+
+    try
+    {
+        dt1.setEpochTime(secs, micSecs, precision);
+        FAIL();
+    }
+    catch (MamaStatus& status) {
+        if (status.getStatus() == MAMA_STATUS_INVALID_ARG) {
+        }
+        else {
+            FAIL();
+       }
+    }
+
+    try
+    {
+        dt1.setWithHints(secs, micSecs, precision, hints);
+        FAIL();
+    }
+    catch (MamaStatus& status) {
+        if (status.getStatus() == MAMA_STATUS_INVALID_ARG) {
+        }
+        else {
+            FAIL();
+        }
+    }
+
+    try
+    {
+        dt1.setFromStructTimeSpec(tVal1);
+        FAIL();
+    }
+    catch (MamaStatus& status) {
+        if (status.getStatus() == MAMA_STATUS_INVALID_ARG) {
+        }
+        else {
+            FAIL();
+        }
+    }
+
+    try
+    {
+        dt1.set(2015, 8, 23, hour, minute, second, microsecond, precision, NULL);
+        FAIL();
+    }
+    catch (MamaStatus& status) {
+        if (status.getStatus() == MAMA_STATUS_INVALID_ARG) {
+        }
+        else {
+            FAIL();
+        }
+    }
+
+    try
+    {
+        dt1.setTime(hour, minute, second, microsecond, precision, NULL);
+        FAIL();
+    }
+    catch (MamaStatus& status) {
+        if (status.getStatus() == MAMA_STATUS_INVALID_ARG) {
+        }
+        else {
+            FAIL();
+        }
+    }
+
+    try
+    {
+        dt1.setEpochTimeExt(secs, nanoSecs);
+        FAIL();
+    }
+    catch (MamaStatus& status) {
+        if (status.getStatus() == MAMA_STATUS_INVALID_ARG) {
+        }
+        else {
+            FAIL();
+        }
+    }
+
+}

@@ -38,7 +38,7 @@
 /* Macros for extract VSIZE and RSS from /proc/pid/stats files */
 #define bytetok(x)      (((x) + 512) >> 10)
 
-#define MAXPROCSARRAY 1000     /* need to keep track of processes */
+#define MAXPROCSARRAY 32000     /* need to keep track of processes */
 
 extern int useLWP;
 static int numProc = 0;
@@ -451,8 +451,10 @@ int getProcessInfo(int pid ,memVals *memV,cpuVals *cpuV,int childFlag)
     }
     /* parse out the status */
     p = buffer;
-    p = strchr(p, '(')+1;                       /* skip pid */
-    if (p==NULL)
+    p = strchr(p, '(') + 1;                       /* skip pid */
+
+    /* Check against '0x1' since we increment above. */
+    if (p == (char*)0x1)
     {
         /* Process has exited since the pid was initially obtained */
         return 0;

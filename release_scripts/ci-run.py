@@ -123,6 +123,7 @@ for root, dirs, files in os.walk(install_dir):
                                   "--show-reachable=no",
                                   "--undef-value-errors=no",
                                   "--track-origins=no",
+                                  "--suppressions=release_scripts/intentionalunittestleaks.supp",
                                   "--xml=yes",
                                   "--xml-file=%s.result" % file,
                                   os.path.join('.', root, file),

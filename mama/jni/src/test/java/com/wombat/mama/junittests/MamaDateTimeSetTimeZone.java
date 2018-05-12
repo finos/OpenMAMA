@@ -203,6 +203,20 @@ public class MamaDateTimeSetTimeZone extends TestCase
         assertEquals (123456999999L, timeus);
     }
 
+    public void testSetEpochTimeMicroSecondTooBig()
+    {
+        try 
+        {
+            mDateTime.setEpochTime (123456, 1000000, MamaDateTimePrecision.PREC_UNKNOWN);
+        }
+        catch(com.wombat.common.WombatException except)
+        {
+            return;
+        }
+        // If we get here there is a problem
+        assertTrue(false);
+    }
+
     public void testSetEpochTimeNegativeMicroSecond()
     {
         mDateTime.setEpochTime (123456, -123456, MamaDateTimePrecision.PREC_UNKNOWN);

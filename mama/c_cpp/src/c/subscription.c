@@ -33,7 +33,7 @@
 #include <imagerequest.h>
 #include <transportimpl.h>
 #include <msgutils.h>
-#include <dqstrategy.h>
+#include <plugin.h>
 #include <dictionaryimpl.h>
 #include <listenermsgcallback.h>
 #include <bridge.h>
@@ -75,7 +75,7 @@ extern int gGenerateTransportStats;
 #define PREINITIALCACHESIZEPROPERTY     "mama.subscription.preinitialcachesize"
 #define STATE_MACHINE_TRACE_PROPERTY    "mama.subscription.statetrace"
 
-static SubjectContext *
+SubjectContext *
 mamaSubscription_getSubjectContext (mamaSubscription subscription,
                                         const mamaMsg msg);
 
@@ -110,7 +110,6 @@ typedef struct mamaSubscriptionImpl_
     double                  mRecapTimeout;
     int                     mRetries;
     int                     mAcceptMultipleInitials;
-    int                     mRecoverGaps; /* boolean */
     char                    mEntitleSubject[WOMBAT_SUBJECT_MAX];
     int                     mRequiresInitial; /* boolean */
     short                   mLogStats;
@@ -387,7 +386,6 @@ mamaSubscription_allocate (
     impl->mRecapTimeout           = MAMA_SUBSCRIPTION_DEFAULT_RECAP_TIMEOUT;
     impl->mRetries                = MAMA_SUBSCRIPTION_DEFAULT_RETRIES;
     impl->mAcceptMultipleInitials = 0;
-    impl->mRecoverGaps            = 1;
     impl->mEntitleSubject[0]      = '\0';
     impl->mRequiresInitial        = 1;
     impl->mCallback               = NULL;
@@ -583,7 +581,6 @@ mamaSubscription_setupBasic (
         self->mUserCallbacks.onRecapRequest = callbacks->onRecapRequest;
         self->mUserCallbacks.onDestroy      = callbacks->onDestroy;
     }
-    self->mRecoverGaps                  = checkSeqNumGaps;
     self->mAcceptMultipleInitials       = acceptMultipleInitials;
     self->mTransport                    = transport;
     mamaTransportImpl_getTransportIndex (transport, &self->mTransportIndex);
@@ -657,12 +654,10 @@ mamaSubscription_setupBasic (
         return status;
     }
 
-    /*Create the DQ strategy - sequence number checking etc.*/
-    if (MAMA_STATUS_OK!=(status=dqStrategy_create (&self->mDqStrategy,
-                      subscription)))
+    if (MAMA_STATUS_OK!=(status=mamaPlugin_fireSubscriptionPostCreateHook (subscription)))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "Could not create DQ strategy. [%s]",
+                  "mamaSubscription_setupBasic: SubscriptionPostCreateHook failed.",
                   mamaStatus_stringForStatus (status));
         return status;
     }
@@ -1127,43 +1122,10 @@ mamaSubscription_hasWildcards (mamaSubscription subscription)
                             (self->mSubscBridge);
 }
 
-void
-mamaSubscription_checkSeqNum (mamaSubscription subscription,
-                              mamaMsg msg,
-                              int msgType,
-                              SubjectContext *ctx)
-{
-    if (self->mRecoverGaps)
-    {
-        if (self->mDqStrategy != NULL) /* Msg may arive before created.*/
-        {
-            dqStrategy_checkSeqNum (self->mDqStrategy,
-                                    msg,
-                                    msgType,
-                                    &ctx->mDqContext);
-
-        }
-    }
-}
-
-mama_status
-mamaSubscription_setRecoverGaps (mamaSubscription subscription, int doesRecover)
-{
-    self->mRecoverGaps = doesRecover;
-    return MAMA_STATUS_OK;
-}
-
 mama_status
 mamaSubscription_setGroupSizeHint (mamaSubscription subscription, int groupSizeHint)
 {
     self->mGroupSizeHint = groupSizeHint;
-    return MAMA_STATUS_OK;
-}
-
-mama_status
-mamaSubscription_getRecoverGaps (mamaSubscription subscription, int* result)
-{
-    *result = self->mRecoverGaps;
     return MAMA_STATUS_OK;
 }
 
@@ -1254,8 +1216,14 @@ void
 mamaSubscription_stopWaitForResponse (mamaSubscription subscription,
                                       SubjectContext* ctx)
 {
-    imageRequest_stopWaitForResponse (self->mInitialRequest);
-    imageRequest_stopWaitForResponse (ctx->mDqContext.mRecapRequest);
+    if(self->mInitialRequest != NULL)
+    {
+        imageRequest_stopWaitForResponse (self->mInitialRequest);
+    }
+    if(ctx->mDqContext.mRecapRequest != NULL)
+    {
+        imageRequest_stopWaitForResponse (ctx->mDqContext.mRecapRequest);
+    }
 }
 
 int
@@ -1273,7 +1241,7 @@ mamaSubscription_setPossiblyStale (mamaSubscription subscription)
     dqState     state        = DQ_STATE_OK;
 
     if (!self) return MAMA_STATUS_NULL_ARG;
-    if (MAMA_STATUS_OK!=(status=dqStrategy_getDqState (self->mSubjectContext.mDqContext, &state)))
+    if (MAMA_STATUS_OK!=(status=dqStrategy_getDqState (&self->mSubjectContext.mDqContext, &state)))
     {
         return status;
     }
@@ -1307,7 +1275,7 @@ mamaSubscription_getQuality (mamaSubscription subscription,
 
     if (!self) return MAMA_STATUS_NULL_ARG;
 
-    dqStrategy_getDqState (self->mSubjectContext.mDqContext, &state);
+    dqStrategy_getDqState (&self->mSubjectContext.mDqContext, &state);
 
 
     switch (state)
@@ -1460,11 +1428,7 @@ mamaSubscription_cleanup (mamaSubscription subscription)
      */
     self->mTransport = NULL;
 
-    if (self->mDqStrategy != NULL)
-    {
-        dqStrategy_destroy (self->mDqStrategy);
-        self->mDqStrategy = NULL;
-    }
+    mamaPlugin_fireSubscriptionDestroyHook (subscription);
 
     if (self->mSubscPublisher)
     {
@@ -1500,8 +1464,9 @@ mamaSubscription_cleanup (mamaSubscription subscription)
             self->mSubjectContext.mEntitlementSubscription = NULL;
         }
     }
-
+    
     dqContext_cleanup (&self->mSubjectContext.mDqContext);
+    self->mDqStrategy   = NULL;
     self->mRecapRequest = NULL;
 
     checkFree (&self->mSubjectContext.mSymbol);
@@ -3381,4 +3346,67 @@ mamaSubscription_getLogStats (mamaSubscription  subscription)
     /* Get the impl. */
     mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
     return impl->mLogStats;
+}
+
+mamaDqContext*
+mamaSubscription_getDqContext(mamaSubscription subscription)
+{
+    mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
+    return &impl->mSubjectContext.mDqContext;
+}
+
+mama_status
+mamaSubscription_setDqContext(mamaSubscription subscription, mamaDqContext dqContext)
+{
+    if(subscription != NULL)
+    {
+        subscription->mSubjectContext.mDqContext = dqContext;
+        return MAMA_STATUS_OK;
+    }
+        return MAMA_STATUS_NULL_ARG;
+}
+
+dqStrategy
+mamaSubscription_getDqStrategy(mamaSubscription subscription)
+{
+    if(subscription != NULL)
+    {
+        mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
+        return impl->mDqStrategy;
+    }
+        return NULL;
+}
+
+mama_status
+mamaSubscription_setDqStrategy(mamaSubscription subscription, dqStrategy strategy)
+{
+    if (subscription != NULL)
+    {
+        self->mDqStrategy =  strategy;
+        return MAMA_STATUS_OK;
+    }
+        return MAMA_STATUS_NULL_ARG;
+}
+
+mama_status
+mamaSubscription_setRecapRequest(mamaSubscription subscription, imageRequest request)
+{
+    if(NULL != subscription && NULL != request)   
+    {
+       subscription->mRecapRequest = request;
+       return MAMA_STATUS_OK;
+    }
+
+    return MAMA_STATUS_NULL_ARG;
+}
+mama_status
+mamaSubscription_getRecapRequest(mamaSubscription subscription, imageRequest request)
+{
+    if(NULL != subscription && NULL != request)   
+    {
+       request = subscription->mRecapRequest;
+       return MAMA_STATUS_OK;
+    }
+
+    return MAMA_STATUS_NULL_ARG;
 }

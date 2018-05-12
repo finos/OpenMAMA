@@ -112,6 +112,7 @@ env.SConscript('src/c/payload/SConscript.win','env')
 env.SConscript('src/c/bridge/SConscript.win','env')
 env.SConscript('src/c/entitlement/SConscript','env')
 env.SConscript('src/examples/SConscript.win','env')
+env.SConscript('src/c/dqstrategyplugin/SConscript.win','env')
 
 if env['with_unittest'] == True and 'dynamic' in env['build']:
     env.SConscript( 'src/gunittest/SConscript','env' )

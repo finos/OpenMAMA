@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "c", "c", "{F02CD330-5AFF-424D-B58C-5E875224AADB}"
 EndProject
@@ -287,6 +287,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "unittests", "unittests", "{CB723844-CDE0-4B27-975B-6E47B37A7643}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "c", "c", "{EE8CFE86-9CE0-4143-9615-213AF3053751}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "dqstrategyplugin", "mama\c_cpp\src\c\dqstrategyplugin\dqstrategyplugin.vcxproj", "{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}"
+	ProjectSection(ProjectDependencies) = postProject
+		{7F64D11F-C002-4271-BDEC-A82C614403EF} = {7F64D11F-C002-4271-BDEC-A82C614403EF}
+		{45F0CC89-C5CD-4AF6-9911-DDF0557F788A} = {45F0CC89-C5CD-4AF6-9911-DDF0557F788A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -1670,6 +1676,20 @@ Global
 		{7D0B02DD-F0F7-4288-BD63-CB8D8A45568B}.Release|Win32.Build.0 = Release|Win32
 		{7D0B02DD-F0F7-4288-BD63-CB8D8A45568B}.Release|x64.ActiveCfg = Release|x64
 		{7D0B02DD-F0F7-4288-BD63-CB8D8A45568B}.Release|x64.Build.0 = Release|x64
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Debug|Win32.ActiveCfg = Debug|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Debug|Win32.Build.0 = Debug|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Debug|x64.ActiveCfg = Debug|x64
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Debug|x64.Build.0 = Debug|x64
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Release|Any CPU.ActiveCfg = Release|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Release|Win32.ActiveCfg = Release|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Release|Win32.Build.0 = Release|Win32
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Release|x64.ActiveCfg = Release|x64
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1800,5 +1820,6 @@ Global
 		{7D0B02DD-F0F7-4288-BD63-CB8D8A45568B} = {A6B04E0B-C888-460F-A99D-57FDFECAAB8A}
 		{CB723844-CDE0-4B27-975B-6E47B37A7643} = {F7FDF0C8-7EB4-4342-AA2A-9970B2AAA8F9}
 		{EE8CFE86-9CE0-4143-9615-213AF3053751} = {CB723844-CDE0-4B27-975B-6E47B37A7643}
+		{CCA6B47D-AF26-4E47-8C0E-A6AA380F3E20} = {11490092-3C11-472D-B4B1-77E74CC9A7D1}
 	EndGlobalSection
 EndGlobal

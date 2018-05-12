@@ -61,10 +61,12 @@ void MamaPriceTest::SetUp(void)
 	// Create a new mama price
     //ASSERT_EQ(mamaPrice_create(&m_price), MAMA_STATUS_OK);
     m_price = new MamaPrice();
+    m_priceDp = new MamaPrice();
 
     // Set the value of the price	
     //ASSERT_EQ(mamaPrice_setValue(m_price, 4000000000), MAMA_STATUS_OK);
     m_price->setValue(4000000000);
+    m_priceDp->setValue(1.12345678901234567890);
 }
 
 void MamaPriceTest::TearDown(void)
@@ -82,6 +84,214 @@ void MamaPriceTest::TearDown(void)
 /* ************************************************************************* */
 /* Test Functions */
 /* ************************************************************************* +*/
+TEST_F(MamaPriceTest, SetPrecision1Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_10);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.1");
+}
+
+TEST_F(MamaPriceTest, SetPrecision2Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_100);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.12");
+}
+
+TEST_F(MamaPriceTest, SetPrecision3Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_1000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.123");
+}
+
+TEST_F(MamaPriceTest, SetPrecision4Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_10000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.1235");
+}
+
+TEST_F(MamaPriceTest, SetPrecision5Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_100000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.12346");
+}
+
+TEST_F(MamaPriceTest, SetPrecision6Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_1000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.123457");
+}
+
+TEST_F(MamaPriceTest, SetPrecision7Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_10000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.1234568");
+}
+
+TEST_F(MamaPriceTest, SetPrecision8Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_100000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.12345679");
+}
+
+TEST_F(MamaPriceTest, SetPrecision9Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_1000000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.123456789");
+}
+
+TEST_F(MamaPriceTest, SetPrecision10Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_10000000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.1234567890");
+}
+
+TEST_F(MamaPriceTest, SetPrecision11Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_100000000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.12345678901");
+}
+
+TEST_F(MamaPriceTest, SetPrecision12Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_1000000000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.123456789012");
+}
+
+TEST_F(MamaPriceTest, SetPrecision13Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_10000000000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.1234567890123");
+}
+
+TEST_F(MamaPriceTest, SetPrecision14Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_100000000000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.12345678901235");
+}
+
+TEST_F(MamaPriceTest, SetPrecision15Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_1000000000000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.123456789012346");
+}
+
+TEST_F(MamaPriceTest, SetPrecision16Dp)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_10000000000000000);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    m_priceDp->getAsString(stringValue, 49);
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.1234567890123457");
+}
+
 TEST_F(MamaPriceTest, SetPrecisionInt)
 {
     // Set the precision
@@ -319,4 +529,49 @@ TEST_F(MamaPriceTest, SetPrecisionDiv512)
 
     // Compare the strings
     ASSERT_STREQ(stringValue, doubleString);    
+}
+
+TEST_F(MamaPriceTest, SetFromString)
+{
+    MamaPrice*  m_price;
+    const char* value       = "123.45";
+    double      doubleValue = 0.0;
+
+    m_price = new MamaPrice();
+
+    m_price->setFromString(value);
+
+    doubleValue = m_price->getValue();
+
+    ASSERT_EQ(doubleValue, atof(value));
+}
+
+TEST_F(MamaPriceTest, SetFromStringLargeValue)
+{
+    MamaPrice*  m_price;
+    const char* value       = "123.456789012345";
+    double      doubleValue = 0.0;
+
+    m_price = new MamaPrice();
+
+    m_price->setFromString(value);
+
+    doubleValue = m_price->getValue();
+
+    ASSERT_EQ(doubleValue, atof(value));
+}
+
+TEST_F(MamaPriceTest, SetFromStringInvalidPrice)
+{
+    MamaPrice*  m_price;
+    const char* value       = "MY PRICE";
+    double      doubleValue = 0.0;
+
+    m_price = new MamaPrice();
+
+    m_price->setFromString(value);
+
+    doubleValue = m_price->getValue();
+
+    ASSERT_EQ(doubleValue, atof(value));
 }
