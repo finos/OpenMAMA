@@ -27,4 +27,6 @@ install(TARGETS mamdaoptions
 		RUNTIME DESTINATION bin
 		LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
-install(FILES $<TARGET_PDB_FILE:mamdaoptions> DESTINATION bin OPTIONAL)
+if (WIN32 AND MSVC)
+	install(FILES $<TARGET_PDB_FILE:mamdaoptions> DESTINATION bin OPTIONAL)
+endif()

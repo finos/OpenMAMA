@@ -19,7 +19,9 @@ macro(UnitTestC bin)
 			RUNTIME DESTINATION bin
 			LIBRARY DESTINATION lib
 			ARCHIVE DESTINATION lib)
-	install(FILES $<TARGET_PDB_FILE:${bin}> DESTINATION bin OPTIONAL)
+	if (WIN32 AND MSVC)
+		install(FILES $<TARGET_PDB_FILE:${bin}> DESTINATION bin OPTIONAL)
+	endif()
 endmacro()
 
 UnitTestC(UnitTestMamaC

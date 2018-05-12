@@ -19,5 +19,8 @@ install(TARGETS wombatcommoncpp
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
-install(FILES $<TARGET_PDB_FILE:wombatcommoncpp> DESTINATION bin OPTIONAL)
 install(DIRECTORY wombat/ DESTINATION include/wombat)
+
+if (WIN32 AND MSVC)
+        install(FILES $<TARGET_PDB_FILE:wombatcommoncpp> DESTINATION bin OPTIONAL)
+endif()

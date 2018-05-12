@@ -15,7 +15,7 @@ set (WITH_MAMDA      true  CACHE BOOL "Include MAMDA in the build")
 set (WITH_JAVA       false CACHE BOOL "Include JAVA bindings")
 set (WITH_CPP        true  CACHE BOOL "Include C++ bindings")
 
-if (WIN32)
+if (WIN32 AND MSVC)
     set (WITH_CSHARP false CACHE BOOL "Include examples during the build")
 endif()
 

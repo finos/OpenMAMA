@@ -18,7 +18,9 @@ macro(mamda_tool name)
 			RUNTIME DESTINATION bin
 			LIBRARY DESTINATION lib
 			ARCHIVE DESTINATION lib)
-	install(FILES $<TARGET_PDB_FILE:${name}> DESTINATION bin OPTIONAL)
+	if (WIN32 AND MSVC)
+		install(FILES $<TARGET_PDB_FILE:${name}> DESTINATION bin OPTIONAL)
+	endif()
 endmacro()
 
 mamda_tool(bookselftest mamdabook)

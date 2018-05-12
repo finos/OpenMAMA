@@ -65,8 +65,10 @@ install(TARGETS mamacpp
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
-install(FILES $<TARGET_PDB_FILE:mamacpp>
-		DESTINATION bin
-		RENAME libmamacpp${OPENMAMA_LIBRARY_SUFFIX}.pdb
-		OPTIONAL)
+if (WIN32 AND MSVC)
+	install(FILES $<TARGET_PDB_FILE:mamacpp>
+			DESTINATION bin
+			RENAME libmamacpp${OPENMAMA_LIBRARY_SUFFIX}.pdb
+			OPTIONAL)
+endif()
 install(DIRECTORY mama/ DESTINATION include/mama)

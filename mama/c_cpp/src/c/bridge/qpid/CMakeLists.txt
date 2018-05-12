@@ -1,8 +1,10 @@
 include(FindProton)
 find_package(Proton REQUIRED)
 
-include(FindUUID)
-find_package(UUID REQUIRED)
+if (NOT WIN32)
+    include(FindUUID)
+    find_package(UUID REQUIRED)
+endif()
 
 include(FindLibevent)
 find_package(Libevent REQUIRED)
@@ -53,7 +55,9 @@ if(WIN32)
 
     # Windows Targets
     set_target_properties(mamaqpidimpl PROPERTIES OUTPUT_NAME "mamaqpidimpl${OPENMAMA_LIBRARY_SUFFIX}")
-    install(FILES $<TARGET_PDB_FILE:mamaqpidimpl> DESTINATION bin OPTIONAL)
+    if (MSVC)
+        install(FILES $<TARGET_PDB_FILE:mamaqpidimpl> DESTINATION bin OPTIONAL)
+    endif()
     install(TARGETS mamaqpidimpl
             RUNTIME DESTINATION bin
             LIBRARY DESTINATION bin

@@ -68,6 +68,8 @@ install(TARGETS mamda
         LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
 set_target_properties(mamda PROPERTIES OUTPUT_NAME "mamda${OPENMAMA_LIBRARY_SUFFIX}")
-install(FILES $<TARGET_PDB_FILE:mamda> DESTINATION bin OPTIONAL)
+if (WIN32 AND MSVC)
+	install(FILES $<TARGET_PDB_FILE:mamda> DESTINATION bin OPTIONAL)
+endif()
 install(DIRECTORY mamda/ DESTINATION include/mamda)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/version.h" DESTINATION include/mamda)

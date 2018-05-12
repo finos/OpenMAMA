@@ -29,9 +29,11 @@ if(WIN32)
 
     # Windows Targets
     set_target_properties(mamaqpidmsgimpl PROPERTIES OUTPUT_NAME "mamaqpidmsgimpl${OPENMAMA_LIBRARY_SUFFIX}")
-    install(FILES $<TARGET_PDB_FILE:mamaqpidmsgimpl>
-            DESTINATION bin
-            OPTIONAL)
+    if (MSVC)
+        install(FILES $<TARGET_PDB_FILE:mamaqpidmsgimpl>
+                DESTINATION bin
+                OPTIONAL)
+    endif()
     install(TARGETS mamaqpidmsgimpl
             RUNTIME DESTINATION bin
             LIBRARY DESTINATION bin

@@ -129,8 +129,10 @@ set_target_properties(mama PROPERTIES OUTPUT_NAME "mama${OPENMAMA_MAMA_TARGET_SU
 install(TARGETS mama
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib)
-install(FILES $<TARGET_PDB_FILE:mama> DESTINATION bin OPTIONAL)
+		ARCHIVE DESTINATION lib)
+if (WIN32 AND MSVC)
+	install(FILES $<TARGET_PDB_FILE:mama> DESTINATION bin OPTIONAL)
+endif()
 install(DIRECTORY mama/ DESTINATION include/mama)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" DESTINATION include/mama)
 
