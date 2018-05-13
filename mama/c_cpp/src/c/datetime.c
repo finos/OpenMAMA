@@ -1410,8 +1410,6 @@ mamaDateTime_getAsFormattedStringWithTz (const mamaDateTime dateTime,
 
     if (offset != 0)
     {
-        mamaDateTime  tmpDateTime = (mama_datetime_t*)dateTime;
-        mamaDateTime_addWholeSeconds (tmpDateTime, offset);
         // Convert time into an Apache APR exploded time
         apr_time_ansi_put(&time_apr, (time_t)impl->mSeconds);
         apr_time_exp_tz(&time_apr_exploded, time_apr, (apr_int32_t)offset);
