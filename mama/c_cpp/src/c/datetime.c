@@ -1250,7 +1250,7 @@ mama_status mamaDateTime_getAsString (const mamaDateTime dateTime,
                 mama_log (MAMA_LOG_LEVEL_WARN,
                 "mamaDateTime_getAsString: percision truncated by buffer");
             }
-            snprintf (buf, bufMaxLen, ".%0*d", (int)precision, digits);
+            snprintf (buf, bufMaxLen, ".%0*ld", (int)precision, digits);
         }
     }
     else if (mamaDateTimeImpl_getHasDate(aDateTime))

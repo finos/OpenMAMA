@@ -232,11 +232,11 @@ int wmFastPrintU64 (
                 ++extra;
                 --minWidth;
             }
-            return extra + snprintf (result, maxLen, "%" PRIu64, value);
+            return extra + snprintf (result, maxLen, "%" PRIu64, (uint64_t)value);
         }
     }
     /*  last resort */
-    return snprintf (result, maxLen, "%"PRIu64, value);
+    return snprintf (result, maxLen, "%"PRIu64, (uint64_t)value);
 }
 
 int wmFastPrintI64 (

@@ -1,0 +1,19 @@
+/* This file was automatically generated */
+#ifndef MamdaVersionHH
+#define MamdaVersionHH
+#define MAMDA_VERSION_MAJOR @MAMDA_VERSION_MAJOR@
+#define MAMDA_VERSION_MINOR @MAMDA_VERSION_MINOR@
+#define MAMDA_VERSION_RELEASE @MAMDA_VERSION_RELEASE@
+#define MAMDA_VERSION "mamda @MAMDA_VERSION_MAJOR@.@MAMDA_VERSION_MINOR@.@MAMDA_VERSION_RELEASE@"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+extern const char* mamda_version;
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

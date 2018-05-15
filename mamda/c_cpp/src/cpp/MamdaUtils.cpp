@@ -22,7 +22,6 @@
 #include "MamdaUtils.h"
 #include "mamda/MamdaCommonFields.h"
 #include "mamda/MamdaDataException.h"
-#include "version.h"
 
 namespace Wombat
 {

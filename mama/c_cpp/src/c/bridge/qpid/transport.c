@@ -887,7 +887,7 @@ qpidBridgeMamaTransportImpl_start (qpidTransportBridge* impl)
         if (QPID_TRANSPORT_TYPE_P2P == impl->mQpidTransportType)
         {
             if (pn_messenger_subscribe (impl->mIncoming,
-                                        impl->mIncomingAddress) <= 0)
+                                        impl->mIncomingAddress) == NULL)
             {
                 mama_log (MAMA_LOG_LEVEL_ERROR, "qpidBridgeMamaTransportImpl_start(): "
                           "Error Subscribing to %s : %s",
@@ -905,7 +905,7 @@ qpidBridgeMamaTransportImpl_start (qpidTransportBridge* impl)
                       PN_MESSENGER_ERROR(impl->mIncoming));
             /* Subscribe to the URL advertised in reply_to */
             if (pn_messenger_subscribe (impl->mIncoming,
-                                        impl->mReplyAddress) <= 0)
+                                        impl->mReplyAddress) == NULL)
             {
                 mama_log (MAMA_LOG_LEVEL_ERROR, "qpidBridgeMamaTransportImpl_start(): "
                           "Error Subscribing to %s : %s",

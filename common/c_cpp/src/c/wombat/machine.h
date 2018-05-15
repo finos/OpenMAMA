@@ -24,7 +24,7 @@
 
 #include <time.h>
 
-#include "wConfig.h"
+#include "wombat/wConfig.h"
 
 #if defined(__cplusplus)
 extern "C" {

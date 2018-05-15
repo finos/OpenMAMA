@@ -11,7 +11,7 @@
     </ApplicationIcon>
     <AssemblyKeyContainerName>
     </AssemblyKeyContainerName>
-    <AssemblyName>MamaListener</AssemblyName>
+    <AssemblyName>MamaListen</AssemblyName>
     <AssemblyOriginatorKeyFile>
     </AssemblyOriginatorKeyFile>
     <DefaultClientScript>JScript</DefaultClientScript>
@@ -19,7 +19,7 @@
     <DefaultTargetSchema>IE50</DefaultTargetSchema>
     <DelaySign>false</DelaySign>
     <OutputType>Exe</OutputType>
-    <RootNamespace>MamaListener</RootNamespace>
+    <RootNamespace>MamaListen</RootNamespace>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
     <StartupObject>MamaListen.MamaListen</StartupObject>
     <FileUpgradeFlags>
@@ -103,7 +103,7 @@
   <PropertyGroup>
     <PreBuildEvent>
     </PreBuildEvent>
-    <PostBuildEvent>copy $(ProjectDir)..\examples.manifest $(TargetDir)\MamaListener.exe.manifest
+    <PostBuildEvent>copy $(ProjectDir)..\examples.manifest $(TargetDir)\MamaListen.exe.manifest
 copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\$(ConfigurationName)
 copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\x64\$(ConfigurationName)</PostBuildEvent>
   </PropertyGroup>

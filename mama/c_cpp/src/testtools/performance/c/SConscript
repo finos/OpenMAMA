@@ -2,10 +2,13 @@ import os
 Import('env')
 env = env.Clone()
 
+osname = env['host']['os']
+
 includePath = []
 includePath.append('.')
 includePath.append('../../../c')
 includePath.append('#common/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/c/' + osname.lower())
 includePath.append('$prefix/include')
 
 libPath = []
@@ -15,7 +18,7 @@ sources = Glob('*.c')
 
 env.Append( LIBPATH = libPath )
 env.Append( CPPPATH = [ includePath ] )
-if env['host']['os'] == 'Darwin':
+if osname == 'Darwin':
     env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','dl'] )
 else:
     env.Append( LIBS = [ 'mama','pthread','m','wombatcommon','dl','rt' ] )

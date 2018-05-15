@@ -28,8 +28,8 @@
 #include <string.h>
 #include <wombat/wtable.h>
 #include <wombat/port.h>
-#include "mama/integration/endpointpool.h"
-#include "wlock.h"
+#include <mama/integration/endpointpool.h>
+#include <wlock.h>
 
 
 /*=========================================================================
@@ -209,7 +209,7 @@ endpointPool_destroyWithCallback (endpointPool_t endpoints, endpointDestroyCb ca
         /* Destroy each sub table in this container (topic) */
         wtable_for_each (impl->mContainer,
                          endpointPoolImpl_destroySubTable,
-                         (void*) callback);
+                         *((void**) &callback));
         /* Free the strdup-ed keys still held by the wtable */
         wtable_free_all_xdata (impl->mContainer);
         /* Finally, destroy the wtable */

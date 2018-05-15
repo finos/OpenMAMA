@@ -9,6 +9,7 @@ includePath.append('../..')
 includePath.append('../../../c')
 includePath.append('../../../cpp')
 includePath.append('#common/c_cpp/src/c')
+includePath.append('#common/c_cpp/src/c/' + env['host']['os'].lower())
 includePath.append('#common/c_cpp/src/cpp')
 includePath.append('$prefix/include')
 
