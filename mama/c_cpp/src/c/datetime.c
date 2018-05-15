@@ -1059,7 +1059,7 @@ mamaDateTime_getStructTimeValWithTz(const mamaDateTime dateTime,
     {
         mama_i32_t  offset   = 0;
         mamaTimeZone_getOffset (tz, &offset);
-        result->tv_usec += offset;
+        result->tv_sec += offset;
     }
 
     return MAMA_STATUS_OK;
