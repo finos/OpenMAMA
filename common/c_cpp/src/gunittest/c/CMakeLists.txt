@@ -34,3 +34,10 @@ install(TARGETS UnitTestCommonC
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
+
+# Install any dependant libraries
+if (INSTALL_RUNTIME_DEPENDENCIES)
+	if (GTEST_ROOT)
+		install (DIRECTORY ${GTEST_ROOT}/lib/ DESTINATION bin FILES_MATCHING PATTERN "*.dll")
+	endif()
+endif()

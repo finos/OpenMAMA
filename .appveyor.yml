@@ -1,0 +1,82 @@
+environment:
+  matrix:
+    - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+
+# Build worker image (VM template)
+image: Visual Studio 2017
+
+init:
+- set OPENMAMA_INSTALL_DIR=C:\projects\openmama\install
+- set GENERATOR="Visual Studio 15 2017 Win64"
+
+# scripts that run after cloning repository
+install:
+- cmd: choco install -y unzip gow wget gradle nunit-console-runner nunit-extension-nunit-v2-driver
+- cmd: refreshenv
+- cmd: set PATH=C:\ProgramData\chocolatey\bin;%PATH%
+
+# build platform, i.e. x86, x64, Any CPU. This setting is optional.
+platform: x64
+
+# scripts to run before build
+before_build:
+- cmd: |-
+    mkdir C:\projects\qpid-proton
+    cd C:\projects\qpid-proton
+    wget "https://github.com/apache/qpid-proton/archive/0.15.0.zip"
+    unzip 0.15.0.zip
+    cd qpid-proton-0.15.0
+    mkdir bld
+    cd bld
+    cmake -DBUILD_TESTING=OFF -DBUILD_JAVA=OFF -DBUILD_CPP=OFF .. -G %GENERATOR%
+    cmake --build . --config Release --target install
+- cmd: |-
+    mkdir C:\projects\googletest
+    cd C:\projects\googletest
+    wget "https://github.com/google/googletest/archive/release-1.8.0.zip"
+    unzip release-1.8.0.zip
+    cd googletest-release-1.8.0
+    mkdir bld
+    cd bld
+    gfind .
+    cmake -DCMAKE_CXX_FLAGS=-D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING -DBUILD_SHARED_LIBS=ON -DBUILD_GTEST=ON -DBUILD_GMOCK=OFF -G %GENERATOR% ..
+    gfind .
+    cmake --build . --config Release --target install
+- cmd: |-
+    mkdir C:\projects\libevent
+    cd C:\projects\libevent
+    wget "https://github.com/libevent/libevent/archive/release-2.1.8-stable.tar.gz"
+    cmake -E tar xzf release-2.1.8-stable.tar.gz
+    cd libevent-release-2.1.8-stable
+    mkdir bld
+    cd bld
+    cmake -DEVENT__DISABLE_OPENSSL=ON -G %GENERATOR% ..
+    type include\event2\event-config.h
+    cmake --build . --config Release --target install
+- cmd: |-
+    mkdir C:\projects\apr
+    cd C:\projects\apr
+    wget "https://github.com/apache/apr/archive/1.6.3.zip"
+    unzip 1.6.3.zip
+    dir
+    cd apr-1.6.3
+    mkdir bld
+    cd bld
+    gfind .
+    cmake -G %GENERATOR% ..
+    gfind .
+    cmake --build . --config Release --target install
+
+# to run your custom scripts instead of automatic MSBuild
+build_script:
+  - cmd: |-
+      cd C:\projects\openmama
+      mkdir build
+      cd build
+      cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWITH_CSHARP=ON -DWITH_UNITTEST=ON -DWITH_JAVA=ON -DINSTALL_RUNTIME_DEPENDENCIES=ON -DCMAKE_INSTALL_PREFIX=%OPENMAMA_INSTALL_DIR% -G %GENERATOR% ..
+      cmake --build . --config RelWithDebInfo --target install
+      cd ..
+      python release_scripts\ci-run.py
+
+# The build script already tests as well and this one doesnt work for some reason anyway
+test: off

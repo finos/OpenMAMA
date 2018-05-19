@@ -22,7 +22,7 @@ def run_command(args, fatal_error=True, env=None, shell=True):
         if fatal_error or p.returncode != 1:
             raise subprocess.CalledProcessError(p.returncode, subprocess.list2cmdline(args))
         else:
-            print "WARNING: %s returned error '%s'" % (subprocess.list2cmdline(args), p.returncode)
+            print("WARNING: %s returned error '%s'" % (subprocess.list2cmdline(args), p.returncode))
 
 env_var = os.environ.copy()
 env_var["PATH"] = env_var["PATH"]
@@ -71,11 +71,14 @@ if os.name != "nt" and "JAVA_HOME" not in env_var:
 if "JAVA_HOME" in env_var:
     scons_cmd.append("java_home=%s" % env_var["JAVA_HOME"])
 
-# Fire off the build
-run_command(args=scons_cmd, env=env_var, shell=shell)
+if "OPENMAMA_INSTALL_DIR" not in env_var:
+    # Fire off the build
+    run_command(args=scons_cmd, env=env_var, shell=shell)
 
-# Installation directory just created
-install_dir = [d for d in os.listdir('.') if os.path.isdir(d) and d.startswith("openmama_install")][0]
+    # Installation directory just created
+    install_dir = [d for d in os.listdir('.') if os.path.isdir(d) and d.startswith("openmama_install")][0]
+else:
+    install_dir = env_var["OPENMAMA_INSTALL_DIR"]
 
 # Set up environment for unit tests
 if os.name != 'nt':
@@ -85,11 +88,16 @@ if os.name != 'nt':
                                      '/usr/local/lib64')
     mama_jni_jar = os.path.join(os.getcwd(), install_dir, 'lib', 'mamajni.jar')
 else:
-    env_var["PATH"] = os.path.join(os.getcwd(), install_dir, 'bin', 'dynamic') + os.pathsep + env_var["PATH"]
+    env_var["PATH"] = os.path.join(os.getcwd(), install_dir, 'bin', 'dynamic') + os.pathsep + os.path.join(os.getcwd(), install_dir, 'bin') + os.pathsep + env_var["PATH"]
     mama_jni_jar = os.path.join(os.getcwd(), install_dir, 'lib', 'dynamic', 'mamajni.jar')
+    if not os.path.exists(mama_jni_jar):
+        mama_jni_jar = os.path.join(os.getcwd(), install_dir, 'lib', 'mamajni.jar')
     mama_nunit_dll = os.path.join(os.getcwd(), install_dir, 'bin', 'dynamic', 'DOTNET_UNITTESTS.dll')
+    if not os.path.exists(mama_nunit_dll):
+        mama_nunit_dll = os.path.join(os.getcwd(), install_dir, 'bin', 'DOTNET_UNITTESTS.dll')
 
 env_var["WOMBAT_PATH"] = os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'examples') + os.pathsep + os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'gunittest', 'c')
+mama_java_test_classes_dir = os.path.join(os.getcwd(), 'build', 'mama', 'jni', 'src', 'mama_java_build', 'classes', 'java', 'test')
 
 if "JOB_NAME" in env_var:
     test_failure_fatal = False
@@ -144,7 +152,7 @@ for root, dirs, files in os.walk(install_dir):
 # will know it's broken)
 run_command(args=["java",
                   "-cp",
-                  mama_jni_jar + os.pathsep + os.path.join(junit_home, "junit.jar") + os.pathsep + os.path.join(junit_home, "hamcrest-core.jar"),
+                  mama_jni_jar + os.pathsep + mama_java_test_classes_dir + os.pathsep + os.path.join(junit_home, "junit.jar") + os.pathsep + os.path.join(junit_home, "hamcrest-core.jar"),
                   "com.wombat.mama.junittests.Main",
                   "-m",
                   middleware
@@ -153,12 +161,17 @@ run_command(args=["java",
             shell=shell,
             env=env_var)
 
+nunit_console = "C:\\Program Files (x86)\\NUnit 2.6.4\\bin\\nunit-console.exe"
+if not os.path.exists(nunit_console):
+    nunit_console = "nunit3-console"
 
 if os.name == "nt":
     env_var["middlewareName"] = middleware
     env_var["transportName"] = "pub"
     run_command(args=[
-                  "C:\\Program Files (x86)\\NUnit 2.6.4\\bin\\nunit-console.exe",
+                  nunit_console,
+                  "--framework=4.0",
+                  "--workers=1",
                   mama_nunit_dll
                 ],
             fatal_error=True,
