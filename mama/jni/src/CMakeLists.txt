@@ -11,7 +11,7 @@ file(GLOB sources
 	main/java/com/wombat/common/*.java
 )
 
-set(MAMAJNI_JAVA_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/java_build")
+set(MAMAJNI_JAVA_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/mama_java_build")
 
 set(CLASSES "")
 foreach(file ${sources})
@@ -26,7 +26,7 @@ endforeach()
 ExternalProject_Add(mamajnijava
         SOURCE_DIR "."
         BUILD_COMMAND ""
-        CONFIGURE_COMMAND ${BIN_GRADLE} --no-daemon -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/../build.gradle jar
+        CONFIGURE_COMMAND ${BIN_GRADLE} --no-daemon -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/../build.gradle jar testClasses
         INSTALL_COMMAND ""
         LOG_BUILD 1)
 
@@ -36,5 +36,7 @@ add_custom_target(mamajnijavah DEPENDS mamajnijava
 )
 
 set_target_properties(mamajnijava PROPERTIES JAVAH_INCLUDES ${CMAKE_CURRENT_BINARY_DIR})
+
+install (FILES ${MAMAJNI_JAVA_BUILD_DIR}/libs/mamajni.jar DESTINATION lib)
 
 add_subdirectory (c)

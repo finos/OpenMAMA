@@ -14,6 +14,8 @@ add_definitions(-DOPENMAMA_INTEGRATION)
 get_component_version(${CMAKE_CURRENT_LIST_DIR} MAMA)
 
 add_subdirectory (c_cpp/src/c)
+add_subdirectory (c_cpp/src/c/entitlement/noop)
+add_subdirectory (c_cpp/src/c/dqstrategyplugin)
 
 if(WITH_CPP)
     add_subdirectory (c_cpp/src/cpp)

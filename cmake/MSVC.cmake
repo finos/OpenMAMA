@@ -34,7 +34,8 @@ set (OPENMAMA_MAMA_TARGET_SUFFIX "c")
 if(CMAKE_CL_64)
 	set(DEFAULT_INSTALL_PREFIX $ENV{ProgramW6432})
 else()
-	set(DEFAULT_INSTALL_PREFIX $ENV{PROGRAMFILES})
+	set(PROGRAMFILES "PROGRAMFILES(X86)") 
+	set(DEFAULT_INSTALL_PREFIX $ENV{${PROGRAMFILES}})
 endif()
 
 set (DEFAULT_LIBEVENT_ROOT "${DEFAULT_INSTALL_PREFIX}/libevent")
@@ -48,7 +49,7 @@ macro(msbuild_project target project output)
 	ExternalProject_Add(${target}
 			SOURCE_DIR "."
 			BUILD_COMMAND ""
-			CONFIGURE_COMMAND ${CMAKE_MAKE_PROGRAM} /p:PreBuildEvent= /p:PostBuildEvent= /p:OutputPath=${CMAKE_CURRENT_BINARY_DIR} /p:BuildPath=${CMAKE_CURRENT_BINARY_DIR}/build ${msbuild_project_assembly_flag} ${CMAKE_CURRENT_SOURCE_DIR}/${project}
+			CONFIGURE_COMMAND ${CMAKE_MAKE_PROGRAM} /p:PreBuildEvent= /p:PostBuildEvent= /p:OutputPath=${CMAKE_CURRENT_BINARY_DIR} /p:Configuration=Release /p:BuildPath=${CMAKE_CURRENT_BINARY_DIR}/build ${msbuild_project_assembly_flag} ${CMAKE_CURRENT_SOURCE_DIR}/${project}
 			INSTALL_COMMAND ""
 			LOG_BUILD 1)
 endmacro()

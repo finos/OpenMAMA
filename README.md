@@ -17,10 +17,10 @@ Build Status
 
 We currently use travis for smoke testing of pull requests and our own Jenkins install for generating release artifacts.
 
-| Branch          | Linux         | Windows       | Travis        |
-|-----------------|---------------|---------------|---------------|
-| master (stable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Linux/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Linux/)|[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Windows/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Windows/)|[![Build Status](https://travis-ci.org/OpenMAMA/OpenMAMA.svg?branch=master)](https://travis-ci.org/OpenMAMA/OpenMAMA)|
-| next (unstable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Linux/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Linux/)|[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Windows/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Windows/)|[![Build Status](https://travis-ci.org/OpenMAMA/OpenMAMA.svg?branch=next)](https://travis-ci.org/OpenMAMA/OpenMAMA)|
+| Branch          | Linux         | Windows       | Travis        | Appveyor      |
+|-----------------|---------------|---------------|---------------|---------------|
+| master (stable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Linux/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Linux/)|[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Windows/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Stable_Windows/)|[![Build Status](https://travis-ci.org/OpenMAMA/OpenMAMA.svg?branch=master)](https://travis-ci.org/OpenMAMA/OpenMAMA)|[![Build status](https://ci.appveyor.com/api/projects/status/44djek23kogivmbk/branch/master?svg=true)](https://ci.appveyor.com/project/fquinner/openmama-gnbjp/branch/master)|
+| next (unstable) |[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Linux/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Linux/)|[![Build Status](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Windows/badge/icon)](http://ci.openmama.org:8080/job/OpenMAMA_Snapshot_Windows/)|[![Build Status](https://travis-ci.org/OpenMAMA/OpenMAMA.svg?branch=next)](https://travis-ci.org/OpenMAMA/OpenMAMA)|[![Build status](https://ci.appveyor.com/api/projects/status/44djek23kogivmbk/branch/next?svg=true)](https://ci.appveyor.com/project/fquinner/openmama-gnbjp/branch/next)|
 
 Supported Platforms
 --------------------------------------------------------------------------------
