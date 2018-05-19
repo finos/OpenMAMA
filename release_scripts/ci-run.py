@@ -170,8 +170,6 @@ if os.name == "nt":
     env_var["transportName"] = "pub"
     run_command(args=[
                   nunit_console,
-                  "--framework=4.0",
-                  "--workers=1",
                   mama_nunit_dll
                 ],
             fatal_error=True,
