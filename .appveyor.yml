@@ -43,8 +43,8 @@ before_build:
     gfind .
     cmake --build . --config Release --target install
 - cmd: |-
-    mkdir %APPVEYOR_BUILD_FOLDER%\libevent
-    cd %APPVEYOR_BUILD_FOLDER%\libevent
+    mkdir %APPVEYOR_BUILD_FOLDER%\..\libevent
+    cd %APPVEYOR_BUILD_FOLDER%\..\libevent
     wget "https://github.com/libevent/libevent/archive/release-2.1.8-stable.tar.gz"
     cmake -E tar xzf release-2.1.8-stable.tar.gz
     cd libevent-release-2.1.8-stable
