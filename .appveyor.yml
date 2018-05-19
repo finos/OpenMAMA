@@ -6,7 +6,7 @@ environment:
 image: Visual Studio 2017
 
 init:
-- set OPENMAMA_INSTALL_DIR=C:\projects\openmama\install
+- set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\install
 - set GENERATOR="Visual Studio 15 2017 Win64"
 
 # scripts that run after cloning repository
@@ -70,7 +70,7 @@ before_build:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
   - cmd: |-
-      cd C:\projects\openmama
+      cd %APPVEYOR_BUILD_FOLDER%
       mkdir build
       cd build
       cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWITH_CSHARP=ON -DWITH_UNITTEST=ON -DWITH_JAVA=ON -DINSTALL_RUNTIME_DEPENDENCIES=ON -DCMAKE_INSTALL_PREFIX=%OPENMAMA_INSTALL_DIR% -G %GENERATOR% ..
