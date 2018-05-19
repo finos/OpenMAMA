@@ -21,8 +21,8 @@ platform: x64
 # scripts to run before build
 before_build:
 - cmd: |-
-    mkdir C:\projects\qpid-proton
-    cd C:\projects\qpid-proton
+    mkdir %APPVEYOR_BUILD_FOLDER%\qpid-proton
+    cd %APPVEYOR_BUILD_FOLDER%\qpid-proton
     wget "https://github.com/apache/qpid-proton/archive/0.15.0.zip"
     unzip 0.15.0.zip
     cd qpid-proton-0.15.0
@@ -31,8 +31,8 @@ before_build:
     cmake -DBUILD_TESTING=OFF -DBUILD_JAVA=OFF -DBUILD_CPP=OFF .. -G %GENERATOR%
     cmake --build . --config Release --target install
 - cmd: |-
-    mkdir C:\projects\googletest
-    cd C:\projects\googletest
+    mkdir %APPVEYOR_BUILD_FOLDER%\googletest
+    cd %APPVEYOR_BUILD_FOLDER%\googletest
     wget "https://github.com/google/googletest/archive/release-1.8.0.zip"
     unzip release-1.8.0.zip
     cd googletest-release-1.8.0
@@ -43,8 +43,8 @@ before_build:
     gfind .
     cmake --build . --config Release --target install
 - cmd: |-
-    mkdir C:\projects\libevent
-    cd C:\projects\libevent
+    mkdir %APPVEYOR_BUILD_FOLDER%\libevent
+    cd %APPVEYOR_BUILD_FOLDER%\libevent
     wget "https://github.com/libevent/libevent/archive/release-2.1.8-stable.tar.gz"
     cmake -E tar xzf release-2.1.8-stable.tar.gz
     cd libevent-release-2.1.8-stable
@@ -54,8 +54,8 @@ before_build:
     type include\event2\event-config.h
     cmake --build . --config Release --target install
 - cmd: |-
-    mkdir C:\projects\apr
-    cd C:\projects\apr
+    mkdir %APPVEYOR_BUILD_FOLDER%\apr
+    cd %APPVEYOR_BUILD_FOLDER%\apr
     wget "https://github.com/apache/apr/archive/1.6.3.zip"
     unzip 1.6.3.zip
     dir
