@@ -1,7 +1,7 @@
 <project name="mama-jni" default="dist" basedir=".">
     <property name="product" value="mamajni"></property>
     <property name="base" value="mamajni"></property>
-    <property name="version" value="6.2.1"></property> 
+    <property name="version" value="6.2.2"></property> 
     <property name="base.release" value="${base}_${version}"></property>
     <property name="release" value="${product}_${version}"></property>
     <property name="build" location="${user.dir}/classes"></property>
