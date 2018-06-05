@@ -49,7 +49,6 @@
 
 #define MAX_FUNC_STRING 256
 
-int gNumPlugins        = 0;
 int gCurrentPluginSize = INITIAL_PLUGIN_ARRAY_SIZE;
 /**
  * @brief Mechanism for registering required plugin functions.
@@ -193,6 +192,11 @@ mama_initPlugins(void)
         gPlugins = calloc (INITIAL_PLUGIN_ARRAY_SIZE, sizeof(mamaPluginImpl*));
     }
 
+    if (gPlugins == NULL)
+    {
+        return MAMA_STATUS_NOMEM;
+    }
+
     properties_ForEach (mamaInternal_getProperties(), pluginPropertiesCb, NULL);
 
 #ifdef WITH_ENTERPRISE
@@ -303,6 +307,18 @@ mama_loadPlugin (const char* pluginName)
             free ((mamaPluginImpl*)aPluginImpl);
 
             return status;
+        }
+
+        /* Resize the gPlugins array for the new plugin */
+        if((gPluginNo + 1) > gCurrentPluginSize)
+        {
+            gCurrentPluginSize += 1;
+            gPlugins = (mamaPluginImpl**) realloc (gPlugins,  sizeof(mamaPluginImpl*) * gCurrentPluginSize);
+
+            if (gPlugins == NULL)
+            {
+                return MAMA_STATUS_NOMEM;
+            }
         }
 
         /* Save off the plugin impl and increment the plugin counter */
@@ -579,16 +595,8 @@ static void pluginPropertiesCb(const char* name, const char* value, void* closur
     {
         if(strstr(name, PLUGIN_PROPERTY) != NULL)
         {
-            gNumPlugins++;
-            if(gNumPlugins > gCurrentPluginSize)
-            {
-                gCurrentPluginSize *= 2;
-                gPlugins = (mamaPluginImpl**) realloc (gPlugins,  sizeof(mamaPluginImpl*) * gCurrentPluginSize);
-            }
-
             mama_log (MAMA_LOG_LEVEL_FINE, "mama_initPlugins(): Initialising %s", value);
             mama_loadPlugin (value);
-
         }
     }
 }
