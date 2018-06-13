@@ -212,7 +212,7 @@ TEST_F (MamaTransportTestC, InvokeQuality)
     const char* tportName = getTransport();
     mamaTransport tport      = NULL;
     int           invoke     = 1;
-    int           testInvoke = NULL;
+    int           testInvoke = 0;
    
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaTransport_allocate (&tport));

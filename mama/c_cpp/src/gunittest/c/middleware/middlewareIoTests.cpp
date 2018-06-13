@@ -71,7 +71,7 @@ void MAMACALLTYPE onIo(mamaIo io, mamaIoType ioType, void* closure)
 TEST_F (MiddlewareIoTests, create)
 {
     ioBridge   io                = NULL;
-    uint32_t   descriptor        = NULL;
+    uint32_t   descriptor        = 0;
     mamaIoType ioType            = MAMA_IO_READ;
     mamaIo     parent            = NULL;
     void*      closure           = NULL;
@@ -184,7 +184,7 @@ TEST_F (MiddlewareIoTests, getDescriptor)
     mamaIo     parent            = NULL;
     void*      closure           = NULL;
     mamaQueue  queue             = NULL;
-    uint32_t   result            = NULL;
+    uint32_t   result            = 0;
 
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaQueue_create(&queue, mBridge));
@@ -226,7 +226,7 @@ TEST_F (MiddlewareIoTests, getDescriptorInvalidResult)
 TEST_F (MiddlewareIoTests, createDestroy)
 {
     ioBridge   io                = NULL;
-    uint32_t   descriptor        = NULL;
+    uint32_t   descriptor        = 0;
     mamaIoType ioType            = MAMA_IO_READ;
     mamaIo     parent            = NULL;
     void*      closure           = NULL;

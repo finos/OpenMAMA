@@ -880,7 +880,6 @@ TEST_F (MamaPriceTestC, testSetFromStringMamaPriceInvalidPrice)
 
    mamaPrice    price   = NULL;
    const char*  value   = "MY PRICE";
-   double       val;
 
    ASSERT_EQ ( MAMA_STATUS_OK, mamaPrice_create(&price) );
 
