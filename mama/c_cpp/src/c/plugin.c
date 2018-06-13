@@ -527,7 +527,7 @@ mamaPlugin_fireSubscriptionDestroyHook (mamaSubscription subscription)
     {
         if (gPlugins[plugin] != NULL)
         {
-            if (gPlugins[plugin]->mamaPluginSubscriptionPreMsgHook != NULL)
+            if (gPlugins[plugin]->mamaPluginSubscriptionDestroyHook != NULL)
             {
                 status = gPlugins[plugin]->mamaPluginSubscriptionDestroyHook (gPlugins[plugin]->mPluginInfo, subscription);
 
