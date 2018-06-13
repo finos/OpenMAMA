@@ -109,7 +109,7 @@ TEST_F (MamaIoTestC, getDescriptor)
     mamaIo      io             = NULL;
     mamaQueue   queue          = NULL;
     uint32_t    descriptor     = 1;
-    uint32_t    testDescriptor = NULL;
+    uint32_t    testDescriptor = 0;
     mamaIoType  ioType         = MAMA_IO_READ;
 
     ASSERT_EQ (MAMA_STATUS_OK,

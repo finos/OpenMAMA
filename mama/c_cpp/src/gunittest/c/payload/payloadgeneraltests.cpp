@@ -1855,7 +1855,7 @@ TEST_F(PayloadGeneralTests, IterHasNextValid)
 {
     msgPayload          testPayload = NULL;
     msgPayloadIter      testIter = NULL;
-    mama_bool_t         output = NULL;
+    mama_bool_t         output = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
@@ -1877,7 +1877,7 @@ TEST_F(PayloadGeneralTests, IterHasNextValid)
 TEST_F(PayloadGeneralTests, IterHasNextInValidIter)
 {
     msgPayload          testPayload = NULL;
-    mama_bool_t         output = NULL;
+    mama_bool_t         output = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);
@@ -1896,7 +1896,7 @@ TEST_F(PayloadGeneralTests, IterHasNextInValidPayload)
 {
     msgPayload          testPayload = NULL;
     msgPayloadIter      testIter = NULL;
-    mama_bool_t         output = NULL;
+    mama_bool_t         output = 0;
 
     result = aBridge->msgPayloadCreate(&testPayload);
 	EXPECT_EQ (MAMA_STATUS_OK, result);

@@ -59,12 +59,10 @@ MamaPriceTest::~MamaPriceTest(void)
 void MamaPriceTest::SetUp(void)
 {
 	// Create a new mama price
-    //ASSERT_EQ(mamaPrice_create(&m_price), MAMA_STATUS_OK);
     m_price = new MamaPrice();
     m_priceDp = new MamaPrice();
 
     // Set the value of the price	
-    //ASSERT_EQ(mamaPrice_setValue(m_price, 4000000000), MAMA_STATUS_OK);
     m_price->setValue(4000000000);
     m_priceDp->setValue(1.12345678901234567890);
 }
@@ -74,11 +72,15 @@ void MamaPriceTest::TearDown(void)
 	// Delete the price
 	if(m_price != NULL)
 	{
-        //ASSERT_EQ(mamaPrice_destroy(m_price), MAMA_STATUS_OK);
-        delete m_price;
-        m_price = NULL;
+		delete m_price;
+		m_price = NULL;
 	}
-    ASSERT_TRUE(m_price == NULL);
+	// Delete the extended precision price
+	if(m_priceDp != NULL)
+	{
+		delete m_priceDp;
+		m_priceDp = NULL;
+	}
 }
 
 /* ************************************************************************* */
@@ -533,11 +535,8 @@ TEST_F(MamaPriceTest, SetPrecisionDiv512)
 
 TEST_F(MamaPriceTest, SetFromString)
 {
-    MamaPrice*  m_price;
     const char* value       = "123.45";
     double      doubleValue = 0.0;
-
-    m_price = new MamaPrice();
 
     m_price->setFromString(value);
 
@@ -548,11 +547,8 @@ TEST_F(MamaPriceTest, SetFromString)
 
 TEST_F(MamaPriceTest, SetFromStringLargeValue)
 {
-    MamaPrice*  m_price;
     const char* value       = "123.456789012345";
     double      doubleValue = 0.0;
-
-    m_price = new MamaPrice();
 
     m_price->setFromString(value);
 
@@ -563,12 +559,10 @@ TEST_F(MamaPriceTest, SetFromStringLargeValue)
 
 TEST_F(MamaPriceTest, SetFromStringInvalidPrice)
 {
-    MamaPrice*  m_price;
     const char* value       = "MY PRICE";
     double      doubleValue = 0.0;
 
-    m_price = new MamaPrice();
-
+    m_price->clear();
     m_price->setFromString(value);
 
     doubleValue = m_price->getValue();

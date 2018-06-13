@@ -357,7 +357,7 @@ TEST_F (MiddlewareSubscriptionTests, destroyInvalid)
 
 TEST_F (MiddlewareSubscriptionTests, isValid)
 {
-    int res = NULL;
+    int res = 0;
     ASSERT_EQ(MAMA_STATUS_OK,
               mamaSubscription_create(parent, queue, &callbacks, source, sourceName, closure));
 
@@ -375,7 +375,7 @@ TEST_F (MiddlewareSubscriptionTests, isValid)
 
 TEST_F (MiddlewareSubscriptionTests, isValidInvalid)
 {
-    int res = NULL;
+    int res = 0;
 
     res = mBridge->bridgeMamaSubscriptionIsValid(NULL);
     
@@ -385,7 +385,7 @@ TEST_F (MiddlewareSubscriptionTests, isValidInvalid)
 
 TEST_F (MiddlewareSubscriptionTests, hasWildcards)
 {
-    int res = NULL;
+    int res = 0;
 
     res = mBridge->bridgeMamaSubscriptionHasWildcards(NULL);
     
