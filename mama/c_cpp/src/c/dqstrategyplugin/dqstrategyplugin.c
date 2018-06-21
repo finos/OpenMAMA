@@ -382,6 +382,12 @@ dqstrategyMamaPlugin_subscriptionDestroyHook(mamaPluginInfo pluginInfo,
 
     strategy = mamaSubscription_getDqStrategy(subscription);
 
+    /* basic subscriptions will not have a dqStrategy */
+    if (NULL == strategy)
+    {
+        return MAMA_STATUS_OK;
+    }
+
     if (MAMA_STATUS_OK == dqStrategy_destroy(strategy))
     {
         return MAMA_STATUS_OK;
