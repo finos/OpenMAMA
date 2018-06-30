@@ -41,7 +41,7 @@ import com.wombat.mama.MamaQueueGroup;
 
 /**
  * The MamdaBookTicker example shows how to make a subscription for an
- * order book (similar to trades & quotes). In the callback, one gets
+ * order book (similar to trades and quotes). In the callback, one gets
  * access to the complete book after the delta has been applied.  The
  * example prints the entire book upon receipt of a recap/initial and
  * just the top-10 for a delta (although the full book is readily

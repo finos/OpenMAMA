@@ -156,7 +156,7 @@ public class MamaPrice implements Comparable
 	 * This function obtains the double value of the price rounded to zero precision. 
 	 *
 	 * @return The rounded value.
-	 * @exception com.wombat.mama MamaException thrown if the underlying JNI object has been destroyed.
+	 * @exception com.wombat.mama.MamaException thrown if the underlying JNI object has been destroyed.
 	 * @exception com.wombat.common.WombatException for other general MAMA errors.
 	 */
     public double getRoundedValue ()
@@ -169,7 +169,7 @@ public class MamaPrice implements Comparable
 	 *
 	 * @param precision The precision to use for rounding.
 	 * @return The rounded value.
-	 * @exception com.wombat.mama MamaException thrown if the underlying JNI object has been destroyed.
+	 * @exception com.wombat.mama.MamaException thrown if the underlying JNI object has been destroyed.
 	 * @exception com.wombat.common.WombatException for other general MAMA errors.
 	 */
     public double getRoundedValue (MamaPricePrecision precision)

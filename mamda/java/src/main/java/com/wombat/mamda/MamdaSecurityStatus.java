@@ -86,7 +86,7 @@ public class MamdaSecurityStatus
      * Convert a string representation of a security status to the
      * enumeration.
      *
-     * @param securityStatusStr The security status as a string.
+     * @param securityStatus The security status as a string.
      *
      * @return The security status as a short.
      */

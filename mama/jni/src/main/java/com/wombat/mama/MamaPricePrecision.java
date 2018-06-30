@@ -145,7 +145,7 @@ public class MamaPricePrecision
 
     /**
      * Return the appropriate precision for a given number of
-     * decimal places. If places > 10 return Unknown.
+     * decimal places. If places is greater than 10 return Unknown.
      */
     public static MamaPricePrecision decimals2Precision (int places)
     {

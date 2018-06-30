@@ -152,7 +152,6 @@ public interface MamdaTradeCancelOrError extends MamdaBasicEvent
     /**
      * getShortSaleCircuitBreaker Returns the ShortSaleCircuitBreaker
      * @return ShortSaleCircuitBreaker
-     * @see MamdaTradeReport#getOrigShortSaleCircuitBreaker()
      */
     public char getOrigShortSaleCircuitBreaker();  
 

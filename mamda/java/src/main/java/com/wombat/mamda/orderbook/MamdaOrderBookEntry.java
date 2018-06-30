@@ -264,7 +264,7 @@ public class MamdaOrderBookEntry
     /**
      * Set the status for the entry.
      *
-     * @value the new status value.
+     * @param value the new status value.
      */
     public void setStatus (int value)
     {
@@ -614,7 +614,7 @@ public class MamdaOrderBookEntry
      * Order book entry equality verification.  A
      * MamdaOrderBookException is thrown if the entries within a price
      * level are not equal, along with the reason for the inequality.
-     * \throw<MamdaOrderBookException> \n
+     * @throws MamdaOrderBookException
      */
     public void assertEqual (MamdaOrderBookEntry  rhs)
     {

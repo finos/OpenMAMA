@@ -34,7 +34,7 @@ import java.util.Properties;
  * <code>setDictionary()</code> method which contains field mappings.
  * <br>
  * Each mapping should have the following format:<br>
- * mamda.field.<common field name>=<mapped field name> e.g.<br>
+ * mamda.field.[common field name]=[mapped field name] e.g.<br>
  * mamda.field.wTradePrice=myMappedTradePrice where myMappedTradePrice is the
  * name of the field under which the trade price is being published by the
  * feedhandlers and which is being published by the dictionary to describe the

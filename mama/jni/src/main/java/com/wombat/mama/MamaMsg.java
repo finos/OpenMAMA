@@ -28,10 +28,12 @@ import java.nio.*;
 /**
  * Wrapper class for the native C mama msg structure.
  *
- * <p/>
- * Field identifiers must be >=0. A field identifier of 0 indicates that there
- * is no unique FID and multiple fields with the same name may have FID == 0.
- * <p/>
+ * <p>
+ * Field identifiers must be greater than or equal to 0. A field identifier
+ * of 0 indicates that there is no unique FID and multiple fields with the
+ * same name may have FID == 0.
+ * </p>
+ * <p>
  * Field lookup proceeds in the following manner.
  * <ol>
  * <li>
@@ -39,13 +41,12 @@ import java.nio.*;
  * specified fid and return the field if it exists (the name is not validated).
  * Otherwise return null.
  * </li>
- * <p/>
  * <li>
  * If the fid supplied is 0, return the first field encountered with the
  * supplied name or null if no such field exists.
  * </li>
  * </ol>
- * <p/>
+ * <p>
  * Get methods for numeric values may result in loss of information through
  * either rounding or truncation when a larger data type is accessed as a
  * smaller one. The result may be the same as the result of casting the larger
@@ -54,7 +55,7 @@ import java.nio.*;
  * might return <code>Short.MIN_VALUE</code>. It is also valid to throw a
  * <code>ClassCastException</code> or other appropriate
  * <code>RuntimeException</code>.
- * <p/>
+ * </p>
  * Since some message implementations may not natively support all data types,
  * the behaviour may vary substantially. In creating and accessing messages the
  * Wombat APIs assume that the underlying values are stored in the smallest

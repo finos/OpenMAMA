@@ -88,7 +88,6 @@ public class MamdaAuctionListener implements MamdaMsgListener,
     /**
      * clearCache - clears all cached data by resetting to 
      * default values.
-     * @param cache The Auction order cache to clear.
      */
     public void clearCache ()
     {
@@ -154,7 +153,6 @@ public class MamdaAuctionListener implements MamdaMsgListener,
     /**
      * getSendTime
      * @return mSendTime
-     * @see MamdaBasicEvent#getSendTime
      */
     public MamaDateTime getSendTime ()
     {
@@ -164,7 +162,6 @@ public class MamdaAuctionListener implements MamdaMsgListener,
     /**
      * getLineTime
      * @return mLineTime
-     * @see MamdaBasicEvent#getLineTime
      */
     public MamaDateTime getLineTime ()
     {
@@ -268,7 +265,6 @@ public class MamdaAuctionListener implements MamdaMsgListener,
     /**
      * getSendTimeFieldState
      * @return mSendTimeFieldState
-     * @see MamdaBasicEvent#getSendTimeFieldState
      */
     public short getSendTimeFieldState()
     {
@@ -278,7 +274,6 @@ public class MamdaAuctionListener implements MamdaMsgListener,
     /**
      * getLineTimeFieldState
      * @return mLineTimeFieldState
-     * @see MamdaBasicEvent#getLineTimeFieldState
      */
     public short getLineTimeFieldState()
     {

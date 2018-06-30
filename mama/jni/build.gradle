@@ -1,4 +1,10 @@
 apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'signing'
+
+group = "org.openmama"
+archivesBaseName = "openmama"
+version = "6.2.2"
 
 repositories {
     mavenCentral()
@@ -10,4 +16,67 @@ dependencies {
 
 test { 
   environment "PATH", "C:\\Users\\fquinn\\SourceExternal\\github\\fquinner\\OpenMAMA\\openmama_install_6.2.1\\bin\\dynamic"
-} 
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+uploadArchives {
+  repositories {
+    mavenDeployer {
+      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+        authentication(userName: ossrhUsername, password: ossrhPassword)
+      }
+
+      pom.project {
+        name 'OpenMAMA'
+        packaging 'jar'
+        // optionally artifactId can be defined here 
+        description 'OpenMAMA is a high performance vendor neutral lightweight wrapper that provides a common API interface to different middleware and messaging solutions across a variety of platforms and languages.'
+        url 'https://www.openmama.org'
+
+        scm {
+          connection 'scm:https://github.com/OpenMAMA/OpenMAMA.git'
+          developerConnection 'scm:git@github.com:OpenMAMA/OpenMAMA.git'
+          url 'https://github.com/OpenMAMA/OpenMAMA'
+        }
+
+        licenses {
+          license {
+            name 'GNU LESSER GENERAL PUBLIC LICENSE 2.1'
+            url 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html'
+          }
+        }
+
+        developers {
+          developer {
+            id 'fquinner'
+            name 'Frank Quinn'
+            email 'fquinn@cascadium.io'
+          }
+        }
+      }
+    }
+  }
+}
