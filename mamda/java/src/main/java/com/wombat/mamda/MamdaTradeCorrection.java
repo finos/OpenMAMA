@@ -239,7 +239,7 @@ public interface MamdaTradeCorrection extends MamdaBasicEvent
     /**
      * getShortSaleCircuitBreaker Returns the ShortSaleCircuitBreaker
      * @return ShortSaleCircuitBreaker
-     * @see MamdaTradeReport#getCorrShortSaleCircuitBreaker()
+
      */
     public char getCorrShortSaleCircuitBreaker();  
 

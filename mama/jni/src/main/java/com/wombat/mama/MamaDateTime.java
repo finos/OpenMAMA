@@ -243,7 +243,7 @@ public class MamaDateTime implements Comparable
 	 * Get the date and time as microseconds since the Epoch, (using the UTC timezone).
 	 *
 	 * @return The number of microseconds since the Epoch.
-	 * @exception com.wombat.mama MamaException thrown if the underlying JNI object has been destroyed.
+	 * @exception com.wombat.mama.MamaException thrown if the underlying JNI object has been destroyed.
 	 * @exception com.wombat.common.WombatException for other general MAMA errors.
 	 */
     public long getEpochTimeMicroseconds ()
@@ -282,7 +282,7 @@ public class MamaDateTime implements Comparable
     * threads concurrently to avoid contention in strftime.
     *
     * @return The number of seconds, (including partial seconds), since the Epoch.
-    * @exception com.wombat.mama MamaException thrown if the underlying JNI object has been destroyed.
+    * @exception com.wombat.mama.MamaException thrown if the underlying JNI object has been destroyed.
     * @exception com.wombat.common.WombatException for other general MAMA errors.
     */
     public native double getEpochTimeSecondsWithCheck ();

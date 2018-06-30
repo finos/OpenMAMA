@@ -352,7 +352,6 @@ public class MamdaOrderImbalanceListener implements MamdaMsgListener,
     /**
      * getSendTime
      * @return mSendTime
-     * @see MamdaBasicEvent#getSendTime
      */
     public MamaDateTime getSendTime ()
     {
@@ -362,7 +361,6 @@ public class MamdaOrderImbalanceListener implements MamdaMsgListener,
     /**
      * getLineTime
      * @return mLineTime
-     * @see MamdaBasicEvent#getLineTime
      */
     public MamaDateTime getLineTime ()
     {
@@ -610,7 +608,6 @@ public class MamdaOrderImbalanceListener implements MamdaMsgListener,
     /**
      * getSendTimeFieldState
      * @return mSendTimeFieldState
-     * @see MamdaBasicEvent#getSendTimeFieldState
      */
     public short getSendTimeFieldState()
     {
@@ -620,7 +617,6 @@ public class MamdaOrderImbalanceListener implements MamdaMsgListener,
     /**
      * getLineTimeFieldState
      * @return mLineTimeFieldState
-     * @see MamdaBasicEvent#getLineTimeFieldState
      */
     public short getLineTimeFieldState()
     {

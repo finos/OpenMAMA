@@ -52,7 +52,7 @@ import com.wombat.mama.*;
  *
  *    java com.wombat.mama.MamaListen -S SOURCE -s MSFT.ISLD
  *
- * 3. Subscribing to top-of-book MSFT & ORCL from Island ITCH feed
+ * 3. Subscribing to top-of-book MSFT and ORCL from Island ITCH feed
  *    (specific fields):
  *
  *    java com.wombat.mama.MamaListen -s MSFT.ISLD -s ORCL.ISLD wBidPrice wBidSize wAskPrice wAskSize wTradePrice wTradeVolume wTotalVolume
@@ -60,7 +60,7 @@ import com.wombat.mama.*;
  * 4. Subscribing to a list of symbols from a file (all fields):
  *
  *    java com.wombat.mama.MamaListen -S WOMABT -f file
- * <pre>
+ * </pre>
  */
 public class MamaListen
 {

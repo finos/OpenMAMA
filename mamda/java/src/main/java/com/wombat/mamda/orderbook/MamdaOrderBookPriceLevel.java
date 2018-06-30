@@ -310,7 +310,7 @@ public class MamdaOrderBookPriceLevel
     }
 
     /**
-     * Take the details from <code>level<code> and apply them to this level.
+     * Take the details from <code>level</code> and apply them to this level.
      * This does not update entries within the level, only information
      * pertaining to the level itself.
      * It is intended that this method should not be used externally to the
@@ -330,7 +330,7 @@ public class MamdaOrderBookPriceLevel
     }
 
     /**
-     * Take the details from <code>atomic level<code> and apply them to this level.
+     * Take the details from <code>atomic level</code> and apply them to this level.
      * This does not update entries within the level, only information
      * pertaining to the level itself.
      * It is intended that this method should not be used externally to the
@@ -348,7 +348,7 @@ public class MamdaOrderBookPriceLevel
     }
      
     /**
-     * Take the details from <code>atomic levelEntry<code> and apply them to this levelEntry.
+     * Take the details from <code>atomic levelEntry</code> and apply them to this levelEntry.
      * This update entries within the level.
      * It is intended that this method should not be used externally to the
      * API.
@@ -608,7 +608,7 @@ public class MamdaOrderBookPriceLevel
      * <code>MamdaOrderBookException</code> exception is thrown. Otherwise the
      * method simply returns.
      * 
-     * @param entry The entry whose presence in the level is being determined.
+     * @param levelEntry The entry whose presence in the level is being determined.
      * 
      * @throws MamdaOrderBookException If the entry is found in the price
      * level.

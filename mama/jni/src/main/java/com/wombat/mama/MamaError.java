@@ -42,7 +42,7 @@ public class MamaError
     /** 
       Get a stringified representation of the error.
 
-      @param quality A valid quality short value.
+      @param error The error code to stringify.
       @return The string representation of the quality.
      */
     public static String toString (int error)
