@@ -11,9 +11,11 @@ osname = env['host']['os']
 if osname == 'Linux':
     includePath.append('./linux')
     includePath.append('./linux/wombat')
+    InstWomPlatformHeaders = Glob('linux/wombat/*.h')
 elif osname == 'Darwin':
     includePath.append('./darwin')
     includePath.append('./darwin/wombat')
+    InstWomPlatformHeaders = Glob('darwin/wombat/*.h')
 
 includePath.append('./wombat')
 
@@ -57,4 +59,5 @@ lib = env.StaticLibrary('libwombatcommon', objects)
 Alias('install', env.Install('$libdir', lib))
 Alias('install', env.Install('$incdir', InstHeaders))
 Alias('install', env.Install('$incdir/wombat', InstWomHeaders))
+Alias('install', env.Install('$incdir/wombat', InstWomPlatformHeaders))
 
