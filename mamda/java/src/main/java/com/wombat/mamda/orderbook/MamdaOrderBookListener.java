@@ -1465,7 +1465,7 @@ public class MamdaOrderBookListener
         entry.setTime   (entryTime);
         entry.setStatus (status);
         entry.setId     (id);
-        
+
         //Apply new position
         if (entryPosition > 0 &&
            MamdaOrderBookEntry.ACTION_UPDATE == entryAction)
