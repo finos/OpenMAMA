@@ -2,9 +2,11 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-group = "org.openmama"
-archivesBaseName = "openmama"
-version = "6.2.2-1"
+if (!project.hasProperty('legacyNaming')) {
+  group = "org.openmama"
+  archivesBaseName = "openmama"
+  version = "6.2.2-1"
+}
 
 repositories {
     mavenCentral()
