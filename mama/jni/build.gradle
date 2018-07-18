@@ -4,7 +4,7 @@ apply plugin: 'signing'
 
 group = "org.openmama"
 archivesBaseName = "openmama"
-version = "6.2.2"
+version = "6.2.2-1"
 
 repositories {
     mavenCentral()
