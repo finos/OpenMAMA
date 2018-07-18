@@ -26,7 +26,7 @@ endforeach()
 ExternalProject_Add(mamajnijava
         SOURCE_DIR "."
         BUILD_COMMAND ""
-        CONFIGURE_COMMAND ${BIN_GRADLE} --no-daemon -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/../build.gradle jar testClasses
+        CONFIGURE_COMMAND ${BIN_GRADLE} --no-daemon -PlegacyNaming -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/../build.gradle jar testClasses
         INSTALL_COMMAND ""
         LOG_BUILD 1)
 
