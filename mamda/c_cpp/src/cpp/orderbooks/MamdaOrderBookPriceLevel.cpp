@@ -1289,11 +1289,9 @@ namespace Wombat
         MamdaOrderBookEntry*  entry = new MamdaOrderBookEntry;
         entry->setId (id);
         entry->setAction (MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
-        //addEntry (entry, entryPosition);   
-        entry->setPriceLevel (&mLevel);
-        mEntries->push_back (entry);
-        mNumEntries++;
-        mNumEntriesTotal++;
+
+        addEntry (entry, entryPosition);   
+
         newEntry = true;
  
  
