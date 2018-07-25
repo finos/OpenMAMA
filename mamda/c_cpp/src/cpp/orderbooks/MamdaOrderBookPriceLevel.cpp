@@ -299,14 +299,21 @@ namespace Wombat
 
                 for (mama_u32_t ii (1) ; iter != endIter; ++ii, ++iter)
                 {
-                    if (ii == targetEntryPosition)
-                        targetIter = iter;
+                    const char *rhs ((*iter)->getId ());
 
-                    if (!strcmp (id, (*iter)->getId ()))
+                    if (ii == targetEntryPosition)
+                    {
+                        targetIter = iter;
+                    }
+                    
+
+                    if (id && rhs && !strcmp (id, rhs))
                     {
                         // Entry is at correct position
                         if (targetEntryPosition == ii)
+                        {
                             break;
+                        }
 
                         curPos = ii;
                         entryIter = iter;
@@ -477,13 +484,18 @@ namespace Wombat
         for (mama_u32_t pos (0); iter != endIter; ++iter)
         {
             MamdaOrderBookEntry *entry (*iter);
+            const char          *rhs   (entry->getId ());
 
             if (checkState && !entry->isVisible())
+            {
                 continue;
+            }
             else
+            {
                 ++pos;
+            }
 
-            if (!strcmp (id, entry->getId ()))
+            if (id && rhs && !strcmp (id, rhs))
                 return pos;
             }
 
