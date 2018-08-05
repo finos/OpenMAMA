@@ -219,7 +219,7 @@ public interface MamdaTradeRecap extends MamdaBasicRecap
      *   <li>0- : Unchanged; Previous move was down tick.</li>
      *   <li>NA : Not applicable. (If it is meaningful to have
      *   such a value for some exchanges.)</li>
-     * <ul>
+     * </ul>
      */
     public String getTradeDirection();
 
@@ -235,13 +235,13 @@ public interface MamdaTradeRecap extends MamdaBasicRecap
      *   <li>0 : No TradeSide is currently known/available.</li>
      *   <li>1 or B : Buy</li>
      *   <li>2 or S : Sell</li>
-     * <ul>
+     * </ul>
      * AggressorSide
      * <ul>
      *   <li>0 : No AggressorSide is currently known/available.</li>
      *   <li>1 or B : Buy</li>
      *   <li>2 or S : Sell</li>
-     * <ul>
+     * </ul>
      */
     public String getSide();
 
@@ -469,7 +469,7 @@ public interface MamdaTradeRecap extends MamdaBasicRecap
      *   <li>OnExchange</li>
      *   <li>OnExchangeOffBook</li>
      *   <li>OffExchange</li>
-     * <ul>
+     * </ul>
      */
     public String getTradeExecVenue();
 

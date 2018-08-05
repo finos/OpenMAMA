@@ -51,7 +51,7 @@ public class MamdaConcreteBasicEvent implements MamdaBasicEvent
     }
 
     /**
-     * @param mSrcTime The mSrcTime to set.
+     * @param srcTime The mSrcTime to set.
      */
     public void setSrcTime (MamaDateTime srcTime)
     {
@@ -75,7 +75,7 @@ public class MamdaConcreteBasicEvent implements MamdaBasicEvent
     }
 
     /**
-     * @param mActivityTime The mActivityTime to set.
+     * @param activityTime The mActivityTime to set.
      */
     public void setActivityTime (MamaDateTime activityTime)
     {
@@ -99,7 +99,7 @@ public class MamdaConcreteBasicEvent implements MamdaBasicEvent
     }
 
     /**
-     * @param mEventTime The mEventTime to set.
+     * @param eventTime The mEventTime to set.
      */
     public void setEventTime (MamaDateTime eventTime)
     {
@@ -123,7 +123,7 @@ public class MamdaConcreteBasicEvent implements MamdaBasicEvent
     }
 
     /**
-     * @param mEventSeqNum The mEventSeqNum to set.
+     * @param eventSeqNum The mEventSeqNum to set.
      */
     public void setEventSeqNum (long eventSeqNum)
     {

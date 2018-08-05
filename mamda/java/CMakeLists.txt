@@ -15,7 +15,7 @@ set(MAMAJNI_JAVA_BUILD_DIR "${CMAKE_CURRENT_BINARY_DIR}/mamda_java_build")
 ExternalProject_Add(mamdajava
         SOURCE_DIR "."
         BUILD_COMMAND ""
-        CONFIGURE_COMMAND ${BIN_GRADLE} --no-daemon -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/build.gradle jar
+        CONFIGURE_COMMAND ${BIN_GRADLE} --no-daemon -PlegacyNaming -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/build.gradle jar
         INSTALL_COMMAND ""
         LOG_BUILD 1)
 install (FILES ${MAMAJNI_JAVA_BUILD_DIR}/libs/mamda.jar DESTINATION lib)

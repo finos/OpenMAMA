@@ -72,12 +72,12 @@ public interface MamdaTradeReport extends MamdaBasicEvent
     public short  getTradePartIdFieldState();      
   
     /**
-     * @see MamdaTradeRecap#getSide();
+     * (@see MamdaTradeRecap#getSide())
      */
     public String getSide();
 
     /**
-     * @see MamdaTradeRecap#getSideFieldState();
+     * (@see MamdaTradeRecap#getSideFieldState())
      */
     public short getSideFieldState();
 
@@ -100,7 +100,7 @@ public interface MamdaTradeReport extends MamdaBasicEvent
      * the current trade for the security. This field may contain
      * multiple string values, separated by the colon(:) character.
      *
-     * <table width="100%" border="1">
+     * <table width="100%" border="1" summary="Matrix of normalized trade qualifiers">
      *   <tr><td><b>Value</b></td><td><b>Meaning</b></td></tr>
      *   <tr>
      *     <td>Normal</td>
@@ -220,7 +220,7 @@ public interface MamdaTradeReport extends MamdaBasicEvent
      *     transaction time.</td>
      *   </tr>
      *   <tr>
-     *     <td>Adjusted</tr>
+     *     <td>Adjusted</td>
      *     <td>&nbsp;</td>
      *   </tr>
      *   <tr>
