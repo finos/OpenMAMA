@@ -28,6 +28,7 @@
 #include <mamda/MamdaOrderBookComplexDelta.h>
 #include <mamda/MamdaOrderBookConcreteSimpleDelta.h>
 #include <mamda/MamdaOrderBookConcreteComplexDelta.h>
+#include <mamda/MamdaOrderBookPriceLevel.h>
 #include <mamda/MamdaOrderBookGap.h>
 #include <mamda/MamdaOrderBookFields.h>
 #include <mamda/MamdaOrderBookHandler.h>
@@ -134,6 +135,7 @@ namespace Wombat
         MamdaOrderBookTypes::Reason        mEntryReason;
         vector<mamaMsg>                    mEntries;           /* for RV MamdaFieldStatebooks */
         mama_u16_t                         mEntryStatus;
+        mama_u32_t                         mEntryPosition;
 
         // Properties
         mama_fid_t*                        mBookPropertyFids;
@@ -238,7 +240,8 @@ namespace Wombat
             const char*                         id,
             mama_quantity_t                     size,
             const MamaDateTime&                 entryTime,
-            mama_u16_t                          status);
+            mama_u16_t                          status,
+            mama_u32_t                          entryPosition);
 
         void addIgnoreEntryId    (const char*  id);
         void removeIgnoreEntryId (const char*  id);
@@ -409,6 +412,7 @@ namespace Wombat
         struct FieldUpdateEntrySize;
         struct FieldUpdateEntryTime;
         struct FieldUpdateEntryStatus;
+        struct FieldUpdateEntryPosition;
         struct FieldUpdateEntryAction;
         struct FieldUpdateEntryReason;
         struct FieldUpdateEntry;
@@ -640,7 +644,6 @@ namespace Wombat
                                         const MamaMsg&     msg,
                                         short              msgType)
     {
-
         // Ensure that the field handling is set up (once for all
         // MamdaOrderBookListener instances).
         if (!mImpl.mUpdatersComplete)
@@ -1475,7 +1478,8 @@ namespace Wombat
                           mBookMsgFields.mEntryId,
                           mBookMsgFields.mEntrySize,
                           mBookMsgFields.mEntryTime,
-                          mBookMsgFields.mEntryStatus);
+                          mBookMsgFields.mEntryStatus,
+                          mBookMsgFields.mEntryPosition);
             mBookMsgFields.clearEntry();
         }
         else
@@ -1495,7 +1499,8 @@ namespace Wombat
                                       mBookMsgFields.mEntryId,
                                       mBookMsgFields.mEntrySize,
                                       mBookMsgFields.mEntryTime,
-                                      mBookMsgFields.mEntryStatus);
+                                      mBookMsgFields.mEntryStatus,
+                                      mBookMsgFields.mEntryPosition);
                         mBookMsgFields.clearEntry();
                     }
                 }
@@ -1514,7 +1519,8 @@ namespace Wombat
                                   mBookMsgFields.mEntryId,
                                   mBookMsgFields.mEntrySize,
                                   mBookMsgFields.mEntryTime,
-                                  mBookMsgFields.mEntryStatus);
+                                  mBookMsgFields.mEntryStatus,
+                                  mBookMsgFields.mEntryPosition);
                     mBookMsgFields.clearEntry();
                 }
             }
@@ -1614,7 +1620,8 @@ namespace Wombat
         const char*                         id,
         mama_quantity_t                     size,
         const MamaDateTime&                 entryTime,
-        mama_u16_t                          status)
+        mama_u16_t                          status,
+        mama_u32_t                          entryPosition)
     {
         // We have to connect this entry to the price level, even if this
         // is a deletion and even if this is a deletion of an entry that
@@ -1666,7 +1673,8 @@ namespace Wombat
                     entry->setAction (MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
                     entry->setSourceDerivative (mFullBook->getSourceDerivative());
                     entry->setManager (mEntryManager);
-                    level->addEntry (entry);
+                    level->addEntry (entry,
+                                     entryPosition);
                     mEntryManager->addEntry (entry);
 
                     newEntry = true;
@@ -1731,7 +1739,8 @@ namespace Wombat
                     entry->setAction (MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
                     entry->setSourceDerivative (mFullBook->getSourceDerivative());
                     entry->setManager (mEntryManager);
-                    level->addEntry (entry);
+                    level->addEntry (entry,
+                                     entryPosition);
                     mEntryManager->addEntry (entry, uniqueId);
 
                     newEntry = true;
@@ -1772,7 +1781,7 @@ namespace Wombat
             }
             else
             {
-                entry = level->findOrCreateEntry (id, newEntry);
+                entry = level->findOrCreateEntry (id, newEntry, entryPosition);
                 if ((newEntry) && (MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UPDATE == entryAction))
                 {
                     //Fix the entry action
@@ -1816,6 +1825,14 @@ namespace Wombat
         entry->setTime (entryTime);
         entry->setStatus (status);
         entry->setReason (reason);
+        
+        //Apply new position
+        if (entryPosition &&
+            MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UPDATE == entryAction)
+        {
+            level->updateEntryPosition (entry->getId (),
+                                    entryPosition);
+        }
 
         if (!mBookMsgFields.mHasPlTime)
         {
@@ -2817,6 +2834,18 @@ namespace Wombat
         }
     };
 
+    struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateEntryPosition
+        : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
+    {
+        void onUpdate (MamdaOrderBookListener::MamdaOrderBookListenerImpl&  impl,
+                       const mamaMsgField&                                  field)
+        {
+            mama_u32_t result = 0;
+            mamaMsgField_getU32 (field, &(result));
+            impl.mBookMsgFields.mEntryPosition = result;
+        }
+    };
+
     struct MamdaOrderBookListener::MamdaOrderBookListenerImpl::FieldUpdateEntry
         : public MamdaOrderBookListener::MamdaOrderBookListenerImpl::BookFieldUpdate
     {
@@ -3105,6 +3134,9 @@ namespace Wombat
         initFieldUpdater(MamdaOrderBookFields::ENTRY_STATUS,
                          new MamdaOrderBookListener::
                          MamdaOrderBookListenerImpl::FieldUpdateEntryStatus);
+        initFieldUpdater(MamdaOrderBookFields::ENTRY_POSITION,
+                         new MamdaOrderBookListener::
+                         MamdaOrderBookListenerImpl::FieldUpdateEntryPosition);  
         initFieldUpdater(MamdaOrderBookFields::BID_MARKET_ORDERS,
                          new MamdaOrderBookListener::
                          MamdaOrderBookListenerImpl::FieldUpdateBidMarketOrders);
@@ -3152,6 +3184,7 @@ namespace Wombat
         mEntryId           = NULL;
         mEntrySize         = 0;
         mEntryStatus       = 0;
+        mEntryPosition     = 0;
         mEntryAction       = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE;
         mEntryReason       = MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN;
         mEntryTime.clear();
@@ -3198,6 +3231,7 @@ namespace Wombat
         mEntryReason       = MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN;
         mHasPlAction       = false;
         mEntryStatus       = 0;
+        mEntryPosition     = 0;
         mSrcTime.clear();
         mBookTime.clear();
         mPlTime.clear ();

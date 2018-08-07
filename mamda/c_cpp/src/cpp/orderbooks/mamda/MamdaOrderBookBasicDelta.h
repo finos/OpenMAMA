@@ -61,6 +61,15 @@ namespace Wombat
                           mama_quantity_t                   plDeltaSize,
                           MamdaOrderBookPriceLevel::Action  plAction,
                           MamdaOrderBookEntry::Action       entryAction);
+        /**
+         * Set the delta info with entry position.
+         */
+        virtual void set (MamdaOrderBookEntry*              entry,
+                          MamdaOrderBookPriceLevel*         level,
+                          mama_quantity_t                   plDeltaSize,
+                          MamdaOrderBookPriceLevel::Action  plAction,
+                          MamdaOrderBookEntry::Action       entryAction,
+                          mama_u32_t                        entryPosition);
 
         /**
          * Set the MamdaOrderBookPriceLevel object to which this entry
@@ -153,6 +162,15 @@ namespace Wombat
         virtual const MamdaOrderBook* getOrderBook() const;
 
         /**
+         * Get the entry position of the entry.
+         * 
+         * Return 0 if entry is null.
+         *
+         * @return The entry position of the entry
+         */
+        mama_u32_t getEntryPosition () const;
+
+        /**
          * Dump the simple update to the output stream.
          *
          * @param output The <code>ostream</code> to write the update to.
@@ -165,6 +183,7 @@ namespace Wombat
         mama_quantity_t                   mPlDeltaSize;
         MamdaOrderBookPriceLevel::Action  mPlAction;
         MamdaOrderBookEntry::Action       mEntryAction;
+        mama_u32_t                        mEntryPosition;
 
     private:
         // No copy constructor nor assignment operator.

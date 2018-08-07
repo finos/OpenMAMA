@@ -203,9 +203,19 @@ public:
         char        entryAction   = levelEntry.getPriceLevelEntryAction ();
         const char* entryId       = levelEntry.getPriceLevelEntryId ();
         long        entrySize     = levelEntry.getPriceLevelEntrySize ();
+        unsigned int entryPosition = levelEntry.getPriceLevelEntryPosition ();
 
         cout << "\tENTRY | " << symbol << " | " << actNumEntries << " | ";
-        cout << entryAction << " | " << entryId << " | " << entrySize << endl;
+        cout << entryAction << " | " << entryId << " | " << entrySize;
+        cout << entryAction << " | " << entryId << " | " << entrySize;
+                
+        if( 0 != entryPosition )
+        {
+            cout << " | " << entryPosition;
+        }
+         
+        cout << std::endl;
+        
         flush (cout);
     }
 

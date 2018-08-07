@@ -115,7 +115,8 @@ namespace Wombat
         char                 getPriceLevelEntryAction    () const;
         char                 getPriceLevelEntryReason    () const;
         const char*          getPriceLevelEntryId        () const;
-        mama_u64_t           getPriceLevelEntrySize      () const;  
+        mama_u64_t           getPriceLevelEntrySize      () const;
+        mama_u32_t           getPriceLevelEntryPosition  () const;  
         const MamaDateTime&  getPriceLevelEntryTime      () const;
 
         MamdaOrderBookTypes::OrderType getOrderType      () const;

@@ -64,6 +64,7 @@ namespace Wombat
         static const MamaFieldDescriptor*  ENTRY_REASON;
         static const MamaFieldDescriptor*  ENTRY_SIZE;
         static const MamaFieldDescriptor*  ENTRY_TIME;
+        static const MamaFieldDescriptor*  ENTRY_POSITION;
         static const MamaFieldDescriptor*  ENTRY_STATUS;
         static const MamaFieldDescriptor*  ENTRY_PROPERTIES;
         static const MamaFieldDescriptor*  ENTRY_PROP_MSG_TYPE;

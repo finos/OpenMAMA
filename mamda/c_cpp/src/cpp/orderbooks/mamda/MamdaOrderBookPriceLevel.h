@@ -145,10 +145,22 @@ namespace Wombat
         void addEntry (MamdaOrderBookEntry*  entry);
 
         /**
+        * Add an entry to the level at a specific position
+        */
+        void addEntry (MamdaOrderBookEntry*  entry,
+                       mama_u32_t            entryPosition);
+
+        /**
          * Update an entry by copying the information from another entry.
          */
         void updateEntry (const MamdaOrderBookEntry&  entry);
-
+    
+        /**
+         * Update the position of an Entry within the list of Entries.
+         */
+        void updateEntryPosition (const char *id,
+                                   mama_u32_t targetEntryPosition);
+      
         /**
          * Remove an entry based on the entry ID information from another entry.
          */
@@ -365,6 +377,20 @@ namespace Wombat
             bool&        newEntry);
 
         /**
+         * Return the order book entry with ID "id" in the price level,
+         * creating one if necessary.
+         *
+         * @param id  The ID of the order book entry.
+         * @param newEntry  Boolean reference indicating entry creation.
+         * @param entryPosition  The entry position for the price level.
+         * @return The order book entry found or created.
+         */
+        MamdaOrderBookEntry* findOrCreateEntry (
+            const char*  id,
+            bool&        newEntry,
+            mama_u32_t entryPosition);
+
+        /**
          * Return the order book entry at position "pos" in the price level.
          *
          * @param pos  The position of the order book entry.
@@ -392,7 +418,18 @@ namespace Wombat
          * @return The order type of the level.
          */
         OrderType getOrderType () const;
-        
+    
+         /**      
+         * Return the position of an Entry within the Price Level. This
+         * index starts from 1.
+         *
+         * @param id  The entry Id.
+         * @return The Entry position or 0 if the Entry is not found.
+         * @throw none
+         */
+        mama_u32_t getEntryPositionInPriceLevel (
+        const char *id) const;
+
         /**
          * Set the order type for this level.
          * @param orderType The order type of the level.

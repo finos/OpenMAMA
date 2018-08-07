@@ -204,6 +204,49 @@ namespace Wombat
             const MamaDateTime&             eventTime,
             MamdaOrderBookBasicDelta*       delta);
 
+        void addEntry (
+            PlMap&                          bookSide,
+            MamdaOrderBookEntry*            entry,
+            double                          price,
+            MamdaOrderBookPriceLevel::Side  side,
+            const MamaDateTime&             eventTime,
+            MamdaOrderBookBasicDelta*       delta,
+            mama_u32_t                      entryPosition);
+        
+        void addEntry (
+            PlMap&                          bookSide,
+            MamdaOrderBookEntry*            entry,
+            MamaPrice&                      price,
+            MamdaOrderBookPriceLevel::Side  side,
+            const MamaDateTime&             eventTime,
+            MamdaOrderBookBasicDelta*       delta,
+            mama_u32_t                      entryPosition);
+    
+        void addEntry (
+            const char*                     entryId,
+            mama_quantity_t                 entrySize,
+            double                          price,
+            MamdaOrderBookPriceLevel::Side  side,
+            const MamaDateTime&             eventTime,
+            const MamaSourceDerivative*     source,
+            MamdaOrderBookBasicDelta*       delta,
+            mama_u32_t                      entryPosition);
+    
+        void addEntryAndSetDelta(
+            MamdaOrderBookEntry*              entry,
+            const MamaDateTime&               eventTime,
+            MamdaOrderBookBasicDelta*         delta,
+            MamdaOrderBookPriceLevel::Action  plAction, 
+            MamdaOrderBookPriceLevel*         level,
+            mama_u32_t                        entryPosition);
+
+        void updateEntry (
+            MamdaOrderBookEntry*            entry,
+            mama_quantity_t                 size,
+            const MamaDateTime&             eventTime,
+            MamdaOrderBookBasicDelta*       delta,
+            mama_u32_t                      entryPosition);
+
         void updateEntry (
             MamdaOrderBookEntry*            entry,
             mama_quantity_t                 size,
@@ -239,7 +282,14 @@ namespace Wombat
                        mama_quantity_t                      plDeltaSize,
                        MamdaOrderBookPriceLevel::Action     plAction,
                        MamdaOrderBookEntry::Action          entryAction);
-
+        
+        void addDelta (MamdaOrderBookEntry*                 entry,
+                       MamdaOrderBookPriceLevel*            level,
+                       mama_quantity_t                      plDeltaSize,
+                       MamdaOrderBookPriceLevel::Action     plAction,
+                       MamdaOrderBookEntry::Action          entryAction,
+                       mama_u32_t                           entryPositon);
+        
         bool reevaluate (
             /*MamdaOrderBookBasicDeltaList*   delta*/);
 
@@ -846,6 +896,39 @@ namespace Wombat
                             eventTime, delta);
     }
 
+    void MamdaOrderBook::addEntry (
+        MamdaOrderBookEntry*            entry,
+        MamaPrice&                      price,
+        MamdaOrderBookPriceLevel::Side  side,
+        const MamaDateTime&             eventTime,
+        MamdaOrderBookBasicDelta*       delta,
+        mama_u32_t                      entryPosition)
+    {
+        if (side == MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID)
+            mImpl.addEntry (mImpl.mBidLevels, entry, price, side,
+                            eventTime, delta, entryPosition);
+        else if (side == MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK)
+            mImpl.addEntry (mImpl.mAskLevels, entry, price, side,
+                            eventTime, delta, entryPosition);
+    }
+    
+    void MamdaOrderBook::addEntry (
+        MamdaOrderBookEntry*            entry,
+        double                          price,
+        MamdaOrderBookPriceLevel::Side  side,
+        const MamaDateTime&             eventTime,
+        MamdaOrderBookBasicDelta*       delta,
+        mama_u32_t                      entryPosition)
+    {
+        if (side == MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID)
+            mImpl.addEntry (mImpl.mBidLevels, entry, price, side,
+                            eventTime, delta, entryPosition);
+        else if (side == MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK)
+            mImpl.addEntry (mImpl.mAskLevels, entry, price, side,
+                            eventTime, delta, entryPosition);
+    }
+
+
 
     MamdaOrderBookEntry* MamdaOrderBook::addEntry (
         const char*                     entryId,
@@ -883,6 +966,43 @@ namespace Wombat
         return entry;
     }
 
+    MamdaOrderBookEntry* MamdaOrderBook::addEntry (
+        const char*                     entryId,
+        mama_quantity_t                 entrySize,
+        MamaPrice&                      price,
+        MamdaOrderBookPriceLevel::Side  side,
+        const MamaDateTime&             eventTime,
+        const MamaSourceDerivative*     source,
+        MamdaOrderBookBasicDelta*       delta,
+        mama_u32_t                      entryPosition)
+    {
+        MamdaOrderBookEntry*  entry = 
+            new MamdaOrderBookEntry (entryId, entrySize,
+                                    MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
+                                    eventTime,
+                                    source);
+        addEntry (entry, price, side, eventTime, delta, entryPosition);
+        return entry;
+    }
+
+    MamdaOrderBookEntry* MamdaOrderBook::addEntry (
+        const char*                     entryId,
+        mama_quantity_t                 entrySize,
+        double                          price,
+        MamdaOrderBookPriceLevel::Side  side,
+        const MamaDateTime&             eventTime,
+        const MamaSourceDerivative*     source,
+        MamdaOrderBookBasicDelta*       delta,
+        mama_u32_t                      entryPosition)
+    {
+        MamdaOrderBookEntry*  entry = 
+            new MamdaOrderBookEntry (entryId, entrySize,
+                                    MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
+                                    eventTime,
+                                    source);
+        addEntry (entry, price, side, eventTime, delta, entryPosition);
+        return entry;
+    }
 
     void MamdaOrderBook::updateEntry (
         MamdaOrderBookEntry*            entry,
@@ -891,6 +1011,16 @@ namespace Wombat
         MamdaOrderBookBasicDelta*       delta)
     {
         mImpl.updateEntry (entry, size, eventTime, delta);
+    }
+    
+    void MamdaOrderBook::updateEntry (
+        MamdaOrderBookEntry*            entry,
+        mama_quantity_t                 size,
+        const MamaDateTime&             eventTime,
+        MamdaOrderBookBasicDelta*       delta,
+        mama_u32_t                      entryPosition)
+    {
+        mImpl.updateEntry (entry, size, eventTime, delta, entryPosition);
     }
 
     void MamdaOrderBook::deleteEntry (
@@ -1243,6 +1373,18 @@ namespace Wombat
 
     {
         return mImpl.addDelta(entry, level, plDeltaSize, plAction, entryAction);
+    }
+    
+    void MamdaOrderBook::addDelta (
+        MamdaOrderBookEntry*              entry,
+        MamdaOrderBookPriceLevel*         level,
+        mama_quantity_t                   plDeltaSize,
+        MamdaOrderBookPriceLevel::Action  plAction,
+        MamdaOrderBookEntry::Action       entryAction,
+        mama_u32_t                        entryPosition)
+
+    {
+        return mImpl.addDelta(entry, level, plDeltaSize, plAction, entryAction, entryPosition);
     }
 
     void MamdaOrderBook::dump(std::ostream& output) const
@@ -2519,6 +2661,106 @@ namespace Wombat
         }
     }
 
+    void MamdaOrderBook::MamdaOrderBookImpl::addEntry (
+        PlMap&                          bookSide,
+        MamdaOrderBookEntry*            entry,
+        MamaPrice&                      price,
+        MamdaOrderBookPriceLevel::Side  side,
+        const MamaDateTime&             eventTime,
+        MamdaOrderBookBasicDelta*       delta,
+        mama_u32_t                      entryPosition)
+    {
+        MamdaOrderBookPriceLevel::Action  plAction;
+        MamdaOrderBookPriceLevel* level = findOrCreateLevel (
+                                            bookSide, price, side, plAction);
+
+        addEntryAndSetDelta(entry, eventTime, delta, plAction, level, entryPosition);
+    }
+    void MamdaOrderBook::MamdaOrderBookImpl::addEntry (
+        PlMap&                          bookSide,
+        MamdaOrderBookEntry*            entry,
+        double                          price,
+        MamdaOrderBookPriceLevel::Side  side,
+        const MamaDateTime&             eventTime,
+        MamdaOrderBookBasicDelta*       delta,
+        mama_u32_t                      entryPosition)
+    {
+        MamdaOrderBookPriceLevel::Action  plAction;
+        MamdaOrderBookPriceLevel* level = findOrCreateLevel (
+                                                bookSide, price, side, plAction);
+
+        addEntryAndSetDelta(entry, eventTime, delta, plAction, level, entryPosition);
+    }
+
+    void MamdaOrderBook::MamdaOrderBookImpl::addEntryAndSetDelta(
+        MamdaOrderBookEntry*              entry,
+        const MamaDateTime&               eventTime,
+        MamdaOrderBookBasicDelta*         delta,
+        MamdaOrderBookPriceLevel::Action  plAction,
+        MamdaOrderBookPriceLevel*         level,
+        mama_u32_t                        entryPosition)
+    {
+        mama_quantity_t plSizeDelta = 0.0;
+        if (!mCheckVisibility || entry->isVisible())
+        {
+            plSizeDelta = entry->getSize();
+            level->setTime (eventTime);
+        }
+        
+        //add entry to level - this will add delta to publishing list
+        level->addEntry (entry,
+                        entryPosition);
+
+        if (delta)
+        {
+            delta->set (entry, level, plSizeDelta, plAction,
+                        MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
+        }
+    }
+
+    void MamdaOrderBook::MamdaOrderBookImpl::updateEntry (
+        MamdaOrderBookEntry*            entry,
+        mama_quantity_t                 size,
+        const MamaDateTime&             eventTime,
+        MamdaOrderBookBasicDelta*       delta,
+        mama_u32_t                      entryPosition)
+    {
+        MamdaOrderBookPriceLevel* level = entry->getPriceLevel();
+        if (!level)
+            throw MamdaOrderBookInvalidEntry (entry,
+                                              "MamdaOrderBook::updateEntry()");
+        mama_quantity_t plSizeDelta = 0.0;
+        if (size != entry->getSize())
+        {
+            // For some reason, we can get updates that do not change the
+            // size and so we also don't want to change the time.
+            if (!mCheckVisibility || entry->isVisible())
+            {
+                plSizeDelta = size - entry->getSize();
+                level->setSize (level->getSize() + plSizeDelta);
+                level->setTime (eventTime);
+            }
+            entry->setSize (size);
+            entry->setTime (eventTime);
+        }
+
+        if (delta)
+        {
+            delta->set (entry, level, plSizeDelta,
+                        MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE,
+                        MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UPDATE,
+                        entryPosition);
+        }
+
+        if (mGenerateDeltas)
+        {
+            addDelta(entry, level, plSizeDelta,
+                     MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE,
+                     MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UPDATE,
+                     entryPosition);
+        }
+    }
+
     void MamdaOrderBook::MamdaOrderBookImpl::updateEntry (
         MamdaOrderBookEntry*            entry,
         mama_quantity_t                 size,
@@ -2661,6 +2903,38 @@ namespace Wombat
             /* This is number greater than two, so add the current delta. */
             mPublishComplexDelta->add (
                 entry, level, plDeltaSize, plAction, entryAction);
+        }
+    }
+    
+    void MamdaOrderBook::MamdaOrderBookImpl::addDelta (
+        MamdaOrderBookEntry*              entry,
+        MamdaOrderBookPriceLevel*         level,
+        mama_quantity_t                   plDeltaSize,
+        MamdaOrderBookPriceLevel::Action  plAction,
+        MamdaOrderBookEntry::Action       entryAction,
+        mama_u32_t                        entryPosition)
+    {
+        ++mCurrentDeltaCount;
+        if (1 == mCurrentDeltaCount)
+        {
+            /* This is number one, so save the "simple" delta. */
+            mPublishSimpleDelta->set (
+                entry, level, plDeltaSize, plAction, entryAction, entryPosition);
+        }
+        else if (2 == mCurrentDeltaCount)
+        {
+            /* This is number two, so copy the saved "simple" delta to the
+             * "complex" delta and add the current one. */
+            mPublishComplexDelta->clear();
+            mPublishComplexDelta->add (*mPublishSimpleDelta);
+            mPublishComplexDelta->add (
+                entry, level, plDeltaSize, plAction, entryAction, entryPosition);
+        }
+        else
+        {
+            /* This is number greater than two, so add the current delta. */
+            mPublishComplexDelta->add (
+                entry, level, plDeltaSize, plAction, entryAction, entryPosition);
         }
     }
 

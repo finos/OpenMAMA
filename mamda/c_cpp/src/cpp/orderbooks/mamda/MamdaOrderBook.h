@@ -396,6 +396,7 @@ namespace Wombat
         bool operator!= (const MamdaOrderBook&  rhs) const
         { return ! operator== (rhs); }
 
+
         /**
          * Add an entry to the order book and (if "delta" is not NULL)
          * record information about the delta related to this action.
@@ -417,7 +418,7 @@ namespace Wombat
             MamdaOrderBookPriceLevel::Side  side,
             const MamaDateTime&             eventTime,
             MamdaOrderBookBasicDelta*       delta);
-            
+
         /**
          * Add an entry to the order book and (if "delta" is not NULL)
          * record information about the delta related to this action.  The
@@ -445,7 +446,61 @@ namespace Wombat
             const MamaDateTime&             eventTime,
             const MamaSourceDerivative*     sourceDeriv,
             MamdaOrderBookBasicDelta*       delta);
-            
+    
+        /**
+        * Add an entry to the order book  at a specified position and 
+        * (if "delta" is not NULL) record information about the delta
+        * related to this action.
+        */
+        void addEntry (
+            MamdaOrderBookEntry*            entry,
+            MamaPrice&                      price,
+            MamdaOrderBookPriceLevel::Side  side,
+            const MamaDateTime&             eventTime,
+            MamdaOrderBookBasicDelta*       delta,
+            mama_u32_t                      entryPosition);
+        
+        void addEntry (
+            MamdaOrderBookEntry*            entry,
+            double                          price,
+            MamdaOrderBookPriceLevel::Side  side,
+            const MamaDateTime&             eventTime,
+            MamdaOrderBookBasicDelta*       delta,
+            mama_u32_t                      entryPosition);
+        
+        void addEntryAndSetDelta(
+            MamdaOrderBookEntry*              entry,
+            const MamaDateTime&               eventTime,
+            MamdaOrderBookBasicDelta*         delta,
+            MamdaOrderBookPriceLevel::Action  plAction, 
+            MamdaOrderBookPriceLevel*         level,
+            mama_u32_t                        entryPosition);
+
+        /**
+        * Add an entry to the order book at a specified position
+        * and (if "delta" is not NULL) record information about
+        * the delta related to this action.  The new entry is returned.
+        */
+        MamdaOrderBookEntry* addEntry (
+            const char*                     entryId,
+            mama_quantity_t                 entrySize,
+            MamaPrice&                      price,
+            MamdaOrderBookPriceLevel::Side  side,
+            const MamaDateTime&             eventTime,
+            const MamaSourceDerivative*     source,
+            MamdaOrderBookBasicDelta*       delta,
+            mama_u32_t                      entryPosition);
+        
+        MamdaOrderBookEntry* addEntry (
+            const char*                     entryId,
+            mama_quantity_t                 entrySize,
+            double                          price,
+            MamdaOrderBookPriceLevel::Side  side,
+            const MamaDateTime&             eventTime,
+            const MamaSourceDerivative*     source,
+            MamdaOrderBookBasicDelta*       delta,
+            mama_u32_t                      entryPosition);
+        
         /**
          * Update an entry in the order book and (if "delta" is not NULL)
          * record information about the delta related to this action.  If
@@ -457,6 +512,13 @@ namespace Wombat
             mama_quantity_t                 size,
             const MamaDateTime&             eventTime,
             MamdaOrderBookBasicDelta*       delta);
+        
+        void updateEntry (
+            MamdaOrderBookEntry*            entry,
+            mama_quantity_t                 size,
+            const MamaDateTime&             eventTime,
+            MamdaOrderBookBasicDelta*       delta,
+            mama_u32_t                      entryPosition);
 
         /**
          * Delete an entry in the order book and (if "delta" is not NULL)
@@ -774,6 +836,23 @@ namespace Wombat
                        mama_quantity_t                   plDeltaSize,
                        MamdaOrderBookPriceLevel::Action  plAction,
                        MamdaOrderBookEntry::Action       entAction);
+        /**
+         * For book delta generation. 
+         * Add a delta to the order book delta list for the publishing of
+         * order book data
+         * @param entry MamdaOrderBookEntry where change occurred.
+         * @param level MamdaOrderBookPriceLevel where change occurred.
+         * @param plDeltaSize Pricelevel size change.
+         * @param plAction Pricelevel action.
+         * @param entAction Entry action.     
+         * @param entryPosition Entry position.
+         */ 
+        void addDelta (MamdaOrderBookEntry*              entry,
+                       MamdaOrderBookPriceLevel*         level,
+                       mama_quantity_t                   plDeltaSize,
+                       MamdaOrderBookPriceLevel::Action  plAction,
+                       MamdaOrderBookEntry::Action       entAction,
+                       mama_u32_t                        entryPosition);
                        
         /**
          * clear the delta list using for storing generated deltas

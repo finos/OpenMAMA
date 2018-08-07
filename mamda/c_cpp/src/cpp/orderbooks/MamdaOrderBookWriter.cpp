@@ -447,6 +447,17 @@ namespace Wombat
         msg.addU32 (NULL, MamdaOrderBookFields::ENTRY_SIZE->getFid(),
                     (mama_u32_t)entry->getSize());
 
+        if(entry->getEntryPositionReceived())
+        {
+            mama_u32_t position = entry->getEntryPositionInPriceLevel();
+            if (position > 0)
+            {
+                msg.addU32 (NULL, MamdaOrderBookFields::ENTRY_POSITION->getFid(),
+                            position);
+            }
+
+        }
+
         if ((NULL == plTime) || (plTime->compare(entry->getTime())!=0 ))
         {
             msg.addDateTime (NULL, MamdaOrderBookFields::ENTRY_TIME->getFid(),

@@ -111,6 +111,14 @@ namespace Wombat
         virtual mama_u64_t           getPriceLevelEntrySize()       const = 0;
 
         /**
+        * Return the order book entry position. Value 0 indicates that
+        * it is undefined.
+        * 
+        * @return Order book entry position.
+        */
+        virtual mama_u32_t           getPriceLevelEntryPosition()   const = 0;
+
+        /**
          * Return the time of order book entry update.
          *
          * @return Time of order book entry update.

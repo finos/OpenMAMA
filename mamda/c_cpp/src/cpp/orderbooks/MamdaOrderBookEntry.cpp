@@ -37,33 +37,35 @@ namespace Wombat
 {
 
     MamdaOrderBookEntry::MamdaOrderBookEntry()
-        : mId          (NULL)
-        , mUniqueId    (NULL)
-        , mSize        (0)
-        , mPriceLevel  (NULL)
-        , mManager     (NULL)
-        , mSourceDeriv (NULL)
-        , mClosure     (NULL)
-        , mQuality     (MAMA_QUALITY_OK)
-        , mAction      (MAMDA_BOOK_ACTION_ADD)
-        , mStatus      (0)
-        , mReason      (MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN)
+        : mId            (NULL)
+        , mUniqueId      (NULL)
+        , mSize          (0)
+        , mPriceLevel    (NULL)
+        , mManager       (NULL)
+        , mSourceDeriv   (NULL)
+        , mClosure       (NULL)
+        , mQuality       (MAMA_QUALITY_OK)
+        , mAction        (MAMDA_BOOK_ACTION_ADD)
+        , mStatus        (0)
+        , mReason        (MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN)
+        , mEntryPosition (false)
     {
     }
 
     MamdaOrderBookEntry::MamdaOrderBookEntry(const MamdaOrderBookEntry& copy)
-        : mId          (NULL)
-        , mUniqueId    (NULL)
-        , mSize        (copy.mSize)
-        , mTime        (copy.mTime)
-        , mPriceLevel  (NULL)
-        , mManager     (NULL)
-        , mSourceDeriv (copy.mSourceDeriv)
-        , mClosure     (copy.mClosure)
-        , mQuality     (copy.mQuality)
-        , mAction      (copy.mAction)
-        , mStatus      (0)
-        , mReason      (copy.mReason)
+        : mId            (NULL)
+        , mUniqueId      (NULL)
+        , mSize          (copy.mSize)
+        , mTime          (copy.mTime)
+        , mPriceLevel    (NULL)
+        , mManager       (NULL)
+        , mSourceDeriv   (copy.mSourceDeriv)
+        , mClosure       (copy.mClosure)
+        , mQuality       (copy.mQuality)
+        , mAction        (copy.mAction)
+        , mStatus        (0)
+        , mReason        (copy.mReason)
+        , mEntryPosition (copy.mEntryPosition)
     {
         setId (copy.mId);
         setUniqueId (copy.mUniqueId);
@@ -87,6 +89,31 @@ namespace Wombat
         , mAction      (action)
         , mStatus      (0)
         , mReason      (MamdaOrderBookTypes::MAMDA_BOOK_REASON_MODIFY)
+        , mEntryPosition (false)
+    {
+        setId (entryId);
+    }
+
+    MamdaOrderBookEntry::MamdaOrderBookEntry(
+        const char*                  entryId,
+        mama_quantity_t              size,
+        Action                       action,
+        const MamaDateTime&          entryTime,
+        const MamaSourceDerivative*  deriv,
+        mama_u32_t                   entryPosition)
+        : mId          (NULL)
+        , mUniqueId    (NULL)
+        , mSize        (size)
+        , mTime        (entryTime)
+        , mPriceLevel  (NULL)
+        , mManager     (NULL)
+        , mSourceDeriv (deriv)
+        , mClosure     (NULL)
+        , mQuality     (MAMA_QUALITY_OK)
+        , mAction      (action)
+        , mStatus      (0)
+        , mReason      (MamdaOrderBookTypes::MAMDA_BOOK_REASON_MODIFY)
+        , mEntryPosition (entryPosition)
     {
         setId (entryId);
     }
@@ -117,18 +144,19 @@ namespace Wombat
         // Now clear everything
         delete[] mId;
         delete[] mUniqueId;
-        mId          = NULL;
-        mUniqueId    = NULL;
-        mSize        = 0;
+        mId            = NULL;
+        mUniqueId      = NULL;
+        mSize          = 0;
         mTime.clear();
-        mPriceLevel  = NULL;
-        mManager     = NULL;
-        mSourceDeriv = NULL;
-        mClosure     = NULL;
-        mQuality     = MAMA_QUALITY_OK;
-        mAction      = MAMDA_BOOK_ACTION_ADD;
-        mStatus      = 0;
-        mReason      = MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN;
+        mPriceLevel    = NULL;
+        mManager       = NULL;
+        mSourceDeriv   = NULL;
+        mClosure       = NULL;
+        mQuality       = MAMA_QUALITY_OK;
+        mAction        = MAMDA_BOOK_ACTION_ADD;
+        mStatus        = 0;
+        mReason        = MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN;
+        mEntryPosition = false;
     }
 
     void MamdaOrderBookEntry::copy(const MamdaOrderBookEntry& copy)
@@ -145,6 +173,7 @@ namespace Wombat
         mAction      = copy.mAction;
         mStatus      = copy.mStatus;
         mReason      = copy.mReason;
+        mEntryPosition = copy.mEntryPosition;
     }
 
     void MamdaOrderBookEntry::setId (const char*  id)
@@ -343,6 +372,14 @@ namespace Wombat
             "MamdaOrderBookEntry::getPosition() (not found)");
     }
 
+    mama_u32_t  MamdaOrderBookEntry::getEntryPositionInPriceLevel () const
+    {
+        if (!mPriceLevel)
+            return 0;
+
+        return mPriceLevel->getEntryPositionInPriceLevel (mId);
+    }
+
     bool MamdaOrderBookEntry::operator== (
         const MamdaOrderBookEntry& rhs) const
     {
@@ -485,4 +522,13 @@ namespace Wombat
         sStrictChecking = strict;
     }
 
+    bool MamdaOrderBookEntry::getEntryPositionReceived () const
+    {
+        return mEntryPositionRecieved;
+    }
+
+    void MamdaOrderBookEntry::setEntryPositionReceived (bool position)
+    {
+        mEntryPositionRecieved = position;
+    }
 }

@@ -79,6 +79,13 @@ namespace Wombat
                              Action                       action,
                              const MamaDateTime&          entryTime,
                              const MamaSourceDerivative*  deriv);
+        
+        MamdaOrderBookEntry (const char*                  entryId,
+                             mama_quantity_t              size,
+                             Action                       action,
+                             const MamaDateTime&          entryTime,
+                             const MamaSourceDerivative*  deriv,
+                             mama_u32_t                   entryPosition);
 
         ~MamdaOrderBookEntry ();
 
@@ -94,16 +101,17 @@ namespace Wombat
          * Copy an order book entry.  Note that the associated price level
          * of the original copy is not copied.
          */
-        void copy          (const MamdaOrderBookEntry&  copy);
+        void        copy                (const MamdaOrderBookEntry&  copy);
 
-        void setId         (const char*          id);
-        void setUniqueId   (const char*          id);
-        void setSize       (mama_quantity_t      size);
-        void setAction     (Action               action);
-        void setReason     (MamdaOrderBookTypes::Reason reason);
-        void setTime       (const MamaDateTime&  time);
-        void setStatus     (mama_u16_t           status);
-        void setDetails    (const MamdaOrderBookEntry&  copy);
+        void        setId               (const char*          id);
+        void        setUniqueId         (const char*          id);
+        void        setSize             (mama_quantity_t      size);
+        void        setAction           (Action               action);
+        void        setReason           (MamdaOrderBookTypes::Reason reason);
+        void        setTime             (const MamaDateTime&  time);
+        void        setStatus           (mama_u16_t           status);
+        void        setDetails          (const MamdaOrderBookEntry&  copy);
+        mama_u32_t  getEntryPosition    ();
 
         /**
          * If supported, Order book entry ID (order ID, participant ID,
@@ -196,6 +204,16 @@ namespace Wombat
          * @return  The position of this entry in the order book.
          */
         mama_u32_t  getPosition (mama_u32_t  maxPos = 0) const;
+        
+        /**
+         * Get the position of the Entry in the Price Level. The index
+         * starts from 1. A value of 0 may be returned if the Entry is
+         * detached from the Price Level.
+         *
+         * @return  The position of this entry in the Price Level.
+         * @throw   none.
+         */
+        mama_u32_t  getEntryPositionInPriceLevel () const;
 
         /**
          * Whether two participant ids are equal.
@@ -372,6 +390,22 @@ namespace Wombat
          */
         static void setStrictChecking (bool strict);
 
+        /**
+        * Get if Entry position has been received.
+        *
+        * @return If entry position has been received.
+        */
+        bool getEntryPositionReceived () const;
+
+        /**
+        * Confirm if entry position has been received. This setting is automatically
+        * updated by MamdaOrderBookEntry::setEntryPositionReceived().
+        *
+        * @param position Whether entry position has been received.
+        */
+        void setEntryPositionReceived (bool position);
+
+
     private:
         char*                        mId;
         char*                        mUniqueId;
@@ -384,6 +418,8 @@ namespace Wombat
         mamaQuality                  mQuality;
         Action                       mAction;
         mama_u16_t                   mStatus;
+        bool                         mEntryPositionRecieved;
+        mama_u32_t                   mEntryPosition;
 
         MamdaOrderBookTypes::Reason  mReason;
     };

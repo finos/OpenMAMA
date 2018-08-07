@@ -148,6 +148,7 @@ namespace Wombat
         int32_t            mPriceLevelEntryReason; // char field
         string             mPriceLevelEntryId;
         mama_u64_t         mPriceLevelEntrySize;
+        mama_u32_t         mPriceLevelEntryPosition;
         MamaDateTime       mPriceLevelEntryTime;
 
         MamdaOrderBookTypes::OrderType     mOrderType;
@@ -338,6 +339,11 @@ namespace Wombat
         return mImpl.mPriceLevelEntrySize;
     }
 
+    mama_u32_t MamdaBookAtomicListener::getPriceLevelEntryPosition () const
+    {
+        return mImpl.mPriceLevelEntryPosition;
+    }
+
     const MamaDateTime& MamdaBookAtomicListener::getPriceLevelEntryTime() const
     {
         return mImpl.mPriceLevelEntryTime;
@@ -459,6 +465,7 @@ namespace Wombat
           , mPriceLevelEntryAction   (0)
           , mPriceLevelEntryReason   (0)
           , mPriceLevelEntrySize     (0)
+          , mPriceLevelEntryPosition (0)
           , mOrderType               (MamdaOrderBookTypes::MAMDA_BOOK_LEVEL_LIMIT)
           , mGapBegin                (0)
           , mGapEnd                  (0)
@@ -618,13 +625,14 @@ namespace Wombat
         clearLevelFields();
         clearLevelEntryFields();
 
-        entryMsg->tryPrice                            (MamdaOrderBookFields::PL_PRICE, mPriceLevelPrice);
-        mPriceLevelSide        = entryMsg->getI32     (MamdaOrderBookFields::PL_SIDE);
-        mPriceLevelEntryId     = entryMsg->getString  (MamdaOrderBookFields::ENTRY_ID);
-        mPriceLevelEntryAction = entryMsg->getI32     (MamdaOrderBookFields::ENTRY_ACTION);
-        mPriceLevelEntrySize   = entryMsg->getU64     (MamdaOrderBookFields::ENTRY_SIZE);
-        entryMsg->getDateTime                         (MamdaOrderBookFields::ENTRY_TIME, mPriceLevelEntryTime);
-        mPriceLevelEntryReason = entryMsg->getI32     (MamdaOrderBookFields::ENTRY_REASON);
+        entryMsg->tryPrice                                (MamdaOrderBookFields::PL_PRICE, mPriceLevelPrice);
+        mPriceLevelSide            = entryMsg->getI32     (MamdaOrderBookFields::PL_SIDE);
+        mPriceLevelEntryId         = entryMsg->getString  (MamdaOrderBookFields::ENTRY_ID);
+        mPriceLevelEntryAction     = entryMsg->getI32     (MamdaOrderBookFields::ENTRY_ACTION);
+        mPriceLevelEntrySize       = entryMsg->getU64     (MamdaOrderBookFields::ENTRY_SIZE);
+        mPriceLevelEntryPosition   = entryMsg->getU32     (MamdaOrderBookFields::ENTRY_POSITION);
+        entryMsg->getDateTime                             (MamdaOrderBookFields::ENTRY_TIME, mPriceLevelEntryTime);
+        mPriceLevelEntryReason     = entryMsg->getI32     (MamdaOrderBookFields::ENTRY_REASON);
 
         //We create object and then clearing the book will clean up
         mEntry = new MamdaOrderBookEntry(
@@ -632,7 +640,8 @@ namespace Wombat
                 mPriceLevelEntrySize,
                 (MamdaOrderBookEntry::Action)mPriceLevelEntryAction,
                 mPriceLevelEntryTime,
-                (const MamaSourceDerivative*) NULL);
+                (const MamaSourceDerivative*) NULL),
+                mPriceLevelEntryPosition;
 
         mEntry->setReason((MamdaOrderBookTypes::Reason)mPriceLevelEntryReason);
         mEntry->setClosure((void*)entryMsg);
@@ -690,6 +699,7 @@ namespace Wombat
             MamdaOrderBookPriceLevel::iterator entryIt, entryEndIt;
             const MamdaOrderBookEntry* entry;
             const MamaMsg* entryMsg;
+            mama_u32_t entryPosition( 0 );
 
             for(entryIt = priceLevel->begin(), entryEndIt = priceLevel->end();
                     entryIt != entryEndIt;
@@ -705,6 +715,8 @@ namespace Wombat
                 mPriceLevelEntryId = entry->getId();
 
                 mPriceLevelEntrySize = mama_u64_t(entry->getSize());
+
+                mPriceLevelEntryPosition = ++entryPosition;
 
                 mPriceLevelEntryTime = entry->getTime();
 
@@ -1113,6 +1125,8 @@ namespace Wombat
                       "MamdaBookAtomicListener: no price level entry size present");
         }
 
+        plMsg.tryU32 (MamdaOrderBookFields::ENTRY_POSITION, mPriceLevelEntryPosition);
+
         /*
          * Negate the entry size to get the price level size change
          * if the entry action is delete. Avoid branch using XOR
@@ -1185,6 +1199,9 @@ namespace Wombat
         plMsg.tryI32(MamdaOrderBookFields::PL_ACTION,mPriceLevelAction);
 
         plMsg.tryI32(MamdaOrderBookFields::PL_SIDE,mPriceLevelSide);
+                
+        plMsg.tryU32 (MamdaOrderBookFields::ENTRY_POSITION,
+                              mPriceLevelEntryPosition);
 
         if (!plMsg.tryDateTime(MamdaOrderBookFields::PL_TIME, mPriceLevelTime))
         {
@@ -1239,6 +1256,9 @@ namespace Wombat
                 plMsg.tryU64 (MamdaOrderBookFields::ENTRY_SIZE,
                         mPriceLevelEntrySize);
 
+                plMsg.tryU32 (MamdaOrderBookFields::ENTRY_POSITION,
+                              mPriceLevelEntryPosition);
+
                 if (!plMsg.tryDateTime(MamdaOrderBookFields::ENTRY_TIME,
                         mPriceLevelEntryTime))
                 {
@@ -1269,8 +1289,7 @@ namespace Wombat
                     mPriceLevelActNumEntries = numEntriesInMsg;
                     for (size_t j = 0; j < numEntriesInMsg; j++)
                     {
-                        const MamaMsg* entMsg = msgEntries[j];
-
+                        const MamaMsg* entMsg = msgEntries[j]; 
                         entMsg->tryI32 (MamdaOrderBookFields::ENTRY_ACTION,
                                         mPriceLevelEntryAction);
 
@@ -1282,6 +1301,9 @@ namespace Wombat
 
                         entMsg->tryU64 (MamdaOrderBookFields::ENTRY_SIZE,
                                         mPriceLevelEntrySize);
+                    
+                        entMsg->tryU32 (MamdaOrderBookFields::ENTRY_POSITION,
+                                        mPriceLevelEntryPosition);
 
                         if (!entMsg->tryDateTime(MamdaOrderBookFields::ENTRY_TIME,
                                                 mPriceLevelEntryTime))
@@ -1355,6 +1377,9 @@ namespace Wombat
 
                             entMsg->tryU64 (MamdaOrderBookFields::ENTRY_SIZE,
                                             mPriceLevelEntrySize);
+                        
+                            entMsg->tryU32 (MamdaOrderBookFields::ENTRY_POSITION,
+                                            mPriceLevelEntryPosition);
 
                             if (!entMsg->tryDateTime(MamdaOrderBookFields::ENTRY_TIME,
                                                     mPriceLevelEntryTime))
@@ -1425,6 +1450,7 @@ namespace Wombat
         mPriceLevelEntryAction     = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE;
         mPriceLevelEntryReason     = MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN;
         mPriceLevelEntrySize       = 0;
+        mPriceLevelEntryPosition   = 0;
         mPriceLevelEntryId         = "";
         mPriceLevelEntryTime.clear();
     }
