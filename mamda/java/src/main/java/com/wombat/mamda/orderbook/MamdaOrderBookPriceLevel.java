@@ -29,36 +29,37 @@ import com.wombat.mama.*;
 
 public class MamdaOrderBookPriceLevel
 {
-    public static final char  ACTION_ADD              = 'A'; /** A new price level. */
-    public static final char  ACTION_UPDATE           = 'U'; /** Updated price level. */
-    public static final char  ACTION_DELETE           = 'D'; /** Deleted price level. */
-    public static final char  ACTION_UNKNOWN          = 'Z'; /** Unknown action (error). */
+    public static final char          ACTION_ADD              = 'A'; /** A new price level. */
+    public static final char          ACTION_UPDATE           = 'U'; /** Updated price level. */
+    public static final char          ACTION_DELETE           = 'D'; /** Deleted price level. */
+    public static final char          ACTION_UNKNOWN          = 'Z'; /** Unknown action (error). */
 
-    public static final char  SIDE_BID                = 'B'; /** Bid (buy) side. */
-    public static final char  SIDE_ASK                = 'A'; /** Ask (sell) side. */
-    public static final char  SIDE_UNKNOWN            = 'Z'; /** Unknown side (error). */
-    
-    public static final char  LEVEL_LIMIT             = 'L'; /** LIMIT order */
-    public static final char  LEVEL_MARKET            = 'M'; /** MARKET order */
-    public static final char  LEVEL_UNKNOWN           = 'U'; /** Unknown order */
+    public static final char          SIDE_BID                = 'B'; /** Bid (buy) side. */
+    public static final char          SIDE_ASK                = 'A'; /** Ask (sell) side. */
+    public static final char          SIDE_UNKNOWN            = 'Z'; /** Unknown side (error). */
 
-    private static boolean    theStrictChecking       = false;
+    public static final char          LEVEL_LIMIT             = 'L'; /** LIMIT order */
+    public static final char          LEVEL_MARKET            = 'M'; /** MARKET order */
+    public static final char          LEVEL_UNKNOWN           = 'U'; /** Unknown order */
 
-    private MamaPrice         mPrice                  = null;
-    private MamaPrice         mAtomicPrice            = null;
-    private double            mSize                   = 0;
-    private double            mSizeChange             = 0;
-    private double            mNumEntries             = 0;
-    private char              mSide                   = SIDE_BID;
-    private char              mAction                 = ACTION_ADD;
-    private MamaDateTime      mTime                   = null;
-    private MamaDateTime      mAtomicLevelEntryTime   = null;
-    private MamaDateTime      mAtomicLevelTime        = null;
-    private Vector            mEntries                = new Vector ();
-    private Vector            mLevelEntries           = new Vector ();
-    private MamdaOrderBook    mBook                   = null;
-    private int               mNumEntriesTotal        = 0;
-    private char              mOrderType              = LEVEL_LIMIT;
+    private static boolean            theStrictChecking       = false;
+
+    private MamaPrice                 mPrice                  = null;
+    private MamaPrice                 mAtomicPrice            = null;
+    private double                    mSize                   = 0;
+    private double                    mSizeChange             = 0;
+    private double                    mNumEntries             = 0;
+    private char                      mSide                   = SIDE_BID;
+    private char                      mAction                 = ACTION_ADD;
+    private MamaDateTime              mTime                   = null;
+    private MamaDateTime              mAtomicLevelEntryTime   = null;
+    private MamaDateTime              mAtomicLevelTime        = null;
+    private Vector                    mEntries                = new Vector ();
+    private MamdaOrderBook            mBook                   = null;
+    private int                       mNumEntriesTotal        = 0;
+    private MamaFieldCacheProperties  mProperties             = null;
+    private char                      mOrderType              = LEVEL_LIMIT;
+    private final MamdaOrderBookEntry mReservedEntry          = new MamdaOrderBookEntry ();
 
     /**
      * Default constructor.
@@ -409,8 +410,81 @@ public class MamdaOrderBookPriceLevel
     }
 
     /**
+     * Add a new order book entry to the price level at a specified
+     * position.
+     *
+     * @param entry The new entry to be added to the level.
+     * @param entryPosition The position (indexed from 1) where the entry
+     *                      should be added.
+     * @see MamdaOrderBookEntry
+     */
+    public void addEntry (MamdaOrderBookEntry  entry,
+                          long entryPosition)
+    {
+        if (theStrictChecking)
+        {
+            checkNotExist(entry);
+        }
+
+        if (mEntries == null)
+        {
+            mEntries = new Vector();
+        }
+        
+        int numNewEntries = 0;
+ 
+        if (0 == entryPosition)
+        {
+            // Entry Position not specified
+            mEntries.add (entry);
+            numNewEntries = 1;
+        }
+
+        if (entryPosition > 0 &&
+            entryPosition <= (mEntries.size () + 1))
+        {
+            mEntries.insertElementAt (entry,
+                                       (int) (entryPosition -1));
+        }
+        else
+        {
+            mEntries.addElement (entry);
+        }
+
+        boolean checkState = (mBook != null ) ? mBook.getCheckSourceState() : false;
+        if (!checkState || entry.isVisible())
+        {
+            mNumEntries++;
+            mSize += entry.getSize();
+        }
+        mNumEntriesTotal++;
+        entry.setPriceLevel (this);
+
+        if (mBook != null)
+        {
+            if (mBook.getGenerateDeltaMsgs())
+            {
+                //Need to set correct action based on numEntries in level
+                char plAction;
+                if (mNumEntriesTotal > 1)
+                {
+                    plAction = MamdaOrderBookPriceLevel.ACTION_UPDATE;
+                }
+                else
+                {
+                    plAction = MamdaOrderBookPriceLevel.ACTION_ADD;
+                }
+                mBook.addDelta(entry, entry.getPriceLevel(),
+                                entry.getPriceLevel().getSizeChange(),
+                                plAction,
+                                MamdaOrderBookEntry.ACTION_ADD);
+            }
+        }
+    }
+
+    /**
      * Update the details of an existing entry in the level.
-     * 
+     *
      * @param entry An instance of <code>MamdaOrderBookEntry</code> with the
      * new details for the entry in the level.
      *
@@ -447,12 +521,58 @@ public class MamdaOrderBookPriceLevel
     }
 
     /**
-     * Update the details of an existing entry in the level, where the update details
-     * are provied by an atomic levelEntry.
-     * @param levelEntry An instance of <code>MamdaBookAtomicLevelEntry</code> with the
+     * Update the entry position of an existing entry in the level.
+     *
+     * @param entry An instance of <code>MamdaOrderBookEntry</code> with the
      * new details for the entry in the level.
+     * @param entryPosition Position of the Entry within the Price Level.
      *
      * @see MamdaOrderBookEntry
+     */
+    public void updateEntryPosition (String entryId,
+                                     long entryPosition)
+    {
+        for (int i = 0; i < mEntries.size(); i++)
+        {
+            MamdaOrderBookEntry existingEntry =
+                (MamdaOrderBookEntry)mEntries.get (i);
+
+            if (existingEntry.equalId (entryId))
+            {
+                // Update the Entry Position if necessary
+                if ((i + 1) != (int) entryPosition)
+                {
+                    mEntries.removeElement (existingEntry);
+
+                    if ((int) entryPosition <= mEntries.size ())
+                    {
+                        mEntries.insertElementAt (existingEntry,
+                                                    (int) (entryPosition -1));
+                    }
+                    else
+                    {
+                        mEntries.addElement (existingEntry);
+                    }
+                }
+
+                return;
+            }
+        }
+
+        if (theStrictChecking)
+        {
+            throw new MamdaOrderBookException (
+                "attempted to update a non-existent entry: " + entryId);
+        }
+    }
+
+     /**
+         * Update the details of an existing entry in the level, where the update details
+         * are provied by an atomic levelEntry.
+         * @param levelEntry An instance of <code>MamdaBookAtomicLevelEntry</code> with the
+         * new details for the entry in the level.
+         *
+         * @see MamdaOrderBookEntry
      */
     public void updateEntry (MamdaBookAtomicLevelEntry  levelEntry)
     {
@@ -1125,6 +1245,39 @@ public class MamdaOrderBookPriceLevel
         return null;
     }
 
+    /**
+     * Return the position of an Entry within the Price Level.
+     *
+     * @param EntryId  The position of the order book entry.
+     * @return The position of the Entry in the Price Level.
+     *         Indexed from 1.
+     */
+    public long getEntryPositionInPriceLevel (String entryId)
+    {
+        long result = 0;
+
+        if (mEntries.isEmpty ())
+            return result;
+
+        boolean        checkState = mBook.getCheckSourceState();
+        Iterator iter = mEntries.iterator ();
+        MamdaOrderBookEntry entry;
+
+        while (iter.hasNext ())
+        {
+            entry = (MamdaOrderBookEntry) iter.next ();
+            if (checkState && !entry.isVisible())
+                continue;
+            else
+                ++result;
+
+            if (entryId.equals (entry.getId ()))
+                return result;
+        }
+
+        return (long) 0;
+    }
+
     public MamdaOrderBookEntry findOrCreateEntry (String id)
     {
         if (mEntries != null)
@@ -1171,6 +1324,106 @@ public class MamdaOrderBookPriceLevel
                             plAction,
                             MamdaOrderBookEntry.ACTION_ADD);
         }
+        return entry;
+    }
+
+    public MamdaOrderBookEntry findOrCreateEntry (String id,
+                                                  long entryPosition)
+    {
+        if (mEntries != null)
+        {
+            Iterator iter = mEntries.iterator ();
+            while (iter.hasNext ())
+            {
+                MamdaOrderBookEntry  entry = (MamdaOrderBookEntry) iter.next ();
+                if (id.equals (entry.getId ()))
+                {
+                    return entry;
+                }
+            }
+        }
+
+        if (null == mEntries)
+        {
+            mEntries = new Vector();
+        }
+
+        // Not found
+        MamdaOrderBookEntry  entry = new MamdaOrderBookEntry();
+        entry.setId (id);
+        entry.setAction (MamdaOrderBookEntry.ACTION_ADD);
+        entry.setPriceLevel (this);
+        int numNewEntries = 0;
+
+        if (0 == entryPosition)
+        {
+            // Entry Position not specified
+            mEntries.add (entry);
+            numNewEntries = 1;
+        }
+        else if (entryPosition > 0 &&
+                 (entryPosition <= (mEntries.size () + 1)))
+        {
+            if (entryPosition == (mEntries.size () + 1))
+            {
+                mEntries.add (entry);
+                numNewEntries = 1;
+            }
+            else
+            {
+                // Check if a reserved entry should be replaced
+                if (mReservedEntry == mEntries.get ((int) (entryPosition -1)))
+                {
+                    mEntries.set ((int) (entryPosition -1), entry);
+                }
+                else
+                {
+                    mEntries.insertElementAt (entry, (int)(entryPosition-1));
+                    numNewEntries = 1;
+                }
+            }
+        }
+        else // Entry Position > size + 1
+        {
+            for (int ii = (mEntries.size () + 1);
+                 ii < entryPosition;
+                 ++ii)
+            {
+                // Add the reserved entry in the sequence gap
+                mEntries.add (mReservedEntry);
+                ++numNewEntries;
+            }
+
+            // Add the out-of-sequence new entry
+            mEntries.add (entry);
+            ++numNewEntries;
+        }
+
+        boolean checkState = (mBook != null) ? mBook.getCheckSourceState() : false;
+        if (!checkState || entry.isVisible())
+        {
+            mNumEntries += numNewEntries;
+            mSize += entry.getSize();
+        }
+        mNumEntriesTotal += numNewEntries;
+
+        if (mBook.getGenerateDeltaMsgs())
+            {
+                //Need to set correct action based on numEntries in level
+                char plAction;
+                if (0 == mNumEntriesTotal)
+                {
+                    plAction = MamdaOrderBookPriceLevel.ACTION_ADD;
+                }
+                else
+                {
+                    plAction = MamdaOrderBookPriceLevel.ACTION_UPDATE;
+                }
+                mBook.addDelta(entry, entry.getPriceLevel(),
+                                entry.getPriceLevel().getSizeChange(),
+                                plAction,
+                                MamdaOrderBookEntry.ACTION_ADD);
+            }
         return entry;
     }
 

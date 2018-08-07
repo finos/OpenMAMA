@@ -414,6 +414,21 @@ public class MamdaOrderBookEntry
     }
 
 
+    /**
+     * Get the position of the Entry in the Price Level. The value
+     * is indexed from 1. A value of 0 may be returned if the
+     * Entry is detached from the Price Level.
+     *
+     * @return  The position of this entry in the Price Level.
+     */
+    public long getEntryPositionInPriceLevel ()
+    {
+        if (mPriceLevel == null)
+            return 0;
+
+        return mPriceLevel.getEntryPositionInPriceLevel (mId);
+    }
+
     public int hashCode ()
     {
         /* From Effective Java */

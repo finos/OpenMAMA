@@ -445,11 +445,19 @@ class MamdaOrderBookWriter
             msg.addDateTime (null, MamdaOrderBookFields.ENTRY_TIME.getFid(),
                              entry.getTime());
         }
-        
+
         if (entry.getStatus() != 0)
         {
             msg.addU16 (null, MamdaOrderBookFields.ENTRY_STATUS.getFid(),
                         (short)entry.getStatus());
+        }
+
+        long entryPosition = entry.getEntryPositionInPriceLevel ();
+
+        if (entryPosition > 0)
+        {
+            msg.addU32 (null, MamdaOrderBookFields.ENTRY_POSITION.getFid(),
+                        entryPosition);
         }
     }
 

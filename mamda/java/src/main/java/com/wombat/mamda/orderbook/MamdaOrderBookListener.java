@@ -1102,7 +1102,8 @@ public class MamdaOrderBookListener
                           mBookMsgFields.mEntryId.getValue(),
                           mBookMsgFields.mEntrySize.getValue(),
                           mBookMsgFields.mEntryTime,
-                          mBookMsgFields.mEntryStatus.getValue());
+                          mBookMsgFields.mEntryStatus.getValue(),
+                          mBookMsgFields.mEntryPosition.getValue());
             mBookMsgFields.clearEntry();
         }
         else
@@ -1123,7 +1124,8 @@ public class MamdaOrderBookListener
                                       mBookMsgFields.mEntryId.getValue(),
                                       mBookMsgFields.mEntrySize.getValue(),
                                       mBookMsgFields.mEntryTime,
-                                      mBookMsgFields.mEntryStatus.getValue());
+                                      mBookMsgFields.mEntryStatus.getValue(),
+                                      mBookMsgFields.mEntryPosition.getValue());
                     }
                     mBookMsgFields.clearEntry();                    
                 }
@@ -1140,13 +1142,14 @@ public class MamdaOrderBookListener
                         {
                             processEntryMessage (entryMsg);
                             processEntry (level,
-                                          plAction,
-                                          mBookMsgFields.mEntryAction.getValue(),
-                                          mBookMsgFields.mEntryReason.getValue(),
-                                          mBookMsgFields.mEntryId.getValue(),
-                                          mBookMsgFields.mEntrySize.getValue(),
-                                          mBookMsgFields.mEntryTime,
-                                          mBookMsgFields.mEntryStatus.getValue());
+                                      plAction,
+                                      mBookMsgFields.mEntryAction.getValue(),
+                                      mBookMsgFields.mEntryReason.getValue(),
+                                      mBookMsgFields.mEntryId.getValue(),
+                                      mBookMsgFields.mEntrySize.getValue(),
+                                      mBookMsgFields.mEntryTime,
+                                      mBookMsgFields.mEntryStatus.getValue(),
+                                      mBookMsgFields.mEntryPosition.getValue());
                             mBookMsgFields.clearEntry();
                         }
                     }
@@ -1260,8 +1263,9 @@ public class MamdaOrderBookListener
                                char                     entryReason,
                                String                   id,
                                double                   size,
-                               MamaDateTime             entryTime, 
-                               int                      status)
+                               MamaDateTime             entryTime,
+                               int                      status,
+                               long                     entryPosition)
     {
         // We have to connect this entry to the price level, even if this
         // is a deletion and even if this is a deletion of an entry that
@@ -1326,7 +1330,7 @@ public class MamdaOrderBookListener
                     entry.setReason           (entryReason);
                     entry.setSourceDerivative (mFullBook.getSourceDerivative());
                     entry.setManager          (mEntryManager);
-                    level.addEntry            (entry);
+                    level.addEntry            (entry, entryPosition);
                     mEntryManager.addEntry    (entry);
                     newEntry = true;
                 }
@@ -1378,9 +1382,8 @@ public class MamdaOrderBookListener
                     entry.setReason           (entryReason);
                     entry.setSourceDerivative (mFullBook.getSourceDerivative());
                     entry.setManager          (mEntryManager);
-                    level.addEntry            (entry);
-                    mEntryManager.addEntry (entry,
-                                            mUniqueIdBuffer.toString ());
+                    level.addEntry            (entry, entryPosition);
+                    mEntryManager.addEntry    (entry, mUniqueIdBuffer.toString ());
                     newEntry = true;
                    
                 }
@@ -1417,7 +1420,7 @@ public class MamdaOrderBookListener
                 entry = level.findEntry(id);
                 if (null == entry)
                 {
-                    entry = level.findOrCreateEntry (id);
+                    entry = level.findOrCreateEntry (id, entryPosition);
                     newEntry = true;
                 }
 
@@ -1462,6 +1465,13 @@ public class MamdaOrderBookListener
         entry.setTime   (entryTime);
         entry.setStatus (status);
         entry.setId     (id);
+        
+        //Apply new position
+        if (entryPosition > 0 &&
+           MamdaOrderBookEntry.ACTION_UPDATE == entryAction)
+        {
+            level.updateEntryPosition (entry.getId (), entryPosition);
+        }
 
         if (!mBookMsgFields.mHasPlTime)
         {
@@ -1809,6 +1819,12 @@ public class MamdaOrderBookListener
                 mPriceLevelUpdaters[j++] = FieldUpdateEntryStatus;
                 mEntryUpdaters[k++] = FieldUpdateEntryStatus;
             } 
+            if (MamdaOrderBookFields.ENTRY_POSITION != null)
+            {
+                mBookUpdaters[i++] = FieldUpdateEntryPosition;
+                mPriceLevelUpdaters[j++] = FieldUpdateEntryPosition;
+                mEntryUpdaters[k++] = FieldUpdateEntryPosition;
+            }
             if (MamdaOrderBookFields.getNumLevelFields ()> 0)
             {
                 mBookUpdaters[i++] = FieldUpdateLevel;
@@ -2208,6 +2224,18 @@ public class MamdaOrderBookListener
         }
     };
 
+    private static BookMsgUpdate FieldUpdateEntryPosition = new BookMsgUpdate()
+    {
+        public void onUpdate (MamaMsg msg, MamdaOrderBookListener impl)
+        {
+            if (impl.mProcessEntries || (impl.mBookMsgFields.mBookType.getValue() == 1))
+            {
+                msg.tryU32 (null, MamdaOrderBookFields.ENTRY_POSITION.getFid(),
+                            impl.mBookMsgFields.mEntryPosition);
+            }
+        }
+    };
+
     private static BookMsgUpdate FieldUpdateEntryReason = new BookMsgUpdate()
     {
         public void onUpdate (MamaMsg msg, MamdaOrderBookListener impl)
@@ -2405,6 +2433,7 @@ public class MamdaOrderBookListener
         MamaDouble          mEntrySize        = new MamaDouble   (0.0);
         MamaDateTime        mEntryTime        = new MamaDateTime ();
         MamaInteger         mEntryStatus      = new MamaInteger  (0);
+        MamaLong            mEntryPosition    = new MamaLong     (0);
         MamaChar            mEntryAction      = 
             new MamaChar(MamdaOrderBookEntry.ACTION_DELETE);
         MamaChar            mEntryReason      = 
@@ -2467,6 +2496,7 @@ public class MamdaOrderBookListener
             mEntryAction.setValue   (MamdaOrderBookEntry.ACTION_DELETE);
             mEntryReason.setValue   (MamdaOrderBookTypes.MAMDA_BOOK_REASON_UNKNOWN);
             mEntryTime.clear        ();
+            mEntryPosition.setValue (0);
         }
         
         void clearPriceLevel()
@@ -2503,10 +2533,11 @@ public class MamdaOrderBookListener
             mEntryId.setValue       (null);
             mEntrySize.setValue     (0.0);
             mEntryStatus.setValue   (0);
+            mEntryPosition.setValue (0);
             mEntryAction.setValue   (MamdaOrderBookEntry.ACTION_DELETE);
             mEntryReason.setValue   (MamdaOrderBookTypes.MAMDA_BOOK_REASON_UNKNOWN);
             mLineTime.clear         ();
-            /* Must be initialized to NULL. Used to determine whether the message is
+            /*Must be initialized to NULL. Used to determine whether the message is
              * flattened or not*/
             mPriceLevelVector.setValue       (null);
             mEntryVector.setValue            (null);
