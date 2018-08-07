@@ -29,20 +29,22 @@ namespace Wombat
     MamdaOrderBookBasicDelta::MamdaOrderBookBasicDelta(
         const MamdaOrderBookBasicDelta&  copy)
     {
-        mPriceLevel  = copy.mPriceLevel;
-        mEntry       = copy.mEntry;
-        mPlDeltaSize = copy.mPlDeltaSize;
-        mPlAction    = copy.mPlAction;
-        mEntryAction = copy.mEntryAction;
+        mPriceLevel    = copy.mPriceLevel;
+        mEntry         = copy.mEntry;
+        mPlDeltaSize   = copy.mPlDeltaSize;
+        mPlAction      = copy.mPlAction;
+        mEntryAction   = copy.mEntryAction;
+        mEntryPosition = copy.mEntryPosition;
     }
 
     void MamdaOrderBookBasicDelta::clear()
     {
-        mPriceLevel  = NULL;
-        mEntry       = NULL;
-        mPlDeltaSize = 0.0;
-        mPlAction    = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UNKNOWN;
-        mEntryAction = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UNKNOWN;
+        mPriceLevel    = NULL;
+        mEntry         = NULL;
+        mPlDeltaSize   = 0.0;
+        mPlAction      = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UNKNOWN;
+        mEntryAction   = MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UNKNOWN;
+        mEntryPosition = 0;
     }
 
     void MamdaOrderBookBasicDelta::set (
@@ -51,13 +53,60 @@ namespace Wombat
         mama_quantity_t                   plDeltaSize,
         MamdaOrderBookPriceLevel::Action  plAction,
         MamdaOrderBookEntry::Action       entryAction)
+    { 
+        mPriceLevel    = level;
+        mEntry         = entry;
+
+        if (plDeltaSize) 
+        {
+            mPlDeltaSize = plDeltaSize;
+        }
+        else 
+        {
+            mPlDeltaSize = 0.0;
+        }
+
+        mPlAction      = plAction;
+        mEntryAction   = entryAction;
+    }
+
+    void MamdaOrderBookBasicDelta::set (
+        MamdaOrderBookEntry*              entry,
+        MamdaOrderBookPriceLevel*         level,
+        mama_quantity_t                   plDeltaSize,
+        MamdaOrderBookPriceLevel::Action  plAction,
+        MamdaOrderBookEntry::Action       entryAction,
+        mama_u32_t                        entryPosition)
+    { 
+        mPriceLevel    = level;
+        mEntry         = entry;
+
+        if (plDeltaSize) 
+        {
+            mPlDeltaSize = plDeltaSize;
+        }
+        else 
+        {
+            mPlDeltaSize = 0.0;
+        }
+        if (entryPosition > 0)
+        {
+            entry->setEntryPositionReceived(entryPosition);
+        }
+            
+        mPlAction      = plAction;
+        mEntryAction   = entryAction;
+        mEntryPosition = entryPosition;
+    }
+    
+    mama_u32_t MamdaOrderBookBasicDelta::getEntryPosition () const
     {
-        mPriceLevel  = level;
-        mEntry       = entry;
-        if (plDeltaSize) mPlDeltaSize = plDeltaSize;
-            else mPlDeltaSize = 0.0;
-        mPlAction    = plAction;
-        mEntryAction = entryAction;
+        if(NULL != mEntry)
+        {
+            return mEntry->getEntryPositionInPriceLevel();
+        }
+        
+        return 0;
     }
 
     const MamdaOrderBook* MamdaOrderBookBasicDelta::getOrderBook () const
@@ -70,14 +119,15 @@ namespace Wombat
 
     void MamdaOrderBookBasicDelta::dump (std::ostream&  output) const
     {
-        output << "Price="           << mPriceLevel->getPrice()
-               << ", Side="          << (char)mPriceLevel->getSide()
-               << ", PlDeltaAction=" << (char)mPlAction
-               << ", EntryId="       << (mEntry ? mEntry->getId(): "NULL")
-               << ", EntryAction="   << (char)mEntryAction
-               << ", PlSize = "      << mPriceLevel->getSize()
+        output << "Price="                << mPriceLevel->getPrice()
+               << ", Side="               << (char)mPriceLevel->getSide()
+               << ", PlDeltaAction="      << (char)mPlAction
+               << ", EntryId="            << (mEntry ? mEntry->getId(): "NULL")
+               << ", EntryAction="        << (char)mEntryAction
+               << ", PlSize = "           << mPriceLevel->getSize()
                << ", NumEntriesTotal = "  << mPriceLevel->getNumEntriesTotal()
-               << ", EntrySize = "   << (mEntry ? mEntry->getSize(): 0)
+               << ", EntrySize = "        << (mEntry ? mEntry->getSize(): 0)
+               << ", EntryPosition = "    << (mEntry ? mEntry->getEntryPositionInPriceLevel(): 0)
                << "\n";
     }
 

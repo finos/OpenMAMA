@@ -55,16 +55,20 @@ namespace Wombat
                                       double price, Side side);
         ~MamdaOrderBookPriceLevelImpl ();
 
-        bool operator==      (const MamdaOrderBookPriceLevelImpl&  rhs) const;
-        void assertEqual     (const MamdaOrderBookPriceLevelImpl&  rhs) const;
-        void clear           ();
-        void copy            (const MamdaOrderBookPriceLevelImpl&  copy);
-        void copyLevelOnly   (const MamdaOrderBookPriceLevelImpl&  copy);
-        void addEntry        (MamdaOrderBookEntry*        entry);
-        void updateEntry     (const MamdaOrderBookEntry&  entry);
-        void removeEntryById (const MamdaOrderBookEntry&  entry);
-        void removeEntry     (const MamdaOrderBookEntry*  entry);
-        void checkNotExist   (const MamdaOrderBookEntry&  entry);
+        bool operator==           (const MamdaOrderBookPriceLevelImpl&  rhs) const;
+        void assertEqual          (const MamdaOrderBookPriceLevelImpl&  rhs) const;
+        void clear                ();
+        void copy                 (const MamdaOrderBookPriceLevelImpl&  copy);
+        void copyLevelOnly        (const MamdaOrderBookPriceLevelImpl&  copy);
+        void addEntry             (MamdaOrderBookEntry*        entry);
+        void addEntry             (MamdaOrderBookEntry*        entry,
+                                   mama_u32_t                  entryPosition);
+        void updateEntry          (const MamdaOrderBookEntry&  entry);
+        void updateEntryPosition  (const char *id, 
+                                   mama_u32_t  targetEntryPosition);
+        void removeEntryById      (const MamdaOrderBookEntry&  entry);
+        void removeEntry          (const MamdaOrderBookEntry*  entry);
+        void checkNotExist        (const MamdaOrderBookEntry&  entry);
         void eraseEntryByIterator (
             EntryList*                           entryList,
             EntryList::iterator                  erasableIter,
@@ -82,23 +86,28 @@ namespace Wombat
         MamdaOrderBookEntry* findEntry          (const char*  id) const;
         MamdaOrderBookEntry* findOrCreateEntry  (const char*  id,
                                                  bool&        newEntry);
+        MamdaOrderBookEntry* findOrCreateEntry  (const char*  id,
+                                                 bool&        newEntry,
+                                                 mama_u32_t   entryPosition);
         MamdaOrderBookEntry* getEntryAtPosition (mama_u32_t   pos) const;
+        mama_u32_t getEntryPositionInPriceLevel (const char*  id) const;
 
         void clearEntries (EntryList& entries);
 
         MamdaOrderBookPriceLevel&  mLevel;
-        MamaPrice        mPrice;
-        mama_quantity_t  mSize;
-        mama_quantity_t  mSizeChange;
-        mama_u32_t       mNumEntries;
-        mama_u32_t       mNumEntriesTotal;
-        Side             mSide;
-        Action           mAction;
-        MamaDateTime     mTime;
-        EntryList*       mEntries;
-        MamdaOrderBook*  mBook;
-        OrderType        mOrderType;
-        void*            mClosure;
+        MamaPrice                  mPrice;
+        mama_quantity_t            mSize;
+        mama_quantity_t            mSizeChange;
+        mama_u32_t                 mNumEntries;
+        mama_u32_t                 mNumEntriesTotal;
+        Side                       mSide;
+        Action                     mAction;
+        MamaDateTime               mTime;
+        EntryList*                 mEntries;
+        MamdaOrderBook*            mBook;
+        OrderType                  mOrderType;
+        void*                      mClosure;
+        MamdaOrderBookEntry        mReservedEntry;
     };
 
     MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevel()
@@ -226,10 +235,95 @@ namespace Wombat
     {
         mImpl.addEntry (entry);
     }
+    
+    void MamdaOrderBookPriceLevel::addEntry (MamdaOrderBookEntry*  entry,
+                                             mama_u32_t            entryPosition)
+    {
+        mImpl.addEntry (entry,
+                         entryPosition);
+    }
 
     void MamdaOrderBookPriceLevel::updateEntry (const MamdaOrderBookEntry&  entry)
     {
         mImpl.updateEntry (entry);
+    }
+    
+    void MamdaOrderBookPriceLevel::updateEntryPosition (const char *id,
+    mama_u32_t targetEntryPosition)
+    {
+        mImpl.updateEntryPosition (id, targetEntryPosition);
+    }
+
+    void MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevelImpl::updateEntryPosition (
+        const char *id,
+        mama_u32_t targetEntryPosition)
+    {
+        if (id && mEntries && mEntries->size () > 1)
+        {
+            EntryList::iterator iter (mEntries->begin ());
+            EntryList::iterator endIter (mEntries->end ());
+
+            if (1 == targetEntryPosition)
+            {
+                for ( ; iter != endIter; ++iter)
+                {
+                    if (!strcmp (id, (*iter)->getId ()))
+                    {
+                        MamdaOrderBookEntry *pEntry (*iter);
+                        mEntries->erase (iter);
+                        mEntries->push_front (pEntry);
+                        pEntry->setEntryPositionReceived (true);   
+                        break;
+                    }
+                }
+            }
+            else if (targetEntryPosition >= mEntries->size ())
+            {
+                for ( ; iter != endIter; ++iter)
+                {
+                    if (!strcmp (id, (*iter)->getId ()))
+                    {
+                        MamdaOrderBookEntry *pEntry (*iter);
+                        mEntries->erase (iter);
+                        mEntries->push_back (pEntry);
+                        pEntry->setEntryPositionReceived (true);     
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                EntryList::iterator targetIter (endIter);
+                EntryList::iterator entryIter (endIter);
+                mama_u32_t curPos (0);
+
+                for (mama_u32_t ii (1) ; iter != endIter; ++ii, ++iter)
+                {
+                    if (ii == targetEntryPosition)
+                        targetIter = iter;
+
+                    if (!strcmp (id, (*iter)->getId ()))
+                    {
+                        // Entry is at correct position
+                        if (targetEntryPosition == ii)
+                            break;
+
+                        curPos = ii;
+                        entryIter = iter;
+                    }
+
+                    if (targetIter != endIter &&
+                        entryIter != endIter)
+                    {
+                        MamdaOrderBookEntry *pEntry (*entryIter);
+                        mEntries->erase (entryIter);
+                        mEntries->insert (((targetEntryPosition > curPos) ? ++targetIter : targetIter), pEntry);
+                        pEntry->setEntryPositionReceived (true);     
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     void MamdaOrderBookPriceLevel::removeEntryById (const MamdaOrderBookEntry&  entry)
@@ -331,15 +425,23 @@ namespace Wombat
         const char*  id)
     {
         bool newEntry = false;
-        return mImpl.findOrCreateEntry (id, newEntry);
+        return mImpl.findOrCreateEntry (id, newEntry, 0);
     }
 
     MamdaOrderBookEntry* MamdaOrderBookPriceLevel::findOrCreateEntry (
         const char* id,
         bool&       newEntry)
     {
-        return mImpl.findOrCreateEntry (id, newEntry);
+        return mImpl.findOrCreateEntry (id, newEntry, 0);
     }
+
+    MamdaOrderBookEntry* MamdaOrderBookPriceLevel::findOrCreateEntry (
+        const char* id,
+        bool&       newEntry,
+        mama_u32_t  entryPosition)
+    {
+        return mImpl.findOrCreateEntry (id, newEntry, entryPosition);
+    }    
 
 
     MamdaOrderBookEntry* MamdaOrderBookPriceLevel::getEntryAtPosition (
@@ -348,10 +450,44 @@ namespace Wombat
         return mImpl.getEntryAtPosition (pos);
     }
 
+    mama_u32_t MamdaOrderBookPriceLevel::getEntryPositionInPriceLevel (
+    const char *id) const
+    {
+        return mImpl.getEntryPositionInPriceLevel (id);
+    }
+
     void MamdaOrderBookPriceLevel::setClosure (
         void*  closure)
     {
         mImpl.mClosure = closure;
+    }
+    
+    mama_u32_t MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevelImpl::getEntryPositionInPriceLevel (
+    const char *id) const
+    {
+        if (!mEntries || !id)
+        {
+            return 0;
+        }
+
+        EntryList::iterator endIter (mEntries->end ());
+        EntryList::iterator iter (mEntries->begin ());
+        bool checkState = mBook ? mBook->getCheckSourceState() : false;
+
+        for (mama_u32_t pos (0); iter != endIter; ++iter)
+        {
+            MamdaOrderBookEntry *entry (*iter);
+
+            if (checkState && !entry->isVisible())
+                continue;
+            else
+                ++pos;
+
+            if (!strcmp (id, entry->getId ()))
+                return pos;
+            }
+
+            return 0;
     }
 
     void* MamdaOrderBookPriceLevel::getClosure () const
@@ -382,36 +518,38 @@ namespace Wombat
 
     MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevelImpl::MamdaOrderBookPriceLevelImpl (
         MamdaOrderBookPriceLevel&  level)
-        : mLevel      (level)
-        , mPrice      (0.0)
-        , mSize       (0.0)
-        , mSizeChange (0.0)
-        , mNumEntries (0)
+        : mLevel           (level)
+        , mPrice           (0.0)
+        , mSize            (0.0)
+        , mSizeChange      (0.0)
+        , mNumEntries      (0)
         , mNumEntriesTotal (0)
-        , mSide       (MAMDA_BOOK_SIDE_BID)
-        , mAction     (MAMDA_BOOK_ACTION_ADD)
-        , mEntries    (NULL)
-        , mBook       (NULL)
-        , mOrderType  (MAMDA_BOOK_LEVEL_LIMIT)
-        , mClosure    (NULL)
+        , mSide            (MAMDA_BOOK_SIDE_BID)
+        , mAction          (MAMDA_BOOK_ACTION_ADD)
+        , mEntries         (NULL)
+        , mBook            (NULL)
+        , mOrderType       (MAMDA_BOOK_LEVEL_LIMIT)
+        , mClosure         (NULL)
+        , mReservedEntry   ()
     {
     }
 
     MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevelImpl::MamdaOrderBookPriceLevelImpl (
         MamdaOrderBookPriceLevel& level,
         const MamdaOrderBookPriceLevelImpl&  copy)
-        : mLevel      (level)
-        , mPrice      (0.0)
-        , mSize       (0.0)
-        , mSizeChange (0.0)
-        , mNumEntries (0)
+        : mLevel           (level)
+        , mPrice           (0.0)
+        , mSize            (0.0)
+        , mSizeChange      (0.0)
+        , mNumEntries      (0)
         , mNumEntriesTotal (0)
-        , mSide       (MAMDA_BOOK_SIDE_BID)
-        , mAction     (MAMDA_BOOK_ACTION_ADD)
-        , mEntries    (NULL)
-        , mBook       (NULL)
-        , mOrderType  (MAMDA_BOOK_LEVEL_LIMIT)
-        , mClosure    (NULL)
+        , mSide            (MAMDA_BOOK_SIDE_BID)
+        , mAction          (MAMDA_BOOK_ACTION_ADD)
+        , mEntries         (NULL)
+        , mBook            (NULL)
+        , mOrderType       (MAMDA_BOOK_LEVEL_LIMIT)
+        , mClosure         (NULL)
+        , mReservedEntry   ()
     {
         MamdaOrderBookPriceLevelImpl::copy (copy);
     }
@@ -420,18 +558,19 @@ namespace Wombat
         MamdaOrderBookPriceLevel& level,
         MamaPrice&  price,
         Side    side)
-        : mLevel      (level)
-        , mPrice      (price)
-        , mSize       (0.0)
-        , mSizeChange (0.0)
-        , mNumEntries (0)
+        : mLevel           (level)
+        , mPrice           (price)
+        , mSize            (0.0)
+        , mSizeChange      (0.0)
+        , mNumEntries      (0)
         , mNumEntriesTotal (0)
-        , mSide       (side)
-        , mAction     (MAMDA_BOOK_ACTION_ADD)
-        , mEntries    (NULL)
-        , mBook       (NULL)
-        , mOrderType  (MAMDA_BOOK_LEVEL_LIMIT)
-        , mClosure    (NULL)
+        , mSide            (side)
+        , mAction          (MAMDA_BOOK_ACTION_ADD)
+        , mEntries         (NULL)
+        , mBook            (NULL)
+        , mOrderType       (MAMDA_BOOK_LEVEL_LIMIT)
+        , mClosure         (NULL)
+        , mReservedEntry   ()
     {
     }
 
@@ -439,18 +578,19 @@ namespace Wombat
         MamdaOrderBookPriceLevel& level,
         double  price,
         Side    side)
-        : mLevel      (level)
-        , mPrice      (price)
-        , mSize       (0.0)
-        , mSizeChange (0.0)
-        , mNumEntries (0)
+        : mLevel           (level)
+        , mPrice           (price)
+        , mSize            (0.0)
+        , mSizeChange      (0.0)
+        , mNumEntries      (0)
         , mNumEntriesTotal (0)
-        , mSide       (side)
-        , mAction     (MAMDA_BOOK_ACTION_ADD)
-        , mEntries    (NULL)
-        , mBook       (NULL)
-        , mOrderType  (MAMDA_BOOK_LEVEL_LIMIT)
-        , mClosure    (NULL)
+        , mSide            (side)
+        , mAction          (MAMDA_BOOK_ACTION_ADD)
+        , mEntries         (NULL)
+        , mBook            (NULL)
+        , mOrderType       (MAMDA_BOOK_LEVEL_LIMIT)
+        , mClosure         (NULL)
+        , mReservedEntry   ()
     {
     }
 
@@ -566,9 +706,28 @@ namespace Wombat
             EntryList::iterator i   = copy.mEntries->begin();
             while (i != end)
             {
-                addEntry (new MamdaOrderBookEntry(**i));
-                ++i;
+                if (*i == &copy.mReservedEntry)
+                {
+                    addEntry (&mReservedEntry);
+                }
+                else
+                {
+                    MamdaOrderBookEntry *entry (new MamdaOrderBookEntry (**i));
+
+                    if ((*i)->getEntryPositionReceived ())
+                    {
+                        addEntry (entry,
+                                  (*i)->getEntryPositionInPriceLevel ());
+                    }
+                    else
+                    {
+                        addEntry (entry);
+                    }
+                }
+
+            ++i;
             }
+ 
         }
         mPrice      = copy.mPrice;
         mSize       = copy.mSize;
@@ -605,6 +764,8 @@ namespace Wombat
             mEntries = new EntryList;
         bool checkState = mBook ? mBook->getCheckSourceState() : false;
         mEntries->push_back (entry);
+        entry->setEntryPositionReceived (false);
+
         if (!checkState || entry->isVisible())
         {
             mNumEntries++;
@@ -631,6 +792,96 @@ namespace Wombat
                              MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
         }
     }
+
+    void MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevelImpl::addEntry (
+    MamdaOrderBookEntry*  entry,
+    mama_u32_t            entryPosition)
+    {
+        if (!mEntries)
+        mEntries = new EntryList;
+        bool checkState = mBook ? mBook->getCheckSourceState() : false;
+        mama_u32_t numNewEntries (0);
+
+        if (0 == entryPosition)
+        {
+            mEntries->push_back (entry);
+            entry->setEntryPositionReceived (false);
+            numNewEntries = 1;
+        }
+        else if (entryPosition > 0 && entryPosition <= (mEntries->size() + 1))
+        {
+            EntryList::iterator iter( mEntries->begin() );
+            EntryList::iterator endIter( mEntries->end() );
+
+            for (mama_u32_t ii (1);
+                 ((ii < entryPosition) && (iter != endIter)) ;
+                 ++ii, ++iter )
+                ;
+
+            if (iter != endIter)
+            {
+                mEntries->insert (iter, 1, entry);
+                entry->setEntryPositionReceived (entryPosition);
+
+                // Check if a previous blank entry should be removed
+                if (*iter == &mReservedEntry)
+                {
+                    mEntries->erase (iter);
+                }
+                else
+                {
+                    numNewEntries = 1;
+                }
+            }
+            else // entryPosition == (size + 1)
+            {
+                mEntries->push_back (entry);
+                entry->setEntryPositionReceived (entryPosition);
+                numNewEntries = 1;
+            }
+        }
+        else // entryPosition > (size +1)
+        {
+            for (mama_u32_t ii = (mEntries->size () + 1); ii < entryPosition; ++ii)
+            {
+                // Add a blank Entry to be updated
+                mEntries->push_back (&mReservedEntry);
+                ++numNewEntries;
+            }
+
+            // Add the out-of-sequence entry
+            mEntries->push_back (entry);
+            entry->setEntryPositionReceived (entryPosition);
+            ++numNewEntries;
+        }
+
+        if (!checkState || entry->isVisible())
+        {
+            mNumEntries += numNewEntries;
+            mSize += entry->getSize();
+        }
+        mNumEntriesTotal += numNewEntries;
+        entry->setPriceLevel (&mLevel);
+
+        if ((mBook) && (mBook->getGenerateDeltaMsgs()))
+        {
+            //Need to set correct action based on numEntries in level
+            MamdaOrderBookPriceLevel::Action plAction;
+            if (mNumEntriesTotal > 1)
+            {
+                plAction = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE;
+            }
+            else
+            {
+                plAction = MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD;
+            }
+            mBook->addDelta(entry, entry->getPriceLevel(),
+                            entry->getPriceLevel()->getSizeChange(),
+                            plAction,
+                            MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
+        }
+    }
+
 
     void MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevelImpl::updateEntry (
         const MamdaOrderBookEntry&  entry)
@@ -727,7 +978,13 @@ namespace Wombat
     {
         bool checkState = mBook ? mBook->getCheckSourceState() : false;
         mEntries->erase(erasableIter);
-        if (mBook) mBook->detach (entry);
+        if (mBook) 
+        { 
+           if(entry != &mReservedEntry)
+            {
+                mBook->detach (entry);
+            }
+        }
         if (!checkState || entry->isVisible())
         {
             mSize -= entry->getSize();
@@ -993,7 +1250,8 @@ namespace Wombat
     MamdaOrderBookEntry*
     MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevelImpl::findOrCreateEntry (
         const char* id,
-        bool&       newEntry)
+        bool&       newEntry,
+        mama_u32_t  entryPosition)
     {
         if (mEntries)
         {
@@ -1002,7 +1260,9 @@ namespace Wombat
             for (; iter != end; ++iter)
             {
                 MamdaOrderBookEntry*  entry = *iter;
-                if (strcmp (id, entry->getId()) == 0)
+                const char *rhs (entry->getId ());
+       
+                if (id && rhs && strcmp (id, rhs) == 0) 
                 {
                     newEntry = false;
                     return entry;
@@ -1013,15 +1273,18 @@ namespace Wombat
         {
             mEntries = new EntryList;
         }
+ 
         MamdaOrderBookEntry*  entry = new MamdaOrderBookEntry;
         entry->setId (id);
         entry->setAction (MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
+        //addEntry (entry, entryPosition);   
         entry->setPriceLevel (&mLevel);
         mEntries->push_back (entry);
         mNumEntries++;
         mNumEntriesTotal++;
         newEntry = true;
-
+ 
+ 
         if (mBook && mBook->getGenerateDeltaMsgs())
         {
             //Need to set correct action based on numEntries in level
@@ -1037,7 +1300,8 @@ namespace Wombat
             mBook->addDelta(entry, entry->getPriceLevel(),
                              entry->getPriceLevel()->getSizeChange(),
                              plAction,
-                             MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD);
+                             MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
+                             entryPosition);
         }
         return entry;
     }
@@ -1362,7 +1626,8 @@ namespace Wombat
         EntryList::iterator end   = entries.end();
         for (; itr != end; itr++)
         {
-            delete *itr;
+            if(*itr != &mReservedEntry)
+                delete *itr;
         }
         entries.clear();
     }

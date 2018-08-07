@@ -58,6 +58,7 @@ namespace Wombat
     const MamaFieldDescriptor*  MamdaOrderBookFields::ENTRY_SIZE          = NULL;
     const MamaFieldDescriptor*  MamdaOrderBookFields::ENTRY_TIME          = NULL;
     const MamaFieldDescriptor*  MamdaOrderBookFields::ENTRY_STATUS        = NULL;
+    const MamaFieldDescriptor*  MamdaOrderBookFields::ENTRY_POSITION      = NULL;
     const MamaFieldDescriptor*  MamdaOrderBookFields::ENTRY_PROPERTIES    = NULL;
     const MamaFieldDescriptor*  MamdaOrderBookFields::ENTRY_PROP_MSG_TYPE = NULL;
     const MamaFieldDescriptor*  MamdaOrderBookFields::BID_MARKET_ORDERS   = NULL;
@@ -106,6 +107,7 @@ namespace Wombat
         ENTRY_SIZE         = dictionary.getFieldByName ("wEntrySize");
         ENTRY_TIME         = dictionary.getFieldByName ("wEntryTime");
         ENTRY_STATUS       = dictionary.getFieldByName ("wEntryStatus");
+        ENTRY_POSITION     = dictionary.getFieldByName ("wEntryPosition");
         ENTRY_PROPERTIES   = dictionary.getFieldByName ("wEntryPropFids");
         ENTRY_PROP_MSG_TYPE= dictionary.getFieldByName ("wEntryPropMsgType");
         BID_MARKET_ORDERS  = dictionary.getFieldByName ("wBidMarketOrders");
@@ -203,6 +205,7 @@ namespace Wombat
         ENTRY_SIZE         = NULL;
         ENTRY_TIME         = NULL;
         ENTRY_STATUS       = NULL;
+        ENTRY_POSITION     = NULL;
         ENTRY_PROPERTIES   = NULL;
         ENTRY_PROP_MSG_TYPE= NULL;
         BID_MARKET_ORDERS  = NULL;

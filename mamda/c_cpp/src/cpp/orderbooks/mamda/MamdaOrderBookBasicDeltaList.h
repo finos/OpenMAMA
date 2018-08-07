@@ -86,6 +86,16 @@ namespace Wombat
                   mama_quantity_t                   plDeltaSize,
                   MamdaOrderBookPriceLevel::Action  plAction,
                   MamdaOrderBookEntry::Action       entryAction);
+        /**
+         * Add a basic delta.  This method adds a MamdaOrderBookBasicDelta
+         * to the list, with an entry position.
+         */
+        void add (MamdaOrderBookEntry*              entry,
+                  MamdaOrderBookPriceLevel*         level,
+                  mama_quantity_t                   plDeltaSize,
+                  MamdaOrderBookPriceLevel::Action  plAction,
+                  MamdaOrderBookEntry::Action       entryAction,
+                  mama_u32_t                        entryPosition);
 
         /**
          * Add a basic delta.  This method adds a copy of the

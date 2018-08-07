@@ -390,6 +390,7 @@ private:
         double      price         = levelEntry.getPriceLevelPrice ();
         char        entrySide     = levelEntry.getPriceLevelSide();
         double      size          = levelEntry.getPriceLevelEntrySize ();
+        unsigned int position     = levelEntry.getPriceLevelEntryPosition ();
 
         cout << "ENTRY "
             << symbol      << " "
@@ -397,8 +398,16 @@ private:
             << entryId     << " "
             << entryAction << " "
             << price       << " "
-            << entrySide   << " "
-            << size        << endl;
+            << entrySide   << " ";
+
+
+        if(0 != position)
+        {
+            cout << position << endl;
+        }
+            
+        cout << size << endl;
+
         flush (cout);
     }
 
@@ -499,11 +508,23 @@ private:
 
                             if(mEntryPtr != NULL)
                             {
-                                mOrderBook.updateEntry(
-                                        mEntryPtr,
-                                        levelEntry.getPriceLevelEntrySize(),
-                                        levelEntry.getPriceLevelEntryTime(),
-                                        (MamdaOrderBookBasicDelta*) NULL);
+                                if(mEntryPtr->getEntryPositionReceived() != 0)
+                                {
+                                    mOrderBook.updateEntry(
+                                            mEntryPtr,
+                                            levelEntry.getPriceLevelEntrySize(),
+                                            levelEntry.getPriceLevelEntryTime(),
+                                            (MamdaOrderBookBasicDelta*) NULL,
+                                            mEntryPtr->getEntryPositionReceived());
+                                }
+                                else
+                                {
+                                    mOrderBook.updateEntry(
+                                            mEntryPtr,
+                                            levelEntry.getPriceLevelEntrySize(),
+                                            levelEntry.getPriceLevelEntryTime(),
+                                            (MamdaOrderBookBasicDelta*) NULL);
+                                }
                                 break;
                             }
                         }
@@ -523,17 +544,21 @@ private:
                         cout<< "Caught MamdaOrderBookException [" << e.what() << "[\n";
                     }
                 case MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD :
+                {
+                    MamaPrice mp( levelEntry.getPriceLevelPrice() );
                     mEntryPtr = mOrderBook.addEntry(
                             levelEntry.getPriceLevelEntryId(),
                             levelEntry.getPriceLevelEntrySize(),
-                            levelEntry.getPriceLevelPrice(),
+                            mp,
                             (MamdaOrderBookPriceLevel::Side) levelEntry.getPriceLevelSide(),
                             levelEntry.getPriceLevelEntryTime(),
                             (const MamaSourceDerivative*) NULL,
-                            (MamdaOrderBookBasicDelta*) NULL);
+                            (MamdaOrderBookBasicDelta*) NULL,
+                            levelEntry.getPriceLevelEntryPosition());
 
                     mEntryPtr->setReason(
                             (MamdaOrderBookTypes::Reason)levelEntry.getPriceLevelEntryReason());
+                }
                     break;
                 case MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE :
                     try

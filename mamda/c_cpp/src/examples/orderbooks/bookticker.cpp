@@ -185,7 +185,7 @@ public:
     void prettyPrintEntries (const MamdaOrderBook&  book)
     {
         printf ("%s\n",
-            "     ID/Num           Time       Size   Price");
+            "ID/Num           Time     Position   Size   Price");
         MamdaOrderBook::constBidIterator bidIter = book.bidBegin ();
         MamdaOrderBook::constBidIterator bidEnd  = book.bidEnd ();
         MamdaOrderBook::constAskIterator askIter = book.askBegin ();
@@ -260,11 +260,12 @@ public:
             {
                 const MamdaOrderBookEntry* entry = *i;
                 const char*      id    = entry->getId ();
+                mama_u32_t       position = entry->getEntryPositionInPriceLevel();
                 mama_quantity_t  size  = entry->getSize ();
                 double           price = bidLevel->getPrice ();
                 entry->getTime().getAsFormattedString (timeStr, 32, "%T%;");
-                printf ("  %14s  %12s %7g %7.*f\n",
-                        id, timeStr, size, mPrecision, price);
+                printf ("  %14s  %12s  %u     %7g %7.*f\n",
+                        id, timeStr, position, size, mPrecision, price);
                 ++i;
             }
             ++bidIter;
@@ -286,11 +287,12 @@ public:
             {
                 const MamdaOrderBookEntry* entry = *i;
                 const char*      id    = entry->getId ();
+                mama_u32_t       position = entry->getEntryPositionInPriceLevel();
                 mama_quantity_t  size  = entry->getSize ();
                 double           price = askLevel->getPrice ();
                 entry->getTime().getAsFormattedString (timeStr, 32, "%T%;");
-                printf ("  %14s  %12s %7g %7.*f\n",
-                        id, timeStr, size, mPrecision, price);
+                printf ("  %14s  %12s  %u      %7g %7.*f\n",
+                        id, timeStr, position, size, mPrecision, price);
                 ++i;
             }
             ++askIter;

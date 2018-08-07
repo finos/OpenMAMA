@@ -46,8 +46,29 @@ namespace Wombat
                                   mama_quantity_t                   plDeltaSize,
                                   MamdaOrderBookPriceLevel::Action  plAction,
                                   MamdaOrderBookEntry::Action       entryAction);
+        
+        void conflateLevelDeltas (MamdaOrderBookEntry*              entry,
+                                  MamdaOrderBookPriceLevel*         level,
+                                  mama_quantity_t                   plDeltaSize,
+                                  MamdaOrderBookPriceLevel::Action  plAction,
+                                  MamdaOrderBookEntry::Action       entryAction,
+                                  mama_u32_t                        entryPosition);
 
         void conflateEntryDeltas (MamdaOrderBookEntry*              entry,
+                                  MamdaOrderBookPriceLevel*         level,
+                                  mama_quantity_t                   plDeltaSize,
+                                  MamdaOrderBookPriceLevel::Action  plAction,
+                                  MamdaOrderBookEntry::Action       entryAction);
+        
+        void conflateEntryDeltas (MamdaOrderBookEntry*              entry,
+                                  MamdaOrderBookPriceLevel*         level,
+                                  mama_quantity_t                   plDeltaSize,
+                                  MamdaOrderBookPriceLevel::Action  plAction,
+                                  MamdaOrderBookEntry::Action       entryAction,
+                                  mama_u32_t                        entryPosition);
+
+        void addEntryDelta       (BasicDeltaList&                   deltaList,
+                                  MamdaOrderBookEntry*              entry,
                                   MamdaOrderBookPriceLevel*         level,
                                   mama_quantity_t                   plDeltaSize,
                                   MamdaOrderBookPriceLevel::Action  plAction,
@@ -58,7 +79,8 @@ namespace Wombat
                                   MamdaOrderBookPriceLevel*         level,
                                   mama_quantity_t                   plDeltaSize,
                                   MamdaOrderBookPriceLevel::Action  plAction,
-                                  MamdaOrderBookEntry::Action       entryAction);
+                                  MamdaOrderBookEntry::Action       entryAction,
+                                  mama_u32_t                        entryPosition);
 
         void applyEntryDelta     (BasicDeltaList&                   deltaList,
                                   MamdaOrderBookEntry*              entry,
@@ -66,6 +88,14 @@ namespace Wombat
                                   mama_quantity_t                   plDeltaSize,
                                   MamdaOrderBookPriceLevel::Action  plAction,
                                   MamdaOrderBookEntry::Action       entryAction);
+        
+        void applyEntryDelta     (BasicDeltaList&                   deltaList,
+                                  MamdaOrderBookEntry*              entry,
+                                  MamdaOrderBookPriceLevel*         level,
+                                  mama_quantity_t                   plDeltaSize,
+                                  MamdaOrderBookPriceLevel::Action  plAction,
+                                  MamdaOrderBookEntry::Action       entryAction,
+                                  mama_u32_t                        entryPosition);
 
         BasicDeltaMap*                               mBidLevelDeltas;
         BasicDeltaMap*                               mAskLevelDeltas;
@@ -212,6 +242,42 @@ namespace Wombat
         }
         mImpl.checkSide (level);
     }
+    
+    void MamdaOrderBookBasicDeltaList::add (
+        MamdaOrderBookEntry*              entry,
+        MamdaOrderBookPriceLevel*         level,
+        mama_quantity_t                   plDeltaSize,
+        MamdaOrderBookPriceLevel::Action  plAction,
+        MamdaOrderBookEntry::Action       entryAction,
+        mama_u32_t                        entryPosition)
+    {
+        if (mImpl.mKeepDeltas)
+        {
+            if (mImpl.mConflateDeltas)
+            {
+                if (mImpl.mProcessEntries)
+                {
+                    mImpl.conflateEntryDeltas (entry, level, plDeltaSize,
+                                                plAction, entryAction, entryPosition);
+                }
+                else
+                {
+                    mImpl.conflateLevelDeltas (entry, level, plDeltaSize,
+                                                plAction, entryAction, entryPosition);
+                }
+            }
+            else
+            {
+                MamdaOrderBookBasicDelta* basicDelta = new MamdaOrderBookBasicDelta;
+                basicDelta->set (entry, level, plDeltaSize, plAction, entryAction, entryPosition);
+
+                if (!mImpl.mDeltas)
+                    mImpl.mDeltas = new BasicDeltaList;
+                mImpl.mDeltas->push_back (basicDelta);
+            }
+        }
+        mImpl.checkSide (level);
+    }
 
     void MamdaOrderBookBasicDeltaList::add (
         const MamdaOrderBookBasicDelta&  delta)
@@ -220,21 +286,45 @@ namespace Wombat
         {
             if (mImpl.mConflateDeltas)
             {
-                if (mImpl.mProcessEntries)
+                if(delta.getEntryPosition() > 0)
                 {
-                    mImpl.conflateEntryDeltas (delta.getEntry(),
-                                               delta.getPriceLevel(),
-                                               delta.getPlDeltaSize(),
-                                               delta.getPlDeltaAction(),
-                                               delta.getEntryDeltaAction());
+                    if (mImpl.mProcessEntries)
+                    {
+                        mImpl.conflateEntryDeltas (delta.getEntry(),
+                                                   delta.getPriceLevel(),
+                                                   delta.getPlDeltaSize(),
+                                                   delta.getPlDeltaAction(),
+                                                   delta.getEntryDeltaAction(),
+                                                   delta.getEntryPosition());
+                    }
+                    else
+                    {
+                        mImpl.conflateLevelDeltas (delta.getEntry(),
+                                                   delta.getPriceLevel(),
+                                                   delta.getPlDeltaSize(),
+                                                   delta.getPlDeltaAction(),
+                                                   delta.getEntryDeltaAction(),
+                                                   delta.getEntryPosition());
+                    }
                 }
                 else
                 {
-                    mImpl.conflateLevelDeltas (delta.getEntry(),
-                                               delta.getPriceLevel(),
-                                               delta.getPlDeltaSize(),
-                                               delta.getPlDeltaAction(),
-                                               delta.getEntryDeltaAction());
+                    if (mImpl.mProcessEntries)
+                    {
+                        mImpl.conflateEntryDeltas (delta.getEntry(),
+                                                   delta.getPriceLevel(),
+                                                   delta.getPlDeltaSize(),
+                                                   delta.getPlDeltaAction(),
+                                                   delta.getEntryDeltaAction());
+                    }
+                    else
+                    {
+                        mImpl.conflateLevelDeltas (delta.getEntry(),
+                                                   delta.getPriceLevel(),
+                                                   delta.getPlDeltaSize(),
+                                                   delta.getPlDeltaAction(),
+                                                   delta.getEntryDeltaAction());
+                    }
                 }
             }
             else
@@ -508,6 +598,96 @@ namespace Wombat
     }
 
     void
+    MamdaOrderBookBasicDeltaList::MamdaOrderBookBasicDeltaListImpl::conflateEntryDeltas (
+        MamdaOrderBookEntry*              entry,
+        MamdaOrderBookPriceLevel*         level,
+        mama_quantity_t                   plDeltaSize,
+        MamdaOrderBookPriceLevel::Action  plAction,
+        MamdaOrderBookEntry::Action       entryAction,
+        mama_u32_t                        entryPosition)
+    {
+        if (!mBidEntryDeltas)
+            mBidEntryDeltas = new DeltaListMap;
+        if (!mAskEntryDeltas)
+            mAskEntryDeltas = new DeltaListMap;
+
+        double price = level->getPrice();
+        DeltaListMap* deltaSide =
+            MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID == level->getSide()
+            ? mBidEntryDeltas
+            : mAskEntryDeltas;
+
+        DeltaListMap::iterator found = deltaSide->find (price);
+
+        /* No deltas for this price level */
+        if (found == deltaSide->end())
+        {
+            BasicDeltaList*  deltaList = new BasicDeltaList;
+            deltaSide->insert (DeltaListMap::value_type(price,deltaList));
+
+            addEntryDelta (*deltaList, entry, level,
+                           plDeltaSize, plAction, entryAction, entryPosition);
+            return;
+        }
+
+        BasicDeltaList*  deltaList = found->second;
+        if (0 == deltaList->size())
+        {
+            addEntryDelta (*deltaList, entry, level,
+                           plDeltaSize, plAction, entryAction, entryPosition);
+            return;
+        }
+
+        /* Existing deltas for this level */
+        switch (plAction)
+        {
+            case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_DELETE:
+            {
+                BasicDeltaList::iterator end = deltaList->end();
+                BasicDeltaList::iterator i   = deltaList->begin();
+
+                MamdaOrderBookBasicDelta* basicDelta = *i;
+
+                MamdaOrderBookPriceLevel::Action  firstAction =
+                            basicDelta->getPlDeltaAction();
+                for (; i != end; ++i)
+                {
+                    MamdaOrderBookBasicDelta* delta = *i;
+                    delete delta;
+                }
+                mSize -= deltaList->size();
+                deltaList->clear();
+                /* If this level was not added during this conflation interval */
+                if (MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD != firstAction)
+                {
+                    /* NULL entry because that way the client will delete all
+                    entries */
+                    addEntryDelta (*deltaList, NULL, level,
+                                    plDeltaSize, plAction, entryAction, entryPosition);
+                    mSendImmediately = true;
+
+                }
+
+                break;
+            }
+            case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD:
+            {
+                addEntryDelta (*deltaList, entry, level,
+                                plDeltaSize, plAction, entryAction, entryPosition);
+                break;
+            }
+            case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE:
+            {
+                applyEntryDelta (*deltaList, entry, level,
+                                 plDeltaSize, plAction, entryAction, entryPosition);
+                break;
+            }
+            case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UNKNOWN:
+                break;
+        }
+    }
+
+    void
     MamdaOrderBookBasicDeltaList::MamdaOrderBookBasicDeltaListImpl::addEntryDelta (
         BasicDeltaList&                   deltaList,
         MamdaOrderBookEntry*              entry,
@@ -518,6 +698,22 @@ namespace Wombat
     {
         MamdaOrderBookBasicDelta* basicDelta = new MamdaOrderBookBasicDelta;
         basicDelta->set (entry, level, plDeltaSize, plAction, entryAction);
+        deltaList.push_back (basicDelta);
+        ++mSize;
+    }
+    
+    void
+    MamdaOrderBookBasicDeltaList::MamdaOrderBookBasicDeltaListImpl::addEntryDelta (
+        BasicDeltaList&                   deltaList,
+        MamdaOrderBookEntry*              entry,
+        MamdaOrderBookPriceLevel*         level,
+        mama_quantity_t                   plDeltaSize,
+        MamdaOrderBookPriceLevel::Action  plAction,
+        MamdaOrderBookEntry::Action       entryAction,
+        mama_u32_t                        entryPosition)
+    {
+        MamdaOrderBookBasicDelta* basicDelta = new MamdaOrderBookBasicDelta;
+        basicDelta->set (entry, level, plDeltaSize, plAction, entryAction, entryPosition);
         deltaList.push_back (basicDelta);
         ++mSize;
     }
@@ -581,6 +777,66 @@ namespace Wombat
         return;
     }
 
+    /* Maybe change to a findOrCreate if needed */
+    void
+    MamdaOrderBookBasicDeltaList::MamdaOrderBookBasicDeltaListImpl::applyEntryDelta (
+        BasicDeltaList&                   deltaList,
+        MamdaOrderBookEntry*              entry,
+        MamdaOrderBookPriceLevel*         level,
+        mama_quantity_t                   plDeltaSize,
+        MamdaOrderBookPriceLevel::Action  plAction,
+        MamdaOrderBookEntry::Action       entryAction,
+        mama_u32_t                        entryPosition)
+    {
+        BasicDeltaList::iterator end = deltaList.end();
+        BasicDeltaList::iterator i   = deltaList.begin();
+
+        for (; i != end; ++i)
+        {
+            MamdaOrderBookBasicDelta* delta = *i;
+
+            if (delta->getEntry() == entry)
+            {
+                MamdaOrderBookEntry::Action existingAction =
+                        delta->getEntryDeltaAction();
+                switch (entryAction)
+                {
+                    case MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE:
+                    {
+                        deltaList.erase (i);
+                        delete delta;
+                        --mSize;
+                        /* Do not add new entry if the existing one was added
+                           this conflation interval */
+                        if (MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD
+                           != existingAction)
+                        {
+                            addEntryDelta (deltaList, entry, level,
+                                       plDeltaSize, plAction, entryAction, entryPosition);
+                        }
+                        return;
+                    }
+                    case MamdaOrderBookEntry::MAMDA_BOOK_ACTION_UPDATE:
+                    case MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD:
+                    {
+                        deltaList.erase (i);
+                        delete delta;
+                        --mSize;
+                        addEntryDelta (deltaList, entry, level,
+                                       plDeltaSize, plAction, entryAction, entryPosition);
+                        return;
+                    }
+                    case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UNKNOWN:
+                        continue;
+                }
+            }
+        }
+        /* If not found then add the new delta */
+        addEntryDelta (deltaList, entry, level,
+                       plDeltaSize, plAction, entryAction, entryPosition);
+        return;
+    }
+
     void
     MamdaOrderBookBasicDeltaList::MamdaOrderBookBasicDeltaListImpl::conflateLevelDeltas (
         MamdaOrderBookEntry*              entry,
@@ -606,6 +862,70 @@ namespace Wombat
         {
             MamdaOrderBookBasicDelta* basicDelta = new MamdaOrderBookBasicDelta;
             basicDelta->set (entry, level, plDeltaSize, plAction, entryAction);
+
+            deltaSide->insert (BasicDeltaMap::value_type(price,basicDelta));
+            ++mSize;
+        }
+        else
+        {
+            MamdaOrderBookBasicDelta* existingDelta = found->second;
+
+            switch (plAction)
+            {
+                case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_DELETE:
+                    if (MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD ==
+                        existingDelta->getPlDeltaAction())
+                    {
+                        delete existingDelta;
+                        deltaSide->erase (found);
+                         --mSize;
+                    }
+                    else
+                    {
+                        existingDelta->setPlDeltaAction (
+                            MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_DELETE);
+                    }
+                    break;
+                case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_ADD:
+                    existingDelta->setPlDeltaAction (
+                            MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE);
+
+                case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UPDATE: /* Fall through */
+                    existingDelta->applyPlDeltaSize (plDeltaSize);
+                    existingDelta->setPriceLevel (level);
+                    break;
+                case MamdaOrderBookPriceLevel::MAMDA_BOOK_ACTION_UNKNOWN:
+                    break;
+            }
+        }
+    }
+    
+    void
+    MamdaOrderBookBasicDeltaList::MamdaOrderBookBasicDeltaListImpl::conflateLevelDeltas (
+        MamdaOrderBookEntry*              entry,
+        MamdaOrderBookPriceLevel*         level,
+        mama_quantity_t                   plDeltaSize,
+        MamdaOrderBookPriceLevel::Action  plAction,
+        MamdaOrderBookEntry::Action       entryAction,
+        mama_u32_t                        entryPosition)
+    {
+        if (!mBidLevelDeltas)
+            mBidLevelDeltas = new BasicDeltaMap;
+        if (!mAskLevelDeltas)
+            mAskLevelDeltas = new BasicDeltaMap;
+
+        double price = level->getPrice();
+        BasicDeltaMap* deltaSide =
+            MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID == level->getSide()
+            ? mBidLevelDeltas
+            : mAskLevelDeltas;
+
+        BasicDeltaMap::iterator found = deltaSide->find(price);
+        /* No deltas for this price level */
+        if (found == deltaSide->end())
+        {
+            MamdaOrderBookBasicDelta* basicDelta = new MamdaOrderBookBasicDelta;
+            basicDelta->set (entry, level, plDeltaSize, plAction, entryAction, entryPosition);
 
             deltaSide->insert (BasicDeltaMap::value_type(price,basicDelta));
             ++mSize;

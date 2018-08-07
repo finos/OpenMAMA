@@ -31,7 +31,7 @@ namespace Wombat
                                           : public MamdaConcreteBasicEvent
     {
     };
-
+    
     MamdaOrderBookConcreteComplexDelta::MamdaOrderBookConcreteComplexDelta ()
         : mImpl (*new OrderBookConcreteComplexDeltaImpl)
     {
@@ -132,8 +132,6 @@ namespace Wombat
     {
         return mImpl.getEventTimeFieldState();
     }
-
-
 
     void MamdaOrderBookConcreteComplexDelta::setSymbol (const char* value)
     {
