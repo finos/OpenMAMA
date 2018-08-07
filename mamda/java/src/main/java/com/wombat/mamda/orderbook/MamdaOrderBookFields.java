@@ -60,6 +60,7 @@ public class MamdaOrderBookFields extends MamdaFields
     public  static MamaFieldDescriptor   ENTRY_SIZE          = null;
     public  static MamaFieldDescriptor   ENTRY_TIME          = null;
     public  static MamaFieldDescriptor   ENTRY_STATUS        = null;
+    public  static MamaFieldDescriptor   ENTRY_POSITION      = null;
     public  static MamaFieldDescriptor   ENTRY_PROPERTIES    = null;
     public  static MamaFieldDescriptor   ENTRY_PROP_MSG_TYPE = null;
     public  static MamaFieldDescriptor[] PRICE_LEVEL         = null;
@@ -150,6 +151,8 @@ public class MamdaOrderBookFields extends MamdaFields
                                                     "wEntryTime");
         String wEntryStatus      = lookupFieldName (properties,
                                                     "wEntryStatus");
+        String wEntryPosition    = lookupFieldName (properties,
+                                                    "wEntryPosition");
         String wEntryPropFids    = lookupFieldName (properties,
                                                     "wEntryPropFids");
         String wEntryPropMsgType = lookupFieldName (properties,
@@ -187,6 +190,7 @@ public class MamdaOrderBookFields extends MamdaFields
         ENTRY_SIZE         = dictionary.getFieldByName (wEntrySize);
         ENTRY_TIME         = dictionary.getFieldByName (wEntryTime);
         ENTRY_STATUS       = dictionary.getFieldByName (wEntryStatus);
+        ENTRY_POSITION     = dictionary.getFieldByName (wEntryPosition);
         ENTRY_PROPERTIES   = dictionary.getFieldByName (wEntryPropFids);
         ENTRY_PROP_MSG_TYPE= dictionary.getFieldByName (wEntryPropMsgType);
         BID_MARKET_ORDERS  = dictionary.getFieldByName (wBidMarketOrders);
@@ -317,6 +321,7 @@ public class MamdaOrderBookFields extends MamdaFields
         ENTRY_SIZE         = null;
         ENTRY_TIME         = null;
         ENTRY_STATUS       = null;
+        ENTRY_POSITION     = null;
         ENTRY_PROPERTIES   = null;
         ENTRY_PROP_MSG_TYPE= null;
         BID_MARKET_ORDERS  = null;

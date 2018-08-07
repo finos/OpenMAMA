@@ -544,7 +544,7 @@ public class MamdaBookTicker
             }
             if (mQuietModeLevel<1)
             {
-                System.out.println ("     ID/Num           Time       Size   Price");
+                System.out.println ("              ID/Num    Pos          Time    Size     Price");
             }
             
             if (mQuietModeLevel<1)
@@ -592,10 +592,10 @@ public class MamdaBookTicker
         {
             if (mQuietModeLevel<1)
             {
-                System.out.print ("  " + side + "  ");
+                System.out.print ("  " + side + "           ");
                 paddedPrint (String.valueOf((long)level.getNumEntries ()), 4,
                              false);
-                System.out.print ("       ");
+                System.out.print ("         ");
                 paddedPrint (level.getTime ().getTimeAsString (), 12, false);
                 System.out.print (" ");
                 paddedPrint (String.valueOf ((long)level.getSize ()), 7,
@@ -612,12 +612,15 @@ public class MamdaBookTicker
             {
                 MamdaOrderBookEntry entry = (MamdaOrderBookEntry) i.next ();
                 String      id    = entry.getId ();
+                long        pos   = entry.getEntryPositionInPriceLevel ();
                 double      size  = entry.getSize ();
                 double      price = level.getPrice ().getValue ();
                 if (mQuietModeLevel<1)
                 {
                     System.out.print ("  ");
                     paddedPrint (id, 18, false);
+                    System.out.print ("  ");
+                    paddedPrint (pos, 5, false);
                     System.out.print ("  ");
                     paddedPrint (entry.getTime().getTimeAsString (), 12, false);
                     System.out.print (" ");
@@ -651,6 +654,15 @@ public class MamdaBookTicker
             paddedPrint (new BigDecimal (value).setScale (prec,BigDecimal.ROUND_HALF_UP).toString (),
                          width, padAfter);
 
+        }
+
+        private void paddedPrint (long value,
+                                  int width,
+                                  boolean padAfter)
+        {
+            paddedPrint (new Long (value).toString (),
+                         width,
+                         padAfter);
         }
 
         private void paddedPrint (String val, int padLen, boolean padAfter)
