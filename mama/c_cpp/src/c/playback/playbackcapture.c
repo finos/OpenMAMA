@@ -127,7 +127,7 @@ int mamaCapture_openFile(mamaPlaybackCapture* mamaCapture,
         mama_log (MAMA_LOG_LEVEL_FINE,
                   "mamaCapture_openFile: opening file: %s",
                   impl->myPlayBackFileName);
-        myPlaybackFile = fopen(impl->myPlayBackFileName,"w");
+        myPlaybackFile = fopen(impl->myPlayBackFileName,"wb");
 
         mama_log (MAMA_LOG_LEVEL_FINE,
                   "mamaCapture_openFile: file  %s succesfully opened.",
