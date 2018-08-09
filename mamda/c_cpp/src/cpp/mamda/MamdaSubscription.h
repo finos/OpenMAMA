@@ -22,6 +22,8 @@
 #ifndef MamdaSubscriptionH
 #define MamdaSubscriptionH
 
+#include <vector>
+
 #include <mamda/MamdaConfig.h>
 #include <mama/mamacpp.h>
 #include <mama/marketdata.h>

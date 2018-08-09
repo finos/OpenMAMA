@@ -24,10 +24,6 @@
 
 #include <mama/mamacpp.h>
 
-#include <vector>
-#include <functional>
-
-
 namespace Wombat 
 {
 
