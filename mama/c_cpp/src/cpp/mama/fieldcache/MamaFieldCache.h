@@ -210,6 +210,9 @@ public:
 
     /**
      * Retrieve a field from the cache.
+     * Note that the field returned is a pointer to a reusable MamaFieldCacheField
+     *  field for the MamaFieldCache which will be overwritten each time the function
+     *  is called.
      * If the field is not found then NULL is returned.
      *
      * @param fid Field id of the field to look up.
@@ -221,6 +224,9 @@ public:
 
     /**
      * Retrieve a field from the cache.
+     * Note that the field returned is a pointer to a reusable MamaFieldCacheField
+     *  field for the MamaFieldCache which will be overwritten each time the function
+     *  is called.
      * If the field is not found then NULL is returned.
      *
      * @param fid Field id of the field to look up.
