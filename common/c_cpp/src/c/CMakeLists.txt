@@ -43,33 +43,27 @@ if(WIN32)
 	target_link_libraries(wombatcommon ws2_32 advapi32 kernel32 Pdh shlwapi)
 endif()
 
-file(GLOB WOMBATCOMMON_SYSTEM_INCLUDES ${system}/wombat/*.h)
-set(WOMBATCOMMON_INCLUDES
-    wombat/environment.h
-    wombat/fileparser.h
-    wombat/fileutils.h
-    wombat/machine.h
-    wombat/memdefs.h
-    wombat/memnode.h
-    wombat/mempool.h
-    wombat/MRSWLock.h
-    wombat/queue.h
-    wombat/strutils.h
-    wombat/thread.h
-    wombat/wCommon.h
-    wombat/wincompat.h
-    wombat/wMessageStats.h
-    wombat/wSemaphore.h
-    wombat/wtable.h
-    ${WOMBATCOMMON_SYSTEM_INCLUDES}
-)
+file(GLOB wombat_inst_includes wombat/*.h ${system}/wombat/*.h)
+list(APPEND inst_includes
+     destroyHandle.h
+     list.h
+     lookup2.h
+     platform.h
+     property.h
+     wlock.h
+     timers.h)
 
 set_target_properties(wombatcommon PROPERTIES OUTPUT_NAME "wombatcommon${OPENMAMA_LIBRARY_SUFFIX}")
 install(TARGETS wombatcommon
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
-install(FILES ${WOMBATCOMMON_INCLUDES} DESTINATION include/wombat)
+
+install(FILES ${wombat_inst_includes}
+	DESTINATION include/wombat)
+
+install(FILES ${inst_includes}
+	DESTINATION include)
 
 if (WIN32 AND MSVC)
 	install(FILES $<TARGET_PDB_FILE:wombatcommon> DESTINATION bin OPTIONAL)
