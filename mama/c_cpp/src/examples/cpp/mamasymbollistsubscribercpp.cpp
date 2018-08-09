@@ -22,6 +22,7 @@
 #include <stdint.h>
 #include "wombat/port.h"
 #include <iostream>
+#include <vector>
 #include <list>
 #include <string.h>
 #include <stdio.h>

@@ -19,6 +19,8 @@
  * 02110-1301 USA
  */
 
+#include <vector>
+
 #include <stdint.h>
 #include "mama/mama.h"
 #include <mamainternal.h>

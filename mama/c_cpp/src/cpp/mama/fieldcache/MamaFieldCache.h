@@ -22,6 +22,8 @@
 #ifndef MAMA_FIELD_CACHE_CPP_H__
 #define MAMA_FIELD_CACHE_CPP_H__
 
+#include <iterator>
+
 #include <mama/mamacpp.h>
 #include <mama/fieldcache/MamaFieldCacheField.h>
 #include <mama/fieldcache/fieldcache.h>
