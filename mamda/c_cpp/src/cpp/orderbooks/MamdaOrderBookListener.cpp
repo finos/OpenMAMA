@@ -1239,8 +1239,17 @@ namespace Wombat
     bool MamdaOrderBookListener::MamdaOrderBookListenerImpl::createDelta(
         bool  isRecap)
     {
-        if ((mBookMsgFields.mNumLevels == 0) &&
-            (!mBookMsgFields.mHasMarketOrders))
+        /* 
+         * Here we are checking for a blank initial and will stop processing
+         * the message at this point.
+         * As MAMDA is optimised (with default values) we also need to check
+         * for non optimised feedhandlers which will not send all the required
+         * fields that we rely on to reset our defaults.
+         */
+        if (((mBookMsgFields.mNumLevels == 0) &&
+            (!mBookMsgFields.mHasMarketOrders)) || 
+            ((mBookMsgFields.mNumLevels == 1) && (mBookMsgFields.mPriceLevelVector == NULL)) &&
+            (isRecap) && (!mBookMsgFields.mHasMarketOrders))
         {
             mama_log (MAMA_LOG_LEVEL_FINEST,
                         "MamdaOrderBookListener::createDelta:- No price levels in update");
