@@ -22,6 +22,9 @@ install(TARGETS mamdanews
 		RUNTIME DESTINATION bin
 		LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
+
+install(DIRECTORY mamda/ DESTINATION include/mamda)
+
 if (WIN32 AND MSVC)
 	install(FILES $<TARGET_PDB_FILE:mamdanews> DESTINATION bin OPTIONAL)
 endif()

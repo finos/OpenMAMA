@@ -19,5 +19,5 @@ if (MSVC)
 endif()
 install(TARGETS mamaplugindqstrategy
         RUNTIME DESTINATION bin
-        LIBRARY DESTINATION bin
+        LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
