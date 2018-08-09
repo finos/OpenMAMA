@@ -1123,10 +1123,22 @@ mamaSubscription_hasWildcards (mamaSubscription subscription)
 }
 
 mama_status
+mamaSubscription_setRecoverGaps (mamaSubscription subscription, int doesRecover)
+{
+    return dqStrategy_setRecoverGaps(mamaSubscription_getDqStrategy(subscription), doesRecover);
+}
+
+mama_status
 mamaSubscription_setGroupSizeHint (mamaSubscription subscription, int groupSizeHint)
 {
     self->mGroupSizeHint = groupSizeHint;
     return MAMA_STATUS_OK;
+}
+
+mama_status
+mamaSubscription_getRecoverGaps (mamaSubscription subscription, int* result)
+{
+    return dqStrategy_getRecoverGaps(mamaSubscription_getDqStrategy(subscription), result);
 }
 
 SubjectContext *

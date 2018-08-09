@@ -339,7 +339,6 @@ public interface MamdaSecurityStatusUpdate extends MamdaBasicEvent
      * see <code>getSecurityStatusQualifierStr</code>/<code>getSecurityStatusQualifierEnum</code>.
      *
      * @return The reason for the current status.
-     * @see getSecurityStatusQualfierStr()
      */
     public String getReason();
 

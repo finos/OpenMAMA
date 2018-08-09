@@ -1086,25 +1086,16 @@ public class MamdaTradeListener implements MamdaMsgListener,
         return mTradeCache.mStopStockInd.getValue();
     }
 
-    /**
-     * @see MamdaTradeReport#gettradeExecVenue()
-     */
     public String getTradeExecVenue()
     {
         return mTradeCache.mTradeExecVenue.getValue();
     }
 
-    /**
-     * @see MamdaTradeReport#geOffExchangetTradePrice()
-     */
     public MamaPrice getOffExchangeTradePrice()
     {
         return mTradeCache.mOffExTradePrice;
     }
 
-    /**
-     * @see MamdaTradeReport#getOnExchangeTradePrice()
-     */
     public MamaPrice getOnExchangeTradePrice()
     {
         return mTradeCache.mOnExTradePrice;
@@ -1814,25 +1805,16 @@ public class MamdaTradeListener implements MamdaMsgListener,
         return mTradeCache.mStopStockIndFieldState.getState();
     }
 
-    /**
-     * @see MamdaTradeReport#gettradeExecVenueFieldState()
-     */
     public short getTradeExecVenueFieldState()
     {
         return mTradeCache.mTradeExecVenueFieldState.getState();
     }
 
-    /**
-     * @see MamdaTradeReport#geOffExchangetTradePriceFieldState()
-     */
     public short getOffExchangeTradePriceFieldState()
     {
         return mTradeCache.mOffExTradePriceFieldState.getState();
     }
 
-    /**
-     * @see MamdaTradeReport#getOnExchangeTradePriceFieldState()
-     */
     public short getOnExchangeTradePriceFieldState()
     {
         return mTradeCache.mOnExTradePriceFieldState.getState();

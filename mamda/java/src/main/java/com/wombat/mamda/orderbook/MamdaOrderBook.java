@@ -636,7 +636,8 @@ public class MamdaOrderBook
      * thrown if the books are not equal, along with the reason for
      * the inequality.
      *
-     * @param rhs The order book to compare to the current book.
+     * @param lhsLevel Left hand side price level to compare.
+     * @param rhsLevel Right hand side price level to compare.
      *
      * @throws MamdaOrderBookException The two books are not equal.
      */
@@ -815,7 +816,7 @@ public class MamdaOrderBook
      * @param level MamdaOrderBookPriceLevel where change occurred.
      * @param plDeltaSize Pricelevel size change.
      * @param plAction Pricelevel action.
-     * @param entAction Entry action.     
+     * @param entryAction Entry action.     
      */ 
     public void addDelta( 
         MamdaOrderBookEntry      entry,

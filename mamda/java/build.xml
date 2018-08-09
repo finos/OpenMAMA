@@ -1,6 +1,6 @@
 <project name="mamda" default="dist" basedir=".">
     <property name="product" value="mamda"></property>
-    <property name="version" value="6.2.1"></property>
+    <property name="version" value="6.2.3"></property>
     <property name="release" value="${product}_${version}_jdk${java.version}"></property>
     <property name="build" location="${user.dir}/classes"></property>
     <property name="dist" location="${user.dir}/${product}"></property>

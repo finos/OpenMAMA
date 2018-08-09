@@ -104,7 +104,7 @@ public interface MamdaQuoteUpdate extends MamdaBasicEvent
      * the security. This field may contain multiple string values,
      * separated by the colon(:) character. 
      *
-     * <table width="100%" border="1">
+     * <table width="100%" border="1" summary="Matrix of normalized euqlifiers">
      *   <tr><td><b>Value</b></td><td><b>Meaning</b></td></tr>
      *   <tr>
      *     <td>Normal</td>
@@ -297,7 +297,7 @@ public interface MamdaQuoteUpdate extends MamdaBasicEvent
      * National Bid Tick Indicator based on changes to the bid price of the
      * National Best Bid or Offer (National BBO).
      * 
-     * <table width="100%" border="1">
+     * <table width="100%" border="1" summary="NASDAQ Bid Tick Indicators for Short Sale Rule Compliance">
      *   <tr><td><b>Value</b></td><td><b>Meaning</b></td></tr>
      *   <tr>
      *     <td>U</td>
