@@ -166,7 +166,7 @@ static long              gNumMsg             = 0;
 static long              gNumMsgLast         = 0;
        long              gTotalMsg           = 0;
 static int               gInterval           = 2;
-static int               gThreads            = 0;
+static int               gThreads            = 1;
 static int               gHasCreatedThreads  = 0;
 static int               gQualityForAll      = 1;
 static mamaQueue*        gQueues             = NULL;
@@ -233,6 +233,7 @@ static void dumpDataDictionary  (void);
 static void loadSymbolMap       (void);
 static void readSymbolsFromFile (void);
 static void subscribeToSymbols  (void);
+static void signalCatcher       (int sig);
 static void mamashutdown            (void);
 static void setQueueMonitors    (mamaQueue queue, int queueIndex);
 static FILE* gLogFile = NULL;
@@ -322,6 +323,8 @@ int main (int argc, const char **argv)
     gSubscriptionList = (mamaSubscription*)calloc (MAX_SUBSCRIPTIONS,
                                                    sizeof (mamaSubscription));
 
+    signal(SIGINT, signalCatcher);
+
     setbuf (stdout, NULL);
     parseCommandLine (argc, argv);
 
@@ -367,12 +370,12 @@ int main (int argc, const char **argv)
 		mamaTimer_destroy(shutdownTimer);
 	}
 
-    mamashutdown ();
-
     if (gMsgCount)
     {
         mamaTimer_destroy (mamatimer);
     }
+
+    mamashutdown ();
 
     return 0;
 }
@@ -666,6 +669,7 @@ static void buildDataDictionary (void)
                 gDictFile);
     }
 }
+
 static void mamashutdown (void)
 {
     int i;
@@ -1872,4 +1876,19 @@ void setQueueMonitors (mamaQueue queue, int queueIndex)
         }
     }
     return;
+}
+
+void signalCatcher (int sig)
+{
+    if(sig == SIGINT)
+    {
+        printf("\nSIGINT caught. Shutting down\n");
+    }
+    else
+    {
+        printf("\nUnknown signal caught. Shutting down\n");
+    }
+
+    /* Stop MAMA */
+    mama_stop(gMamaBridge);
 }
