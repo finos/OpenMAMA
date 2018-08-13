@@ -117,6 +117,7 @@ static const char* gUsageString[]=
                    " times.",
 "-version          Print the version of the API and exit.",
 "-1                Create a snapshot subscription (no updates received).",
+"-file             Writes output to specified file instead of STDOUT.",
 "-?, --help        Print this usage information and exit.",
 "",
 " Examples:",
@@ -234,9 +235,10 @@ static void loadSymbolMap       (void);
 static void readSymbolsFromFile (void);
 static void subscribeToSymbols  (void);
 static void signalCatcher       (int sig);
-static void mamashutdown            (void);
+static void mamashutdown        (void);
 static void setQueueMonitors    (mamaQueue queue, int queueIndex);
-static FILE* gLogFile = NULL;
+static FILE* gLogFile    = NULL;
+static FILE* gFileOutput = NULL;
 
 static void MAMACALLTYPE
 subscriptionOnMsg   (mamaSubscription    subscription,
@@ -326,6 +328,10 @@ int main (int argc, const char **argv)
     signal(SIGINT, signalCatcher);
 
     setbuf (stdout, NULL);
+
+    // Default the output file to stdout
+    gFileOutput = stdout;
+
     parseCommandLine (argc, argv);
 
     if (gNumSymbols == 0 && !gPrintVersionAndExit)
@@ -747,6 +753,13 @@ static void mamashutdown (void)
     {
         fprintf(stderr, "mamashutdown: destroying transport\n");
         mamaTransport_destroy (gTransport);
+    }
+
+    /* Closing output file */
+    if(gFileOutput)
+    {
+        fclose (gFileOutput);
+        gFileOutput = NULL;
     }
 
     mama_close ();
@@ -1227,6 +1240,17 @@ static void parseCommandLine (int argc, const char** argv)
             i += 2;
         }
 
+        else if (strcmp ("-file", argv[i]) == 0)
+        {
+            gFileOutput = fopen( argv[i+1],"w+" );
+            if( gFileOutput == NULL)
+            {
+                fprintf (stderr, "Failed open log file %s\n",argv[i+1] );
+                exit(1);
+            }
+            i += 2;
+        }
+
         else
         {
             gFieldList[gNumFields++] = strdup (argv[i]);
@@ -1335,12 +1359,13 @@ void displayFields (mamaMsg msg, mamaSubscription subscription )
     {
         const char* issueSymbol = NULL;
         mamaMsg_getString (msg, NULL, 305, &issueSymbol);
-        printf ("%s.%s.%s Type: %s Status %s \n",
-                       issueSymbol ? issueSymbol : "",
-                       source,
-                       symbol,
-                       mamaMsgType_stringForMsg (msg),
-                       mamaMsgStatus_stringForMsg (msg));
+        fprintf (gFileOutput,
+                 "%s.%s.%s Type: %s Status %s \n",
+                 issueSymbol ? issueSymbol : "",
+                 source,
+                 symbol,
+                 mamaMsgType_stringForMsg (msg),
+                 mamaMsgStatus_stringForMsg (msg));
     }
 
     for (i = 0; i < gNumFields; i++)
@@ -1372,9 +1397,9 @@ void displayFields (mamaMsg msg, mamaSubscription subscription )
 #define printData(value, format)                \
 do                                              \
 {                                               \
-    if (gQuietness==0)                           \
+    if (gQuietness==0)                          \
     {                                           \
-        printf (format, value);                 \
+        fprintf (gFileOutput, format, value);   \
     }                                           \
 } while (0)                                     \
 
@@ -1416,10 +1441,11 @@ void displayField (mamaMsgField field, const char* fieldName, const mamaMsg msg,
         */
         mamaMsgField_getFid  (field, &fid);
         mamaMsgField_getTypeName (field, &fieldTypeName);
-        printf (indentOffsetAll,
-                fieldName ? fieldName : "",
-                fid,
-                fieldTypeName);
+        fprintf (gFileOutput,
+                 indentOffsetAll,
+                 fieldName ? fieldName : "",
+                 fid,
+                 fieldTypeName);
     }
 
     /*
@@ -1660,12 +1686,13 @@ void displayAllFields (mamaMsg msg, mamaSubscription subscription, int
         mamaSubscription_getSource (subscription, &source);
         mamaSubscription_getSymbol (subscription, &symbol);
         mamaMsg_getString (msg, NULL, 305, &issueSymbol);
-        printf ("%s.%s.%s Type: %s Status %s \n",
-                issueSymbol == NULL ? "" : issueSymbol,
-                source      == NULL ? "" : source,
-                symbol      == NULL ? "" : symbol,
-                mamaMsgType_stringForMsg (msg),
-                mamaMsgStatus_stringForMsg (msg));
+        fprintf (gFileOutput,
+                 "%s.%s.%s Type: %s Status %s \n",
+                 issueSymbol == NULL ? "" : issueSymbol,
+                 source      == NULL ? "" : source,
+                 symbol      == NULL ? "" : symbol,
+                 mamaMsgType_stringForMsg (msg),
+                 mamaMsgStatus_stringForMsg (msg));
     }
 
     /*
