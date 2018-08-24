@@ -53,7 +53,7 @@ if env['with_docs'] == True and not env.GetOption('clean'):
    cdoc = env.Doxygen('doxyconfig-c.in')
    cppdoc = env.Doxygen('doxyconfig-cpp.in')
 
-   env.Command( '$prefix/doc/mama/images', cdoc, 'mkdir -p $TARGET; cp -rf %s/mama/c_cpp/doc/images/* $TARGET' % ( env['TOPLEVEL'] ) )
+   env.Command( '$prefix/doc/mama/images', cdoc, 'mkdir -p $TARGET; cp -rf %s/media/images/* $TARGET' % ( env['TOPLEVEL'] ) )
    env.Command( '$prefix/doc/mama/c/html', cdoc, 'mkdir -p $TARGET; cp -rf %s/mama/c_cpp/doc/c/html/* $TARGET' % ( env['TOPLEVEL'] ) )
    env.Command( '$prefix/doc/mama/cpp/html', cppdoc, 'mkdir -p $TARGET; cp -rf %s/mama/c_cpp/doc/cpp/html/* $TARGET' % ( env['TOPLEVEL'] ) )
 

@@ -58,7 +58,7 @@ for m in modules:
 if env['with_docs'] == True:
    cppdoc = env.Doxygen('doxyconfig-cpp.in')
 
-   env.Command( '$prefix/doc/mamda/images', cppdoc, 'mkdir -p $TARGET; cp -rf %s/mamda/c_cpp/doc/images/* $TARGET' % ( env['TOPLEVEL'] ) )
+   env.Command( '$prefix/doc/mamda/images', cppdoc, 'mkdir -p $TARGET; cp -rf %s/media/images/* $TARGET' % ( env['TOPLEVEL'] ) )
    env.Command( '$prefix/doc/mamda/cpp/html', cppdoc, 'mkdir -p $TARGET; cp -rf %s/mamda/c_cpp/doc/cpp/html/* $TARGET' % ( env['TOPLEVEL'] ) )
 
    env.Clean( cppdoc, '%s/mamda/c_cpp/doc/cpp' % (env['TOPLEVEL']) )

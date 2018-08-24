@@ -2,10 +2,12 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
+def mamaVersion = project.findProperty('mamaVersion') ?: '6.2.2-1'
+
 if (!project.hasProperty('legacyNaming')) {
   group = "org.openmama"
   archivesBaseName = "openmama"
-  version = "6.2.2-1"
+  version = mamaVersion
 }
 
 repositories {
@@ -18,6 +20,15 @@ dependencies {
 
 test { 
   environment "PATH", "C:\\Users\\fquinn\\SourceExternal\\github\\fquinner\\OpenMAMA\\openmama_install_6.2.1\\bin\\dynamic"
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+    title = 'MAMA (Middleware Agnostic Messaging API) JNI specification, v' + mamaVersion
+    options.overview = 'doc/overview-jni.html'
+    options.windowTitle = 'MAMA JNI ' + mamaVersion
+    options.bottom = 'Copyright 2011 NYSE Technologies'
 }
 
 task javadocJar(type: Jar) {

@@ -23,10 +23,17 @@ foreach(file ${sources})
 	list(APPEND CLASSES ${classname})
 endforeach()
 
+list(APPEND GRADLE_TARGETS jar testClasses)
+if(WITH_DOC)
+	list(APPEND GRADLE_TARGETS javadoc)
+	set(GRADLE_EXTRA_ARGS "-PmamaVersion=${MAMA_VERSION_MAJOR}.${MAMA_VERSION_MINOR}.${MAMA_VERSION_RELEASE}")
+	install(DIRECTORY ${MAMAJNI_JAVA_BUILD_DIR}/docs/javadoc/ DESTINATION doc/mama/jni/html)
+endif()
+
 ExternalProject_Add(mamajnijava
         SOURCE_DIR "."
         BUILD_COMMAND ""
-        CONFIGURE_COMMAND ${BIN_GRADLE} --no-daemon -PlegacyNaming -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/../build.gradle jar testClasses
+        CONFIGURE_COMMAND ${BIN_GRADLE} --no-daemon -PlegacyNaming -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/../build.gradle ${GRADLE_EXTRA_ARGS} ${GRADLE_TARGETS}
         INSTALL_COMMAND ""
         LOG_BUILD 1)
 

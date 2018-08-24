@@ -2,10 +2,12 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
+def mamdaVersion = project.findProperty('mamdaVersion') ?: '6.2.2-1'
+
 if (!project.hasProperty('legacyNaming')) {
   group = "org.openmama"
   archivesBaseName = "openmamda"
-  version = "6.2.2-1"
+  version = mamdaVersion
 }
 
 repositories {
@@ -21,6 +23,15 @@ test {
     systemProperties = [
             dictionary: System.getProperty('dictionary')
     ]
+}
+
+javadoc {
+    source = sourceSets.main.allJava
+    classpath = configurations.compile
+    title = 'MAMDA (Middleware Agnostic Market Data API) Java specification, v' + mamdaVersion
+    options.overview = 'overview.html'
+    options.windowTitle = 'MAMDA Java ' + mamdaVersion
+    options.bottom = 'Copyright 2011 NYSE Technologies'
 }
 
 task javadocJar(type: Jar) {
