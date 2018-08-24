@@ -14,6 +14,7 @@ set (WITH_PROTON     true   CACHE BOOL   "Include the qpid proton middleware and
 set (WITH_MAMDA      true   CACHE BOOL   "Include MAMDA in the build")
 set (WITH_JAVA       false  CACHE BOOL   "Include JAVA bindings")
 set (WITH_CPP        true   CACHE BOOL   "Include C++ bindings")
+set (WITH_DOC        false  CACHE BOOL   "Include documentation")
 set (ENTITLEMENTS    "noop" CACHE STRING "Comma delimited list of entitlement bridges to allow to load at runtime")
 
 if (WIN32 AND MSVC)
