@@ -63,7 +63,7 @@
     if (BUFFERLEN - (pvtb_size * 22) < (MEMNODE_INITIAL_SIZE / 2)) {          \
         if (0 == memoryNode_stretch(NODE, NODE->mNodeCapacity + MEMNODE_INITIAL_SIZE)) { \
             BUFFERLEN += MEMNODE_INITIAL_SIZE;                                \
-            target = BUFFER + OFFSET;                          \
+            BUFFER = (char*)NODE->mNodeBuffer + OFFSET;                       \
         } else {                                                              \
             mama_log(MAMA_LOG_LEVEL_ERROR,                                    \
                      "Could not allocate string required for vector field - truncation is likely."); \
