@@ -61,7 +61,7 @@
         return;                                                               \
     }                                                                         \
     if (BUFFERLEN - (pvtb_size * 22) < (MEMNODE_INITIAL_SIZE / 2)) {          \
-        if (0 == memoryNode_stretch(NODE, NODE->mNodeSize + MEMNODE_INITIAL_SIZE)) { \
+        if (0 == memoryNode_stretch(NODE, NODE->mNodeCapacity + MEMNODE_INITIAL_SIZE)) { \
             BUFFERLEN += MEMNODE_INITIAL_SIZE;                                \
             target = BUFFER + OFFSET;                          \
         } else {                                                              \
@@ -2837,7 +2837,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
     struct normalizedStringIterClosure* iterClosure = (struct normalizedStringIterClosure*)closure;
     memoryNode*       memNode   = iterClosure->memNode;
     char*             target    = NULL;
-    size_t            remaining = memNode->mNodeSize - iterClosure->position;
+    size_t            remaining = memNode->mNodeCapacity - iterClosure->position;
     size_t            written   = 0;
     const char*       name      = NULL;
     mama_status       status;
@@ -2870,8 +2870,9 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
 
     // Recommend at least this buffer size
     if (remaining < (MEMNODE_INITIAL_SIZE / 2)) {
-        if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+        if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
             remaining += MEMNODE_INITIAL_SIZE;
+            target = (char*)memNode->mNodeBuffer + iterClosure->position;
         }
         else {
             mama_log(MAMA_LOG_LEVEL_ERROR,
@@ -2983,7 +2984,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
         mamaMsgField_getString(field, &value);
         valueLength = strlen(value);
         if (remaining - valueLength < (MEMNODE_INITIAL_SIZE / 2)) {
-            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
                 target = (char*)memNode->mNodeBuffer + iterClosure->position;
             }
@@ -3006,7 +3007,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
         valueLength = strlen(value);
         // [0xaa ] = 5 bytes in string per byte of input
         if (remaining - (valueLength * 5) < (MEMNODE_INITIAL_SIZE / 2)) {
-            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
                 target = (char*)memNode->mNodeBuffer + iterClosure->position;
             }
@@ -3080,7 +3081,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
                 return;
             }
             if (remaining - (pvtb_size * 22) < (MEMNODE_INITIAL_SIZE / 2)) {
-                if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                     remaining += MEMNODE_INITIAL_SIZE;
                     target = target + iterClosure->position;
                 } else {
@@ -3163,7 +3164,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
         subMsgStringLen = strlenEx(subMsgString);
 
         if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
-            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
                 target = (char*)memNode->mNodeBuffer + iterClosure->position;
             }
@@ -3198,7 +3199,7 @@ mamaMsg_toNormalizedStringIterCb(const mamaMsg       msg,
             const char* subMsgString = mamaMsg_toNormalizedString(pvtb_result[pvtb_i]);
             size_t subMsgStringLen = strlen(subMsgString);
             if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
-                if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                     remaining += MEMNODE_INITIAL_SIZE;
                     target = (char*)memNode->mNodeBuffer + iterClosure->position;
                 }
@@ -3236,7 +3237,7 @@ mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
     struct normalizedStringIterClosure* iterClosure = (struct normalizedStringIterClosure*)closure;
     memoryNode*       memNode = iterClosure->memNode;
     char*             target = NULL;
-    size_t            remaining = memNode->mNodeSize - iterClosure->position;
+    size_t            remaining = memNode->mNodeCapacity - iterClosure->position;
     size_t            written = 0;
     const char*       name = NULL;
     mama_status       status;
@@ -3269,8 +3270,9 @@ mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
 
     // Recommend at least this buffer size
     if (remaining < (MEMNODE_INITIAL_SIZE / 2)) {
-        if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+        if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
             remaining += MEMNODE_INITIAL_SIZE;
+            target = (char*)memNode->mNodeBuffer + iterClosure->position;
         }
         else {
             mama_log(MAMA_LOG_LEVEL_ERROR,
@@ -3387,7 +3389,7 @@ mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
         mamaMsgField_getString(field, &value);
         valueLength = strlen(value);
         if (remaining - valueLength < (MEMNODE_INITIAL_SIZE / 2)) {
-            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
                 target = (char*)memNode->mNodeBuffer + iterClosure->position;
             }
@@ -3410,7 +3412,7 @@ mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
         valueLength = strlen(value);
         // [0xaa ] = 5 bytes in string per byte of input
         if (remaining - (valueLength * 5) < (MEMNODE_INITIAL_SIZE / 2)) {
-            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
                 target = (char*)memNode->mNodeBuffer + iterClosure->position;
             }
@@ -3484,7 +3486,7 @@ mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
             return;
         }
         if (remaining - (pvtb_size * 22) < (MEMNODE_INITIAL_SIZE / 2)) {
-            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
                 target = target + iterClosure->position;
             }
@@ -3568,7 +3570,7 @@ mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
         subMsgStringLen = strlenEx(subMsgString);
 
         if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
-            if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+            if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                 remaining += MEMNODE_INITIAL_SIZE;
                 target = (char*)memNode->mNodeBuffer + iterClosure->position;
             }
@@ -3603,7 +3605,7 @@ mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
             const char* subMsgString = mamaMsg_toJsonString(pvtb_result[pvtb_i]);
             size_t subMsgStringLen = strlen(subMsgString);
             if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
-                if (0 == memoryNode_stretch(memNode, memNode->mNodeSize + MEMNODE_INITIAL_SIZE)) {
+                if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
                     remaining += MEMNODE_INITIAL_SIZE;
                     target = (char*)memNode->mNodeBuffer + iterClosure->position;
                 }
@@ -3666,7 +3668,7 @@ mamaMsg_toNormalizedString(const mamaMsg msg)
 }
 
 const char*
-mamaMsg_toJsonString(const mamaMsg msg)
+mamaMsg_toJsonStringWithDictionary(const mamaMsg msg, const mamaDictionary dictionary)
 {
     mamaMsgImpl* impl = (mamaMsgImpl*)msg;
     struct normalizedStringIterClosure closure;
@@ -3682,7 +3684,7 @@ mamaMsg_toJsonString(const mamaMsg msg)
     ((char*)closure.memNode->mNodeBuffer)[0] = '{';
     closure.position = 1;
 
-    mamaMsg_iterateFields(msg, mamaMsg_toJsonStringIterCb, NULL, (void*)&closure);
+    mamaMsg_iterateFields(msg, mamaMsg_toJsonStringIterCb, dictionary, (void*)&closure);
 
     if (closure.position > 1)
     {
@@ -3695,6 +3697,12 @@ mamaMsg_toJsonString(const mamaMsg msg)
     ((char*)closure.memNode->mNodeBuffer)[closure.position + 1] = '\0';
 
     return (const char*)impl->mReusableMemoryNode->mNodeBuffer;
+}
+
+const char*
+mamaMsg_toJsonString(const mamaMsg msg)
+{
+    return mamaMsg_toJsonStringWithDictionary(msg, NULL);
 }
 
 MAMAIgnoreDeprecatedOpen

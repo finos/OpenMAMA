@@ -2104,6 +2104,20 @@ mamaMsg_toJsonString(
     const mamaMsg msg);
 
 /**
+* Return a const char * representation the message in JSON format. Memory
+* is owned by the mamaMsg.
+*
+* @param msg The message.
+* @param msg The dictionary to use when resolving field names.
+* @return A json string representation of the message.
+*/
+MAMAExpDLL
+extern const char*
+mamaMsg_toJsonStringWithDictionary(
+    const mamaMsg msg,
+    const mamaDictionary dictionary);
+
+/**
  * Free the memory allocated by mamaMsg_toString [deprecated].
  *
  * @param msg The message.
