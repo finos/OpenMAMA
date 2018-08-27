@@ -453,6 +453,8 @@ timerCallback (mamaTimer timer, void *closure)
     if (gCount && ++count >= gCount)
     {
         mamaPublisher_destroy (gPublisher);
+        mamaTimer_destroy (gTimer);
+        mamaSubscription_destroy (gSubscription);
         sleep (1);    /* to see all queued events */
         mama_stop (gMamaBridge);
     }
