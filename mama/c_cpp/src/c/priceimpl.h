@@ -74,6 +74,7 @@ typedef struct mama_price_t_
 #define MAMA_PRICE_IMPL_HINT_PREC_10000000000000000 ((mama_price_hints_t)0x1f)
 
 #define MAMA_PRICE_IMPL_HINT_VALID_PRICE            ((mama_price_hints_t)0x20)
+#define MAMA_PRICE_IMPL_HINT_INVALID_PRICE          ((mama_price_hints_t)0x40)
 
 #define mamaPriceImpl_clear(price) \
     ((price)->mValue = 0.0, (price)->mHints = MAMA_PRICE_IMPL_HINT_PREC_UNKNOWN)

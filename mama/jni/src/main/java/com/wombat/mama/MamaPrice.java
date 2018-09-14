@@ -202,9 +202,19 @@ public class MamaPrice implements Comparable
         return (value > -EPSILON && value < EPSILON);
     }
 
-    public native void setIsValidPrice (boolean valid);
+    /**
+     * @deprecated use setIsInvalidPrice(boolean inValid) instead.
+     **/
+    @Deprecated public native void setIsValidPrice (boolean valid);
     
-    public native boolean getIsValidPrice ();
+    /**
+     * @deprecated use getIsInvalidPrice() instead.
+     **/
+    @Deprecated public native boolean getIsValidPrice ();
+    
+    public native void setIsInvalidPrice (boolean inValid);
+    
+    public native boolean getIsInvalidPrice ();
     
     public native void copy (MamaPrice price);
     

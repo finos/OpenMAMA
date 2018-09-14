@@ -569,3 +569,49 @@ TEST_F(MamaPriceTest, SetFromStringInvalidPrice)
 
     ASSERT_EQ(doubleValue, atof(value));
 }
+
+TEST_F(MamaPriceTest, SetIsInvalidPriceTestValidPrice)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_100);
+
+    // Set the price as valid
+    m_priceDp->setIsInvalidPrice(false);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    if (m_priceDp->getIsInvalidPrice())
+    {
+        snprintf (stringValue, 50, "N/A");
+    }
+    else
+    {
+        m_priceDp->getAsString(stringValue, 49);
+    }
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "1.12");
+}
+
+TEST_F(MamaPriceTest, SetIsInvalidPriceTestInValidPrice)
+{
+    // Set the precision
+    m_priceDp->setPrecision(MAMA_PRICE_PREC_100);
+
+    // Set the price as valid
+    m_priceDp->setIsInvalidPrice(true);
+    
+    // Get the value as a string
+    char stringValue[50] = "";
+    if (m_priceDp->getIsInvalidPrice())
+    {
+        snprintf (stringValue, 50, "N/A");
+    }
+    else
+    {
+        m_priceDp->getAsString(stringValue, 49);
+    }
+
+    // Compare the strings
+    ASSERT_STREQ(stringValue, "N/A");
+}

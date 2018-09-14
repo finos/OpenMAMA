@@ -801,6 +801,34 @@ TEST_F (MamaPriceTestC, testSetIsValidPriceMamaPrice)
    EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_destroy(price) );
 }
 
+TEST_F (MamaPriceTestC, testSetIsInvalidPriceMamaPrice)
+{
+
+   double x = 100.1;
+
+   mama_price_hints_t hints = MAMA_PRICE_IMPL_HINT_PREC_10; 
+
+   mama_bool_t t = true,
+               f = false,
+               expected;
+
+   mamaPrice price = CreateTestPrice(x,hints),
+             nullPrice = NULL;
+
+   EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaPrice_setIsInvalidPrice(nullPrice, t) );
+   EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaPrice_setIsInvalidPrice(nullPrice, f) );
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setIsInvalidPrice(price, t) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getIsInvalidPrice(price, &expected) );
+   EXPECT_NE ( f, expected );
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_setIsInvalidPrice(price, f) );
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_getIsValidPrice(price, &expected) );
+   EXPECT_EQ ( f, expected );
+
+   EXPECT_EQ ( MAMA_STATUS_OK, mamaPrice_destroy(price) );
+}
+
 TEST_F (MamaPriceTestC, testSetHintsMamaPrice)
 {
 

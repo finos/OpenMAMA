@@ -359,6 +359,35 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_setIsValidPrice
 
 /*
  * Class:     com_wombat_mama_MamaPrice
+ * Method:    setIsInvalidPrice
+ * Signature: ()Z
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_setIsInvalidPrice
+  (JNIEnv* env, jobject this, jboolean inValid)
+{
+    jlong       pPrice      = 0;
+    mama_status status      = MAMA_STATUS_OK;
+    char        errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
+    pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VOID(pPrice,
+		"Null parameter, MamaPrice may have already been destroyed.");
+
+    if(MAMA_STATUS_OK!=(status=mamaPrice_setIsInvalidPrice(
+                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice),
+                            (mama_bool_t) inValid)))
+    {
+         utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Error calling MamaPrice.setIsInvalidPrice().",
+                status);
+        utils_throwExceptionForMamaStatus(env,status,errorString);
+    }
+}
+
+/*
+ * Class:     com_wombat_mama_MamaPrice
  * Method:    _getPrecision
  * Signature: ()B
  */
@@ -415,6 +444,36 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaPrice_getIsValidPrice
         utils_throwExceptionForMamaStatus(env,status,errorString);
     }
     return (jboolean) valid;
+}
+
+/*
+ * Class:     com_wombat_mama_MamaPrice
+ * Method:    getIsInvalidPrice
+ * Signature: ()Z
+ */
+JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaPrice_getIsInvalidPrice
+  (JNIEnv* env, jobject this)
+{
+    jlong               pPrice      = 0;
+    mama_status         status      = MAMA_STATUS_OK;
+    mama_bool_t         inValid     = 0;
+    char                errorString [UTILS_MAX_ERROR_STRING_LENGTH];
+
+    pPrice = (*env)->GetLongField(env,this,pricePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(pPrice,
+		"Null parameter, MamaPrice may have already been destroyed.", 0);
+
+    if(MAMA_STATUS_OK!=(status=mamaPrice_getIsInvalidPrice(
+                            CAST_JLONG_TO_POINTER(mamaPrice,pPrice), &inValid)))
+    {
+         utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Error calling MamaPrice.getIsInvalidPrice().",
+                status);
+        utils_throwExceptionForMamaStatus(env,status,errorString);
+    }
+    return (jboolean) inValid;
 }
 
 
