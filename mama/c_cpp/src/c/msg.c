@@ -151,6 +151,7 @@ typedef struct mamaMsgImpl_
 struct normalizedStringIterClosure {
     memoryNode* memNode;
     size_t position;
+    mamaDictionary dictionary;
 };
 
 /*================================================================
@@ -3566,7 +3567,7 @@ mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
             return;
         }
 
-        subMsgString = mamaMsg_toJsonString(pvtb_result);
+        subMsgString = mamaMsg_toJsonStringWithDictionary(pvtb_result, iterClosure->dictionary);
         subMsgStringLen = strlenEx(subMsgString);
 
         if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
@@ -3602,7 +3603,7 @@ mamaMsg_toJsonStringIterCb(const mamaMsg       msg,
 
         for (pvtb_i = 0; pvtb_i < pvtb_size; pvtb_i++)
         {
-            const char* subMsgString = mamaMsg_toJsonString(pvtb_result[pvtb_i]);
+            const char* subMsgString = mamaMsg_toJsonStringWithDictionary(pvtb_result[pvtb_i], iterClosure->dictionary);
             size_t subMsgStringLen = strlen(subMsgString);
             if (remaining - (subMsgStringLen) < (MEMNODE_INITIAL_SIZE / 2)) {
                 if (0 == memoryNode_stretch(memNode, memNode->mNodeCapacity + MEMNODE_INITIAL_SIZE)) {
@@ -3651,6 +3652,7 @@ mamaMsg_toNormalizedString(const mamaMsg msg)
     closure.memNode = impl->mReusableMemoryNode;
     ((char*)closure.memNode->mNodeBuffer)[0] = '{';
     closure.position = 1;
+    closure.dictionary = NULL;
 
     mamaMsg_iterateFields(msg, mamaMsg_toNormalizedStringIterCb, NULL, (void*)&closure);
 
@@ -3683,6 +3685,7 @@ mamaMsg_toJsonStringWithDictionary(const mamaMsg msg, const mamaDictionary dicti
     closure.memNode = impl->mReusableMemoryNode;
     ((char*)closure.memNode->mNodeBuffer)[0] = '{';
     closure.position = 1;
+    closure.dictionary = dictionary;
 
     mamaMsg_iterateFields(msg, mamaMsg_toJsonStringIterCb, dictionary, (void*)&closure);
 
