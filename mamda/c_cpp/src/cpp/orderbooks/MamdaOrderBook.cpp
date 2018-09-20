@@ -3606,11 +3606,12 @@ namespace Wombat
                 {
                     char msg[1000];
                     const char* sourceId = "none";
-                    if (mSourceDeriv)
+                    if (mSourceDeriv) {
                         sourceId = mSourceDeriv->getBaseSource()->getDisplayId();
-                        snprintf (msg, 1000,"MamdaOrderBook::detach(%s:%s) attempted to detach"
-                                  " MARKET order price level %g with an unknown side",
-                                  sourceId, mSymbol.c_str(), level->getPrice());
+                    }
+                    snprintf (msg, 1000,"MamdaOrderBook::detach(%s:%s) attempted to detach"
+                                        " MARKET order price level %g with an unknown side",
+                                        sourceId, mSymbol.c_str(), level->getPrice());
 
                     return;
                 }

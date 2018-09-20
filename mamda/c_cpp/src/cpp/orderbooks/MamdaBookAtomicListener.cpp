@@ -640,8 +640,7 @@ namespace Wombat
                 mPriceLevelEntrySize,
                 (MamdaOrderBookEntry::Action)mPriceLevelEntryAction,
                 mPriceLevelEntryTime,
-                (const MamaSourceDerivative*) NULL),
-                mPriceLevelEntryPosition;
+                (const MamaSourceDerivative*) NULL);
 
         mEntry->setReason((MamdaOrderBookTypes::Reason)mPriceLevelEntryReason);
         mEntry->setClosure((void*)entryMsg);

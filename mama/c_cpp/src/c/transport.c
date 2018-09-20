@@ -188,7 +188,7 @@ typedef struct transportImpl_
 static mama_status
 init (transportImpl* transport, int createResponder)
 {
-    char        searchName[256];
+    char        searchName[512];
     const char* searchResult;
     const char* middleware               = NULL;
     const char* propertyVal              = NULL;
@@ -389,11 +389,11 @@ static int mamaTransportInternal_cmResponderEnabled (transportImpl *impl,
 static void setPreInitialStrategy (mamaTransport transport)
 {
     const char* propValue     = NULL;
-    char propNameBuf[256];
+    char propNameBuf[512];
 
     if (!self) return;
 
-    snprintf (propNameBuf, 256, "mama.transport.%s.preinitialstrategy", self->mName);
+    snprintf (propNameBuf, sizeof(propNameBuf), "mama.transport.%s.preinitialstrategy", self->mName);
 
     propValue = properties_Get (mamaInternal_getProperties (),
                                propNameBuf);
@@ -421,11 +421,11 @@ static void setPreInitialStrategy (mamaTransport transport)
 static void setDQStrategy (mamaTransport transport)
 {
     const char* propValue     = NULL;
-    char propNameBuf[256];
+    char propNameBuf[512];
 
     if (!self) return;
 
-    snprintf (propNameBuf, 256, "mama.transport.%s.dqstrategy", self->mName);
+    snprintf (propNameBuf, sizeof(propNameBuf), "mama.transport.%s.dqstrategy", self->mName);
 
     propValue = properties_Get(mamaInternal_getProperties(),
                                propNameBuf);
@@ -460,11 +460,11 @@ static void setDQStrategy (mamaTransport transport)
 static void setFtStrategy (mamaTransport transport)
 {
     const char* propValue     = NULL;
-    char propNameBuf[256];
+    char propNameBuf[512];
 
     if (!self) return;
 
-    snprintf (propNameBuf, 256, "mama.transport.%s.ftstrategy", self->mName);
+    snprintf (propNameBuf, sizeof(propNameBuf), "mama.transport.%s.ftstrategy", self->mName);
 
     propValue = properties_Get(mamaInternal_getProperties(),
                                propNameBuf);
@@ -492,11 +492,11 @@ static void setFtStrategy (mamaTransport transport)
 
 static void enablePreRecapCache (mamaTransport transport, const char* middleware)
 {
-    char propNameBuf[256];
+    char propNameBuf[512];
 
     if (!self) return;
 
-    snprintf (propNameBuf, 256, "mama.%s.transport.%s.prerecapcache.enable", middleware, self->mName);
+    snprintf (propNameBuf, sizeof(propNameBuf), "mama.%s.transport.%s.prerecapcache.enable", middleware, self->mName);
 
     self->mPreRecapCacheEnabled = strtobool (mama_getProperty (propNameBuf));
 
@@ -572,11 +572,11 @@ static int mamaTransportImpl_disableDisconnectCb (const char* transportName)
 static void setDeactivateOnError (mamaTransport transport)
 {
     const char* propValue     = NULL;
-    char propNameBuf[256];
+    char propNameBuf[MAX_PROP_STRING];
 
     if (!self) return;
 
-    snprintf (propNameBuf, 256, "mama.transport.%s.deactivateonerror", self->mName);
+    snprintf (propNameBuf, sizeof(propNameBuf), "mama.transport.%s.deactivateonerror", self->mName);
     /*Check for a user specified activity timer value*/
     propValue = properties_Get (mamaInternal_getProperties (),
                                propNameBuf);
@@ -593,13 +593,13 @@ static void setDeactivateOnError (mamaTransport transport)
 static void setGroupSizeHint (mamaTransport transport, const char* middleware)
 {
     const char* propValue   = NULL;
-    char propNameBuf[256];
-    char propNameBufMw[256];
+    char propNameBuf[MAX_PROP_STRING];
+    char propNameBufMw[MAX_PROP_STRING];
 
     if (!self) return;
 
     /* Check for mama.middleware.transport[...] first */
-    snprintf (propNameBufMw, 256, "mama.%s.transport.%s.groupsizehint",
+    snprintf (propNameBufMw, sizeof(propNameBufMw), "mama.%s.transport.%s.groupsizehint",
                 middleware, self->mName);
     propValue = properties_Get (mamaInternal_getProperties (),
                                propNameBufMw);
@@ -607,7 +607,7 @@ static void setGroupSizeHint (mamaTransport transport, const char* middleware)
     /* Only use mama.transport[...] if not found with middleware */
     if (NULL == propValue)
     {
-        snprintf (propNameBuf, 256, "mama.transport.%s.groupsizehint", self->mName);
+        snprintf (propNameBuf, sizeof(propNameBuf), "mama.transport.%s.groupsizehint", self->mName);
         propValue = properties_Get (mamaInternal_getProperties (),
                                    propNameBuf);
     }
@@ -644,7 +644,7 @@ mamaTransport_create (mamaTransport transport,
     int           i;
     int           numTransports;
     int           isLoadBalanced;
-    char          loadBalanceName[MAX_TPORT_NAME_LEN];
+    char          loadBalanceName[MAX_TPORT_NAME_LEN * 2];
     const char*   bridgeName       = NULL;
     const char*   sharedObjectName = NULL;
     mamaQueue     defaultQueue     = NULL;
@@ -652,7 +652,7 @@ mamaTransport_create (mamaTransport transport,
     mama_status   status;
     const char*   middleware  = NULL;
     const char*   throttleInt = NULL;
-    char          propNameBuf[256];
+    char          propNameBuf[MAX_PROP_STRING];
     const char*   entBridgeName;
     const char*   propValue;
 
@@ -851,7 +851,7 @@ mamaTransport_create (mamaTransport transport,
 
         for (i = 0; i < self->mNumTransports; ++i)
         {
-            snprintf (loadBalanceName, MAX_TPORT_NAME_LEN,
+            snprintf (loadBalanceName, sizeof(loadBalanceName),
                     "%s.lb%d", self->mName, i);
             loadBalanceName[MAX_TPORT_NAME_LEN-1] = '\0';
             bridgeName = loadBalanceName;
@@ -877,7 +877,7 @@ mamaTransport_create (mamaTransport transport,
 
         if (isLoadBalanced)
         {
-            snprintf (loadBalanceName, MAX_TPORT_NAME_LEN,
+            snprintf (loadBalanceName, sizeof(loadBalanceName),
                       "%s.lb%d", self->mName, self->mCurTransportIndex);
             loadBalanceName[MAX_TPORT_NAME_LEN-1] = '\0';
             bridgeName = loadBalanceName;
@@ -938,7 +938,7 @@ mamaTransport_create (mamaTransport transport,
 
     if (strlen((char*)gEntitlementBridges))   /* If entitlement bridges were built in at compile time. */
     {
-        snprintf (propNameBuf, 256, "mama.transport.%s.entitlementBridge", self->mName);
+        snprintf (propNameBuf, sizeof(propNameBuf), "mama.transport.%s.entitlementBridge", self->mName);
         propValue = properties_Get (mamaInternal_getProperties (), propNameBuf);
         if (NULL != propValue)
         {

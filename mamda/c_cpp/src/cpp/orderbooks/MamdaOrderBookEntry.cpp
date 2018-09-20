@@ -47,8 +47,8 @@ namespace Wombat
         , mQuality       (MAMA_QUALITY_OK)
         , mAction        (MAMDA_BOOK_ACTION_ADD)
         , mStatus        (0)
+        , mEntryPosition (0)
         , mReason        (MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN)
-        , mEntryPosition (false)
     {
     }
 
@@ -64,8 +64,8 @@ namespace Wombat
         , mQuality       (copy.mQuality)
         , mAction        (copy.mAction)
         , mStatus        (0)
-        , mReason        (copy.mReason)
         , mEntryPosition (copy.mEntryPosition)
+        , mReason        (copy.mReason)
     {
         setId (copy.mId);
         setUniqueId (copy.mUniqueId);
@@ -88,8 +88,8 @@ namespace Wombat
         , mQuality     (MAMA_QUALITY_OK)
         , mAction      (action)
         , mStatus      (0)
+        , mEntryPosition (0)
         , mReason      (MamdaOrderBookTypes::MAMDA_BOOK_REASON_MODIFY)
-        , mEntryPosition (false)
     {
         setId (entryId);
     }
@@ -112,8 +112,8 @@ namespace Wombat
         , mQuality     (MAMA_QUALITY_OK)
         , mAction      (action)
         , mStatus      (0)
-        , mReason      (MamdaOrderBookTypes::MAMDA_BOOK_REASON_MODIFY)
         , mEntryPosition (entryPosition)
+        , mReason      (MamdaOrderBookTypes::MAMDA_BOOK_REASON_MODIFY)
     {
         setId (entryId);
     }
@@ -156,7 +156,7 @@ namespace Wombat
         mAction        = MAMDA_BOOK_ACTION_ADD;
         mStatus        = 0;
         mReason        = MamdaOrderBookTypes::MAMDA_BOOK_REASON_UNKNOWN;
-        mEntryPosition = false;
+        mEntryPosition = 0;
     }
 
     void MamdaOrderBookEntry::copy(const MamdaOrderBookEntry& copy)

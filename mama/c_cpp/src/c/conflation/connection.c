@@ -178,11 +178,11 @@ mamaConnection_toString (mamaConnection connection)
     mamaConnectionImpl* impl = (mamaConnectionImpl*)connection;
 
     /* Clear the buffer first */
-    memset(impl->mStrVal, 0, MAX_STR_LEN);
+    memset(impl->mStrVal, 0, sizeof(impl->mStrVal));
 
     /* Format the string and print it into the mStrVal buffer */
     /* uint16_t = max 5 digits, uint32_t = max 10 digits */
-    snprintf (impl->mStrVal, (MAX_STR_LEN - 1), "%s %d %s %s %u %u %u %u",
+    snprintf (impl->mStrVal, sizeof(impl->mStrVal), "%s %d %s %s %u %u %u %u",
               impl->mIpAddress,
               impl->mPort,
               impl->mAppName,

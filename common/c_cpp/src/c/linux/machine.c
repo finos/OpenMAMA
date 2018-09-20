@@ -591,13 +591,21 @@ long getTotalSystemMem(void)
 
 void getSystemTime(double* upTime,double* idleTime)
 {
+    int matching_args = 0;
     FILE* fp;
     *upTime = 0;
     *idleTime = 0;
     fp = fopen("/proc/uptime", "r");
     if (fp==NULL)
         return;
-    fscanf (fp, "%lf %lf\n", upTime, idleTime);
+    matching_args = fscanf (fp, "%lf %lf\n", upTime, idleTime);
+    switch (matching_args) {
+	case 0:
+	    *upTime = 0.0;
+	case 1:
+	    *idleTime = 0.0;
+	    break;
+    }
     fclose (fp);
 }
 

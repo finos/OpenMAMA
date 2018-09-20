@@ -787,11 +787,11 @@ void  MamaListen::subscribeToSymbols ()
     {
         for (index=0; index<mThreads; index++)
         {
-            char queueNameBuf[12];
+            char queueNameBuf[56];
 
             MamaQueue* queue = mQueueGroup->getNextQueue ();
 
-            snprintf (queueNameBuf, 12, "QUEUE %d", index);
+            snprintf (queueNameBuf, sizeof(queueNameBuf), "QUEUE %d", index);
 
             printf ("Setting monitor for %s\n", queueNameBuf);
 
