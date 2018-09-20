@@ -453,18 +453,15 @@ namespace Wombat
 
     void MamdaSubscription::MamdaSubscriptionImpl::destroy ()
     {
-        if (this != NULL)
+        if (implValid)
         {
-            if (implValid)
-            {
-                *implValid = false;
-            }
-
-            mSubscription.deactivate ();
-            clearMsgListeners        ();
-            clearErrorListeners      ();
-            clearQualityListeners    ();
+            *implValid = false;
         }
+
+        mSubscription.deactivate ();
+        clearMsgListeners        ();
+        clearErrorListeners      ();
+        clearQualityListeners    ();
     }
 
     void MamdaSubscription::MamdaSubscriptionImpl::clearMsgListeners ()

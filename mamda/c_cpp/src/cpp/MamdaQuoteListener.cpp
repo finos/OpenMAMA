@@ -1967,7 +1967,7 @@ namespace Wombat
                        const MamaMsgField&                          field)
         {
             impl.mQuoteCache.mTmpQuoteCount = field.getU32();
-            impl.mQuoteCache.mGotQuoteCount = (bool)MODIFIED;
+            impl.mQuoteCache.mGotQuoteCount = true;
             impl.mQuoteCache.mTmpQuoteCountFieldState = MODIFIED;
         }
     };

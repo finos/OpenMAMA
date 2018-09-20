@@ -271,7 +271,7 @@ mamaPlayback_findOrCreatePublisher (mamaPlaybackPublisher mamaPlayback,
 {
     char*         temp         = NULL;
     int           nPos         = 0;
-    char          topic          [BUFFER_SIZE];
+    char          topic          [BUFFER_SIZE*3];
     char          keyCopy        [BUFFER_SIZE];
     mamaTransport transport    = NULL;
     int           result       = 1;
@@ -312,7 +312,7 @@ mamaPlayback_findOrCreatePublisher (mamaPlaybackPublisher mamaPlayback,
             return -1;
         }
 
-        sprintf(topic,"%s.%s", impl->mySource, impl->mySymbol); /**use fastCopyAndSlide*/
+        sprintf(topic, "%s.%s", impl->mySource, impl->mySymbol); /**use fastCopyAndSlide*/
         mamaPlayback_createPublisher (impl, &transport,
                                       publisher,
                                       topic);

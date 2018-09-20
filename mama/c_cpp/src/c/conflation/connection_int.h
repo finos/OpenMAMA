@@ -30,7 +30,7 @@
 extern "C" {
 #endif
 
-#define MAX_STR_LEN 67
+#define MAX_STR_LEN 1024
 #define MAX_USER_STR_LEN 256
 
 #define MAMACONNECTION_MAX_IP_ADDRESS_LEN INET_ADDRSTRLEN    
