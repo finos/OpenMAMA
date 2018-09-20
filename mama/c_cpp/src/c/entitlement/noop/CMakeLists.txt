@@ -16,8 +16,10 @@ set_target_properties(mamaentnoop PROPERTIES OUTPUT_NAME "mamaentnoop${OPENMAMA_
 
 if (MSVC)
     install(FILES $<TARGET_PDB_FILE:mamaentnoop> DESTINATION bin OPTIONAL)
+    install(TARGETS mamaentnoop
+            RUNTIME DESTINATION bin
+            LIBRARY DESTINATION bin
+            ARCHIVE DESTINATION lib)
+else()
+    install(TARGETS mamaentnoop DESTINATION lib)
 endif()
-install(TARGETS mamaentnoop
-        RUNTIME DESTINATION bin
-        LIBRARY DESTINATION bin
-        ARCHIVE DESTINATION lib)
