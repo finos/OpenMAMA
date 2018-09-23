@@ -254,6 +254,14 @@ class Windows:
         env.Append( CCPDBFLAGS = '/Fd${TARGET}.pdb' )
         env.Append( PDB = '${TARGET.base}.pdb')
 
+        if os.environ.has_key('CCFLAGS'):
+            print 'Setting User defined CCFLAGS: ' + os.environ['CCFLAGS']
+            env.Append( CCFLAGS = Split( os.environ['CCFLAGS'] ) )
+
+        if os.environ.has_key('CXXFLAGS'):
+            print 'Setting User defined CXXFLAGS: ' + os.environ['CXXFLAGS']
+            env.Append( CXXFLAGS = Split( os.environ['CXXFLAGS'] ) )
+
         # Architecture specific setup
         if env['target_arch'] == 'x86_64':
             env['bit_suffix'] = '_x64'
