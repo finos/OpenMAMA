@@ -50,9 +50,15 @@ if os.name is 'nt':
     dep_base = os.path.join("C:\\", "Deps", env_var["MSVSVER"])
     shell = True
     product = 'mamdaall'
+    env_var["CCFLAGS"] = '/WX'
+    env_var["CXXFLAGS"] = '/WX'
 else:
     dep_base = '/opt'
     shell = False
+    # Have to disable error for strict-prototypes otherwise the
+    # CheckLib generated code on scons will fail. Bring on cmake :(
+    env_var["CCFLAGS"] = '-Werror -Wno-error=strict-prototypes'
+    env_var["CXXFLAGS"] = '-Werror -Wno-error=strict-prototypes'
     product = 'mamdajni'
 
 middleware = env_var["MW"].lower()
@@ -98,6 +104,8 @@ else:
 
 env_var["WOMBAT_PATH"] = os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'examples') + os.pathsep + os.path.join(os.getcwd(), 'mama', 'c_cpp', 'src', 'gunittest', 'c')
 mama_java_test_classes_dir = os.path.join(os.getcwd(), 'build', 'mama', 'jni', 'src', 'mama_java_build', 'classes', 'java', 'test')
+if not os.path.exists(mama_java_test_classes_dir):
+    mama_java_test_classes_dir = os.path.join(os.getcwd(), 'build', 'mama', 'jni', 'src', 'mama_java_build', 'classes', 'test')
 
 if "JOB_NAME" in env_var:
     test_failure_fatal = False
@@ -133,6 +141,7 @@ for root, dirs, files in os.walk(install_dir):
                                   "--track-origins=no",
                                   "--suppressions=release_scripts/intentionalunittestleaks.supp",
                                   "--xml=yes",
+                                  #"--error-exitcode=%d" % int(test_failure_fatal),
                                   "--xml-file=%s.result" % file,
                                   os.path.join('.', root, file),
                                   "-m",

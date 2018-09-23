@@ -1248,8 +1248,8 @@ namespace Wombat
          */
         if (((mBookMsgFields.mNumLevels == 0) &&
             (!mBookMsgFields.mHasMarketOrders)) || 
-            ((mBookMsgFields.mNumLevels == 1) && (mBookMsgFields.mPriceLevelVector == NULL)) &&
-            (isRecap) && (!mBookMsgFields.mHasMarketOrders))
+            (((mBookMsgFields.mNumLevels == 1) && (mBookMsgFields.mPriceLevelVector == NULL)) &&
+            (isRecap) && (!mBookMsgFields.mHasMarketOrders)))
         {
             mama_log (MAMA_LOG_LEVEL_FINEST,
                         "MamdaOrderBookListener::createDelta:- No price levels in update");

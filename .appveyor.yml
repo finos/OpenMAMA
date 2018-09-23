@@ -1,19 +1,22 @@
-environment:
-  matrix:
-    - JAVA_HOME: C:\Program Files\Java\jdk1.8.0
-
 # Build worker image (VM template)
-image: Visual Studio 2017
+image:
+- ubuntu1804
+- Visual Studio 2017
 
 init:
-- set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\install
-- set GENERATOR="Visual Studio 15 2017 Win64"
+- cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\install
+- cmd: set GENERATOR="Visual Studio 15 2017 Win64"
+- cmd: set JAVA_HOME=C:\Program Files\Java\jdk1.8.0
+- sh: export OPENMAMA_INSTALL_DIR=$APPVEYOR_BUILD_FOLDER/install
+- sh: export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 
 # scripts that run after cloning repository
 install:
 - cmd: choco install -y unzip gow wget gradle nunit-console-runner nunit-extension-nunit-v2-driver
 - cmd: refreshenv
 - cmd: set PATH=C:\ProgramData\chocolatey\bin;%PATH%
+- sh: sudo apt-get update -qq
+- sh: sudo apt-get install -y scons git flex uuid-dev libevent-dev cmake git libzmq3-dev openjdk-8-jdk ncurses-dev ant unzip valgrind libapr1-dev
 
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
@@ -38,9 +41,7 @@ before_build:
     cd googletest-release-1.8.0
     mkdir bld
     cd bld
-    gfind .
     cmake -DCMAKE_CXX_FLAGS=-D_SILENCE_TR1_NAMESPACE_DEPRECATION_WARNING -DBUILD_SHARED_LIBS=ON -DBUILD_GTEST=ON -DBUILD_GMOCK=OFF -G %GENERATOR% ..
-    gfind .
     cmake --build . --config Release --target install
 - cmd: |-
     mkdir %APPVEYOR_BUILD_FOLDER%\..\libevent
@@ -62,10 +63,28 @@ before_build:
     cd apr-1.6.3
     mkdir bld
     cd bld
-    gfind .
     cmake -G %GENERATOR% ..
-    gfind .
     cmake --build . --config Release --target install
+- sh: |-
+    mkdir $APPVEYOR_BUILD_FOLDER/googletest
+    cd $APPVEYOR_BUILD_FOLDER/googletest
+    wget "https://github.com/google/googletest/archive/release-1.8.0.zip"
+    unzip release-1.8.0.zip
+    cd googletest-release-1.8.0
+    mkdir bld
+    cd bld
+    cmake -DBUILD_TESTING:BOOL=OFF -DBUILD_JAVA:BOOL=OFF -DCMAKE_INSTALL_PREFIX=/usr ..
+    sudo cmake --build . --config Release --target install
+- sh: |-
+    mkdir $APPVEYOR_BUILD_FOLDER\qpid-proton
+    cd $APPVEYOR_BUILD_FOLDER\qpid-proton
+    wget "https://github.com/apache/qpid-proton/archive/0.24.0.zip"
+    unzip 0.24.0.zip
+    cd qpid-proton-0.24.0
+    mkdir bld
+    cd bld
+    cmake -DBUILD_TESTING:BOOL=OFF -DBUILD_CPP:BOOL=OFF -DCMAKE_INSTALL_PREFIX=/usr ..
+    sudo cmake --build . --config Release --target install
 
 # to run your custom scripts instead of automatic MSBuild
 build_script:
@@ -77,6 +96,14 @@ build_script:
       cmake --build . --config RelWithDebInfo --target install
       cd ..
       python release_scripts\ci-run.py
+  - sh: |-
+      cd $APPVEYOR_BUILD_FOLDER
+      mkdir build
+      cd build
+      cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWITH_UNITTEST=ON -DWITH_JAVA=ON -DINSTALL_RUNTIME_DEPENDENCIES=ON -DCMAKE_INSTALL_PREFIX=$OPENMAMA_INSTALL_DIR -DCMAKE_CXX_FLAGS=-Werror -DCMAKE_C_FLAGS=-Werror -DJAVA_HOME=$JAVA_HOME ..
+      cmake --build . --config RelWithDebInfo --target install
+      cd ..
+      python release_scripts/ci-run.py
 
 # The build script already tests as well and this one doesnt work for some reason anyway
 test: off
