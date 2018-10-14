@@ -33,6 +33,8 @@ matrix:
       DOCKER_IMAGE: centos:6
     - image: Visual Studio 2017
       DOCKER_IMAGE: centos:7
+    - image: ubuntu1804
+      DOCKER_IMAGE: none
 
 init:
 - cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\install
