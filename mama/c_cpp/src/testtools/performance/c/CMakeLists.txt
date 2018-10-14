@@ -11,7 +11,7 @@ include_directories(
 include(mama-common)
 
 mamac_binary(mamaconsumerc)
-mamac_binary(mamaconsumerc_v2)
-mamac_binary(mamapingpongc)
-mamac_binary(mamaproducerc)
-mamac_binary(mamaproducerc_v2)
+mamac_binary(mamaconsumerc_v2 rt)
+mamac_binary(mamapingpongc rt)
+mamac_binary(mamaproducerc rt)
+mamac_binary(mamaproducerc_v2 rt)

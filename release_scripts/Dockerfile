@@ -19,7 +19,8 @@ ENV IS_DOCKER_BUILD true
 ENV SDKMAN_DIR /usr/local/sdkman
 ENV DEPS_DIR /apps/deps
 ENV SRC_DIR /apps/src
-ENV INSTALL_DIR /apps/install
+ENV PREFIX /apps/install
+ENV INSTALL_DIR $PREFIX/opt/openmama
 ENV RELEASE_DIR /apps/release
 
 # Run script to update dependencies
@@ -42,6 +43,16 @@ RUN cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
 
 # Perform the build and install
 RUN make && make install
+
+# Include the test data
+WORKDIR $INSTALL_DIR/data
+RUN curl -sL https://github.com/OpenMAMA/OpenMAMA-testdata/archive/master.tar.gz | tar xz --strip 1
+
+# Move profile to top level
+RUN cp profiles/profile.openmama . && rm -rf profiles
+
+# Clean up Unit Test files - we don't need them for RPM
+RUN find $INSTALL_DIR -type f -name UnitTest* -exec rm -f {} \;
 
 # When RPMs are generated, they'll go here
 WORKDIR $RELEASE_DIR

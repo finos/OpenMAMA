@@ -4,7 +4,7 @@
 set -e
 
 # Globals
-INSTALL_DIR=${DEPS_DIR:-/app/install}
+PREFIX=${PREFIX:-/apps/install}
 
 # Constants
 FEDORA=Fedora
@@ -52,5 +52,5 @@ then
     echo "Unsupported distro found: $(cat /etc/*-release)" && exit $LINENO
 fi
 
-fpm -s dir -t $PACKAGE_TYPE -C $INSTALL_DIR --name openmama --version $VERSION --iteration 1 \
+fpm -s dir -t $PACKAGE_TYPE -C $PREFIX --name openmama --version $VERSION --iteration 1 \
         $DEPENDS_FLAGS --description "OpenMAMA high performance Market Data API" .

@@ -15,10 +15,10 @@ include_directories(
 
 mamda_example(atomicbookbuilder mamdabook)
 mamda_example(atomicbookticker mamdabook)
-mamda_example(bookchurn mamdabook)
+# mamda_example(bookchurn mamdabook)
 mamda_example(bookpublisher mamdabook)
 mamda_example(bookticker mamdabook)
-mamda_example(listenerBookPublisher mamdabook)
+# mamda_example(listenerBookPublisher mamdabook)
 if(UNIX)
 	mamda_example(bookviewer mamdabook ${CURSES_LIBRARIES})
 endif()

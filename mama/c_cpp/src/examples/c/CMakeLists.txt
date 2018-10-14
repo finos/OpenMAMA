@@ -21,3 +21,12 @@ mamac_binary(mamapublisherc)
 mamac_binary(mamasubscriberc)
 mamac_binary(mamasymbollistsubscriberc)
 
+install(DIRECTORY . DESTINATION examples/mama/c
+        PATTERN CMakeLists.txt EXCLUDE
+		PATTERN *.vcxproj EXCLUDE
+		PATTERN SConscript* EXCLUDE)
+
+if (WIN32 AND MSVC)
+    install(DIRECTORY . DESTINATION examples/mama/c
+		    PATTERN *.vcxproj)
+endif()
