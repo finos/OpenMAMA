@@ -35,8 +35,8 @@ for:
 -
   matrix:
     only:
-     - image: Visual Studio 2017
-       DOCKER_IMAGE: none
+    - image: Visual Studio 2017
+      DOCKER_IMAGE: none
 
   # scripts to run before build
   before_build:
@@ -101,7 +101,7 @@ for:
   matrix:
     only:
     - image: ubuntu1804
-    except:
+    exclude:
     - DOCKER_IMAGE: none
 
   # scripts to run before build
