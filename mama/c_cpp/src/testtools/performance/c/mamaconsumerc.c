@@ -372,7 +372,7 @@ static void MAMACALLTYPE mc_msgCb
   if ((msgCount - lastMsgCount) >= gIntervalRate)
   {
     gettimeofday(&gNow, NULL);
-    printf ("Rate: %llu\tLatency(usec): Low: %lld\tAverage: %lld\tHigh: %lld\tGaps: %llu\n",
+    printf ("Rate: %" PRIu64 "\tLatency(usec): Low: %" PRId64 "\tAverage: %" PRId64 "\tHigh: %" PRId64 "\tGaps: %" PRIu64 "\n",
            (uint64_t)((float)(msgCount-lastMsgCount)/(((float)((gNow.tv_sec - gLast.tv_sec)*1000000) + (gNow.tv_usec - gLast.tv_usec))/1000000.0f)),
            lowLatency,
            (int64_t)((float)runningLatency/(float)sampleCount),
@@ -443,7 +443,7 @@ static void MAMACALLTYPE mc_msgCb2
     time(&nTime);
     now = localtime(&nTime);
     strftime(nowTime, 100, "%Y/%m/%d - %H:%M:%S", now);
-    printf ("%s Rate: %llu\tLatency(usec): Low: %lld\tAverage: %lld\tHigh: %lld\n",
+    printf ("%s Rate: %" PRIu64 "\tLatency(usec): Low: %" PRId64 "\tAverage: %" PRId64 "\tHigh: %" PRId64 "\n",
             nowTime,
            (uint64_t)((float)(msgCount-lastMsgCount)/(((float)((gNow.tv_sec - gLast.tv_sec)*1000000) + (gNow.tv_usec - gLast.tv_usec))/1000000.0f)),
            lowLatency,

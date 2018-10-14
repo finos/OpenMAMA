@@ -68,7 +68,7 @@ then
 	    java-1.8.0-openjdk-devel libuuid-devel flex doxygen \
 	    qpid-proton-c-devel libevent-devel ncurses-devel \
 	    apr-devel wget curl cmake gcc-c++ libuuid qpid-proton-c \
-	    libevent ncurses apr
+	    libevent ncurses apr valgrind python
 fi
 
 if [ "$DISTRIB_ID" = "$UBUNTU" ]
@@ -77,7 +77,7 @@ then
     apt-get install -qq -y ruby ruby-dev rubygems build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
 	    cmake git libzmq3-dev openjdk-8-jdk ncurses-dev \
-	    unzip valgrind libapr1-dev
+	    unzip valgrind libapr1-dev python
 fi
 
 test -d $DEPS_DIR || mkdir -p $DEPS_DIR
