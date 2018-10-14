@@ -55,7 +55,7 @@ RUN test "$WITH_UNITTEST" = "ON" && OPENMAMA_INSTALL_DIR=$INSTALL_DIR python rel
 
 # Clean up Unit Test files - we don't need them any more
 WORKDIR $INSTALL_DIR
-RUN find $INSTALL_DIR -type f -name UnitTest* -exec rm -f {} \;
+RUN rm -f *.xml bin/UnitTest*
 
 # Include the test data
 WORKDIR $INSTALL_DIR/data
