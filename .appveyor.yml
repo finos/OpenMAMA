@@ -5,6 +5,7 @@ image:
 
 environment:
   matrix:
+  - DOCKER_IMAGE: none
   - DOCKER_IMAGE: fedora:26
   - DOCKER_IMAGE: fedora:27
   - DOCKER_IMAGE: fedora:28
@@ -35,6 +36,7 @@ for:
   matrix:
     only:
      - image: Visual Studio 2017
+       DOCKER_IMAGE: none
 
   # scripts to run before build
   before_build:
@@ -99,6 +101,8 @@ for:
   matrix:
     only:
     - image: ubuntu1804
+    except:
+    - DOCKER_IMAGE: none
 
   # scripts to run before build
   before_build:
