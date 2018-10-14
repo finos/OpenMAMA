@@ -26,3 +26,5 @@ ExternalProject_Add(mamdajava
         INSTALL_COMMAND ""
         LOG_BUILD 1)
 install (FILES ${MAMAJNI_JAVA_BUILD_DIR}/libs/mamda.jar DESTINATION lib)
+
+install(DIRECTORY src/main/java/com/wombat/mamda/examples/ DESTINATION examples/com/wombat/mamda/examples)

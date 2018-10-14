@@ -8,10 +8,12 @@ include_directories(
 	${MAMA_INCLUDES}
 )
 
-include(mama-common)
+if (NOT WIN32)
+    add_definitions(-Wno-deprecated-declarations -Wno-unused-result)
+endif()
 
 mamac_binary(mamaconsumerc)
-mamac_binary(mamaconsumerc_v2)
-mamac_binary(mamapingpongc)
-mamac_binary(mamaproducerc)
-mamac_binary(mamaproducerc_v2)
+mamac_binary(mamaconsumerc_v2 rt)
+mamac_binary(mamapingpongc rt)
+mamac_binary(mamaproducerc rt)
+mamac_binary(mamaproducerc_v2 rt)

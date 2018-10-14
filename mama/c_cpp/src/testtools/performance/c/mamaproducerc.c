@@ -201,7 +201,7 @@ int main (int argc, const char **argv)
         mp_nanosleep(sleepTime);
       }
       gettimeofday (&now, NULL);
-      printf ("RATE = %llu\n", (uint64_t)((float)refreshRate/(((float)((now.tv_sec - last.tv_sec)*1000000) + (now.tv_usec - last.tv_usec))/1000000.0f)));
+      printf ("RATE = %" PRIu64 "\n", (uint64_t)((float)refreshRate/(((float)((now.tv_sec - last.tv_sec)*1000000) + (now.tv_usec - last.tv_usec))/1000000.0f)));
       if (gflush)
       {
         fflush(stdout);
@@ -223,7 +223,7 @@ int main (int argc, const char **argv)
         mp_publishMessage (msgNum++, mamaTime, randVal);
       }
       gettimeofday (&now, NULL);
-      printf ("RATE = %llu\n", (uint64_t)((float)refreshRate/(((float)((now.tv_sec - last.tv_sec)*1000000) + (now.tv_usec - last.tv_usec))/1000000.0f)));
+      printf ("RATE = %" PRIu64 "\n", (uint64_t)((float)refreshRate/(((float)((now.tv_sec - last.tv_sec)*1000000) + (now.tv_usec - last.tv_usec))/1000000.0f)));
       if (gflush)
       {
         fflush(stdout);

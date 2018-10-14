@@ -58,17 +58,15 @@
 #define STEP_TARGET 10007
 
 #define PERROR(...) do {                                    \
-    fprintf (stderr, "%s:%d (%s) - ",                       \
+    fprintf (stderr, "%s:%d - ",                            \
              __FILE__,                                      \
-             __LINE__,                                      \
-             __FUNCTION__);                                 \
+             __LINE__);                                     \
     fprintf (stderr, ## __VA_ARGS__);                       \
     fprintf (stderr, ": %s\n", strerror (errno));           \
 } while (0)
 
 #define PRINT_ERROR(...) do {               \
-    fprintf (stderr, "%s (%d): ",           \
-             __FUNCTION__,                  \
+    fprintf (stderr, "lineno: %d: ",        \
              __LINE__);                     \
     fprintf (stderr, ## __VA_ARGS__);       \
     fprintf (stderr, "\n");                 \
@@ -78,10 +76,9 @@
 #define MAMA_CHECK(in) do {                                 \
     mama_status status = in;                                \
     if (MAMA_STATUS_OK != status) {                         \
-        printf ("%s:%d (%s) - Function error : %d (%s)\n",  \
+        printf ("%s:%d  - Function error : %d (%s)\n",      \
                 __FILE__,                                   \
                 __LINE__,                                   \
-                __FUNCTION__,                               \
                 status,                                     \
                 mamaStatus_stringForStatus (status));       \
         exit(status);                                       \
@@ -1490,7 +1487,7 @@ static void initializeMessages
     MAMA_CHECK (mamaDateTime_destroy (dateTime));
 }
 
-static void rewindPlayback()
+static void rewindPlayback(void)
 {
     static long int rewindCount = 0;
 

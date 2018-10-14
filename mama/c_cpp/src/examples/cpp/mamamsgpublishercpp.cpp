@@ -22,6 +22,11 @@
 #include <stdio.h>
 #include <iostream>
 
+#ifndef __STDC_FORMAT_MACROS
+#define __STDC_FORMAT_MACROS
+#endif
+#include <inttypes.h>
+
 using std::cerr;
 using std::cout;
 using std::endl;

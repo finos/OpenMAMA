@@ -34,7 +34,8 @@ mamda_example(auctionticker)
 mamda_example(comboticker)
 mamda_example(fundamentallisten)
 mamda_example(mamdalisten)
-mamda_example(mamdapublisher)
+# Was disabled before so disabling again - should find out why
+# mamda_example(mamdapublisher)
 mamda_example(multipartticker)
 mamda_example(multisecurityticker)
 mamda_example(optionchainer mamdaoptions)
@@ -43,10 +44,20 @@ mamda_example(quoteticker)
 mamda_example(secstatuslisten)
 mamda_example(tradeticker)
 
-if (!WIN32)
+if (NOT WIN32)
     mamda_example(currencyticker)
     mamda_example(orderimbalanceticker)
 endif()
 
 add_subdirectory (news)
 add_subdirectory (orderbooks)
+
+install(DIRECTORY . DESTINATION examples/mamda/cpp
+        PATTERN CMakeLists.txt EXCLUDE
+		PATTERN *.vcxproj EXCLUDE
+		PATTERN SConscript* EXCLUDE)
+
+if (WIN32 AND MSVC)
+    install(DIRECTORY . DESTINATION examples/mamda/cpp
+		    PATTERN *.vcxproj)
+endif()

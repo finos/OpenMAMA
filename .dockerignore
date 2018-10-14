@@ -1,0 +1,19 @@
+# comment
+release_scripts/Dockerfile
+build/
+cmake-build*
+openmama_install*/
+install/
+release/
+.vscode/
+.git/
+.github/
+.idea/
+objdir/
+*.conf
+*.jar
+*.xml
+*.result
+.sc*
+.dockerignore
+*.log

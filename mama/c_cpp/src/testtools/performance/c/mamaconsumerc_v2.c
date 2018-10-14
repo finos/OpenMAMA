@@ -42,17 +42,15 @@
 #include <sys/resource.h>    /* needed for getrusage */
 
 #define PERROR(...) do {                                    \
-    fprintf (stderr, "%s:%d (%s) - ",                       \
+    fprintf (stderr, "%s:%d - ",                            \
              __FILE__,                                      \
-             __LINE__,                                      \
-             __FUNCTION__);                                 \
+             __LINE__);                                     \
     fprintf (stderr, ## __VA_ARGS__);                       \
     fprintf (stderr, ": %s\n", strerror (errno));           \
 } while (0)
 
 #define PRINT_ERROR(...) do {               \
-    fprintf (stderr, "%s (%d): ",           \
-             __FUNCTION__,                  \
+    fprintf (stderr, "lineno: %d: ",        \
              __LINE__);                     \
     fprintf (stderr, ## __VA_ARGS__);       \
     fprintf (stderr, "\n");                 \
@@ -62,10 +60,9 @@
 #define MAMA_CHECK(in) do {                                 \
     mama_status status = in;                                \
     if (MAMA_STATUS_OK != status) {                         \
-        printf ("%s:%d (%s) - Function error : %d (%s)\n",  \
+        printf ("%s:%d - Function error : %d (%s)\n",       \
                 __FILE__,                                   \
                 __LINE__,                                   \
-                __FUNCTION__,                               \
                 status,                                     \
                 mamaStatus_stringForStatus (status));       \
         exit(status);                                       \
@@ -81,9 +78,9 @@
 #define LINE_TIME_FID   1174
 #define EX_TIME_FID     465
 
-#define MAX(a, b)   (a > b ? a : b)
+#define MAX_FID(a, b)   (a > b ? a : b)
 
-#define MAX_MD_FID MAX(SEND_TIME_FID, MAX(LINE_TIME_FID, EX_TIME_FID))
+#define MAX_MD_FID MAX(SEND_TIME_FID, MAX_FID(LINE_TIME_FID, EX_TIME_FID))
 
 #define STEP_PERCENT    10006
 #define STEP_TARGET     10007

@@ -46,4 +46,6 @@ set_target_properties(mamajnijava PROPERTIES JAVAH_INCLUDES ${CMAKE_CURRENT_BINA
 
 install (FILES ${MAMAJNI_JAVA_BUILD_DIR}/libs/mamajni.jar DESTINATION lib)
 
+install(DIRECTORY main/java/com/wombat/mama/examples/ DESTINATION examples/mamajni)
+
 add_subdirectory (c)

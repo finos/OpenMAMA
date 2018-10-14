@@ -37,3 +37,6 @@ add_subdirectory (mama)
 if (WITH_MAMDA AND WITH_CPP)
    add_subdirectory (mamda)
 endif()
+
+install(FILES LICENSE.md DESTINATION .)
+install(FILES mama/c_cpp/src/examples/mama.properties DESTINATION config)
