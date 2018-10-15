@@ -48,6 +48,7 @@ install:
 - cmd: set PATH=C:\ProgramData\chocolatey\bin;%PATH%
 - sh: sudo apt-get update -qq
 - sh: sudo apt-get install -y docker python
+- sh: sudo pip install --upgrade cloudsmith-cli
 
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
 platform: x64
@@ -129,6 +130,7 @@ for:
   - sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE
   - sh: docker run -e VERSION=6.2.3 -v release:/apps/release --rm omdocker
   - sh: find ./release
+  - sh: cloudsmith whoami
 
   # The build script already tests as well and this one doesnt work for some reason anyway
   test: off

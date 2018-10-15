@@ -53,7 +53,7 @@ fi
 if [ "$DISTRIB_ID" = "$FEDORA" ]
 then
     echo "Installing fedora specific dependencies"
-    yum install -y libnsl2-devel libffi-devel ruby-devel rubygems redhat-rpm-config
+    yum install -y libnsl2-devel libffi-devel ruby-devel rubygems redhat-rpm-config rpm-build
 fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ]
