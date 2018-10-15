@@ -46,12 +46,19 @@ install:
 - cmd: choco install -y unzip gow wget gradle nunit-console-runner nunit-extension-nunit-v2-driver
 - cmd: refreshenv
 - cmd: set PATH=C:\ProgramData\chocolatey\bin;%PATH%
+- cmd: |-
+    cd "C:\Tools\vcpkg"
+    git pull
+    .\bootstrap-vcpkg.bat
+    cd %appveyor_build_folder%
 - sh: sudo apt-get update -qq
 - sh: sudo apt-get install -y docker python
 - sh: sudo pip install --upgrade cloudsmith-cli
 
 # build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: x64
+platform:
+- x64
+- x86
 
 for:
 -
