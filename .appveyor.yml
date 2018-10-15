@@ -35,6 +35,8 @@ matrix:
       DOCKER_IMAGE: centos:7
     - image: ubuntu1804
       DOCKER_IMAGE: none
+    - image: ubuntu1804
+      platform: x86
 
 init:
 - cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\install
