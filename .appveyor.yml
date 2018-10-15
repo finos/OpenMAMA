@@ -61,6 +61,7 @@ for:
 
   # scripts to run before build
   before_build:
+  - cmd: vcpkg install qpid-proton libevent apr gtest
   - cmd: |-
       mkdir %APPVEYOR_BUILD_FOLDER%\qpid-proton
       cd %APPVEYOR_BUILD_FOLDER%\qpid-proton
@@ -123,13 +124,11 @@ for:
     only:
     - image: ubuntu1804
 
-  # scripts to run before build
-  before_build:
-  - sh: echo before_build
-
   # to run your custom scripts instead of automatic MSBuild
   build_script:
-  - sh: echo build_script
+  - sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE
+  - sh: docker run -e VERSION=6.2.3 -v release:/apps/release --rm -it omdocker
+  - sh: find ./release
 
   # The build script already tests as well and this one doesnt work for some reason anyway
   test: off
