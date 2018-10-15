@@ -128,8 +128,8 @@ for:
   # to run your custom scripts instead of automatic MSBuild
   build_script:
   - sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE
-  - sh: docker run -e VERSION=6.2.3 -v release:/apps/release --rm omdocker
-  - sh: find ./release
+  - sh: docker run -e VERSION=6.2.3 -v $(pwd):/apps/release --rm omdocker
+  - sh: ls -ltr
   - sh: cloudsmith whoami
 
   # The build script already tests as well and this one doesnt work for some reason anyway
