@@ -7,13 +7,13 @@ environment:
   matrix:
   - DOCKER_IMAGE: none
   - DOCKER_IMAGE: fedora:26
-  - DOCKER_IMAGE: fedora:27
-  - DOCKER_IMAGE: fedora:28
-  - DOCKER_IMAGE: ubuntu:14.04
-  - DOCKER_IMAGE: ubuntu:16.04
-  - DOCKER_IMAGE: ubuntu:18.04
-  - DOCKER_IMAGE: centos:6
-  - DOCKER_IMAGE: centos:7
+  # - DOCKER_IMAGE: fedora:27
+  # - DOCKER_IMAGE: fedora:28
+  # - DOCKER_IMAGE: ubuntu:14.04
+  # - DOCKER_IMAGE: ubuntu:16.04
+  # - DOCKER_IMAGE: ubuntu:18.04
+  # - DOCKER_IMAGE: centos:6
+  # - DOCKER_IMAGE: centos:7
 
 matrix:
   exclude:
