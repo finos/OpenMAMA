@@ -71,9 +71,9 @@ build_script:
     python release_scripts\ci-run.py
 
   # Linux build
-  - sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE
-  - sh: docker run -e VERSION=6.2.3 -v $(pwd):/apps/release --rm omdocker
-  - sh: ls -ltr
-  - sh: cloudsmith whoami
+- sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE
+- sh: docker run -e VERSION=6.2.3 -v $(pwd):/apps/release --rm omdocker
+- sh: ls -ltr
+- sh: cloudsmith whoami
 
 test: off
