@@ -75,7 +75,7 @@ fi
 if [ "$DISTRIB_ID" = "$UBUNTU" ]
 then
     apt-get update -qq
-    apt-get install -qq -y ruby ruby-dev build-essential \
+    apt-get install -y ruby ruby-dev build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
 	    cmake git libzmq3-dev ncurses-dev \
 	    unzip valgrind libapr1-dev python libz-dev
@@ -84,19 +84,19 @@ fi
 # Ubuntu 18 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "18" ]
 then
-    apt-get install -qq -y rubygems openjdk-8-jdk
+    apt-get install -y rubygems openjdk-8-jdk
 fi
 
 # Ubuntu 16 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
 then
-    apt-get install -qq -y openjdk-8-jdk
+    apt-get install -y openjdk-8-jdk libssl-dev
 fi
 
 # Ubuntu 16 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "14" ]
 then
-    apt-get install -qq -y openjdk-7-jdk
+    apt-get install -y openjdk-7-jdk libssl-dev
 fi
 
 test -d $DEPS_DIR || mkdir -p $DEPS_DIR
