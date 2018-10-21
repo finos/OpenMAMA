@@ -42,8 +42,8 @@ RUN cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
           -DWITH_JAVA=ON \
           -DWITH_UNITTEST=$WITH_UNITTEST \
           -DINSTALL_RUNTIME_DEPENDENCIES=ON \
-          -DCMAKE_CXX_FLAGS="-Werror -Wno-error=strict-prototypes" \
-          -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes" \
+          -DCMAKE_CXX_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
+          -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
           ..
 
 # Perform the build and install
