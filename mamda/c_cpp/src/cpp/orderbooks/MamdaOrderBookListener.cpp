@@ -1567,14 +1567,27 @@ namespace Wombat
             }
             else
             {
-                //Check if level exists
-                MamdaOrderBookPriceLevel::Action findLevelAction = plAction;
-                level = mFullBook->findOrCreateLevel (plPrice, plSide, findLevelAction);
-                if (plAction != findLevelAction)
+                if ((mBookMsgFields.mBookType == 1) &&
+                    (MamdaOrderBookEntry::MAMDA_BOOK_ACTION_DELETE == mBookMsgFields.mEntryAction))
                 {
-                    //Fix the level action for the delta
-                    plAction = findLevelAction;
-                    mBookMsgFields.mPlAction = findLevelAction;
+                    // We just need to find the level
+                    level = mFullBook->findLevel (plPrice, plSide);
+                    if (!level)
+                    {
+                        return;
+                    }
+                }
+                else
+                {
+                    //Check if level exists
+                    MamdaOrderBookPriceLevel::Action findLevelAction = plAction;
+                    level = mFullBook->findOrCreateLevel (plPrice, plSide, findLevelAction);
+                    if (plAction != findLevelAction)
+                    {
+                        //Fix the level action for the delta
+                        plAction = findLevelAction;
+                        mBookMsgFields.mPlAction = findLevelAction;
+                    }
                 }
             }
         }
