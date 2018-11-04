@@ -39,10 +39,10 @@ extern "C" {
   =========================================================================*/
 
 mama_status
-qpidBridgeMamaIoImpl_start (void);
+qpidBridgeMamaIoImpl_start (void* closure);
 
 mama_status
-qpidBridgeMamaIoImpl_stop  (void);
+qpidBridgeMamaIoImpl_stop  (void* closure);
 
 #if defined(__cplusplus)
 }

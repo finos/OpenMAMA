@@ -30,23 +30,15 @@
 #include <mama/io.h>
 #include "qpidbridgefunctions.h"
 #include "io.h"
-
+#include "qpiddefs.h"
 
 
 #include <wombat/port.h>
+#include <mama/integration/io.h>
 
 /*=========================================================================
   =                Typedefs, structs, enums and globals                   =
   =========================================================================*/
-
-typedef struct qpidIoImpl
-{
-    struct event_base*  mEventBase;
-    wthread_t           mDispatchThread;
-    uint8_t             mActive;
-    uint8_t             mEventsRegistered;
-    wsem_t              mResumeDispatching;
-} qpidIoImpl;
 
 typedef struct qpidIoEventImpl
 {
@@ -57,12 +49,6 @@ typedef struct qpidIoEventImpl
     void*               mClosure;
     struct event        mEvent;
 } qpidIoEventImpl;
-
-/*
- * Global static container to hold instance-wide information not otherwise
- * available in this interface.
- */
-static qpidIoImpl       gQpidIoContainer;
 
 #ifndef evutil_socket_t
 #define evutil_socket_t int
@@ -79,6 +65,9 @@ qpidBridgeMamaIoImpl_dispatchThread (void* closure);
 void
 qpidBridgeMamaIoImpl_libeventIoCallback (evutil_socket_t fd, short type, void* closure);
 
+qpidBridgeClosure*
+qpidBridgeMamaIoImpl_getQpidBridgeClosure (qpidIoEventImpl* impl);
+
 
 /*=========================================================================
   =                   Public implementation functions                     =
@@ -94,8 +83,9 @@ qpidBridgeMamaIo_create         (ioBridge*   result,
                                  mamaIo      parent,
                                  void*       closure)
 {
-    qpidIoEventImpl*    impl    = NULL;
-    short               evtType = 0;
+    qpidIoEventImpl*    impl            = NULL;
+    short               evtType         = 0;
+    qpidBridgeClosure*  bridgeClosure   = NULL;
 
     if (NULL == result)
     {
@@ -145,14 +135,16 @@ qpidBridgeMamaIo_create         (ioBridge*   result,
 
     event_add (&impl->mEvent, NULL);
 
-    event_base_set (gQpidIoContainer.mEventBase, &impl->mEvent);
+    bridgeClosure = qpidBridgeMamaIoImpl_getQpidBridgeClosure(impl);
+
+    event_base_set (bridgeClosure->mIoState.mEventBase, &impl->mEvent);
 
     /* If this is the first event since base was emptied or created */
-    if (0 == gQpidIoContainer.mEventsRegistered)
+    if (0 == bridgeClosure->mIoState.mEventsRegistered)
     {
-        wsem_post (&gQpidIoContainer.mResumeDispatching);
+        wsem_post (&bridgeClosure->mIoState.mResumeDispatching);
     }
-    gQpidIoContainer.mEventsRegistered++;
+    bridgeClosure->mIoState.mEventsRegistered++;
 
     *result = (ioBridge)impl;
 
@@ -163,15 +155,17 @@ qpidBridgeMamaIo_create         (ioBridge*   result,
 mama_status
 qpidBridgeMamaIo_destroy        (ioBridge io)
 {
-    qpidIoEventImpl* impl = (qpidIoEventImpl*) io;
+    qpidIoEventImpl*    impl            = (qpidIoEventImpl*) io;
+    qpidBridgeClosure*  bridgeClosure   = NULL;
     if (NULL == io)
     {
         return MAMA_STATUS_NULL_ARG;
     }
+    bridgeClosure = qpidBridgeMamaIoImpl_getQpidBridgeClosure(impl);
     event_del (&impl->mEvent);
 
     free (impl);
-    gQpidIoContainer.mEventsRegistered--;
+    bridgeClosure->mIoState.mEventsRegistered--;
 
     return MAMA_STATUS_OK;
 }
@@ -197,18 +191,20 @@ qpidBridgeMamaIo_getDescriptor  (ioBridge    io,
   =========================================================================*/
 
 mama_status
-qpidBridgeMamaIoImpl_start ()
+qpidBridgeMamaIoImpl_start (void* closure)
 {
     int threadResult                        = 0;
-    gQpidIoContainer.mEventsRegistered      = 0;
-    gQpidIoContainer.mActive                = 1;
-    gQpidIoContainer.mEventBase             = event_init ();
+    qpidBridgeClosure* bridgeClosure        = (qpidBridgeClosure*) closure;
 
-    wsem_init (&gQpidIoContainer.mResumeDispatching, 0, 0);
-    threadResult = wthread_create (&gQpidIoContainer.mDispatchThread,
+    bridgeClosure->mIoState.mEventsRegistered   = 0;
+    bridgeClosure->mIoState.mActive             = 1;
+    bridgeClosure->mIoState.mEventBase          = event_init ();
+
+    wsem_init (&bridgeClosure->mIoState.mResumeDispatching, 0, 0);
+    threadResult = wthread_create (&bridgeClosure->mIoState.mDispatchThread,
                                    NULL,
                                    qpidBridgeMamaIoImpl_dispatchThread,
-                                   gQpidIoContainer.mEventBase);
+                                   bridgeClosure);
     if (0 != threadResult)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR, "qpidBridgeMamaIoImpl_initialize(): "
@@ -219,22 +215,23 @@ qpidBridgeMamaIoImpl_start ()
 }
 
 mama_status
-qpidBridgeMamaIoImpl_stop ()
+qpidBridgeMamaIoImpl_stop (void* closure)
 {
-    gQpidIoContainer.mActive = 0;
+    qpidBridgeClosure* bridgeClosure        = (qpidBridgeClosure*) closure;
+    bridgeClosure->mIoState.mActive = 0;
 
     /* Alert the semaphore so the dispatch loop can exit */
-    wsem_post (&gQpidIoContainer.mResumeDispatching);
+    wsem_post (&bridgeClosure->mIoState.mResumeDispatching);
 
     /* Flush until event base is empty */
-    while (0 == event_base_loop(gQpidIoContainer.mEventBase, EVLOOP_ONCE));
+    while (0 == event_base_loop(bridgeClosure->mIoState.mEventBase, EVLOOP_ONCE));
 
     /* Join with the dispatch thread - it should exit shortly */
-    wthread_join (gQpidIoContainer.mDispatchThread, NULL);
-    wsem_destroy (&gQpidIoContainer.mResumeDispatching);
+    wthread_join (bridgeClosure->mIoState.mDispatchThread, NULL);
+    wsem_destroy (&bridgeClosure->mIoState.mResumeDispatching);
 
     /* Free the main event base */
-    event_base_free (gQpidIoContainer.mEventBase);
+    event_base_free (bridgeClosure->mIoState.mEventBase);
 
     return MAMA_STATUS_OK;
 }
@@ -248,22 +245,23 @@ qpidBridgeMamaIoImpl_stop ()
 void*
 qpidBridgeMamaIoImpl_dispatchThread (void* closure)
 {
-    int             dispatchResult = 0;
+    int                 dispatchResult  = 0;
+    qpidBridgeClosure*  bridgeClosure   = (qpidBridgeClosure*) closure;
 
     /* Wait on the first event to register before starting dispatching */
-    wsem_wait (&gQpidIoContainer.mResumeDispatching);
+    wsem_wait (&bridgeClosure->mIoState.mResumeDispatching);
 
-    while (0 != gQpidIoContainer.mActive)
+    while (0 != bridgeClosure->mIoState.mActive)
     {
-        dispatchResult = event_base_loop (gQpidIoContainer.mEventBase,
+        dispatchResult = event_base_loop (bridgeClosure->mIoState.mEventBase,
                                           EVLOOP_NONBLOCK | EVLOOP_ONCE);
 
         /* If no events are currently registered */
         if (1 == dispatchResult)
         {
             /* Wait until they are */
-            gQpidIoContainer.mEventsRegistered = 0;
-            wsem_wait (&gQpidIoContainer.mResumeDispatching);
+            bridgeClosure->mIoState.mEventsRegistered = 0;
+            wsem_wait (&bridgeClosure->mIoState.mResumeDispatching);
         }
     }
     return NULL;
@@ -297,4 +295,17 @@ qpidBridgeMamaIoImpl_libeventIoCallback (evutil_socket_t fd, short type, void* c
 
     /* Enqueue for the next time */
     event_add (&impl->mEvent, NULL);
+}
+
+qpidBridgeClosure*
+qpidBridgeMamaIoImpl_getQpidBridgeClosure(qpidIoEventImpl* impl)
+{
+    mamaBridge          mamaBridgeImpl  = NULL;
+    qpidBridgeClosure*  bridgeClosure   = NULL;
+
+    mamaIoImpl_getMamaBridge(impl->mParent, &mamaBridgeImpl);
+    mamaBridgeImpl_getClosure(mamaBridgeImpl, (void**)&bridgeClosure);
+
+    return bridgeClosure;
+
 }

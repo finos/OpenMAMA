@@ -21,6 +21,7 @@
 
 #include <mama/mama.h>
 #include <mama/io.h>
+#include <mama/integration/io.h>
 #include "bridge.h"
 #include "queueimpl.h"
 
@@ -141,4 +142,15 @@ mama_status mamaIo_destroy (mamaIo io)
     free (impl);
 
     return status;
+}
+
+mama_status mamaIoImpl_getMamaBridge(mamaIo io, mamaBridge* bridge)
+{
+    mamaIoImpl* impl = (mamaIoImpl*)io;
+    if (!impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    *bridge = impl->mBridgeImpl;
+    return MAMA_STATUS_OK;
 }

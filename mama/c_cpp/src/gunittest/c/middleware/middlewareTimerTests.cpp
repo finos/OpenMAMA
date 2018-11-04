@@ -29,6 +29,10 @@
 using std::cout;
 using std::endl;
 
+static void MAMACALLTYPE
+noopTimerCb(mamaTimer timer, void *closure)
+{
+}
 
 class MiddlewareTimerTests : public ::testing::Test
 {
@@ -40,6 +44,7 @@ protected:
     virtual void TearDown(void);
 
 public:
+    mamaTimer mTimerParent;
     mamaBridge mBridge;
     timerBridge mTimerBridge;
     mamaQueue mDefaultQueue;
@@ -57,10 +62,13 @@ void MiddlewareTimerTests::SetUp(void)
 {
     mama_loadBridge (&mBridge,getMiddleware());
     mama_open ();
+    mama_getDefaultEventQueue(mBridge,&mDefaultQueue);
+    mamaTimer_create(&mTimerParent, mDefaultQueue, noopTimerCb, 1.0, NULL);
 }
 
 void MiddlewareTimerTests::TearDown(void)
 {
+    mamaTimer_destroy(mTimerParent);
     mama_close ();
 }
 
@@ -83,19 +91,15 @@ static void MAMACALLTYPE onTimerDestroy(mamaTimer timer, void* closure)
 TEST_F (MiddlewareTimerTests, create)
 {
     double        interval      =             0.001;
-    mamaTimer     fakeParent    = (mamaTimer) NOT_NULL;
     void*         handle        =             NULL;
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mama_getDefaultEventQueue(mBridge,&mDefaultQueue));
 
     ASSERT_EQ(MAMA_STATUS_OK, 
               mamaQueue_getNativeHandle(mDefaultQueue, &handle));
     
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaTimerCreate(&mTimerBridge, handle, onTick,
-                                            onTimerDestroy, interval,
-                                            fakeParent, (void*)this));
+                                             onTimerDestroy, interval,
+                                             mTimerParent, (void*)this));
 
     /* Will block until timer destroys itself */
     mBridge->bridgeStart(mDefaultQueue);
@@ -107,13 +111,12 @@ TEST_F (MiddlewareTimerTests, createInvalidResult)
     mamaTimerCb   action            = (mamaTimerCb) NOT_NULL;
     mamaTimerCb   onTimerDestroyed  = (mamaTimerCb) NOT_NULL;
     double        interval          =               0.0;
-    mamaTimer     parent            = (mamaTimer)   NOT_NULL;
     void*         closure           =               NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaTimerCreate(NULL, nativeQueueHandle,
                                               action, onTimerDestroyed,
-                                              interval, parent, closure));
+                                              interval, mTimerParent, closure));
 }
 
 TEST_F (MiddlewareTimerTests, createInvalidNativeQueueHandle)
@@ -122,13 +125,12 @@ TEST_F (MiddlewareTimerTests, createInvalidNativeQueueHandle)
     mamaTimerCb   action            = (mamaTimerCb) NOT_NULL;
     mamaTimerCb   onTimerDestroyed  = (mamaTimerCb) NOT_NULL;
     double        interval          =               0.0;
-    mamaTimer     parent            = (mamaTimer)   NOT_NULL;
     void*         closure           =               NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaTimerCreate(&result, NULL,
                                               action, onTimerDestroyed,
-                                              interval, parent, closure));
+                                              interval, mTimerParent, closure));
 }
 
 TEST_F (MiddlewareTimerTests, createInvalidActionCB)
@@ -137,13 +139,12 @@ TEST_F (MiddlewareTimerTests, createInvalidActionCB)
     void*         nativeQueueHandle =               NOT_NULL;
     mamaTimerCb   onTimerDestroyed  = (mamaTimerCb) NOT_NULL;
     double        interval          =               0.0;
-    mamaTimer     parent            = (mamaTimer)   NOT_NULL;
     void*         closure           =               NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaTimerCreate(&result, nativeQueueHandle,
                                               NULL, onTimerDestroyed,
-                                              interval, parent, closure));
+                                              interval, mTimerParent, closure));
 }
 
 TEST_F (MiddlewareTimerTests, DISABLED_createInvalidDestroyCB)
@@ -152,13 +153,12 @@ TEST_F (MiddlewareTimerTests, DISABLED_createInvalidDestroyCB)
     void*         nativeQueueHandle =               NOT_NULL;
     mamaTimerCb   action            = (mamaTimerCb) NOT_NULL;
     double        interval          =               0.0;
-    mamaTimer     parent            = (mamaTimer)   NOT_NULL;
     void*         closure           =               NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaTimerCreate(&result, nativeQueueHandle,
                                               action, NULL,
-                                              interval, parent, closure));
+                                              interval, mTimerParent, closure));
 }
 
 /* TODO: Determine if interval maybe a NULL value */
@@ -168,13 +168,12 @@ TEST_F (MiddlewareTimerTests, DISABLED_createInvalidInterval)
     void*         nativeQueueHandle =               NOT_NULL;
     mamaTimerCb   action            = (mamaTimerCb) NOT_NULL;
     mamaTimerCb   onTimerDestroyed  = (mamaTimerCb) NOT_NULL;
-    mamaTimer     parent            = (mamaTimer)   NOT_NULL;
     void*         closure           =               NOT_NULL;
 
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaTimerCreate(&result, nativeQueueHandle,
                                               action, onTimerDestroyed,
-                                              0, parent, closure));
+                                              0, mTimerParent, closure));
 }
 
 TEST_F (MiddlewareTimerTests, createInvalidParent)
@@ -195,19 +194,15 @@ TEST_F (MiddlewareTimerTests, createInvalidParent)
 TEST_F (MiddlewareTimerTests, destroy)
 {
     double        interval      =             1;
-    mamaTimer     fakeParent    = (mamaTimer) NOT_NULL;
     void*         handle        =             NULL;
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mama_getDefaultEventQueue(mBridge, &mDefaultQueue));
     
     ASSERT_EQ(MAMA_STATUS_OK, 
               mamaQueue_getNativeHandle(mDefaultQueue, &handle));
     
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaTimerCreate(&mTimerBridge, handle, onTick,
-                                            onTimerDestroy, interval,
-                                            fakeParent, (void*)this));
+                                             onTimerDestroy, interval,
+                                             mTimerParent, (void*)this));
 
     /* Will block until timer destroys itself */
     mBridge->bridgeStart(mDefaultQueue);
@@ -222,19 +217,15 @@ TEST_F (MiddlewareTimerTests, destroyInvalid)
 TEST_F (MiddlewareTimerTests, reset)
 {
     double        interval      =             1;
-    mamaTimer     fakeParent    = (mamaTimer) NOT_NULL;
     void*         handle        =             NULL;
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mama_getDefaultEventQueue(mBridge,&mDefaultQueue));
 
     ASSERT_EQ(MAMA_STATUS_OK, 
               mamaQueue_getNativeHandle(mDefaultQueue, &handle));
     
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaTimerCreate(&mTimerBridge, handle, onTick,
-                                            onTimerDestroy, interval,
-                                            fakeParent, (void*)this));
+                                             onTimerDestroy, interval,
+                                             mTimerParent, (void*)this));
 
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaTimerReset(mTimerBridge));
@@ -251,20 +242,16 @@ TEST_F (MiddlewareTimerTests, resetInvalid)
 TEST_F (MiddlewareTimerTests, setInterval)
 {
     double        interval      =             0.001;
-    mamaTimer     fakeParent    = (mamaTimer) NOT_NULL;
     void*         handle        =             NULL;
     mama_f64_t    newInterval   =             0.01;
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mama_getDefaultEventQueue(mBridge,&mDefaultQueue));
 
     ASSERT_EQ(MAMA_STATUS_OK, 
               mamaQueue_getNativeHandle(mDefaultQueue, &handle));
     
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaTimerCreate(&mTimerBridge, handle, onTick,
-                                            onTimerDestroy, interval,
-                                            fakeParent, (void*)this));
+                                             onTimerDestroy, interval,
+                                             mTimerParent, (void*)this));
 
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaTimerSetInterval(mTimerBridge,newInterval));
@@ -294,21 +281,17 @@ TEST_F (MiddlewareTimerTests, DISABLED_setIntervalInvalidInterval)
 TEST_F (MiddlewareTimerTests, getInterval)
 {
     double        interval      =             0.001;
-    mamaTimer     fakeParent    = (mamaTimer) NOT_NULL;
     void*         handle        =             NULL;
     mama_f64_t    newInterval   =             0.01;
     mama_f64_t    testInterval  =             0.005;
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mama_getDefaultEventQueue(mBridge,&mDefaultQueue));
 
     ASSERT_EQ(MAMA_STATUS_OK, 
               mamaQueue_getNativeHandle(mDefaultQueue, &handle));
 
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaTimerCreate(&mTimerBridge, handle, onTick,
-                                            onTimerDestroy, interval,
-                                            fakeParent, (void*)this));
+                                             onTimerDestroy, interval,
+                                             mTimerParent, (void*)this));
 
     ASSERT_EQ(MAMA_STATUS_OK, 
               mBridge->bridgeMamaTimerSetInterval(mTimerBridge,newInterval));

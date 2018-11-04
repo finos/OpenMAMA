@@ -105,19 +105,6 @@ TEST_F (MiddlewareIoTests, createInvalidResult)
                                           onIo, ioType, parent, closure));
 }
 
-TEST_F (MiddlewareIoTests, createInvalidDescriptor)
-{
-    ioBridge   io                = (ioBridge)   NOT_NULL;
-    mamaIoType ioType            =              MAMA_IO_READ;
-    mamaIo     parent            = (mamaIo)     NOT_NULL;
-    void*      closure           =              NOT_NULL;
-    mamaQueue  queue             = (mamaQueue)  NOT_NULL;
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaIoCreate(&io,queue, 0,
-                                          onIo, ioType, parent, closure));
-    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
-}
 /* THIS WAS COMMENTED OUT BECAUSE mamaIoType CANNOT BE CAST AS NULL.
 TEST_F (MiddlewareIoTests, createInvalidType)
 {
@@ -132,49 +119,6 @@ TEST_F (MiddlewareIoTests, createInvalidType)
                                           onIo,(mamaIoType)* NULL, parent, closure));
 }
 */
-TEST_F (MiddlewareIoTests, createInvalidParent)
-{
-    ioBridge   io                = (ioBridge)   NOT_NULL;
-    uint32_t   descriptor        =              0;
-    mamaIoType ioType            =              MAMA_IO_READ;
-    void*      closure           =              NOT_NULL;
-    mamaQueue  queue             = (mamaQueue)  NOT_NULL;
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaIoCreate(&io,queue, descriptor,
-                                          onIo, ioType, NULL, closure));
-    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
-}
-
-TEST_F (MiddlewareIoTests, createInvalidQueue)
-{
-    ioBridge   io                = (ioBridge)   NOT_NULL;
-    uint32_t   descriptor        =              0;
-    mamaIoType ioType            =              MAMA_IO_READ;
-    mamaIo     parent            = (mamaIo)     NOT_NULL;
-    void*      closure           =              NOT_NULL;
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaIoCreate(&io,NULL, descriptor,
-                                          onIo, ioType, parent, closure));
-    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
-}
-
-TEST_F (MiddlewareIoTests, createInvalidCb)
-{
-    ioBridge   io                = (ioBridge)   NOT_NULL;
-    uint32_t   descriptor        =              0;
-    mamaIoType ioType            =              MAMA_IO_READ;
-    mamaIo     parent            = (mamaIo)     NOT_NULL;
-    void*      closure           =              NOT_NULL;
-    mamaQueue  queue             = (mamaQueue)  NOT_NULL;
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaIoCreate(&io,queue, descriptor,
-                                          NULL, ioType, parent, closure));
-    ASSERT_EQ(MAMA_STATUS_OK, mBridge->bridgeMamaIoDestroy(io));
-}
-
 
 TEST_F (MiddlewareIoTests, getDescriptor)
 {

@@ -30,14 +30,12 @@
 #include <wombat/strutils.h>
 #include "io.h"
 #include "qpidbridgefunctions.h"
+#include "qpiddefs.h"
 
 
 /*=========================================================================
   =                Typedefs, structs, enums and globals                   =
   =========================================================================*/
-
-/* Global timer heap */
-timerHeap           gQpidTimerHeap;
 
 /* Default payload names and IDs to be loaded when this bridge is loaded */
 static char*        PAYLOAD_NAMES[]         =   { "qpidmsg", NULL };
@@ -103,6 +101,7 @@ mama_status
 qpidBridge_open (mamaBridge bridgeImpl)
 {
     mama_status         status  = MAMA_STATUS_OK;
+    qpidBridgeClosure*  closure = NULL;
     mamaBridgeImpl*     bridge  = (mamaBridgeImpl*) bridgeImpl;
 
     wsocketstartup();
@@ -111,6 +110,16 @@ qpidBridge_open (mamaBridge bridgeImpl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
+
+    /* Create the bridge impl container */
+    closure = (qpidBridgeClosure*) calloc(1, sizeof(qpidBridgeClosure));
+    if (NULL == closure)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "qpidBridge_open(): Could not allocate bridge structure.");
+        return MAMA_STATUS_NOMEM;
+    }
+    mamaBridgeImpl_setClosure(bridgeImpl, closure);
 
     /* Create the default event queue */
     status = mamaQueue_create (&bridge->mDefaultEventQueue, bridgeImpl);
@@ -127,7 +136,7 @@ qpidBridge_open (mamaBridge bridgeImpl)
                             QPID_DEFAULT_QUEUE_NAME);
 
     /* Create the timer heap */
-    if (0 != createTimerHeap (&gQpidTimerHeap))
+    if (0 != createTimerHeap (&closure->mTimerHeap))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "qpidBridge_open(): Failed to initialize timers.");
@@ -135,7 +144,7 @@ qpidBridge_open (mamaBridge bridgeImpl)
     }
 
     /* Start the dispatch timer heap which will create a new thread */
-    if (0 != startDispatchTimerHeap (gQpidTimerHeap))
+    if (0 != startDispatchTimerHeap (closure->mTimerHeap))
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "qpidBridge_open(): Failed to start timer thread.");
@@ -143,7 +152,7 @@ qpidBridge_open (mamaBridge bridgeImpl)
     }
 
     /* Start the io thread */
-    qpidBridgeMamaIoImpl_start ();
+    qpidBridgeMamaIoImpl_start ((void*)closure);
 
     return MAMA_STATUS_OK;
 }
@@ -151,17 +160,19 @@ qpidBridge_open (mamaBridge bridgeImpl)
 mama_status
 qpidBridge_close (mamaBridge bridgeImpl)
 {
-    mama_status      status      = MAMA_STATUS_OK;
-    mamaBridgeImpl*  bridge      = (mamaBridgeImpl*) bridgeImpl;
-    wthread_t        timerThread;
+    mama_status         status      = MAMA_STATUS_OK;
+    mamaBridgeImpl*     bridge      = (mamaBridgeImpl*) bridgeImpl;
+    qpidBridgeClosure*  closure     = NULL;
+    wthread_t           timerThread;
 
+    mamaBridgeImpl_getClosure(bridgeImpl, (void**)&closure);
 
     /* Remove the timer heap */
-    if (NULL != gQpidTimerHeap)
+    if (NULL != closure->mTimerHeap)
     {
         /* The timer heap allows us to access it's thread ID for joining */
-        timerThread = timerHeapGetTid (gQpidTimerHeap);
-        if (0 != destroyHeap (gQpidTimerHeap))
+        timerThread = timerHeapGetTid (closure->mTimerHeap);
+        if (0 != destroyHeap (closure->mTimerHeap))
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
                       "qpidBridge_close(): Failed to destroy QPID timer heap.");
@@ -170,14 +181,14 @@ qpidBridge_close (mamaBridge bridgeImpl)
         /* The timer thread expects us to be responsible for terminating it */
         wthread_join    (timerThread, NULL);
     }
-    gQpidTimerHeap = NULL;
+    mamaBridgeImpl_setClosure(bridgeImpl, NULL);
 
     /* Destroy once queue has been emptied */
     mamaQueue_destroyTimedWait (bridge->mDefaultEventQueue,
                                 QPID_SHUTDOWN_TIMEOUT);
 
     /* Stop and destroy the io thread */
-    qpidBridgeMamaIoImpl_stop ();
+    qpidBridgeMamaIoImpl_stop ((void*)closure);
 
     return status;
 }
