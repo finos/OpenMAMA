@@ -6,7 +6,7 @@
 #include <mama/version.h>
 #include <timers.h>
 #include <wombat/strutils.h>
-#include "io.h"
+#include <mama/integration/bridge/base.h>
 #include "basebridgefunctions.h"
 #include "basedefs.h"
 

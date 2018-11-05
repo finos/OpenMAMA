@@ -30,15 +30,6 @@ extern "C" {
 /*=========================================================================
   =                Typedefs, structs, enums and globals                   =
   =========================================================================*/
-/* Message types */
-typedef enum baseMsgType_
-{
-    BASE_MSG_PUB_SUB        =               0x00,
-    BASE_MSG_INBOX_REQUEST,
-    BASE_MSG_INBOX_RESPONSE,
-    BASE_MSG_SUB_REQUEST,
-    BASE_MSG_TERMINATE      =               0xff
-} baseMsgType;
 
 typedef struct baseBridgeIoImpl
 {

@@ -6,10 +6,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <mama/mama.h>
+#include <mama/integration/bridge/base.h>
 #include <msgimpl.h>
 #include "basedefs.h"
 #include "basebridgefunctions.h"
-#include "msg.h"
 
 
 /*=========================================================================

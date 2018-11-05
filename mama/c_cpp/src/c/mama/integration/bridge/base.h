@@ -1,23 +1,52 @@
-#ifndef MAMA_BRIDGE_BASE_MSG_H__
-#define MAMA_BRIDGE_BASE_MSG_H__
+/**
+ * This file contains methods which are intended for use only by OpenMAMA core,
+ * bridges and plugins. These methods typically only make sense to developers
+ * who have intimate knowledge of the inner workings of OpenMAMA. Its use in
+ * applications is heavily discouraged and entirely unsupported.
+ *
+ * Note that you can only use these methods if you have defined the
+ * OPENMAMA_INTEGRATION macro. If you think a case is to be made for accessing
+ * one of these methods, please raise to the mailing list and we'll investigate
+ * opening up a more stable formal interface for the standard public API.
+ */
 
+#if defined (OPENMAMA_INTEGRATION) && ! defined (OPENMAMA_INTEGRATION_BRIDGE_BASE_H__)
+#define OPENMAMA_INTEGRATION_BRIDGE_BASE_H__
 
-/*=========================================================================
-  =                             Includes                                  =
-  =========================================================================*/
+#include <mama/mama.h>
+#include <mama/integration/types.h>
 
-#include <mama/integration/bridge.h>
-#include "basedefs.h"
+/* Message types */
+typedef enum baseMsgType_
+{
+    BASE_MSG_PUB_SUB        =               0x00,
+    BASE_MSG_INBOX_REQUEST,
+    BASE_MSG_INBOX_RESPONSE,
+    BASE_MSG_SUB_REQUEST,
+    BASE_MSG_TERMINATE      =               0xff
+} baseMsgType;
 
-
-#if defined(__cplusplus)
-extern "C" {
+#if defined (__cplusplus)
+extern "C"
+{
 #endif
 
+/**
+ * This function will return the topic on which to reply in order to reach the
+ * supplied inbox.
+ *
+ * @param inboxBridge The inbox implementation to extract the reply subject from.
+ *
+ * @return const char* containing the subject on which to reply.
+ */
+const char*
+baseBridgeMamaInboxImpl_getReplySubject (inboxBridge inbox);
 
-/*=========================================================================
-  =                  Public implementation functions                      =
-  =========================================================================*/
+mama_status
+baseBridgeMamaIoImpl_start (void* closure);
+
+mama_status
+baseBridgeMamaIoImpl_stop  (void* closure);
 
 /**
  * This will return true if the bridge message supplied is not null and has
@@ -188,7 +217,11 @@ baseBridgeMamaMsgImpl_getSendSubject          (msgBridge    msg,
 mama_status
 baseBridgeMamaMsgReplyHandleImpl_getInboxName (void*       replyHandle,
                                                char**      value);
+mama_status
+baseBridgeMamaIoImpl_start (void* closure);
 
+mama_status
+baseBridgeMamaIoImpl_stop  (void* closure);
 /**
  * This will set the inbox name for the reply handle specified.
  *
@@ -235,8 +268,11 @@ baseBridgeMamaMsgReplyHandleImpl_setReplyTo   (void*       replyHandle,
 mama_status
 baseBridgeMamaMsgImpl_createMsgOnly 		  (msgBridge*  msg);
 
-#if defined(__cplusplus)
+
+
+
+#if defined (__cplusplus)
 }
 #endif
 
-#endif /* MAMA_BRIDGE_BASE_MSG_H__ */
+#endif /* OPENMAMA_INTEGRATION_BRIDGE_BASE_H__ */

@@ -10,7 +10,7 @@
 #include <bridge.h>
 #include "basebridgefunctions.h"
 #include "basedefs.h"
-#include "inbox.h"
+#include <mama/integration/bridge/base.h>
 
 
 /*=========================================================================

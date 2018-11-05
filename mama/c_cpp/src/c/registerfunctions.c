@@ -144,7 +144,7 @@ mamaInternal_registerMiddlewareFunctions (LIB_HANDLE  bridgeLib,
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (BridgeMamaMsgImpl_setReplyHandleAndIncrement, bridgeMamaMsgSetReplyHandleAndIncrement, bridgeMamaMsgImpl_setReplyHandleAndIncrement);
     REGISTER_OPTIONAL_BRIDGE_FUNCTION (BridgeMamaMsg_destroyReplyHandle, bridgeMamaMsgDestroyReplyHandle, bridgeMamaMsg_destroyReplyHandle);
 
-    /* Return success */
+    /* Return any erroneous statuses */
     return status;
 }
 

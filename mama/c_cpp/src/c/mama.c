@@ -2538,6 +2538,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
                                  const char* path)
 {
     mama_status         status              = MAMA_STATUS_OK;
+    mama_status         bridgeMethodStatus  = MAMA_STATUS_OK;
     int                 i                   = 0;
     mamaMiddlewareLib*  middlewareLib       = NULL;
     LIB_HANDLE          middlewareLibHandle = NULL;
@@ -2671,27 +2672,19 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         goto error_handling_impl;
     }
 
+    /* Create the bridge lock */
+    (*impl)->mLock = wlock_create();
+
     /* Once the middleware has been successfully allocate and initialised,
      * we can use the function search to register various middleware functions.
      */
-    status = mamaInternal_registerMiddlewareFunctions (middlewareLibHandle,
+    bridgeMethodStatus = mamaInternal_registerMiddlewareFunctions (
+                                                       middlewareLibHandle,
                                                        impl,
                                                        middlewareName);
 
-    if (MAMA_STATUS_OK != status)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mama_loadBridge(): "
-                  "Failed to register middleware functions for [%s] from [%s] library:[%s]",
-                  middlewareName,
-                  middlewareImplName,
-                  mamaStatus_stringForStatus (status));
-
-        goto error_handling_impl_allocated;
-    }
-
+    /* Call init function anyway - may explain why above method may fail */
     status = initFunc (*impl);
-
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -2701,11 +2694,70 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         goto error_handling_impl_allocated;
     }
 
-    /* Create the bridge lock */
-    (*impl)->mLock = wlock_create();
-
     /* Populate bridge meta data based on bridge's init properties */
     mamaBridgeImpl_populateBridgeMetaData (*impl);
+
+    /* If this is a middleware that extends the base bridge, pre-load base functions that are non null */
+    if (strtobool (mamaBridgeImpl_getMetaProperty (*impl, MAMA_PROP_EXTENDS_BASE_BRIDGE)))
+    {
+        LIB_HANDLE  baseLibHandle = NULL;
+        const char* baseLibImplName = "mamabaseimpl";
+
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadmamaPayload(): "
+                  "Loading base bridge library for %s",
+                  middlewareImplName);
+
+        baseLibHandle = openSharedLib (baseLibImplName, path);
+        if (!baseLibHandle)
+        {
+            status = MAMA_STATUS_NO_BRIDGE_IMPL;
+            if (path)
+            {
+                mama_log (MAMA_LOG_LEVEL_ERROR,
+                          "mama_loadmamaPayload(): "
+                          "Could not open middleware base bridge library [%s] [%s] [%s]",
+                          path,
+                          baseLibImplName,
+                          getLibError());
+            }
+            else
+            {
+                mama_log (MAMA_LOG_LEVEL_ERROR,
+                          "mama_loadmamaPayload(): "
+                          "Could not open middleware base bridge library [%s] [%s]",
+                          baseLibImplName,
+                          getLibError());
+            }
+            goto error_handling_unlock;
+        }
+
+        /* Note this will return error if neither bridge nor base have functions */
+        status = mamaInternal_registerMiddlewareFunctions(baseLibHandle,
+                                                          impl,
+                                                          "base");
+        if (MAMA_STATUS_OK != status)
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                      "mama_loadBridge(): "
+                      "Failed to register middleware functions for base bridge %s [%s]",
+                      middlewareImplName,
+                      mamaStatus_stringForStatus (status));
+
+            goto error_handling_impl_allocated;
+        }
+    }
+    else if (MAMA_STATUS_OK != bridgeMethodStatus)
+    {
+        mama_log (MAMA_LOG_LEVEL_ERROR,
+                  "mama_loadBridge(): "
+                  "Failed to register middleware functions for [%s] from [%s] library:[%s]",
+                  middlewareName,
+                  middlewareImplName,
+                  mamaStatus_stringForStatus (bridgeMethodStatus));
+
+        goto error_handling_impl_allocated;
+    }
 
     /* Verify interface compatibility */
     if(!strToVersionInfo(

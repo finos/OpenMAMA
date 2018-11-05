@@ -11,6 +11,7 @@ set (WITH_EXAMPLES      true   CACHE BOOL   "Include compiled example applicatio
 set (WITH_TESTTOOLS     true   CACHE BOOL   "Include test tools in the build (e.g. capturereplay)")
 set (WITH_UNITTEST      false  CACHE BOOL   "Include unit tests in the build (e.g. UnitTestMamaC)")
 set (WITH_PROTON        true   CACHE BOOL   "Include the qpid proton middleware and payload bridges in the build")
+set (WITH_NOOP_BRIDGE   false  CACHE BOOL   "Include the noop example middleware bridge in the build")
 set (WITH_BASE_BRIDGE   true   CACHE BOOL   "Include the base bridge in the build (required for qpid proton)")
 set (WITH_MAMDA         true   CACHE BOOL   "Include MAMDA in the build")
 set (WITH_JAVA          false  CACHE BOOL   "Include JAVA bindings")

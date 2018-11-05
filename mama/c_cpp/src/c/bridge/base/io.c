@@ -6,7 +6,7 @@
 #include <mama/mama.h>
 #include <mama/io.h>
 #include "basebridgefunctions.h"
-#include "io.h"
+#include <mama/integration/bridge/base.h>
 #include "basedefs.h"
 #include <wombat/port.h>
 #include <mama/integration/io.h>
