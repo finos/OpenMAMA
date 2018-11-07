@@ -368,7 +368,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
     else if (0 == strcmp (tportType, CONFIG_VALUE_TPORT_TYPE_P2P))
     {
         impl->mQpidTransportType = QPID_TRANSPORT_TYPE_P2P;
-        defOutUrl = NULL;
+		defOutUrl = DEFAULT_OUTGOING_URL;
     }
     else
     {
