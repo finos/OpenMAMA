@@ -136,7 +136,11 @@ TEST_F(MamaPublisherTest, Publish)
     MamaPublisher *publisher = new MamaPublisher();
 
     // Create the publisher
-    publisher->create(m_transport, getSymbol(), getSource(), NULL);
+	mama_log(MAMA_LOG_LEVEL_NORMAL,
+		"Creating publisher source is [%s]. symbol is [%s].",
+		getSource(),
+		getSymbol());
+	publisher->create(m_transport, getSymbol(), getSource(), NULL);
 
     // Process messages until the first message is received
     Mama::startBackground(m_bridge, this);
