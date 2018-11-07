@@ -46,7 +46,7 @@ void MamaSubscriptionTest::SetUp(void)
     m_this = this;
 
     // Load the bridge
-    m_bridge = Mama::loadBridge(getMiddleware());
+   m_bridge = Mama::loadBridge(getMiddleware());
 
     // Open mama
     Mama::open();
@@ -265,7 +265,7 @@ public:
         const char*        symbol)
      {
          // Stop on error
-         Mama::stop(m_bridge);
+//         Mama::stop(m_bridge);
      }
 
      virtual void onGap (
@@ -925,7 +925,11 @@ TEST_F(MamaSubscriptionTest, Subscription)
             // Get the default queue
             MamaQueue *queue = Mama::getDefaultEventQueue(m_bridge);
 
-            // Create the subscription
+			mama_log(MAMA_LOG_LEVEL_NORMAL,
+				"Creating subscriptions source is [%s]. symbol is [%s].",
+				getSource(),
+				getSymbol());
+			// Create the subscription now
             subscription->create(m_transport, queue, testCallback, getSource(), getSymbol());
 
             // check if transport got stored correctly
