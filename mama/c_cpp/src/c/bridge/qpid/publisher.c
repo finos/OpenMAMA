@@ -190,7 +190,10 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
                                              impl->mTopic,
                                              uuid,
                                              &impl->mUri);
+
     }
+	mama_log(MAMA_LOG_LEVEL_NORMAL,
+		"mUri: %", impl->mUri);
 
     /* Create a reusable proton message */
     impl->mQpidRawMsg = pn_message ();
