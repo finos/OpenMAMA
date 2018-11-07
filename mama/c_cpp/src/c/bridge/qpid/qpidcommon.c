@@ -228,6 +228,9 @@ qpidBridgeCommon_generateSubjectUri (const char*  format,
     while (nextSeg != NULL)
     {
         written = snprintf (uriPos, bytesRemaining, "%s", nextSeg);
+		mama_log(MAMA_LOG_LEVEL_NORMAL,
+			"uri is %s.", uri);
+
         bytesRemaining -= written;
         uriPos += written;
 
