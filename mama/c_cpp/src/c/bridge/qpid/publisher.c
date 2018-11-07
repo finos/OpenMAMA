@@ -151,6 +151,9 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
     uuid = qpidBridgeMamaTransportImpl_getUuid (
                  (transportBridge) impl->mTransport);
 
+	mama_log(MAMA_LOG_LEVEL_NORMAL,
+		"outgoingAddress: %s, uuid: %s", outgoingAddress, uuid);
+	
     /* Collapse subject key to single string based on supplied values
      *
      * _MD requests do not use the topic on the wire as the responder may not
