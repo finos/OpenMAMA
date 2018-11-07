@@ -284,6 +284,9 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     /* Get the bridge message type if specified already by inbox handlers */
     qpidBridgeMamaMsgImpl_getMsgType (impl->mMamaBridgeMsg, &type);
 
+	mama_log(MAMA_LOG_LEVEL_NORMAL,
+		"qpidBridgeMamaMsgImpl_getMsgType returned type: %d", type);
+
     switch (type)
     {
     case QPID_MSG_INBOX_REQUEST:
