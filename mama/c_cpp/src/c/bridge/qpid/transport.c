@@ -382,6 +382,10 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
         impl->mQpidTransportType = DEFAULT_TPORT_TYPE_VALUE;
     }
 
+	mama_log(MAMA_LOG_LEVEL_NORMAL,
+		"qpidBridgeMamaTransport_create(): Initializing Transport %s, tportType %s, defOutUrl %s",
+		name, tportType, defOutUrl);
+
     /* Set the incoming address */
     impl->mIncomingAddress = qpidBridgeMamaTransportImpl_getParameter (
             DEFAULT_INCOMING_URL,
