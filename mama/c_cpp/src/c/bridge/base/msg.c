@@ -8,15 +8,15 @@
 #include <mama/mama.h>
 #include <mama/integration/bridge/base.h>
 #include <msgimpl.h>
+#include <wombat/memnode.h>
 #include "basedefs.h"
-#include "basebridgefunctions.h"
 
 
 /*=========================================================================
   =                              Macros                                   =
   =========================================================================*/
 
-#define     QPID_MSG_PROPERTY_LEN     1024
+#define     BRIDGE_MSG_PROPERTY_LEN     1024
 
 
 /*=========================================================================
@@ -25,8 +25,8 @@
 
 typedef struct baseBridgeMsgReplyHandle
 {
-    char                        mInboxName[QPID_MSG_PROPERTY_LEN];
-    char                        mReplyTo[QPID_MSG_PROPERTY_LEN];
+    char                        mInboxName[BRIDGE_MSG_PROPERTY_LEN];
+    char                        mReplyTo[BRIDGE_MSG_PROPERTY_LEN];
 } baseBridgeMsgReplyHandle;
 
 typedef struct baseBridgeMsgImpl
@@ -35,9 +35,12 @@ typedef struct baseBridgeMsgImpl
     baseMsgType                 mMsgType;
     uint8_t                     mIsValid;
     baseBridgeMsgReplyHandle    mReplyHandle;
-    char                        mTargetSubject[QPID_MSG_PROPERTY_LEN];
-    char                        mSendSubject[QPID_MSG_PROPERTY_LEN];
-    char                        mDestination[QPID_MSG_PROPERTY_LEN];
+    char                        mTargetSubject[BRIDGE_MSG_PROPERTY_LEN];
+    char                        mSendSubject[BRIDGE_MSG_PROPERTY_LEN];
+    char                        mDestination[BRIDGE_MSG_PROPERTY_LEN];
+    void*                       mSerializedBuffer;
+    size_t                      mSerializedBufferSize;
+    size_t                      mPayloadSize;
 } baseBridgeMsgImpl;
 
 
@@ -577,6 +580,36 @@ baseBridgeMamaMsgImpl_createMsgOnly (msgBridge* msg)
     return MAMA_STATUS_OK;
 }
 
+mama_status
+baseBridgeMamaMsgImpl_getSerializationBuffer (msgBridge    msg,
+                                              void**       buffer,
+                                              size_t       size)
+{
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
+
+    if (NULL == impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Allocate more memory if necessary */
+    allocateBufferMemory (&impl->mSerializedBuffer,
+                          &impl->mSerializedBufferSize,
+                          size);
+
+    if (size > impl->mSerializedBufferSize)
+    {
+        *buffer = NULL;
+        return MAMA_STATUS_NOMEM;
+    }
+    else
+    {
+        *buffer = impl->mSerializedBuffer;
+        return MAMA_STATUS_OK;
+    }
+
+}
+
 
 /*=========================================================================
   =                  Private implementation functions                     =
@@ -586,13 +619,13 @@ mama_status
 baseBridgeMamaMsgImpl_setStringValue (char*         dest,
                                       const char*   value)
 {
-    strncpy (dest, value, QPID_MSG_PROPERTY_LEN);
+    strncpy (dest, value, BRIDGE_MSG_PROPERTY_LEN);
 
     /* ISO C - remaining bytes from strncpy are null unless overrun occurred */
-    if (dest[QPID_MSG_PROPERTY_LEN - 1] != '\0')
+    if (dest[BRIDGE_MSG_PROPERTY_LEN - 1] != '\0')
     {
         /* Terminate string to at least make it usable (though truncated) */
-        dest[QPID_MSG_PROPERTY_LEN - 1] = '\0';
+        dest[BRIDGE_MSG_PROPERTY_LEN - 1] = '\0';
         mama_log (MAMA_LOG_LEVEL_WARN,
                   "baseBridgeMamaMsgImpl_setStringValue(): "
                   "Unable to set value '%s': Property too long for buffer. ",

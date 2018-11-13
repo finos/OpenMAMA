@@ -5,7 +5,6 @@
 #include <stdint.h>
 #include <string.h>
 
-#include "basebridgefunctions.h"
 #include <mama/mama.h>
 #include <mama/inbox.h>
 #include <mama/publisher.h>

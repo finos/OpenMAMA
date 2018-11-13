@@ -5,8 +5,9 @@
 #include <stdint.h>
 #include <string.h>
 #include <mama/mama.h>
-#include "basebridgefunctions.h"
-
+#include <mama/integration/types.h>
+#include <mama/integration/subscription.h>
+#include <mama/integration/bridge/base.h>
 
 /*=========================================================================
   =               Public interface implementation functions               =

@@ -6,7 +6,7 @@
 #include <wombat/queue.h>
 #include <mama/integration/bridge.h>
 #include <mama/integration/queue.h>
-#include "basebridgefunctions.h"
+#include <mama/integration/bridge/base.h>
 
 
 /*=========================================================================
@@ -14,15 +14,17 @@
   =========================================================================*/
 
 typedef struct baseQueueBridge {
-    mamaQueue          mParent;
-    wombatQueue        mQueue;
-    uint8_t            mHighWaterFired;
-    size_t             mHighWatermark;
-    size_t             mLowWatermark;
-    uint8_t            mIsDispatching;
-    mamaQueueEnqueueCB mEnqueueCallback;
-    void*              mEnqueueClosure;
-    wthread_mutex_t    mDispatchLock;
+    mamaQueue               mParent;
+    wombatQueue             mQueue;
+    uint8_t                 mHighWaterFired;
+    size_t                  mHighWatermark;
+    size_t                  mLowWatermark;
+    uint8_t                 mIsDispatching;
+    mamaQueueEnqueueCB      mEnqueueCallback;
+    void*                   mEnqueueClosure;
+    wthread_mutex_t         mDispatchLock;
+    void*                   mClosure;
+    baseQueueClosureCleanup mClosureCleanupCb;
 } baseQueueBridge;
 
 
@@ -175,6 +177,12 @@ baseBridgeMamaQueue_destroy (queueBridge queue)
     wthread_mutex_lock              (&impl->mDispatchLock);
     status = wombatQueue_destroy    (impl->mQueue);
     wthread_mutex_unlock            (&impl->mDispatchLock);
+
+    /* Give any queue specific resources a chance to clean up */
+    if (NULL != impl->mClosureCleanupCb && NULL != impl->mClosure)
+    {
+        impl->mClosureCleanupCb (impl->mClosure);
+    }
 
     /* Free the impl container struct */
     free (impl);
@@ -469,6 +477,28 @@ baseBridgeMamaQueue_setLowWatermark (queueBridge    queue,
     impl->mLowWatermark = lowWatermark;
 
     return MAMA_STATUS_OK;
+}
+
+
+/*=========================================================================
+  =                  Public implementation functions                      =
+  =========================================================================*/
+
+void
+baseBridgeMamaQueueImpl_setClosure (queueBridge              queue,
+                                    void*                    closure,
+                                    baseQueueClosureCleanup  callback)
+{
+    baseQueueBridge* impl = (baseQueueBridge*) queue;
+    impl->mClosure          = closure;
+    impl->mClosureCleanupCb = callback;
+}
+
+void*
+baseBridgeMamaQueueImpl_getClosure (queueBridge              queue)
+{
+    baseQueueBridge* impl = (baseQueueBridge*) queue;
+    return impl->mClosure;
 }
 
 

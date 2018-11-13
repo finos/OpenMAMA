@@ -39,7 +39,7 @@
   =                              Macros                                   =
   =========================================================================*/
 
-#define     QPID_MSG_PROPERTY_LEN     1024
+#define     BRIDGE_MSG_PROPERTY_LEN     1024
 
 
 /*=========================================================================
@@ -48,8 +48,8 @@
 
 typedef struct qpidBridgeMsgReplyHandle
 {
-    char                        mInboxName[QPID_MSG_PROPERTY_LEN];
-    char                        mReplyTo[QPID_MSG_PROPERTY_LEN];
+    char                        mInboxName[BRIDGE_MSG_PROPERTY_LEN];
+    char                        mReplyTo[BRIDGE_MSG_PROPERTY_LEN];
 } qpidBridgeMsgReplyHandle;
 
 typedef struct qpidBridgeMsgImpl
@@ -58,9 +58,9 @@ typedef struct qpidBridgeMsgImpl
     qpidMsgType                 mMsgType;
     uint8_t                     mIsValid;
     qpidBridgeMsgReplyHandle    mReplyHandle;
-    char                        mTargetSubject[QPID_MSG_PROPERTY_LEN];
-    char                        mSendSubject[QPID_MSG_PROPERTY_LEN];
-    char                        mDestination[QPID_MSG_PROPERTY_LEN];
+    char                        mTargetSubject[BRIDGE_MSG_PROPERTY_LEN];
+    char                        mSendSubject[BRIDGE_MSG_PROPERTY_LEN];
+    char                        mDestination[BRIDGE_MSG_PROPERTY_LEN];
 } qpidBridgeMsgImpl;
 
 
@@ -592,13 +592,13 @@ qpidBridgeMamaMsgImpl_createMsgOnly (msgBridge* msg)
 mama_status qpidBridgeMamaMsgImpl_setStringValue (char*         dest,
                                                   const char*   value)
 {
-    strncpy (dest, value, QPID_MSG_PROPERTY_LEN);
+    strncpy (dest, value, BRIDGE_MSG_PROPERTY_LEN);
 
     /* ISO C - remaining bytes from strncpy are null unless overrun occurred */
-    if (dest[QPID_MSG_PROPERTY_LEN - 1] != '\0')
+    if (dest[BRIDGE_MSG_PROPERTY_LEN - 1] != '\0')
     {
         /* Terminate string to at least make it usable (though truncated) */
-        dest[QPID_MSG_PROPERTY_LEN - 1] = '\0';
+        dest[BRIDGE_MSG_PROPERTY_LEN - 1] = '\0';
         mama_log (MAMA_LOG_LEVEL_WARN,
                   "qpidBridgeMamaMsgImpl_setStringValue(): "
                   "Unable to set value '%s': Property too long for buffer. ",

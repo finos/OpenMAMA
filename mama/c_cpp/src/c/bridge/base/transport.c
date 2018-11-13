@@ -27,7 +27,7 @@
 #include <stdint.h>
 #include <wombat/port.h>
 #include <mama/mama.h>
-#include "basebridgefunctions.h"
+#include <mama/integration/bridge/base.h>
 #include <mama/integration/transport.h>
 
 

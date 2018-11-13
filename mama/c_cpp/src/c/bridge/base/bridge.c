@@ -7,7 +7,8 @@
 #include <timers.h>
 #include <wombat/strutils.h>
 #include <mama/integration/bridge/base.h>
-#include "basebridgefunctions.h"
+#include <mama/integration/bridge.h>
+#include <mama/integration/mama.h>
 #include "basedefs.h"
 
 
@@ -45,9 +46,9 @@ baseBridge_init (mamaBridge bridgeImpl)
 mama_status
 baseBridge_open (mamaBridge bridgeImpl)
 {
-    mama_status         status  = MAMA_STATUS_OK;
-    baseBridgeClosure*  closure = NULL;
-    mamaBridgeImpl*     bridge  = (mamaBridgeImpl*) bridgeImpl;
+    mama_status         status              = MAMA_STATUS_OK;
+    baseBridgeClosure*  closure             = NULL;
+    mamaQueue           defaultEventQueue   = NULL;
 
     wsocketstartup();
 
@@ -67,7 +68,7 @@ baseBridge_open (mamaBridge bridgeImpl)
     mamaBridgeImpl_setClosure(bridgeImpl, closure);
 
     /* Create the default event queue */
-    status = mamaQueue_create (&bridge->mDefaultEventQueue, bridgeImpl);
+    status = mamaQueue_create (&defaultEventQueue, bridgeImpl);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -76,9 +77,10 @@ baseBridge_open (mamaBridge bridgeImpl)
         return status;
     }
 
+    mamaImpl_setDefaultEventQueue(bridgeImpl, defaultEventQueue);
+
     /* Set the queue name (used to identify this queue in MAMA stats) */
-    mamaQueue_setQueueName (bridge->mDefaultEventQueue,
-                            DEFAULT_QUEUE_NAME);
+    mamaQueue_setQueueName (defaultEventQueue, DEFAULT_QUEUE_NAME);
 
     /* Create the timer heap */
     if (0 != createTimerHeap (&closure->mTimerHeap))
@@ -105,9 +107,9 @@ baseBridge_open (mamaBridge bridgeImpl)
 mama_status
 baseBridge_close (mamaBridge bridgeImpl)
 {
-    mama_status         status      = MAMA_STATUS_OK;
-    mamaBridgeImpl*     bridge      = (mamaBridgeImpl*) bridgeImpl;
-    baseBridgeClosure*  closure     = NULL;
+    mama_status         status              = MAMA_STATUS_OK;
+    mamaQueue           defaultEventQueue   = NULL;
+    baseBridgeClosure*  closure             = NULL;
     wthread_t           timerThread;
 
     mamaBridgeImpl_getClosure(bridgeImpl, (void**)&closure);
@@ -128,9 +130,9 @@ baseBridge_close (mamaBridge bridgeImpl)
     }
     mamaBridgeImpl_setClosure(bridgeImpl, NULL);
 
+    mama_getDefaultEventQueue(bridgeImpl, &defaultEventQueue);
     /* Destroy once queue has been emptied */
-    mamaQueue_destroyTimedWait (bridge->mDefaultEventQueue,
-                                QUEUE_SHUTDOWN_TIMEOUT);
+    mamaQueue_destroyTimedWait (defaultEventQueue, QUEUE_SHUTDOWN_TIMEOUT);
 
     /* Stop and destroy the io thread */
     baseBridgeMamaIoImpl_stop ((void*)closure);

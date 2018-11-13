@@ -8,7 +8,6 @@
 #include <wombat/port.h>
 #include <mama/mama.h>
 #include <bridge.h>
-#include "basebridgefunctions.h"
 #include "basedefs.h"
 #include <mama/integration/bridge/base.h>
 
