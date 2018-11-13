@@ -91,14 +91,14 @@ fi
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
 then
     apt-get install -y openjdk-8-jdk libssl-dev
-    echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni
+    echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
 # Ubuntu 16 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "14" ]
 then
     apt-get install -y openjdk-7-jdk libssl-dev
-    echo "export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64" > /etc/profile.d/profile.jni
+    echo "export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
 test -d $DEPS_DIR || mkdir -p $DEPS_DIR

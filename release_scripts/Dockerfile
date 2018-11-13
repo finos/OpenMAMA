@@ -36,7 +36,7 @@ ADD . $SRC_DIR
 WORKDIR $SRC_DIR/build
 
 # Configure the build. SDKMAN needs bash. Note strict-prototypes is temporary for cmake on centos bug with -Werror.
-RUN cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+RUN . /etc/profile && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
           -DBIN_GRADLE=$SDKMAN_DIR/candidates/gradle/current/bin/gradle \
           -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
           -DWITH_JAVA=ON \
