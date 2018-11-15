@@ -76,6 +76,7 @@ if os.name != "nt" and "JAVA_HOME" not in env_var:
 
 if "JAVA_HOME" in env_var:
     scons_cmd.append("java_home=%s" % env_var["JAVA_HOME"])
+    env_var["PATH"] = os.path.join(env_var["JAVA_HOME"], 'bin') os.pathsep + env_var["PATH"]
 
 if "OPENMAMA_INSTALL_DIR" not in env_var:
     # Fire off the build
