@@ -6,15 +6,15 @@ environment:
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     PLATFORM: x86
     BUILD_TYPE: RelWithDebInfo
-    JAVA_HOME: C:\Progra~2\Java\jdk1.8.0
-    JAVA_HOME_TEST: C:\Program Files (x86)\Java\jdk1.8.0
+    # NB Can't use JAVA_HOME because appveyor trashes it
+    JAVA_HOME_OVERRIDE: C:\Program Files (x86)\Java\jdk1.8.0
 
   - GENERATOR: Visual Studio 15 2017 Win64
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     PLATFORM: x64
     BUILD_TYPE: RelWithDebInfo
-    JAVA_HOME: C:\Progra~1\Java\jdk1.8.0
-    JAVA_HOME_TEST: C:\Program Files\Java\jdk1.8.0
+    # NB Can't use JAVA_HOME because appveyor trashes it
+    JAVA_HOME_OVERRIDE: C:\Program Files\Java\jdk1.8.0
 
   - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
     DOCKER_IMAGE: fedora:26
@@ -66,6 +66,7 @@ install:
 
 build_script:
   # Windows build
+- cmd: set PATH=%JAVA_HOME_OVERRIDE%\bin;%PATH%
 - cmd: |-
     cd %APPVEYOR_BUILD_FOLDER%
     mkdir build
@@ -73,6 +74,8 @@ build_script:
     REM cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWITH_CSHARP=ON -DWITH_UNITTEST=ON -DWITH_JAVA=ON -DPROTON_ROOT=C:/tools/vcpkg/installed/%PLATFORM%-windows/ -DGTEST_ROOT=C:/tools/vcpkg/installed/%PLATFORM%-windows/ -DINSTALL_RUNTIME_DEPENDENCIES=ON -DCMAKE_INSTALL_PREFIX=%OPENMAMA_INSTALL_DIR% -G "%GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DAPR_ROOT=C:/tools/vcpkg/installed/%PLATFORM%-windows/ ..
     REM cmake --build . --config RelWithDebInfo --target install
     cd ..
+    set JAVA_HOME=%JAVA_HOME_OVERRIDE%
+    echo %JAVA_HOME_OVERRIDE%
     python release_scripts\ci-run.py
 
   # Linux build
