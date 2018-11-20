@@ -1,3 +1,6 @@
+services:
+- docker
+
 # Build worker image (VM template)
 environment:
   matrix:
