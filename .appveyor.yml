@@ -56,8 +56,8 @@ install:
 - sh: sudo pip install --upgrade cloudsmith-cli
 
 # Dependencies
-before_build:
-- cmd: vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows
+# before_build:
+# - cmd: vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows
 
 build_script:
   # Windows build
