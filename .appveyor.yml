@@ -7,12 +7,14 @@ environment:
     PLATFORM: x86
     BUILD_TYPE: RelWithDebInfo
     JAVA_HOME: C:\Program Files (x86)\Java\jdk1.8.0
+    JAVA_HOME_TEST: C:\Program Files (x86)\Java\jdk1.8.0
 
   - GENERATOR: Visual Studio 15 2017 Win64
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     PLATFORM: x64
     BUILD_TYPE: RelWithDebInfo
     JAVA_HOME: C:\Program Files\Java\jdk1.8.0
+    JAVA_HOME_TEST: C:\Program Files\Java\jdk1.8.0
 
   - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
     DOCKER_IMAGE: fedora:26
@@ -48,6 +50,7 @@ install:
 - cmd: set PATH=C:\ProgramData\chocolatey\bin;%JAVA_HOME%\bin;%PATH%
 - cmd: echo %PATH%
 - cmd: echo %JAVA_HOME%
+- cmd: echo %JAVA_HOME_TEST%
 # - cmd: |-
 #     cd "C:\Tools\vcpkg"
 #     git pull
