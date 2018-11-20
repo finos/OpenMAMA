@@ -51,18 +51,18 @@ install:
 - cmd: echo %PATH%
 - cmd: echo %JAVA_HOME%
 - cmd: echo %JAVA_HOME_TEST%
-# - cmd: |-
-#     cd "C:\Tools\vcpkg"
-#     git pull
-#     .\bootstrap-vcpkg.bat
-#     cd %appveyor_build_folder%
+- cmd: |-
+    cd "C:\Tools\vcpkg"
+    git pull
+    .\bootstrap-vcpkg.bat
+    cd %appveyor_build_folder%
 - sh: sudo apt-get update -qq
 - sh: sudo apt-get install -y docker python
 - sh: sudo pip install --upgrade cloudsmith-cli
 
 # Dependencies
-# before_build:
-# - cmd: vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows
+before_build:
+- cmd: vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows
 
 build_script:
   # Windows build
@@ -71,11 +71,9 @@ build_script:
     cd %APPVEYOR_BUILD_FOLDER%
     mkdir build
     cd build
-    REM cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWITH_CSHARP=ON -DWITH_UNITTEST=ON -DWITH_JAVA=ON -DPROTON_ROOT=C:/tools/vcpkg/installed/%PLATFORM%-windows/ -DGTEST_ROOT=C:/tools/vcpkg/installed/%PLATFORM%-windows/ -DINSTALL_RUNTIME_DEPENDENCIES=ON -DCMAKE_INSTALL_PREFIX=%OPENMAMA_INSTALL_DIR% -G "%GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DAPR_ROOT=C:/tools/vcpkg/installed/%PLATFORM%-windows/ ..
-    REM cmake --build . --config RelWithDebInfo --target install
+    cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWITH_CSHARP=ON -DWITH_UNITTEST=ON -DWITH_JAVA=ON -DPROTON_ROOT=C:/tools/vcpkg/installed/%PLATFORM%-windows/ -DGTEST_ROOT=C:/tools/vcpkg/installed/%PLATFORM%-windows/ -DINSTALL_RUNTIME_DEPENDENCIES=ON -DCMAKE_INSTALL_PREFIX=%OPENMAMA_INSTALL_DIR% -G "%GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake -DAPR_ROOT=C:/tools/vcpkg/installed/%PLATFORM%-windows/ ..
+    cmake --build . --config RelWithDebInfo --target install
     cd ..
-    set JAVA_HOME=%JAVA_HOME_OVERRIDE%
-    echo %JAVA_HOME_OVERRIDE%
     python release_scripts\ci-run.py
 
   # Linux build
