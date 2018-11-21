@@ -78,7 +78,7 @@ build_script:
     cmake --build . --config RelWithDebInfo --target install
     cd ..
     python release_scripts\ci-run.py
-    7z a openmama-%VERSION%.win.%PLATFORM%.zip %APPVEYOR_BUILD_FOLDER%\build\openmama-%VERSION%.win.%PLATFORM%
+    7z a openmama-%VERSION%.win.%PLATFORM%.zip "%OPENMAMA_INSTALL_DIR%"
 
   # Linux build
 - sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE
