@@ -38,7 +38,7 @@ FIND_PATH(APR_INCLUDE_DIR apr.h
     /usr/local/apr/include/apr-1
 )
 
-SET(APR_NAMES ${APR_NAMES} apr-1)
+SET(APR_NAMES ${APR_NAMES} libapr-1 apr-1)
 FIND_LIBRARY(APR_LIBRARY
   NAMES ${APR_NAMES}
   PATHS
@@ -47,7 +47,6 @@ FIND_LIBRARY(APR_LIBRARY
     /usr/local/lib
     /usr/local/apr/lib
     /usr/lib/x86_64-linux-gnu
-  NO_DEFAULT_PATH
 )
 
 IF (APR_LIBRARY AND APR_INCLUDE_DIR)

@@ -53,7 +53,7 @@ fi
 if [ "$DISTRIB_ID" = "$FEDORA" ]
 then
     echo "Installing fedora specific dependencies"
-    yum install -y libnsl2-devel libffi-devel ruby-devel rubygems redhat-rpm-config
+    yum install -y libnsl2-devel libffi-devel ruby-devel rubygems redhat-rpm-config rpm-build
 fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ]
@@ -71,19 +71,40 @@ then
 	    libevent ncurses apr valgrind python
 fi
 
+# General ubuntu packages
 if [ "$DISTRIB_ID" = "$UBUNTU" ]
 then
     apt-get update -qq
-    apt-get install -qq -y ruby ruby-dev rubygems build-essential \
+    apt-get install -y ruby ruby-dev build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
-	    cmake git libzmq3-dev openjdk-8-jdk ncurses-dev \
-	    unzip valgrind libapr1-dev python
+	    cmake git libzmq3-dev ncurses-dev \
+	    unzip valgrind libapr1-dev python libz-dev
+fi
+
+# Ubuntu 18 specific software
+if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "18" ]
+then
+    apt-get install -y rubygems openjdk-8-jdk
+fi
+
+# Ubuntu 16 specific software
+if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
+then
+    apt-get install -y openjdk-8-jdk libssl-dev
+    echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
+fi
+
+# Ubuntu 16 specific software
+if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "14" ]
+then
+    apt-get install -y openjdk-7-jdk libssl-dev
+    echo "export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
 test -d $DEPS_DIR || mkdir -p $DEPS_DIR
 
-# Centos version specific dependencies (ruby is too old for FPM)
-if [ "$DISTRIB_ID" = "$RHEL" ] && [ "${DISTRIB_RELEASE:0:1}"  = "6" ]
+# Centos and old ubuntu version specific dependencies (ruby is too old for FPM)
+if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" = "6") || ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" != "18") ]]
 then
     cd $DEPS_DIR
     curl -sL http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz | tar xz

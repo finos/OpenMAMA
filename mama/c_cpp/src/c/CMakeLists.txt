@@ -142,3 +142,9 @@ endif()
 install(DIRECTORY mama/ DESTINATION include/mama)
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" DESTINATION include/mama)
 
+# Install any dependant libraries
+if (INSTALL_RUNTIME_DEPENDENCIES)
+	if (WIN32)
+		install (DIRECTORY ${APR_ROOT}/bin/ DESTINATION bin FILES_MATCHING PATTERN "*apr*.dll")
+	endif()
+endif()

@@ -61,20 +61,20 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableValidBrackets)
     const char* baseDir     = "/tmp";
     const char* logfileName = "/test/logfile.log";
     char*       outputStr   = NULL;
-    char        inputString[30];
-    char        expectedStr[30];
+    char        inputString[41];
+    char        expectedStr[41];
 
     environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
-    strncat (inputString, envVar, 9);
-    strncat (inputString, logfileName, 17);
+    strncat (inputString, envVar, 20);
+    strncat (inputString, logfileName, 20);
 
     outputStr = strReplaceEnvironmentVariable (inputString);
 
     expectedStr[0] = '\0';
-    strncat (expectedStr, baseDir, 4);
-    strncat (expectedStr, logfileName, 17);
+    strncat (expectedStr, baseDir, 20);
+    strncat (expectedStr, logfileName, 20);
 
     ASSERT_STREQ (outputStr, expectedStr);
 
@@ -87,20 +87,20 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableValidBracketsAlternative)
     const char* baseDir     = "/tmp";
     const char* logfileName = "/test/logfile.log";
     char*       outputStr   = NULL;
-    char        inputString[30];
-    char        expectedStr[30];
+    char        inputString[41];
+    char        expectedStr[41];
 
     environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
-    strncat (inputString, envVar, 9);
-    strncat (inputString, logfileName, 17);
+    strncat (inputString, envVar, 20);
+    strncat (inputString, logfileName, 20);
 
     outputStr = strReplaceEnvironmentVariable (inputString);
 
     expectedStr[0] = '\0';
-    strncat (expectedStr, baseDir, 4);
-    strncat (expectedStr, logfileName, 17);
+    strncat (expectedStr, baseDir, 20);
+    strncat (expectedStr, logfileName, 20);
 
     ASSERT_STREQ (outputStr, expectedStr);
 
@@ -113,13 +113,13 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableValidMixedBrackets)
     const char* baseDir     = "/tmp";
     const char* logfileName = "/test/logfile.log";
     char*       outputStr   = NULL;
-    char        inputString[30];
+    char        inputString[41];
 
     environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
-    strncat (inputString, envVar, 9);
-    strncat (inputString, logfileName, 17);
+    strncat (inputString, envVar, 20);
+    strncat (inputString, logfileName, 20);
 
     outputStr = strReplaceEnvironmentVariable (inputString);
 
@@ -134,13 +134,13 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableValidMixedBracketsReverse
     const char* baseDir     = "/tmp";
     const char* logfileName = "/test/logfile.log";
     char*       outputStr   = NULL;
-    char        inputString[30];
+    char        inputString[41];
 
     environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
-    strncat (inputString, envVar, 9);
-    strncat (inputString, logfileName, 17);
+    strncat (inputString, envVar, 20);
+    strncat (inputString, logfileName, 20);
 
     outputStr = strReplaceEnvironmentVariable (inputString);
 
@@ -153,10 +153,10 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableNoEnvVar)
 {
     const char* logfileName = "/test/logfile.log";
     char*       outputStr   = NULL;
-    char        inputString[20];
+    char        inputString[41];
 
     inputString[0] = '\0';
-    strncat (inputString, logfileName, 17);
+    strncat (inputString, logfileName, 20);
 
     outputStr = strReplaceEnvironmentVariable (inputString);
 
@@ -177,13 +177,13 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableLargeLogfileStr)
     environment_setVariable("TMPDIR", baseDir);
 
     inputString[0] = '\0';
-    strncat (inputString, envVar, 9);
+    strncat (inputString, envVar, 14);
     strncat (inputString, logfileName, 795);
 
     outputStr = strReplaceEnvironmentVariable (inputString);
 
     expectedStr[0] = '\0';
-    strncat (expectedStr, baseDir, 4);
+    strncat (expectedStr, baseDir, 14);
     strncat (expectedStr, logfileName, 795);
 
     ASSERT_STREQ (outputStr, expectedStr);
@@ -203,13 +203,13 @@ TEST_F (CommonStrutilsTestC, replaceEnvironmentVariableLargePathStr)
     environment_setVariable ("TMPDIR", baseDir);
 
     inputString[0] = '\0';
-    strncat (inputString, envVar, 9);
+    strncat (inputString, envVar, 24);
     strncat (inputString, logfileName,515);
 
     outputStr = strReplaceEnvironmentVariable (inputString);
 
     expectedStr[0] = '\0';
-    strncat (expectedStr, baseDir, 4);
+    strncat (expectedStr, baseDir, 24);
     strncat (expectedStr, logfileName, 515);
 
     ASSERT_STREQ (outputStr, expectedStr);
@@ -223,7 +223,7 @@ TEST_F (CommonStrutilsTestC, replaceMultipleEnvironmentVariableValid)
     const char* baseDir     = "/tmp";
     const char* logfileName = "/test/logfile.log";
     char*       outputStr   = NULL;
-    char        expectedStr[30];
+    char        expectedStr[41];
 
     environment_setVariable("TMPDIR", baseDir);
     environment_setVariable("TMPLOGFILE", logfileName);
@@ -231,8 +231,8 @@ TEST_F (CommonStrutilsTestC, replaceMultipleEnvironmentVariableValid)
     outputStr = strReplaceEnvironmentVariable (envVar);
 
     expectedStr[0] = '\0';
-    strncat (expectedStr, baseDir, 4);
-    strncat (expectedStr, logfileName, 17);
+    strncat (expectedStr, baseDir, 20);
+    strncat (expectedStr, logfileName, 20);
 
     ASSERT_STREQ (outputStr, expectedStr);
 
@@ -247,7 +247,7 @@ TEST_F (CommonStrutilsTestC, replaceMultipleEmbeddedEnvironmentVariableValid)
     const char* secondDir   = "/for";
     const char* logfileName = "/test/logfile.log";
     char*       outputStr   = NULL;
-    char        expectedStr[30];
+    char        expectedStr[41];
 
     environment_setVariable("TMPDIR", baseDirEx);
     environment_setVariable("TMPSECONDDIR", secondDir);
@@ -256,9 +256,9 @@ TEST_F (CommonStrutilsTestC, replaceMultipleEmbeddedEnvironmentVariableValid)
     outputStr = strReplaceEnvironmentVariable (envVar);
 
     expectedStr[0] = '\0';
-    strncat (expectedStr, baseDir, 4);
-    strncat (expectedStr, secondDir, 4);
-    strncat (expectedStr, logfileName, 17);
+    strncat (expectedStr, baseDir, 10);
+    strncat (expectedStr, secondDir, 10);
+    strncat (expectedStr, logfileName, 20);
 
     ASSERT_STREQ (outputStr, expectedStr);
 

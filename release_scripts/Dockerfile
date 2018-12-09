@@ -35,15 +35,15 @@ ADD . $SRC_DIR
 # Run out-of-source builds
 WORKDIR $SRC_DIR/build
 
-# Configure the build. SDKMAN needs bash.
-RUN cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+# Configure the build. SDKMAN needs bash. Note strict-prototypes is temporary for cmake on centos bug with -Werror.
+RUN . /etc/profile && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
           -DBIN_GRADLE=$SDKMAN_DIR/candidates/gradle/current/bin/gradle \
           -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
           -DWITH_JAVA=ON \
           -DWITH_UNITTEST=$WITH_UNITTEST \
           -DINSTALL_RUNTIME_DEPENDENCIES=ON \
-          -DCMAKE_CXX_FLAGS=-Werror \
-          -DCMAKE_C_FLAGS=-Werror \
+          -DCMAKE_CXX_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
+          -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
           ..
 
 # Perform the build and install
