@@ -18,15 +18,11 @@ include_directories(../../../../../../common/c_cpp/src/c)
 add_definitions(-DBRIDGE)
 
 add_library(mamabaseimpl MODULE
-        basebridgefunctions.h
         basedefs.h
         bridge.c
         inbox.c
-        inbox.h
         io.c
-        io.h
         msg.c
-        msg.h
         publisher.c
         queue.c
         subscription.c
