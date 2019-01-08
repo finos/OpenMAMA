@@ -519,6 +519,21 @@ baseBridgeMamaMsgReplyHandleImpl_setInboxName (
 }
 
 mama_status
+baseBridgeMamaMsgImpl_getReplyHandle (
+        msgBridge     msg,
+        void**       replyHandle)
+{
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
+
+    if (NULL == impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    *replyHandle = &impl->mReplyHandle;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
 baseBridgeMamaMsgReplyHandleImpl_getReplyTo (void*  replyHandle,
                                                          char** value)
 {
@@ -610,6 +625,32 @@ baseBridgeMamaMsgImpl_getSerializationBuffer (msgBridge    msg,
 
 }
 
+mama_status
+baseBridgeMamaMsgImpl_getPayloadSize (msgBridge    msg,
+                                      size_t*      size)
+{
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
+
+    if (NULL == impl || NULL == size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    *size = impl->mPayloadSize;
+}
+
+mama_status
+baseBridgeMamaMsgImpl_setPayloadSize (msgBridge    msg,
+                                      size_t       size)
+{
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
+
+    if (NULL == impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    impl->mPayloadSize = size;
+}
 
 /*=========================================================================
   =                  Private implementation functions                     =

@@ -1716,6 +1716,33 @@ MAMAExpBridgeDLL
 extern mama_status
 baseBridgeMamaMsgImpl_getDestination          (msgBridge    msg,
                                                char**       value);
+/**
+ * This will get the bridge message's payload size (the MAMA Message serielized
+ * message length excluding the middleware header.
+ *
+ * @param msg    The bridge message to examine.
+ * @param size   Pointer to populate with the payload size
+ *
+ * @return mama_status indicating whether the method succeeded or failed.
+ */
+MAMAExpBridgeDLL
+extern mama_status
+baseBridgeMamaMsgImpl_getPayloadSize (msgBridge    msg,
+                                      size_t*      size);
+
+/**
+ * This will set the bridge message's payload size (the MAMA Message serielized
+ * message length excluding the middleware header.
+*
+* @param msg    The bridge message to examine.
+* @param type   The new payload size
+*
+* @return mama_status indicating whether the method succeeded or failed.
+*/
+MAMAExpBridgeDLL
+extern mama_status
+baseBridgeMamaMsgImpl_setPayloadSize (msgBridge    msg,
+                                      size_t       size);
 
 /**
  * This will get the bridge's send subject which is currently the topic name.
@@ -1762,6 +1789,19 @@ MAMAExpBridgeDLL
 extern mama_status
 baseBridgeMamaMsgReplyHandleImpl_setInboxName (void*       replyHandle,
                                                const char* value);
+
+/**
+ * This will return an opaque reply handle for the bridge message.
+ *
+ * @param msg           The bridge message to examine.
+ * @param replyHandle   Pointer to populate with the reply handle
+ *
+ * @return mama_status indicating whether the method succeeded or failed.
+ */
+MAMAExpBridgeDLL
+extern mama_status
+baseBridgeMamaMsgImpl_getReplyHandle (msgBridge    msg,
+                                      void**       replyHandle);
 
 /**
  * This will get the reply to URL from the reply handle specified.
