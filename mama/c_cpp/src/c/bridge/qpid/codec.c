@@ -27,9 +27,10 @@
 #include <stdint.h>
 #include <mama/mama.h>
 #include <msgimpl.h>
+#include <mama/integration/bridge/base.h>
 #include "codec.h"
-#include "msg.h"
 #include "msgimpl.h"
+#include "qpiddefs.h"
 
 
 /*=========================================================================
@@ -52,7 +53,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     char*               replyTo         = NULL;
     char*               targetSubject   = NULL;
     mama_status         status          = MAMA_STATUS_OK;
-    qpidMsgType         type            = QPID_MSG_PUB_SUB;
+    baseMsgType         type            = BASE_MSG_PUB_SUB;
 
     if (NULL == bridgeMessage || NULL == target)
     {
@@ -73,9 +74,6 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     }
     else
     {
-        const void*    buffer      = NULL;
-        mama_size_t    bufferLen   = 0;
-
         /* This will extract a serialized version of the payload */
         mamaMsg_getByteBuffer   (target, &buffer, &bufferLen);
 
@@ -85,7 +83,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     }
 
     /* Set the subject for the middleware according to the bridge msg */
-    status = qpidBridgeMamaMsgImpl_getSendSubject (bridgeMessage, &subject);
+    status = baseBridgeMamaMsgImpl_getSendSubject (bridgeMessage, &subject);
     if (MAMA_STATUS_OK != status)
     {
         return status;
@@ -93,7 +91,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     pn_message_set_subject (*protonMessage, subject);
 
     /* Set the URL destination for the middleware according to the bridge msg */
-    status = qpidBridgeMamaMsgImpl_getDestination (bridgeMessage, &destination);
+    status = baseBridgeMamaMsgImpl_getDestination (bridgeMessage, &destination);
     if (MAMA_STATUS_OK != status)
     {
         return status;
@@ -116,7 +114,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     pn_data_enter (properties);
 
     /* Set the message type for the middleware according to the bridge msg */
-    status = qpidBridgeMamaMsgImpl_getMsgType (bridgeMessage, &type);
+    status = baseBridgeMamaMsgImpl_getMsgType (bridgeMessage, &type);
     if (MAMA_STATUS_OK != status)
     {
         return status;
@@ -127,9 +125,9 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
     switch (type)
     {
     /* For inbox requests, set inbox name and reply to URLs */
-    case QPID_MSG_INBOX_REQUEST:
+    case BASE_MSG_INBOX_REQUEST:
 
-        status = qpidBridgeMamaMsgImpl_getInboxName (bridgeMessage, &inboxName);
+        status = baseBridgeMamaMsgImpl_getInboxName (bridgeMessage, &inboxName);
         if (MAMA_STATUS_OK != status)
         {
             return status;
@@ -138,7 +136,7 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
         pn_data_put_string (properties, pn_bytes (strlen(inboxName),
                                                       inboxName));
 
-        status = qpidBridgeMamaMsgImpl_getReplyTo (bridgeMessage, &replyTo);
+        status = baseBridgeMamaMsgImpl_getReplyTo (bridgeMessage, &replyTo);
         if (MAMA_STATUS_OK != status)
         {
             return status;
@@ -149,8 +147,8 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
 
         break;
     /* For inbox responses, set the target subject (e.g. initial for XX) */
-    case QPID_MSG_INBOX_RESPONSE:
-        status = qpidBridgeMamaMsgImpl_getTargetSubject (bridgeMessage,
+    case BASE_MSG_INBOX_RESPONSE:
+        status = baseBridgeMamaMsgImpl_getTargetSubject (bridgeMessage,
                                                          &targetSubject);
         if (MAMA_STATUS_OK != status)
         {
@@ -161,9 +159,9 @@ qpidBridgeMsgCodec_pack (msgBridge      bridgeMessage,
                                                   targetSubject));
         break;
     /* The following message types require no further meta data */
-    case QPID_MSG_TERMINATE:
-    case QPID_MSG_SUB_REQUEST:
-    case QPID_MSG_PUB_SUB:
+    case BASE_MSG_TERMINATE:
+    case BASE_MSG_SUB_REQUEST:
+    case BASE_MSG_PUB_SUB:
     default:
         break;
     }
@@ -182,7 +180,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
     pn_data_t*          properties      = NULL;
     pn_data_t*          body            = NULL;
     mama_status         status          = MAMA_STATUS_OK;
-    qpidMsgType         type            = QPID_MSG_PUB_SUB;
+    baseMsgType         type            = BASE_MSG_PUB_SUB;
     pn_bytes_t          prop;
     pn_atom_t           firstAtom;
 
@@ -219,7 +217,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
         if (firstAtom.u.as_bytes.size == 0)
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "qpidBridgeMamaMsgImpl_unpack(): "
+                      "baseBridgeMamaMsgImpl_unpack(): "
                       "Binary blob of zero length found - not processing");
             return MAMA_STATUS_INVALID_ARG;
         }
@@ -237,7 +235,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
         if (MAMA_STATUS_OK != status)
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "qpidBridgeMamaMsgImpl_unpack(): "
+                      "baseBridgeMamaMsgImpl_unpack(): "
                       "Could not set msg buffer. Cannot unpack (%s).",
                       mamaStatus_stringForStatus (status));
             return status;
@@ -247,7 +245,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
     else
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaMsgImpl_unpack(): "
+                  "baseBridgeMamaMsgImpl_unpack(): "
                   "Unable to unpack data received: incompatible format %s",
                   pn_type_name (firstAtom.type));
     }
@@ -269,21 +267,21 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
     found = pn_data_lookup (properties,QPID_KEY_MSGTYPE);
     if (found)
     {
-        type = (qpidMsgType) pn_data_get_ubyte (properties);
+        type = (baseMsgType) pn_data_get_ubyte (properties);
     }
     else
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaMsgImpl_unpack(): "
+                  "baseBridgeMamaMsgImpl_unpack(): "
                   "Unable to retrieve message type from message");
         return MAMA_STATUS_PLATFORM;
     }
 
-    qpidBridgeMamaMsgImpl_setMsgType (bridgeMessage, type);
+    baseBridgeMamaMsgImpl_setMsgType (bridgeMessage, type);
 
     switch (type)
     {
-    case QPID_MSG_INBOX_REQUEST:
+    case BASE_MSG_INBOX_REQUEST:
 
         /* Move onto inbox name and extract / copy */
         found = pn_data_lookup (properties,QPID_KEY_INBOXNAME);
@@ -294,12 +292,12 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
         else
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "qpidBridgeMamaMsgImpl_unpack(): "
+                      "baseBridgeMamaMsgImpl_unpack(): "
                       "Unable to retrieve inbox name");
             return MAMA_STATUS_PLATFORM;
         }
 
-        status = qpidBridgeMamaMsgImpl_setInboxName (bridgeMessage, prop.start);
+        status = baseBridgeMamaMsgImpl_setInboxName (bridgeMessage, prop.start);
         if (MAMA_STATUS_OK != status)
         {
             return status;
@@ -313,18 +311,18 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
         else
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "qpidBridgeMamaMsgImpl_unpack(): "
+                      "baseBridgeMamaMsgImpl_unpack(): "
                       "Unable to retrieve reply to url");
             return MAMA_STATUS_PLATFORM;
         }
 
-        status = qpidBridgeMamaMsgImpl_setReplyTo (bridgeMessage, prop.start);
+        status = baseBridgeMamaMsgImpl_setReplyTo (bridgeMessage, prop.start);
         if (MAMA_STATUS_OK != status)
         {
             return status;
         }
         break;
-    case QPID_MSG_INBOX_RESPONSE:
+    case BASE_MSG_INBOX_RESPONSE:
 
         found = pn_data_lookup (properties,QPID_KEY_TARGETSUBJECT);
         if (found)
@@ -334,12 +332,12 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
         else
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "qpidBridgeMamaMsgImpl_unpack(): "
+                      "baseBridgeMamaMsgImpl_unpack(): "
                       "Unable to retrieve target container");
             return MAMA_STATUS_PLATFORM;
         }
 
-        status = qpidBridgeMamaMsgImpl_setTargetSubject (bridgeMessage,
+        status = baseBridgeMamaMsgImpl_setTargetSubject (bridgeMessage,
                                                          prop.start);
         if (MAMA_STATUS_OK != status)
         {
@@ -347,9 +345,9 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
         }
         break;
     /* The following message types require no further meta data */
-    case QPID_MSG_TERMINATE:
-    case QPID_MSG_SUB_REQUEST:
-    case QPID_MSG_PUB_SUB:
+    case BASE_MSG_TERMINATE:
+    case BASE_MSG_SUB_REQUEST:
+    case BASE_MSG_PUB_SUB:
     default:
         break;
     }

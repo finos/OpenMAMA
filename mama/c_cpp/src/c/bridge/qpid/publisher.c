@@ -35,13 +35,12 @@
 #include "qpidbridgefunctions.h"
 #include "transport.h"
 #include "qpiddefs.h"
-#include "msg.h"
 #include "codec.h"
-#include "inbox.h"
 #include "publisher.h"
 #include "mama/integration/endpointpool.h"
 #include "qpidcommon.h"
 #include <proton/connection.h>
+#include <mama/integration/bridge/base.h>
 
 /*=========================================================================
  =                Typedefs, structs, enums and globals                   =
@@ -131,7 +130,7 @@ qpidBridgeMamaPublisher_createByIndex (publisherBridge*     result,
     impl->mParent    = parent;
 
     /* Create an underlying bridge message with no parent to be used in sends */
-    status = qpidBridgeMamaMsgImpl_createMsgOnly (&impl->mMamaBridgeMsg);
+    status = baseBridgeMamaMsgImpl_createMsgOnly (&impl->mMamaBridgeMsg);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -244,7 +243,7 @@ qpidBridgeMamaPublisher_destroy (publisherBridge publisher)
     }
     if (NULL != impl->mMamaBridgeMsg)
     {
-        qpidBridgeMamaMsg_destroy (impl->mMamaBridgeMsg, 0);
+        baseBridgeMamaMsg_destroy (impl->mMamaBridgeMsg, 0);
     }
 
     if (NULL != callbacks.onDestroy)
@@ -267,7 +266,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     size_t                  targetCount   = 0;
     size_t                  targetInc     = 0;
     char*                   url           = NULL;
-    qpidMsgType             type          = QPID_MSG_PUB_SUB;
+    baseMsgType             type          = BASE_MSG_PUB_SUB;
     int                     err           = 0;
 
     if (NULL == impl)
@@ -282,13 +281,13 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     }
 
     /* Get the bridge message type if specified already by inbox handlers */
-    qpidBridgeMamaMsgImpl_getMsgType (impl->mMamaBridgeMsg, &type);
+    baseBridgeMamaMsgImpl_getMsgType (impl->mMamaBridgeMsg, &type);
 
     switch (type)
     {
-    case QPID_MSG_INBOX_REQUEST:
+    case BASE_MSG_INBOX_REQUEST:
         /* Use the publisher's default send subject */
-        qpidBridgeMamaMsg_setSendSubject (impl->mMamaBridgeMsg,
+        baseBridgeMamaMsg_setSendSubject (impl->mMamaBridgeMsg,
                                           impl->mSubject,
                                           impl->mSource);
 
@@ -299,16 +298,16 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
                 impl,
                 NULL);
         break;
-    case QPID_MSG_INBOX_RESPONSE:
+    case BASE_MSG_INBOX_RESPONSE:
         /* The url should already be set for inbox responses as the replyTo */
-        qpidBridgeMamaMsgImpl_getDestination (impl->mMamaBridgeMsg, &url);
+        baseBridgeMamaMsgImpl_getDestination (impl->mMamaBridgeMsg, &url);
 
         /* Send out this message to the URL already provided */
         qpidBridgePublisherImpl_enqueueMessageForAddress (msg, url, impl, NULL);
         break;
     default:
         /* Use the publisher's default send subject */
-        qpidBridgeMamaMsg_setSendSubject (impl->mMamaBridgeMsg,
+        baseBridgeMamaMsg_setSendSubject (impl->mMamaBridgeMsg,
                                           impl->mSubject,
                                           impl->mSource);
 
@@ -358,7 +357,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     }
 
     /* Reset the message type for the next publish */
-    qpidBridgeMamaMsgImpl_setMsgType (impl->mMamaBridgeMsg, QPID_MSG_PUB_SUB);
+    baseBridgeMamaMsgImpl_setMsgType (impl->mMamaBridgeMsg, BASE_MSG_PUB_SUB);
 
     return status;
 }
@@ -381,11 +380,11 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
     }
 
     /* Set properties for the outgoing bridge message */
-    qpidBridgeMamaMsgImpl_setMsgType (impl->mMamaBridgeMsg,
-                                      QPID_MSG_INBOX_RESPONSE);
+    baseBridgeMamaMsgImpl_setMsgType (impl->mMamaBridgeMsg,
+                                      BASE_MSG_INBOX_RESPONSE);
 
     /* Target is for MD subscriptions to respond to this particular topic */
-    qpidBridgeMamaMsgImpl_setTargetSubject (impl->mMamaBridgeMsg,
+    baseBridgeMamaMsgImpl_setTargetSubject (impl->mMamaBridgeMsg,
                                             impl->mSubject);
 
     /* Get the incoming bridge message from the mamaMsg */
@@ -401,7 +400,7 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
     }
 
     /* Get properties from the incoming bridge message */
-    status = qpidBridgeMamaMsgImpl_getInboxName (bridgeMsg,
+    status = baseBridgeMamaMsgImpl_getInboxName (bridgeMsg,
                                                  (char**) &inboxSubject);
     if (MAMA_STATUS_OK != status)
     {
@@ -412,7 +411,7 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
         return status;
     }
 
-    status = qpidBridgeMamaMsgImpl_getReplyTo (bridgeMsg, (char**) &replyTo);
+    status = baseBridgeMamaMsgImpl_getReplyTo (bridgeMsg, (char**) &replyTo);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -432,7 +431,7 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
     }
 
     /* Set the send subject to publish onto the inbox subject */
-    status = qpidBridgeMamaMsg_setSendSubject (impl->mMamaBridgeMsg,
+    status = baseBridgeMamaMsg_setSendSubject (impl->mMamaBridgeMsg,
                                                inboxSubject,
                                                impl->mSource);
     if (MAMA_STATUS_OK != status)
@@ -446,7 +445,7 @@ qpidBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
     }
 
     /* Set the destination to the replyTo URL */
-    status = qpidBridgeMamaMsgImpl_setDestination (impl->mMamaBridgeMsg,
+    status = baseBridgeMamaMsgImpl_setDestination (impl->mMamaBridgeMsg,
                                                    replyTo);
     if (MAMA_STATUS_OK != status)
     {
@@ -478,15 +477,15 @@ qpidBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge     publisher,
     }
 
     /* Set properties for the outgoing bridge message */
-    qpidBridgeMamaMsgImpl_setMsgType (impl->mMamaBridgeMsg,
-                                      QPID_MSG_INBOX_RESPONSE);
+    baseBridgeMamaMsgImpl_setMsgType (impl->mMamaBridgeMsg,
+                                      BASE_MSG_INBOX_RESPONSE);
 
     /* Target is for MD subscriptions to respond to this particular topic */
-    qpidBridgeMamaMsgImpl_setTargetSubject (impl->mMamaBridgeMsg,
+    baseBridgeMamaMsgImpl_setTargetSubject (impl->mMamaBridgeMsg,
                                             impl->mSubject);
 
     /* Get properties from the incoming bridge message */
-    status = qpidBridgeMamaMsgReplyHandleImpl_getInboxName (
+    status = baseBridgeMamaMsgReplyHandleImpl_getInboxName (
                      inbox,
                      (char**) &inboxSubject);
     if (MAMA_STATUS_OK != status)
@@ -498,7 +497,7 @@ qpidBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge     publisher,
         return status;
     }
 
-    status = qpidBridgeMamaMsgReplyHandleImpl_getReplyTo (
+    status = baseBridgeMamaMsgReplyHandleImpl_getReplyTo (
                                                 inbox,
                                                 (char**) &replyTo);
     if (MAMA_STATUS_OK != status)
@@ -521,7 +520,7 @@ qpidBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge     publisher,
     }
 
     /* Set the send subject to publish onto the inbox subject */
-    status = qpidBridgeMamaMsg_setSendSubject (impl->mMamaBridgeMsg,
+    status = baseBridgeMamaMsg_setSendSubject (impl->mMamaBridgeMsg,
                                                inboxSubject,
                                                impl->mSource);
     if (MAMA_STATUS_OK != status)
@@ -535,7 +534,7 @@ qpidBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge     publisher,
     }
 
     /* Set the destination to the replyTo URL */
-    status = qpidBridgeMamaMsgImpl_setDestination (impl->mMamaBridgeMsg,
+    status = baseBridgeMamaMsgImpl_setDestination (impl->mMamaBridgeMsg,
                                                    replyTo);
     if (MAMA_STATUS_OK != status)
     {
@@ -570,11 +569,11 @@ qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
 
     /* Get the inbox which you want the publisher to respond to */
     inboxImpl = mamaInboxImpl_getInboxBridge (inbox);
-    replyAddr = qpidBridgeMamaInboxImpl_getReplySubject (inboxImpl);
+    replyAddr = baseBridgeMamaInboxImpl_getReplySubject (inboxImpl);
 
     /* Mark this as being a request from an inbox */
-    status = qpidBridgeMamaMsgImpl_setMsgType (impl->mMamaBridgeMsg,
-                                               QPID_MSG_INBOX_REQUEST);
+    status = baseBridgeMamaMsgImpl_setMsgType (impl->mMamaBridgeMsg,
+                                               BASE_MSG_INBOX_REQUEST);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -585,7 +584,7 @@ qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
     }
 
     /* Update meta data in outgoing message to reflect the inbox name */
-    qpidBridgeMamaMsgImpl_setInboxName (impl->mMamaBridgeMsg,
+    baseBridgeMamaMsgImpl_setInboxName (impl->mMamaBridgeMsg,
                                         replyAddr);
     if (MAMA_STATUS_OK != status)
     {
@@ -597,7 +596,7 @@ qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
     }
 
     /* Update meta data in outgoing message to reflect the reply URL */
-    qpidBridgeMamaMsgImpl_setReplyTo (impl->mMamaBridgeMsg,
+    baseBridgeMamaMsgImpl_setReplyTo (impl->mMamaBridgeMsg,
                                       impl->mTransport->mReplyAddress);
     if (MAMA_STATUS_OK != status)
     {
@@ -609,17 +608,6 @@ qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
     }
 
     return qpidBridgeMamaPublisher_send (publisher, msg);;
-}
-
-mama_status
-qpidBridgeMamaPublisher_sendFromInbox (publisherBridge  publisher,
-                                       mamaInbox        inbox,
-                                       mamaMsg          msg)
-{
-    return qpidBridgeMamaPublisher_sendFromInboxByIndex (publisher,
-                                                         0,
-                                                         inbox,
-                                                         msg);
 }
 
 mama_status
@@ -646,7 +634,7 @@ qpidBridgeMamaPublisher_setUserCallbacks (publisherBridge         publisher,
  =========================================================================*/
 
 void
-qpidBridgePublisherImpl_setMessageType (pn_message_t* message, qpidMsgType type)
+qpidBridgePublisherImpl_setMessageType (pn_message_t* message, baseMsgType type)
 {
     /* Get the properties */
     pn_data_t* properties = pn_message_properties (message);
@@ -691,11 +679,11 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
         return;
     }
 
-    /* Make a copy of the pointer - qpidBridgeMamaMsgImpl_pack may modify */
+    /* Make a copy of the pointer - baseBridgeMamaMsgImpl_pack may modify */
     pnMsg = impl->mQpidRawMsg;
 
     /* Update the address with the current url */
-    qpidBridgeMamaMsgImpl_setDestination (impl->mMamaBridgeMsg, url);
+    baseBridgeMamaMsgImpl_setDestination (impl->mMamaBridgeMsg, url);
 
     /* Pack the provided MAMA message into a proton message */
     qpidBridgeMsgCodec_pack (impl->mMamaBridgeMsg,

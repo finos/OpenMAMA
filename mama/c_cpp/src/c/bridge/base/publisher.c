@@ -9,6 +9,7 @@
 #include <mama/inbox.h>
 #include <mama/publisher.h>
 #include <mama/integration/bridge.h>
+#include <mama/integration/bridge/base.h>
 #include <mama/integration/publisher.h>
 
 

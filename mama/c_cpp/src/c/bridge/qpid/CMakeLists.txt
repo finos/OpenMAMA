@@ -25,22 +25,13 @@ add_library(mamaqpidimpl
             MODULE bridge.c
                    codec.c
                    codec.h
-                   inbox.c
-                   inbox.h
-                   io.c
-                   io.h
-                   msg.c
-                   msg.h
                    publisher.c
                    publisher.h
                    qpidcommon.c
                    qpidcommon.h
                    qpidbridgefunctions.h
                    qpiddefs.h
-                   queue.c
                    subscription.c
-                   subscription.h
-                   timer.c
                    transport.c
                    transport.h)
 

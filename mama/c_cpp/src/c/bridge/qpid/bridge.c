@@ -28,7 +28,6 @@
 #include <mama/version.h>
 #include <timers.h>
 #include <wombat/strutils.h>
-#include "io.h"
 #include "qpidbridgefunctions.h"
 #include "qpiddefs.h"
 
@@ -73,6 +72,11 @@ mama_status qpidBridge_init (mamaBridge bridgeImpl)
     /* Will set the bridge's compile time MAMA version */
     MAMA_SET_BRIDGE_COMPILE_TIME_VERSION(QPID_BRIDGE_NAME);
 
+    /* Enable extending of the base bridge implementation */
+    mamaBridgeImpl_setReadOnlyProperty (bridgeImpl,
+                                        MAMA_PROP_EXTENDS_BASE_BRIDGE,
+                                        "true");
+
     /* Ensure that the qpid bridge is defined as not deferring entitlements */
     status = mamaBridgeImpl_setReadOnlyProperty (bridgeImpl,
                                                  MAMA_PROP_BARE_ENT_DEFERRED,
@@ -95,129 +99,6 @@ mama_status qpidBridge_init (mamaBridge bridgeImpl)
     }
 
     return status;
-}
-
-mama_status
-qpidBridge_open (mamaBridge bridgeImpl)
-{
-    mama_status         status  = MAMA_STATUS_OK;
-    qpidBridgeClosure*  closure = NULL;
-    mamaBridgeImpl*     bridge  = (mamaBridgeImpl*) bridgeImpl;
-
-    wsocketstartup();
-
-    if (NULL == bridgeImpl)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-
-    /* Create the bridge impl container */
-    closure = (qpidBridgeClosure*) calloc(1, sizeof(qpidBridgeClosure));
-    if (NULL == closure)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridge_open(): Could not allocate bridge structure.");
-        return MAMA_STATUS_NOMEM;
-    }
-    mamaBridgeImpl_setClosure(bridgeImpl, closure);
-
-    /* Create the default event queue */
-    status = mamaQueue_create (&bridge->mDefaultEventQueue, bridgeImpl);
-    if (MAMA_STATUS_OK != status)
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridge_open(): Failed to create QPID queue (%s).",
-                  mamaStatus_stringForStatus (status));
-        return status;
-    }
-
-    /* Set the queue name (used to identify this queue in MAMA stats) */
-    mamaQueue_setQueueName (bridge->mDefaultEventQueue,
-                            QPID_DEFAULT_QUEUE_NAME);
-
-    /* Create the timer heap */
-    if (0 != createTimerHeap (&closure->mTimerHeap))
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridge_open(): Failed to initialize timers.");
-        return MAMA_STATUS_PLATFORM;
-    }
-
-    /* Start the dispatch timer heap which will create a new thread */
-    if (0 != startDispatchTimerHeap (closure->mTimerHeap))
-    {
-        mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridge_open(): Failed to start timer thread.");
-        return MAMA_STATUS_PLATFORM;
-    }
-
-    /* Start the io thread */
-    qpidBridgeMamaIoImpl_start ((void*)closure);
-
-    return MAMA_STATUS_OK;
-}
-
-mama_status
-qpidBridge_close (mamaBridge bridgeImpl)
-{
-    mama_status         status      = MAMA_STATUS_OK;
-    mamaBridgeImpl*     bridge      = (mamaBridgeImpl*) bridgeImpl;
-    qpidBridgeClosure*  closure     = NULL;
-    wthread_t           timerThread;
-
-    mamaBridgeImpl_getClosure(bridgeImpl, (void**)&closure);
-
-    /* Remove the timer heap */
-    if (NULL != closure->mTimerHeap)
-    {
-        /* The timer heap allows us to access it's thread ID for joining */
-        timerThread = timerHeapGetTid (closure->mTimerHeap);
-        if (0 != destroyHeap (closure->mTimerHeap))
-        {
-            mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "qpidBridge_close(): Failed to destroy QPID timer heap.");
-            status = MAMA_STATUS_PLATFORM;
-        }
-        /* The timer thread expects us to be responsible for terminating it */
-        wthread_join    (timerThread, NULL);
-    }
-    mamaBridgeImpl_setClosure(bridgeImpl, NULL);
-
-    /* Destroy once queue has been emptied */
-    mamaQueue_destroyTimedWait (bridge->mDefaultEventQueue,
-                                QPID_SHUTDOWN_TIMEOUT);
-
-    /* Stop and destroy the io thread */
-    qpidBridgeMamaIoImpl_stop ((void*)closure);
-
-    return status;
-}
-
-mama_status
-qpidBridge_start (mamaQueue defaultEventQueue)
-{
-    if (NULL == defaultEventQueue)
-    {
-      mama_log (MAMA_LOG_LEVEL_FINER,
-                "qpidBridge_start(): defaultEventQueue is NULL");
-      return MAMA_STATUS_NULL_ARG;
-    }
-
-    /* Start the default event queue */
-    return mamaQueue_dispatch (defaultEventQueue);;
-}
-
-mama_status
-qpidBridge_stop (mamaQueue defaultEventQueue)
-{
-    if (NULL == defaultEventQueue)
-    {
-      mama_log (MAMA_LOG_LEVEL_FINER,
-                "qpidBridge_stop(): defaultEventQueue is NULL");
-      return MAMA_STATUS_NULL_ARG;
-    }
-
-    return mamaQueue_stopDispatch (defaultEventQueue);;
 }
 
 const char*
