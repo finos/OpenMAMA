@@ -48,23 +48,6 @@ extern "C" {
  *
  * Requirement: Required
  *
- * @param result The function will populate this mamaBridge* with a reference
- *               to the middleware bridge just created.
- */
-MAMAExpBridgeDLL
-extern void
-qpidBridge_createImpl (mamaBridge* result);
-
-/**
- * Each MAMA bridge created is expected to define its own underlying
- * implementation which is middleware-specific. This object is then tracked
- * within MAMA as a mamaBridge object, and used to access middleware-level
- * implementations of MAMA functions. This function is responsible for creating
- * this object and creating each of the function pointers required to
- * satisfy a MAMA bridge implementation.
- *
- * Requirement: Required
- *
  * @return A mama_status indicating the success or failure of the bridge
  *         initialisation.
  */
@@ -213,23 +196,6 @@ extern mama_status qpidBridgeMamaSubscription_create
                                 void*               closure );
 
 /**
- * This function is not required in the QPID Bridge
- *
- * Requirement:         Optional
- */
-MAMAExpBridgeDLL
-extern mama_status
-qpidBridgeMamaSubscription_createWildCard (
-                                subscriptionBridge* subsc_,
-                                const char*         source,
-                                const char*         symbol,
-                                mamaTransport       transport,
-                                mamaQueue           queue,
-                                mamaMsgCallbacks    callback,
-                                mamaSubscription    subscription,
-                                void*               closure );
-
-/**
  * This will instruct this subscription to be "muted" which means that it will
  * no longer receive updates from any upstream dispatchers.
  *
@@ -278,36 +244,7 @@ qpidBridgeMamaSubscription_isValid (subscriptionBridge bridge);
  */
 MAMAExpBridgeDLL
 extern int
-qpidBridgeMamaSubscription_hasWildcards (subscriptionBridge subscriber);
-
-/**
- * This function is not required in the QPID Bridge
- *
- * Requirement:         Optional
- */
-MAMAExpBridgeDLL
-extern mama_status
-qpidBridgeMamaSubscription_getPlatformError (subscriptionBridge subsc,
-                                             void** error);
-
-/**
- * This function is not required in the QPID Bridge
- *
- * Requirement:         Optional
- */
-MAMAExpBridgeDLL
-extern int
 qpidBridgeMamaSubscription_isTportDisconnected (subscriptionBridge subsc);
-
-/**
- * This function is not required in the QPID Bridge
- *
- * Requirement:         Optional
- */
-MAMAExpBridgeDLL
-extern mama_status
-qpidBridgeMamaSubscription_setTopicClosure (subscriptionBridge subsc,
-                                            void* closure);
 
 /**
  * This function is an alias for qpidBridgeMamaSubscription_mute()
@@ -317,100 +254,6 @@ qpidBridgeMamaSubscription_setTopicClosure (subscriptionBridge subsc,
 MAMAExpBridgeDLL
 extern mama_status
 qpidBridgeMamaSubscription_muteCurrentTopic (subscriptionBridge subsc);
-
-
-/*=========================================================================
-  =                    Functions for the mamaTimer                        =
-  =========================================================================*/
-
-/**
- * This will create a qpid timer object, allocating all required memory and
- * dependencies for its operation.
- *
- * Requirement:              Required
- *
- * @param timer             This is a pointer which the function must populate
- *                          to provide a timer instance up to MAMA for handling.
- * @param nativeQueueHandle This is the name of the *qpidQueue* which is to be
- *                          used with this timer.
- * @param action            This is a callback which is to be fired when each
- *                          timer event is to be fired.
- * @param onTimerDestroyed  This is a callback which is to be fired when this
- *                          timer is to be destroyed.
- * @param interval          The timer period for this timer in seconds.
- * @param parent            This is a reference to the parent MAMA timer.
- * @param closure           This is a reference closure provided to the timer
- *                          during creation.
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-MAMAExpBridgeDLL
-extern mama_status
-qpidBridgeMamaTimer_create (timerBridge* timer,
-                            void*        nativeQueueHandle,
-                            mamaTimerCb  action,
-                            mamaTimerCb  onTimerDestroyed,
-                            mama_f64_t   interval,
-                            mamaTimer    parent,
-                            void*        closure);
-
-/**
- * This will destroy the provided qpid timer object, removing all memory
- * created and destroying any dependencies created during its life cycle.
- *
- * Requirement:      Required
- *
- * @param timer      This is a pointer which the qpid timer to be destroyed
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-MAMAExpBridgeDLL
-extern mama_status
-qpidBridgeMamaTimer_destroy (timerBridge timer);
-
-/**
- * This will reset the provided qpid timer object in the event that parameters
- * change (e.g. a new time interval is provided after creation). This will
- * usually involve destroying and recreating the timer.
- *
- * Requirement:      Required
- *
- *@param timer      This is a pointer which the qpid timer to be reset.
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-MAMAExpBridgeDLL
-extern mama_status
-qpidBridgeMamaTimer_reset (timerBridge timer);
-
-/**
- * This will set a new timer interval for the provided timer which will recur
- * until stopped.
- *
- * Requirement:      Required
- *
- * @param timer      This is a pointer which the qpid timer to be adjusted.
- * @param interval   The new time interval in seconds for this timer.
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-MAMAExpBridgeDLL
-extern mama_status
-qpidBridgeMamaTimer_setInterval (timerBridge timer, mama_f64_t interval);
-
-/**
- * This will return the existing timer interval for the provided timer.
- *
- * Requirement:      Required
- *
- * @param timer      This is a pointer which the qpid timer to be adjusted.
- * @param interval   Pointer to populate with the current time interval
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-MAMAExpBridgeDLL
-extern mama_status
-qpidBridgeMamaTimer_getInterval (timerBridge timer, mama_f64_t* interval);
 
 
 /*=========================================================================
@@ -532,29 +375,6 @@ qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
                                               int               tportIndex,
                                               mamaInbox         inbox,
                                               mamaMsg           msg);
-
-/**
- * This method will be called when MAMA has already created an inbox and now
- * wishes to send a request from it. This method is responsible for sending
- * the message over the middleware in such a way that the receiver can
- * appropriately respond.
- *
- * In qpid, this is done using the properties meta data provided adjacent to the
- * pn_message_t main body.
- *
- * Requirement:      Required
- *
- * @param publisher  This is the qpid publisher implementation to use
- * @param inbox      This is the MAMA inbox to send from
- * @param msg        This is the MAMA message to send
- *
- * @return mama_status indicating whether the method succeeded or failed.
- */
-MAMAExpBridgeDLL
-extern mama_status
-qpidBridgeMamaPublisher_sendFromInbox (publisherBridge publisher,
-                                       mamaInbox       inbox,
-                                       mamaMsg         msg);
 
 /**
  * This method informs the middleware bridge implementation of the callbacks

@@ -201,19 +201,6 @@ qpidBridgeMamaSubscription_create (subscriptionBridge* subscriber,
 }
 
 mama_status
-qpidBridgeMamaSubscription_createWildCard (subscriptionBridge*     subscriber,
-                                           const char*             source,
-                                           const char*             symbol,
-                                           mamaTransport           transport,
-                                           mamaQueue               queue,
-                                           mamaMsgCallbacks        callback,
-                                           mamaSubscription        subscription,
-                                           void*                   closure)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
 qpidBridgeMamaSubscription_mute (subscriptionBridge subscriber)
 {
     qpidSubscription* impl = (qpidSubscription*) subscriber;
@@ -317,19 +304,6 @@ qpidBridgeMamaSubscription_isValid (subscriptionBridge subscriber)
 }
 
 int
-qpidBridgeMamaSubscription_hasWildcards (subscriptionBridge subscriber)
-{
-    return 0;
-}
-
-mama_status
-qpidBridgeMamaSubscription_getPlatformError (subscriptionBridge subscriber,
-                                             void** error)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-int
 qpidBridgeMamaSubscription_isTportDisconnected (subscriptionBridge subscriber)
 {
 	qpidSubscription* impl = (qpidSubscription*) subscriber;
@@ -338,13 +312,6 @@ qpidBridgeMamaSubscription_isTportDisconnected (subscriptionBridge subscriber)
 		return MAMA_STATUS_NULL_ARG;
 	}
     return impl->mIsTportDisconnected;
-}
-
-mama_status
-qpidBridgeMamaSubscription_setTopicClosure (subscriptionBridge subscriber,
-                                            void* closure)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
 }
 
 mama_status
