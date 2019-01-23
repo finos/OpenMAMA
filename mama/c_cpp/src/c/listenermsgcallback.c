@@ -390,8 +390,13 @@ listenerMsgCallback_processMsg( listenerMsgCallback callback, mamaMsg msg,
         case MAMA_MSG_TYPE_BOOK_RECAP:
             if(!isDqEnabled)
             {
-               mamaSubscription_stopWaitForResponse (subscription, ctx);
+               if (!mamaSubscription_getAcceptMultipleInitials (subscription))
+               {
+                    mamaSubscription_stopWaitForResponse (subscription, ctx);
+               }
+
                mamaSubscription_forwardMsg(subscription, msg);
+
             }
             break;
         case MAMA_MSG_TYPE_REFRESH:
