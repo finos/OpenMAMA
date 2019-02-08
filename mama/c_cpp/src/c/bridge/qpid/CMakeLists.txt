@@ -39,6 +39,7 @@ if(WIN32)
     target_link_libraries(mamaqpidimpl
                           wombatcommon
                           mama
+                          mamabaseimpl
                           ${PROTON_LIBRARIES}
                           ${LIBEVENT_LIBRARIES}
                           uuid
@@ -57,6 +58,7 @@ elseif(UNIX)
     target_link_libraries(mamaqpidimpl
                           wombatcommon
                           mama
+                          mamabaseimpl
                           ${PROTON_LIBRARIES}
                           ${LIBEVENT_LIBRARIES}
                           ${UUID_LIBRARIES})

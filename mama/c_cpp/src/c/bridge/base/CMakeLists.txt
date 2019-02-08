@@ -17,7 +17,7 @@ include_directories(../../../../../../common/c_cpp/src/c)
 
 add_definitions(-DBRIDGE)
 
-add_library(mamabaseimpl MODULE
+add_library(mamabaseimpl SHARED
         basedefs.h
         bridge.c
         inbox.c
