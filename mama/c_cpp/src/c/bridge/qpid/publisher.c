@@ -611,6 +611,17 @@ qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
 }
 
 mama_status
+qpidBridgeMamaPublisher_sendFromInbox (publisherBridge  publisher,
+                                       mamaInbox        inbox,
+                                       mamaMsg          msg)
+{
+    return qpidBridgeMamaPublisher_sendFromInboxByIndex (publisher,
+                                                         0,
+                                                         inbox,
+                                                         msg);
+}
+
+mama_status
 qpidBridgeMamaPublisher_setUserCallbacks (publisherBridge         publisher,
                                           mamaQueue               queue,
                                           mamaPublisherCallbacks* cb,

@@ -73,10 +73,7 @@ baseBridgeMamaPublisher_sendFromInbox (publisherBridge  publisher,
                                        mamaInbox        inbox,
                                        mamaMsg          msg)
 {
-    return baseBridgeMamaPublisher_sendFromInboxByIndex (publisher,
-                                                         0,
-                                                         inbox,
-                                                         msg);
+    return MAMA_STATUS_NOT_IMPLEMENTED;
 }
 
 mama_status

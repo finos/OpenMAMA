@@ -377,6 +377,23 @@ qpidBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
                                               mamaMsg           msg);
 
 /**
+ * This is for sending a request out from an inbox in MAMA
+ *
+ * Requirement:      Required
+ *
+ * @param publisher  This is the qpid publisher implementation to use
+ * @param inbox      This is the MAMA inbox to send from
+ * @param msg        This is the MAMA message to send
+ *
+ * @return mama_status indicating whether the method succeeded or failed.
+ */
+MAMAExpBridgeDLL
+extern mama_status
+qpidBridgeMamaPublisher_sendFromInbox (publisherBridge  publisher,
+                                       mamaInbox        inbox,
+                                       mamaMsg          msg);
+
+/**
  * This method informs the middleware bridge implementation of the callbacks
  * to use when various situations are encountered as defined by
  * mamaPublisherCallbacks.
