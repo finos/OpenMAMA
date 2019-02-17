@@ -242,14 +242,14 @@ public:
 /* Private Classes - Subscription */
 /* ************************************************************************* */
 
-class TestCallback : public MamaSubscriptionCallback
+class TestSubscriptionCallback : public MamaSubscriptionCallback
 {
     // Private member variables
     mamaBridge m_bridge;
 
 public:
     
-    TestCallback(mamaBridge bridge)
+    TestSubscriptionCallback(mamaBridge bridge)
     {
         m_bridge = bridge;
     }
@@ -300,23 +300,23 @@ public:
      }    
 };
 
-class TestCallback_RecreateOnMsg : public MamaSubscriptionCallback
+class TestSubscriptionCallback_RecreateOnMsg : public MamaSubscriptionCallback
 {
     // Private member variables
     mamaBridge m_bridge;
-    TestCallback *m_testCallback;
+    TestSubscriptionCallback *m_testCallback;
     MamaTransport *m_transport;
 
 public:
     
-     TestCallback_RecreateOnMsg(mamaBridge bridge, MamaTransport *transport)
+     TestSubscriptionCallback_RecreateOnMsg(mamaBridge bridge, MamaTransport *transport)
      {
          m_bridge = bridge;
          m_transport = transport;
-         m_testCallback = new TestCallback(bridge);
+         m_testCallback = new TestSubscriptionCallback(bridge);
      }
 
-     virtual ~TestCallback_RecreateOnMsg(void)
+     virtual ~TestSubscriptionCallback_RecreateOnMsg(void)
      {
          if(NULL != m_testCallback)
          {
@@ -395,23 +395,23 @@ public:
      }    
 };
 
-class TestCallback_RecreateOnDestroy : public MamaSubscriptionCallback
+class TestSubscriptionCallback_RecreateOnDestroy : public MamaSubscriptionCallback
 {
     // Private member variables
     mamaBridge m_bridge;
-    TestCallback *m_testCallback;
+    TestSubscriptionCallback *m_testCallback;
     MamaTransport *m_transport;
 
 public:
     
-     TestCallback_RecreateOnDestroy(mamaBridge bridge, MamaTransport *transport)
+     TestSubscriptionCallback_RecreateOnDestroy(mamaBridge bridge, MamaTransport *transport)
      {
          m_bridge = bridge;
          m_transport = transport;
-         m_testCallback = new TestCallback(bridge);
+         m_testCallback = new TestSubscriptionCallback(bridge);
      }
 
-     virtual ~TestCallback_RecreateOnDestroy(void)
+     virtual ~TestSubscriptionCallback_RecreateOnDestroy(void)
      {
          if(NULL != m_testCallback)
          {
@@ -787,6 +787,9 @@ TEST_F(MamaSubscriptionTest, DISABLED_BasicSubscription)
             // Create the subscription
             basicSubscription->createBasic(m_transport, queue, testCallback, getTopic());
 
+            // Confirm transport is associated with subscription
+            ASSERT_TRUE(m_transport == basicSubscription->getTransport());
+
             // Process messages until the first message is received
             Mama::start(m_bridge);
 
@@ -903,7 +906,7 @@ TEST_F(MamaSubscriptionTest, BasicSubscriptionRecreateOnMsg)
 TEST_F(MamaSubscriptionTest, Subscription)
 {
     // Create a callback object
-    TestCallback *testCallback = new TestCallback(m_bridge);
+    TestSubscriptionCallback *testCallback = new TestSubscriptionCallback(m_bridge);
     if(NULL != testCallback)
     {
         // Allocate a subscription
@@ -936,7 +939,7 @@ TEST_F(MamaSubscriptionTest, Subscription)
 TEST_F(MamaSubscriptionTest, Subscription)
 {
     // Create a callback object
-    TestCallback *testCallback = new TestCallback(m_bridge);
+    TestSubscriptionCallback *testCallback = new TestSubscriptionCallback(m_bridge);
     if(NULL != testCallback)
     {
         // Allocate a subscription
@@ -969,7 +972,7 @@ TEST_F(MamaSubscriptionTest, Subscription)
 TEST_F(MamaSubscriptionTest, Subscription_RecreateOnDestroy)
 {
     // Create a callback object
-    TestCallback_RecreateOnDestroy *testCallback = new TestCallback_RecreateOnDestroy(m_bridge, m_transport);
+    TestSubscriptionCallback_RecreateOnDestroy *testCallback = new TestSubscriptionCallback_RecreateOnDestroy(m_bridge, m_transport);
     if(NULL != testCallback)
     {
         // Allocate a subscription
@@ -1002,7 +1005,7 @@ TEST_F(MamaSubscriptionTest, Subscription_RecreateOnDestroy)
 TEST_F(MamaSubscriptionTest, Subscription_RecreateOnMsg)
 {
     // Create a callback object
-    TestCallback_RecreateOnMsg *testCallback = new TestCallback_RecreateOnMsg(m_bridge, m_transport);
+    TestSubscriptionCallback_RecreateOnMsg *testCallback = new TestSubscriptionCallback_RecreateOnMsg(m_bridge, m_transport);
     if(NULL != testCallback)
     {
         // Allocate a subscription
