@@ -38,6 +38,9 @@ install(TARGETS UnitTestCommonC
 # Install any dependant libraries
 if (INSTALL_RUNTIME_DEPENDENCIES)
 	if (GTEST_ROOT)
-		install (DIRECTORY ${GTEST_ROOT}/lib/ DESTINATION bin FILES_MATCHING PATTERN "*.dll")
+		if (WIN32)
+			install (DIRECTORY ${GTEST_ROOT}/lib/ DESTINATION bin FILES_MATCHING PATTERN "*gtest*.dll")
+			install (DIRECTORY ${GTEST_ROOT}/bin/ DESTINATION bin FILES_MATCHING PATTERN "*gtest*.dll")
+		endif()
 	endif()
 endif()

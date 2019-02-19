@@ -174,7 +174,7 @@ nunit_console = "C:\\Program Files (x86)\\NUnit 2.6.4\\bin\\nunit-console.exe"
 if not os.path.exists(nunit_console):
     nunit_console = "nunit3-console"
 
-if os.name == "nt":
+if os.name == "nt" and ('PLATFORM' not in env_var or env_var['PLATFORM'] == 'x64'):
     env_var["middlewareName"] = middleware
     env_var["transportName"] = "pub"
     run_command(args=[

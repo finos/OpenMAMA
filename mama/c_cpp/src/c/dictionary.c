@@ -829,11 +829,8 @@ checkForDuplicateNames (mamaDictionary dictionary)
 
 char* copyString (const char*  str)
 {
-    /* Windows does not like strdup */
-    size_t len = strlen (str) + 1;
-    char* result = (char*)calloc (len, sizeof (char));
-    strncpy (result, str, len);
-    return result;
+    // Legacy abstraction from when windows did not like strdup, so just strdup now
+    return strdup(str);
 }
 
 void checkFree (char**  str)

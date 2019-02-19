@@ -46,9 +46,7 @@ mamaFieldDescriptor_create (
     if(name == NULL) name = "";
     impl->mFid  = fid;
     impl->mType = wType;
-    impl->mName = (char *)calloc (strlen (name)+1, sizeof (char));
-    strncpy (impl->mName, name, strlen (name) + 1);
-
+    impl->mName = strdup(name);
     if (!impl->mName)
     {
         free(impl);
