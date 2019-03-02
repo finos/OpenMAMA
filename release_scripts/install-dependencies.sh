@@ -94,7 +94,7 @@ then
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
-# Ubuntu 16 specific software
+# Ubuntu 14 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "14" ]
 then
     apt-get install -y openjdk-7-jdk libssl-dev
@@ -123,7 +123,7 @@ source "$SDKMAN_DIR/bin/sdkman-init.sh"
 sdk install gradle
 
 # Install FPM for packaging up
-gem install fpm
+gem install -N fpm
 
 # Gtest is best always getting built
 cd $DEPS_DIR
