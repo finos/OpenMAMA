@@ -27,6 +27,7 @@
   =                             Includes                                  =
   =========================================================================*/
 
+#include <mama/integration/bridge/base.h>
 #include "../../bridge.h"
 
 
@@ -50,7 +51,7 @@ extern "C" {
  */
 void
 qpidBridgePublisherImpl_setMessageType (pn_message_t*   message,
-                                        qpidMsgType     type);
+                                        baseMsgType     type);
 
 
 #if defined(__cplusplus)

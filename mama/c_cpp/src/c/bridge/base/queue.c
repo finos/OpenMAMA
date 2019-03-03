@@ -1,51 +1,31 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
-
-
 /*=========================================================================
   =                             Includes                                  =
   =========================================================================*/
 
 #include <mama/mama.h>
 #include <wombat/queue.h>
-#include <bridge.h>
-#include "queueimpl.h"
-#include "qpidbridgefunctions.h"
+#include <mama/integration/bridge.h>
+#include <mama/integration/queue.h>
+#include <mama/integration/bridge/base.h>
 
 
 /*=========================================================================
   =                Typedefs, structs, enums and globals                   =
   =========================================================================*/
 
-typedef struct qpidQueueBridge {
-    mamaQueue          mParent;
-    wombatQueue        mQueue;
-    uint8_t            mHighWaterFired;
-    size_t             mHighWatermark;
-    size_t             mLowWatermark;
-    uint8_t            mIsDispatching;
-    mamaQueueEnqueueCB mEnqueueCallback;
-    void*              mEnqueueClosure;
-    wthread_mutex_t    mDispatchLock;
-} qpidQueueBridge;
+typedef struct baseQueueBridge {
+    mamaQueue               mParent;
+    wombatQueue             mQueue;
+    uint8_t                 mHighWaterFired;
+    size_t                  mHighWatermark;
+    size_t                  mLowWatermark;
+    uint8_t                 mIsDispatching;
+    mamaQueueEnqueueCB      mEnqueueCallback;
+    void*                   mEnqueueClosure;
+    wthread_mutex_t         mDispatchLock;
+    void*                   mClosure;
+    baseQueueClosureCleanup mClosureCleanupCb;
+} baseQueueBridge;
 
 
 /*=========================================================================
@@ -75,10 +55,10 @@ typedef struct qpidQueueBridge {
  * functions. If it determines that it should, it invokes the relevant callback
  * itself.
  *
- * @param impl The qpid queue bridge implementation to check.
+ * @param impl The queue bridge implementation to check.
  */
 static void
-qpidBridgeMamaQueueImpl_checkWatermarks (qpidQueueBridge* impl);
+baseBridgeMamaQueueImpl_checkWatermarks (baseQueueBridge* impl);
 
 
 /*=========================================================================
@@ -86,11 +66,11 @@ qpidBridgeMamaQueueImpl_checkWatermarks (qpidQueueBridge* impl);
   =========================================================================*/
 
 mama_status
-qpidBridgeMamaQueue_create (queueBridge* queue,
+baseBridgeMamaQueue_create (queueBridge* queue,
                             mamaQueue    parent)
 {
     /* Null initialize the queue to be created */
-    qpidQueueBridge*    impl                = NULL;
+    baseQueueBridge*    impl                = NULL;
     wombatQueueStatus   underlyingStatus    = WOMBAT_QUEUE_OK;
 
     if (queue == NULL || parent == NULL)
@@ -101,12 +81,12 @@ qpidBridgeMamaQueue_create (queueBridge* queue,
     /* Null initialize the queueBridge */
     *queue = NULL;
 
-    /* Allocate memory for the qpid queue implementation */
-    impl = (qpidQueueBridge*) calloc (1, sizeof (qpidQueueBridge));
+    /* Allocate memory for the queue implementation */
+    impl = (baseQueueBridge*) calloc (1, sizeof (baseQueueBridge));
     if (NULL == impl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_create (): "
+                  "baseBridgeMamaQueue_create (): "
                   "Failed to allocate memory for queue.");
         return MAMA_STATUS_NOMEM;
     }
@@ -122,7 +102,7 @@ qpidBridgeMamaQueue_create (queueBridge* queue,
     if (WOMBAT_QUEUE_OK != underlyingStatus)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_create (): "
+                  "baseBridgeMamaQueue_create (): "
                   "Failed to allocate memory for underlying queue.");
         free (impl);
         return MAMA_STATUS_NOMEM;
@@ -135,7 +115,7 @@ qpidBridgeMamaQueue_create (queueBridge* queue,
     if (WOMBAT_QUEUE_OK != underlyingStatus)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_create (): "
+                  "baseBridgeMamaQueue_create (): "
                   "Failed to create underlying queue.");
         wombatQueue_deallocate (impl->mQueue);
         free (impl);
@@ -149,11 +129,11 @@ qpidBridgeMamaQueue_create (queueBridge* queue,
 }
 
 mama_status
-qpidBridgeMamaQueue_create_usingNative (queueBridge* queue,
+baseBridgeMamaQueue_create_usingNative (queueBridge* queue,
                                         mamaQueue    parent,
                                         void*        nativeQueue)
 {
-    qpidQueueBridge* impl = NULL;
+    baseQueueBridge* impl = NULL;
     if (NULL == queue || NULL == parent || NULL == nativeQueue)
     {
         return MAMA_STATUS_NULL_ARG;
@@ -162,12 +142,12 @@ qpidBridgeMamaQueue_create_usingNative (queueBridge* queue,
     /* Null initialize the queueBridge to be returned */
     *queue = NULL;
 
-    /* Allocate memory for the qpid bridge implementation */
-    impl = (qpidQueueBridge*) calloc (1, sizeof (qpidQueueBridge));
+    /* Allocate memory for the bridge implementation */
+    impl = (baseQueueBridge*) calloc (1, sizeof (baseQueueBridge));
     if (NULL == impl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_create_usingNative (): "
+                  "baseBridgeMamaQueue_create_usingNative (): "
                   "Failed to allocate memory for queue.");
         return MAMA_STATUS_NOMEM;
     }
@@ -185,10 +165,10 @@ qpidBridgeMamaQueue_create_usingNative (queueBridge* queue,
 }
 
 mama_status
-qpidBridgeMamaQueue_destroy (queueBridge queue)
+baseBridgeMamaQueue_destroy (queueBridge queue)
 {
     wombatQueueStatus   status  = WOMBAT_QUEUE_OK;
-    qpidQueueBridge*    impl    = (qpidQueueBridge*) queue;
+    baseQueueBridge*    impl    = (baseQueueBridge*) queue;
 
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
@@ -198,13 +178,19 @@ qpidBridgeMamaQueue_destroy (queueBridge queue)
     status = wombatQueue_destroy    (impl->mQueue);
     wthread_mutex_unlock            (&impl->mDispatchLock);
 
-    /* Free the qpidQueueImpl container struct */
+    /* Give any queue specific resources a chance to clean up */
+    if (NULL != impl->mClosureCleanupCb && NULL != impl->mClosure)
+    {
+        impl->mClosureCleanupCb (impl->mClosure);
+    }
+
+    /* Free the impl container struct */
     free (impl);
 
     if (WOMBAT_QUEUE_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_WARN,
-                  "qpidBridgeMamaQueue_destroy (): "
+                  "baseBridgeMamaQueue_destroy (): "
                   "Failed to destroy wombat queue (%d).",
                   status);
         return MAMA_STATUS_PLATFORM;
@@ -214,9 +200,9 @@ qpidBridgeMamaQueue_destroy (queueBridge queue)
 }
 
 mama_status
-qpidBridgeMamaQueue_getEventCount (queueBridge queue, size_t* count)
+baseBridgeMamaQueue_getEventCount (queueBridge queue, size_t* count)
 {
-    qpidQueueBridge* impl       = (qpidQueueBridge*) queue;
+    baseQueueBridge* impl       = (baseQueueBridge*) queue;
     int              countInt   = 0;
 
     if (NULL == count)
@@ -236,10 +222,10 @@ qpidBridgeMamaQueue_getEventCount (queueBridge queue, size_t* count)
 }
 
 mama_status
-qpidBridgeMamaQueue_dispatch (queueBridge queue)
+baseBridgeMamaQueue_dispatch (queueBridge queue)
 {
     wombatQueueStatus   status;
-    qpidQueueBridge*    impl = (qpidQueueBridge*) queue;
+    baseQueueBridge*    impl = (baseQueueBridge*) queue;
 
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
@@ -256,7 +242,7 @@ qpidBridgeMamaQueue_dispatch (queueBridge queue)
     do
     {
         /* Check the watermarks to see if thresholds have been breached */
-        qpidBridgeMamaQueueImpl_checkWatermarks (impl);
+        baseBridgeMamaQueueImpl_checkWatermarks (impl);
 
         /*
          * Perform a dispatch with a timeout to allow the dispatching process
@@ -277,7 +263,7 @@ qpidBridgeMamaQueue_dispatch (queueBridge queue)
     if (WOMBAT_QUEUE_OK != status && WOMBAT_QUEUE_TIMEOUT != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_dispatch (): "
+                  "baseBridgeMamaQueue_dispatch (): "
                   "Failed to dispatch Qpid Middleware queue (%d). ",
                   status);
         return MAMA_STATUS_PLATFORM;
@@ -287,16 +273,16 @@ qpidBridgeMamaQueue_dispatch (queueBridge queue)
 }
 
 mama_status
-qpidBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout)
+baseBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout)
 {
     wombatQueueStatus   status;
-    qpidQueueBridge*    impl        = (qpidQueueBridge*) queue;
+    baseQueueBridge*    impl        = (baseQueueBridge*) queue;
 
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
 
     /* Check the watermarks to see if thresholds have been breached */
-    qpidBridgeMamaQueueImpl_checkWatermarks (impl);
+    baseBridgeMamaQueueImpl_checkWatermarks (impl);
 
     /* Attempt to dispatch the queue with a timeout once */
     status = wombatQueue_timedDispatch (impl->mQueue,
@@ -308,7 +294,7 @@ qpidBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout)
     if (WOMBAT_QUEUE_OK != status && WOMBAT_QUEUE_TIMEOUT != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_timedDispatch (): "
+                  "baseBridgeMamaQueue_timedDispatch (): "
                   "Failed to dispatch Qpid Middleware queue (%d).",
                   status);
         return MAMA_STATUS_PLATFORM;
@@ -319,16 +305,16 @@ qpidBridgeMamaQueue_timedDispatch (queueBridge queue, uint64_t timeout)
 }
 
 mama_status
-qpidBridgeMamaQueue_dispatchEvent (queueBridge queue)
+baseBridgeMamaQueue_dispatchEvent (queueBridge queue)
 {
     wombatQueueStatus   status;
-    qpidQueueBridge*    impl = (qpidQueueBridge*) queue;
+    baseQueueBridge*    impl = (baseQueueBridge*) queue;
 
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
 
     /* Check the watermarks to see if thresholds have been breached */
-    qpidBridgeMamaQueueImpl_checkWatermarks (impl);
+    baseBridgeMamaQueueImpl_checkWatermarks (impl);
 
     /* Attempt to dispatch the queue with a timeout once */
     status = wombatQueue_dispatch (impl->mQueue, NULL, NULL);
@@ -337,7 +323,7 @@ qpidBridgeMamaQueue_dispatchEvent (queueBridge queue)
     if (WOMBAT_QUEUE_OK != status && WOMBAT_QUEUE_TIMEOUT != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_dispatchEvent (): "
+                  "baseBridgeMamaQueue_dispatchEvent (): "
                   "Failed to dispatch Qpid Middleware queue (%d).",
                   status);
         return MAMA_STATUS_PLATFORM;
@@ -347,12 +333,12 @@ qpidBridgeMamaQueue_dispatchEvent (queueBridge queue)
 }
 
 mama_status
-qpidBridgeMamaQueue_enqueueEvent (queueBridge        queue,
+baseBridgeMamaQueue_enqueueEvent (queueBridge        queue,
                                   mamaQueueEventCB   callback,
                                   void*              closure)
 {
     wombatQueueStatus   status;
-    qpidQueueBridge*    impl = (qpidQueueBridge*) queue;
+    baseQueueBridge*    impl = (baseQueueBridge*) queue;
 
     if (NULL == callback)
         return MAMA_STATUS_NULL_ARG;
@@ -376,7 +362,7 @@ qpidBridgeMamaQueue_enqueueEvent (queueBridge        queue,
     if (WOMBAT_QUEUE_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaQueue_enqueueEvent (): "
+                  "baseBridgeMamaQueue_enqueueEvent (): "
                   "Failed to enqueueEvent (%d). Callback: %p; Closure: %p",
                   status, callback, closure);
         return MAMA_STATUS_PLATFORM;
@@ -386,9 +372,9 @@ qpidBridgeMamaQueue_enqueueEvent (queueBridge        queue,
 }
 
 mama_status
-qpidBridgeMamaQueue_stopDispatch (queueBridge queue)
+baseBridgeMamaQueue_stopDispatch (queueBridge queue)
 {
-    qpidQueueBridge* impl = (qpidQueueBridge*) queue;
+    baseQueueBridge* impl = (baseQueueBridge*) queue;
 
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
@@ -400,11 +386,11 @@ qpidBridgeMamaQueue_stopDispatch (queueBridge queue)
 }
 
 mama_status
-qpidBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
+baseBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
                                         mamaQueueEnqueueCB callback,
                                         void*              closure)
 {
-    qpidQueueBridge* impl   = (qpidQueueBridge*) queue;
+    baseQueueBridge* impl   = (baseQueueBridge*) queue;
 
     if (NULL == callback)
     {
@@ -421,9 +407,9 @@ qpidBridgeMamaQueue_setEnqueueCallback (queueBridge        queue,
 }
 
 mama_status
-qpidBridgeMamaQueue_removeEnqueueCallback (queueBridge queue)
+baseBridgeMamaQueue_removeEnqueueCallback (queueBridge queue)
 {
-    qpidQueueBridge* impl = (qpidQueueBridge*) queue;
+    baseQueueBridge* impl = (baseQueueBridge*) queue;
 
     /* Perform null checks and return if null arguments provided */
     CHECK_QUEUE(impl);
@@ -436,10 +422,10 @@ qpidBridgeMamaQueue_removeEnqueueCallback (queueBridge queue)
 }
 
 mama_status
-qpidBridgeMamaQueue_getNativeHandle (queueBridge queue,
+baseBridgeMamaQueue_getNativeHandle (queueBridge queue,
                                      void**      nativeHandle)
 {
-    qpidQueueBridge* impl = (qpidQueueBridge*) queue;
+    baseQueueBridge* impl = (baseQueueBridge*) queue;
 
     if (NULL == nativeHandle)
     {
@@ -456,10 +442,10 @@ qpidBridgeMamaQueue_getNativeHandle (queueBridge queue,
 }
 
 mama_status
-qpidBridgeMamaQueue_setHighWatermark (queueBridge queue,
+baseBridgeMamaQueue_setHighWatermark (queueBridge queue,
                                       size_t      highWatermark)
 {
-    qpidQueueBridge* impl = (qpidQueueBridge*) queue;
+    baseQueueBridge* impl = (baseQueueBridge*) queue;
 
     if (0 == highWatermark)
     {
@@ -475,10 +461,10 @@ qpidBridgeMamaQueue_setHighWatermark (queueBridge queue,
 }
 
 mama_status
-qpidBridgeMamaQueue_setLowWatermark (queueBridge    queue,
+baseBridgeMamaQueue_setLowWatermark (queueBridge    queue,
                                      size_t         lowWatermark)
 {
-    qpidQueueBridge* impl = (qpidQueueBridge*) queue;
+    baseQueueBridge* impl = (baseQueueBridge*) queue;
 
     if (0 == lowWatermark)
     {
@@ -495,16 +481,38 @@ qpidBridgeMamaQueue_setLowWatermark (queueBridge    queue,
 
 
 /*=========================================================================
+  =                  Public implementation functions                      =
+  =========================================================================*/
+
+void
+baseBridgeMamaQueueImpl_setClosure (queueBridge              queue,
+                                    void*                    closure,
+                                    baseQueueClosureCleanup  callback)
+{
+    baseQueueBridge* impl = (baseQueueBridge*) queue;
+    impl->mClosure          = closure;
+    impl->mClosureCleanupCb = callback;
+}
+
+void*
+baseBridgeMamaQueueImpl_getClosure (queueBridge              queue)
+{
+    baseQueueBridge* impl = (baseQueueBridge*) queue;
+    return impl->mClosure;
+}
+
+
+/*=========================================================================
   =                  Private implementation functions                     =
   =========================================================================*/
 
 void
-qpidBridgeMamaQueueImpl_checkWatermarks (qpidQueueBridge* impl)
+baseBridgeMamaQueueImpl_checkWatermarks (baseQueueBridge* impl)
 {
     size_t              eventCount      =  0;
 
     /* Get the current size of the wombat impl */
-    qpidBridgeMamaQueue_getEventCount      ((queueBridge) impl, &eventCount);
+    baseBridgeMamaQueue_getEventCount      ((queueBridge) impl, &eventCount);
 
     /* If the high watermark had been fired but the event count is now down */
     if (0 != impl->mHighWaterFired && eventCount == impl->mLowWatermark)

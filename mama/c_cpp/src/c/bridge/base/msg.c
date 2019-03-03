@@ -1,25 +1,3 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
-
-
 /*=========================================================================
   =                             Includes                                  =
   =========================================================================*/
@@ -28,40 +6,42 @@
 #include <stdlib.h>
 #include <string.h>
 #include <mama/mama.h>
+#include <mama/integration/bridge/base.h>
 #include <msgimpl.h>
-#include "qpiddefs.h"
-#include "qpidbridgefunctions.h"
-#include "transport.h"
-#include "msg.h"
+#include <wombat/memnode.h>
+#include "basedefs.h"
 
 
 /*=========================================================================
   =                              Macros                                   =
   =========================================================================*/
 
-#define     QPID_MSG_PROPERTY_LEN     1024
+#define     BRIDGE_MSG_PROPERTY_LEN     1024
 
 
 /*=========================================================================
   =                Typedefs, structs, enums and globals                   =
   =========================================================================*/
 
-typedef struct qpidBridgeMsgReplyHandle
+typedef struct baseBridgeMsgReplyHandle
 {
-    char                        mInboxName[QPID_MSG_PROPERTY_LEN];
-    char                        mReplyTo[QPID_MSG_PROPERTY_LEN];
-} qpidBridgeMsgReplyHandle;
+    char                        mInboxName[BRIDGE_MSG_PROPERTY_LEN];
+    char                        mReplyTo[BRIDGE_MSG_PROPERTY_LEN];
+} baseBridgeMsgReplyHandle;
 
-typedef struct qpidBridgeMsgImpl
+typedef struct baseBridgeMsgImpl
 {
     mamaMsg                     mParent;
-    qpidMsgType                 mMsgType;
+    baseMsgType                 mMsgType;
     uint8_t                     mIsValid;
-    qpidBridgeMsgReplyHandle    mReplyHandle;
-    char                        mTargetSubject[QPID_MSG_PROPERTY_LEN];
-    char                        mSendSubject[QPID_MSG_PROPERTY_LEN];
-    char                        mDestination[QPID_MSG_PROPERTY_LEN];
-} qpidBridgeMsgImpl;
+    baseBridgeMsgReplyHandle    mReplyHandle;
+    char                        mTargetSubject[BRIDGE_MSG_PROPERTY_LEN];
+    char                        mSendSubject[BRIDGE_MSG_PROPERTY_LEN];
+    char                        mDestination[BRIDGE_MSG_PROPERTY_LEN];
+    void*                       mSerializedBuffer;
+    size_t                      mSerializedBufferSize;
+    size_t                      mPayloadSize;
+} baseBridgeMsgImpl;
 
 
 /*=========================================================================
@@ -78,7 +58,7 @@ typedef struct qpidBridgeMsgImpl
  *
  * @return mama_status indicating whether the method succeeded or failed.
  */
-static mama_status qpidBridgeMamaMsgImpl_setStringValue (char*          dest,
+static mama_status baseBridgeMamaMsgImpl_setStringValue (char*          dest,
                                                          const char*    value);
 
 
@@ -88,9 +68,9 @@ static mama_status qpidBridgeMamaMsgImpl_setStringValue (char*          dest,
 
 /* Bridge specific implementations below here */
 mama_status
-qpidBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
+baseBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
 {
-    qpidBridgeMsgImpl* impl   = NULL;
+    baseBridgeMsgImpl* impl   = NULL;
     mama_status        status = MAMA_STATUS_OK;
 
     if (NULL == msg || NULL == parent)
@@ -98,27 +78,27 @@ qpidBridgeMamaMsg_create (msgBridge* msg, mamaMsg parent)
         return MAMA_STATUS_NULL_ARG;
     }
 
-    status = qpidBridgeMamaMsgImpl_createMsgOnly (msg);
+    status = baseBridgeMamaMsgImpl_createMsgOnly (msg);
     if (MAMA_STATUS_OK != status)
     {
     	return status;
     }
 
     /* Cast back to implementation to set parent */
-    impl = (qpidBridgeMsgImpl*) *msg;
+    impl = (baseBridgeMsgImpl*) *msg;
     impl->mParent       = parent;
 
     return MAMA_STATUS_OK;
 }
 
 int
-qpidBridgeMamaMsg_isFromInbox (msgBridge msg)
+baseBridgeMamaMsg_isFromInbox (msgBridge msg)
 {
     if (NULL == msg)
     {
         return -1;
     }
-    if (QPID_MSG_INBOX_REQUEST == ((qpidBridgeMsgImpl*)msg)->mMsgType)
+    if (BASE_MSG_INBOX_REQUEST == ((baseBridgeMsgImpl*)msg)->mMsgType)
     {
         return 1;
     }
@@ -127,7 +107,7 @@ qpidBridgeMamaMsg_isFromInbox (msgBridge msg)
 }
 
 mama_status
-qpidBridgeMamaMsg_destroy (msgBridge msg, int destroyMsg)
+baseBridgeMamaMsg_destroy (msgBridge msg, int destroyMsg)
 {
     if (NULL == msg)
     {
@@ -140,7 +120,7 @@ qpidBridgeMamaMsg_destroy (msgBridge msg, int destroyMsg)
 }
 
 mama_status
-qpidBridgeMamaMsg_destroyMiddlewareMsg (msgBridge msg)
+baseBridgeMamaMsg_destroyMiddlewareMsg (msgBridge msg)
 {
     /*
      * The bridge message is never responsible for the memory associated with
@@ -155,7 +135,7 @@ qpidBridgeMamaMsg_destroyMiddlewareMsg (msgBridge msg)
 }
 
 mama_status
-qpidBridgeMamaMsg_detach (msgBridge msg)
+baseBridgeMamaMsg_detach (msgBridge msg)
 {
     /*
      * The bridge message is never responsible for the memory associated with
@@ -170,7 +150,7 @@ qpidBridgeMamaMsg_detach (msgBridge msg)
 }
 
 mama_status
-qpidBridgeMamaMsg_getPlatformError (msgBridge msg, void** error)
+baseBridgeMamaMsg_getPlatformError (msgBridge msg, void** error)
 {
     /* Null initialize the error return */
     if (NULL != error)
@@ -181,23 +161,23 @@ qpidBridgeMamaMsg_getPlatformError (msgBridge msg, void** error)
 }
 
 mama_status
-qpidBridgeMamaMsg_setSendSubject (msgBridge   msg,
+baseBridgeMamaMsg_setSendSubject (msgBridge   msg,
                                   const char* symbol,
                                   const char* subject)
 {
-    qpidBridgeMsgImpl* impl     = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl* impl     = (baseBridgeMsgImpl*) msg;
     mama_status        status   = MAMA_STATUS_OK;
 
-    if (NULL == impl || NULL == symbol || (NULL == symbol && NULL == subject))
+    if (NULL == impl || NULL == symbol)
     {
         return MAMA_STATUS_NULL_ARG;
     }
 
-    status = qpidBridgeMamaMsgImpl_setStringValue (impl->mSendSubject, symbol);
+    status = baseBridgeMamaMsgImpl_setStringValue (impl->mSendSubject, symbol);
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaMsg_setSendSubject(): "
+                  "baseBridgeMamaMsg_setSendSubject(): "
                   "Could not set send subject: %s",
                   mamaStatus_stringForStatus(status));
         return MAMA_STATUS_PLATFORM;
@@ -215,9 +195,9 @@ qpidBridgeMamaMsg_setSendSubject (msgBridge   msg,
 }
 
 mama_status
-qpidBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result)
+baseBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result)
 {
-    qpidBridgeMsgImpl* impl = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl* impl = (baseBridgeMsgImpl*) msg;
     if (NULL == impl || NULL == result)
     {
         return MAMA_STATUS_NULL_ARG;
@@ -227,29 +207,29 @@ qpidBridgeMamaMsg_getNativeHandle (msgBridge msg, void** result)
 }
 
 mama_status
-qpidBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
+baseBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
 {
-    qpidBridgeMsgImpl*          impl        = (qpidBridgeMsgImpl*) msg;
-    qpidBridgeMsgReplyHandle*   replyHandle = NULL;
+    baseBridgeMsgImpl*          impl        = (baseBridgeMsgImpl*) msg;
+    baseBridgeMsgReplyHandle*   replyHandle = NULL;
 
     if (NULL == impl || NULL == result)
     {
         return MAMA_STATUS_NULL_ARG;
     }
 
-    replyHandle = (qpidBridgeMsgReplyHandle*) calloc (1,
-		                  sizeof (struct qpidBridgeMsgReplyHandle));
+    replyHandle = (baseBridgeMsgReplyHandle*) calloc (1,
+		                  sizeof (struct baseBridgeMsgReplyHandle));
 
     if (NULL == replyHandle)
     {
         return MAMA_STATUS_NOMEM;
     }
 
-    qpidBridgeMamaMsgReplyHandleImpl_setReplyTo (
+    baseBridgeMamaMsgReplyHandleImpl_setReplyTo (
             replyHandle,
             impl->mReplyHandle.mReplyTo);
 
-    qpidBridgeMamaMsgReplyHandleImpl_setInboxName (
+    baseBridgeMamaMsgReplyHandleImpl_setInboxName (
             replyHandle,
             impl->mReplyHandle.mInboxName);
 
@@ -259,28 +239,28 @@ qpidBridgeMamaMsg_duplicateReplyHandle (msgBridge msg, void** result)
 }
 
 mama_status
-qpidBridgeMamaMsg_copyReplyHandle (void* src, void** dest)
+baseBridgeMamaMsg_copyReplyHandle (void* src, void** dest)
 {
-    qpidBridgeMsgReplyHandle* impl        = (qpidBridgeMsgReplyHandle*)src;
-    qpidBridgeMsgReplyHandle* replyHandle = NULL;
+    baseBridgeMsgReplyHandle* impl        = (baseBridgeMsgReplyHandle*)src;
+    baseBridgeMsgReplyHandle* replyHandle = NULL;
 
     if (NULL == impl || NULL == dest)
     {
         return MAMA_STATUS_NULL_ARG;
     }
 
-    replyHandle = (qpidBridgeMsgReplyHandle*) calloc (1,
-		                  sizeof (struct qpidBridgeMsgReplyHandle));
+    replyHandle = (baseBridgeMsgReplyHandle*) calloc (1,
+		                  sizeof (struct baseBridgeMsgReplyHandle));
 
     if (NULL == replyHandle)
     {
         return MAMA_STATUS_NOMEM;
     }
 
-    qpidBridgeMamaMsgReplyHandleImpl_setReplyTo   (replyHandle,
+    baseBridgeMamaMsgReplyHandleImpl_setReplyTo   (replyHandle,
                                                    impl->mReplyTo);
 
-    qpidBridgeMamaMsgReplyHandleImpl_setInboxName (replyHandle,
+    baseBridgeMamaMsgReplyHandleImpl_setInboxName (replyHandle,
                                                    impl->mInboxName);
 
     *dest = replyHandle;
@@ -289,7 +269,7 @@ qpidBridgeMamaMsg_copyReplyHandle (void* src, void** dest)
 }
 
 mama_status
-qpidBridgeMamaMsg_destroyReplyHandle (void* result)
+baseBridgeMamaMsg_destroyReplyHandle (void* result)
 {
     /* What do we do here if the replyHandle is attached to a message? */
     if (NULL == result)
@@ -302,31 +282,31 @@ qpidBridgeMamaMsg_destroyReplyHandle (void* result)
 }
 
 mama_status
-qpidBridgeMamaMsgImpl_setReplyHandle (msgBridge msg, void* handle)
+baseBridgeMamaMsgImpl_setReplyHandle (msgBridge msg, void* handle)
 {
     /* Do we assume we now own the memory of the handle here? Should we
      * free it when we have copied? Or indeed, do we need the copy? */
-    qpidBridgeMsgImpl*        impl        = (qpidBridgeMsgImpl*) msg;
-    qpidBridgeMsgReplyHandle* replyHandle = (qpidBridgeMsgReplyHandle*) handle;
+    baseBridgeMsgImpl*        impl        = (baseBridgeMsgImpl*) msg;
+    baseBridgeMsgReplyHandle* replyHandle = (baseBridgeMsgReplyHandle*) handle;
 
     if (NULL == impl || NULL == replyHandle)
     {
         return MAMA_STATUS_NULL_ARG;
     }
 
-    qpidBridgeMamaMsgReplyHandleImpl_setReplyTo   (&impl->mReplyHandle,
+    baseBridgeMamaMsgReplyHandleImpl_setReplyTo   (&impl->mReplyHandle,
                                                    replyHandle->mReplyTo);
 
-    qpidBridgeMamaMsgReplyHandleImpl_setInboxName (&impl->mReplyHandle,
+    baseBridgeMamaMsgReplyHandleImpl_setInboxName (&impl->mReplyHandle,
                                                    replyHandle->mInboxName);
 
     return MAMA_STATUS_OK;
 }
 
 mama_status
-qpidBridgeMamaMsgImpl_setReplyHandleAndIncrement (msgBridge msg, void* result)
+baseBridgeMamaMsgImpl_setReplyHandleAndIncrement (msgBridge msg, void* result)
 {
-    return qpidBridgeMamaMsgImpl_setReplyHandle (msg, result);
+    return baseBridgeMamaMsgImpl_setReplyHandle (msg, result);
 }
 
 
@@ -334,24 +314,26 @@ qpidBridgeMamaMsgImpl_setReplyHandleAndIncrement (msgBridge msg, void* result)
   =                  Public implementation functions                      =
   =========================================================================*/
 
-mama_status qpidBridgeMamaMsgImpl_isValid (msgBridge    msg,
-                                           uint8_t*     result)
+mama_status
+baseBridgeMamaMsgImpl_isValid (msgBridge    msg,
+                               uint8_t*     result)
 {
-    qpidBridgeMsgImpl* impl   = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl* impl   = (baseBridgeMsgImpl*) msg;
     if (NULL == impl)
     {
-        return MAMA_STATUS_NULL_ARG;
         *result = 0;
+        return MAMA_STATUS_NULL_ARG;
     }
 
     *result = impl->mIsValid;
     return MAMA_STATUS_OK;
 }
 
-mama_status qpidBridgeMamaMsgImpl_setMsgType (msgBridge     msg,
-                                              qpidMsgType   type)
+mama_status
+baseBridgeMamaMsgImpl_setMsgType (msgBridge     msg,
+                                  baseMsgType   type)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
@@ -361,10 +343,11 @@ mama_status qpidBridgeMamaMsgImpl_setMsgType (msgBridge     msg,
     return MAMA_STATUS_OK;
 }
 
-mama_status qpidBridgeMamaMsgImpl_getMsgType (msgBridge     msg,
-                                              qpidMsgType*  type)
+mama_status
+baseBridgeMamaMsgImpl_getMsgType (msgBridge     msg,
+                                  baseMsgType*  type)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
@@ -374,80 +357,86 @@ mama_status qpidBridgeMamaMsgImpl_getMsgType (msgBridge     msg,
     return MAMA_STATUS_OK;
 }
 
-mama_status qpidBridgeMamaMsgImpl_setInboxName (msgBridge   msg,
-                                                const char* value)
+mama_status
+baseBridgeMamaMsgImpl_setInboxName (msgBridge   msg,
+                                    const char* value)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-    return qpidBridgeMamaMsgReplyHandleImpl_setInboxName (
+    return baseBridgeMamaMsgReplyHandleImpl_setInboxName (
                    (void*) &impl->mReplyHandle,
                    value);
 }
 
-mama_status qpidBridgeMamaMsgImpl_getInboxName (msgBridge   msg,
-                                                char**      value)
+mama_status
+baseBridgeMamaMsgImpl_getInboxName (msgBridge   msg,
+                                    char**      value)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
 
-    return qpidBridgeMamaMsgReplyHandleImpl_getInboxName (
+    return baseBridgeMamaMsgReplyHandleImpl_getInboxName (
                    (void*) &impl->mReplyHandle,
                    value);
 }
 
-mama_status qpidBridgeMamaMsgImpl_setReplyTo (msgBridge     msg,
-                                              const char*   value)
+mama_status
+baseBridgeMamaMsgImpl_setReplyTo (msgBridge     msg,
+                                  const char*   value)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-    return qpidBridgeMamaMsgReplyHandleImpl_setReplyTo (
+    return baseBridgeMamaMsgReplyHandleImpl_setReplyTo (
                    (void*) &impl->mReplyHandle,
                    value);
 }
 
-mama_status qpidBridgeMamaMsgImpl_getReplyTo (msgBridge     msg,
-                                              char**        value)
+mama_status
+baseBridgeMamaMsgImpl_getReplyTo (msgBridge     msg,
+                                  char**        value)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-    return qpidBridgeMamaMsgReplyHandleImpl_getReplyTo (
+    return baseBridgeMamaMsgReplyHandleImpl_getReplyTo (
                    (void*) &impl->mReplyHandle,
                    value);
 }
 
-mama_status qpidBridgeMamaMsgImpl_setTargetSubject (msgBridge   msg,
-                                                    const char* value)
+mama_status
+baseBridgeMamaMsgImpl_setTargetSubject (msgBridge   msg,
+                                        const char* value)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-    return qpidBridgeMamaMsgImpl_setStringValue (impl->mTargetSubject,
+    return baseBridgeMamaMsgImpl_setStringValue (impl->mTargetSubject,
                                                  value);
 }
 
-mama_status qpidBridgeMamaMsgImpl_getTargetSubject (msgBridge   msg,
-                                                    char**      value)
+mama_status
+baseBridgeMamaMsgImpl_getTargetSubject (msgBridge   msg,
+                                        char**      value)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
@@ -457,23 +446,25 @@ mama_status qpidBridgeMamaMsgImpl_getTargetSubject (msgBridge   msg,
     return MAMA_STATUS_OK;
 }
 
-mama_status qpidBridgeMamaMsgImpl_setDestination (msgBridge     msg,
-                                                  const char*   value)
+mama_status
+baseBridgeMamaMsgImpl_setDestination (msgBridge     msg,
+                                      const char*   value)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-    return qpidBridgeMamaMsgImpl_setStringValue (impl->mDestination,
+    return baseBridgeMamaMsgImpl_setStringValue (impl->mDestination,
                                                  value);
 }
 
-mama_status qpidBridgeMamaMsgImpl_getDestination (msgBridge     msg,
-                                                  char**        value)
+mama_status
+baseBridgeMamaMsgImpl_getDestination (msgBridge     msg,
+                                      char**        value)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
@@ -483,10 +474,11 @@ mama_status qpidBridgeMamaMsgImpl_getDestination (msgBridge     msg,
     return MAMA_STATUS_OK;
 }
 
-mama_status qpidBridgeMamaMsgImpl_getSendSubject (msgBridge     msg,
-                                                  char**        value)
+mama_status
+baseBridgeMamaMsgImpl_getSendSubject (msgBridge     msg,
+                                      char**        value)
 {
-    qpidBridgeMsgImpl*  impl        = (qpidBridgeMsgImpl*) msg;
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
 
     if (NULL == impl)
     {
@@ -496,10 +488,11 @@ mama_status qpidBridgeMamaMsgImpl_getSendSubject (msgBridge     msg,
     return MAMA_STATUS_OK;
 }
 
-mama_status qpidBridgeMamaMsgReplyHandleImpl_getInboxName (void*  replyHandle,
-                                                           char** value)
+mama_status
+baseBridgeMamaMsgReplyHandleImpl_getInboxName (void*  replyHandle,
+                                               char** value)
 {
-    qpidBridgeMsgReplyHandle* impl = (qpidBridgeMsgReplyHandle*)replyHandle;
+    baseBridgeMsgReplyHandle* impl = (baseBridgeMsgReplyHandle*)replyHandle;
 
     if (NULL == impl)
     {
@@ -510,24 +503,41 @@ mama_status qpidBridgeMamaMsgReplyHandleImpl_getInboxName (void*  replyHandle,
     return MAMA_STATUS_OK;
 }
 
-mama_status qpidBridgeMamaMsgReplyHandleImpl_setInboxName (
+mama_status
+baseBridgeMamaMsgReplyHandleImpl_setInboxName (
                     void*       replyHandle,
                     const char* value)
 {
-    qpidBridgeMsgReplyHandle*  impl   = (qpidBridgeMsgReplyHandle*)replyHandle;
+    baseBridgeMsgReplyHandle*  impl   = (baseBridgeMsgReplyHandle*)replyHandle;
 
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-    return qpidBridgeMamaMsgImpl_setStringValue (impl->mInboxName,
+    return baseBridgeMamaMsgImpl_setStringValue (impl->mInboxName,
                                                  value);
 }
 
-mama_status qpidBridgeMamaMsgReplyHandleImpl_getReplyTo (void*  replyHandle,
+mama_status
+baseBridgeMamaMsgImpl_getReplyHandle (
+        msgBridge     msg,
+        void**       replyHandle)
+{
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
+
+    if (NULL == impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    *replyHandle = &impl->mReplyHandle;
+    return MAMA_STATUS_OK;
+}
+
+mama_status
+baseBridgeMamaMsgReplyHandleImpl_getReplyTo (void*  replyHandle,
                                                          char** value)
 {
-    qpidBridgeMsgReplyHandle* impl = (qpidBridgeMsgReplyHandle*) replyHandle;
+    baseBridgeMsgReplyHandle* impl = (baseBridgeMsgReplyHandle*) replyHandle;
 
     if (NULL == impl)
     {
@@ -538,24 +548,25 @@ mama_status qpidBridgeMamaMsgReplyHandleImpl_getReplyTo (void*  replyHandle,
     return MAMA_STATUS_OK;
 }
 
-mama_status qpidBridgeMamaMsgReplyHandleImpl_setReplyTo (
+mama_status
+baseBridgeMamaMsgReplyHandleImpl_setReplyTo (
                     void*           replyHandle,
                     const char*     value)
 {
-    qpidBridgeMsgReplyHandle*  impl   = (qpidBridgeMsgReplyHandle*) replyHandle;
+    baseBridgeMsgReplyHandle*  impl   = (baseBridgeMsgReplyHandle*) replyHandle;
 
     if (NULL == impl)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-    return qpidBridgeMamaMsgImpl_setStringValue (impl->mReplyTo, value);
+    return baseBridgeMamaMsgImpl_setStringValue (impl->mReplyTo, value);
 }
 
 /* Non-interface version of create which permits null parent */
 mama_status
-qpidBridgeMamaMsgImpl_createMsgOnly (msgBridge* msg)
+baseBridgeMamaMsgImpl_createMsgOnly (msgBridge* msg)
 {
-    qpidBridgeMsgImpl* impl = NULL;
+    baseBridgeMsgImpl* impl = NULL;
 
     if (NULL == msg)
     {
@@ -566,11 +577,11 @@ qpidBridgeMamaMsgImpl_createMsgOnly (msgBridge* msg)
     *msg = NULL;
 
     /* Allocate memory for the implementation struct */
-    impl = (qpidBridgeMsgImpl*) calloc (1, sizeof (qpidBridgeMsgImpl));
+    impl = (baseBridgeMsgImpl*) calloc (1, sizeof (baseBridgeMsgImpl));
     if (NULL == impl)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "qpidBridgeMamaMsg_create (): "
+                  "baseBridgeMamaMsg_create (): "
                   "Failed to allocate memory for bridge message.");
         return MAMA_STATUS_NOMEM;
     }
@@ -584,23 +595,80 @@ qpidBridgeMamaMsgImpl_createMsgOnly (msgBridge* msg)
     return MAMA_STATUS_OK;
 }
 
+mama_status
+baseBridgeMamaMsgImpl_getSerializationBuffer (msgBridge    msg,
+                                              void**       buffer,
+                                              size_t       size)
+{
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
+
+    if (NULL == impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    /* Allocate more memory if necessary */
+    allocateBufferMemory (&impl->mSerializedBuffer,
+                          &impl->mSerializedBufferSize,
+                          size);
+
+    if (size > impl->mSerializedBufferSize)
+    {
+        *buffer = NULL;
+        return MAMA_STATUS_NOMEM;
+    }
+    else
+    {
+        *buffer = impl->mSerializedBuffer;
+        return MAMA_STATUS_OK;
+    }
+
+}
+
+mama_status
+baseBridgeMamaMsgImpl_getPayloadSize (msgBridge    msg,
+                                      size_t*      size)
+{
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
+
+    if (NULL == impl || NULL == size)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+
+    *size = impl->mPayloadSize;
+}
+
+mama_status
+baseBridgeMamaMsgImpl_setPayloadSize (msgBridge    msg,
+                                      size_t       size)
+{
+    baseBridgeMsgImpl*  impl        = (baseBridgeMsgImpl*) msg;
+
+    if (NULL == impl)
+    {
+        return MAMA_STATUS_NULL_ARG;
+    }
+    impl->mPayloadSize = size;
+}
 
 /*=========================================================================
   =                  Private implementation functions                     =
   =========================================================================*/
 
-mama_status qpidBridgeMamaMsgImpl_setStringValue (char*         dest,
-                                                  const char*   value)
+mama_status
+baseBridgeMamaMsgImpl_setStringValue (char*         dest,
+                                      const char*   value)
 {
-    strncpy (dest, value, QPID_MSG_PROPERTY_LEN);
+    strncpy (dest, value, BRIDGE_MSG_PROPERTY_LEN);
 
     /* ISO C - remaining bytes from strncpy are null unless overrun occurred */
-    if (dest[QPID_MSG_PROPERTY_LEN - 1] != '\0')
+    if (dest[BRIDGE_MSG_PROPERTY_LEN - 1] != '\0')
     {
         /* Terminate string to at least make it usable (though truncated) */
-        dest[QPID_MSG_PROPERTY_LEN - 1] = '\0';
+        dest[BRIDGE_MSG_PROPERTY_LEN - 1] = '\0';
         mama_log (MAMA_LOG_LEVEL_WARN,
-                  "qpidBridgeMamaMsgImpl_setStringValue(): "
+                  "baseBridgeMamaMsgImpl_setStringValue(): "
                   "Unable to set value '%s': Property too long for buffer. ",
                   "Truncated to '%s'",
                   value,

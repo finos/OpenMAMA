@@ -1,25 +1,3 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
-
-
 /*=========================================================================
   =                             Includes                                  =
   =========================================================================*/
@@ -30,9 +8,8 @@
 #include <wombat/port.h>
 #include <mama/mama.h>
 #include <bridge.h>
-#include "qpidbridgefunctions.h"
-#include "qpiddefs.h"
-#include "inbox.h"
+#include "basedefs.h"
+#include <mama/integration/bridge/base.h>
 
 
 /*=========================================================================
@@ -46,7 +23,7 @@
   =                Typedefs, structs, enums and globals                   =
   =========================================================================*/
 
-typedef struct qpidInboxImpl
+typedef struct baseInboxImpl
 {
     char                            mInbox[MAX_SUBJECT_LENGTH];
     mamaSubscription                mSubscription;
@@ -55,7 +32,7 @@ typedef struct qpidInboxImpl
     mamaInboxErrorCallback          mErrCB;
     mamaInboxDestroyCallback        mOnInboxDestroyed;
     mamaInbox                       mParent;
-} qpidInboxImpl;
+} baseInboxImpl;
 
 /*=========================================================================
   =                  Private implementation prototypes                    =
@@ -74,7 +51,7 @@ typedef struct qpidInboxImpl
  *                     mamaSubscription_setItemClosure (not used in this case).
  */
 static void MAMACALLTYPE
-qpidBridgeMamaInboxImpl_onMsg       (mamaSubscription    subscription,
+baseBridgeMamaInboxImpl_onMsg       (mamaSubscription    subscription,
                                      mamaMsg             msg,
                                      void*               closure,
                                      void*               itemClosure);
@@ -89,7 +66,7 @@ qpidBridgeMamaInboxImpl_onMsg       (mamaSubscription    subscription,
  *                     function (in this case, the inbox impl).
  */
 static void MAMACALLTYPE
-qpidBridgeMamaInboxImpl_onCreate    (mamaSubscription    subscription,
+baseBridgeMamaInboxImpl_onCreate    (mamaSubscription    subscription,
                                      void*               closure);
 
 /**
@@ -102,7 +79,7 @@ qpidBridgeMamaInboxImpl_onCreate    (mamaSubscription    subscription,
  *                     function (in this case, the inbox impl).
  */
 static void MAMACALLTYPE
-qpidBridgeMamaInboxImpl_onDestroy   (mamaSubscription    subscription,
+baseBridgeMamaInboxImpl_onDestroy   (mamaSubscription    subscription,
                                      void*               closure);
 
 /**
@@ -118,7 +95,7 @@ qpidBridgeMamaInboxImpl_onDestroy   (mamaSubscription    subscription,
  *                      function (in this case, the inbox impl).
  */
 static void MAMACALLTYPE
-qpidBridgeMamaInboxImpl_onError     (mamaSubscription    subscription,
+baseBridgeMamaInboxImpl_onError     (mamaSubscription    subscription,
                                      mama_status         status,
                                      void*               platformError,
                                      const char*         subject,
@@ -130,7 +107,7 @@ qpidBridgeMamaInboxImpl_onError     (mamaSubscription    subscription,
   =========================================================================*/
 
 mama_status
-qpidBridgeMamaInbox_create          (inboxBridge*             bridge,
+baseBridgeMamaInbox_create          (inboxBridge*             bridge,
                                      mamaTransport            transport,
                                      mamaQueue                queue,
                                      mamaInboxMsgCallback     msgCB,
@@ -139,7 +116,7 @@ qpidBridgeMamaInbox_create          (inboxBridge*             bridge,
                                      void*                    closure,
                                      mamaInbox                parent)
 {
-    return qpidBridgeMamaInbox_createByIndex (bridge,
+    return baseBridgeMamaInbox_createByIndex (bridge,
                                               transport,
                                               0,
                                               queue,
@@ -151,7 +128,7 @@ qpidBridgeMamaInbox_create          (inboxBridge*             bridge,
 }
 
 mama_status
-qpidBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
+baseBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
                                      mamaTransport            transport,
                                      int                      tportIndex,
                                      mamaQueue                queue,
@@ -161,7 +138,7 @@ qpidBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
                                      void*                    closure,
                                      mamaInbox                parent)
 {
-    qpidInboxImpl*      impl        = NULL;
+    baseInboxImpl*      impl        = NULL;
     mama_status         status      = MAMA_STATUS_OK;
     mamaMsgCallbacks    cb;
     wUuid               tempUuid;
@@ -172,8 +149,8 @@ qpidBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
         return MAMA_STATUS_NULL_ARG;
     }
 
-    /* Allocate memory for the qpid inbox implementation */
-    impl = (qpidInboxImpl*) calloc (1, sizeof (qpidInboxImpl));
+    /* Allocate memory for the inbox implementation */
+    impl = (baseInboxImpl*) calloc (1, sizeof (baseInboxImpl));
     if (NULL == impl)
     {
        return MAMA_STATUS_NOMEM;
@@ -183,7 +160,7 @@ qpidBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
     if (MAMA_STATUS_OK != status)
     {
        mama_log (MAMA_LOG_LEVEL_ERROR,
-                 "qpidBridgeMamaInbox_createByIndex(): "
+                 "baseBridgeMamaInbox_createByIndex(): "
                  "Failed to allocate subscription ");
        mamaSubscription_deallocate (impl->mSubscription);
        free (impl);
@@ -202,17 +179,17 @@ qpidBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
               uuidStringBuffer);
 
     /* Set the mandatory callbacks for basic subscriptions */
-    cb.onCreate             = &qpidBridgeMamaInboxImpl_onCreate;
-    cb.onError              = &qpidBridgeMamaInboxImpl_onError;
-    cb.onMsg                = &qpidBridgeMamaInboxImpl_onMsg;
-    cb.onDestroy            = &qpidBridgeMamaInboxImpl_onDestroy;
+    cb.onCreate             = &baseBridgeMamaInboxImpl_onCreate;
+    cb.onError              = &baseBridgeMamaInboxImpl_onError;
+    cb.onMsg                = &baseBridgeMamaInboxImpl_onMsg;
+    cb.onDestroy            = &baseBridgeMamaInboxImpl_onDestroy;
 
     /* These callbacks are not used by basic subscriptions */
     cb.onQuality            = NULL;
     cb.onGap                = NULL;
     cb.onRecapRequest       = NULL;
 
-    /* Initialize the remaining members for the qpid inbox implementation */
+    /* Initialize the remaining members for the base inbox implementation */
     impl->mClosure          = closure;
     impl->mMsgCB            = msgCB;
     impl->mErrCB            = errorCB;
@@ -229,7 +206,7 @@ qpidBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
     if (MAMA_STATUS_OK != status)
     {
        mama_log (MAMA_LOG_LEVEL_ERROR,
-                 "qpidBridgeMamaInbox_createByIndex(): "
+                 "baseBridgeMamaInbox_createByIndex(): "
                  "Failed to create subscription ");
        mamaSubscription_deallocate (impl->mSubscription);
        free (impl);
@@ -243,9 +220,9 @@ qpidBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
 }
 
 mama_status
-qpidBridgeMamaInbox_destroy (inboxBridge inbox)
+baseBridgeMamaInbox_destroy (inboxBridge inbox)
 {
-    qpidInboxImpl* impl = (qpidInboxImpl*) inbox;
+    baseInboxImpl* impl = (baseInboxImpl*) inbox;
 
     if (NULL != impl)
     {
@@ -266,9 +243,9 @@ qpidBridgeMamaInbox_destroy (inboxBridge inbox)
   =========================================================================*/
 
 const char*
-qpidBridgeMamaInboxImpl_getReplySubject (inboxBridge inbox)
+baseBridgeMamaInboxImpl_getReplySubject (inboxBridge inbox)
 {
-    qpidInboxImpl* impl = (qpidInboxImpl*) inbox;
+    baseInboxImpl* impl = (baseInboxImpl*) inbox;
     if (NULL == impl)
     {
         return NULL;
@@ -283,12 +260,12 @@ qpidBridgeMamaInboxImpl_getReplySubject (inboxBridge inbox)
 
 /* Inbox bridge callbacks */
 static void MAMACALLTYPE
-qpidBridgeMamaInboxImpl_onMsg (mamaSubscription    subscription,
+baseBridgeMamaInboxImpl_onMsg (mamaSubscription    subscription,
                                mamaMsg             msg,
                                void*               closure,
                                void*               itemClosure)
 {
-    qpidInboxImpl* impl = (qpidInboxImpl*) closure;
+    baseInboxImpl* impl = (baseInboxImpl*) closure;
     if (NULL == impl)
     {
         return;
@@ -303,24 +280,24 @@ qpidBridgeMamaInboxImpl_onMsg (mamaSubscription    subscription,
 
 /* No additional processing is required on inbox creation */
 static void MAMACALLTYPE
-qpidBridgeMamaInboxImpl_onCreate (mamaSubscription    subscription,
+baseBridgeMamaInboxImpl_onCreate (mamaSubscription    subscription,
                                   void*               closure)
 {
 }
 
 /* Calls the implementation's destroy callback on execution */
 static void MAMACALLTYPE
-qpidBridgeMamaInboxImpl_onDestroy (mamaSubscription    subscription,
+baseBridgeMamaInboxImpl_onDestroy (mamaSubscription    subscription,
                                    void*               closure)
 {
-    /* The closure provided is the qpid inbox implementation */
-    qpidInboxImpl* impl = (qpidInboxImpl*) closure;
+    /* The closure provided is the inbox implementation */
+    baseInboxImpl* impl = (baseInboxImpl*) closure;
     if (NULL == impl)
     {
         return;
     }
 
-    /* Call the qpid inbox destroy callback if defined */
+    /* Call the inbox destroy callback if defined */
     if (NULL != impl->mOnInboxDestroyed)
     {
         (impl->mOnInboxDestroyed)(impl->mParent, impl->mClosure);
@@ -329,20 +306,20 @@ qpidBridgeMamaInboxImpl_onDestroy (mamaSubscription    subscription,
 
 /* Calls the implementation's error callback on execution */
 static void MAMACALLTYPE
-qpidBridgeMamaInboxImpl_onError (mamaSubscription    subscription,
+baseBridgeMamaInboxImpl_onError (mamaSubscription    subscription,
                                  mama_status         status,
                                  void*               platformError,
                                  const char*         subject,
                                  void*               closure)
 {
-    /* The closure provided is the qpid inbox implementation */
-    qpidInboxImpl* impl = (qpidInboxImpl*) closure;
+    /* The closure provided is the inbox implementation */
+    baseInboxImpl* impl = (baseInboxImpl*) closure;
     if (NULL == impl)
     {
         return;
     }
 
-    /* Call the qpid inbox error callback if defined */
+    /* Call the inbox error callback if defined */
     if (NULL != impl->mErrCB)
     {
         (impl->mErrCB)(status, impl->mClosure);

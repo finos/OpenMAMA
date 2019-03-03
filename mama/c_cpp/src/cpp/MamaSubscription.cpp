@@ -506,6 +506,9 @@ namespace Wombat
         mCallback = callback;
         mClosure  = closure;
 
+        // Save the MAMA transport
+        mTransport = transport;
+
         // Save the queue so that calls to MamaBasicSubscription->getQueue () work
         mQueue = queue;
 

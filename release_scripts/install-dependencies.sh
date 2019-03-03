@@ -94,7 +94,7 @@ then
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
-# Ubuntu 16 specific software
+# Ubuntu 14 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "14" ]
 then
     apt-get install -y openjdk-7-jdk libssl-dev
@@ -107,8 +107,8 @@ test -d $DEPS_DIR || mkdir -p $DEPS_DIR
 if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" = "6") || ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" != "18") ]]
 then
     cd $DEPS_DIR
-    curl -sL http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz | tar xz
-    cd ruby-2.1.2
+    curl -sL https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.1.tar.gz | tar xz
+    cd ruby-2.6.1
     ./configure --prefix=/usr
     make
     make install && gem update --system
@@ -123,7 +123,7 @@ source "$SDKMAN_DIR/bin/sdkman-init.sh"
 sdk install gradle
 
 # Install FPM for packaging up
-gem install --no-ri --no-rdoc fpm
+gem install -N fpm
 
 # Gtest is best always getting built
 cd $DEPS_DIR

@@ -57,6 +57,14 @@ if (WITH_UNITTEST)
     endif()
 endif ()
 
+if (WITH_BASE_BRIDGE)
+    add_subdirectory (c_cpp/src/c/bridge/base)
+endif ()
+
+if (WITH_NOOP_BRIDGE)
+    add_subdirectory (c_cpp/src/c/bridge/noop)
+endif ()
+
 if (WITH_PROTON)
     add_subdirectory (c_cpp/src/c/bridge/qpid)
     add_subdirectory (c_cpp/src/c/payload/qpidmsg)

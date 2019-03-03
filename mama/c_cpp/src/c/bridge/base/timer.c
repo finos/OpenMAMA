@@ -27,17 +27,16 @@
 #include <mama/mama.h>
 #include <mama/timer.h>
 #include <timers.h>
-#include "qpidbridgefunctions.h"
-#include <wombat/queue.h>
+#include <mama/integration/queue.h>
+#include <mama/integration/bridge/base.h>
+#include "basedefs.h"
 
 
 /*=========================================================================
   =                Typedefs, structs, enums and globals                   =
   =========================================================================*/
 
-extern timerHeap gQpidTimerHeap;
-
-typedef struct qpidTimerImpl_
+typedef struct baseTimerImpl_
 {
     timerElement    mTimerElement;
     double          mInterval;
@@ -49,7 +48,7 @@ typedef struct qpidTimerImpl_
     mamaTimerCb     mOnTimerDestroyed;
     /* This callback will be invoked on each timer firing */
     mamaTimerCb     mAction;
-} qpidTimerImpl;
+} baseTimerImpl;
 
 
 /*=========================================================================
@@ -65,34 +64,43 @@ typedef struct qpidTimerImpl_
  * calls the application developer's destroy callback function.
  *
  * @param queue   MAMA queue from which this callback was fired.
- * @param closure In this instance, the closure will contain the qpid timer
+ * @param closure In this instance, the closure will contain the timer
  *                implementation.
  */
 static void MAMACALLTYPE
-qpidBridgeMamaTimerImpl_destroyCallback (mamaQueue queue, void* closure);
+baseBridgeMamaTimerImpl_destroyCallback (mamaQueue queue, void* closure);
 
 /**
  * When a timer fires, it enqueues this callback for execution. This is where
  * the action callback provided in the timer's create function gets fired.
  *
  * @param queue   MAMA queue from which this callback was fired.
- * @param closure In this instance, the closure will contain the qpid timer
+ * @param closure In this instance, the closure will contain the timer
  *                implementation.
  */
 static void MAMACALLTYPE
-qpidBridgeMamaTimerImpl_queueCallback (mamaQueue queue, void* closure);
+baseBridgeMamaTimerImpl_queueCallback (mamaQueue queue, void* closure);
 
 /**
  * Every time the timer fires, it calls this timer callback which adds
- * qpidBridgeMamaTimerImpl_queueCallback to the queue as long as the timer's
+ * baseBridgeMamaTimerImpl_queueCallback to the queue as long as the timer's
  * mDestroying flag is not currently set.
  *
  * @param timer   The underlying timer element which has just fired (not used).
- * @param closure In this instance, the closure will contain the qpid timer
+ * @param closure In this instance, the closure will contain the timer
  *                implementation.
  */
 static void
-qpidBridgeMamaTimerImpl_timerCallback (timerElement timer, void* closure);
+baseBridgeMamaTimerImpl_timerCallback (timerElement timer, void* closure);
+
+/**
+ * Utility function to get the bridge closure from the timer implementation
+ * object
+ * @param impl  The timer implementation to query for the bridge closure
+ * @return Qpid bridge closure object (bridge specific context)
+ */
+baseBridgeClosure*
+baseBridgeMamaTimerImpl_getQpidBridgeClosure(baseTimerImpl* impl);
 
 
 /*=========================================================================
@@ -100,7 +108,7 @@ qpidBridgeMamaTimerImpl_timerCallback (timerElement timer, void* closure);
   =========================================================================*/
 
 mama_status
-qpidBridgeMamaTimer_create (timerBridge*  result,
+baseBridgeMamaTimer_create (timerBridge*  result,
                            void*         nativeQueueHandle,
                            mamaTimerCb   action,
                            mamaTimerCb   onTimerDestroyed,
@@ -108,8 +116,8 @@ qpidBridgeMamaTimer_create (timerBridge*  result,
                            mamaTimer     parent,
                            void*         closure)
 {
-
-    qpidTimerImpl*              impl            = NULL;
+    baseBridgeClosure*          bridgeClosure   = NULL;
+    baseTimerImpl*              impl            = NULL;
     int                         timerResult     = 0;
     struct timeval              timeout;
 
@@ -124,7 +132,7 @@ qpidBridgeMamaTimer_create (timerBridge*  result,
     *result = NULL;
 
     /* Allocate the timer implementation and set up */
-    impl = (qpidTimerImpl*) calloc (1, sizeof (qpidTimerImpl));
+    impl = (baseTimerImpl*) calloc (1, sizeof (baseTimerImpl));
     if (NULL == impl)
     {
         return MAMA_STATUS_NOMEM;
@@ -143,10 +151,13 @@ qpidBridgeMamaTimer_create (timerBridge*  result,
     timeout.tv_sec  = (time_t) interval;
     timeout.tv_usec = ((interval-timeout.tv_sec) * 1000000.0);
 
+    /* Get the timer heap from the bridge */
+    bridgeClosure = baseBridgeMamaTimerImpl_getQpidBridgeClosure (impl);
+
     /* Create the first single fire timer */
     timerResult = createTimer (&impl->mTimerElement,
-                               gQpidTimerHeap,
-                               qpidBridgeMamaTimerImpl_timerCallback,
+                               bridgeClosure->mTimerHeap,
+                               baseBridgeMamaTimerImpl_timerCallback,
                                &timeout,
                                impl);
     if (0 != timerResult)
@@ -161,11 +172,12 @@ qpidBridgeMamaTimer_create (timerBridge*  result,
 
 /* This call should always come from MAMA queue thread */
 mama_status
-qpidBridgeMamaTimer_destroy (timerBridge timer)
+baseBridgeMamaTimer_destroy (timerBridge timer)
 {
-    qpidTimerImpl*  impl            = NULL;
-    mama_status     returnStatus    = MAMA_STATUS_OK;
-    int             timerResult     = 0;
+    baseTimerImpl*      impl            = NULL;
+    baseBridgeClosure*  bridgeClosure   = NULL;
+    mama_status         returnStatus    = MAMA_STATUS_OK;
+    int                 timerResult     = 0;
 
     if (NULL == timer)
     {
@@ -173,7 +185,7 @@ qpidBridgeMamaTimer_destroy (timerBridge timer)
     }
 
     /* Nullify the callback and set destroy flag */
-    impl                            = (qpidTimerImpl*) timer;
+    impl                            = (baseTimerImpl*) timer;
 
     /* It is important to set mDestroying prior to calling destroyTimer.
      * This flag is checked by the common timer callback, during which the
@@ -190,8 +202,11 @@ qpidBridgeMamaTimer_destroy (timerBridge timer)
     impl->mDestroying               = 1;
     impl->mAction                   = NULL;
 
+    /* Get the timer heap from the bridge */
+    bridgeClosure = baseBridgeMamaTimerImpl_getQpidBridgeClosure (impl);
+
     /* Destroy the timer element */
-    timerResult = destroyTimer (gQpidTimerHeap, impl->mTimerElement);
+    timerResult = destroyTimer (bridgeClosure->mTimerHeap, impl->mTimerElement);
     if (0 != timerResult)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -204,17 +219,18 @@ qpidBridgeMamaTimer_destroy (timerBridge timer)
      * Put the impl free at the back of the queue to be executed when all
      * pending timer events have been completed
      */
-    qpidBridgeMamaQueue_enqueueEvent ((queueBridge) impl->mQueue,
-                                      qpidBridgeMamaTimerImpl_destroyCallback,
+    baseBridgeMamaQueue_enqueueEvent ((queueBridge) impl->mQueue,
+                                      baseBridgeMamaTimerImpl_destroyCallback,
                                       (void*) impl);
 
     return returnStatus;
 }
 
 mama_status
-qpidBridgeMamaTimer_reset (timerBridge timer)
+baseBridgeMamaTimer_reset (timerBridge timer)
 {
-    qpidTimerImpl*      impl            = (qpidTimerImpl*) timer;
+    baseTimerImpl*      impl            = (baseTimerImpl*) timer;
+    baseBridgeClosure*  bridgeClosure   = NULL;
     int                 timerResult     = 0;
     struct timeval      timeout;
 
@@ -227,8 +243,11 @@ qpidBridgeMamaTimer_reset (timerBridge timer)
     timeout.tv_sec  = (time_t) impl->mInterval;
     timeout.tv_usec = ((impl->mInterval- timeout.tv_sec) * 1000000.0);
 
+    /* Get the timer heap from the bridge */
+    bridgeClosure = baseBridgeMamaTimerImpl_getQpidBridgeClosure (impl);
+
     /* Create the timer for the next firing */
-    timerResult = resetTimer (gQpidTimerHeap,
+    timerResult = resetTimer (bridgeClosure->mTimerHeap,
                                impl->mTimerElement,
                                &timeout);
     if (0 != timerResult)
@@ -243,10 +262,10 @@ qpidBridgeMamaTimer_reset (timerBridge timer)
 }
 
 mama_status
-qpidBridgeMamaTimer_setInterval (timerBridge  timer,
+baseBridgeMamaTimer_setInterval (timerBridge  timer,
                                  mama_f64_t   interval)
 {
-    qpidTimerImpl* impl  = (qpidTimerImpl*) timer;
+    baseTimerImpl* impl  = (baseTimerImpl*) timer;
     if (NULL == timer)
     {
         return MAMA_STATUS_NULL_ARG;
@@ -254,20 +273,20 @@ qpidBridgeMamaTimer_setInterval (timerBridge  timer,
 
     impl->mInterval = interval;
 
-    return  qpidBridgeMamaTimer_reset (timer);
+    return  baseBridgeMamaTimer_reset (timer);
 }
 
 mama_status
-qpidBridgeMamaTimer_getInterval (timerBridge    timer,
+baseBridgeMamaTimer_getInterval (timerBridge    timer,
                                 mama_f64_t*    interval)
 {
-    qpidTimerImpl* impl  = NULL;
+    baseTimerImpl* impl  = NULL;
     if (NULL == timer || NULL == interval)
     {
         return MAMA_STATUS_NULL_ARG;
     }
 
-    impl = (qpidTimerImpl*) timer;
+    impl = (baseTimerImpl*) timer;
     *interval = impl->mInterval;
 
     return MAMA_STATUS_OK;
@@ -278,22 +297,22 @@ qpidBridgeMamaTimer_getInterval (timerBridge    timer,
   =                  Private implementation functions                     =
   =========================================================================*/
 
-/* This callback is invoked by the qpid bridge's destroy event */
+/* This callback is invoked by the bridge's destroy event */
 static void MAMACALLTYPE
-qpidBridgeMamaTimerImpl_destroyCallback (mamaQueue queue, void* closure)
+baseBridgeMamaTimerImpl_destroyCallback (mamaQueue queue, void* closure)
 {
-    qpidTimerImpl* impl = (qpidTimerImpl*) closure;
+    baseTimerImpl* impl = (baseTimerImpl*) closure;
     (*impl->mOnTimerDestroyed)(impl->mParent, impl->mClosure);
 
     /* Free the implementation memory here */
     free (impl);
 }
 
-/* This callback is invoked by the qpid bridge's timer event */
+/* This callback is invoked by the bridge's timer event */
 static void MAMACALLTYPE
-qpidBridgeMamaTimerImpl_queueCallback (mamaQueue queue, void* closure)
+baseBridgeMamaTimerImpl_queueCallback (mamaQueue queue, void* closure)
 {
-    qpidTimerImpl* impl = (qpidTimerImpl*) closure;
+    baseTimerImpl* impl = (baseTimerImpl*) closure;
     if (impl->mAction)
     {
         impl->mAction (impl->mParent, impl->mClosure);
@@ -302,11 +321,11 @@ qpidBridgeMamaTimerImpl_queueCallback (mamaQueue queue, void* closure)
 
 /* This callback is invoked by the common timer's dispatch thread */
 static void
-qpidBridgeMamaTimerImpl_timerCallback (timerElement  timer,
+baseBridgeMamaTimerImpl_timerCallback (timerElement  timer,
                                        void*         closure)
 {
 
-    qpidTimerImpl* impl = (qpidTimerImpl*) closure;
+    baseTimerImpl* impl = (baseTimerImpl*) closure;
 
     if (NULL == impl)
     {
@@ -320,13 +339,31 @@ qpidBridgeMamaTimerImpl_timerCallback (timerElement  timer,
     if (0 == impl->mDestroying)
     {
         /* Set the timer for the next firing */
-        qpidBridgeMamaTimer_reset ((timerBridge) closure);
+        baseBridgeMamaTimer_reset ((timerBridge) closure);
 
         /* Enqueue the callback for handling */
-        qpidBridgeMamaQueue_enqueueEvent ((queueBridge) impl->mQueue,
-                                          qpidBridgeMamaTimerImpl_queueCallback,
+        baseBridgeMamaQueue_enqueueEvent ((queueBridge) impl->mQueue,
+                                          baseBridgeMamaTimerImpl_queueCallback,
                                           closure);
     }
 }
 
+baseBridgeClosure*
+baseBridgeMamaTimerImpl_getQpidBridgeClosure (baseTimerImpl* impl)
+{
+    mamaQueue           queue           = NULL;
+    baseBridgeClosure*  bridgeClosure   = NULL;
+    mamaBridge          bridgeImpl      = NULL;
 
+    /* Get the queue from the timer */
+    mamaTimer_getQueue(impl->mParent, &queue);
+
+    /* Get the bridge impl from the queue */
+    bridgeImpl = mamaQueueImpl_getBridgeImpl (queue);
+
+    /* Get the closure from the bridge */
+    mamaBridgeImpl_getClosure(bridgeImpl, (void**)&bridgeClosure);
+
+    return bridgeClosure;
+
+}

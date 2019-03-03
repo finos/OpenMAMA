@@ -31,6 +31,7 @@ extern "C"
 /* These are the bare parameters which may be reused in other properties */
 #define MAMA_PROP_BARE_ENT_DEFERRED        "entitlements.deferred"
 #define MAMA_PROP_BARE_COMPILE_TIME_VER    "compile_version"
+#define MAMA_PROP_EXTENDS_BASE_BRIDGE      "extends_base_bridge"
 
 /* These properties will be set by MAMA */
 #define MAMA_PROP_MAMA_RUNTIME_VER         "mama.runtime_version"

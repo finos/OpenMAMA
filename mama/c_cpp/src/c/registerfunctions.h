@@ -60,16 +60,16 @@ do {                                                                            
     snprintf (functionName, 256, "%s"#FUNCSTRINGNAME, name);                    \
     result = loadLibFunc (bridgeLib, functionName);                             \
                                                                                 \
-    if (NULL != result) {                                                       \
+    if (NULL != result && NULL == (*bridge)->FUNCIMPLNAME) {                    \
         (*bridge)->FUNCIMPLNAME = *(FUNCIMPLTYPE*)&result;                      \
         result = NULL;                                                          \
-    } else {                                                                    \
-        mama_log (MAMA_LOG_LEVEL_ERROR,                                         \
+    }                                                                           \
+    if (NULL == (*bridge)->FUNCIMPLNAME) {                                      \
+        mama_log (MAMA_LOG_LEVEL_FINEST,                                        \
                   "mamaInternal_registerBridgeFunctions: "                      \
-                  "Cannot load bridge, does not implement required function: [%s]",\
+                  "Bridge does not implement required function: [%s]",          \
                   functionName);                                                \
         status = MAMA_STATUS_PLATFORM;                                          \
-        return status;                                                          \
     }                                                                           \
 } while (0)
 
@@ -92,10 +92,11 @@ do {                                                                            
     snprintf (functionName, 256, "%s"#FUNCSTRINGNAME, name);                    \
     result = loadLibFunc (bridgeLib, functionName);                             \
                                                                                 \
-    if (NULL != result) {                                                       \
+    if (NULL != result && NULL == (*bridge)->FUNCIMPLNAME) {                    \
         (*bridge)->FUNCIMPLNAME = *(FUNCIMPLTYPE*)&result;                      \
         result = NULL;                                                          \
-    } else {                                                                    \
+    }                                                                           \
+    if (NULL == (*bridge)->FUNCIMPLNAME) {                                      \
         mama_log (MAMA_LOG_LEVEL_FINE,                                          \
                   "mamaInternal_registerBridgeFunctions: "                      \
                   "Optional bridge function [%s] not found. Unavailable.",      \

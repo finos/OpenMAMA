@@ -31,6 +31,7 @@
 #include <wombat/wtable.h>
 #include <list.h>
 #include <wombat/mempool.h>
+#include <timers.h>
 
 /* Qpid include files */
 #include <proton/version.h>
@@ -157,6 +158,22 @@ typedef struct qpidP2pEndpoint_
     size_t                mMsgCount;
     size_t                mErrorCount;
 } qpidP2pEndpoint;
+
+typedef struct qpidIoImpl
+{
+    struct event_base*  mEventBase;
+    wthread_t           mDispatchThread;
+    uint8_t             mActive;
+    uint8_t             mEventsRegistered;
+    wsem_t              mResumeDispatching;
+} qpidIoImpl;
+
+typedef struct qpidBridgeClosure_
+{
+    void*                 mClosure;
+    timerHeap             mTimerHeap;
+    qpidIoImpl            mIoState;
+} qpidBridgeClosure;
 
 #if defined(__cplusplus)
 }

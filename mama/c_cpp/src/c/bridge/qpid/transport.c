@@ -46,7 +46,6 @@
 #include "qpidbridgefunctions.h"
 #include "qpiddefs.h"
 #include "qpidcommon.h"
-#include "msg.h"
 #include "codec.h"
 #include "mama/integration/endpointpool.h"
 
@@ -509,202 +508,6 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
     *result = (transportBridge) impl;
 
     return qpidBridgeMamaTransportImpl_start (impl);
-}
-
-mama_status
-qpidBridgeMamaTransport_forceClientDisconnect (transportBridge*   transports,
-                                               int                numTransports,
-                                               const char*        ipAddress,
-                                               uint16_t           port)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_findConnection (transportBridge*    transports,
-                                        int                 numTransports,
-                                        mamaConnection*     result,
-                                        const char*         ipAddress,
-                                        uint16_t            port)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_getAllConnections (transportBridge*    transports,
-                                           int                 numTransports,
-                                           mamaConnection**    result,
-                                           uint32_t*           len)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_getAllConnectionsForTopic (
-                    transportBridge*    transports,
-                    int                 numTransports,
-                    const char*         topic,
-                    mamaConnection**    result,
-                    uint32_t*           len)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_requestConflation (transportBridge*     transports,
-                                           int                  numTransports)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_requestEndConflation (transportBridge*  transports,
-                                              int               numTransports)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_getAllServerConnections (
-        transportBridge*        transports,
-        int                     numTransports,
-        mamaServerConnection**  result,
-        uint32_t*               len)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_freeAllServerConnections (
-        transportBridge*        transports,
-        int                     numTransports,
-        mamaServerConnection*   result,
-        uint32_t                len)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_freeAllConnections (transportBridge*    transports,
-                                            int                 numTransports,
-                                            mamaConnection*     result,
-                                            uint32_t            len)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_getNumLoadBalanceAttributes (
-        const char*     name,
-        int*            numLoadBalanceAttributes)
-{
-    if (NULL == numLoadBalanceAttributes || NULL == name)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-
-    *numLoadBalanceAttributes = 0;
-    return MAMA_STATUS_OK;
-}
-
-mama_status
-qpidBridgeMamaTransport_getLoadBalanceSharedObjectName (
-        const char*     name,
-        const char**    loadBalanceSharedObjectName)
-{
-    if (NULL == loadBalanceSharedObjectName)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-
-    *loadBalanceSharedObjectName = NULL;
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_getLoadBalanceScheme (const char*       name,
-                                              tportLbScheme*    scheme)
-{
-    if (NULL == scheme || NULL == name)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-
-    *scheme = TPORT_LB_SCHEME_STATIC;
-    return MAMA_STATUS_OK;
-}
-
-mama_status
-qpidBridgeMamaTransport_sendMsgToConnection (transportBridge    tport,
-                                             mamaConnection     connection,
-                                             mamaMsg            msg,
-                                             const char*        topic)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_isConnectionIntercepted (mamaConnection connection,
-                                                 uint8_t*       result)
-{
-    if (NULL == result)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-
-    *result = 0;
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_installConnectConflateMgr (
-        transportBridge         handle,
-        mamaConflationManager   mgr,
-        mamaConnection          connection,
-        conflateProcessCb       processCb,
-        conflateGetMsgCb        msgCb)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_uninstallConnectConflateMgr (
-        transportBridge         handle,
-        mamaConflationManager   mgr,
-        mamaConnection          connection)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_startConnectionConflation (
-        transportBridge         tport,
-        mamaConflationManager   mgr,
-        mamaConnection          connection)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
-}
-
-mama_status
-qpidBridgeMamaTransport_getNativeTransport (transportBridge     transport,
-                                            void**              result)
-{
-    qpidTransportBridge* impl = (qpidTransportBridge*)transport;
-
-    if (NULL == transport || NULL == result)
-    {
-        return MAMA_STATUS_NULL_ARG;
-    }
-    *result = impl;
-
-    return MAMA_STATUS_OK;
-}
-
-mama_status
-qpidBridgeMamaTransport_getNativeTransportNamingCtx (transportBridge transport,
-                                                     void**          result)
-{
-    return MAMA_STATUS_NOT_IMPLEMENTED;
 }
 
 
@@ -1507,7 +1310,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                     pn_data_copy (pn_message_properties (tmpMsgNode->mMsg),
                                   pn_message_properties (msgNode->mMsg));
 
-                    qpidBridgeMamaQueue_enqueueEvent (
+                    baseBridgeMamaQueue_enqueueEvent (
                             (queueBridge) subscription->mQpidQueue,
                             qpidBridgeMamaTransportImpl_queueCallback,
                             tmpNode);
@@ -1520,7 +1323,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
                 {
                     msgNode->mQpidSubscription = subscription;
                     msgNode->mQpidTransportBridge = impl;
-                    qpidBridgeMamaQueue_enqueueEvent (
+                    baseBridgeMamaQueue_enqueueEvent (
                             (queueBridge) subscription->mQpidQueue,
                             qpidBridgeMamaTransportImpl_queueCallback,
                             node);
