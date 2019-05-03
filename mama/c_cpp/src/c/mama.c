@@ -1367,9 +1367,11 @@ mama_closeCount (unsigned int* count)
             }
         }
 
-        /* Once the libraries have been unloaded, destroy the wtable. */
+        /* Once the libraries have been unloaded, clear and destroy the wtable. */
+        wtable_clear (gImpl.entitlements.table);
         wtable_destroy (gImpl.entitlements.table);
         gImpl.entitlements.table = NULL;
+
         /* Reset the count of loaded entitlements libraries */
         gImpl.entitlements.count = 0;
 
@@ -1536,9 +1538,11 @@ mama_closeCount (unsigned int* count)
 
         }
 
-        /* Once the libraries have been unloaded, destroy the wtable. */
+        /* Once the libraries have been unloaded, clear and destroy the wtable. */
+        wtable_clear (gImpl.payloads.table);
         wtable_destroy (gImpl.payloads.table);
         gImpl.payloads.table = NULL;
+
         /* This will shutdown all plugins */
         mama_shutdownPlugins();
 
@@ -1597,9 +1601,11 @@ mama_closeCount (unsigned int* count)
             }
         }
 
-        /* Once the libraries have been unloaded, clear the middlewareTable. */
+        /* Once the libraries have been unloaded, clear and destroy the middlewareTable. */
+        wtable_clear(gImpl.middlewares.table);
         wtable_destroy(gImpl.middlewares.table);
         gImpl.middlewares.table = NULL;
+
         /* Reset the count of loaded middlewares */
         gImpl.middlewares.count = 0;
 
