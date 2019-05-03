@@ -1538,7 +1538,7 @@ mama_closeCount (unsigned int* count)
 
         }
 
-        /* Once the libraries have been unloaded, clear down the wtable. */
+        /* Once the libraries have been unloaded, clear down and destroy the wtable. */
         wtable_clear (gImpl.payloads.table);
         wtable_destroy(gImpl.payloads.table);
         gImpl.payloads.table = NULL;
@@ -1633,7 +1633,11 @@ mama_closeCount (unsigned int* count)
         mama_freeAppContext(&appContext);
 
     }
-    wInterlocked_decrement(&gImpl.init);
+
+    if (0 < wInterlocked_read(&gImpl.init))
+    {
+        wInterlocked_decrement(&gImpl.init);
+    }
 
     if (count)
         *count = gImpl.myRefCount;
