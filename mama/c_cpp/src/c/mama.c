@@ -1369,6 +1369,8 @@ mama_closeCount (unsigned int* count)
 
         /* Once the libraries have been unloaded, clear down the wtable. */
         wtable_clear (gImpl.entitlements.table);
+        wtable_destroy(gImpl.entitlements.table);
+        gImpl.entitlements.table = NULL;
 
         /* Reset the count of loaded entitlements libraries */
         gImpl.entitlements.count = 0;
@@ -1536,8 +1538,10 @@ mama_closeCount (unsigned int* count)
 
         }
 
-        /* Once the libraries have been unloaded, clear down the wtable. */
+        /* Once the libraries have been unloaded, clear down and destroy the wtable. */
         wtable_clear (gImpl.payloads.table);
+        wtable_destroy(gImpl.payloads.table);
+        gImpl.payloads.table = NULL;
 
         /* This will shutdown all plugins */
         mama_shutdownPlugins();
@@ -1599,6 +1603,8 @@ mama_closeCount (unsigned int* count)
 
         /* Once the libraries have been unloaded, clear the middlewareTable. */
         wtable_clear (gImpl.middlewares.table);
+        wtable_destroy(gImpl.middlewares.table);
+        gImpl.middlewares.table = NULL;
 
         /* Reset the count of loaded middlewares */
         gImpl.middlewares.count = 0;
@@ -1627,6 +1633,12 @@ mama_closeCount (unsigned int* count)
         mama_freeAppContext(&appContext);
 
     }
+
+    if (0 < wInterlocked_read(&gImpl.init))
+    {
+        wInterlocked_decrement(&gImpl.init);
+    }
+
     if (count)
         *count = gImpl.myRefCount;
     wthread_static_mutex_unlock (&gImpl.myLock);

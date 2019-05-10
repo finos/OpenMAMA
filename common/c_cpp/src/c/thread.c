@@ -121,6 +121,12 @@ wombatThread_destroy (const char* name)
     /* Remove from Thread Dictionary */
     wtable_remove (gWombatThreadDict, name);
 
+    if (wtable_get_count(gWombatThreadDict) == 0)
+    {
+        wtable_destroy(gWombatThreadDict);
+        gWombatThreadDict = NULL;
+    }
+
     wthread_static_mutex_unlock(&gWombatThreadsMutex);
 
     // Attempt to join the thread to ensure it has terminated
