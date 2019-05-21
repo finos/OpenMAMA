@@ -959,7 +959,7 @@ mama_openWithPropertiesCount (const char* path,
     {
         mama_log (MAMA_LOG_LEVEL_WARN, "%s (non entitled)",mama_version);
     }
-    
+
     /* Iterate the currently loaded middleware bridges, log their version, and
      * increment the count of open bridges.
      */
@@ -1367,9 +1367,9 @@ mama_closeCount (unsigned int* count)
             }
         }
 
-        /* Once the libraries have been unloaded, clear down the wtable. */
+        /* Once the libraries have been unloaded, clear and destroy the wtable. */
         wtable_clear (gImpl.entitlements.table);
-        wtable_destroy(gImpl.entitlements.table);
+        wtable_destroy (gImpl.entitlements.table);
         gImpl.entitlements.table = NULL;
 
         /* Reset the count of loaded entitlements libraries */
@@ -1538,6 +1538,7 @@ mama_closeCount (unsigned int* count)
 
         }
 
+
         /* Once the libraries have been unloaded, clear down and destroy the wtable. */
         wtable_clear (gImpl.payloads.table);
         wtable_destroy(gImpl.payloads.table);
@@ -1601,8 +1602,8 @@ mama_closeCount (unsigned int* count)
             }
         }
 
-        /* Once the libraries have been unloaded, clear the middlewareTable. */
-        wtable_clear (gImpl.middlewares.table);
+        /* Once the libraries have been unloaded, clear and destroy the middlewareTable. */
+        wtable_clear(gImpl.middlewares.table);
         wtable_destroy(gImpl.middlewares.table);
         gImpl.middlewares.table = NULL;
 
@@ -1641,7 +1642,13 @@ mama_closeCount (unsigned int* count)
 
     if (count)
         *count = gImpl.myRefCount;
+
+    if(wInterlocked_read (&gImpl.init) > 0)
+    {
+        wInterlocked_decrement (&gImpl.init);
+    }
     wthread_static_mutex_unlock (&gImpl.myLock);
+
     return result;
 }
 

@@ -352,7 +352,10 @@ mama_shutdownPlugins (void)
                 /* Fire the user shutdown hook first - if one is present */
                 if (gPlugins[plugin]->mamaPluginShutdownHook != NULL)
                 {
-                    gPlugins[plugin]->mamaPluginShutdownHook (gPlugins[plugin]->mPluginInfo);
+                    if (gPlugins[plugin]->mPluginInfo != NULL)
+                    {
+                        gPlugins[plugin]->mamaPluginShutdownHook (gPlugins[plugin]->mPluginInfo);
+                    }
                 }
 
                 ret = closeSharedLib (gPlugins[plugin]->mPluginHandle);
@@ -379,6 +382,7 @@ mama_shutdownPlugins (void)
     free(gPlugins);
     gPlugins  = NULL;
     gPluginNo = 0;
+    gCurrentPluginSize = 0;
 
     return status;
 }

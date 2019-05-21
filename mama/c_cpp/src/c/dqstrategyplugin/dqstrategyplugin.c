@@ -927,7 +927,10 @@ checkSeqNum(dqStrategy strategy, mamaMsg msg, int msgType, mamaDqContext* ctx)
 
 mama_status dqstrategyMamaPlugin_shutdownHook(mamaPluginInfo pluginInfo)
 {
+
     free(pluginInfo);
+    pluginInfo = NULL;
+
     return MAMA_STATUS_OK;
 }
 
