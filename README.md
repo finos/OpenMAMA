@@ -28,6 +28,10 @@ Currently C, C++, C# and Java are all supported languages and Linux and Windows 
 
 You can find more details on supported platforms here [here](https://github.com/OpenMAMA/OpenMAMA/wiki/Platforms)
 
+Docker
+--------------------------------------------------------------------------------
+For docker support for OpenMAMA, please see [our docker guide](docker/README.md).
+
 Downloading the Software
 --------------------------------------------------------------------------------
 You can find the latest stable releases [on the our github releases page](https://github.com/OpenMAMA/OpenMAMA/releases)
