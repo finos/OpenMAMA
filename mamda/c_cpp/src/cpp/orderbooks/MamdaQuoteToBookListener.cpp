@@ -35,7 +35,7 @@ using std::deque;
 
 namespace Wombat
 {
-    struct QuoteCache
+    struct QuoteToBookListenerCache
     {
 
         void initialize();
@@ -244,9 +244,9 @@ namespace Wombat
         MamaMsgQual                mMsgQual;
 
         // The Quote Listener Data Caches
-        QuoteCache                 mRegularCache;     // Regular update cache
-        QuoteCache                 mTransientCache;   // Transient cache
-        QuoteCache&                mQuoteCache;       // Current cache in use
+        QuoteToBookListenerCache                 mRegularCache;     // Regular update cache
+        QuoteToBookListenerCache                 mTransientCache;   // Transient cache
+        QuoteToBookListenerCache&                mQuoteToBookListenerCache;       // Current cache in use
 
         struct FieldUpdateSymbol;
         struct FieldUpdateIssueSymbol;
@@ -428,7 +428,7 @@ namespace Wombat
 
     mama_u32_t           MamdaQuoteToBookListener::getQuoteCount () const
     {
-        return mImpl.mQuoteCache.mQuoteCount;
+        return mImpl.mQuoteToBookListenerCache.mQuoteCount;
     }
 
     void MamdaQuoteToBookListener::resolvePossiblyDuplicate (bool tf)
@@ -513,7 +513,7 @@ namespace Wombat
         const MamaMsg&      msg)
     {
         // Check number of quotes for gaps
-        mama_u32_t quoteCount = mQuoteCache.mTmpQuoteCount;
+        mama_u32_t quoteCount = mQuoteToBookListenerCache.mTmpQuoteCount;
         mama_u16_t conflateCount = 0;
         if (!msg.tryU16 ("wConflateQuoteCount", 23, conflateCount))
         {
@@ -522,17 +522,17 @@ namespace Wombat
 
         if (quoteCount > 0)
         {
-            if ((mQuoteCache.mQuoteCount > 0) &&
-                (quoteCount > (mQuoteCache.mQuoteCount+conflateCount)))
+            if ((mQuoteToBookListenerCache.mQuoteCount > 0) &&
+                (quoteCount > (mQuoteToBookListenerCache.mQuoteCount+conflateCount)))
             {
-                mGapBegin = mQuoteCache.mQuoteCount+conflateCount;
+                mGapBegin = mQuoteToBookListenerCache.mQuoteCount+conflateCount;
                 mGapEnd   = quoteCount-1;
-                mQuoteCache.mQuoteCount = quoteCount;
+                mQuoteToBookListenerCache.mQuoteCount = quoteCount;
                 mFullBook->setIsConsistent (false);
                 invokeGapHandlers (subscription, &msg);
             }
         }
-        mQuoteCache.mQuoteCount = quoteCount;
+        mQuoteToBookListenerCache.mQuoteCount = quoteCount;
     }
 
     void MamdaQuoteToBookListener::acquireReadLock ()
@@ -624,7 +624,7 @@ namespace Wombat
         , mUpdateInconsistentBook (false)
         , mResolvePossiblyDuplicate (false)
         , mQuoteSizeMultiplier  (1)
-        , mQuoteCache           (mRegularCache)
+        , mQuoteToBookListenerCache           (mRegularCache)
     {
         if (!mFullBook)
         {
@@ -636,7 +636,7 @@ namespace Wombat
         {
             initFieldUpdaters ();
         }
-        mQuoteCache.initialize();
+        mQuoteToBookListenerCache.initialize();
     }
 
     MamdaQuoteToBookListenerImpl::~MamdaQuoteToBookListenerImpl()
@@ -653,7 +653,7 @@ namespace Wombat
     void MamdaQuoteToBookListenerImpl::clear()
     {
         acquireLock();
-        mQuoteCache.initialize();
+        mQuoteToBookListenerCache.initialize();
         mEventSeqNum = 0;
         mGapBegin = 0;
         mGapEnd = 0;
@@ -721,19 +721,19 @@ namespace Wombat
     void MamdaQuoteToBookListenerImpl::updateQuoteFields (
         const MamaMsg&  msg)
     {
-        mQuoteCache.mLastGenericMsgWasQuote = false;
-        mQuoteCache.mGotBidPrice  = false;
-        mQuoteCache.mGotAskPrice  = false;
-        mQuoteCache.mGotBidSize   = false;
-        mQuoteCache.mGotAskSize   = false;
+        mQuoteToBookListenerCache.mLastGenericMsgWasQuote = false;
+        mQuoteToBookListenerCache.mGotBidPrice  = false;
+        mQuoteToBookListenerCache.mGotAskPrice  = false;
+        mQuoteToBookListenerCache.mGotBidSize   = false;
+        mQuoteToBookListenerCache.mGotAskSize   = false;
 
         msg.iterateFields (*this, NULL, NULL);
 
         // Check certain special fields.
-        if (mQuoteCache.mGotBidSize    || mQuoteCache.mGotAskSize   ||
-            mQuoteCache.mGotBidPrice   || mQuoteCache.mGotAskPrice)
+        if (mQuoteToBookListenerCache.mGotBidSize    || mQuoteToBookListenerCache.mGotAskSize   ||
+            mQuoteToBookListenerCache.mGotBidPrice   || mQuoteToBookListenerCache.mGotAskPrice)
         {
-            mQuoteCache.mLastGenericMsgWasQuote = true;
+            mQuoteToBookListenerCache.mLastGenericMsgWasQuote = true;
         }
     }
 
@@ -755,7 +755,7 @@ namespace Wombat
         {
             mama_i32_t quoteCount = 0;
             if (msg.tryI32 (MamdaQuoteFields::QUOTE_COUNT, quoteCount))
-               mQuoteCache.mQuoteCount = quoteCount;
+               mQuoteToBookListenerCache.mQuoteCount = quoteCount;
             return;
         }
 
@@ -781,7 +781,7 @@ namespace Wombat
         case MAMA_MSG_TYPE_TRADE:
             updateQuoteFields (msg);
 
-            if (mQuoteCache.mLastGenericMsgWasQuote)
+            if (mQuoteToBookListenerCache.mLastGenericMsgWasQuote)
             {
                 handleQuote (subscription, msg);
             }
@@ -872,10 +872,10 @@ namespace Wombat
         mFullBook->clear();
 
         // Clear ask/bid
-        mQuoteCache.mBidPrice = 0.0;
-        mQuoteCache.mBidSize  = 0.0;
-        mQuoteCache.mAskPrice = 0.0;
-        mQuoteCache.mAskSize  = 0.0;
+        mQuoteToBookListenerCache.mBidPrice = 0.0;
+        mQuoteToBookListenerCache.mBidSize  = 0.0;
+        mQuoteToBookListenerCache.mAskPrice = 0.0;
+        mQuoteToBookListenerCache.mAskSize  = 0.0;
 
         // get all the fields out of the message
         updateQuoteFields (msg);
@@ -890,22 +890,22 @@ namespace Wombat
         }
 
         MamdaOrderBookPriceLevel* level = NULL;
-        if (mQuoteCache.mGotBidSize || mQuoteCache.mGotBidPrice)
+        if (mQuoteToBookListenerCache.mGotBidSize || mQuoteToBookListenerCache.mGotBidPrice)
         {
             addLevel (level,
-                      mQuoteCache.mBidPrice.getValue(),
-                      mQuoteCache.mBidSize,
+                      mQuoteToBookListenerCache.mBidPrice.getValue(),
+                      mQuoteToBookListenerCache.mBidSize,
                       MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
-                      mQuoteCache.mQuoteTime);
+                      mQuoteToBookListenerCache.mQuoteTime);
         }
 
-        if (mQuoteCache.mGotAskSize || mQuoteCache.mGotAskPrice)
+        if (mQuoteToBookListenerCache.mGotAskSize || mQuoteToBookListenerCache.mGotAskPrice)
         {
             addLevel (level,
-                      mQuoteCache.mAskPrice.getValue(),
-                      mQuoteCache.mAskSize,
+                      mQuoteToBookListenerCache.mAskPrice.getValue(),
+                      mQuoteToBookListenerCache.mAskSize,
                       MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
-                      mQuoteCache.mQuoteTime);
+                      mQuoteToBookListenerCache.mQuoteTime);
         }
 
         mFullBook->setIsConsistent (true);
@@ -920,7 +920,7 @@ namespace Wombat
         checkQuoteCount (subscription, msg);
 
         MamdaOrderBookPriceLevel* level = NULL;
-        if (mQuoteCache.mGotBidSize || mQuoteCache.mGotBidPrice)
+        if (mQuoteToBookListenerCache.mGotBidSize || mQuoteToBookListenerCache.mGotBidPrice)
         {
             // get current level
             MamdaOrderBook::bidIterator bidIter = mFullBook->bidBegin();
@@ -930,9 +930,9 @@ namespace Wombat
                 level = *bidIter;
             if (level == NULL)
             {
-                if (mQuoteCache.mBidSize == (mama_quantity_t)0 || mQuoteCache.mBidPrice.isZero())
+                if (mQuoteToBookListenerCache.mBidSize == (mama_quantity_t)0 || mQuoteToBookListenerCache.mBidPrice.isZero())
                 {
-                    if (mQuoteCache.mBidSize == (mama_quantity_t)0 && mQuoteCache.mBidPrice.isZero())
+                    if (mQuoteToBookListenerCache.mBidSize == (mama_quantity_t)0 && mQuoteToBookListenerCache.mBidPrice.isZero())
                     {
                         mama_log (MAMA_LOG_LEVEL_WARN,
                                   "MamdaQuoteToBookListener: Got bid update, but price and size are 0\n");
@@ -941,41 +941,41 @@ namespace Wombat
                 else
                 {
                     addLevel (level,
-                              mQuoteCache.mBidPrice.getValue(),
-                              mQuoteCache.mBidSize,
+                              mQuoteToBookListenerCache.mBidPrice.getValue(),
+                              mQuoteToBookListenerCache.mBidSize,
                               MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
-                              mQuoteCache.mQuoteTime);
+                              mQuoteToBookListenerCache.mQuoteTime);
                 }
             }
             else
             {
-                if ((mQuoteCache.mBidSize == 0) || (mQuoteCache.mBidPrice.isZero()))
+                if ((mQuoteToBookListenerCache.mBidSize == 0) || (mQuoteToBookListenerCache.mBidPrice.isZero()))
                 {
-                    deleteLevel (level, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID, mQuoteCache.mQuoteTime);
+                    deleteLevel (level, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID, mQuoteToBookListenerCache.mQuoteTime);
                 }
-                else if (mQuoteCache.mBidPrice == level->getPrice())
+                else if (mQuoteToBookListenerCache.mBidPrice == level->getPrice())
                 {
                     updateLevel (level,
-                                 mQuoteCache.mBidSize,
-                                 mQuoteCache.mBidSize - level->getSize(),
+                                 mQuoteToBookListenerCache.mBidSize,
+                                 mQuoteToBookListenerCache.mBidSize - level->getSize(),
                                  MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
-                                 mQuoteCache.mQuoteTime);
+                                 mQuoteToBookListenerCache.mQuoteTime);
                 }
                 else
                 {
                     deleteLevel (level,
                                  MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
-                                 mQuoteCache.mQuoteTime);
+                                 mQuoteToBookListenerCache.mQuoteTime);
                     addLevel (level,
-                              mQuoteCache.mBidPrice.getValue(),
-                              mQuoteCache.mBidSize,
+                              mQuoteToBookListenerCache.mBidPrice.getValue(),
+                              mQuoteToBookListenerCache.mBidSize,
                               MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID,
-                              mQuoteCache.mQuoteTime);
+                              mQuoteToBookListenerCache.mQuoteTime);
                 }
             }
         }
 
-        if (mQuoteCache.mGotAskSize || mQuoteCache.mGotAskPrice)
+        if (mQuoteToBookListenerCache.mGotAskSize || mQuoteToBookListenerCache.mGotAskPrice)
         {
             // get current level
             MamdaOrderBook::askIterator askIter = mFullBook->askBegin();
@@ -985,9 +985,9 @@ namespace Wombat
                 level = *askIter;
             if (level == NULL)
             {
-                if (mQuoteCache.mAskSize == (mama_quantity_t)0 || mQuoteCache.mAskPrice.isZero())
+                if (mQuoteToBookListenerCache.mAskSize == (mama_quantity_t)0 || mQuoteToBookListenerCache.mAskPrice.isZero())
                 {
-                    if (mQuoteCache.mAskSize == (mama_quantity_t)0 && mQuoteCache.mAskPrice.isZero())
+                    if (mQuoteToBookListenerCache.mAskSize == (mama_quantity_t)0 && mQuoteToBookListenerCache.mAskPrice.isZero())
                     {
                         mama_log (MAMA_LOG_LEVEL_WARN,
                             "MamdaQuoteToBookListener: Got ask update, but price and size are 0\n");
@@ -996,36 +996,36 @@ namespace Wombat
                 else
                 {
                     addLevel (level,
-                              mQuoteCache.mAskPrice.getValue(),
-                              mQuoteCache.mAskSize,
+                              mQuoteToBookListenerCache.mAskPrice.getValue(),
+                              mQuoteToBookListenerCache.mAskSize,
                               MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
-                              mQuoteCache.mQuoteTime);
+                              mQuoteToBookListenerCache.mQuoteTime);
                 }
             }
             else
             {
-                if ((mQuoteCache.mAskSize == 0) || (mQuoteCache.mAskPrice.isZero()))
+                if ((mQuoteToBookListenerCache.mAskSize == 0) || (mQuoteToBookListenerCache.mAskPrice.isZero()))
                 {
-                    deleteLevel (level, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK, mQuoteCache.mQuoteTime);
+                    deleteLevel (level, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK, mQuoteToBookListenerCache.mQuoteTime);
                 }
-                else if (mQuoteCache.mAskPrice == level->getPrice())
+                else if (mQuoteToBookListenerCache.mAskPrice == level->getPrice())
                 {
                     updateLevel (level,
-                                 mQuoteCache.mAskSize,
-                                 mQuoteCache.mAskSize - level->getSize(),
+                                 mQuoteToBookListenerCache.mAskSize,
+                                 mQuoteToBookListenerCache.mAskSize - level->getSize(),
                                  MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
-                                 mQuoteCache.mQuoteTime);
+                                 mQuoteToBookListenerCache.mQuoteTime);
                 }
                 else
                 {
                     deleteLevel (level,
                                  MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
-                                 mQuoteCache.mQuoteTime);
+                                 mQuoteToBookListenerCache.mQuoteTime);
                     addLevel (level,
-                              mQuoteCache.mAskPrice.getValue(),
-                              mQuoteCache.mAskSize,
+                              mQuoteToBookListenerCache.mAskPrice.getValue(),
+                              mQuoteToBookListenerCache.mAskSize,
                               MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_ASK,
-                              mQuoteCache.mQuoteTime);
+                              mQuoteToBookListenerCache.mQuoteTime);
                 }
             }
         }
@@ -1134,55 +1134,55 @@ namespace Wombat
     MamdaFieldState
     MamdaQuoteToBookListenerImpl::getSymbolFieldState() const
     {
-        return mQuoteCache.mSymbolFieldState;
+        return mQuoteToBookListenerCache.mSymbolFieldState;
     }
 
     MamdaFieldState
     MamdaQuoteToBookListenerImpl::getPartIdFieldState() const
     {
-        return mQuoteCache.mPartIdFieldState;
+        return mQuoteToBookListenerCache.mPartIdFieldState;
     }
 
     MamdaFieldState
     MamdaQuoteToBookListenerImpl::getEventSeqNumFieldState() const
     {
-        return mQuoteCache.mEventSeqNumFieldState;
+        return mQuoteToBookListenerCache.mEventSeqNumFieldState;
     }
 
     MamdaFieldState
     MamdaQuoteToBookListenerImpl::getEventTimeFieldState() const
     {
-        return mQuoteCache.mEventTimeFieldState;
+        return mQuoteToBookListenerCache.mEventTimeFieldState;
     }
 
     MamdaFieldState
     MamdaQuoteToBookListenerImpl::getSrcTimeFieldState() const
     {
-        return mQuoteCache.mSrcTimeFieldState;
+        return mQuoteToBookListenerCache.mSrcTimeFieldState;
     }
 
     MamdaFieldState
     MamdaQuoteToBookListenerImpl::getActivityTimeFieldState() const
     {
-        return mQuoteCache.mActivityTimeFieldState;
+        return mQuoteToBookListenerCache.mActivityTimeFieldState;
     }
 
     MamdaFieldState
     MamdaQuoteToBookListenerImpl::getLineTimeFieldState() const
     {
-        return mQuoteCache.mLineTimeFieldState;
+        return mQuoteToBookListenerCache.mLineTimeFieldState;
     }
 
     MamdaFieldState
     MamdaQuoteToBookListenerImpl::getSendTimeFieldState() const
     {
-        return mQuoteCache.mSendTimeFieldState;
+        return mQuoteToBookListenerCache.mSendTimeFieldState;
     }
 
     MamdaFieldState
     MamdaQuoteToBookListenerImpl::getMsgQualFieldState() const
     {
-        return mQuoteCache.mMsgQualFieldState;
+        return mQuoteToBookListenerCache.mMsgQualFieldState;
     }
 
     const MamdaOrderBook* MamdaQuoteToBookListenerImpl::getOrderBook () const
@@ -1228,27 +1228,27 @@ namespace Wombat
 
     const MamaDateTime& MamdaQuoteToBookListenerImpl::getEventTime() const
     {
-        return mQuoteCache.mQuoteTime;
+        return mQuoteToBookListenerCache.mQuoteTime;
     }
 
     const MamaDateTime& MamdaQuoteToBookListenerImpl::getSrcTime() const
     {
-        return mQuoteCache.mSrcTime;
+        return mQuoteToBookListenerCache.mSrcTime;
     }
 
     const MamaDateTime& MamdaQuoteToBookListenerImpl::getLineTime() const
     {
-        return mQuoteCache.mLineTime;
+        return mQuoteToBookListenerCache.mLineTime;
     }
 
     const MamaDateTime& MamdaQuoteToBookListenerImpl::getActivityTime() const
     {
-        return mQuoteCache.mActTime;
+        return mQuoteToBookListenerCache.mActTime;
     }
 
     const MamaDateTime& MamdaQuoteToBookListenerImpl::getSendTime() const
     {
-        return mQuoteCache.mSendTime;
+        return mQuoteToBookListenerCache.mSendTime;
     }
 
     const MamaMsgQual&  MamdaQuoteToBookListenerImpl::getMsgQual() const
@@ -1315,8 +1315,8 @@ namespace Wombat
                        const MamaMsgField&            field)
         {
     ;
-            field.getDateTime(impl.mQuoteCache.mSrcTime);
-            impl.mQuoteCache.mSrcTimeFieldState = MODIFIED;
+            field.getDateTime(impl.mQuoteToBookListenerCache.mSrcTime);
+            impl.mQuoteToBookListenerCache.mSrcTimeFieldState = MODIFIED;
         }
     };
 
@@ -1326,8 +1326,8 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            field.getDateTime(impl.mQuoteCache.mActTime);
-            impl.mQuoteCache.mActivityTimeFieldState = MODIFIED;
+            field.getDateTime(impl.mQuoteToBookListenerCache.mActTime);
+            impl.mQuoteToBookListenerCache.mActivityTimeFieldState = MODIFIED;
         }
     };
 
@@ -1337,8 +1337,8 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            field.getDateTime(impl.mQuoteCache.mLineTime);
-            impl.mQuoteCache.mLineTimeFieldState = MODIFIED;
+            field.getDateTime(impl.mQuoteToBookListenerCache.mLineTime);
+            impl.mQuoteToBookListenerCache.mLineTimeFieldState = MODIFIED;
         }
     };
 
@@ -1348,8 +1348,8 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            field.getDateTime(impl.mQuoteCache.mSendTime);
-            impl.mQuoteCache.mSendTimeFieldState = MODIFIED;
+            field.getDateTime(impl.mQuoteToBookListenerCache.mSendTime);
+            impl.mQuoteToBookListenerCache.mSendTimeFieldState = MODIFIED;
         }
     };
 
@@ -1362,10 +1362,10 @@ namespace Wombat
             MamaPrice bidPrice;
             field.getPrice(bidPrice);
 
-            if (impl.mQuoteCache.mBidPrice != bidPrice)
+            if (impl.mQuoteToBookListenerCache.mBidPrice != bidPrice)
             {
-                impl.mQuoteCache.mBidPrice = bidPrice;
-                impl.mQuoteCache.mGotBidPrice = true;
+                impl.mQuoteToBookListenerCache.mBidPrice = bidPrice;
+                impl.mQuoteToBookListenerCache.mGotBidPrice = true;
             }
         }
     };
@@ -1378,10 +1378,10 @@ namespace Wombat
         {
             mama_quantity_t bidSize = field.getF64() * impl.mQuoteSizeMultiplier;
 
-            if (impl.mQuoteCache.mBidSize != bidSize)
+            if (impl.mQuoteToBookListenerCache.mBidSize != bidSize)
             {
-                impl.mQuoteCache.mBidSize = bidSize;
-                impl.mQuoteCache.mGotBidSize = true;
+                impl.mQuoteToBookListenerCache.mBidSize = bidSize;
+                impl.mQuoteToBookListenerCache.mGotBidSize = true;
             }
         }
     };
@@ -1395,10 +1395,10 @@ namespace Wombat
             MamaPrice askPrice;
             field.getPrice (askPrice);
 
-            if (impl.mQuoteCache.mAskPrice != askPrice)
+            if (impl.mQuoteToBookListenerCache.mAskPrice != askPrice)
             {
-                impl.mQuoteCache.mAskPrice = askPrice;
-                impl.mQuoteCache.mGotAskPrice = true;
+                impl.mQuoteToBookListenerCache.mAskPrice = askPrice;
+                impl.mQuoteToBookListenerCache.mGotAskPrice = true;
             }
         }
     };
@@ -1411,10 +1411,10 @@ namespace Wombat
         {
             mama_quantity_t askSize = field.getF64() * impl.mQuoteSizeMultiplier;
 
-            if (impl.mQuoteCache.mAskSize != askSize)
+            if (impl.mQuoteToBookListenerCache.mAskSize != askSize)
             {
-                impl.mQuoteCache.mAskSize = askSize;
-                impl.mQuoteCache.mGotAskSize = true;
+                impl.mQuoteToBookListenerCache.mAskSize = askSize;
+                impl.mQuoteToBookListenerCache.mGotAskSize = true;
             }
         }
     };
@@ -1425,7 +1425,7 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            field.getDateTime(impl.mQuoteCache.mQuoteTime);
+            field.getDateTime(impl.mQuoteToBookListenerCache.mQuoteTime);
         }
     };
 
@@ -1435,7 +1435,7 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            impl.mQuoteCache.mQuoteSeqNum = field.getU32();
+            impl.mQuoteToBookListenerCache.mQuoteSeqNum = field.getU32();
         }
     };
 
@@ -1445,7 +1445,7 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            field.getDateTime(impl.mQuoteCache.mQuoteDate);
+            field.getDateTime(impl.mQuoteToBookListenerCache.mQuoteDate);
         }
     };
 
@@ -1455,7 +1455,7 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            impl.mQuoteCache.mQuoteQualStr = field.getString();
+            impl.mQuoteToBookListenerCache.mQuoteQualStr = field.getString();
         }
     };
 
@@ -1467,11 +1467,11 @@ namespace Wombat
         {
             if (field.getType () == MAMA_FIELD_TYPE_STRING)
             {
-                impl.mQuoteCache.mQuoteQualNative = field.getString();
+                impl.mQuoteToBookListenerCache.mQuoteQualNative = field.getString();
             }
             else if (field.getType () == MAMA_FIELD_TYPE_CHAR)
             {
-                impl.mQuoteCache.mQuoteQualNative = field.getChar();
+                impl.mQuoteToBookListenerCache.mQuoteQualNative = field.getChar();
             }
         }
     };
@@ -1482,7 +1482,7 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            impl.mQuoteCache.mTmpQuoteCount = field.getU32();
+            impl.mQuoteToBookListenerCache.mTmpQuoteCount = field.getU32();
         }
     };
 
@@ -1492,7 +1492,7 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            field.getDateTime(impl.mQuoteCache.mAskTime);
+            field.getDateTime(impl.mQuoteToBookListenerCache.mAskTime);
         }
     };
 
@@ -1502,7 +1502,7 @@ namespace Wombat
         void onUpdate (MamdaQuoteToBookListenerImpl&  impl,
                        const MamaMsgField&            field)
         {
-            field.getDateTime(impl.mQuoteCache.mBidTime);
+            field.getDateTime(impl.mQuoteToBookListenerCache.mBidTime);
         }
     };
 
@@ -1577,28 +1577,28 @@ namespace Wombat
 
     void MamdaQuoteToBookListenerImpl::updateFieldStates()
     {
-        if (mQuoteCache.mSymbolFieldState == MODIFIED)
-            mQuoteCache.mSymbolFieldState = NOT_MODIFIED;
-        if (mQuoteCache.mPartIdFieldState == MODIFIED)
-            mQuoteCache.mPartIdFieldState = NOT_MODIFIED;
-        if (mQuoteCache.mEventSeqNumFieldState == MODIFIED)
-            mQuoteCache.mEventSeqNumFieldState = NOT_MODIFIED;
-        if (mQuoteCache.mEventTimeFieldState == MODIFIED)
-            mQuoteCache.mEventTimeFieldState = NOT_MODIFIED;
-        if (mQuoteCache.mSrcTimeFieldState == MODIFIED)
-            mQuoteCache.mSrcTimeFieldState = NOT_MODIFIED;
-        if (mQuoteCache.mActivityTimeFieldState == MODIFIED)
-            mQuoteCache.mActivityTimeFieldState = NOT_MODIFIED;
-        if (mQuoteCache.mLineTimeFieldState == MODIFIED)
-            mQuoteCache.mLineTimeFieldState = NOT_MODIFIED;
-        if (mQuoteCache.mSendTimeFieldState == MODIFIED)
-            mQuoteCache.mSendTimeFieldState = NOT_MODIFIED;
-        if (mQuoteCache.mMsgQualFieldState == MODIFIED)
-            mQuoteCache.mMsgQualFieldState = NOT_MODIFIED;
+        if (mQuoteToBookListenerCache.mSymbolFieldState == MODIFIED)
+            mQuoteToBookListenerCache.mSymbolFieldState = NOT_MODIFIED;
+        if (mQuoteToBookListenerCache.mPartIdFieldState == MODIFIED)
+            mQuoteToBookListenerCache.mPartIdFieldState = NOT_MODIFIED;
+        if (mQuoteToBookListenerCache.mEventSeqNumFieldState == MODIFIED)
+            mQuoteToBookListenerCache.mEventSeqNumFieldState = NOT_MODIFIED;
+        if (mQuoteToBookListenerCache.mEventTimeFieldState == MODIFIED)
+            mQuoteToBookListenerCache.mEventTimeFieldState = NOT_MODIFIED;
+        if (mQuoteToBookListenerCache.mSrcTimeFieldState == MODIFIED)
+            mQuoteToBookListenerCache.mSrcTimeFieldState = NOT_MODIFIED;
+        if (mQuoteToBookListenerCache.mActivityTimeFieldState == MODIFIED)
+            mQuoteToBookListenerCache.mActivityTimeFieldState = NOT_MODIFIED;
+        if (mQuoteToBookListenerCache.mLineTimeFieldState == MODIFIED)
+            mQuoteToBookListenerCache.mLineTimeFieldState = NOT_MODIFIED;
+        if (mQuoteToBookListenerCache.mSendTimeFieldState == MODIFIED)
+            mQuoteToBookListenerCache.mSendTimeFieldState = NOT_MODIFIED;
+        if (mQuoteToBookListenerCache.mMsgQualFieldState == MODIFIED)
+            mQuoteToBookListenerCache.mMsgQualFieldState = NOT_MODIFIED;
 
     }
 
-    void QuoteCache::initialize()
+    void QuoteToBookListenerCache::initialize()
     {
         mSrcTime.clear();
         mActTime.clear();
