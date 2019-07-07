@@ -82,7 +82,11 @@ build_script:
 - sh: docker run -e VERSION=$VERSION -v $(pwd):/apps/release --rm omdocker
 
 artifacts:
-  - path: openmama-*
-    name: OpenMAMA
+  - path: *.deb
+    name: OpenMAMA Ubuntu Package
+  - path: *.rpm
+    name: OpenMAMA RPM Package
+  - path: *.zip
+    name: OpenMAMA Windows Release
 
 test: off
