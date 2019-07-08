@@ -68,7 +68,7 @@ then
 	    java-1.8.0-openjdk-devel libuuid-devel flex doxygen \
 	    qpid-proton-c-devel libevent-devel ncurses-devel \
 	    apr-devel wget curl cmake gcc-c++ libuuid qpid-proton-c \
-	    libevent ncurses apr valgrind python
+	    libevent ncurses apr valgrind python which
 fi
 
 # General ubuntu packages
