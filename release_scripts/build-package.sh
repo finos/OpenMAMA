@@ -47,10 +47,26 @@ then
     DEPENDS_FLAGS="-d uuid -d libevent -d libzmq3 -d openjdk-8-jdk -d ncurses -d libapr1"
 fi
 
-if [ -z "$DISTRIB_RELEASE" ]
+if [ "$DISTRIB_ID" == "$FEDORA" ]
 then
-    echo "Unsupported distro found: $(cat /etc/*-release)" && exit $LINENO
+    DISTRIB_PACKAGE_QUALIFIER=fc${DISTRIB_RELEASE%%.*}
+elif [ "$DISTRIB_ID" == "$RHEL" ]
+then
+    DISTRIB_PACKAGE_QUALIFIER=el${DISTRIB_RELEASE%%.*}
+elif [ "$DISTRIB_ID" == "$UBUNTU" ]
+then
+    DISTRIB_PACKAGE_QUALIFIER=ubuntu${DISTRIB_RELEASE%%.*}
+else
+    echo "Unsupported distro [$DISTRIB_ID] found: $(cat /etc/*-release)" && exit $LINENO
 fi
 
-fpm -s dir -t $PACKAGE_TYPE -C $PREFIX --name openmama --version $VERSION --iteration 1 \
-        $DEPENDS_FLAGS --description "OpenMAMA high performance Market Data API" .
+fpm -s dir \
+        -t $PACKAGE_TYPE \
+        -m "openmama-users@lists.openmama.org" \
+        -C $PREFIX \
+        --name openmama \
+        --version $VERSION \
+        --iteration 1 \
+        $DEPENDS_FLAGS \
+        -p openmama-$VERSION-1.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE \
+        --description "OpenMAMA high performance Market Data API" .
