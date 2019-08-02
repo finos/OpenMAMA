@@ -58,10 +58,13 @@ set(sources
 )
 
 add_library(mamacpp SHARED ${sources})
+add_library(mamacppstatic STATIC ${sources})
 target_link_libraries(mamacpp mama)
+target_link_libraries(mamacppstatic mamastatic)
 
 set_target_properties(mamacpp PROPERTIES OUTPUT_NAME "mamacpp${OPENMAMA_LIBRARY_SUFFIX}")
-install(TARGETS mamacpp
+set_target_properties(mamacppstatic PROPERTIES OUTPUT_NAME "mamacpp${OPENMAMA_LIBRARY_STATIC_SUFFIX}")
+install(TARGETS mamacpp mamacppstatic
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)

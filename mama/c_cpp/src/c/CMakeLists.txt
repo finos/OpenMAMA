@@ -129,10 +129,14 @@ endif()
 add_library(mama SHARED ${sources})
 target_link_libraries(mama ${MAMA_LINK_LIBRARIES})
 
+add_library(mamastatic STATIC ${sources})
+target_link_libraries(mama ${MAMA_LINK_LIBRARIES})
+
 # On windows this file has historically been named libmamac for some reason. Will conform in future.
 set_target_properties(mama PROPERTIES OUTPUT_NAME "mama${OPENMAMA_MAMA_TARGET_SUFFIX}${OPENMAMA_LIBRARY_SUFFIX}")
+set_target_properties(mamastatic PROPERTIES OUTPUT_NAME "mama${OPENMAMA_MAMA_TARGET_SUFFIX}${OPENMAMA_LIBRARY_STATIC_SUFFIX}")
 
-install(TARGETS mama
+install(TARGETS mama mamastatic
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
@@ -146,5 +150,8 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/mama/version.h" DESTINATION include/m
 if (INSTALL_RUNTIME_DEPENDENCIES)
 	if (WIN32)
 		install (DIRECTORY ${APR_ROOT}/bin/ DESTINATION bin FILES_MATCHING PATTERN "*apr*.dll")
+    elseif(UNIX)
+        message(STATUS "Installing apr_root")
+        install (FILES ${APR_LIBRARY} DESTINATION lib)
 	endif()
 endif()

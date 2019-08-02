@@ -27,7 +27,10 @@ set(sources
 add_library(mamdabook SHARED ${sources})
 target_link_libraries(mamdabook mamda)
 set_target_properties(mamdabook PROPERTIES OUTPUT_NAME "mamdabook${OPENMAMA_LIBRARY_SUFFIX}")
-install(TARGETS mamdabook
+add_library(mamdabookstatic STATIC ${sources})
+target_link_libraries(mamdabookstatic mamdastatic)
+set_target_properties(mamdabookstatic PROPERTIES OUTPUT_NAME "mamdabook${OPENMAMA_LIBRARY_STATIC_SUFFIX}")
+install(TARGETS mamdabook mamdabookstatic
 		RUNTIME DESTINATION bin
 		LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
