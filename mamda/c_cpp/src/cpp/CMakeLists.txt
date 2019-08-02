@@ -63,11 +63,15 @@ endif()
 add_library(mamda SHARED ${sources})
 target_link_libraries(mamda mamacpp)
 
-install(TARGETS mamda
+add_library(mamdastatic STATIC ${sources})
+target_link_libraries(mamdastatic mamacppstatic)
+
+install(TARGETS mamda mamdastatic
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
 set_target_properties(mamda PROPERTIES OUTPUT_NAME "mamda${OPENMAMA_LIBRARY_SUFFIX}")
+set_target_properties(mamdastatic PROPERTIES OUTPUT_NAME "mamda${OPENMAMA_LIBRARY_STATIC_SUFFIX}")
 if (WIN32 AND MSVC)
 	install(FILES $<TARGET_PDB_FILE:mamda> DESTINATION bin OPTIONAL)
 endif()
