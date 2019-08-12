@@ -2,7 +2,11 @@
 
 import subprocess
 import os
-import urllib
+import sys
+if sys.version_info[0] == 3:
+    from urllib.request import urlretrieve
+else:
+    from urllib import urlretrieve
 
 def run_command(args, fatal_error=True, env=None, shell=True):
     # Run the command
@@ -41,8 +45,8 @@ if "MSVSVER" not in env_var:
     env_var["MSVSVER"] = 'VS2015'
 
 # Go download junit
-urllib.urlretrieve ("http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar", "junit.jar")
-urllib.urlretrieve ("http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar", "hamcrest-core.jar")
+urlretrieve ("http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar", "junit.jar")
+urlretrieve ("http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar", "hamcrest-core.jar")
 junit_home = os.getcwd()
 
 # Set up derived values

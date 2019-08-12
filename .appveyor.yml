@@ -20,13 +20,13 @@ environment:
     JAVA_HOME_OVERRIDE: C:\Program Files\Java\jdk1.8.0
 
   - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
-    DOCKER_IMAGE: fedora:26
-
-  - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
-    DOCKER_IMAGE: fedora:27
-
-  - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
     DOCKER_IMAGE: fedora:28
+
+  - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
+    DOCKER_IMAGE: fedora:29
+
+  - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
+    DOCKER_IMAGE: fedora:30
 
   - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
     DOCKER_IMAGE: ubuntu:16.04
@@ -42,8 +42,8 @@ environment:
 
 init:
 # TODO: Make programatic
-- cmd: set VERSION=6.2.3
-- sh: export VERSION=6.2.3
+- cmd: set VERSION=6.3.0rc1
+- sh: export VERSION=6.3.0rc1
 - cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\openmama-%VERSION%.win.%PLATFORM%
 
 # Build chain tooling
@@ -54,6 +54,7 @@ install:
 - cmd: |-
     cd "C:\Tools\vcpkg"
     git pull
+    git checkout 563ab882e1fdb45a851b03d56f4c8d18cf00d7ec
     .\bootstrap-vcpkg.bat
     cd %appveyor_build_folder%
 - sh: sudo apt-get update -qq
@@ -82,7 +83,11 @@ build_script:
 - sh: docker run -e VERSION=$VERSION -v $(pwd):/apps/release --rm omdocker
 
 artifacts:
-  - path: openmama-*
-    name: OpenMAMA
+  - path: '*.deb'
+    name: OpenMAMA Ubuntu Package
+  - path: '*.rpm'
+    name: OpenMAMA RPM Package
+  - path: '*.zip'
+    name: OpenMAMA Windows Release
 
 test: off
