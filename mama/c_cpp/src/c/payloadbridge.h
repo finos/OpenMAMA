@@ -218,7 +218,7 @@ typedef mama_status
 (*msgPayload_addMsg)           (msgPayload          msg,
                                 const char*         name,
                                 mama_fid_t          fid,
-                                msgPayload          value);
+                                mamaMsg             value);
 typedef mama_status
 (*msgPayload_addVectorBool)    (msgPayload          msg,
                                 const char*         name,
@@ -405,7 +405,7 @@ typedef mama_status
 (*msgPayload_updateSubMsg)     (msgPayload          msg,
                                 const char*         fname,
                                 mama_fid_t          fid,
-                                const msgPayload    subMsg);
+                                const mamaMsg       subMsg);
 typedef mama_status
 (*msgPayload_updateVectorMsg)  (msgPayload          msg,
                                 const char*         fname,

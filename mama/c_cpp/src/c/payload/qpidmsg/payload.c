@@ -1617,11 +1617,10 @@ mama_status
 qpidmsgPayload_addMsg (msgPayload  msg,
                        const char* name,
                        mama_fid_t  fid,
-                       msgPayload  value)
+                       mamaMsg  value)
 {
     qpidmsgPayloadImpl* impl        = (qpidmsgPayloadImpl*) msg;
     mama_status         status      = MAMA_STATUS_OK;
-    mamaMsg             tmpMsg      = NULL;
 
     if (NULL == impl || NULL == value)
     {
@@ -1650,18 +1649,7 @@ qpidmsgPayload_addMsg (msgPayload  msg,
     pn_data_put_list   (impl->mBody);
     pn_data_enter      (impl->mBody);
 
-    /*
-     * addBareMsg expects a mamaMsg, so we must detach payload to create one
-     * here
-     */
-
-    status = qpidmsgPayloadImpl_payloadToMamaMsg ((qpidmsgPayloadImpl*) value,
-		             &tmpMsg);
-
-    qpidmsgPayloadImpl_addBareMsg (msg, tmpMsg);
-
-    /* finished with the temporary message - destroy */
-    mamaMsg_destroy (tmpMsg);
+    qpidmsgPayloadImpl_addBareMsg (msg, value);
 
     /* Exit list */
     pn_data_exit (impl->mBody);
@@ -2368,12 +2356,9 @@ mama_status
 qpidmsgPayload_updateSubMsg (msgPayload          msg,
                              const char*         name,
                              mama_fid_t          fid,
-                             const msgPayload    subMsg)
+                             const mamaMsg       subMsg)
 {
     qpidmsgPayloadImpl* impl    = (qpidmsgPayloadImpl*) msg;
-
-    /* Despite the prototype, subMsg seems to be a mamaMsg, so treat as such */
-    mamaMsg             valMsg  = (mamaMsg) subMsg;
     mama_status         status  = MAMA_STATUS_OK;
 
     if (NULL == impl)
@@ -2398,7 +2383,7 @@ qpidmsgPayload_updateSubMsg (msgPayload          msg,
     pn_data_put_list (impl->mBody);
     pn_data_enter    (impl->mBody);
 
-    status = qpidmsgPayloadImpl_addBareMsg (msg, valMsg);
+    status = qpidmsgPayloadImpl_addBareMsg (msg, subMsg);
 
     pn_data_exit     (impl->mBody);
 

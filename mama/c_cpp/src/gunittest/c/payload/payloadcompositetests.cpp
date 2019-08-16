@@ -36,15 +36,19 @@ class PayloadCompositeTests : public Test  //: public ForkedTest
 {
 protected:
 
+    std::string m_middleware;
     std::string m_payload;
 
     // Reusables
+    mamaBridge        m_middlewareBridge;
     mamaPayloadBridge m_payloadBridge;
     msgPayload        m_msg;
     mama_status       m_status;
 
     PayloadCompositeTests()
-        : m_payload(::getPayload())
+        : m_middleware(::getMiddleware())
+        , m_payload(::getPayload())
+        , m_middlewareBridge(NULL)
         , m_payloadBridge(NULL)
         , m_msg(NULL)
         , m_status(MAMA_STATUS_OK)
@@ -56,7 +60,7 @@ protected:
     virtual void SetUp()
     {
         //ForkedTest::SetUp();
-
+        mama_loadBridge(&m_middlewareBridge, m_middleware.c_str());
         mama_loadPayloadBridge(&m_payloadBridge, m_payload.c_str());
         mama_open();
         m_status = m_payloadBridge->msgPayloadCreate(&m_msg);
@@ -591,24 +595,33 @@ protected:
 
     // Reusables
     msgPayload m_in, m_update, m_out;
+    mamaMsg m_inMsg, m_updateMsg;
 
     virtual void SetUp()
     {
         PayloadCompositeTests::SetUp();
 
-        m_payloadBridge->msgPayloadCreate(&m_in);
+        mamaMsg_create(&m_inMsg);
+        mamaMsgImpl_getPayload(m_inMsg, &m_in);
         m_payloadBridge->msgPayloadAddBool(m_in, NULL, 2, 0);
 
-        m_payloadBridge->msgPayloadCreate (&m_update);
+        mamaMsg_create(&m_updateMsg);
+        mamaMsgImpl_getPayload(m_updateMsg, &m_update);
         m_payloadBridge->msgPayloadAddChar (m_in, NULL, 1, 'A');
     }
 
     virtual void TearDown()
     {
-        // Cores
-        m_payloadBridge->msgPayloadDestroy(m_in);
-        m_payloadBridge->msgPayloadDestroy(m_update);
-
+        if (m_inMsg)
+        {
+            mamaMsg_destroy(m_inMsg);
+            m_in = NULL;
+        }
+        if (m_updateMsg)
+        {
+            mamaMsg_destroy(m_updateMsg);
+            m_update = NULL;
+        }
         PayloadCompositeTests::TearDown();
     }
 };
@@ -620,7 +633,7 @@ protected:
 
 TEST_F(PayloadSubMsgTests, AddSubMsg)
 {
-    m_status = m_payloadBridge->msgPayloadAddMsg(m_msg, NULL, 1, m_in);
+    m_status = m_payloadBridge->msgPayloadAddMsg(m_msg, NULL, 1, m_inMsg);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
@@ -632,7 +645,7 @@ TEST_F(PayloadSubMsgTests, AddSubMsgNullAdd)
 
 TEST_F(PayloadSubMsgTests, AddSubMsgNullMessage)
 {
-    m_status = m_payloadBridge->msgPayloadAddMsg(NULL, NULL, 1, m_in);
+    m_status = m_payloadBridge->msgPayloadAddMsg(NULL, NULL, 1, m_inMsg);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
@@ -643,8 +656,7 @@ TEST_F(PayloadSubMsgTests, AddSubMsgNullMessage)
 
 TEST_F(PayloadSubMsgTests, UpdateSubMsg)
 {
-    /* TODO revist this */
-    m_status = m_payloadBridge->msgPayloadUpdateSubMsg(m_msg, NULL, 1, m_update);
+    m_status = m_payloadBridge->msgPayloadUpdateSubMsg(m_msg, NULL, 1, m_updateMsg);
     EXPECT_EQ (MAMA_STATUS_OK, m_status);
 }
 
@@ -656,7 +668,7 @@ TEST_F(PayloadSubMsgTests, UpdateSubMsgNullUpdate)
 
 TEST_F(PayloadSubMsgTests, UpdateSubMsgNullMessage)
 {
-    m_status = m_payloadBridge->msgPayloadUpdateSubMsg(NULL, NULL, 1, m_update);
+    m_status = m_payloadBridge->msgPayloadUpdateSubMsg(NULL, NULL, 1, m_updateMsg);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }
 
@@ -684,6 +696,6 @@ TEST_F(PayloadSubMsgTests, GetSubMsgNullUpdate)
 
 TEST_F(PayloadSubMsgTests, GetSubMsgNullMessage)
 {
-    m_status = m_payloadBridge->msgPayloadAddMsg(NULL, NULL, 1, m_in);
+    m_status = m_payloadBridge->msgPayloadAddMsg(NULL, NULL, 1, m_inMsg);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, m_status);
 }

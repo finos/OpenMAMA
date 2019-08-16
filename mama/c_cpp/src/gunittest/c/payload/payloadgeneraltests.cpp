@@ -159,13 +159,16 @@ TEST_F(PayloadGeneralTests, SerializeRoundtrip)
         --fid;
 
     // Create an populate a submessage...
-    msgPayload subMsg = NULL;
-    ret = aBridge->msgPayloadCreate (&subMsg);
+    mamaMsg    subMsg = NULL;
+    msgPayload subMsgPayload = NULL;
+    ret = mamaMsg_create(&subMsg);
+    EXPECT_EQ (MAMA_STATUS_OK, ret);
+    ret = mamaMsgImpl_getPayload(subMsg, &subMsgPayload);
     EXPECT_EQ (MAMA_STATUS_OK, ret);
 
-    ret = aBridge->msgPayloadAddU32 (subMsg, NULL, 101, 123);
+    ret = aBridge->msgPayloadAddU32 (subMsgPayload, NULL, 101, 123);
     EXPECT_EQ (MAMA_STATUS_OK, ret);
-    ret = aBridge->msgPayloadAddString (subMsg, NULL, 102, str);
+    ret = aBridge->msgPayloadAddString (subMsgPayload, NULL, 102, str);
     EXPECT_EQ (MAMA_STATUS_OK, ret);
 
     ret = aBridge->msgPayloadAddMsg (testPayload, NULL, ++fid, subMsg);
@@ -312,7 +315,7 @@ TEST_F(PayloadGeneralTests, SerializeRoundtrip)
 
     EXPECT_EQ (MAMA_STATUS_OK, aBridge->msgPayloadDestroy (testPayload));
     EXPECT_EQ (MAMA_STATUS_OK, aBridge->msgPayloadDestroy (testPayloadIn));
-    EXPECT_EQ (MAMA_STATUS_OK, aBridge->msgPayloadDestroy (subMsg));
+    EXPECT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (subMsg));
 }
 
 /* OPTIONAL TEST:
