@@ -1332,7 +1332,7 @@ mamaMsg_addMsg(
     return impl->mPayloadBridge->msgPayloadAddMsg (impl->mPayload,
                                                    name,
                                                    fid,
-                                                   subMsg->mPayload);
+                                                   subMsg);
 
 
 }

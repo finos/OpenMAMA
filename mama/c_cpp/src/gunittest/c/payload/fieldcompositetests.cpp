@@ -37,12 +37,13 @@ protected:
     virtual void SetUp(void);
     virtual void TearDown(void);
 
-     mamaPayloadBridge aBridge;
+    mamaBridge        mMiddlewareBridge;
+    mamaPayloadBridge aBridge;
 
 };
 
 FieldCompositeTestsC::FieldCompositeTestsC(void)
-    : aBridge (NULL)
+    : mMiddlewareBridge(NULL), aBridge (NULL)
 {
 }
 
@@ -52,6 +53,7 @@ FieldCompositeTestsC::~FieldCompositeTestsC(void)
 
 void FieldCompositeTestsC::SetUp(void)
 {
+    mama_loadBridge(&mMiddlewareBridge, getMiddleware());
     mama_loadPayloadBridge(&aBridge,getPayload());
 }
 
@@ -593,6 +595,7 @@ class FieldMsgTests : public FieldCompositeTestsC
 {
 protected:
 
+    mamaMsg    m_inMsg;
     msgPayload m_in;
     mama_size_t in_size;
     msgPayload m_out;
@@ -608,6 +611,25 @@ protected:
     ~FieldMsgTests()
     {}
 
+    mama_status getSubMsg(mamaMsg* msg_p, msgPayload* msgPayload_p)
+    {
+        mama_status ret = MAMA_STATUS_OK;
+        if (msg_p)
+        {
+            ret = mamaMsg_create(msg_p);
+            if (ret != MAMA_STATUS_OK) return ret;
+            if (msgPayload_p)
+            {
+                ret = mamaMsgImpl_getPayload(*msg_p, msgPayload_p);
+            }
+        }
+        return ret;
+    }
+
+    mama_status getSubMsg(void)
+    {
+        return getSubMsg(&m_inMsg, &m_in);
+    }
 };
 
 TEST_F(FieldMsgTests, GetMsgValid)
@@ -616,10 +638,10 @@ TEST_F(FieldMsgTests, GetMsgValid)
     msgPayload          msg = NULL;
     mama_status         ret = MAMA_STATUS_OK;
 
-    aBridge->msgPayloadCreate(&m_in);
+    EXPECT_EQ (MAMA_STATUS_OK, getSubMsg());
     ret = aBridge->msgPayloadCreate(&msg);
     EXPECT_EQ (MAMA_STATUS_OK, ret);
-    ret = aBridge->msgPayloadAddMsg(msg, NULL, 1, m_in);
+    ret = aBridge->msgPayloadAddMsg(msg, NULL, 1, m_inMsg);
     EXPECT_EQ (MAMA_STATUS_OK, ret);
      ret = aBridge->msgPayloadGetField(msg, NULL, 1, &field);
     EXPECT_EQ (MAMA_STATUS_OK, ret);
@@ -627,7 +649,8 @@ TEST_F(FieldMsgTests, GetMsgValid)
     ret = aBridge->msgFieldPayloadGetMsg(field, &m_out);
     ASSERT_EQ (MAMA_STATUS_OK, ret);
 
-    aBridge->msgPayloadDestroy(m_in);
+    mamaMsg_destroy(m_inMsg);
+    m_in = NULL;
     aBridge->msgPayloadDestroy(msg);
 }
 
