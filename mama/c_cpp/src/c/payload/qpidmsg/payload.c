@@ -4062,7 +4062,14 @@ qpidmsgPayloadImpl_addFieldToPayload (msgPayload                 msg,
     {
         /* Get the message implementation from the field's array */
         qpidmsgPayloadImpl* impl = (qpidmsgPayloadImpl*)field->mDataVector[0];
-        return qpidmsgPayload_addMsg (msg, name, fid, impl);
+        mamaMsg tmpMsg = NULL;
+        mama_status status = qpidmsgPayloadImpl_payloadToMamaMsg (impl,  
+                     &tmpMsg);
+        if (status != MAMA_STATUS_OK) return status;
+        
+        status = qpidmsgPayload_addMsg (msg, name, fid, tmpMsg);
+        mamaMsg_destroy (tmpMsg);
+        return status;
         break;
     }
     case MAMA_FIELD_TYPE_OPAQUE:
