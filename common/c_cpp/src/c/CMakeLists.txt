@@ -46,6 +46,9 @@ if(WIN32)
 endif()
 
 file(GLOB wombat_inst_includes wombat/*.h ${system}/wombat/*.h)
+if(WIN32)
+    file(GLOB wombat_platform_inst_includes ${system}/*.h)
+endif()
 list(APPEND inst_includes
      destroyHandle.h
      list.h
@@ -64,7 +67,10 @@ install(TARGETS wombatcommon wombatcommonstatic
 
 install(FILES ${wombat_inst_includes}
 	DESTINATION include/wombat)
-
+if(WIN32)
+    install(FILES ${wombat_platform_inst_includes}
+        DESTINATION include/${system})
+endif()
 install(FILES ${inst_includes}
 	DESTINATION include)
 
