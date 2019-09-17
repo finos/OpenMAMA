@@ -45,22 +45,24 @@ protected:
     {
         mama_loadPayloadBridge (&mPayloadBridge, getPayload());
         mama_loadBridge (&mMiddlewareBridge, getMiddleware());
-        mama_open();
+
     }
 
     virtual ~MsgGeneralTestsC(void)
     {
-        mama_close();
+
     };
 
     virtual void SetUp(void) 
     {
+        mama_open();
         mamaMsg_create (&mMsg);
     };
 
     virtual void TearDown(void) 
     {
         mamaMsg_destroy(mMsg);
+        mama_close();
     };
     
     mamaMsg            mMsg;
@@ -338,6 +340,7 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsSubMessage)
     EXPECT_EQ (addedFields, numFields);
 
     ASSERT_EQ (MAMA_STATUS_OK, mamaMsg_destroy (submsg));
+    submsg = NULL;
 }
 
 TEST_F (MsgGeneralTestsC, msgGetPayloadTypeValid)
@@ -415,7 +418,7 @@ TEST_F (MsgGeneralTestsC, msgIterateFieldsInValidMsg)
     ASSERT_EQ (mamaMsg_iterateFields (NULL, callback, dict, closure), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, DISABLED_msgIterateFieldsInValidCallback)
+TEST_F (MsgGeneralTestsC, msgIterateFieldsInValidCallback)
 {
     const mamaDictionary dict     = NULL;
     void*                closure  = 0;
@@ -427,7 +430,7 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgIterateFieldsInValidCallback)
     ASSERT_EQ (mamaMsg_iterateFields (mMsg, NULL, dict, closure), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, DISABLED_msgIterateFieldsInValidDict)
+TEST_F (MsgGeneralTestsC, msgIterateFieldsInValidDict)
 {
     mamaMsgIteratorCb    callback = NULL;
     void*                closure  = 0;
@@ -439,7 +442,7 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgIterateFieldsInValidDict)
     ASSERT_EQ (mamaMsg_iterateFields (mMsg, callback, NULL, closure), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, DISABLED_msgIterateFieldsInValidClosure)
+TEST_F (MsgGeneralTestsC, msgIterateFieldsInValidClosure)
 {
     mamaMsgIteratorCb    callback = NULL;
     const mamaDictionary dict     = NULL;
@@ -485,7 +488,7 @@ TEST_F (MsgGeneralTestsC, msgImplSetQueueInValidQueue)
 }
 
 /*
-TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetDqStrategyContextValid)
+TEST_F (MsgGeneralTestsC, msgImplSetDqStrategyContextValid)
 {
     mamaMsg          mMsg               = NULL;
     //mamaDqContext    dqStrategyContext  = NULL;
@@ -499,7 +502,7 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetDqStrategyContextValid)
     ASSERT_EQ (mamaMsgImpl_setDqStrategyContext(mMsg, &dqStrategyContext), MAMA_STATUS_OK);
 }
 
-TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetDqStrategyContextInValidMsg)
+TEST_F (MsgGeneralTestsC, msgImplSetDqStrategyContextInValidMsg)
 {
     mamaMsg        mMsg               = NULL;
     //mamaDqContext  dqStrategyContext  = NULL;
@@ -513,7 +516,7 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetDqStrategyContextInValidMsg)
     ASSERT_EQ (mamaMsgImpl_setDqStrategyContext(NULL, &dqStrategyContext), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetDqStrategyContextInValidDq)
+TEST_F (MsgGeneralTestsC, msgImplSetDqStrategyContextInValidDq)
 {
     mamaMsg        mMsg               = NULL;
     //mamaDqContext  dqStrategyContext  = NULL;
@@ -957,7 +960,7 @@ TEST_F (MsgGeneralTestsC, msgSetNewBufferInValidMsg)
     ASSERT_EQ (mamaMsg_setNewBuffer(NULL, &buffer, size), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F (MsgGeneralTestsC, DISABLED_msgSetNewBufferInValidBuffer)
+TEST_F (MsgGeneralTestsC, msgSetNewBufferInValidBuffer)
 {
     mamaMsg              mMsg         = NULL;
     const void*          buffer       = NULL;

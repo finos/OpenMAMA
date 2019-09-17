@@ -536,7 +536,7 @@ mama_status
 qpidmsgPayload_addMsg           (msgPayload          msg,
                                  const char*         name,
                                  mama_fid_t          fid,
-                                 msgPayload          value);
+                                 mamaMsg          value);
 
 /*=========================================================================
   =                   Payload Add Vector Field Methods                    =
@@ -831,7 +831,7 @@ mama_status
 qpidmsgPayload_updateSubMsg     (msgPayload          msg,
                                  const char*         fname,
                                  mama_fid_t          fid,
-                                 const msgPayload    subMsg);
+                                 const mamaMsg       subMsg);
 
 
 /*=========================================================================

@@ -23,7 +23,13 @@ add_library(mamdaoptions SHARED ${sources})
 target_link_libraries(mamdaoptions mamda)
 
 set_target_properties(mamdaoptions PROPERTIES OUTPUT_NAME "mamdaoptions${OPENMAMA_LIBRARY_SUFFIX}")
-install(TARGETS mamdaoptions
+
+add_library(mamdaoptionsstatic STATIC ${sources})
+target_link_libraries(mamdaoptionsstatic mamdastatic)
+
+set_target_properties(mamdaoptionsstatic PROPERTIES OUTPUT_NAME "mamdaoptions${OPENMAMA_LIBRARY_STATIC_SUFFIX}")
+
+install(TARGETS mamdaoptions mamdaoptionsstatic
 		RUNTIME DESTINATION bin
 		LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)

@@ -39,11 +39,16 @@ set(sources
 list(APPEND sources ${SYSTEM_SOURCES})
 
 add_library(wombatcommon SHARED ${sources})
+add_library(wombatcommonstatic STATIC ${sources})
 if(WIN32)
 	target_link_libraries(wombatcommon ws2_32 advapi32 kernel32 Pdh shlwapi)
+	target_link_libraries(wombatcommonstatic ws2_32 advapi32 kernel32 Pdh shlwapi)
 endif()
 
 file(GLOB wombat_inst_includes wombat/*.h ${system}/wombat/*.h)
+if(WIN32)
+    file(GLOB wombat_platform_inst_includes ${system}/*.h)
+endif()
 list(APPEND inst_includes
      destroyHandle.h
      list.h
@@ -54,14 +59,18 @@ list(APPEND inst_includes
      timers.h)
 
 set_target_properties(wombatcommon PROPERTIES OUTPUT_NAME "wombatcommon${OPENMAMA_LIBRARY_SUFFIX}")
-install(TARGETS wombatcommon
+set_target_properties(wombatcommonstatic PROPERTIES OUTPUT_NAME "wombatcommon${OPENMAMA_LIBRARY_STATIC_SUFFIX}")
+install(TARGETS wombatcommon wombatcommonstatic
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
 install(FILES ${wombat_inst_includes}
 	DESTINATION include/wombat)
-
+if(WIN32)
+    install(FILES ${wombat_platform_inst_includes}
+        DESTINATION include/${system})
+endif()
 install(FILES ${inst_includes}
 	DESTINATION include)
 

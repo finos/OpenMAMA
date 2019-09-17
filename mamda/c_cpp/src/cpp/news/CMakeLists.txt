@@ -18,7 +18,13 @@ add_library(mamdanews SHARED ${sources})
 target_link_libraries(mamdanews mamda)
 
 set_target_properties(mamdanews PROPERTIES OUTPUT_NAME "mamdanews${OPENMAMA_LIBRARY_SUFFIX}")
-install(TARGETS mamdanews
+
+add_library(mamdanewsstatic STATIC ${sources})
+target_link_libraries(mamdanewsstatic mamdastatic)
+
+set_target_properties(mamdanewsstatic PROPERTIES OUTPUT_NAME "mamdanews${OPENMAMA_LIBRARY_STATIC_SUFFIX}")
+
+install(TARGETS mamdanews mamdanewsstatic
 		RUNTIME DESTINATION bin
 		LIBRARY DESTINATION lib
 		ARCHIVE DESTINATION lib)
