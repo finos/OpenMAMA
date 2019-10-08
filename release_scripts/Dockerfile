@@ -67,5 +67,5 @@ RUN cp profiles/profile.openmama . && rm -rf profiles
 # When RPMs are generated, they'll go here
 WORKDIR $RELEASE_DIR
 
-# Generate the package (deb / rpm / tarball). Will become script
+# Generate the package (deb / rpm / tarball).
 CMD $SRC_DIR/release_scripts/build-package.sh

@@ -89,5 +89,7 @@ artifacts:
     name: OpenMAMA RPM Package
   - path: '*.zip'
     name: OpenMAMA Windows Release
+  - path: '*.tar.gz'
+    name: OpenMAMA Linux Install Tarball
 
 test: off
