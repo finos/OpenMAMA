@@ -36,3 +36,5 @@ ELSE ()
       MESSAGE(FATAL_ERROR "Could not find Proton library")
    ENDIF ()
 ENDIF ()
+
+FILE(GLOB PROTON_LIBRARY_FILES ${PROTON_LIBRARY}*)
