@@ -222,7 +222,7 @@ init (transportImpl* transport, int createResponder)
 
     snprintf(searchName, sizeof(searchName), "mama.%s.%s", middleware, DQ_ENABLED_PROP);
     propertyVal = mama_getProperty(searchName);
-    
+
     if(NULL != propertyVal)
     {
         self->mDqEnabled = strtobool(mama_getProperty(searchName));
@@ -238,7 +238,7 @@ init (transportImpl* transport, int createResponder)
             self->mDqEnabled = strtobool(mama_getProperty(searchName));
         }
     }
-    
+
     return MAMA_STATUS_OK;
 }
 
@@ -414,7 +414,7 @@ static void setPreInitialStrategy (mamaTransport transport)
     }
     else
     {
-        mama_log (MAMA_LOG_LEVEL_NORMAL,
+        mama_log (MAMA_LOG_LEVEL_FINE,
                   "%s: Using default preinitial strategy: ON_GAP", self->mName);
     }
 }
@@ -447,12 +447,12 @@ static void setDQStrategy (mamaTransport transport)
 
     if (self->mDQStratScheme == DQ_SCHEME_INGORE_DUPS)
     {
-        mama_log (MAMA_LOG_LEVEL_NORMAL,
+        mama_log (MAMA_LOG_LEVEL_FINE,
                   "%s: Using dq strategy: DQ_SCHEME_IGNORE_DUPS", self->mName);
     }
     else
     {
-        mama_log (MAMA_LOG_LEVEL_NORMAL,
+        mama_log (MAMA_LOG_LEVEL_FINE,
                   "%s: Using default dq strategy: DQ_SCHEME_DELIVER_ALL", self->mName);
     }
 }
@@ -485,7 +485,7 @@ static void setFtStrategy (mamaTransport transport)
     }
     else
     {
-        mama_log (MAMA_LOG_LEVEL_NORMAL,
+        mama_log (MAMA_LOG_LEVEL_FINE,
                   "%s: Using default ft strategy: DQ_FT_DO_NOT_WAIT_FOR_RECAP", self->mName);
     }
 }
@@ -500,9 +500,9 @@ static void enablePreRecapCache (mamaTransport transport, const char* middleware
 
     self->mPreRecapCacheEnabled = strtobool (mama_getProperty (propNameBuf));
 
-    mama_log (MAMA_LOG_LEVEL_NORMAL,
+    mama_log (MAMA_LOG_LEVEL_FINE,
               "%s: Pre-Recap cache %s", self->mName, self->mPreRecapCacheEnabled ? "enabled" : "disabled");
-}    
+}
 void mamaTransport_disableRefresh(mamaTransport transport, uint8_t disable)
 {
     self->mDisableRefresh=disable;
@@ -950,7 +950,7 @@ mamaTransport_create (mamaTransport transport,
         }
         else
         {
-            mama_log(MAMA_LOG_LEVEL_WARN,
+            mama_log(MAMA_LOG_LEVEL_FINE,
                      "mamaTransport_create(): No entitlement bridge specified for transport %s. Defaulting to %s.",
                      self->mName,
                      gEntitlementBridges[0]);
@@ -1963,7 +1963,7 @@ mamaTransportImpl_processAdvisory (mamaTransport transport,
                         self->mCause, self->mPlatformInfo,
                         self->mTportClosure);
     }
-    
+
 
     /* Clear the platforminfo and cause, these should not be used after this
      * point. */
@@ -2880,7 +2880,7 @@ mama_status mamaTransportImpl_getDqEnabled(mamaTransport transport, int* result)
         *result = self->mDqEnabled;
         return MAMA_STATUS_OK;
     }
-    
+
     return MAMA_STATUS_NULL_ARG;
 }
 
@@ -2889,7 +2889,7 @@ mama_status mamaTransportImpl_setDqPluginInfo (mamaTransport transport, mamaPlug
     if (NULL != transport)
     {
         self->mDqPluginInfo = pluginInfo;
-        return MAMA_STATUS_OK;   
+        return MAMA_STATUS_OK;
     }
 
     return MAMA_STATUS_NULL_ARG;
