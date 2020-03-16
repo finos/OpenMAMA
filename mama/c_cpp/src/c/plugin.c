@@ -203,7 +203,7 @@ mama_initPlugins(void)
     mama_log (MAMA_LOG_LEVEL_FINE, "mama_initPlugins(): Initialising mamacenterprise");
     mama_loadPlugin ("mamacenterprise");
 #endif /* WITH_ENTERPRISE */
-
+    
     mama_loadPlugin("dqstrategy");
 
     return MAMA_STATUS_OK;
@@ -265,7 +265,7 @@ mama_loadPlugin (const char* pluginName)
 
         if (MAMA_STATUS_OK == status)
         {
-            mama_log (MAMA_LOG_LEVEL_FINE,
+            mama_log (MAMA_LOG_LEVEL_NORMAL,
                      "mama_loadPlugin(): "
                      "Sucessfully registered plugin functions for [%s]",
                      pluginName);
@@ -291,7 +291,7 @@ mama_loadPlugin (const char* pluginName)
 
         if (MAMA_STATUS_OK == status)
         {
-            mama_log (MAMA_LOG_LEVEL_FINE,
+            mama_log (MAMA_LOG_LEVEL_NORMAL,
                       "mama_loadPlugin(): Successfully run the init hook for mama plugin [%s]",
                        aPluginImpl->mPluginName);
         }
@@ -367,7 +367,7 @@ mama_shutdownPlugins (void)
                 }
                 else
                 {
-                     mama_log (MAMA_LOG_LEVEL_FINE,
+                     mama_log (MAMA_LOG_LEVEL_WARN,
                                 "mama_shutdownPlugins(): Mama Plugin [%s] successfully closed",
                                 gPlugins[plugin]->mPluginName);
                 }
@@ -469,7 +469,7 @@ mamaPlugin_fireShutdownHook (void)
 
 mama_status
 mamaPlugin_fireSubscriptionPostCreateHook (mamaSubscription subscription)
-{
+{ 
     mama_status      status           = MAMA_STATUS_OK;
     int              plugin           = 0;
     int              tPluginNo        = 0;
@@ -517,7 +517,7 @@ mamaPlugin_fireSubscriptionPreMsgHook (mamaSubscription subscription, int msgTyp
             }
         }
     }
-
+    
     return status;
 }
 
@@ -544,7 +544,7 @@ mamaPlugin_fireSubscriptionDestroyHook (mamaSubscription subscription)
             }
         }
     }
-
+    
     return status;
 }
 
