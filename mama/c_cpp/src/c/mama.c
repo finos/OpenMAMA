@@ -369,20 +369,20 @@ mamaInternal_loadProperties (const char *path,
     if( !path )
     {
         path = getenv (WOMBAT_PATH_ENV);
-        mama_log (MAMA_LOG_LEVEL_NORMAL, "Using path specified in %s",
+        mama_log (MAMA_LOG_LEVEL_FINE, "Using path specified in %s",
             WOMBAT_PATH_ENV);
     }
 
     if( !filename )
     {
        filename = PROPERTY_FILE;
-       mama_log (MAMA_LOG_LEVEL_NORMAL,
+       mama_log (MAMA_LOG_LEVEL_FINE,
                  "Using default properties file %s",
                  PROPERTY_FILE);
     }
 
-    mama_log (MAMA_LOG_LEVEL_NORMAL,
-              "Attempting to load MAMA properties from %s", path ? path : "");
+    mama_log (MAMA_LOG_LEVEL_FINE,
+              "Attempting to load %s from %s", filename, path ? path : "");
 
     fileProperties = properties_Load (path, filename);
 
@@ -390,7 +390,7 @@ mamaInternal_loadProperties (const char *path,
      * non-defaults were specified */
     if( fileProperties == 0 && (!usingDefaults || 0 == properties_Count(gProperties)))
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open properties file.");
+        mama_log (MAMA_LOG_LEVEL_ERROR, "Failed to open %s from %s.", filename, path);
         return;
     }
 
@@ -817,7 +817,7 @@ mama_openWithPropertiesCount (const char* path,
     if (0 != gImpl.myRefCount)
     {
         gImpl.myRefCount++;
-        
+
         if (count)
             *count = gImpl.myRefCount;
 
@@ -872,7 +872,7 @@ mama_openWithPropertiesCount (const char* path,
     }
 
 
-    /* Check mama.properteis for default payload bridge to use when calling mamaMsg_create. 
+    /* Check mama.properteis for default payload bridge to use when calling mamaMsg_create.
      * The payload bridge will be loaded before any middleware or payload bridges.
      */
     if (!gDefaultPayload)
@@ -880,14 +880,14 @@ mama_openWithPropertiesCount (const char* path,
         prop = properties_Get (gProperties, "mama.payload.default");
         if (prop != NULL)
         {
-            mama_log(MAMA_LOG_LEVEL_FINE, 
+            mama_log(MAMA_LOG_LEVEL_FINE,
                      "mama.payload.default=%s detected, setting default payload.",
                      prop);
 
             result = mama_loadPayloadBridge (&payloadImpl, prop);
             if (MAMA_STATUS_OK != result)
             {
-                mama_log(MAMA_LOG_LEVEL_ERROR, 
+                mama_log(MAMA_LOG_LEVEL_ERROR,
                          "Could not load defauult payload [%s].",
                          prop);
             }
@@ -901,7 +901,7 @@ mama_openWithPropertiesCount (const char* path,
         }
     }
 
-    /* Read any payload bridge names from the properties file, and load 
+    /* Read any payload bridge names from the properties file, and load
      * them before any of the other middleware bridges.
      */
     result = mamaInternal_autoloadPayloadBridges ( );
@@ -953,11 +953,11 @@ mama_openWithPropertiesCount (const char* path,
 
     if (strlen( (char*) gEntitlementBridges))
     {
-        mama_log (MAMA_LOG_LEVEL_WARN, "%s (entitled)",mama_version);
+        mama_log (MAMA_LOG_LEVEL_FINE, "%s (entitled)",mama_version);
     }
     else
     {
-        mama_log (MAMA_LOG_LEVEL_WARN, "%s (non entitled)",mama_version);
+        mama_log (MAMA_LOG_LEVEL_FINE, "%s (non entitled)",mama_version);
     }
 
     /* Iterate the currently loaded middleware bridges, log their version, and
@@ -965,12 +965,12 @@ mama_openWithPropertiesCount (const char* path,
      */
     for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
     {
-        mamaMiddlewareLib* middlewareLib 
+        mamaMiddlewareLib* middlewareLib
             = (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
 
         if (middlewareLib)
         {
-            mama_log (MAMA_LOG_LEVEL_WARN,
+            mama_log (MAMA_LOG_LEVEL_FINE,
                     middlewareLib->bridge->bridgeGetVersion());
 
             /* Increment the reference count for each bridge loaded */
@@ -987,7 +987,7 @@ mama_openWithPropertiesCount (const char* path,
                   "At least one bridge must be specified");
         if (count)
             *count = gImpl.myRefCount;
-        
+
         wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
@@ -1001,7 +1001,7 @@ mama_openWithPropertiesCount (const char* path,
                   "At least one payload must be specified");
         if (count)
             *count = gImpl.myRefCount;
-        
+
         wthread_static_mutex_unlock (&gImpl.myLock);
         return MAMA_STATUS_NO_BRIDGE_IMPL;
     }
@@ -1125,13 +1125,13 @@ mama_statsInit (void)
         propVal           = properties_Get (gProperties, "mama.statslogging.user.publishing");
         if ( propVal != NULL)
             gPublishUserStats = strtobool(propVal);
-        
+
         if (gLogGlobalStats || gPublishGlobalStats) gGenerateGlobalStats=1;
         if (gLogTransportStats || gPublishTransportStats) gGenerateTransportStats=1;
         if (gLogQueueStats || gPublishQueueStats) gGenerateQueueStats=1;
         if (gLogLbmStats || gPublishLbmStats) gGenerateLbmStats=1;
         if (gLogUserStats || gPublishUserStats) gGenerateUserStats=1;
-          
+
         mama_setupStatsGenerator();
 
         mamaInternal_enableStatsLogging();
@@ -1141,7 +1141,7 @@ mama_statsInit (void)
          */
         for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
         {
-            mamaMiddlewareLib* middlewareLib = 
+            mamaMiddlewareLib* middlewareLib =
                 (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
 
             if (middlewareLib && middlewareLib->bridge)
@@ -1174,7 +1174,7 @@ mama_setupStatsGenerator (void)
 
         return result;
     }
-    
+
     /* No publishing, therefore no middleware needs to be specified
        in mama.properties.  Instead, check through loaded bridges */
     if (!mamaInternal_statsPublishingEnabled())
@@ -1257,7 +1257,7 @@ mama_setProperty (const char* name,
     if (!name||!value)
         return MAMA_STATUS_NULL_ARG;
 
-    mama_log (MAMA_LOG_LEVEL_NORMAL,"Setting property: %s with value: %s",
+    mama_log (MAMA_LOG_LEVEL_FINE ,"Setting property: %s with value: %s",
                                    name, value);
 
     if( 0 == properties_setProperty (gProperties,
@@ -1353,7 +1353,7 @@ mama_closeCount (unsigned int* count)
                 /* Remove from indexed list of entitlements libraries. */
                 gImpl.entitlements.byIndex[bridgeCount] = NULL;
 
-                /* Destroy the MAMA-level bridge and underlying implementation struct. */    
+                /* Destroy the MAMA-level bridge and underlying implementation struct. */
                 mamaEntitlementBridge_destroy(entLib->bridge);
                 entLib->bridge = NULL;
 
@@ -1976,7 +1976,7 @@ mama_registerEntitlementCallbacks (const mamaEntitlementCallbacks* entitlementCa
     gEntitlementCallbacks = *entitlementCallbacks;
     return MAMA_STATUS_OK;
 }
- 
+
 void MAMACALLTYPE mamaImpl_entitlementDisconnectCallback (
                             const sessionDisconnectReason  reason,
                             const char * const             userId,
@@ -2053,7 +2053,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     void*                   vp              = NULL;
 
     /* Indicates if the payload bridge struct was allocated by MAMA or
-     * by the bridge 
+     * by the bridge
      */
     if (!impl || !payloadName)
     {
@@ -2086,7 +2086,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     if (payloadLib && payloadLib->bridge)
     {
         status = MAMA_STATUS_OK;
-        mama_log (MAMA_LOG_LEVEL_NORMAL,
+        mama_log (MAMA_LOG_LEVEL_FINE,
                   "mama_loadPayloadBridgeInternal (): "
                   "Payload bridge [%s] already loaded. Returning previously loaded bridge.",
                   payloadName);
@@ -2296,7 +2296,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     if (WTABLE_INSERT_SUCCESS != status)
     {
         status = MAMA_STATUS_NO_BRIDGE_IMPL;
-        mama_log (MAMA_LOG_LEVEL_ERROR, 
+        mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadPayloadBridgeInternal (): "
                   "Failed to register payload [%s] with MAMA.",
                   payloadName);
@@ -2453,7 +2453,7 @@ mama_loadEntitlementBridgeInternal(const char* name)
     if (NULL == entBridge)
     {
         status = MAMA_STATUS_NOMEM;
-        mama_log(MAMA_LOG_LEVEL_ERROR, 
+        mama_log(MAMA_LOG_LEVEL_ERROR,
                 "mama_loadEntitlementBridgeInternal (): "
                  "Could not allocate memory for %s entitlement bridge.",
                  name);
@@ -2488,14 +2488,14 @@ mama_loadEntitlementBridgeInternal(const char* name)
     if (NULL == entitlementLib)
     {
         status = MAMA_STATUS_NOMEM;
-        mama_log(MAMA_LOG_LEVEL_ERROR, 
+        mama_log(MAMA_LOG_LEVEL_ERROR,
                  "mama_loadEntitlementBridgeInternal (): "
                  "Could not allocate entitlementLib %s.",
                  name);
         goto error_handling_unlock;
     }
 
-    entitlementLib->bridge        = entBridge; 
+    entitlementLib->bridge        = entBridge;
     entitlementLib->library       = entitlementLibHandle;
 
     insertCheck = wtable_insert (gImpl.entitlements.table,
@@ -2601,7 +2601,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     if (middlewareLib && middlewareLib->bridge)
     {
         status = MAMA_STATUS_OK;
-        mama_log (MAMA_LOG_LEVEL_NORMAL,
+        mama_log (MAMA_LOG_LEVEL_FINE,
                   "mama_loadBridgeWithPathInternal (): "
                   "Middleware bridge [%s] already loaded. Returning previously loaded bridge.",
                   middlewareName);
@@ -2722,7 +2722,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         LIB_HANDLE  baseLibHandle = NULL;
         const char* baseLibImplName = "mamabaseimpl";
 
-        mama_log (MAMA_LOG_LEVEL_ERROR,
+        mama_log (MAMA_LOG_LEVEL_FINE,
                   "mama_loadmamaPayload(): "
                   "Loading base bridge library for %s",
                   middlewareImplName);
@@ -2819,7 +2819,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
               bridgeMamaVersion.mRelease,
               bridgeMamaVersion.mExtra ? bridgeMamaVersion.mExtra : "");
 
-    mama_log (MAMA_LOG_LEVEL_NORMAL,
+    mama_log (MAMA_LOG_LEVEL_FINE,
              "mama_loadBridge(): "
              "Sucessfully loaded %s middleware from library [%s]",
              middlewareName, middlewareImplName);
@@ -3102,7 +3102,7 @@ mamaInternal_init (void)
     };
 
     /* Lock the gImpl to ensure we don't clobber something else trying to
-     * access at the same time. 
+     * access at the same time.
      */
     wthread_static_mutex_lock (&gImpl.myLock);
 
@@ -3130,7 +3130,7 @@ mamaInternal_init (void)
                                                "Middlewares",
                                                MIDDLEWARE_TABLE_SIZE);
 
-        if (MAMA_STATUS_OK != status) 
+        if (MAMA_STATUS_OK != status)
         {
             wthread_static_mutex_unlock (&gImpl.myLock);
             return status;
@@ -3340,12 +3340,12 @@ int mama_getGenerateTransportStats()
 {
     return gGenerateTransportStats;
 }
-/** 
+/**
  * Get Middleware Bridge by middleware name
  *
  * @param bridge Pointer to a mamaBridge object.
  * @param middlewareName String denoting the middleware to return
- * @return mama_status MAMA_STATUS_OK if successful. 
+ * @return mama_status MAMA_STATUS_OK if successful.
  *                     MAMA_STATUS_NOT_FOUND if no bridge available.
  */
 MAMAExpDLL
@@ -3371,11 +3371,11 @@ mama_getMiddlewareBridge (mamaBridge *bridge, const char *middlewareName)
              "mama_getMiddlewareBridge (): "
              "Searching for existing bridge [%s]",
              middlewareName);
-    
+
     middlewareLib = (mamaMiddlewareLib*)wtable_lookup (
                                      gImpl.middlewares.table,
                                      middlewareName);
-    
+
     if (middlewareLib && middlewareLib->bridge)
     {
         status = MAMA_STATUS_OK;
@@ -3403,7 +3403,7 @@ mama_getMiddlewareBridge (mamaBridge *bridge, const char *middlewareName)
 
 /**
  * Get Payload bridge by payload name
- * 
+ *
  * @param payloadBridge Pointer to the mamaPayloadBridge object.
  * @param payloadName String denoting the payload to return
  * @return mama_status MAMA_STATUS_OK if successful
@@ -3411,7 +3411,7 @@ mama_getMiddlewareBridge (mamaBridge *bridge, const char *middlewareName)
  */
 MAMAExpDLL
 extern mama_status
-mama_getPayloadBridge (mamaPayloadBridge *payloadBridge, 
+mama_getPayloadBridge (mamaPayloadBridge *payloadBridge,
                        const char        *payloadName)
 {
     mama_status status         = MAMA_STATUS_OK;
@@ -3426,7 +3426,7 @@ mama_getPayloadBridge (mamaPayloadBridge *payloadBridge,
     /* Lock here to avoid accidentally grabbing a payload mid load. */
     wthread_static_mutex_lock (&gImpl.myLock);
 
-    mama_log (MAMA_LOG_LEVEL_FINEST, 
+    mama_log (MAMA_LOG_LEVEL_FINEST,
               "mama_getPayloadBridge ():"
               "Searching for existing payload [%s]",
               payloadName);
@@ -3463,7 +3463,7 @@ mama_getPayloadBridge (mamaPayloadBridge *payloadBridge,
  * Automatically load any payload bridges specified in the configuration
  * files using the "mama.payload.autoload.*" property.
  *
- * @return mama_status Always returns MAMA_STATUS_OK. Logs indicate failure. 
+ * @return mama_status Always returns MAMA_STATUS_OK. Logs indicate failure.
  */
 mama_status mamaInternal_autoloadPayloadBridges (void)
 {
@@ -3474,7 +3474,7 @@ mama_status mamaInternal_autoloadPayloadBridges (void)
                 "Attempting to autoload payload bridges.");
 
     /* Ensure that we have loaded the properties file before we start
-     * loading values. 
+     * loading values.
      */
     if (!gProperties) {
         mamaInternal_loadProperties (NULL, NULL);
