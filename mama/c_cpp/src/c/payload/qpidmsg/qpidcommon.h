@@ -226,6 +226,12 @@ typedef struct qpidmsgPayloadImpl_
   =                   Public implementation prototypes                    =
   =========================================================================*/
 
+void
+qpidmsgPayloadInternal_checkLengthAndIncDest (mama_size_t  written,
+                                              mama_size_t* length,
+                                              char**        dest);
+
+
 /**
  * This function will advise the caller what the MAMA field type equivalent of
  * the provided proton data type is. Note that this includes types which
