@@ -37,14 +37,21 @@
 #include "qpidcommon.h"
 
 
-static inline void
-qpidmsgPayloadInternal_checkLengthAndIncDest (mama_size_t  written, 
-                                              mama_size_t* length, 
-                                              char**        dest);
-
 /*=========================================================================
   =                  Public implementation functions                      =
   =========================================================================*/
+
+inline void
+qpidmsgPayloadInternal_checkLengthAndIncDest (mama_size_t  written,
+                                              mama_size_t* length,
+                                              char**       dest)
+{
+    if (written > 0 && written <= *length)
+    {
+        *dest   += written;
+        *length -= written;
+    }
+}
 
 mamaFieldType
 qpidmsgPayloadInternal_toMamaType (pn_type_t type)
@@ -95,18 +102,6 @@ qpidmsgPayloadInternal_toMamaStatus (int status)
     case PN_TIMEOUT:   return MAMA_STATUS_TIMEOUT;
     case PN_INTR:      return MAMA_STATUS_PLATFORM;
     default:           return MAMA_STATUS_PLATFORM;
-    }
-}
-
-inline void
-qpidmsgPayloadInternal_checkLengthAndIncDest (mama_size_t  written, 
-                                              mama_size_t* length, 
-                                              char**       dest)
-{
-    if (written > 0 && written <= *length)
-    {
-        *dest   += written;
-        *length -= written;
     }
 }
 
@@ -262,7 +257,7 @@ qpidmsgPayloadInternal_elementToString (pn_data_t* payload,
 
             written = qpidmsgPayloadInternal_elementToString (payload,
                                                              atom,
-                                                             dest, 
+                                                             dest,
                                                              len);
 
             qpidmsgPayloadInternal_checkLengthAndIncDest (written, &len, &dest);
