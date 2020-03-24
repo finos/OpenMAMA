@@ -381,7 +381,7 @@ mamaInternal_loadProperties (const char *path,
                  PROPERTY_FILE);
     }
 
-    mama_log (MAMA_LOG_LEVEL_FINE,
+    mama_log (MAMA_LOG_LEVEL_NORMAL,
               "Attempting to load %s from %s", filename, path ? path : "");
 
     fileProperties = properties_Load (path, filename);
