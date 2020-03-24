@@ -47,7 +47,7 @@ noopEntitlementBridge_destroy(mamaEntitlementBridge bridge)
 mama_status
 noopEntitlementBridge_init(entitlementBridge* bridge)
 {
-    mama_log (MAMA_LOG_LEVEL_FINE,
+    mama_log (MAMA_LOG_LEVEL_WARN,
               "\n********************************************************************************\n"
               "Note: This build of the MAMA API is not enforcing entitlement checks.\n"
               "Please see the Licensing file for details\n"
