@@ -70,9 +70,3 @@ fpm -s dir \
         $DEPENDS_FLAGS \
         -p openmama-$VERSION-1.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE \
         --description "OpenMAMA high performance Market Data API" .
-
-# Only generate the tarball for RHEL 7
-if [ "$DISTRIB_PACKAGE_QUALIFIER" == "el7" ]
-then
-    tar -C $PREFIX -czf openmama-$VERSION.linux.x86_64.tar.gz --transform "s,^\./opt/openmama/,openmama-$VERSION/," ./
-fi
