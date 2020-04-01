@@ -42,8 +42,8 @@ environment:
 
 init:
 # TODO: Make programatic
-- cmd: set VERSION=6.3.0rc1
-- sh: export VERSION=6.3.0rc1
+- cmd: set VERSION=6.3.0
+- sh: export VERSION=6.3.0
 - cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\openmama-%VERSION%.win.%PLATFORM%
 
 # Build chain tooling
@@ -89,5 +89,7 @@ artifacts:
     name: OpenMAMA RPM Package
   - path: '*.zip'
     name: OpenMAMA Windows Release
+  - path: '*.tar.gz'
+    name: OpenMAMA Linux Install Tarball
 
 test: off

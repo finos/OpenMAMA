@@ -29,14 +29,15 @@ fi
 if [ -f /etc/redhat-release ]
 then
     DISTRIB_RELEASE=$(cat /etc/redhat-release | tr " " "\n" | egrep "^[0-9]")
+    DEPENDS_FLAGS="-d libuuid -d qpid-proton-c -d libevent -d ncurses -d apr -d java-1.8.0-openjdk"
     if [ -f /etc/fedora-release ]
     then
         DISTRIB_ID=$FEDORA
+        DEPENDS_FLAGS="$DEPENDS_FLAGS -d libnsl2"
     else
         DISTRIB_ID=$RHEL
     fi
     PACKAGE_TYPE=rpm
-    DEPENDS_FLAGS="-d libuuid -d qpid-proton-c -d libevent -d ncurses -d apr -d java-1.8.0-openjdk -d libnsl2"
 fi
 
 if [ -f /etc/lsb-release ]
@@ -44,7 +45,7 @@ then
     # Will set DISTRIB_ID and DISTRIB_RELEASE
     source /etc/lsb-release
     PACKAGE_TYPE=deb
-    DEPENDS_FLAGS="-d uuid -d libevent -d libzmq3 -d openjdk-8-jdk -d ncurses -d libapr1"
+    DEPENDS_FLAGS="-d uuid -d libevent-dev -d libzmq3-dev -d openjdk-8-jdk -d ncurses-dev -d libapr1-dev"
 fi
 
 if [ "$DISTRIB_ID" == "$FEDORA" ]
@@ -70,3 +71,9 @@ fpm -s dir \
         $DEPENDS_FLAGS \
         -p openmama-$VERSION-1.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE \
         --description "OpenMAMA high performance Market Data API" .
+
+# Only generate the tarball for RHEL 7
+if [ "$DISTRIB_PACKAGE_QUALIFIER" == "el7" ]
+then
+    tar -C $PREFIX -czf openmama-$VERSION.linux.x86_64.tar.gz --transform "s,^\./opt/openmama/,openmama-$VERSION/," ./
+fi
