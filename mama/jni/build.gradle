@@ -3,6 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 def mamaVersion = project.findProperty('mamaVersion') ?: '6.2.2-1'
+def mamaJniHeaderDir = project.findProperty('mamaJniHeaderDir') ?: 'mamajni'
 
 if (!project.hasProperty('legacyNaming')) {
   group = "org.openmama"
@@ -39,6 +40,10 @@ task javadocJar(type: Jar) {
 task sourcesJar(type: Jar) {
     classifier = 'sources'
     from sourceSets.main.allSource
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs += ["-h", mamaJniHeaderDir]
 }
 
 artifacts {
