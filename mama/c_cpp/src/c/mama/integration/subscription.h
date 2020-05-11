@@ -239,6 +239,19 @@ mamaSubscription_setupBasic(
     const char*               symbol,
     void*                     closure);
 
+/**
+ * Register additional interest in this reference. Will be decremented on calls
+ * to deallocate. This is for external references to this subscription which
+ * may otherwise try and deallocate from multiple threads.
+ *
+ * @param subscription The subscription.
+ *
+ * @return int The updated reference count after this registration (informative
+ *             only)
+ */
+MAMAExpDLL
+int mamaSubscriptionImpl_registerReference(
+    mamaSubscription          subscription);
 
 #if defined (__cplusplus)
 }

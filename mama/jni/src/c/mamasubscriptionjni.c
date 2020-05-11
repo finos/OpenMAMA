@@ -1339,6 +1339,9 @@ Java_com_wombat_mama_MamaSubscription_allocateSubscription(JNIEnv* env, jobject 
         return;
     }
 
+    /* Increment reference count for Java App / GC */
+    mamaSubscriptionImpl_registerReference(subscription);
+
     /*Add the subscription pointer to the Java object field*/
     (*env)->SetLongField(env, this, subscriptionPointerFieldId_g,
                          CAST_POINTER_TO_JLONG(subscription));

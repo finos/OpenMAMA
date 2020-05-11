@@ -65,9 +65,6 @@ extern int gGenerateTransportStats;
 #define WOMBAT_SUBSCRIPTION_ROOT_NORMAL "_MD"
 #define WOMBAT_SUBSCRIPTION_ROOT_DICT   "_MDDD"
 
-#define DEFULAT_RETRIES  3
-#define DEFUALT_TIMEOUT  10
-
 #define DEFAULT_PRE_INITIAL_CACHE 10
 
 #define MINIMUM_GROUP_SIZE_HINT 100
@@ -143,6 +140,10 @@ typedef struct mamaSubscriptionImpl_
      * instead be set by calling the mamaSubscriptionImpl_setState private function.
      */
     wInterlockedInt mState;
+
+    /* This is a reference count for wrappers etc using this object. The object
+     * will not be deallocated until this reaches zero */
+    wInterlockedInt mReferenceCount;
 
     /* The queue lock handle. */
     mamaQueueLockHandle mLockHandle;
@@ -417,14 +418,14 @@ mamaSubscription_allocate (
         mama_log(MAMA_LOG_LEVEL_FINE, "Subscription state machine logging set to %d", impl->mStateMachineTrace);
     }
 
-    /* Initialise the state. */
+    /* Initialise the atomics. */
     wInterlocked_initialize(&impl->mState);
+    wInterlocked_initialize(&impl->mReferenceCount);
 
     /* Set the initial state of the subscription now that the memory has been allocated. */
     mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_ALLOCATED);
 
     *result = impl;
-
 
     return MAMA_STATUS_OK;
 }
@@ -923,6 +924,7 @@ mamaSubscription_initialize (mamaSubscription subscription)
     {
         /*Delegate to the correct bridge implementation*/
             mamaMsgCallbacks    cb;
+            mama_status         status = MAMA_STATUS_NULL_ARG;
 
             cb.onCreate = self->mUserCallbacks.onCreate;
             cb.onError = self->mUserCallbacks.onError;
@@ -932,7 +934,7 @@ mamaSubscription_initialize (mamaSubscription subscription)
             cb.onRecapRequest = self->mUserCallbacks.onRecapRequest;
             cb.onDestroy = mamaSubscriptionImpl_onSubscriptionDestroyed;
 
-            self->mBridgeImpl->bridgeMamaSubscriptionCreate
+            status = self->mBridgeImpl->bridgeMamaSubscriptionCreate
                                       (&self->mSubscBridge,
                                        self->mSubscSource,
                                        self->mSubscSymbol,
@@ -941,6 +943,17 @@ mamaSubscription_initialize (mamaSubscription subscription)
                                        cb,
                                        self,
                                        self->mClosure);
+            if (status == MAMA_STATUS_OK)
+            {
+                /* Bridge may trigger callbacks, so increment reference for bridge */
+                wInterlocked_increment(&self->mReferenceCount);
+            }
+            else
+            {
+                mama_log (MAMA_LOG_LEVEL_ERROR,
+                          "Could not create bridge subscription. [%s]",
+                          mamaStatus_stringForStatus (status));
+            }
     }
     if (self->mRequiresInitial)
     {
@@ -3058,11 +3071,11 @@ mama_status mamaSubscriptionImpl_completeBasicInitialisation(mamaSubscription su
 
             if(MAMA_STATUS_OK == ret)
             {
-
                 self->mLockHandle = mamaQueue_incrementObjectCount(impl->mQueue, subscription);
                 /* The subscription is now active, set this before the onCreate callback. */
                 mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_ACTIVATED);
-
+                /* Bridge may trigger callbacks, so increment reference for bridge */
+                wInterlocked_increment(&self->mReferenceCount);
             }
         }
     }
@@ -3223,6 +3236,27 @@ mama_status mamaSubscriptionImpl_createBasic(
 
 void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl)
 {
+    int reference_count = wInterlocked_read(&impl->mReferenceCount);
+    /*
+     * Defer deallocation if not already decremented to zero (i.e. alloc but no
+     * create) and there are outstanding references
+     */
+    if (reference_count != 0
+        && (reference_count = wInterlocked_decrement(&impl->mReferenceCount)) > 0)
+    {
+        mama_log(MAMA_LOG_LEVEL_FINER,
+                 "Subscription %p has %d references - not deallocating yet",
+                 impl,
+                 reference_count);
+        return;
+    }
+    else
+    {
+        mama_log(MAMA_LOG_LEVEL_FINE,
+                 "Subscription %p has no further references - deallocating.",
+                 impl);
+    }
+
     /* Set the state to be de-allocated to at least show in the log that it has been completely removed. */
     mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEALLOCATED);
 
@@ -3231,8 +3265,9 @@ void mamaSubscriptionImpl_deallocate(mamaSubscriptionImpl *impl)
     /* Destroy the mutex. */
     wlock_destroy(impl->mCreateDestroyLock);
 
-    /* Destroy the state. */
+    /* Destroy the atomics. */
     wInterlocked_destroy(&impl->mState);
+    wInterlocked_destroy(&impl->mReferenceCount);
 
     mamaEntitlementBridge_destroySubscription (impl->mSubjectContext.mEntitlementSubscription);
 
@@ -3246,18 +3281,16 @@ void MAMACALLTYPE mamaSubscriptionImpl_onSubscriptionDestroyed(mamaSubscription 
     mamaSubscriptionImpl *impl = (mamaSubscriptionImpl *)subscription;
     if(NULL != impl)
     {
-
         if(NULL != impl->mQueue)
             mamaQueue_decrementObjectCount(&impl->mLockHandle, impl->mQueue);
 
         /* Lock the mutex. */
         wlock_lock(impl->mCreateDestroyLock);
 
-
         /* The next action will depend on the current state of the subscription. */
         switch(wInterlocked_read(&impl->mState))
         {
-                /* The subscription is being deactivated. */
+            /* The subscription is being deactivated. */
             case MAMA_SUBSCRIPTION_DEACTIVATING:
                 /* Change the state. */
                 mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DEACTIVATED);
@@ -3267,22 +3300,22 @@ void MAMACALLTYPE mamaSubscriptionImpl_onSubscriptionDestroyed(mamaSubscription 
                  * before the destroy callback has come in from the bridge.
                  */
             case MAMA_SUBSCRIPTION_DEALLOCATING :
-                 mamaSubscription_cleanup(subscription);
-                 wlock_unlock(impl->mCreateDestroyLock);
-                 mamaSubscriptionImpl_invokeDestroyedCallback(impl);
-                /* Delete the subscription. */
+                mamaSubscription_cleanup(subscription);
+                mamaSubscriptionImpl_invokeDestroyedCallback(impl);
+                wlock_unlock(impl->mCreateDestroyLock);
+                /* Delete the subscription - will decrement reference count. */
                 mamaSubscriptionImpl_deallocate(impl);
                 return;
-                break;
 
                 /* The subscription is being destroyed. */
             case MAMA_SUBSCRIPTION_DESTROYING :
-                 mamaSubscription_cleanup(subscription);
-                 mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DESTROYED);
-                  wlock_unlock(impl->mCreateDestroyLock);
-                 mamaSubscriptionImpl_invokeDestroyedCallback(impl);
-                 return;
-                break;
+                mamaSubscription_cleanup(subscription);
+                mamaSubscriptionImpl_setState(impl, MAMA_SUBSCRIPTION_DESTROYED);
+                /* Bridge is finished with this reference */
+                mamaSubscriptionImpl_invokeDestroyedCallback(impl);
+                wInterlocked_decrement(&impl->mReferenceCount);
+                wlock_unlock(impl->mCreateDestroyLock);
+                return;
 
                 /* The subscription must be de-activated then re-activated. */
             case MAMA_SUBSCRIPTION_REACTIVATING:
@@ -3301,6 +3334,10 @@ void MAMACALLTYPE mamaSubscriptionImpl_onSubscriptionDestroyed(mamaSubscription 
                 }
                 break;
         }
+
+        /* Bridge is finished with this reference, regardless */
+        wInterlocked_decrement(&impl->mReferenceCount);
+
        /* Unlock the mutex before the callback is invoked. */
         wlock_unlock(impl->mCreateDestroyLock);
     }
@@ -3314,6 +3351,11 @@ void mamaSubscriptionImpl_setState(mamaSubscriptionImpl *impl, mamaSubscriptionS
         mama_log(MAMA_LOG_LEVEL_ERROR, "Subscription %p is now at state %s.", impl, mamaSubscription_stringForState(state));
     else
         mama_log(MAMA_LOG_LEVEL_FINEST, "Subscription %p is now at state %s.", impl, mamaSubscription_stringForState(state));
+}
+
+int mamaSubscriptionImpl_registerReference(mamaSubscriptionImpl *impl)
+{
+    return wInterlocked_increment(&impl->mReferenceCount);
 }
 
 void mamaSubscriptionImpl_invokeDestroyedCallback(mamaSubscriptionImpl *impl)
