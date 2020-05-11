@@ -377,6 +377,8 @@ public class MamaListen
                     t.printStackTrace();
                 }
             }
+            /* Clean up references to allow GC to do housekeeping */
+            subscriptions.clear();
 
             /* Destroy all the queues. */
             if((queueGroup != null) && (numThreads > 0))
