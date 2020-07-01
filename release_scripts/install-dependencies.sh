@@ -74,6 +74,7 @@ fi
 # General ubuntu packages
 if [ "$DISTRIB_ID" = "$UBUNTU" ]
 then
+    export DEBIAN_FRONTEND=noninteractive
     apt-get update -qq
     apt-get install -y ruby ruby-dev build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
@@ -81,30 +82,29 @@ then
 	    unzip valgrind libapr1-dev python libz-dev
 fi
 
+# Ubuntu 20 specific software
+if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "20" ]
+then
+    apt-get install -y rubygems openjdk-13-jdk libqpid-proton11-dev
+fi
+
 # Ubuntu 18 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "18" ]
 then
-    apt-get install -y rubygems openjdk-8-jdk
+    apt-get install -y rubygems openjdk-11-jdk libqpid-proton8-dev
 fi
 
 # Ubuntu 16 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
 then
-    apt-get install -y openjdk-8-jdk libssl-dev
+    apt-get install -y openjdk-8-jdk libssl-dev libqpid-proton2-dev
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
-fi
-
-# Ubuntu 14 specific software
-if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "14" ]
-then
-    apt-get install -y openjdk-7-jdk libssl-dev
-    echo "export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
 test -d $DEPS_DIR || mkdir -p $DEPS_DIR
 
 # Centos and old ubuntu version specific dependencies (ruby is too old for FPM)
-if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" = "6") || ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" != "18") ]]
+if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" = "6") || ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" == "16") ]]
 then
     cd $DEPS_DIR
     curl -sL https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.1.tar.gz | tar xz
@@ -132,16 +132,3 @@ cd googletest-release-$VERSION_GTEST
 mkdir bld
 cd bld
 cmake -DCMAKE_INSTALL_PREFIX=/usr .. && make && make install
-
-# Ubuntu doesn't have this as a package yet so need to build
-if [ "$DISTRIB_ID" = "$UBUNTU" ]
-then
-    cd $DEPS_DIR
-    curl -sL http://github.com/apache/qpid-proton/archive/$VERSION_QPID.tar.gz | tar xz
-    cd qpid-proton-$VERSION_QPID
-    mkdir bld
-    cd bld
-    cmake -DBUILD_TESTING:BOOL=OFF -DBUILD_CPP:BOOL=OFF -DCMAKE_INSTALL_PREFIX=/usr ..
-    make
-    make install
-fi

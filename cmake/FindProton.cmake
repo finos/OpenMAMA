@@ -16,6 +16,7 @@ FIND_LIBRARY(PROTON_LIBRARY qpid-proton
 		${PROTON_ROOT}/lib
 		/usr/lib
 		/usr/local/lib
+		/usr/lib/x86_64-linux-gnu
 	NO_DEFAULT_PATH
 )
 
