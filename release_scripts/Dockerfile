@@ -51,7 +51,7 @@ RUN cmake --build . --config RelWithDebInfo --target install
 
 # Perform unit tests
 WORKDIR $SRC_DIR
-RUN test "$WITH_UNITTEST" = "ON" && OPENMAMA_INSTALL_DIR=$INSTALL_DIR python release_scripts/ci-run.py
+RUN test "$WITH_UNITTEST" = "ON" && OPENMAMA_INSTALL_DIR=$INSTALL_DIR python3 release_scripts/ci-run.py
 
 # Clean up Unit Test files - we don't need them any more
 WORKDIR $INSTALL_DIR

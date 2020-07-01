@@ -61,7 +61,7 @@ then
     # Ubuntu 16 specific software
     if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
     then
-        DEPENDS_FLAGS="$DEPENDS_FLAGS -d openjdk-8-jdk libssl libqpid-proton2"
+        DEPENDS_FLAGS="$DEPENDS_FLAGS -d openjdk-8-jdk -d libssl -d libqpid-proton2"
     fi
 fi
 

@@ -42,12 +42,12 @@ typedef struct mamaDictionaryImpl_
                                                         not always packed */
     size_t                      mDictSize;               /* size of array */
     size_t                      mSize;      /* number of entries in mDict */
-    mama_fid_t                  mMaxFid;   /* derived from the incoming 
+    mama_fid_t                  mMaxFid;   /* derived from the incoming
                                  mamaMsg, this will determine mDictSize */
     int                         mHasDuplicates; /* boolean - are there fields
                                    with the same name (and different fids)? */
     mamaDictionaryCallbackSet   mCallbackSet;
-    void*                       mClosure; 
+    void*                       mClosure;
     mamaSubscription            mSubscription;
     char*                       mFeedHost;
     char*                       mFeedName;
@@ -58,10 +58,9 @@ typedef struct mamaDictionaryImpl_
 static void determineMaxFid( mamaDictionary dictionary, mamaMsg msg );
 static void getAndStoreFields( mamaDictionary dictionary, mamaMsg msg );
 static void checkForDuplicateNames( mamaDictionary dictionary );
-static char* copyString( const char* str );
 static void checkFree( char** str );
 
-/*Used to grow the dictionary array if necessary to contain new field 
+/*Used to grow the dictionary array if necessary to contain new field
  descritors.*/
 static mama_status ensureCapacity (mamaDictionaryImpl* impl, mama_fid_t fid);
 
@@ -123,7 +122,7 @@ mamaDictionary_create (mamaDictionary* dictionary)
     impl->mMaxFid = 0;/*Default for when manually creating a dictionary*/
     impl->mFeedHost = NULL;
     impl->mFeedName = NULL;
-    
+
     *dictionary =  impl;
 
     return MAMA_STATUS_OK;
@@ -132,7 +131,7 @@ mamaDictionary_create (mamaDictionary* dictionary)
 mama_status
 mamaDictionary_destroy (mamaDictionary dictionary)
 {
-    uint32_t i = 0; 
+    uint32_t i = 0;
 
     if (dictionary == NULL) return MAMA_STATUS_OK;
 
@@ -141,7 +140,7 @@ mamaDictionary_destroy (mamaDictionary dictionary)
         for (i = 0; i <= self->mMaxFid; ++i)
         {
             if (self->mDict[i] )
-            {   
+            {
                 mamaFieldDescriptor_destroy (self->mDict[i]);
             }
         }
@@ -157,7 +156,7 @@ mamaDictionary_destroy (mamaDictionary dictionary)
     {
         free(self->mDict);
     }
-    
+
     checkFree(&self->mFeedName);
     checkFree(&self->mFeedHost);
 
@@ -169,7 +168,7 @@ mamaDictionary_destroy (mamaDictionary dictionary)
 
 
 mama_status
-mamaDictionary_setSubscPtr( mamaDictionary dictionary, 
+mamaDictionary_setSubscPtr( mamaDictionary dictionary,
                             mamaSubscription subsc )
 {
     self->mSubscription = subsc;
@@ -202,7 +201,7 @@ mamaDictionary_getFeedHost( mamaDictionary dictionary,
     {
         return MAMA_STATUS_INVALID_ARG;
     }
-  
+
     if (NULL != self->mFeedName)
     {
         *result = self->mFeedHost;
@@ -252,7 +251,7 @@ mamaDictionary_getFieldDescriptorByIndex (
 
     if (index >= self->mSize)
     {
-        return MAMA_STATUS_INVALID_ARG; 
+        return MAMA_STATUS_INVALID_ARG;
     }
 
 
@@ -272,9 +271,9 @@ mamaDictionary_getFieldDescriptorByIndex (
     return MAMA_STATUS_NOT_FOUND;
 }
 
-/* 
- * If more than one field has the same name, the one with the lowest 
- * fid is returned 
+/*
+ * If more than one field has the same name, the one with the lowest
+ * fid is returned
  */
 mama_status
 mamaDictionary_getFieldDescriptorByName(
@@ -293,7 +292,7 @@ mamaDictionary_getFieldDescriptorByName(
     for (i = 0; i < self->mDictSize; ++i)
     {
         rval = self->mDict[i];
-        
+
         if (rval &&
             (strcmp(mamaFieldDescriptor_getName(rval), fname) == 0))
         {
@@ -355,7 +354,7 @@ mamaDictionary_getMaxFid (
 }
 
 
-mama_status 
+mama_status
 mamaDictionary_getSize(
     mamaDictionary  dictionary,
     size_t*         value)
@@ -391,7 +390,7 @@ mamaDictionary_setCompleteCallback( mamaDictionary dictionary,
     if( self == NULL ) return MAMA_STATUS_NULL_ARG;
 
     self->mCallbackSet.onComplete = cb;
-    
+
     return MAMA_STATUS_OK;
 }
 
@@ -403,30 +402,30 @@ mamaDictionary_setTimeoutCallback( mamaDictionary dictionary,
     if( self == NULL ) return MAMA_STATUS_NULL_ARG;
 
     self->mCallbackSet.onTimeout = cb;
-    
+
     return MAMA_STATUS_OK;
 }
 
 
 mama_status
-mamaDictionary_setErrorCallback( 
+mamaDictionary_setErrorCallback(
     mamaDictionary dictionary,
     mamaDictionary_errorCallback cb )
 {
     if( self == NULL ) return MAMA_STATUS_NULL_ARG;
 
     self->mCallbackSet.onError = cb;
-    
+
     return MAMA_STATUS_OK;
 }
 
-static void 
+static void
 processMsg( mamaDictionary dictionary, const mamaMsg msg )
 {
     mamaMsgStatus     msgStatus = -1;
     mamaMsgType       msgType = -1;
 
-    msgStatus = mamaMsgStatus_statusForMsg( msg ); 
+    msgStatus = mamaMsgStatus_statusForMsg( msg );
     msgType   = mamaMsgType_typeForMsg( msg );
 
     if( msgStatus == MAMA_MSG_STATUS_TIMEOUT )
@@ -435,9 +434,9 @@ processMsg( mamaDictionary dictionary, const mamaMsg msg )
         return;
     }
 
-    if( msgStatus != MAMA_MSG_STATUS_OK && 
+    if( msgStatus != MAMA_MSG_STATUS_OK &&
         msgType   != MAMA_MSG_TYPE_DDICT_SNAPSHOT &&
-        msgType   != MAMA_MSG_TYPE_UPDATE ) 
+        msgType   != MAMA_MSG_TYPE_UPDATE )
     {
         char errBuf[1024];
 
@@ -461,7 +460,7 @@ processMsg( mamaDictionary dictionary, const mamaMsg msg )
     self->mCallbackSet.onComplete( dictionary, self->mClosure );
 }
 
-mama_status 
+mama_status
 mamaDictionary_buildDictionaryFromMessage(
         mamaDictionary dictionary,
         const mamaMsg msg )
@@ -485,7 +484,7 @@ mamaDictionary_getDictionaryMessage (
     if (!msg) return MAMA_STATUS_INVALID_ARG;
 
     *msg  = NULL;
-    
+
     mamaMsg_create (&tempMsg);
 
     populateMessageFromDictionary (impl, tempMsg);
@@ -514,7 +513,7 @@ mama_status
 mamaDictionary_createFieldDescriptor (
                 mamaDictionary       dictionary,
                 mama_fid_t           fid,
-                const char*          name, 
+                const char*          name,
                 mamaFieldType        type,
                 mamaFieldDescriptor* descriptor)
 {
@@ -524,7 +523,7 @@ mamaDictionary_createFieldDescriptor (
 
     /*The first time in we will have to create the array for Fd's*/
     if (!impl->mDict) createDictArray (impl);
-    
+
     mamaFieldDescriptor_create (&newDescriptor,
                                 fid,
                                 type,
@@ -532,7 +531,7 @@ mamaDictionary_createFieldDescriptor (
 
     /*Make sure we have room to hold the field descriptor*/
     ensureCapacity (impl, fid);
-   
+
     /*Add the new descriptor to the array*/
     self->mDict[fid] = newDescriptor;
 
@@ -560,7 +559,7 @@ mamaDictionary_setMaxFid (
     }
     else
     {
-        /*The dictionary array will be created on the first call to 
+        /*The dictionary array will be created on the first call to
          addFieldDescriptor()*/
         impl->mMaxFid = (mama_fid_t)maxFid;
     }
@@ -691,7 +690,7 @@ mamaDictionary_populateFromFile (
                     "from file. [%s] [%s]",fileName, lineBuffer);
             return status;
          }
-    
+
     }
     fclose (infile);
     return MAMA_STATUS_OK;
@@ -721,13 +720,13 @@ dictMsgIterator (const mamaMsg       msg,
     mamaMsgField_getType(field,&type);
     mamaMsgField_getFid(field,&fid);
     mamaMsgField_getName(field,&fieldName);
-    
+
     if (MamaFieldFeedName.mFid == fid)
     {
         if (MAMA_STATUS_OK == mamaMsg_getString (msg, fieldName, fid, &val))
         {
             checkFree(&impl->mFeedName);
-            impl->mFeedName = copyString(val);
+            impl->mFeedName = strdup(val);
             mama_log ( MAMA_LOG_LEVEL_FINE,
                        "Dictionary source feed name: %s",
                        val);
@@ -738,13 +737,13 @@ dictMsgIterator (const mamaMsg       msg,
         if (MAMA_STATUS_OK == mamaMsg_getString (msg, fieldName, fid, &val))
         {
             checkFree(&impl->mFeedHost);
-            impl->mFeedHost = copyString(val);
+            impl->mFeedHost = strdup(val);
             mama_log ( MAMA_LOG_LEVEL_FINE,
                        "Dictionary source hostname: %s",
                        val);
         }
     }
-    
+
     mamaDictionary_createFieldDescriptor (impl,
                                        fid,
                                        fieldName,
@@ -752,7 +751,7 @@ dictMsgIterator (const mamaMsg       msg,
                                        NULL);
 }
 
-static void 
+static void
 getAndStoreFields (mamaDictionary dictionary, mamaMsg msg)
 {
     mamaMsg_iterateFields (msg, dictMsgIterator, NULL, self);
@@ -772,7 +771,7 @@ maxIterator(const mamaMsg       msg,
     }
 }
 
-static void 
+static void
 determineMaxFid (mamaDictionary dictionary, mamaMsg msg)
 {
     const char* userSymbol;
@@ -827,12 +826,6 @@ checkForDuplicateNames (mamaDictionary dictionary)
     END_OUTER_LOOP:;
 }
 
-char* copyString (const char*  str)
-{
-    // Legacy abstraction from when windows did not like strdup, so just strdup now
-    return strdup(str);
-}
-
 void checkFree (char**  str)
 {
     if (*str)
@@ -848,7 +841,7 @@ void checkFree (char**  str)
  */
 
 static void MAMACALLTYPE
-dict_onCreate( mamaSubscription subsc, 
+dict_onCreate( mamaSubscription subsc,
                void *dictionary )
 {
     /* no op */
@@ -856,20 +849,20 @@ dict_onCreate( mamaSubscription subsc,
 
 static void MAMACALLTYPE
 dict_onError( mamaSubscription mamaSubsc,
-              mama_status status, 
-              void *platformError, 
+              mama_status status,
+              void *platformError,
               const char *subject,
               void *dictionary )
 {
     if( status == MAMA_STATUS_TIMEOUT )
     {
-        self->mCallbackSet.onTimeout( self, 
+        self->mCallbackSet.onTimeout( self,
                                       self->mClosure );
     }
     else
     {
-        self->mCallbackSet.onError( self, 
-                                    mamaStatus_stringForStatus( status ), 
+        self->mCallbackSet.onError( self,
+                                    mamaStatus_stringForStatus( status ),
                                     self->mClosure );
     }
 }
@@ -893,7 +886,7 @@ mama_status ensureCapacity (mamaDictionaryImpl* impl, mama_fid_t fid)
 {
     /*The fid is the index into the array. Therefore we need that the
      array has at least index+1 elements*/
-    
+
     /*The maximum fid in the dictionary*/
     if (fid > impl->mMaxFid) impl->mMaxFid   = fid;
 
@@ -999,7 +992,7 @@ void populateMessageFromDictionary (mamaDictionaryImpl* impl,
     mamaDateTime_create (&dateTime);
     mamaDateTime_setToNow (dateTime);
     dateTime_vector[0] = dateTime;
-    
+
     for (i=0;i<impl->mDictSize;i++)
     {
         if (impl->mDict[i])

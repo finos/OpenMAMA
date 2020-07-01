@@ -60,6 +60,13 @@ if [ "$DISTRIB_ID" = "$RHEL" ]
 then
     echo "Installing CentOS / RHEL specific dependencies"
     yum install -y epel-release gcc make rpm-build which
+    # CentOS 8 specific software
+    if [ "${DISTRIB_RELEASE:0:1}" = "8" ]
+    then
+        yum install -y dnf-plugins-core
+        dnf config-manager --set-enabled PowerTools
+        dnf -y install doxygen
+    fi
 fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ] || [ "$DISTRIB_ID" = "$FEDORA" ]
@@ -68,7 +75,7 @@ then
 	    java-1.8.0-openjdk-devel libuuid-devel flex doxygen \
 	    qpid-proton-c-devel libevent-devel ncurses-devel \
 	    apr-devel wget curl cmake gcc-c++ libuuid qpid-proton-c \
-	    libevent ncurses apr valgrind python which
+	    libevent ncurses apr valgrind which python3
 fi
 
 # General ubuntu packages
@@ -86,12 +93,14 @@ fi
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "20" ]
 then
     apt-get install -y rubygems openjdk-13-jdk libqpid-proton11-dev
+    echo "export JAVA_HOME=/usr/lib/jvm/java-13-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
 # Ubuntu 18 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "18" ]
 then
     apt-get install -y rubygems openjdk-11-jdk libqpid-proton8-dev
+    echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
 # Ubuntu 16 specific software
@@ -104,7 +113,7 @@ fi
 test -d $DEPS_DIR || mkdir -p $DEPS_DIR
 
 # Centos and old ubuntu version specific dependencies (ruby is too old for FPM)
-if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" = "6") || ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" == "16") ]]
+if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" -le "7") || ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" -le "16") ]]
 then
     cd $DEPS_DIR
     curl -sL https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.1.tar.gz | tar xz

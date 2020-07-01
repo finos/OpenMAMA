@@ -299,9 +299,6 @@ static mama_status
 configureForMultipleTopics (
     mamaSubscription  subscription);
 
-static char* copyString (
-    const char*   str);
-
 static void  checkFree  (
     char**        str);
 
@@ -502,7 +499,7 @@ mamaSubscription_setupBasic (
         return MAMA_STATUS_NOT_ENTITLED;
     }
 
-    self->mSubjectContext.mSymbol = copyString (symbol);
+    self->mSubjectContext.mSymbol = strdup (symbol);
 
     /* mamaSubscMsgType is being removed in favor of a combination of
      * mamaServiceLevel, mamaSubscriptionType.  For backward
@@ -1202,7 +1199,7 @@ mamaSubscription_getSubjectContext (mamaSubscription subscription,
 
         dqContext_initializeContext (&context->mDqContext, self->mPreInitialCacheSize, recap);
         msgUtils_getIssueSymbol (msg, &issueSymbol);
-        context->mSymbol = copyString (issueSymbol);
+        context->mSymbol = strdup (issueSymbol);
         {
             mamaBridgeImpl* bridge = mamaSubscription_getBridgeImpl(subscription);
             if (!(mamaBridgeImpl_areEntitlementsDeferred(bridge)))
@@ -1359,13 +1356,13 @@ setSubscInfo (
     if (root != NULL)
     {
         checkFree (&self->mSubscRoot);
-        self->mSubscRoot = copyString (root);
+        self->mSubscRoot = strdup (root);
     }
 
     if (source != NULL)
     {
         checkFree (&self->mSubscSource);
-        self->mSubscSource = copyString (source);
+        self->mSubscSource = strdup (source);
     }
 
     /*Also check for empty string - tibrv subject is badly formed
@@ -1375,7 +1372,7 @@ setSubscInfo (
     {
         checkFree (&self->mUserSymbol);
         checkFree (&self->mSubscSymbol);
-        self->mUserSymbol  = copyString (symbol);
+        self->mUserSymbol  = strdup (symbol);
         self->mSubscSymbol = determineMappedSymbol (transport, symbol);
     }
     return MAMA_STATUS_OK;
@@ -1476,7 +1473,7 @@ mamaSubscription_cleanup (mamaSubscription subscription)
             self->mSubjectContext.mEntitlementSubscription = NULL;
         }
     }
-    
+
     dqContext_cleanup (&self->mSubjectContext.mDqContext);
     self->mDqStrategy   = NULL;
     self->mRecapRequest = NULL;
@@ -1490,7 +1487,6 @@ mama_status mamaSubscription_deactivate_internal(mamaSubscriptionImpl *impl)
 {
     /* Returns. */
     mama_status ret = MAMA_STATUS_OK;
-
 
     mama_log (MAMA_LOG_LEVEL_FINE, "mamaSubscription_deactivate(): %s%s Initiating deactivation of subscription (%p)", userSymbolFormattedImpl, impl);
 
@@ -2114,9 +2110,9 @@ mamaSubscription_processTportMsg( mamaSubscription subscription,
 
     bridge = mamaSubscription_getBridgeImpl(subscription);
 
-    if (!mamaBridgeImpl_areEntitlementsDeferred(bridge)) 
+    if (!mamaBridgeImpl_areEntitlementsDeferred(bridge))
     {
-        allowed = self->mSubjectContext.mEntitlementBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription, 
+        allowed = self->mSubjectContext.mEntitlementBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription,
                                                             self->mSubjectContext.mSymbol);
         if (!allowed)
         {
@@ -2130,10 +2126,10 @@ mamaSubscription_processTportMsg( mamaSubscription subscription,
     }
 
     self->mWcCallbacks.onMsg (
-           subscription, 
-           msg, 
+           subscription,
+           msg,
            NULL,
-           self->mClosure, 
+           self->mClosure,
            topicClosure);
 
     /*Do not access subscription here as it mey have been deleted/destroyed*/
@@ -2185,10 +2181,10 @@ mamaSubscription_processWildCardMsg( mamaSubscription subscription,
     }
 
     self->mWcCallbacks.onMsg (
-           subscription, 
-           msg, 
+           subscription,
+           msg,
            topic,
-           self->mClosure, 
+           self->mClosure,
            topicClosure);
 
     /* Do not access subscription here as it may have been deleted/destroyed */
@@ -2239,13 +2235,13 @@ mamaSubscription_processMsg (mamaSubscription subscription, mamaMsg msg)
     {
         bridge = mamaSubscription_getBridgeImpl(subscription);
 
-        if (!mamaBridgeImpl_areEntitlementsDeferred(bridge)) 
+        if (!mamaBridgeImpl_areEntitlementsDeferred(bridge))
         {
             entBridge = self->mSubjectContext.mEntitlementBridge;
 
             if (NULL != entBridge) /* entitlementBridge will not be set for dict subscription, skip check. */
             {
-                allowed = entBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription, 
+                allowed = entBridge->isAllowed(self->mSubjectContext.mEntitlementSubscription,
                                                                     self->mSubjectContext.mSymbol);
                 if (!allowed)
                 {
@@ -2506,23 +2502,6 @@ isEntitledToSymbol (const char *source, const char*symbol, mamaSubscription subs
     return result;
 }
 
-char* copyString (const char*  str)
-{
-    size_t len;
-    char* result;
-
-    if (!str)
-    {
-        str = "";
-    }
-
-    /* Windows does not like strdup */
-    len = strlen (str) + 1;
-    result = (char*)calloc (len, sizeof (char));
-    strncpy (result, str, len);
-    return result;
-}
-
 void checkFree (char**  str)
 {
     if (*str)
@@ -2539,7 +2518,7 @@ char* determineMappedSymbol (mamaTransport  transport,
     void*  mapFuncClosure = mamaTransport_getSymbolMapFuncClosure (transport);
     if (!mapFunc)
     {
-        return copyString (symbol);
+        return strdup (symbol);
     }
     else
     {
@@ -2550,7 +2529,7 @@ char* determineMappedSymbol (mamaTransport  transport,
          */
         char tmpSymbol[256];
         (*mapFunc)(mapFuncClosure, tmpSymbol, symbol, 256);
-        return copyString (tmpSymbol);
+        return strdup (tmpSymbol);
     }
 }
 
@@ -3403,7 +3382,7 @@ mamaSubscription_setDqStrategy(mamaSubscription subscription, dqStrategy strateg
 mama_status
 mamaSubscription_setRecapRequest(mamaSubscription subscription, imageRequest request)
 {
-    if(NULL != subscription && NULL != request)   
+    if(NULL != subscription && NULL != request)
     {
        subscription->mRecapRequest = request;
        return MAMA_STATUS_OK;
@@ -3414,7 +3393,7 @@ mamaSubscription_setRecapRequest(mamaSubscription subscription, imageRequest req
 mama_status
 mamaSubscription_getRecapRequest(mamaSubscription subscription, imageRequest request)
 {
-    if(NULL != subscription && NULL != request)   
+    if(NULL != subscription && NULL != request)
     {
        request = subscription->mRecapRequest;
        return MAMA_STATUS_OK;
