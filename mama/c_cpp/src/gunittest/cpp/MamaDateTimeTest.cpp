@@ -112,13 +112,13 @@ TEST_F(MamaDateTimeTest, CompareDates)
 
 	// Format a string using today's date and a time, this should be as "2010-07-04 10:00:00.000"
 	const char *time = "10:00:00.000000";
-	char completeDateTime[100] = "";
+	char completeDateTime[200] = "";
 	sprintf(completeDateTime, "%s %s", stringDate, time);
 
 	// Set the date from this string
 	//ASSERT_EQ(mamaDateTime_setFromString(m_cDateTime, completeDateTime), MAMA_STATUS_OK);
     delete m_DateTime;
-    m_DateTime = new MamaDateTime(completeDateTime);    
+    m_DateTime = new MamaDateTime(completeDateTime);
 
 	// Get the number of seconds
 	mama_f64_t completeDateSeconds = 0;
@@ -135,7 +135,7 @@ TEST_F(MamaDateTimeTest, CompareDates)
 	mama_f64_t timeSeconds = 0;
 	//ASSERT_EQ(mamaDateTime_getEpochTimeSecondsWithCheck(m_cDateTime, &timeSeconds), MAMA_STATUS_OK);
     timeSeconds = m_DateTime->getEpochTimeSecondsWithCheck();
-    
+
 	// These must be the same
 	ASSERT_EQ(completeDateSeconds, timeSeconds);
 }

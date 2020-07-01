@@ -107,3 +107,6 @@ Release/
 *.sdf
 *.suo
 packages.config
+.idea/
+build/
+cmake-build-debug/

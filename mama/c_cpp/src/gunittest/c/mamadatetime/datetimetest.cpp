@@ -110,7 +110,7 @@ TEST_F (MamaDateTimeTestC, TestCreate)
 // Test Destroy function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestDestroy)
 {
-    mamaDateTime t, nullTime = NULL; 
+    mamaDateTime t, nullTime = NULL;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
@@ -120,7 +120,7 @@ TEST_F (MamaDateTimeTestC, TestDestroy)
 // Test Clear function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestClear)
 {
-    mamaDateTime t, nullTime = NULL; 
+    mamaDateTime t, nullTime = NULL;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_clear(t) );
@@ -133,7 +133,7 @@ TEST_F (MamaDateTimeTestC, TestClear)
 // Test ClearDate function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestClearDate)
 {
-    mamaDateTime t, nullTime = NULL; 
+    mamaDateTime t, nullTime = NULL;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_clearDate(t) );
@@ -146,7 +146,7 @@ TEST_F (MamaDateTimeTestC, TestClearDate)
 // Test ClearTime function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestClearTime)
 {
-    mamaDateTime t, nullTime = NULL; 
+    mamaDateTime t, nullTime = NULL;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_clearTime(t) );
@@ -159,7 +159,7 @@ TEST_F (MamaDateTimeTestC, TestClearTime)
 // Test Copy function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestCopy)
 {
-    mamaDateTime t,u, nullTime = NULL; 
+    mamaDateTime t,u, nullTime = NULL;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&u) );
@@ -181,7 +181,7 @@ TEST_F (MamaDateTimeTestC, TestCopy)
 // Test Empty function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestEmpty)
 {
-    mamaDateTime t, nullTime = NULL; 
+    mamaDateTime t, nullTime = NULL;
 
     // Test with NULL paremeters
     EXPECT_EQ ( 1, mamaDateTime_empty(nullTime) );
@@ -196,7 +196,7 @@ TEST_F (MamaDateTimeTestC, TestEmpty)
 // Test Equal function with valid and NULL parameters
 TEST_F (MamaDateTimeTestC, TestEqual)
 {
-    mamaDateTime t, u, nullTime = NULL; 
+    mamaDateTime t, u, nullTime = NULL;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&u) );
@@ -245,7 +245,7 @@ TEST_F (MamaDateTimeTestC, TestSetEpochTime)
 // Test Compare method iwth valid and invalid input parameters
 TEST_F (MamaDateTimeTestC, TestCompare)
 {
-    mamaDateTime t, u, nullTime = NULL; 
+    mamaDateTime t, u, nullTime = NULL;
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&u) );
@@ -424,14 +424,14 @@ TEST_F (MamaDateTimeTestC, TestSetWithPrecisionAndTzTest)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
 
     // Test with invalid arguments
-    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setWithPrecisionAndTz(nullTime, year, month, day, hour, minute, 
+    EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setWithPrecisionAndTz(nullTime, year, month, day, hour, minute,
                                                                             second, microsecond, precision, nullTz) );
 
     // Test with valid argumetns
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithPrecisionAndTz(t, invyear, invmonth, invday, invhour, invminute, 
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithPrecisionAndTz(t, invyear, invmonth, invday, invhour, invminute,
                                                                             invsecond, microsecond, precision, tz) );
 
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithPrecisionAndTz(t, year, month, day, hour, minute, 
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setWithPrecisionAndTz(t, year, month, day, hour, minute,
                                                                    second, microsecond, precision, tz) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
@@ -446,7 +446,7 @@ TEST_F (MamaDateTimeTestC, TestSetTimeTest)
    // Larger values, which are converted by the implemenation.
     mama_u32_t invhour = 29, invminute = 121, invsecond = 712;
 
-   
+
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_create(&t) );
     // Test with invalid arguments
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_setTime(nullTime, hour, minute, second, microsecond) );
@@ -514,13 +514,13 @@ TEST_F (MamaDateTimeTestC, TestCopyTime)
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setToNow(t1) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setToNow(t2) );
-    
+
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_setTime(t2, hour, minute, second, microsecond) );
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_copyTime(t1,t2) );
     EXPECT_EQ ( 1, mamaDateTime_equal(t1,t2) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t1) );
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) ); 
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) );
 }
 
 TEST_F (MamaDateTimeTestC, TestCopyDate)
@@ -542,7 +542,7 @@ TEST_F (MamaDateTimeTestC, TestCopyDate)
     EXPECT_EQ ( 1, mamaDateTime_equal(t1,t2) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t1) );
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) ); 
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) );
 }
 
 TEST_F (MamaDateTimeTestC, TestHasTime)
@@ -557,7 +557,7 @@ TEST_F (MamaDateTimeTestC, TestHasTime)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_hasTime(t, &b) );
     EXPECT_TRUE ( b );
 
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) ); 
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
 TEST_F (MamaDateTimeTestC, TestHasDate)
@@ -573,7 +573,7 @@ TEST_F (MamaDateTimeTestC, TestHasDate)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_hasDate(t, &b) );
     EXPECT_TRUE ( b );
 
-    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) ); 
+    EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
 
 TEST_F (MamaDateTimeTestC, TestAddSeconds)
@@ -638,7 +638,7 @@ TEST_F (MamaDateTimeTestC, TestSetFromString)
 {
     mamaDateTime t, nullTime = NULL;
 
-    // Format a string using today's date and a time, 
+    // Format a string using today's date and a time,
     // 4th July
     std::string szGood = "2013-07-04 10:03:21.123";
     // 31st June
@@ -666,7 +666,7 @@ TEST_F (MamaDateTimeTestC, TestSetFromStringWithTz)
 
     mamaTimeZone tz  = mamaTimeZone_utc(), nullTz = NULL;;
 
-    // Format a string using today's date and a time, 
+    // Format a string using today's date and a time,
     // 4th July
     std::string szGood = "2013-07-04 10:03:21.123";
     // 31st June
@@ -694,7 +694,7 @@ TEST_F (MamaDateTimeTestC, TestSetFromStringBuffer)
     mamaDateTime t, nullTime = NULL;
     mama_size_t  bigBuff = 100, smallBuff = 1;
 
-    // Format a string using today's date and a time, 
+    // Format a string using today's date and a time,
     // 4th July
     std::string szGood = "2013-07-04 10:03:21.123";
     // 31st June
@@ -723,7 +723,7 @@ TEST_F (MamaDateTimeTestC, TestSetFromStringBufferWIthTz)
     mama_size_t  bigBuff = 100, smallBuff = 1;
     mamaTimeZone tz  = mamaTimeZone_utc(), nullTz = NULL;;
 
-    // Format a string using today's date and a time, 
+    // Format a string using today's date and a time,
     // 4th July
     std::string szGood = "2013-07-04 10:03:21.123";
     // 31st June
@@ -1019,8 +1019,8 @@ TEST_F (MamaDateTimeTestC, TestGetStructTimeVal)
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getStructTimeVal(t, NULL) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeVal(t, &tVal) );
-    EXPECT_EQ ( tVal.tv_sec, secs ); 
-    EXPECT_EQ ( tVal.tv_usec, uSecs ); 
+    EXPECT_EQ ( tVal.tv_sec, secs );
+    EXPECT_EQ ( tVal.tv_usec, uSecs );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
@@ -1047,8 +1047,8 @@ TEST_F (MamaDateTimeTestC, TestGetStructTimeValWithTz)
     EXPECT_EQ ( MAMA_STATUS_INVALID_ARG, mamaDateTime_getStructTimeValWithTz(t, NULL, tz) );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_getStructTimeValWithTz(t, &tVal, tz) );
-    EXPECT_EQ ( tVal.tv_sec, secs ); 
-    EXPECT_EQ ( tVal.tv_usec, uSecs ); 
+    EXPECT_EQ ( tVal.tv_sec, secs );
+    EXPECT_EQ ( tVal.tv_usec, uSecs );
 
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t) );
 }
@@ -1444,7 +1444,7 @@ TEST_F (MamaDateTimeTestC, TestDiffMicrosecondsMixedValues)
     EXPECT_EQ ( MAMA_STATUS_OK, mamaDateTime_destroy(t2) );
 }
 
-/*  Description:     Get the current time since epoch by passing: 
+/*  Description:     Get the current time since epoch by passing:
  *                       1) NULL date-time & valid seconds
  *                       2) Valid date-time & NULL seconds
  *                       3) NULL date-time & NULL seconds
@@ -1457,18 +1457,18 @@ TEST_F (MamaDateTimeTestC, NullArguments)
 {
     mama_f64_t      seconds = 0;
     mamaDateTime    m_DateTime = NULL;
-    
+
     /* Call with a NULL date time */
-    EXPECT_EQ (MAMA_STATUS_NULL_ARG, 
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG,
                mamaDateTime_getEpochTimeSecondsWithCheck (NULL, &seconds));
 
     /* NULL seconds */
     EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&m_DateTime));
-    EXPECT_EQ (MAMA_STATUS_NULL_ARG, 
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG,
                mamaDateTime_getEpochTimeSecondsWithCheck (m_DateTime, NULL));
 
     /* NULL for both */
-    EXPECT_EQ (MAMA_STATUS_NULL_ARG, 
+    EXPECT_EQ (MAMA_STATUS_NULL_ARG,
                mamaDateTime_getEpochTimeSecondsWithCheck (NULL, NULL));
 
     EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (m_DateTime));
@@ -1485,29 +1485,29 @@ TEST_F (MamaDateTimeTestC, NullArguments)
 TEST_F (MamaDateTimeTestC, CompareDates)
 {
     mamaDateTime today                 = NULL;
-    char         stringDate[100]       = "";
+    char         stringDate[200]       = "";
     const char*  time                  = "10:00:00.000000";
-    char         completeDateTime[100] = "";
+    char         completeDateTime[400] = "";
     mamaDateTime m_cDateTime           = NULL;
     mama_f64_t   completeDateSeconds   = 0;
     mama_f64_t   timeSeconds           = 0;
-    
+
     /* Get todays date in a date time */
-    EXPECT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK,
                mamaDateTime_create (&today));
 
-    EXPECT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK,
                mamaDateTime_setToNow (today));
 
     /* Get the string representation of the data */
-    EXPECT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK,
                mamaDateTime_getAsFormattedString (today, stringDate, 100, "%Y-%m-%d"));
 
     /* Destroy the date */
-    EXPECT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK,
                mamaDateTime_destroy (today));
 
-    /* Format a string using today's date and a time, 
+    /* Format a string using today's date and a time,
      * this should be as "2010-07-04 10:00:00.000" */
     EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_create (&m_cDateTime));
     sprintf (completeDateTime, "%s %s", stringDate, time);
@@ -1517,7 +1517,7 @@ TEST_F (MamaDateTimeTestC, CompareDates)
                mamaDateTime_setFromString (m_cDateTime, completeDateTime));
 
     /* Get the number of seconds */
-    EXPECT_EQ (MAMA_STATUS_OK, 
+    EXPECT_EQ (MAMA_STATUS_OK,
                mamaDateTime_getEpochTimeSecondsWithCheck (m_cDateTime, &completeDateSeconds));
 
     /* Set the date using just the time string */
@@ -1526,7 +1526,7 @@ TEST_F (MamaDateTimeTestC, CompareDates)
 
     /* Get the number of seconds from this */
     EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_getEpochTimeSecondsWithCheck (m_cDateTime, &timeSeconds));
-    
+
     /* These must be the same */
     EXPECT_EQ (completeDateSeconds, timeSeconds);
     EXPECT_EQ (MAMA_STATUS_OK, mamaDateTime_destroy (m_cDateTime));
