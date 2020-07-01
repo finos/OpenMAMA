@@ -46,6 +46,23 @@ then
     source /etc/lsb-release
     PACKAGE_TYPE=deb
     DEPENDS_FLAGS="-d uuid -d libevent-dev -d libzmq3-dev -d openjdk-8-jdk -d ncurses-dev -d libapr1-dev"
+    # Ubuntu 20 specific software
+    if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "20" ]
+    then
+        DEPENDS_FLAGS="$DEPENDS_FLAGS -d openjdk-13-jdk -d libqpid-proton11"
+    fi
+
+    # Ubuntu 18 specific software
+    if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "18" ]
+    then
+        DEPENDS_FLAGS="$DEPENDS_FLAGS -d openjdk-11-jdk -d libqpid-proton8"
+    fi
+
+    # Ubuntu 16 specific software
+    if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
+    then
+        DEPENDS_FLAGS="$DEPENDS_FLAGS -d openjdk-8-jdk libssl libqpid-proton2"
+    fi
 fi
 
 if [ "$DISTRIB_ID" == "$FEDORA" ]
