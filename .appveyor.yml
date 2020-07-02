@@ -84,7 +84,7 @@ build_script:
     7z a openmama-%VERSION%.win.%PLATFORM%.zip "%OPENMAMA_INSTALL_DIR%"
 
   # Linux build
-- sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE INSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES
+- sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE --build-arg INSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES
 - sh: docker run -e VERSION=$VERSION -v $(pwd):/apps/release --rm omdocker
 
 artifacts:
