@@ -15,6 +15,9 @@ FEDORA=Fedora
 RHEL=CentOS
 UBUNTU=Ubuntu
 
+# Initial setup
+test -d $DEPS_DIR || mkdir -p $DEPS_DIR
+
 if [ -z "$IS_DOCKER_BUILD" ]
 then
     echo
@@ -123,8 +126,6 @@ then
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
-test -d $DEPS_DIR || mkdir -p $DEPS_DIR
-
 # Centos and old ubuntu version specific dependencies (ruby is too old for FPM)
 if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" -le "7") || ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" -le "16") ]]
 then
@@ -140,6 +141,7 @@ then
 fi
 
 # Install gradle
+cd $DEPS_DIR
 curl -s "https://get.sdkman.io" | bash
 source "$SDKMAN_DIR/bin/sdkman-init.sh"
 sdk install gradle
