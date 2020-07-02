@@ -45,7 +45,7 @@ then
     # Will set DISTRIB_ID and DISTRIB_RELEASE
     source /etc/lsb-release
     PACKAGE_TYPE=deb
-    DEPENDS_FLAGS="-d uuid -d libevent-dev -d libzmq3-dev -d openjdk-8-jdk -d ncurses-dev -d libapr1-dev"
+    DEPENDS_FLAGS="-d uuid -d libevent-dev -d libzmq3-dev -d ncurses-dev -d libapr1-dev"
     # Ubuntu 20 specific software
     if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "20" ]
     then
@@ -61,7 +61,7 @@ then
     # Ubuntu 16 specific software
     if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
     then
-        DEPENDS_FLAGS="$DEPENDS_FLAGS -d openjdk-8-jdk -d libssl -d libqpid-proton2"
+        DEPENDS_FLAGS="$DEPENDS_FLAGS -d openjdk-8-jdk -d libqpid-proton2 -d netbase"
     fi
 fi
 
