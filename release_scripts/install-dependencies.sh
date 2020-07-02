@@ -63,10 +63,23 @@ then
     # CentOS 8 specific software
     if [ "${DISTRIB_RELEASE:0:1}" = "8" ]
     then
+        # CentOS 8 has funnies around where to find doxygen
         yum install -y dnf-plugins-core
         dnf config-manager --set-enabled PowerTools
         dnf -y install doxygen
+        yum install -y python3
+    elif [ "${DISTRIB_RELEASE:0:1}" = "6" ]
+    then
+        # CentOS 6 doesn't have official python3
+        yum install -y centos-release-scl
+        yum install -y rh-python36
+        update-alternatives --install /usr/bin/python3 python /opt/rh/rh-python36/root/usr/bin/python3 2
+    else
+        yum install -y python3
     fi
+elif [ "$DISTRIB_ID" = "$FEDORA" ]
+then
+    yum install -y python3
 fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ] || [ "$DISTRIB_ID" = "$FEDORA" ]
@@ -75,7 +88,7 @@ then
 	    java-1.8.0-openjdk-devel libuuid-devel flex doxygen \
 	    qpid-proton-c-devel libevent-devel ncurses-devel \
 	    apr-devel wget curl cmake gcc-c++ libuuid qpid-proton-c \
-	    libevent ncurses apr valgrind which python3
+	    libevent ncurses apr valgrind which
 fi
 
 # General ubuntu packages
@@ -86,7 +99,7 @@ then
     apt-get install -y ruby ruby-dev build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
 	    cmake git libzmq3-dev ncurses-dev \
-	    unzip valgrind libapr1-dev python libz-dev
+	    unzip valgrind libapr1-dev python3 libz-dev
 fi
 
 # Ubuntu 20 specific software
