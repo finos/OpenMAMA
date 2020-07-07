@@ -915,12 +915,12 @@ static mama_status mamaPublisherImpl_destroy(mamaPublisherImpl *impl)
     /* Returns. */
     mama_status        status   = MAMA_STATUS_OK;
 
+    mamaTransport_removePublisher(impl->mTport, impl->mTransportHandle);
+
     wlock_lock(impl->mCreateDestroyLock);
 
     /* Set the state to be deleted to at least show in the log that it has been completely removed. */
     mamaPublisherImpl_setState(impl, MAMA_PUBLISHER_DESTROYING);
-
-    mamaTransport_removePublisher(impl->mTport, impl->mTransportHandle);
 
     if (!impl->mMamaPublisherBridgeImpl)
     {
