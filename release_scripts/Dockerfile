@@ -1,8 +1,9 @@
 # Use configurable image name
 ARG IMAGE=centos:7.5.1804
-FROM $IMAGE
+FROM $IMAGE AS builder
 
 # Assign arguments with defaults
+ARG VERSION=6.3.0
 ARG VERSION_QPID=0.24.0
 ARG VERSION_GTEST=1.8.0
 ARG VERSION_APR=1.6.3
@@ -11,6 +12,7 @@ ARG INSTALL_RUNTIME_DEPENDENCIES=OFF
 ARG IMAGE
 
 # Promote arguments to environment variables
+ENV VERSION $VERSION
 ENV VERSION_QPID $VERSION_QPID
 ENV VERSION_GTEST $VERSION_GTEST
 ENV VERSION_APR $VERSION_APR
@@ -26,9 +28,13 @@ ENV SRC_DIR /apps/src
 ENV PREFIX /apps/install
 ENV INSTALL_DIR $PREFIX/opt/openmama
 ENV RELEASE_DIR /apps/release
+ENV PACKAGE_DIR /apps/package
+
+# Add internal scripts here to prevent reruns
+ADD release_scripts/install-dependencies.sh $SRC_DIR/release_scripts/
+ADD release_scripts/Dockerfile $SRC_DIR/release_scripts/
 
 # Run script to update dependencies
-ADD release_scripts/install-dependencies.sh $SRC_DIR/release_scripts/
 RUN $SRC_DIR/release_scripts/install-dependencies.sh
 
 # Add the rest of the source code here so code changes don't trigger dependency regeneration
@@ -67,7 +73,24 @@ RUN curl -sL https://github.com/OpenMAMA/OpenMAMA-testdata/archive/master.tar.gz
 RUN cp profiles/profile.openmama . && rm -rf profiles
 
 # When RPMs are generated, they'll go here
-WORKDIR $RELEASE_DIR
+WORKDIR $PACKAGE_DIR
 
 # Generate the package (deb / rpm / tarball).
-CMD $SRC_DIR/release_scripts/build-package.sh
+RUN $SRC_DIR/release_scripts/build-package.sh
+
+###############################################################################
+#                              Final Build
+###############################################################################
+
+from $IMAGE
+
+WORKDIR /root
+
+# Copy the artifact from the build to the root directory
+COPY --from=builder /apps/package/* ./
+
+# Install the package, leaving the package behind in the /root directory for future access.
+RUN find . -type f -name "*.deb" | while read P; do apt-get update -qq && apt-get install -y -f "$P"; done
+RUN find . -type f -name "*.rpm" | while read P; do yum install -y -f "$P"; done
+
+CMD ["/bin/bash"]
