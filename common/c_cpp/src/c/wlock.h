@@ -31,9 +31,9 @@ extern "C" {
 typedef void * wLock;
 
 COMMONExpDLL wLock    wlock_create( void );
-COMMONExpDLL void     wlock_destroy( wLock lock );
-COMMONExpDLL void     wlock_lock( wLock lock );
-COMMONExpDLL void     wlock_unlock( wLock lock );
+COMMONExpDLL int      wlock_destroy( wLock lock );
+COMMONExpDLL int      wlock_lock( wLock lock );
+COMMONExpDLL int      wlock_unlock( wLock lock );
 
 #if defined (__cplusplus)
 }

@@ -47,27 +47,29 @@ wlock_create( void )
     return( rval );
 }
 
-void
+int
 wlock_destroy( wLock lock )
 {
     wLockImpl* impl = (wLockImpl*) lock;
 
-    wthread_mutex_destroy( &impl->mMutex );
+    int rc = wthread_mutex_destroy( &impl->mMutex );
     free( lock );
+
+    return rc;
 }
 
-void
+int
 wlock_lock( wLock lock )
 {
     wLockImpl* impl = (wLockImpl*) lock;
 
-    wthread_mutex_lock( &impl->mMutex );
+    return wthread_mutex_lock( &impl->mMutex );
 }
 
-void 
+int
 wlock_unlock( wLock lock )
 {
     wLockImpl* impl = (wLockImpl*) lock;
 
-    wthread_mutex_unlock( &impl->mMutex );   
+    return wthread_mutex_unlock( &impl->mMutex );
 }
