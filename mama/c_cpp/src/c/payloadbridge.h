@@ -1120,8 +1120,6 @@ typedef struct mamaPayloadBridgeImpl_
     msgPayloadIter_associate            msgPayloadIterAssociate;
     msgPayloadIter_destroy              msgPayloadIterDestroy;
 
-    void*                               closure;
-
     /* Back reference to parent library itself */
     mamaPayloadLib*                     payloadLib;
 

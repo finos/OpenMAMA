@@ -135,8 +135,8 @@ typedef struct mamaMsgImpl_
     mamaBridgeImpl*         mBridgeImpl;
     /*The bridge specific message*/
     msgBridge               mBridgeMessage;
-    /*If we have detached the middleware message we will own it
-     and are responsible for destroying it*/
+    /*If set to 1, mamaMsg_destroy will also call the
+     payload bridge's destroy function*/
     int                     mMessageOwner;
 
     /*The context if this is a msg from the dqStrategy cache*/

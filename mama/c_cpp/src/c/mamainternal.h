@@ -53,6 +53,9 @@ typedef struct mamaPayloadLib_
 
     /* Indcates if the bridge was allocated by MAMA or the bridge */
     mama_bool_t       mamaAllocated;
+
+    /* Indcates whether to keep the library loaded */
+    mama_bool_t       keepLoaded;
 } mamaPayloadLib;
 
 
