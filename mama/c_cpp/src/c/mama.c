@@ -61,6 +61,7 @@
 #define MAMA_PROPERTY_BRIDGE "mama.bridge.provider"
 #define MAMA_PROPERTY_THREAD_AFFINITY "mama.thread_affinity."
 #define MAMA_PROPERTY_PAYLOAD_AUTOLOAD "mama.payload.autoload."
+#define MAMA_PROPERTY_PAYLOAD_KEEPLOADED "mama.payload.keeploaded."
 #define MAMA_ENTITLEMENT_LIB_FILEPATTERN "mamaent%s"
 #define DEFAULT_STATS_INTERVAL 60
 
@@ -1522,20 +1523,21 @@ mama_closeCount (unsigned int* count)
                  * built with different version, we may trigger some undefined
                  * behaviour via this free,
                  */
-                free (payloadLib->bridge);
-                payloadLib->bridge  = NULL;
-                payloadLib->id      = MAMA_PAYLOAD_NULL;
+                if(payloadLib->keepLoaded != 1) {
+                    free (payloadLib->bridge);
+                    payloadLib->bridge  = NULL;
+                    payloadLib->id      = MAMA_PAYLOAD_NULL;
 
-                if(payloadLib->library)
-                {
-                    closeSharedLib (payloadLib->library);
-                    payloadLib->library = NULL;
+                    if(payloadLib->library)
+                    {
+                        closeSharedLib (payloadLib->library);
+                        payloadLib->library = NULL;
+                    }
+
+                    /* Free the payloadLib structure */
+                    free (payloadLib);
                 }
-
-                /* Free the payloadLib structure */
-                free (payloadLib);
             }
-
         }
 
 
@@ -2280,6 +2282,18 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     payloadLib->bridge        = *(mamaPayloadBridge*)impl;
     payloadLib->library       = payloadLibHandle;
     payloadLib->id            = payloadChar;
+    payloadLib->keepLoaded    = 0;
+    {
+        int nameLen = strlen (payloadName) + strlen (MAMA_PROPERTY_PAYLOAD_KEEPLOADED) +1;
+        char propName[nameLen];
+        sprintf(propName, "%s%s",MAMA_PROPERTY_PAYLOAD_KEEPLOADED, payloadName);
+        const char *propstring = properties_Get(mamaInternal_getProperties(), propName);
+        if (propstring)
+        {
+            payloadLib->keepLoaded = properties_GetPropertyValueAsBoolean (propstring);
+        }
+    }
+
 
     status = wtable_insert (gImpl.payloads.table,
                             payloadName,
