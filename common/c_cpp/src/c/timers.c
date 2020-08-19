@@ -124,7 +124,7 @@ static void* dispatchEntry (void *closure)
         struct timeval timeout, now, *timeptr;
 
         wthread_mutex_lock (&heap->mLock);
-        ele = RB_MIN (orderedTimeRBTree_, &heap->mTimeTree);        
+        ele = RB_MIN (orderedTimeRBTree_, &heap->mTimeTree);
 
         while (1)
         {
@@ -133,7 +133,7 @@ static void* dispatchEntry (void *closure)
             else
             {
                 timeptr = &timeout;
-                gettimeofday (&now, NULL); 
+                gettimeofday (&now, NULL);
                 if (!timercmp(&ele->mTimeout, &now, >))
                     timerclear (&timeout);
                 else
@@ -144,7 +144,7 @@ static void* dispatchEntry (void *closure)
             /* Sit on Select as it has the best resolution */
             FD_ZERO(&wakeUpDes);
             FD_SET(heap->mSockPair[0], &wakeUpDes);
-        
+
             selectReturn = select(heap->mSockPair[0] + 1, &wakeUpDes, NULL, NULL, timeptr);
 
             wthread_mutex_lock (&heap->mLock);
@@ -196,7 +196,7 @@ endLoop:
     }
     return NULL;
 }
-        
+
 int startDispatchTimerHeap (timerHeap heap)
 {
     if (heap == NULL)
@@ -247,8 +247,8 @@ writeagain:
 
             default:
                 perror ("write()");
-                return -1; 
-            }    
+                return -1;
+            }
         }
 
         wthread_mutex_lock   (&heapImpl->mEndingLock);
@@ -348,7 +348,7 @@ writeagain:
     }
     return 0;
 }
-    
+
 int destroyTimer (timerHeap heap, timerElement timer)
 {
     if ((heap == NULL) || (timer == NULL))
@@ -400,3 +400,24 @@ int resetTimer (timerHeap heap, timerElement timer, struct timeval* timeout)
     }
     return 0;
 }
+
+
+int lockTimerHeap (timerHeap heap)
+{
+    if (heap == NULL)
+        return -1;
+    timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
+
+    return wthread_mutex_lock (&heapImpl->mLock);
+}
+
+
+int unlockTimerHeap (timerHeap heap)
+{
+    if (heap == NULL)
+        return -1;
+    timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
+
+    return wthread_mutex_unlock (&heapImpl->mLock);
+}
+

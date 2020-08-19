@@ -42,6 +42,11 @@ COMMONExpDLL int createTimer (timerElement* timer, timerHeap heap, timerFireCb c
 COMMONExpDLL int destroyTimer (timerHeap heap, timerElement timer);
 COMMONExpDLL int resetTimer (timerHeap heap, timerElement timer, struct timeval* timeout);
 
+
+COMMONExpDLL int lockTimerHeap (timerHeap heap);
+COMMONExpDLL int unlockTimerHeap (timerHeap heap);
+
+
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus */
