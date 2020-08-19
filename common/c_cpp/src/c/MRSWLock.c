@@ -42,7 +42,7 @@ MRSW_RESULT MRSWLock_acquire(PMRSWLock lock, int read)
 			/* If the current thread already holds the write lock then there is no need to acquire it again.
 			 * Note that waiting on the semaphore twice in the same thread causes a problem.
 			 */
-			long currentThreadId = wGetCurrentThreadId();
+			long currentThreadId = (long) wGetCurrentThreadId();
 			long writeThreadId = MRSWLock_getWriteThreadId(lock);
 			if(currentThreadId == writeThreadId)
 			{
@@ -108,7 +108,7 @@ MRSW_RESULT MRSWLock_acquire(PMRSWLock lock, int read)
 			}
 
 			/* Increment the count of readers. */
-			lock->m_numberReaders ++;			
+			lock->m_numberReaders ++;
 
 			/* Release the mutex. */
 			wlock_unlock(lock->m_mutex);
@@ -190,7 +190,7 @@ MRSW_RESULT MRSWLock_free(PMRSWLock lock)
 		/* Set the return code, note that errors will be preserved. */
 		ret = MRSW_S_OK;
 
-		/* Destroy the mutex. */		
+		/* Destroy the mutex. */
 		if(lock->m_mutex != NULL)
 		{
 			wlock_destroy(lock->m_mutex);
@@ -259,7 +259,7 @@ MRSW_RESULT MRSWLock_release(PMRSWLock lock, int read)
 				/* Signal the semaphore to allow a new write lock to be acquired. */
 				wsem_post(&lock->m_noLocksEvent);
 			}
-			
+
 			/* Release the mutex. */
 			wlock_unlock(lock->m_mutex);
 		}

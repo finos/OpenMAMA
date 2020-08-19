@@ -1,6 +1,12 @@
 cmake_minimum_required (VERSION 2.8)
 project (mamac)
 
+# avoid warning from xxx_ROOT variables
+if(${CMAKE_VERSION} VERSION_LESS "3.16.5")
+else()
+   cmake_policy(SET CMP0074 NEW)
+endif()
+
 include(FindAPR)
 
 find_package(APR REQUIRED)
@@ -13,7 +19,7 @@ include_directories(
 	${WOMBAT_INCLUDES}
 	${APR_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR} # for generated files like version.h etc
-)	
+)
 
 set(ENTITLEMENT_BRIDGES "")
 if(DEFINED ENTITLEMENTS)

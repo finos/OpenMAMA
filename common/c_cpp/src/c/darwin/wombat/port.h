@@ -131,7 +131,7 @@ typedef struct cpu_set {
 } cpu_set_t;
 
 /* Use pthreads for Mac OS X */
-#define INVALID_THREAD (-1)
+#define INVALID_THREAD ((wthread_t) (-1))
 
 #define wthread_mutex_t             pthread_mutex_t
 #define wthread_mutex_init          pthread_mutex_init
@@ -235,11 +235,11 @@ struct in_addr wresolve_ip (const char * arg);
 #define WMWDeprecated(MSG)               __attribute__((deprecated(#MSG)))
 #define WMWExpDeprecatedDLL(MSG)         __attribute__((deprecated(#MSG)))
 
-#define MAMATypeDeprecated(NAME, MSG)   __attribute__ ((deprecated(#MSG))) 
+#define MAMATypeDeprecated(NAME, MSG)   __attribute__ ((deprecated(#MSG)))
 
 /* Special tags to allow for disabling deprecation messages for code between
  * the MAMAIgnoreDeprecatedOpen and MAMAIgnoreDeprecatedClose tags.
- * 
+ *
  * Only support Clang / LLVM on Mac
  */
 #  define MAMAIgnoreDeprecatedOpen           \
