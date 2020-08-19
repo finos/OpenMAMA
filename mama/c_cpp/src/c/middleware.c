@@ -31,7 +31,7 @@ mamaMiddleware_convertFromString (const char*  str)
 
     if (strcasecmp (str, "wmw") == 0)
         return MAMA_MIDDLEWARE_WMW;
-        
+
     if (strcasecmp (str, "lbm") == 0)
         return MAMA_MIDDLEWARE_LBM;
 
@@ -83,6 +83,9 @@ mamaMiddleware_convertFromString (const char*  str)
     if (strcasecmp (str, "hms") == 0)
         return MAMA_MIDDLEWARE_HMS;
 
+    if (strcasecmp (str, "zmq") == 0)
+        return MAMA_MIDDLEWARE_ZMQ;
+
     return MAMA_MIDDLEWARE_UNKNOWN;
 }
 
@@ -128,6 +131,8 @@ mamaMiddleware_convertToString (mamaMiddleware  middleware)
             return "umdskomodo";
         case MAMA_MIDDLEWARE_HMS:
             return "hms";
+        case MAMA_MIDDLEWARE_ZMQ:
+            return "zmq";
         default:
             return "unknown";
     }
