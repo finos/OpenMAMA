@@ -66,6 +66,7 @@ typedef enum mamaPayloadType_
     MAMA_PAYLOAD_VULCAN     = 'V',
     MAMA_PAYLOAD_WOMBAT_MSG = 'W',
     MAMA_PAYLOAD_EXEGY      = 'X',
+    MAMA_PAYLOAD_OMNM       = 'O',
 
 /* Unknown Payload */
     MAMA_PAYLOAD_UNKNOWN    = 'U',
