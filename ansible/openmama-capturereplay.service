@@ -1,0 +1,16 @@
+[Unit]
+Description=OpenMAMA Capture Replay utility for producing OpenMAMA output data
+
+[Service]
+Environment=WOMBAT_PATH=/opt/openmama/config
+Environment=LD_LIBRARY_PATH=/opt/openmama/lib
+Environment=OM_PB_FILE=/opt/openmama/data/playbacks/openmama_utpcasheuro_capture.5000.10.qpid.mplay
+Environment=OM_DICT_FILE=/opt/openmama/data/dictionaries/data.dict
+Environment=OM_MIDDLEWARE=qpid
+Environment=OM_TRANSPORT=pub
+Environment=OM_SOURCE=OM
+ExecStart=/opt/openmama/bin/capturereplayc -S ${OM_SOURCE} -f "${OM_PB_FILE}" -dictionary "${OM_DICT_FILE}" -m ${OM_MIDDLEWARE} -tport ${OM_TRANSPORT} -r
+
+[Install]
+WantedBy=multi-user.target
+
