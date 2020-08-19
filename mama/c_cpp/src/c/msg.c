@@ -4326,7 +4326,8 @@ mamaMsg_setReplyHandle (mamaMsg msg, mamaMsgReply handle)
 
     if (!impl) return MAMA_STATUS_NULL_ARG;
 
-    mamaMsgImpl_setBridgeImpl(msg, reply->mBridgeImpl);
+    if(!impl->mBridgeImpl)
+        mamaMsgImpl_setBridgeImpl(msg, reply->mBridgeImpl );
 
     return reply->mBridgeImpl->bridgeMamaMsgSetReplyHandleAndIncrement
         (impl->mBridgeMessage, reply->replyHandle);
