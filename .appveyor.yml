@@ -77,6 +77,7 @@ init:
 # TODO: Make programatic
 - cmd: set VERSION=6.3.0rc1
 - sh: export VERSION=6.3.0rc1
+- sh: export ARTIFACT_TYPE=dev
 - cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\openmama-%VERSION%.win.%PLATFORM%
 
 # Build chain tooling
@@ -114,7 +115,7 @@ build_script:
 
   # Linux build
 - sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE --build-arg INSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES
-- sh: docker run -e VERSION=$VERSION -v $(pwd):/apps/release --rm omdocker
+- sh: docker run -e VERSION=$VERSION -e ARTIFACT_TYPE=$ARTIFACT_TYPE -v $(pwd):/apps/release --rm omdocker
 - sh: test -n "$CLOUDSMITH_REPO" && echo cloudsmith push $PACKAGE_TYPE $CLOUDSMITH_REPO/openmama/$DISTRO/$DISTRO_VERSION *.$PACKAGE_TYPE
 - sh: test -n "$CLOUDSMITH_REPO" && cloudsmith push $PACKAGE_TYPE $CLOUDSMITH_REPO/$DISTRO/$DISTRO_VERSION *.$PACKAGE_TYPE
 
@@ -135,6 +136,7 @@ for:
       - master
   environment:
     CLOUDSMITH_REPO: openmama/openmama
+    ARTIFACT_TYPE: release
 -
   branches:
     only:
@@ -142,10 +144,12 @@ for:
       - next
   environment:
     CLOUDSMITH_REPO: openmama/openmama-experimental
+    ARTIFACT_TYPE: dev
 -
   branches:
     only:
       - /OpenMAMA-\d*\.\d*\.\d*/
   environment:
     CLOUDSMITH_REPO: openmama/openmama-rc
+    ARTIFACT_TYPE: rc
 
