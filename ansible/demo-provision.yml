@@ -41,6 +41,9 @@
         - java-latest-openjdk-devel
         - ruby-devel
         - rubygems
+        - figlet
+        - uuid
+        - rsync
       enablerepo: PowerTools
   - name: Installing prerequisite Ruby Gems
     gem:
@@ -85,3 +88,68 @@
       cmd: make install
       chdir: /usr/local/src/googletest/bld
       creates: /usr/lib64/libgtest.a
+  - name: Installing capturereplay service
+    copy:
+      src: openmama-capturereplay.service
+      dest: /etc/systemd/system/openmama-capturereplay.service
+  - name: Enabling capturereplay service
+    systemd:
+      name: openmama-capturereplay
+      state: started
+      enabled: yes
+      daemon_reload: yes
+  - name: Enabling crond
+    systemd:
+      name: crond
+      state: started
+      enabled: yes
+      daemon_reload: yes
+  - name: Setting up ldconfig
+    copy:
+      src: openmama.ld.so.conf
+      dest: /etc/ld.so.conf.d/openmama.ld.so.conf
+    notify:
+      - update ldconfig
+  - name: Setting up system configuration for profiles
+    copy:
+      src: openmama.profile.sh
+      dest: /etc/profile.d/openmama.profile.sh
+  - name: Installing screenfetch
+    get_url:
+      url: https://raw.githubusercontent.com/KittyKatt/screenFetch/v3.9.1/screenfetch-dev
+      dest: /usr/local/bin/screenfetch
+      mode: '1777'
+  - name: Creating OpenMAMA login config directory
+    file:
+      path: /etc/openmama
+      state: directory
+      recurse: yes
+  - name: Installing OpenMAMA Ansi Logo
+    copy:
+      src: ascii-logo.ans
+      dest: /etc/openmama/ascii-logo.ans
+  - name: Installing OpenMAMA Logo Parser for Screenfetch
+    copy:
+      src: screenfetch-icon-load.sh
+      dest: /etc/openmama/screenfetch-icon-load.sh
+  - name: Installing OpenMAMA Logo banner generator
+    copy:
+      src: generate-banner.sh
+      dest: /etc/openmama/generate-banner.sh
+      mode: 0755
+    notify:
+      - generate openmama banner
+  - name: Installing cron to regenerate ssh login banner
+    cron:
+      name: OpenMAMA motd
+      minute: "*/10"
+      job: "/etc/openmama/generate-banner.sh > /etc/motd"
+    notify:
+      - generate openmama banner
+  handlers:
+    - name: generate openmama banner
+      shell: /etc/openmama/generate-banner.sh > /etc/motd
+    - name: update ldconfig
+      command:
+        cmd: ldconfig
+ 

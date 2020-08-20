@@ -13,4 +13,3 @@ ExecStart=/opt/openmama/bin/capturereplayc -S ${OM_SOURCE} -f "${OM_PB_FILE}" -d
 
 [Install]
 WantedBy=multi-user.target
-

@@ -1,6 +1,7 @@
 startline="0"
 logowidth="53"
-readarray -t fulloutput < ascii-logo.ans
+
+readarray -t fulloutput < /etc/openmama/ascii-logo.ans
 
 cnt=${#fulloutput[@]}
 for ((i=0;i<cnt;i++)); do
@@ -8,4 +9,3 @@ for ((i=0;i<cnt;i++)); do
 done
 
 labelcolor=$c2
-
