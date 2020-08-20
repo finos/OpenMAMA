@@ -95,4 +95,6 @@ COPY --from=builder /apps/package/* ./
 RUN find . -type f -name "*.deb" | while read P; do apt-get update -qq && apt-get install -y -f "$P"; done
 RUN find . -type f -name "*.rpm" | while read P; do yum install -y -f "$P"; done
 
+COPY --from=builder /apps/package/* /apps/release/
+
 CMD ["/bin/bash"]
