@@ -5,20 +5,6 @@ services:
 environment:
   matrix:
 
-  - GENERATOR: Visual Studio 15 2017
-    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    PLATFORM: x86
-    BUILD_TYPE: RelWithDebInfo
-    # NB Can't use JAVA_HOME because appveyor trashes it
-    JAVA_HOME_OVERRIDE: C:\Program Files (x86)\Java\jdk1.8.0
-
-  - GENERATOR: Visual Studio 15 2017 Win64
-    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-    PLATFORM: x64
-    BUILD_TYPE: RelWithDebInfo
-    # NB Can't use JAVA_HOME because appveyor trashes it
-    JAVA_HOME_OVERRIDE: C:\Program Files\Java\jdk1.8.0
-
   - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
     DOCKER_IMAGE: fedora:30
 
@@ -45,6 +31,21 @@ environment:
 
   - APPVEYOR_BUILD_WORKER_IMAGE: ubuntu1804
     DOCKER_IMAGE: centos:8
+
+  - GENERATOR: Visual Studio 15 2017
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    PLATFORM: x86
+    BUILD_TYPE: RelWithDebInfo
+    # NB Can't use JAVA_HOME because appveyor trashes it
+    JAVA_HOME_OVERRIDE: C:\Program Files (x86)\Java\jdk1.8.0
+
+  - GENERATOR: Visual Studio 15 2017 Win64
+    APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+    PLATFORM: x64
+    BUILD_TYPE: RelWithDebInfo
+    # NB Can't use JAVA_HOME because appveyor trashes it
+    JAVA_HOME_OVERRIDE: C:\Program Files\Java\jdk1.8.0
+
 init:
 # TODO: Make programatic
 - cmd: set VERSION=6.3.0rc1
