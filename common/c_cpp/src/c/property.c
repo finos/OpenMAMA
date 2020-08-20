@@ -245,7 +245,7 @@ properties_Get( wproperty_t handle, const char* name )
 
     rval = (char* )wtable_lookup( this->mTable, (char* )name );
 
-    if( gPropertyDebug )fprintf( stderr, "Get property: %s\n", rval );
+    if( gPropertyDebug )fprintf( stderr, "Get property: %s=%s\n", name, rval );
 
     return rval;
 }
