@@ -113,9 +113,10 @@ build_script:
     7z a openmama-%VERSION%.win.%PLATFORM%.zip "%OPENMAMA_INSTALL_DIR%"
 
   # Linux build
-#- sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE --build-arg INSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES
-#- sh: docker run -e VERSION=$VERSION -v $(pwd):/apps/release --rm omdocker
-- sh: test -n "$CLOUDSMITH_REPO" && echo cloudsmith push $PACKAGE_TYPE openmama/openmama/$DISTRO/$DISTRO_VERSION NAME-VERSION.ARCH.$PACKAGE_TYPE
+- sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE --build-arg INSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES
+- sh: docker run -e VERSION=$VERSION -v $(pwd):/apps/release --rm omdocker
+- sh: test -n "$CLOUDSMITH_REPO" && echo cloudsmith push $PACKAGE_TYPE $CLOUDSMITH_REPO/openmama/$DISTRO/$DISTRO_VERSION *.$PACKAGE_TYPE
+- sh: test -n "$CLOUDSMITH_REPO" && cloudsmith push $PACKAGE_TYPE $CLOUDSMITH_REPO/$DISTRO/$DISTRO_VERSION *.$PACKAGE_TYPE
 
 artifacts:
   - path: '*.deb'
