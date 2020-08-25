@@ -75,7 +75,6 @@ environment:
 
 before_build:
 - cmd: set /p VERSION=<VERSION
-- sh: export VERSION=`cat VERSION`
 - sh: export ARTIFACT_TYPE=dev
 - cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\openmama-%VERSION%.win.%PLATFORM%
 - cmd: vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows
@@ -111,7 +110,7 @@ build_script:
 
   # Linux build
 - sh: docker build -t omdocker -f release_scripts/Dockerfile . --build-arg IMAGE=$DOCKER_IMAGE --build-arg INSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES
-- sh: docker run -e VERSION=$VERSION -e ARTIFACT_TYPE=$ARTIFACT_TYPE -e BUILD_NUMBER=$APPVEYOR_BUILD_NUMBER -v $(pwd):/apps/release --rm omdocker
+- sh: docker run -e ARTIFACT_TYPE=$ARTIFACT_TYPE -e BUILD_NUMBER=$APPVEYOR_BUILD_NUMBER -v $(pwd):/apps/release --rm omdocker
 - sh: test -n "$CLOUDSMITH_REPO" && echo cloudsmith push $PACKAGE_TYPE $CLOUDSMITH_REPO/$DISTRO/$DISTRO_VERSION *.$PACKAGE_TYPE
 - sh: ls *.$PACKAGE_TYPE
 - sh: test -n "$CLOUDSMITH_REPO" && cloudsmith push $PACKAGE_TYPE $CLOUDSMITH_REPO/$DISTRO/$DISTRO_VERSION *.$PACKAGE_TYPE

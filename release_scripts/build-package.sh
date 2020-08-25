@@ -13,7 +13,7 @@ RHEL=CentOS
 UBUNTU=Ubuntu
 
 test ! -f "$VERSION_FILE" && echo "VERSION_FILE=$VERSION_FILE not found!" && exit $LINENO
-VERSION=$(cat VERSION_FILE)
+VERSION=$(cat $VERSION_FILE)
 
 if [ "$ARTIFACT_TYPE" != "release" ]
 then
