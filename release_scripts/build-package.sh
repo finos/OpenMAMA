@@ -17,7 +17,7 @@ VERSION=$(cat $VERSION_FILE)
 
 if [ "$ARTIFACT_TYPE" != "release" ]
 then
-    test -n "$BUILD_NUMBER" && echo "BUILD_NUMBER must be specified!" && exit $LINENO
+    test -z "$BUILD_NUMBER" && echo "BUILD_NUMBER must be specified!" && exit $LINENO
 else
     BUILD_NUMBER=1
 fi
