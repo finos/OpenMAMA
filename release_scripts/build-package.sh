@@ -18,9 +18,7 @@ VERSION=$(cat $VERSION_FILE)
 if [ "$ARTIFACT_TYPE" != "release" ]
 then
     test -z "$BUILD_NUMBER" && echo "BUILD_NUMBER must be specified!" && exit $LINENO
-    VERSION=${VERSION}${ARTIFACT_TYPE}
-else
-    BUILD_NUMBER=1
+    VERSION=${VERSION}.${ARTIFACT_TYPE}.${BUILD_NUMBER}
 fi
 
 if [ -z "$IS_DOCKER_BUILD" ]
@@ -98,5 +96,5 @@ fpm -s dir \
         --version $VERSION \
         --iteration 1 \
         $DEPENDS_FLAGS \
-        -p openmama-$VERSION-$BUILD_NUMBER.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE \
+        -p openmama-$VERSION-1.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE \
         --description "OpenMAMA high performance Market Data API" .
