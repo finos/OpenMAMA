@@ -5,13 +5,22 @@ set -e
 
 # Globals
 PREFIX=${PREFIX:-/apps/install}
+ARTIFACT_TYPE=${ARTIFACT_TYPE:-dev}
 
 # Constants
 FEDORA=Fedora
 RHEL=CentOS
 UBUNTU=Ubuntu
 
-test -z "$VERSION" && echo "VERSION must be specified!" && exit $LINENO
+test ! -f "$VERSION_FILE" && echo "VERSION_FILE=$VERSION_FILE not found!" && exit $LINENO
+VERSION=$(cat VERSION_FILE)
+
+if [ "$ARTIFACT_TYPE" != "release" ]
+then
+    test -n "$BUILD_NUMBER" && echo "BUILD_NUMBER must be specified!" && exit $LINENO
+else
+    BUILD_NUMBER=1
+fi
 
 if [ -z "$IS_DOCKER_BUILD" ]
 then
@@ -88,5 +97,5 @@ fpm -s dir \
         --version $VERSION \
         --iteration 1 \
         $DEPENDS_FLAGS \
-        -p openmama-$VERSION-1.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE \
+        -p openmama-$VERSION-$BUILD_NUMBER.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE \
         --description "OpenMAMA high performance Market Data API" .

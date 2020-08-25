@@ -3,7 +3,7 @@ project (mamda)
 
 include(mama-common)
 
-get_component_version(${CMAKE_CURRENT_LIST_DIR}/. MAMDA)
+get_component_version(MAMDA)
 
 if(WIN32)
 	add_definitions(-DMAMDA_DLL)

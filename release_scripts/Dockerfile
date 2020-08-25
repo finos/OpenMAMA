@@ -10,6 +10,7 @@ ARG VERSION_GTEST=1.8.0
 ARG VERSION_APR=1.6.3
 ARG WITH_UNITTEST=ON
 ARG INSTALL_RUNTIME_DEPENDENCIES=OFF
+ARG BUILD_NUMBER=1
 ARG IMAGE
 
 # Promote arguments to environment variables
@@ -21,6 +22,7 @@ ENV VERSION_APR $VERSION_APR
 ENV WITH_UNITTEST $WITH_UNITTEST
 ENV INSTALL_RUNTIME_DEPENDENCIES $INSTALL_RUNTIME_DEPENDENCIES
 ENV IMAGE $IMAGE
+ENV BUILD_NUMBER $BUILD_NUMBER
 
 # Additional defaults for underlying scripts
 ENV IS_DOCKER_BUILD true
@@ -31,6 +33,7 @@ ENV PREFIX /apps/install
 ENV INSTALL_DIR $PREFIX/opt/openmama
 ENV RELEASE_DIR /apps/release
 ENV PACKAGE_DIR /apps/package
+ENV VERSION_FILE=$SRC_DIR/VERSION
 
 # Add internal scripts here to prevent reruns
 ADD release_scripts/install-dependencies.sh $SRC_DIR/release_scripts/
