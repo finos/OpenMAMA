@@ -74,9 +74,8 @@ environment:
     JAVA_HOME_OVERRIDE: C:\Program Files\Java\jdk1.8.0
 
 init:
-# TODO: Make programatic
-- cmd: set VERSION=6.3.0rc1
-- sh: export VERSION=6.3.0rc1
+- cmd: set /p VERSION=<VERSION
+- sh: export VERSION=`cat VERSION`
 - sh: export ARTIFACT_TYPE=dev
 - cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\openmama-%VERSION%.win.%PLATFORM%
 
