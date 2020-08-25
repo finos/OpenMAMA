@@ -113,7 +113,8 @@ build_script:
 - sh: docker run -e ARTIFACT_TYPE=$ARTIFACT_TYPE -e BUILD_NUMBER=$APPVEYOR_BUILD_NUMBER -v $(pwd):/apps/release --rm omdocker
   # Verify the packages are installable
 - sh: if [ "$PACKAGE_TYPE" = deb ]; then docker run --rm -v $(pwd):/package $DOCKER_IMAGE /bin/bash -c "apt update && apt install -y /package/*.deb"; fi
-- sh: if [ "$PACKAGE_TYPE" = rpm ]; then docker run --rm -v $(pwd):/package $DOCKER_IMAGE /bin/bash -c "yum install -y /package/*.rpm"; fi
+- sh: if [ "$DISTRO" = fedora ]; then docker run --rm -v $(pwd):/package $DOCKER_IMAGE /bin/bash -c "dnf install -y /package/*.rpm"; fi
+- sh: if [ "$DISTRO" = el ]; then docker run --rm -v $(pwd):/package $DOCKER_IMAGE /bin/bash -c "yum install epel-release && yum install -y /package/*.rpm"; fi
   # Upload to cloudsmith
 - sh: if [ -n "$CLOUDSMITH_REPO" ]; then echo cloudsmith push $PACKAGE_TYPE $CLOUDSMITH_REPO/$DISTRO/$DISTRO_VERSION *.$PACKAGE_TYPE; fi
 - sh: ls *.$PACKAGE_TYPE
