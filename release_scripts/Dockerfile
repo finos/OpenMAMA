@@ -1,6 +1,6 @@
 # Use configurable image name
 ARG IMAGE=centos:7.5.1804
-FROM $IMAGE AS builder
+FROM $IMAGE
 
 # Assign arguments with defaults
 ARG VERSION=6.3.0
@@ -34,7 +34,6 @@ ENV PACKAGE_DIR /apps/package
 
 # Add internal scripts here to prevent reruns
 ADD release_scripts/install-dependencies.sh $SRC_DIR/release_scripts/
-ADD release_scripts/Dockerfile $SRC_DIR/release_scripts/
 
 # Run script to update dependencies
 RUN $SRC_DIR/release_scripts/install-dependencies.sh
@@ -49,8 +48,8 @@ WORKDIR $SRC_DIR/build
 RUN . /etc/profile && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
           -DBIN_GRADLE=$SDKMAN_DIR/candidates/gradle/current/bin/gradle \
           -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
-          -DWITH_JAVA=ON \
-          -DWITH_UNITTEST=$WITH_UNITTEST \
+#          -DWITH_JAVA=ON \
+#          -DWITH_UNITTEST=$WITH_UNITTEST \
           -DINSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES \
           -DCMAKE_CXX_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
           -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
@@ -61,7 +60,7 @@ RUN cmake --build . --config RelWithDebInfo --target install
 
 # Perform unit tests
 WORKDIR $SRC_DIR
-RUN test "$WITH_UNITTEST" = "ON" && OPENMAMA_INSTALL_DIR=$INSTALL_DIR python3 release_scripts/ci-run.py
+#RUN test "$WITH_UNITTEST" = "ON" && OPENMAMA_INSTALL_DIR=$INSTALL_DIR python3 release_scripts/ci-run.py
 
 # Clean up Unit Test files - we don't need them any more
 WORKDIR $INSTALL_DIR
@@ -75,26 +74,7 @@ RUN curl -sL https://github.com/OpenMAMA/OpenMAMA-testdata/archive/master.tar.gz
 RUN cp profiles/profile.openmama . && rm -rf profiles
 
 # When RPMs are generated, they'll go here
-WORKDIR $PACKAGE_DIR
+WORKDIR $RELEASE_DIR
 
 # Generate the package (deb / rpm / tarball).
-RUN $SRC_DIR/release_scripts/build-package.sh
-
-###############################################################################
-#                              Final Build
-###############################################################################
-
-from $IMAGE
-
-WORKDIR /root
-
-# Copy the artifact from the build to the root directory
-COPY --from=builder /apps/package/* ./
-
-# Install the package, leaving the package behind in the /root directory for future access.
-RUN find . -type f -name "*.deb" | while read P; do apt-get update -qq && apt-get install -y -f "$P"; done
-RUN find . -type f -name "*.rpm" | while read P; do yum install -y -f "$P"; done
-
-COPY --from=builder /apps/package/* /apps/release/
-
-CMD ["/bin/bash"]
+CMD $SRC_DIR/release_scripts/build-package.sh
