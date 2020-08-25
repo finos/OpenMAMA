@@ -73,11 +73,12 @@ environment:
     # NB Can't use JAVA_HOME because appveyor trashes it
     JAVA_HOME_OVERRIDE: C:\Program Files\Java\jdk1.8.0
 
-init:
+before_build:
 - cmd: set /p VERSION=<VERSION
 - sh: export VERSION=`cat VERSION`
 - sh: export ARTIFACT_TYPE=dev
 - cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\openmama-%VERSION%.win.%PLATFORM%
+- cmd: vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows
 
 # Build chain tooling
 install:
@@ -94,10 +95,6 @@ install:
 - sh: sudo apt-get install -y docker python
 - sh: sudo pip install --upgrade cloudsmith-cli
 - sh: cloudsmith whoami
-
-# Dependencies
-before_build:
-- cmd: vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows
 
 build_script:
   # Windows build
