@@ -11,7 +11,7 @@ if(WIN32)
 endif()
 add_definitions(-DOPENMAMA_INTEGRATION)
 
-get_component_version(${CMAKE_CURRENT_LIST_DIR} MAMA)
+get_component_version(MAMA)
 
 add_subdirectory (c_cpp/src/c)
 add_subdirectory (c_cpp/src/c/dqstrategyplugin)

@@ -1,5 +1,4 @@
 # comment
-release_scripts/Dockerfile
 build/
 cmake-build*
 openmama_install*/

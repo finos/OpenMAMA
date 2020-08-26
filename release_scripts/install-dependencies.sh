@@ -99,7 +99,7 @@ if [ "$DISTRIB_ID" = "$UBUNTU" ]
 then
     export DEBIAN_FRONTEND=noninteractive
     apt-get update -qq
-    apt-get install -y ruby ruby-dev build-essential \
+    apt-get install -qq -y ruby ruby-dev build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
 	    cmake git libzmq3-dev ncurses-dev \
 	    unzip valgrind libapr1-dev python3 libz-dev
@@ -108,21 +108,21 @@ fi
 # Ubuntu 20 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "20" ]
 then
-    apt-get install -y rubygems openjdk-13-jdk libqpid-proton11-dev
+    apt-get install -qq -y rubygems openjdk-13-jdk libqpid-proton11-dev
     echo "export JAVA_HOME=/usr/lib/jvm/java-13-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
 # Ubuntu 18 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "18" ]
 then
-    apt-get install -y rubygems openjdk-11-jdk libqpid-proton8-dev
+    apt-get install -qq -y rubygems openjdk-11-jdk libqpid-proton8-dev
     echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
 # Ubuntu 16 specific software
 if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
 then
-    apt-get install -y openjdk-8-jdk libssl-dev libqpid-proton2-dev
+    apt-get install -qq -y openjdk-8-jdk libssl-dev libqpid-proton2-dev
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
