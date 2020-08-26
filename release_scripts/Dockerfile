@@ -51,8 +51,8 @@ WORKDIR $SRC_DIR/build
 RUN . /etc/profile && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
           -DBIN_GRADLE=$SDKMAN_DIR/candidates/gradle/current/bin/gradle \
           -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
-#          -DWITH_JAVA=ON \
-#          -DWITH_UNITTEST=$WITH_UNITTEST \
+          -DWITH_JAVA=ON \
+          -DWITH_UNITTEST=$WITH_UNITTEST \
           -DINSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES \
           -DCMAKE_CXX_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
           -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
@@ -63,7 +63,7 @@ RUN cmake --build . --config RelWithDebInfo --target install
 
 # Perform unit tests
 WORKDIR $SRC_DIR
-#RUN test "$WITH_UNITTEST" = "ON" && OPENMAMA_INSTALL_DIR=$INSTALL_DIR python3 release_scripts/ci-run.py
+RUN test "$WITH_UNITTEST" = "ON" && OPENMAMA_INSTALL_DIR=$INSTALL_DIR python3 release_scripts/ci-run.py
 
 # Clean up Unit Test files - we don't need them any more
 WORKDIR $INSTALL_DIR
