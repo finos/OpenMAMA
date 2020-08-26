@@ -59,15 +59,15 @@ environment:
     DISTRO_VERSION: 8
     PACKAGE_TYPE: rpm
 
-  - PLATFORM: x86
-    GENERATOR: Visual Studio 15 2017
+  - GENERATOR: Visual Studio 15 2017
+    PLATFORM: x86
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     BUILD_TYPE: RelWithDebInfo
     # NB Can't use JAVA_HOME because appveyor trashes it
     JAVA_HOME_OVERRIDE: C:\Program Files (x86)\Java\jdk1.8.0
 
-  - PLATFORM: x64
-    GENERATOR: Visual Studio 15 2017 Win64
+  - GENERATOR: Visual Studio 15 2017 Win64
+    PLATFORM: x64
     APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
     BUILD_TYPE: RelWithDebInfo
     # NB Can't use JAVA_HOME because appveyor trashes it
