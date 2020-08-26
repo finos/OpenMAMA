@@ -135,14 +135,13 @@ for:
 -
   branches:
     only:
-      - master
+      - /OpenMAMA-\d*\.\d*\.\d*[\d.]*-release$/
   environment:
     CLOUDSMITH_REPO: openmama/openmama
     ARTIFACT_TYPE: release
 -
   branches:
     only:
-      - feature/package-post-install
       - next
   environment:
     CLOUDSMITH_REPO: openmama/openmama-experimental
@@ -150,7 +149,7 @@ for:
 -
   branches:
     only:
-      - /OpenMAMA-\d*\.\d*\.\d*/
+      - /OpenMAMA-\d*\.\d*\.\d*[\d.]*$/
   environment:
     CLOUDSMITH_REPO: openmama/openmama-rc
     ARTIFACT_TYPE: rc
