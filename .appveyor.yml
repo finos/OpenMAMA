@@ -94,7 +94,6 @@ install:
 - sh: sudo apt-get update -qq
 - sh: sudo apt-get install -y docker python
 - sh: sudo pip install --upgrade cloudsmith-cli
-- sh: cloudsmith whoami
 
 build_script:
   # Windows build
