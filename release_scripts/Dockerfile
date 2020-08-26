@@ -59,7 +59,7 @@ RUN . /etc/profile && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
           ..
 
 # Perform the build and install
-RUN cmake --build . --config RelWithDebInfo --target install -j
+RUN cmake --build . --config RelWithDebInfo --target install
 
 # Perform unit tests
 WORKDIR $SRC_DIR
