@@ -86,8 +86,6 @@ else
     echo "Unsupported distro [$DISTRIB_ID] found: $(cat /etc/*-release)" && exit $LINENO
 fi
 
-echo "ARTIFACT_TYPE=$ARTIFACT_TYPE"
-
 fpm -s dir \
         -t $PACKAGE_TYPE \
         -m "openmama-users@lists.openmama.org" \
