@@ -3,7 +3,6 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <RootNamespace>_01_quickstart</RootNamespace>
-    <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="OpenMAMA">
