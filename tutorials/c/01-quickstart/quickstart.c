@@ -5,41 +5,10 @@
 #define DEFAULT_MIDDLEWARE_NAME "qpid"
 #define DEFAULT_TRANSPORT_NAME "sub"
 #define DEFAULT_SOURCE_NAME "OPENMAMA"
+#define DEFAULT_DICTIONARY_FILE "/opt/openmama/data/dictionaries/data.dict"
 #define DEFAULT_REQUIRES_DICTIONARY 1
 #define DEFAULT_REQUIRES_INITIAL 1
 
-// This closure is used by this App to pass some context to the dict callbacks
-typedef struct dictionaryClosure {
-    mamaBridge bridge;
-    mama_status status;
-} dictionaryClosure;
-
-// This will be fired when a dictionary request times out
-void MAMACALLTYPE
-timeoutCb (mamaDictionary dict, void *closure)
-{
-    dictionaryClosure* dc = (dictionaryClosure*) closure;
-    dc->status = MAMA_STATUS_TIMEOUT;
-    mama_stop(dc->bridge);
-}
-
-// This will be fired when a dictionary request fails
-void MAMACALLTYPE
-errorCb (mamaDictionary dict, const char *errMsg, void *closure)
-{
-    dictionaryClosure* dc = (dictionaryClosure*) closure;
-    dc->status = MAMA_STATUS_PLATFORM;
-    mama_stop(dc->bridge);
-}
-
-// This will be fired when a dictionary request succeeds
-void MAMACALLTYPE
-completeCb (mamaDictionary dict, void *closure)
-{
-    dictionaryClosure* dc = (dictionaryClosure*) closure;
-    dc->status = MAMA_STATUS_OK;
-    mama_stop(dc->bridge);
-}
 
 // This will be fired when a message for the OpenMAMA subscription is received
 void MAMACALLTYPE
@@ -47,7 +16,7 @@ subscriptionOnMsg  (mamaSubscription subscription,
                     mamaMsg msg,
                     void *closure,
                     void *itemClosure) {
-    fprintf(stdout, "Received a message: %s\n", mamaMsg_toJsonStringWithDictionary(msg, (mamaDictionary)closure));
+    fprintf(stdout, "%s\n", mamaMsg_toJsonStringWithDictionary(msg, (mamaDictionary)closure));
 }
 
 // Rudimentary error checking mechanism for brevity
@@ -81,6 +50,38 @@ void usageAndExit(const char* appName) {
     exit(EXIT_FAILURE);
 }
 
+void MAMACALLTYPE
+subscriptionOnCreate (mamaSubscription subscription, void* closure)
+{
+    // You may add additional event handling for when subscription is created here
+}
+
+static void MAMACALLTYPE
+subscriptionOnError (mamaSubscription subscription,
+                     mama_status      status,
+                     void*            platformError,
+                     const char*      subject,
+                     void*            closure)
+{
+    fprintf (stdout,
+             "An error occurred creating subscription for %s: %s\n",
+             subject ? subject : "(null)",
+             mamaStatus_stringForStatus (status));
+}
+
+void MAMACALLTYPE
+subscriptionOnQuality (mamaSubscription subsc,
+                       mamaQuality      quality,
+                       const char*      symbol,
+                       short            cause,
+                       const void*      platformInfo,
+                       void*            closure)
+{
+    printf ("Quality changed to %s for %s, cause %d, platformInfo: %s\n",
+            mamaQuality_convertToString (quality), symbol, cause,
+            platformInfo ? (char*)platformInfo: "");
+}
+
 int main(int argc, char* argv[])
 {
     // OpenMAMA status variable which we will use throughout this example
@@ -95,9 +96,6 @@ int main(int argc, char* argv[])
     // The OpenMAMA transport configured in $WOMBAT_PATH/mama.properties
     mamaTransport transport;
 
-    // The OpenMAMA source to use for dictionary requests if applicable
-    mamaSource dictSource;
-
     // Optional reference to the OpenMAMA dictionary (id to field mapping)
     mamaDictionary dictionary;
 
@@ -108,17 +106,9 @@ int main(int argc, char* argv[])
     mamaSubscription subscription;
 
     // This is a set of callbacks which we'll populate here
-    mamaDictionaryCallbackSet dictionaryCallback;
-
-    // This is a set of callbacks which we'll populate here
-    dictionaryClosure dc;
-
-    // This is a set of callbacks which we'll populate here
     mamaMsgCallbacks callbacks;
 
     // NULL initialize any stack structs for safety
-    memset(&dictionaryCallback, 0, sizeof(dictionaryCallback));
-    memset(&dc, 0, sizeof(dc));
     memset(&callbacks, 0, sizeof(callbacks));
 
     // Parse the command line options to override defaults
@@ -126,15 +116,19 @@ int main(int argc, char* argv[])
     const char* transportName = DEFAULT_TRANSPORT_NAME;
     const char* sourceName = DEFAULT_SOURCE_NAME;
     const char* symbolName = NULL;
+    const char* dictionaryFile = DEFAULT_DICTIONARY_FILE;
     int requiresDictionary = DEFAULT_REQUIRES_DICTIONARY;
     int requiresInitial = DEFAULT_REQUIRES_INITIAL;
 
     // Parse out command line options
     int opt;
-    while((opt = getopt(argc, argv, ":BIm:s:S:t:v")) != -1) {
+    while((opt = getopt(argc, argv, ":Bd:Im:s:S:t:v")) != -1) {
         switch(opt) {
             case 'B':
                 requiresDictionary = 0;
+                break;
+            case 'd':
+                dictionaryFile = optarg;
                 break;
             case 'I':
                 requiresInitial = 0;
@@ -175,14 +169,6 @@ int main(int argc, char* argv[])
     status = mama_open();
     checkStatusAndExitOnFailure(status, "mama_open");
 
-    // Populate the dictionary struct context with the bridge to allow closing
-    dc.bridge = bridge;
-
-    // Populate the dictionary callbacks
-    dictionaryCallback.onComplete = completeCb;
-    dictionaryCallback.onTimeout  = timeoutCb;
-    dictionaryCallback.onError    = errorCb;
-
     // Get default event queue from the bridge for testing
     status = mama_getDefaultEventQueue(bridge, &queue);
     checkStatusAndExitOnFailure(status, "mama_getDefaultEventQueue");
@@ -193,30 +179,12 @@ int main(int argc, char* argv[])
     status = mamaTransport_create(transport, transportName, bridge);
     checkStatusAndExitOnFailure(status, "mamaTransport_create");
 
-    // Create the OpenMAMA source (namespace)
-    status = mamaSource_create (&dictSource);
-    checkStatusAndExitOnFailure(status, "mamaSource_create");
-    status = mamaSource_setTransport (dictSource, transport);
-    checkStatusAndExitOnFailure(status, "mamaSource_setTransport");
-    status = mamaSource_setSymbolNamespace (dictSource, "WOMBAT");
-    checkStatusAndExitOnFailure(status, "mamaSource_setSymbolNamespace");
-
-    // If we need a dictionary, go fetch it
-    if (requiresDictionary != 0) {
-        status = mama_createDictionary(
-                &dictionary,
-                queue,
-                dictionaryCallback,
-                dictSource,
-                10.0,
-                3,
-                &dc
-        );
-        checkStatusAndExitOnFailure(status, "mama_createDictionary");
-
-        // Note this will block until the callbacks are triggered to unblock
-        status = mama_start(bridge);
-        checkStatusAndExitOnFailure(status, "mama_start");
+    // Set up the data dictionary
+    if (requiresDictionary) {
+        status = mamaDictionary_create (&dictionary);
+        checkStatusAndExitOnFailure(status, "mamaDictionary_create");
+        status = mamaDictionary_populateFromFile(dictionary, dictionaryFile);
+        checkStatusAndExitOnFailure(status, "mamaDictionary_populateFromFile");
     } else {
         dictionary = NULL;
     }
@@ -235,6 +203,8 @@ int main(int argc, char* argv[])
 
     // Set up the callbacks for OpenMAMA (note that other events are available too)
     callbacks.onMsg = subscriptionOnMsg;
+    callbacks.onCreate = subscriptionOnCreate;
+    callbacks.onError = subscriptionOnError;
 
     // Fire up the subscription to the symbol requested
     status = mamaSubscription_create(
