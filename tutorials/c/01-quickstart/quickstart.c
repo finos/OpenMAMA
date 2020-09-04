@@ -1,34 +1,18 @@
 #include <stdio.h>
 #include <mama/mama.h>
 
-// Default values for command line arguments
-#define DEFAULT_MIDDLEWARE_NAME "qpid"
-#define DEFAULT_TRANSPORT_NAME "sub"
-#define DEFAULT_SOURCE_NAME "OPENMAMA"
-#define DEFAULT_DICTIONARY_FILE "/opt/openmama/data/dictionaries/data.dict"
-#define DEFAULT_REQUIRES_DICTIONARY 1
-#define DEFAULT_REQUIRES_INITIAL 1
-
-
-// This will be fired when a message for the OpenMAMA subscription is received
-void MAMACALLTYPE
-subscriptionOnMsg  (mamaSubscription subscription,
-                    mamaMsg msg,
-                    void *closure,
-                    void *itemClosure) {
-    fprintf(stdout, "%s\n", mamaMsg_toJsonStringWithDictionary(msg, (mamaDictionary)closure));
-}
 
 // Rudimentary error checking mechanism for brevity
 void checkStatusAndExitOnFailure(mama_status status, const char* scenario) {
     if (status != MAMA_STATUS_OK) {
         fprintf(stderr,
-                "Failure encountered while %s: %s",
+                "Failure encountered during %s: %s",
                 scenario,
                 mamaStatus_stringForStatus(status));
         exit(EXIT_FAILURE);
     }
 }
+
 void usageAndExit(const char* appName) {
     fprintf(stderr,
             "This is an OpenMAMA market data subscriber which assumes an\n"
@@ -37,36 +21,41 @@ void usageAndExit(const char* appName) {
             "For more information, see http://openmama.org/quickstart.html\n\n"
             "Usage: %s -s [symbol] [arguments]\n\n"
             "Arguments:\n"
-            "\t-m [middleware]\tMiddleware bridge to load. Default: [%s]\n"
-            "\t-S [source]\tSource name (prefix) to use. Default: [%s]\n"
-            "\t-t [transport]\tTransport from mama.properties to use. Default: [%s]\n"
+            "\t-m [middleware]\tMiddleware bridge to load. Default: [qpid]\n"
+            "\t-S [source]\tSource name (prefix) to use. Default: [OM]\n"
+            "\t-t [transport]\tTransport from mama.properties to use. Default: [sub]\n"
             "\t-B\t\tDisables dictionary request\n"
             "\t-I\t\tPrevents an intial from being requested\n"
             "\n",
-            appName,
-            DEFAULT_MIDDLEWARE_NAME,
-            DEFAULT_SOURCE_NAME,
-            DEFAULT_TRANSPORT_NAME);
+            appName);
     exit(EXIT_FAILURE);
 }
 
 void MAMACALLTYPE
-subscriptionOnCreate (mamaSubscription subscription, void* closure)
-{
-    // You may add additional event handling for when subscription is created here
+subscriptionOnMsg  (mamaSubscription    subscription,
+                    mamaMsg             msg,
+                    void*               closure,
+                    void*               itemClosure) {
+    fprintf(stdout, "Message Received: %s\n", mamaMsg_toString(msg));
 }
 
-static void MAMACALLTYPE
-subscriptionOnError (mamaSubscription subscription,
-                     mama_status      status,
-                     void*            platformError,
-                     const char*      subject,
-                     void*            closure)
+void MAMACALLTYPE
+subscriptionOnError (mamaSubscription   subscription,
+                     mama_status        status,
+                     void*              platformError,
+                     const char*        subject,
+                     void*              closure)
 {
-    fprintf (stdout,
-             "An error occurred creating subscription for %s: %s\n",
-             subject ? subject : "(null)",
-             mamaStatus_stringForStatus (status));
+    fprintf(stdout,
+            "An error occurred creating subscription for %s: %s\n",
+            subject ? subject : "(null)",
+            mamaStatus_stringForStatus (status));
+}
+
+void MAMACALLTYPE
+subscriptionOnCreate (mamaSubscription  subscription, void* closure)
+{
+    // You may add your own event handling logic here
 }
 
 void MAMACALLTYPE
@@ -77,9 +66,9 @@ subscriptionOnQuality (mamaSubscription subsc,
                        const void*      platformInfo,
                        void*            closure)
 {
-    printf ("Quality changed to %s for %s, cause %d, platformInfo: %s\n",
-            mamaQuality_convertToString (quality), symbol, cause,
-            platformInfo ? (char*)platformInfo: "");
+    fprintf(stdout,
+            "Quality changed to %s for %s, cause %d\n",
+            mamaQuality_convertToString (quality), symbol, cause);
 }
 
 int main(int argc, char* argv[])
@@ -112,13 +101,13 @@ int main(int argc, char* argv[])
     memset(&callbacks, 0, sizeof(callbacks));
 
     // Parse the command line options to override defaults
-    const char* middlewareName = DEFAULT_MIDDLEWARE_NAME;
-    const char* transportName = DEFAULT_TRANSPORT_NAME;
-    const char* sourceName = DEFAULT_SOURCE_NAME;
+    const char* middlewareName = "qpid";
+    const char* transportName = "sub";
+    const char* sourceName = "OM";
     const char* symbolName = NULL;
-    const char* dictionaryFile = DEFAULT_DICTIONARY_FILE;
-    int requiresDictionary = DEFAULT_REQUIRES_DICTIONARY;
-    int requiresInitial = DEFAULT_REQUIRES_INITIAL;
+    const char* dictionaryFile = "/opt/openmama/data/dictionaries/data.dict";
+    int requiresDictionary = 1;
+    int requiresInitial = 1;
 
     // Parse out command line options
     int opt;
@@ -173,7 +162,7 @@ int main(int argc, char* argv[])
     status = mama_getDefaultEventQueue(bridge, &queue);
     checkStatusAndExitOnFailure(status, "mama_getDefaultEventQueue");
 
-    // Allocate and create the required transport on the specified bridge
+    // Set up the required transport on the specified bridge
     status = mamaTransport_allocate(&transport);
     checkStatusAndExitOnFailure(status, "mamaTransport_allocate");
     status = mamaTransport_create(transport, transportName, bridge);
@@ -197,16 +186,14 @@ int main(int argc, char* argv[])
     status = mamaSource_setTransport(source, transport);
     checkStatusAndExitOnFailure(status, "mamaSource_setTransport");
 
-    // Set up the OpenMAMA Subscription (interest in a topic)
-    status = mamaSubscription_allocate(&subscription);
-    checkStatusAndExitOnFailure(status, "mamaSubscription_allocate");
-
-    // Set up the callbacks for OpenMAMA (note that other events are available too)
+    // Set up the event handlers for OpenMAMA
     callbacks.onMsg = subscriptionOnMsg;
     callbacks.onCreate = subscriptionOnCreate;
     callbacks.onError = subscriptionOnError;
 
-    // Fire up the subscription to the symbol requested
+    // Set up the OpenMAMA Subscription (interest in a topic)
+    status = mamaSubscription_allocate(&subscription);
+    checkStatusAndExitOnFailure(status, "mamaSubscription_allocate");
     status = mamaSubscription_create(
             subscription,
             queue,
@@ -216,14 +203,10 @@ int main(int argc, char* argv[])
             dictionary
     );
     checkStatusAndExitOnFailure(status, "mamaSubscription_create");
-
-    // Let OpenMAMA know you want that data (more relevant for ad-hoc subscriptions after OpenMAMA has started)
-    status = mamaSubscription_activate(subscription);
-    checkStatusAndExitOnFailure(status, "mamaSubscription_activate");
-
-    // Confirm whether or not an initial is required (image request)
     status = mamaSubscription_setRequiresInitial(subscription, requiresInitial);
     checkStatusAndExitOnFailure(status, "mamaSubscription_setRequiresInitial");
+    status = mamaSubscription_activate(subscription);
+    checkStatusAndExitOnFailure(status, "mamaSubscription_activate");
 
     // Kick off OpenMAMA now (blocking call, non-blocking call also available)
     status = mama_start(bridge);

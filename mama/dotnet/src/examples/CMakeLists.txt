@@ -1,14 +1,14 @@
 cmake_minimum_required (VERSION 2.8.3)
 project (mamacs)
 
-msbuild_project(MamaFtMember MamaFtMember/MamaFtMemberCS.csproj MamaFtMember)
-msbuild_project(MamaInbox MamaInbox/MamaInboxCS.csproj MamaInbox)
-msbuild_project(MamaIo MamaIo/MamaIoCS.csproj MamaIo)
-msbuild_project(MamaListen MamaListen/MamaListenCS.csproj MamaListen)
-msbuild_project(MamaMultiSubscriber MamaMultiSubscriber/MamaMultiSubscriberCS.csproj MamaMultiSubscriber)
-msbuild_project(MamaPublisher MamaPublisher/MamaPublisherCS.csproj MamaPublisher)
-msbuild_project(MamaSubscriber MamaSubscriber/MamaSubscriberCS.csproj MamaSubscriber)
-msbuild_project(MamaSymbolListSubscriber MamaSymbolListSubscriber/MamaSymbolListSubscriberCS.csproj MamaSymbolListSubscriber)
+csharp_build_project(MamaFtMember MamaFtMember/MamaFtMemberCS.csproj MamaFtMember mamacs)
+csharp_build_project(MamaInbox MamaInbox/MamaInboxCS.csproj MamaInbox mamacs)
+csharp_build_project(MamaIo MamaIo/MamaIoCS.csproj MamaIo mamacs)
+csharp_build_project(MamaListen MamaListen/MamaListenCS.csproj MamaListen mamacs)
+csharp_build_project(MamaMultiSubscriber MamaMultiSubscriber/MamaMultiSubscriberCS.csproj MamaMultiSubscriber mamacs)
+csharp_build_project(MamaPublisher MamaPublisher/MamaPublisherCS.csproj MamaPublisher mamacs)
+csharp_build_project(MamaSubscriber MamaSubscriber/MamaSubscriberCS.csproj MamaSubscriber mamacs)
+csharp_build_project(MamaSymbolListSubscriber MamaSymbolListSubscriber/MamaSymbolListSubscriberCS.csproj MamaSymbolListSubscriber mamacs)
 
 install (FILES ${CMAKE_CURRENT_BINARY_DIR}/MamaFtMember.exe
                ${CMAKE_CURRENT_BINARY_DIR}/MamaInbox.exe

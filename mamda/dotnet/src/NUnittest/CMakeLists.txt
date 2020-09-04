@@ -1,1 +1,1 @@
-msbuild_project(mamdacs_unittest NUnitTest.csproj NUnitTest)
+csharp_build_project(mamdacs_unittest NUnitTest.csproj NUnitTest mamdacs)
