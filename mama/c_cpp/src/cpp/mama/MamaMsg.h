@@ -2680,6 +2680,33 @@ namespace Wombat
         const char* toString () const;
 
         /**
+         * Return a const char * json representation the message. The memory allocated by
+         * this method gets freed upon destroying the message or invoking toString()
+         * again.
+         *
+         * @return A string representation of the message.
+         */
+        const char* toJsonString () const;
+
+        /**
+         * Return a const char * json representation the message. The memory allocated by
+         * this method gets freed upon destroying the message or invoking toString()
+         * again.
+         *
+         * @return A string representation of the message.
+         */
+        const char* toJsonString (const MamaDictionary*  dictionary) const;
+
+        /**
+         * Return a const char * normalized representation the message. The memory allocated by
+         * this method gets freed upon destroying the message or invoking toString()
+         * again.
+         *
+         * @return A string representation of the message.
+         */
+        const char* toNormalizedString () const;
+
+        /**
          * Obtain a string representation the field with the given fid.
          * @param name The field name.
          * @param fid The field identifier.
