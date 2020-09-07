@@ -3656,7 +3656,7 @@ JNIEXPORT jboolean JNICALL Java_com_wombat_mama_MamaMsg_isFromInbox
 /*
  * Class:     com_wombat_mama_MamaMsg
  * Method:    toString
- * Signature: ()java/lang/String;
+ * Signature: ()Ljava/lang/String;
  */
 JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaMsg_toString
   (JNIEnv* env, jobject this)
@@ -3671,7 +3671,116 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaMsg_toString
 		"Null parameter, MamaMsg may have already been destroyed.", NULL);
 
 
-    retVal_c  = mamaMsg_toString(CAST_JLONG_TO_POINTER(mamaMsg,msgPointer));
+    retVal_c  = mamaMsg_toJsonString(CAST_JLONG_TO_POINTER(mamaMsg,msgPointer));
+
+    if(NULL==retVal_c)
+    {
+        utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Could not call toString on mamaMsg.",
+                status);
+        utils_throwWombatException(env,errorString);
+        return NULL;
+    }
+
+    return (*env)->NewStringUTF(env, retVal_c);
+}
+
+/*
+ * Class:     com_wombat_mama_MamaMsg
+ * Method:    toJsonString
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaMsg_toJsonString
+  (JNIEnv* env, jobject this)
+{
+    mama_status     status          =   MAMA_STATUS_OK;
+    jlong           msgPointer      =   0;
+    const char*     retVal_c        =   NULL;
+    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+
+    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+		"Null parameter, MamaMsg may have already been destroyed.", NULL);
+
+
+    retVal_c  = mamaMsg_toJsonString(CAST_JLONG_TO_POINTER(mamaMsg,msgPointer));
+
+    if(NULL==retVal_c)
+    {
+        utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Could not call toJsonString on mamaMsg.",
+                status);
+        utils_throwWombatException(env,errorString);
+        return NULL;
+    }
+
+    return (*env)->NewStringUTF(env, retVal_c);
+}
+
+/*
+ * Class:     com_wombat_mama_MamaMsg
+ * Method:    toJsonString
+ * Signature: (Lcom/wombat/mama/MamaDictionary;)Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaMsg_toJsonStringWithDictionary
+  (JNIEnv* env, jobject this, jobject dictionary)
+{
+    mama_status     status          =   MAMA_STATUS_OK;
+    jlong           msgPointer      =   0;
+    jlong           dictPointer     =   0;
+    const char*     retVal_c        =   NULL;
+    mamaDictionary  dictPointer_c   =   NULL;
+    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+
+    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+		"Null parameter, MamaMsg may have already been destroyed.", NULL);
+
+    if(NULL!=dictionary)
+    {
+        dictPointer = (*env)->GetLongField(env, dictionary, dictionaryPointerFieldId_g);
+        dictPointer_c = CAST_JLONG_TO_POINTER(mamaDictionary, dictPointer);
+    }
+
+    retVal_c  = mamaMsg_toJsonStringWithDictionary(CAST_JLONG_TO_POINTER(mamaMsg, msgPointer), dictPointer_c);
+
+    if(NULL==retVal_c)
+    {
+        utils_buildErrorStringForStatus(
+                errorString,
+                UTILS_MAX_ERROR_STRING_LENGTH,
+                "Could not call mamaMsg_toJsonStringWithDictionary on mamaMsg.",
+                status);
+        utils_throwWombatException(env,errorString);
+        return NULL;
+    }
+
+    return (*env)->NewStringUTF(env, retVal_c);
+}
+
+/*
+ * Class:     com_wombat_mama_MamaMsg
+ * Method:    toNormalizedString
+ * Signature: ()java/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_wombat_mama_MamaMsg_toNormalizedString
+  (JNIEnv* env, jobject this)
+{
+    mama_status     status          =   MAMA_STATUS_OK;
+    jlong           msgPointer      =   0;
+    const char*     retVal_c        =   NULL;
+    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+
+    msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
+    MAMA_THROW_NULL_PARAMETER_RETURN_VALUE(msgPointer,
+		"Null parameter, MamaMsg may have already been destroyed.", NULL);
+
+
+    retVal_c  = mamaMsg_toNormalizedString(CAST_JLONG_TO_POINTER(mamaMsg,msgPointer));
 
     if(NULL==retVal_c)
     {

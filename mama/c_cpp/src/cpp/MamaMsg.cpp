@@ -2026,7 +2026,24 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
     const char* MamaMsg::toString () const
     {
         mString = mamaMsg_toString (mMsg);
+        return mString;
+    }
 
+    const char* MamaMsg::toJsonString () const
+    {
+        mString = mamaMsg_toJsonString (mMsg);
+        return mString;
+    }
+
+    const char* MamaMsg::toJsonString (const MamaDictionary*  dictionary) const
+    {
+        mString = mamaMsg_toJsonStringWithDictionary (mMsg, dictionary->getDictC());
+        return mString;
+    }
+
+    const char* MamaMsg::toNormalizedString () const
+    {
+        mString = mamaMsg_toNormalizedString (mMsg);
         return mString;
     }
 
