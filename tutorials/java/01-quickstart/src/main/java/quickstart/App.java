@@ -76,7 +76,7 @@ public class App {
         System.out.println("\t-t [transport]\tTransport from mama.properties to use. Default: [sub]");
         System.out.println("\t-B\t\tDisables dictionary request");
         System.out.println("\t-I\t\tPrevents an intial from being requested");
-        System.exit(1);
+        System.exit(0);
     }
 
     public static void main(String[] args) {

@@ -9,7 +9,7 @@ void checkStatusAndExitOnFailure(mama_status status, const char* scenario) {
                 "Failure encountered during %s: %s",
                 scenario,
                 mamaStatus_stringForStatus(status));
-        exit(EXIT_FAILURE);
+        exit(EXIT_SUCCESS);
     }
 }
 
@@ -28,7 +28,7 @@ void usageAndExit(const char* appName) {
             "\t-I\t\tPrevents an intial from being requested\n"
             "\n",
             appName);
-    exit(EXIT_FAILURE);
+    exit(EXIT_SUCCESS);
 }
 
 void MAMACALLTYPE

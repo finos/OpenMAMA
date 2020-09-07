@@ -22,7 +22,7 @@ namespace _01_quickstart
             Console.WriteLine("\t-t [transport]\tTransport from mama.properties to use. Default: [sub]");
             Console.WriteLine("\t-B\t\tDisables dictionary request");
             Console.WriteLine("\t-I\t\tPrevents an intial from being requested");
-            System.Environment.Exit(1);
+            System.Environment.Exit(0);
         }
 
         internal class SubscriptionEventHandler : MamaSubscriptionCallback

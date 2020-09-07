@@ -32,7 +32,7 @@ void usageAndExit(const char* appName) {
             "\t-I\t\tPrevents an intial from being requested\n"
             "\n",
             appName);
-    exit(EXIT_FAILURE);
+    exit(EXIT_SUCCESS);
 }
 
 class SubscriptionEventHandler : public MamaSubscriptionCallback
