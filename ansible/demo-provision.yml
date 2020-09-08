@@ -90,6 +90,25 @@
       cmd: make install
       chdir: /usr/local/src/googletest/bld
       creates: /usr/lib64/libgtest.a
+  - name: Add Cloudsmith OpenMAMA Repository GPG key
+    rpm_key:
+      key: https://dl.cloudsmith.io/public/openmama/openmama-experimental/cfg/gpg/gpg.422DD3D44D7B047A.key
+      #  key: https://dl.cloudsmith.io/public/openmama/openmama/cfg/gpg/gpg.4A23800CBEE8E065.key
+      state: present
+    become: yes
+  - name: Add Cloudsmith OpenMAMA Repository
+    yum_repository:
+      name: openmama
+      description: OpenMAMA repository hosted by Cloudsmith
+      baseurl: https://dl.cloudsmith.io/public/openmama/openmama-experimental/rpm/el/$releasever/$basearch
+      #  baseurl: https://dl.cloudsmith.io/public/openmama/openmama/rpm/el/$releasever/$basearch
+    become: yes
+  - name: Install OpenMAMA from Cloudsmith
+    dnf:
+      name: openmama
+      state: present
+      update_cache: yes
+    become: yes
   - name: Installing capturereplay service
     copy:
       src: openmama-capturereplay.service
