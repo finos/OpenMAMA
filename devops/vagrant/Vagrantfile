@@ -4,7 +4,12 @@
 Vagrant.configure("2") do |config|
   config.vm.box = "generic/centos8"
 
+  config.vm.provision "shell", inline: "dnf install -y git"
+  config.vm.provision "shell", inline: "test -d OpenMAMA || git clone --single-branch --branch feature/demo-environment https://github.com/fquinner/OpenMAMA.git"
+  config.vm.provision "shell", inline: "pwd"
+
   config.vm.provision "ansible_local" do |ansible|
+    ansible.provisioning_path = "/home/vagrant"
     ansible.playbook = "OpenMAMA/ansible/demo-provision.yml"
     ansible.become = true
   end
@@ -33,7 +38,6 @@ Vagrant.configure("2") do |config|
   # the path on the host to the actual folder. The second argument is
   # the path on the guest to mount the folder. And the optional third
   # argument is a set of non-required options.
-  config.vm.synced_folder "../..", "/vagrant/OpenMAMA"
 
   # config.vm.provider "virtualbox" do |vb|
   #   # Display the VirtualBox GUI when booting the machine
