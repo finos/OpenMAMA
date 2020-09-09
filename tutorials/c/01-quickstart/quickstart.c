@@ -36,7 +36,38 @@ subscriptionOnMsg  (mamaSubscription    subscription,
                     mamaMsg             msg,
                     void*               closure,
                     void*               itemClosure) {
-    fprintf(stdout, "Message Received: %s\n", mamaMsg_toString(msg));
+    mamaMsgIterator iterator = NULL;
+    mamaMsgField currentField = NULL;
+    mamaDictionary dictionary = (mamaDictionary) closure;
+    uint16_t fid = 0;
+    mamaFieldType fieldType = MAMA_FIELD_TYPE_UNKNOWN;
+    char fieldValueAsString[1024];
+    const char* fieldName = NULL;
+
+    // Print out the heading
+    fprintf(stdout, "\n"
+            "+------------------------+--------+--------------+-------------------\n"
+            "| FIELD NAME             | FID    | TYPE         | VALUE (AS STRING) \n"
+            "+------------------------+--------+--------------+-------------------\n");
+
+    // Initialize the iterator
+    mamaMsgIterator_create (&iterator, dictionary);
+    mamaMsgIterator_associate (iterator, msg);
+
+    // Loop over each field in the message and print a summary of its contents
+    while ((currentField = mamaMsgIterator_next (iterator)) != NULL )
+    {
+        mamaMsgField_getFid (currentField, &fid);
+        mamaMsgField_getType (currentField, &fieldType);
+        mamaMsgField_getAsString(currentField, fieldValueAsString, sizeof(fieldValueAsString));
+        mamaMsgField_getName (currentField, &fieldName);
+        fprintf(stdout,
+                "| %-22s | %-6u | %-12s | %s\n",
+                fieldName,
+                fid,
+                mamaFieldTypeToString(fieldType),
+                fieldValueAsString);
+    }
 }
 
 void MAMACALLTYPE

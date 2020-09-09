@@ -2,52 +2,38 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
-  config.vm.box = "generic/centos8"
 
+  config.vm.provider "virtualbox" do |virtualbox|
+    config.vm.box = "generic/centos8"
+  end
+
+  config.vm.provider "hyperv" do |hyperv|
+    config.vm.box = "generic/centos8"
+  end
+
+  config.vm.provider "docker" do |docker|
+    # Password here just for bootstrapping and installing public key
+    config.ssh.password = 'vagrant'
+    # Let vagrant know this image will be running an ssh server
+    docker.has_ssh = true
+    # We need our own dockerfile to bootstrap vagrant user etc
+    docker.build_dir = "."
+    docker.dockerfile = "Dockerfile.vagrant"
+  end
+
+  # This is how we get hold of the ansible playbook - via git
   config.vm.provision "shell", inline: "dnf install -y git"
   config.vm.provision "shell", inline: "test -d OpenMAMA || git clone --single-branch --branch feature/demo-environment https://github.com/fquinner/OpenMAMA.git"
-  config.vm.provision "shell", inline: "pwd"
 
+  # This is where we actually run the playbook
   config.vm.provision "ansible_local" do |ansible|
+    # Playbook path is relative to this location
     ansible.provisioning_path = "/home/vagrant"
     ansible.playbook = "OpenMAMA/ansible/demo-provision.yml"
+    # Run the playbook with sudo
     ansible.become = true
   end
 
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine. In the example below,
-  # accessing "localhost:8080" will access port 80 on the guest machine.
-  # NOTE: This will enable public access to the opened port
-  # config.vm.network "forwarded_port", guest: 80, host: 8080
-
-  # Create a forwarded port mapping which allows access to a specific port
-  # within the machine from a port on the host machine and only allow access
-  # via 127.0.0.1 to disable public access
-  # config.vm.network "forwarded_port", guest: 80, host: 8080, host_ip: "127.0.0.1"
-
-  # Create a private network, which allows host-only access to the machine
-  # using a specific IP.
-  # config.vm.network "private_network", ip: "192.168.33.10"
-
-  # Create a public network, which generally matched to bridged network.
-  # Bridged networks make the machine appear as another physical device on
-  # your network.
-  # config.vm.network "public_network"
-
-  # Share an additional folder to the guest VM. The first argument is
-  # the path on the host to the actual folder. The second argument is
-  # the path on the guest to mount the folder. And the optional third
-  # argument is a set of non-required options.
+  # Disable default share - we don't use it
   config.vm.synced_folder '.', '/vagrant', disabled: true
-
-  # config.vm.provider "virtualbox" do |vb|
-  #   # Display the VirtualBox GUI when booting the machine
-  #   vb.gui = true
-  #
-  #   # Customize the amount of memory on the VM:
-  #   vb.memory = "1024"
-  # end
-  #
-  # View the documentation for the provider you are using for more
-  # information on available options.
 end
