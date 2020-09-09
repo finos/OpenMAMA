@@ -6,19 +6,51 @@ import com.wombat.mama.MamaQueue;
 import com.wombat.mama.MamaTransport;
 import com.wombat.mama.MamaDictionary;
 import com.wombat.mama.MamaMsg;
+import com.wombat.mama.MamaMsgField;
+import com.wombat.mama.MamaMsgIterator;
 import com.wombat.mama.MamaStatus;
 import com.wombat.mama.MamaSource;
 import com.wombat.mama.MamaSubscription;
 import com.wombat.mama.MamaSubscriptionCallback;
 import com.wombat.mama.MamaQuality;
 import java.util.logging.Level;
+import java.util.Iterator;
+
 
 class SubscriptionEventHandler implements MamaSubscriptionCallback
 {
+    public MamaDictionary mDictionary;
+
     @Override
     public void onMsg (final MamaSubscription subscription,
                        final MamaMsg msg) {
-        System.out.println("Message Received: " + msg.toString());
+
+        System.out.println("\n+------------------------+--------+--------------+-------------------");
+        System.out.println("| FIELD NAME             | FID    | TYPE         | VALUE (AS STRING) ");
+        System.out.println("+------------------------+--------+--------------+-------------------");
+
+        for (Iterator iterator=msg.iterator(mDictionary); iterator.hasNext();)
+        {
+            MamaMsgField field = (MamaMsgField) iterator.next();
+            try
+            {
+                String fieldType = field.getTypeName();
+                String fieldName = field.getName();
+                int fid = field.getFid();
+                String fieldValueAsString = field.toString();
+
+                System.out.println(
+                    String.format("| %-22s | %-6d | %-12s | %s",
+                                  fieldName,
+                                  fid,
+                                  fieldType,
+                                  fieldValueAsString));
+            }
+            catch (Exception ex)
+            {
+                ex.printStackTrace();
+            }
+        }
     }
 
     @Override
@@ -155,6 +187,7 @@ public class App {
 
         // Set up the event handlers for OpenMAMA
         SubscriptionEventHandler eventHandler = new SubscriptionEventHandler();
+        eventHandler.mDictionary = dictionary;
 
         // Set up the OpenMAMA Subscription (interest in a topic)
         MamaSubscription subscription = new MamaSubscription();
