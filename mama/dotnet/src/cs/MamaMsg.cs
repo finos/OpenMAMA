@@ -5002,7 +5002,7 @@ namespace Wombat
         /// <summary>
         /// Return a json string representation the message.
         /// </summary>
-        public override string ToJsonString()
+        public string ToJsonString()
         {
 			EnsurePeerCreated();
             string strRet =  Marshal.PtrToStringAnsi(NativeMethods.mamaMsg_toJsonString(nativeHandle));
@@ -5014,7 +5014,7 @@ namespace Wombat
         /// <summary>
         /// Return a json string representation the message.
         /// </summary>
-        public override string ToJsonString(MamaDictionary dictionary)
+        public string ToJsonString(MamaDictionary dictionary)
         {
 			EnsurePeerCreated();
 			IntPtr dictHandle = dictionary != null ? dictionary.NativeHandle : IntPtr.Zero;
@@ -5027,7 +5027,7 @@ namespace Wombat
         /// <summary>
         /// Return a normalized string representation the message.
         /// </summary>
-        public override string ToNormalizedString()
+        public string ToNormalizedString()
         {
 			EnsurePeerCreated();
             string strRet =  Marshal.PtrToStringAnsi(NativeMethods.mamaMsg_toNormalizedString(nativeHandle));
