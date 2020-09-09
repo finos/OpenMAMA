@@ -11,7 +11,7 @@ void checkStatusAndExitOnFailure(mama_status status, const char* scenario) {
         std::cerr << "Failure encountered during "
                   << scenario 
                   << ": "
-                  << MamaStatus(status).toString())
+                  << MamaStatus(status).toString()
                   << std::endl;
         exit(EXIT_FAILURE);
     }
@@ -40,7 +40,42 @@ class SubscriptionEventHandler : public MamaSubscriptionCallback
 public:
     virtual void onMsg (MamaSubscription*      subscription,
                         MamaMsg&               msg) {
-        std::cout << "Message Received: " << msg.toString() << std::endl;
+        MamaMsgIterator* mMamaMsgIterator = new MamaMsgIterator(
+            (MamaDictionary*)subscription->getClosure());
+
+        std::cout << std::endl
+                  << "+------------------------+--------+--------------+-------------------\n"
+                  << "| FIELD NAME             | FID    | TYPE         | VALUE (AS STRING) \n"
+                  << "+------------------------+--------+--------------+-------------------\n";
+
+        msg.begin(*mMamaMsgIterator);
+        while (*(*mMamaMsgIterator) != NULL)
+        {
+            MamaMsgField afield = *(*mMamaMsgIterator);
+
+            mama_fid_t fid = afield.getFid();
+            const char* fieldType = afield.getTypeName();
+            const char* fieldName = afield.getName();
+            char fieldValueAsString[1024];
+
+            afield.getAsString(fieldValueAsString, sizeof(fieldValueAsString));
+
+            std::cout << "| ";
+            std::cout.width(22);
+            std::cout << std::left << fieldName;
+            std::cout << " | ";
+            std::cout.width(6);
+            std::cout << std::left << fid;
+            std::cout << " | ";
+            std::cout.width(12);
+            std::cout << std::left << fieldType;
+            std::cout << " | " << std::left << fieldValueAsString;
+            std::cout << std::endl;
+
+            ++(*mMamaMsgIterator);
+        }
+
+        delete mMamaMsgIterator;
     }
 
     virtual void onError (MamaSubscription*    subscription,
