@@ -40,7 +40,7 @@ class SubscriptionEventHandler : public MamaSubscriptionCallback
 public:
     virtual void onMsg (MamaSubscription*      subscription,
                         MamaMsg&               msg) {
-        MamaMsgIterator* mMamaMsgIterator = new MamaMsgIterator(
+        MamaMsgIterator* iterator = new MamaMsgIterator(
             (MamaDictionary*)subscription->getClosure());
 
         std::cout << std::endl
@@ -48,10 +48,10 @@ public:
                   << "| FIELD NAME             | FID    | TYPE         | VALUE (AS STRING) \n"
                   << "+------------------------+--------+--------------+-------------------\n";
 
-        msg.begin(*mMamaMsgIterator);
-        while (*(*mMamaMsgIterator) != NULL)
+        msg.begin(*iterator);
+        while (*(*iterator) != NULL)
         {
-            MamaMsgField afield = *(*mMamaMsgIterator);
+            MamaMsgField afield = *(*iterator);
 
             mama_fid_t fid = afield.getFid();
             const char* fieldType = afield.getTypeName();
@@ -72,10 +72,10 @@ public:
             std::cout << " | " << std::left << fieldValueAsString;
             std::cout << std::endl;
 
-            ++(*mMamaMsgIterator);
+            ++(*iterator);
         }
 
-        delete mMamaMsgIterator;
+        delete iterator;
     }
 
     virtual void onError (MamaSubscription*    subscription,

@@ -27,9 +27,40 @@ namespace _01_quickstart
 
         internal class SubscriptionEventHandler : MamaSubscriptionCallback
         {
+            public MamaDictionary mDictionary;
+
             public void onMsg(MamaSubscription subscription, MamaMsg msg)
             {
-                Console.WriteLine("Message Received: " + msg.ToString());
+                MamaMsgIterator iterator = new MamaMsgIterator(mDictionary);
+
+                // Set the iterator to the beginning of the message
+                msg.begin(ref iterator);
+
+                Console.WriteLine("\n+------------------------+--------+--------------+-------------------");
+                Console.WriteLine("| FIELD NAME             | FID    | TYPE         | VALUE (AS STRING) ");
+                Console.WriteLine("+------------------------+--------+--------------+-------------------");
+
+                // Keep going until there are no more fields
+                MamaMsgField field = iterator.getField();
+                while (field != null)
+                {
+                    string fieldType = field.getTypeName();
+                    string fieldName = field.getName();
+                    int fid = field.getFid();
+                    string fieldValueAsString = field.getAsString();
+
+                    Console.WriteLine("| {0,-22} | {1,-6} | {2,-12} | {3}",
+                                      fieldName,
+                                      fid,
+                                      fieldType,
+                                      fieldValueAsString);
+
+
+                    iterator++;
+
+                    // Get the next field
+                    field = iterator.getField();
+                }
             }
 
             public void onError(MamaSubscription subscription, MamaStatus.mamaStatus status, string subject)
@@ -141,6 +172,7 @@ namespace _01_quickstart
 
             // Set up the event handlers for OpenMAMA
             SubscriptionEventHandler eventHandler = new SubscriptionEventHandler();
+            eventHandler.mDictionary = dictionary;
 
             // Set up the OpenMAMA Subscription (interest in a topic)
             MamaSubscription subscription = new MamaSubscription();
