@@ -38,7 +38,7 @@
         - apr
         - git
         - valgrind
-        - java-latest-openjdk-devel
+        - java-11-openjdk
         - ruby-devel
         - rubygems
         - figlet
@@ -109,6 +109,10 @@
       state: present
       update_cache: yes
     become: yes
+  - name: Set default Java runtime
+    alternatives:
+      name: java
+      path: /usr/lib/jvm/jre-11/bin/java
   - name: Installing capturereplay service
     copy:
       src: openmama-capturereplay.service
