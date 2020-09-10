@@ -219,7 +219,7 @@ static void MAMACALLTYPE pubCallback (mamaTimer timer, void* closure)
 
                         mama_log (MAMA_LOG_LEVEL_FINEST,
                                   "pubCallback (): Publishing message: %s",
-                                  mamaMsg_toString (newMessage));
+                                  mamaMsg_toNormalizedString (newMessage));
 
                         /* Send the message via the publisher. */
                         status = mamaDQPublisher_send (

@@ -772,5 +772,11 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
                       impl->mSubject,
                       url);
         }
+    } else {
+        mama_log (MAMA_LOG_LEVEL_WARN,
+                      "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
+                      "Cannot publish message for %s to %s - link not ready.",
+                      impl->mSubject,
+                      url);
     }
 }

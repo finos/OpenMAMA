@@ -637,6 +637,7 @@ baseBridgeMamaMsgImpl_getPayloadSize (msgBridge    msg,
     }
 
     *size = impl->mPayloadSize;
+    return MAMA_STATUS_OK;
 }
 
 mama_status
@@ -650,6 +651,7 @@ baseBridgeMamaMsgImpl_setPayloadSize (msgBridge    msg,
         return MAMA_STATUS_NULL_ARG;
     }
     impl->mPayloadSize = size;
+    return MAMA_STATUS_OK;
 }
 
 /*=========================================================================

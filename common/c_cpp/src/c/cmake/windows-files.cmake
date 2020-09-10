@@ -1,5 +1,6 @@
 set(SYSTEM_SOURCES
 	windows/environment.c
+	windows/lock.c
 	windows/lock.h
 	windows/machine_win.c
 	windows/mman.c
