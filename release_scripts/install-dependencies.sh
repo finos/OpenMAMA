@@ -71,6 +71,8 @@ then
         dnf config-manager --set-enabled PowerTools
         dnf -y install doxygen
         yum install -y python3
+        rpm -Uvh https://packages.microsoft.com/config/centos/$DISTRIB_RELEASE/packages-microsoft-prod.rpm
+        dnf install -y dotnet-sdk-2.1
     elif [ "${DISTRIB_RELEASE:0:1}" = "6" ]
     then
         # CentOS 6 doesn't have official python3
@@ -79,10 +81,15 @@ then
         update-alternatives --install /usr/bin/python3 python /opt/rh/rh-python36/root/usr/bin/python3 2
     else
         yum install -y python3
+        rpm -Uvh https://packages.microsoft.com/config/centos/$DISTRIB_RELEASE/packages-microsoft-prod.rpm
+        dnf install -y dotnet-sdk-2.1
     fi
 elif [ "$DISTRIB_ID" = "$FEDORA" ]
 then
     yum install -y python3
+    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/$DISTRIB_RELEASE/prod.repo
+    yum install dotnet-sdk-2.1
 fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ] || [ "$DISTRIB_ID" = "$FEDORA" ]
@@ -103,6 +110,9 @@ then
 	    zip unzip curl git flex uuid-dev libevent-dev \
 	    cmake git libzmq3-dev ncurses-dev \
 	    unzip valgrind libapr1-dev python3 libz-dev
+    wget https://packages.microsoft.com/config/ubuntu/$DISTRIB_RELEASE/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
+    dpkg -i packages-microsoft-prod.deb
+    apt-get install dotnet-sdk-2.1
 fi
 
 # Ubuntu 20 specific software
