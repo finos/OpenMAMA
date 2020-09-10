@@ -74,7 +74,7 @@
 #define     DEFAULT_RECV_BLOCK_SIZE         10
 
 /* Non configurable runtime defaults */
-#define     PN_MESSENGER_TIMEOUT            100
+#define     PN_MESSENGER_TIMEOUT            1000
 #define     PARAM_NAME_MAX_LENGTH           1024L
 #define     MIN_SUB_POOL_SIZE               1L
 #define     MAX_SUB_POOL_SIZE               30000L
@@ -839,7 +839,8 @@ qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "qpidBridgeMamaTransportImpl_queueCallback(): "
-                  "Subscriber has been unregistered since msg was enqueued.");
+                  "Subscriber has been unregistered for '%s' since msg was enqueued.",
+                  subject);
         return;
     }
 

@@ -2284,9 +2284,9 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     payloadLib->id            = payloadChar;
     payloadLib->keepLoaded    = 0;
     {
-        int nameLen = strlen (payloadName) + strlen (MAMA_PROPERTY_PAYLOAD_KEEPLOADED) +1;
-        char propName[nameLen];
-        sprintf(propName, "%s%s",MAMA_PROPERTY_PAYLOAD_KEEPLOADED, payloadName);
+        char propName[MAX_INTERNAL_PROP_LEN];
+        snprintf (propName, MAX_INTERNAL_PROP_LEN,
+                  "%s%s", MAMA_PROPERTY_PAYLOAD_KEEPLOADED, payloadName);
         const char *propstring = properties_Get(mamaInternal_getProperties(), propName);
         if (propstring)
         {
@@ -2651,7 +2651,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         if (path)
         {
                 mama_log (MAMA_LOG_LEVEL_ERROR,
-                "mama_loadmamaPayload(): "
+                "mama_loadBridgeWithPathInternal(): "
                 "Could not open middleware bridge library [%s] [%s] [%s]",
                 path,
                 middlewareImplName,
@@ -2660,7 +2660,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         else
         {
                 mama_log (MAMA_LOG_LEVEL_ERROR,
-                "mama_loadmamaPayload(): "
+                "mama_loadBridgeWithPathInternal(): "
                 "Could not open middleware bridge library [%s] [%s]",
                 middlewareImplName,
                 getLibError());
@@ -2678,7 +2678,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     {
         status = MAMA_STATUS_INVALID_ARG;
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mama_loadBridge (): "
+                  "mama_loadBridgeWithPathInternal (): "
                   "Failed to initialise middleware bridge [%s]. "
                   "Cannot find function %s in implementation library.",
                   middlewareName,
@@ -2688,7 +2688,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
 
     /* Construct the bridge in MAMA */
     mama_log (MAMA_LOG_LEVEL_FINE,
-              "mama_loadBridge (): "
+              "mama_loadBridgeWithPathInternal (): "
               "Found bridge_init function, loading bridge [%s] with function search.",
               middlewareName);
 
@@ -2699,7 +2699,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     {
         status = MAMA_STATUS_NOMEM;
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mama_loadBridge (): "
+                  "mama_loadBridgeWithPathInternal (): "
                   "Failed to allocate memory for middleware bridge [%s]. Cannot load bridge.",
                   middlewareName);
         goto error_handling_impl;
@@ -2721,7 +2721,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mama_loadBridge (): "
+                  "mama_loadBridgeWithPathInternal (): "
                   "Failed to initialise middleware bridge [%s]. Cannot load bridge.",
                   middlewareName);
         goto error_handling_impl_allocated;
@@ -2737,7 +2737,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         const char* baseLibImplName = "mamabaseimpl";
 
         mama_log (MAMA_LOG_LEVEL_FINE,
-                  "mama_loadmamaPayload(): "
+                  "mama_loadBridgeWithPathInternal(): "
                   "Loading base bridge library for %s",
                   middlewareImplName);
 
@@ -2748,7 +2748,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
             if (path)
             {
                 mama_log (MAMA_LOG_LEVEL_ERROR,
-                          "mama_loadmamaPayload(): "
+                          "mama_loadBridgeWithPathInternal(): "
                           "Could not open middleware base bridge library [%s] [%s] [%s]",
                           path,
                           baseLibImplName,
@@ -2757,7 +2757,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
             else
             {
                 mama_log (MAMA_LOG_LEVEL_ERROR,
-                          "mama_loadmamaPayload(): "
+                          "mama_loadBridgeWithPathInternal(): "
                           "Could not open middleware base bridge library [%s] [%s]",
                           baseLibImplName,
                           getLibError());
@@ -2772,7 +2772,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
         if (MAMA_STATUS_OK != status)
         {
             mama_log (MAMA_LOG_LEVEL_ERROR,
-                      "mama_loadBridge(): "
+                      "mama_loadBridgeWithPathInternal(): "
                       "Failed to register middleware functions for base bridge %s [%s]",
                       middlewareImplName,
                       mamaStatus_stringForStatus (status));
@@ -2783,7 +2783,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     else if (MAMA_STATUS_OK != bridgeMethodStatus)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mama_loadBridge(): "
+                  "mama_loadBridgeWithPathInternal(): "
                   "Failed to register middleware functions for [%s] from [%s] library:[%s]",
                   middlewareName,
                   middlewareImplName,
@@ -2799,7 +2799,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     {
         status = MAMA_STATUS_INVALID_ARG;
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mama_loadBridge (): "
+                  "mama_loadBridgeWithPathInternal (): "
                   "Failed to initialise middleware bridge [%s]. "
                   "Cannot determine bridge's MAMA version.",
                   middlewareName);
@@ -2811,7 +2811,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     {
         status = MAMA_STATUS_INVALID_ARG;
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mama_loadBridge (): "
+                  "mama_loadBridgeWithPathInternal (): "
                   "Failed to initialise middleware bridge [%s]. "
                   "MAMA Runtime Version v%d.%d.%d not compatible with bridge's compile version v%d.%d.%d",
                   middlewareName,
@@ -2825,7 +2825,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     }
 
     mama_log (MAMA_LOG_LEVEL_FINE,
-              "mama_loadBridge(): "
+              "mama_loadBridgeWithPathInternal(): "
               "Loaded middleware bridge [%s] compiled against MAMA v%d.%d.%d %s",
               middlewareName,
               bridgeMamaVersion.mMajor,
@@ -2834,7 +2834,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
               bridgeMamaVersion.mExtra ? bridgeMamaVersion.mExtra : "");
 
     mama_log (MAMA_LOG_LEVEL_FINE,
-             "mama_loadBridge(): "
+             "mama_loadBridgeWithPathInternal(): "
              "Sucessfully loaded %s middleware from library [%s]",
              middlewareName, middlewareImplName);
 
@@ -2846,7 +2846,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     if (MAMA_STATUS_OK != status)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
-                  "mama_loadBridge(): "
+                  "mama_loadBridgeWithPathInternal(): "
                   "Error when attempting to open middleware [%s] - [%s]",
                   middlewareName,
                   mamaStatus_stringForStatus (status));
