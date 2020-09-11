@@ -109,7 +109,8 @@ then
     apt-get install -qq -y ruby ruby-dev build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
 	    cmake git libzmq3-dev ncurses-dev \
-	    unzip valgrind libapr1-dev python3 libz-dev wget
+	    unzip valgrind libapr1-dev python3 libz-dev wget \
+	    apt-transport-https ca-certificates
     wget https://packages.microsoft.com/config/ubuntu/$DISTRIB_RELEASE/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
     dpkg -i packages-microsoft-prod.deb
     apt-get update -qq
