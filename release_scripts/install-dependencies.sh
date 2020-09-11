@@ -89,7 +89,7 @@ then
     yum install -y python3 wget
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/$DISTRIB_RELEASE/prod.repo
-    yum install dotnet-sdk-2.1
+    yum install -y dotnet-sdk-2.1
 fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ] || [ "$DISTRIB_ID" = "$FEDORA" ]
@@ -112,7 +112,7 @@ then
 	    unzip valgrind libapr1-dev python3 libz-dev
     wget https://packages.microsoft.com/config/ubuntu/$DISTRIB_RELEASE/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
     dpkg -i packages-microsoft-prod.deb
-    apt-get install dotnet-sdk-2.1
+    apt-get install -y dotnet-sdk-2.1
 fi
 
 # Ubuntu 20 specific software
