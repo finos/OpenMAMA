@@ -3161,6 +3161,39 @@ public class MamaMsg
     public native String toString();
 
     /**
+      * Return a json String representation of the entire message.
+      *
+      * @return the String representation of the entire message.
+      */
+    public native String toJsonString();
+
+    /**
+      * Return a json String representation of the entire message using field names
+      * from the dictionary.
+      *
+      * @return the String representation of the entire message.
+      */
+      public String toJsonString(MamaDictionary dictionary) {
+        return toJsonStringWithDictionary(dictionary);
+      }
+
+    /**
+      * Return a json String representation of the entire message.
+      *
+      * @param dictionary MamaDictionary object
+      *
+      * @return the String representation of the entire message.
+      */
+    private native String toJsonStringWithDictionary(MamaDictionary dictionary);
+
+    /**
+      * Return a normalized String representation of the entire message.
+      *
+      * @return the String representation of the entire message.
+      */
+    public native String toNormalizedString();
+
+    /**
      * Return as a character representation of the payload type used in the message.
      *
      * @return A MamaPayloadType indicating which message payload is used in the

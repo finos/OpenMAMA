@@ -22,6 +22,9 @@
 #ifndef STATICLOCK_H__
 #define STATICLOCK_H__
 
+#include "wombat/wConfig.h"
+#include <windows.h>
+
 /* Make windows synchronization look like pthreads we use 'w' rather than 'p' to 
  * avoid conflicts with other pthreads for windows implementations
  */
@@ -43,8 +46,6 @@ typedef wthread_mutex_t wthread_spinlock_t;
 #define wthread_spin_destroy    wthread_mutex_destroy
 
 #define wthread_mutex_init( h, zip ) (InitializeCriticalSection( (h) ))
-#define wthread_mutex_unlock( h )    (LeaveCriticalSection( (h) ) )
-#define wthread_mutex_lock( h )      (EnterCriticalSection( (h) ) )
 #define wthread_mutex_destroy( h )   (DeleteCriticalSection( (h) ) )
 
 /* Windows does not have static lock initializers */
@@ -78,5 +79,19 @@ typedef struct
     wthread_mutex_lock(&((x)->mLock))
 
 #define wthread_static_mutex_unlock(x) wthread_mutex_unlock(&((x)->mLock))
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+COMMONExpDLL
+int wthread_mutex_lock(wthread_t thread);
+
+COMMONExpDLL
+int wthread_mutex_unlock(wthread_t thread);
+
+#ifdef __cplusplus
+};
+#endif
 
 #endif /* STATIClOCK_H__ */

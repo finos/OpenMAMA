@@ -5000,6 +5000,43 @@ namespace Wombat
         }
 
         /// <summary>
+        /// Return a json string representation the message.
+        /// </summary>
+        public string ToJsonString()
+        {
+			EnsurePeerCreated();
+            string strRet =  Marshal.PtrToStringAnsi(NativeMethods.mamaMsg_toJsonString(nativeHandle));
+            string val;
+            val = string.Copy(strRet);
+            return val;
+        }
+
+        /// <summary>
+        /// Return a json string representation the message.
+        /// </summary>
+        public string ToJsonString(MamaDictionary dictionary)
+        {
+			EnsurePeerCreated();
+			IntPtr dictHandle = dictionary != null ? dictionary.NativeHandle : IntPtr.Zero;
+            string strRet =  Marshal.PtrToStringAnsi(NativeMethods.mamaMsg_toJsonStringWithDictionary(nativeHandle, dictHandle));
+            string val;
+            val = string.Copy(strRet);
+            return val;
+        }
+
+        /// <summary>
+        /// Return a normalized string representation the message.
+        /// </summary>
+        public string ToNormalizedString()
+        {
+			EnsurePeerCreated();
+            string strRet =  Marshal.PtrToStringAnsi(NativeMethods.mamaMsg_toNormalizedString(nativeHandle));
+            string val;
+            val = string.Copy(strRet);
+            return val;
+        }
+
+        /// <summary>
         /// Get the entitle code for this message. The result defaults to 0 (no
         /// entitlement) if the field is not present.
         /// </summary>
@@ -5737,6 +5774,12 @@ namespace Wombat
 				ref int numFields);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr mamaMsg_toString(IntPtr mamaMsg);
+			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern IntPtr mamaMsg_toJsonString(IntPtr mamaMsg);
+			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern IntPtr mamaMsg_toJsonStringWithDictionary(IntPtr mamaMsg, IntPtr dictionary);
+			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern IntPtr mamaMsg_toNormalizedString(IntPtr mamaMsg);
             [DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaMsg_getEntitleCode(IntPtr mamaMsg,
 				ref int code);

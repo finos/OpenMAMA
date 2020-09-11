@@ -25,6 +25,7 @@ ExternalProject_Add(mamdajava
         CONFIGURE_COMMAND ${BIN_GRADLE} --no-daemon -PlegacyNaming -PbuildDir=${MAMAJNI_JAVA_BUILD_DIR} -b ${CMAKE_CURRENT_SOURCE_DIR}/build.gradle ${GRADLE_EXTRA_ARGS} ${GRADLE_TARGETS}
         INSTALL_COMMAND ""
         LOG_BUILD 1)
+add_dependencies(mamdajava mamajnijava)
 install (FILES ${MAMAJNI_JAVA_BUILD_DIR}/libs/mamda.jar DESTINATION lib)
 
 install(DIRECTORY src/main/java/com/wombat/mamda/examples/ DESTINATION examples/com/wombat/mamda/examples)

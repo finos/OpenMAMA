@@ -24,6 +24,7 @@
   =                             Includes                                  =
   =========================================================================*/
 
+#include <stdint.h>
 #include <mama/mama.h>
 #include <mama/version.h>
 #include <timers.h>
