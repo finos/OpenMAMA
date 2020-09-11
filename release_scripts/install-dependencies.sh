@@ -112,6 +112,7 @@ then
 	    unzip valgrind libapr1-dev python3 libz-dev wget
     wget https://packages.microsoft.com/config/ubuntu/$DISTRIB_RELEASE/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
     dpkg -i packages-microsoft-prod.deb
+    apt-get update -qq
     apt-get install -y dotnet-sdk-2.1
 fi
 
