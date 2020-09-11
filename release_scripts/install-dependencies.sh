@@ -71,7 +71,7 @@ then
         dnf config-manager --set-enabled PowerTools
         dnf -y install doxygen
         yum install -y python3
-        rpm -Uvh https://packages.microsoft.com/config/centos/$DISTRIB_RELEASE/packages-microsoft-prod.rpm
+        rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
         dnf install -y dotnet-sdk-2.1
     elif [ "${DISTRIB_RELEASE:0:1}" = "6" ]
     then
@@ -81,7 +81,7 @@ then
         update-alternatives --install /usr/bin/python3 python /opt/rh/rh-python36/root/usr/bin/python3 2
     else
         yum install -y python3 wget
-        rpm -Uvh https://packages.microsoft.com/config/centos/$DISTRIB_RELEASE/packages-microsoft-prod.rpm
+        rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
         dnf install -y dotnet-sdk-2.1
     fi
 elif [ "$DISTRIB_ID" = "$FEDORA" ]
@@ -109,7 +109,7 @@ then
     apt-get install -qq -y ruby ruby-dev build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
 	    cmake git libzmq3-dev ncurses-dev \
-	    unzip valgrind libapr1-dev python3 libz-dev
+	    unzip valgrind libapr1-dev python3 libz-dev wget
     wget https://packages.microsoft.com/config/ubuntu/$DISTRIB_RELEASE/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
     dpkg -i packages-microsoft-prod.deb
     apt-get install -y dotnet-sdk-2.1
