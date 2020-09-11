@@ -67,7 +67,7 @@ then
     if [ "${DISTRIB_RELEASE:0:1}" = "8" ]
     then
         # CentOS 8 has funnies around where to find doxygen
-        yum install -y dnf-plugins-core
+        yum install -y dnf-plugins-core wget
         dnf config-manager --set-enabled PowerTools
         dnf -y install doxygen
         yum install -y python3
@@ -80,13 +80,13 @@ then
         yum install -y rh-python36
         update-alternatives --install /usr/bin/python3 python /opt/rh/rh-python36/root/usr/bin/python3 2
     else
-        yum install -y python3
+        yum install -y python3 wget
         rpm -Uvh https://packages.microsoft.com/config/centos/$DISTRIB_RELEASE/packages-microsoft-prod.rpm
         dnf install -y dotnet-sdk-2.1
     fi
 elif [ "$DISTRIB_ID" = "$FEDORA" ]
 then
-    yum install -y python3
+    yum install -y python3 wget
     sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
     sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/$DISTRIB_RELEASE/prod.repo
     yum install dotnet-sdk-2.1
