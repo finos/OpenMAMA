@@ -82,7 +82,7 @@ then
     else
         yum install -y python3 wget
         rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
-        dnf install -y dotnet-sdk-2.1
+        yum install -y dotnet-sdk-2.1
     fi
 elif [ "$DISTRIB_ID" = "$FEDORA" ]
 then
