@@ -1,0 +1,181 @@
+---
+- hosts: all
+  tasks:
+  - name: Installing core packages and repositories
+    dnf:
+      name:
+        - epel-release
+        - dnf-plugins-core
+      state: latest
+  - name: Installing build dependencies for OpenMAMA development environment
+    dnf:
+      name:
+        - doxygen
+        - make
+        - which
+        - rpm-build
+        - gcc
+        - python3
+        - zlib-devel
+        - openssl-devel
+        - zip
+        - unzip
+        - libuuid-devel
+        - flex
+        - doxygen
+        - qpid-proton-c-devel
+        - libevent-devel
+        - ncurses-devel
+        - apr-devel
+        - wget
+        - curl
+        - cmake
+        - gcc-c++
+        - libuuid
+        - qpid-proton-c
+        - libevent
+        - ncurses
+        - apr
+        - git
+        - valgrind
+        - java-11-openjdk
+        - ruby-devel
+        - rubygems
+        - figlet
+        - uuid
+        - rsync
+        - dotnet-sdk-2.1
+        - dotnet-sdk-3.1
+      enablerepo: PowerTools
+  - name: Installing prerequisite Ruby Gems
+    gem:
+      name: fpm
+      state: latest
+      user_install: no
+  - name: Creating gradle local directory
+    file:
+      path: /usr/local/src/gradle
+      state: directory
+      recurse: yes
+  - name: Downloading gradle
+    unarchive:
+      src: https://downloads.gradle-dn.com/distributions/gradle-6.6-bin.zip
+      dest: /usr/local/src/gradle
+      remote_src: yes
+      creates: /usr/local/src/gradle/gradle-6.6/bin/gradle
+  - name: Installing gradle
+    synchronize:
+      src: /usr/local/src/gradle/gradle-6.6/
+      dest: /usr/local
+    delegate_to: "{{ inventory_hostname }}"
+  - name: Create gtest directory for building
+    file:
+      path: /usr/local/src/googletest/bld
+      state: directory
+      recurse: yes
+  - name: Downloading gtest
+    unarchive:
+      src: https://github.com/google/googletest/archive/release-1.10.0.tar.gz
+      dest: /usr/local/src/googletest
+      remote_src: yes
+      extra_opts: ["--strip-components=1"]
+      creates: /usr/local/src/googletest/CMakeLists.txt
+  - name: Configuring gtest for build
+    command:
+      cmd: cmake -DCMAKE_INSTALL_PREFIX=/usr ..
+      chdir: /usr/local/src/googletest/bld
+      creates: /usr/local/src/googletest/bld/CMakeCache.txt
+  - name: Building and installing gtest
+    command:
+      cmd: make install
+      chdir: /usr/local/src/googletest/bld
+      creates: /usr/lib64/libgtest.a
+  - name: Add Cloudsmith OpenMAMA Repository GPG key
+    rpm_key:
+      key: https://dl.cloudsmith.io/public/openmama/openmama-experimental/cfg/gpg/gpg.422DD3D44D7B047A.key
+      #  key: https://dl.cloudsmith.io/public/openmama/openmama/cfg/gpg/gpg.4A23800CBEE8E065.key
+      state: present
+    become: yes
+  - name: Add Cloudsmith OpenMAMA Repository
+    yum_repository:
+      name: openmama
+      description: OpenMAMA repository hosted by Cloudsmith
+      baseurl: https://dl.cloudsmith.io/public/openmama/openmama-experimental/rpm/el/$releasever/$basearch
+      #  baseurl: https://dl.cloudsmith.io/public/openmama/openmama/rpm/el/$releasever/$basearch
+    become: yes
+  - name: Install OpenMAMA from Cloudsmith
+    dnf:
+      name: openmama
+      state: present
+      update_cache: yes
+    become: yes
+  - name: Set default Java runtime
+    alternatives:
+      name: java
+      link: /usr/bin/java
+      path: /usr/lib/jvm/jre-11/bin/java
+  - name: Installing capturereplay service
+    copy:
+      src: openmama-capturereplay.service
+      dest: /etc/systemd/system/openmama-capturereplay.service
+  - name: Enabling capturereplay service
+    systemd:
+      name: openmama-capturereplay
+      state: started
+      enabled: yes
+      daemon_reload: yes
+  - name: Enabling crond
+    systemd:
+      name: crond
+      state: started
+      enabled: yes
+      daemon_reload: yes
+  - name: Setting up ldconfig
+    copy:
+      src: openmama.ld.so.conf
+      dest: /etc/ld.so.conf.d/openmama.ld.so.conf
+    notify:
+      - update ldconfig
+  - name: Setting up system configuration for profiles
+    copy:
+      src: openmama.profile.sh
+      dest: /etc/profile.d/openmama.profile.sh
+  - name: Installing screenfetch
+    get_url:
+      url: https://raw.githubusercontent.com/KittyKatt/screenFetch/v3.9.1/screenfetch-dev
+      dest: /usr/local/bin/screenfetch
+      mode: '1777'
+  - name: Creating OpenMAMA login config directory
+    file:
+      path: /etc/openmama
+      state: directory
+      recurse: yes
+  - name: Installing OpenMAMA Ansi Logo
+    copy:
+      src: ascii-logo.ans
+      dest: /etc/openmama/ascii-logo.ans
+  - name: Installing OpenMAMA Logo Parser for Screenfetch
+    copy:
+      src: screenfetch-icon-load.sh
+      dest: /etc/openmama/screenfetch-icon-load.sh
+  - name: Installing OpenMAMA Logo banner generator
+    copy:
+      src: generate-banner.sh
+      dest: /etc/openmama/generate-banner.sh
+      mode: 0755
+    notify:
+      - generate openmama banner
+  - name: Installing cron to regenerate ssh login banner
+    cron:
+      name: OpenMAMA motd
+      minute: "*/10"
+      job: "/etc/openmama/generate-banner.sh > /etc/motd"
+    notify:
+      - generate openmama banner
+  handlers:
+    - name: generate openmama banner
+      shell: /etc/openmama/generate-banner.sh > /etc/motd
+    - name: update ldconfig
+      command:
+        cmd: ldconfig
+ 

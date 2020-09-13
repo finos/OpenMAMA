@@ -1,0 +1,19 @@
+FROM centos:8
+
+EXPOSE 22
+
+RUN dnf install -y openssh-server openssh-clients sudo
+
+RUN adduser vagrant
+
+RUN echo 'vagrant:vagrant' | chpasswd
+
+RUN sed -i 's/PermitRootLogin yes/PermitRootLogin no/' /etc/ssh/sshd_config
+
+RUN echo vagrant ALL=NOPASSWD:ALL > /etc/sudoers.d/vagrant
+
+RUN /usr/bin/ssh-keygen -A
+
+RUN rm -f /run/nologin
+
+CMD [ "/usr/sbin/sshd", "-D" ]

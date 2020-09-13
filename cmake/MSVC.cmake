@@ -1,3 +1,5 @@
+include(ExternalProject)
+
 add_definitions(
 	-DXML_STATIC 
 	-DFD_SETSIZE=1024 
@@ -49,12 +51,12 @@ set (DEFAULT_GTEST_ROOT    "${DEFAULT_INSTALL_PREFIX}/googletest-distribution")
 
 include(ExternalProject)
 
-macro(msbuild_project target project output)
+macro(csharp_build_project target project output depends)
 	ExternalProject_Add(${target}
 			SOURCE_DIR "."
 			BUILD_COMMAND ""
 			CONFIGURE_COMMAND ${CMAKE_MAKE_PROGRAM} /p:PreBuildEvent= /p:PostBuildEvent= /p:OutputPath=${CMAKE_CURRENT_BINARY_DIR} /p:Configuration=Release /p:BuildPath=${CMAKE_CURRENT_BINARY_DIR}/build ${msbuild_project_assembly_flag} ${CMAKE_CURRENT_SOURCE_DIR}/${project}
 			INSTALL_COMMAND ""
-			LOG_BUILD 1)
+			LOG_BUILD 1
+            DEPENDS ${depends})
 endmacro()
-	

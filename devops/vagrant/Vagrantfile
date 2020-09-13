@@ -1,0 +1,39 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+Vagrant.configure("2") do |config|
+
+  config.vm.provider "virtualbox" do |virtualbox|
+    config.vm.box = "generic/centos8"
+  end
+
+  config.vm.provider "hyperv" do |hyperv|
+    config.vm.box = "generic/centos8"
+  end
+
+  config.vm.provider "docker" do |docker|
+    # Password here just for bootstrapping and installing public key
+    # config.ssh.password = 'vagrant'
+    # Let vagrant know this image will be running an ssh server
+    docker.has_ssh = true
+    # We need our own dockerfile to bootstrap vagrant user etc
+    docker.build_dir = "."
+    docker.dockerfile = "Dockerfile.vagrant"
+  end
+
+  # This is how we get hold of the ansible playbook - via git
+  config.vm.provision "shell", inline: "dnf install -y git"
+  config.vm.provision "shell", inline: "test -d OpenMAMA || git clone --single-branch --branch feature/demo-environment https://github.com/fquinner/OpenMAMA.git"
+
+  # This is where we actually run the playbook
+  config.vm.provision "ansible_local" do |ansible|
+    # Playbook path is relative to this location
+    ansible.provisioning_path = "/home/vagrant"
+    ansible.playbook = "OpenMAMA/ansible/demo-provision.yml"
+    # Run the playbook with sudo
+    ansible.become = true
+  end
+
+  # Disable default share - we don't use it
+  config.vm.synced_folder '.', '/vagrant', disabled: true
+end

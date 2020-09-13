@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <AssemblyName>MAMDA</AssemblyName>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <Title>OpenMAMDA</Title>
+    <Description>OpenMAMDA API C#</Description>
+    <Configuration>OpenMAMDA API C#</Configuration>
+    <Product>OpenMAMDA API C#</Product>
+    <Copyright>Copyright 2009 OpenMAMA.org</Copyright>
+    <Company>OpenMAMA.org</Company>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../../mama/dotnet/src/cs/mamadotnetcore.csproj" />
+  </ItemGroup>
+</Project>
+

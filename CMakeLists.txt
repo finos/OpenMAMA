@@ -12,14 +12,11 @@ set (WITH_PROTON        true   CACHE BOOL   "Include the qpid proton middleware 
 set (WITH_NOOP_BRIDGE   false  CACHE BOOL   "Include the noop example middleware bridge in the build")
 set (WITH_BASE_BRIDGE   true   CACHE BOOL   "Include the base bridge in the build (required for qpid proton)")
 set (WITH_MAMDA         true   CACHE BOOL   "Include MAMDA in the build")
-set (WITH_JAVA          false  CACHE BOOL   "Include JAVA bindings")
 set (WITH_CPP           true   CACHE BOOL   "Include C++ bindings")
+set (WITH_CSHARP        false  CACHE BOOL   "Include C# bindings")
+set (WITH_JAVA          false  CACHE BOOL   "Include JAVA bindings")
 set (WITH_DOC           false  CACHE BOOL   "Include documentation")
 set (ENTITLEMENTS       "noop" CACHE STRING "Comma delimited list of entitlement bridges to allow to load at runtime")
-
-if (WIN32 AND MSVC)
-    set (WITH_CSHARP false CACHE BOOL "Include examples during the build")
-endif()
 
 # Dependency detection options
 set (LIBEVENT_ROOT "${DEFAULT_LIBEVENT_ROOT}" CACHE PATH "Libevent dependency install directory (for qpid)")

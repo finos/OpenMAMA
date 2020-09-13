@@ -1,0 +1,6 @@
+OPENMAMA_ROOT=${OPENMAMA_ROOT:-/opt/openmama}
+
+export WOMBAT_PATH=${OPENMAMA_ROOT}/config
+export PATH=$OPENMAMA_ROOT/bin:$PATH
+export LD_LIBRARY_PATH=$OPENMAMA_ROOT/lib
+

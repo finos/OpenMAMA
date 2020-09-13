@@ -291,7 +291,9 @@ namespace Wombat
         /// <summary>
         /// Name of DLL containing Native code
         /// </summary>
-#if (DEBUG)
+#if _GNU
+        public const string DllName = "mama";
+#elif DEBUG
 		public const string DllName = "libmamacmdd.dll";
 #else
 		public const string DllName = "libmamacmd.dll";
