@@ -16,6 +16,14 @@ get_component_version(MAMA)
 add_subdirectory (c_cpp/src/c)
 add_subdirectory (c_cpp/src/c/dqstrategyplugin)
 
+if (WITH_JAVA)
+    add_subdirectory (jni/src)
+endif ()
+
+if (WITH_CSHARP)
+    add_subdirectory (dotnet/src/cs)
+endif()
+
 if(WITH_CPP)
     add_subdirectory (c_cpp/src/cpp)
 endif()
@@ -69,11 +77,3 @@ if (WITH_PROTON)
     add_subdirectory (c_cpp/src/c/bridge/qpid)
     add_subdirectory (c_cpp/src/c/payload/qpidmsg)
 endif ()
-
-if (WITH_JAVA)
-    add_subdirectory (jni/src)
-endif ()
-
-if (WITH_CSHARP)
-    add_subdirectory (dotnet/src/cs)
-endif()
