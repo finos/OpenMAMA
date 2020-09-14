@@ -103,6 +103,17 @@
       baseurl: https://dl.cloudsmith.io/public/openmama/openmama-experimental/rpm/el/$releasever/$basearch
       #  baseurl: https://dl.cloudsmith.io/public/openmama/openmama/rpm/el/$releasever/$basearch
     become: yes
+  - name: Add Cloudsmith OpenMAMA Third Party Repository GPG key
+    rpm_key:
+      key: https://dl.cloudsmith.io/public/openmama/openmama-thirdparty/cfg/gpg/gpg.94B0B44BC9A08EBD.key
+      state: present
+    become: yes
+  - name: Add Cloudsmith OpenMAMA Third Party Repository
+    yum_repository:
+      name: openmama
+      description: OpenMAMA Third Party repository hosted by Cloudsmith
+      baseurl: https://dl.cloudsmith.io/public/openmama/openmama-thirdparty/rpm/el/$releasever/$basearch
+    become: yes
   - name: Install OpenMAMA from Cloudsmith
     dnf:
       name: openmama
