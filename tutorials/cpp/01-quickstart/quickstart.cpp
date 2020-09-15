@@ -25,9 +25,11 @@ void usageAndExit(const char* appName) {
             "For more information, see http://openmama.org/quickstart.html\n\n"
             "Usage: %s -s [symbol] [arguments]\n\n"
             "Arguments:\n"
+            "\t-d [dictionary]\tDictionary file to load. Default: [/opt/openmama/data/dictionaries/data.dict]\n"
             "\t-m [middleware]\tMiddleware bridge to load. Default: [qpid]\n"
             "\t-S [source]\tSource name (prefix) to use. Default: [OM]\n"
             "\t-t [transport]\tTransport from mama.properties to use. Default: [sub]\n"
+            "\t-v\t\tEnable verbose logging\n"
             "\t-B\t\tDisables dictionary request\n"
             "\t-I\t\tPrevents an intial from being requested\n"
             "\n",

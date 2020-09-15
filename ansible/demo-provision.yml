@@ -1,6 +1,13 @@
 ---
 - hosts: all
   tasks:
+  - name: Disabling cockpit login prompt
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /etc/issue.d/cockpit.issue
+      - /etc/motd.d/cockpit
   - name: Installing core packages and repositories
     dnf:
       name:
@@ -110,7 +117,7 @@
     become: yes
   - name: Add Cloudsmith OpenMAMA Third Party Repository
     yum_repository:
-      name: openmama
+      name: openmama-thirdparty
       description: OpenMAMA Third Party repository hosted by Cloudsmith
       baseurl: https://dl.cloudsmith.io/public/openmama/openmama-thirdparty/rpm/el/$releasever/$basearch
     become: yes
@@ -146,7 +153,7 @@
       src: openmama.ld.so.conf
       dest: /etc/ld.so.conf.d/openmama.ld.so.conf
     notify:
-      - update ldconfig
+      - Update ldconfig
   - name: Setting up system configuration for profiles
     copy:
       src: openmama.profile.sh
@@ -175,18 +182,18 @@
       dest: /etc/openmama/generate-banner.sh
       mode: 0755
     notify:
-      - generate openmama banner
+      - Generate openmama banner
   - name: Installing cron to regenerate ssh login banner
     cron:
       name: OpenMAMA motd
       minute: "*/10"
       job: "/etc/openmama/generate-banner.sh > /etc/motd"
     notify:
-      - generate openmama banner
+      - Generate openmama banner
   handlers:
-    - name: generate openmama banner
+    - name: Generate openmama banner
       shell: /etc/openmama/generate-banner.sh > /etc/motd
-    - name: update ldconfig
+    - name: Update ldconfig
       command:
         cmd: ldconfig
  

@@ -17,9 +17,11 @@ namespace _01_quickstart
             Console.WriteLine("For more information, see http://openmama.org/quickstart.html\n");
             Console.WriteLine("Usage: dotnet run -s [symbol] [arguments]\n");
             Console.WriteLine("Arguments:");
+            Console.WriteLine("\t-d [dictionary]\tDictionary file to load. Default: [/opt/openmama/data/dictionaries/data.dict]");
             Console.WriteLine("\t-m [middleware]\tMiddleware bridge to load. Default: [qpid]");
             Console.WriteLine("\t-S [source]\tSource name (prefix) to use. Default: [OM]");
             Console.WriteLine("\t-t [transport]\tTransport from mama.properties to use. Default: [sub]");
+            Console.WriteLine("\t-v\t\tEnable verbose logging");
             Console.WriteLine("\t-B\t\tDisables dictionary request");
             Console.WriteLine("\t-I\t\tPrevents an intial from being requested");
             System.Environment.Exit(0);

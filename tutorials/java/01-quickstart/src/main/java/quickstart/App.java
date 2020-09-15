@@ -103,10 +103,12 @@ public class App {
         System.out.println("For more information, see http://openmama.org/quickstart.html\n");
         System.out.println("Usage: java -jar 01-quickstart.jar -s [symbol] [arguments]\n");
         System.out.println("Arguments:");
+        System.out.println("\t-d [dictionary]\tDictionary file to load. Default: [/opt/openmama/data/dictionaries/data.dict]");
         System.out.println("\t-m [middleware]\tMiddleware bridge to load. Default: [qpid]");
         System.out.println("\t-S [source]\tSource name (prefix) to use. Default: [OM]");
         System.out.println("\t-t [transport]\tTransport from mama.properties to use. Default: [sub]");
         System.out.println("\t-B\t\tDisables dictionary request");
+        System.out.println("\t-v\t\tEnable verbose logging");
         System.out.println("\t-I\t\tPrevents an intial from being requested");
         System.exit(0);
     }
