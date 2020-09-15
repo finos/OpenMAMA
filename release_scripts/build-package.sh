@@ -93,6 +93,8 @@ fpm -s dir \
         --name openmama \
         --version $VERSION \
         --iteration 1 \
+        --url "https://openmama.org" \
+        --license LGPLv2 \
         $DEPENDS_FLAGS \
         -p openmama-$VERSION-1.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE \
         --description "OpenMAMA high performance Market Data API" .

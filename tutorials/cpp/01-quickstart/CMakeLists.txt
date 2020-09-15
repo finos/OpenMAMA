@@ -1,9 +1,13 @@
 cmake_minimum_required (VERSION 2.8.7)
 project ("01-quickstart")
 
-if(NOT OPENMAMA_ROOT)
-    message(FATAL_ERROR "Please provide -DOPENMAMA_ROOT=/path/to/openmama/install")
-endif()
+if (DEFINED ENV{OPENMAMA_ROOT})
+  set (OPENMAMA_ROOT_DEFAULT $ENV{OPENMAMA_ROOT})
+else ()
+  set (OPENMAMA_ROOT_DEFAULT "/opt/openmama")
+endif ()
+
+set (OPENMAMA_ROOT ${OPENMAMA_ROOT_DEFAULT} CACHE PATH "Location of the OpenMAMA installation to use")
 
 include_directories(${OPENMAMA_ROOT}/include)
 link_directories(${OPENMAMA_ROOT}/lib)
