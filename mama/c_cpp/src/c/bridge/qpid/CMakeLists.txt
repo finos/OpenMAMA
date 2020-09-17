@@ -22,7 +22,7 @@ include_directories(../../../../../../common/c_cpp/src/c)
 add_definitions(-DBRIDGE)
 
 add_library(mamaqpidimpl
-            MODULE bridge.c
+            SHARED bridge.c
                    codec.c
                    codec.h
                    publisher.c
@@ -69,7 +69,6 @@ endif()
 if (INSTALL_RUNTIME_DEPENDENCIES)
     if (WIN32)
         install (FILES ${PROTON_ROOT}/bin/qpid-proton${OPENMAMA_MAMAJNI_TARGET_SUFFIX}.dll DESTINATION bin)
-        install (DIRECTORY ${LIBEVENT_ROOT}/lib/ DESTINATION bin FILES_MATCHING PATTERN "*event*.dll")
     else()
         install (FILES ${PROTON_LIBRARY_FILES} DESTINATION lib)
     endif()

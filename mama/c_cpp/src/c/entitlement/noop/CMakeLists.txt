@@ -9,7 +9,7 @@ include_directories(../../../../../../common/c_cpp/src/c)
 add_definitions(-DBRIDGE)
 
 add_library(mamaentnoop
-            MODULE noop.c
+            SHARED noop.c
                    noop.h)
 target_link_libraries(mamaentnoop mama wombatcommon)
 set_target_properties(mamaentnoop PROPERTIES OUTPUT_NAME "mamaentnoop${OPENMAMA_LIBRARY_SUFFIX}")

@@ -12,7 +12,7 @@ include_directories(../../../../../../common/c_cpp/src/c)
 add_definitions(-DBRIDGE)
 
 add_library(mamaqpidmsgimpl
-            MODULE field.c
+            SHARED field.c
                    field.h
                    iterator.c
                    payload.c
