@@ -22,7 +22,7 @@ include_directories(../../../../../../common/c_cpp/src/c)
 add_definitions(-DBRIDGE)
 
 add_library(mamaqpidimpl
-            MODULE bridge.c
+            SHARED bridge.c
                    codec.c
                    codec.h
                    publisher.c

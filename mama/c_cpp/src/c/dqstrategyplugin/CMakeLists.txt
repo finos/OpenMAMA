@@ -9,7 +9,7 @@ include_directories(../../../../../common/c_cpp/src/c)
 add_definitions(-DBRIDGE)
 
 add_library(mamaplugindqstrategy
-            MODULE dqstrategyplugin.c
+            SHARED dqstrategyplugin.c
                    dqstrategyplugin.h)
 target_link_libraries(mamaplugindqstrategy mama)
 set_target_properties(mamaplugindqstrategy PROPERTIES OUTPUT_NAME "mamaplugindqstrategy${OPENMAMA_LIBRARY_SUFFIX}")

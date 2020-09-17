@@ -10,7 +10,7 @@ include_directories(
 add_definitions(-DBRIDGE)
 
 add_library(mamaentoea
-            MODULE oea.c
+            SHARED oea.c
 )
 target_link_libraries(mamaentoea mama wombatcommon)
 set_target_properties(mamaentoea PROPERTIES OUTPUT_NAME "mamaentoea${OPENMAMA_LIBRARY_SUFFIX}")

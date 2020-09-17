@@ -10,7 +10,7 @@ include_directories(../../../../../../common/c_cpp/src/c)
 
 add_definitions(-DBRIDGE -DBRIDGE_STUB_NAME=${BRIDGE_STUB_NAME})
 
-add_library(mama${BRIDGE_STUB_NAME}impl MODULE
+add_library(mama${BRIDGE_STUB_NAME}impl SHARED
         bridgefunctions.h
         bridge.c
         publisher.c
