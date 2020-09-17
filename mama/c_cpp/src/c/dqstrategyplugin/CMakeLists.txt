@@ -16,8 +16,13 @@ set_target_properties(mamaplugindqstrategy PROPERTIES OUTPUT_NAME "mamaplugindqs
 
 if (MSVC)
     install(FILES $<TARGET_PDB_FILE:mamaplugindqstrategy> DESTINATION bin OPTIONAL)
-endif()
-install(TARGETS mamaplugindqstrategy
+    install(TARGETS mamaplugindqstrategy
         RUNTIME DESTINATION bin
-        LIBRARY DESTINATION lib
+        LIBRARY DESTINATION bin
         ARCHIVE DESTINATION lib)
+else ()
+    install(TARGETS mamaplugindqstrategy
+            RUNTIME DESTINATION bin
+            LIBRARY DESTINATION lib
+            ARCHIVE DESTINATION lib)
+endif ()
