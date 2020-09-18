@@ -86,10 +86,10 @@ then
     fi
 elif [ "$DISTRIB_ID" = "$FEDORA" ]
 then
-    yum install -y python3 wget
-    sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    sudo wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/$DISTRIB_RELEASE/prod.repo
-    yum install -y dotnet-sdk-2.1
+    dnf install -y python3 wget
+    rpm --import https://packages.microsoft.com/keys/microsoft.asc
+    wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/$DISTRIB_RELEASE/prod.repo
+    dnf install --disablerepo=updates -y dotnet-sdk-2.1
 fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ] || [ "$DISTRIB_ID" = "$FEDORA" ]
