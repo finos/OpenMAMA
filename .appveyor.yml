@@ -143,7 +143,7 @@ for:
 -
   branches:
     only:
-      - /OpenMAMA-\d*\.\d*\.\d*[\d.]*-release/
+      - master
   environment:
     CLOUDSMITH_REPO: openmama/openmama
     ARTIFACT_TYPE: release
@@ -157,7 +157,7 @@ for:
 -
   branches:
     only:
-      - /OpenMAMA-\d*\.\d*\.\d*[\d.]*(?!-release)/
+      - /OpenMAMA-\d*\.\d*\.\d*[\d.]*/
   environment:
     CLOUDSMITH_REPO: openmama/openmama-rc
     ARTIFACT_TYPE: rc
