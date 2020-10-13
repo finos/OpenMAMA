@@ -84,7 +84,6 @@ environment:
 
 before_build:
 - cmd: set /p VERSION=<VERSION
-- sh: export ARTIFACT_TYPE=dev
 - sh: if [ ! "$ARTIFACT_TYPE" = "release" ]; then export CLOUDSMITH_UPLOAD_FLAGS=--republish; fi
 - cmd: set OPENMAMA_INSTALL_DIR=%APPVEYOR_BUILD_FOLDER%\openmama-%VERSION%.win.%PLATFORM%
 - cmd: vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows
