@@ -19,8 +19,8 @@ We currently use travis for smoke testing of pull requests and our own Jenkins i
 
 | Branch          | Status      |
 |-----------------|---------------|
-| master (stable) |[![Build status](https://ci.appveyor.com/api/projects/status/44djek23kogivmbk/branch/master?svg=true)](https://ci.appveyor.com/project/openmama/openmama/branch/master)|
-| next (unstable) |[![Build status](https://ci.appveyor.com/api/projects/status/44djek23kogivmbk/branch/next?svg=true)](https://ci.appveyor.com/project/openmama/openmama/branch/next)|
+| master (stable) |[![Build status](https://ci.appveyor.com/api/projects/status/4xo7i60r36vaeigi/branch/master?svg=true)](https://ci.appveyor.com/project/finos/openmama/branch/master)|
+| next (unstable) |[![Build status](https://ci.appveyor.com/api/projects/status/4xo7i60r36vaeigi/branch/next?svg=true)](https://ci.appveyor.com/project/finos/openmama/branch/next)|
 
 Supported Platforms
 --------------------------------------------------------------------------------
