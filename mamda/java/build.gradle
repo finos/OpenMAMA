@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
-def mamdaVersion = project.findProperty('mamdaVersion') ?: '6.2.2-1'
+def mamdaVersion = project.findProperty('mamdaVersion') ?: new File("${rootDir.absolutePath}/../../VERSION").text.trim() + "-1"
 
 if (!project.hasProperty('legacyNaming')) {
   group = "org.openmama"

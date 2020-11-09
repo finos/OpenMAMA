@@ -24,9 +24,9 @@ foreach(file ${sources})
 endforeach()
 
 list(APPEND GRADLE_TARGETS jar testClasses)
+set(GRADLE_EXTRA_ARGS "-PmamaVersion=${MAMA_VERSION_MAJOR}.${MAMA_VERSION_MINOR}.${MAMA_VERSION_RELEASE}")
 if(WITH_DOC)
 	list(APPEND GRADLE_TARGETS javadoc)
-	set(GRADLE_EXTRA_ARGS "-PmamaVersion=${MAMA_VERSION_MAJOR}.${MAMA_VERSION_MINOR}.${MAMA_VERSION_RELEASE}")
 	install(DIRECTORY ${MAMAJNI_JAVA_BUILD_DIR}/docs/javadoc/ DESTINATION doc/mama/jni/html)
 endif()
 
