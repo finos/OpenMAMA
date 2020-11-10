@@ -12,6 +12,8 @@ You can also pop into our gitter channel to have a chat if you just want quick a
 
 [![Join the chat at https://gitter.im/OpenMAMA/OpenMAMA](https://badges.gitter.im/OpenMAMA/OpenMAMA.svg)](https://gitter.im/OpenMAMA/OpenMAMA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
+OpenMAMA project and [charter](https://github.com/finos/OpenMAMA/raw/next/OpenMAMA%20Technical%20Charter%202020-10-01.pdf) were approved by the [FINOS Governing Board](https://www.finos.org/governing-board) on October 21, 2020.
+
 Build Status
 --------------------------------------------------------------------------------
 
