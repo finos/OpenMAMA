@@ -59,5 +59,5 @@ depends on several third party libraries, the licenses for which are listed in t
 
 Contributing
 --------------------------------------------------------------------------------
-Information on contributing on the project can be found [here](https://openmama.github.io/openmama_submission_process.html).
+Information on contributing on the project can be found [here](https://openmama.finos.org/openmama_submission_process.html).
 
