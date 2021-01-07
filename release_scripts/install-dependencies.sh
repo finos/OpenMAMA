@@ -61,6 +61,13 @@ fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ]
 then
+    if [ "${DISTRIB_RELEASE:0:1}" = "6" ]
+    then
+        # CentOS now needs EOL repos
+        curl https://www.getpagespeed.com/files/centos6-eol.repo --output /etc/yum.repos.d/CentOS-Base.repo
+        curl https://www.getpagespeed.com/files/centos6-epel-eol.repo --output /etc/yum.repos.d/epel.repo
+    fi
+
     echo "Installing CentOS / RHEL specific dependencies"
     yum install -y epel-release gcc make rpm-build which
     # CentOS 8 specific software
@@ -68,7 +75,7 @@ then
     then
         # CentOS 8 has funnies around where to find doxygen
         yum install -y dnf-plugins-core wget
-        dnf config-manager --set-enabled PowerTools
+        dnf config-manager --set-enabled powertools
         dnf -y install doxygen
         yum install -y python3
         rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
@@ -77,6 +84,8 @@ then
     then
         # CentOS 6 doesn't have official python3
         yum install -y centos-release-scl
+        curl https://www.getpagespeed.com/files/centos6-scl-eol.repo --output /etc/yum.repos.d/CentOS-SCLo-scl.repo
+        curl https://www.getpagespeed.com/files/centos6-scl-rh-eol.repo --output /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo
         yum install -y rh-python36
         update-alternatives --install /usr/bin/python3 python /opt/rh/rh-python36/root/usr/bin/python3 2
     else
@@ -168,3 +177,6 @@ cd googletest-release-$VERSION_GTEST
 mkdir bld
 cd bld
 cmake -DCMAKE_INSTALL_PREFIX=/usr .. && make && make install
+
+# Clean up dependency directory to keep size down
+test -d $DEPS_DIR && rm -rf $DEPS_DIR/*
