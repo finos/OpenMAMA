@@ -3,28 +3,28 @@ name: Main OpenMAMA Workflow
 on: push
 
 jobs:
-  linux-build:
-    name: Build and Test for Linux
-    runs-on: ubuntu-latest
-    continue-on-error: true
-    container:
-      image: ${{ matrix.image }}
-    strategy:
-      matrix:
-        image: 
-          - openmama/openmama-dev:centos-6
-          - openmama/openmama-dev:centos-7
-          - openmama/openmama-dev:centos-8
-          - openmama/openmama-dev:fedora-30
-          - openmama/openmama-dev:fedora-31
-          - openmama/openmama-dev:fedora-32
-          - openmama/openmama-dev:ubuntu-16.04
-          - openmama/openmama-dev:ubuntu-18.04
-          - openmama/openmama-dev:ubuntu-20.04
-    steps:
-    - uses: actions/checkout@v1
-    - name: Run Linux build
-      run: ./devops/build/ci-run.sh
+  # linux-build:
+  #   name: Build and Test for Linux
+  #   runs-on: ubuntu-latest
+  #   continue-on-error: true
+  #   container:
+  #     image: ${{ matrix.image }}
+  #   strategy:
+  #     matrix:
+  #       image: 
+  #         - openmama/openmama-dev:centos-6
+  #         - openmama/openmama-dev:centos-7
+  #         - openmama/openmama-dev:centos-8
+  #         - openmama/openmama-dev:fedora-30
+  #         - openmama/openmama-dev:fedora-31
+  #         - openmama/openmama-dev:fedora-32
+  #         - openmama/openmama-dev:ubuntu-16.04
+  #         - openmama/openmama-dev:ubuntu-18.04
+  #         - openmama/openmama-dev:ubuntu-20.04
+  #   steps:
+  #   - uses: actions/checkout@v1
+  #   - name: Run Linux build
+  #     run: ./devops/build/ci-run.sh
 
   windows-build:
     name: Build and Test for Windows
@@ -41,7 +41,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run Windows Build
-      run: echo ./devops/build/ci-run.bat
+      run: ./devops/build/ci-run.bat
 
   macos-build:
     name: Build and Test for MacOS
@@ -50,4 +50,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run MacOS Build
-      run: echo ./devops/build/ci-run.sh
+      run: ./devops/build/ci-run.sh
