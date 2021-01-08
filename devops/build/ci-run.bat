@@ -14,4 +14,4 @@ goto end
 echo Failed with error #%errorlevel%.
 
 :end
-exit /b %errorlevel
+exit /b %errorlevel%
