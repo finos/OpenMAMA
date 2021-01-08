@@ -22,8 +22,6 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DWITH_CSHARP=OFF \
      -DAPR_ROOT=/usr/local/Cellar/apr/1.7.0/libexec \
      -DWITH_UNITTEST=ON \
-     -DCMAKE_CXX_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
-     -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
      ..
 make -j install
 cd - > /dev/null
