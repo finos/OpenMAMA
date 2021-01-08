@@ -49,5 +49,7 @@ jobs:
     continue-on-error: true
     steps:
     - uses: actions/checkout@v1
+    - name: Install packages
+      run: brew install googletest apr apr-util ossp-uuid qpid-proton
     - name: Run MacOS Build
       run: ./devops/build/ci-run.sh
