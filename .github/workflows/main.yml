@@ -28,10 +28,13 @@ jobs:
 
   windows-build:
     name: Build and Test for Windows
-    runs-on: windows-latest
+    runs-on: ${{ matrix.os }}
     continue-on-error: true
     strategy:
       matrix:
+        os:
+          - windows-2016
+          - windows-2019
         build:
           - x86
           - x64
@@ -39,3 +42,12 @@ jobs:
     - uses: actions/checkout@v1
     - name: Run Windows Build
       run: echo ./devops/build/ci-run.bat
+
+  macos-build:
+    name: Build and Test for MacOS
+    runs-on: macos-latest
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run MacOS Build
+      run: echo ./devops/build/ci-run.sh
