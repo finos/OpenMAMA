@@ -1,10 +1,6 @@
 name: Main OpenMAMA Workflow
 
-on:
-  pull_request:
-  push:
-  branches:
-    - feature/github-actions
+on: push
 
 jobs:
   test:
