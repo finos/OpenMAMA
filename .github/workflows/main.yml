@@ -3,29 +3,33 @@ name: Main OpenMAMA Workflow
 on: push
 
 jobs:
-  test:
-    name: Build and Test
-    runs-on: ${{ matrix.os }}
+  linux-build:
+    name: Build and Test for Linux
+    runs-on: ubuntu-latest
     container:
       image: ${{ matrix.image }}
     strategy:
       matrix:
-        os: [ "ubuntu-latest" ]
-        image: [ "openmama/openmama-dev:fedora-30",  "openmama/openmama-dev:fedora-31", "openmama/openmama-dev:fedora-32" ]
+        image: 
+          - openmama/openmama-dev:centos-6
+          - openmama/openmama-dev:centos-7
+          - openmama/openmama-dev:centos-8
+          - openmama/openmama-dev:fedora-30
+          - openmama/openmama-dev:fedora-31
+          - openmama/openmama-dev:fedora-32
+          - openmama/openmama-dev:ubuntu-16.04
+          - openmama/openmama-dev:ubuntu-18.04
+          - openmama/openmama-dev:ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
-    - run: |
-          mkdir -p build \
-            && cd build \
-            && . /etc/profile \
-            && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-                -DBIN_GRADLE=$SDKMAN_DIR/candidates/gradle/current/bin/gradle \
-                -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
-                -DWITH_JAVA=ON \
-                -DWITH_UNITTEST=$WITH_UNITTEST \
-                -DINSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES \
-                -DCMAKE_CXX_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
-                -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
-                -DWITH_CSHARP=$WITH_CSHARP \
-                .. \
-            && cmake --build . --config RelWithDebInfo --target install
+    - name: Run Linux build
+      run: ./devops/build/ci-run.sh
+
+
+  windows-build:
+    name: Build and Test for Windows
+    runs-on: windows-latest
+    steps:
+    - name: Run Windows Build
+      if: matrix.os == 'windows-latest'
+      run: echo ./devops/build/ci-run.bat

@@ -50,7 +50,7 @@ urlretrieve ("http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcre
 junit_home = os.getcwd()
 
 # Set up derived values
-if os.name is 'nt':
+if os.name == 'nt':
     dep_base = os.path.join("C:\\", "Deps", env_var["MSVSVER"])
     shell = True
     product = 'mamdaall'

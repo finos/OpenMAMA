@@ -4,8 +4,9 @@
 set -e
 
 # Globals
-PREFIX=${PREFIX:-/apps/install}
+PREFIX=${PREFIX:-/opt/openmama}
 ARTIFACT_TYPE=${ARTIFACT_TYPE:-dev}
+VERSION_FILE=${VERSION_FILE:-VERSION}
 
 # Constants
 FEDORA=Fedora
