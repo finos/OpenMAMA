@@ -7,11 +7,11 @@ jobs:
     name: Build and Test
     runs-on: ${{ matrix.os }}
     container:
-      image: openmama/openmama-dev:fedora-31
+      image: ${{ matrix.image }}
     strategy:
       matrix:
         os: [ "ubuntu-latest" ]
-        devenv: [ "openmama/openmama-dev:fedora-30",  "openmama/openmama-dev:fedora-31", "openmama/openmama-dev:fedora-32" ]
+        image: [ "openmama/openmama-dev:fedora-30",  "openmama/openmama-dev:fedora-31", "openmama/openmama-dev:fedora-32" ]
     steps:
     - uses: actions/checkout@v2
     - run: |
