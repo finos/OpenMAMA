@@ -26,7 +26,6 @@ jobs:
     - name: Run Linux build
       run: ./devops/build/ci-run.sh
 
-
   windows-build:
     name: Build and Test for Windows
     runs-on: windows-latest
@@ -39,5 +38,4 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run Windows Build
-      if: matrix.os == 'windows-latest'
       run: echo ./devops/build/ci-run.bat
