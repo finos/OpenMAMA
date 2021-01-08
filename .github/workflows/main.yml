@@ -22,7 +22,7 @@ jobs:
           - openmama/openmama-dev:ubuntu-18.04
           - openmama/openmama-dev:ubuntu-20.04
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v1
     - name: Run Linux build
       run: ./devops/build/ci-run.sh
 
@@ -37,6 +37,7 @@ jobs:
           - x86
           - x64
     steps:
+    - uses: actions/checkout@v1
     - name: Run Windows Build
       if: matrix.os == 'windows-latest'
       run: echo ./devops/build/ci-run.bat
