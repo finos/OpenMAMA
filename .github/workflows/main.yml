@@ -52,4 +52,4 @@ jobs:
     - name: Install packages
       run: brew install googletest apr apr-util ossp-uuid qpid-proton
     - name: Run MacOS Build
-      run: ./devops/build/ci-run.sh
+      run: ./devops/build/ci-run.macos.sh
