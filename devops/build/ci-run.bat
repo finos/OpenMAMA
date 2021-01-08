@@ -1,4 +1,6 @@
 set PATH=%JAVA_HOME_OVERRIDE%\bin;%PATH%
+set /p VERSION=<%GITHUB_WORKSPACE%\VERSION
+set OPENMAMA_INSTALL_DIR=%GITHUB_WORKSPACE%\openmama-%VERSION%.win.%PLATFORM%
 
 mkdir build || goto error
 cd build || goto error

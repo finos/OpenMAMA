@@ -32,16 +32,26 @@ jobs:
     continue-on-error: true
     strategy:
       matrix:
-        os:
-          - windows-2016
-          - windows-2019
-        build:
-          - x86
-          - x64
+        include:
+          - os: windows-2016
+            platform: x86
+            generator: Visual Studio 15 2017
+          - os: windows-2016
+            platform: x64
+            generator: Visual Studio 15 2017 Win64
+          - os: windows-2019
+            platform: x86
+            generator: Visual Studio 16 2019
+          - os: windows-2019
+            platform: x64
+            generator: Visual Studio 16 2019 Win64
     steps:
     - uses: actions/checkout@v1
     - name: Run Windows Build
       run: ./devops/build/ci-run.bat
+      env:
+        PLATFORM: ${{ matrix.platform }}
+        GENERATOR: ${{ matrix.generator }}
 
   macos-build:
     name: Build and Test for MacOS
