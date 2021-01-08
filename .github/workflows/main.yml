@@ -1,0 +1,35 @@
+name: Main OpenMAMA Workflow
+
+on:
+  pull_request:
+  push:
+  branches:
+    - feature/github-actions
+
+jobs:
+  test:
+    name: Build and Test
+    runs-on: ${{ matrix.os }}
+    container:
+      image: openmama/openmama-dev:fedora-31
+    strategy:
+      matrix:
+        os: [ "ubuntu-latest" ]
+        devenv: [ "openmama/openmama-dev:fedora-30",  "openmama/openmama-dev:fedora-31", "openmama/openmama-dev:fedora-32" ]
+    steps:
+    - uses: actions/checkout@v2
+    - run: |
+          mkdir -p build \
+            && cd build \
+            && . /etc/profile \
+            && cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+                -DBIN_GRADLE=$SDKMAN_DIR/candidates/gradle/current/bin/gradle \
+                -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR \
+                -DWITH_JAVA=ON \
+                -DWITH_UNITTEST=$WITH_UNITTEST \
+                -DINSTALL_RUNTIME_DEPENDENCIES=$INSTALL_RUNTIME_DEPENDENCIES \
+                -DCMAKE_CXX_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
+                -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
+                -DWITH_CSHARP=$WITH_CSHARP \
+                .. \
+            && cmake --build . --config RelWithDebInfo --target install
