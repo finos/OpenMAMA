@@ -6,6 +6,7 @@ jobs:
   linux-build:
     name: Build and Test for Linux
     runs-on: ubuntu-latest
+    continue-on-error: true
     container:
       image: ${{ matrix.image }}
     strategy:
@@ -29,6 +30,12 @@ jobs:
   windows-build:
     name: Build and Test for Windows
     runs-on: windows-latest
+    continue-on-error: true
+    strategy:
+      matrix:
+        build:
+          - x86
+          - x64
     steps:
     - name: Run Windows Build
       if: matrix.os == 'windows-latest'
