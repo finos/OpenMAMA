@@ -2,6 +2,7 @@ set PATH=%JAVA_HOME_OVERRIDE%\bin;%PATH%
 set /p VERSION=<%GITHUB_WORKSPACE%\VERSION
 set OPENMAMA_INSTALL_DIR=%GITHUB_WORKSPACE%\openmama-%VERSION%.win.%PLATFORM%
 
+choco install -y unzip gow wget gradle nunit-console-runner nunit-extension-nunit-v2-driver || goto error
 mkdir build || goto error
 cd build || goto error
 REM -DCMAKE_TOOLCHAIN_FILE=c:/tools/vcpkg/scripts/buildsystems/vcpkg.cmake
