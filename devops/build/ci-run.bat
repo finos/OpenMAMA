@@ -3,6 +3,7 @@ set /p VERSION=<%GITHUB_WORKSPACE%\VERSION
 set OPENMAMA_INSTALL_DIR=%GITHUB_WORKSPACE%\openmama-%VERSION%.win.%PLATFORM%
 
 choco install -y unzip gow wget gradle nunit-console-runner nunit-extension-nunit-v2-driver || goto error
+vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows || goto error
 call RefreshEnv.cmd
 mkdir build || goto error
 cd build || goto error
