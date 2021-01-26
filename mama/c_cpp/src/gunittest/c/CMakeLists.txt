@@ -22,6 +22,11 @@ macro(UnitTestC bin)
 	if (WIN32 AND MSVC)
 		install(FILES $<TARGET_PDB_FILE:${bin}> DESTINATION bin OPTIONAL)
 	endif()
+
+    # Note that platform specific PATH / LD_LIBRARY_PATH is expected to already be set in calling environment
+	gtest_discover_tests(${bin}
+	                     EXTRA_ARGS -m qpid -p qpidmsg -i Q
+						 PROPERTIES ENVIRONMENT "WOMBAT_PATH=${CMAKE_SOURCE_DIR}/mama/c_cpp/src/examples:${CMAKE_SOURCE_DIR}/mama/c_cpp/src/gunittest/c")
 endmacro()
 
 UnitTestC(UnitTestMamaC

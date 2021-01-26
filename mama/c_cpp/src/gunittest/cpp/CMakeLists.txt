@@ -21,6 +21,11 @@ add_executable(UnitTestMamaCPP
 )
 target_link_libraries(UnitTestMamaCPP ${GTEST_BOTH_LIBRARIES} mamacpp mama)
 
+# Note that platform specific PATH / LD_LIBRARY_PATH is expected to already be set in calling environment
+gtest_discover_tests(UnitTestMamaCPP
+                         EXTRA_ARGS -m qpid -p qpidmsg -i Q
+                         PROPERTIES ENVIRONMENT "WOMBAT_PATH=${CMAKE_SOURCE_DIR}/mama/c_cpp/src/examples:${CMAKE_BINARY_DIR}/mama/c_cpp/src/gunittest/c")
+
 install(TARGETS UnitTestMamaCPP
         RUNTIME DESTINATION bin
         LIBRARY DESTINATION lib
