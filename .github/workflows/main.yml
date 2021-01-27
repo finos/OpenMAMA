@@ -42,9 +42,11 @@ jobs:
           - os: windows-2019
             platform: x86
             generator: Visual Studio 16 2019
+            args: -A Win32
           - os: windows-2019
             platform: x64
-            generator: Visual Studio 16 2019 Win64
+            generator: Visual Studio 16 2019
+            args: -A x64
     steps:
     - uses: actions/checkout@v1
     - name: Run Windows Build
@@ -52,6 +54,7 @@ jobs:
       env:
         PLATFORM: ${{ matrix.platform }}
         GENERATOR: ${{ matrix.generator }}
+        EXTRA_ARGS: ${{ matrix.args }}
 
   macos-build:
     name: Build and Test for MacOS
@@ -59,7 +62,5 @@ jobs:
     continue-on-error: true
     steps:
     - uses: actions/checkout@v1
-    - name: Install packages
-      run: brew install googletest apr apr-util ossp-uuid qpid-proton
     - name: Run MacOS Build
       run: ./devops/build/ci-run.macos.sh

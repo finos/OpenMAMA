@@ -11,6 +11,8 @@ export OPENMAMA_INSTALL_DIR=/opt/openmama
 unset PREFIX
 unset VERSION_FILE
 
+brew install googletest apr apr-util ossp-uuid qpid-proton
+
 # Build the project
 test -d build && rm -rf build || true
 mkdir -p build
