@@ -13,6 +13,8 @@ unset VERSION_FILE
 
 brew install googletest apr apr-util ossp-uuid qpid-proton
 
+find /usr/local/Cellar/apr
+
 # Build the project
 test -d build && rm -rf build || true
 mkdir -p build
