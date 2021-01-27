@@ -6,12 +6,15 @@ choco install -y unzip gow wget gradle nunit-console-runner nunit-extension-nuni
 vcpkg install qpid-proton:%PLATFORM%-windows libevent:%PLATFORM%-windows apr:%PLATFORM%-windows gtest:%PLATFORM%-windows || goto error
 msiexec.exe /I https://github.com/nunit-legacy/nunitv2/releases/download/2.7.1/NUnit-2.7.1.msi /QN || goto error
 call RefreshEnv.cmd
-mkdir build || goto error
-cd build || goto error
+mkdir %GITHUB_WORKSPACE%\build || goto error
+cd %GITHUB_WORKSPACE%\build || goto error
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWITH_CSHARP=ON -DWITH_UNITTEST=ON -DWITH_JAVA=ON -DPROTON_ROOT=C:/vcpkg/installed/%PLATFORM%-windows/ -DGTEST_ROOT=C:/vcpkg/installed/%PLATFORM%-windows/ -DINSTALL_RUNTIME_DEPENDENCIES=ON -DCMAKE_INSTALL_PREFIX="%OPENMAMA_INSTALL_DIR%" -G "%GENERATOR%" -DAPR_ROOT=C:/vcpkg/installed/%PLATFORM%-windows/ -DCMAKE_TOOLCHAIN_FILE=c:/vcpkg/scripts/buildsystems/vcpkg.cmake .. || goto error
+call build_dll_path_RelWithDebInfo.bat
 cmake --build . --config RelWithDebInfo --target install || goto error
-cd .. || goto error
-python release_scripts\ci-run.py || goto error
+ctest .
+cd %GITHUB_WORKSPACE%\mama\jni || goto error
+gradle test
+cd %GITHUB_WORKSPACE% || goto error
 7z a openmama-%VERSION%.win.%PLATFORM%.zip "%OPENMAMA_INSTALL_DIR%" || goto error
 
 goto end
