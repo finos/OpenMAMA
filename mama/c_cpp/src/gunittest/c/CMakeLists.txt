@@ -2,6 +2,9 @@ enable_testing()
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
+include(FindAPR)
+find_package(APR REQUIRED)
+
 get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
 
 include_directories(
@@ -23,10 +26,12 @@ macro(UnitTestC bin)
 		install(FILES $<TARGET_PDB_FILE:${bin}> DESTINATION bin OPTIONAL)
 	endif()
 
-    # Note that platform specific PATH / LD_LIBRARY_PATH is expected to already be set in calling environment
-	gtest_discover_tests(${bin}
-	                     EXTRA_ARGS -m qpid -p qpidmsg -i Q
-						 PROPERTIES ENVIRONMENT "WOMBAT_PATH=${CMAKE_SOURCE_DIR}/mama/c_cpp/src/examples:${CMAKE_SOURCE_DIR}/mama/c_cpp/src/gunittest/c")
+    gtest_discover_tests(
+        ${bin}
+        EXTRA_ARGS -m qpid -p qpidmsg -i Q
+        PROPERTIES ENVIRONMENT
+            "WOMBAT_PATH=${CMAKE_SOURCE_DIR}/mama/c_cpp/src/examples:${CMAKE_SOURCE_DIR}/mama/c_cpp/src/gunittest/c"
+    )
 endmacro()
 
 UnitTestC(UnitTestMamaC
@@ -93,3 +98,22 @@ UnitTestC(UnitTestMamaPayloadC
 	payload/payloadgeneraltests.cpp
 	payload/payloadvectortests.cpp
 )
+
+if (WIN32)
+    set(BATCH_ENV_PATH "${GTEST_ROOT}/bin;${APR_ROOT}/bin;${PROTON_ROOT}/bin;${LIBEVENT_ROOT}/lib;$<TARGET_FILE_DIR:mama>;$<TARGET_FILE_DIR:wombatcommon>;$<TARGET_FILE_DIR:mamabaseimpl>;$<TARGET_FILE_DIR:mamaqpidimpl>;$<TARGET_FILE_DIR:mamaplugindqstrategy>;$<TARGET_FILE_DIR:mamaentnoop>;$<TARGET_FILE_DIR:mamaqpidmsgimpl>")
+	if (WITH_MAMDA)
+		set(BATCH_ENV_PATH "${BATCH_ENV_PATH};$<TARGET_FILE_DIR:mamda>")
+	endif()
+	if (WITH_CPP)
+		set(BATCH_ENV_PATH "${BATCH_ENV_PATH};$<TARGET_FILE_DIR:mamacpp>")
+	endif()
+	if (WITH_JAVA)
+		set(BATCH_ENV_PATH "${BATCH_ENV_PATH};$<TARGET_FILE_DIR:mamajni>")
+	endif()
+    file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/build_dll_path_$<CONFIG>.bat"
+	     CONTENT "set PATH=${BATCH_ENV_PATH};%PATH%")
+	message(WARNING "\tNB: On windows there is no RPATH, so generated environment for you "
+	                "required for unit tests. Execute the following *before* building "
+					"with 'cmake --build . --config ${CMAKE_BUILD_TYPE}'':"
+					"\n\t\tCALL build_dll_path_${CMAKE_BUILD_TYPE}.bat")
+endif()

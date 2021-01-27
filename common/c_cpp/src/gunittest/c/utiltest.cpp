@@ -69,7 +69,7 @@ TEST_F (CommonUtilTestC, findFileInPath)
                                       sizeof(filePath),
                                       "mama.properties",
                                       environment_getVariable("WOMBAT_PATH"),
-                                      NULL));
+                                      ":;"));
 
 }
 
@@ -83,7 +83,7 @@ TEST_F(CommonUtilTestC, findFileInPathNotExist)
             sizeof(filePath),
             "mama.invisible_man",
             environment_getVariable("WOMBAT_PATH"),
-            NULL));
+            ":;"));
 }
 
 TEST_F(CommonUtilTestC, getVerInfoFromString)

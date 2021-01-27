@@ -30,6 +30,13 @@ if(WITH_DOC)
 	install(DIRECTORY ${MAMAJNI_JAVA_BUILD_DIR}/docs/javadoc/ DESTINATION doc/mama/jni/html)
 endif()
 
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/junit.jar)
+    file(DOWNLOAD "http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar" ${CMAKE_CURRENT_BINARY_DIR}/junit.jar TIMEOUT 60)
+endif()
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/hamcrest-core.jar)
+    file(DOWNLOAD "http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" ${CMAKE_CURRENT_BINARY_DIR}/hamcrest-core.jar TIMEOUT 60)
+endif()
+
 ExternalProject_Add(mamajnijava
         SOURCE_DIR "."
         BUILD_COMMAND ""
