@@ -26,8 +26,9 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DWITH_CSHARP=OFF \
      -DAPR_ROOT=$APR_ROOT \
      -DWITH_UNITTEST=ON \
+     -DCMAKE_CXX_STANDARD=17 \
      ..
-make -j install
+make install
 cd - > /dev/null
 
 # Perform unit tests
