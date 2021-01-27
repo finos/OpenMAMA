@@ -7,7 +7,6 @@ set -x
 
 set -e
 
-export OPENMAMA_INSTALL_DIR=/opt/openmama
 unset PREFIX
 unset VERSION_FILE
 
@@ -19,6 +18,7 @@ APR_ROOT=$(find /usr/local/Cellar/apr -type d -name libexec)
 test -d build && rm -rf build || true
 mkdir -p build
 cd build
+export OPENMAMA_INSTALL_DIR=`pwd`/install
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_INSTALL_PREFIX=$OPENMAMA_INSTALL_DIR \
@@ -32,10 +32,7 @@ make install
 cd - > /dev/null
 
 # Perform unit tests
-python3 release_scripts/ci-run.py
-
-# Clean up Unit Test files - we don't need them any more
-rm -f $OPENMAMA_INSTALL_DIR/*.xml $OPENMAMA_INSTALL_DIR/bin/UnitTest*
+ctest .
 
 # Include the test data and grab profile configuration from there for packaging
 test -d $OPENMAMA_INSTALL_DIR/data && rm -rf $OPENMAMA_INSTALL_DIR/data || true
@@ -47,4 +44,3 @@ rm -rf profiles
 cd - > /dev/null
 
 # Generate the package (deb / rpm / tarball).
-./release_scripts/build-package.sh
