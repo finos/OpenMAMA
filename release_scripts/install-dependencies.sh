@@ -88,10 +88,16 @@ then
         curl https://www.getpagespeed.com/files/centos6-scl-rh-eol.repo --output /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo
         yum install -y rh-python36
         update-alternatives --install /usr/bin/python3 python /opt/rh/rh-python36/root/usr/bin/python3 2
+
+        # CentOS 6 cmake version is too old - upgrade it
+        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
     else
         yum install -y python3 wget
         rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
         yum install -y dotnet-sdk-2.1
+
+        # CentOS 7 cmake version is too old - upgrade it
+        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
     fi
 elif [ "$DISTRIB_ID" = "$FEDORA" ]
 then
@@ -145,6 +151,8 @@ if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
 then
     apt-get install -qq -y openjdk-8-jdk libssl-dev libqpid-proton2-dev
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
+    # CentOS 7 cmake version is too old - upgrade it
+    (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
 fi
 
 # Centos and old ubuntu version specific dependencies (ruby is too old for FPM)
