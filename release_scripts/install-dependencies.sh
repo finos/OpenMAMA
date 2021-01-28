@@ -56,7 +56,7 @@ fi
 if [ "$DISTRIB_ID" = "$FEDORA" ]
 then
     echo "Installing fedora specific dependencies"
-    yum install -y libnsl2-devel libffi-devel ruby-devel rubygems redhat-rpm-config rpm-build
+    yum install -y libnsl2-devel libffi-devel ruby-devel rubygems redhat-rpm-config rpm-build cmake
 fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ]
@@ -77,7 +77,7 @@ then
         yum install -y dnf-plugins-core
         dnf config-manager --set-enabled powertools
         dnf -y install doxygen
-        yum install -y python3
+        yum install -y python3 cmake
         rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
         dnf install -y dotnet-sdk-2.1
     elif [ "${DISTRIB_RELEASE:0:1}" = "6" ]
@@ -112,7 +112,7 @@ then
     yum install -y zlib-devel openssl-devel zip unzip make \
 	    java-1.8.0-openjdk-devel libuuid-devel flex doxygen \
 	    qpid-proton-c-devel libevent-devel ncurses-devel \
-	    apr-devel wget curl cmake gcc-c++ libuuid qpid-proton-c \
+	    apr-devel wget curl gcc-c++ libuuid qpid-proton-c \
 	    libevent ncurses apr valgrind which
 fi
 
@@ -151,7 +151,7 @@ if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
 then
     apt-get install -qq -y openjdk-8-jdk libssl-dev libqpid-proton2-dev
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
-    # CentOS 7 cmake version is too old - upgrade it
+    # Ubuntu 16 cmake version is too old - upgrade it
     (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
 fi
 
