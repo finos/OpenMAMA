@@ -64,7 +64,8 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: package
-        path: *.zip
+        path: |
+          *.zip
 
   macos-build:
     name: Build and Test for MacOS
