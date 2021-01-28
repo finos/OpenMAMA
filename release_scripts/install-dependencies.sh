@@ -69,12 +69,12 @@ then
     fi
 
     echo "Installing CentOS / RHEL specific dependencies"
-    yum install -y epel-release gcc make rpm-build which
+    yum install -y epel-release gcc make rpm-build which wget
     # CentOS 8 specific software
     if [ "${DISTRIB_RELEASE:0:1}" = "8" ]
     then
         # CentOS 8 has funnies around where to find doxygen
-        yum install -y dnf-plugins-core wget
+        yum install -y dnf-plugins-core
         dnf config-manager --set-enabled powertools
         dnf -y install doxygen
         yum install -y python3
@@ -92,7 +92,7 @@ then
         # CentOS 6 cmake version is too old - upgrade it
         (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
     else
-        yum install -y python3 wget
+        yum install -y python3
         rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
         yum install -y dotnet-sdk-2.1
 
