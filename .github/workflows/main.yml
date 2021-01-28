@@ -29,8 +29,8 @@ jobs:
       with:
         name: package
         path: |
-          build/*.rpm
-          build/*.deb
+          *.rpm
+          *.deb
 
   windows-build:
     name: Build and Test for Windows
@@ -64,7 +64,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: package
-        path: build/*.zip
+        path: *.zip
 
   macos-build:
     name: Build and Test for MacOS
