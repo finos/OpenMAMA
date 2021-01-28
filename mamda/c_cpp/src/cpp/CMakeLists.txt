@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 2.8.3)
 project (mamdacpp)
 
 get_target_property(MAMA_INCLUDES mamacpp INCLUDE_DIRECTORIES)

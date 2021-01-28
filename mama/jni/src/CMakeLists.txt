@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 2.8.3)
 project (mamajni)
 
 find_package(Java)
@@ -50,6 +49,8 @@ ExternalProject_Add(mamajnijava
 		    ${GRADLE_EXTRA_ARGS}
 		    ${GRADLE_TARGETS}
         INSTALL_COMMAND ""
+		#TEST_COMMAND
+		#    "${Java_JAVA_EXECUTABLE} -cp \"${CMAKE_CURRENT_BINARY_DIR}/mama_java_build/classes/java/test:${MAMAJNI_JAVA_BUILD_DIR}/libs/mamajni.jar:${CMAKE_CURRENT_BINARY_DIR}/junit.jar:${CMAKE_CURRENT_BINARY_DIR}/hamcrest-core.jar\" com.wombat.mama.junittests.Main -m qpid"
         LOG_BUILD 1)
 
 set_target_properties(mamajnijava PROPERTIES JAVAH_INCLUDES ${CMAKE_CURRENT_BINARY_DIR})

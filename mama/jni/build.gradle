@@ -20,7 +20,7 @@ dependencies {
 }
 
 test { 
-  environment "PATH", "C:\\Users\\fquinn\\SourceExternal\\github\\fquinner\\OpenMAMA\\openmama_install_6.2.1\\bin\\dynamic"
+  environment "PATH", "C:\\Users\\fquinn\\SourceExternal\\cascadium\\OpenMAMA\\build_2017\\install\\bin"
 }
 
 javadoc {

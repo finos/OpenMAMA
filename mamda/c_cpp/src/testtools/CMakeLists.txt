@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 2.8.3)
 project (mamda_testtools)
 
 get_target_property(MAMDA_INCLUDES mamda INCLUDE_DIRECTORIES)
