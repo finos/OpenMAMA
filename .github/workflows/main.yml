@@ -3,28 +3,34 @@ name: Main OpenMAMA Workflow
 on: push
 
 jobs:
-  # linux-build:
-  #   name: Build and Test for Linux
-  #   runs-on: ubuntu-latest
-  #   continue-on-error: true
-  #   container:
-  #     image: ${{ matrix.image }}
-  #   strategy:
-  #     matrix:
-  #       image: 
-  #         - openmama/openmama-dev:centos-6
-  #         - openmama/openmama-dev:centos-7
-  #         - openmama/openmama-dev:centos-8
-  #         - openmama/openmama-dev:fedora-30
-  #         - openmama/openmama-dev:fedora-31
-  #         - openmama/openmama-dev:fedora-32
-  #         - openmama/openmama-dev:ubuntu-16.04
-  #         - openmama/openmama-dev:ubuntu-18.04
-  #         - openmama/openmama-dev:ubuntu-20.04
-  #   steps:
-  #   - uses: actions/checkout@v1
-  #   - name: Run Linux build
-  #     run: ./devops/build/ci-run.sh
+  linux-build:
+    name: Build and Test for Linux
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      matrix:
+        image: 
+          - openmama/openmama-dev:centos-6
+          - openmama/openmama-dev:centos-7
+          - openmama/openmama-dev:centos-8
+          - openmama/openmama-dev:fedora-30
+          - openmama/openmama-dev:fedora-31
+          - openmama/openmama-dev:fedora-32
+          - openmama/openmama-dev:ubuntu-16.04
+          - openmama/openmama-dev:ubuntu-18.04
+          - openmama/openmama-dev:ubuntu-20.04
+    steps:
+    - uses: actions/checkout@v1
+    - name: Run Linux build
+      run: ./devops/build/ci-run.sh
+    - uses: actions/upload-artifact@v2
+      with:
+        name: package
+        path: |
+          build/*.rpm
+          build/*.deb
 
   windows-build:
     name: Build and Test for Windows
@@ -55,6 +61,10 @@ jobs:
         PLATFORM: ${{ matrix.platform }}
         GENERATOR: ${{ matrix.generator }}
         EXTRA_ARGS: ${{ matrix.args }}
+    - uses: actions/upload-artifact@v2
+      with:
+        name: package
+        path: build/*.zip
 
   macos-build:
     name: Build and Test for MacOS
