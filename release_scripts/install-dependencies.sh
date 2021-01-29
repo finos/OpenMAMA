@@ -176,7 +176,7 @@ source "$SDKMAN_DIR/bin/sdkman-init.sh"
 sdk install gradle
 
 # Install FPM for packaging up
-gem install -N fpm
+gem install -N fpm -v 1.11.0
 
 # Gtest is best always getting built
 cd $DEPS_DIR
