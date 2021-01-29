@@ -31,13 +31,35 @@ jobs:
           - image: openmama/openmama-dev:ubuntu-20.04
             package_type: deb
     steps:
-    - uses: actions/checkout@v1
+    - name: Check out the code
+      uses: actions/checkout@v1
     - name: Run Linux build
       run: ./devops/build/ci-run.sh
-    - uses: actions/upload-artifact@v1
+    - name: Uploading package as an artifact to github actions
+      uses: actions/upload-artifact@v1
+      if: ${{ matrix.image == 'openmama/openmama-dev:centos-6' }}
       with:
         name: package
-        path: '*.${{ matrix.package_type}}'
+        path: '*.${{ matrix.package_type }}'
+    - name: Uploading package as an artifact to github actions
+      uses: actions/upload-artifact@v2
+      if: ${{ matrix.image != 'openmama/openmama-dev:centos-6' }}
+      with:
+        name: package
+        path: '*.${{ matrix.package_type }}'
+    - name: Uploading package to cloudsmith
+      uses: cloudsmith-io/action@master
+      env:
+        artifact_type: 'dev'
+      with:
+        api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
+        command: 'push'
+        owner: 'openmama'
+        repo: 'openmama-experimental'
+        distro: '${{ matrix.distro }}/${{ matrix.distro_version }}'
+        republish: 'true'
+        file: '*.${{ matrix.package_type }}'
+
   windows-build:
     name: Build and Test for Windows
     runs-on: ${{ matrix.os }}
@@ -70,8 +92,7 @@ jobs:
     - uses: actions/upload-artifact@v2
       with:
         name: package
-        path: |
-          *.zip
+        path: '*.zip'
 
   macos-build:
     name: Build and Test for MacOS
