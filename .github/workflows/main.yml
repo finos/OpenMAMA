@@ -56,12 +56,6 @@ jobs:
     - name: Find the package
       run: 'pwd && find . -name "*.${{ matrix.package_type }}"'
     - name: Uploading package as an artifact to github actions
-      uses: actions/upload-artifact@v1
-      if: ${{ matrix.image == 'openmama/openmama-dev:centos-6' }}
-      with:
-        name: package
-        path: '*.${{ matrix.package_type }}'
-    - name: Uploading package as an artifact to github actions
       uses: actions/upload-artifact@v2
       if: ${{ matrix.image != 'openmama/openmama-dev:centos-6' }}
       with:
