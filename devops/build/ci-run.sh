@@ -30,13 +30,8 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
      ..
 make -j install
+ctest .
 cd - > /dev/null
-
-# Perform unit tests
-python3 release_scripts/ci-run.py
-
-# Clean up Unit Test files - we don't need them any more
-rm -f $OPENMAMA_INSTALL_DIR/*.xml $OPENMAMA_INSTALL_DIR/bin/UnitTest*
 
 # Include the test data and grab profile configuration from there for packaging
 test -d $OPENMAMA_INSTALL_DIR/data && rm -rf $OPENMAMA_INSTALL_DIR/data || true
