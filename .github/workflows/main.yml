@@ -1,6 +1,14 @@
 name: Main OpenMAMA Workflow
 
-on: push
+on:
+  push:
+    branches:
+      - 'feature/github-actions'
+      - 'next'
+      - 'master'
+      - 'OpenMAMA-*'
+    tags:
+      - 'OpenMAMA-*'
 
 jobs:
   linux-build:
@@ -51,6 +59,21 @@ jobs:
     steps:
     - name: Check out the code
       uses: actions/checkout@v1
+    - name: Set artifact type to 'undefined'
+      run: |
+        echo "ARTIFACT_TYPE=undefined" >> $GITHUB_ENV
+    - name: Set artifact type to dev
+      if: endswith(github.ref, '/next')
+      run: |
+        echo "ARTIFACT_TYPE=dev" >> $GITHUB_ENV
+    - name: Set artifact type to release
+      if: startsWith(github.ref, 'refs/tags/OpenMAMA-')
+      run: |
+        echo "ARTIFACT_TYPE=release" >> $GITHUB_ENV
+    - name: Set artifact type to rc
+      if: startsWith(github.ref, 'refs/heads/OpenMAMA-')
+      run: |
+        echo "ARTIFACT_TYPE=rc" >> $GITHUB_ENV
     - name: Run Linux build
       run: ./devops/build/ci-run.sh
     - name: Find the package
@@ -63,8 +86,9 @@ jobs:
         path: '*.${{ matrix.package_type }}'
     - name: Uploading package to cloudsmith
       uses: cloudsmith-io/action@master
+      if: ${{ env.ARTIFACT_TYPE != 'undefined' }}
       env:
-        artifact_type: 'dev'
+        artifact_type: ${{ env.ARTIFACT_TYPE }}
       with:
         api-key: ${{ secrets.CLOUDSMITH_API_KEY }}
         command: 'push'
