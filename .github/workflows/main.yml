@@ -28,9 +28,17 @@ jobs:
     - uses: actions/upload-artifact@v1
       with:
         name: package
+        path: *.rpm
+      if: matrix.image == openmama/openmama-dev:centos-6
+    - uses: actions/upload-artifact@v2
+      with:
+        name: package
         path: |
           *.rpm
           *.deb
+      if: matrix.image != openmama/openmama-dev:centos-6
+
+
 
   windows-build:
     name: Build and Test for Windows
