@@ -13,25 +13,31 @@ jobs:
       matrix:
         include:
           - image: openmama/openmama-dev:centos-6
+            package_type: rpm
           - image: openmama/openmama-dev:centos-7
+            package_type: rpm
           - image: openmama/openmama-dev:centos-8
+            package_type: rpm
           - image: openmama/openmama-dev:fedora-30
+            package_type: rpm
           - image: openmama/openmama-dev:fedora-31
+            package_type: rpm
           - image: openmama/openmama-dev:fedora-32
+            package_type: rpm
           - image: openmama/openmama-dev:ubuntu-16.04
+            package_type: deb
           - image: openmama/openmama-dev:ubuntu-18.04
+            package_type: rpm
           - image: openmama/openmama-dev:ubuntu-20.04
+            package_type: deb
     steps:
     - uses: actions/checkout@v1
     - name: Run Linux build
       run: ./devops/build/ci-run.sh
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v1
       with:
         name: package
-        path: |
-          *.rpm
-          *.deb
-      if: ${{ matrix.image != 'openmama/openmama-dev:centos-6' }}
+        path: '*.${{package_type}}'
   windows-build:
     name: Build and Test for Windows
     runs-on: ${{ matrix.os }}
