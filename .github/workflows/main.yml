@@ -41,7 +41,7 @@ jobs:
             distro: ubuntu
             distro_version: xenial
           - image: openmama/openmama-dev:ubuntu-18.04
-            package_type: rpm
+            package_type: deb
             distro: ubuntu
             distro_version: bionic
           - image: openmama/openmama-dev:ubuntu-20.04
