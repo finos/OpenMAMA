@@ -37,7 +37,7 @@ jobs:
     - uses: actions/upload-artifact@v1
       with:
         name: package
-        path: '*.${{package_type}}'
+        path: '*.${{ matrix.package_type}}'
   windows-build:
     name: Build and Test for Windows
     runs-on: ${{ matrix.os }}
