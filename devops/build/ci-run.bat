@@ -16,7 +16,7 @@ ctest . -C RelWithDebInfo
 cd %GITHUB_WORKSPACE%\mama\jni || goto error
 gradle test
 cd %GITHUB_WORKSPACE% || goto error
-7z a openmama-%VERSION%.win.%PLATFORM%.zip "%OPENMAMA_INSTALL_DIR%" || goto error
+7z a openmama-%VERSION%.win.%VCVER%.%PLATFORM%.zip "%OPENMAMA_INSTALL_DIR%" || goto error
 
 goto end
 

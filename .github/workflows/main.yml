@@ -70,17 +70,21 @@ jobs:
           - os: windows-2016
             platform: x86
             generator: Visual Studio 15 2017
+            vcver: msvc2017
           - os: windows-2016
             platform: x64
             generator: Visual Studio 15 2017 Win64
+            vcver: msvc2017
           - os: windows-2019
             platform: x86
             generator: Visual Studio 16 2019
             args: -A Win32
+            vcver: msvc2019
           - os: windows-2019
             platform: x64
             generator: Visual Studio 16 2019
             args: -A x64
+            vcver: msvc2019
     steps:
     - uses: actions/checkout@v1
     - name: Run Windows Build
@@ -89,6 +93,7 @@ jobs:
         PLATFORM: ${{ matrix.platform }}
         GENERATOR: ${{ matrix.generator }}
         EXTRA_ARGS: ${{ matrix.args }}
+        VCVER: ${{ matrix.vcver }}
     - uses: actions/upload-artifact@v2
       with:
         name: package
