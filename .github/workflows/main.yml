@@ -11,16 +11,16 @@ jobs:
       image: ${{ matrix.image }}
     strategy:
       matrix:
-        image: 
-          - openmama/openmama-dev:centos-6
-          - openmama/openmama-dev:centos-7
-          - openmama/openmama-dev:centos-8
-          - openmama/openmama-dev:fedora-30
-          - openmama/openmama-dev:fedora-31
-          - openmama/openmama-dev:fedora-32
-          - openmama/openmama-dev:ubuntu-16.04
-          - openmama/openmama-dev:ubuntu-18.04
-          - openmama/openmama-dev:ubuntu-20.04
+        include:
+          - image: openmama/openmama-dev:centos-6
+          - image: openmama/openmama-dev:centos-7
+          - image: openmama/openmama-dev:centos-8
+          - image: openmama/openmama-dev:fedora-30
+          - image: openmama/openmama-dev:fedora-31
+          - image: openmama/openmama-dev:fedora-32
+          - image: openmama/openmama-dev:ubuntu-16.04
+          - image: openmama/openmama-dev:ubuntu-18.04
+          - image: openmama/openmama-dev:ubuntu-20.04
     steps:
     - uses: actions/checkout@v1
     - name: Run Linux build
