@@ -38,7 +38,7 @@ ENV PACKAGE_DIR /apps/package
 ENV VERSION_FILE=$SRC_DIR/VERSION
 
 # Add internal scripts here to prevent reruns
-ADD release_scripts/install-dependencies.sh $SRC_DIR/release_scripts/
+ADD install-dependencies.sh $SRC_DIR/
 
 # Run script to update dependencies
-RUN $SRC_DIR/release_scripts/install-dependencies.sh
+RUN $SRC_DIR/install-dependencies.sh

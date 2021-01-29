@@ -43,4 +43,4 @@ rm -rf profiles
 cd - > /dev/null
 
 # Generate the package (deb / rpm / tarball).
-./release_scripts/build-package.sh
+./devops/build/build-package.sh
