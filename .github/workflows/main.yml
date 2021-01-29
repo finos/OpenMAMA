@@ -59,7 +59,8 @@ jobs:
         format: '${{ matrix.package_type }}'
         owner: 'openmama'
         repo: 'openmama-experimental'
-        distro: '${{ matrix.distro }}/${{ matrix.distro_version }}'
+        distro: '${{ matrix.distro }}'
+        release: ${{ matrix.distro_version }}
         republish: 'true'
         file: '*.${{ matrix.package_type }}'
 
