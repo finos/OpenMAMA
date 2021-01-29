@@ -113,7 +113,7 @@ then
 	    java-1.8.0-openjdk-devel libuuid-devel flex doxygen \
 	    qpid-proton-c-devel libevent-devel ncurses-devel \
 	    apr-devel wget curl gcc-c++ libuuid qpid-proton-c \
-	    libevent ncurses apr valgrind which
+	    libevent ncurses apr valgrind which git
 fi
 
 # General ubuntu packages
