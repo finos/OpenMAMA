@@ -18,8 +18,8 @@ VERSION=$(cat $VERSION_FILE)
 
 if [ "$ARTIFACT_TYPE" != "release" ]
 then
-    test -z "$BUILD_NUMBER" && echo "BUILD_NUMBER must be specified!" && exit $LINENO
-    VERSION=${VERSION}.${ARTIFACT_TYPE}.${BUILD_NUMBER}
+    test -z "$GITHUB_RUN_ID" && echo "GITHUB_RUN_ID must be specified!" && exit $LINENO
+    VERSION=${VERSION}.${ARTIFACT_TYPE}.${GITHUB_RUN_ID}
 fi
 
 if [ -z "$IS_DOCKER_BUILD" ]
