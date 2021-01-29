@@ -28,7 +28,7 @@ jobs:
     - uses: actions/upload-artifact@v1
       with:
         name: package
-        path: *.rpm
+        path: '*.rpm'
       #if: ${{ matrix.image }} == 'openmama/openmama-dev:centos-6'
     - uses: actions/upload-artifact@v2
       with:
