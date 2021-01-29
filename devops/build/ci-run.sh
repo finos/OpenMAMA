@@ -30,6 +30,7 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
      ..
 make -j install
+export LD_LIBRARY_PATH=/opt/openmama/lib
 ctest .
 cd - > /dev/null
 
