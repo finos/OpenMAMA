@@ -35,6 +35,8 @@ jobs:
       uses: actions/checkout@v1
     - name: Run Linux build
       run: ./devops/build/ci-run.sh
+    - name: Find the package
+      run: 'pwd && find . -name "*.${{ matrix.package_type }}"'
     - name: Uploading package as an artifact to github actions
       uses: actions/upload-artifact@v1
       if: ${{ matrix.image == 'openmama/openmama-dev:centos-6' }}
