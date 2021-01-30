@@ -51,18 +51,18 @@ jobs:
     steps:
     - name: Check out the code
       uses: actions/checkout@v1
-    - name: Set artifact type to 'undefined'
+    - name: Set default artifact type to 'undefined'
       run: |
         echo "ARTIFACT_TYPE=undefined" >> $GITHUB_ENV
-    - name: Set artifact type to dev
+    - name: Override artifact type to dev
       if: endswith(github.ref, '/next')
       run: |
         echo "ARTIFACT_TYPE=dev" >> $GITHUB_ENV
-    - name: Set artifact type to release
+    - name: Override artifact type to release
       if: startsWith(github.ref, 'refs/tags/OpenMAMA-')
       run: |
         echo "ARTIFACT_TYPE=release" >> $GITHUB_ENV
-    - name: Set artifact type to rc
+    - name: Override artifact type to rc
       if: startsWith(github.ref, 'refs/heads/OpenMAMA-')
       run: |
         echo "ARTIFACT_TYPE=rc" >> $GITHUB_ENV
@@ -70,19 +70,12 @@ jobs:
       run: ./devops/build/ci-run.sh
     - name: Find the package
       run: 'echo PKG=`find . -name "*.${{ matrix.package_type }}"` >> $GITHUB_ENV'
-    - name: Uploading package as an artifact to github actions
-      uses: actions/upload-artifact@v2
-      if: ${{ matrix.image != 'openmama/openmama-dev:centos-6' }}
-      with:
-        name: package
-        path: '*.${{ matrix.package_type }}'
-    - name: Uploading package as an artifact to github actions
+    - name: Archive package as an artifact
       uses: actions/upload-artifact@v1
-      if: ${{ matrix.image == 'openmama/openmama-dev:centos-6' }}
       with:
         name: package
         path: ${{ env.PKG }}
-    - name: Uploading package to cloudsmith
+    - name: Upload package to cloudsmith
       uses: cloudsmith-io/action@master
       if: ${{ env.ARTIFACT_TYPE != 'undefined' }}
       env:
@@ -96,7 +89,7 @@ jobs:
         distro: '${{ matrix.distro }}'
         release: '${{ matrix.distro_version }}'
         republish: 'true'
-        file: '*.${{ matrix.package_type }}'
+        file: '${{ env.PKG }}'
 
   windows-build:
     name: Build and Test for Windows
