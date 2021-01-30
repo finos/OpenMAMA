@@ -1,14 +1,6 @@
 name: Main OpenMAMA Workflow
 
-on:
-  push:
-    branches:
-      - 'feature/github-actions'
-      - 'next'
-      - 'master'
-      - 'OpenMAMA-*'
-    tags:
-      - 'OpenMAMA-*'
+on: push
 
 jobs:
   linux-build:
