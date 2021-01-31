@@ -56,33 +56,48 @@ fi
 if [ "$DISTRIB_ID" = "$FEDORA" ]
 then
     echo "Installing fedora specific dependencies"
-    yum install -y libnsl2-devel libffi-devel ruby-devel rubygems redhat-rpm-config rpm-build
+    yum install -y libnsl2-devel libffi-devel ruby-devel rubygems redhat-rpm-config rpm-build cmake
 fi
 
 if [ "$DISTRIB_ID" = "$RHEL" ]
 then
+    if [ "${DISTRIB_RELEASE:0:1}" = "6" ]
+    then
+        # CentOS now needs EOL repos
+        curl https://www.getpagespeed.com/files/centos6-eol.repo --output /etc/yum.repos.d/CentOS-Base.repo
+        curl https://www.getpagespeed.com/files/centos6-epel-eol.repo --output /etc/yum.repos.d/epel.repo
+    fi
+
     echo "Installing CentOS / RHEL specific dependencies"
-    yum install -y epel-release gcc make rpm-build which
+    yum install -y epel-release gcc make rpm-build which wget
     # CentOS 8 specific software
     if [ "${DISTRIB_RELEASE:0:1}" = "8" ]
     then
         # CentOS 8 has funnies around where to find doxygen
-        yum install -y dnf-plugins-core wget
-        dnf config-manager --set-enabled PowerTools
+        yum install -y dnf-plugins-core
+        dnf config-manager --set-enabled powertools
         dnf -y install doxygen
-        yum install -y python3
+        yum install -y python3 cmake
         rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
         dnf install -y dotnet-sdk-2.1
     elif [ "${DISTRIB_RELEASE:0:1}" = "6" ]
     then
         # CentOS 6 doesn't have official python3
         yum install -y centos-release-scl
+        curl https://www.getpagespeed.com/files/centos6-scl-eol.repo --output /etc/yum.repos.d/CentOS-SCLo-scl.repo
+        curl https://www.getpagespeed.com/files/centos6-scl-rh-eol.repo --output /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo
         yum install -y rh-python36
         update-alternatives --install /usr/bin/python3 python /opt/rh/rh-python36/root/usr/bin/python3 2
+
+        # CentOS 6 cmake version is too old - upgrade it
+        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
     else
-        yum install -y python3 wget
+        yum install -y python3
         rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
         yum install -y dotnet-sdk-2.1
+
+        # CentOS 7 cmake version is too old - upgrade it
+        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
     fi
 elif [ "$DISTRIB_ID" = "$FEDORA" ]
 then
@@ -97,8 +112,8 @@ then
     yum install -y zlib-devel openssl-devel zip unzip make \
 	    java-1.8.0-openjdk-devel libuuid-devel flex doxygen \
 	    qpid-proton-c-devel libevent-devel ncurses-devel \
-	    apr-devel wget curl cmake gcc-c++ libuuid qpid-proton-c \
-	    libevent ncurses apr valgrind which
+	    apr-devel wget curl gcc-c++ libuuid qpid-proton-c \
+	    libevent ncurses apr valgrind which git
 fi
 
 # General ubuntu packages
@@ -136,6 +151,8 @@ if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
 then
     apt-get install -qq -y openjdk-8-jdk libssl-dev libqpid-proton2-dev
     echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
+    # Ubuntu 16 cmake version is too old - upgrade it
+    (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
 fi
 
 # Centos and old ubuntu version specific dependencies (ruby is too old for FPM)
@@ -159,7 +176,7 @@ source "$SDKMAN_DIR/bin/sdkman-init.sh"
 sdk install gradle
 
 # Install FPM for packaging up
-gem install -N fpm
+gem install -N fpm -v 1.11.0
 
 # Gtest is best always getting built
 cd $DEPS_DIR
@@ -168,3 +185,6 @@ cd googletest-release-$VERSION_GTEST
 mkdir bld
 cd bld
 cmake -DCMAKE_INSTALL_PREFIX=/usr .. && make && make install
+
+# Clean up dependency directory to keep size down
+test -d $DEPS_DIR && rm -rf $DEPS_DIR/*
