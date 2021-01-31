@@ -1,8 +1,0 @@
-import os
-Import('env')
-env = env.Clone()
-
-for m in env['middleware']:
-	if m == 'lbm':
-		m = 'lbt'
-	env.SConscript( os.path.join(m,'SConscript'), 'env' )
