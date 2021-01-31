@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 2.8)
 project (libwombatcommonc)
 
 string(TOLOWER ${CMAKE_SYSTEM_NAME} system)

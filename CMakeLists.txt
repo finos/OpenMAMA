@@ -1,8 +1,18 @@
-cmake_minimum_required (VERSION 2.8)
+cmake_minimum_required (VERSION 3.10)
 project (OpenMAMA)
+
+enable_testing()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(${CMAKE_C_COMPILER_ID})
+
+# Set up default cmake build type if not defined
+if (NOT CMAKE_BUILD_TYPE)
+  set (CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "The cmake build type to perform")
+  message(STATUS "No CMAKE_BUILD_TYPE provided - defaulting to ${CMAKE_BUILD_TYPE}")
+else()
+  message(STATUS "CMAKE_BUILD_TYPE=${CMAKE_BUILD_TYPE} provided")
+endif()
 
 # Build type options
 set (WITH_EXAMPLES      true   CACHE BOOL   "Include compiled example applications in the build (e.g. mamalistenc)")

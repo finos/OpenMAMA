@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 2.8.3)
 project (mamajni)
 
 find_package(Java)
@@ -30,6 +29,13 @@ if(WITH_DOC)
 	install(DIRECTORY ${MAMAJNI_JAVA_BUILD_DIR}/docs/javadoc/ DESTINATION doc/mama/jni/html)
 endif()
 
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/junit.jar)
+    file(DOWNLOAD "http://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar" ${CMAKE_CURRENT_BINARY_DIR}/junit.jar TIMEOUT 60)
+endif()
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/hamcrest-core.jar)
+    file(DOWNLOAD "http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar" ${CMAKE_CURRENT_BINARY_DIR}/hamcrest-core.jar TIMEOUT 60)
+endif()
+
 ExternalProject_Add(mamajnijava
         SOURCE_DIR "."
         BUILD_COMMAND ""
@@ -43,6 +49,8 @@ ExternalProject_Add(mamajnijava
 		    ${GRADLE_EXTRA_ARGS}
 		    ${GRADLE_TARGETS}
         INSTALL_COMMAND ""
+		#TEST_COMMAND
+		#    "${Java_JAVA_EXECUTABLE} -cp \"${CMAKE_CURRENT_BINARY_DIR}/mama_java_build/classes/java/test:${MAMAJNI_JAVA_BUILD_DIR}/libs/mamajni.jar:${CMAKE_CURRENT_BINARY_DIR}/junit.jar:${CMAKE_CURRENT_BINARY_DIR}/hamcrest-core.jar\" com.wombat.mama.junittests.Main -m qpid"
         LOG_BUILD 1)
 
 set_target_properties(mamajnijava PROPERTIES JAVAH_INCLUDES ${CMAKE_CURRENT_BINARY_DIR})

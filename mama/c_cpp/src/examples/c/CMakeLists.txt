@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 2.8)
 project (mamac_examples)
 
 get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
