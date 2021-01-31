@@ -107,6 +107,6 @@ Release/
 *.suo
 packages.config
 .idea/
-build/
+/build/
 cmake-build-debug/
 
