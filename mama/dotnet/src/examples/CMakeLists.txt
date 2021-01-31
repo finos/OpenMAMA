@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 2.8.3)
 project (mamacs)
 
 csharp_build_project(MamaFtMember MamaFtMember/MamaFtMemberCS.csproj MamaFtMember mamacs)

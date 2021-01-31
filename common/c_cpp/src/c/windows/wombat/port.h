@@ -65,12 +65,19 @@ typedef int              int32_t;
 typedef unsigned __int64 uint64_t;
 typedef __int64          int64_t;
 
+/* Convenience macros for enclosing macro in quotes */
+#define OPENMAMA_MACRO_STRINGIFY(x) #x
+#define OPENMAMA_MACRO_STRINGIFY_VALUE_OF(x) OPENMAMA_MACRO_STRINGIFY(x)
 
 /* suffix for shared libraries */
+#ifdef OPENMAMA_LIBRARY_SUFFIX
+#define LIB_EXTENSION OPENMAMA_MACRO_STRINGIFY_VALUE_OF(OPENMAMA_LIBRARY_SUFFIX)
+#else
 #ifdef _DEBUG
 #define LIB_EXTENSION "mdd.dll"
 #else
 #define LIB_EXTENSION "md.dll"
+#endif
 #endif
 
 /* 8 byte int typedefs */

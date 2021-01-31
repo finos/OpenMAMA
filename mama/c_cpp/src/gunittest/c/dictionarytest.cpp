@@ -83,7 +83,7 @@ TEST_F (MamaDictionaryTestC, LoadFromFileAndWriteToMsg)
     
     ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_create(&dictionary));
 
-    ASSERT_EQ (1, fileUtils_findFileInPathList(buf, sizeof(buf), "dictionary1.txt", getenv("WOMBAT_PATH"), NULL));
+    ASSERT_EQ (1, fileUtils_findFileInPathList(buf, sizeof(buf), "dictionary1.txt", getenv("WOMBAT_PATH"), ":;"));
 
     ASSERT_EQ (MAMA_STATUS_OK, mamaDictionary_populateFromFile(dictionary, buf));
 

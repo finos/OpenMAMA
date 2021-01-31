@@ -237,10 +237,15 @@ public class MamaMsgVectorFields extends TestCase
         message.addArrayMsg("vm", 1, subMessages);
 
         // Get the data from the message
-        message.getArrayMsg("vm", 1);
+        MamaMsg[] am = message.getArrayMsg("vm", 1);
 
-        // Destroy the message
-        message.destroy();
+        for (MamaMsg m : am) {
+            System.out.println(m.toJsonString());
+        }
+
+        System.out.println(message.toJsonString());
+
+        // Let the GC clean it up
     }
 
     /* ****************************************************** */
