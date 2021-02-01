@@ -6,7 +6,7 @@ to different middleware and messaging solutions across a variety of platforms an
 
 OpenMAMDA is a framework that adds Market Data functionality, such as order book handling on top of MAMA.
 
-The [project's homepage](https://openmama.org) provides a good overview of the project.
+The [project's homepage](https://openmama.finos.org) provides a good overview of the project.
 
 You can also pop into our gitter channel to have a chat if you just want quick answers:
 
@@ -26,7 +26,7 @@ Supported Platforms
 --------------------------------------------------------------------------------
 Currently C, C++, C# and Java are all supported languages and Linux and Windows are supported platforms.
 
-You can find more details on supported platforms [here](https://openmama.github.io/openmama_supported_platforms.html)
+You can find more details on supported platforms [here](https://openmama.finos.org/openmama_supported_platforms.html)
 
 Docker
 --------------------------------------------------------------------------------
@@ -41,11 +41,11 @@ which can provide stable or unstable builds depending on which repository you se
 
 Getting Started
 --------------------------------------------------------------------------------
-If you want to dive in, take a look at [our quick start guide](https://openmama.github.io/quickstart)
+If you want to dive in, take a look at [our quick start guide](https://openmama.finos.org/quickstart.html)
 
 Documentation
 --------------------------------------------------------------------------------
-We host the latest OpenMAMA Technical documentation on [http://openmama.github.io](http://openmama.github.io)
+We host the latest OpenMAMA Technical documentation on [https://openmama.finos.org/documentation.html](https://openmama.finos.org/documentation.html)
 
 Licensing
 --------------------------------------------------------------------------------
@@ -54,5 +54,5 @@ depends on several third party libraries, the licenses for which are listed in t
 
 Contributing
 --------------------------------------------------------------------------------
-Information on contributing on the project can be found [here](https://openmama.github.io/openmama_submission_process.html).
+Information on contributing on the project can be found [here](https://openmama.finos.org/openmama_submission_process.html).
 
