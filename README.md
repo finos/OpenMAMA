@@ -24,8 +24,8 @@ We currently use travis for smoke testing of pull requests and our own Jenkins i
 
 | Branch          | Status      |
 |-----------------|---------------|
-| master (stable) |![Build and Deploy](https://github.com/finos/OpenMAMA/workflows/Main%20OpenMAMA%20Workflow/badge.svg?branch=next)|
-| next (unstable) |![Build and Deploy](https://github.com/finos/OpenMAMA/workflows/Main%20OpenMAMA%20Workflow/badge.svg?branch=master)|
+| master (stable) |![Build and Deploy](https://github.com/finos/OpenMAMA/workflows/Build%20and%20Deploy/badge.svg?branch=next)|
+| next (unstable) |![Build and Deploy](https://github.com/finos/OpenMAMA/workflows/Build%20and%20Deploy/badge.svg?branch=master)|
 
 Supported Platforms
 --------------------------------------------------------------------------------
