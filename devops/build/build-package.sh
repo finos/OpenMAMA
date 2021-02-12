@@ -90,7 +90,6 @@ fi
 fpm -s dir \
         -t $PACKAGE_TYPE \
         -m "openmama-users@lists.openmama.org" \
-        -C $PREFIX \
         --name openmama \
         --version $VERSION \
         --iteration 1 \
@@ -98,4 +97,5 @@ fpm -s dir \
         --license LGPLv2 \
         $DEPENDS_FLAGS \
         -p openmama-$VERSION-1.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE \
-        --description "OpenMAMA high performance Market Data API" .
+        --description "OpenMAMA high performance Market Data API" \
+        $PREFIX/=/opt/openmama/
