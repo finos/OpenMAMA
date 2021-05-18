@@ -173,7 +173,8 @@ fi
 cd $DEPS_DIR
 curl -s "https://get.sdkman.io" | bash
 source "$SDKMAN_DIR/bin/sdkman-init.sh"
-sdk install gradle
+# Stick to gradle 6.9 - 7.x seems to have moved maven libraries around
+sdk install gradle 6.9
 
 # Install FPM for packaging up
 gem install -N fpm -v 1.11.0
