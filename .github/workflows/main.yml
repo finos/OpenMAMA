@@ -24,18 +24,10 @@ jobs:
             package_type: rpm
             distro: el
             distro_version: 8
-          - image: openmama/openmama-dev:fedora-30
+          - image: openmama/openmama-dev:centos-stream
             package_type: rpm
-            distro: fedora
-            distro_version: 30
-          - image: openmama/openmama-dev:fedora-31
-            package_type: rpm
-            distro: fedora
-            distro_version: 31
-          - image: openmama/openmama-dev:fedora-32
-            package_type: rpm
-            distro: fedora
-            distro_version: 32
+            distro: centos
+            distro_version: stream
           - image: openmama/openmama-dev:ubuntu-16.04
             package_type: deb
             distro: ubuntu
