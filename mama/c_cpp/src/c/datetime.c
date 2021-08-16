@@ -302,7 +302,7 @@ mamaDateTime_setWithHints(mamaDateTime           dateTime,
 
     if (microseconds >= 1000000)
         return MAMA_STATUS_INVALID_ARG;
-    
+
     mamaDateTimeImpl_clear           ((mama_datetime_t*)dateTime);
     mamaDateTimeImpl_setSeconds      ((mama_datetime_t*)dateTime, seconds);
     mamaDateTimeImpl_setMicroSeconds ((mama_datetime_t*)dateTime, microseconds);
@@ -483,7 +483,7 @@ mamaDateTime_setFromStringBufferWithTz(mamaDateTime       dateTime,
                                        const mamaTimeZone tz)
 {
     mama_status status;
-    char* tmpStr = (char*) malloc (strLen +1);
+    char* tmpStr = (char*) calloc (strLen +1, 1);
     if (!tmpStr)
         return MAMA_STATUS_NOMEM;
 
@@ -594,7 +594,7 @@ mamaDateTime_setTimeWithPrecisionAndTz(mamaDateTime           dateTime,
 
     if (microsecond >= 1000000)
         return MAMA_STATUS_INVALID_ARG;
-    
+
     /* Get existing number of seconds and remove any intraday-seconds. */
     tmpSeconds = (mamaDateTimeImpl_getSeconds ((mama_datetime_t*)dateTime) / SECONDS_IN_A_DAY) *
                                                   SECONDS_IN_A_DAY;
