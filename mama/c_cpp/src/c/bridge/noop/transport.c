@@ -28,6 +28,7 @@ mama_status
 noopBridgeMamaTransport_destroy (transportBridge transport)
 {
     free (transport);
+    return MAMA_STATUS_OK;
 }
 
 mama_status

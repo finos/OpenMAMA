@@ -6,23 +6,23 @@
 
 MAMAExpBridgeDLL
 mama_status
-noopBridge_init (mamaBridge bridgeImpl);
+ompbBridge_init (mamaBridge bridgeImpl);
 
 MAMAExpBridgeDLL
 const char*
-noopBridge_getVersion (void);
+ompbBridge_getVersion (void);
 
 MAMAExpBridgeDLL
 const char*
-noopBridge_getName (void);
+ompbBridge_getName (void);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridge_getDefaultPayloadId (char ***name, char **id);
+ompbBridge_getDefaultPayloadId (char ***name, char **id);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaPublisher_createByIndex (publisherBridge*     result,
+ompbBridgeMamaPublisher_createByIndex (publisherBridge*     result,
                                            mamaTransport        tport,
                                            int                  tportIndex,
                                            const char*          topic,
@@ -32,47 +32,47 @@ noopBridgeMamaPublisher_createByIndex (publisherBridge*     result,
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaPublisher_destroy (publisherBridge publisher);
+ompbBridgeMamaPublisher_destroy (publisherBridge publisher);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg);
+ompbBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
+ompbBridgeMamaPublisher_sendReplyToInbox (publisherBridge   publisher,
                                               mamaMsg           request,
                                               mamaMsg           reply);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge     publisher,
+ompbBridgeMamaPublisher_sendReplyToInboxHandle (publisherBridge     publisher,
                                                     void*               inbox,
                                                     mamaMsg             reply);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
+ompbBridgeMamaPublisher_sendFromInboxByIndex (publisherBridge   publisher,
                                                   int               tportIndex,
                                                   mamaInbox         inbox,
                                                   mamaMsg           msg);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaPublisher_sendFromInbox (publisherBridge  publisher,
+ompbBridgeMamaPublisher_sendFromInbox (publisherBridge  publisher,
                                            mamaInbox        inbox,
                                            mamaMsg          msg);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaPublisher_setUserCallbacks (publisherBridge         publisher,
+ompbBridgeMamaPublisher_setUserCallbacks (publisherBridge         publisher,
                                               mamaQueue               queue,
                                               mamaPublisherCallbacks* cb,
                                               void*                   closure);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaSubscription_create (subscriptionBridge* subscriber,
+ompbBridgeMamaSubscription_create (subscriptionBridge* subscriber,
                                        const char*         source,
                                        const char*         symbol,
                                        mamaTransport       tport,
@@ -83,38 +83,38 @@ noopBridgeMamaSubscription_create (subscriptionBridge* subscriber,
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaSubscription_mute (subscriptionBridge subscriber);
+ompbBridgeMamaSubscription_mute (subscriptionBridge subscriber);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaSubscription_destroy (subscriptionBridge subscriber);
+ompbBridgeMamaSubscription_destroy (subscriptionBridge subscriber);
 
 MAMAExpBridgeDLL
 int
-noopBridgeMamaSubscription_isValid (subscriptionBridge subscriber);
+ompbBridgeMamaSubscription_isValid (subscriptionBridge subscriber);
 
 MAMAExpBridgeDLL
 int
-noopBridgeMamaSubscription_hasWildcards (subscriptionBridge subscriber);
+ompbBridgeMamaSubscription_hasWildcards (subscriptionBridge subscriber);
 
 MAMAExpBridgeDLL
 int
-noopBridgeMamaSubscription_isTportDisconnected (subscriptionBridge subscriber);
+ompbBridgeMamaSubscription_isTportDisconnected (subscriptionBridge subscriber);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaSubscription_muteCurrentTopic (subscriptionBridge subscriber);
+ompbBridgeMamaSubscription_muteCurrentTopic (subscriptionBridge subscriber);
 
 MAMAExpBridgeDLL
 int
-noopBridgeMamaTransport_isValid (transportBridge transport);
+ompbBridgeMamaTransport_isValid (transportBridge transport);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaTransport_destroy (transportBridge transport);
+ompbBridgeMamaTransport_destroy (transportBridge transport);
 
 MAMAExpBridgeDLL
 mama_status
-noopBridgeMamaTransport_create (transportBridge*    result,
+ompbBridgeMamaTransport_create (transportBridge*    result,
                                     const char*         name,
                                     mamaTransport       parent);
