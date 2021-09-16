@@ -21,6 +21,7 @@ set (WITH_UNITTEST      false  CACHE BOOL   "Include unit tests in the build (e.
 set (WITH_PROTON        true   CACHE BOOL   "Include the qpid proton middleware and payload bridges in the build")
 set (WITH_NOOP_BRIDGE   false  CACHE BOOL   "Include the noop example middleware bridge in the build")
 set (WITH_BASE_BRIDGE   true   CACHE BOOL   "Include the base bridge in the build (required for qpid proton)")
+set (WITH_OMPB_BRIDGE   true   CACHE BOOL   "Include the OpenMAMA Playback bridge in the build (subscriber only)")
 set (WITH_MAMDA         true   CACHE BOOL   "Include MAMDA in the build")
 set (WITH_CPP           true   CACHE BOOL   "Include C++ bindings")
 set (WITH_CSHARP        false  CACHE BOOL   "Include C# bindings")
