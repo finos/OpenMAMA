@@ -19,6 +19,7 @@ test -d build && rm -rf build || true
 mkdir -p build
 cd build
 export OPENMAMA_INSTALL_DIR=`pwd`/install
+export DYLD_LIBRARY_PATH=$OPENMAMA_INSTALL_DIR/lib
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_INSTALL_PREFIX=$OPENMAMA_INSTALL_DIR \
@@ -28,11 +29,11 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DWITH_UNITTEST=ON \
      -DCMAKE_CXX_STANDARD=17 \
      ..
-make install
-cd - > /dev/null
-
-# Perform unit tests
+make -j install
 ctest .
+
+# Return to parent directory
+cd - > /dev/null
 
 # Include the test data and grab profile configuration from there for packaging
 test -d $OPENMAMA_INSTALL_DIR/data && rm -rf $OPENMAMA_INSTALL_DIR/data || true
