@@ -13,8 +13,6 @@ set PATH=C:\Program Files (x86)\Gow\bin;%JAVA_HOME%;C:\Program Files\CMake\bin;C
 call build_dll_path_RelWithDebInfo.bat
 cmake --build . --config RelWithDebInfo --target install || goto error
 ctest . -C RelWithDebInfo || goto error
-cd %GITHUB_WORKSPACE%\mama\jni || goto error
-gradle test || goto error
 cd %GITHUB_WORKSPACE% || goto error
 7z a openmama-%VERSION%.win.%VCVER%.%PLATFORM%.zip "%OPENMAMA_INSTALL_DIR%" || goto error
 
