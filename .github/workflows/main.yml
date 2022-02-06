@@ -4,7 +4,7 @@ on: push
 
 jobs:
   linux-build:
-    name: Build and Test for Linux
+    name: Linux
     runs-on: ubuntu-20.04
     continue-on-error: true
     container:
@@ -81,7 +81,7 @@ jobs:
         file: '${{ env.PKG }}'
 
   windows-build:
-    name: Build and Test for Windows
+    name: Windows
     runs-on: ${{ matrix.os }}
     continue-on-error: true
     strategy:
