@@ -20,14 +20,10 @@ jobs:
             package_type: rpm
             distro: el
             distro_version: 7
-          - image: openmama/openmama-dev:centos-8
+          - image: openmama/openmama-dev:centos-stream
             package_type: rpm
             distro: el
             distro_version: 8
-          - image: openmama/openmama-dev:centos-stream
-            package_type: rpm
-            distro: centos
-            distro_version: stream
           - image: openmama/openmama-dev:ubuntu-16.04
             package_type: deb
             distro: ubuntu
@@ -66,7 +62,7 @@ jobs:
         path: ${{ env.PKG }}
     - name: Upload package to cloudsmith
       uses: cloudsmith-io/action@master
-      if: ${{ env.ARTIFACT_TYPE && matrix.distro_version != 'stream' }}
+      if: ${{ env.ARTIFACT_TYPE }}
       env:
         artifact_type: ${{ env.ARTIFACT_TYPE }}
       with:
