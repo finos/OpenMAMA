@@ -74,6 +74,10 @@ if (WITH_NOOP_BRIDGE)
     add_subdirectory (c_cpp/src/c/bridge/noop)
 endif ()
 
+if (WITH_OMPB_BRIDGE)
+    add_subdirectory (c_cpp/src/c/bridge/ompb)
+endif ()
+
 if (WITH_PROTON)
     add_subdirectory (c_cpp/src/c/bridge/qpid)
     add_subdirectory (c_cpp/src/c/payload/qpidmsg)
