@@ -142,12 +142,14 @@
       state: started
       enabled: yes
       daemon_reload: yes
+    when: ansible_service_mgr == 'systemd'
   - name: Enabling crond
     systemd:
       name: crond
       state: started
       enabled: yes
       daemon_reload: yes
+    when: ansible_service_mgr == 'systemd'
   - name: Setting up ldconfig
     copy:
       src: openmama.ld.so.conf
