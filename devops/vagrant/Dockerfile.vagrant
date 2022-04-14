@@ -2,7 +2,7 @@ FROM quay.io/centos/centos:stream
 
 EXPOSE 22
 
-RUN dnf install -y openssh-server openssh-clients sudo
+RUN dnf install -y openssh-server openssh-clients sudo cronie
 
 RUN adduser vagrant
 
