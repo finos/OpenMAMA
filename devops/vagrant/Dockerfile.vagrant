@@ -16,4 +16,6 @@ RUN /usr/bin/ssh-keygen -A
 
 RUN rm -f /run/nologin
 
-CMD [ "/usr/sbin/sshd", "-D" ]
+ADD entrypoint.sh /root
+
+CMD /root/entrypoint.sh
