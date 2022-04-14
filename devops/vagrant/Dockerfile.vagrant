@@ -2,7 +2,7 @@ FROM quay.io/centos/centos:stream
 
 EXPOSE 22
 
-RUN dnf install -y openssh-server openssh-clients sudo cronie
+RUN dnf install -y openssh-server openssh-clients sudo cronie procps
 
 RUN adduser vagrant
 
@@ -17,5 +17,8 @@ RUN /usr/bin/ssh-keygen -A
 RUN rm -f /run/nologin
 
 ADD entrypoint.sh /root
+ADD openmama-capturereplayd.sh /root
+
+RUN chmod a+x /root/entrypoint.sh /root/openmama-capturereplayd.sh
 
 CMD /root/entrypoint.sh
