@@ -12,6 +12,6 @@ done
 # Start capturereplay service and restart if it bombs out
 while true
 do
-    /opt/openmama/bin/capturereplayc -S OM -f /opt/openmama/data/playbacks/openmama_utpcasheuro_capture.5000.10.qpid.mplay -dictionary /opt/openmama/data/dictionaries/data.dict -m qpid -tport pub -r > /root/capturereplay.log 2>&1 &
+    /opt/openmama/bin/capturereplayc -S OM -f /opt/openmama/data/playbacks/openmama_utpcasheuro_capture.5000.10.qpid.mplay -dictionary /opt/openmama/data/dictionaries/data.dict -m qpid -tport pub -r > /root/capturereplay.log 2>&1
 done
 
