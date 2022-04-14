@@ -2,7 +2,11 @@ FROM quay.io/centos/centos:stream
 
 EXPOSE 22
 
-RUN dnf install -y openssh-server openssh-clients sudo cronie procps
+RUN dnf install -y openssh-server openssh-clients sudo cronie procps python3 python3-pip git
+
+RUN pip3 install --upgrade pip
+
+RUN pip3 install ansible==2.9.27
 
 RUN adduser vagrant
 
@@ -21,4 +25,11 @@ ADD openmama-capturereplayd.sh /root
 
 RUN chmod a+x /root/entrypoint.sh /root/openmama-capturereplayd.sh
 
+RUN git clone -b next https://github.com/finos/OpenMAMA.git /tmp/om && \
+        cd /tmp/om/ansible && \
+        ansible-playbook -b --connection=local --inventory 127.0.0.1, demo-provision.yml && \
+        cd /root && \
+        rm -rf /tmp/om
+
 CMD /root/entrypoint.sh
+
