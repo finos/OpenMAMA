@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>mamaunittestscs</AssemblyName>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <Title>OpenMAMA</Title>
+        <Description>OpenMAMA API C# Unit Tests</Description>
+        <Configuration>OpenMAMA API C# Unit Tests</Configuration>
+        <Product>OpenMAMA API C# Unit Tests</Product>
+        <Copyright>Copyright 2009 OpenMAMA.org</Copyright>
+        <Company>OpenMAMA.org</Company>
+        <OutputType>Exe</OutputType>
+        <StartupObject>NUnitTest.MamaCommon</StartupObject>
+    </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="NUnitLite" Version="3.13.3" />
+        <PackageReference Include="nunit" Version="3.13.3" />
+        <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\cs\mamadotnet.csproj" />
+    </ItemGroup>
+</Project>

@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>mamdaexamplescommoncs</AssemblyName>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <TargetFramework>netstandard2.0</TargetFramework>
+        <Title>OpenMAMA MAMDA Examples Common C#</Title>
+        <Description>OpenMAMA MAMDA Examples Common API C#</Description>
+        <Configuration>OpenMAMA MAMDA Examples Common API C#</Configuration>
+        <Product>OpenMAMA API C#</Product>
+        <Copyright>Copyright 2009 OpenMAMA.org</Copyright>
+        <Company>OpenMAMA.org</Company>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\..\cs\mamdadotnet.csproj" />
+    </ItemGroup>
+</Project>
