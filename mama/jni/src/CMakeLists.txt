@@ -3,7 +3,7 @@ project (mamajni)
 find_package(Java)
 include(ExternalProject)
 
-find_program(BIN_GRADLE gradle)
+find_program(BIN_GRADLE gradle REQUIRED HINTS /usr/local/sdkman/candidates/gradle/current/bin)
 
 file(GLOB sources 
 	main/java/com/wombat/mama/*.java

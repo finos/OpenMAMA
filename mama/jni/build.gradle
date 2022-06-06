@@ -23,6 +23,9 @@ dependencies {
 
 test { 
   environment "PATH", "C:\\Users\\fquinn\\SourceExternal\\cascadium\\OpenMAMA\\build_2017\\install\\bin"
+  testLogging.showStandardStreams = true
+  testLogging.showExceptions = true
+  maxParallelForks = 1
 }
 
 javadoc {

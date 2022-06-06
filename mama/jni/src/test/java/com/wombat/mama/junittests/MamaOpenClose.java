@@ -21,14 +21,18 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.*;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  * This class will test Mama.open() and Mama.close().
  */
-public class MamaOpenClose extends TestCase
+public class MamaOpenClose extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -38,24 +42,27 @@ public class MamaOpenClose extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testOpenClose()
     {
         // Load the bridge
-        Mama.loadBridge(Main.GetBridgeName());
+        Mama.loadBridge(getBridgeName());
 
         // Open mama
         Mama.open();
@@ -64,10 +71,11 @@ public class MamaOpenClose extends TestCase
         Mama.close();
     }
 
+    @Test
     public void testOpenCloseWithProperties()
     {
         // Load the bridge
-        Mama.loadBridge(Main.GetBridgeName());
+        Mama.loadBridge(getBridgeName());
 
         // Open mama
         Mama.open("", "mama.properties");
@@ -76,10 +84,11 @@ public class MamaOpenClose extends TestCase
         Mama.close();
     }
 
+    @Test
     public void testNestedOpenClose()
     {
         // Load the bridge
-        Mama.loadBridge(Main.GetBridgeName());
+        Mama.loadBridge(getBridgeName());
 
         // Open mama
         Mama.open();
@@ -94,10 +103,11 @@ public class MamaOpenClose extends TestCase
         Mama.close();
     }
 
+    @Test
     public void testOpenCloseReopenSameBridge()
     {
         // Load the bridge
-        Mama.loadBridge(Main.GetBridgeName());
+        Mama.loadBridge(getBridgeName());
 
         // Open mama
         Mama.open();

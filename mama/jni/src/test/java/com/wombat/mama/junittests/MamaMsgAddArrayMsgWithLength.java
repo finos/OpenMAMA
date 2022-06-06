@@ -21,14 +21,18 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.TestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  * This class will test the addArrayMsgWithLength function.
  */
-public class MamaMsgAddArrayMsgWithLength extends TestCase
+public class MamaMsgAddArrayMsgWithLength extends MamaTestBaseTestCase
 {
     // This array message will be added
     private MamaMsg[] mArrayMsg;
@@ -41,10 +45,6 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
 
     // The bridge
     MamaBridge mBridge;
-
-    /* ****************************************************** */
-    /* Private Functions. */
-    /* ****************************************************** */
 
     private void TestAddingArray(int numberElements)
     {
@@ -77,15 +77,10 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
         }
     }
 
-    /* ****************************************************** */
-    /* Protected Functions. */
-    /* ****************************************************** */
-
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
-        mBridge = Mama.loadBridge(Main.GetBridgeName());
-        Mama.open();
+        super.setUp();
 
         // Create a new mama msg
         mMsg = new MamaMsg();
@@ -103,21 +98,16 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
         }
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
-        // Close mama
-        Mama.close();
-
         // Clear all variables
         mMsg = null;
         mArrayMsg = null;
+        super.tearDown();
     }
 
-    /* ****************************************************** */
-    /* Test Functions. */
-    /* ****************************************************** */
-
+    @Test
     public void testNullArguments()
     {
         // Call the function with NULL array
@@ -132,18 +122,21 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
         }
     }
 
+    @Test
     public void testNormal()
     {
         // Call the function with a normal number
         TestAddingArray(5);
     }
 
+    @Test
     public void testUpperBoundary()
     {
         // Call the function with the maximum allowed length
         TestAddingArray(10);
     }
 
+    @Test
     public void testAboveUpperBoundary()
     {
         // Call the function with one greater than the maximum allowed length
@@ -158,12 +151,14 @@ public class MamaMsgAddArrayMsgWithLength extends TestCase
         }
     }
 
+    @Test
     public void testLowerBoundary()
     {
         // Call the function with the minimum allowed length
         TestAddingArray(1);
     }
 
+    @Test
     public void testBelowLowerBoundary()
     {
         // Call the function with one less than the minimum allowed length

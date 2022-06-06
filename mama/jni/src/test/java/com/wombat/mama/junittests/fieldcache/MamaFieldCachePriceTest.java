@@ -1,32 +1,18 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
+package com.wombat.mama.junittests.fieldcache;
 
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
  * This class will test MamaFieldCachePrice's functions
  */
-public class MamaFieldCachePriceTest extends TestCase
+public class MamaFieldCachePriceTest extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -35,27 +21,32 @@ public class MamaFieldCachePriceTest extends TestCase
     protected MamaMsg mMsg;
     protected MamaFieldCachePrice mFieldCachePrice;
     protected MamaPrice           mprice;
+    protected Double mDelta = 0.000000001;
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
+
         mFieldCachePrice = new MamaFieldCachePrice(101, "example", true);
         mprice = new MamaPrice(10.01);
         mMsg = new MamaMsg();   
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        Mama.close();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testAddToMessage()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -63,9 +54,10 @@ public class MamaFieldCachePriceTest extends TestCase
         //add it to the message
         mFieldCachePrice.addToMessage(false, mMsg);
         //check we can get the value of true returned to us when searching for the field
-        assertEquals(mMsg.getPrice("example", 101).getValue(), 10.01);
+        assertEquals(mMsg.getPrice("example", 101).getValue(), 10.01, mDelta);
     }
 
+    @Test
     public void testAddToMessagefieldName()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -73,9 +65,10 @@ public class MamaFieldCachePriceTest extends TestCase
         //add it to the message
         mFieldCachePrice.addToMessage(true, mMsg);
         //check we can get the value of true returned to us when searching for the field
-        assertEquals(mMsg.getPrice("example", 101).getValue(), 10.01);
+        assertEquals(mMsg.getPrice("example", 101).getValue(), 10.01, mDelta);
     }
 
+    @Test
     public void testCopy()
     {
         mFieldCachePrice.set(mprice);
@@ -83,71 +76,78 @@ public class MamaFieldCachePriceTest extends TestCase
         assertEquals(mFieldCachePrice.getAsString(), copyCache.getAsString());
     }
 
+    @Test
     public void testApplyMsgField()
     {
         MamaFieldCachePrice testCachePrice = new MamaFieldCachePrice(102, "example2", true);
         testCachePrice.set(new MamaPrice(20.02));
         mFieldCachePrice.set(mprice);
-        assertEquals(testCachePrice.get().getValue(), 20.02);
-        assertEquals(mFieldCachePrice.get().getValue(), 10.01);
+        assertEquals(testCachePrice.get().getValue(), 20.02, mDelta);
+        assertEquals(mFieldCachePrice.get().getValue(), 10.01, mDelta);
         mFieldCachePrice.apply(testCachePrice);
-        assertEquals(mFieldCachePrice.get().getValue(), 20.02);
+        assertEquals(mFieldCachePrice.get().getValue(), 20.02, mDelta);
     }
 
+    @Test
     public void testApplyFieldCache()
     {
        MamaFieldCachePrice testField  = new MamaFieldCachePrice(102, "example2", true);
        testField.set(new MamaPrice(20.02));
        mFieldCachePrice.apply(testField);
-       assertEquals(mFieldCachePrice.get().getValue(), 20.02);
+       assertEquals(mFieldCachePrice.get().getValue(), 20.02, mDelta);
     }
 
 
+    @Test
     public void testSet()
     {
         MamaFieldCachePrice testCachePrice = new MamaFieldCachePrice(102, "example2", false);
 
-        assertEquals(testCachePrice.get(), null);
+        assertNull(testCachePrice.get());
         testCachePrice.set(mprice);
         //set without track state
-        assertEquals(testCachePrice.get().getValue(), 10.01);
+        assertEquals(testCachePrice.get().getValue(), 10.01, mDelta);
 
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, testCachePrice.getModState());
 
     }
 
+    @Test
     public void testSetTrackState()
     {
-        assertEquals(mFieldCachePrice.get(), null);
+        assertNull(mFieldCachePrice.get());
         mFieldCachePrice.set(mprice);
         //set with track state
-        assertEquals(mFieldCachePrice.get().getValue(), 10.01);
+        assertEquals(mFieldCachePrice.get().getValue(), 10.01, mDelta);
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, mFieldCachePrice.getModState());
     }
 
+    @Test
     public void testIsEqual()
     {   
         MamaFieldCachePrice testCachePrice = new MamaFieldCachePrice(102, "example2", true);
         testCachePrice.set(mprice);
         mFieldCachePrice.set(mprice);
-        assertEquals(testCachePrice.get().getValue(), 10.01);
-        assertEquals(mFieldCachePrice.get().getValue(), 10.01);
+        assertEquals(testCachePrice.get().getValue(), 10.01, mDelta);
+        assertEquals(mFieldCachePrice.get().getValue(), 10.01, mDelta);
         assertTrue(testCachePrice.isEqual(mFieldCachePrice.get()));
     }
 
+    @Test
     public void testGet()
     {
-        assertEquals(mFieldCachePrice.get(), null);
+        assertNull(mFieldCachePrice.get());
         mFieldCachePrice.set(mprice);
-        assertEquals(mFieldCachePrice.get(), 10.01);
+        assertEquals(mFieldCachePrice.get().getValue(), 10.01, mDelta);
     }
 
+    @Test
     public void testGetAsString()
     {
-        assertEquals(mFieldCachePrice.get(), null);
+        assertNull(mFieldCachePrice.get());
         assertEquals("null", mFieldCachePrice.getAsString());
         mFieldCachePrice.set(mprice);
-        assertEquals(mFieldCachePrice.get().getValue(), 10.01);
+        assertEquals(mFieldCachePrice.get().getValue(), 10.01, mDelta);
         assertEquals("10.01", mFieldCachePrice.getAsString());
     }
 

@@ -21,20 +21,26 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.TestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  * This class will test the MamaPrice.setPrecision() and MamaPrice.toString()
  *   methods with various levels of MamaPricePrecision.
  */
-public class MamaPriceDecimalPlaces extends TestCase
+public class MamaPriceDecimalPlaces
 {
     // The message under test
     protected MamaPrice mPrice;
 
     protected Double b;
+
+    protected Double delta = 0.000000001;
 
     String szOneDP       = "1.1";
     String szTwoDP       = "1.12";
@@ -58,8 +64,8 @@ public class MamaPriceDecimalPlaces extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
          b = 1.12345678901234567890;
 
@@ -67,8 +73,8 @@ public class MamaPriceDecimalPlaces extends TestCase
          mPrice.setValue(b);
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
         // Clear all variables
     	mPrice = null;
@@ -78,6 +84,7 @@ public class MamaPriceDecimalPlaces extends TestCase
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testImplicit()
     {
     	mPrice.setPrecision(MamaPricePrecision.PRECISION_10);

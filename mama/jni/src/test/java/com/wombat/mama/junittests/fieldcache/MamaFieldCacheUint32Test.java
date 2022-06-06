@@ -1,32 +1,19 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
+package com.wombat.mama.junittests.fieldcache;
 
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  * This class will test MamaFieldCacheUint32's functions
  */
-public class MamaFieldCacheUint32Test extends TestCase
+public class MamaFieldCacheUint32Test extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -39,22 +26,25 @@ public class MamaFieldCacheUint32Test extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
         mFieldCacheUint32 = new MamaFieldCacheUint32(101, "example", true);
-        mMsg = new MamaMsg();   
+        mMsg = new MamaMsg();
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testAddToMessage()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -65,6 +55,7 @@ public class MamaFieldCacheUint32Test extends TestCase
         assertEquals(mMsg.getU32("example", 101), 1);
     }
 
+    @Test
     public void testAddToMessagefieldName()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -75,12 +66,14 @@ public class MamaFieldCacheUint32Test extends TestCase
         assertEquals(mMsg.getU32("example", 101), 1);
     }
 
+    @Test
     public void testCopy()
     {
         MamaFieldCacheField copyCache =  mFieldCacheUint32.copy();
         assertEquals(mFieldCacheUint32.getAsString(), copyCache.getAsString());
     }
 
+    @Test
     public void testApplyMsgField()
     {
         MamaFieldCacheUint32 testCacheUint32 = new MamaFieldCacheUint32(102, "example2", true);
@@ -92,6 +85,7 @@ public class MamaFieldCacheUint32Test extends TestCase
         assertEquals(mFieldCacheUint32.get(), 1);
     }
 
+    @Test
     public void testApplyFieldCache()
     {
        MamaFieldCacheUint32 testField  = new MamaFieldCacheUint32(102, "example2", true);
@@ -101,6 +95,7 @@ public class MamaFieldCacheUint32Test extends TestCase
     }
 
 
+    @Test
     public void testSet()
     {
         MamaFieldCacheUint32 testCacheUint32 = new MamaFieldCacheUint32(102, "example2", false);
@@ -114,6 +109,7 @@ public class MamaFieldCacheUint32Test extends TestCase
 
     }
 
+    @Test
     public void testSetTrackState()
     {
         assertEquals(mFieldCacheUint32.get(), 0);
@@ -123,6 +119,7 @@ public class MamaFieldCacheUint32Test extends TestCase
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, mFieldCacheUint32.getModState());
     }
 
+    @Test
     public void testSetTrackStateTouched()
     {
     
@@ -135,6 +132,7 @@ public class MamaFieldCacheUint32Test extends TestCase
 
     }
 
+    @Test
     public void testIsEqual()
     {   
         MamaFieldCacheUint32 testCacheUint32 = new MamaFieldCacheUint32(102, "example2", true);
@@ -145,6 +143,7 @@ public class MamaFieldCacheUint32Test extends TestCase
         assertTrue(testCacheUint32.isEqual(mFieldCacheUint32.get()));
     }
 
+    @Test
     public void testGet()
     {
         assertEquals(mFieldCacheUint32.get(), 0);
@@ -152,6 +151,7 @@ public class MamaFieldCacheUint32Test extends TestCase
         assertEquals(mFieldCacheUint32.get(), 1);
     }
 
+    @Test
     public void testGetAsString()
     {
         assertEquals(mFieldCacheUint32.get(), 0);

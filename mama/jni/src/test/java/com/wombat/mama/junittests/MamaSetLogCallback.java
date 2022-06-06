@@ -21,14 +21,19 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.*;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  * This class will test the setLogCallback function.
  */
-public class MamaSetLogCallback extends TestCase
+public class MamaSetLogCallback
 {
     public class TestLogCallback implements MamaLogFileCallback2
     {
@@ -58,15 +63,15 @@ public class MamaSetLogCallback extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
         // Create the callback class
         mCallback = new TestLogCallback();
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
         // Reset member variables
         mCallback = null;
@@ -76,6 +81,7 @@ public class MamaSetLogCallback extends TestCase
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testNullArguments()
     {
         // Set the log function
@@ -86,12 +92,12 @@ public class MamaSetLogCallback extends TestCase
             // If reach here then fail
             assertTrue(true);
         }
-
-        catch(IllegalArgumentException iae)
+        catch(IllegalArgumentException ignored)
         {
         }
     }
 
+    @Test
     public void testLogMessage()
     {
         // Set the log function
