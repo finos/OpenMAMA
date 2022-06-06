@@ -37,36 +37,37 @@ namespace NUnitTest
         #region Tests
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void NullFile()
         {
             // Null file name
-            Mama.logToFile(null, MamaLogLevel.MAMA_LOG_LEVEL_NORMAL);
+            Assert.Throws<ArgumentNullException>(() => Mama.logToFile(null, MamaLogLevel.MAMA_LOG_LEVEL_NORMAL));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void BlankFile()
         {
             // Blank file name
-            Mama.logToFile(string.Empty, MamaLogLevel.MAMA_LOG_LEVEL_NORMAL);
+            Assert.Throws<ArgumentNullException>(() => Mama.logToFile(string.Empty, MamaLogLevel.MAMA_LOG_LEVEL_NORMAL));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void InvalidLogLevel()
         {
             // Invalid log level
             MamaLogLevel logLevel = (MamaLogLevel)19;
-            Mama.logToFile(Path.GetTempPath(), logLevel);
+            Assert.Throws<ArgumentOutOfRangeException>(() => Mama.logToFile(Path.GetTempPath(), logLevel));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void InvalidPathCharacters()
         {
             // Invalid characters
-            Mama.logToFile("<>", MamaLogLevel.MAMA_LOG_LEVEL_NORMAL);
+            Char[] invalidPathChars = Path.GetInvalidPathChars();
+            if (invalidPathChars.Length > 0)
+            {
+                string invalidPath = string.Format("{0}{0}", invalidPathChars[0]);
+                Assert.Throws<ArgumentOutOfRangeException>(() => Mama.logToFile(invalidPath, MamaLogLevel.MAMA_LOG_LEVEL_NORMAL));
+            }
         }
 
         [Test]
@@ -86,31 +87,6 @@ namespace NUnitTest
             {
                 throw new InvalidOperationException("Logging to file should be on.");
             }            
-        }
-
-        [Test]
-        [ExpectedException(typeof(UnauthorizedAccessException))]
-        public void ReadOnlyFile()
-        {
-            // Create a temporary file
-            string tempFile = Path.GetTempFileName();
-            try
-            {
-                // Make the file read only
-                File.SetAttributes(tempFile, FileAttributes.ReadOnly);
-
-                // Set this as the log file
-                Mama.logToFile(tempFile, MamaLogLevel.MAMA_LOG_LEVEL_NORMAL);
-
-                // Write a log
-                Mama.log(MamaLogLevel.MAMA_LOG_LEVEL_NORMAL, "This is a test");
-            }
-
-            finally
-            {
-                // Delete the file
-                File.Delete(tempFile);
-            }
         }
 
         [Test]

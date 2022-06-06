@@ -107,22 +107,20 @@ namespace NUnitTest
         #region Tests - AddVectorMsg
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void AddStringMsgNullArgument()
         {
             // Call the function with a null array
-            m_msg.addVectorString(null, 1, null);
+            Assert.Throws<ArgumentNullException>(() => m_msg.addVectorString(null, 1, null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void AddStringMsgInvalidArgument()
         {
             // Create an empty array
             string[] emptyArray = new string[0];
 
             // Call the function with an invalid array
-            m_msg.addVectorString(null, 1, emptyArray);
+            Assert.Throws<ArgumentOutOfRangeException>(() => m_msg.addVectorString(null, 1, emptyArray));
         }
 
         [Test]
@@ -143,22 +141,20 @@ namespace NUnitTest
         #region Tests - UpdateVectorMsg
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void UpdateVectorMsgNullArgument()
         {
             // Call the function with a null array
-            m_msg.updateVectorString(null, 1, null);
+            Assert.Throws<ArgumentNullException>(() => m_msg.updateVectorString(null, 1, null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void UpdateVectorMsgInvalidArgument()
         {
             // Create an empty array
             string[] emptyArray = new string[0];
 
             // Call the function with an invalid array
-            m_msg.updateVectorString(null, 1, emptyArray);
+            Assert.Throws<ArgumentOutOfRangeException>(() => m_msg.updateVectorString(null, 1, emptyArray));
         }
 
         [Test]

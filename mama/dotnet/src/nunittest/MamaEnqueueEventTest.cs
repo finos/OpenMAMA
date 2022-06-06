@@ -128,11 +128,10 @@ namespace NUnitTest
         /// This test will check that an exception is thrown if a null argument is passed
         /// </summary>
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void NullParameterTest()
         {
             // Call the test function
-            m_queue.enqueueEvent(null, null);
+            Assert.Throws<ArgumentNullException>(() => m_queue.enqueueEvent(null, null));
 
             // Ensure that no events have been procesed
             Assert.AreEqual(m_numberEvents, 0);

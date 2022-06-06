@@ -125,25 +125,23 @@ namespace NUnitTest
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void RollPolicyZeroMax()
         {
             // Set rolling log file policy
             Mama.setLogFilePolicy(MamaLogFilePolicy.LOGFILE_ROLL);
 
             // Set the max log files to be 0
-            Mama.setNumLogFiles(0);
+            Assert.Throws<ArgumentOutOfRangeException>(() => Mama.setNumLogFiles(0));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void RollPolicyInvalidMax()
         {
             // Set rolling log file policy
             Mama.setLogFilePolicy(MamaLogFilePolicy.LOGFILE_ROLL);
 
             // Set the max log files to be negative
-            Mama.setNumLogFiles(-16);
+            Assert.Throws<ArgumentOutOfRangeException>(() => Mama.setNumLogFiles(-16));
         }
 
         [Test]

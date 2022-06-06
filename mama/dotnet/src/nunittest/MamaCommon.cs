@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using NUnitLite;
 
 namespace NUnitTest
 {
@@ -26,6 +27,10 @@ namespace NUnitTest
             transportName = Environment.GetEnvironmentVariable("transportName");
             source = Environment.GetEnvironmentVariable("source");
             symbol = Environment.GetEnvironmentVariable("symbol");
+        }
+        public static int Main(string[] args)
+        {
+            return new AutoRun().Execute(args);
         }
     }
 }

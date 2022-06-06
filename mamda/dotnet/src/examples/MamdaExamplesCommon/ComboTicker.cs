@@ -31,7 +31,7 @@ namespace Wombat.Mamda.Examples
 	/// Can be used to handler callbacks from both a TradeListener and a
 	/// QuoteListener.
 	/// </summary>
-	class ComboTicker :
+	public class ComboTicker :
 		MamdaTradeHandler,
 		MamdaQuoteHandler,
 		MamdaStaleListener,

@@ -72,14 +72,13 @@ namespace NUnitTest
         #region Tests
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void InvalidLogLevel()
         {
             // Create an invalid log level
             MamaLogLevel logLevel = (MamaLogLevel)19;
 
             // Log with an invalid level
-            Mama.log(logLevel, "This is a test");
+            Assert.Throws<ArgumentOutOfRangeException>(() => Mama.log(logLevel, "This is a test"));
         }
 
         [Test]
