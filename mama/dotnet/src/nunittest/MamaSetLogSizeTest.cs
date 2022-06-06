@@ -28,11 +28,10 @@ namespace NUnitTest
         #region Tests
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void InvalidSize()
         {
             // Set the size to 0 byte
-            Mama.setLogSize(0);
+            Assert.Throws<ArgumentOutOfRangeException>(() => Mama.setLogSize(0));
         }
                 
         [Test]

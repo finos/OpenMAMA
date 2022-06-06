@@ -108,22 +108,20 @@ namespace NUnitTest
         #region Tests - AddVectorPrice
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void AddVectorPriceNullArgument()
         {
             // Call the function with a null array
-            m_msg.addVectorPrice(null, 1, null);
+            Assert.Throws<ArgumentNullException>(() => m_msg.addVectorPrice(null, 1, null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void AddVectorPriceInvalidArgument()
         {
             // Create an empty array
             MamaPrice[] emptyArray = new MamaPrice[0];
 
             // Call the function with an invalid array
-            m_msg.addVectorPrice(null, 1, emptyArray);
+            Assert.Throws<ArgumentOutOfRangeException>(() => m_msg.addVectorPrice(null, 1, emptyArray));
         }
 
         #endregion
@@ -131,22 +129,20 @@ namespace NUnitTest
         #region Tests - UpdateVectorMsg
 
         [Test]
-        [ExpectedException(typeof(ArgumentNullException))]
         public void UpdateVectorPriceNullArgument()
         {
             // Call the function with a null array
-            m_msg.updateVectorPrice(null, 1, null);
+            Assert.Throws<ArgumentNullException>(() => m_msg.updateVectorPrice(null, 1, null));
         }
 
         [Test]
-        [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void UpdateVectorPriceInvalidArgument()
         {
             // Create an empty array
             MamaPrice[] emptyArray = new MamaPrice[0];
 
             // Call the function with an invalid array
-            m_msg.updateVectorPrice(null, 1, emptyArray);
+            Assert.Throws<ArgumentOutOfRangeException>(() => m_msg.updateVectorPrice(null, 1, emptyArray));
         }
 
         #endregion

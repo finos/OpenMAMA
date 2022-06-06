@@ -29,7 +29,7 @@ namespace Wombat.Mamda.Examples
 	/// to the underlying security.  This example just prints
 	/// individual trades and quotes.
 	/// </summary>
-    class UnderlyingTicker :
+    public class UnderlyingTicker :
 		MamdaTradeHandler,
         MamdaQuoteHandler
     {
