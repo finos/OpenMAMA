@@ -80,8 +80,46 @@ add_subdirectory (common)
 add_subdirectory (mama)
 
 if (WITH_MAMDA AND WITH_CPP)
-   add_subdirectory (mamda)
+  add_subdirectory (mamda)
+endif()
+
+if (WITH_CSHARP)
+    include (ExternalProject)
+    ExternalProject_Add(OpenMAMA-csharp
+        SOURCE_DIR "."
+        BUILD_COMMAND ""
+        CONFIGURE_COMMAND dotnet build -c Release /p:Platform="Any CPU" /p:IsInOpenMAMABuild=true -o ${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-csharp ${CMAKE_CURRENT_SOURCE_DIR}/OpenMAMA-csharp.sln
+        INSTALL_COMMAND ""
+        LOG_BUILD 1
+        DEPENDS mama)
+
+    install(
+        DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-csharp/
+        DESTINATION bin
+        FILES_MATCHING 
+        REGEX "^.*.exe$"
+        REGEX "^.*.dll$"
+        REGEX "^.*[0-9].*$" EXCLUDE
+    )
+
+    if (WITH_UNITTEST)
+        find_program(NUNIT_CONSOLE_BIN nunit3-console)
+        enable_testing()
+        add_test(NAME mama_csharp_nunit COMMAND dotnet ${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-csharp/mamaunittestscs.dll)
+        set_tests_properties(mama_csharp_nunit
+                             PROPERTIES
+                                 ENVIRONMENT "middlewareName=qpid;transportName=pub")
+    endif()
+endif()
+
+if (WITH_TUTORIALS)
+  add_subdirectory(tutorials/c)
+  if (WITH_CPP)
+    add_subdirectory(tutorials/cpp)
+  endif()
 endif()
 
 install(FILES LICENSE.md DESTINATION .)
 install(FILES mama/c_cpp/src/examples/mama.properties DESTINATION config)
+
+include(CPack)

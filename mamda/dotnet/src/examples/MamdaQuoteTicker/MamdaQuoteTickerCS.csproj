@@ -1,118 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
-  <PropertyGroup>
-    <ProjectType>Local</ProjectType>
-    <ProductVersion>8.0.50727</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{C029498A-E911-4E9F-8290-DA98B4B28FDD}</ProjectGuid>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ApplicationIcon>
-    </ApplicationIcon>
-    <AssemblyKeyContainerName>
-    </AssemblyKeyContainerName>
-    <AssemblyName>MamdaQuoteTicker</AssemblyName>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
-    <DefaultClientScript>JScript</DefaultClientScript>
-    <DefaultHTMLPageLayout>Grid</DefaultHTMLPageLayout>
-    <DefaultTargetSchema>IE50</DefaultTargetSchema>
-    <DelaySign>false</DelaySign>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>Wombat.Mamda.Examples</RootNamespace>
-    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
-    <StartupObject>
-    </StartupObject>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <OldToolsVersion>2.0</OldToolsVersion>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile>
-    </ConfigurationOverrideFile>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
-    <DebugSymbols>true</DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-    <NoStdLib>false</NoStdLib>
-    <NoWarn>
-    </NoWarn>
-    <Optimize>false</Optimize>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>3</WarningLevel>
-    <DebugType>full</DebugType>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <OutputPath>bin\Release\</OutputPath>
-    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-    <BaseAddress>285212672</BaseAddress>
-    <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
-    <ConfigurationOverrideFile>
-    </ConfigurationOverrideFile>
-    <DefineConstants>TRACE</DefineConstants>
-    <DocumentationFile>
-    </DocumentationFile>
-    <DebugSymbols>false</DebugSymbols>
-    <FileAlignment>4096</FileAlignment>
-    <NoStdLib>false</NoStdLib>
-    <NoWarn>
-    </NoWarn>
-    <Optimize>true</Optimize>
-    <RegisterForComInterop>false</RegisterForComInterop>
-    <RemoveIntegerChecks>false</RemoveIntegerChecks>
-    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
-    <WarningLevel>3</WarningLevel>
-    <DebugType>none</DebugType>
-    <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>false</Prefer32Bit>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System">
-      <Name>System</Name>
-    </Reference>
-    <ProjectReference Include="..\..\..\..\..\mama\dotnet\src\cs\mamadotnet.csproj">
-      <Project>{B4483E45-D484-49D0-8477-18CC80CC9766}</Project>
-      <Name>mamadotnet</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\cs\mamdadotnet.csproj">
-      <Name>mamdadotnet</Name>
-      <Project>{2B6B0518-89A5-40F2-B2C2-9EC3D8B11F3B}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Compile Include="..\MamdaExamplesCommon\CommandLineProcessor.cs">
-      <Link>CommandLineProcessor.cs</Link>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MamdaQuoteTicker.cs">
-      <SubType>Code</SubType>
-    </Compile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="app.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <PropertyGroup>
-    <PreBuildEvent>
-    </PreBuildEvent>
-    <PostBuildEvent>copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\$(ConfigurationName)
-copy $(TargetDir)\$(TargetFileName)* $(SolutionDir)\x64\$(ConfigurationName)</PostBuildEvent>
-  </PropertyGroup>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>mamdaquotetickercs</AssemblyName>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <Title>OpenMAMA MamdaQuoteTickerCS C#</Title>
+        <Description>OpenMAMA MamdaQuoteTickerCS C#</Description>
+        <Configuration>OpenMAMA MamdaQuoteTickerCS C#</Configuration>
+        <Product>OpenMAMA API C#</Product>
+        <Copyright>Copyright 2009 OpenMAMA.org</Copyright>
+        <Company>OpenMAMA.org</Company>
+        <OutputType>Exe</OutputType>
+    </PropertyGroup>
+    <ItemGroup>
+      <ProjectReference Include="..\MamdaExamplesCommon\mamdaexamplescommon.csproj" />
+    </ItemGroup>
 </Project>
