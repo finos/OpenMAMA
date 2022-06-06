@@ -109,4 +109,4 @@ packages.config
 .idea/
 /build/
 cmake-build-debug/
-
+latex/

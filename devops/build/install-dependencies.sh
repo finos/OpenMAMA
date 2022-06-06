@@ -1,22 +1,21 @@
 #!/bin/bash
 
 # Make all unhandled erroneous return codes fatal
-set -e
+set -e -x
 
 # Globals
 export SDKMAN_DIR=${SDKMAN_DIR:-/usr/local/sdkman}
 VERSION_GTEST=${VERSION_GTEST:-1.8.0}
 VERSION_APR=${VERSION_APR:-1.6.3}
-VERSION_QPID=${VERSION_QPID:-0.24.0}
+VERSION_QPID=${VERSION_QPID:-0.37.0}
 DEPS_DIR=${DEPS_DIR:-/app/deps}
 
 # Constants
-FEDORA=Fedora
 RHEL=CentOS
 UBUNTU=Ubuntu
 
 # Initial setup
-test -d $DEPS_DIR || mkdir -p $DEPS_DIR
+test -d "$DEPS_DIR" || mkdir -p "$DEPS_DIR"
 
 if [ -z "$IS_DOCKER_BUILD" ]
 then
@@ -33,10 +32,10 @@ fi
 
 if [ -f /etc/redhat-release ]
 then
-    DISTRIB_RELEASE=$(cat /etc/redhat-release | tr " " "\n" | egrep "^[0-9]")
+    DISTRIB_RELEASE=$(tr " " "\n" < /etc/redhat-release | grep -E "^[0-9]")
     if [ -f /etc/fedora-release ]
     then
-        DISTRIB_ID=$FEDORA
+        echo "Fedora builds no longer supported: $(cat /etc/*-release)" && exit $LINENO
     else
         DISTRIB_ID=$RHEL
     fi
@@ -53,139 +52,93 @@ then
     echo "Unsupported distro found: $(cat /etc/*-release)" && exit $LINENO
 fi
 
-if [ "$DISTRIB_ID" = "$FEDORA" ]
-then
-    echo "Installing fedora specific dependencies"
-    yum install -y libnsl2-devel libffi-devel ruby-devel rubygems redhat-rpm-config rpm-build cmake
-fi
-
 if [ "$DISTRIB_ID" = "$RHEL" ]
 then
-    if [ "${DISTRIB_RELEASE:0:1}" = "6" ]
-    then
-        # CentOS now needs EOL repos
-        curl https://www.getpagespeed.com/files/centos6-eol.repo --output /etc/yum.repos.d/CentOS-Base.repo
-        curl https://www.getpagespeed.com/files/centos6-epel-eol.repo --output /etc/yum.repos.d/epel.repo
-    fi
-
     echo "Installing CentOS / RHEL specific dependencies"
-    yum install -y epel-release gcc make rpm-build which wget
-    # CentOS 8 specific software
-    if [ "${DISTRIB_RELEASE:0:1}" = "8" ]
+    yum install -y epel-release gcc make rpm-build which wget cmake
+    if [ "${DISTRIB_RELEASE:0:1}" = "7" ]
+    then
+        # CentOS 7 cmake version is too old - upgrade it
+        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
+    elif [ "${DISTRIB_RELEASE:0:1}" = "8" ]
     then
         # CentOS 8 has funnies around where to find doxygen
         yum install -y dnf-plugins-core
         dnf config-manager --set-enabled powertools
-        dnf -y install doxygen
-        yum install -y python3 cmake
-        rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
-        dnf install -y dotnet-sdk-2.1
-    elif [ "${DISTRIB_RELEASE:0:1}" = "6" ]
+    elif [ "${DISTRIB_RELEASE:0:1}" = "9" ]
     then
-        # CentOS 6 doesn't have official python3
-        yum install -y centos-release-scl
-        curl https://www.getpagespeed.com/files/centos6-scl-eol.repo --output /etc/yum.repos.d/CentOS-SCLo-scl.repo
-        curl https://www.getpagespeed.com/files/centos6-scl-rh-eol.repo --output /etc/yum.repos.d/CentOS-SCLo-scl-rh.repo
-        yum install -y rh-python36
-        update-alternatives --install /usr/bin/python3 python /opt/rh/rh-python36/root/usr/bin/python3 2
-
-        # CentOS 6 cmake version is too old - upgrade it
-        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
-    else
-        yum install -y python3
-        rpm -Uvh https://packages.microsoft.com/config/centos/${DISTRIB_RELEASE:0:1}/packages-microsoft-prod.rpm
-        yum install -y dotnet-sdk-2.1
-
-        # CentOS 7 cmake version is too old - upgrade it
-        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
+        # We want "full" curl not minimal curl and rexml required to work around:
+        #     https://github.com/jordansissel/fpm/issues/1784
+        dnf install -y --allowerasing curl rubygem-rexml
     fi
-elif [ "$DISTRIB_ID" = "$FEDORA" ]
-then
-    dnf install -y python3 wget
-    rpm --import https://packages.microsoft.com/keys/microsoft.asc
-    wget -O /etc/yum.repos.d/microsoft-prod.repo https://packages.microsoft.com/config/fedora/$DISTRIB_RELEASE/prod.repo
-    dnf install --disablerepo=updates -y dotnet-sdk-2.1
-fi
-
-if [ "$DISTRIB_ID" = "$RHEL" ] || [ "$DISTRIB_ID" = "$FEDORA" ]
-then
-    yum install -y zlib-devel openssl-devel zip unzip make \
-	    java-1.8.0-openjdk-devel libuuid-devel flex doxygen \
-	    qpid-proton-c-devel libevent-devel ncurses-devel \
-	    apr-devel wget curl gcc-c++ libuuid qpid-proton-c \
-	    libevent ncurses apr valgrind which git
+    yum install -y python3 zlib-devel openssl-devel zip unzip make \
+	    java-11-openjdk-devel libuuid-devel flex doxygen \
+	    libevent-devel ncurses-devel python3-pip \
+	    apr-devel wget curl gcc-c++ libuuid \
+	    libevent ncurses apr apr-util-devel valgrind which git \
+	    ruby-devel rubygems
 fi
 
 # General ubuntu packages
 if [ "$DISTRIB_ID" = "$UBUNTU" ]
 then
     export DEBIAN_FRONTEND=noninteractive
-    apt-get update -qq
-    apt-get install -qq -y ruby ruby-dev build-essential \
+    apt-get update
+    apt-get install -y ruby ruby-dev build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
-	    cmake git libzmq3-dev ncurses-dev \
+	    cmake git libzmq3-dev ncurses-dev python3-pip \
 	    unzip valgrind libapr1-dev python3 libz-dev wget \
-	    apt-transport-https ca-certificates
-    wget https://packages.microsoft.com/config/ubuntu/$DISTRIB_RELEASE/packages-microsoft-prod.deb -O packages-microsoft-prod.deb
-    dpkg -i packages-microsoft-prod.deb
-    apt-get update -qq
-    apt-get install -y dotnet-sdk-2.1
-fi
-
-# Ubuntu 20 specific software
-if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "20" ]
-then
-    apt-get install -qq -y rubygems openjdk-13-jdk libqpid-proton11-dev
-    echo "export JAVA_HOME=/usr/lib/jvm/java-13-openjdk-amd64" > /etc/profile.d/profile.jni.sh
-fi
-
-# Ubuntu 18 specific software
-if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "18" ]
-then
-    apt-get install -qq -y rubygems openjdk-11-jdk libqpid-proton8-dev
+	    apt-transport-https ca-certificates libaprutil1-dev
+    apt-get install -y rubygems openjdk-11-jdk
     echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" > /etc/profile.d/profile.jni.sh
 fi
 
-# Ubuntu 16 specific software
-if [ "$DISTRIB_ID" = "$UBUNTU" ] && [ "${DISTRIB_RELEASE:0:2}" = "16" ]
+# RHEL 7 ruby is too old - need a more recent version for FPM to work later
+if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" -le "7") ]]
 then
-    apt-get install -qq -y openjdk-8-jdk libssl-dev libqpid-proton2-dev
-    echo "export JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64" > /etc/profile.d/profile.jni.sh
-    # Ubuntu 16 cmake version is too old - upgrade it
-    (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
-fi
-
-# Centos and old ubuntu version specific dependencies (ruby is too old for FPM)
-if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" -le "7") || ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" -le "16") ]]
-then
-    cd $DEPS_DIR
-    curl -sL https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.1.tar.gz | tar xz
+    cd "$DEPS_DIR"
+    curl -sL "https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.1.tar.gz" | tar xz
     cd ruby-2.6.1
     ./configure --prefix=/usr
     make
     make install && gem update --system
-elif [ "$DISTRIB_ID" = "$RHEL" ]
-then
-    yum install -y ruby-devel rubygems
 fi
 
 # Install gradle
-cd $DEPS_DIR
+cd "$DEPS_DIR"
 curl -s "https://get.sdkman.io" | bash
 source "$SDKMAN_DIR/bin/sdkman-init.sh"
 # Stick to gradle 6.9 - 7.x seems to have moved maven libraries around
 sdk install gradle 6.9
 
 # Install FPM for packaging up
-gem install -N fpm -v 1.11.0
+gem install -N fpm -v 1.12.0
 
 # Gtest is best always getting built
-cd $DEPS_DIR
-curl -sL http://github.com/google/googletest/archive/release-$VERSION_GTEST.tar.gz | tar xz
-cd googletest-release-$VERSION_GTEST
+cd "$DEPS_DIR"
+curl -sL "http://github.com/google/googletest/archive/release-$VERSION_GTEST.tar.gz" | tar xz
+cd "googletest-release-$VERSION_GTEST"
 mkdir bld
 cd bld
-cmake -DCMAKE_INSTALL_PREFIX=/usr .. && make && make install
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j
+make install
+
+# Best installing qpid proton known version too
+cd "$DEPS_DIR"
+curl -sL "https://github.com/apache/qpid-proton/archive/refs/tags/$VERSION_QPID.tar.gz" | tar xz
+cd "qpid-proton-$VERSION_QPID"
+mkdir bld
+cd bld
+cmake -DSSL_IMPL=none -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j
+make install
+
+# Install dotnet
+wget --no-check-certificate -q -O - https://dot.net/v1/dotnet-install.sh | DOTNET_INSTALL_DIR=/usr/local/bin bash
+
+# Install cloudsmith CLI
+python3 -m pip install --upgrade cloudsmith-cli
 
 # Clean up dependency directory to keep size down
-test -d $DEPS_DIR && rm -rf $DEPS_DIR/*
+test -d "$DEPS_DIR" && rm -rf "${DEPS_DIR:?}/"*

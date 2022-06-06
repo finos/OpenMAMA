@@ -4,7 +4,7 @@ import subprocess
 import os
 from dirsync import sync
 
-openmama_src_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..")
+openmama_src_root = os.path.join(os.path.dirname(os.path.realpath(__file__)), "..", "..")
 
 def run_command(args, relpath, shell=True):
     print ("Starting to run command {}".format(" ".join(args)))

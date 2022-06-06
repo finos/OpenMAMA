@@ -5,13 +5,9 @@ To build a repository, use the tag name in the definition that it's based on:
 
 Docker images currently supported:
 
-* ubuntu:16.04
 * ubuntu:18.04
 * ubuntu:20.04
-* centos:6
+* ubuntu:22.04
 * centos:7
-* centos:8
-* fedora:30
-* fedora:31
-* fedora:32
-* quay.io/centos/centos:stream
+* quay.io/centos/centos:stream8
+* quay.io/centos/centos:stream9
