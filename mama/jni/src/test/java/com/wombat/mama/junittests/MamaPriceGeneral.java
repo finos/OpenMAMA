@@ -21,33 +21,40 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.TestCase;
+import com.wombat.common.WombatException;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  * This class will mainly test the MamaPrice.setFromString() method
  */
-public class MamaPriceGeneral extends TestCase
+public class MamaPriceGeneral
 {
     protected MamaPrice mPrice;
 
     protected Double doubleValue;
 
+    protected Double delta = 0.000000001;
+
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
          doubleValue = 1.12345678901234567890;
 
          mPrice = new MamaPrice();
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
         // Clear all variables
     	mPrice = null;
@@ -57,34 +64,27 @@ public class MamaPriceGeneral extends TestCase
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testSetFromString()
     {
         String strValue  = "1.12345678901234567890";
 
     	mPrice.setFromString(strValue);
-    	assertEquals(doubleValue,   mPrice.getValue());
+    	assertEquals(doubleValue,   mPrice.getValue(), delta);
     }
 
+    @Test
     public void testSetFromStringMixedValue()
     {
         String strValue  = "1.12345678901MY PRICE";
-        double mDouble = 1.12345678901";
+        double mDouble = 1.12345678901;
 
     	mPrice.setFromString(strValue);
-    	assertEquals(mDouble,   mPrice.getValue());
+    	assertEquals(mDouble,   mPrice.getValue(), delta);
     }
 
-    public void testSetFromStringInvalidValue()
-    {
-        String strValue  = "MY PRICE";
-
-        // This will throw an exception with "STATUS_INVALID_ARG"
-        try
-        {
-    	    mPrice.setFromString(strValue);
-        }
-        catch ( MamaException me )
-        {
-            // Expected
-        }
+    @Test(expected = WombatException.class)
+    public void testSetFromStringInvalidValue() {
+        mPrice.setFromString("MY PRICE");
+    }
 }

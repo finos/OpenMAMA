@@ -21,16 +21,18 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.*;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
-import java.util.logging.Level;
+import static org.junit.Assert.*;
 
 /**
  *
  * This class will test setting a timezone on MamaDateTime and the setLogCallback function.
  */
-public class MamaDateTimeSetTimeZone extends TestCase
+public class MamaDateTimeSetTimeZone extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -41,14 +43,17 @@ public class MamaDateTimeSetTimeZone extends TestCase
     // A time zone
     protected MamaTimeZone mTimeZone;
 
+    protected Double mDelta = 0.00000001;
+
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
-        Level level = Mama.getLogLevel();
+        super.setUp();
+
         // Create the date time
         mDateTime = new MamaDateTime();
 
@@ -56,18 +61,20 @@ public class MamaDateTimeSetTimeZone extends TestCase
         mTimeZone = null;            // set to UTC for these tests
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
         // Reset member variables
         mDateTime = null;
         mTimeZone = null;
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testSetToMidnightToday()
     {
         // Call the function
@@ -79,6 +86,7 @@ public class MamaDateTimeSetTimeZone extends TestCase
         assertEquals(time, "00:00:00");
     }
 
+    @Test
     public void testSetTime()
     {
         // Set the time
@@ -89,6 +97,7 @@ public class MamaDateTimeSetTimeZone extends TestCase
         assertEquals(time, "03:16:42.000099");
     }
 
+    @Test
     public void testSetFromString()
     {
         // Recreate the date time using a string
@@ -99,12 +108,13 @@ public class MamaDateTimeSetTimeZone extends TestCase
         assertEquals(time, "03:16:42.000099");
     }
 
+    @Test
     public void testSetEpochTimeLargePositive()
     {
         mDateTime.setEpochTime (4211753600L, 0, MamaDateTimePrecision.PREC_UNKNOWN);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (4211753600.0, timeDouble);
+        assertEquals (4211753600.0, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (4211753600000000L, timeus);
@@ -113,12 +123,13 @@ public class MamaDateTimeSetTimeZone extends TestCase
     }
 
 
+    @Test
     public void testSetEpochTimeLargePositiveWithMSec()
     {
         mDateTime.setEpochTime (4211753600L, 999999, MamaDateTimePrecision.PREC_UNKNOWN);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (4211753600.999999, timeDouble);
+        assertEquals (4211753600.999999, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (4211753600999999L, timeus);
@@ -126,12 +137,13 @@ public class MamaDateTimeSetTimeZone extends TestCase
         assertEquals (4211753600999L, timems);
     }
 
+    @Test
     public void testSetEpochTimeLargeNegative()
     {
         mDateTime.setEpochTime (-4211753600L, 0, MamaDateTimePrecision.PREC_UNKNOWN);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (-4211753600.0, timeDouble);
+        assertEquals (-4211753600.0, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (-4211753600000000L, timeus);
@@ -140,24 +152,26 @@ public class MamaDateTimeSetTimeZone extends TestCase
     }
 
 
+    @Test
     public void testSetEpochTimeLargeNegativeWithMSec()
     {
         mDateTime.setEpochTime (-4211753600L, 999999, MamaDateTimePrecision.PREC_UNKNOWN);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (-4211753599.000001, timeDouble);
+        assertEquals (-4211753599.000001, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (-4211753599000001L, timeus);
     }
 
+    @Test
     public void testSetEpochTimeNegativeExtreme()
     {
         // This test will use the largest number that can be represented as microseconds
         mDateTime.setEpochTime (-9223372036854L, 0, MamaDateTimePrecision.PREC_UNKNOWN);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (-9223372036854.0, timeDouble);
+        assertEquals (-9223372036854.0, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (-9223372036854000000L, timeus);
@@ -166,13 +180,14 @@ public class MamaDateTimeSetTimeZone extends TestCase
     }
 
 
+    @Test
     public void testSetEpochTimeNegativeExtremeWithMSec()
     {
         // This test will use the largest number that can be represented as microseconds
         mDateTime.setEpochTime (-9223372036854L, 999999, MamaDateTimePrecision.PREC_UNKNOWN);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (-9223372036853.000001, timeDouble);
+        assertEquals (-9223372036853.000001, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (-9223372036853000001L, timeus);
@@ -180,29 +195,32 @@ public class MamaDateTimeSetTimeZone extends TestCase
         assertEquals (-9223372036853001L, timems);
     }
 
+    @Test
     public void testSetEpochTime()
     {
         mDateTime.setEpochTime (123456, 12, MamaDateTimePrecision.PREC_UNKNOWN);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (123456.000012, timeDouble);
+        assertEquals (123456.000012, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (123456000012L, timeus);
     }
 
 
+    @Test
     public void testSetEpochTimeBigMicroSecond()
     {
         mDateTime.setEpochTime (123456, 999999, MamaDateTimePrecision.PREC_UNKNOWN);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (123456.999999, timeDouble);
+        assertEquals (123456.999999, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (123456999999L, timeus);
     }
 
+    @Test
     public void testSetEpochTimeMicroSecondTooBig()
     {
         try 
@@ -214,39 +232,42 @@ public class MamaDateTimeSetTimeZone extends TestCase
             return;
         }
         // If we get here there is a problem
-        assertTrue(false);
+        fail();
     }
 
+    @Test
     public void testSetEpochTimeNegativeMicroSecond()
     {
         mDateTime.setEpochTime (123456, -123456, MamaDateTimePrecision.PREC_UNKNOWN);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (123455.876544, timeDouble);
+        assertEquals (123455.876544, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (123455876544L, timeus);
     }
 
+    @Test
     public void testSetWithHints()
     {
         // The hints are never used.
         mDateTime.setWithHints (123456, 12, MamaDateTimePrecision.PREC_UNKNOWN, null);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (123456.000012, timeDouble);
+        assertEquals (123456.000012, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (123456000012L, timeus);
     }
 
+    @Test
     public void testSetWithHintsWithMSec()
     {
         // The hints are never used.
         mDateTime.setWithHints (123456, 999999, MamaDateTimePrecision.PREC_UNKNOWN, null);
 
         double timeDouble = mDateTime.getEpochTimeSeconds();
-        assertEquals (123456.999999, timeDouble);
+        assertEquals (123456.999999, timeDouble, mDelta);
 
         long timeus = mDateTime.getEpochTimeMicroseconds();
         assertEquals (123456999999L, timeus);

@@ -21,14 +21,16 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.TestCase;
 import com.wombat.mama.*;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
 
 /**
  *
  * This class will test MamaMsg vector fields.
  */
-public class MamaMsgVectorFields extends TestCase
+public class MamaMsgVectorFields extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -41,25 +43,23 @@ public class MamaMsgVectorFields extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
-         // Load the bridge
-        mBridge = Mama.loadBridge(Main.GetBridgeName());
-        Mama.open();
+        super.setUp();
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
-        // Close mama
-        Mama.close();
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Message Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testVectorF32()
     {
         // Create the message
@@ -70,11 +70,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayF32("vf32", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorF64()
     {
         // Create the message
@@ -85,11 +83,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayF64("vf64", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorI8()
     {
         // Create the message
@@ -100,11 +96,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayI8("vi8", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorI16()
     {
         // Create the message
@@ -115,11 +109,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayI16("vi16", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorI32()
     {
         // Create the message
@@ -130,11 +122,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayI32("vi32", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorI64()
     {
         // Create the message
@@ -145,11 +135,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayI64("vi64", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorU8()
     {
         // Create the message
@@ -160,11 +148,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayU8("vu8", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorU16()
     {
         // Create the message
@@ -175,11 +161,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayU16("vu16", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorU32()
     {
         // Create the message
@@ -190,11 +174,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayU32("vu32", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorU64()
     {
         // Create the message
@@ -205,11 +187,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayU64("vu64", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorString()
     {
         // Create the message
@@ -220,11 +200,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the message
         message.getArrayString("vs", 1);
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testVectorMessage()
     {
         // Create the message
@@ -252,6 +230,7 @@ public class MamaMsgVectorFields extends TestCase
     /* Test Field Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testFieldVectorF32()
     {
         // Create the message
@@ -265,11 +244,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayF32();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorF64()
     {
         // Create the message
@@ -283,11 +260,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayF64();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorI8()
     {
         // Create the message
@@ -301,11 +276,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayI8();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorI16()
     {
         // Create the message
@@ -319,11 +292,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayI16();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorI32()
     {
         // Create the message
@@ -337,11 +308,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayI32();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorI64()
     {
         // Create the message
@@ -355,11 +324,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayI64();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorU8()
     {
         // Create the message
@@ -373,11 +340,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayU8();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorU16()
     {
         // Create the message
@@ -391,11 +356,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayU16();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorU32()
     {
         // Create the message
@@ -409,11 +372,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayU32();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorU64()
     {
         // Create the message
@@ -427,11 +388,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayU64();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorString()
     {
         // Create the message
@@ -445,11 +404,9 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayString();
-
-        // Destroy the message
-        message.destroy();
     }
 
+    @Test
     public void testFieldVectorMessage()
     {
         // Create the message
@@ -466,8 +423,5 @@ public class MamaMsgVectorFields extends TestCase
 
         // Get the data from the field
         field.getArrayMsg();
-
-        // Destroy the message
-        message.destroy();
     }
 }

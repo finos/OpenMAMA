@@ -1,32 +1,18 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
+package com.wombat.mama.junittests.fieldcache;
 
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
  * This class will test MamaFieldCacheString's functions
  */
-public class MamaFieldCacheStringTest extends TestCase
+public class MamaFieldCacheStringTest extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -39,22 +25,26 @@ public class MamaFieldCacheStringTest extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
+
         mFieldCacheString = new MamaFieldCacheString(101, "example", true);
         mMsg = new MamaMsg();   
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testAddToMessage()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -65,6 +55,7 @@ public class MamaFieldCacheStringTest extends TestCase
         assertEquals(mMsg.getString("example", 101), "a");
     }
 
+    @Test
     public void testAddToMessagefieldName()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -75,12 +66,14 @@ public class MamaFieldCacheStringTest extends TestCase
         assertEquals(mMsg.getString("example", 101), "a");
     }
 
+    @Test
     public void testCopy()
     {
         MamaFieldCacheField copyCache =  mFieldCacheString.copy();
         assertEquals(mFieldCacheString.getAsString(), copyCache.getAsString());
     }
 
+    @Test
     public void testApplyMsgField()
     {
         MamaFieldCacheString testCacheString = new MamaFieldCacheString(102, "example2", true);
@@ -92,6 +85,7 @@ public class MamaFieldCacheStringTest extends TestCase
         assertEquals(mFieldCacheString.get(), "a");
     }
 
+    @Test
     public void testApplyFieldCache()
     {
        MamaFieldCacheString testField  = new MamaFieldCacheString(102, "example2", true);
@@ -101,11 +95,12 @@ public class MamaFieldCacheStringTest extends TestCase
     }
 
 
+    @Test
     public void testSet()
     {
         MamaFieldCacheString testCacheString = new MamaFieldCacheString(102, "example2", false);
 
-        assertEquals(testCacheString.get(), null);
+        assertNull(testCacheString.get());
         testCacheString.set("a");
         //set without track state
         assertEquals(testCacheString.get(), "a");
@@ -114,19 +109,21 @@ public class MamaFieldCacheStringTest extends TestCase
 
     }
 
+    @Test
     public void testSetTrackState()
     {
-        assertEquals(mFieldCacheString.get(), null);
+        assertNull(mFieldCacheString.get());
         mFieldCacheString.set("a");
         //set with track state
         assertEquals(mFieldCacheString.get(), "a");
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, mFieldCacheString.getModState());
     }
 
+    @Test
     public void testSetTrackStateTouched()
     {
-    
-        assertEquals(mFieldCacheString.get(), null);
+
+        assertNull(mFieldCacheString.get());
         mFieldCacheString.set("a");
         mFieldCacheString.set("a");
         //set with track state
@@ -135,6 +132,7 @@ public class MamaFieldCacheStringTest extends TestCase
 
     }
 
+    @Test
     public void testIsEqual()
     {   
         MamaFieldCacheString testCacheString = new MamaFieldCacheString(102, "example2", true);
@@ -145,16 +143,18 @@ public class MamaFieldCacheStringTest extends TestCase
         assertTrue(testCacheString.isEqual(mFieldCacheString.get()));
     }
 
+    @Test
     public void testGet()
     {
-        assertEquals(mFieldCacheString.get(), null);
+        assertNull(mFieldCacheString.get());
         mFieldCacheString.set("a");
         assertEquals(mFieldCacheString.get(), "a");
     }
 
+    @Test
     public void testGetAsString()
     {
-        assertEquals(mFieldCacheString.get(), null);
+        assertNull(mFieldCacheString.get());
         assertEquals("null", mFieldCacheString.getAsString());
         mFieldCacheString.set("a");
         assertEquals(mFieldCacheString.get(), "a");

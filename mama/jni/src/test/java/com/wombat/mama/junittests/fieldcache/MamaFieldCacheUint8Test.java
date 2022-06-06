@@ -1,32 +1,19 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
+package com.wombat.mama.junittests.fieldcache;
 
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  * This class will test MamaFieldCacheUint8's functions
  */
-public class MamaFieldCacheUint8Test extends TestCase
+public class MamaFieldCacheUint8Test extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -39,22 +26,26 @@ public class MamaFieldCacheUint8Test extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
+
         mFieldCacheUint8 = new MamaFieldCacheUint8(101, "example", true);
         mMsg = new MamaMsg();   
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testAddToMessage()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -65,6 +56,7 @@ public class MamaFieldCacheUint8Test extends TestCase
         assertEquals(mMsg.getU8("example", 101), 1);
     }
 
+    @Test
     public void testAddToMessagefieldName()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -75,12 +67,14 @@ public class MamaFieldCacheUint8Test extends TestCase
         assertEquals(mMsg.getU8("example", 101), 1);
     }
 
+    @Test
     public void testCopy()
     {
         MamaFieldCacheField copyCache =  mFieldCacheUint8.copy();
         assertEquals(mFieldCacheUint8.getAsString(), copyCache.getAsString());
     }
 
+    @Test
     public void testApplyMsgField()
     {
         MamaFieldCacheUint8 testCacheUint8 = new MamaFieldCacheUint8(102, "example2", true);
@@ -92,6 +86,7 @@ public class MamaFieldCacheUint8Test extends TestCase
         assertEquals(mFieldCacheUint8.get(), 1);
     }
 
+    @Test
     public void testApplyFieldCache()
     {
        MamaFieldCacheUint8 testField  = new MamaFieldCacheUint8(102, "example2", true);
@@ -101,6 +96,7 @@ public class MamaFieldCacheUint8Test extends TestCase
     }
 
 
+    @Test
     public void testSet()
     {
         MamaFieldCacheUint8 testCacheUint8 = new MamaFieldCacheUint8(102, "example2", false);
@@ -114,6 +110,7 @@ public class MamaFieldCacheUint8Test extends TestCase
 
     }
 
+    @Test
     public void testSetTrackState()
     {
         assertEquals(mFieldCacheUint8.get(), 0);
@@ -123,6 +120,7 @@ public class MamaFieldCacheUint8Test extends TestCase
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, mFieldCacheUint8.getModState());
     }
 
+    @Test
     public void testSetTrackStateTouched()
     {
     
@@ -135,6 +133,7 @@ public class MamaFieldCacheUint8Test extends TestCase
 
     }
 
+    @Test
     public void testIsEqual()
     {   
         MamaFieldCacheUint8 testCacheUint8 = new MamaFieldCacheUint8(102, "example2", true);
@@ -145,6 +144,7 @@ public class MamaFieldCacheUint8Test extends TestCase
         assertTrue(testCacheUint8.isEqual(mFieldCacheUint8.get()));
     }
 
+    @Test
     public void testGet()
     {
         assertEquals(mFieldCacheUint8.get(), 0);
@@ -152,6 +152,7 @@ public class MamaFieldCacheUint8Test extends TestCase
         assertEquals(mFieldCacheUint8.get(), 1);
     }
 
+    @Test
     public void testGetAsString()
     {
         assertEquals(mFieldCacheUint8.get(), 0);

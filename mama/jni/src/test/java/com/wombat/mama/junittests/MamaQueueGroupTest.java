@@ -21,41 +21,44 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.TestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
  *
  * This class will test the MamaQueueGroup
  */
-public class MamaQueueGroupTest extends TestCase
+public class MamaQueueGroupTest extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
-    private MamaBridge bridge;
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
-        bridge = Mama.loadBridge(Main.GetBridgeName());
-        Mama.open();
+        super.setUp();
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
-        Mama.close();
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testMamaQueueGroup()
     {
         int num = 4;
-        MamaQueueGroup g = new MamaQueueGroup(num, bridge);
+        MamaQueueGroup g = new MamaQueueGroup(num, getBridge());
         
         assertEquals(num, g.getNumberOfQueues());
     }
