@@ -1,24 +1,26 @@
 #!/bin/bash
 
-# All errors fatal
-set -x
-
 . /etc/profile
 
-set -e
+# All errors fatal
+set -e -x
 
 export OPENMAMA_INSTALL_DIR=/opt/openmama
-unset PREFIX
-unset VERSION_FILE
+export SDKMAN_DIR=/usr/local/sdkman
+BUILD_DIR=/build-ci-run
+SOURCE_PATH_RELATIVE=$(dirname "$0")/../..
+SOURCE_PATH_ABSOLUTE=$(cd "$SOURCE_PATH_RELATIVE" && pwd)
+
+git config --global --add safe.directory SOURCE_PATH_ABSOLUTE
 
 # Build the project
-if [ -d build ]
+if [ -d $BUILD_DIR ]
 then
-    rm -rf build
+    rm -rf $BUILD_DIR
 fi
 
-mkdir -p build
-cd build
+mkdir -p $BUILD_DIR
+cd $BUILD_DIR
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DBIN_GRADLE=$SDKMAN_DIR/candidates/gradle/current/bin/gradle \
      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
@@ -26,22 +28,116 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DWITH_JAVA=ON \
      -DWITH_CSHARP=OFF \
      -DWITH_UNITTEST=ON \
-     -DCMAKE_CXX_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
-     -DCMAKE_C_FLAGS="-Werror -Wno-error=strict-prototypes -Wno-deprecated-declarations" \
-     ..
+     -DCMAKE_CXX_FLAGS="-Wno-error=strict-prototypes -Wno-deprecated-declarations" \
+     -DCMAKE_C_FLAGS="-Wno-error=strict-prototypes -Wno-deprecated-declarations" \
+     "$SOURCE_PATH_ABSOLUTE"
 make -j install
 export LD_LIBRARY_PATH=/opt/openmama/lib
 ctest .
-cd - > /dev/null
+cd "$SOURCE_PATH_ABSOLUTE" > /dev/null
 
 # Include the test data and grab profile configuration from there for packaging
-test -d $OPENMAMA_INSTALL_DIR/data && rm -rf $OPENMAMA_INSTALL_DIR/data || true
+if [ -d $OPENMAMA_INSTALL_DIR/data ]
+then
+    rm -rf $OPENMAMA_INSTALL_DIR/data
+fi
 mkdir -p $OPENMAMA_INSTALL_DIR/data
 cd $OPENMAMA_INSTALL_DIR/data
 curl -sL https://github.com/OpenMAMA/OpenMAMA-testdata/archive/master.tar.gz | tar xz --strip 1
 cp profiles/profile.openmama .
 rm -rf profiles
-cd - > /dev/null
+cd "$SOURCE_PATH_ABSOLUTE" > /dev/null
 
 # Generate the package (deb / rpm / tarball).
-./devops/build/build-package.sh
+# Globals
+ARTIFACT_TYPE=${ARTIFACT_TYPE:-dev}
+VERSION_FILE=${VERSION_FILE:-"$SOURCE_PATH_ABSOLUTE/VERSION"}
+
+# Constants
+RHEL=CentOS
+UBUNTU=Ubuntu
+
+VERSION=$(git --git-dir="$SOURCE_PATH_ABSOLUTE/.git" describe --tags | sed 's/^OpenMAMA-//g' | sed 's/-release//g')
+CURRENT_BRANCH=$(git --git-dir="$SOURCE_PATH_ABSOLUTE/.git" rev-parse --abbrev-ref HEAD)
+if echo "$VERSION" | grep -E "^[0-9.]*$" > /dev/null
+then
+    CLOUDSMITH_REPOSITORY=openmama
+elif echo "$VERSION" | grep -E "^[0-9.]*-rc[0-9]*" > /dev/null
+then
+    CLOUDSMITH_REPOSITORY=openmama-rc
+elif [ "$CURRENT_BRANCH" = "next" ]
+then
+    CLOUDSMITH_REPOSITORY=openmama-experimental
+else
+    CLOUDSMITH_REPOSITORY=none
+fi
+
+if [ -z "$IS_DOCKER_BUILD" ]
+then
+    echo
+    echo "------------------------------- DRAGON ALERT --------------------------------"
+    echo "IS_DOCKER_BUILD environment not set. This should be set before launching this"
+    echo "script as the root user IN AN ISOLATED DOCKER ENVIRONMENT. It is highly "
+    echo "recommended not to run this script in any other environment. Obviously we"
+    echo "cannot stop you... but if you try it, you're on your own..."
+    echo "-----------------------------------------------------------------------------"
+    echo
+    exit $LINENO
+fi
+
+if [ -f /etc/redhat-release ]
+then
+    DISTRIB_RELEASE=$(cat /etc/redhat-release | tr " " "\n" | egrep "^[0-9]")
+    DEPENDS_FLAGS="-d libuuid -d libevent -d ncurses -d apr -d java-11-openjdk"
+    DISTRIB_ID=$RHEL
+    PACKAGE_TYPE=rpm
+    CLOUDSMITH_DISTRO_NAME=centos
+    CLOUDSMITH_DISTRO_VERSION=${DISTRIB_RELEASE%%.*}
+fi
+
+if [ -f /etc/lsb-release ]
+then
+    # Will set DISTRIB_ID and DISTRIB_RELEASE
+    source /etc/lsb-release
+    PACKAGE_TYPE=deb
+    DEPENDS_FLAGS="-d uuid -d libevent-dev -d libzmq3-dev -d ncurses-dev -d libapr1-dev -d openjdk-11-jdk"
+    CLOUDSMITH_DISTRO_NAME=ubuntu
+    CLOUDSMITH_DISTRO_VERSION=${DISTRIB_CODENAME}
+fi
+
+if [ "$DISTRIB_ID" == "$RHEL" ]
+then
+    DISTRIB_PACKAGE_QUALIFIER=el${DISTRIB_RELEASE%%.*}
+elif [ "$DISTRIB_ID" == "$UBUNTU" ]
+then
+    DISTRIB_PACKAGE_QUALIFIER=ubuntu${DISTRIB_RELEASE%%.*}
+else
+    echo "Unsupported distro [$DISTRIB_ID] found: $(cat /etc/*-release)" && exit $LINENO
+fi
+
+DIST_DIR="$SOURCE_PATH_ABSOLUTE/dist"
+if [ ! -d "$DIST_DIR" ]
+then
+    mkdir "$DIST_DIR"
+fi
+
+PACKAGE_FILE="$DIST_DIR/openmama-$VERSION-1.$DISTRIB_PACKAGE_QUALIFIER.x86_64.$PACKAGE_TYPE"
+fpm -s dir --force \
+        -t $PACKAGE_TYPE \
+        -m "openmama-users@lists.openmama.org" \
+        --name openmama \
+        --version $VERSION \
+        --iteration 1 \
+        --url "https://openmama.org" \
+        --license LGPLv2 \
+        $DEPENDS_FLAGS \
+        -p "$PACKAGE_FILE" \
+        --description "OpenMAMA high performance Market Data API" \
+        $OPENMAMA_INSTALL_DIR/=/opt/openmama/
+
+find "$DIST_DIR" -type f -name "*.$PACKAGE_TYPE"
+
+if [ "true" = "$PACKAGE_UPLOAD_ENABLED" ] && [ "$CLOUDSMITH_REPOSITORY" != "none" ]
+then
+    cloudsmith push $PACKAGE_TYPE "openmama/$CLOUDSMITH_REPOSITORY/$CLOUDSMITH_DISTRO_NAME/$CLOUDSMITH_DISTRO_VERSION" "${PACKAGE_FILE}"
+fi

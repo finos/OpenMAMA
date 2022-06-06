@@ -13,6 +13,7 @@ unset VERSION_FILE
 brew install googletest apr apr-util ossp-uuid qpid-proton
 
 APR_ROOT=$(find /usr/local/Cellar/apr -type d -name libexec)
+APRUTIL_ROOT=$(find /usr/local/Cellar/apr-util -type d -maxdepth 1 -mindepth 1)
 
 # Build the project
 test -d build && rm -rf build || true
@@ -26,6 +27,7 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DWITH_JAVA=ON \
      -DWITH_CSHARP=OFF \
      -DAPR_ROOT=$APR_ROOT \
+     -DAPRUTIL_ROOT=$APRUTIL_ROOT \
      -DWITH_UNITTEST=ON \
      -DCMAKE_CXX_STANDARD=17 \
      ..
