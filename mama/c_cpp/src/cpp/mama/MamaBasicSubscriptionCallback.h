@@ -37,6 +37,8 @@ namespace Wombat
  * @see MamaSubscription
  * @author mls
  */
+class MamaBasicSubscription;
+
 class MAMACPPExpDLL MamaBasicSubscriptionCallback
 {
 public:

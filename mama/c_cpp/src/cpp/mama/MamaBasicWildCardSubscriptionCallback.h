@@ -23,10 +23,10 @@
 #define MAMA_BASIC_WILD_CARD_SUBSCRIPTION_CALLBACK_CPP_H__
 
 #include "mama/mamacpp.h"
-#include "mama/MamaBasicWildCardSubscription.h"
 
-namespace Wombat 
+namespace Wombat
 {
+class MamaBasicWildCardSubscription;
 /**
  * The message callback interface for basic subscriptions. 
  * Callers provide an object implementing this 

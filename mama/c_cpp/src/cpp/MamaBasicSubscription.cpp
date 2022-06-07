@@ -198,6 +198,33 @@ struct MamaBasicSubscriptionImpl
     }
 };
 
+class MamaSubscriptionCallbackToMamaBasicSubscriptionCallbackMapper : public MamaBasicSubscriptionCallback {
+  public:
+    explicit MamaSubscriptionCallbackToMamaBasicSubscriptionCallbackMapper(MamaSubscriptionCallback* callback) {
+        mCallback = callback;
+    }
+    void onCreate (MamaBasicSubscription* subscription) override {
+        mCallback->onCreate (subscription);
+    }
+    void onError (MamaBasicSubscription* subscription,
+                  const MamaStatus&      status,
+                  const char*            topic) override
+    {
+        mCallback->onError (subscription, status, topic);
+    }
+    void onMsg (MamaBasicSubscription* subscription, MamaMsg& msg) override
+    {
+        mCallback->onMsg (subscription, msg);
+    }
+    void onDestroy (MamaBasicSubscription* subscription,
+                    void*                  closure) override
+    {
+        mCallback->onDestroy ((MamaSubscription*)subscription);
+    }
+  private:
+    MamaSubscriptionCallback* mCallback;
+};
+
 /* *************************************************** */
 /* MamaBasicSubscription Implementation. */
 /* *************************************************** */
@@ -208,6 +235,7 @@ struct MamaBasicSubscriptionImpl
 
 MamaBasicSubscription::MamaBasicSubscription(void)
     : mCallback(NULL),
+      mCallbackMapper(NULL),
       mClosure(NULL),
       mQueue(NULL),
       mSubscription(NULL),
@@ -241,6 +269,9 @@ MamaBasicSubscription::~MamaBasicSubscription(void)
             mImpl = NULL;
         }
         mSubscription = NULL;
+    }
+    if (nullptr != mCallbackMapper) {
+        delete mCallbackMapper;
     }
 }
 
@@ -350,6 +381,23 @@ void MamaBasicSubscription::createBasic(
 
     // Convert the status into an exception
     mamaTry(status);
+}
+
+void MamaBasicSubscription::createBasic (
+    MamaTransport*                 transport,
+    MamaQueue*                     queue,
+    MamaSubscriptionCallback*      callback,
+    const char*                    topic,
+    void*                          closure)
+{
+    // Prevent leak on double init if non null
+    delete mCallbackMapper;
+
+    // This will create a basic subscription wrapper
+    mCallbackMapper = new MamaSubscriptionCallbackToMamaBasicSubscriptionCallbackMapper(callback);
+
+    // Call function which expects basic callbacks
+    createBasic (transport, queue, mCallbackMapper, topic, closure);
 }
 
 void MamaBasicSubscription::destroy(void)
