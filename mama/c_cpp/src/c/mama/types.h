@@ -137,7 +137,9 @@ typedef struct mamaStatImpl_*                   mamaStat;
 typedef struct mamaStatsCollectorImpl_*         mamaStatsCollector;
 typedef struct mamaStatsGeneratorImpl_*         mamaStatsGenerator;
 typedef struct mamaMsgReplyImpl_*               mamaMsgReply;
+typedef struct mamaResourcePoolImpl_*           mamaResourcePool;
 typedef struct mamaQueueGroupImpl_*             mamaQueueGroup;
+typedef struct mamaRegexChannelFilter_*         mamaRegexChannelFilter;
 
 typedef struct mamaVersion {
     int     mMajor;

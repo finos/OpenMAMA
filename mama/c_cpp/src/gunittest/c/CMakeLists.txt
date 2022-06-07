@@ -22,6 +22,8 @@ add_executable(UnitTestMamaC
 	publishertest.cpp
 	queuetest.cpp
 	dictionarytest.cpp
+	regexchannelfiltertest.cpp
+	resourcepooltest.cpp
 	subscriptiontest.cpp
 	timertest.cpp
 	transporttest.cpp

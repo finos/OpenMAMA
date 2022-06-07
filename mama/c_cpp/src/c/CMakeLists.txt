@@ -17,6 +17,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${WOMBAT_INCLUDES}
 	${APR_INCLUDE_DIR}
+	${APRUTIL_INCLUDE_DIR}
 	${CMAKE_CURRENT_BINARY_DIR} # for generated files like version.h etc
 )
 
@@ -64,6 +65,9 @@ set(sources
 	mama.c
 	queuegroup.c
 	mama/queuegroup.h
+	resourcepool.c
+	resourcepool.h
+	mama/resourcepool.h
 	mamaStrUtils.c
 	mamautils.c
 	marketdata.c
@@ -81,6 +85,8 @@ set(sources
 	quality.c
 	queue.c
 	refreshtransport.c
+	regexchannelfilter.c
+	mama/regexchannelfilter.h
 	registerfunctions.c
 	reservedfields.c
 	senderId.c
@@ -124,10 +130,13 @@ set(sources
 	fieldcache/fieldcachevector.c
 )
 
+# Compile this code with C++ compiler to leverage inbuilt regex support
+set_source_files_properties(regexchannelfilter.c PROPERTIES LANGUAGE CXX)
+
 list(APPEND sources ${SYSTEM_SOURCES})
 
-list(APPEND MAMA_LINK_LIBRARIES ${APR_LIBRARY} wombatcommon ${CMAKE_THREAD_LIBS_INIT})
-list(APPEND MAMA_STATIC_LINK_LIBRARIES ${APR_LIBRARY} wombatcommonstatic ${CMAKE_THREAD_LIBS_INIT})
+list(APPEND MAMA_LINK_LIBRARIES ${APR_LIBRARY} ${APRUTIL_LIBRARY} wombatcommon ${CMAKE_THREAD_LIBS_INIT})
+list(APPEND MAMA_STATIC_LINK_LIBRARIES ${APR_LIBRARY} ${APRUTIL_LIBRARY} wombatcommonstatic ${CMAKE_THREAD_LIBS_INIT})
 if(UNIX)
 	list(APPEND MAMA_LINK_LIBRARIES m)
 	list(APPEND MAMA_STATIC_LINK_LIBRARIES m)
@@ -162,6 +171,6 @@ if (INSTALL_RUNTIME_DEPENDENCIES)
 		install (DIRECTORY ${APR_ROOT}/bin/ DESTINATION bin FILES_MATCHING PATTERN "*apr*.dll")
     elseif(UNIX)
         message(STATUS "Installing apr_root")
-        install (FILES ${APR_LIBRARY_FILES} DESTINATION lib)
+        install (FILES ${APR_LIBRARY_FILES} ${APRUTIL_LIBRARY_FILES} DESTINATION lib)
 	endif()
 endif()
