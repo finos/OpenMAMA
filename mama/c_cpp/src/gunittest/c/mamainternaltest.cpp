@@ -219,6 +219,21 @@ TEST_F (MamaInternalTestC, getProperties)
     ASSERT_EQ (MAMA_STATUS_OK, mama_close ());
 }
 
+TEST_F (MamaInternalTestC, getAllProperties)
+{
+    ASSERT_EQ (MAMA_STATUS_OK, mama_setProperty ("citizen", "kane"));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_setProperty ("busta", "rhymes"));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_setProperty ("taylor", "swift"));
+    ASSERT_EQ (MAMA_STATUS_OK, mama_setProperty ("banana", "rama"));
+    const char* propertiesString = mama_getPropertiesAsString ( );
+    EXPECT_TRUE (NULL != propertiesString);
+
+    EXPECT_TRUE (NULL != strstr (propertiesString, "citizen=kane"));
+    EXPECT_TRUE (NULL != strstr (propertiesString, "busta=rhymes"));
+    EXPECT_TRUE (NULL != strstr (propertiesString, "taylor=swift"));
+    EXPECT_TRUE (NULL != strstr (propertiesString, "banana=rama"));
+}
+
 TEST_F (MamaInternalTestC, getPropertiesUnloaded)
 {
     wproperty_t properties = NULL;

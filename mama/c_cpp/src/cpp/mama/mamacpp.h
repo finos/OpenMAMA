@@ -376,6 +376,13 @@ public:
     static const char * getProperty (const char* name);
 
     /**
+     * Retrieve all configuration properties from the API.
+     *
+     * @return A key value map of all configuration properties
+     */
+    static std::map<std::string, std::string> getProperties ();
+
+    /**
      * Close MAMA and free all associated resource.
      *
      * MAMA employs a reference count to track multiple

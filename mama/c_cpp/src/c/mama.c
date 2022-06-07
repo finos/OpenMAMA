@@ -1080,121 +1080,6 @@ threadPropertiesCb (const char* name, const char* value, void* closure)
     }
 }
 
-MAMAExpDLL
-extern long int
-mamaImpl_getParameterAsLong (
-    long defaultVal,
-    long minimum,
-    long maximum,
-    const char* format, ...)
-{
-    const char* returnVal     = NULL;
-    long        returnLong    = 0;
-    char        paramDefault[PROPERTY_NAME_MAX_LENGTH];
-    char        paramName[PROPERTY_NAME_MAX_LENGTH];
-
-    /* Create list for storing the parameters passed in */
-    va_list arguments;
-
-    /* Populate list with arguments passed in */
-    va_start(arguments, format);
-
-    snprintf (paramDefault, PROPERTY_NAME_MAX_LENGTH, "%ld", defaultVal);
-
-    returnVal = properties_GetPropertyValueUsingVaList(
-        mamaInternal_getProperties(),
-        paramDefault,
-        paramName,
-        format,
-        arguments);
-
-    /* Translate the returned string to a long */
-    returnLong = atol (returnVal);
-
-    if (returnLong < minimum)
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
-                  "Value for %s too small (%ld) - reverting to: [%ld]",
-                  paramName,
-                  returnLong,
-                  minimum);
-        returnLong = minimum;
-    }
-    else if (returnLong > maximum)
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
-                  "Value for %s too large (%ld) - reverting to: [%ld]",
-                  paramName,
-                  returnLong,
-                  maximum);
-        returnLong = maximum;
-    }
-    /* These will be equal if unchanged */
-    else if (returnVal == paramDefault)
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
-                  "parameter [%s]: [%ld] (Default)",
-                  paramName, returnLong);
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
-                  "parameter [%s]: [%ld] (User Defined)",
-                  paramName, returnLong);
-    }
-
-    return returnLong;
-}
-
-MAMAExpDLL
-extern const char*
-mamaImpl_getParameter (
-    const char* defaultVal,
-    const char* format, ...)
-{
-    char        paramName[PROPERTY_NAME_MAX_LENGTH];
-    const char* returnVal = NULL;
-    /* Create list for storing the parameters passed in */
-    va_list     arguments;
-
-    /* Populate list with arguments passed in */
-    va_start (arguments, format);
-
-    returnVal = properties_GetPropertyValueUsingVaList (
-        mamaInternal_getProperties(),
-        (char*)defaultVal,
-        paramName,
-        format,
-        arguments);
-
-    /* These will be equal if unchanged */
-    if (returnVal == defaultVal)
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameter: "
-                  "parameter [%s]: [%s] (Default)",
-                  paramName,
-                  returnVal);
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameter: "
-                  "parameter [%s]: [%s] (User Defined)",
-                  paramName,
-                  returnVal);
-    }
-
-    /* Clean up the list */
-    va_end(arguments);
-
-    return returnVal;
-}
-
 mama_status
 mama_statsInit (void)
     {
@@ -1419,6 +1304,52 @@ mama_getProperty (const char *name)
         return NULL;
 
     return properties_Get( gProperties, name );
+}
+
+typedef struct mamaImplGetAllPropertiesImpl_ {
+    char* mPosition;
+    char* mBuffer;
+    size_t mBytesRemaining;
+} mamaImplGetAllPropertiesImpl;
+
+static void mamaImpl_getAllPropertiesAsStringCb (const char* name,
+                                                 const char* value,
+                                                 void*       closure)
+{
+    mamaImplGetAllPropertiesImpl* propertiesImpl = (mamaImplGetAllPropertiesImpl*) closure;
+    // Unlikely but just in case we have already blown our limit here
+    if (propertiesImpl->mBytesRemaining > 0)
+    {
+        size_t bytesWritten = snprintf (propertiesImpl->mPosition,
+                                        propertiesImpl->mBytesRemaining,
+                                        "%s=%s\n",
+                                        name,
+                                        value);
+        propertiesImpl->mPosition += bytesWritten;
+        propertiesImpl->mBytesRemaining -= bytesWritten;
+    }
+}
+
+const char * mama_getPropertiesAsString ()
+{
+    uint32_t propertyCount = properties_Count (mamaInternal_getProperties());
+    mamaImplGetAllPropertiesImpl propertiesImpl;
+    size_t bufferSize = propertyCount * ((MAX_INTERNAL_PROP_LEN * 2) + 2) + 1;
+    // Leave null terminator at end
+    propertiesImpl.mBytesRemaining = bufferSize - 1;
+
+    // Preallocate required amount of memory based on number of entries in property file + max property lengths
+    propertiesImpl.mBuffer = (char*) calloc (1, bufferSize);
+    propertiesImpl.mPosition = propertiesImpl.mBuffer;
+    properties_ForEach (mamaInternal_getProperties(),
+                        mamaImpl_getAllPropertiesAsStringCb,
+                        (void*)&propertiesImpl);
+
+    // Replace last trailing newline with a null terminator
+    if (propertiesImpl.mPosition > propertiesImpl.mBuffer) {
+        *(propertiesImpl.mPosition - 1) = '\0';
+    }
+    return propertiesImpl.mBuffer;
 }
 
 void mama_freeAllocatedBuffer (const char* buffer)
@@ -3747,4 +3678,185 @@ autoloadPayloadPropertiesCb (const char* name, const char* value, void* closure)
             }
         }
     }
+}
+
+MAMAExpDLL
+extern long int
+mamaImpl_getParameterAsLong (
+    long defaultVal,
+    long minimum,
+    long maximum,
+    const char* format, ...)
+{
+    const char* returnVal     = NULL;
+    long        returnLong    = 0;
+    char        paramDefault[PROPERTY_NAME_MAX_LENGTH];
+    char        paramName[PROPERTY_NAME_MAX_LENGTH];
+
+    /* Create list for storing the parameters passed in */
+    va_list arguments;
+
+    /* Populate list with arguments passed in */
+    va_start(arguments, format);
+
+    snprintf (paramDefault, PROPERTY_NAME_MAX_LENGTH, "%ld", defaultVal);
+
+    returnVal = properties_GetPropertyValueUsingVaList(
+        mamaInternal_getProperties(),
+        paramDefault,
+        paramName,
+        format,
+        arguments);
+
+    /* Translate the returned string to a long */
+    returnLong = atol (returnVal);
+
+    if (returnLong < minimum)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "Value for %s too small (%ld) - reverting to: [%ld]",
+                  paramName,
+                  returnLong,
+                  minimum);
+        returnLong = minimum;
+    }
+    else if (returnLong > maximum)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "Value for %s too large (%ld) - reverting to: [%ld]",
+                  paramName,
+                  returnLong,
+                  maximum);
+        returnLong = maximum;
+    }
+    /* These will be equal if unchanged */
+    else if (returnVal == paramDefault)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "parameter [%s]: [%ld] (Default)",
+                  paramName, returnLong);
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "parameter [%s]: [%ld] (User Defined)",
+                  paramName, returnLong);
+    }
+
+    return returnLong;
+}
+
+MAMAExpDLL
+extern const char*
+mamaImpl_getParameter (
+    const char* defaultVal,
+    const char* format, ...)
+{
+    char        paramName[PROPERTY_NAME_MAX_LENGTH];
+    const char* returnVal = NULL;
+    /* Create list for storing the parameters passed in */
+    va_list     arguments;
+
+    /* Populate list with arguments passed in */
+    va_start (arguments, format);
+
+    returnVal = properties_GetPropertyValueUsingVaList (
+        mamaInternal_getProperties(),
+        (char*)defaultVal,
+        paramName,
+        format,
+        arguments);
+
+    /* These will be equal if unchanged */
+    if (returnVal == defaultVal)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameter: "
+                  "parameter [%s]: [%s] (Default)",
+                  paramName,
+                  returnVal);
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameter: "
+                  "parameter [%s]: [%s] (User Defined)",
+                  paramName,
+                  returnVal);
+    }
+
+    /* Clean up the list */
+    va_end(arguments);
+
+    return returnVal;
+}
+
+struct findTransportContainer {
+    char *mTransports;
+    size_t mCapacity;
+    size_t mMatchCount;
+    wtable_t mMatches;
+};
+
+static void mamaImpl_findTransportNameByPrefix (const char* name,
+                                                const char* value,
+                                                void* closure)
+{
+    struct findTransportContainer* container = (struct findTransportContainer*) closure;
+    char mutableProperty[PROPERTY_NAME_MAX_LENGTH];
+    char *curPos = NULL;
+    char *tokens = mutableProperty;
+    char components[4][PROPERTY_NAME_MAX_LENGTH];
+    size_t componentIdx = 0;
+    strncpy (mutableProperty, name, PROPERTY_NAME_MAX_LENGTH);
+    // We need 4 tokens here to determine a transport name
+    while (componentIdx < 4 && (curPos = wstrsep (&tokens, "."))) {
+        strncpy (components[componentIdx++], curPos, PROPERTY_NAME_MAX_LENGTH);
+    }
+    if (componentIdx == 4
+        // String is mama.<bridge>.transport.<transportname>.<more fields>
+        && 0 == strcmp (components[0], "mama")
+        && 0 == strcmp (components[2], "transport")
+        && 0 != strlenEx(tokens)) {
+        uint32_t updatedCount = wtable_get_count (container->mMatches);
+        if (NULL == wtable_lookup (container->mMatches, components[3])
+            && updatedCount != container->mCapacity
+            && WTABLE_INSERT_SUCCESS == wtable_insert (container->mMatches, components[3], NULL)) {
+            strncpy (&container->mTransports[(container->mMatchCount) * MAMA_MAX_TRANSPORT_LEN],
+                     components[3],
+                     MAMA_MAX_TRANSPORT_LEN);
+            container->mMatchCount = updatedCount + 1;
+        }
+    }
+
+}
+
+MAMAExpDLL
+extern mama_status
+mama_getAvailableTransportNames (char transports[][MAMA_MAX_TRANSPORT_LEN],
+                                 size_t maxCount,
+                                 size_t* count)
+{
+    size_t found;
+    wtable_t table = wtable_create("tport_names", 10);
+    struct findTransportContainer container;
+    if (NULL == table) {
+        return MAMA_STATUS_NOMEM;
+    }
+
+    container.mCapacity = maxCount;
+    container.mMatches = table;
+    container.mTransports = (char*)transports;
+    container.mMatchCount = 0;
+    properties_ForEach (
+        mamaInternal_getProperties(),
+        mamaImpl_findTransportNameByPrefix,
+        &container);
+
+    *count = wtable_get_count (table);
+    return MAMA_STATUS_OK;
 }

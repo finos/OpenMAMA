@@ -375,7 +375,52 @@ public class Mama
         }
     }
 
+    /**
+     * Retrieve a specific property from the API.
+     *
+     * If the property has not been set, a NULL value will be returned.
+     *
+     * @param name The name of the property to retrieve.
+     *
+     * @return the value of the property or NULL if unset.
+     */
     public static native String getProperty(String name);
+
+    /**
+     * Retrieve a specific property from the API.
+     *
+     * If the property has not been set, the default value will be returned.
+     *
+     * @param name         The name of the property to retrieve.
+     * @param defaultValue The value to return if this property does not exist.
+     *
+     * @return the value of the property or NULL if unset.
+     */
+    public static String getProperty(String name, String defaultValue) {
+        String property = getProperty(name);
+        if (null == property) {
+            property = defaultValue;
+        }
+        return property;
+    }
+
+    /**
+     * Retrieve a list of all configured properties in key -> value format
+     * @return A map of all currently configured properties
+     */
+    public static Map<String, String> getProperties() {
+        Map<String, String> result = new HashMap<>();
+        String propertiesAsString = getPropertiesAsString();
+        for (String propStringPair : propertiesAsString.split("\n")) {
+            String[] pair = propStringPair.split("=");
+            if (pair.length > 1) {
+                result.put(pair[0], pair[1]);
+            }
+        }
+        return result;
+    }
+
+    private static native String getPropertiesAsString ();
 
     public static native void setProperty (String name, String value);
 
