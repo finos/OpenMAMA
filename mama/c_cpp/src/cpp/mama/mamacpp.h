@@ -418,6 +418,15 @@ public:
     static void start (mamaBridge bridgeImpl);
 
     /**
+     * Calls Mama::start for all currently loaded middleware bridges
+     *
+     * This function is thread safe.
+     *
+     * @param[in] isBlocking Whether to start blocking or run in background
+     */
+    static void startAll (bool isBlocking = true);
+
+    /**
      * Start processing MAMA internal events in the background. This
      * method invokes Mama::start () in a separate thread.
      *

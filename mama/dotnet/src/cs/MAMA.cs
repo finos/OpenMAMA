@@ -293,6 +293,8 @@ namespace Wombat
         /// </summary>
 #if _GNU
         public const string DllName = "mama";
+#elif _OSX
+        public const string DllName = "mama";
 #elif DEBUG
 		public const string DllName = "libmamacmdd.dll";
 #else
@@ -458,6 +460,31 @@ namespace Wombat
             MamaWrapper.CheckResultCode(NativeMethods.mama_start(bridgeImpl.NativeHandle));
         }
 
+		/// <summary>
+		/// Starts and starts dispatching on all currently loaded MAMA bridges and blocks until they have been stopped.
+		/// </summary>
+        public static void startAll()
+        {
+	        MamaWrapper.CheckResultCode(NativeMethods.mama_startAll(true));
+        }
+
+        /// <summary>
+		/// Starts and starts dispatching on all currently loaded MAMA bridges and optionally blocks until they have
+		/// been stopped.
+		/// </summary>
+        public static void startAll(bool isBlocking)
+        {
+	        MamaWrapper.CheckResultCode(NativeMethods.mama_startAll(isBlocking));
+        }
+
+        /// <summary>
+		/// Stops dispatching for all currently started MAMA bridges.
+		/// </summary>
+        public static void stopAll()
+        {
+	        MamaWrapper.CheckResultCode(NativeMethods.mama_stopAll());
+        }
+        
 		/// <summary>
         ///
         /// Close MAMA and free all associated resource.
@@ -875,16 +902,22 @@ namespace Wombat
 			public static extern int mama_setProperty (string name, string value);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr mama_getProperty (string name);
+			[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+            public static extern void mama_freeAllocatedBuffer (IntPtr buffer);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr mama_getVersion (IntPtr bridgeImpl);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mama_close();
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mama_start (IntPtr bridgeImpl);
+			[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern int mama_startAll(bool isBlocking);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern int mama_startBackground(IntPtr bridgeImpl, StartBackgroundCallbackForwarder.StartBackgroundCompleteDelegate callback);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mama_stop (IntPtr bridgeImpl);
+			[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern int mama_stopAll();
 			[DllImport(DllName, CallingConvention=CallingConvention.Cdecl)]
 			public static extern int mama_enableLogging (IntPtr f, int level);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]

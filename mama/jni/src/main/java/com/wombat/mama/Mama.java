@@ -22,6 +22,8 @@
 package com.wombat.mama;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.*;
 import java.net.InetAddress;
 import java.util.Date;
@@ -146,6 +148,24 @@ public class Mama
     public static native void start (MamaBridge bridge);
 
     /**
+     * Calls Mama::start for all currently loaded middleware bridges
+     *
+     * This function is thread safe.
+     *
+     * @param[in] isBlocking Whether to start blocking or run in background
+     */
+     public static native void startAll (boolean isBlocking);
+
+    /**
+     * Calls Mama::start for all currently loaded middleware bridges and blocks.
+     *
+     * This function is thread safe.
+     */
+     public static void startAll () {
+        startAll(true);
+     }
+
+    /**
      * Start processing MAMA internal events in the background. This
      * method invokes Mama::start () in a separate thread.
      *
@@ -167,6 +187,11 @@ public class Mama
      * @param bridge The bridge specific structure.
      */
     public static native void stop (MamaBridge bridge);
+
+    /**
+     * Stop dispatching on the default event queue for all bridges.
+     */
+    public static native void stopAll ();
 
     /**
      * Close MAMA and free all associated resource.

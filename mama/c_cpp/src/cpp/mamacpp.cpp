@@ -262,6 +262,11 @@ namespace Wombat
         mamaTry (mama_start (bridgeImpl));
     }
 
+    void Mama::startAll (bool isBlocking)
+    {
+        mamaTry (mama_startAll((mama_bool_t)isBlocking));
+    }
+
     extern "C"
     {
         void MAMACALLTYPE stopCb (mama_status status, mamaBridge, void* closure)
@@ -281,7 +286,7 @@ namespace Wombat
         mamaTry (mama_stop (bridgeImpl));
     }
 
-    void Mama::stopAll (void)
+    void Mama::stopAll ()
     {
         mamaTry (mama_stopAll ());
     }

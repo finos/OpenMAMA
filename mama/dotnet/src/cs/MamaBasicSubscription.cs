@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-﻿
+ 
 using System;
 using System.Runtime.InteropServices;
 
@@ -279,7 +279,7 @@ namespace Wombat
         /// <param name="closure">
         /// The native closure passed to the create function.
         /// </param>
-        protected delegate void OnSubscriptionCreateDelegate(IntPtr nativeHandle, IntPtr closure);
+        public delegate void OnSubscriptionCreateDelegate(IntPtr nativeHandle, IntPtr closure);
 
         /// <summary>
         /// This delegate describes the native function invoked whenever the subscription has been either
@@ -291,7 +291,7 @@ namespace Wombat
         /// <param name="closure">
         /// The native closure passed to the create function.
         /// </param>
-        protected delegate void OnSubscriptionDestroyDelegate(IntPtr nativeHandle, IntPtr closure);
+        public delegate void OnSubscriptionDestroyDelegate(IntPtr nativeHandle, IntPtr closure);
 
         /// <summary>
         /// This delegate describes the native function invoked if an error occurs during prior to subscription
@@ -315,7 +315,7 @@ namespace Wombat
         /// <param name="closure">
         /// The native closure passed to the create function.
         /// </param>
-        protected delegate void OnSubscriptionErrorDelegate(IntPtr nativeHandle, int status, IntPtr platformError, string subject, IntPtr closure);
+        public delegate void OnSubscriptionErrorDelegate(IntPtr nativeHandle, int status, IntPtr platformError, string subject, IntPtr closure);
 
         /// <summary>
         /// This delegate describes the native function invoked when a sequence number gap is detected. At this
@@ -328,7 +328,7 @@ namespace Wombat
         /// <param name="closure">
         /// The native closure passed to the create function.
         /// </param>
-        protected delegate void OnSubscriptionGapDelegate(IntPtr nativeHandle, IntPtr closure);
+        public delegate void OnSubscriptionGapDelegate(IntPtr nativeHandle, IntPtr closure);
 
         /// <summary>
         /// This delegate describes the native function that is invoked whenever a message arrives.
@@ -346,7 +346,7 @@ namespace Wombat
         /// The item closure for the subscription can be set with setItemClosure, note that setItemClosure is not provided
         /// in the C# implementation.
         /// </param>
-        protected delegate void OnSubscriptionMessageDelegate(IntPtr nativeHandle, IntPtr msg, IntPtr closure, IntPtr itemClosure);
+        public delegate void OnSubscriptionMessageDelegate(IntPtr nativeHandle, IntPtr msg, IntPtr closure, IntPtr itemClosure);
 
         /// <summary>
         /// This delegate describes the native function invoked to indicate a data quality event.
@@ -369,7 +369,7 @@ namespace Wombat
         /// <param name="closure">
         /// The native closure passed to the create function.
         /// </param>
-        protected delegate void OnSubscriptionQualityDelegate(IntPtr nativeHandle, int quality, string symbol, short cause, string platforminfo, IntPtr closure);
+        public delegate void OnSubscriptionQualityDelegate(IntPtr nativeHandle, int quality, string symbol, short cause, string platforminfo, IntPtr closure);
 
         /// <summary>
         /// This delegate describes the native function invoked when a recap is requested upon detecting a
@@ -381,7 +381,7 @@ namespace Wombat
         /// <param name="closure">
         /// The native closure passed to the create function.
         /// </param>
-        protected delegate void OnSubscriptionRecapRequestDelegate(IntPtr nativeHandle, IntPtr closure);
+        public delegate void OnSubscriptionRecapRequestDelegate(IntPtr nativeHandle, IntPtr closure);
 
         #endregion
 

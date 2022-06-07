@@ -398,6 +398,20 @@ extern "C"
     mama_start (mamaBridge bridgeImpl);
 
     /**
+     * Start processing messages on the internal queue for all currently loaded
+     * MAMA bridges. This starts Mama's internal throttle, refresh logic, and
+     * other internal Mama processes as well as dispatching messages from the
+     * internal queue.
+     * <p>
+     * mama_startAll( ) blocks until all currently outstandin
+     *
+     * @param bridgeImpl The bridge specific structure.
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_startAll (mama_bool_t isBlocking);
+
+    /**
      * The callback invoked if an error occurs calling mama_startBackground() or
      * when mama_startBackground() exits normally in which case status will be
      * MAMA_STATUS_OK.
