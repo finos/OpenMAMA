@@ -133,6 +133,17 @@ public class MamaQueueGroup
                                 : myQueues[myCurQueue++ % myQueues.length];
     }
 
+    /**
+     * Return the requested Queue based on the given index, or null if it
+     * is not a valid index.
+     *
+     * @return The queue object
+     */
+    public MamaQueue getQueueByIndex(int index)
+    {
+        return myQueues == null ? Mama.getDefaultQueue (myBridge) : myQueues[index % myQueues.length];
+    }
+
 
     public void stopDispatch ()
     {

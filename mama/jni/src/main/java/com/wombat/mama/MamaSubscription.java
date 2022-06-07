@@ -63,6 +63,8 @@ public class MamaSubscription
     /* The type of the subscription. */
     private MamaSubscriptionType mySubType = MamaSubscriptionType.NORMAL;
 
+    private MamaQueue mQueue = null;
+
     /* ************************************************** */
     /* Construction and Finalization. */
     /* ************************************************** */
@@ -127,6 +129,9 @@ public class MamaSubscription
         // Save the closure as well
         myClosure = closure;
 
+        // Save the queue
+        mQueue = queue;
+
         // Create the native subscription
         createNativeSubscription(
             callback,
@@ -151,6 +156,9 @@ public class MamaSubscription
         MamaQueue               queue,
         MamaSource              source)
     {
+        // Save the queue
+        mQueue = queue;
+
         // Simply call the overload
         return createDictionarySubscription (
                 callback,
@@ -179,6 +187,9 @@ public class MamaSubscription
     {
         // Save the source to prevent additional context switches into C
         mySource = source;
+
+        // Save the queue
+        mQueue = queue;
 
         // Create the native dictionary subscription
         return createNativeDictionarySubscription(callback, queue, source, timeout, retries);
@@ -214,6 +225,9 @@ public class MamaSubscription
 
         // Save the closure
         myClosure = closure;
+
+        // Save the queue
+        mQueue = queue;
 
         // Create the native subscription
         createNativeSubscription(
@@ -252,6 +266,15 @@ public class MamaSubscription
     public MamaSource getSource ()
     {
         return mySource;
+    }
+
+    /**
+     * Return the queue used for this subscription
+     *
+     * @return The MamaQueue object
+     */
+    public MamaQueue getQueue () {
+        return mQueue;
     }
 
     /**
@@ -294,6 +317,9 @@ public class MamaSubscription
 
         // Save the closure
         myClosure = closure;
+
+        // Save the queue
+        mQueue = queue;
 
         // Create the native subscription
         setupNativeSubscription(
