@@ -22,8 +22,10 @@
 #ifndef MAMA_CPP_H__
 #define MAMA_CPP_H__
 
-#include <stdio.h>
+#include <cstdio>
 #include <cstring>
+#include <string>
+#include <map>
 
 #include <mama/mama.h>
 #include <mama/MamaBridgeCallback.h>
@@ -440,7 +442,7 @@ public:
     static void stop (mamaBridge bridgeImpl);
 
 
-     /**
+    /**
      * Stop dispatching on the default event queue for all bridges.
      */
     static void stopAll (void);

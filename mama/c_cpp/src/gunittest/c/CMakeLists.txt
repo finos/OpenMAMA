@@ -98,9 +98,24 @@ UnitTestC(UnitTestMamaPayloadC
 	payload/payloadgeneraltests.cpp
 	payload/payloadvectortests.cpp
 )
+target_link_libraries(UnitTestMamaC ${GTEST_BOTH_LIBRARIES} mama)
+install(TARGETS UnitTestMamaC
+		RUNTIME DESTINATION bin
+		LIBRARY DESTINATION lib
+		ARCHIVE DESTINATION lib)
+if (WIN32 AND MSVC)
+	install(FILES $<TARGET_PDB_FILE:UnitTestMamaC> DESTINATION bin OPTIONAL)
+endif()
+
+gtest_discover_tests(
+		UnitTestMamaC
+	EXTRA_ARGS -m qpid -p qpidmsg -i Q
+	PROPERTIES ENVIRONMENT
+		"WOMBAT_PATH=${CMAKE_SOURCE_DIR}/mama/c_cpp/src/examples:${CMAKE_SOURCE_DIR}/mama/c_cpp/src/gunittest/c"
+)
 
 if (WIN32)
-    set(BATCH_ENV_PATH "${GTEST_ROOT}/bin;${APR_ROOT}/bin;${PROTON_ROOT}/bin;${LIBEVENT_ROOT}/lib;$<TARGET_FILE_DIR:mama>;$<TARGET_FILE_DIR:wombatcommon>;$<TARGET_FILE_DIR:mamabaseimpl>;$<TARGET_FILE_DIR:mamaqpidimpl>;$<TARGET_FILE_DIR:mamaplugindqstrategy>;$<TARGET_FILE_DIR:mamaentnoop>;$<TARGET_FILE_DIR:mamaqpidmsgimpl>")
+    set(BATCH_ENV_PATH "${GTEST_ROOT}/bin;${APR_ROOT}/bin;${APRUTIL_ROOT}/bin;${PROTON_ROOT}/bin;${LIBEVENT_ROOT}/lib;$<TARGET_FILE_DIR:mama>;$<TARGET_FILE_DIR:wombatcommon>;$<TARGET_FILE_DIR:wombatcommoncpp>;$<TARGET_FILE_DIR:mamabaseimpl>;$<TARGET_FILE_DIR:mamaqpidimpl>;$<TARGET_FILE_DIR:mamaplugindqstrategy>;$<TARGET_FILE_DIR:mamaentnoop>;$<TARGET_FILE_DIR:mamaqpidmsgimpl>")
 	if (WITH_MAMDA)
 		set(BATCH_ENV_PATH "${BATCH_ENV_PATH};$<TARGET_FILE_DIR:mamda>")
 	endif()

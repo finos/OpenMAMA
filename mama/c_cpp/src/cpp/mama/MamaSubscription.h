@@ -30,6 +30,7 @@ namespace Wombat
     class MamaSubscriptionCallback;
     class MamaSource;
     class MamaSourceDerivative;
+    class MamaTransport;
 
     struct MamaSubscriptionImpl;
     /**

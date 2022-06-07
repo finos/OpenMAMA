@@ -33,6 +33,7 @@
 #include <mama/queue.h>
 #include <mama/MamaQueue.h>
 #include <mama/MamaReservedFields.h>
+#include <map>
 
 namespace Wombat
 {

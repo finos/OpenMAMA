@@ -2,12 +2,13 @@ project (wombatcommoncpp)
 
 get_target_property(WOMBAT_INCLUDES wombatcommon INCLUDE_DIRECTORIES)
 include_directories(
-	wombat
-	${WOMBAT_INCLUDES}
+    .
+    ${WOMBAT_INCLUDES}
 )
 
 set(sources
-	Lock.cpp
+    Lock.cpp
+    CommonStrUtils.cpp
 )
 
 add_library(wombatcommoncpp SHARED ${sources})

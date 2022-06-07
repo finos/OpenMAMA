@@ -69,6 +69,8 @@ extern "C"
 #define MAMA_MAX_ROOT_LEN          5 // e.g. _MDDD
 #define MAMA_MAX_SOURCE_LEN        64
 #define MAMA_MAX_TRANSPORT_LEN     64
+#define MAMA_MAX_BRIDGE_NAME_LEN   64
+#define MAMA_MAX_RESOURCE_POOL_LEN 128
 // This is source + symbol + root + 2 delimiting periods
 #define MAMA_MAX_TOTAL_SYMBOL_LEN  (MAMA_MAX_SYMBOL_LEN + MAMA_MAX_SOURCE_LEN + \
                                     MAMA_MAX_ROOT_LEN + 2)

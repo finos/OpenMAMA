@@ -78,6 +78,9 @@ list_create (size_t elementSize)
     wListImpl* rval;
 
     rval = malloc (sizeof (wListImpl));
+    if (NULL == rval) {
+        return INVALID_LIST;
+    }
     memset (rval, 0, sizeof (wListImpl));
 
     /* We need to deal with alignment when alocating elements */

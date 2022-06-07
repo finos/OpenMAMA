@@ -404,9 +404,9 @@ int resetTimer (timerHeap heap, timerElement timer, struct timeval* timeout)
 
 int lockTimerHeap (timerHeap heap)
 {
+    timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
     if (heap == NULL)
         return -1;
-    timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
 
     return wthread_mutex_lock (&heapImpl->mLock);
 }
@@ -414,9 +414,9 @@ int lockTimerHeap (timerHeap heap)
 
 int unlockTimerHeap (timerHeap heap)
 {
+    timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
     if (heap == NULL)
         return -1;
-    timerHeapImpl* heapImpl = (timerHeapImpl*)heap;
 
     return wthread_mutex_unlock (&heapImpl->mLock);
 }

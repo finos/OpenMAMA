@@ -483,10 +483,9 @@ endpointPool_getEndpointByIdentifiers   (endpointPool_t     endpoints,
     endpointPoolImpl*       impl             = (endpointPoolImpl*) endpoints;
     wtable_t                registeredTable  = NULL;
     endpoint_t              existingEndpoint = NULL;
+    mama_status status;
 
     wlock_lock(impl->mLock);
-
-    mama_status status;
 
     /* Get the wtable representing the endpoints associated with this topic */
     registeredTable = wtable_lookup (impl->mContainer, topic);
@@ -522,6 +521,7 @@ endpointPoolImpl_extendBuffer (endpointPoolImpl* impl, size_t size)
 {
     size_t  newSize     = 0;
     void*   newBuffer   = NULL;
+    mama_status status;
 
     if (NULL == impl)
     {
@@ -542,7 +542,6 @@ endpointPoolImpl_extendBuffer (endpointPoolImpl* impl, size_t size)
     }
 
     /* Reallocate memory as required */
-    mama_status status;
     newBuffer = realloc (impl->mBuffer, newSize);
     if (NULL == newBuffer)
     {
