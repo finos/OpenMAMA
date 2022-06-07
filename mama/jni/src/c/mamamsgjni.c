@@ -49,6 +49,7 @@ static jfieldID  pricePointerFieldId_g     =   NULL;
 static jfieldID  dateTimePointerFieldId_g  =   NULL;
 static jfieldID  msgPricePointerFieldId_g     =   NULL;
 static jfieldID  msgDateTimePointerFieldId_g  =   NULL;
+static jfieldID  msgByteBufferPointerFieldId_g = NULL;
 static jfieldID  jMsgArrayFieldId_g        =   NULL;
 static jfieldID  jMsgArraySizeFieldId_g    =   NULL;
 
@@ -67,9 +68,6 @@ static jfieldID jMamaStringValue_g = NULL;
 
 /*Method ids for MamaMsg.java method callbacks*/
 jmethodID        messageConstructorId_g    =   NULL;
-
-/* This pointer holds the byte buffer used in the createFromByteBuffer function. */
-static jbyte *g_byteBuffer = NULL;
 
 /*The onField callback method on the MamaMsgFieldIterator interface*/
 static jmethodID iteratorCbOnFieldId_g     =   NULL;
@@ -380,8 +378,12 @@ char *CopyBuffer(jbyte *buffer, jsize len)
  */
 JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1createFromByteBuffer(JNIEnv *env, jobject this, jbyteArray byteArray)
 {
+        jlong byteBufferPointerJlong = (*env)->GetLongField(
+            env, this, msgByteBufferPointerFieldId_g);
+
+        void* byteBufferPointer = CAST_JLONG_TO_POINTER(void*, byteBufferPointerJlong);
 	/* If this function has already been called thrown an error. */
-	if(NULL != g_byteBuffer)
+	if(NULL != byteBufferPointer)
 	{
 		/* Format an error string. */
 		char  errorString[UTILS_MAX_ERROR_STRING_LENGTH] = "";
@@ -410,8 +412,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1createFromByteBuffer(JNIEn
 					 * memory from being freed.
 					 */
 					mama_status status = MAMA_STATUS_NOMEM;
-					g_byteBuffer = CopyBuffer(nativeByteArray, arrayLength);
-					if(NULL != g_byteBuffer)
+                                        byteBufferPointer = CopyBuffer(nativeByteArray, arrayLength);
+					if(NULL != byteBufferPointer)
 					{
 						/* The address of the message pointer must be passed to this function. */
 						mamaMsg cMessage = CAST_JLONG_TO_POINTER(mamaMsg,msgPointer);
@@ -419,20 +421,20 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1createFromByteBuffer(JNIEn
 						/* Call the native function. */
 						status = mamaMsg_createFromByteBuffer (
 							&cMessage,
-							(const void*)g_byteBuffer,
+							(const void*)byteBufferPointer,
 							(mama_size_t)arrayLength);
 
 						/* If something went wrong then delete the global array. */
 						if(MAMA_STATUS_OK != status)
 						{
-							free(g_byteBuffer);
-							g_byteBuffer = NULL;
+							free(byteBufferPointer);
 						}
 						else
 						{
-						    (*env)->SetLongField(env, this,
-                                                 messagePointerFieldId_g,
-                                                 CAST_POINTER_TO_JLONG (cMessage));
+						    (*env)->SetLongField(
+                                                        env, this, messagePointerFieldId_g, CAST_POINTER_TO_JLONG (cMessage));
+                                                    (*env)->SetLongField(
+                                                        env, this, msgByteBufferPointerFieldId_g, CAST_POINTER_TO_JLONG (byteBufferPointer));
 						}
 					}
 
@@ -485,12 +487,15 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1setNewBuffer(JNIEnv *env, 
 					/* If something went wrong then delete the global array. */
 					if(MAMA_STATUS_OK == status)
 					{
-						/* Free the existing global buffer. */
-						if(NULL != g_byteBuffer)
-						{
-							free(g_byteBuffer);
-						}
-						g_byteBuffer = newBuffer;
+                                            jlong byteBufferPointerJlong = (*env)->GetLongField(env, this, msgByteBufferPointerFieldId_g);
+                                            void* byteBufferPointer = CAST_JLONG_TO_POINTER(void*, byteBufferPointerJlong);
+                                            /* Free the existing global buffer. */
+                                            if(NULL != byteBufferPointer)
+                                            {
+                                                free (byteBufferPointer);
+                                            }
+                                            (*env)->SetLongField(
+                                                env, this, msgByteBufferPointerFieldId_g, CAST_POINTER_TO_JLONG (newBuffer));
 					}
 
 					/* If something went wrong then delete the global array. */
@@ -3995,6 +4000,8 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1destroy
     jint        jMsgArraySize   =   0;
     jint        i               =   0;
     jobject     jMsg            =   NULL;
+    jlong       byteBufferPointerJlong = 0;
+    void*       byteBufferPointer = NULL;
 
     msgPointer = (*env)->GetLongField(env,this,messagePointerFieldId_g);
 
@@ -4038,12 +4045,15 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg__1destroy
         (*env)->SetIntField (env, this, jMsgArraySizeFieldId_g, jMsgArraySize);
     }
 
-	/* Free the byte buffer if it is held. */
-	if(NULL != g_byteBuffer)
-	{
-		free(g_byteBuffer);
-		g_byteBuffer = NULL;
-	}
+    byteBufferPointerJlong = (*env)->GetLongField(env, this, msgByteBufferPointerFieldId_g);
+    byteBufferPointer = CAST_JLONG_TO_POINTER(void*, byteBufferPointerJlong);
+    /* Free the byte buffer if it is held. */
+    if(NULL != byteBufferPointer)
+    {
+        free(byteBufferPointer);
+        (*env)->SetLongField (env, this, msgByteBufferPointerFieldId_g, 0);
+        byteBufferPointer = NULL;
+    }
 
     return;
 }
@@ -4660,6 +4670,10 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsg_initIDs
 
     msgDateTimePointerFieldId_g = (*env)->GetFieldID(env,
                              class,"dateTimePointer_i",
+                             UTILS_JAVA_POINTER_TYPE_SIGNATURE);
+
+    msgByteBufferPointerFieldId_g = (*env)->GetFieldID(env,
+                             class,"byteBufferPointer_i",
                              UTILS_JAVA_POINTER_TYPE_SIGNATURE);
 
     priceClass = (*env)->FindClass(env,"com/wombat/mama/MamaPrice");

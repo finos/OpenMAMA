@@ -102,6 +102,7 @@ public class MamaMsg
     /* Pointer to the underlying C structure of the reuseable objects */
     private long dateTimePointer_i = 0;
     private long pricePointer_i    = 0;
+    private long byteBufferPointer_i = 0;
 
     /* Pointer to an array of reuseable JNI Msg Objects for extracting
     vector messages */
