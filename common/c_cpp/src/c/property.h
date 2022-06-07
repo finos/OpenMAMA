@@ -24,6 +24,7 @@
  
 #include <wombat/wConfig.h>
 #include <wombat/port.h>
+#include <stdarg.h>
 
 #if defined(__cplusplus)
 extern "C" {
@@ -88,6 +89,16 @@ void
 properties_ForEach( wproperty_t handle, propertiesCallback cb, void* closure);
 
 /**
+ * Iterate over all keys in the properties table matching the given prefix
+ */
+COMMONExpDLL
+void
+properties_ForEachWithPrefix (wproperty_t handle,
+                              const char* prefix,
+                              propertiesCallback cb,
+                              void* closure);
+
+/**
  * Free the resources associated with the properties.
  */
 COMMONExpDLL
@@ -117,6 +128,34 @@ properties_GetPropertyValueUsingFormatString (wproperty_t handle,
                                               const char* defaultVal,
                                               const char* format,
                                               ...);
+
+/**
+ * This is a local function for parsing string configuration parameters from the
+ * properties object, and supports default values. This function should
+ * be used where the configuration parameter itself can be variable.
+ * @param handle     The property file handle to use
+ * @param defaultVal This is the default value to use if the parameter does not
+ *                   exist in the configuration file
+ * @param paramName  The format and variable list combine to form the real
+ *                   configuration parameter used. This configuration parameter
+ *                   will be stored at this location so the calling function
+ *                   can log this.
+ * @param format     This is the format string which is used to build the
+ *                   name of the configuration parameter which is to be parsed.
+ * @param arguments  This is the variable list of arguments to be used along
+ *                   with the format string.
+ *
+ * @return const char* containing the parameter value or the default or NULL if
+ *         it is not found.
+ */
+COMMONExpDLL
+const char*
+properties_GetPropertyValueUsingVaList (
+    wproperty_t handle,
+    const char* defaultVal,
+    char* paramName,
+    const char* format,
+    va_list arguments);
 
 /**
  * Will escape the chars with a \ found to match in chars array. Returns a 

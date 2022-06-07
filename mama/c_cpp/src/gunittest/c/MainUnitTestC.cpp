@@ -40,9 +40,9 @@
 static string version     ("APPNAMESTR:  Version " VERSIONSTR
                            "  Date " DATESTR "  Build " BUILDSTR);
 
-static const char*       gMiddleware = "wmw";
-static const char*       gPayload    = "wmsg";
-static char              gPayloadId  = 'W';
+static const char*       gMiddleware = "qpid";
+static const char*       gPayload    = "qpidmsg";
+static char              gPayloadId  = 'Q';
 static const char*       gTransport  = "tport";
 static gtest_strictness  gStrictness  = DISCRETIONAL;
 static const char*       gSymbol     = "SYM";

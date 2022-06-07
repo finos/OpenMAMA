@@ -23,6 +23,7 @@
 #define MAMA_BASIC_SUBSCRIPTION_CALLBACK_CPP_H__
 
 #include "mama/mamacpp.h"
+#include "mama/MamaStatus.h"
 
 namespace Wombat 
 {

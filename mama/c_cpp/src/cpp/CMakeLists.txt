@@ -1,9 +1,11 @@
 project (mamacpp)
 
+get_target_property(WOMBAT_INCLUDES wombatcommoncpp INCLUDE_DIRECTORIES)
 get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
 
 include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${WOMBAT_INCLUDES}
 	${MAMA_INCLUDES}
 )
 
@@ -58,7 +60,7 @@ set(sources
 
 add_library(mamacpp SHARED ${sources})
 add_library(mamacppstatic STATIC ${sources})
-target_link_libraries(mamacpp mama)
+target_link_libraries(mamacpp mama wombatcommoncpp)
 target_link_libraries(mamacppstatic mamastatic)
 
 set_target_properties(mamacpp PROPERTIES OUTPUT_NAME "mamacpp${OPENMAMA_LIBRARY_SUFFIX}")

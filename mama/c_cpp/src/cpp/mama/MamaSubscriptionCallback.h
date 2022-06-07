@@ -22,11 +22,13 @@
 #ifndef MAMA_SUBSCRIPTION_CALLBACK_CPP_H__
 #define MAMA_SUBSCRIPTION_CALLBACK_CPP_H__
 
+#include "mama/MamaStatus.h"
 #include "mama/mamacpp.h"
 
 namespace Wombat 
 {
     class MamaSubscription;
+    class MamaBasicSubscription;
     /**
      * The message callback interface. Callers provide an object implementing this 
      * interface on creating a <code>MamaSubscription</code>.

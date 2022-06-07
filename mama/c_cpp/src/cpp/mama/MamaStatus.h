@@ -22,7 +22,8 @@
 #ifndef MAMA_STATUS_CPP_H__
 #define MAMA_STATUS_CPP_H__
 
-#include "mama/mamacpp.h"
+#include <mama/status.h>
+#include <exception>
 
 namespace Wombat 
 {

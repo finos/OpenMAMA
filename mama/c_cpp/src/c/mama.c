@@ -707,7 +707,7 @@ mamaInternal_getGlobalStatsCollector()
 wproperty_t
 mamaInternal_getProperties()
 {
-  return gProperties;
+    return gProperties;
 }
 
 /**
@@ -769,7 +769,7 @@ mama_openWithPropertiesCount (const char* path,
 {
     mama_status         result                  = MAMA_STATUS_OK;
     mama_size_t         numBridges              = 0;
-    mamaMiddleware      middleware              = 0;
+    mama_size_t         middlewareIdx           = 0;
     const char*         appString               = NULL;
     const char*         prop                    = NULL;
     int                 bridgeIdx               = 0;
@@ -913,9 +913,9 @@ mama_openWithPropertiesCount (const char* path,
      * Note: At present we ignore the return status of the loadPayloadBridge
      * call within the iteration, though we may wish to resolve that.
      */
-    for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
     {
-        mamaMiddlewareLib*  middlewareLib   = gImpl.middlewares.byIndex[middleware];
+        mamaMiddlewareLib*  middlewareLib   = gImpl.middlewares.byIndex[middlewareIdx];
 
         if (middlewareLib && middlewareLib->bridge)
         {
@@ -964,10 +964,10 @@ mama_openWithPropertiesCount (const char* path,
     /* Iterate the currently loaded middleware bridges, log their version, and
      * increment the count of open bridges.
      */
-    for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
     {
         mamaMiddlewareLib* middlewareLib
-            = (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+            = (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
         if (middlewareLib)
         {
@@ -1074,10 +1074,125 @@ threadPropertiesCb (const char* name, const char* value, void* closure)
     }
 }
 
+MAMAExpDLL
+extern long int
+mamaImpl_getParameterAsLong (
+    long defaultVal,
+    long minimum,
+    long maximum,
+    const char* format, ...)
+{
+    const char* returnVal     = NULL;
+    long        returnLong    = 0;
+    char        paramDefault[PROPERTY_NAME_MAX_LENGTH];
+    char        paramName[PROPERTY_NAME_MAX_LENGTH];
+
+    /* Create list for storing the parameters passed in */
+    va_list arguments;
+
+    /* Populate list with arguments passed in */
+    va_start(arguments, format);
+
+    snprintf (paramDefault, PROPERTY_NAME_MAX_LENGTH, "%ld", defaultVal);
+
+    returnVal = properties_GetPropertyValueUsingVaList(
+        mamaInternal_getProperties(),
+        paramDefault,
+        paramName,
+        format,
+        arguments);
+
+    /* Translate the returned string to a long */
+    returnLong = atol (returnVal);
+
+    if (returnLong < minimum)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "Value for %s too small (%ld) - reverting to: [%ld]",
+                  paramName,
+                  returnLong,
+                  minimum);
+        returnLong = minimum;
+    }
+    else if (returnLong > maximum)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "Value for %s too large (%ld) - reverting to: [%ld]",
+                  paramName,
+                  returnLong,
+                  maximum);
+        returnLong = maximum;
+    }
+    /* These will be equal if unchanged */
+    else if (returnVal == paramDefault)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "parameter [%s]: [%ld] (Default)",
+                  paramName, returnLong);
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "parameter [%s]: [%ld] (User Defined)",
+                  paramName, returnLong);
+    }
+
+    return returnLong;
+}
+
+MAMAExpDLL
+extern const char*
+mamaImpl_getParameter (
+    const char* defaultVal,
+    const char* format, ...)
+{
+    char        paramName[PROPERTY_NAME_MAX_LENGTH];
+    const char* returnVal = NULL;
+    /* Create list for storing the parameters passed in */
+    va_list     arguments;
+
+    /* Populate list with arguments passed in */
+    va_start (arguments, format);
+
+    returnVal = properties_GetPropertyValueUsingVaList (
+        mamaInternal_getProperties(),
+        (char*)defaultVal,
+        paramName,
+        format,
+        arguments);
+
+    /* These will be equal if unchanged */
+    if (returnVal == defaultVal)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameter: "
+                  "parameter [%s]: [%s] (Default)",
+                  paramName,
+                  returnVal);
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameter: "
+                  "parameter [%s]: [%s] (User Defined)",
+                  paramName,
+                  returnVal);
+    }
+
+    /* Clean up the list */
+    va_end(arguments);
+
+    return returnVal;
+}
+
 mama_status
 mama_statsInit (void)
     {
-    mamaMiddleware middleware = 0;
+    mama_size_t middlewareIdx = 0;
     char* statsLogging = (char*) properties_Get (gProperties, "mama.statslogging.enable");
 
     if ( (statsLogging != NULL) && strtobool (statsLogging))
@@ -1140,10 +1255,10 @@ mama_statsInit (void)
         /* Iterate each bridge, and call the enableStats method on the default
          * queue for each.
          */
-        for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+        for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
         {
             mamaMiddlewareLib* middlewareLib =
-                (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+                (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
             if (middlewareLib && middlewareLib->bridge)
             {
@@ -1331,7 +1446,7 @@ mama_status
 mama_closeCount (unsigned int* count)
 {
     mama_status    result     = MAMA_STATUS_OK;
-    mamaMiddleware middleware = 0;
+    mama_size_t    middlewareIdx = 0;
     int payload = 0;
     int bridgeCount = 0;
 
@@ -1386,11 +1501,11 @@ mama_closeCount (unsigned int* count)
         /* Iterate the loaded bridges, and stop the internal event queue for
          * each.
          */
-        for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+        for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
         {
             char threadname[256];
             mamaMiddlewareLib* middlewareLib =
-                        (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+                        (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
             if (middlewareLib && middlewareLib->bridge)
             {
@@ -1557,10 +1672,10 @@ mama_closeCount (unsigned int* count)
         /* Iterate over the loaded middleware bridges, close each bridge, and
          * unload each library in turn.
          */
-        for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+        for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
         {
             mamaMiddlewareLib* middlewareLib =
-                        (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+                        (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
             if (middlewareLib)
             {
@@ -1600,7 +1715,7 @@ mama_closeCount (unsigned int* count)
                 /* Free the middlewareLib struct */
                 free (middlewareLib);
 
-                gImpl.middlewares.byIndex[middleware] = NULL;
+                gImpl.middlewares.byIndex[middlewareIdx] = NULL;
             }
         }
 
@@ -1868,13 +1983,13 @@ mama_status
 mama_stopAll (void)
 {
     mama_status  result      = MAMA_STATUS_OK;
-    mamaMiddleware middleware = 0;
+    mama_size_t  middlewareIdx = 0;
 
     /* Iterate the loaded bridges and call mama_stop for each. */
-    for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
     {
         mamaMiddlewareLib* middlewareLib =
-                    (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+                    (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
         if (middlewareLib && middlewareLib->bridge)
         {
@@ -2284,10 +2399,11 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     payloadLib->id            = payloadChar;
     payloadLib->keepLoaded    = 0;
     {
+        const char *propstring = NULL;
         char propName[MAX_INTERNAL_PROP_LEN];
         snprintf (propName, MAX_INTERNAL_PROP_LEN,
                   "%s%s", MAMA_PROPERTY_PAYLOAD_KEEPLOADED, payloadName);
-        const char *propstring = properties_Get(mamaInternal_getProperties(), propName);
+        propstring = properties_Get(mamaInternal_getProperties(), propName);
         if (propstring)
         {
             payloadLib->keepLoaded = properties_GetPropertyValueAsBoolean (propstring);
@@ -2866,8 +2982,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     /* Allocate the bridgeLib struct, and populate with the bridgeImpl and
      * library handle.
      */
-    middlewareLib = malloc (sizeof (mamaMiddlewareLib));
-
+    middlewareLib = calloc (1, sizeof (mamaMiddlewareLib));
     if (!middlewareLib)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,

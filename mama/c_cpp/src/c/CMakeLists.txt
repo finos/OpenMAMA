@@ -62,6 +62,8 @@ set(sources
 	listenermsgcallback.c
 	log.c
 	mama.c
+	queuegroup.c
+	mama/queuegroup.h
 	mamaStrUtils.c
 	mamautils.c
 	marketdata.c

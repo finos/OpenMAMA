@@ -35,7 +35,7 @@
   #define OPENMAMA_INTEGRATION
 #endif
 
-#include <mama/integration/mama.h>
+#include "mama/integration/mama.h"
 
 #if defined(__cplusplus)
 extern "C"

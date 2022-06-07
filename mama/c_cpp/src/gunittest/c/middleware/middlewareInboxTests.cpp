@@ -69,7 +69,7 @@ void MAMACALLTYPE onError(mama_status status, void *closure)
 {
 }
 
-void MAMACALLTYPE onInboxDestroy(mamaInbox inbox, void *closure)
+void MAMACALLTYPE onMwInboxDestroy(mamaInbox inbox, void *closure)
 {
 }
 
@@ -104,7 +104,7 @@ TEST_F (MiddlewareInboxTests, create)
                                               queue,
                                               onMsg,
                                               onError,
-                                              onInboxDestroy,
+                                              onMwInboxDestroy,
                                               closure,
                                               parent));
 
@@ -324,7 +324,7 @@ TEST_F (MiddlewareInboxTests, CreateDestroy)
                                               queue,
                                               onMsg,
                                               onError,
-                                              onInboxDestroy,
+                                              onMwInboxDestroy,
                                               closure,
                                               parent));
 
