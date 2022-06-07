@@ -1619,6 +1619,13 @@ mamaSubscription_cleanup (mamaSubscription subscription)
         self->mInitialRequest = NULL;
     }
 
+    /* Destroy the recap request inbox only if it was never handed over to DQ */
+    if (self->mSubjectContext.mDqContext.mRecapRequest == NULL && self->mRecapRequest != NULL)
+    {
+        imageRequest_destroy (self->mRecapRequest);
+        self->mRecapRequest = NULL;
+    }
+
     if (self->mCallback)
     {
         listenerMsgCallback_destroy (self->mCallback);
