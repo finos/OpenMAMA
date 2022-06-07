@@ -1,5 +1,3 @@
-cmake_minimum_required (VERSION 2.8.3)
-
 function (get_component_version COMPONENT)
 	file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION VERSION)
 

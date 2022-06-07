@@ -81,8 +81,12 @@ MARK_AS_ADVANCED(
 
 FIND_PATH(APRUTIL_INCLUDE_DIR apu.h
   PATHS
+    ${APRUTIL_ROOT}/include/apr-1
+    ${APRUTIL_ROOT}/include/apr-1.0
+    ${APRUTIL_ROOT}/include
     ${APR_ROOT}/include/apr-1
     ${APR_ROOT}/include/apr-1.0
+    ${APR_ROOT}/include
     /usr/local/include/apr-1
     /usr/local/include/apr-1.0
     /usr/include/apr-1
@@ -90,10 +94,11 @@ FIND_PATH(APRUTIL_INCLUDE_DIR apu.h
     /usr/local/apr/include/apr-1
 )
 
-SET(APRUTIL_NAMES ${APRUTIL_NAMES} aprutil-1)
+SET(APRUTIL_NAMES ${APRUTIL_NAMES} libaprutil-1 aprutil-1)
 FIND_LIBRARY(APRUTIL_LIBRARY
   NAMES ${APRUTIL_NAMES}
   PATHS
+    ${APRUTIL_ROOT}/lib
     ${APR_ROOT}/lib
     /usr/lib
     /usr/local/lib
@@ -130,3 +135,4 @@ MARK_AS_ADVANCED(
   )
 
 FILE(GLOB APR_LIBRARY_FILES ${APR_LIBRARY}*)
+FILE(GLOB APRUTIL_LIBRARY_FILES ${APRUTIL_LIBRARY}*)

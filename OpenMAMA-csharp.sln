@@ -74,7 +74,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tutorials", "tutorials", "{
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "01-quickstart", "tutorials\csharp\01-quickstart\01-quickstart.csproj", "{D4394ED3-EC18-47EC-89A3-BA935E6C3A61}"
 EndProject
-# Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02-resourcepool", "tutorials\csharp\02-resourcepool\02-resourcepool.csproj", "{AC1F495A-43E6-4509-B7EB-E961C7D1BD24}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "02-resourcepool", "tutorials\csharp\02-resourcepool\02-resourcepool.csproj", "{AC1F495A-43E6-4509-B7EB-E961C7D1BD24}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
