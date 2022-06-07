@@ -137,12 +137,14 @@ typedef struct mamaAppContext_
 } mamaApplicationContext;
 
 /**
- * @brief Structure for storing combined mamaBridge and LIB_HANDLE data
+ * @brief Structure for storing metadata associated with the MAMA middleware lib
  */
 typedef struct mamaMiddlewareLib_
 {
-    mamaBridge  bridge;
-    LIB_HANDLE  library;
+    mamaBridge      bridge;
+    LIB_HANDLE      library;
+    wthread_mutex_t mMamaStartLock;
+    wthread_cond_t  mMamaStartCond;
 } mamaMiddlewareLib;
 
 
@@ -268,6 +270,10 @@ mama_normalizeMamaBridgeInterfaceVersionInternal (versionInfo* version);
 MAMAExpDLL
 void
 mama_setWrapperGetVersion(fpWrapperGetVersion value);
+
+MAMAExpDLL
+void
+mama_freeAllocatedBuffer (const char* buffer);
 
 mama_status mamaInternal_autoloadPayloadBridges (void);
 
@@ -1415,6 +1421,11 @@ mama_getProperty (const char *name)
     return properties_Get( gProperties, name );
 }
 
+void mama_freeAllocatedBuffer (const char* buffer)
+{
+    free((void*)buffer);
+}
+
 const char*
 mama_getVersion (mamaBridge bridgeImpl)
 {
@@ -1712,6 +1723,10 @@ mama_closeCount (unsigned int* count)
                     middlewareLib->library = NULL;
                 }
 
+                /* Destroy objects for synchronization */
+                wthread_mutex_destroy (&middlewareLib->mMamaStartLock);
+                wthread_cond_destroy (&middlewareLib->mMamaStartCond);
+
                 /* Free the middlewareLib struct */
                 free (middlewareLib);
 
@@ -1934,6 +1949,76 @@ mama_startBackgroundEx (mamaBridge bridgeImpl, mamaStopCBEx exCallback, void* cl
 {
     /* Passing this NULL tells mama_StartBackgroundHelper to use new functionality */
     return mama_startBackgroundHelper (bridgeImpl, NULL, exCallback, closure);
+}
+
+static void MAMACALLTYPE mamaImpl_startAllStopCb(
+    mama_status status, mamaBridge bridge, void* closure) {
+    // This callback means that mama_start has stopped for the given thread
+    mama_status result = MAMA_STATUS_OK;
+    mama_size_t middlewareIdx = 0;
+
+    /* Iterate loaded bridges and call start for each on their own thread */
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
+    {
+        mamaMiddlewareLib* middlewareLib =
+            (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
+
+        if (middlewareLib && middlewareLib->bridge)
+        {
+            // Send a conditional signal for unblocking
+            wthread_mutex_lock   (&middlewareLib->mMamaStartLock);
+            wthread_cond_signal  (&middlewareLib->mMamaStartCond);
+            wthread_mutex_unlock (&middlewareLib->mMamaStartLock);
+        }
+    }
+}
+
+mama_status
+mama_startAll (mama_bool_t isBlocking) {
+    mama_status result = MAMA_STATUS_OK;
+    mama_size_t middlewareIdx = 0;
+
+    /* Iterate loaded bridges and call start for each on their own thread */
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
+    {
+        mamaMiddlewareLib* middlewareLib =
+            (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
+
+        if (middlewareLib && middlewareLib->bridge)
+        {
+            mamaBridgeImpl* impl = (mamaBridgeImpl*)middlewareLib->bridge;
+            mama_status bridgeStartStatus = mama_startBackgroundHelper (
+                middlewareLib->bridge, NULL, mamaImpl_startAllStopCb, NULL);
+            if (bridgeStartStatus != MAMA_STATUS_OK) {
+                mama_log (MAMA_LOG_LEVEL_ERROR,
+                          "mama_startAll(): Failed to start bridge %s.",
+                          impl->bridgeGetName());
+                // This may be fatal so save status code for return
+                result = bridgeStartStatus;
+            }
+        }
+    }
+
+    /* OK so this function is expected to block, so join threads here */
+    if (isBlocking == MAMA_BOOL_TRUE)
+    {
+        for (middlewareIdx = 0; middlewareIdx < gImpl.middlewares.count; ++middlewareIdx)
+        {
+            mamaMiddlewareLib* middlewareLib =
+                (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
+
+            if (middlewareLib && middlewareLib->bridge)
+            {
+                mamaBridgeImpl* impl = (mamaBridgeImpl*)middlewareLib->bridge;
+                // Wait on the ending lock
+                wthread_mutex_lock (&middlewareLib->mMamaStartLock);
+                wthread_cond_wait (&middlewareLib->mMamaStartCond,
+                                   &middlewareLib->mMamaStartLock);
+                wthread_mutex_unlock (&middlewareLib->mMamaStartLock);
+            }
+        }
+    }
+    return result;
 }
 
 /**
@@ -3006,6 +3091,10 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
 
     middlewareLib->bridge        = *(mamaBridge*)impl;
     middlewareLib->library       = middlewareLibHandle;
+
+    // Initializing mutex and conditional for start / stopping this lock
+    wthread_mutex_init (&middlewareLib->mMamaStartLock, NULL);
+    wthread_cond_init  (&middlewareLib->mMamaStartCond, NULL);
 
     status = wtable_insert (gImpl.middlewares.table,
                             middlewareName,

@@ -523,7 +523,7 @@ public class MamdaOrderBookPriceLevel
     /**
      * Update the entry position of an existing entry in the level.
      *
-     * @param entry An instance of <code>MamdaOrderBookEntry</code> with the
+     * @param entryId An instance of <code>MamdaOrderBookEntry</code> with the
      * new details for the entry in the level.
      * @param entryPosition Position of the Entry within the Price Level.
      *
@@ -1248,7 +1248,7 @@ public class MamdaOrderBookPriceLevel
     /**
      * Return the position of an Entry within the Price Level.
      *
-     * @param EntryId  The position of the order book entry.
+     * @param entryId  The position of the order book entry.
      * @return The position of the Entry in the Price Level.
      *         Indexed from 1.
      */
