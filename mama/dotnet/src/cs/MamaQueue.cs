@@ -115,6 +115,15 @@ namespace Wombat
 		}
 
 		/// <summary>
+		/// Sets the name of the queue to the given name (for stats, OS naming etc).
+		/// </summary>
+		public void setQueueName(string queueName)
+		{
+			int code = NativeMethods.mamaQueue_setQueueName(nativeHandle, queueName);
+			CheckResultCode(code);
+		}
+
+		/// <summary>
 		/// Get the value of the low water mark for the specified queue. A value of 1
 		/// will be returned if no low water mark was previously specified.
 		/// </summary>
@@ -712,6 +721,9 @@ namespace Wombat
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaQueue_setLowWatermark (IntPtr nativeHandle,
 				int lowWatermark);
+			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern int mamaQueue_setQueueName(IntPtr nativeHandle,
+				string name);
 			[DllImport(Mama.DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern int mamaQueue_getLowWatermark (IntPtr nativeHandle,
 				ref int lowWatermark);
