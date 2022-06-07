@@ -182,6 +182,43 @@ namespace Wombat
 
         #endregion
 
+        public static MamaLogLevel GetLogLevelForString(string level)
+        {
+	        if (level.Equals("OFF", StringComparison.OrdinalIgnoreCase))
+	        {
+		        return MamaLogLevel.MAMA_LOG_LEVEL_OFF;
+	        }
+	        if (level.Equals("SEVERE", StringComparison.OrdinalIgnoreCase))
+	        {
+		        return MamaLogLevel.MAMA_LOG_LEVEL_SEVERE;
+	        }
+	        if (level.Equals("ERROR", StringComparison.OrdinalIgnoreCase))
+	        {
+		        return MamaLogLevel.MAMA_LOG_LEVEL_ERROR;
+	        }
+	        if (level.Equals("WARN", StringComparison.OrdinalIgnoreCase))
+	        {
+		        return MamaLogLevel.MAMA_LOG_LEVEL_WARN;
+	        }
+	        if (level.Equals("NORMAL", StringComparison.OrdinalIgnoreCase))
+	        {
+		        return MamaLogLevel.MAMA_LOG_LEVEL_NORMAL;
+	        }
+	        if (level.Equals("FINE", StringComparison.OrdinalIgnoreCase))
+	        {
+		        return MamaLogLevel.MAMA_LOG_LEVEL_FINE;
+	        }
+	        if (level.Equals("FINER", StringComparison.OrdinalIgnoreCase))
+	        {
+		        return MamaLogLevel.MAMA_LOG_LEVEL_FINER;
+	        }
+	        if (level.Equals("FINEST", StringComparison.OrdinalIgnoreCase))
+	        {
+		        return MamaLogLevel.MAMA_LOG_LEVEL_FINEST;
+	        }
+
+	        return MamaLogLevel.MAMA_LOG_LEVEL_NORMAL;
+        }
 
         /// <summary>
         /// Sets the log callback, this will be invoked every time a log is written in MAMA.
