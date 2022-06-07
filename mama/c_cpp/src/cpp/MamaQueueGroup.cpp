@@ -82,6 +82,11 @@ namespace Wombat
                                 : mQueues [mCallCount++ % mQueueCount];
     }
 
+    MamaQueue* MamaQueueGroup::getQueueByIndex (int index)
+    {
+        return mQueues == nullptr ? nullptr : mQueues [index % mQueueCount];
+    }
+
     int MamaQueueGroup::getNumberOfQueues (void)
     {
         return mQueueCount;
