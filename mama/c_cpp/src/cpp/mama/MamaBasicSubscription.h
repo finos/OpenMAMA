@@ -27,12 +27,15 @@
 namespace Wombat
 {
 class MamaStatus;
+class MamaSubscriptionCallback;
 class MamaMsg;
 class MamaQueue;
-class MamaTransport;
 class MamaBasicSubscriptionCallback;
+class MamaSubscriptionCallbackToMamaBasicSubscriptionCallbackMapper;
+class MamaTransport;
 
 struct MamaBasicSubscriptionImpl;
+
 /**
  * The <code>MamaBasicSubscription</code> interface represents a
  * subscription to a topic with no market data semantics.
@@ -61,8 +64,8 @@ public:
      *
      * @param transport The transport to use. Must be a basic transport.
      * @param queue The queue.
-     * @param callback The mamaMsgCallbacks structure containing the three
-     * callback methods.
+     * @param callback MamaBasicSubscriptionCallback class instance containing
+     *     the three callback methods.
      *
      * @param topic The topic.
      * @param closure The caller supplied closure.
@@ -72,6 +75,26 @@ public:
         MamaTransport*                 transport,
         MamaQueue*                     queue,
         MamaBasicSubscriptionCallback* callback,
+        const char*                    topic,
+        void*                          closure = NULL);
+
+    /**
+      * Create a basic subscription without market data semantics using
+      * MAMA callback structure
+      *
+      * @param transport The transport to use. Must be a basic transport.
+      * @param queue The queue.
+      * @param callback MamaSubscriptionCallback class instance containing
+      *     the three callback methods.
+      *
+      * @param topic The topic.
+      * @param closure The caller supplied closure.
+      *
+     */
+    virtual void createBasic (
+        MamaTransport*                 transport,
+        MamaQueue*                     queue,
+        MamaSubscriptionCallback*      callback,
         const char*                    topic,
         void*                          closure = NULL);
 
@@ -188,6 +211,8 @@ private:
     MamaBasicSubscriptionCallback *mCallback;
 
     MamaBasicSubscriptionImpl*     mImpl;
+
+    MamaSubscriptionCallbackToMamaBasicSubscriptionCallbackMapper* mCallbackMapper;
 protected:
 
     // The closure passed to the create function
