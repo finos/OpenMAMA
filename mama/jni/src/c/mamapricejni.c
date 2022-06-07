@@ -138,6 +138,7 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaPrice_setFromString
                 "Error calling MamaPrice.setFromString().",
                 status);
         utils_throwExceptionForMamaStatus(env,status,errorString);
+        return;
     }
 
     /*Tidy up all local refs*/
