@@ -16,6 +16,8 @@ add_executable(UnitTestMamaCPP
 	MamaOpenCloseTest.cpp
 	MamaPriceTest.cpp
 	MamaPublisherTest.cpp
+	MamaRegexChannelFilterTest.cpp
+	MamaResourcePoolTest.cpp
 	MamaSubscriptionTest.cpp
 	MamaTimerTest.cpp
 )

@@ -35,6 +35,9 @@ set(sources
 	MamaSource.cpp
 	MamaReservedFields.cpp
 	MamaBasicSubscription.cpp
+	MamaResourcePool.cpp
+	mama/MamaResourcePool.h
+	mama/MamaRegexChannelFilter.h
 	MamaTimeZone.cpp
 	MamaSymbolMapFile.cpp
 	MamaTransportMap.cpp
