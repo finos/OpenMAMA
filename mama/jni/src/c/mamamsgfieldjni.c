@@ -885,9 +885,9 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsgField__1getMsg
 { 
     mama_status     status          =   MAMA_STATUS_OK;
     jlong           msgFieldPointer =   0;
-    jlong           msgPointerId    =   0;
-    jobject         subMsg          = NULL;
+    jobject         subMsg          =   NULL;
     mamaMsg         msg             =   NULL;
+    mamaMsg         msgCopy         =   NULL;
     char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
 
     msgFieldPointer = (*env)->GetLongField(env,this,messageFieldPointerFieldId_g);
@@ -909,10 +909,21 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaMsgField__1getMsg
         utils_throwWombatException(env,errorString);
         return; 
     }
-    (*env)->SetLongField (env, 
+    // Take a copy of this message since MamaMsg will want to own this memory
+    if(MAMA_STATUS_OK!=(status=mamaMsg_copy(msg, &msgCopy)))
+    {
+        utils_buildErrorStringForStatus(
+            errorString,
+            UTILS_MAX_ERROR_STRING_LENGTH,
+            "Could not copy Msg for mamaMsgField.",
+            status);
+        utils_throwWombatException(env,errorString);
+        return;
+    }
+    (*env)->SetLongField (env,
                           subMsg,
                           messagePointerFieldId_g, 
-                          CAST_POINTER_TO_JLONG(msg));
+                          CAST_POINTER_TO_JLONG(msgCopy));
 }
 
 /*
