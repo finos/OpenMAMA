@@ -230,6 +230,27 @@ namespace Wombat
         return mama_getProperty (name);
     }
 
+    extern "C"
+    {
+        static void mamaImpl_propertyCollectorCb (const char* name,
+                                                  const char* value,
+                                                  void*       closure)
+        {
+            auto* properties =
+                reinterpret_cast<std::map<std::string, std::string>*> (closure);
+            (*properties)[std::string (name)] = std::string (value);
+        }
+    }
+
+    std::map<std::string, std::string> Mama::getProperties ()
+    {
+        std::map<std::string, std::string> properties;
+        properties_ForEach (mamaInternal_getProperties(),
+                            mamaImpl_propertyCollectorCb,
+                            (void*)&properties);
+        return properties;
+    }
+
     void Mama::close ()
     {
         closeCount ();

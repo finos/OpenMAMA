@@ -991,6 +991,28 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_Mama_getProperty
 
 /*
  * Class:     com_wombat_mama_Mama
+ * Method:    getPropertiesAsString
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_wombat_mama_Mama_getPropertiesAsString
+    (JNIEnv* env, jclass class)
+{
+    const char* c_retVal = mama_getPropertiesAsString();
+    if (NULL == c_retVal)
+    {
+        return NULL;
+    }
+    else
+    {
+        jstring result = (*env)->NewStringUTF (env, c_retVal);
+        // This is our memory to free now
+        free ((void*)c_retVal);
+        return result;
+    }
+}
+
+/*
+ * Class:     com_wombat_mama_Mama
  * Method:    getLastErrorCode
  * Signature: ()I
  */

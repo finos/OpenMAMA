@@ -20,6 +20,7 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
@@ -415,6 +416,48 @@ namespace Wombat
 		public static string getProperty (string name)
 		{
 			return Marshal.PtrToStringAnsi(NativeMethods.mama_getProperty (name));
+		}
+
+		/// <summary>
+		/// Retrieve a specific property from the API.
+		/// If the property has not been set, the default value will be returned
+		/// </summary>
+		public static string getProperty (string name, string defaultValue)
+		{
+			string property = getProperty(name);
+			if (null == property)
+			{
+				return defaultValue;
+			}
+			else
+			{
+				return property;
+			}
+		}
+
+		/// <summary>
+		/// Retrieve all configured properties as a dictionary from the current configuration.
+		/// </summary>
+		public static Dictionary<string, string> getProperties ()
+		{
+			IntPtr propertiesAsStringPtr = NativeMethods.mama_getPropertiesAsString();
+			string propertiesAsString = Marshal.PtrToStringAnsi(propertiesAsStringPtr);
+			// We have our C# string now - free underlying native memory
+			NativeMethods.mama_freeAllocatedBuffer(propertiesAsStringPtr);
+
+			Dictionary<string, string> result = new Dictionary<string, string>();
+			if (null == propertiesAsString)
+			{
+				return result;
+			}
+			string[] propPairs = propertiesAsString.Split('\n');
+			foreach (string propStringPair in propPairs) {
+				String[] pair = propStringPair.Split('=');
+				if (pair.Length > 1) {
+					result.Add(pair[0], pair[1]);
+				}
+			}
+			return result;
 		}
 
 		/// <summary>
@@ -902,6 +945,8 @@ namespace Wombat
 			public static extern int mama_setProperty (string name, string value);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr mama_getProperty (string name);
+			[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern IntPtr mama_getPropertiesAsString ();
 			[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
             public static extern void mama_freeAllocatedBuffer (IntPtr buffer);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]

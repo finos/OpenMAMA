@@ -12,29 +12,8 @@ include_directories(
 	${MAMA_INCLUDES}
 )
 
-macro(UnitTestC bin)
-	add_executable(${bin}
-		${ARGN}
-		MainUnitTestC.cpp
-	)
-	target_link_libraries(${bin} ${GTEST_BOTH_LIBRARIES} mama)
-	install(TARGETS ${bin}
-			RUNTIME DESTINATION bin
-			LIBRARY DESTINATION lib
-			ARCHIVE DESTINATION lib)
-	if (WIN32 AND MSVC)
-		install(FILES $<TARGET_PDB_FILE:${bin}> DESTINATION bin OPTIONAL)
-	endif()
-
-    gtest_discover_tests(
-        ${bin}
-        EXTRA_ARGS -m qpid -p qpidmsg -i Q
-        PROPERTIES ENVIRONMENT
-            "WOMBAT_PATH=${CMAKE_SOURCE_DIR}/mama/c_cpp/src/examples:${CMAKE_SOURCE_DIR}/mama/c_cpp/src/gunittest/c"
-    )
-endmacro()
-
-UnitTestC(UnitTestMamaC
+add_executable(UnitTestMamaC
+	MainUnitTestC.cpp
 	inboxtest.cpp
 	iotest.cpp
 	mamainternaltest.cpp
@@ -53,14 +32,8 @@ UnitTestC(UnitTestMamaC
 	fieldcache/fieldcacheiteratortest.cpp
 	fieldcache/fieldcacherecordtest.cpp
 	fieldcache/fieldcachetest.cpp
-)
-
-UnitTestC(UnitTestMamaDateTimeC
 	mamadatetime/datetimerangetest.cpp
 	mamadatetime/datetimetest.cpp
-)
-
-UnitTestC(UnitTestMamaMsgC
 	mamamsg/msgatomictests.cpp
 	mamamsg/msgcompositetests.cpp
 	mamamsg/msgfieldatomictests.cpp
@@ -70,14 +43,8 @@ UnitTestC(UnitTestMamaMsgC
 	mamamsg/msgiterationtests.cpp
 	mamamsg/msgstatustests.cpp
 	mamamsg/msgvectortests.cpp
-)
-
-UnitTestC(UnitTestMamaPriceC
 	mamaprice/pricegeneraltests.cpp
 	mamaprice/pricerangetests.cpp
-)
-
-UnitTestC(UnitTestMamaMiddlewareC
 	middleware/middlewareGeneralTests.cpp
 	middleware/middlewareInboxTests.cpp
 	middleware/middlewareIoTests.cpp
@@ -87,9 +54,6 @@ UnitTestC(UnitTestMamaMiddlewareC
 	middleware/middlewareSubscriptionTests.cpp
 	middleware/middlewareTimerTests.cpp
 	middleware/middlewareTransportTests.cpp
-)
-
-UnitTestC(UnitTestMamaPayloadC
 	payload/fieldatomictests.cpp
 	payload/fieldcompositetests.cpp
 	payload/fieldvectortests.cpp

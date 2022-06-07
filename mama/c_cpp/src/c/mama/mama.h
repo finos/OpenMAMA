@@ -349,6 +349,20 @@ extern "C"
     mama_getProperty (const char* name);
 
     /**
+     * Build a string containing all configuration properties in the format:
+     *     key1=value
+     *     key2=value
+     *     key3=value
+     *
+     * NB The caller is responsible for destroying memory allocated by this
+     *    function
+     *
+     * @return String representing all the properties
+     */
+    MAMAExpDLL
+    extern const char * mama_getPropertiesAsString (void);
+
+    /**
      * Close MAMA and free all associated resources if no more references exist
      * (e.g.if open has been called 3 times then it will require 3 calls to 
      * close in order for all resources to be freed).
@@ -709,6 +723,19 @@ extern "C"
     extern mama_status
     mama_getPayloadBridge (mamaPayloadBridge *payloadBridge,
                            const char        *payloadName);
+
+    /**
+     *
+     * @param transports
+     * @param count
+     * @param maxCount
+     * @return
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_getAvailableTransportNames (char transports[][MAMA_MAX_TRANSPORT_LEN],
+                                     size_t maxCount,
+                                     size_t* count);
 
 #if defined(__cplusplus)
 }
