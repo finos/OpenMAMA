@@ -30,7 +30,7 @@ typedef struct implTransportBridge_
     wthread_mutex_t         mSubscriptionsLock;
 } implTransportBridge;
 
-void ompbBridgeMamaTransportImpl_dispatchThread (mamaTimer timer, void* closure);
+static void MAMACALLTYPE ompbBridgeMamaTransportImpl_dispatchThread (mamaTimer timer, void* closure);
 
 /*=========================================================================
   =               Public interface implementation functions               =
