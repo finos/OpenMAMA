@@ -68,7 +68,7 @@ void ompbBridgeMamaTransportImpl_registerSubscription(transportBridge transport,
 
 #define HEADER_DELIM ':'
 
-void ompbBridgeMamaTransportImpl_dispatchThread (mamaTimer timer, void* closure)
+static void MAMACALLTYPE ompbBridgeMamaTransportImpl_dispatchThread (mamaTimer timer, void* closure)
 {
     implTransportBridge* impl = (implTransportBridge*) closure;
 
