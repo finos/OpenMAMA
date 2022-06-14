@@ -16,4 +16,4 @@ include_directories(${OPENMAMA_ROOT}/include)
 link_directories(${OPENMAMA_ROOT}/lib)
 
 add_executable(resourcepoolcpp resourcepool.cpp)
-target_link_libraries(resourcepoolcpp mamacpp wombatcommon)
+target_link_libraries(resourcepoolcpp mama mamacpp wombatcommon)
