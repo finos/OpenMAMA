@@ -10,6 +10,12 @@ set -e
 unset PREFIX
 unset VERSION_FILE
 
+# Install dotnet
+wget --no-check-certificate -q -O /tmp/dotnet-install.sh https://dot.net/v1/dotnet-install.sh
+chmod a+x /tmp/dotnet-install.sh
+/tmp/dotnet-install.sh -i ~/bin -c 3.1
+/tmp/dotnet-install.sh -i ~/bin
+
 brew install googletest apr apr-util ossp-uuid qpid-proton
 
 APR_ROOT=$(find /usr/local/Cellar/apr -type d -name libexec)
@@ -25,14 +31,14 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_INSTALL_PREFIX=$OPENMAMA_INSTALL_DIR \
      -DWITH_JAVA=ON \
-     -DWITH_CSHARP=OFF \
+     -DWITH_CSHARP=ON \
      -DAPR_ROOT=$APR_ROOT \
      -DAPRUTIL_ROOT=$APRUTIL_ROOT \
      -DWITH_UNITTEST=ON \
      -DCMAKE_CXX_STANDARD=17 \
      ..
 make -j install
-ctest .
+ctest . -E java_unittests --timeout 120 --output-on-failure
 
 # Return to parent directory
 cd - > /dev/null

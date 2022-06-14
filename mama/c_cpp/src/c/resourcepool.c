@@ -697,11 +697,13 @@ mamaResourcePool_createSubscriptionFromUri (
         return MAMA_STATUS_INVALID_ARG;
     }
 
+    wthread_mutex_lock (&impl->mLock);
     aprStatus = apr_uri_parse (impl->mAprPool, uri, &parsedUri);
     if (APR_SUCCESS != aprStatus) {
         mama_log (MAMA_LOG_LEVEL_WARN,
                   "Could not parse url %s - is it correctly formed?",
                   uri);
+        wthread_mutex_unlock (&impl->mLock);
         return MAMA_STATUS_INVALID_ARG;
     }
 
@@ -711,6 +713,7 @@ mamaResourcePool_createSubscriptionFromUri (
         mama_log (MAMA_LOG_LEVEL_WARN,
                   "Could not parse url %s - could not find a valid bridge.",
                   uri);
+        wthread_mutex_unlock (&impl->mLock);
         return MAMA_STATUS_INVALID_ARG;
     }
 
@@ -720,17 +723,18 @@ mamaResourcePool_createSubscriptionFromUri (
         mama_log (MAMA_LOG_LEVEL_WARN,
                   "Could not parse url %s - could not find a valid transport.",
                   uri);
+        wthread_mutex_unlock (&impl->mLock);
         return MAMA_STATUS_INVALID_ARG;
     }
 
     // Find the bridge for this
-    wthread_mutex_lock (&impl->mLock);
     mrpBridgeImpl = (mamaResourcePoolBridgeImpl*) wtable_lookup (
         impl->mPoolBridgeImpls, bridgeName);
     if (NULL == mrpBridgeImpl) {
         mama_log (MAMA_LOG_LEVEL_WARN,
                   "Could not find bridge using scheme '%s'.",
                   bridgeName);
+        wthread_mutex_unlock (&impl->mLock);
         return MAMA_STATUS_NOT_FOUND;
     }
 
@@ -742,6 +746,7 @@ mamaResourcePool_createSubscriptionFromUri (
                   "Could not create transport %s - %s.",
                   transportName,
                   mamaStatus_stringForStatus (status));
+        wthread_mutex_unlock (&impl->mLock);
         return MAMA_STATUS_INVALID_ARG;
     }
 
@@ -823,6 +828,7 @@ mamaResourcePool_createSubscriptionFromComponents (
                   "Could not create transport %s - %s.",
                   transportName,
                   mamaStatus_stringForStatus (status));
+        wthread_mutex_unlock (&impl->mLock);
         return MAMA_STATUS_INVALID_ARG;
     }
 

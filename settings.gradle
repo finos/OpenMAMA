@@ -1,0 +1,3 @@
+rootProject.name = 'openmama'
+include ':mama:jni'
+include ':mamda:java'

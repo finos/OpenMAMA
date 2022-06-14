@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>mamachurncs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Title>OpenMAMA MamaChurnCS C#</Title>
         <Description>OpenMAMA MamaChurnCS C#</Description>
         <Configuration>OpenMAMA MamaChurnCS C#</Configuration>

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>MAMDA</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>

@@ -81,7 +81,7 @@ gtest_discover_tests(
 )
 
 if (WIN32)
-    set(BATCH_ENV_PATH "${GTEST_ROOT}/bin;${APR_ROOT}/bin;${APRUTIL_ROOT}/bin;${PROTON_ROOT}/bin;${LIBEVENT_ROOT}/lib;$<TARGET_FILE_DIR:mama>;$<TARGET_FILE_DIR:wombatcommon>;$<TARGET_FILE_DIR:wombatcommoncpp>;$<TARGET_FILE_DIR:mamabaseimpl>;$<TARGET_FILE_DIR:mamaqpidimpl>;$<TARGET_FILE_DIR:mamaplugindqstrategy>;$<TARGET_FILE_DIR:mamaentnoop>;$<TARGET_FILE_DIR:mamaqpidmsgimpl>")
+    set(BATCH_ENV_PATH "${GTEST_ROOT}/bin;${APR_ROOT}/bin;${APRUTIL_ROOT}/bin;${PROTON_ROOT}/bin;${LIBEVENT_ROOT}/lib;$<TARGET_FILE_DIR:mama>;$<TARGET_FILE_DIR:wombatcommon>;$<TARGET_FILE_DIR:wombatcommoncpp>;$<TARGET_FILE_DIR:mamabaseimpl>;$<TARGET_FILE_DIR:mamaqpidimpl>;$<TARGET_FILE_DIR:mamaplugindqstrategy>;$<TARGET_FILE_DIR:mamaentnoop>;$<TARGET_FILE_DIR:mamaqpidmsgimpl>;$<TARGET_FILE_DIR:mamda>;$<TARGET_FILE_DIR:mamdanews>;$<TARGET_FILE_DIR:mamdabook>;$<TARGET_FILE_DIR:mamdaoptions>")
 	if (WITH_MAMDA)
 		set(BATCH_ENV_PATH "${BATCH_ENV_PATH};$<TARGET_FILE_DIR:mamda>")
 	endif()

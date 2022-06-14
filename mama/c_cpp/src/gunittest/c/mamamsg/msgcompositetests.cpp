@@ -78,7 +78,7 @@ TEST_F(MsgStringTests, addStringInValidMsg)
     ASSERT_EQ(mamaMsg_addString(NULL, NULL, 1, m_in), MAMA_STATUS_NULL_ARG);
 }
 
-TEST_F(MsgStringTests, DISABLED_addStringInValidString)
+TEST_F(MsgStringTests, addStringInValidString)
 {
     ASSERT_EQ(mamaMsg_addString(mMsg, NULL, 1, NULL), MAMA_STATUS_NULL_ARG);
 }

@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>mamaftmembercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Title>OpenMAMA MamaFtMemberCS C#</Title>
         <Description>OpenMAMA MamaFtMemberCS C#</Description>
         <Configuration>OpenMAMA MamaFtMemberCS C#</Configuration>

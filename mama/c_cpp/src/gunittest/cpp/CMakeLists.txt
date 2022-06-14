@@ -18,7 +18,6 @@ add_executable(UnitTestMamaCPP
 	MamaPublisherTest.cpp
 	MamaRegexChannelFilterTest.cpp
 	MamaResourcePoolTest.cpp
-	MamaSubscriptionTest.cpp
 	MamaTimerTest.cpp
 )
 target_link_libraries(UnitTestMamaCPP ${GTEST_BOTH_LIBRARIES} mamacpp mama)

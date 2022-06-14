@@ -66,23 +66,6 @@ void MiddlewareGeneralTests::TearDown(void)
 /*===================================================================
  =                      Used in mama.c                              =
  ====================================================================*/
-/* TODO: Rewrite this test to call bridgeStart on a separate thread, since it is
- * a blocking call. Otherwise, bridgeStop is never called.
- *
- */
-TEST_F (MiddlewareGeneralTests, DISABLED_startStop)
-{
-    mamaQueue defaultEventQueue = NULL;
-
-    ASSERT_EQ (MAMA_STATUS_OK, 
-               mama_getDefaultEventQueue(mBridge, &defaultEventQueue));
-
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mBridge->bridgeStart(defaultEventQueue));
-
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mBridge->bridgeStop(defaultEventQueue));
-}
 
 TEST_F (MiddlewareGeneralTests, startInvalid)
 {

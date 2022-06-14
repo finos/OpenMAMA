@@ -123,7 +123,7 @@ public class MamdaOrderImbalanceCallBackTests extends TestCase
             Mama.open();
 /*                mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);*/
             mDictionary = new MamaDictionary();
-            mDictionary.create();            
+            mDictionary.create();
             mDictionary._populateFromFile(Main.getDictionaryFile());
 
             MamdaCommonFields.setDictionary (mDictionary,null);

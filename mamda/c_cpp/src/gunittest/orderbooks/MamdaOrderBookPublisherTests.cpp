@@ -32,15 +32,12 @@
 #include <mamda/MamdaOrderBookEntry.h>
 #include <mamda/MamdaOrderBookTypes.h>
 #include <mama/MamaDictionary.h>
-
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
-
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
+#include "common/MainUnitTest.h"
 #include <cstdlib>
 #include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 using namespace Wombat;
 
@@ -62,7 +59,7 @@ public:
     {
         try
         {
-            vector<MamdaMsgListener*>& msgListeners = sub->getMsgListeners();
+            std::vector<MamdaMsgListener*>& msgListeners = sub->getMsgListeners();
             unsigned long size = msgListeners.size();
             for (unsigned long i = 0; i < size; i++)
             {
@@ -128,7 +125,7 @@ public:
     }
 };
 
-typedef struct publisherTestImpl
+struct publisherTestImpl
 {
     MamaDictionary*             dictionary;
     MamdaOrderBook*             myBook;
@@ -232,9 +229,9 @@ void assertEqual(MamdaOrderBook* lhs, MamdaOrderBook* rhs)
 }
 
 void myCreateAndAddEntry (publisherTestImpl* myImpl, double price,
-                        string id, double size, int status, 
-                        MamdaOrderBookEntry::Action entryAction,
-                        MamdaOrderBookPriceLevel::Side side)
+                          std::string id, double size, int status,
+                          MamdaOrderBookEntry::Action entryAction,
+                          MamdaOrderBookPriceLevel::Side side)
 {
     MamdaOrderBookEntry* entry = new MamdaOrderBookEntry();
     entry->setId(id.c_str());
@@ -247,9 +244,9 @@ void myCreateAndAddEntry (publisherTestImpl* myImpl, double price,
 }
 
 void myCreateAndAddEntryAtLevel (publisherTestImpl* myImpl, double price,
-                        string id, double size, int status, 
-                        MamdaOrderBookEntry::Action entryAction,
-                        MamdaOrderBookPriceLevel::Side side)
+                                 std::string id, double size, int status,
+                                 MamdaOrderBookEntry::Action entryAction,
+                                 MamdaOrderBookPriceLevel::Side side)
 {
     MamdaOrderBookEntry* entry = new MamdaOrderBookEntry();
     entry->setId(id.c_str());
@@ -269,9 +266,9 @@ void myCreateAndAddEntryAtLevel (publisherTestImpl* myImpl, double price,
 }
 
 void myDeleteEntry (publisherTestImpl* myImpl, double price,
-                        string id, double size, int status, 
-                        MamdaOrderBookEntry::Action entryAction,
-                        MamdaOrderBookPriceLevel::Side side)
+                    std::string id, double size, int status,
+                    MamdaOrderBookEntry::Action entryAction,
+                    MamdaOrderBookPriceLevel::Side side)
 {
     MamdaOrderBookPriceLevel* level = NULL;
     level = myImpl->myBook->findOrCreateLevel(price, side);
@@ -280,9 +277,9 @@ void myDeleteEntry (publisherTestImpl* myImpl, double price,
 }
 
 void myRemoveEntry (publisherTestImpl* myImpl, double price,
-                        string id, double size, int status, 
-                        MamdaOrderBookEntry::Action entryAction,
-                        MamdaOrderBookPriceLevel::Side side)
+                    std::string id, double size, int status,
+                    MamdaOrderBookEntry::Action entryAction,
+                    MamdaOrderBookPriceLevel::Side side)
 {
     MamdaOrderBookPriceLevel* level = NULL;
     level = myImpl->myBook->findOrCreateLevel(price, side);
@@ -294,7 +291,7 @@ void myRemoveEntry (publisherTestImpl* myImpl, double price,
 }
 
 void myRemoveEntryById (publisherTestImpl* myImpl, double price,
-                        string id, double size, int status, 
+                        std::string id, double size, int status,
                         MamdaOrderBookEntry::Action entryAction,
                         MamdaOrderBookPriceLevel::Side side)
 {
@@ -373,7 +370,7 @@ MamdaOrderBookPriceLevel*
     return level;
 }
 
-void myUpdateEntry (publisherTestImpl* myImpl, string id, double price,
+void myUpdateEntry (publisherTestImpl* myImpl, std::string id, double price,
                    double size, MamdaOrderBookPriceLevel::Side side)
 {
     MamdaOrderBookPriceLevel* level = NULL;
@@ -384,7 +381,7 @@ void myUpdateEntry (publisherTestImpl* myImpl, string id, double price,
     myImpl->myBook->updateEntry(entry, size, myImpl->myBookTime, NULL);
 }
 
-void myUpdateEntryAtLevel (publisherTestImpl* myImpl, string id, double price,
+void myUpdateEntryAtLevel (publisherTestImpl* myImpl, std::string id, double price,
                    double size, MamdaOrderBookPriceLevel::Side side)
 {
     MamdaOrderBookPriceLevel* level = NULL;
@@ -452,7 +449,7 @@ void addMamaHeaderFields (publisherTestImpl* myImpl,
 {
     myImpl->myPublishMsg.clear();                      
 
-    msg.addU8  (NULL, MamaFieldMsgType.mFid,     msgType);
+    msg.addU8 (NULL, MamaFieldMsgType.mFid, msgType);
     msg.addU8  (NULL, MamaFieldMsgStatus.mFid,   msgStatus);
     msg.addU32(MamdaCommonFields::MSG_SEQ_NUM, seqNum);          
     //msg.addU8  (NULL, MamaFieldAppMsgType.mFid,  appMsgType);
@@ -468,11 +465,14 @@ protected:
   
     virtual void SetUp()
     {
+        Mama::loadBridge(getMiddleware());
+        Mama::open();
+
         myImpl = (publisherTestImpl*) calloc(1, sizeof (publisherTestImpl));
         //mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);
-        
+
         myImpl->dictionary = new MamaDictionary;
-        myImpl->dictionary->populateFromFile("dictionary");
+        myImpl->dictionary->populateFromFile(getDictionary());
         MamdaCommonFields::reset();
         MamdaCommonFields::setDictionary (*(myImpl->dictionary));
         MamdaOrderBookFields::reset();
@@ -523,7 +523,7 @@ protected:
         {
             free (myImpl);
         }
-                
+        Mama::close();
     }
     publisherTestImpl* myImpl;
     MamdaOrderBookPriceLevel* ownBkLevel;
@@ -1618,255 +1618,4 @@ TEST_F (MamdaBookPublisherTest, UpdateMultipleEntriesTest)
                "\n ********************************************************************************** \n",               
                test_info->name());
     }
-}
-
-TEST_F (MamdaBookPublisherTest, PopulateRecapSimpleCpuTest)
-{
-    myCreateAndAddEntry (myImpl, 100.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    START_RECORDING_CPU (5000000);
-    myImpl->myBook->populateRecap(myImpl->myPublishMsg);
-    myImpl->myPublishMsg.clear();
-    STOP_RECORDING_CPU ();
-
-    const ::testing::TestInfo* const test_info =
-        ::testing::UnitTest::GetInstance()->current_test_info();
-    if (HasFailure())
-    {
-        printf("\n **********************************************************************************   "
-               "\n \t\t      **** %s failed ****                                                        "
-               "\n This test checks the CPU time for calling populateRecap() populating a one level, one"
-               "\n entry msg. This test CPU for populateMsg(simpleBook)                                 "           
-               "\n ********************************************************************************** \n",               
-               test_info->name());
-    }
-}
-
-TEST_F (MamdaBookPublisherTest, PopulateRecapComplexCpuTest)
-{
-    myCreateAndAddEntry (myImpl, 100.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 100.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    START_RECORDING_CPU (5000000);
-    myImpl->myBook->populateRecap(myImpl->myPublishMsg);
-    myImpl->myPublishMsg.clear();
-    STOP_RECORDING_CPU ();
-    
-    const ::testing::TestInfo* const test_info =
-        ::testing::UnitTest::GetInstance()->current_test_info();
-    if (HasFailure())
-    {
-        printf("\n **********************************************************************************   "
-               "\n \t\t      **** %s failed ****                                                        "
-               "\n This test checks the CPU time for calling populateRecap() populating a one level, two"
-               "\n entry msg. This test CPU for populateMsg(complexBook)                               "           
-               "\n ********************************************************************************** \n",               
-               test_info->name());
-    }
-}
-
-
-TEST_F (MamdaBookPublisherTest, PopulateDeltaSimpleCpuTest)
-{
-    myImpl->myPublishMsg.clear();
-    myCreateAndAddEntry (myImpl, 100.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myImpl->myBook->clearDeltaList();
-    START_RECORDING_CPU (5000000);
-    myUpdateEntry (myImpl, "jmg", 100.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myImpl->myBook->populateDelta(myImpl->myPublishMsg);
-    myImpl->myPublishMsg.clear();
-    STOP_RECORDING_CPU ();
-    
-    const ::testing::TestInfo* const test_info =
-        ::testing::UnitTest::GetInstance()->current_test_info();
-    if (HasFailure())
-    {
-        printf("\n **********************************************************************************   "
-               "\n \t\t      **** %s failed ****                                                        "
-               "\n This test checks the CPU time for calling populateDelta() populating a one level, two"
-               "\n entry msg. This test CPU for populateMsg(simpleDelta)                                "           
-               "\n ********************************************************************************** \n",               
-               test_info->name());
-    }
-}
-
-TEST_F (MamdaBookPublisherTest, PopulateDeltaComplexCpuTest)
-{
-    myImpl->myPublishMsg.clear();
-    myCreateAndAddEntry (myImpl, 100.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 100.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myImpl->myBook->clearDeltaList();
-    START_RECORDING_CPU (5000000);
-    myUpdateEntry (myImpl, "jmg", 100.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg2", 100.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myImpl->myBook->populateDelta(myImpl->myPublishMsg);
-    myImpl->myPublishMsg.clear();
-    STOP_RECORDING_CPU ();
-    const ::testing::TestInfo* const test_info =
-        ::testing::UnitTest::GetInstance()->current_test_info();
-    if (HasFailure())
-    {
-        printf("\n **********************************************************************************   "
-               "\n \t\t      **** %s failed ****                                                        "
-               "\n This test checks the CPU time for calling populateDelta() populating a one level, two"
-               "\n entry msg. This test CPU for populateMsg(complexDelta)                               "           
-               "\n ********************************************************************************** \n",               
-               test_info->name());
-    }
-}
-
-TEST_F (MamdaBookPublisherTest, PopulateLargeDeltaCpuTest)
-{
-    myImpl->myPublishMsg.clear();
-    myCreateAndAddEntry (myImpl, 100.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 100.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 101.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 101.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 102.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 102.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);                      
-    myCreateAndAddEntry (myImpl, 103.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 103.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 104.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 104.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);                      
-    myImpl->myBook->clearDeltaList();
-    START_RECORDING_CPU (1000000);
-    myUpdateEntry (myImpl, "jmg", 100.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg2", 100.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg", 101.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg2", 101.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg", 102.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg2", 102.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg", 103.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg2", 103.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg", 104.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg2", 104.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myImpl->myBook->populateDelta(myImpl->myPublishMsg);
-    myImpl->myPublishMsg.clear();
-    STOP_RECORDING_CPU ();
-//     myImpl->myBook->dump(std::cout);
-    const ::testing::TestInfo* const test_info =
-        ::testing::UnitTest::GetInstance()->current_test_info();
-    if (HasFailure())
-    {
-        printf("\n **********************************************************************************   "
-               "\n \t\t      **** %s failed ****                                                        "
-               "\n This test checks the CPU time for calling populateDelta() populating a one level, two"
-               "\n entry msg. This test CPU for populateMsg(complexDelta) populating very large msg     "           
-               "\n ********************************************************************************** \n",               
-               test_info->name());
-    }
-}
-
-//Test grows vector msg holder at beginning and sucessive updates never need larger vector
-//Should be similar to typical use case 
-TEST_F (MamdaBookPublisherTest, PopulateDeltaGrowOnceCpuTest)
-{
-    myImpl->myPublishMsg.clear();
-    myCreateAndAddEntry (myImpl, 100.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 100.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 101.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 101.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 102.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 102.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);                      
-    myCreateAndAddEntry (myImpl, 103.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 103.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 104.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myCreateAndAddEntry (myImpl, 104.0, "jmg2", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);                      
-    myImpl->myBook->clearDeltaList();
-    START_RECORDING_CPU (1000000);
-    myUpdateEntry (myImpl, "jmg", 100.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg2", 100.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg", 101.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myUpdateEntry (myImpl, "jmg2", 101.0, 500, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    myImpl->myBook->populateDelta(myImpl->myPublishMsg);
-    myImpl->myPublishMsg.clear();
-    STOP_RECORDING_CPU ();
-//     myImpl->myBook->dump(std::cout);
-
-    const ::testing::TestInfo* const test_info =
-        ::testing::UnitTest::GetInstance()->current_test_info();
-    if (HasFailure())
-    {
-        printf("\n **********************************************************************************   "
-               "\n \t\t      **** %s failed ****                                                        "
-               "\n This test checks the CPU time for calling populateDelta(). The Test grows vector msg "
-               "\n holder at beginning and sucessive updates never need larger vector                   "
-               "\n This CPU test should be similar to typical use case                                  "
-               "\n ********************************************************************************** \n",               
-               test_info->name());
-    }
-}
-
-TEST_F (MamdaBookPublisherTest, populateRecapMemTest)
-{
-    myCreateAndAddEntry (myImpl, 100.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-
-    START_RECORDING_MEMORY ();
-    myImpl->myBook->populateRecap(myImpl->myPublishMsg);
-    STOP_RECORDING_MEMORY ();
-
-
-}
-
-TEST_F (MamdaBookPublisherTest, populateDeltaMemTest)
-{
-    myCreateAndAddEntry (myImpl, 100.0, "jmg", 500, 82, 
-                      MamdaOrderBookEntry::MAMDA_BOOK_ACTION_ADD,
-                      MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-
-    START_RECORDING_MEMORY ();
-    myImpl->myBook->populateDelta(myImpl->myPublishMsg);
-    STOP_RECORDING_MEMORY ();
 }

@@ -493,7 +493,7 @@ mamaMsgField_getVectorBool (
 {
     mamaMsgFieldImpl* impl =
         (mamaMsgFieldImpl*)(msgField);
-    if (!impl) return MAMA_STATUS_INVALID_ARG;
+    if (!impl) return MAMA_STATUS_NULL_ARG;
 
     if (impl->myPayloadBridge)
     {

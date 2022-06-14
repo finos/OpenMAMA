@@ -18,22 +18,24 @@ if [ -d $BUILD_DIR ]
 then
     rm -rf $BUILD_DIR
 fi
+/tmp/dotnet-install.sh -i ~/bin
+/tmp/dotnet-install.sh -i ~/bin -c 3.1
+
+export PATH=~/bin:$PATH
 
 mkdir -p $BUILD_DIR
 cd $BUILD_DIR
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-     -DBIN_GRADLE=$SDKMAN_DIR/candidates/gradle/current/bin/gradle \
-     -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_INSTALL_PREFIX=$OPENMAMA_INSTALL_DIR \
      -DWITH_JAVA=ON \
-     -DWITH_CSHARP=OFF \
+     -DWITH_CSHARP=ON \
      -DWITH_UNITTEST=ON \
      -DCMAKE_CXX_FLAGS="-Wno-error=strict-prototypes -Wno-deprecated-declarations" \
      -DCMAKE_C_FLAGS="-Wno-error=strict-prototypes -Wno-deprecated-declarations" \
      "$SOURCE_PATH_ABSOLUTE"
 make -j install
 export LD_LIBRARY_PATH=/opt/openmama/lib
-ctest .
+ctest . --timeout 120 --output-on-failure
 cd "$SOURCE_PATH_ABSOLUTE" > /dev/null
 
 # Include the test data and grab profile configuration from there for packaging

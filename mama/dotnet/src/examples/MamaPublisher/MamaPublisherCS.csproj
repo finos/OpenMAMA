@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>mamapublishercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Title>OpenMAMA MamaPublisherCS C#</Title>
         <Description>OpenMAMA MamaPublisherCS C#</Description>
         <Configuration>OpenMAMA MamaPublisherCS C#</Configuration>

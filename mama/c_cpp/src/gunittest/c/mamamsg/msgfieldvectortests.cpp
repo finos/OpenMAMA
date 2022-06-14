@@ -115,7 +115,7 @@ TEST_F(MsgFieldVectorBoolTests, GetVectorBool)
     EXPECT_EQ (VECTOR_SIZE, mSize);
 }
 
-TEST_F(MsgFieldVectorBoolTests, DISABLED_GetVectorBoolNullField)
+TEST_F(MsgFieldVectorBoolTests, GetVectorBoolNullField)
 {
     mStatus = mamaMsgField_getVectorBool (NULL, &mOut, &mSize);
     EXPECT_EQ (MAMA_STATUS_NULL_ARG, mStatus);

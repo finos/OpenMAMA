@@ -19,21 +19,22 @@
  * 02110-1301 USA
  */
 
-#include <stdint.h>
-#include <mamda/MamdaOrderBookPriceLevel.h>
-#include  <wombat/wincompat.h>
-#include <mamda/MamdaOrderBookExceptions.h>
-#include <mamda/MamdaOrderBook.h>
-#include <mamda/MamdaOrderBookEntry.h>
-#include <mamda/MamdaOrderBookBasicDeltaList.h>
-#include <mama/types.h>
-#include <string>
-#include <string.h>
-#include <list>
-#include <stdio.h>
 #include <assert.h>
+#include <iostream>
+#include <list>
+#include <mama/types.h>
+#include <mamda/MamdaOrderBook.h>
+#include <mamda/MamdaOrderBookBasicDeltaList.h>
+#include <mamda/MamdaOrderBookEntry.h>
+#include <mamda/MamdaOrderBookExceptions.h>
+#include <mamda/MamdaOrderBookPriceLevel.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <string.h>
+#include <string>
+#include <wombat/wincompat.h>
 
-using std::strcpy;
+using std::list;
 using std::strlen;
 using std::list;
 
@@ -42,7 +43,7 @@ static bool sStrictChecking = false;
 namespace Wombat
 {
 
-    typedef list<MamdaOrderBookEntry*>  EntryList;
+    typedef std::list<MamdaOrderBookEntry*>  EntryList;
 
     struct MamdaOrderBookPriceLevel::MamdaOrderBookPriceLevelImpl
     {

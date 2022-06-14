@@ -1259,7 +1259,6 @@ static void
 {
     mamaDispatcherImpl* impl = (mamaDispatcherImpl*)closure;
 
-    wInterlocked_set (1, &impl->mIsDispatching);
     while (wInterlocked_read (&impl->mIsDispatching) &&
            MAMA_STATUS_OK == mamaQueue_dispatch (impl->mQueue));
     wInterlocked_set (0, &impl->mIsDispatching);
@@ -1313,6 +1312,8 @@ mamaDispatcher_create (mamaDispatcher *result,
     mama_log (MAMA_LOG_LEVEL_FINER, "mamaDispatcher_create (): "
               "Creating new background thread (name=%s).", impl->mThreadName);
 
+    // Set as dispatching now to avoid race condition in dispatchThreadProc
+    wInterlocked_set (1, &impl->mIsDispatching);
     threadStatus = wombatThread_create(impl->mThreadName,
                             &thread,
                             NULL,
