@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-#include <pthread.h>
+#include <stdint.h>
 #include <wombat/wincompat.h>
 #include <mama/mamacpp.h>
 #include <mamda/MamdaOrderImbalanceListener.h>
@@ -32,6 +32,7 @@
 #include "MamdaUtils.h"
 #include <vector>
 #include <string>
+#include <iostream>
 
 using namespace std;
 using namespace Wombat;
@@ -166,7 +167,7 @@ namespace Wombat
 
         static OrderImbalanceFieldUpdate**  mFieldUpdaters;
         static volatile uint16_t            mFieldUpdatersSize;
-        static wthread_mutex_t              mImbalanceFieldUpdaterLockMutex;
+        static wthread_static_mutex_t       mImbalanceFieldUpdaterLockMutex;
         static bool                         mUpdatersComplete;
 
         struct FieldUpdateHighIndicationPrice;
@@ -1084,9 +1085,9 @@ namespace Wombat
     volatile uint16_t MamdaOrderImbalanceListener::
         MamdaOrderImbalanceListenerImpl::mFieldUpdatersSize = 0;
 
-    pthread_mutex_t MamdaOrderImbalanceListener::
-        MamdaOrderImbalanceListenerImpl::mImbalanceFieldUpdaterLockMutex
-        = PTHREAD_MUTEX_INITIALIZER;
+    wthread_static_mutex_t MamdaOrderImbalanceListener::
+        MamdaOrderImbalanceListenerImpl::mImbalanceFieldUpdaterLockMutex =
+            WSTATIC_MUTEX_INITIALIZER;
 
     bool MamdaOrderImbalanceListener::
         MamdaOrderImbalanceListenerImpl::mUpdatersComplete = false;
@@ -1276,7 +1277,7 @@ namespace Wombat
         // MamdaQuoteListener instances).
         if (!mUpdatersComplete)
         {
-            wthread_mutex_lock (&mImbalanceFieldUpdaterLockMutex);
+            wthread_static_mutex_lock (&mImbalanceFieldUpdaterLockMutex);
 
             if (!mUpdatersComplete)
             {
@@ -1285,7 +1286,7 @@ namespace Wombat
                      mama_log (MAMA_LOG_LEVEL_WARN,
                                "MamdaOrderImbalanceListener: MamdaOrderImbalanceFields::setDictionary() "
                                "has not been called.");
-                     wthread_mutex_unlock (&mImbalanceFieldUpdaterLockMutex);
+                     wthread_static_mutex_unlock (&mImbalanceFieldUpdaterLockMutex);
                      return;
                 }
 
@@ -1298,13 +1299,13 @@ namespace Wombat
                     mama_log (MAMA_LOG_LEVEL_WARN,
                               "MamdaOrderImbalanceListener: Could not set field updaters: %s",
                               e.toString ());
-                    wthread_mutex_unlock (&mImbalanceFieldUpdaterLockMutex);
+                    wthread_static_mutex_unlock (&mImbalanceFieldUpdaterLockMutex);
                     return;
                 }
                 mUpdatersComplete = true;
             }
 
-            wthread_mutex_unlock (&mImbalanceFieldUpdaterLockMutex);
+            wthread_static_mutex_unlock (&mImbalanceFieldUpdaterLockMutex);
         }
 
         // Determine if this message is a duplicate or a tranient record

@@ -35,9 +35,8 @@
 #include <mamda/MamdaErrorListener.h>
 #include <mamda/MamdaQualityListener.h>
 
+#include "common/MainUnitTest.h"
 #include "common/MamdaUnitTestUtils.h"
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -55,7 +54,9 @@ using namespace Wombat;
 class QuoteTickerCB : public MamdaQuoteHandler                  
 {
 public:
-    QuoteTickerCB () {}
+    QuoteTickerCB () {
+        std::cout << "ENDING\n";
+    }
     virtual ~QuoteTickerCB () {} 
 
     void callMamdaOnMsg(MamdaSubscription* sub, MamaMsg& msg)
@@ -99,13 +100,13 @@ public:
     {   
         mQuoteTestFields.myTempSymbol         = quote.getSymbol();
         mQuoteTestFields.myTempQuoteCount     = recap.getQuoteCount ();
-        mQuoteTestFields.myTempBidPriceStr    = quote.getBidPrice().getAsString();
+        mQuoteTestFields.myTempBidPrice       = quote.getBidPrice();
         mQuoteTestFields.myTempBidSize        = quote.getBidSize ();
         mQuoteTestFields.myTempAskSize        = quote.getAskSize ();
-        mQuoteTestFields.myTempAskPriceStr    = quote.getAskPrice().getAsString();
+        mQuoteTestFields.myTempAskPrice       = quote.getAskPrice();
         mQuoteTestFields.myTempEventSeqNum    = quote.getEventSeqNum();
         mQuoteTestFields.myTempEventTimeStr   = listener.getEventTime().getAsString();
-        mQuoteTestFields.myTempQuoteQualStr   = quote.getQuoteQualStr(); 
+        mQuoteTestFields.myTempQuoteQualStr   = quote.getQuoteQualStr();
     }
 
     void onQuoteGap (
@@ -127,10 +128,10 @@ public:
         const MamdaQuoteRecap&    recap)
     {  
         mQuoteTestFields.myTempSymbol           = event.getSymbol();
-        mQuoteTestFields.myTempBidClosePriceStr = event.getBidClosePrice().getAsString();
-        mQuoteTestFields.myTempAskClosePriceStr = event.getAskClosePrice().getAsString();
-        mQuoteTestFields.myTempEventSeqNum      = event.getEventSeqNum ();
-        mQuoteTestFields.myTempEventTimeStr     = listener.getEventTime ().getAsString();                   
+        mQuoteTestFields.myTempBidClosePrice    = event.getBidClosePrice();
+        mQuoteTestFields.myTempAskClosePrice    = event.getAskClosePrice();
+        mQuoteTestFields.myTempEventSeqNum      = event.getEventSeqNum();
+        mQuoteTestFields.myTempEventTimeStr     = listener.getEventTime().getAsString();
     }
 
     void onQuoteOutOfSequence (
@@ -143,10 +144,10 @@ public:
         mQuoteTestFields.myTempSymbol       = recap.getSymbol ();
         mQuoteTestFields.myTempMsgQualStr   = event.getMsgQual().getAsString();
         mQuoteTestFields.myTempMsgQual      = event.getMsgQual().getValue();
-        mQuoteTestFields.myTempBidPriceStr  = event.getBidPrice().getAsString();
-        mQuoteTestFields.myTempAskPriceStr  = event.getAskPrice().getAsString();
+        mQuoteTestFields.myTempBidPrice     = event.getBidPrice();
+        mQuoteTestFields.myTempAskPrice     = event.getAskPrice();
         mQuoteTestFields.myTempEventSeqNum  = event.getEventSeqNum();
-        mQuoteTestFields.myTempEventTimeStr = listener.getEventTime ().getAsString();          
+        mQuoteTestFields.myTempEventTimeStr = listener.getEventTime().getAsString();
     }
 
     void onQuotePossiblyDuplicate (
@@ -159,8 +160,8 @@ public:
         mQuoteTestFields.myTempSymbol       = recap.getSymbol();
         mQuoteTestFields.myTempMsgQualStr   = event.getMsgQual().getAsString();
         mQuoteTestFields.myTempMsgQual      = event.getMsgQual().getValue();
-        mQuoteTestFields.myTempBidPriceStr  = event.getBidPrice().getAsString();
-        mQuoteTestFields.myTempAskPriceStr  = event.getAskPrice().getAsString();
+        mQuoteTestFields.myTempBidPrice     = event.getBidPrice();
+        mQuoteTestFields.myTempAskPrice     = event.getAskPrice();
         mQuoteTestFields.myTempEventSeqNum  = event.getEventSeqNum();
         mQuoteTestFields.myTempEventTimeStr = listener.getEventTime().getAsString();  
     }
@@ -195,7 +196,7 @@ protected:
         try
         {
             mamaBridge bridge;
-            bridge = Mama::loadBridge("wmw");
+            bridge = Mama::loadBridge(getMiddleware());
             Mama::open();
             //mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);
             myDictionary = new MamaDictionary;
@@ -205,7 +206,7 @@ protected:
                 return;
             }
             
-            myDictionary->populateFromFile("dictionary.txt");
+            myDictionary->populateFromFile(getDictionary());
             MamdaCommonFields::setDictionary (*myDictionary);
             MamdaQuoteFields::reset();
             MamdaQuoteFields::setDictionary (*myDictionary);
@@ -286,10 +287,10 @@ TEST_F (MamdaQuoteCBTest, QUpdateCallback)
     
     EXPECT_STREQ (ticker->mQuoteControlFields.mySymbol,       ticker->mQuoteTestFields.myTempSymbol); 
     EXPECT_EQ    (ticker->mQuoteControlFields.myQuoteCount,   ticker->mQuoteTestFields.myTempQuoteCount); 
-    EXPECT_STREQ (ticker->mQuoteControlFields.myBidPriceStr,  ticker->mQuoteTestFields.myTempBidPriceStr); 
+    EXPECT_EQ    (ticker->mQuoteControlFields.myBidPrice, ticker->mQuoteTestFields.myTempBidPrice);
     EXPECT_EQ    (ticker->mQuoteControlFields.myBidSize,      ticker->mQuoteTestFields.myTempBidSize);
     EXPECT_EQ    (ticker->mQuoteControlFields.myAskSize,      ticker->mQuoteTestFields.myTempAskSize); 
-    EXPECT_STREQ (ticker->mQuoteControlFields.myAskPriceStr,  ticker->mQuoteTestFields.myTempAskPriceStr); 
+    EXPECT_EQ    (ticker->mQuoteControlFields.myAskPrice,  ticker->mQuoteTestFields.myTempAskPrice);
     EXPECT_EQ    (ticker->mQuoteControlFields.myEventSeqNum,  ticker->mQuoteTestFields.myTempEventSeqNum); 
     //EXPECT_STREQ (ticker->mQuoteControlFields.myEventTimeStr, ticker->mQuoteTestFields.myTempEventTimeStr);
     EXPECT_STREQ (ticker->mQuoteControlFields.myQuoteQualStr, ticker->mQuoteTestFields.myTempQuoteQualStr); 
@@ -343,8 +344,8 @@ TEST_F (MamdaQuoteCBTest, QClosingCallback)
     ticker->callMamdaOnMsg(mySubscription, *newMessage);  
     
     EXPECT_STREQ (ticker->mQuoteControlFields.mySymbol,           ticker->mQuoteTestFields.myTempSymbol);          
-    EXPECT_STREQ (ticker->mQuoteControlFields.myBidClosePriceStr, ticker->mQuoteTestFields.myTempBidClosePriceStr); 
-    EXPECT_STREQ (ticker->mQuoteControlFields.myAskClosePriceStr, ticker->mQuoteTestFields.myTempAskClosePriceStr);
+    EXPECT_EQ    (ticker->mQuoteControlFields.myBidClosePrice, ticker->mQuoteTestFields.myTempBidClosePrice);
+    EXPECT_EQ    (ticker->mQuoteControlFields.myAskClosePrice, ticker->mQuoteTestFields.myTempAskClosePrice);
     EXPECT_EQ    (ticker->mQuoteControlFields.myEventSeqNum,      ticker->mQuoteTestFields.myTempEventSeqNum);     
     //EXPECT_STREQ (ticker->mQuoteControlFields.myEventTimeStr,     ticker->mQuoteTestFields.myTempEventTimeStr);      
 
@@ -371,8 +372,8 @@ TEST_F (MamdaQuoteCBTest, QoutOfSeqCallback)
     EXPECT_STREQ(ticker->mQuoteControlFields.mySymbol,ticker->mQuoteTestFields.myTempSymbol); 
     EXPECT_STREQ(ticker->mQuoteControlFields.myMsgQualStr,ticker->mQuoteTestFields.myTempMsgQualStr);
     EXPECT_EQ(ticker->mQuoteControlFields.myMsgQual,ticker->mQuoteTestFields.myTempMsgQual);
-    EXPECT_STREQ(ticker->mQuoteControlFields.myBidPriceStr,ticker->mQuoteTestFields.myTempBidPriceStr); 
-    EXPECT_STREQ(ticker->mQuoteControlFields.myAskPriceStr,ticker->mQuoteTestFields.myTempAskPriceStr); 
+    EXPECT_EQ(ticker->mQuoteControlFields.myBidPrice,ticker->mQuoteTestFields.myTempBidPrice);
+    EXPECT_EQ(ticker->mQuoteControlFields.myAskPrice,ticker->mQuoteTestFields.myTempAskPrice);
     EXPECT_EQ(ticker->mQuoteControlFields.myEventSeqNum,ticker->mQuoteTestFields.myTempEventSeqNum); 
     //EXPECT_STREQ(ticker->mQuoteControlFields.myEventTimeStr,ticker->mQuoteTestFields.myTempEventTimeStr); 
     
@@ -399,8 +400,8 @@ TEST_F (MamdaQuoteCBTest, QPossibilyDuplicateCallback)
     EXPECT_STREQ(ticker->mQuoteControlFields.mySymbol,ticker->mQuoteTestFields.myTempSymbol); 
     EXPECT_STREQ(ticker->mQuoteControlFields.myMsgQualPossDupStr,ticker->mQuoteTestFields.myTempMsgQualStr);
     EXPECT_EQ(ticker->mQuoteControlFields.myMsgQualPossDup,ticker->mQuoteTestFields.myTempMsgQual); 
-    EXPECT_STREQ(ticker->mQuoteControlFields.myBidPriceStr,ticker->mQuoteTestFields.myTempBidPriceStr);
-    EXPECT_STREQ(ticker->mQuoteControlFields.myAskPriceStr,ticker->mQuoteTestFields.myTempAskPriceStr);
+    EXPECT_EQ(ticker->mQuoteControlFields.myBidPrice,ticker->mQuoteTestFields.myTempBidPrice);
+    EXPECT_EQ(ticker->mQuoteControlFields.myAskPrice,ticker->mQuoteTestFields.myTempAskPrice);
     EXPECT_EQ(ticker->mQuoteControlFields.myEventSeqNum,ticker->mQuoteTestFields.myTempEventSeqNum);
     //EXPECT_STREQ(myEventTimeStr,myTempEventTimeStr);
     

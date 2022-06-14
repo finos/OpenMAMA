@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>mamdatradetickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Title>OpenMAMA MamdaTradeTickerCS C#</Title>
         <Description>OpenMAMA MamdaTradeTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaTradeTickerCS C#</Configuration>

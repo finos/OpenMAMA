@@ -55,7 +55,7 @@ fi
 if [ "$DISTRIB_ID" = "$RHEL" ]
 then
     echo "Installing CentOS / RHEL specific dependencies"
-    yum install -y epel-release gcc make rpm-build which wget cmake
+    yum install -y epel-release gcc make rpm-build which wget cmake libicu
     if [ "${DISTRIB_RELEASE:0:1}" = "7" ]
     then
         # CentOS 7 cmake version is too old - upgrade it
@@ -135,7 +135,10 @@ make -j
 make install
 
 # Install dotnet
-wget --no-check-certificate -q -O - https://dot.net/v1/dotnet-install.sh | DOTNET_INSTALL_DIR=/usr/local/bin bash
+wget --no-check-certificate -q -O /tmp/dotnet-install.sh https://dot.net/v1/dotnet-install.sh
+chmod a+x /tmp/dotnet-install.sh
+/tmp/dotnet-install.sh -i /usr/local/bin
+/tmp/dotnet-install.sh -i /usr/local/bin -c 3.1
 
 # Install cloudsmith CLI
 python3 -m pip install --upgrade cloudsmith-cli

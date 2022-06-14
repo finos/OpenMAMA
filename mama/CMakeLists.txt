@@ -18,7 +18,7 @@ add_subdirectory (c_cpp/src/c)
 add_subdirectory (c_cpp/src/c/dqstrategyplugin)
 
 if (WITH_JAVA)
-    add_subdirectory (jni/src)
+    add_subdirectory (jni/src/c)
 endif ()
 
 if(WITH_CPP)

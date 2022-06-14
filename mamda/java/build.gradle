@@ -4,7 +4,7 @@ plugins {
     id 'signing'
 }
 
-def mamdaVersion = project.findProperty('mamdaVersion') ?: new File("${rootDir.absolutePath}/../../VERSION").text.trim() + "-1"
+def mamdaVersion = project.findProperty('mamaVersion') ?: new File("${projectDir.absolutePath}/../../VERSION").text.trim() + "-1"
 
 if (!project.hasProperty('legacyNaming')) {
   group = "org.openmama"
@@ -17,13 +17,13 @@ repositories {
 }
 
 dependencies {
-    implementation project(':mamajni')
+    implementation project(':mama:jni')
     testImplementation "junit:junit:4.12"  // Or whatever version
 }
 
 test {
     systemProperties = [
-            dictionary: System.getProperty('dictionary')
+        dictionary: System.getProperty('dictionary')
     ]
 }
 

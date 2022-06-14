@@ -4,7 +4,7 @@ plugins {
     id 'signing'
 }
 
-def mamaVersion = project.findProperty('mamaVersion') ?: new File("${rootDir.absolutePath}/../../VERSION").text.trim() + "-1"
+def mamaVersion = project.findProperty('mamaVersion') ?: new File("${projectDir.absolutePath}/../../VERSION").text.trim() + "-1"
 def mamaJniHeaderDir = project.findProperty('mamaJniHeaderDir') ?: 'mamajni'
 
 if (!project.hasProperty('legacyNaming')) {
@@ -21,11 +21,13 @@ dependencies {
     testImplementation "junit:junit:4.12"  // Or whatever version
 }
 
-test { 
-  environment "PATH", "C:\\Users\\fquinn\\SourceExternal\\cascadium\\OpenMAMA\\build_2017\\install\\bin"
-  testLogging.showStandardStreams = true
-  testLogging.showExceptions = true
-  maxParallelForks = 1
+test {
+    systemProperties = [
+        dictionary: System.getProperty('dictionary')
+    ]
+    testLogging.showStandardStreams = true
+    testLogging.showExceptions = true
+    maxParallelForks = 1
 }
 
 javadoc {

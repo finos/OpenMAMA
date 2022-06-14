@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>mamdafundamentaltickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Title>OpenMAMA MamdaFundamentalTickerCS C#</Title>
         <Description>OpenMAMA MamdaFundamentalTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaFundamentalTickerCS C#</Configuration>

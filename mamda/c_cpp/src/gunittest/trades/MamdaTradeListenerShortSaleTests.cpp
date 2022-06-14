@@ -36,9 +36,8 @@
 #include <mamda/MamdaErrorListener.h>
 #include <mamda/MamdaQualityListener.h>
 
+#include "common/MainUnitTest.h"
 #include "common/MamdaUnitTestUtils.h"
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -64,7 +63,7 @@ protected:
         try
         {
             mamaBridge bridge;
-            bridge = Mama::loadBridge("wmw");
+            bridge = Mama::loadBridge(getMiddleware());
             Mama::open();
             //mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);
             mDictionary = new MamaDictionary;
@@ -74,7 +73,7 @@ protected:
                 return;
             }
             
-            mDictionary->populateFromFile("dictionary.txt");
+            mDictionary->populateFromFile(getDictionary());
             MamdaCommonFields::setDictionary (*mDictionary);
             MamdaTradeFields::reset();
             MamdaTradeFields::setDictionary (*mDictionary);

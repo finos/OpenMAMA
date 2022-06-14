@@ -11,10 +11,6 @@ endif()
 
 add_subdirectory (c_cpp/src/cpp)
 
-if (WITH_JAVA)
-    add_subdirectory (java)
-endif()
-
 if (WITH_EXAMPLES)
     add_subdirectory (c_cpp/src/examples)
 endif()
@@ -24,4 +20,5 @@ if (WITH_TESTTOOLS)
 endif()
 
 if (WITH_UNITTEST)
+    add_subdirectory (c_cpp/src/gunittest)
 endif()

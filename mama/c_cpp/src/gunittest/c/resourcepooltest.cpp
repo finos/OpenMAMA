@@ -6,7 +6,17 @@
 #include <cstdlib>
 
 class MamaResourcePoolTestC : public ::testing::Test
-{	
+{
+public:
+    static void resetMamaMsgCallbacks(mamaMsgCallbacks* callbacks) {
+        callbacks->onCreate = nullptr;
+        callbacks->onError = nullptr;
+        callbacks->onMsg = nullptr;
+        callbacks->onQuality = nullptr;
+        callbacks->onGap = nullptr;
+        callbacks->onRecapRequest = nullptr;
+        callbacks->onDestroy = nullptr;
+    }
 protected:
     MamaResourcePoolTestC () {};
     virtual ~MamaResourcePoolTestC () {};
@@ -98,7 +108,7 @@ TEST_F (MamaResourcePoolTestC, CreateSubscriptionFromUri)
     ASSERT_EQ (MAMA_STATUS_OK, mamaResourcePool_create (&pool, "test"));
     mamaSubscription subscription;
     mamaMsgCallbacks callbacks;
-    memset(&callbacks, 0, sizeof(mamaMsgCallbacks));
+    MamaResourcePoolTestC::resetMamaMsgCallbacks(&callbacks);
     callbacks.onMsg = onResourcePoolTestSubMsg;
     ASSERT_EQ (MAMA_STATUS_OK, mamaResourcePool_createSubscriptionFromUri(
                                    pool,
@@ -125,7 +135,7 @@ TEST_F (MamaResourcePoolTestC, CreateSubscriptionFromUriInvalidUri)
     ASSERT_EQ (MAMA_STATUS_OK, mamaResourcePool_create (&pool, "test"));
     mamaSubscription subscription;
     mamaMsgCallbacks callbacks;
-    memset(&callbacks, 0, sizeof(mamaMsgCallbacks));
+    MamaResourcePoolTestC::resetMamaMsgCallbacks(&callbacks);
     callbacks.onMsg = onResourcePoolTestSubMsg;
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG,
                mamaResourcePool_createSubscriptionFromUri(
@@ -157,7 +167,7 @@ TEST_F (MamaResourcePoolTestC, CreateSubscriptionFromUriInvalidOnMsgCb) {
     mamaSubscription subscription;
     // No onMsg callback provided
     mamaMsgCallbacks callbacks;
-    memset(&callbacks, 0, sizeof(mamaMsgCallbacks));
+    MamaResourcePoolTestC::resetMamaMsgCallbacks(&callbacks);
     ASSERT_EQ (MAMA_STATUS_INVALID_ARG,
                mamaResourcePool_createSubscriptionFromUri(
                    pool,
@@ -174,7 +184,7 @@ TEST_F (MamaResourcePoolTestC, CreateSubscriptionFromUriNullArgs) {
     mamaSubscription subscription;
     // No onMsg callback provided
     mamaMsgCallbacks callbacks;
-    memset(&callbacks, 0, sizeof(mamaMsgCallbacks));
+    MamaResourcePoolTestC::resetMamaMsgCallbacks(&callbacks);
     callbacks.onMsg = onResourcePoolTestSubMsg;
     ASSERT_EQ (MAMA_STATUS_NULL_ARG,
                mamaResourcePool_createSubscriptionFromUri(
@@ -206,7 +216,7 @@ TEST_F (MamaResourcePoolTestC, CreateSubscriptionFromComponents)
     ASSERT_EQ (MAMA_STATUS_OK, mamaResourcePool_create (&pool, "test"));
     mamaSubscription subscription;
     mamaMsgCallbacks callbacks;
-    memset(&callbacks, 0, sizeof(mamaMsgCallbacks));
+    MamaResourcePoolTestC::resetMamaMsgCallbacks(&callbacks);
     callbacks.onMsg = onResourcePoolTestSubMsg;
     mama_setProperty("mama.resource_pool.test.bridges", mBridgeName);
     char prop[PROPERTY_NAME_MAX_LENGTH];
@@ -242,7 +252,7 @@ TEST_F (MamaResourcePoolTestC, CreateSubscriptionFromTopicWithSource)
     ASSERT_EQ (MAMA_STATUS_OK, mamaResourcePool_create (&pool, "test"));
     mamaSubscription subscription;
     mamaMsgCallbacks callbacks;
-    memset(&callbacks, 0, sizeof(mamaMsgCallbacks));
+    MamaResourcePoolTestC::resetMamaMsgCallbacks(&callbacks);
     callbacks.onMsg = onResourcePoolTestSubMsg;
     mama_setProperty("mama.resource_pool.test.bridges", mBridgeName);
     mama_setProperty("mama.resource_pool.test.default_transport_sub", mTransportName);
@@ -278,7 +288,7 @@ TEST_F (MamaResourcePoolTestC, CreateSubscriptionFromTopic)
     ASSERT_EQ (MAMA_STATUS_OK, mamaResourcePool_create (&pool, "test"));
     mamaSubscription subscription;
     mamaMsgCallbacks callbacks;
-    memset(&callbacks, 0, sizeof(mamaMsgCallbacks));
+    MamaResourcePoolTestC::resetMamaMsgCallbacks(&callbacks);
     callbacks.onMsg = onResourcePoolTestSubMsg;
     mama_setProperty("mama.resource_pool.test.bridges", mBridgeName);
     mama_setProperty("mama.resource_pool.test.default_transport_sub", mTransportName);

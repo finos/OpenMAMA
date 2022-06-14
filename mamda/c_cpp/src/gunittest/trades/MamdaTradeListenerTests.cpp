@@ -35,9 +35,8 @@
 #include <mama/mamacpp.h>
 #include <mama/MamaMsg.h>
 
+#include "common/MainUnitTest.h"
 #include "common/MamdaUnitTestUtils.h"
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -166,28 +165,28 @@ public:
         ++mOnQualityCount;
     }
 
-    uint getTradeRecapCount ()          { return mTradeRecapCount; }
-    uint getTradeReportCount ()         { return mTradeReportCount; }
-    uint getTradeGapCount ()            { return mTradeGapCount; }
-    uint getTradeCancelOrErrorCount ()  { return mTradeCancelOrErrorCount; }
-    uint getTradeCorrectionCount ()     { return mTradeCorrectionCount; }
-    uint getTradeClosingCount ()        { return mTradeClosingCount; }
-    uint getTradeOutOfSequenceCount ()  { return mTradeOutOfSequenceCount; }
-    uint getTradePossiblyDuplicateCount () { return mTradePossiblyDuplicateCount; }
-    uint getOnErrorCount ()             { return mOnErrorCount; }
-    uint getOnQualityCount ()           { return mOnQualityCount; }
+    unsigned int getTradeRecapCount ()          { return mTradeRecapCount; }
+    unsigned int getTradeReportCount ()         { return mTradeReportCount; }
+    unsigned int getTradeGapCount ()            { return mTradeGapCount; }
+    unsigned int getTradeCancelOrErrorCount ()  { return mTradeCancelOrErrorCount; }
+    unsigned int getTradeCorrectionCount ()     { return mTradeCorrectionCount; }
+    unsigned int getTradeClosingCount ()        { return mTradeClosingCount; }
+    unsigned int getTradeOutOfSequenceCount ()  { return mTradeOutOfSequenceCount; }
+    unsigned int getTradePossiblyDuplicateCount () { return mTradePossiblyDuplicateCount; }
+    unsigned int getOnErrorCount ()             { return mOnErrorCount; }
+    unsigned int getOnQualityCount ()           { return mOnQualityCount; }
 
 private:
-    uint mTradeRecapCount;
-    uint mTradeReportCount;
-    uint mTradeGapCount;
-    uint mTradeCancelOrErrorCount;
-    uint mTradeCorrectionCount;
-    uint mTradeClosingCount;
-    uint mTradeOutOfSequenceCount;
-    uint mTradePossiblyDuplicateCount;
-    uint mOnErrorCount;
-    uint mOnQualityCount;
+    unsigned int mTradeRecapCount;
+    unsigned int mTradeReportCount;
+    unsigned int mTradeGapCount;
+    unsigned int mTradeCancelOrErrorCount;
+    unsigned int mTradeCorrectionCount;
+    unsigned int mTradeClosingCount;
+    unsigned int mTradeOutOfSequenceCount;
+    unsigned int mTradePossiblyDuplicateCount;
+    unsigned int mOnErrorCount;
+    unsigned int mOnQualityCount;
 };
 
 class MamdaTradeListenerTest : public ::testing::Test
@@ -201,7 +200,7 @@ protected:
         try
         {
             mamaBridge bridge;
-            bridge = Mama::loadBridge("wmw"); //TODO - make configurable
+            bridge = Mama::loadBridge(getMiddleware());
             Mama::open();
 
             mDictionary = new MamaDictionary;
@@ -210,7 +209,7 @@ protected:
                 FAIL() << "Failed to allocate MamaDictionary\n";
                 return;
             }
-            mDictionary->populateFromFile("dictionary.txt"); //TODO - make configurable
+            mDictionary->populateFromFile(getDictionary());
             MamdaCommonFields::setDictionary (*mDictionary);
             MamdaTradeFields::reset();
             MamdaTradeFields::setDictionary (*mDictionary);

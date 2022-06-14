@@ -1,8 +1,8 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <AssemblyName>mamdamultisecuritytickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp2.1</TargetFramework>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
         <Title>OpenMAMA MamdaMultiSecurityTickerCS C#</Title>
         <Description>OpenMAMA MamdaMultiSecurityTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaMultiSecurityTickerCS C#</Configuration>

@@ -36,6 +36,37 @@
 static string version     ("APPNAMESTR:  Version " VERSIONSTR
                            "  Date " DATESTR "  Build " BUILDSTR);
 
+static const char*  gMiddleware = "qpid";
+static const char*  gDictionary = "dictionary1.txt";
+
+const char* getMiddleware (void) { return gMiddleware; }
+const char* getDictionary (void) { return gDictionary; }
+
+static void parseCommandLine (int argc, char** argv)
+{
+    int i = 1;
+
+    for (i = 1; i < argc;)
+    {
+        if (strcmp ("-m", argv[i]) == 0)
+        {
+            gMiddleware = argv[i+1];
+            i += 2;
+        }
+        else if (strcmp ("-d", argv[i]) == 0)
+        {
+            gDictionary = argv[i+1];
+            i += 2;
+        }
+        else
+        {
+           //unknown arg
+            i++;
+        }
+    }
+    printf("Middleware=%s dictionary=%s\n", gMiddleware, gDictionary);
+}
+
 int main (int argc, char **argv)
 {
     // create all tests, passing in command line options
@@ -43,6 +74,8 @@ int main (int argc, char **argv)
     // e.g. --gtest_filter, --gtest_repeat, etc
     // see google test framework docs for details
     ::testing::InitGoogleTest(&argc, argv);
+    parseCommandLine(argc, argv);
+
     // run all tests
     return RUN_ALL_TESTS();
 
