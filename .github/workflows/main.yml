@@ -78,6 +78,19 @@ jobs:
             args: -A x64
             vcver: msvc2019
             name: MSVC 2019 x64
+          - os: windows-2022
+            platform: x86
+            generator: Visual Studio 17 2022
+            args: -A Win32
+            vcver: msvc2022
+            name: MSVC 2022 x86
+          - os: windows-2022
+            platform: x64
+            generator: Visual Studio 17 2022
+            args: -A x64
+            vcver: msvc2022
+            name: MSVC 2022 x64
+
     steps:
     - uses: actions/checkout@v1
     - name: Run Windows Build
