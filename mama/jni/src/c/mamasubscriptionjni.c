@@ -944,7 +944,6 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_createNativeSubscri
         if(c_symbol)(*env)->ReleaseStringUTFChars(env,symbol, c_symbol);
         if(closure)(*env)->DeleteGlobalRef(env,closureImpl->mUserData);
         (*env)->DeleteGlobalRef(env,closureImpl->mClientCB);
-        (*env)->DeleteGlobalRef(env,this);
         free(closureImpl);
         utils_buildErrorStringForStatus(
                 errorString,
@@ -1066,7 +1065,6 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_MamaSubscription_setupNativeSubscrip
         if(c_symbol)(*env)->ReleaseStringUTFChars(env,symbol, c_symbol);
         if(closure)(*env)->DeleteGlobalRef(env,closureImpl->mUserData);
         (*env)->DeleteGlobalRef(env,closureImpl->mClientCB);
-        (*env)->DeleteGlobalRef(env,this);
         free(closureImpl);
         utils_buildErrorStringForStatus(
                 errorString,
