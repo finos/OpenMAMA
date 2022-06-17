@@ -32,9 +32,9 @@
 #include <mama/error.h>
 #include <mamainternal.h>
 #include <mama/version.h>
-#include <property.h>
+#include <wombat/property.h>
 #include <plugin.h>
-#include <platform.h>
+#include <wombat/platform.h>
 #include <dqstrategy.h>
 #include <subscriptionimpl.h>
 #include <mama/transport.h>

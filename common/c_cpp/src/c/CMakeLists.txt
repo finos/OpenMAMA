@@ -44,19 +44,6 @@ if(WIN32)
 	target_link_libraries(wombatcommonstatic ws2_32 advapi32 kernel32 Pdh shlwapi)
 endif()
 
-file(GLOB wombat_inst_includes wombat/*.h ${system}/wombat/*.h)
-if(WIN32)
-    file(GLOB wombat_platform_inst_includes ${system}/*.h)
-endif()
-list(APPEND inst_includes
-     destroyHandle.h
-     list.h
-     lookup2.h
-     platform.h
-     property.h
-     wlock.h
-     timers.h)
-
 set_target_properties(wombatcommon PROPERTIES OUTPUT_NAME "wombatcommon${OPENMAMA_LIBRARY_SUFFIX}")
 set_target_properties(wombatcommonstatic PROPERTIES OUTPUT_NAME "wombatcommon${OPENMAMA_LIBRARY_STATIC_SUFFIX}")
 install(TARGETS wombatcommon wombatcommonstatic
@@ -64,14 +51,15 @@ install(TARGETS wombatcommon wombatcommonstatic
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
+file(GLOB wombat_inst_includes wombat/*.h ${system}/wombat/*.h)
 install(FILES ${wombat_inst_includes}
 	DESTINATION include/wombat)
+
 if(WIN32)
+    file(GLOB wombat_platform_inst_includes ${system}/*.h)
     install(FILES ${wombat_platform_inst_includes}
-        DESTINATION include/${system})
+        DESTINATION include/wombat/${system})
 endif()
-install(FILES ${inst_includes}
-	DESTINATION include)
 
 if (WIN32 AND MSVC)
 	install(FILES $<TARGET_PDB_FILE:wombatcommon> DESTINATION bin OPTIONAL)

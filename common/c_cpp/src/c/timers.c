@@ -20,7 +20,7 @@
  */
 
 #include "wombat/port.h"
-#include "timers.h"
+#include "wombat/timers.h"
 
 #include <sys/types.h>
 #include <stdio.h>

@@ -28,7 +28,7 @@
 #include "mama/subscmsgtype.h"
 #include "mamainternal.h"
 #include "conflation/manager_int.h"
-#include "wlock.h"
+#include "wombat/wlock.h"
 #include <wombat/thread.h>
 
 #ifndef OPENMAMA_INTEGRATION

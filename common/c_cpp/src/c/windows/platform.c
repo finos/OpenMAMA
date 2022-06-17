@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "wombat/port.h"
-#include "platform.h"
+#include "wombat/platform.h"
 
 #define PATH_SEPERATOR "\\"
 

@@ -36,8 +36,8 @@
 #include <mama/version.h>
 #include <bridge.h>
 #include <payloadbridge.h>
-#include <property.h>
-#include <platform.h>
+#include <wombat/property.h>
+#include <wombat/platform.h>
 #include <plugin.h>
 #include <registerfunctions.h>
 

@@ -28,9 +28,9 @@
 #include <ctype.h>
 
 
-#include "property.h"
+#include "wombat/property.h"
 #include "propertyinternal.h"
-#include "lookup2.h"
+#include "wombat/lookup2.h"
 #include "wombat/memnode.h"
 #include "wombat/wtable.h"
 #include "wombat/strutils.h"

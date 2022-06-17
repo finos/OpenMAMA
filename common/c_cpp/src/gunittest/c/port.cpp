@@ -27,7 +27,7 @@
 #include <cstdlib>
 
 #include "wombat/port.h"
-#include "timers.h"
+#include "wombat/timers.h"
 #include <sys/types.h>
 
 class CommonPortTestC : public ::testing::Test

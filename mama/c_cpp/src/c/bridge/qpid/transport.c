@@ -26,7 +26,7 @@
 
 #include <stdint.h>
 #include <wombat/port.h>
-#include <property.h>
+#include <wombat/property.h>
 #include <mama/mama.h>
 #include <queueimpl.h>
 #include <msgimpl.h>
@@ -35,7 +35,7 @@
 #include <msgimpl.h>
 #include <subscriptionimpl.h>
 #include <transportimpl.h>
-#include <timers.h>
+#include <wombat/timers.h>
 #include <stdio.h>
 #include <errno.h>
 #include <wombat/queue.h>

@@ -6,7 +6,7 @@
 #include "bridgefunctions.h"
 #include "transport.h"
 #include <mama/mama.h>
-#include <property.h>
+#include <wombat/property.h>
 #include <stdlib.h>
 #include <string.h>
 

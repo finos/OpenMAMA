@@ -31,8 +31,8 @@
 #include "mama/mama.h"
 #include "mama/timer.h"
 #include "throttle.h"
-#include "list.h"
-#include "wlock.h"
+#include "wombat/list.h"
+#include "wombat/wlock.h"
 #include "wombat/wincompat.h"
 
 #define self ((wombatThrottleImpl*)(throttle))

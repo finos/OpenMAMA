@@ -20,7 +20,7 @@
  */
 
 #include <string.h>
-#include "list.h"
+#include "wombat/list.h"
 #include "mama/mama.h"
 #include "mama/types.h"
 #include "mama/stat.h"

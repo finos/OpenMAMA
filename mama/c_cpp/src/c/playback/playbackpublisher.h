@@ -35,8 +35,8 @@ extern "C" {
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <list.h>
-#include <lookup2.h>
+#include <wombat/list.h>
+#include <wombat/lookup2.h>
 #include <wombat/wtable.h>
 #include "playbackFileParser.h"
 #include "wombat/port.h"

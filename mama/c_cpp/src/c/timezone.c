@@ -22,7 +22,7 @@
 #include "wombat/port.h"
 #include "wombat/environment.h"
 #include <mama/timezone.h>
-#include <list.h>
+#include <wombat/list.h>
 #include <string.h>
 #include <stdio.h>
 #include <wombat/wincompat.h>

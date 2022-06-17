@@ -22,7 +22,7 @@
 #ifndef MamaInternalH__
 #define MamaInternalH__
 
-#include <property.h>
+#include <wombat/property.h>
 #include "wombat/wtable.h"
 #include "mama/types.h"
 #include "mama/status.h"

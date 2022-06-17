@@ -30,7 +30,7 @@
 #include <mama/statfields.h>
 #include "statsgeneratorinternal.h"
 #include "statinternal.h"
-#include "wlock.h"
+#include "wombat/wlock.h"
 #include "wombat/wInterlocked.h"
 #include <wombat/strutils.h>
 #include <wombat/thread.h>

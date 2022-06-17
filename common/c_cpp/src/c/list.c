@@ -25,8 +25,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "wlock.h"
-#include "list.h"
+#include "wombat/wlock.h"
+#include "wombat/list.h"
 
 int gWListDebug;
 

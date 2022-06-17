@@ -26,7 +26,7 @@
 
 extern "C"
 {
-    #include "destroyHandle.h"
+    #include "wombat/destroyHandle.h"
 }
 
 

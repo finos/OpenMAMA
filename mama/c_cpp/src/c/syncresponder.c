@@ -22,7 +22,7 @@
 #include "mama/mama.h"
 #include "mama/clientmanage.h"
 #include "clientmanageresponder.h"
-#include "list.h"
+#include "wombat/list.h"
 #include "syncresponder.h"
 #include "transportimpl.h"
 

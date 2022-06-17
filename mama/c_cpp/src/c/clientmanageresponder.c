@@ -23,7 +23,7 @@
 #include "mama/clientmanage.h"
 #include "subscriptionimpl.h"
 #include "clientmanageresponder.h"
-#include "list.h"
+#include "wombat/list.h"
 #include "syncresponder.h"
 #include "bridge.h"
 #include "transportimpl.h"

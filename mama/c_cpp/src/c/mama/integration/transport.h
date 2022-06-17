@@ -15,7 +15,7 @@
 
 #include <mama/mama.h>
 #include <mama/integration/types.h>
-#include "list.h"
+#include <wombat/list.h>
 
 #if defined (__cplusplus)
 extern "C"
