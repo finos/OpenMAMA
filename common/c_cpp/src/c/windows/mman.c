@@ -26,7 +26,7 @@
 #include <errno.h>
 #include <io.h>
 
-#include "mman.h"
+#include "wombat/windows/mman.h"
 
 #ifndef FILE_MAP_EXECUTE
 #define FILE_MAP_EXECUTE    0x0020
