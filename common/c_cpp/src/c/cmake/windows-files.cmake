@@ -1,10 +1,8 @@
 set(SYSTEM_SOURCES
 	windows/environment.c
 	windows/lock.c
-	windows/lock.h
 	windows/machine_win.c
 	windows/mman.c
-	windows/mman.h
 	windows/network.c
 	windows/platform.c
 	windows/port.c
