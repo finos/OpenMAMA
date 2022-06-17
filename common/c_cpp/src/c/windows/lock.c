@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-#include "lock.h"
+#include "wombat/windows/lock.h"
 
 
 int wthread_mutex_lock (wthread_t thread)

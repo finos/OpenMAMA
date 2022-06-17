@@ -39,7 +39,7 @@
 
 #include "wombat/targetsxs.h"
 #include "wombat/wConfig.h"
-#include "windows/lock.h"
+#include "wombat/windows/lock.h"
 #include "wombat/windows/mman.h"
 
 #if defined(__cplusplus)
