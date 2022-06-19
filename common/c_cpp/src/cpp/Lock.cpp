@@ -18,7 +18,7 @@
  * 02110-1301 USA
  */
 
-#include <wlock.h>
+#include <wombat/wlock.h>
 #include "wombat/Lock.h"
 
 namespace Wombat {

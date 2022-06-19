@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stddef.h>
 #include <string.h>
-#include <property.h>
+#include <wombat/property.h>
 #include "playbackcapture.h"
 #include <wombat/port.h>
 

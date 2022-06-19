@@ -29,7 +29,7 @@
 #include <wombat/wtable.h>
 #include <wombat/port.h>
 #include <mama/integration/endpointpool.h>
-#include <wlock.h>
+#include <wombat/wlock.h>
 
 
 /*=========================================================================

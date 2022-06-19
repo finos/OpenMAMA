@@ -25,7 +25,7 @@
 #include <stdlib.h>
 #include <stddef.h>
 
-#include "platform.h"
+#include "wombat/platform.h"
 #include "wombat/wincompat.h"
 
 /**

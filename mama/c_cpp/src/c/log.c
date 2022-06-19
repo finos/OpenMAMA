@@ -31,7 +31,7 @@
 #include "mama/log.h"
 
 #include "wombat/MRSWLock.h"
-#include "property.h"
+#include "wombat/property.h"
 #include "mamainternal.h"
 
 /* ******************************************************************* */

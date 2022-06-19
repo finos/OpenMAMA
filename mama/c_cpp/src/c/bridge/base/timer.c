@@ -26,7 +26,7 @@
 
 #include <mama/mama.h>
 #include <mama/timer.h>
-#include <timers.h>
+#include <wombat/timers.h>
 #include <mama/integration/queue.h>
 #include <mama/integration/bridge/base.h>
 #include "basedefs.h"

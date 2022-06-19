@@ -41,7 +41,7 @@
 #include "bridge.h"
 #include "transportimpl.h"
 #include "subscriptionimpl.h"
-#include "list.h"
+#include "wombat/list.h"
 #include "refreshtransport.h"
 
 #define SYNC_SUBJECTS_PER_MESSAGE  100

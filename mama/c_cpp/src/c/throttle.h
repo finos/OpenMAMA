@@ -23,7 +23,7 @@
 #define ThrottleH__
 
 #include "mama/status.h"
-#include "list.h"
+#include "wombat/list.h"
 
 #ifndef OPENMAMA_INTEGRATION
   #define OPENMAMA_INTEGRATION

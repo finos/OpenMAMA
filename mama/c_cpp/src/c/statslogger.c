@@ -31,7 +31,7 @@
 #include <statsgeneratorinternal.h>
 #include <subscriptionimpl.h>
 #include <stdio.h>
-#include <wlock.h>
+#include <wombat/wlock.h>
 #include <mama/msg.h>
 #include <wombat/wincompat.h>
 

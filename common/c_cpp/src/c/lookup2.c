@@ -20,7 +20,7 @@ You can use this free for any purpose.  It has no warranty.
 #include <stddef.h>
 #include <stdlib.h>
 
-#include "lookup2.h"
+#include "wombat/lookup2.h"
 
 /*
 --------------------------------------------------------------------

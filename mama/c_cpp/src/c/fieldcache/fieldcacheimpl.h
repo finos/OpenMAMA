@@ -25,7 +25,7 @@
 #include <mama/types.h>
 #include "fieldcachemap.h"
 #include "fieldcachelist.h"
-#include <wlock.h>
+#include <wombat/wlock.h>
 
 #if defined(__cplusplus)
 extern "C" {

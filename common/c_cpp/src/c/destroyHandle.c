@@ -23,7 +23,7 @@
 /* Includes. */
 /* ************************************************************** */
 #include "wombat/port.h"
-#include "destroyHandle.h"
+#include "wombat/destroyHandle.h"
 #include <stdio.h>
 
 /* ************************************************************** */

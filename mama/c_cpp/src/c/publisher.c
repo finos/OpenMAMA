@@ -34,7 +34,7 @@
 
 #include "wombat/wInterlocked.h"
 
-#include "list.h"
+#include "wombat/list.h"
 
 /* For Stats */
 extern int gGenerateTransportStats;

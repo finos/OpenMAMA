@@ -29,7 +29,7 @@
 #include <subscriptionimpl.h>
 #include <publisherimpl.h>
 #include <wombat/wtable.h>
-#include <list.h>
+#include <wombat/list.h>
 #include <imagerequest.h>
 #include <transportimpl.h>
 #include <msgutils.h>
@@ -43,11 +43,11 @@
 #include "transportimpl.h"
 #include <mama/statfields.h>
 #include <mama/statscollector.h>
-#include "wlock.h"
+#include "wombat/wlock.h"
 #include "wombat/wincompat.h"
 #include "wombat/wInterlocked.h"
 #include "queueimpl.h"
-#include "property.h"
+#include "wombat/property.h"
 #include <mama/entitlement.h>
 #include "entitlementinternal.h"
 extern int gGenerateGlobalStats;

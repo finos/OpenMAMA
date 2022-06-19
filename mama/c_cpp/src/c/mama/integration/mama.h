@@ -14,7 +14,7 @@
 #define OPENMAMA_INTEGRATION_MAMA_H__
 
 #include <wombat/wtable.h>
-#include <property.h>
+#include <wombat/property.h>
 #include <mama/mama.h>
 #include <mama/version.h>
 

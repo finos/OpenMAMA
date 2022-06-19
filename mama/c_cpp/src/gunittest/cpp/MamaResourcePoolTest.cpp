@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 #include "mama/resourcepool.h"
 #include "mama/mama.h"
-#include "property.h"
+#include "wombat/property.h"
 #include "mama/MamaResourcePool.h"
 #include "mama/MamaStatus.h"
 #include "mama/mamacpp.h"

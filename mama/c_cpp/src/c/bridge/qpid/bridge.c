@@ -27,7 +27,7 @@
 #include <stdint.h>
 #include <mama/mama.h>
 #include <mama/version.h>
-#include <timers.h>
+#include <wombat/timers.h>
 #include <wombat/strutils.h>
 #include "qpidbridgefunctions.h"
 #include "qpiddefs.h"

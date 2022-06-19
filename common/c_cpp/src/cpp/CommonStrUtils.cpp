@@ -1,4 +1,4 @@
-#include <wlock.h>
+#include <wombat/wlock.h>
 #include "wombat/CommonStrUtils.h"
 
 namespace Wombat

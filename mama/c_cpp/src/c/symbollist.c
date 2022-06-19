@@ -22,7 +22,7 @@
 /* *************************************************** */
 /* Includes. */
 /* *************************************************** */
-#include "list.h"
+#include "wombat/list.h"
 #include "mama/symbollist.h"
 #include "mama/symbollistmember.h"
 #include "mama/symbollisttypes.h"

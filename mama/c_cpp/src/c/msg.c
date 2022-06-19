@@ -37,7 +37,7 @@
 #include "msgfieldimpl.h"
 #include "mamainternal.h"
 
-#include "list.h"
+#include "wombat/list.h"
 
 #include "wombat/wincompat.h"
 #include "wombat/memnode.h"

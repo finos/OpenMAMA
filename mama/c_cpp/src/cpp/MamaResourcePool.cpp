@@ -12,7 +12,7 @@
 #include "mama/MamaResourcePool.h"
 #include "mamacppinternal.h"
 #include "mama/MamaRegexChannelFilter.h"
-#include "property.h"
+#include "wombat/property.h"
 #include "mama/integration/mama.h"
 #include "wombat/CommonStrUtils.h"
 #include "../c/resourcepool.h"

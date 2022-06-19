@@ -1,5 +1,5 @@
 #include "resourcepool.h"
-#include "list.h"
+#include "wombat/list.h"
 #include "mama/integration/mama.h"
 #include "mama/mama.h"
 #include "mama/queuegroup.h"

@@ -1,6 +1,6 @@
 #include <gtest/gtest.h>
 #include "mama/mama.h"
-#include "property.h"
+#include "wombat/property.h"
 #include "mama/MamaRegexChannelFilter.h"
 #include <cstring>
 
