@@ -1555,7 +1555,7 @@ baseBridgeMamaInboxImpl_getReplySubject (inboxBridge inbox);
 
 MAMAExpBridgeDLL
 extern mama_status
-baseBridgeMamaIoImpl_start (void* closure);
+baseBridgeMamaIoImpl_start (void** closure);
 
 MAMAExpBridgeDLL
 extern mama_status
@@ -1770,13 +1770,7 @@ MAMAExpBridgeDLL
 extern mama_status
 baseBridgeMamaMsgReplyHandleImpl_getInboxName (void*       replyHandle,
                                                char**      value);
-MAMAExpBridgeDLL
-extern mama_status
-baseBridgeMamaIoImpl_start (void* closure);
 
-MAMAExpBridgeDLL
-extern mama_status
-baseBridgeMamaIoImpl_stop  (void* closure);
 /**
  * This will set the inbox name for the reply handle specified.
  *
