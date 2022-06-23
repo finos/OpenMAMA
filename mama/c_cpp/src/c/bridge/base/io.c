@@ -119,14 +119,6 @@ baseBridgeMamaIo_create         (ioBridge*   result,
     event_add (&impl->mEvent, NULL);
 
     bridgeClosure = baseBridgeMamaIoImpl_getBridgeClosure(impl);
-    bridgeClosure->mIoState = calloc (1, sizeof (baseBridgeIoImpl));
-    if (NULL == bridgeClosure->mIoState)
-    {
-        event_del (&impl->mEvent);
-        free (impl);
-        return MAMA_STATUS_NOMEM;
-    }
-
     ioState = bridgeClosure->mIoState;
     event_base_set (ioState->mEventBase, &impl->mEvent);
 
@@ -197,7 +189,7 @@ baseBridgeMamaIoImpl_start (void** closure)
                                    (void*)ioState);
     if (0 != threadResult)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "baseBridgeMamaIoImpl_initialize(): "
+        mama_log (MAMA_LOG_LEVEL_ERROR, "baseBridgeMamaIoImpl_start(): "
                   "wthread_create returned %d", threadResult);
         return MAMA_STATUS_PLATFORM;
     }
