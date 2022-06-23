@@ -100,7 +100,7 @@ baseBridgeMamaTimerImpl_timerCallback (timerElement timer, void* closure);
  * @return Qpid bridge closure object (bridge specific context)
  */
 baseBridgeClosure*
-baseBridgeMamaTimerImpl_getQpidBridgeClosure(baseTimerImpl* impl);
+baseBridgeMamaTimerImpl_getBridgeClosure(baseTimerImpl* impl);
 
 
 /*=========================================================================
@@ -152,7 +152,7 @@ baseBridgeMamaTimer_create (timerBridge*  result,
     timeout.tv_usec = ((interval-timeout.tv_sec) * 1000000.0);
 
     /* Get the timer heap from the bridge */
-    bridgeClosure = baseBridgeMamaTimerImpl_getQpidBridgeClosure (impl);
+    bridgeClosure = baseBridgeMamaTimerImpl_getBridgeClosure (impl);
 
     /* Create the first single fire timer */
     timerResult = createTimer (&impl->mTimerElement,
@@ -203,7 +203,10 @@ baseBridgeMamaTimer_destroy (timerBridge timer)
     impl->mAction                   = NULL;
 
     /* Get the timer heap from the bridge */
-    bridgeClosure = baseBridgeMamaTimerImpl_getQpidBridgeClosure (impl);
+    bridgeClosure = baseBridgeMamaTimerImpl_getBridgeClosure (impl);
+
+    // destroy must be syncrhonized w/reset
+    lockTimerHeap(bridgeClosure->mTimerHeap);
 
     /* Destroy the timer element */
     timerResult = destroyTimer (bridgeClosure->mTimerHeap, impl->mTimerElement);
@@ -214,6 +217,8 @@ baseBridgeMamaTimer_destroy (timerBridge timer)
                   timerResult);
         returnStatus = MAMA_STATUS_PLATFORM;
     }
+
+    unlockTimerHeap(bridgeClosure->mTimerHeap);
 
     /*
      * Put the impl free at the back of the queue to be executed when all
@@ -239,12 +244,16 @@ baseBridgeMamaTimer_reset (timerBridge timer)
         return MAMA_STATUS_NULL_ARG;
     }
 
+    /* Get the timer heap from the bridge */
+    bridgeClosure = baseBridgeMamaTimerImpl_getBridgeClosure (impl);
+    lockTimerHeap(bridgeClosure->mTimerHeap);
+
     /* Calculate next time interval */
     timeout.tv_sec  = (time_t) impl->mInterval;
     timeout.tv_usec = ((impl->mInterval- timeout.tv_sec) * 1000000.0);
 
     /* Get the timer heap from the bridge */
-    bridgeClosure = baseBridgeMamaTimerImpl_getQpidBridgeClosure (impl);
+    bridgeClosure = baseBridgeMamaTimerImpl_getBridgeClosure (impl);
 
     /* Create the timer for the next firing */
     timerResult = resetTimer (bridgeClosure->mTimerHeap,
@@ -254,9 +263,11 @@ baseBridgeMamaTimer_reset (timerBridge timer)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "Failed to reset Qpid underlying timer [%d].", timerResult);
+        unlockTimerHeap(bridgeClosure->mTimerHeap);
         return MAMA_STATUS_PLATFORM;
     }
 
+    unlockTimerHeap(bridgeClosure->mTimerHeap);
     return MAMA_STATUS_OK;
 
 }
@@ -349,7 +360,7 @@ baseBridgeMamaTimerImpl_timerCallback (timerElement  timer,
 }
 
 baseBridgeClosure*
-baseBridgeMamaTimerImpl_getQpidBridgeClosure (baseTimerImpl* impl)
+baseBridgeMamaTimerImpl_getBridgeClosure (baseTimerImpl* impl)
 {
     mamaQueue           queue           = NULL;
     baseBridgeClosure*  bridgeClosure   = NULL;
