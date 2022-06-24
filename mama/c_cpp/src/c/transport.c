@@ -936,7 +936,7 @@ mamaTransport_create (mamaTransport transport,
     }
 
 
-    if (strlen((char*)gEntitlementBridges))   /* If entitlement bridges were built in at compile time. */
+    if (gEntitlementBridges[0])   /* If entitlement bridges were built in at compile time. */
     {
         snprintf (propNameBuf, sizeof(propNameBuf), "mama.transport.%s.entitlementBridge", self->mName);
         propValue = properties_Get (mamaInternal_getProperties (), propNameBuf);
