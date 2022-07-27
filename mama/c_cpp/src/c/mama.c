@@ -171,8 +171,11 @@ typedef struct mamaPayloads_
     /* wtable of loaded payloads, keyed by payload name */
     wtable_t            table;
 
-    /* Array indexed by char id, for rapid access when required. */
-    mamaPayloadLib*     byChar[MAMA_PAYLOAD_MAX];
+    /* Array of payload indices indexed by char id, for rapid access when required. */
+    uint8_t             byChar[MAMA_PAYLOAD_MAX];
+
+    /* Array of loaded middleware libraries, indexed by order of load */
+    mamaPayloadLib*     byIndex[MAMA_MAX_PAYLOADS];
 
     /* Count of number of currently loaded payloads */
     mama_i32_t          count;
@@ -227,7 +230,7 @@ static char mama_ver_string[256];
 
 static mamaImpl gImpl = {
                             { NULL, {0}, 0 },         /* middlewares */
-                            { NULL, {0}, 0 },         /* payloads */
+                            { NULL, {0}, {0}, 0 },    /* payloads */
                             { NULL, {0}, 0 },         /* entitlements */
                             0,                        /* myRefCount */
                             0,                        /* init */
@@ -744,8 +747,8 @@ mamaInternal_findPayload (char id)
     if (MAMA_PAYLOAD_NULL == id)
         return NULL;
 
-    payloadLib = gImpl.payloads.byChar[(uint8_t)id];
-
+    uint8_t idx = gImpl.payloads.byChar[(uint8_t)id];
+    payloadLib = gImpl.payloads.byIndex[idx];
     if (NULL != payloadLib)
     {
         return payloadLib->bridge;
@@ -931,7 +934,7 @@ mama_openWithPropertiesCount (const char* path,
                 uint8_t i = 0;
                 while (payloadId[i] != MAMA_PAYLOAD_NULL)
                 {
-                    if (!gImpl.payloads.byChar[payloadId[i]])
+                    if (!gImpl.payloads.byIndex[gImpl.payloads.byChar[payloadId[i]]])
                     {
                         mamaPayloadBridge payloadImpl = NULL;
                         mama_loadPayloadBridge (&payloadImpl, payloadName[i]);
@@ -1562,15 +1565,16 @@ mama_closeCount (unsigned int* count)
         /* Iterate over the payloads which have been loaded, and unload each
          * library in turn.
          */
-        for (payload = 0; payload != MAMA_PAYLOAD_MAX; ++payload)
+        for (payload = 0; payload != MAMA_MAX_PAYLOADS; ++payload)
         {
-            mamaPayloadLib* payloadLib =
-                    (mamaPayloadLib *)gImpl.payloads.byChar[payload];
-
-            if (payloadLib)
+            uint8_t idx = gImpl.payloads.byChar[payload];
+            if (gImpl.payloads.byIndex[idx])
             {
+                mamaPayloadLib* payloadLib =
+                        (mamaPayloadLib *)gImpl.payloads.byIndex[idx];
                 /* Remove the pointer from the payload cache */
-                gImpl.payloads.byChar[payload] = NULL;
+                gImpl.payloads.byChar[payload] = 0;
+                gImpl.payloads.byIndex[idx] = NULL;
 
                 /* The memory for the payloadBridge struct is presently allocated
                  * by the bridge itself. However, there is no mechanism via which
@@ -2151,10 +2155,11 @@ mamaInternal_registerBridge (mamaBridge     bridge,
 mama_status
 mama_setDefaultPayload (char id)
 {
-    if (MAMA_PAYLOAD_NULL == id || gImpl.payloads.byChar[(uint8_t)id] == NULL)
+    uint8_t idx = gImpl.payloads.byChar[(uint8_t)id];
+    if (MAMA_PAYLOAD_NULL == id || NULL == gImpl.payloads.byIndex[idx])
         return MAMA_STATUS_NULL_ARG;
 
-    gDefaultPayload = gImpl.payloads.byChar[(uint8_t)id]->bridge;
+    gDefaultPayload = gImpl.payloads.byIndex[idx]->bridge;
 
     return MAMA_STATUS_OK;
 }
@@ -2231,9 +2236,9 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
 
     /* Once we have checked if the payload has already been loaded, check if
      * we've already loaded the maximum number of bridges allowed,
-     * MAMA_PAYLOAD_MAX. If we have, report an error and return.
+     * MAMA_MAX_PAYLOADS. If we have, report an error and return.
      */
-    if (gImpl.payloads.count >= MAMA_PAYLOAD_MAX)
+    if (gImpl.payloads.count >= MAMA_MAX_PAYLOADS)
     {
         status = MAMA_STATUS_NO_BRIDGE_IMPL;
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -2449,7 +2454,7 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
         goto error_handling_payloadlib;
     }
 
-    if (gImpl.payloads.byChar[(uint8_t)payloadChar])
+    if (gImpl.payloads.byIndex[gImpl.payloads.byChar[(uint8_t)payloadChar]])
     {
         status = MAMA_STATUS_SYSTEM_ERROR;
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -2461,7 +2466,8 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     }
 
     /* Add a pointer to the byChar array for rapid access later. */
-    gImpl.payloads.byChar[(uint8_t)payloadChar] = payloadLib;
+    gImpl.payloads.byChar[(uint8_t)payloadChar] = (uint8_t)gImpl.payloads.count;
+    gImpl.payloads.byIndex[gImpl.payloads.count] = payloadLib;
 
     /* Increment the count of loaded payloads. */
     /* Note: Due to the check for the PAYLOAD_MAX limit at the start of the
