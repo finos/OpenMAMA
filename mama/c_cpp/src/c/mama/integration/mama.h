@@ -23,10 +23,10 @@ extern "C"
 {
 #endif
 
-#define MAMA_PAYLOAD_MAX        CHAR_MAX
-#define MAMA_MAX_MIDDLEWARES    CHAR_MAX
-#define MAMA_MAX_ENTITLEMENTS   CHAR_MAX
-#define MAX_ENTITLEMENT_BRIDGES CHAR_MAX
+#define MAMA_PAYLOAD_MAX        UINT8_MAX
+#define MAMA_MAX_MIDDLEWARES    UINT8_MAX
+#define MAMA_MAX_ENTITLEMENTS   UINT8_MAX
+#define MAX_ENTITLEMENT_BRIDGES UINT8_MAX
 
 /* These are the bare parameters which may be reused in other properties */
 #define MAMA_PROP_BARE_ENT_DEFERRED        "entitlements.deferred"

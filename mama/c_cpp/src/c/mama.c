@@ -1389,7 +1389,7 @@ mama_closeCount (unsigned int* count)
 {
     mama_status    result     = MAMA_STATUS_OK;
     mama_size_t    middlewareIdx = 0;
-    int payload = 0;
+    uint8_t payload = 0;
     int bridgeCount = 0;
 
     wthread_static_mutex_lock (&gImpl.myLock);
@@ -2449,19 +2449,19 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
         goto error_handling_payloadlib;
     }
 
-    if (gImpl.payloads.byChar[payloadChar])
+    if (gImpl.payloads.byChar[(uint8_t)payloadChar])
     {
         status = MAMA_STATUS_SYSTEM_ERROR;
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadPayloadBridgeInternal (): "
-                  "Payload bridge using this character [%c] has already been registered. Cannot load payload bridge [%s]",
-                  payloadChar,
+                  "Payload bridge using this character [%#x] has already been registered. Cannot load payload bridge [%s]",
+                  (uint8_t)payloadChar,
                   payloadName);
         goto error_handling_payloadlib;
     }
 
     /* Add a pointer to the byChar array for rapid access later. */
-    gImpl.payloads.byChar[payloadChar] = payloadLib;
+    gImpl.payloads.byChar[(uint8_t)payloadChar] = payloadLib;
 
     /* Increment the count of loaded payloads. */
     /* Note: Due to the check for the PAYLOAD_MAX limit at the start of the
