@@ -23,7 +23,7 @@ extern "C"
 {
 #endif
 
-#define MAMA_PAYLOAD_MAX        UINT8_MAX
+#define MAMA_PAYLOAD_MAX        CHAR_MAX
 #define MAMA_MAX_PAYLOADS       CHAR_MAX
 #define MAMA_MAX_MIDDLEWARES    CHAR_MAX
 #define MAMA_MAX_ENTITLEMENTS   CHAR_MAX
