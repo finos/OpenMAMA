@@ -39,6 +39,7 @@ public class MamaFieldCachePriceTest extends MamaTestBaseTestCase
     @After
     public void tearDown()
     {
+        mMsg.destroy();
         Mama.close();
     }
 

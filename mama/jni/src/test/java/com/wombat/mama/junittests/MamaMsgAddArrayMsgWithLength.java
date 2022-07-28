@@ -102,8 +102,10 @@ public class MamaMsgAddArrayMsgWithLength extends MamaTestBaseTestCase
     public void tearDown()
     {
         // Clear all variables
-        mMsg = null;
-        mArrayMsg = null;
+        mMsg.destroy();
+        for(int i=0; i < mArrayMsg.length; i++) {
+            mArrayMsg[i].destroy();
+        }
         super.tearDown();
     }
 
