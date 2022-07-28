@@ -934,7 +934,7 @@ mama_openWithPropertiesCount (const char* path,
                 uint8_t i = 0;
                 while (payloadId[i] != MAMA_PAYLOAD_NULL)
                 {
-                    if (!gImpl.payloads.byIndex[gImpl.payloads.byChar[payloadId[i]]])
+                    if (!gImpl.payloads.byIndex[gImpl.payloads.byChar[(uint8_t)payloadId[i]]])
                     {
                         mamaPayloadBridge payloadImpl = NULL;
                         mama_loadPayloadBridge (&payloadImpl, payloadName[i]);
