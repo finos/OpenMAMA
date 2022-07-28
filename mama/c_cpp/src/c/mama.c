@@ -1565,7 +1565,7 @@ mama_closeCount (unsigned int* count)
         /* Iterate over the payloads which have been loaded, and unload each
          * library in turn.
          */
-        for (payload = 0; payload != MAMA_MAX_PAYLOADS; ++payload)
+        for (payload = 0; payload != gImpl.payloads.count; ++payload)
         {
             uint8_t idx = gImpl.payloads.byChar[payload];
             if (gImpl.payloads.byIndex[idx])
@@ -1601,6 +1601,9 @@ mama_closeCount (unsigned int* count)
             }
         }
 
+        /* Reset the count of loaded payloads */
+        gImpl.payloads.count = 0;
+        gDefaultPayload = NULL;
 
         /* Once the libraries have been unloaded, clear down and destroy the wtable. */
         wtable_clear (gImpl.payloads.table);
@@ -1609,11 +1612,6 @@ mama_closeCount (unsigned int* count)
 
         /* This will shutdown all plugins */
         mama_shutdownPlugins();
-
-        /* Reset the count of loaded payloads */
-        gImpl.payloads.count = 0;
-
-        gDefaultPayload = NULL;
 
         /* Iterate over the loaded middleware bridges, close each bridge, and
          * unload each library in turn.
