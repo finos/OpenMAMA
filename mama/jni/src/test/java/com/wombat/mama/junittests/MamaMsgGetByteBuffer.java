@@ -60,6 +60,9 @@ public class MamaMsgGetByteBuffer extends MamaTestBaseTestCase
         super.setUp();
 
         // Create the second message
+        mMessage = new MamaMsg();
+
+        // Create the second message
         mSecondMessage = new MamaMsg();
 
         // Add some data to it
@@ -70,7 +73,8 @@ public class MamaMsgGetByteBuffer extends MamaTestBaseTestCase
     public void tearDown()
     {
         // Destroy the message
-        mMessage = null;
+        mMessage.destroy();
+        mSecondMessage.destroy();
         super.tearDown();
     }
 
@@ -84,7 +88,6 @@ public class MamaMsgGetByteBuffer extends MamaTestBaseTestCase
         try
         {
             // Create the message
-            mMessage = new MamaMsg();
             mMessage.createFromByteBuffer(null);
         }
 
@@ -98,9 +101,6 @@ public class MamaMsgGetByteBuffer extends MamaTestBaseTestCase
     {
         // Get the byte buffer from the second message
         byte[] buffer = mSecondMessage.getByteBuffer();
-
-        // Create the message
-        mMessage = new MamaMsg();
 
         // Create the message twice
         mMessage.createFromByteBuffer(buffer);
@@ -118,9 +118,6 @@ public class MamaMsgGetByteBuffer extends MamaTestBaseTestCase
     @Test
     public void testPair()
     {
-        // Create the message
-        mMessage = new MamaMsg();
-
         // Get the byte buffer from the second message
         byte[] buffer = mSecondMessage.getByteBuffer();
 

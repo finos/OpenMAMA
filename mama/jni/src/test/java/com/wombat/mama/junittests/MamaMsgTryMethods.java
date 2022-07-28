@@ -83,7 +83,6 @@ public class MamaMsgTryMethods extends MamaTestBaseTestCase
     {
         // Reset all member variables
         mMsg.destroy();
-        mMsg = null;
 
         super.tearDown();
     }
