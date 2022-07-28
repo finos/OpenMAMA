@@ -161,7 +161,7 @@ if (WITH_JAVA)
                  COMMAND ${BIN_GRADLE} --no-daemon
                      -PbuildDir=${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-java
                      -Ddictionary=${CMAKE_SOURCE_DIR}/mamda/java/src/test/resources/data.dict
-                     test)
+                     test -i)
         set_tests_properties(java_unittests
                              PROPERTIES
                                  ENVIRONMENT "middlewareName=qpid;transportName=pub")
