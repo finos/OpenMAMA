@@ -35,7 +35,6 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      "$SOURCE_PATH_ABSOLUTE"
 make -j install
 export LD_LIBRARY_PATH=/opt/openmama/lib
-# ctest . --timeout 120 --output-on-failure -R java_unittests
 ctest . --timeout 120 --output-on-failure
 cd "$SOURCE_PATH_ABSOLUTE" > /dev/null
 

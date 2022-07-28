@@ -38,7 +38,7 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_CXX_STANDARD=17 \
      ..
 make -j install
-ctest . -E java_unittests --timeout 240 --output-on-failure
+ctest . -E java_unittests --timeout 120 --output-on-failure
 
 # Return to parent directory
 cd - > /dev/null

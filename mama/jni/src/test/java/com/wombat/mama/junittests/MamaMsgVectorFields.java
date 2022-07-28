@@ -177,7 +177,6 @@ public class MamaMsgVectorFields extends MamaTestBaseTestCase
     }
 
     @Test
-    @Ignore("Disabling vector message test now since it seems to trigger race condition")
     public void testVectorMessage()
     {
 
@@ -343,7 +342,6 @@ public class MamaMsgVectorFields extends MamaTestBaseTestCase
     }
 
     @Test
-    @Ignore("Disabling vector message test now since it seems to trigger race condition")
     public void testFieldVectorMessage()
     {
         // Add data to the message
