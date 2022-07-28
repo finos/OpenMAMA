@@ -22,7 +22,7 @@ public class MamaTestBaseTestCase {
 
     protected void setUp()
     {
-//        Mama.setProperty("mama.payload.keeploaded.qpidmsg", "true");
+        Mama.setProperty("mama.payload.keeploaded.qpidmsg", "true");
         // Load the bridge
         String bridgeName = getBridgeName();
         bridge = Mama.loadBridge(bridgeName);

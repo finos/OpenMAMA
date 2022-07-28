@@ -40,6 +40,7 @@ public class MamaFieldCacheFloat64Test extends MamaTestBaseTestCase
     @After
     public void tearDown()
     {
+        mMsg.destroy();
         super.tearDown();
     }
 

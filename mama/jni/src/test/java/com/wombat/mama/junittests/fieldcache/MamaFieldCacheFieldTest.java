@@ -36,6 +36,7 @@ public class MamaFieldCacheFieldTest extends MamaTestBaseTestCase
     @After
     public void tearDown()
     {
+        mMsg.destroy();
         super.tearDown();
     }
 
