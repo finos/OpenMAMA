@@ -5,8 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.logging.Level;
-
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
@@ -72,7 +70,6 @@ public class MamaResourcePoolTest extends MamaTestBaseTestCase {
 
     @Test
     public void createTransportFromName() {
-        Mama.setLogLevel(Level.FINEST);
         MamaTransport transport = mPool.createTransportFromName(mTransportName);
         assertNotEquals(null, transport);
         assertEquals(mTransportName, transport.getName());
