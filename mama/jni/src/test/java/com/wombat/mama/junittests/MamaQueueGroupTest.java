@@ -59,8 +59,8 @@ public class MamaQueueGroupTest extends MamaTestBaseTestCase
     {
         int num = 4;
         MamaQueueGroup g = new MamaQueueGroup(num, getBridge());
-        
         assertEquals(num, g.getNumberOfQueues());
+        g.destroyWait();
     }
 }
 
