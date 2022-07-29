@@ -10,7 +10,7 @@ cd %GITHUB_WORKSPACE%\build || goto error
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWITH_CSHARP=ON -DWITH_UNITTEST=ON -DWITH_JAVA=ON -DPROTON_ROOT=C:/vcpkg/installed/%PLATFORM%-windows/ -DGTEST_ROOT=C:/vcpkg/installed/%PLATFORM%-windows/ -DINSTALL_RUNTIME_DEPENDENCIES=ON -DCMAKE_INSTALL_PREFIX="%OPENMAMA_INSTALL_DIR%" -G "%GENERATOR%" -DAPR_ROOT=C:/vcpkg/installed/%PLATFORM%-windows/ -DAPRUTIL_ROOT=C:/vcpkg/installed/%PLATFORM%-windows/ -DCMAKE_TOOLCHAIN_FILE=c:/vcpkg/scripts/buildsystems/vcpkg.cmake %EXTRA_ARGS% .. || goto error
 call build_dll_path_RelWithDebInfo.bat
 cmake --build . --config RelWithDebInfo --target install || goto error
-ctest . -C RelWithDebInfo --timeout 240 --output-on-failure || goto error
+ctest . -C RelWithDebInfo -E java_unittests --timeout 240 --output-on-failure || goto error
 cd %GITHUB_WORKSPACE%\mama\jni || goto error
 cd %GITHUB_WORKSPACE% || goto error
 7z a openmama-%VERSION%.win.%VCVER%.%PLATFORM%.zip "%OPENMAMA_INSTALL_DIR%" || goto error
