@@ -100,6 +100,11 @@ then
     PACKAGE_TYPE=rpm
     CLOUDSMITH_DISTRO_NAME=centos
     CLOUDSMITH_DISTRO_VERSION=${DISTRIB_RELEASE%%.*}
+    if [ "$CLOUDSMITH_DISTRO_VERSION" = "7" ]
+    then
+        export LC_ALL=$(locale -a | tail -1)
+        export LANG=$LC_ALL
+    fi
 fi
 
 if [ -f /etc/lsb-release ]
