@@ -60,7 +60,12 @@ RHEL=CentOS
 UBUNTU=Ubuntu
 
 VERSION=$(git --git-dir="$SOURCE_PATH_ABSOLUTE/.git" describe --tags | sed 's/^OpenMAMA-//g' | sed 's/-release//g')
-CURRENT_BRANCH=$(git --git-dir="$SOURCE_PATH_ABSOLUTE/.git" rev-parse --abbrev-ref HEAD)
+if [ -n "$GITHUB_REF" ]
+then
+    CURRENT_BRANCH=${GITHUB_REF##*/}
+else
+    CURRENT_BRANCH=$(git --git-dir="$SOURCE_PATH_ABSOLUTE/.git" rev-parse --abbrev-ref HEAD)
+fi
 if echo "$VERSION" | grep -E "^[0-9.]*$" > /dev/null
 then
     CLOUDSMITH_REPOSITORY=openmama
