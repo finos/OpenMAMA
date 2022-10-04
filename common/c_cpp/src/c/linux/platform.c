@@ -62,7 +62,12 @@ LIB_HANDLE openSharedLib (const char* libName, const char* path)
         snprintf (fileName, nameLength, "lib%s%s", libName, LIB_EXTENSION);
     }
 
+    #ifdef ENABLE_ASAN
+    // see https://github.com/google/sanitizers/issues/89
+    handle = dlopen (fileName, RTLD_NOW | RTLD_GLOBAL | RTLD_NODELETE);
+    #else
     handle = dlopen (fileName, RTLD_NOW | RTLD_GLOBAL);
+    #endif
 
     free(fileName);
     return handle;
