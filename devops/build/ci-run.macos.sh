@@ -18,7 +18,7 @@ chmod a+x /tmp/dotnet-install.sh
 
 brew install googletest apr apr-util ossp-uuid qpid-proton
 
-APR_ROOT=$(find /usr/local/Cellar/apr -type d -name libexec)
+APR_ROOT=$(find /usr/local/Cellar/apr -type d -maxdepth 1 -mindepth 1)
 APRUTIL_ROOT=$(find /usr/local/Cellar/apr-util -type d -maxdepth 1 -mindepth 1)
 
 # Build the project
