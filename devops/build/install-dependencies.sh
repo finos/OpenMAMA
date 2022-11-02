@@ -99,8 +99,9 @@ then
 fi
 
 # RHEL 7 ruby is too old - need a more recent version for FPM to work later
-if [[ ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" -le "7") ]]
+if [[ ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" -le "18") || ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" -le "7") ]]
 then
+    apt-get install -y libssl-ocaml-dev
     cd "$DEPS_DIR"
     curl -sL "https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.1.tar.gz" | tar xz
     cd ruby-2.6.1
