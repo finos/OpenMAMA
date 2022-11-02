@@ -91,6 +91,11 @@ then
 	    apt-transport-https ca-certificates libaprutil1-dev
     apt-get install -y rubygems openjdk-11-jdk
     echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" > /etc/profile.d/profile.jni.sh
+    if [ "${DISTRIB_RELEASE:0:2}" = "18" ]
+    then
+        # Ubuntu 18 cmake version is too old - upgrade it
+        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
+    fi
 fi
 
 # RHEL 7 ruby is too old - need a more recent version for FPM to work later
