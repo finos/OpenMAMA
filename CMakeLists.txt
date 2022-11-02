@@ -202,16 +202,16 @@ install(
 
 install(
     EXPORT OpenMAMA-targets
-    DESTINATION share/OpenMAMA
+    DESTINATION lib/cmake/OpenMAMA
     NAMESPACE OpenMAMA::
 )
 
 configure_package_config_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/OpenMAMAConfig.cmake.in
     ${CMAKE_CURRENT_BINARY_DIR}/OpenMAMAConfig.cmake
-    INSTALL_DESTINATION share/OpenMAMA)
+    INSTALL_DESTINATION lib/cmake/OpenMAMA)
 
 install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenMAMAConfig.cmake
-    DESTINATION "share/OpenMAMA"
+    DESTINATION lib/cmake/OpenMAMA
 )

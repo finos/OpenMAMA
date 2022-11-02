@@ -145,7 +145,7 @@ fpm -s dir --force \
         $DEPENDS_FLAGS \
         -p "$PACKAGE_FILE" \
         --description "OpenMAMA high performance Market Data API" \
-        $OPENMAMA_INSTALL_DIR/=/opt/openmama/
+        $OPENMAMA_INSTALL_DIR/=/usr/
 
 find "$DIST_DIR" -type f -name "*.$PACKAGE_TYPE"
 
