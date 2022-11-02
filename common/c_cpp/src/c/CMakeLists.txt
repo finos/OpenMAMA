@@ -56,9 +56,9 @@ install(FILES ${wombat_inst_includes}
 	DESTINATION include/wombat)
 
 if(WIN32)
-    file(GLOB wombat_platform_inst_includes ${system}/*.h)
+    file(GLOB wombat_platform_inst_includes wombat/windows/*.h)
     install(FILES ${wombat_platform_inst_includes}
-        DESTINATION include/wombat/${system})
+        DESTINATION include/wombat/windows)
 endif()
 
 if (WIN32 AND MSVC)
