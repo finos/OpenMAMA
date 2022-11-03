@@ -1,4 +1,4 @@
-cmake_minimum_required (VERSION 3.10)
+cmake_minimum_required (VERSION 3.16)
 project (OpenMAMA)
 
 set (CMAKE_CXX_STANDARD 11)
@@ -180,3 +180,38 @@ install(FILES LICENSE.md DESTINATION .)
 install(FILES mama/c_cpp/src/examples/mama.properties DESTINATION config)
 
 include(CPack)
+
+include(CMakePackageConfigHelpers)
+
+set(OPENMAMA_INSTALL_TARGETS wombatcommon mama mamabaseimpl)
+if (WITH_CPP)
+    list(APPEND OPENMAMA_INSTALL_TARGETS wombatcommoncpp mamacpp)
+endif()
+if (WITH_MAMDA)
+    list(APPEND OPENMAMA_INSTALL_TARGETS mamda mamdanews mamdaoptions mamdabook)
+    set(OPENMAMA_INSTALL_TARGETS ${OPENMAMA_INSTALL_TARGETS}  )
+endif()
+install(
+    TARGETS ${OPENMAMA_INSTALL_TARGETS}
+    EXPORT OpenMAMA-targets
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+    INCLUDES DESTINATION include
+)
+
+install(
+    EXPORT OpenMAMA-targets
+    DESTINATION lib/cmake/OpenMAMA
+    NAMESPACE OpenMAMA::
+)
+
+configure_package_config_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/OpenMAMAConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/OpenMAMAConfig.cmake
+    INSTALL_DESTINATION lib/cmake/OpenMAMA)
+
+install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenMAMAConfig.cmake
+    DESTINATION lib/cmake/OpenMAMA
+)

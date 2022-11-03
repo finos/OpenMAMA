@@ -95,7 +95,7 @@ fi
 if [ -f /etc/redhat-release ]
 then
     DISTRIB_RELEASE=$(cat /etc/redhat-release | tr " " "\n" | egrep "^[0-9]")
-    DEPENDS_FLAGS="-d libuuid -d libevent -d ncurses -d apr -d java-11-openjdk"
+    DEPENDS_FLAGS="-d libuuid -d libevent -d ncurses -d apr -d apr-util -d java-11-openjdk"
     DISTRIB_ID=$RHEL
     PACKAGE_TYPE=rpm
     CLOUDSMITH_DISTRO_NAME=centos
@@ -112,7 +112,7 @@ then
     # Will set DISTRIB_ID and DISTRIB_RELEASE
     source /etc/lsb-release
     PACKAGE_TYPE=deb
-    DEPENDS_FLAGS="-d uuid -d libevent-dev -d libzmq3-dev -d ncurses-dev -d libapr1-dev -d openjdk-11-jdk"
+    DEPENDS_FLAGS="-d uuid -d libevent-dev -d libzmq3-dev -d ncurses-dev -d libapr1-dev -d libaprutil1-dev -d openjdk-11-jdk"
     CLOUDSMITH_DISTRO_NAME=ubuntu
     CLOUDSMITH_DISTRO_VERSION=${DISTRIB_CODENAME}
 fi

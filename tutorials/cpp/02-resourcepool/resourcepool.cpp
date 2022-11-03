@@ -40,7 +40,6 @@ void usageAndExit(const char* appName) {
 int main(int argc, char* argv[])
 {
     // OpenMAMA status variable which we will use throughout this example
-    mama_status status;
     const char* transportName = "sub";
     const char* sourceName = "OM";
     const char* symbolName = NULL;
@@ -50,39 +49,54 @@ int main(int argc, char* argv[])
     int requiresInitial = 1;
 
     // Parse out command line options
-    int opt;
-    while((opt = getopt(argc, argv, ":Bd:Im:s:S:t:u:v")) != -1) {
-        switch(opt) {
-            case 'B':
-                requiresDictionary = false;
-                break;
-            case 'd':
-                dictionaryFile = optarg;
-                break;
-            case 'I':
-                requiresInitial = false;
-                break;
-            case 's':
-                symbolName = optarg;
-                break;
-            case 'S':
-                sourceName = optarg;
-                break;
-            case 't':
-                transportName = optarg;
-                break;
-            case 'u':
-                uri = optarg;
-                break;
-            case 'v':
-                // Set up the Log level for OpenMAMA internals
-                Mama::setLogLevel(MAMA_LOG_LEVEL_FINEST);
-                break;
-            default:
-                fprintf(stderr, "Encountered '%c'\n\n", optopt);
-                usageAndExit(argv[0]);
-                break;
+    int i = 0;
+    for (i = 1; i < argc; )
+    {
+        if (strcmp ("-B", argv[i]) == 0)
+        {
+            requiresDictionary = 0;
         }
+        else if (strcmp ("-d", argv[i]) == 0)
+        {
+            dictionaryFile = argv[++i];
+        }
+        else if (strcmp ("-I", argv[i]) == 0)
+        {
+            requiresInitial = 0;
+        }
+        else if (strcmp ("-s", argv[i]) == 0)
+        {
+            symbolName = argv[++i];
+        }
+        else if (strcmp ("-S", argv[i]) == 0)
+        {
+            sourceName = argv[++i];
+        }
+        else if (strcmp ("-t", argv[i]) == 0)
+        {
+            transportName = argv[++i];
+        }
+        else if (strcmp ("-u", argv[i]) == 0)
+        {
+            uri = argv[++i];
+        }
+        else if (strcmp ("-v", argv[i]) == 0)
+        {
+            // Set up the Log level for OpenMAMA internals
+            mama_setLogLevel(MAMA_LOG_LEVEL_FINEST);
+        }
+        else if ((strcmp (argv[i], "-h") == 0)||
+                 (strcmp (argv[i], "--help") == 0)||
+                 (strcmp (argv[i], "-?") == 0))
+        {
+            usageAndExit(argv[0]);
+        }
+        else
+        {
+            fprintf(stderr, "Unknown arg: %s\n",    argv[i]);
+            usageAndExit(argv[0]);
+        }
+        ++i;
     }
 
     try {

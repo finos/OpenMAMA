@@ -1,0 +1,9 @@
+@PACKAGE_INIT@
+
+include("${CMAKE_CURRENT_LIST_DIR}/OpenMAMA-targets.cmake")
+
+set (OpenMAMA_INCLUDE_DIRS ${PACKAGE_PREFIX_DIR}/include)
+set (OpenMAMA_LIBRARIES OpenMAMA::mama OpenMAMA::wombatcommon)
+set (OpenMAMA_FOUND True)
+
+check_required_components(OpenMAMA)
