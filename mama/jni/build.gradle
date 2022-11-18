@@ -17,7 +17,7 @@ plugins {
 
 dependencyCheck {
     failBuildOnCVSS=5
-    suppressionFile="../../allow-list.xml"
+    suppressionFile="allow-list.xml"
 }
 
 def mamaVersion = project.findProperty('mamaVersion') ?: new File("${projectDir.absolutePath}/../../VERSION").text.trim() + "-1"
