@@ -54,7 +54,7 @@ jobs:
     - name: Find the package
       run: 'echo PKG=`find ./dist -name "*.${{ matrix.package_type }}"` >> $GITHUB_ENV'
     - name: Archive package as an artifact
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v3
       with:
         name: package
         path: ${{ env.PKG }}
@@ -101,7 +101,7 @@ jobs:
         GENERATOR: ${{ matrix.generator }}
         EXTRA_ARGS: ${{ matrix.args }}
         VCVER: ${{ matrix.vcver }}
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v3
       with:
         name: package
         path: '*.zip'
