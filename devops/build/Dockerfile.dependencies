@@ -1,5 +1,5 @@
 # Use configurable image name
-ARG IMAGE=centos:7.5.1804
+ARG IMAGE=centos:7.9.2009
 FROM $IMAGE
 
 # Assign arguments with defaults
