@@ -1,3 +1,13 @@
+![Build CI](https://github.com/finos/OpenMAMA/workflows/Build%20and%20Deploy/badge.svg)
+[![FINOS - Active](https://cdn.jsdelivr.net/gh/finos/contrib-toolbox@master/images/badge-active.svg)](https://finosfoundation.atlassian.net/wiki/display/FINOS/Active)
+[![License](https://img.shields.io/badge/License-LGPLv2.1-blue.svg)](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html)
+[![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/6741/badge)](https://bestpractices.coreinfrastructure.org/projects/6741) 
+[![Join the chat at https://gitter.im/OpenMAMA/OpenMAMA](https://badges.gitter.im/OpenMAMA/OpenMAMA.svg)](https://gitter.im/OpenMAMA/OpenMAMA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![.NET security](https://img.shields.io/github/workflow/status/finos/OpenMAMA/CVE%20Scanning%20for%20.NET?label=.NET%20Security)](https://github.com/finos/openmama/actions/workflows/cve-scanning-dotnet.yml)
+[![Java Security](https://img.shields.io/github/workflow/status/finos/OpenMAMA/CVE%20Scanning%20for%20Gradle?label=Java%20Security)](https://github.com/finos/openmama/actions/workflows/cve-scanning-gradle.yml)
+[![Docker Security](https://img.shields.io/github/workflow/status/finos/OpenMAMA/CVE%20Scanning%20for%20Docker?label=Docker%20Security)](https://github.com/finos/openmama/actions/workflows/cve-scanning-docker.yml)
+[![Static Code Analysis](https://img.shields.io/github/workflow/status/finos/OpenMAMA/Static%20code%20analysis?label=Static%20Code%20Analysis)](https://github.com/finos/openmama/actions/workflows/semgrep.yml)
+
 The Open Middleware Agnostic Messaging API
 ================================================================================
 
@@ -6,26 +16,14 @@ to different middleware and messaging solutions across a variety of platforms an
 
 OpenMAMDA is a framework that adds Market Data functionality, such as order book handling on top of MAMA.
 
-The [project's homepage](https://openmama.finos.org) provides a good overview of the project.
+The [project's homepage](https://openmama.finos.org) provides a good overview of the project along with how to get in touch.
 
-You can also pop into our gitter channel to have a chat if you just want quick answers:
-
-[![Join the chat at https://gitter.im/OpenMAMA/OpenMAMA](https://badges.gitter.im/OpenMAMA/OpenMAMA.svg)](https://gitter.im/OpenMAMA/OpenMAMA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+If you're in a pinch, you can also pop into [our gitter channel](https://gitter.im/OpenMAMA/OpenMAMA) to have a chat if you just want quick answers.
 
 ## Governance
-[![FINOS - Active](https://cdn.jsdelivr.net/gh/finos/contrib-toolbox@master/images/badge-active.svg)](https://finosfoundation.atlassian.net/wiki/display/FINOS/Active)
 
-OpenMAMA was accepted as a project under the auspices of [FINOS](finos.org), the Fintech Open Source Foundation in October 2020. The [OpenMAMA's project charter](https://github.com/finos/OpenMAMA/raw/next/OpenMAMA%20Technical%20Charter%202020-10-01.pdf) was approved by the [FINOS Governing Board](https://www.finos.org/governing-board) on October 21, 2020.
-
-Build Status
---------------------------------------------------------------------------------
-
-We currently use travis for smoke testing of pull requests and our own Jenkins install for generating release artifacts.
-
-| Branch          | Status      |
-|-----------------|---------------|
-| master (stable) |![Build and Deploy](https://github.com/finos/OpenMAMA/workflows/Build%20and%20Deploy/badge.svg?branch=next)|
-| next (unstable) |![Build and Deploy](https://github.com/finos/OpenMAMA/workflows/Build%20and%20Deploy/badge.svg?branch=master)|
+OpenMAMA was accepted as a project under the auspices of [FINOS](finos.org), the Fintech Open Source Foundation in October 2020.
+The [OpenMAMA's project charter](https://github.com/finos/OpenMAMA/raw/next/OpenMAMA%20Technical%20Charter%202020-10-01.pdf) was approved by the [FINOS Governing Board](https://www.finos.org/governing-board) on October 21, 2020.
 
 Supported Platforms
 --------------------------------------------------------------------------------
