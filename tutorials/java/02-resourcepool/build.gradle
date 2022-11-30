@@ -27,7 +27,7 @@ dependencies {
     implementation files('/home/fquinn/SourceExternal/finos/OpenMAMA/mama/jni/build/libs/openmama-6.3.0-1.jar')
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 application {

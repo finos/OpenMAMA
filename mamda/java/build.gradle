@@ -34,7 +34,7 @@ repositories {
 
 dependencies {
     implementation project(':mama:jni')
-    testImplementation "junit:junit:4.12"  // Or whatever version
+    testImplementation "junit:junit:4.13.2"  // Or whatever version
 }
 
 test {

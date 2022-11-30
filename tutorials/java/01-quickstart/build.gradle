@@ -26,7 +26,7 @@ dependencies {
     implementation 'org.openmama:openmama:6.2.2'
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 application {
