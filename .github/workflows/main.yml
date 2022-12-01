@@ -3,61 +3,61 @@ name: Build and Deploy
 on: [push, pull_request]
 
 jobs:
-  linux-build:
-    name: Linux ${{ matrix.name }}
-    runs-on: ubuntu-22.04
-    timeout-minutes: 20
-    continue-on-error: true
-    container:
-      image: ${{ matrix.image }}
-    strategy:
-      matrix:
-        include:
-          - image: openmama/openmama-dev:centos-7
-            package_type: rpm
-            distro: el
-            distro_version: 7
-            name: CentOS 7
-          - image: openmama/openmama-dev:centos-stream8
-            package_type: rpm
-            distro: centos
-            distro_version: 8
-            name: CentOS Stream 8
-          - image: openmama/openmama-dev:centos-stream9
-            package_type: rpm
-            distro: centos
-            distro_version: 9
-            name: CentOS Stream 9
-          - image: openmama/openmama-dev:ubuntu-18.04
-            package_type: deb
-            distro: ubuntu
-            distro_version: bionic
-            name: Ubuntu 18.04 LTS
-          - image: openmama/openmama-dev:ubuntu-20.04
-            package_type: deb
-            distro: ubuntu
-            distro_version: focal
-            name: Ubuntu 20.04 LTS
-          - image: openmama/openmama-dev:ubuntu-22.04
-            package_type: deb
-            distro: ubuntu
-            distro_version: jammy
-            name: Ubuntu 22.04 LTS
-    steps:
-    - name: Check out the code
-      uses: actions/checkout@v1
-    - name: Run Linux build
-      env:
-        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-        PACKAGE_UPLOAD_ENABLED: "true"
-      run: ./devops/build/ci-run.sh
-    - name: Find the package
-      run: 'echo PKG=`find ./dist -name "*.${{ matrix.package_type }}"` >> $GITHUB_ENV'
-    - name: Archive package as an artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: package
-        path: ${{ env.PKG }}
+  # linux-build:
+  #   name: Linux ${{ matrix.name }}
+  #   runs-on: ubuntu-22.04
+  #   timeout-minutes: 20
+  #   continue-on-error: true
+  #   container:
+  #     image: ${{ matrix.image }}
+  #   strategy:
+  #     matrix:
+  #       include:
+  #         - image: openmama/openmama-dev:centos-7
+  #           package_type: rpm
+  #           distro: el
+  #           distro_version: 7
+  #           name: CentOS 7
+  #         - image: openmama/openmama-dev:centos-stream8
+  #           package_type: rpm
+  #           distro: centos
+  #           distro_version: 8
+  #           name: CentOS Stream 8
+  #         - image: openmama/openmama-dev:centos-stream9
+  #           package_type: rpm
+  #           distro: centos
+  #           distro_version: 9
+  #           name: CentOS Stream 9
+  #         - image: openmama/openmama-dev:ubuntu-18.04
+  #           package_type: deb
+  #           distro: ubuntu
+  #           distro_version: bionic
+  #           name: Ubuntu 18.04 LTS
+  #         - image: openmama/openmama-dev:ubuntu-20.04
+  #           package_type: deb
+  #           distro: ubuntu
+  #           distro_version: focal
+  #           name: Ubuntu 20.04 LTS
+  #         - image: openmama/openmama-dev:ubuntu-22.04
+  #           package_type: deb
+  #           distro: ubuntu
+  #           distro_version: jammy
+  #           name: Ubuntu 22.04 LTS
+  #   steps:
+  #   - name: Check out the code
+  #     uses: actions/checkout@v1
+  #   - name: Run Linux build
+  #     env:
+  #       CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+  #       PACKAGE_UPLOAD_ENABLED: "true"
+  #     run: ./devops/build/ci-run.sh
+  #   - name: Find the package
+  #     run: 'echo PKG=`find ./dist -name "*.${{ matrix.package_type }}"` >> $GITHUB_ENV'
+  #   - name: Archive package as an artifact
+  #     uses: actions/upload-artifact@v3
+  #     with:
+  #       name: package
+  #       path: ${{ env.PKG }}
 
   windows-build:
     name: Windows ${{ matrix.name }}
@@ -95,23 +95,25 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Run Windows Build
-      run: ./devops/build/ci-run.bat
-      env:
-        PLATFORM: ${{ matrix.platform }}
-        GENERATOR: ${{ matrix.generator }}
-        EXTRA_ARGS: ${{ matrix.args }}
-        VCVER: ${{ matrix.vcver }}
-    - uses: actions/upload-artifact@v3
-      with:
-        name: package
-        path: '*.zip'
+      run: vcpkg --version
+    # - name: Run Windows Build
+    #   run: ./devops/build/ci-run.bat
+    #   env:
+    #     PLATFORM: ${{ matrix.platform }}
+    #     GENERATOR: ${{ matrix.generator }}
+    #     EXTRA_ARGS: ${{ matrix.args }}
+    #     VCVER: ${{ matrix.vcver }}
+    # - uses: actions/upload-artifact@v3
+    #   with:
+    #     name: package
+    #     path: '*.zip'
 
-  macos-build:
-    name: MacOS
-    runs-on: macos-latest
-    timeout-minutes: 60
-    continue-on-error: true
-    steps:
-    - uses: actions/checkout@v1
-    - name: MacOS Build
-      run: ./devops/build/ci-run.macos.sh
+  # macos-build:
+  #   name: MacOS
+  #   runs-on: macos-latest
+  #   timeout-minutes: 60
+  #   continue-on-error: true
+  #   steps:
+  #   - uses: actions/checkout@v1
+  #   - name: MacOS Build
+  #     run: ./devops/build/ci-run.macos.sh
