@@ -95,9 +95,10 @@ jobs:
             name: MSVC 2022 x64
 
     steps:
-    - name: Dump all environment ariables
-      run: env
     - uses: actions/checkout@v1
+    - name: Create vcpkg cache directory
+      shell: pwsh
+      run: New-Item -itemType Directory -Path (Split-Path -Path $env:VCPKG_DEFAULT_BINARY_CACHE) -Name (Split-Path -Leaf $env:VCPKG_DEFAULT_BINARY_CACHE) -Force
     - name: Vcpkg Dependencies
       id: vcpkg-dependencies
       uses: actions/cache@v3
