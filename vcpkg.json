@@ -7,5 +7,5 @@
     "apr-util",
     "gtest"
   ],
-  "builtin-baseline": "5fdee72bc1fceca198fb1ab7589837206a8b81ba"
+  "builtin-baseline": "62d01b70df227850b728f5050418b917ad6d2b32"
 }
