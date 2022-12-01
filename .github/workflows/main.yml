@@ -97,14 +97,10 @@ jobs:
     - name: Vcpkg Dependencies
       id: vcpkg-dependencies
       uses: actions/cache@v3
-      env:
-        VCPKG_DEFAULT_BINARY_CACHE: ~/.vcpkg
       with:
-        path: ~/.vcpkg
+        path: ${{ env.LOCALAPPDATA }}/vcpkg/archives
         key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vcver }}-${{ hashFiles('**/vcpkg.json') }}
     - name: Install VCPKG based dependencies
-      env:
-        VCPKG_DEFAULT_BINARY_CACHE: ~/.vcpkg
       if: steps.vcpkg-dependencies.outputs.cache-hit != 'true'
       run: vcpkg install --triplet ${{ matrix.platform }}-windows
     # - name: Run Windows Build
