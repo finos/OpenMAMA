@@ -98,8 +98,9 @@ jobs:
       uses: actions/cache@v3
       env:
         VCPKG_DEFAULT_BINARY_CACHE: ~/.vcpkg
-      path: ${{ env.VCPKG_INSTALLATION_ROOT }}
-      key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vsver }}-${{ hashFiles('**/vcpkg.json') }}
+      with:
+        path: ${{ env.VCPKG_INSTALLATION_ROOT }}
+        key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vsver }}-${{ hashFiles('**/vcpkg.json') }}
     - name: Install VCPKG based dependencies
       env:
         VCPKG_DEFAULT_BINARY_CACHE: ~/.vcpkg
