@@ -94,15 +94,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
-    - name: Run Windows Build
-      run: vcpkg --version
     - name: Vcpkg Dependencies
       uses: actions/cache@v3
       env:
         VCPKG_DEFAULT_BINARY_CACHE: ~/.vcpkg
-      with:
-        path: ${{ env.VCPKG_INSTALLATION_ROOT }}
-        key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vsver }}-${{ hashFiles('**/vcpkg.json') }}
+      path: ${{ env.VCPKG_INSTALLATION_ROOT }}
+      key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vsver }}-${{ hashFiles('**/vcpkg.json') }}
     - name: Install VCPKG based dependencies
       env:
         VCPKG_DEFAULT_BINARY_CACHE: ~/.vcpkg
