@@ -93,6 +93,8 @@ jobs:
             name: MSVC 2022 x64
 
     steps:
+    - name: Dump all environment ariables
+      run: env
     - uses: actions/checkout@v1
     - name: Vcpkg Dependencies
       id: vcpkg-dependencies
