@@ -107,17 +107,17 @@ jobs:
         key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vcver }}-${{ hashFiles('**/vcpkg.json') }}
     - name: Install VCPKG based dependencies
       run: vcpkg install --triplet ${{ matrix.platform }}-windows
-    # - name: Run Windows Build
-    #   run: ./devops/build/ci-run.bat
-    #   env:
-    #     PLATFORM: ${{ matrix.platform }}
-    #     GENERATOR: ${{ matrix.generator }}
-    #     EXTRA_ARGS: ${{ matrix.args }}
-    #     VCVER: ${{ matrix.vcver }}
-    # - uses: actions/upload-artifact@v3
-    #   with:
-    #     name: package
-    #     path: '*.zip'
+    - name: Run Windows Build
+      run: ./devops/build/ci-run.bat
+      env:
+        PLATFORM: ${{ matrix.platform }}
+        GENERATOR: ${{ matrix.generator }}
+        EXTRA_ARGS: ${{ matrix.args }}
+        VCVER: ${{ matrix.vcver }}
+    - uses: actions/upload-artifact@v3
+      with:
+        name: package
+        path: '*.zip'
 
   # macos-build:
   #   name: MacOS
