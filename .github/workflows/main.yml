@@ -106,7 +106,7 @@ jobs:
       env:
         VCPKG_DEFAULT_BINARY_CACHE: ~/.vcpkg
       if: steps.vcpkg-dependencies.outputs.cache-hit != 'true'
-      run: vcpkg install --triplet ${{ env.platform }}-windows qpid-proton libevent apr apr-util gtest
+      run: vcpkg install --triplet ${{ matrix.platform }}-windows qpid-proton libevent apr apr-util gtest
     # - name: Run Windows Build
     #   run: ./devops/build/ci-run.bat
     #   env:
