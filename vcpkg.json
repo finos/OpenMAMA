@@ -2,7 +2,9 @@
   "name": "openmama",
   "dependencies": [
     "qpid-proton",
+    "libevent",
     "apr",
-    "apr-util"
+    "apr-util",
+    "gtest"
   ]
 }
