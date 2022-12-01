@@ -6,5 +6,6 @@
     "apr",
     "apr-util",
     "gtest"
-  ]
+  ],
+  "builtin-baseline": "5fdee72bc1fceca198fb1ab7589837206a8b81ba"
 }

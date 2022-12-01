@@ -64,6 +64,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     timeout-minutes: 60
     continue-on-error: true
+    env:
+      VCPKG_DEFAULT_BINARY_CACHE: C:\vcpkg_binary_cache
     strategy:
       matrix:
         include:
@@ -100,18 +102,18 @@ jobs:
       id: vcpkg-dependencies
       uses: actions/cache@v3
       with:
-        path: ${{ env.LOCALAPPDATA }}/vcpkg/archives
+        path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
         key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vcver }}-${{ hashFiles('**/vcpkg.json') }}
     - name: Install VCPKG based dependencies
       if: steps.vcpkg-dependencies.outputs.cache-hit != 'true'
       run: vcpkg install --triplet ${{ matrix.platform }}-windows
-    - name: Run Windows Build
-      run: ./devops/build/ci-run.bat
-      env:
-        PLATFORM: ${{ matrix.platform }}
-        GENERATOR: ${{ matrix.generator }}
-        EXTRA_ARGS: ${{ matrix.args }}
-        VCVER: ${{ matrix.vcver }}
+    # - name: Run Windows Build
+    #   run: ./devops/build/ci-run.bat
+    #   env:
+    #     PLATFORM: ${{ matrix.platform }}
+    #     GENERATOR: ${{ matrix.generator }}
+    #     EXTRA_ARGS: ${{ matrix.args }}
+    #     VCVER: ${{ matrix.vcver }}
     # - uses: actions/upload-artifact@v3
     #   with:
     #     name: package
