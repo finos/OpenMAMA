@@ -1,0 +1,8 @@
+{
+  "name": "openmama",
+  "dependencies": [
+    "qpid-proton",
+    "apr",
+    "apr-util"
+  ]
+}
