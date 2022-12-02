@@ -108,7 +108,7 @@ jobs:
     - name: Check vcpkg version
       run: vcpkg --version
     - name: Populate vcpkg dependency cache
-      run: vcpkg install --triplet ${{ matrix.platform }}-windows
+      run: vcpkg --triplet ${{ matrix.platform }}-windows install
     - name: Run Windows Build
       run: ./devops/build/ci-run.bat
       env:
