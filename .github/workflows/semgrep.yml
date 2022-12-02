@@ -4,6 +4,8 @@ on: [push, pull_request]
 
 jobs:
   semgrep:
+    # Disable for now
+    if: ${{ false }}
     name: run-semgrep
     runs-on: ubuntu-latest
     container:

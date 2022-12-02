@@ -1,5 +1,6 @@
 {
   "name": "openmama",
+  "version-string": "6.3.0",
   "dependencies": [
     "qpid-proton",
     "libevent",
