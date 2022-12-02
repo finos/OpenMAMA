@@ -105,6 +105,8 @@ jobs:
       with:
         path: ${{ env.VCPKG_DEFAULT_BINARY_CACHE }}
         key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vcver }}-${{ hashFiles('**/vcpkg.json') }}
+    - name: Check vcpkg version
+      run: vcpkg --version
     - name: Populate vcpkg dependency cache
       run: vcpkg install --triplet ${{ matrix.platform }}-windows
     - name: Run Windows Build
