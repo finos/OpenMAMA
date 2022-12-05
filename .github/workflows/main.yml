@@ -45,7 +45,9 @@ jobs:
             name: Ubuntu 22.04 LTS
     steps:
     - name: Check out the code
-      uses: actions/checkout@v1
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: Run Linux build
       env:
         CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
@@ -93,7 +95,9 @@ jobs:
             name: MSVC 2022 x64
 
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: Run Windows Build
       run: ./devops/build/ci-run.bat
       env:
@@ -112,6 +116,8 @@ jobs:
     timeout-minutes: 60
     continue-on-error: true
     steps:
-    - uses: actions/checkout@v1
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
     - name: MacOS Build
       run: ./devops/build/ci-run.macos.sh
