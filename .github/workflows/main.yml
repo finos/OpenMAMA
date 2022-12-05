@@ -98,6 +98,17 @@ jobs:
     - uses: actions/checkout@v3
       with:
         fetch-depth: 0
+    - name: Vcpkg Dependencies
+      id: vcpkg-openmama
+      uses: actions/cache@v3
+      with:
+        path: vcpkg-openmama
+        key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vcver }}-${{ hashFiles('devops/build/install-dependencies.bat') }}
+    - name: Populate vcpkg dependency cache (creates directory 'vcpkg-openmama')
+      if: steps.vcpkg-openmama.outputs.cache-hit != 'true'
+      run: ./devops/build/install-dependencies.bat
+      env:
+        PLATFORM: ${{ matrix.platform }}
     - name: Run Windows Build
       run: ./devops/build/ci-run.bat
       env:
