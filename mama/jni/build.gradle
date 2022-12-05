@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.owasp:dependency-check-gradle:7.3.2'
+        classpath 'org.owasp:dependency-check-gradle:7.4.0'
     }
 }
 
