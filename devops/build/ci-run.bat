@@ -10,7 +10,7 @@ set PATH=C:\Program Files (x86)\Gow\bin;%JAVA_HOME%;C:\Program Files\CMake\bin;C
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DWITH_CSHARP=ON -DWITH_UNITTEST=ON -DWITH_JAVA=ON -DPROTON_ROOT=%VCPKG_DIR%/installed/%PLATFORM%-windows/ -DGTEST_ROOT=%VCPKG_DIR%/installed/%PLATFORM%-windows/ -DAPR_ROOT=%VCPKG_DIR%/installed/%PLATFORM%-windows/ -DAPRUTIL_ROOT=%VCPKG_DIR%/installed/%PLATFORM%-windows/ -DINSTALL_RUNTIME_DEPENDENCIES=ON -DCMAKE_INSTALL_PREFIX="%OPENMAMA_INSTALL_DIR%" -G "%GENERATOR%" -DCMAKE_TOOLCHAIN_FILE=%VCPKG_DIR%/scripts/buildsystems/vcpkg.cmake %EXTRA_ARGS% -B build -S . || goto error
 call build\build_dll_path_RelWithDebInfo.bat
 cmake --build build --config RelWithDebInfo --target install || goto error
-ctest build -C RelWithDebInfo -E java_unittests --timeout 240 --output-on-failure || goto error
+ctest . -C RelWithDebInfo -E java_unittests --timeout 240 --output-on-failure || goto error
 cd %GITHUB_WORKSPACE% || goto error
 7z a openmama-%VERSION%.win.%VCVER%.%PLATFORM%.zip "%OPENMAMA_INSTALL_DIR%" || goto error
 
