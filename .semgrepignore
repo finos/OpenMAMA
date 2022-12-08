@@ -9,6 +9,7 @@ common/c_cpp/src/c/strutils.c
 common/c_cpp/src/c/thread.c
 common/c_cpp/src/c/wMessageStats.c
 common/c_cpp/src/c/wtable.c
+common/c_cpp/src/c/windows/wUuid.c
 mama/c_cpp/src/c/bridge/noop/publisher.c
 mama/c_cpp/src/c/bridge/noop/subscription.c
 mama/c_cpp/src/c/bridge/ompb/publisher.c
