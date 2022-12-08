@@ -85,7 +85,6 @@
 #define     MAX_RECV_BLOCK_SIZE             100L
 #define     CONFIG_VALUE_TPORT_TYPE_BROKER  "broker"
 #define     CONFIG_VALUE_TPORT_TYPE_P2P     "p2p"
-#define     UUID_STRING_BUF_SIZE            37
 #define     KNOWN_SOURCES_WTABLE_SIZE       10
 
 
@@ -530,7 +529,7 @@ qpidBridgeMamaTransportImpl_getUuid (transportBridge transport)
     if (NULL == impl->mUuid)
     {
         wUuid                tempUuid;
-        char                 uuidStringBuffer[UUID_STRING_BUF_SIZE];
+        char                 uuidStringBuffer[WUUID_UNPARSE_OUTPUT_LENGTH];
 
         wUuid_clear          (tempUuid);
         wUuid_generate_time  (tempUuid);

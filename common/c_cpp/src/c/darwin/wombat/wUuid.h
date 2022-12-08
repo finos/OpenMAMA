@@ -27,6 +27,8 @@
 
 typedef uuid_t wUuid;
 
+#define WUUID_UNPARSE_OUTPUT_LENGTH 37
+
 #define wUuid_generate              uuid_generate
 #define wUuid_generate_time         uuid_generate_time
 int wUuid_generate_time_safe (wUuid myUuid);
