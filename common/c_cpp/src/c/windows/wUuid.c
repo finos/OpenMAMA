@@ -51,5 +51,5 @@ void wUuid_generate_random (wUuid myUuid) {
 }
 
 void wUuid_clear (wUuid myUuid) {
-    memset(&myUuid[0], 0, sizeof(UUID));
+    memset_s(&myUuid[0], sizeof(UUID), '\0', sizeof(UUID));
 }
