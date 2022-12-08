@@ -25,6 +25,11 @@
 
 #include <uuid/uuid.h>
 
+#if defined (__cplusplus)
+extern "C"
+{
+#endif
+
 typedef uuid_t wUuid;
 
 #define WUUID_UNPARSE_OUTPUT_LENGTH 37
@@ -37,5 +42,9 @@ typedef uuid_t wUuid;
 #define wUuid_unparse uuid_unparse
 
 #define wUuid_clear(UUID) uuid_clear(UUID)
+
+#if defined (__cplusplus)
+} /* extern "c" */
+#endif
 
 #endif /* WUUID_H__ */
