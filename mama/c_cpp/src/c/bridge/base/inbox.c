@@ -13,13 +13,6 @@
 
 
 /*=========================================================================
-  =                              Macros                                   =
-  =========================================================================*/
-
-#define                 UUID_STRING_BUF_SIZE                37
-
-
-/*=========================================================================
   =                Typedefs, structs, enums and globals                   =
   =========================================================================*/
 
@@ -142,7 +135,7 @@ baseBridgeMamaInbox_createByIndex   (inboxBridge*             bridge,
     mama_status         status      = MAMA_STATUS_OK;
     mamaMsgCallbacks    cb;
     wUuid               tempUuid;
-    char                uuidStringBuffer[UUID_STRING_BUF_SIZE];
+    char                uuidStringBuffer[WUUID_UNPARSE_OUTPUT_LENGTH];
 
     if (NULL == bridge || NULL == transport || NULL == queue || NULL == msgCB)
     {

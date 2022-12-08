@@ -63,12 +63,15 @@ TEST_F (CommonUtilTestC, findFileInPath)
 {
     char filePath[1024];
 
+    const char* wombatPath = environment_getVariable("WOMBAT_PATH");
+    ASSERT_NE (nullptr, wombatPath);
+
     /* This should be successful in test environment */
     EXPECT_EQ(1,
         fileUtils_findFileInPathList (filePath,
                                       sizeof(filePath),
                                       "mama.properties",
-                                      environment_getVariable("WOMBAT_PATH"),
+                                      wombatPath,
                                       ":;"));
 
 }

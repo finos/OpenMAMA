@@ -19,51 +19,37 @@
  * 02110-1301 USA
  */
 
-
-#include <time.h>
+#include "wombat/wUuid.h"
+#include <Rpc.h>
+#include <combaseapi.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "wombat/wUuid.h"
-
-static uint64_t gRoot = 0;
-static uint16_t gGotroot = 0;
-
-#ifndef HOST_NAME_MAX
-# define HOST_NAME_MAX 255
-#endif
-
-void wUuid_generate_time (wUuid myUuid)
-{
-}
+#include <windows.h>
 
 void wUuid_unparse (wUuid myUuid, char* out)
 {
-	if (!gGotroot)
-	{
-		char hostname[HOST_NAME_MAX+1];
-		if (gethostname (hostname, HOST_NAME_MAX) == 0)
-		{
-		    struct in_addr addr;
-		    struct hostent* host = gethostbyname (hostname);
-		    if ((host != NULL) && (host->h_addrtype == AF_INET))
-		    {
-		        /* Found host by name - we just look at the first entry.
-		         * Maybe we should look at all of the entries (these are not
-		         * aliases though). */
-		        addr = *(struct in_addr*)(host->h_addr_list[0]);
-		    }
-		    else
-		    	addr.s_addr=INADDR_NONE;
+    RPC_CSTR outputUuid = NULL;
+    UuidToString (&myUuid[0], &outputUuid);
+    strncpy (out, (const char*)outputUuid, WUUID_UNPARSE_OUTPUT_LENGTH);
+    RpcStringFree (&outputUuid);
+}
 
-		    gRoot	= (((uint64_t)addr.s_addr) << 32) + getpid();
-		}
-		else
-		{
-			gRoot	= getpid();
-		}
-		gGotroot	= 1;
-	}
+void wUuid_generate (wUuid myUuid) {
+    UuidCreate (&myUuid[0]);
+}
 
-    srand ((unsigned int) time (NULL));
-    snprintf (out, 49, "%d%d", (int)gRoot, (int)rand() % 10000);
+void wUuid_generate_time (wUuid myUuid) {
+    UuidCreateSequential (&myUuid[0]);
+}
+
+int wUuid_generate_time_safe (wUuid myUuid) {
+    CoCreateGuid (&myUuid[0]);
+}
+
+void wUuid_generate_random (wUuid myUuid) {
+    UuidCreate (&myUuid[0]);
+}
+
+void wUuid_clear (wUuid myUuid) {
+    memset(&myUuid[0], '\0', sizeof(UUID));
 }

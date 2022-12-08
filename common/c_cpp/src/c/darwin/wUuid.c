@@ -19,32 +19,11 @@
  * 02110-1301 USA
  */
 
+#include <wombat/wUuid.h>
 
-#ifndef WUUID_H__
-#define WUUID_H__
-
-#include <uuid/uuid.h>
-
-#if defined (__cplusplus)
-extern "C"
+int wUuid_generate_time_safe (wUuid myUuid)
 {
-#endif
-
-typedef uuid_t wUuid;
-
-#define WUUID_UNPARSE_OUTPUT_LENGTH 37
-
-#define wUuid_generate              uuid_generate
-#define wUuid_generate_time         uuid_generate_time
-int wUuid_generate_time_safe (wUuid myUuid);
-#define wUuid_generate_random       uuid_generate_random
-
-#define wUuid_unparse uuid_unparse
-
-#define wUuid_clear(UUID) uuid_clear(UUID)
-
-#if defined (__cplusplus)
-} /* extern "c" */
-#endif
-
-#endif /* WUUID_H__ */
+   uuid_generate_time(myUuid);
+   /* since we cant guarantee that the uuid was generated in a safe manner, return -1 */
+   return -1;
+}
