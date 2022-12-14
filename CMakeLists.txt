@@ -33,11 +33,6 @@ set (WITH_TUTORIALS     false  CACHE BOOL   "Include building of tutorial code")
 set (ENTITLEMENTS       "noop" CACHE STRING "Comma delimited list of entitlement bridges to allow to load at runtime")
 
 # Dependency detection options
-set (LIBEVENT_ROOT "${DEFAULT_LIBEVENT_ROOT}" CACHE PATH "Libevent dependency install directory (for qpid)")
-set (PROTON_ROOT   "${DEFAULT_PROTON_ROOT}"   CACHE PATH "Qpid dependency install directory (for qpid middleware and payload bridges)")
-set (APR_ROOT      "${DEFAULT_APR_ROOT}"      CACHE PATH "Apache APR dependency install directory (for core MAMA)")
-set (APRUTIL_ROOT  "${DEFAULT_APRUTIL_ROOT}"  CACHE PATH "Apache APR Utils dependency install directory (for core MAMA)")
-set (GTEST_ROOT    "${DEFAULT_GTEST_ROOT}"    CACHE PATH "Google test framework dependency install directory (for unit tests)")
 set (OEA_ROOT      "${DEFAULT_OEA_ROOT}"      CACHE PATH "OEA dependency install directory (for ef ENTITLEMENTS is set to oea)")
 
 # Install / post-compilation options
@@ -79,6 +74,28 @@ if(ENABLE_UBSAN)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${UBSAN_FLAGS}")
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${UBSAN_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${UBSAN_FLAGS}")
+endif()
+
+# Resolve common reusable dependencies
+find_package(FLEX REQUIRED)
+find_package(Libevent REQUIRED)
+find_package(Threads REQUIRED)
+find_package(APR REQUIRED)
+
+if (WITH_PROTON)
+    find_package(Proton REQUIRED)
+endif()
+
+if (WITH_UNITTEST)
+    find_package(GTest REQUIRED)
+endif()
+
+if (NOT WIN32)
+    find_package(UUID REQUIRED)
+endif()
+
+if (WITH_JAVA)
+    find_package(JNI)
 endif()
 
 add_subdirectory (common)

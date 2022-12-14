@@ -1,5 +1,4 @@
 enable_testing()
-find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
 get_target_property(WOMBAT_INCLUDES wombatcommon INCLUDE_DIRECTORIES)

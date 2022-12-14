@@ -1,5 +1,3 @@
-include(FindProton)
-find_package(Proton REQUIRED)
 string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
 
 include_directories(${PROTON_INCLUDE_DIR})

@@ -2,9 +2,6 @@ enable_testing()
 find_package(GTest REQUIRED)
 include_directories(${GTEST_INCLUDE_DIRS})
 
-include(FindAPR)
-find_package(APR REQUIRED)
-
 get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
 
 include_directories(

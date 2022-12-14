@@ -1,6 +1,3 @@
-include(FindLibevent)
-find_package(Libevent REQUIRED)
-
 string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
 
 include_directories(${LIBEVENT_INCLUDE_DIRS})

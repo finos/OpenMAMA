@@ -31,6 +31,7 @@ FIND_PATH(APR_INCLUDE_DIR apr.h
     ${APR_ROOT}/include/apr-1
     ${APR_ROOT}/include/apr-1.0
     ${APR_ROOT}/include
+    /usr/local/opt/apr/include/apr-1
     /usr/local/include/apr-1
     /usr/local/include/apr-1.0
     /usr/include/apr-1
@@ -43,6 +44,7 @@ FIND_LIBRARY(APR_LIBRARY
   NAMES ${APR_NAMES}
   PATHS
     ${APR_ROOT}/lib
+    /usr/local/opt/apr/lib
     /usr/lib
     /usr/local/lib
     /usr/local/apr/lib
@@ -87,6 +89,7 @@ FIND_PATH(APRUTIL_INCLUDE_DIR apu.h
     ${APR_ROOT}/include/apr-1
     ${APR_ROOT}/include/apr-1.0
     ${APR_ROOT}/include
+    /usr/local/opt/apr-util/include/apr-1
     /usr/local/include/apr-1
     /usr/local/include/apr-1.0
     /usr/include/apr-1
@@ -100,6 +103,7 @@ FIND_LIBRARY(APRUTIL_LIBRARY
   PATHS
     ${APRUTIL_ROOT}/lib
     ${APR_ROOT}/lib
+    /usr/local/opt/apr-util/lib
     /usr/lib
     /usr/local/lib
     /usr/local/apr/lib

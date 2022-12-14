@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Make all unhandled erroneous return codes fatal
-set -e -x
+set -e
 
 # Globals
 export SDKMAN_DIR=${SDKMAN_DIR:-/usr/local/sdkman}
@@ -11,13 +11,14 @@ VERSION_QPID=${VERSION_QPID:-0.37.0}
 DEPS_DIR=${DEPS_DIR:-/app/deps}
 
 # Constants
-RHEL=CentOS
+CENTOS=CentOS
+RHEL=RHEL
 UBUNTU=Ubuntu
 
 # Initial setup
 test -d "$DEPS_DIR" || mkdir -p "$DEPS_DIR"
 
-if [ -z "$IS_DOCKER_BUILD" ]
+if [[ -z "$IS_DOCKER_BUILD" ]]
 then
     echo
     echo "------------------------------- DRAGON ALERT --------------------------------"
@@ -25,83 +26,120 @@ then
     echo "script as the root user IN AN ISOLATED DOCKER ENVIRONMENT. It is highly "
     echo "recommended not to run this script in any other environment. Obviously we"
     echo "cannot stop you... but if you try it, you're on your own..."
+    echo
+    echo "However if you really *really* *REALLY* know what you're doing, you can also"
+    echo "set IS_NATIVE_BUILD to attempt to run this script on a host device"
     echo "-----------------------------------------------------------------------------"
     echo
-    exit $LINENO
+    test -z "$IS_NATIVE_BUILD" && exit $LINENO
 fi
 
-if [ -f /etc/redhat-release ]
+if [[ -f /etc/redhat-release ]]
 then
     DISTRIB_RELEASE=$(tr " " "\n" < /etc/redhat-release | grep -E "^[0-9]")
-    if [ -f /etc/fedora-release ]
+    if [[ -f /etc/fedora-release ]]
     then
         echo "Fedora builds no longer supported: $(cat /etc/*-release)" && exit $LINENO
     else
-        DISTRIB_ID=$RHEL
+        if grep -q "Red Hat" /etc/redhat-release
+        then
+            DISTRIB_ID=$RHEL
+            # Install full fat dnf
+            if [[ -f /bin/microdnf ]]
+            then
+                microdnf install -y dnf
+            fi
+
+            # Install other dependencies for script
+            dnf install -y yum subscription-manager findutils
+
+            # If this is not a docker build, assume system is already registered
+            if [[ ( -n "$IS_DOCKER_BUILD") ]]
+            then
+                # RHEL 8 though does not seem to recognize SMDEV_CONTAINER_OFF=1 at this point so (cringe)...
+                sed -i 's/\(def in_container():\)/\1\n    return False/g' /usr/lib64/python*/*-packages/rhsm/config.py
+                subscription-manager register --auto-attach --username "$RHN_USER" --password "$RHN_PASS" --name openmama-docker-build-rhel-${DISTRIB_RELEASE:0:1}
+            fi
+            dnf config-manager --set-enabled codeready-builder-for-rhel-${DISTRIB_RELEASE:0:1}-$(arch)-rpms
+        else
+            DISTRIB_ID=$CENTOS
+        fi
     fi
 fi
 
-if [ -f /etc/lsb-release ]
+if [[ -f /etc/lsb-release ]]
 then
     # Will set DISTRIB_ID and DISTRIB_RELEASE
     source /etc/lsb-release
 fi
 
-if [ -z "$DISTRIB_RELEASE" ]
+if [[ -z "$DISTRIB_RELEASE" ]]
 then
     echo "Unsupported distro found: $(cat /etc/*-release)" && exit $LINENO
 fi
 
-if [ "$DISTRIB_ID" = "$RHEL" ]
+if [[ ( "$DISTRIB_ID" = "$RHEL" || "$DISTRIB_ID" = "$CENTOS" ) ]]
 then
     echo "Installing CentOS / RHEL specific dependencies"
-    yum install -y epel-release gcc make rpm-build which wget cmake libicu
-    if [ "${DISTRIB_RELEASE:0:1}" = "7" ]
+    if [[ ( "$DISTRIB_ID" = "$CENTOS" ) ]]
+    then
+        yum install -y epel-release
+    fi
+
+    yum install -y gcc make rpm-build which wget cmake libicu
+
+    if [[ "${DISTRIB_RELEASE:0:1}" = "7" ]]
     then
         # CentOS 7 cmake version is too old - upgrade it
         (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
-    elif [ "${DISTRIB_RELEASE:0:1}" = "8" ]
+    fi
+
+    if [[ ( "${DISTRIB_RELEASE:0:1}" = "8" && "$DISTRIB_ID" = "$CENTOS" ) ]]
     then
         # CentOS 8 has funnies around where to find doxygen
         yum install -y dnf-plugins-core
         dnf config-manager --set-enabled powertools
-    elif [ "${DISTRIB_RELEASE:0:1}" = "9" ]
+
+    fi
+
+    if [[ "${DISTRIB_RELEASE:0:1}" = "9" ]]
     then
         # We want "full" curl not minimal curl and rexml required to work around:
         #     https://github.com/jordansissel/fpm/issues/1784
         dnf install -y --allowerasing curl rubygem-rexml
     fi
+
     yum install -y python3 zlib-devel openssl-devel zip unzip make \
-	    java-11-openjdk-devel libuuid-devel flex doxygen \
-	    libevent-devel ncurses-devel python3-pip \
-	    apr-devel wget curl gcc-c++ libuuid \
-	    libevent ncurses apr apr-util-devel valgrind which git \
-	    ruby-devel rubygems
+        java-11-openjdk-devel libuuid-devel \
+        libevent-devel ncurses-devel python3-pip \
+        apr-devel wget curl gcc-c++ libuuid \
+        libevent ncurses apr apr-util-devel which git \
+        ruby-devel rubygems flex doxygen
 fi
 
 # General ubuntu packages
-if [ "$DISTRIB_ID" = "$UBUNTU" ]
+if [[ "$DISTRIB_ID" = "$UBUNTU" ]]
 then
     export DEBIAN_FRONTEND=noninteractive
     apt-get update
     apt-get install -y ruby ruby-dev build-essential \
 	    zip unzip curl git flex uuid-dev libevent-dev \
 	    cmake git libzmq3-dev ncurses-dev python3-pip \
-	    unzip valgrind libapr1-dev python3 libz-dev wget \
+	    unzip libapr1-dev python3 libz-dev wget \
 	    apt-transport-https ca-certificates libaprutil1-dev
     apt-get install -y rubygems openjdk-11-jdk
     echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" > /etc/profile.d/profile.jni.sh
-    if [ "${DISTRIB_RELEASE:0:2}" = "18" ]
+    if [[ "${DISTRIB_RELEASE:0:2}" -le "18" ]]
     then
+        apt-get install -y libssl-ocaml-dev
         # Ubuntu 18 cmake version is too old - upgrade it
         (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
     fi
 fi
 
-# RHEL 7 ruby is too old - need a more recent version for FPM to work later
-if [[ ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" -le "18") || ("$DISTRIB_ID" = "$RHEL" && "${DISTRIB_RELEASE:0:1}" -le "7") ]]
+# RHEL 7 + 8 ruby is too old - need a more recent version for FPM to work later
+if [[ ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" -le "18") || ( ("$DISTRIB_ID" = "$RHEL" || "$DISTRIB_ID" = "$CENTOS") && "${DISTRIB_RELEASE:0:1}" -le "8") ]]
 then
-    apt-get install -y libssl-ocaml-dev
     cd "$DEPS_DIR"
     curl -sL "https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.1.tar.gz" | tar xz
     cd ruby-2.6.1
@@ -151,3 +189,9 @@ python3 -m pip install --upgrade cloudsmith-cli
 
 # Clean up dependency directory to keep size down
 test -d "$DEPS_DIR" && rm -rf "${DEPS_DIR:?}/"*
+
+# Clean up RHN registration
+if [[ ( "$DISTRIB_ID" = "$RHEL" && -n "$IS_DOCKER_BUILD" && "${DISTRIB_RELEASE:0:1}" -lt 9) ]]
+then
+    subscription-manager unregister
+fi

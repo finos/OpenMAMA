@@ -18,9 +18,6 @@ chmod a+x /tmp/dotnet-install.sh
 
 brew install googletest apr apr-util ossp-uuid qpid-proton
 
-APR_ROOT=$(find /usr/local/Cellar/apr -type d -maxdepth 1 -mindepth 1)
-APRUTIL_ROOT=$(find /usr/local/Cellar/apr-util -type d -maxdepth 1 -mindepth 1)
-
 # Build the project
 test -d build && rm -rf build || true
 mkdir -p build
@@ -32,8 +29,6 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      -DCMAKE_INSTALL_PREFIX=$OPENMAMA_INSTALL_DIR \
      -DWITH_JAVA=ON \
      -DWITH_CSHARP=ON \
-     -DAPR_ROOT=$APR_ROOT \
-     -DAPRUTIL_ROOT=$APRUTIL_ROOT \
      -DWITH_UNITTEST=ON \
      -DCMAKE_CXX_STANDARD=17 \
      ..
