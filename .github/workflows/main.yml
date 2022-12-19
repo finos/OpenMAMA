@@ -22,11 +22,13 @@ jobs:
             distro: rhel
             distro_version: 8
             name: RHEL 8
+            package_upload_enabled: true
           - image: finos/openmama:ubi9
             package_type: rpm
             distro: rhel
             distro_version: 9
             name: RHEL 9
+            package_upload_enabled: true
     steps:
     - name: Check out the code
       uses: actions/checkout@v3
@@ -35,7 +37,7 @@ jobs:
     - name: Run Linux build
       env:
         CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-        PACKAGE_UPLOAD_ENABLED: "true"
+        PACKAGE_UPLOAD_ENABLED: ${{ matrix.package_upload_enabled }}
       run: ./devops/build/ci-run.sh
     - name: Find the package
       run: 'echo PKG=`find ./dist -name "*.${{ matrix.package_type }}"` >> $GITHUB_ENV'
@@ -60,31 +62,37 @@ jobs:
             distro: el
             distro_version: 7
             name: CentOS 7
+            package_upload_enabled: true
           - image: openmama/openmama-dev:centos-stream8
             package_type: rpm
             distro: centos
             distro_version: 8
             name: CentOS Stream 8
+            package_upload_enabled: false
           - image: openmama/openmama-dev:centos-stream9
             package_type: rpm
             distro: centos
             distro_version: 9
             name: CentOS Stream 9
+            package_upload_enabled: false
           - image: openmama/openmama-dev:ubuntu-18.04
             package_type: deb
             distro: ubuntu
             distro_version: bionic
             name: Ubuntu 18.04 LTS
+            package_upload_enabled: true
           - image: openmama/openmama-dev:ubuntu-20.04
             package_type: deb
             distro: ubuntu
             distro_version: focal
             name: Ubuntu 20.04 LTS
+            package_upload_enabled: true
           - image: openmama/openmama-dev:ubuntu-22.04
             package_type: deb
             distro: ubuntu
             distro_version: jammy
             name: Ubuntu 22.04 LTS
+            package_upload_enabled: true
     steps:
     - name: Check out the code
       uses: actions/checkout@v3
@@ -93,7 +101,7 @@ jobs:
     - name: Run Linux build
       env:
         CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
-        PACKAGE_UPLOAD_ENABLED: "true"
+        PACKAGE_UPLOAD_ENABLED: ${{ matrix.package_upload_enabled }}
       run: ./devops/build/ci-run.sh
     - name: Find the package
       run: 'echo PKG=`find ./dist -name "*.${{ matrix.package_type }}"` >> $GITHUB_ENV'
