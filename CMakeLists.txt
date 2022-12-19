@@ -183,7 +183,11 @@ if (WITH_JAVA)
         SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
         BUILD_COMMAND ""
         CONFIGURE_COMMAND
-            ${BIN_GRADLE} --no-daemon -PmamaVersion=${OPENMAMA_VERSION} -PmamdaVersion=${OPENMAMA_VERSION} -PbuildDir=${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-java -PmamaJniHeaderDir=${CMAKE_BINARY_DIR}/OpenMAMA-java/mamajni
+            ${BIN_GRADLE} --no-daemon
+                -PmamaVersion=${OPENMAMA_VERSION}
+                -PmamdaVersion=${OPENMAMA_VERSION}
+                -PbuildDir=${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-java
+                -PmamaJniHeaderDir=${CMAKE_BINARY_DIR}/OpenMAMA-java/mamajni
                 jar testClasses
         INSTALL_COMMAND ""
         LOG_BUILD 1
@@ -207,6 +211,8 @@ if (WITH_JAVA)
                  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                  COMMAND ${BIN_GRADLE} --no-daemon
                      -PbuildDir=${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-java
+                     -PmamaVersion=${OPENMAMA_VERSION}
+                     -PmamdaVersion=${OPENMAMA_VERSION}
                      -Ddictionary=${CMAKE_SOURCE_DIR}/mamda/java/src/test/resources/data.dict
                      test -i)
         set_tests_properties(java_unittests
