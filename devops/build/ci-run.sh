@@ -149,6 +149,7 @@ fpm -s dir --force \
 
 find "$DIST_DIR" -type f -name "*.$PACKAGE_TYPE"
 
+echo "PACKAGE_UPLOAD_ENABLED = '$PACKAGE_UPLOAD_ENABLED'"
 if [ "true" = "$PACKAGE_UPLOAD_ENABLED" ] && [ "$CLOUDSMITH_REPOSITORY" != "none" ]
 then
     cloudsmith push $PACKAGE_TYPE "openmama/$CLOUDSMITH_REPOSITORY/$CLOUDSMITH_DISTRO_NAME/$CLOUDSMITH_DISTRO_VERSION" "${PACKAGE_FILE}"
