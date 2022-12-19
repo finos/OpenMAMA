@@ -5,6 +5,8 @@ set (CMAKE_CXX_STANDARD 11)
 
 enable_testing()
 
+find_program(GIT_BIN git REQUIRED)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(${CMAKE_C_COMPILER_ID})
 
@@ -21,7 +23,8 @@ if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
             COMMAND "${GIT_BIN}" diff-index --quiet HEAD --
             WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
             RESULT_VARIABLE is_current_source_dir_dirty)
-    # Strip out unwanted part of tag
+    # Strip out unwanted part of version from git
+    message(STATUS "OPENMAMA_VERSION_GIT: ${OPENMAMA_VERSION_GIT}")
     STRING(REGEX REPLACE "^OpenMAMA-" "" OPENMAMA_VERSION ${OPENMAMA_VERSION_GIT})
     STRING(REGEX REPLACE "-release" "" OPENMAMA_VERSION ${OPENMAMA_VERSION})
     if(NOT is_current_source_dir_dirty EQUAL 0)
