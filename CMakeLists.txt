@@ -8,6 +8,32 @@ enable_testing()
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(${CMAKE_C_COMPILER_ID})
 
+# Get the version including tag information
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
+    execute_process(
+            COMMAND "${GIT_BIN}" describe --tags
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            OUTPUT_VARIABLE OPENMAMA_VERSION_GIT
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    # Check if code is dirty (local changes not committed)
+    execute_process(
+            COMMAND "${GIT_BIN}" diff-index --quiet HEAD --
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            RESULT_VARIABLE is_current_source_dir_dirty)
+    # Strip out unwanted part of tag
+    STRING(REGEX REPLACE "^OpenMAMA-" "" OPENMAMA_VERSION ${OPENMAMA_VERSION_GIT})
+    STRING(REGEX REPLACE "-release" "" OPENMAMA_VERSION ${OPENMAMA_VERSION})
+    if(NOT is_current_source_dir_dirty EQUAL 0)
+        set(OPENMAMA_VERSION "${OPENMAMA_VERSION}-DIRTY")
+    endif()
+else()
+    set(OPENMAMA_VERSION "NON_GIT_BUILD")
+endif()
+
+message(STATUS "OPENMAMA_VERSION: ${OPENMAMA_VERSION}")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/VERSION "${OPENMAMA_VERSION}")
+
 # Set up default cmake build type if not defined
 if (NOT CMAKE_BUILD_TYPE)
   set (CMAKE_BUILD_TYPE "RelWithDebInfo" CACHE STRING "The cmake build type to perform")

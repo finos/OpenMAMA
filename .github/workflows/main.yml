@@ -182,3 +182,7 @@ jobs:
         fetch-depth: 0
     - name: MacOS Build
       run: ./devops/build/ci-run.macos.sh
+    - uses: actions/upload-artifact@v3
+      with:
+        name: package
+        path: '*.zip'

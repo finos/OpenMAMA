@@ -53,13 +53,12 @@ cd "$SOURCE_PATH_ABSOLUTE" > /dev/null
 # Generate the package (deb / rpm / tarball).
 # Globals
 ARTIFACT_TYPE=${ARTIFACT_TYPE:-dev}
-VERSION_FILE=${VERSION_FILE:-"$SOURCE_PATH_ABSOLUTE/VERSION"}
 
 # Constants
 RHEL=CentOS
 UBUNTU=Ubuntu
 
-VERSION=$(git --git-dir="$SOURCE_PATH_ABSOLUTE/.git" describe --tags | sed 's/^OpenMAMA-//g' | sed 's/-release//g')
+VERSION=$(cat $BUILD_DIR/VERSION)
 if [ -n "$GITHUB_REF" ]
 then
     CURRENT_BRANCH=${GITHUB_REF##*/}
