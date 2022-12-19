@@ -31,7 +31,7 @@ jobs:
             distro: rhel
             distro_version: 9
             name: RHEL 9
-        - image: openmama/openmama-dev:centos-stream8
+          - image: openmama/openmama-dev:centos-stream8
             package_type: rpm
             distro: centos
             distro_version: 8
