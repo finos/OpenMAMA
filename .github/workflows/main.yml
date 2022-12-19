@@ -21,7 +21,17 @@ jobs:
             distro: el
             distro_version: 7
             name: CentOS 7
-          - image: openmama/openmama-dev:centos-stream8
+          - image: finos/openmama:ubi8
+            package_type: rpm
+            distro: rhel
+            distro_version: 8
+            name: RHEL 8
+          - image: finos/openmama:ubi9
+            package_type: rpm
+            distro: rhel
+            distro_version: 9
+            name: RHEL 9
+        - image: openmama/openmama-dev:centos-stream8
             package_type: rpm
             distro: centos
             distro_version: 8
