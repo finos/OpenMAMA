@@ -46,12 +46,6 @@ else()
     set(IS_MSVC_32_BIT TRUE)
 endif()
 
-set (DEFAULT_LIBEVENT_ROOT "${DEFAULT_INSTALL_PREFIX}/libevent")
-set (DEFAULT_PROTON_ROOT   "${DEFAULT_INSTALL_PREFIX}/Proton")
-set (DEFAULT_APR_ROOT      "${DEFAULT_INSTALL_PREFIX}/APR")
-set (DEFAULT_APRUTIL_ROOT  "${DEFAULT_INSTALL_PREFIX}/APR-Util")
-set (DEFAULT_GTEST_ROOT    "${DEFAULT_INSTALL_PREFIX}/googletest-distribution")
-
 include(ExternalProject)
 
 macro(csharp_build_project target project output depends)

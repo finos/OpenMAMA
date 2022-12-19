@@ -4,9 +4,13 @@ FROM $IMAGE
 
 # Assign arguments with defaults
 ARG IMAGE
+ARG RHN_USER
+ARG RHN_PASS
 
 # Promote arguments to environment variables
 ENV IMAGE $IMAGE
+ENV RHN_USER $RHN_USER
+ENV RHN_PASS $RHN_PASS
 
 # Additional defaults for underlying scripts
 ENV IS_DOCKER_BUILD true

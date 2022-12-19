@@ -7,7 +7,6 @@ include_directories(
 	${system}
 	${system}/wombat)
 
-find_package(FLEX)
 FLEX_TARGET(properties properties.l  ${CMAKE_CURRENT_BINARY_DIR}/properties.c)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)

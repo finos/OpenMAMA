@@ -4,8 +4,6 @@ get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
 
 configure_file(version.c.in "${CMAKE_CURRENT_BINARY_DIR}/version.c" @ONLY)
 
-find_package(JNI)
-
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 	add_definitions(-Wno-deprecated-declarations -Wno-pointer-sign)
 endif()

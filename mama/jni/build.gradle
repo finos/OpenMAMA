@@ -20,7 +20,7 @@ dependencyCheck {
     suppressionFile="allow-list.xml"
 }
 
-def mamaVersion = project.findProperty('mamaVersion') ?: new File("${projectDir.absolutePath}/../../VERSION").text.trim() + "-1"
+def mamaVersion = project.findProperty('mamaVersion') ?: new File("${projectDir.absolutePath}/../../build/VERSION").text.trim() + "-1"
 def mamaJniHeaderDir = project.findProperty('mamaJniHeaderDir') ?: 'mamajni'
 
 if (!project.hasProperty('legacyNaming')) {
