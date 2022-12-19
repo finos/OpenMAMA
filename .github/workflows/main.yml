@@ -10,6 +10,9 @@ jobs:
     continue-on-error: true
     container:
       image: ${{ matrix.image }}
+      credentials:
+        username: finos
+        password: ${{ secrets.DOCKER_TOKEN }}
     strategy:
       matrix:
         include:
