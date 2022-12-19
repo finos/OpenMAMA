@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   linux-build-finos:  
-    if: github.repository_owner == 'finos'
+    if: github.repository_owner == 'finos' && ! github.event.issue.pull_request
     name: Linux ${{ matrix.name }}
     runs-on: ubuntu-22.04
     timeout-minutes: 20
