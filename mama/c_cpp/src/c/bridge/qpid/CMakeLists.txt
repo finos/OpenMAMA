@@ -1,14 +1,3 @@
-include(FindProton)
-find_package(Proton REQUIRED)
-
-if (NOT WIN32)
-    include(FindUUID)
-    find_package(UUID REQUIRED)
-endif()
-
-include(FindLibevent)
-find_package(Libevent REQUIRED)
-
 string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
 
 include_directories(${PROTON_INCLUDE_DIR})

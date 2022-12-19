@@ -11,7 +11,7 @@ BUILD_DIR=/build-ci-run
 SOURCE_PATH_RELATIVE=$(dirname "$0")/../..
 SOURCE_PATH_ABSOLUTE=$(cd "$SOURCE_PATH_RELATIVE" && pwd)
 
-git config --global --add safe.directory SOURCE_PATH_ABSOLUTE
+git config --global --add safe.directory $SOURCE_PATH_ABSOLUTE
 
 # Build the project
 if [ -d $BUILD_DIR ]
@@ -53,19 +53,19 @@ cd "$SOURCE_PATH_ABSOLUTE" > /dev/null
 # Generate the package (deb / rpm / tarball).
 # Globals
 ARTIFACT_TYPE=${ARTIFACT_TYPE:-dev}
-VERSION_FILE=${VERSION_FILE:-"$SOURCE_PATH_ABSOLUTE/VERSION"}
 
 # Constants
 RHEL=CentOS
 UBUNTU=Ubuntu
 
-VERSION=$(git --git-dir="$SOURCE_PATH_ABSOLUTE/.git" describe --tags | sed 's/^OpenMAMA-//g' | sed 's/-release//g')
+VERSION=$(cat $BUILD_DIR/VERSION)
 if [ -n "$GITHUB_REF" ]
 then
     CURRENT_BRANCH=${GITHUB_REF##*/}
 else
     CURRENT_BRANCH=$(git --git-dir="$SOURCE_PATH_ABSOLUTE/.git" rev-parse --abbrev-ref HEAD)
 fi
+echo "CURRENT_BRANCH='${CURRENT_BRANCH}'"
 if echo "$VERSION" | grep -E "^[0-9.]*$" > /dev/null
 then
     CLOUDSMITH_REPOSITORY=openmama
@@ -149,6 +149,7 @@ fpm -s dir --force \
 
 find "$DIST_DIR" -type f -name "*.$PACKAGE_TYPE"
 
+echo "PACKAGE_UPLOAD_ENABLED = '$PACKAGE_UPLOAD_ENABLED'"
 if [ "true" = "$PACKAGE_UPLOAD_ENABLED" ] && [ "$CLOUDSMITH_REPOSITORY" != "none" ]
 then
     cloudsmith push $PACKAGE_TYPE "openmama/$CLOUDSMITH_REPOSITORY/$CLOUDSMITH_DISTRO_NAME/$CLOUDSMITH_DISTRO_VERSION" "${PACKAGE_FILE}"

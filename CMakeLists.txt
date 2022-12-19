@@ -5,8 +5,37 @@ set (CMAKE_CXX_STANDARD 11)
 
 enable_testing()
 
+find_program(GIT_BIN git REQUIRED)
+
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 include(${CMAKE_C_COMPILER_ID})
+
+# Get the version including tag information
+if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
+    execute_process(
+            COMMAND "${GIT_BIN}" describe --tags
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            OUTPUT_VARIABLE OPENMAMA_VERSION_GIT
+            OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+    # Check if code is dirty (local changes not committed)
+    execute_process(
+            COMMAND "${GIT_BIN}" diff-index --quiet HEAD --
+            WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
+            RESULT_VARIABLE is_current_source_dir_dirty)
+    # Strip out unwanted part of version from git
+    message(STATUS "OPENMAMA_VERSION_GIT: ${OPENMAMA_VERSION_GIT}")
+    STRING(REGEX REPLACE "^OpenMAMA-" "" OPENMAMA_VERSION ${OPENMAMA_VERSION_GIT})
+    STRING(REGEX REPLACE "-release" "" OPENMAMA_VERSION ${OPENMAMA_VERSION})
+    if(NOT is_current_source_dir_dirty EQUAL 0)
+        set(OPENMAMA_VERSION "${OPENMAMA_VERSION}-DIRTY")
+    endif()
+else()
+    set(OPENMAMA_VERSION "NON_GIT_BUILD")
+endif()
+
+message(STATUS "OPENMAMA_VERSION: ${OPENMAMA_VERSION}")
+file(WRITE ${CMAKE_CURRENT_BINARY_DIR}/VERSION "${OPENMAMA_VERSION}")
 
 # Set up default cmake build type if not defined
 if (NOT CMAKE_BUILD_TYPE)
@@ -33,11 +62,6 @@ set (WITH_TUTORIALS     false  CACHE BOOL   "Include building of tutorial code")
 set (ENTITLEMENTS       "noop" CACHE STRING "Comma delimited list of entitlement bridges to allow to load at runtime")
 
 # Dependency detection options
-set (LIBEVENT_ROOT "${DEFAULT_LIBEVENT_ROOT}" CACHE PATH "Libevent dependency install directory (for qpid)")
-set (PROTON_ROOT   "${DEFAULT_PROTON_ROOT}"   CACHE PATH "Qpid dependency install directory (for qpid middleware and payload bridges)")
-set (APR_ROOT      "${DEFAULT_APR_ROOT}"      CACHE PATH "Apache APR dependency install directory (for core MAMA)")
-set (APRUTIL_ROOT  "${DEFAULT_APRUTIL_ROOT}"  CACHE PATH "Apache APR Utils dependency install directory (for core MAMA)")
-set (GTEST_ROOT    "${DEFAULT_GTEST_ROOT}"    CACHE PATH "Google test framework dependency install directory (for unit tests)")
 set (OEA_ROOT      "${DEFAULT_OEA_ROOT}"      CACHE PATH "OEA dependency install directory (for ef ENTITLEMENTS is set to oea)")
 
 # Install / post-compilation options
@@ -79,6 +103,28 @@ if(ENABLE_UBSAN)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${UBSAN_FLAGS}")
   set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} ${UBSAN_FLAGS}")
   set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${UBSAN_FLAGS}")
+endif()
+
+# Resolve common reusable dependencies
+find_package(FLEX REQUIRED)
+find_package(Libevent REQUIRED)
+find_package(Threads REQUIRED)
+find_package(APR REQUIRED)
+
+if (WITH_PROTON)
+    find_package(Proton REQUIRED)
+endif()
+
+if (WITH_UNITTEST)
+    find_package(GTest REQUIRED)
+endif()
+
+if (NOT WIN32)
+    find_package(UUID REQUIRED)
+endif()
+
+if (WITH_JAVA)
+    find_package(JNI)
 endif()
 
 add_subdirectory (common)
@@ -137,7 +183,11 @@ if (WITH_JAVA)
         SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}"
         BUILD_COMMAND ""
         CONFIGURE_COMMAND
-            ${BIN_GRADLE} --no-daemon -PbuildDir=${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-java -PmamaJniHeaderDir=${CMAKE_BINARY_DIR}/OpenMAMA-java/mamajni
+            ${BIN_GRADLE} --no-daemon
+                -PmamaVersion=${OPENMAMA_VERSION}
+                -PmamdaVersion=${OPENMAMA_VERSION}
+                -PbuildDir=${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-java
+                -PmamaJniHeaderDir=${CMAKE_BINARY_DIR}/OpenMAMA-java/mamajni
                 jar testClasses
         INSTALL_COMMAND ""
         LOG_BUILD 1
@@ -161,6 +211,8 @@ if (WITH_JAVA)
                  WORKING_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}"
                  COMMAND ${BIN_GRADLE} --no-daemon
                      -PbuildDir=${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-java
+                     -PmamaVersion=${OPENMAMA_VERSION}
+                     -PmamdaVersion=${OPENMAMA_VERSION}
                      -Ddictionary=${CMAKE_SOURCE_DIR}/mamda/java/src/test/resources/data.dict
                      test -i)
         set_tests_properties(java_unittests
