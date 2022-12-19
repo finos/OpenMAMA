@@ -20,7 +20,7 @@ dependencyCheck {
     suppressionFile="allow-list.xml"
 }
 
-def mamdaVersion = project.findProperty('mamaVersion') ?: new File("${projectDir.absolutePath}/../../VERSION").text.trim() + "-1"
+def mamdaVersion = project.findProperty('mamaVersion') ?: new File("${projectDir.absolutePath}/../../build/VERSION").text.trim() + "-1"
 
 if (!project.hasProperty('legacyNaming')) {
   group = "org.openmama"
