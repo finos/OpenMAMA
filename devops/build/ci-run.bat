@@ -13,9 +13,9 @@ cd %CMAKE_BUILD_DIR% || goto error
 ctest . -C RelWithDebInfo -E java_unittests --timeout 240 --output-on-failure || goto error
 cd %CMAKE_SOURCE_DIR% || goto error
 set /p VERSION=<%CMAKE_BUILD_DIR%\VERSION
-set OPENMAMA_RELEASE_DIR=%CMAKE_SOURCE_DIR%\openmama-%VERSION%.win.%PLATFORM%
+set OPENMAMA_RELEASE_DIR=openmama-%VERSION%.win.%PLATFORM%
 rename %CMAKE_INSTALL_DIR% %OPENMAMA_RELEASE_DIR%
-7z a openmama-%VERSION%.win.%VCVER%.%PLATFORM%.zip "%OPENMAMA_RELEASE_DIR%" || goto error
+7z a openmama-%VERSION%.win.%VCVER%.%PLATFORM%.zip %OPENMAMA_RELEASE_DIR% || goto error
 
 goto end
 

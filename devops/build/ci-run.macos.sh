@@ -51,5 +51,5 @@ cd - > /dev/null
 # Generate the package (deb / rpm / tarball).
 VERSION=$(cat $CMAKE_BUILD_DIR/VERSION)
 export OPENMAMA_RELEASE_DIR=$CMAKE_SOURCE_DIR\openmama-$VERSION.osx.$(uname -m).$(sw_vers -productVersion)
-rename $CMAKE_INSTALL_DIR $OPENMAMA_RELEASE_DIR
+mv $CMAKE_INSTALL_DIR $OPENMAMA_RELEASE_DIR
 7z a $OPENMAMA_RELEASE_DIR.zip "$OPENMAMA_RELEASE_DIR" || goto error
