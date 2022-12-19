@@ -107,7 +107,6 @@ jobs:
       run: 'echo PKG=`find ./dist -name "*.${{ matrix.package_type }}"` >> $GITHUB_ENV'
     - name: Archive package as an artifact
       uses: actions/upload-artifact@v3
-      if: matrix.package_upload_enabled == 'true'
       with:
         name: package
         path: ${{ env.PKG }}
