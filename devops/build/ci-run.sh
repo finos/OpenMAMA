@@ -123,7 +123,7 @@ then
     then
         DISTRIB_PACKAGE_QUALIFIER=el${DISTRIB_RELEASE%%.*}
     else
-        DISTRIB_PACKAGE_QUALIFIER=centos${DISTRIB_RELEASE
+        DISTRIB_PACKAGE_QUALIFIER=centos${DISTRIB_RELEASE%%.*}
     fi
 elif [ "$DISTRIB_ID" == "$UBUNTU" ]
 then
