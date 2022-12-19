@@ -65,6 +65,7 @@ then
 else
     CURRENT_BRANCH=$(git --git-dir="$SOURCE_PATH_ABSOLUTE/.git" rev-parse --abbrev-ref HEAD)
 fi
+echo "CURRENT_BRANCH='${CURRENT_BRANCH}'"
 if echo "$VERSION" | grep -E "^[0-9.]*$" > /dev/null
 then
     CLOUDSMITH_REPOSITORY=openmama
