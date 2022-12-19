@@ -20,9 +20,9 @@ brew install googletest apr apr-util ossp-uuid qpid-proton
 # Build the project
 export CMAKE_SOURCE_DIR=$(pwd)
 export CMAKE_BUILD_DIR=$(pwd)/build
-test -d $(CMAKE_BUILD_DIR) && rm -rf $(CMAKE_BUILD_DIR) || true
-mkdir -p $(CMAKE_BUILD_DIR)
-cd $(CMAKE_BUILD_DIR)
+test -d $CMAKE_BUILD_DIR && rm -rf $CMAKE_BUILD_DIR || true
+mkdir -p $CMAKE_BUILD_DIR
+cd $CMAKE_BUILD_DIR
 export CMAKE_INSTALL_DIR=$(pwd)/install
 export DYLD_LIBRARY_PATH=$CMAKE_INSTALL_DIR/lib
 cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \

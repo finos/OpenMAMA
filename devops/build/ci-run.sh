@@ -11,7 +11,7 @@ BUILD_DIR=/build-ci-run
 SOURCE_PATH_RELATIVE=$(dirname "$0")/../..
 SOURCE_PATH_ABSOLUTE=$(cd "$SOURCE_PATH_RELATIVE" && pwd)
 
-git config --global --add safe.directory SOURCE_PATH_ABSOLUTE
+git config --global --add safe.directory $SOURCE_PATH_ABSOLUTE
 
 # Build the project
 if [ -d $BUILD_DIR ]
