@@ -119,7 +119,12 @@ fi
 
 if [ "$DISTRIB_ID" == "$RHEL" ]
 then
-    DISTRIB_PACKAGE_QUALIFIER=el${DISTRIB_RELEASE%%.*}
+    if grep -q "Red Hat" /etc/redhat-release
+    then
+        DISTRIB_PACKAGE_QUALIFIER=el${DISTRIB_RELEASE%%.*}
+    else
+        DISTRIB_PACKAGE_QUALIFIER=centos${DISTRIB_RELEASE
+    fi
 elif [ "$DISTRIB_ID" == "$UBUNTU" ]
 then
     DISTRIB_PACKAGE_QUALIFIER=ubuntu${DISTRIB_RELEASE%%.*}
