@@ -60,9 +60,17 @@ set (WITH_JAVA          false  CACHE BOOL   "Include JAVA bindings")
 set (WITH_DOC           false  CACHE BOOL   "Include documentation")
 set (WITH_TUTORIALS     false  CACHE BOOL   "Include building of tutorial code")
 set (ENTITLEMENTS       "noop" CACHE STRING "Comma delimited list of entitlement bridges to allow to load at runtime")
+if (WIN32)
+    set (DEFAULT_BIN_GRADLE "${CMAKE_SOURCE_DIR}/gradlew.bat")
+else()
+    set (DEFAULT_BIN_GRADLE "${CMAKE_SOURCE_DIR}/gradlew")
+endif()
+
+# Set gradle binary override
+set (BIN_GRADLE    "${DEFAULT_BIN_GRADLE}"    CACHE PATH "The 'gradle' executable to use (defaults to: ${DEFAULT_BIN_GRADLE} which requires internet access)")
 
 # Dependency detection options
-set (OEA_ROOT      "${DEFAULT_OEA_ROOT}"      CACHE PATH "OEA dependency install directory (for ef ENTITLEMENTS is set to oea)")
+set (OEA_ROOT      "${DEFAULT_OEA_ROOT}"      CACHE PATH   "OEA dependency install directory (for ef ENTITLEMENTS is set to oea)")
 
 # Install / post-compilation options
 set (INSTALL_RUNTIME_DEPENDENCIES true CACHE BOOL "Whether or not to include dependent .so or .dll files in the installation package")
@@ -167,12 +175,6 @@ endif()
 if (WITH_JAVA)
     include(ExternalProject)
     find_package(Java)
-
-    if (WIN32)
-        find_program(BIN_GRADLE gradlew.bat HINTS ${CMAKE_SOURCE_DIR})
-    else()
-        find_program(BIN_GRADLE gradlew HINTS ${CMAKE_SOURCE_DIR})
-    endif()
 
     message(STATUS "Using gradle: ${BIN_GRADLE}")
 
