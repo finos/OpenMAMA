@@ -378,7 +378,7 @@ public:
     /**
      * Load in default mama.properties from the default WOMBAT_PATH directory.
      */
-    static const void loadDefaultProperties (void);
+    static void loadDefaultProperties (void);
 
     /**
      * Retrieve all configuration properties from the API.
