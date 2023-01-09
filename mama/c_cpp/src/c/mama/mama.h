@@ -353,7 +353,7 @@ extern "C"
      */
     MAMAExpDLL
     extern void
-    mama_loadDefaultProperties (void)
+    mama_loadDefaultProperties (void);
 
     /**
      * Build a string containing all configuration properties in the format:
