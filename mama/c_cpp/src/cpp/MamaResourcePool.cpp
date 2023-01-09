@@ -335,25 +335,36 @@ public:
         const char*                     topicName,
         MamaSubscriptionCallback*       callbacks,
         void*                           closure) {
+
         // Get the default subscribing transport name from the mama.properties for
         // this resource pool
-        const char* transportName = properties_GetPropertyValueUsingFormatString (
+        const char* poolDefaultTransportName = properties_GetPropertyValueUsingFormatString (
             mamaInternal_getProperties(),
             nullptr,
             "mama.resource_pool.%s.default_transport_sub",
             mName.c_str());
-        if (nullptr == transportName) {
+
+        // Get the default subscribing transport name from the mama.properties for
+        // this source
+        const char* sourceDefaultTransportName = properties_GetPropertyValueUsingFormatString (
+            mamaInternal_getProperties(),
+            nullptr,
+            "mama.source.%s.transport_sub",
+            sourceName);
+        if (nullptr == poolDefaultTransportName && nullptr == sourceDefaultTransportName) {
             mama_log (MAMA_LOG_LEVEL_WARN,
-                      "Could not create subscription for %s.%s - no default_transport_sub "
-                      "transport defined for resource pool %s",
-                      sourceName == nullptr ? "" : sourceName,
+                      "Could not create subscription for %s - no default "
+                      "source or resource pool default transport defined for source "
+                      "%s in resource pool %s",
                       topicName,
+                      sourceName,
                       mName.c_str());
             throw MamaStatus(MAMA_STATUS_INVALID_ARG);
         }
+
         std::lock_guard<std::recursive_mutex> lock(mMutex);
         return createSubscriptionFromComponents (
-            transportName,
+            sourceDefaultTransportName != nullptr ? sourceDefaultTransportName : poolDefaultTransportName,
             sourceName,
             topicName,
             callbacks,

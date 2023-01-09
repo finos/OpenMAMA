@@ -519,19 +519,19 @@ public class MamaResourcePool
             throw new MamaException("Null arguments passed to createSubscriptionFromTopicWithSource");
         }
 
-        String transportName = Mama.getProperty(String.format("mama.resource_pool.%s.default_transport_sub", mName));
-        if (null == transportName) {
+        String poolDefaultTransportName = Mama.getProperty(String.format("mama.resource_pool.%s.default_transport_sub", mName));
+        String sourceDefaultTransportName = Mama.getProperty(String.format("mama.source.%s.transport_sub", sourceName));
+
+        if (null == poolDefaultTransportName && null == sourceDefaultTransportName) {
             throw new MamaException(String.format(
-                    "Could not create subscription for %s.%s - no default_transport_sub " +
-                        "transport defined for resource pool %s",
-                    sourceName,
-                    topicName,
-                    mName
-            ));
+                    "Could not create subscription for %s - no default " +
+                            "source or resource pool default transport defined for source " +
+                            "%s in resource pool %s",
+                    topicName, sourceName, mName));
         }
 
         return createSubscriptionFromComponents (
-                transportName,
+                sourceDefaultTransportName != null ? sourceDefaultTransportName : poolDefaultTransportName,
                 sourceName,
                 topicName,
                 callbacks,
