@@ -460,7 +460,7 @@ namespace Wombat
 		/// </summary>
 		public static void loadDefaultProperties ()
 		{
-			MamaWrapper.CheckResultCode (NativeMethods.mama_loadDefaultProperties ());
+			NativeMethods.mama_loadDefaultProperties ();
 		}
 
 		/// <summary>
