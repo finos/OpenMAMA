@@ -31,7 +31,10 @@ if (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/.git)
         set(OPENMAMA_VERSION "${OPENMAMA_VERSION}-DIRTY")
     endif()
 else()
-    set(OPENMAMA_VERSION "NON_GIT_BUILD")
+    if (NOT OPENMAMA_VERSION)
+	    message(FATAL_ERROR
+                    "Non git build detected. In this case a version must be provided, e.g: -DOPENMAMA_VERSION=6.3.1")
+    endif ()
 endif()
 
 message(STATUS "OPENMAMA_VERSION: ${OPENMAMA_VERSION}")
