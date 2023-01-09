@@ -387,6 +387,11 @@ public class Mama
     public static native String getProperty(String name);
 
     /**
+     * Load in default mama.properties from the default WOMBAT_PATH directory.
+     */
+    public static native void loadDefaultProperties();
+
+    /**
      * Retrieve a specific property from the API.
      *
      * If the property has not been set, the default value will be returned.

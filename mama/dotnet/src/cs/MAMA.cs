@@ -456,6 +456,14 @@ namespace Wombat
 		}
 
 		/// <summary>
+		/// Load in default mama.properties from the default WOMBAT_PATH directory.
+		/// </summary>
+		public static void loadDefaultProperties ()
+		{
+			MamaWrapper.CheckResultCode (NativeMethods.mama_loadDefaultProperties ());
+		}
+
+		/// <summary>
 		/// Retrieve a specific property from the API.
 		/// If the property has not been set, the default value will be returned
 		/// </summary>
@@ -982,6 +990,8 @@ namespace Wombat
 			public static extern int mama_setProperty (string name, string value);
             [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr mama_getProperty (string name);
+            [DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
+			public static extern void mama_loadDefaultProperties ();
 			[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]
 			public static extern IntPtr mama_getPropertiesAsString ();
 			[DllImport(DllName, CallingConvention = CallingConvention.Cdecl)]

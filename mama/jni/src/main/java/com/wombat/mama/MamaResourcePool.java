@@ -104,6 +104,7 @@ public class MamaResourcePool
         {
             throw new MamaException("Null string passed to MamaResourcePool");
         }
+        Mama.loadDefaultProperties();
         mName = name;
         String bridgesProperty = Mama.getProperty (String.format("mama.resource_pool.%s.bridges", mName), "qpid");
         mBridgeNames = Arrays.asList(bridgesProperty.split(","));

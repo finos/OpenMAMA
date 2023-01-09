@@ -352,6 +352,9 @@ mamaResourcePool_create (
         return MAMA_STATUS_INVALID_ARG;
     }
 
+    // Load in default configuration properties so we can look for configuration before calling open()
+    mama_loadDefaultProperties ();
+
     impl = (mamaResourcePoolImpl*) calloc (1, sizeof(mamaResourcePoolImpl));
     if (NULL == impl) {
         status = MAMA_STATUS_NOMEM;

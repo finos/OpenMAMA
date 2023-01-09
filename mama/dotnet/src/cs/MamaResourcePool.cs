@@ -615,6 +615,7 @@ namespace Wombat
 		            "Null string passed to MamaResourcePool");
 	        }
 	        mName = name;
+	        Mama.loadDefaultProperties();
 	        String bridgesProperty = Mama.getProperty (string.Format("mama.resource_pool.{0}.bridges", mName), "qpid");
 	        mBridgeNames = new List<string>(bridgesProperty.Split(','));
 	        if (mBridgeNames.Count == 0) {

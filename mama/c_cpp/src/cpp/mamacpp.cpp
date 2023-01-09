@@ -230,6 +230,10 @@ namespace Wombat
         return mama_getProperty (name);
     }
 
+    void Mama::loadDefaultProperties (void) {
+        mama_loadDefaultProperties ();
+    }
+
     extern "C"
     {
         static void mamaImpl_propertyCollectorCb (const char* name,
