@@ -861,7 +861,8 @@ mamaResourcePool_createSubscriptionFromTopicWithSource (
     void* closure
 ) {
     mamaResourcePoolImpl* impl = (mamaResourcePoolImpl*) resourcePool;
-    const char* transportName = NULL;
+    const char* poolDefaultTransportName = NULL;
+    const char* sourceDefaultTransportName = NULL;
     if (NULL == impl || NULL == subscription || NULL == topicName) {
         return MAMA_STATUS_NULL_ARG;
     }
@@ -872,24 +873,34 @@ mamaResourcePool_createSubscriptionFromTopicWithSource (
 
     // Get the default subscribing transport name from the mama.properties for
     // this resource pool
-    transportName = properties_GetPropertyValueUsingFormatString (
+    poolDefaultTransportName = properties_GetPropertyValueUsingFormatString (
         mamaInternal_getProperties(),
         NULL,
         "mama.resource_pool.%s.default_transport_sub",
         impl->mName);
-    if (NULL == transportName) {
+
+    // Get the default subscribing transport name from the mama.properties for
+    // this source
+    sourceDefaultTransportName = properties_GetPropertyValueUsingFormatString (
+        mamaInternal_getProperties(),
+        NULL,
+        "mama.source.%s.transport_sub",
+        sourceName);
+    if (NULL == poolDefaultTransportName && NULL == sourceDefaultTransportName) {
         mama_log (MAMA_LOG_LEVEL_WARN,
-                  "Could not create subscription for %s.%s - no default_transport_sub "
-                  "transport defined for resource pool %s",
-                  sourceName == NULL ? "" : sourceName,
+                  "Could not create subscription for %s - no default "
+                  "source or resource pool default transport defined for source "
+                  "%s in resource pool %s",
                   topicName,
+                  sourceName,
                   impl->mName);
         return MAMA_STATUS_INVALID_ARG;
     }
+
     return mamaResourcePool_createSubscriptionFromComponents (
             resourcePool,
             subscription,
-            transportName,
+            sourceDefaultTransportName != NULL ? sourceDefaultTransportName : poolDefaultTransportName,
             sourceName,
             topicName,
             callbacks,

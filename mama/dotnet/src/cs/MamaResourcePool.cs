@@ -453,20 +453,21 @@ namespace Wombat
 	            throw new MamaException(MamaStatus.mamaStatus.MAMA_STATUS_NULL_ARG, "Null arguments passed to createSubscriptionFromTopicWithSource");
 	        }
 
-	        String transportName = Mama.getProperty(string.Format("mama.resource_pool.{0}.default_transport_sub", mName));
-	        if (null == transportName) {
-	            throw new MamaException(MamaStatus.mamaStatus.MAMA_STATUS_NULL_ARG,
+			string poolDefaultTransportName = Mama.getProperty(string.Format("mama.resource_pool.{0}.default_transport_sub", mName));
+	        string sourceDefaultTransportName = Mama.getProperty(string.Format("mama.source.{0}.transport_sub", sourceName));
+
+	        if (null == poolDefaultTransportName && null == sourceDefaultTransportName) {
+	            throw new MamaException(
+		            MamaStatus.mamaStatus.MAMA_STATUS_NULL_ARG, 
 		            string.Format(
-	                    "Could not create subscription for {0}.{1} - no default_transport_sub " +
-	                        "transport defined for resource pool {2}",
-	                    sourceName,
-	                    topicName,
-	                    mName
-	            ));
+	                    "Could not create subscription for {0} - no default " +
+	                            "source or resource pool default transport defined for source " +
+	                            "{1} in resource pool {3]",
+	                    topicName, sourceName, mName));
 	        }
 
 	        return createSubscriptionFromComponents (
-	                transportName,
+	                sourceDefaultTransportName != null ? sourceDefaultTransportName : poolDefaultTransportName,
 	                sourceName,
 	                topicName,
 	                callbacks,
