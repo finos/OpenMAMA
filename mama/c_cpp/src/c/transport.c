@@ -652,6 +652,7 @@ mamaTransport_create (mamaTransport transport,
     mama_status   status;
     const char*   middleware  = NULL;
     const char*   throttleInt = NULL;
+    const char*   throttleFromGlobalInt = NULL;
     char          propNameBuf[MAX_PROP_STRING];
     const char*   entBridgeName;
     const char*   propValue;
@@ -695,15 +696,15 @@ mamaTransport_create (mamaTransport transport,
         }
     }
 
-    throttleInt = properties_Get (mamaInternal_getProperties (),
-            "mama.throttle.interval");
+    throttleFromGlobalInt = mamaImpl_getParameter (NULL, "mama.throttle.interval");
+    throttleInt = mamaImpl_getParameter (throttleFromGlobalInt, "mama.transport.%s.throttle.interval", name);
     if (throttleInt != NULL)
     {
         double interval = strtod (throttleInt, NULL);
-        if (interval != 0)
+        if (interval > 0)
         {
             mama_log (MAMA_LOG_LEVEL_FINER,
-                    "Setting mama.throttle.interval to %f\n", interval);
+                    "Setting mama transport throttle for %s to %f", name, interval);
             wombatThrottle_setInterval (self->mThrottle, interval);
         }
     }
