@@ -349,6 +349,13 @@ extern "C"
     mama_getProperty (const char* name);
 
     /**
+     * Load in default mama.properties from the default WOMBAT_PATH directory.
+     */
+    MAMAExpDLL
+    extern void
+    mama_loadDefaultProperties (void);
+
+    /**
      * Build a string containing all configuration properties in the format:
      *     key1=value
      *     key2=value

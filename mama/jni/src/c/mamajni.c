@@ -991,6 +991,16 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_Mama_getProperty
 
 /*
  * Class:     com_wombat_mama_Mama
+ * Method:    loadDefaultProperties
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_loadDefaultProperties
+  (JNIEnv* env, jclass class)
+{
+    mama_loadDefaultProperties ();
+}
+
+/*
+ * Class:     com_wombat_mama_Mama
  * Method:    getPropertiesAsString
  * Signature: ()Ljava/lang/String;
  */

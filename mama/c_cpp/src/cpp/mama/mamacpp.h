@@ -376,6 +376,11 @@ public:
     static const char * getProperty (const char* name);
 
     /**
+     * Load in default mama.properties from the default WOMBAT_PATH directory.
+     */
+    static void loadDefaultProperties (void);
+
+    /**
      * Retrieve all configuration properties from the API.
      *
      * @return A key value map of all configuration properties
