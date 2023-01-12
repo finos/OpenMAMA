@@ -1295,7 +1295,9 @@ mama_setPropertiesFromFile (const char *path,
 void
 mama_loadDefaultProperties ()
 {
-    mamaInternal_loadProperties (NULL, NULL);
+    if (!gProperties) {
+        mamaInternal_loadProperties (NULL, NULL);
+    }
 }
 
 const char *
