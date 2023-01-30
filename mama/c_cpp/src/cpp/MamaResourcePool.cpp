@@ -101,6 +101,9 @@ public:
             throw MamaStatus (MAMA_STATUS_NOMEM);
         }
 
+        // Load in default configuration properties so we can look for configuration before calling open()
+        Mama::loadDefaultProperties();
+
         const char* bridgesProperty = mamaImpl_getParameter (
             "qpid", "mama.resource_pool.%s.bridges", mName.c_str());
         if (nullptr != bridgesProperty) {
