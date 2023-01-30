@@ -652,7 +652,8 @@ mamaTransport_create (mamaTransport transport,
     mama_status   status;
     const char*   middleware  = NULL;
     const char*   throttleInt = NULL;
-    const char*   throttleFromGlobalInt = NULL;
+    const char*   recapThrottleRate = NULL;
+    const char*   defaultThrottleRate = NULL;
     char          propNameBuf[MAX_PROP_STRING];
     const char*   entBridgeName;
     const char*   propValue;
@@ -664,6 +665,7 @@ mamaTransport_create (mamaTransport transport,
     mama_log(MAMA_LOG_LEVEL_FINER, "Entering mamaTransport_create for transport (%p) with name %s", transport, name);
 
     self->mBridgeImpl = (mamaBridgeImpl*)bridgeImpl;
+    middleware = self->mBridgeImpl->bridgeGetName ();
 
     /*So that we can configure the default transport!*/
     if (!name) name = "default";
@@ -696,16 +698,58 @@ mamaTransport_create (mamaTransport transport,
         }
     }
 
-    throttleFromGlobalInt = mamaImpl_getParameter (NULL, "mama.throttle.interval");
-    throttleInt = mamaImpl_getParameter (throttleFromGlobalInt, "mama.transport.%s.throttle.interval", name);
+    throttleInt = mamaImpl_getParameter (
+                    mamaImpl_getParameter (
+                        mamaImpl_getParameter (NULL, "mama.throttle.interval"),
+                        "mama.transport.%s.throttle.interval",
+                        name),
+                    "mama.%s.transport.%s.throttle.interval",
+                    middleware,
+                    name);
     if (throttleInt != NULL)
     {
         double interval = strtod (throttleInt, NULL);
         if (interval > 0)
         {
             mama_log (MAMA_LOG_LEVEL_FINER,
-                    "Setting mama transport throttle for %s to %f", name, interval);
+                      "Setting mama transport throttle interval for %s to %f seconds", name, interval);
             wombatThrottle_setInterval (self->mThrottle, interval);
+        }
+    }
+
+    defaultThrottleRate = mamaImpl_getParameter (
+            mamaImpl_getParameter (NULL, "mama.transport.%s.default_throttle_rate", name),
+            "mama.%s.transport.%s.default_throttle_rate",
+            middleware,
+            name);
+    if (defaultThrottleRate != NULL)
+    {
+        double throttleRate = strtod (defaultThrottleRate, NULL);
+        if (throttleRate > 0)
+        {
+            // Figure out the interval from the events per second
+            double interval = 1.0 / throttleRate;
+            mama_log (MAMA_LOG_LEVEL_FINER,
+                    "Setting mama transport default throttle rate for %s to %f evt/s", name, interval);
+            wombatThrottle_setInterval (self->mThrottle, interval);
+        }
+    }
+
+    recapThrottleRate = mamaImpl_getParameter (
+            mamaImpl_getParameter (NULL, "mama.transport.%s.recap_throttle_rate", name),
+            "mama.%s.transport.%s.recap_throttle_rate",
+            middleware,
+            name);
+    if (recapThrottleRate != NULL)
+    {
+        double throttleRate = strtod (recapThrottleRate, NULL);
+        if (throttleRate > 0)
+        {
+            // Figure out the interval from the events per second
+            double interval = 1.0 / throttleRate;
+            mama_log (MAMA_LOG_LEVEL_FINER,
+                      "Setting mama transport recap throttle rate for %s to %f evt/s", name, interval);
+            wombatThrottle_setInterval (self->mRecapThrottle, interval);
         }
     }
 
@@ -895,8 +939,6 @@ mamaTransport_create (mamaTransport transport,
         if (rval != MAMA_STATUS_OK) return rval;
 
     }
-
-    middleware = self->mBridgeImpl->bridgeGetName ();
 
     setGroupSizeHint (transport, middleware);
 
