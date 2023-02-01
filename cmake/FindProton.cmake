@@ -4,6 +4,8 @@ FIND_PATH(PROTON_INCLUDE_DIR proton/version.h
 		${PROTON_ROOT}/include
 		/usr/local/include
 		/usr/include
+		"C:/Program Files/Proton/include"
+		"C:/Program Files (x86)/Proton/include"
 )
 
 FIND_LIBRARY(PROTON_LIBRARY qpid-proton
@@ -17,6 +19,8 @@ FIND_LIBRARY(PROTON_LIBRARY qpid-proton
 		/usr/lib
 		/usr/local/lib
 		/usr/lib/x86_64-linux-gnu
+		"C:/Program Files/Proton/lib"
+		"C:/Program Files (x86)/Proton/lib"
 	NO_DEFAULT_PATH
 )
 

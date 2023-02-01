@@ -37,6 +37,8 @@ FIND_PATH(APR_INCLUDE_DIR apr.h
     /usr/include/apr-1
     /usr/include/apr-1.0
     /usr/local/apr/include/apr-1
+    "C:/Program Files/APR/include"
+    "C:/Program Files (x86)/APR/include"
 )
 
 SET(APR_NAMES ${APR_NAMES} apr-1.0 libapr-1 apr-1)
@@ -49,6 +51,8 @@ FIND_LIBRARY(APR_LIBRARY
     /usr/local/lib
     /usr/local/apr/lib
     /usr/lib/x86_64-linux-gnu
+    "C:/Program Files/APR/lib"
+    "C:/Program Files (x86)/APR/lib"
    NO_DEFAULT_PATH
 )
 
@@ -95,6 +99,8 @@ FIND_PATH(APRUTIL_INCLUDE_DIR apu.h
     /usr/include/apr-1
     /usr/include/apr-1.0
     /usr/local/apr/include/apr-1
+    "C:/Program Files/APR-Util/include"
+    "C:/Program Files (x86)/APR-Util/include"
 )
 
 SET(APRUTIL_NAMES ${APRUTIL_NAMES} libaprutil-1 aprutil-1)
@@ -108,6 +114,8 @@ FIND_LIBRARY(APRUTIL_LIBRARY
     /usr/local/lib
     /usr/local/apr/lib
     /usr/lib/x86_64-linux-gnu
+    "C:/Program Files/APR-Util/lib"
+    "C:/Program Files (x86)/APR-Util/lib"
   NO_DEFAULT_PATH
 )
 
