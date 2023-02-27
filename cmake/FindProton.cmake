@@ -1,21 +1,29 @@
+if (CMAKE_BUILD_TYPE MATCHES Debug)
+	set (FIND_PROTON_SEARCH_LIB_SUFFIX "d")
+else ()
+	set (FIND_PROTON_SEARCH_LIB_SUFFIX "")
+endif ()
+
 FIND_PATH(PROTON_INCLUDE_DIR proton/version.h
 	PATHS
 		${QPID_ROOT}/include
 		${PROTON_ROOT}/include
+		${OPENMAMA_DEPENDENCY_ROOT}/include
 		/usr/local/include
 		/usr/include
 		"C:/Program Files/Proton/include"
 		"C:/Program Files (x86)/Proton/include"
 )
 
-FIND_LIBRARY(PROTON_LIBRARY qpid-proton
+FIND_LIBRARY(PROTON_LIBRARY qpid-proton${FIND_PROTON_SEARCH_LIB_SUFFIX}
 	PATHS
 		${QPID_ROOT}/lib64
 		${PROTON_ROOT}/lib64
-		/usr/lib64
-		/usr/local/lib64
 		${QPID_ROOT}/lib
 		${PROTON_ROOT}/lib
+		${OPENMAMA_DEPENDENCY_ROOT}/lib
+		/usr/lib64
+		/usr/local/lib64
 		/usr/lib
 		/usr/local/lib
 		/usr/lib/x86_64-linux-gnu

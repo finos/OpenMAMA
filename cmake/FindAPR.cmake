@@ -31,6 +31,9 @@ FIND_PATH(APR_INCLUDE_DIR apr.h
     ${APR_ROOT}/include/apr-1
     ${APR_ROOT}/include/apr-1.0
     ${APR_ROOT}/include
+    ${OPENMAMA_DEPENDENCY_ROOT}/include/apr-1
+    ${OPENMAMA_DEPENDENCY_ROOT}/include/apr-1.0
+    ${OPENMAMA_DEPENDENCY_ROOT}/include
     /usr/local/opt/apr/include/apr-1
     /usr/local/include/apr-1
     /usr/local/include/apr-1.0
@@ -41,11 +44,12 @@ FIND_PATH(APR_INCLUDE_DIR apr.h
     "C:/Program Files (x86)/APR/include"
 )
 
-SET(APR_NAMES ${APR_NAMES} apr-1.0 libapr-1 apr-1)
+SET(APR_NAMES ${APR_NAMES} libapr-1 apr-1.0 apr-1)
 FIND_LIBRARY(APR_LIBRARY
   NAMES ${APR_NAMES}
   PATHS
     ${APR_ROOT}/lib
+    ${OPENMAMA_DEPENDENCY_ROOT}/lib
     /usr/local/opt/apr/lib
     /usr/lib
     /usr/local/lib
@@ -90,6 +94,9 @@ FIND_PATH(APRUTIL_INCLUDE_DIR apu.h
     ${APRUTIL_ROOT}/include/apr-1
     ${APRUTIL_ROOT}/include/apr-1.0
     ${APRUTIL_ROOT}/include
+    ${OPENMAMA_DEPENDENCY_ROOT}/include/apr-1
+    ${OPENMAMA_DEPENDENCY_ROOT}/include/apr-1.0
+    ${OPENMAMA_DEPENDENCY_ROOT}/include
     ${APR_ROOT}/include/apr-1
     ${APR_ROOT}/include/apr-1.0
     ${APR_ROOT}/include
@@ -108,6 +115,7 @@ FIND_LIBRARY(APRUTIL_LIBRARY
   NAMES ${APRUTIL_NAMES}
   PATHS
     ${APRUTIL_ROOT}/lib
+    ${OPENMAMA_DEPENDENCY_ROOT}/lib
     ${APR_ROOT}/lib
     /usr/local/opt/apr-util/lib
     /usr/lib

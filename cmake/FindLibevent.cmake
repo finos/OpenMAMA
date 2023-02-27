@@ -9,6 +9,7 @@
 set(LIBEVENT_ROOT CACHE PATH "Root directory of libevent installation")
 set(LibEvent_EXTRA_PREFIXES
         ${LIBEVENT_ROOT}
+        ${OPENMAMA_DEPENDENCY_ROOT}
         /usr/local
         /opt/local
         "$ENV{HOME}"

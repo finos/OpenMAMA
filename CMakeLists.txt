@@ -226,13 +226,6 @@ if (WITH_JAVA)
     endif()
 endif()
 
-if (WITH_TUTORIALS)
-  add_subdirectory(tutorials/c)
-  if (WITH_CPP)
-    add_subdirectory(tutorials/cpp)
-  endif()
-endif()
-
 install(FILES LICENSE.md DESTINATION .)
 install(FILES mama/c_cpp/src/examples/mama.properties DESTINATION config)
 
@@ -248,6 +241,7 @@ if (WITH_MAMDA)
     list(APPEND OPENMAMA_INSTALL_TARGETS mamda mamdanews mamdaoptions mamdabook)
     set(OPENMAMA_INSTALL_TARGETS ${OPENMAMA_INSTALL_TARGETS}  )
 endif()
+
 install(
     TARGETS ${OPENMAMA_INSTALL_TARGETS}
     EXPORT OpenMAMA-targets
@@ -272,3 +266,10 @@ install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/OpenMAMAConfig.cmake
     DESTINATION lib/cmake/OpenMAMA
 )
+
+if (WITH_TUTORIALS)
+    add_subdirectory(tutorials/c)
+    if (WITH_CPP)
+        add_subdirectory(tutorials/cpp)
+    endif()
+endif()

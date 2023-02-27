@@ -45,7 +45,6 @@ ompbBridgeMamaTransport_isValid (transportBridge transport)
 mama_status
 ompbBridgeMamaTransport_destroy (transportBridge transport)
 {
-    printf("DESTROYING THE TRANSPORT IF THIS WORKS...\n");
     free (transport);
     return MAMA_STATUS_OK;
 }
