@@ -152,7 +152,7 @@ if (WITH_CSHARP)
     ExternalProject_Add(OpenMAMA-csharp
         SOURCE_DIR "."
         BUILD_COMMAND ""
-	CONFIGURE_COMMAND ${BIN_DOTNET} build -c Release /p:Platform="Any CPU" /p:IsInOpenMAMABuild=true -o ${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-csharp ${CMAKE_CURRENT_SOURCE_DIR}/OpenMAMA-csharp.sln
+	CONFIGURE_COMMAND ${BIN_DOTNET} build -c Release /p:Platform="Any CPU" /p:IsInOpenMAMABuild=true /p:OutputPath=${CMAKE_CURRENT_BINARY_DIR}/OpenMAMA-csharp ${CMAKE_CURRENT_SOURCE_DIR}/OpenMAMA-csharp.sln
         INSTALL_COMMAND ""
         LOG_BUILD 1
         DEPENDS mama)
