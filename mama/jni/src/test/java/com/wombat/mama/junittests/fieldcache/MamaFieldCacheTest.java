@@ -1,32 +1,18 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
+package com.wombat.mama.junittests.fieldcache;
 
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
  * This class will test MamaFieldCache's functions
  */
-public class MamaFieldCacheTest extends TestCase
+public class MamaFieldCacheTest extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -41,58 +27,67 @@ public class MamaFieldCacheTest extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
         mFieldCache = new MamaFieldCache();
         mFieldCacheInt32 = new MamaFieldCacheInt32(101, "example", true);
         mFieldCacheInt32_2 = new MamaFieldCacheInt32(102, "example2", true);
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
-  
+
+    @Test
     public void testAdd()
     {
         mFieldCache.add(mFieldCacheInt32);
         assertEquals(mFieldCache.find(101), mFieldCacheInt32);
     }
 
+    @Test
     public void testFindOrAddDescriptor()
     {
         String example3 = "example3";
         mFieldDescriptor = new MamaFieldDescriptor( 101, (short) 18, "example3", example3);
-        assertEquals(mFieldCache.find(mFieldDescriptor), null);
+        assertNull(mFieldCache.find(mFieldDescriptor));
         mFieldCache.findOrAdd(mFieldDescriptor);
         assertEquals(mFieldCache.find(101).getDescriptor().toString(), example3);
     }
 
+    @Test
     public void testFindOrAdd()
     {
         String example3 = "example3";
-        assertEquals(mFieldCache.find(101), null);
+        assertNull(mFieldCache.find(101));
         mFieldCache.findOrAdd(101, (short) 18, "example3");
         assertEquals(mFieldCache.find(101).getDescriptor().toString(), "I32");
     }
 
+    @Test
     public void testSetTrackModState()
     {
-        assertEquals(mFieldCache.getTrackModState(), false);
+        assertFalse(mFieldCache.getTrackModState());
         mFieldCache.setTrackModState(true);
-        assertEquals(mFieldCache.getTrackModState(), true);
+        assertTrue(mFieldCache.getTrackModState());
     }
 
+    @Test
     public void testSetOverrideDescriptorTrackModState()
     {
-        assertEquals(mFieldCache.getOverrideDescriptorTrackModState(), true);
+        assertTrue(mFieldCache.getOverrideDescriptorTrackModState());
         mFieldCache.setOverrideDescriptorTrackModState(false);
-        assertEquals(mFieldCache.getOverrideDescriptorTrackModState(), false);
+        assertFalse(mFieldCache.getOverrideDescriptorTrackModState());
+        mFieldCache.setOverrideDescriptorTrackModState(true);
+        assertTrue(mFieldCache.getOverrideDescriptorTrackModState());
     }
 
 }

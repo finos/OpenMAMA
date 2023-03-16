@@ -8,9 +8,9 @@
 
 #include <wombat/wSemaphore.h>
 #include <wombat/wtable.h>
-#include <list.h>
+#include <wombat/list.h>
 #include <wombat/mempool.h>
-#include <timers.h>
+#include <wombat/timers.h>
 
 #include <mama/integration/bridge.h>
 
@@ -31,21 +31,12 @@ extern "C" {
   =                Typedefs, structs, enums and globals                   =
   =========================================================================*/
 
-typedef struct baseBridgeIoImpl
-{
-    struct event_base*  mEventBase;
-    wthread_t           mDispatchThread;
-    uint8_t             mActive;
-    uint8_t             mEventsRegistered;
-    wsem_t              mResumeDispatching;
-} baseBridgeIoImpl;
-
 typedef struct baseBridgeClosure_
 {
     // Note that mClosure is first - contains implementation bridge's own closure
     void*                 mImplClosure;
     timerHeap             mTimerHeap;
-    baseBridgeIoImpl      mIoState;
+    void*                 mIoState;
 } baseBridgeClosure;
 
 #if defined(__cplusplus)

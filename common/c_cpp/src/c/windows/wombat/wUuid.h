@@ -22,20 +22,33 @@
 #define WUUID_H__
 
 #include "wombat/port.h"
+#include <rpc.h>
 
-typedef char* wUuid;
+typedef UUID wUuid[1];
+
+#define WUUID_UNPARSE_OUTPUT_LENGTH 37
 
 #if defined(__cplusplus)
 extern "C" {
 #endif
 
-#define wUuid_clear(uuid) uuid = NULL;
+COMMONExpDLL
+void wUuid_generate (wUuid myUuid);
 
 COMMONExpDLL
 void wUuid_generate_time (wUuid myUuid);
 
 COMMONExpDLL
+int wUuid_generate_time_safe (wUuid myUuid);
+
+COMMONExpDLL
+void wUuid_generate_random (wUuid myUuid);
+
+COMMONExpDLL
 void wUuid_unparse (wUuid myUuid, char* out);
+
+COMMONExpDLL
+void wUuid_clear (wUuid myUuid);
 
 #if defined(__cplusplus)
 } /* extern "C" */

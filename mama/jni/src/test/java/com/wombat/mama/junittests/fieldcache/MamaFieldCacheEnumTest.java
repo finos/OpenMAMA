@@ -1,33 +1,19 @@
+package com.wombat.mama.junittests.fieldcache;
 
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
-
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  * This class will test MamaFieldCacheEnum's functions
  */
-public class MamaFieldCacheEnumTest extends TestCase
+public class MamaFieldCacheEnumTest extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -40,22 +26,27 @@ public class MamaFieldCacheEnumTest extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
+
         mFieldCacheEnum = new MamaFieldCacheEnum(101, "example", true);
         mMsg = new MamaMsg();   
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        mMsg.destroy();
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testAddToMessage()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -66,6 +57,7 @@ public class MamaFieldCacheEnumTest extends TestCase
         assertEquals(mMsg.getI32("example", 101), 1);
     }
 
+    @Test
     public void testAddToMessagefieldName()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -76,12 +68,14 @@ public class MamaFieldCacheEnumTest extends TestCase
         assertEquals(mMsg.getI32("example", 101), 1);
     }
 
+    @Test
     public void testCopy()
     {
         MamaFieldCacheField copyCache =  mFieldCacheEnum.copy();
         assertEquals(mFieldCacheEnum.getAsString(), copyCache.getAsString());
     }
 
+    @Test
     public void testApplyMsgField()
     {
         MamaFieldCacheEnum testCacheEnum = new MamaFieldCacheEnum(102, "example2", true);
@@ -93,6 +87,7 @@ public class MamaFieldCacheEnumTest extends TestCase
         assertEquals(mFieldCacheEnum.get(), 1);
     }
 
+    @Test
     public void testApplyFieldCache()
     {
        MamaFieldCacheEnum testField  = new MamaFieldCacheEnum(102, "example2", true);
@@ -102,6 +97,7 @@ public class MamaFieldCacheEnumTest extends TestCase
     }
 
 
+    @Test
     public void testSet()
     {
         MamaFieldCacheEnum testCacheEnum = new MamaFieldCacheEnum(102, "example2", false);
@@ -115,6 +111,7 @@ public class MamaFieldCacheEnumTest extends TestCase
 
     }
 
+    @Test
     public void testSetTrackState()
     {
         assertEquals(mFieldCacheEnum.get(), 0);
@@ -124,6 +121,7 @@ public class MamaFieldCacheEnumTest extends TestCase
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, mFieldCacheEnum.getModState());
     }
 
+    @Test
     public void testSetTrackStateTouched()
     {
     
@@ -136,6 +134,7 @@ public class MamaFieldCacheEnumTest extends TestCase
 
     }
 
+    @Test
     public void testIsEqual()
     {   
         MamaFieldCacheEnum testCacheEnum = new MamaFieldCacheEnum(102, "example2", true);
@@ -146,6 +145,7 @@ public class MamaFieldCacheEnumTest extends TestCase
         assertTrue(testCacheEnum.isEqual(mFieldCacheEnum.get()));
     }
 
+    @Test
     public void testGet()
     {
         assertEquals(mFieldCacheEnum.get(), 0);
@@ -153,6 +153,7 @@ public class MamaFieldCacheEnumTest extends TestCase
         assertEquals(mFieldCacheEnum.get(), 1);
     }
 
+    @Test
     public void testGetAsString()
     {
         assertEquals(mFieldCacheEnum.get(), 0);

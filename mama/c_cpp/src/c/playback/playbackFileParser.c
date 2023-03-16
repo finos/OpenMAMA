@@ -20,7 +20,7 @@
  */
 
 #include "playbackFileParser.h"
-#include "property.h"
+#include "wombat/property.h"
 
 #include <wombat/strutils.h>
 #include <mama/mama.h>

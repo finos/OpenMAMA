@@ -35,9 +35,8 @@
 #include <mama/mamacpp.h>
 #include <mama/MamaMsg.h>
 
+#include "common/MainUnitTest.h"
 #include "common/MamdaUnitTestUtils.h"
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -101,7 +100,7 @@ public:
         mTradeTestFields.myTempSymbol            = recap.getSymbol ();
         mTradeTestFields.myTempTradeCount        = recap.getTradeCount ();
         mTradeTestFields.myTempTradeVolume       = event.getTradeVolume ();
-        mTradeTestFields.myTempTradePrice        = event.getTradePrice().getAsString();
+        mTradeTestFields.myTempTradePrice        = event.getTradePrice();
         mTradeTestFields.myTempTradeEventSeqNum  = event.getEventSeqNum ();
         mTradeTestFields.myTempTradeEventTime    = event.getEventTime().getAsString();
         mTradeTestFields.myTempTradeActivityTime = event.getActivityTime().getAsString();
@@ -161,7 +160,7 @@ public:
         mTradeTestFields.myTempSymbol           = subscription->getSymbol();       
         mTradeTestFields.myTempTradeMsgQualStr  = event.getMsgQual().getAsString();
         mTradeTestFields.myTempTradeMsgQual     = event.getMsgQual().getValue();
-        mTradeTestFields.myTempTradePrice       = event.getTradePrice().getAsString();
+        mTradeTestFields.myTempTradePrice       = event.getTradePrice();
         mTradeTestFields.myTempAccVolume        = recap.getAccVolume();
         mTradeTestFields.myTempTradeEventSeqNum = event.getEventSeqNum();
         mTradeTestFields.myTempTradeEventTime   = event.getEventTime().getAsString();  
@@ -177,7 +176,7 @@ public:
         mTradeTestFields.myTempSymbol           = subscription->getSymbol ();
         mTradeTestFields.myTempTradeMsgQualStr  = event.getMsgQual().getAsString();
         mTradeTestFields.myTempTradeMsgQual     = event.getMsgQual().getValue();
-        mTradeTestFields.myTempTradePrice       = event.getTradePrice().getAsString();
+        mTradeTestFields.myTempTradePrice       = event.getTradePrice();
         mTradeTestFields.myTempAccVolume        = recap.getAccVolume ();
         mTradeTestFields.myTempTradeEventSeqNum = event.getEventSeqNum();
         mTradeTestFields.myTempTradeEventTime   = event.getEventTime().getAsString();            
@@ -212,7 +211,7 @@ protected:
         try
         {
             mamaBridge bridge;
-            bridge = Mama::loadBridge("wmw");
+            bridge = Mama::loadBridge(getMiddleware());
             Mama::open();
             //mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);
             myDictionary = new MamaDictionary;
@@ -222,7 +221,7 @@ protected:
                 return;
             }
             
-            myDictionary->populateFromFile("dictionary.txt");
+            myDictionary->populateFromFile(getDictionary());
             MamdaCommonFields::setDictionary (*myDictionary);
             MamdaTradeFields::reset();
             MamdaTradeFields::setDictionary (*myDictionary);
@@ -238,7 +237,7 @@ protected:
                 FAIL() << "Failed to allocate MamdaTradeListener\n";
                 return;
             }
-            
+
             mySubscription->addMsgListener(myTradeListener);       
         }
         catch(MamaStatus status)
@@ -276,7 +275,8 @@ protected:
 
 TEST_F (MamdaTradeCBTest, TradeRecapCallback)
 {
-    TradeTickerCB* ticker = new TradeTickerCB;      
+    TradeTickerCB* ticker = new TradeTickerCB;
+    initializeTradeControlFields (ticker->mTradeControlFields);
     myTradeListener->addHandler (ticker);   
 
     MamaMsg* newMessage = NULL;
@@ -284,7 +284,7 @@ TEST_F (MamdaTradeCBTest, TradeRecapCallback)
     newMessage->create();
     SetTradeRecapFields(*newMessage);          
     ticker->callMamdaOnMsg(mySubscription, *newMessage);         
-      
+
     EXPECT_STREQ (ticker->mTradeControlFields.mySymbol, ticker->mTradeTestFields.myTempSymbol);
  
     delete ticker;
@@ -296,7 +296,8 @@ TEST_F (MamdaTradeCBTest, TradeRecapCallback)
 
 TEST_F (MamdaTradeCBTest, TradeReportCallback)
 {
-    TradeTickerCB* ticker = new TradeTickerCB;      
+    TradeTickerCB* ticker = new TradeTickerCB;
+    initializeTradeControlFields (ticker->mTradeControlFields);
     myTradeListener->addHandler (ticker);   
 
     MamaMsg* newMessage = NULL;
@@ -312,7 +313,7 @@ TEST_F (MamdaTradeCBTest, TradeReportCallback)
     EXPECT_STREQ (ticker->mTradeControlFields.mySymbol,            ticker->mTradeTestFields.myTempSymbol);
     EXPECT_EQ    (ticker->mTradeControlFields.myTradeCount,        ticker->mTradeTestFields.myTempTradeCount);
     EXPECT_EQ    (ticker->mTradeControlFields.myTradeVolume,       ticker->mTradeTestFields.myTempTradeVolume);
-    EXPECT_STREQ (ticker->mTradeControlFields.myTradePrice,        ticker->mTradeTestFields.myTempTradePrice);
+    EXPECT_EQ    (ticker->mTradeControlFields.myTradePrice,        ticker->mTradeTestFields.myTempTradePrice);
     EXPECT_EQ    (ticker->mTradeControlFields.myTradeEventSeqNum,  ticker->mTradeTestFields.myTempTradeEventSeqNum);
     EXPECT_STREQ (ticker->mTradeControlFields.myTradeEventTime,    ticker->mTradeTestFields.myTempTradeEventTime);
     EXPECT_STREQ (ticker->mTradeControlFields.myTradeActivityTime, ticker->mTradeTestFields.myTempTradeActivityTime);
@@ -331,7 +332,8 @@ TEST_F (MamdaTradeCBTest, TradeReportCallback)
 TEST_F (MamdaTradeCBTest, TradeCancelOrErrorCallback)
 {
     TradeTickerCB* ticker = new TradeTickerCB;      
-    myTradeListener->addHandler (ticker);   
+    myTradeListener->addHandler (ticker);
+    initializeTradeControlFields (ticker->mTradeControlFields);
 
     MamaMsg* newMessage = NULL;
     newMessage = new MamaMsg();
@@ -350,7 +352,8 @@ TEST_F (MamdaTradeCBTest, TradeCancelOrErrorCallback)
 
 TEST_F (MamdaTradeCBTest, TradeCorrectionCallback)
 {
-    TradeTickerCB* ticker = new TradeTickerCB;      
+    TradeTickerCB* ticker = new TradeTickerCB;
+    initializeTradeControlFields (ticker->mTradeControlFields);
     myTradeListener->addHandler (ticker);   
 
     MamaMsg* newMessage = NULL;
@@ -370,7 +373,8 @@ TEST_F (MamdaTradeCBTest, TradeCorrectionCallback)
 
 TEST_F (MamdaTradeCBTest, TradeGapCallback)
 {
-    TradeTickerCB* ticker = new TradeTickerCB;      
+    TradeTickerCB* ticker = new TradeTickerCB;
+    initializeTradeControlFields (ticker->mTradeControlFields);
     myTradeListener->addHandler (ticker);   
 
     MamaMsg* newMessage[2];
@@ -398,7 +402,8 @@ TEST_F (MamdaTradeCBTest, TradeGapCallback)
 
 TEST_F (MamdaTradeCBTest, TradeOutOfSeqCallback)
 {
-    TradeTickerCB* ticker = new TradeTickerCB;      
+    TradeTickerCB* ticker = new TradeTickerCB;
+    initializeTradeControlFields (ticker->mTradeControlFields);
     myTradeListener->addHandler (ticker);   
     myTradeListener->usePosDupAndOutOfSeqHandlers(true);
 
@@ -411,7 +416,7 @@ TEST_F (MamdaTradeCBTest, TradeOutOfSeqCallback)
     EXPECT_STREQ (ticker->mTradeControlFields.mySymbol,           ticker->mTradeTestFields.myTempSymbol);           
     EXPECT_STREQ (ticker->mTradeControlFields.myTradeMsgQualStr,  ticker->mTradeTestFields.myTempTradeMsgQualStr); 
     EXPECT_EQ    (ticker->mTradeControlFields.myTradeMsgQual,     ticker->mTradeTestFields.myTempTradeMsgQual);    
-    EXPECT_STREQ (ticker->mTradeControlFields.myTradePrice,       ticker->mTradeTestFields.myTempTradePrice);    
+    EXPECT_EQ    (ticker->mTradeControlFields.myTradePrice,       ticker->mTradeTestFields.myTempTradePrice);
     EXPECT_EQ    (ticker->mTradeControlFields.myAccVolume,        ticker->mTradeTestFields.myTempAccVolume);    
     EXPECT_EQ    (ticker->mTradeControlFields.myTradeEventSeqNum, ticker->mTradeTestFields.myTempTradeEventSeqNum);
     EXPECT_STREQ (ticker->mTradeControlFields.myTradeEventTime,   ticker->mTradeTestFields.myTempTradeEventTime);    
@@ -425,7 +430,8 @@ TEST_F (MamdaTradeCBTest, TradeOutOfSeqCallback)
 
 TEST_F (MamdaTradeCBTest, TradeClosingCallback)
 {
-    TradeTickerCB* ticker = new TradeTickerCB;      
+    TradeTickerCB* ticker = new TradeTickerCB;
+    initializeTradeControlFields (ticker->mTradeControlFields);
     myTradeListener->addHandler (ticker);   
    
     MamaMsg* newMessage = NULL;
@@ -445,20 +451,22 @@ TEST_F (MamdaTradeCBTest, TradeClosingCallback)
  
 TEST_F (MamdaTradeCBTest, TradePossDupCallback)
 {
-    TradeTickerCB* ticker = new TradeTickerCB;      
+    TradeTickerCB* ticker = new TradeTickerCB;
+    initializeTradeControlFields (ticker->mTradeControlFields);
     myTradeListener->addHandler (ticker);   
     myTradeListener->usePosDupAndOutOfSeqHandlers(true);
 
     MamaMsg* newMessage = NULL;
     newMessage = new MamaMsg();
     newMessage->create();
-    SetTradePossDupFields(*newMessage);          
+    SetTradePossDupFields(*newMessage);
+    std::cout << newMessage->toString() << std::endl;
     ticker->callMamdaOnMsg(mySubscription, *newMessage);    
     
      EXPECT_STREQ (ticker->mTradeControlFields.mySymbol,                 ticker->mTradeTestFields.myTempSymbol);           
      EXPECT_STREQ (ticker->mTradeControlFields.myTradeMsgQualPossDupStr, ticker->mTradeTestFields.myTempTradeMsgQualStr);  
      EXPECT_EQ    (ticker->mTradeControlFields.myTradeMsgQualPossDup,    ticker->mTradeTestFields.myTempTradeMsgQual);    
-     EXPECT_STREQ (ticker->mTradeControlFields.myTradePrice,             ticker->mTradeTestFields.myTempTradePrice);   
+     EXPECT_EQ    (ticker->mTradeControlFields.myTradePrice,             ticker->mTradeTestFields.myTempTradePrice);
      EXPECT_EQ    (ticker->mTradeControlFields.myAccVolume,              ticker->mTradeTestFields.myTempAccVolume);       
      EXPECT_EQ    (ticker->mTradeControlFields.myTradeEventSeqNum,       ticker->mTradeTestFields.myTempTradeEventSeqNum); 
      EXPECT_STREQ (ticker->mTradeControlFields.myTradeEventTime,         ticker->mTradeTestFields.myTempTradeEventTime);     

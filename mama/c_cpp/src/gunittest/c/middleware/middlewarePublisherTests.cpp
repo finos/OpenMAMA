@@ -65,7 +65,7 @@ void MiddlewarePublisherTests::TearDown(void)
 /*===================================================================
  =               mamaPublisher bridge functions                      =
  ====================================================================*/
-TEST_F (MiddlewarePublisherTests, DISABLED_createDestroy)
+TEST_F (MiddlewarePublisherTests, createDestroy)
 /* cores */
 {
     publisherBridge  publisher         = NULL;
@@ -229,55 +229,6 @@ TEST_F (MiddlewarePublisherTests, createInvalidTport)
                                                   parent));
 }
 
-/* TODO: Disabling this these tests temporarily:
- * - Firstly, it's not clear that all the arguments are required for the
- *   publisher
- * - Secondly, the simple NOT_NULL attributes make the rest of the test invalid.
- *   This actually needs to be changed for ALL these tests, but the impact is
- *   clearest here.
- */
-TEST_F (MiddlewarePublisherTests, DISABLED_createInvalidTopic)
-{
-    publisherBridge  result            = (publisherBridge) NOT_NULL;
-    mamaTransport    tport             = (mamaTransport)   NOT_NULL;
-    const char*      source            = (char*)           NOT_NULL;
-    const char*      root              = (char*)           NOT_NULL;
-    mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
-    
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreateByIndex(&result, tport, 0, NULL,
-                                                  source, root, 
-                                                  parent));
-}
-
-TEST_F (MiddlewarePublisherTests, DISABLED_createInvalidSource)
-{
-    publisherBridge  result            = (publisherBridge) NOT_NULL;
-    mamaTransport    tport             = (mamaTransport)   NOT_NULL;
-    const char*      topic             = (char*)           NOT_NULL;
-    const char*      root              = (char*)           NOT_NULL;
-    mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
-    
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreateByIndex(&result, tport, 0, topic,
-                                                  NULL, root, 
-                                                  parent));
-}
-
-TEST_F (MiddlewarePublisherTests, DISABLED_createInvalidRoot)
-{
-    publisherBridge  result            = (publisherBridge) NOT_NULL;
-    mamaTransport    tport             = (mamaTransport)   NOT_NULL;
-    const char*      topic             = (char*)           NOT_NULL;
-    const char*      source            = (char*)           NOT_NULL;
-    mamaPublisher    parent            = (mamaPublisher)   NOT_NULL;
-    
-    ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
-               mBridge->bridgeMamaPublisherCreateByIndex(&result, tport, 0, topic,
-                                                  source, NULL, 
-                                                  parent));
-}
-
 TEST_F (MiddlewarePublisherTests, createInvalidPublisher)
 {
     publisherBridge  result            = (publisherBridge) NOT_NULL;
@@ -296,51 +247,6 @@ TEST_F (MiddlewarePublisherTests, destroyInvalid)
 {
     ASSERT_EQ (MAMA_STATUS_NULL_ARG, 
                mBridge->bridgeMamaPublisherDestroy(NULL));
-}
-
-TEST_F (MiddlewarePublisherTests, DISABLED_send)
-/* cores */
-{
-    publisherBridge  publisher         = NULL;
-    mamaTransport    tport             = NULL;
-    const char*      topic             = "TOPIC";
-    const char*      symbol            = "SYM";
-    const char*      source            = "SOURCE";
-    const char*      root              = "ROOT";
-    mamaPublisher    parent            = NULL;
-    mamaMsg          msg               = NULL;
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_allocate(&tport));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_create(tport, "test_tport", mBridge));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaMsg_create(&msg));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaPublisher_create(&parent, tport, symbol, source, root));
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaPublisherCreateByIndex(&publisher, tport, 0,
-                                                 topic, source, root, 
-                                                 parent));
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaPublisherSend(publisher, msg));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mBridge->bridgeMamaPublisherDestroy(publisher));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaPublisher_destroy(parent));
-    
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaMsg_destroy(msg));
-
-    ASSERT_EQ(MAMA_STATUS_OK,
-              mamaTransport_destroy(tport));
 }
 
 TEST_F (MiddlewarePublisherTests, sendInvalidPublisherBridge)

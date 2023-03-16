@@ -38,12 +38,12 @@
 static string version     ("APPNAMESTR:  Version " VERSIONSTR
                            "  Date " DATESTR "  Build " BUILDSTR);
 
-static const char*  gMiddleware = "wmw";
+static const char*  gMiddleware = "qpid";
 static const char*  gTransport = "test_tport";
 static const char*  gSource = "SRC";
 static const char*  gSymbol = "SYM";
 static const char*  gBadSource = "BADSRC";
-static const char*  gPayload = "wmsg";
+static const char*  gPayload = "qpidmsg";
 
 const char* getMiddleware (void) { return gMiddleware; }
 const char* getTransport (void) { return gTransport; }

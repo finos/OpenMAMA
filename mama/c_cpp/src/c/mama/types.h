@@ -48,6 +48,9 @@ typedef uint32_t        mama_seqnum_t;
 
 #define MAMA_QUANTITY_EPSILON   ((mama_f64_t)0.00000000001)
 
+#define MAMA_BOOL_TRUE 1
+#define MAMA_BOOL_FALSE 0
+
 /**
  * Macro to determine if a quantity is zero
  */
@@ -134,6 +137,9 @@ typedef struct mamaStatImpl_*                   mamaStat;
 typedef struct mamaStatsCollectorImpl_*         mamaStatsCollector;
 typedef struct mamaStatsGeneratorImpl_*         mamaStatsGenerator;
 typedef struct mamaMsgReplyImpl_*               mamaMsgReply;
+typedef struct mamaResourcePoolImpl_*           mamaResourcePool;
+typedef struct mamaQueueGroupImpl_*             mamaQueueGroup;
+typedef struct mamaRegexChannelFilter_*         mamaRegexChannelFilter;
 
 typedef struct mamaVersion {
     int     mMajor;

@@ -441,6 +441,27 @@ namespace Wombat
             return ret;
         }
 
+		/// <summary>
+		/// This function will return the queue in this queue group at the given index specifically.
+		/// </summary>
+        public MamaQueue getQueueByIndex(int index)
+        {
+            // Returns
+            MamaQueue ret = null;
+
+            lock(this)
+            {
+                // Only continue if the array of threads is valid
+                if (mQueueThreads != null)
+                {
+                    // Get the queue at this index and increment.
+                    ret = mQueueThreads[index % mQueueThreads.Length].Queue;
+                }
+            }
+
+            return ret;
+        }
+
         #endregion
     }
 

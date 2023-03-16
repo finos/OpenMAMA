@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 2.8.3)
 project (mamdacpp)
 
 get_target_property(MAMA_INCLUDES mamacpp INCLUDE_DIRECTORIES)
@@ -52,12 +51,14 @@ list(APPEND sources
 	MamdaUncrossPriceInd.cpp
 	MamdaAuctionFields.cpp
 	MamdaAuctionListener.cpp
+	MamdaOrderImbalanceListener.cpp
+	MamdaCurrencyListener.cpp
 	${CMAKE_CURRENT_BINARY_DIR}/version.c
 )
 if(WIN32)
 	list(APPEND sources MamdaLockWin32.cpp)
 else()
-	list(APPEND sources MamdaLock.cpp MamdaOrderImbalanceListener.cpp MamdaCurrencyListener.cpp)
+	list(APPEND sources MamdaLock.cpp)
 endif()
 
 add_library(mamda SHARED ${sources})

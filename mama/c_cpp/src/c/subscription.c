@@ -29,7 +29,7 @@
 #include <subscriptionimpl.h>
 #include <publisherimpl.h>
 #include <wombat/wtable.h>
-#include <list.h>
+#include <wombat/list.h>
 #include <imagerequest.h>
 #include <transportimpl.h>
 #include <msgutils.h>
@@ -43,11 +43,11 @@
 #include "transportimpl.h"
 #include <mama/statfields.h>
 #include <mama/statscollector.h>
-#include "wlock.h"
+#include "wombat/wlock.h"
 #include "wombat/wincompat.h"
 #include "wombat/wInterlocked.h"
 #include "queueimpl.h"
-#include "property.h"
+#include "wombat/property.h"
 #include <mama/entitlement.h>
 #include "entitlementinternal.h"
 extern int gGenerateGlobalStats;
@@ -317,6 +317,76 @@ void MAMACALLTYPE sendCompleteCb (mamaPublisher publisher,
 mama_status mamaSubscription_activate_internal(mamaSubscriptionImpl *impl);
 mama_status mamaSubscription_deactivate_internal(mamaSubscriptionImpl *impl);
 
+/*
+ * Default onMsg callbacks where they are not provided. At least this way
+ * they'll be defined and have a sane default
+ */
+static void MAMACALLTYPE mamaSubscriptionImpl_onCreateDefault(
+    mamaSubscription subscription,
+    void *closure)
+{
+    mama_log (MAMA_LOG_LEVEL_FINE,
+              "Subscription for %s%s created",
+              userSymbolFormatted);
+}
+
+static void MAMACALLTYPE mamaSubscriptionImpl_onErrorDefault (
+    mamaSubscription subscription,
+    mama_status      status,
+    void             *platformError,
+    const char       *subject,
+    void             *closure)
+{
+    mama_log (MAMA_LOG_LEVEL_ERROR,
+              "Error creating subscription for %s%s (%s): %s",
+              userSymbolFormatted,
+              subject,
+              mamaStatus_stringForStatus (status));
+}
+
+static void MAMACALLTYPE mamaSubscriptionImpl_onQualityDefault (
+    mamaSubscription subscription,
+    mamaQuality quality,
+    const char *symbol,
+    short cause,
+    const void *platformInfo,
+    void *closure)
+{
+    mama_log (MAMA_LOG_LEVEL_FINE,
+              "Quality for subscription %s%s (%s) changed to: %s (%d)",
+              userSymbolFormatted,
+              symbol,
+              mamaQuality_convertToString (quality),
+              cause);
+}
+
+static void MAMACALLTYPE mamaSubscriptionImpl_onGapDefault (
+    mamaSubscription subscription,
+    void *closure)
+{
+    mama_log (MAMA_LOG_LEVEL_FINE,
+              "Gap detected for subscription %s%s",
+              userSymbolFormatted);
+}
+
+static void MAMACALLTYPE mamaSubscriptionImpl_onRecapRequestDefault (
+    mamaSubscription subscription,
+    void *closure)
+{
+    mama_log (MAMA_LOG_LEVEL_FINE,
+              "Recap request detected for subscription %s%s",
+              userSymbolFormatted);
+}
+
+static void MAMACALLTYPE mamaSubscriptionImpl_onDestroyDefault (
+    mamaSubscription subscription,
+    void *closure)
+{
+    mama_log (MAMA_LOG_LEVEL_FINE,
+              "Subscription destroyed for subscription %s%s",
+              userSymbolFormatted);
+}
+
 /* end forward declarations */
 
 
@@ -571,13 +641,55 @@ mamaSubscription_setupBasic (
     self->mClosure                      = closure;
     if (callbacks) /* NULL for wild cards */
     {
-        self->mUserCallbacks.onCreate       = callbacks->onCreate;
-        self->mUserCallbacks.onError        = callbacks->onError;
         self->mUserCallbacks.onMsg          = callbacks->onMsg;
-        self->mUserCallbacks.onQuality      = callbacks->onQuality;
-        self->mUserCallbacks.onGap          = callbacks->onGap;
-        self->mUserCallbacks.onRecapRequest = callbacks->onRecapRequest;
-        self->mUserCallbacks.onDestroy      = callbacks->onDestroy;
+        if (NULL != callbacks->onCreate)
+        {
+            self->mUserCallbacks.onCreate = callbacks->onCreate;
+        }
+        else
+        {
+            self->mUserCallbacks.onCreate = mamaSubscriptionImpl_onCreateDefault;
+        }
+        if (NULL != callbacks->onError)
+        {
+            self->mUserCallbacks.onError = callbacks->onError;
+        }
+        else
+        {
+            self->mUserCallbacks.onError = mamaSubscriptionImpl_onErrorDefault;
+        }
+        if (NULL != callbacks->onQuality)
+        {
+            self->mUserCallbacks.onQuality = callbacks->onQuality;
+        }
+        else
+        {
+            self->mUserCallbacks.onQuality = mamaSubscriptionImpl_onQualityDefault;
+        }
+        if (NULL != callbacks->onGap)
+        {
+            self->mUserCallbacks.onGap = callbacks->onGap;
+        }
+        else
+        {
+            self->mUserCallbacks.onGap = mamaSubscriptionImpl_onGapDefault;
+        }
+        if (NULL != callbacks->onRecapRequest)
+        {
+            self->mUserCallbacks.onRecapRequest = callbacks->onRecapRequest;
+        }
+        else
+        {
+            self->mUserCallbacks.onRecapRequest = mamaSubscriptionImpl_onRecapRequestDefault;
+        }
+        if (NULL != callbacks->onDestroy)
+        {
+            self->mUserCallbacks.onDestroy = callbacks->onDestroy;
+        }
+        else
+        {
+            self->mUserCallbacks.onDestroy = mamaSubscriptionImpl_onDestroyDefault;
+        }
     }
     self->mAcceptMultipleInitials       = acceptMultipleInitials;
     self->mTransport                    = transport;
@@ -680,9 +792,30 @@ mamaSubscription_setupBasicWildCard (
     self->mWildCardType = symbol == NULL ? wc_transport : wc_wildcard;
     self->mWcCallbacks = *callbacks;
     /* So these get called when necessary */
-    self->mUserCallbacks.onCreate = callbacks->onCreate;
-    self->mUserCallbacks.onError  = callbacks->onError;
-    self->mUserCallbacks.onDestroy  = callbacks->onDestroy;
+    if (NULL != callbacks->onCreate)
+    {
+        self->mUserCallbacks.onCreate = callbacks->onCreate;
+    }
+    else
+    {
+        self->mUserCallbacks.onCreate = mamaSubscriptionImpl_onCreateDefault;
+    }
+    if (NULL != callbacks->onError)
+    {
+        self->mUserCallbacks.onError = callbacks->onError;
+    }
+    else
+    {
+        self->mUserCallbacks.onError = mamaSubscriptionImpl_onErrorDefault;
+    }
+    if (NULL != callbacks->onDestroy)
+    {
+        self->mUserCallbacks.onDestroy = callbacks->onDestroy;
+    }
+    else
+    {
+        self->mUserCallbacks.onDestroy = mamaSubscriptionImpl_onDestroyDefault;
+    }
     return mamaSubscription_setupBasic (
             subscription,
             transport,
@@ -873,9 +1006,30 @@ mamaSubscription_createBasicWildCard (
     }
     self->mWcCallbacks = *callbacks;
     /* So these get called when necessary */
-    self->mUserCallbacks.onCreate = callbacks->onCreate;
-    self->mUserCallbacks.onError  = callbacks->onError;
-    self->mUserCallbacks.onDestroy  = callbacks->onDestroy;
+    if (NULL != callbacks->onCreate)
+    {
+        self->mUserCallbacks.onCreate = callbacks->onCreate;
+    }
+    else
+    {
+        self->mUserCallbacks.onCreate = mamaSubscriptionImpl_onCreateDefault;
+    }
+    if (NULL != callbacks->onError)
+    {
+        self->mUserCallbacks.onError = callbacks->onError;
+    }
+    else
+    {
+        self->mUserCallbacks.onError = mamaSubscriptionImpl_onErrorDefault;
+    }
+    if (NULL != callbacks->onDestroy)
+    {
+        self->mUserCallbacks.onDestroy = callbacks->onDestroy;
+    }
+    else
+    {
+        self->mUserCallbacks.onDestroy = mamaSubscriptionImpl_onDestroyDefault;
+    }
 
     return mamaSubscription_createBasic (
             subscription,
@@ -1463,6 +1617,13 @@ mamaSubscription_cleanup (mamaSubscription subscription)
     {
         imageRequest_destroy (self->mInitialRequest);
         self->mInitialRequest = NULL;
+    }
+
+    /* Destroy the recap request inbox only if it was never handed over to DQ */
+    if (self->mSubjectContext.mDqContext.mRecapRequest == NULL && self->mRecapRequest != NULL)
+    {
+        imageRequest_destroy (self->mRecapRequest);
+        self->mRecapRequest = NULL;
     }
 
     if (self->mCallback)
@@ -3202,13 +3363,55 @@ mama_status mamaSubscriptionImpl_createBasic(
                     /* The callback structure will be NULL for wildcard subscriptions. */
                     if(NULL != callbacks)
                     {
-                        impl->mUserCallbacks.onCreate       = callbacks->onCreate;
-                        impl->mUserCallbacks.onError        = callbacks->onError;
                         impl->mUserCallbacks.onMsg          = callbacks->onMsg;
-                        impl->mUserCallbacks.onQuality      = callbacks->onQuality;
-                        impl->mUserCallbacks.onGap          = callbacks->onGap;
-                        impl->mUserCallbacks.onRecapRequest = callbacks->onRecapRequest;
-                        impl->mUserCallbacks.onDestroy      = callbacks->onDestroy;
+                        if (NULL != callbacks->onCreate)
+                        {
+                            self->mUserCallbacks.onCreate = callbacks->onCreate;
+                        }
+                        else
+                        {
+                            self->mUserCallbacks.onCreate = mamaSubscriptionImpl_onCreateDefault;
+                        }
+                        if (NULL != callbacks->onError)
+                        {
+                            self->mUserCallbacks.onError = callbacks->onError;
+                        }
+                        else
+                        {
+                            self->mUserCallbacks.onError = mamaSubscriptionImpl_onErrorDefault;
+                        }
+                        if (NULL != callbacks->onQuality)
+                        {
+                            self->mUserCallbacks.onQuality = callbacks->onQuality;
+                        }
+                        else
+                        {
+                            self->mUserCallbacks.onQuality = mamaSubscriptionImpl_onQualityDefault;
+                        }
+                        if (NULL != callbacks->onGap)
+                        {
+                            self->mUserCallbacks.onGap = callbacks->onGap;
+                        }
+                        else
+                        {
+                            self->mUserCallbacks.onGap = mamaSubscriptionImpl_onGapDefault;
+                        }
+                        if (NULL != callbacks->onRecapRequest)
+                        {
+                            self->mUserCallbacks.onRecapRequest = callbacks->onRecapRequest;
+                        }
+                        else
+                        {
+                            self->mUserCallbacks.onRecapRequest = mamaSubscriptionImpl_onRecapRequestDefault;
+                        }
+                        if (NULL != callbacks->onDestroy)
+                        {
+                            self->mUserCallbacks.onDestroy = callbacks->onDestroy;
+                        }
+                        else
+                        {
+                            self->mUserCallbacks.onDestroy = mamaSubscriptionImpl_onDestroyDefault;
+                        }
                     }
 
                     /* The subscription has now been setup and is awaiting final processing by the throttle. */

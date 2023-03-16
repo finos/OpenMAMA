@@ -23,7 +23,7 @@
 #define ThrottleH__
 
 #include "mama/status.h"
-#include "list.h"
+#include "wombat/list.h"
 
 #ifndef OPENMAMA_INTEGRATION
   #define OPENMAMA_INTEGRATION
@@ -149,7 +149,8 @@ void
 wombatThrottle_unlock (wombatThrottle throttle );
 
 /**
- * Set how frequently the throttle runs.
+ * Set how frequently the throttle timer fires. Note that the rate will then
+ * batch up events according to the rate (rather than the interval)
  *
  * @param interval Time in seconds between runs.
  */

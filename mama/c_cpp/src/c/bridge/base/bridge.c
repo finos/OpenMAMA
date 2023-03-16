@@ -5,7 +5,7 @@
 #include <stdint.h>
 #include <mama/mama.h>
 #include <mama/version.h>
-#include <timers.h>
+#include <wombat/timers.h>
 #include <wombat/strutils.h>
 #include <mama/integration/bridge/base.h>
 #include <mama/integration/bridge.h>
@@ -100,7 +100,7 @@ baseBridge_open (mamaBridge bridgeImpl)
     }
 
     /* Start the io thread */
-    baseBridgeMamaIoImpl_start ((void*)closure);
+    baseBridgeMamaIoImpl_start ((void**)&closure->mIoState);
 
     return MAMA_STATUS_OK;
 }
@@ -136,7 +136,10 @@ baseBridge_close (mamaBridge bridgeImpl)
     mamaQueue_destroyTimedWait (defaultEventQueue, QUEUE_SHUTDOWN_TIMEOUT);
 
     /* Stop and destroy the io thread */
-    baseBridgeMamaIoImpl_stop ((void*)closure);
+    baseBridgeMamaIoImpl_stop ((void*)closure->mIoState);
+
+    /* Free the original closure */
+    free (closure);
 
     return status;
 }

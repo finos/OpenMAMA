@@ -31,8 +31,8 @@
 #include "mama/mama.h"
 #include "mama/timer.h"
 #include "throttle.h"
-#include "list.h"
-#include "wlock.h"
+#include "wombat/list.h"
+#include "wombat/wlock.h"
 #include "wombat/wincompat.h"
 
 #define self ((wombatThrottleImpl*)(throttle))
@@ -85,7 +85,8 @@ wombatThrottle_allocate (wombatThrottle *throttle)
     memset (impl, 0, sizeof (wombatThrottleImpl));
 
     impl->mMsgQueue = list_create (sizeof (MsgProperties));
-   
+
+    /* Default to firing the timer 10 times a second */
     impl->mInterval = 0.1;
 
     /* Create the timer lock. */
@@ -186,16 +187,16 @@ wombatThrottle_setRate (wombatThrottle throttle, double rate)
          * have an instant effect. This could be easily changed. */ 
         return;
     }
-
-    if (self->mRate < 10)
-    {
-        self->mInterval = 1.0; /* 1 second */
-        self->mMessagesPerInterval = self->mRate;
-    }
     else
     {
-        self->mMessagesPerInterval = (int) (self->mRate * self->mInterval);
-        if (self->mMessagesPerInterval <= 0) self->mMessagesPerInterval = 1;
+        double messagesPerInterval = self->mRate * self->mInterval;
+        if (messagesPerInterval > 1.0) {
+            self->mMessagesPerInterval = (int) messagesPerInterval;
+        }
+        else
+        {
+            self->mMessagesPerInterval = 1;
+        }
     }
 }
 
@@ -209,7 +210,7 @@ wombatThrottle_dispatch (wombatThrottle throttle,
                          wombatThrottleAction *handle)
 {
     MsgProperties* info = NULL;
-    
+
     if (self->mRate <= 0.0)
     {
         /* throttle is not in use, execute immediately */

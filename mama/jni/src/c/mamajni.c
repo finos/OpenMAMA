@@ -335,6 +335,29 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_start
 
 /*
  * Class:     com_wombat_mama_Mama
+ * Method:    startAll
+ * Signature: (Z)V
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_startAll
+    (JNIEnv* env , jclass class, jboolean isBlocking)
+{
+    mama_status status = MAMA_STATUS_OK;
+    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+
+    if (MAMA_STATUS_OK != (status = mama_startAll(isBlocking == JNI_TRUE)))
+    {
+        utils_buildErrorStringForStatus(
+            errorString,
+            UTILS_MAX_ERROR_STRING_LENGTH,
+            "startAll(): Failed to start Mama.",
+            status);
+
+        utils_throwMamaException(env,errorString);
+    }
+}
+
+/*
+ * Class:     com_wombat_mama_Mama
  * Method:    startBackground
  * Signature: (Lcom/wombat/mama/MamaBridge;Lcom/wombat/mama/MamaStartBackgroundCallback;)V
  */
@@ -387,6 +410,29 @@ JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_stop
                             UTILS_MAX_ERROR_STRING_LENGTH,
                             "stop(): Failed to stop Mama.",
                             status);
+
+        utils_throwMamaException(env,errorString);
+    }
+}
+
+/*
+ * Class:     com_wombat_mama_Mama
+ * Method:    stopAll
+ * Signature: ()V
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_stopAll
+    (JNIEnv* env , jclass class)
+{
+    mama_status status = MAMA_STATUS_OK;
+    char errorString[UTILS_MAX_ERROR_STRING_LENGTH];
+
+    if (MAMA_STATUS_OK != (status = mama_stopAll()))
+    {
+        utils_buildErrorStringForStatus(
+            errorString,
+            UTILS_MAX_ERROR_STRING_LENGTH,
+            "stopAll(): Failed to stop Mama.",
+            status);
 
         utils_throwMamaException(env,errorString);
     }
@@ -941,6 +987,38 @@ JNIEXPORT jstring JNICALL Java_com_wombat_mama_Mama_getProperty
       return NULL;
     else
       return (*env)->NewStringUTF(env, c_retVal);
+}
+
+/*
+ * Class:     com_wombat_mama_Mama
+ * Method:    loadDefaultProperties
+ */
+JNIEXPORT void JNICALL Java_com_wombat_mama_Mama_loadDefaultProperties
+  (JNIEnv* env, jclass class)
+{
+    mama_loadDefaultProperties ();
+}
+
+/*
+ * Class:     com_wombat_mama_Mama
+ * Method:    getPropertiesAsString
+ * Signature: ()Ljava/lang/String;
+ */
+JNIEXPORT jstring JNICALL Java_com_wombat_mama_Mama_getPropertiesAsString
+    (JNIEnv* env, jclass class)
+{
+    const char* c_retVal = mama_getPropertiesAsString();
+    if (NULL == c_retVal)
+    {
+        return NULL;
+    }
+    else
+    {
+        jstring result = (*env)->NewStringUTF (env, c_retVal);
+        // This is our memory to free now
+        free ((void*)c_retVal);
+        return result;
+    }
 }
 
 /*

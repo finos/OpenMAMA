@@ -1,8 +1,26 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.owasp:dependency-check-gradle:8.1.2'
+    }
+}
 
-def mamdaVersion = project.findProperty('mamdaVersion') ?: '6.2.2-1'
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'com.adarshr.test-logger' version '3.2.0'
+    id 'org.owasp.dependencycheck' version "8.1.2"
+}
+
+dependencyCheck {
+    failBuildOnCVSS=5
+    suppressionFile="allow-list.xml"
+}
+
+def mamdaVersion = project.findProperty('mamaVersion') ?: new File("${projectDir.absolutePath}/../../build/VERSION").text.trim() + "-1"
 
 if (!project.hasProperty('legacyNaming')) {
   group = "org.openmama"
@@ -15,19 +33,18 @@ repositories {
 }
 
 dependencies {
-    compile project(':mamajni')
-    testCompile "junit:junit:4.12"  // Or whatever version
+    implementation project(':mama:jni')
+    testImplementation "junit:junit:4.13.2"  // Or whatever version
 }
 
 test {
     systemProperties = [
-            dictionary: System.getProperty('dictionary')
+        dictionary: System.getProperty('dictionary')
     ]
 }
 
 javadoc {
     source = sourceSets.main.allJava
-    classpath = configurations.compile
     title = 'MAMDA (Middleware Agnostic Market Data API) Java specification, v' + mamdaVersion
     options.overview = 'overview.html'
     options.windowTitle = 'MAMDA Java ' + mamdaVersion
@@ -48,51 +65,57 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    sign configurations.archives
-}
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifactId = 'openmamda'
+      from components.java
+      versionMapping {
+          usage('java-api') {
+              fromResolutionOf('runtimeClasspath')
+          }
+          usage('java-runtime') {
+              fromResolutionResult()
+          }
       }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      pom.project {
-        name 'OpenMAMDA'
-        packaging 'jar'
+      pom {
+        name = 'OpenMAMDA'
         // optionally artifactId can be defined here 
-        description 'OpenMAMDA is a high performance Market Data API written on top of OpenMAMA.'
-        url 'https://www.openmama.org'
-
-        scm {
-          connection 'scm:https://github.com/OpenMAMA/OpenMAMA.git'
-          developerConnection 'scm:git@github.com:OpenMAMA/OpenMAMA.git'
-          url 'https://github.com/OpenMAMA/OpenMAMA'
-        }
-
+        description = 'OpenMAMDA is a high performance Market Data API written on top of OpenMAMA.'
+        url = 'https://www.openmama.org'
+  
         licenses {
           license {
-            name 'GNU LESSER GENERAL PUBLIC LICENSE 2.1'
-            url 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html'
+            name = 'GNU LESSER GENERAL PUBLIC LICENSE 2.1'
+            url = 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html'
           }
         }
 
         developers {
           developer {
-            id 'fquinner'
-            name 'Frank Quinn'
-            email 'fquinn@cascadium.io'
+            id = 'fquinner'
+            name = 'Frank Quinn'
+            email = 'fquinn@cascadium.io'
           }
+        }
+
+        scm {
+          connection = 'scm:https://github.com/OpenMAMA/OpenMAMA.git'
+          developerConnection = 'scm:git@github.com:OpenMAMA/OpenMAMA.git'
+          url = 'https://github.com/OpenMAMA/OpenMAMA'
         }
       }
     }
   }
+  repositories {
+    maven {
+      def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+      url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }

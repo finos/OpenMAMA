@@ -1,7 +1,5 @@
-cmake_minimum_required (VERSION 2.8.3)
-
 function (get_component_version COMPONENT)
-	file(STRINGS ${CMAKE_SOURCE_DIR}/VERSION VERSION)
+	file(STRINGS ${CMAKE_BINARY_DIR}/VERSION VERSION)
 
  	 string(REPLACE "." ";" VERSION_LIST ${VERSION})
 

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OPENMAMA_ROOT Condition="$(OPENMAMA_ROOT) == ''">/opt/openmama</OPENMAMA_ROOT>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <RootNamespace>_02_resourcepool</RootNamespace>
+  </PropertyGroup>
+
+  <!-- Only add OPENMAMA_ROOT dll if not part of OpenMAMA build. May move to nuget later. -->
+  <ItemGroup Condition="$(IsInOpenMAMABuild) != 'true'">
+    <Reference Include="OpenMAMA">
+      <HintPath>$(OPENMAMA_ROOT)\bin\MAMA.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+  <!-- If this is part of an OpenMAMA build, include mama project directly instead for latest code -->
+  <ItemGroup Condition="$(IsInOpenMAMABuild) == 'true'">
+    <ProjectReference Include="..\..\..\mama\dotnet\src\cs\mamadotnet.csproj" />
+  </ItemGroup>
+</Project>

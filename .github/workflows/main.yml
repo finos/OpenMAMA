@@ -1,0 +1,188 @@
+name: Build and Deploy
+
+on: [push, pull_request]
+
+jobs:
+  linux-build-finos:  
+    if: github.repository_owner == 'finos' && github.event_name != 'pull_request'
+    name: Linux ${{ matrix.name }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    continue-on-error: true
+    container:
+      image: ${{ matrix.image }}
+      credentials:
+        username: finos
+        password: ${{ secrets.DOCKER_TOKEN }}
+    strategy:
+      matrix:
+        include:
+          - image: finos/openmama:ubi8
+            package_type: rpm
+            distro: rhel
+            distro_version: 8
+            name: RHEL 8
+            package_upload_enabled: true
+          - image: finos/openmama:ubi9
+            package_type: rpm
+            distro: rhel
+            distro_version: 9
+            name: RHEL 9
+            package_upload_enabled: true
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Run Linux build
+      env:
+        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+        PACKAGE_UPLOAD_ENABLED: ${{ matrix.package_upload_enabled }}
+      run: ./devops/build/ci-run.sh
+    - name: Find the package
+      run: 'echo PKG=`find ./dist -name "*.${{ matrix.package_type }}"` >> $GITHUB_ENV'
+    - name: Archive package as an artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: package
+        path: ${{ env.PKG }}
+
+  linux-build:
+    name: Linux ${{ matrix.name }}
+    runs-on: ubuntu-22.04
+    timeout-minutes: 20
+    continue-on-error: true
+    container:
+      image: ${{ matrix.image }}
+    strategy:
+      matrix:
+        include:
+          - image: openmama/openmama-dev:centos-7
+            package_type: rpm
+            distro: el
+            distro_version: 7
+            name: CentOS 7
+            package_upload_enabled: true
+          - image: openmama/openmama-dev:centos-stream8
+            package_type: rpm
+            distro: centos
+            distro_version: 8
+            name: CentOS Stream 8
+            package_upload_enabled: false
+          - image: openmama/openmama-dev:centos-stream9
+            package_type: rpm
+            distro: centos
+            distro_version: 9
+            name: CentOS Stream 9
+            package_upload_enabled: false
+          - image: openmama/openmama-dev:ubuntu-18.04
+            package_type: deb
+            distro: ubuntu
+            distro_version: bionic
+            name: Ubuntu 18.04 LTS
+            package_upload_enabled: true
+          - image: openmama/openmama-dev:ubuntu-20.04
+            package_type: deb
+            distro: ubuntu
+            distro_version: focal
+            name: Ubuntu 20.04 LTS
+            package_upload_enabled: true
+          - image: openmama/openmama-dev:ubuntu-22.04
+            package_type: deb
+            distro: ubuntu
+            distro_version: jammy
+            name: Ubuntu 22.04 LTS
+            package_upload_enabled: true
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Run Linux build
+      env:
+        CLOUDSMITH_API_KEY: ${{ secrets.CLOUDSMITH_API_KEY }}
+        PACKAGE_UPLOAD_ENABLED: ${{ matrix.package_upload_enabled }}
+      run: ./devops/build/ci-run.sh
+    - name: Find the package
+      run: 'echo PKG=`find ./dist -name "*.${{ matrix.package_type }}"` >> $GITHUB_ENV'
+    - name: Archive package as an artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: package
+        path: ${{ env.PKG }}
+
+  windows-build:
+    name: Windows ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    continue-on-error: true
+    strategy:
+      matrix:
+        include:
+          - os: windows-2019
+            platform: x86
+            generator: Visual Studio 16 2019
+            args: -A Win32
+            vcver: msvc2019
+            name: MSVC 2019 x86
+          - os: windows-2019
+            platform: x64
+            generator: Visual Studio 16 2019
+            args: -A x64
+            vcver: msvc2019
+            name: MSVC 2019 x64
+          - os: windows-2022
+            platform: x86
+            generator: Visual Studio 17 2022
+            args: -A Win32
+            vcver: msvc2022
+            name: MSVC 2022 x86
+          - os: windows-2022
+            platform: x64
+            generator: Visual Studio 17 2022
+            args: -A x64
+            vcver: msvc2022
+            name: MSVC 2022 x64
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: Vcpkg Dependencies
+      id: vcpkg-openmama
+      uses: actions/cache@v3
+      with:
+        path: vcpkg-openmama
+        key: vcpkg-deps-${{ matrix.os }}-${{ matrix.platform }}-${{ matrix.vcver }}-${{ hashFiles('devops/build/install-dependencies.bat') }}
+    - name: Populate vcpkg dependency cache (creates directory 'vcpkg-openmama')
+      if: steps.vcpkg-openmama.outputs.cache-hit != 'true'
+      run: ./devops/build/install-dependencies.bat
+      env:
+        PLATFORM: ${{ matrix.platform }}
+    - name: Run Windows Build
+      run: ./devops/build/ci-run.bat
+      env:
+        PLATFORM: ${{ matrix.platform }}
+        GENERATOR: ${{ matrix.generator }}
+        EXTRA_ARGS: ${{ matrix.args }}
+        VCVER: ${{ matrix.vcver }}
+    - uses: actions/upload-artifact@v3
+      with:
+        name: package
+        path: '*.zip'
+
+  macos-build:
+    name: MacOS
+    runs-on: macos-latest
+    timeout-minutes: 60
+    continue-on-error: true
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - name: MacOS Build
+      run: ./devops/build/ci-run.macos.sh
+    - uses: actions/upload-artifact@v3
+      with:
+        name: package
+        path: '*.zip'

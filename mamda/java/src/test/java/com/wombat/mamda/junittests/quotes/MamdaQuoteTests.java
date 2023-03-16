@@ -43,10 +43,10 @@ public class MamdaQuoteTests extends TestCase
     private MamdaQuoteListener           mQuoteListener          = null;
     private MamaBridge                   bridge                  = null;
     private MamaDictionary               mDictionary             = null;
-    private QuoteTickerCB                ticker                  = null;      
+    private QuoteTestHandlerCB           ticker                  = null;
     private MamaMsg                      mMsg                    = null;        
    
-    private class QuoteTickerCB implements  MamdaQuoteHandler,
+    private class QuoteTestHandlerCB implements  MamdaQuoteHandler,
                                             MamdaErrorListener,
                                             MamdaStaleListener
     {  
@@ -150,7 +150,7 @@ public class MamdaQuoteTests extends TestCase
         
             mSubscription.addMsgListener(mQuoteListener);
 
-            ticker = new QuoteTickerCB();      
+            ticker = new QuoteTestHandlerCB();      
             mQuoteListener.addHandler (ticker);   
         }
         catch (Exception e)

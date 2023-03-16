@@ -1,11 +1,3 @@
-if (NOT WIN32)
-    include(FindUUID)
-    find_package(UUID REQUIRED)
-endif()
-
-include(FindLibevent)
-find_package(Libevent REQUIRED)
-
 string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
 
 include_directories(${LIBEVENT_INCLUDE_DIRS})
@@ -51,7 +43,6 @@ elseif(UNIX)
     target_link_libraries(mamabaseimpl
                           wombatcommon
                           mama
-                          ${LIBEVENT_LIBRARIES}
-                          ${UUID_LIBRARIES})
+                          ${LIBEVENT_LIBRARIES})
     install(TARGETS mamabaseimpl DESTINATION lib)
 endif()

@@ -29,7 +29,7 @@
 #include <wombat/wtable.h>
 #include <wombat/port.h>
 #include <mama/integration/endpointpool.h>
-#include <wlock.h>
+#include <wombat/wlock.h>
 
 
 /*=========================================================================
@@ -129,6 +129,19 @@ endpointPoolImpl_destroySubTable        (wtable_t           table,
                                          const char*        key,
                                          void*              closure);
 
+/**
+ * Trigger callback router for sub tables
+ * @param table   The sub table
+ * @param data    The data element in the sub table
+ * @param key     The key pointing to this data element
+ * @param closure The closure passed to the wtable walker
+ */
+void
+endpointPoolImpl_triggerEndpointDestroyCb (wtable_t     table,
+                                           void*        data,
+                                           const        char* key,
+                                           void*        closure);
+
 /*=========================================================================
   =               Public interface implementation functions               =
   =========================================================================*/
@@ -209,7 +222,7 @@ endpointPool_destroyWithCallback (endpointPool_t endpoints, endpointDestroyCb ca
         /* Destroy each sub table in this container (topic) */
         wtable_for_each (impl->mContainer,
                          endpointPoolImpl_destroySubTable,
-                         *((void**) &callback));
+                         (void*) &callback);
         /* Free the strdup-ed keys still held by the wtable */
         wtable_free_all_xdata (impl->mContainer);
         /* Finally, destroy the wtable */
@@ -483,10 +496,9 @@ endpointPool_getEndpointByIdentifiers   (endpointPool_t     endpoints,
     endpointPoolImpl*       impl             = (endpointPoolImpl*) endpoints;
     wtable_t                registeredTable  = NULL;
     endpoint_t              existingEndpoint = NULL;
+    mama_status status;
 
     wlock_lock(impl->mLock);
-
-    mama_status status;
 
     /* Get the wtable representing the endpoints associated with this topic */
     registeredTable = wtable_lookup (impl->mContainer, topic);
@@ -522,6 +534,7 @@ endpointPoolImpl_extendBuffer (endpointPoolImpl* impl, size_t size)
 {
     size_t  newSize     = 0;
     void*   newBuffer   = NULL;
+    mama_status status;
 
     if (NULL == impl)
     {
@@ -542,7 +555,6 @@ endpointPoolImpl_extendBuffer (endpointPoolImpl* impl, size_t size)
     }
 
     /* Reallocate memory as required */
-    mama_status status;
     newBuffer = realloc (impl->mBuffer, newSize);
     if (NULL == newBuffer)
     {
@@ -607,6 +619,18 @@ endpointPoolImpl_checkEndpointExists (wtable_t     table,
     }
 }
 
+void
+endpointPoolImpl_triggerEndpointDestroyCb (wtable_t     table,
+                                           void*        data,
+                                           const        char* key,
+                                           void*        closure)
+{
+    endpointDestroyCb* callback = (endpointDestroyCb*) closure;
+    if (NULL != data) {
+        (*callback)(data);
+    }
+}
+
 // NOTE: lock acquired in caller
 void
 endpointPoolImpl_destroySubTable (wtable_t     table,
@@ -618,7 +642,7 @@ endpointPoolImpl_destroySubTable (wtable_t     table,
     {
         /* Destroy each sub table in this container (topic) */
         wtable_for_each ((wtable_t)data,
-                         endpointPoolImpl_destroySubTable,
+                         endpointPoolImpl_triggerEndpointDestroyCb,
                          closure);
     }
 

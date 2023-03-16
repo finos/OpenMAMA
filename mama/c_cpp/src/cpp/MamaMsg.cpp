@@ -2037,7 +2037,8 @@ void MamaMsg::method (const MamaFieldDescriptor* field, fType value)   \
 
     const char* MamaMsg::toJsonString (const MamaDictionary*  dictionary) const
     {
-        mString = mamaMsg_toJsonStringWithDictionary (mMsg, dictionary->getDictC());
+        mamaDictionary cDictionary = dictionary == nullptr ? nullptr : dictionary->getDictC();
+        mString = mamaMsg_toJsonStringWithDictionary (mMsg, cDictionary);
         return mString;
     }
 

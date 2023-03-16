@@ -183,6 +183,7 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
     baseMsgType         type            = BASE_MSG_PUB_SUB;
     pn_bytes_t          prop;
     pn_atom_t           firstAtom;
+    int                 found = 0;
 
     if (NULL == bridgeMessage || NULL == protonMessage)
     {
@@ -263,7 +264,6 @@ qpidBridgeMsgCodec_unpack (msgBridge        bridgeMessage,
     pn_data_get_map (properties);
     pn_data_enter (properties);
 
-    int found = 0;
     found = pn_data_lookup (properties,QPID_KEY_MSGTYPE);
     if (found)
     {

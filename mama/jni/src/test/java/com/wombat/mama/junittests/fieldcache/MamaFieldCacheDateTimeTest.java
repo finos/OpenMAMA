@@ -1,34 +1,18 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
+package com.wombat.mama.junittests.fieldcache;
 
-
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
-import java.util.TimeZone;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
  * This class will test MamaFieldCacheDateTime's functions
  */
-public class MamaFieldCacheDateTimeTest extends TestCase
+public class MamaFieldCacheDateTimeTest extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -44,26 +28,30 @@ public class MamaFieldCacheDateTimeTest extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
+
         mFieldCacheDateTime = new MamaFieldCacheDateTime(101, "example", true);
         mdateTime = new MamaDateTime();
-        mtimeZone = new MamaTimeZone ();
-        mtimeZone = mtimeZone.utc();
+        mtimeZone = MamaTimeZone.utc();
         mdateTime.setTime(9,0,0,0L, MamaDateTimePrecision.PREC_SECONDS, mtimeZone);
         mMsg = new MamaMsg(); 
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        mMsg.destroy();
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testAddToMessage()
     {
         mFieldCacheDateTime.set(mdateTime);
@@ -73,6 +61,7 @@ public class MamaFieldCacheDateTimeTest extends TestCase
         assertEquals(mMsg.getDateTime("example", 101).getAsString(), "09:00:00");
     }
 
+    @Test
     public void testAddToMessagefieldName()
     {
         mFieldCacheDateTime.set(mdateTime);
@@ -82,6 +71,7 @@ public class MamaFieldCacheDateTimeTest extends TestCase
         assertEquals(mMsg.getDateTime("example", 101).getAsString(), "09:00:00");
     }
 
+    @Test
     public void testCopy()
     {
         mFieldCacheDateTime.set(mdateTime);
@@ -89,6 +79,7 @@ public class MamaFieldCacheDateTimeTest extends TestCase
         assertEquals(mFieldCacheDateTime.getAsString(), copyCache.getAsString());
     }
 
+    @Test
     public void testApplyMsgField()
     {
         MamaFieldCacheDateTime testCacheDateTime = new MamaFieldCacheDateTime(102, "example2", true);
@@ -102,6 +93,7 @@ public class MamaFieldCacheDateTimeTest extends TestCase
         assertEquals(mFieldCacheDateTime.get().getAsString(), tenAM);
     }
 
+    @Test
     public void testApplyFieldCache()
     {
        MamaFieldCacheDateTime testField  = new MamaFieldCacheDateTime(102, "example2", true);
@@ -111,10 +103,11 @@ public class MamaFieldCacheDateTimeTest extends TestCase
     }
 
 
+    @Test
     public void testSet()
     {
         MamaFieldCacheDateTime testCacheDateTime = new MamaFieldCacheDateTime(102, "example2", false);
-        assertEquals(testCacheDateTime.get(), null);
+        assertNull(testCacheDateTime.get());
         testCacheDateTime.set(mdateTime);
         //set without track state
         assertEquals(testCacheDateTime.get().getAsString(), nineAM);
@@ -122,18 +115,20 @@ public class MamaFieldCacheDateTimeTest extends TestCase
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, testCacheDateTime.getModState());
     }
 
+    @Test
     public void testSetTrackState()
     {
-        assertEquals(mFieldCacheDateTime.get(), null);
+        assertNull(mFieldCacheDateTime.get());
         mFieldCacheDateTime.set(mdateTime);
         //set with track state
         assertEquals(mFieldCacheDateTime.get().getAsString(), nineAM);
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, mFieldCacheDateTime.getModState());
     }
 
+    @Test
     public void testSetTrackStateTouched()
     {
-        assertEquals(mFieldCacheDateTime.get(), null);
+        assertNull(mFieldCacheDateTime.get());
         mFieldCacheDateTime.set(mdateTime);
         mFieldCacheDateTime.set(mdateTime);
         //set with track state
@@ -142,6 +137,7 @@ public class MamaFieldCacheDateTimeTest extends TestCase
 
     }
 
+    @Test
     public void testIsEqual()
     {   
         MamaFieldCacheDateTime testCacheDateTime = new MamaFieldCacheDateTime(102, "example2", true);
@@ -152,16 +148,18 @@ public class MamaFieldCacheDateTimeTest extends TestCase
         assertTrue(testCacheDateTime.isEqual(mFieldCacheDateTime.get()));
     }
 
+    @Test
     public void testGet()
     {
-        assertEquals(mFieldCacheDateTime.get(), null);
+        assertNull(mFieldCacheDateTime.get());
         mFieldCacheDateTime.set(mdateTime);
         assertEquals(mFieldCacheDateTime.get().getAsString(), nineAM);
     }
 
+    @Test
     public void testGetAsString()
     {
-        assertEquals(mFieldCacheDateTime.get(), null);
+        assertNull(mFieldCacheDateTime.get());
         assertEquals("null", mFieldCacheDateTime.getAsString());
         mFieldCacheDateTime.set(mdateTime);
         assertEquals(mFieldCacheDateTime.get().getAsString(), nineAM);

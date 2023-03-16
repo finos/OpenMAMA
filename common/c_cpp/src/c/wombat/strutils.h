@@ -168,6 +168,12 @@ int strToVersionInfo(const char* s, versionInfo* version);
 COMMONExpDLL
 char* strReplaceEnvironmentVariable(const char* value);
 
+/**
+ * Portable implementation of strsep which is public domain taken from
+ * https://unixpapa.com/incnote/string.html
+ */
+COMMONExpDLL char* wstrsep (char** sp, char* sep);
+
 #if defined(__cplusplus)
 }
 #endif

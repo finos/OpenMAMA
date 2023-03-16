@@ -53,7 +53,7 @@
         - rsync
         - dotnet-sdk-2.1
         - dotnet-sdk-3.1
-      enablerepo: PowerTools
+      enablerepo: powertools
   - name: Installing prerequisite Ruby Gems
     gem:
       name: fpm
@@ -142,12 +142,14 @@
       state: started
       enabled: yes
       daemon_reload: yes
+    when: ansible_virtualization_type != 'docker'
   - name: Enabling crond
     systemd:
       name: crond
       state: started
       enabled: yes
       daemon_reload: yes
+    when: ansible_virtualization_type != 'docker'
   - name: Setting up ldconfig
     copy:
       src: openmama.ld.so.conf

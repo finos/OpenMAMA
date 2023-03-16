@@ -33,15 +33,15 @@
 #include <mama/MamaDictionary.h>
 #include <mama/mamacpp.h>
 
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
+#include "common/MainUnitTest.h"
 #include <wombat/wMessageStats.h>
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 #include <cstdlib>
+#include <list>
 #include <sstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 template <class T>
 inline std::string to_String (const T& t)
@@ -53,41 +53,45 @@ inline std::string to_String (const T& t)
   
 using namespace Wombat;
 
-class MamdaBookTest : public ::testing::Test
+class MamdaOrderBookEntryTests : public ::testing::Test
 {
 protected:
-	MamdaBookTest () {}
-	virtual ~MamdaBookTest () {}
-  
-	virtual void SetUp()
-	{
-		mLevel = new MamdaOrderBookPriceLevel();
-        mBook  = new MamdaOrderBook();
-        
-        mLevel->setOrderBook(mBook);
-	}
-  
-	virtual void TearDown()
-	{
-		if (mLevel)
-		{
-		delete mLevel;
-		mLevel = NULL;
-		}
-		
-        if (mBook)
-        {
-        delete mBook;
-        mBook = NULL;
-        }
-	}
-	MamdaOrderBookPriceLevel*   mLevel;
+    MamdaOrderBookEntryTests ();
+    ~MamdaOrderBookEntryTests () override {}
+    void SetUp() override;
+    void TearDown() override;
+    MamdaOrderBookPriceLevel*   mLevel;
     MamdaOrderBook*             mBook;
 };
 
-TEST_F (MamdaBookTest, AddEntryTest)
+MamdaOrderBookEntryTests::MamdaOrderBookEntryTests() {
+    mLevel = NULL;
+}
+
+void MamdaOrderBookEntryTests::SetUp()
 {
-	printf("\n\n");
+    mLevel = new MamdaOrderBookPriceLevel();
+    mBook  = new MamdaOrderBook();
+    mLevel->setOrderBook(mBook);
+}
+
+void MamdaOrderBookEntryTests::TearDown()
+{
+    if (mLevel)
+    {
+        delete mLevel;
+        mLevel = NULL;
+    }
+
+    if (mBook)
+    {
+        delete mBook;
+        mBook = NULL;
+    }
+}
+
+TEST_F (MamdaOrderBookEntryTests, AddEntryTest)
+{
 	MamdaOrderBookEntry* mEntry = new MamdaOrderBookEntry;
 	mEntry->setId("TEST");
 	mLevel->addEntry(mEntry);
@@ -95,12 +99,10 @@ TEST_F (MamdaBookTest, AddEntryTest)
 	EXPECT_EQ(1,mLevel->getNumEntries());
 	EXPECT_EQ(1,mLevel->getNumEntriesTotal());
 	mLevel->clear();
-
 }
 
-TEST_F (MamdaBookTest, FindOrCreateEntryTest)
+TEST_F (MamdaOrderBookEntryTests, FindOrCreateEntryTest)
 {
-	printf("\n\n");
 	MamdaOrderBookEntry* mEntry = mLevel->findOrCreateEntry("TEST");
 	ASSERT_STREQ ("TEST",(mLevel->findOrCreateEntry("TEST"))->getId());
 	EXPECT_EQ(1,mLevel->getNumEntries());
@@ -109,88 +111,3 @@ TEST_F (MamdaBookTest, FindOrCreateEntryTest)
 
 }
 
-TEST_F (MamdaBookTest, CpuFindOrCreateEntryTest)
-{
-	printf("\n\n");
-	MamdaOrderBookEntry* mEntry = mLevel->findOrCreateEntry("TEST1");
-	START_RECORDING_CPU (100000000);
-	MamdaOrderBookEntry* mEntry = mLevel->findOrCreateEntry("TEST1");
-	STOP_RECORDING_CPU ();
-	mLevel->clear();
-
-}
-
-TEST_F (MamdaBookTest, CpuAddXEntriesTest)
-{
-	printf("\n\n");
-	int numEntries;
-	const char* strNumEntries = Mama::getProperty("AddEntryNumEntries");
-	if (!strNumEntries) 
-    {
-        strNumEntries = "10"; 
-        printf("\n !!!!!!! Error reading \"AddEntryNumEntries\" parameter !!!!!!!\n"); 
-    }
-	numEntries = atoi(strNumEntries);
-
-	const char* searchEntryId = Mama::getProperty("AddEntrySearchId");
-	if (!searchEntryId) 
-    { 
-        searchEntryId = "10"; 
-        printf("\n !!!!!!! Error reading \"AddEntrySearchId\" parameter !!!!!!!\n"); 
-    }
-	
-	for (int i=1; i<=numEntries; i++)
-	{
-	    string id;
-	    id = to_String(i);
-	    string entryId ("TEST");
-	    entryId += id;
-	    MamdaOrderBookEntry* mEntry = new MamdaOrderBookEntry;
-	    mEntry->setId(entryId.c_str());
-	    mLevel->addEntry(mEntry);
-	}
-	EXPECT_EQ(numEntries,mLevel->getNumEntries());
-	EXPECT_EQ(numEntries,mLevel->getNumEntriesTotal());
-	
-	START_RECORDING_CPU (100000000);
-	MamdaOrderBookEntry* mEntry = mLevel->findOrCreateEntry(searchEntryId);
-	STOP_RECORDING_CPU ();
-	mLevel->clear();
-
-}
-
-TEST_F (MamdaBookTest, CpuFindOrCreateXEntriesTest)
-{
-	printf("\n\n");
-	int numEntries;
-	const char* strNumEntries = Mama::getProperty("findOrCreateNumEntries");
-	if (!strNumEntries) 
-    { 
-        strNumEntries = "10"; 
-        printf("\n !!!!!!! Error reading \"findOrCreateNumEntries\" parameter !!!!!!!\n"); 
-    }
-	numEntries = atoi(strNumEntries);
-	
-	const char* searchEntryId = Mama::getProperty("findOrCreateEntrySearchId");
-	if (!searchEntryId) 
-    { 
-        searchEntryId = "10"; 
-        printf("\n !!!!!!! Error reading \"findOrCreateEntrySearchId\" parameter !!!!!!!\n"); 
-    }
-	
-	for (int i=1; i<=numEntries; i++)
-	{
-	    string id = to_String(i);
-	    string entryId ("TEST");
-	    entryId += id;
-	    MamdaOrderBookEntry* mEntry = mLevel->findOrCreateEntry(entryId.c_str());
-	}
-	EXPECT_EQ(numEntries,mLevel->getNumEntries());
-	EXPECT_EQ(numEntries,mLevel->getNumEntriesTotal());
-	
-	START_RECORDING_CPU (100000000);
-	MamdaOrderBookEntry* mEntry = mLevel->findOrCreateEntry(searchEntryId);
-	STOP_RECORDING_CPU ();
-	mLevel->clear();
-	
-}

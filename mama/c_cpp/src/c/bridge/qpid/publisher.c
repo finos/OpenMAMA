@@ -344,8 +344,7 @@ qpidBridgeMamaPublisher_send (publisherBridge publisher, mamaMsg msg)
     }
 
     /* Note the messages don't actually get published until here */
-    err = pn_messenger_send (impl->mTransport->mOutgoing,
-                             QPID_MESSENGER_SEND_TIMEOUT);
+    err = pn_messenger_send (impl->mTransport->mOutgoing, -1);
     if (err && err != PN_TIMEOUT)
     {
         qpidError = PN_MESSENGER_ERROR (impl->mTransport->mOutgoing);
@@ -681,6 +680,7 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
     pn_link_t*      pnLink      = NULL;
     pn_state_t      pnLinkState = PN_STATE_ERR;
     mama_bool_t     linkReady   = 1;
+    char urlCopy[MAMA_MAX_TOTAL_SYMBOL_LEN];
 
     if (NULL == impl || NULL == url)
     {
@@ -689,12 +689,13 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
                   "Null closure or url received.");
         return;
     }
+    strncpy (urlCopy, url, sizeof(urlCopy));
 
     /* Make a copy of the pointer - baseBridgeMamaMsgImpl_pack may modify */
     pnMsg = impl->mQpidRawMsg;
 
     /* Update the address with the current url */
-    baseBridgeMamaMsgImpl_setDestination (impl->mMamaBridgeMsg, url);
+    baseBridgeMamaMsgImpl_setDestination (impl->mMamaBridgeMsg, urlCopy);
 
     /* Pack the provided MAMA message into a proton message */
     qpidBridgeMsgCodec_pack (impl->mMamaBridgeMsg,
@@ -705,7 +706,7 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
      * the first message has already been enqueued for send */
     if (NULL != endpoint && endpoint->mMsgCount > 0)
     {
-        pnLink = pn_messenger_get_link (impl->mTransport->mOutgoing, url, 1);
+        pnLink = pn_messenger_get_link (impl->mTransport->mOutgoing, urlCopy, 1);
         if (NULL != pnLink)
         {
             pnLinkState = pn_link_state (pnLink);
@@ -718,7 +719,7 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
                       "Link last seen as down while sending on topic %s to %s "
                       "[%d] (attempt %d of %d to re-establish).",
                       impl->mSubject,
-                      url,
+                      urlCopy,
                       (int)pnLinkState,
                       endpoint->mErrorCount,
                       QPID_PUBLISHER_RETRIES);
@@ -728,12 +729,15 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
                           "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
                           "Not publishing message for %s to %s: link is down [%d].",
                           impl->mSubject,
-                          url,
+                          urlCopy,
                           (int)pnLinkState);
+                if (NULL != pnLink) {
+                    pn_link_free (pnLink);
+                }
 
                 endpointPool_unregister (impl->mTransport->mPubEndpoints,
                                          impl->mSubject,
-                                         url);
+                                         urlCopy);
                 free (endpoint);
                 linkReady = 0;
             }
@@ -770,13 +774,13 @@ qpidBridgePublisherImpl_enqueueMessageForAddress (mamaMsg              msg,
                       "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
                       "Publishing message for %s to %s.",
                       impl->mSubject,
-                      url);
+                      urlCopy);
         }
     } else {
         mama_log (MAMA_LOG_LEVEL_WARN,
                       "qpidBridgePublisherImpl_enqueueMessageForAddress(): "
                       "Cannot publish message for %s to %s - link not ready.",
                       impl->mSubject,
-                      url);
+                      urlCopy);
     }
 }

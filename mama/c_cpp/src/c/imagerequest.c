@@ -25,14 +25,14 @@
 #include <imagerequest.h>
 #include <throttle.h>
 #include <bridge.h>
-#include <list.h>
+#include <wombat/list.h>
 #include <mama/timer.h>
 #include <mama/subscription.h>
 #include <subscriptionimpl.h>
 #include <assert.h>
 #include "msgutils.h"
-#include "destroyHandle.h"
-#include "wlock.h"
+#include "wombat/destroyHandle.h"
+#include "wombat/wlock.h"
 #include "msgimpl.h"
 #include "inboximpl.h"
 #include "publisherimpl.h"

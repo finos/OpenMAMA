@@ -1,32 +1,18 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
+package com.wombat.mama.junittests.fieldcache;
 
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.*;
 
 /**
  *
  * This class will test MamaFieldCacheField's functions - Implemented through Int32
  */
-public class MamaFieldCacheFieldTest extends TestCase
+public class MamaFieldCacheFieldTest extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -39,60 +25,70 @@ public class MamaFieldCacheFieldTest extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
         mFieldCacheInt32 = new MamaFieldCacheInt32(101, "example", true);
-
         mMsg = new MamaMsg();   
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        mMsg.destroy();
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
-    
+
+    @Test
     public void testSetDescriptor()
     {
         MamaFieldDescriptor desc = new MamaFieldDescriptor(101, (short) 38, "example", null);
         mFieldCacheInt32.setDescriptor(desc);
+
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, mFieldCacheInt32.getModState());
         assertEquals(mFieldCacheInt32.getDescriptor(), desc);
     }
-    
+
+    @Test
     public void testGetType()
     {
         assertEquals(mFieldCacheInt32.getType(), MamaFieldDescriptor.I32);
     }
 
+    @Test
     public void testGetTrackModState()
     {
         assertTrue(mFieldCacheInt32.getTrackModState());
     }
 
+    @Test
     public void testSetTrackModState()
     {
         mFieldCacheInt32.setTrackModState(false);
         assertFalse(mFieldCacheInt32.getTrackModState());
     }
 
+    @Test
     public void testClearModState()
     {
         mFieldCacheInt32.clearModState();
         assertEquals(MamaFieldCacheField.MOD_STATE_NOT_MODIFIED, mFieldCacheInt32.getModState());
     }
 
+    @Test
     public void testIsUnmodified()
     {
         assertFalse(mFieldCacheInt32.isUnmodified());
         mFieldCacheInt32.clearModState();
         assertTrue(mFieldCacheInt32.isUnmodified());
     }
-    
+
+    @Test
     public void testIsModified()
     {
         assertTrue(mFieldCacheInt32.isModified());
@@ -100,6 +96,7 @@ public class MamaFieldCacheFieldTest extends TestCase
         assertFalse(mFieldCacheInt32.isModified());
     }
 
+    @Test
     public void testTouch()
     {
         assertFalse(mFieldCacheInt32.isTouched());

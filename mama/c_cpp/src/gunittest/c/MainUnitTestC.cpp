@@ -40,9 +40,9 @@
 static string version     ("APPNAMESTR:  Version " VERSIONSTR
                            "  Date " DATESTR "  Build " BUILDSTR);
 
-static const char*       gMiddleware = "wmw";
-static const char*       gPayload    = "wmsg";
-static char              gPayloadId  = 'W';
+static const char*       gMiddleware = "qpid";
+static const char*       gPayload    = "qpidmsg";
+static char              gPayloadId  = 'Q';
 static const char*       gTransport  = "tport";
 static gtest_strictness  gStrictness  = DISCRETIONAL;
 static const char*       gSymbol     = "SYM";
@@ -124,7 +124,13 @@ static void parseCommandLine (int argc, char** argv)
         }
         else if (strcmp ("-i", argv[i]) == 0)
         {
-            gPayloadId = argv[i+1][0];
+            const char* payloadIdOrig = argv[i+1];
+            // Support non printable payloads by supporting 0xef etc
+            if (strlen(payloadIdOrig) > 2 && payloadIdOrig[0] == '0' && payloadIdOrig[1] == 'x') {
+                gPayloadId = static_cast<char>(std::stoul(payloadIdOrig + 2, nullptr, 16));
+            } else {
+                gPayloadId = payloadIdOrig[0];
+            }
             i += 2;
         }
         else if (strcmp ("-tport", argv[i]) == 0)

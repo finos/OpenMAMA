@@ -22,7 +22,7 @@
 #include "wombat/port.h"
 #include "wombat/environment.h"
 #include <mama/timezone.h>
-#include <list.h>
+#include <wombat/list.h>
 #include <string.h>
 #include <stdio.h>
 #include <wombat/wincompat.h>
@@ -393,7 +393,10 @@ static void startThread(void)
     int                 status = 0;
 
     /* Start the thread scanning the vector of TimeZones. */
-     sThreadStarted = 1;
+    sThreadStarted = 1;
+
+    /* Initialize the semaphore before creating the thread to avoid race on mamaTimeZone_cleanUp */
+    wsem_init (&sTzSem, 0, 0);
 
     if ((status = wthread_create(&sThread, NULL, updateTimeZones, NULL) != 0))
     {
@@ -419,7 +422,6 @@ static void* updateTimeZones (void* ptr)
     /* Interval is in milliseconds */
     unsigned int    checkInterval = 60000;
 
-    wsem_init (&sTzSem, 0, 0);
     /* Until interrupted */
     do
     {

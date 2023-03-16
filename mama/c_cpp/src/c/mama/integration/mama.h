@@ -14,7 +14,7 @@
 #define OPENMAMA_INTEGRATION_MAMA_H__
 
 #include <wombat/wtable.h>
-#include <property.h>
+#include <wombat/property.h>
 #include <mama/mama.h>
 #include <mama/version.h>
 
@@ -23,7 +23,7 @@ extern "C"
 {
 #endif
 
-#define MAMA_PAYLOAD_MAX        CHAR_MAX
+#define MAMA_PAYLOAD_MAX        UCHAR_MAX
 #define MAMA_MAX_MIDDLEWARES    CHAR_MAX
 #define MAMA_MAX_ENTITLEMENTS   CHAR_MAX
 #define MAX_ENTITLEMENT_BRIDGES CHAR_MAX
@@ -236,6 +236,52 @@ MAMAExpDLL
 mama_status
 mamaImpl_setDefaultEventQueue (mamaBridge bridgeImpl,
                                mamaQueue defaultQueue);
+
+/**
+ * This is a local function for parsing long configuration parameters from the
+ * MAMA properties object, and supports minimum and maximum limits as well
+ * as default values to reduce the amount of code duplicated throughout.
+ *
+ * @param defaultVal This is the default value to use if the parameter does not
+ *                   exist in the configuration file
+ * @param minimum    If the parameter obtained from the configuration file is
+ *                   less than this value, this value will be used.
+ * @param maximum    If the parameter obtained from the configuration file is
+ *                   greater than this value, this value will be used.
+ * @param format     This is the format string which is used to build the
+ *                   name of the configuration parameter which is to be parsed.
+ * @param ...        This is the variable list of arguments to be used along
+ *                   with the format string.
+ *
+ * @return long int containing the parameter value, default, minimum or maximum.
+ */
+MAMAExpDLL
+extern long int
+mamaImpl_getParameterAsLong (
+    long defaultVal,
+    long minimum,
+    long maximum,
+    const char* format, ...);
+
+/**
+ * This is a local function for parsing string configuration parameters from the
+ * MAMA properties object, and supports default values. This function should
+ * be used where the configuration parameter itself can be variable.
+ *
+ * @param defaultVal This is the default value to use if the parameter does not
+ *                   exist in the configuration file
+ * @param format     This is the format string which is used to build the
+ *                   name of the configuration parameter which is to be parsed.
+ * @param ...        This is the variable list of arguments to be used along
+ *                   with the format string.
+ *
+ * @return const char* containing the parameter value or the default.
+ */
+MAMAExpDLL
+extern const char*
+mamaImpl_getParameter (
+    const char* defaultVal,
+    const char* format, ...);
 
 #if defined (__cplusplus)
 }

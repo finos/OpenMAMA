@@ -14,7 +14,7 @@
 #define OPENMAMA_INTEGRATION_TYPES_H__
 
 #include <mama/mama.h>
-#include "list.h"
+#include <wombat/list.h>
 
 #if defined (__cplusplus)
 extern "C"

@@ -28,59 +28,62 @@
 #include <mamda/MamdaOrderBookBasicDeltaList.h>
 #include <mamda/MamdaOrderBookEntry.h>
 
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
-
-#include <stdlib.h>
+#include "common/MainUnitTest.h"
+#include <iostream>
+#include <sstream>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <string>
-#include <sstream>
-#include <iostream>
 
 using namespace std;
 
 using namespace Wombat;
 
-class MamdaBookTest : public ::testing::Test
+class MamdaOrderBookPriceLevelTests : public ::testing::Test
 {
 protected:
-	MamdaBookTest () {}
-	virtual ~MamdaBookTest () {}
+	MamdaOrderBookPriceLevelTests () {}
+	virtual ~MamdaOrderBookPriceLevelTests () {}
   
 	virtual void SetUp()
 	{
-		mBook = new MamdaOrderBook();
-		mLevel = new MamdaOrderBookPriceLevel();
-        mLevel1 = new MamdaOrderBookPriceLevel();
-        mDeltaList = new MamdaOrderBookBasicDeltaList();
-        mEntry  = new MamdaOrderBookEntry();
+            mBridge = Mama::loadBridge(getMiddleware());
+            Mama::open();
+
+            mBook = new MamdaOrderBook();
+            mLevel = new MamdaOrderBookPriceLevel();
+            mLevel1 = new MamdaOrderBookPriceLevel();
+            mDeltaList = new MamdaOrderBookBasicDeltaList();
+            mEntry  = new MamdaOrderBookEntry();
 	}
   
 	virtual void TearDown()
 	{
-		if (mLevel)
-		{
-		    delete mLevel;
-		    mLevel = NULL;
-		}
-		
-		if (mBook)
-		{
-		    delete mBook;
-		    mBook = NULL;
-		}
+            if (mLevel)
+            {
+                delete mLevel;
+                mLevel = NULL;
+            }
+
+            if (mBook)
+            {
+                delete mBook;
+                mBook = NULL;
+            }
+            Mama::close();
 	}
 	MamdaOrderBook* mBook;
 	MamdaOrderBookPriceLevel* mLevel;
-    MamdaOrderBookPriceLevel* mLevel1;
-    MamdaOrderBookBasicDeltaList* mDeltaList;
-    MamdaOrderBookEntry*          mEntry;
+        MamdaOrderBookPriceLevel* mLevel1;
+        MamdaOrderBookBasicDeltaList* mDeltaList;
+        MamdaOrderBookEntry*          mEntry;
+        mamaBridge mBridge;
 
 };
 
 /* ************ FUNCTIONALITY TESTS ******************* */
-TEST_F (MamdaBookTest, DoubleFindOrCreateLevelTest)
+TEST_F (MamdaOrderBookPriceLevelTests, DoubleFindOrCreateLevelTest)
 {
 	printf("\n\n");
 	mBook->findOrCreateLevel(100, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
@@ -89,7 +92,7 @@ TEST_F (MamdaBookTest, DoubleFindOrCreateLevelTest)
 	mBook->clear(true);
 }
 
-TEST_F (MamdaBookTest, MamaPriceFindOrCreateLevelTest)
+TEST_F (MamdaOrderBookPriceLevelTests, MamaPriceFindOrCreateLevelTest)
 {
 	printf("\n\n");
 	MamaPrice price;
@@ -100,7 +103,7 @@ TEST_F (MamdaBookTest, MamaPriceFindOrCreateLevelTest)
 	mBook->clear(true);
 }
 
-TEST_F (MamdaBookTest, addEntriesFromLevelTest)
+TEST_F (MamdaOrderBookPriceLevelTests, addEntriesFromLevelTest)
 {
     printf("\n\n");
     mEntry->setId("TEST");
@@ -114,121 +117,3 @@ TEST_F (MamdaBookTest, addEntriesFromLevelTest)
 }
 
 /* ************ END FUNCTIONALITY TESTS ******************* */
-
-/* ************ CPU TESTS ******************* */
-TEST_F (MamdaBookTest, CpuDoubleFindOrCreateLevelTest)
-{
-	printf("\n\n");
-	double dPrice =100;
-	mBook->findOrCreateLevel(dPrice, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);  
-	START_RECORDING_CPU (100000000);
-	mBook->findOrCreateLevel(dPrice, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-	STOP_RECORDING_CPU ();
-	mBook->clear(true);
-}
-
-TEST_F (MamdaBookTest, CpuMamaPriceFindOrCreateLevelTest)
-{
-	printf("\n\n");
-	MamaPrice price;
-	price.setValue(100);
-	mBook->findOrCreateLevel(price, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-	START_RECORDING_CPU (100000000);
-	mBook->findOrCreateLevel(price, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-	STOP_RECORDING_CPU ();
-	mBook->clear(true);
-}
-
-TEST_F (MamdaBookTest, CpuDoubleFindOrCreateXLevelsTest)
-{
-	printf("\n\n");
-	double dPrice =100; double searchPrice; int numLevels;
-	
-	const char* strLevels = Mama::getProperty("findOrCreateNumLevels");
-	if (!strLevels) 
-    { 
-        strLevels = "100"; 
-        printf("\n !!!!!!! Error reading \"findOrCreateNumLevels\" parameter !!!!!!!\n"); 
-    }
-	numLevels = atoi(strLevels);
-	
-	const char* strSearchPrice = Mama::getProperty("searchPrice");
-	if (!strSearchPrice) 
-    { 
-        strSearchPrice = "100.05"; 
-        printf("\n !!!!!!! Error reading \"searchPrice\" parameter !!!!!!!\n"); 
-    }
-	searchPrice = atof(strSearchPrice);
-	  
-	for (int i=1; i<=numLevels; i++)
-	{
-	    mBook->findOrCreateLevel(dPrice, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);  
-	    dPrice+=0.01;
-	}
-	mBook->findOrCreateLevel(10000.0, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    //printf("\n Num of Levels = %d \n", mBook->getTotalNumLevels());
-	
-	START_RECORDING_CPU (100000000);
-	mBook->findOrCreateLevel(dPrice, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-	STOP_RECORDING_CPU ();
-	mBook->clear(true);
-}
-
-TEST_F (MamdaBookTest, CpuMamaPriceFindOrCreateXLevelsTest)
-{
-	printf("\n\n");
-	MamaPrice price; double dPrice = 100;
-	price.setValue(dPrice);
-	double searchPrice; int numLevels;
-	
-	const char* strLevels = Mama::getProperty("findOrCreateNumLevels");
-	if (!strLevels) 
-    { 
-        strLevels = "100"; 
-        printf("\n !!!!!!! Error reading \"findOrCreateNumLevels\" parameter !!!!!!!\n"); 
-    }
-	numLevels = atoi(strLevels);
-	
-	const char* strSearchPrice = Mama::getProperty("searchPrice");
-	if (!strSearchPrice) { strSearchPrice = "100"; printf("\n !!!!!!! Error reading \"searchPrice\" parameter !!!!!!!\n"); }
-	searchPrice = atof(strSearchPrice);
-	
-	MamaPrice searchMamaPrice;
-	searchMamaPrice.setValue(searchPrice);
-	
-	for (int i=1; i<+numLevels; i++)
-	{
-	    mBook->findOrCreateLevel(price, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);  
-	    dPrice+=0.01;
-	    price.setValue(dPrice);
-	}
-	price.setValue(10000.0);
-	mBook->findOrCreateLevel(price, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-    //printf("\n Num of Levels = %d \n", mBook->getTotalNumLevels());
-
-	START_RECORDING_CPU (100000000);
-	mBook->findOrCreateLevel(searchMamaPrice, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-	STOP_RECORDING_CPU ();
-	
-	mBook->clear(true);
-}
-
-/* ************ END CPU TESTS ******************* */
-
-
-/* ************ MEMORY TESTS ******************* */
-TEST_F (MamdaBookTest, MemoryFindOrCreateOneLevelTest)
-{
-	printf("\n\n");
-	START_RECORDING_MEMORY ();
-	for (int i=0;i<1000;i++)
-	{
-	    mBook->findOrCreateLevel(100, MamdaOrderBookPriceLevel::MAMDA_BOOK_SIDE_BID);
-	}
-	STOP_RECORDING_MEMORY ();
-	mBook->clear(true);
-
-}
-
-
-/* ************ END MEMORY TESTS ******************* */

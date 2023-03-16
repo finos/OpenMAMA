@@ -22,8 +22,10 @@
 #ifndef MAMA_CPP_H__
 #define MAMA_CPP_H__
 
-#include <stdio.h>
+#include <cstdio>
 #include <cstring>
+#include <string>
+#include <map>
 
 #include <mama/mama.h>
 #include <mama/MamaBridgeCallback.h>
@@ -374,6 +376,18 @@ public:
     static const char * getProperty (const char* name);
 
     /**
+     * Load in default mama.properties from the default WOMBAT_PATH directory.
+     */
+    static void loadDefaultProperties (void);
+
+    /**
+     * Retrieve all configuration properties from the API.
+     *
+     * @return A key value map of all configuration properties
+     */
+    static std::map<std::string, std::string> getProperties ();
+
+    /**
      * Close MAMA and free all associated resource.
      *
      * MAMA employs a reference count to track multiple
@@ -416,6 +430,15 @@ public:
     static void start (mamaBridge bridgeImpl);
 
     /**
+     * Calls Mama::start for all currently loaded middleware bridges
+     *
+     * This function is thread safe.
+     *
+     * @param[in] isBlocking Whether to start blocking or run in background
+     */
+    static void startAll (bool isBlocking = true);
+
+    /**
      * Start processing MAMA internal events in the background. This
      * method invokes Mama::start () in a separate thread.
      *
@@ -440,7 +463,7 @@ public:
     static void stop (mamaBridge bridgeImpl);
 
 
-     /**
+    /**
      * Stop dispatching on the default event queue for all bridges.
      */
     static void stopAll (void);

@@ -36,9 +36,8 @@
 #include <mamda/MamdaErrorListener.h>
 #include <mamda/MamdaQualityListener.h>
 
+#include "common/MainUnitTest.h"
 #include "common/MamdaUnitTestUtils.h"
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -64,7 +63,7 @@ protected:
         try
         {
             mamaBridge bridge;
-            bridge = Mama::loadBridge("wmw");
+            bridge = Mama::loadBridge(getMiddleware());
             Mama::open();
             //mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);
             mDictionary = new MamaDictionary;
@@ -74,7 +73,7 @@ protected:
                 return;
             }
             
-            mDictionary->populateFromFile("dictionary.txt");
+            mDictionary->populateFromFile(getDictionary());
             MamdaCommonFields::setDictionary (*mDictionary);
             MamdaQuoteFields::reset();
             MamdaQuoteFields::setDictionary (*mDictionary);
@@ -121,7 +120,7 @@ protected:
     MamdaSubscription*      mSubscription;
 };
 
-void callMamdaOnMsg(MamdaSubscription* sub, MamaMsg& msg)
+void callMamdaQlOnMsg(MamdaSubscription* sub, MamaMsg& msg)
 {  
     try
     {   
@@ -156,7 +155,7 @@ TEST_F(MamdaQuoteListenerShortSaleTests, quotelistenerRecapFuncTest)
                         1);
                         
     mMsg->addChar("wShortSaleCircuitBreaker",5248,'A');    
-    callMamdaOnMsg(mSubscription,*mMsg);  
+    callMamdaQlOnMsg(mSubscription,*mMsg);  
     EXPECT_TRUE('A' == mQuoteListener->getShortSaleCircuitBreaker());
     EXPECT_EQ(MODIFIED,mQuoteListener->getShortSaleCircuitBreakerFieldState());   
 }
@@ -172,7 +171,7 @@ TEST_F(MamdaQuoteListenerShortSaleTests, quotelistenerQuoteFuncTest)
                         1);                        
                         
     mMsg->addChar("wShortSaleCircuitBreaker",5248,'A');    
-    callMamdaOnMsg(mSubscription,*mMsg);  
+    callMamdaQlOnMsg(mSubscription,*mMsg);  
     EXPECT_TRUE('A' == mQuoteListener->getShortSaleCircuitBreaker());
     EXPECT_EQ(MODIFIED,mQuoteListener->getShortSaleCircuitBreakerFieldState());          
    

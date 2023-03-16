@@ -23,7 +23,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "lookup2.h"
+#include "wombat/lookup2.h"
 #include "wombat/wtable.h"
 
 #define HASH_INITVAL 1

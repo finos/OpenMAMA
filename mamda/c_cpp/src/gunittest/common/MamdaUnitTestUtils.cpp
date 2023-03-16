@@ -653,7 +653,6 @@ namespace Wombat
         msg.addF64("wBidPrice",237, 143.950000);
         msg.addI64("wBidSize",238, 736);
         msg.addF64("wBidDepth", 232,20);
-        //msg.addPrice("wBidClosePrice",2542,123.23);
         msg.addDateTime("wBidCloseDate",505,val);
         msg.addPrice("wPrevBidClose",443, 123.23);
         msg.addDateTime("wPrevBidCloseDate",434, val);       
@@ -1307,12 +1306,12 @@ namespace Wombat
     {
         quoteControlFields.mySymbol = "SPY";
         quoteControlFields.myQuoteCount = 469136;
-        quoteControlFields.myBidPriceStr   = "143.95";
-        quoteControlFields.myBidClosePriceStr = "999.95";
+        quoteControlFields.myBidPrice          = 143.95;
+        quoteControlFields.myBidClosePrice     = 999.95;
         quoteControlFields.myBidSize  = 736;
         quoteControlFields.myAskSize = 331;
-        quoteControlFields.myAskPriceStr = "143.96";
-        quoteControlFields.myAskClosePriceStr = "2345.96";
+        quoteControlFields.myAskPrice          = 143.96;
+        quoteControlFields.myAskClosePrice     = 2345.96;
         quoteControlFields.myEventSeqNum = 18;
         quoteControlFields.myEventTimeStr = "14:40:33.760";
         quoteControlFields.myQuoteQualStr = "normal";
@@ -1329,7 +1328,7 @@ namespace Wombat
         tradeControlFields.mySymbol = "SPY";      
         tradeControlFields.myTradeCount = 1;
         tradeControlFields.myTradeVolume = 100;
-        tradeControlFields.myTradePrice = "144.058";
+        tradeControlFields.myTradePrice = 144.057500;
         tradeControlFields.myTradeEventSeqNum = 1;
         tradeControlFields.myTradeEventTime = "15:33:43.480";
         tradeControlFields.myTradeActivityTime = "13:20:33.767";

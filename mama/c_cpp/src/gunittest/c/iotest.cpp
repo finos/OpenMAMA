@@ -33,17 +33,17 @@
 
 
 class MamaIoTestC : public ::testing::Test
-{	
+{
 protected:
-    MamaIoTestC();          
-    virtual ~MamaIoTestC(); 
+    MamaIoTestC();
+    virtual ~MamaIoTestC();
 
-    virtual void SetUp();        
-    virtual void TearDown ();    
+    virtual void SetUp();
+    virtual void TearDown ();
 public:
     MamaIoTestC *m_this;
     mamaBridge mBridge;
-    
+
 };
 
 MamaIoTestC::MamaIoTestC()
@@ -55,7 +55,7 @@ MamaIoTestC::~MamaIoTestC()
 }
 
 void MamaIoTestC::SetUp(void)
-{	
+{
     m_this = this;
 
     mama_loadBridge (&mBridge, getMiddleware());
@@ -90,8 +90,9 @@ TEST_F (MamaIoTestC, CreateDestroy)
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaQueue_create (&queue, mBridge));
 
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mamaIo_create (&io, queue, descriptor, onIo, ioType, m_this));
+    mama_status status = mamaIo_create (&io, queue, descriptor, onIo, ioType, m_this);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+    ASSERT_EQ( status, MAMA_STATUS_OK );
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaIo_destroy (io));
@@ -101,8 +102,8 @@ TEST_F (MamaIoTestC, CreateDestroy)
 
 /*  Description:  Create a mamaIo, get it's descriptor then destory it.
  *
- *  Expected Results:MAMA_STATUS_OK, descriptor=testDescriptor 
- *                  
+ *  Expected Results:MAMA_STATUS_OK, descriptor=testDescriptor
+ *
  */
 TEST_F (MamaIoTestC, getDescriptor)
 {
@@ -115,12 +116,13 @@ TEST_F (MamaIoTestC, getDescriptor)
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaQueue_create (&queue, mBridge));
 
-    ASSERT_EQ (MAMA_STATUS_OK,
-               mamaIo_create (&io, queue, descriptor, onIo, ioType, m_this));
+    mama_status status = mamaIo_create (&io, queue, descriptor, onIo, ioType, m_this);
+    CHECK_NON_IMPLEMENTED_OPTIONAL(status);
+    ASSERT_EQ( status, MAMA_STATUS_OK );
 
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaIo_getDescriptor (io, &testDescriptor));
-    
+
     ASSERT_EQ (MAMA_STATUS_OK,
                mamaIo_destroy (io));
 

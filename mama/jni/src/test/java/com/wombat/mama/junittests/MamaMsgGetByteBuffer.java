@@ -21,15 +21,17 @@
 
 package com.wombat.mama.junittests;
 
-import junit.framework.TestCase;
 import com.wombat.mama.*;
 import com.wombat.common.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
  * This class will test the MamaMsg.getByteBuffer() method.
  */
-public class MamaMsgGetByteBuffer extends TestCase
+public class MamaMsgGetByteBuffer extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -51,14 +53,13 @@ public class MamaMsgGetByteBuffer extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
-         // Load the bridge
-        mBridge = Mama.loadBridge(Main.GetBridgeName());
-        Mama.open();
+        // Load the bridge
+        super.setUp();
 
-        // Create the message
+        // Create the second message
         mMessage = new MamaMsg();
 
         // Create the second message
@@ -68,25 +69,25 @@ public class MamaMsgGetByteBuffer extends TestCase
         mSecondMessage.addString(null, 1, mStringData);
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
         // Destroy the message
         mMessage.destroy();
-        mMessage = null;
-
-        // Destroy the second message
         mSecondMessage.destroy();
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testNullArguments()
     {
         try
         {
+            // Create the message
             mMessage.createFromByteBuffer(null);
         }
 
@@ -95,6 +96,7 @@ public class MamaMsgGetByteBuffer extends TestCase
         }
     }
 
+    @Test
     public void createByteBufferTwice()
     {
         // Get the byte buffer from the second message
@@ -113,6 +115,7 @@ public class MamaMsgGetByteBuffer extends TestCase
         }
     }
 
+    @Test
     public void testPair()
     {
         // Get the byte buffer from the second message

@@ -586,13 +586,11 @@ protected:
          : mOut   (NULL)
          , mField (NULL)  
     {
-        mamaMsg_create (&mIn);
         mamaMsg_create (&mUpdate);
     }
 
     ~FieldMsgTestsC()
     {
-        mamaMsg_destroy(mIn);
         mamaMsg_destroy(mUpdate);
     }
 
@@ -617,10 +615,12 @@ TEST_F (FieldMsgTestsC, updateSubMsgInValidMsg)
 // Get
 TEST_F (FieldMsgTestsC, getMsgValid)
 {
+    mamaMsg_create (&mIn);
     ASSERT_EQ (mamaMsg_addString(mIn, "Gary", 10101, "Unit Testing getMsg"), MAMA_STATUS_OK);
     ASSERT_EQ (mamaMsg_addMsg(mMsg, "Gary", 10101, mIn), MAMA_STATUS_OK);
     ASSERT_EQ (mamaMsg_getField(mMsg, "Gary", 10101, &mField), MAMA_STATUS_OK);
     ASSERT_EQ (mamaMsgField_getMsg(mField, &mOut), MAMA_STATUS_OK);
+    mamaMsg_destroy(mIn);
 }
 
 TEST_F (FieldMsgTestsC, getMsgInValidField)

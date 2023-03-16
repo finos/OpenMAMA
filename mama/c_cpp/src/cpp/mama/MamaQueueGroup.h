@@ -59,6 +59,13 @@ namespace Wombat
         virtual MamaQueue* getNextQueue ();
 
         /**
+         * Return the requested Queue based on the given index, or NULL if it
+         * is not a valid index.
+         * @return pointer to queue object
+         */
+        MamaQueue* getQueueByIndex (int index);
+
+        /**
          * Return the number of MamaQueues currently managed by this queue group.
          */
         virtual int getNumberOfQueues ();

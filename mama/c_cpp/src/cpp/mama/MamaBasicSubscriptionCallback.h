@@ -23,6 +23,7 @@
 #define MAMA_BASIC_SUBSCRIPTION_CALLBACK_CPP_H__
 
 #include "mama/mamacpp.h"
+#include "mama/MamaStatus.h"
 
 namespace Wombat 
 {
@@ -36,6 +37,8 @@ namespace Wombat
  * @see MamaSubscription
  * @author mls
  */
+class MamaBasicSubscription;
+
 class MAMACPPExpDLL MamaBasicSubscriptionCallback
 {
 public:

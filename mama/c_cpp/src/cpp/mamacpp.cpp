@@ -33,6 +33,7 @@
 #include <mama/queue.h>
 #include <mama/MamaQueue.h>
 #include <mama/MamaReservedFields.h>
+#include <map>
 
 namespace Wombat
 {
@@ -229,6 +230,31 @@ namespace Wombat
         return mama_getProperty (name);
     }
 
+    void Mama::loadDefaultProperties (void) {
+        mama_loadDefaultProperties ();
+    }
+
+    extern "C"
+    {
+        static void mamaImpl_propertyCollectorCb (const char* name,
+                                                  const char* value,
+                                                  void*       closure)
+        {
+            auto* properties =
+                reinterpret_cast<std::map<std::string, std::string>*> (closure);
+            (*properties)[std::string (name)] = std::string (value);
+        }
+    }
+
+    std::map<std::string, std::string> Mama::getProperties ()
+    {
+        std::map<std::string, std::string> properties;
+        properties_ForEach (mamaInternal_getProperties(),
+                            mamaImpl_propertyCollectorCb,
+                            (void*)&properties);
+        return properties;
+    }
+
     void Mama::close ()
     {
         closeCount ();
@@ -261,6 +287,11 @@ namespace Wombat
         mamaTry (mama_start (bridgeImpl));
     }
 
+    void Mama::startAll (bool isBlocking)
+    {
+        mamaTry (mama_startAll((mama_bool_t)isBlocking));
+    }
+
     extern "C"
     {
         void MAMACALLTYPE stopCb (mama_status status, mamaBridge, void* closure)
@@ -280,7 +311,7 @@ namespace Wombat
         mamaTry (mama_stop (bridgeImpl));
     }
 
-    void Mama::stopAll (void)
+    void Mama::stopAll ()
     {
         mamaTry (mama_stopAll ());
     }

@@ -1,8 +1,26 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'signing'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.owasp:dependency-check-gradle:8.1.2'
+    }
+}
 
-def mamaVersion = project.findProperty('mamaVersion') ?: '6.2.2-1'
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'signing'
+    id 'com.adarshr.test-logger' version '3.2.0'
+    id 'org.owasp.dependencycheck' version "8.1.2"
+}
+
+dependencyCheck {
+    failBuildOnCVSS=5
+    suppressionFile="allow-list.xml"
+}
+
+def mamaVersion = project.findProperty('mamaVersion') ?: new File("${projectDir.absolutePath}/../../build/VERSION").text.trim() + "-1"
 def mamaJniHeaderDir = project.findProperty('mamaJniHeaderDir') ?: 'mamajni'
 
 if (!project.hasProperty('legacyNaming')) {
@@ -16,16 +34,20 @@ repositories {
 }
 
 dependencies {
-    testCompile "junit:junit:4.12"  // Or whatever version
+    testImplementation "junit:junit:4.13.2"  // Or whatever version
 }
 
-test { 
-  environment "PATH", "C:\\Users\\fquinn\\SourceExternal\\github\\fquinner\\OpenMAMA\\openmama_install_6.2.1\\bin\\dynamic"
+test {
+    systemProperties = [
+        dictionary: System.getProperty('dictionary')
+    ]
+    testLogging.showStandardStreams = true
+    testLogging.showExceptions = true
+    maxParallelForks = 1
 }
 
 javadoc {
     source = sourceSets.main.allJava
-    classpath = configurations.compile
     title = 'MAMA (Middleware Agnostic Messaging API) JNI specification, v' + mamaVersion
     options.overview = 'doc/overview-jni.html'
     options.windowTitle = 'MAMA JNI ' + mamaVersion
@@ -50,51 +72,57 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-signing {
-    sign configurations.archives
-}
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-      repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
+publishing {
+  publications {
+    mavenJava(MavenPublication) {
+      artifactId = 'openmama'
+      from components.java
+      versionMapping {
+          usage('java-api') {
+              fromResolutionOf('runtimeClasspath')
+          }
+          usage('java-runtime') {
+              fromResolutionResult()
+          }
       }
-
-      snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      pom.project {
-        name 'OpenMAMA'
-        packaging 'jar'
+      pom {
+        name = 'OpenMAMA'
         // optionally artifactId can be defined here 
-        description 'OpenMAMA is a high performance vendor neutral lightweight wrapper that provides a common API interface to different middleware and messaging solutions across a variety of platforms and languages.'
-        url 'https://www.openmama.org'
-
-        scm {
-          connection 'scm:https://github.com/OpenMAMA/OpenMAMA.git'
-          developerConnection 'scm:git@github.com:OpenMAMA/OpenMAMA.git'
-          url 'https://github.com/OpenMAMA/OpenMAMA'
-        }
-
+        description = 'OpenMAMA is a high performance vendor neutral lightweight wrapper that provides a common API interface to different middleware and messaging solutions across a variety of platforms and languages.'
+        url = 'https://www.openmama.org'
+  
         licenses {
           license {
-            name 'GNU LESSER GENERAL PUBLIC LICENSE 2.1'
-            url 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html'
+            name = 'GNU LESSER GENERAL PUBLIC LICENSE 2.1'
+            url = 'https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html'
           }
         }
 
         developers {
           developer {
-            id 'fquinner'
-            name 'Frank Quinn'
-            email 'fquinn@cascadium.io'
+            id = 'fquinner'
+            name = 'Frank Quinn'
+            email = 'fquinn@cascadium.io'
           }
+        }
+
+        scm {
+          connection = 'scm:https://github.com/OpenMAMA/OpenMAMA.git'
+          developerConnection = 'scm:git@github.com:OpenMAMA/OpenMAMA.git'
+          url = 'https://github.com/OpenMAMA/OpenMAMA'
         }
       }
     }
   }
+  repositories {
+    maven {
+      def releasesRepoUrl = "https://oss.sonatype.org/service/local/staging/deploy/maven2/"
+      def snapshotsRepoUrl = "https://oss.sonatype.org/content/repositories/snapshots/"
+      url = version.endsWith('SNAPSHOT') ? snapshotsRepoUrl : releasesRepoUrl
+    }
+  }
+}
+
+signing {
+    sign publishing.publications.mavenJava
 }

@@ -270,7 +270,7 @@ typedef struct mamaMsgCallbacks_
     wombat_subscriptionQualityCB  onQuality;
     wombat_subscriptionGapCB      onGap;
     wombat_subscriptionRecapCB    onRecapRequest;
-	wombat_subscriptionDestroyCB  onDestroy;
+    wombat_subscriptionDestroyCB  onDestroy;
 } mamaMsgCallbacks;
 
 /**

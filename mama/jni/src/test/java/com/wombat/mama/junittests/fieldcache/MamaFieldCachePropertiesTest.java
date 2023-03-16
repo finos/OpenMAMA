@@ -1,34 +1,20 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
+package com.wombat.mama.junittests.fieldcache;
 
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
 import java.util.Iterator;
-import java.io.OutputStream;
-import java.io.BufferedOutputStream;
+
+import static org.junit.Assert.*;
+
 /**
  *
  * This class will test MamaFieldCacheProperties's functions
  */
-public class MamaFieldCachePropertiesTest extends TestCase
+public class MamaFieldCachePropertiesTest extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -43,52 +29,59 @@ public class MamaFieldCachePropertiesTest extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
         mFieldCacheProperties = new MamaFieldCacheProperties();
         mFieldCacheInt32 = new MamaFieldCacheInt32(101, "example", true);
         mFieldCacheInt32_2 = new MamaFieldCacheInt32(102, "example2", true);
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
    
+    @Test
     public void testClearAndDelete()
     {
         mFieldCacheProperties.add(mFieldCacheInt32);
         assertEquals(mFieldCacheProperties.find(101), mFieldCacheInt32);
         mFieldCacheProperties.clear();
-        assertEquals(mFieldCacheProperties.find(101), null);
+        assertNull(mFieldCacheProperties.find(101));
     }
 
-     public void testAddIfModifiedNotModified()
-     {
+    @Test
+    public void testAddIfModifiedNotModified()
+    {
          mFieldCacheInt32.setModState(MamaFieldCacheField.MOD_STATE_NOT_MODIFIED);
          mFieldCacheProperties.addIfModified(mFieldCacheInt32);
-         assertEquals(mFieldCacheProperties.find("example"), null);
-     }
+         assertNull(mFieldCacheProperties.find("example"));
+    }
 
-     public void testAddIfModifiedModified()
-     {
+    @Test
+    public void testAddIfModifiedModified()
+    {
          mFieldCacheProperties.addIfModified(mFieldCacheInt32);
          assertEquals(mFieldCacheProperties.find("example"), mFieldCacheInt32);
-     }
+    }
 
+    @Test
     public void testClearAndUnregisterAll()
     {
         mFieldCacheProperties.add(mFieldCacheInt32);
         assertEquals(mFieldCacheProperties.find(101), mFieldCacheInt32);
         mFieldCacheProperties.clear();
-        assertEquals(mFieldCacheProperties.find(101), null);
+        assertNull(mFieldCacheProperties.find(101));
     }
 
+    @Test
     public void testRegisterProperty()
     {
         MamaFieldCacheFieldList testFieldList = new MamaFieldCacheFieldList();
@@ -102,6 +95,7 @@ public class MamaFieldCachePropertiesTest extends TestCase
         assertEquals(mFieldCacheProperties.find(101), mFieldCacheInt32);
     }
 
+    @Test
     public void testRegisterPropertyFieldNull()
     {
         MamaFieldCacheFieldList testFieldList = new MamaFieldCacheFieldList();
@@ -111,47 +105,51 @@ public class MamaFieldCachePropertiesTest extends TestCase
 
         mFieldCacheProperties.registerProperty(101, mFieldCacheInt32);
         mFieldCacheProperties.apply(testFieldList);
-        
-        assertEquals(mFieldCacheProperties.find(101), null);
+
+        assertNull(mFieldCacheProperties.find(101));
     }
 
+    @Test
     public void testApply()
     {
         MamaFieldCacheFieldList testFieldList = new MamaFieldCacheFieldList();
         testFieldList.add(mFieldCacheInt32);
         
         mFieldCacheProperties.registerProperty(101, mFieldCacheInt32);
-        assertEquals(mFieldCacheProperties.find(101), null);
+        assertNull(mFieldCacheProperties.find(101));
 
         mFieldCacheProperties.apply(testFieldList);
         assertEquals(mFieldCacheProperties.find(101), mFieldCacheInt32);
     }
 
+    @Test
     public void testFindNullName()
     {
         MamaFieldCacheFieldList testFieldList = new MamaFieldCacheFieldList();
         testFieldList.add(mFieldCacheInt32);
         
         mFieldCacheProperties.registerProperty(101, mFieldCacheInt32);
-        assertEquals(mFieldCacheProperties.find(101), null);
+        assertNull(mFieldCacheProperties.find(101));
 
         mFieldCacheProperties.apply(testFieldList);
         assertEquals(mFieldCacheProperties.find(101), mFieldCacheInt32);
-        assertEquals(mFieldCacheProperties.find(""), null);
+        assertNull(mFieldCacheProperties.find(""));
     }
 
+    @Test
     public void testFindByDesc()
     {
         MamaFieldCacheFieldList testFieldList = new MamaFieldCacheFieldList();
         testFieldList.add(mFieldCacheInt32);
         
         mFieldCacheProperties.registerProperty(101, mFieldCacheInt32);
-        assertEquals(mFieldCacheProperties.find(101), null);
+        assertNull(mFieldCacheProperties.find(101));
 
         mFieldCacheProperties.apply(testFieldList);
         assertEquals(mFieldCacheProperties.find("example"), mFieldCacheInt32);
     }
 
+    @Test
     public void testSize()
     {
         MamaFieldCacheFieldList testFieldList = new MamaFieldCacheFieldList();
@@ -164,29 +162,31 @@ public class MamaFieldCachePropertiesTest extends TestCase
         assertEquals(mFieldCacheProperties.size(), 1);
     }
 
+    @Test
     public void testEmpty()
     {
         MamaFieldCacheFieldList testFieldList = new MamaFieldCacheFieldList();
-        assertEquals(mFieldCacheProperties.empty(), true);
+        assertTrue(mFieldCacheProperties.empty());
         testFieldList.add(mFieldCacheInt32);
         
         mFieldCacheProperties.registerProperty(101, mFieldCacheInt32);
 
         mFieldCacheProperties.apply(testFieldList);
-        assertEquals(mFieldCacheProperties.empty(), false);
+        assertFalse(mFieldCacheProperties.empty());
     }
+    @Test
     public void testGetIterator()
     {
         MamaFieldCacheFieldList testFieldList = new MamaFieldCacheFieldList();
 
-        assertEquals(mFieldCacheProperties.empty(), true);
+        assertTrue(mFieldCacheProperties.empty());
         i = mFieldCacheProperties.getIterator();
         assertFalse(i.hasNext());
         testFieldList.add(mFieldCacheInt32);
         mFieldCacheProperties.registerProperty(101, mFieldCacheInt32);
         mFieldCacheProperties.apply(testFieldList);
 
-        assertEquals(mFieldCacheProperties.empty(), false);
+        assertFalse(mFieldCacheProperties.empty());
         i = mFieldCacheProperties.getIterator();
         assertTrue(i.hasNext());
     }

@@ -19,7 +19,7 @@
  * 02110-1301 USA
  */
 
-#include "list.h"
+#include "wombat/list.h"
 #include "mama/log.h"
 #include "mama/types.h"
 #include "mama/mama.h"

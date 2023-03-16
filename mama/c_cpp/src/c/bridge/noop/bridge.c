@@ -4,7 +4,7 @@
 
 #include <mama/mama.h>
 #include <mama/version.h>
-#include <timers.h>
+#include <wombat/timers.h>
 #include <wombat/strutils.h>
 #include <mama/integration/mama.h>
 #include "bridgefunctions.h"

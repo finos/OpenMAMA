@@ -22,6 +22,8 @@
 package com.wombat.mama;
 
 import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.*;
 import java.net.InetAddress;
 import java.util.Date;
@@ -146,6 +148,24 @@ public class Mama
     public static native void start (MamaBridge bridge);
 
     /**
+     * Calls Mama::start for all currently loaded middleware bridges
+     *
+     * This function is thread safe.
+     *
+     * @param[in] isBlocking Whether to start blocking or run in background
+     */
+     public static native void startAll (boolean isBlocking);
+
+    /**
+     * Calls Mama::start for all currently loaded middleware bridges and blocks.
+     *
+     * This function is thread safe.
+     */
+     public static void startAll () {
+        startAll(true);
+     }
+
+    /**
      * Start processing MAMA internal events in the background. This
      * method invokes Mama::start () in a separate thread.
      *
@@ -167,6 +187,11 @@ public class Mama
      * @param bridge The bridge specific structure.
      */
     public static native void stop (MamaBridge bridge);
+
+    /**
+     * Stop dispatching on the default event queue for all bridges.
+     */
+    public static native void stopAll ();
 
     /**
      * Close MAMA and free all associated resource.
@@ -350,7 +375,57 @@ public class Mama
         }
     }
 
+    /**
+     * Retrieve a specific property from the API.
+     *
+     * If the property has not been set, a NULL value will be returned.
+     *
+     * @param name The name of the property to retrieve.
+     *
+     * @return the value of the property or NULL if unset.
+     */
     public static native String getProperty(String name);
+
+    /**
+     * Load in default mama.properties from the default WOMBAT_PATH directory.
+     */
+    public static native void loadDefaultProperties();
+
+    /**
+     * Retrieve a specific property from the API.
+     *
+     * If the property has not been set, the default value will be returned.
+     *
+     * @param name         The name of the property to retrieve.
+     * @param defaultValue The value to return if this property does not exist.
+     *
+     * @return the value of the property or NULL if unset.
+     */
+    public static String getProperty(String name, String defaultValue) {
+        String property = getProperty(name);
+        if (null == property) {
+            property = defaultValue;
+        }
+        return property;
+    }
+
+    /**
+     * Retrieve a list of all configured properties in key -> value format
+     * @return A map of all currently configured properties
+     */
+    public static Map<String, String> getProperties() {
+        Map<String, String> result = new HashMap<>();
+        String propertiesAsString = getPropertiesAsString();
+        for (String propStringPair : propertiesAsString.split("\n")) {
+            String[] pair = propStringPair.split("=");
+            if (pair.length > 1) {
+                result.put(pair[0], pair[1]);
+            }
+        }
+        return result;
+    }
+
+    private static native String getPropertiesAsString ();
 
     public static native void setProperty (String name, String value);
 

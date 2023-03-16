@@ -1,4 +1,3 @@
-cmake_minimum_required (VERSION 2.8)
 project (libwombatcommonc)
 
 string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
@@ -8,7 +7,6 @@ include_directories(
 	${system}
 	${system}/wombat)
 
-find_package(FLEX)
 FLEX_TARGET(properties properties.l  ${CMAKE_CURRENT_BINARY_DIR}/properties.c)
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
@@ -41,22 +39,14 @@ list(APPEND sources ${SYSTEM_SOURCES})
 add_library(wombatcommon SHARED ${sources})
 add_library(wombatcommonstatic STATIC ${sources})
 if(WIN32)
-	target_link_libraries(wombatcommon ws2_32 advapi32 kernel32 Pdh shlwapi)
-	target_link_libraries(wombatcommonstatic ws2_32 advapi32 kernel32 Pdh shlwapi)
+	target_link_libraries(wombatcommon ws2_32 advapi32 kernel32 Pdh shlwapi rpcrt4)
+	target_link_libraries(wombatcommonstatic ws2_32 advapi32 kernel32 Pdh shlwapi rpcrt4)
+else()
+	include(FindUUID)
+	find_package(UUID REQUIRED)
+	target_link_libraries(wombatcommon ${UUID_LIBRARIES})
+	target_link_libraries(wombatcommonstatic ${UUID_LIBRARIES})
 endif()
-
-file(GLOB wombat_inst_includes wombat/*.h ${system}/wombat/*.h)
-if(WIN32)
-    file(GLOB wombat_platform_inst_includes ${system}/*.h)
-endif()
-list(APPEND inst_includes
-     destroyHandle.h
-     list.h
-     lookup2.h
-     platform.h
-     property.h
-     wlock.h
-     timers.h)
 
 set_target_properties(wombatcommon PROPERTIES OUTPUT_NAME "wombatcommon${OPENMAMA_LIBRARY_SUFFIX}")
 set_target_properties(wombatcommonstatic PROPERTIES OUTPUT_NAME "wombatcommon${OPENMAMA_LIBRARY_STATIC_SUFFIX}")
@@ -65,14 +55,15 @@ install(TARGETS wombatcommon wombatcommonstatic
         LIBRARY DESTINATION lib
         ARCHIVE DESTINATION lib)
 
+file(GLOB wombat_inst_includes wombat/*.h ${system}/wombat/*.h)
 install(FILES ${wombat_inst_includes}
 	DESTINATION include/wombat)
+
 if(WIN32)
+    file(GLOB wombat_platform_inst_includes wombat/windows/*.h)
     install(FILES ${wombat_platform_inst_includes}
-        DESTINATION include/${system})
+        DESTINATION include/wombat/windows)
 endif()
-install(FILES ${inst_includes}
-	DESTINATION include)
 
 if (WIN32 AND MSVC)
 	install(FILES $<TARGET_PDB_FILE:wombatcommon> DESTINATION bin OPTIONAL)

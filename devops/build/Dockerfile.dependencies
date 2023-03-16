@@ -1,0 +1,27 @@
+# Use configurable image name
+ARG IMAGE=centos:8.4.2105
+FROM $IMAGE
+
+# Assign arguments with defaults
+ARG IMAGE
+ARG RHN_USER
+ARG RHN_PASS
+
+# Promote arguments to environment variables
+ENV IMAGE $IMAGE
+ENV RHN_USER $RHN_USER
+ENV RHN_PASS $RHN_PASS
+
+# Additional defaults for underlying scripts
+ENV IS_DOCKER_BUILD true
+ENV LC_ALL=C.UTF-8
+ENV LANG=C.UTF-8
+
+# Add internal scripts here to prevent reruns
+ADD install-dependencies.sh /tmp
+
+# Run script to update dependencies
+RUN /tmp/install-dependencies.sh
+
+# Clean up dependency install script
+RUN rm -f /tmp/install-dependencies.sh

@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <wlock.h>
+#include <wombat/wlock.h>
 
 typedef struct
 {

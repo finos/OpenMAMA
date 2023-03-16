@@ -22,11 +22,11 @@ repositories {
 
 dependencies {
     // This dependency is used by the application.
-    implementation 'com.google.guava:guava:29.0-jre'
-    implementation 'org.openmama:openmama:6.2.2'
+    implementation 'com.google.guava:guava:31.1-jre'
+    implementation 'org.openmama:openmama:6.3.1-1'
 
     // Use JUnit test framework
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
 }
 
 application {

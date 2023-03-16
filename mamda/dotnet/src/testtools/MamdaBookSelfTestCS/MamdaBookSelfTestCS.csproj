@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <AssemblyName>mamdabookselftestcs</AssemblyName>
+        <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <Title>OpenMAMDA MamdaBookSelfTestCS C#</Title>
+        <Description>OpenMAMDA MamdaBookSelfTestCS C#</Description>
+        <Configuration>OpenMAMDA MamdaBookSelfTestCS C#</Configuration>
+        <Product>OpenMAMA API C#</Product>
+        <Copyright>Copyright 2009 OpenMAMA.org</Copyright>
+        <Company>OpenMAMA.org</Company>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>MamdaBookSelfTest</RootNamespace>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\..\cs\mamdadotnet.csproj"/>
+        <ProjectReference Include="..\..\examples\MamdaExamplesCommon\mamdaexamplescommon.csproj"/>
+    </ItemGroup>
+</Project>

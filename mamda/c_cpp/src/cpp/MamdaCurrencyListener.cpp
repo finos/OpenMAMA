@@ -19,8 +19,8 @@
  * 02110-1301 USA
  */
 
+#include <stdint.h>
 #include <wombat/wincompat.h>
-#include <pthread.h>
 #include <mamda/MamdaCurrencyListener.h>
 #include <mamda/MamdaCurrencyHandler.h>
 #include <mamda/MamdaCommonFields.h>
@@ -116,7 +116,7 @@ namespace Wombat
 
         static CurrencyFieldUpdate**        mFieldUpdaters;
         static volatile uint16_t            mFieldUpdatersSize;
-        static wthread_mutex_t              mCurrencyFieldUpdaterLockMutex;
+        static wthread_static_mutex_t       mCurrencyFieldUpdaterLockMutex;
         static bool                         mUpdatersComplete;
 
         struct FieldUpdateSrcTime;
@@ -334,7 +334,7 @@ namespace Wombat
         // MamdaCurrencyListener instances).
         if (!mUpdatersComplete)
         {
-            wthread_mutex_lock (&mCurrencyFieldUpdaterLockMutex);
+            wthread_static_mutex_lock (&mCurrencyFieldUpdaterLockMutex);
 
             if (!mUpdatersComplete)
             {
@@ -343,7 +343,7 @@ namespace Wombat
                      mama_log (MAMA_LOG_LEVEL_WARN,
                                "MamdaCurrencyListener: MamdaCurrencyFields::setDictionary() "
                                "has not been called.");
-                     wthread_mutex_unlock (&mCurrencyFieldUpdaterLockMutex);
+                     wthread_static_mutex_unlock (&mCurrencyFieldUpdaterLockMutex);
                      return;
                 }
 
@@ -356,13 +356,13 @@ namespace Wombat
                     mama_log (MAMA_LOG_LEVEL_WARN,
                               "MamdaCurrencyListener: Could not set field updaters: %s",
                               e.toString ());
-                    wthread_mutex_unlock (&mCurrencyFieldUpdaterLockMutex);
+                    wthread_static_mutex_unlock (&mCurrencyFieldUpdaterLockMutex);
                     return;
                 }
                 mUpdatersComplete = true;
             }
 
-            wthread_mutex_unlock (&mCurrencyFieldUpdaterLockMutex);
+            wthread_static_mutex_unlock (&mCurrencyFieldUpdaterLockMutex);
         }
 
         // Handle fields in message:
@@ -510,9 +510,9 @@ namespace Wombat
     volatile uint16_t 
         MamdaCurrencyListener::MamdaCurrencyListenerImpl::mFieldUpdatersSize = 0;
 
-    pthread_mutex_t 
+    wthread_static_mutex_t 
         MamdaCurrencyListener::MamdaCurrencyListenerImpl::mCurrencyFieldUpdaterLockMutex 
-        = PTHREAD_MUTEX_INITIALIZER;
+        = WSTATIC_MUTEX_INITIALIZER;
 
     bool MamdaCurrencyListener::MamdaCurrencyListenerImpl::mUpdatersComplete = false;
 

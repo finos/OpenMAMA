@@ -22,7 +22,7 @@
 #ifndef MamaInternalH__
 #define MamaInternalH__
 
-#include <property.h>
+#include <wombat/property.h>
 #include "wombat/wtable.h"
 #include "mama/types.h"
 #include "mama/status.h"
@@ -35,7 +35,7 @@
   #define OPENMAMA_INTEGRATION
 #endif
 
-#include <mama/integration/mama.h>
+#include "mama/integration/mama.h"
 
 #if defined(__cplusplus)
 extern "C"

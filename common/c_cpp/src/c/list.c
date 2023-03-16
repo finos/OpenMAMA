@@ -25,8 +25,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "wlock.h"
-#include "list.h"
+#include "wombat/wlock.h"
+#include "wombat/list.h"
 
 int gWListDebug;
 
@@ -78,6 +78,9 @@ list_create (size_t elementSize)
     wListImpl* rval;
 
     rval = malloc (sizeof (wListImpl));
+    if (NULL == rval) {
+        return INVALID_LIST;
+    }
     memset (rval, 0, sizeof (wListImpl));
 
     /* We need to deal with alignment when alocating elements */

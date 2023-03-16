@@ -21,15 +21,16 @@
 
 package com.wombat.mama.junittests;
 
-import java.nio.*;
-import junit.framework.*;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  *
  * This class will test the MamaTimer callbacks.
  */
-public class MamaTimerCallbacks extends TestCase
+public class MamaTimerCallbacks extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -42,21 +43,17 @@ public class MamaTimerCallbacks extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
-        // Load the bridge
-        mBridge = Mama.loadBridge(Main.GetBridgeName());
-
-        // Open mama
-        Mama.open();
+        super.setUp();
+        mBridge = getBridge();
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
-        // Close mama
-        Mama.close();
+        super.tearDown();
     }
 
     /* ************************************************************************* */
@@ -150,6 +147,7 @@ public class MamaTimerCallbacks extends TestCase
     /* Test Functions - Timer */
     /* ************************************************************************* */
 
+    @Test
     public void testTimer()
     {
         // Create a callback object
@@ -171,6 +169,7 @@ public class MamaTimerCallbacks extends TestCase
         timer.destroy();
     }
 
+    @Test
     public void testTimerRecreateOnDestroy()
     {
         // Create a callback object
@@ -192,6 +191,7 @@ public class MamaTimerCallbacks extends TestCase
         timer.destroy();
     }
 
+    @Test
     public void testTimerRecreateOnTick()
     {
         // Create a callback object

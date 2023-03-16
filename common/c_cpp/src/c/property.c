@@ -28,9 +28,9 @@
 #include <ctype.h>
 
 
-#include "property.h"
+#include "wombat/property.h"
 #include "propertyinternal.h"
-#include "lookup2.h"
+#include "wombat/lookup2.h"
 #include "wombat/memnode.h"
 #include "wombat/wtable.h"
 #include "wombat/strutils.h"
@@ -265,22 +265,38 @@ properties_GetPropertyValueUsingFormatString (wproperty_t handle,
     /* Populate list with arguments passed in */
     va_start (arguments, format);
 
-    /* Create the complete transport property string */
-    vsnprintf (paramName, PROPERTY_NAME_MAX_LENGTH, format, arguments);
-
-    /* Get the property out for analysis */
-    returnVal = properties_Get (handle, paramName);
-
-    /* Properties will return NULL if property is not specified in configs */
-    if (returnVal == NULL)
-    {
-        returnVal = defaultVal;
-    }
+    returnVal = properties_GetPropertyValueUsingVaList (
+        handle, defaultVal, paramName, format, arguments);
 
     /* Clean up the list */
     va_end(arguments);
 
     return returnVal;
+}
+
+const char* properties_GetPropertyValueUsingVaList (
+    wproperty_t handle,
+    const char* defaultVal,
+    char* paramName,
+    const char* format,
+    va_list arguments)
+{
+    const char* property = NULL;
+
+    /* Create the complete transport property string */
+    vsnprintf (paramName, PROPERTY_NAME_MAX_LENGTH,
+               format, arguments);
+
+    /* Get the property out for analysis */
+    property = properties_Get (handle, paramName);
+
+    /* Properties will return NULL if parameter is not specified in configs */
+    if (property == NULL)
+    {
+        property = defaultVal;
+    }
+
+    return property;
 }
 
 int
@@ -314,6 +330,8 @@ struct propCallbackContainer
 {
     propertiesCallback cb;
     void* closure;
+    const char* prefix;
+    size_t prefixLen;
 };
 
 static void
@@ -323,7 +341,13 @@ propertiesImpl_ForEach( wtable_t props, void* data, const char* key,
     struct propCallbackContainer * container =
 	(struct propCallbackContainer *) cookie;
 
-    (*container->cb)(key, data, container->closure);
+    if (container->prefix == NULL) {
+        (*container->cb)(key, data, container->closure);
+    } else if (0 == strncmp(key, container->prefix, container->prefixLen)
+        && strlen(key) > container->prefixLen) {
+        // Only pass bare key name when using this callback
+        (*container->cb)(key + container->prefixLen, data, container->closure);
+    }
 }
 
 /**
@@ -337,6 +361,25 @@ properties_ForEach( wproperty_t handle, propertiesCallback cb, void* closure)
     propertiesImpl_ *this = (propertiesImpl_ *)handle;
     container.cb = cb;
     container.closure = closure;
+    container.prefix = NULL;
+    container.prefixLen = 0;
+
+    wtable_for_each( this->mTable, propertiesImpl_ForEach, &container );
+}
+
+/**
+ * Iterate over all keys in the properties table matching provided prefix
+ */
+void
+properties_ForEachWithPrefix( wproperty_t handle, const char* prefix, propertiesCallback cb, void* closure)
+{
+    struct propCallbackContainer container;
+
+    propertiesImpl_ *this = (propertiesImpl_ *)handle;
+    container.cb = cb;
+    container.closure = closure;
+    container.prefix = prefix;
+    container.prefixLen = strlen (prefix);
 
     wtable_for_each( this->mTable, propertiesImpl_ForEach, &container );
 }

@@ -40,9 +40,8 @@
 #include <mama/MamaDictionary.h>
 #include <mama/mamacpp.h>
 
+#include "common/MainUnitTest.h"
 #include "common/MamdaUnitTestUtils.h"
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -58,11 +57,11 @@ using std::string;
 using namespace std;
 using namespace Wombat;
 
-class OrderImbalanceTickerCB : public MamdaOrderImbalanceHandler
+class OrderImbalanceFieldTestsTickerCB : public MamdaOrderImbalanceHandler
 {
     public:
-        OrderImbalanceTickerCB () {}
-        virtual ~OrderImbalanceTickerCB () {}
+        OrderImbalanceFieldTestsTickerCB () {}
+        virtual ~OrderImbalanceFieldTestsTickerCB () {}
 
 
     void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
@@ -119,7 +118,7 @@ class OrderImbalanceTickerCB : public MamdaOrderImbalanceHandler
             const MamaMsg&               msg,
             MamdaOrderImbalanceRecap&    imbalance,
             MamdaOrderImbalanceUpdate&   update)
-    {     
+    {
         mOrderImbalanceTestCache.myTestHighIndicationPrice  = listener.getBuyVolume();
         mOrderImbalanceTestCache.myTestSellVolume           = listener.getSellVolume();
         mOrderImbalanceTestCache.myTestBuyVolume            = listener.getBuyVolume();
@@ -173,7 +172,7 @@ protected:
         try
         {
             mamaBridge bridge;
-            bridge = Mama::loadBridge("wmw");
+            bridge = Mama::loadBridge(getMiddleware());
             Mama::open();
             //mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);
             mDictionary = new MamaDictionary;
@@ -183,7 +182,7 @@ protected:
                 return;
             }
 
-            mDictionary->populateFromFile("dictionary.txt");
+            mDictionary->populateFromFile(getDictionary());
             MamdaCommonFields::setDictionary (*mDictionary);
             MamdaOrderImbalanceFields::reset();
             MamdaOrderImbalanceFields::setDictionary (*mDictionary);
@@ -204,7 +203,7 @@ protected:
 
             mSubscription->addMsgListener(mOrderImbalanceListener);
             
-            ticker = new OrderImbalanceTickerCB;      
+            ticker = new OrderImbalanceFieldTestsTickerCB;      
             mOrderImbalanceListener->addHandler (ticker);   
 
             newMessage = NULL;
@@ -263,26 +262,26 @@ protected:
     MamdaSubscription*                mSubscription;
     MamdaOrderImbalanceListener*      mOrderImbalanceListener;
     MamaMsg*                          newMessage;
-    OrderImbalanceTickerCB*           ticker;   
+    OrderImbalanceFieldTestsTickerCB*           ticker;   
 };
 
 //Each Test has one Field Set and the SecurityStatus is set to OrderImbNone. 
 //These should trigger the noOrderImbalance CallBack.
 TEST_F (MamdaOrderImbalanceFieldTests, BuyVolume_onNoOrdImbal_Test)
-{       
-    newMessage->addI64("wBuyVolume", 239, 1000);
+{
+    ticker->mOrderImbalanceControlCache.myBuyVolume = 1000;
+    newMessage->addI64("wBuyVolume", 239, ticker->mOrderImbalanceControlCache.myBuyVolume);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");   
-    
+
     ticker->callMamdaOnMsg(mSubscription, *newMessage);        
     
     EXPECT_EQ (ticker->mOrderImbalanceControlCache.myBuyVolume, ticker->mOrderImbalanceTestCache.myTestBuyVolume);
-     
-   
 }
 
 TEST_F (MamdaOrderImbalanceFieldTests, SellVolume_onNoOrdImbal_Test)
-{  
-    newMessage->addI64("wSellVolume", 453, 2000);
+{
+    ticker->mOrderImbalanceControlCache.mySellVolume = 2000;
+    newMessage->addI64("wSellVolume", 453, ticker->mOrderImbalanceControlCache.mySellVolume);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -291,8 +290,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, SellVolume_onNoOrdImbal_Test)
 }
                                                                                                                                                                    
 TEST_F (MamdaOrderImbalanceFieldTests, HighIndication_onNoOrdImbal_Test)
-{      
-    newMessage->addPrice("wHighIndicationPrice",276,2000);
+{
+    ticker->mOrderImbalanceControlCache.myHighIndicationPrice = 2000;
+    newMessage->addPrice("wHighIndicationPrice",276,ticker->mOrderImbalanceControlCache.myHighIndicationPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -301,8 +301,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, HighIndication_onNoOrdImbal_Test)
 }
 
 TEST_F (MamdaOrderImbalanceFieldTests, LowIndication_onNoOrdImbal_Test)
-{      
-    newMessage->addPrice("wLowIndicationPrice",325,3000);
+{
+    ticker->mOrderImbalanceControlCache.myLowIndicationPrice = 3000;
+    newMessage->addPrice("wLowIndicationPrice",325,ticker->mOrderImbalanceControlCache.myLowIndicationPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
 
         
@@ -312,8 +313,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, LowIndication_onNoOrdImbal_Test)
 }
 
 TEST_F (MamdaOrderImbalanceFieldTests, Indication_onNoOrdImbal_Test)
-{     
-    newMessage->addPrice("wIndicationPrice",978,4000);
+{
+    ticker->mOrderImbalanceControlCache.myIndicationPrice = 4000;
+    newMessage->addPrice("wIndicationPrice",978,ticker->mOrderImbalanceControlCache.myIndicationPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -322,8 +324,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, Indication_onNoOrdImbal_Test)
 }    
 
 TEST_F (MamdaOrderImbalanceFieldTests, MatchVolume_onNoOrdImbal_Test)
-{    
-    newMessage->addI64("wMatchVolume",979,4000);
+{
+    ticker->mOrderImbalanceControlCache.myMatchVolume = 4000;
+    newMessage->addI64("wMatchVolume",979,ticker->mOrderImbalanceControlCache.myMatchVolume);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -334,16 +337,16 @@ TEST_F (MamdaOrderImbalanceFieldTests, MatchVolume_onNoOrdImbal_Test)
 TEST_F (MamdaOrderImbalanceFieldTests, SecurityStatus_onNoOrdImbal_Test)
 { 
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");    
-        
-    ticker->callMamdaOnMsg(mSubscription, *newMessage);     
+    ticker->callMamdaOnMsg(mSubscription, *newMessage);
   
     EXPECT_STREQ ("OrderImbNone", ticker->mOrderImbalanceTestCache.myTestSecurityStatusQual);
    
 }                                                                                                                                                                  
 
 TEST_F (MamdaOrderImbalanceFieldTests, InsideMatchPrice_onNoOrdImbal_Test)
-{  
-    newMessage->addPrice("wInsideMatchPrice",1023,5000); 
+{
+    ticker->mOrderImbalanceControlCache.myInsideMatchPrice = 5000;
+    newMessage->addPrice("wInsideMatchPrice", 1023, ticker->mOrderImbalanceControlCache.myInsideMatchPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -352,8 +355,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, InsideMatchPrice_onNoOrdImbal_Test)
 }           
 
 TEST_F (MamdaOrderImbalanceFieldTests, FarClearingPrice_onNoOrdImbal_Test)
-{  
-    newMessage->addPrice("wFarClearingPrice",1024,6000);
+{
+    ticker->mOrderImbalanceControlCache.myFarClearingPrice = 6000;
+    newMessage->addPrice("wFarClearingPrice",1024,ticker->mOrderImbalanceControlCache.myFarClearingPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -363,8 +367,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, FarClearingPrice_onNoOrdImbal_Test)
 }   
 
 TEST_F (MamdaOrderImbalanceFieldTests, NearClearingPrice_onNoOrdImbal_Test)
-{      
-    newMessage->addPrice("wNearClearingPrice",1025,6000);
+{
+    ticker->mOrderImbalanceControlCache.myNearClearingPrice = 6000;
+    newMessage->addPrice("wNearClearingPrice",1025,ticker->mOrderImbalanceControlCache.myNearClearingPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -374,8 +379,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, NearClearingPrice_onNoOrdImbal_Test)
 }           
 
 TEST_F (MamdaOrderImbalanceFieldTests, NoClearingPrice_onNoOrdImbal_Test)
-{      
-    newMessage->addChar("wNoClearingPrice",1026,'c');
+{
+    ticker->mOrderImbalanceControlCache.myNoClearingPrice = 'c';
+    newMessage->addChar("wNoClearingPrice",1026,ticker->mOrderImbalanceControlCache.myNoClearingPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -384,8 +390,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, NoClearingPrice_onNoOrdImbal_Test)
 }  
 
 TEST_F (MamdaOrderImbalanceFieldTests, PriceVarInd_onNoOrdImbal_Test)
-{      
-    newMessage->addChar("wPriceVarInd",1027,'a');
+{
+    ticker->mOrderImbalanceControlCache.myPriceVarInd = 'a';
+    newMessage->addChar("wPriceVarInd",1027,ticker->mOrderImbalanceControlCache.myPriceVarInd);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -394,8 +401,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, PriceVarInd_onNoOrdImbal_Test)
 }   
 
 TEST_F (MamdaOrderImbalanceFieldTests, CrossType_onNoOrdImbal_Test)
-{  
-    newMessage->addChar("wCrossType",1170,'b');
+{
+    ticker->mOrderImbalanceControlCache.myCrossType = 'b';
+    newMessage->addChar("wCrossType",1170,ticker->mOrderImbalanceControlCache.myCrossType);
     newMessage->addString("wSecStatusQual",1020,"OrderImbNone");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -406,8 +414,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, CrossType_onNoOrdImbal_Test)
 //Each Test has one Field set and the SecurityStatus field is set to OrderImbBuy.
 //These messages should trigger the onOrderImbalance CallBack.
 TEST_F (MamdaOrderImbalanceFieldTests, BuyVolume_OnOrderImbal_Test)
-{      
-    newMessage->addI64("wBuyVolume", 239, 1000);
+{
+    ticker->mOrderImbalanceControlCache.myBuyVolume = 1000;
+    newMessage->addI64("wBuyVolume", 239, ticker->mOrderImbalanceControlCache.myBuyVolume);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);         
@@ -416,8 +425,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, BuyVolume_OnOrderImbal_Test)
 }
 
 TEST_F (MamdaOrderImbalanceFieldTests, SellVolume_OnOrderImbal_Test)
-{  
-    newMessage->addI64("wSellVolume", 453, 2000);
+{
+    ticker->mOrderImbalanceControlCache.mySellVolume = 2000;
+    newMessage->addI64("wSellVolume", 453, ticker->mOrderImbalanceControlCache.mySellVolume);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -426,8 +436,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, SellVolume_OnOrderImbal_Test)
 }
                                                                                                                                                                     
 TEST_F (MamdaOrderImbalanceFieldTests, HighIndication_OnOrderImbal_Test)
-{     
-    newMessage->addPrice("wHighIndicationPrice",276,2000);
+{
+    ticker->mOrderImbalanceControlCache.myHighIndicationPrice = 2000;
+    newMessage->addPrice("wHighIndicationPrice",276,ticker->mOrderImbalanceControlCache.myHighIndicationPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -436,8 +447,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, HighIndication_OnOrderImbal_Test)
 }
 
 TEST_F (MamdaOrderImbalanceFieldTests, LowIndication_OnOrderImbal_Test)
-{     
-    newMessage->addPrice("wLowIndicationPrice",325,3000);
+{
+    ticker->mOrderImbalanceControlCache.myLowIndicationPrice = 3000;
+    newMessage->addPrice("wLowIndicationPrice",325,ticker->mOrderImbalanceControlCache.myLowIndicationPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
 
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -446,8 +458,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, LowIndication_OnOrderImbal_Test)
 }
 
 TEST_F (MamdaOrderImbalanceFieldTests, Indication_OnOrderImbal_Test)
-{     
-    newMessage->addPrice("wIndicationPrice",978,4000);
+{
+    ticker->mOrderImbalanceControlCache.myIndicationPrice = 4000;
+    newMessage->addPrice("wIndicationPrice",978,ticker->mOrderImbalanceControlCache.myIndicationPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
 
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -456,8 +469,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, Indication_OnOrderImbal_Test)
 }    
 
 TEST_F (MamdaOrderImbalanceFieldTests, MatchVolume_OnOrderImbal_Test)
-{  
-    newMessage->addI64("wMatchVolume",979,4000);
+{
+    ticker->mOrderImbalanceControlCache.myMatchVolume = 4000;
+    newMessage->addI64("wMatchVolume",979,ticker->mOrderImbalanceControlCache.myMatchVolume);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
 
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -466,8 +480,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, MatchVolume_OnOrderImbal_Test)
 }        
 
 TEST_F (MamdaOrderImbalanceFieldTests, InsideMatchPrice_OnOrderImbal_Test)
-{      
-    newMessage->addPrice("wInsideMatchPrice",1023,5000); 
+{
+    ticker->mOrderImbalanceControlCache.myInsideMatchPrice = 5000;
+    newMessage->addPrice("wInsideMatchPrice",1023,ticker->mOrderImbalanceControlCache.myInsideMatchPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
 
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -476,8 +491,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, InsideMatchPrice_OnOrderImbal_Test)
 }           
 
 TEST_F (MamdaOrderImbalanceFieldTests, FarClearingPrice_OnOrderImbal_Test)
-{      
-    newMessage->addPrice("wFarClearingPrice",1024,6000);
+{
+    ticker->mOrderImbalanceControlCache.myFarClearingPrice = 6000;
+    newMessage->addPrice("wFarClearingPrice",1024,ticker->mOrderImbalanceControlCache.myFarClearingPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
 
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -486,8 +502,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, FarClearingPrice_OnOrderImbal_Test)
 }   
 
 TEST_F (MamdaOrderImbalanceFieldTests, NearClearingPrice_OnOrderImbal_Test)
-{    
-    newMessage->addPrice("wNearClearingPrice",1025,6000);
+{
+    ticker->mOrderImbalanceControlCache.myNearClearingPrice = 6000;
+    newMessage->addPrice("wNearClearingPrice",1025,ticker->mOrderImbalanceControlCache.myNearClearingPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
 
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -496,8 +513,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, NearClearingPrice_OnOrderImbal_Test)
 }           
 
 TEST_F (MamdaOrderImbalanceFieldTests, NoClearingPrice_OnOrderImbal_Test)
-{     
-    newMessage->addChar("wNoClearingPrice",1026,'c');
+{
+    ticker->mOrderImbalanceControlCache.myNoClearingPrice = 'c';
+    newMessage->addChar("wNoClearingPrice",1026,ticker->mOrderImbalanceControlCache.myNoClearingPrice);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -506,8 +524,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, NoClearingPrice_OnOrderImbal_Test)
 }  
 
 TEST_F (MamdaOrderImbalanceFieldTests, PriceVarInd_OnOrderImbal_Test)
-{       
-    newMessage->addChar("wPriceVarInd",1027,'a');
+{
+    ticker->mOrderImbalanceControlCache.myPriceVarInd = 'a';
+    newMessage->addChar("wPriceVarInd",1027,ticker->mOrderImbalanceControlCache.myPriceVarInd);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     
@@ -516,8 +535,9 @@ TEST_F (MamdaOrderImbalanceFieldTests, PriceVarInd_OnOrderImbal_Test)
 }   
 
 TEST_F (MamdaOrderImbalanceFieldTests, CrossType_OnOrderImbal_Test)
-{ 
-    newMessage->addChar("wCrossType",1170,'b');
+{
+    ticker->mOrderImbalanceControlCache.myCrossType = 'b';
+    newMessage->addChar("wCrossType",1170,ticker->mOrderImbalanceControlCache.myCrossType);
     newMessage->addString("wSecStatusQual",1020,"OrderImbBuy");
         
     ticker->callMamdaOnMsg(mSubscription, *newMessage);     

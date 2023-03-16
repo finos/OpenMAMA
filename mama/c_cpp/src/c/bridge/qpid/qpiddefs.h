@@ -29,9 +29,9 @@
 
 #include <wombat/wSemaphore.h>
 #include <wombat/wtable.h>
-#include <list.h>
+#include <wombat/list.h>
 #include <wombat/mempool.h>
-#include <timers.h>
+#include <wombat/timers.h>
 
 /* Qpid include files */
 #include <proton/version.h>

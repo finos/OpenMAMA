@@ -1,5 +1,6 @@
-cmake_minimum_required (VERSION 2.8.3)
 project (mama)
+
+enable_testing()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/c_cpp/cmake)
 include(mama-common)
@@ -17,12 +18,8 @@ add_subdirectory (c_cpp/src/c)
 add_subdirectory (c_cpp/src/c/dqstrategyplugin)
 
 if (WITH_JAVA)
-    add_subdirectory (jni/src)
+    add_subdirectory (jni/src/c)
 endif ()
-
-if (WITH_CSHARP)
-    add_subdirectory (dotnet/src/cs)
-endif()
 
 if(WITH_CPP)
     add_subdirectory (c_cpp/src/cpp)
@@ -32,9 +29,6 @@ if (WITH_EXAMPLES)
     add_subdirectory (c_cpp/src/examples/c)
     if(WITH_CPP)
         add_subdirectory (c_cpp/src/examples/cpp)
-    endif()
-    if (WITH_CSHARP AND WIN32 AND MSVC)
-        add_subdirectory (dotnet/src/examples)
     endif()
 endif ()
 
@@ -50,18 +44,12 @@ if (WITH_TESTTOOLS)
             add_subdirectory (c_cpp/src/testtools/performance/cpp)
         endif()
     endif ()
-    if (WITH_CSHARP AND WIN32 AND MSVC)
-        add_subdirectory (dotnet/src/testtools)
-    endif()
 endif ()
 
 if (WITH_UNITTEST)
     add_subdirectory (c_cpp/src/gunittest/c)
     if(WITH_CPP)
         add_subdirectory (c_cpp/src/gunittest/cpp)
-    endif()
-    if (WITH_CSHARP AND WIN32 AND MSVC)
-        add_subdirectory (dotnet/src/nunittest)
     endif()
 endif ()
 
@@ -71,6 +59,10 @@ endif ()
 
 if (WITH_NOOP_BRIDGE)
     add_subdirectory (c_cpp/src/c/bridge/noop)
+endif ()
+
+if (WITH_OMPB_BRIDGE)
+    add_subdirectory (c_cpp/src/c/bridge/ompb)
 endif ()
 
 if (WITH_PROTON)

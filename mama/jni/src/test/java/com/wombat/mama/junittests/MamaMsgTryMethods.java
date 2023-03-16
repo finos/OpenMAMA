@@ -22,14 +22,16 @@
 package com.wombat.mama.junittests;
 
 import com.wombat.mama.*;
-import junit.framework.TestCase;
 import org.junit.Assert;
+import org.junit.Before;
+import org.junit.After;
+import org.junit.Test;
 
 /**
  *
  * This class will test the MamaMsg.try*() methods.
  */
-public class MamaMsgTryMethods extends TestCase
+public class MamaMsgTryMethods extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -45,11 +47,10 @@ public class MamaMsgTryMethods extends TestCase
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
-        mBridge = Mama.loadBridge(Main.GetBridgeName());
-        Mama.open();
+        super.setUp();
 
         // Create the mama message
         mMsg = new MamaMsg();
@@ -57,8 +58,6 @@ public class MamaMsgTryMethods extends TestCase
         // Data for the fields
         int[] i32Array = new int[] { 1, 2 };
         String[] stringArray = new String[] { "1", "2" };
-        MamaMsg subMessage = new MamaMsg();
-        subMessage.addI32(null, 1, 752);
 
         // Add some fields
         mMsg.addBool(null, 1, true);
@@ -77,22 +76,22 @@ public class MamaMsgTryMethods extends TestCase
         mMsg.addArrayI32(null, 14, i32Array);
         mMsg.addArrayU16(null, 15, i32Array);
         mMsg.addArrayString(null, 16, stringArray);
-        mMsg.addMsg(null, 17, subMessage);
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
         // Reset all member variables
-        mMsg = null;
-        // Close mama
-        Mama.close();
+        mMsg.destroy();
+
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testBool()
     {
         // Extract the field
@@ -106,6 +105,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), true);
     }
 
+    @Test
     public void testChar()
     {
         // Extract the field
@@ -119,6 +119,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 'G');
     }
 
+    @Test
     public void testI8()
     {
         // Extract the field
@@ -132,6 +133,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 16);
     }
 
+    @Test
     public void testI16()
     {
         // Extract the field
@@ -145,6 +147,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 144);
     }
 
+    @Test
     public void testI32()
     {
         // Extract the field
@@ -158,6 +161,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 69);
     }
 
+    @Test
     public void testI64()
     {
         // Extract the field
@@ -171,6 +175,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 23847329);
     }
 
+    @Test
     public void testU8()
     {
         // Extract the field
@@ -184,6 +189,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 16);
     }
 
+    @Test
     public void testU16()
     {
         // Extract the field
@@ -197,6 +203,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 144);
     }
 
+    @Test
     public void testU32()
     {
         // Extract the field
@@ -210,6 +217,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 69);
     }
 
+    @Test
     public void testU64()
     {
         // Extract the field
@@ -223,6 +231,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 23847329);
     }
 
+    @Test
     public void testF32()
     {
         // Extract the field
@@ -236,6 +245,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), (float)6.4, 0.001);
     }
 
+    @Test
     public void testF64()
     {
         // Extract the field
@@ -249,6 +259,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), 196.4, 0.001);
     }
 
+    @Test
     public void testString()
     {
         // Extract the field
@@ -262,6 +273,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(result.getValue(), "This is a test");
     }
 
+    @Test
     public void testI32Array()
     {
         // Extract the field
@@ -277,6 +289,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(arrayValues[1], 2);
     }
 
+    @Test
     public void testU16Array()
     {
         // Extract the field
@@ -292,6 +305,7 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(arrayValues[1], 2);
     }
 
+    @Test
     public void testStringArray()
     {
         // Extract the field
@@ -307,8 +321,14 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertEquals(arrayValues[1], "2");
     }
 
+    @Test
     public void testMsg()
     {
+        MamaMsg subMessage = new MamaMsg();
+        subMessage.addI32(null, 1, 752);
+        mMsg.addMsg(null, 17, subMessage);
+        subMessage.destroy();
+
         // Extract the field
         MamaMessage result = new MamaMessage();
         Assert.assertTrue(mMsg.tryMsg(null, 17, result));
@@ -317,8 +337,10 @@ public class MamaMsgTryMethods extends TestCase
         Assert.assertFalse(mMsg.tryMsg(null, 117, result));
 
         // Verify that the result is valid
-        MamaMsg subMessage = result.getValue();
-        int subMessageResult = subMessage.getI32(null, 1, 66);
+        MamaMsg subMessageRead = result.getValue();
+        int subMessageResult = subMessageRead.getI32(null, 1, 66);
         Assert.assertEquals(subMessageResult, 752);
+        // Destroy the submsg here
+        subMessageRead.destroy();
     }
 }

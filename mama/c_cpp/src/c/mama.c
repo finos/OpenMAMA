@@ -36,8 +36,8 @@
 #include <mama/version.h>
 #include <bridge.h>
 #include <payloadbridge.h>
-#include <property.h>
-#include <platform.h>
+#include <wombat/property.h>
+#include <wombat/platform.h>
 #include <plugin.h>
 #include <registerfunctions.h>
 
@@ -137,12 +137,14 @@ typedef struct mamaAppContext_
 } mamaApplicationContext;
 
 /**
- * @brief Structure for storing combined mamaBridge and LIB_HANDLE data
+ * @brief Structure for storing metadata associated with the MAMA middleware lib
  */
 typedef struct mamaMiddlewareLib_
 {
-    mamaBridge  bridge;
-    LIB_HANDLE  library;
+    mamaBridge      bridge;
+    LIB_HANDLE      library;
+    wthread_mutex_t mMamaStartLock;
+    wthread_cond_t  mMamaStartCond;
 } mamaMiddlewareLib;
 
 
@@ -268,6 +270,10 @@ mama_normalizeMamaBridgeInterfaceVersionInternal (versionInfo* version);
 MAMAExpDLL
 void
 mama_setWrapperGetVersion(fpWrapperGetVersion value);
+
+MAMAExpDLL
+void
+mama_freeAllocatedBuffer (const char* buffer);
 
 mama_status mamaInternal_autoloadPayloadBridges (void);
 
@@ -707,7 +713,7 @@ mamaInternal_getGlobalStatsCollector()
 wproperty_t
 mamaInternal_getProperties()
 {
-  return gProperties;
+    return gProperties;
 }
 
 /**
@@ -769,7 +775,7 @@ mama_openWithPropertiesCount (const char* path,
 {
     mama_status         result                  = MAMA_STATUS_OK;
     mama_size_t         numBridges              = 0;
-    mamaMiddleware      middleware              = 0;
+    mama_size_t         middlewareIdx           = 0;
     const char*         appString               = NULL;
     const char*         prop                    = NULL;
     int                 bridgeIdx               = 0;
@@ -913,9 +919,9 @@ mama_openWithPropertiesCount (const char* path,
      * Note: At present we ignore the return status of the loadPayloadBridge
      * call within the iteration, though we may wish to resolve that.
      */
-    for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
     {
-        mamaMiddlewareLib*  middlewareLib   = gImpl.middlewares.byIndex[middleware];
+        mamaMiddlewareLib*  middlewareLib   = gImpl.middlewares.byIndex[middlewareIdx];
 
         if (middlewareLib && middlewareLib->bridge)
         {
@@ -925,7 +931,7 @@ mama_openWithPropertiesCount (const char* path,
                 uint8_t i = 0;
                 while (payloadId[i] != MAMA_PAYLOAD_NULL)
                 {
-                    if (!gImpl.payloads.byChar[payloadId[i]])
+                    if (!gImpl.payloads.byChar[(uint8_t)payloadId[i]])
                     {
                         mamaPayloadBridge payloadImpl = NULL;
                         mama_loadPayloadBridge (&payloadImpl, payloadName[i]);
@@ -964,10 +970,10 @@ mama_openWithPropertiesCount (const char* path,
     /* Iterate the currently loaded middleware bridges, log their version, and
      * increment the count of open bridges.
      */
-    for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
     {
         mamaMiddlewareLib* middlewareLib
-            = (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+            = (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
         if (middlewareLib)
         {
@@ -1077,7 +1083,7 @@ threadPropertiesCb (const char* name, const char* value, void* closure)
 mama_status
 mama_statsInit (void)
     {
-    mamaMiddleware middleware = 0;
+    mama_size_t middlewareIdx = 0;
     char* statsLogging = (char*) properties_Get (gProperties, "mama.statslogging.enable");
 
     if ( (statsLogging != NULL) && strtobool (statsLogging))
@@ -1140,10 +1146,10 @@ mama_statsInit (void)
         /* Iterate each bridge, and call the enableStats method on the default
          * queue for each.
          */
-        for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+        for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
         {
             mamaMiddlewareLib* middlewareLib =
-                (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+                (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
             if (middlewareLib && middlewareLib->bridge)
             {
@@ -1286,6 +1292,14 @@ mama_setPropertiesFromFile (const char *path,
     return MAMA_STATUS_OK;
 }
 
+void
+mama_loadDefaultProperties ()
+{
+    if (!gProperties) {
+        mamaInternal_loadProperties (NULL, NULL);
+    }
+}
+
 const char *
 mama_getProperty (const char *name)
 {
@@ -1298,6 +1312,57 @@ mama_getProperty (const char *name)
         return NULL;
 
     return properties_Get( gProperties, name );
+}
+
+typedef struct mamaImplGetAllPropertiesImpl_ {
+    char* mPosition;
+    char* mBuffer;
+    size_t mBytesRemaining;
+} mamaImplGetAllPropertiesImpl;
+
+static void mamaImpl_getAllPropertiesAsStringCb (const char* name,
+                                                 const char* value,
+                                                 void*       closure)
+{
+    mamaImplGetAllPropertiesImpl* propertiesImpl = (mamaImplGetAllPropertiesImpl*) closure;
+    // Unlikely but just in case we have already blown our limit here
+    if (propertiesImpl->mBytesRemaining > 0)
+    {
+        size_t bytesWritten = snprintf (propertiesImpl->mPosition,
+                                        propertiesImpl->mBytesRemaining,
+                                        "%s=%s\n",
+                                        name,
+                                        value);
+        propertiesImpl->mPosition += bytesWritten;
+        propertiesImpl->mBytesRemaining -= bytesWritten;
+    }
+}
+
+const char * mama_getPropertiesAsString ()
+{
+    uint32_t propertyCount = properties_Count (mamaInternal_getProperties());
+    mamaImplGetAllPropertiesImpl propertiesImpl;
+    size_t bufferSize = propertyCount * ((MAX_INTERNAL_PROP_LEN * 2) + 2) + 1;
+    // Leave null terminator at end
+    propertiesImpl.mBytesRemaining = bufferSize - 1;
+
+    // Preallocate required amount of memory based on number of entries in property file + max property lengths
+    propertiesImpl.mBuffer = (char*) calloc (1, bufferSize);
+    propertiesImpl.mPosition = propertiesImpl.mBuffer;
+    properties_ForEach (mamaInternal_getProperties(),
+                        mamaImpl_getAllPropertiesAsStringCb,
+                        (void*)&propertiesImpl);
+
+    // Replace last trailing newline with a null terminator
+    if (propertiesImpl.mPosition > propertiesImpl.mBuffer) {
+        *(propertiesImpl.mPosition - 1) = '\0';
+    }
+    return propertiesImpl.mBuffer;
+}
+
+void mama_freeAllocatedBuffer (const char* buffer)
+{
+    free((void*)buffer);
 }
 
 const char*
@@ -1331,8 +1396,8 @@ mama_status
 mama_closeCount (unsigned int* count)
 {
     mama_status    result     = MAMA_STATUS_OK;
-    mamaMiddleware middleware = 0;
-    int payload = 0;
+    mama_size_t    middlewareIdx = 0;
+    uint8_t payload = 0;
     int bridgeCount = 0;
 
     wthread_static_mutex_lock (&gImpl.myLock);
@@ -1386,11 +1451,11 @@ mama_closeCount (unsigned int* count)
         /* Iterate the loaded bridges, and stop the internal event queue for
          * each.
          */
-        for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+        for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
         {
             char threadname[256];
             mamaMiddlewareLib* middlewareLib =
-                        (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+                        (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
             if (middlewareLib && middlewareLib->bridge)
             {
@@ -1557,10 +1622,10 @@ mama_closeCount (unsigned int* count)
         /* Iterate over the loaded middleware bridges, close each bridge, and
          * unload each library in turn.
          */
-        for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+        for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
         {
             mamaMiddlewareLib* middlewareLib =
-                        (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+                        (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
             if (middlewareLib)
             {
@@ -1597,10 +1662,14 @@ mama_closeCount (unsigned int* count)
                     middlewareLib->library = NULL;
                 }
 
+                /* Destroy objects for synchronization */
+                wthread_mutex_destroy (&middlewareLib->mMamaStartLock);
+                wthread_cond_destroy (&middlewareLib->mMamaStartCond);
+
                 /* Free the middlewareLib struct */
                 free (middlewareLib);
 
-                gImpl.middlewares.byIndex[middleware] = NULL;
+                gImpl.middlewares.byIndex[middlewareIdx] = NULL;
             }
         }
 
@@ -1821,6 +1890,76 @@ mama_startBackgroundEx (mamaBridge bridgeImpl, mamaStopCBEx exCallback, void* cl
     return mama_startBackgroundHelper (bridgeImpl, NULL, exCallback, closure);
 }
 
+static void MAMACALLTYPE mamaImpl_startAllStopCb(
+    mama_status status, mamaBridge bridge, void* closure) {
+    // This callback means that mama_start has stopped for the given thread
+    mama_status result = MAMA_STATUS_OK;
+    mama_size_t middlewareIdx = 0;
+
+    /* Iterate loaded bridges and call start for each on their own thread */
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
+    {
+        mamaMiddlewareLib* middlewareLib =
+            (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
+
+        if (middlewareLib && middlewareLib->bridge)
+        {
+            // Send a conditional signal for unblocking
+            wthread_mutex_lock   (&middlewareLib->mMamaStartLock);
+            wthread_cond_signal  (&middlewareLib->mMamaStartCond);
+            wthread_mutex_unlock (&middlewareLib->mMamaStartLock);
+        }
+    }
+}
+
+mama_status
+mama_startAll (mama_bool_t isBlocking) {
+    mama_status result = MAMA_STATUS_OK;
+    mama_size_t middlewareIdx = 0;
+
+    /* Iterate loaded bridges and call start for each on their own thread */
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
+    {
+        mamaMiddlewareLib* middlewareLib =
+            (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
+
+        if (middlewareLib && middlewareLib->bridge)
+        {
+            mamaBridgeImpl* impl = (mamaBridgeImpl*)middlewareLib->bridge;
+            mama_status bridgeStartStatus = mama_startBackgroundHelper (
+                middlewareLib->bridge, NULL, mamaImpl_startAllStopCb, NULL);
+            if (bridgeStartStatus != MAMA_STATUS_OK) {
+                mama_log (MAMA_LOG_LEVEL_ERROR,
+                          "mama_startAll(): Failed to start bridge %s.",
+                          impl->bridgeGetName());
+                // This may be fatal so save status code for return
+                result = bridgeStartStatus;
+            }
+        }
+    }
+
+    /* OK so this function is expected to block, so join threads here */
+    if (isBlocking == MAMA_BOOL_TRUE)
+    {
+        for (middlewareIdx = 0; middlewareIdx < gImpl.middlewares.count; ++middlewareIdx)
+        {
+            mamaMiddlewareLib* middlewareLib =
+                (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
+
+            if (middlewareLib && middlewareLib->bridge)
+            {
+                mamaBridgeImpl* impl = (mamaBridgeImpl*)middlewareLib->bridge;
+                // Wait on the ending lock
+                wthread_mutex_lock (&middlewareLib->mMamaStartLock);
+                wthread_cond_wait (&middlewareLib->mMamaStartCond,
+                                   &middlewareLib->mMamaStartLock);
+                wthread_mutex_unlock (&middlewareLib->mMamaStartLock);
+            }
+        }
+    }
+    return result;
+}
+
 /**
  * Stop processing messages
  */
@@ -1868,13 +2007,13 @@ mama_status
 mama_stopAll (void)
 {
     mama_status  result      = MAMA_STATUS_OK;
-    mamaMiddleware middleware = 0;
+    mama_size_t  middlewareIdx = 0;
 
     /* Iterate the loaded bridges and call mama_stop for each. */
-    for (middleware = 0; middleware != gImpl.middlewares.count; ++middleware)
+    for (middlewareIdx = 0; middlewareIdx != gImpl.middlewares.count; ++middlewareIdx)
     {
         mamaMiddlewareLib* middlewareLib =
-                    (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middleware];
+                    (mamaMiddlewareLib*)gImpl.middlewares.byIndex[middlewareIdx];
 
         if (middlewareLib && middlewareLib->bridge)
         {
@@ -2284,10 +2423,11 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
     payloadLib->id            = payloadChar;
     payloadLib->keepLoaded    = 0;
     {
+        const char *propstring = NULL;
         char propName[MAX_INTERNAL_PROP_LEN];
         snprintf (propName, MAX_INTERNAL_PROP_LEN,
                   "%s%s", MAMA_PROPERTY_PAYLOAD_KEEPLOADED, payloadName);
-        const char *propstring = properties_Get(mamaInternal_getProperties(), propName);
+        propstring = properties_Get(mamaInternal_getProperties(), propName);
         if (propstring)
         {
             payloadLib->keepLoaded = properties_GetPropertyValueAsBoolean (propstring);
@@ -2317,19 +2457,19 @@ mama_loadPayloadBridgeInternal  (mamaPayloadBridge* impl,
         goto error_handling_payloadlib;
     }
 
-    if (gImpl.payloads.byChar[payloadChar])
+    if (gImpl.payloads.byChar[(uint8_t)payloadChar])
     {
         status = MAMA_STATUS_SYSTEM_ERROR;
         mama_log (MAMA_LOG_LEVEL_ERROR,
                   "mama_loadPayloadBridgeInternal (): "
-                  "Payload bridge using this character [%c] has already been registered. Cannot load payload bridge [%s]",
-                  payloadChar,
+                  "Payload bridge using this character [%#x] has already been registered. Cannot load payload bridge [%s]",
+                  (uint8_t)payloadChar,
                   payloadName);
         goto error_handling_payloadlib;
     }
 
     /* Add a pointer to the byChar array for rapid access later. */
-    gImpl.payloads.byChar[payloadChar] = payloadLib;
+    gImpl.payloads.byChar[(uint8_t)payloadChar] = payloadLib;
 
     /* Increment the count of loaded payloads. */
     /* Note: Due to the check for the PAYLOAD_MAX limit at the start of the
@@ -2866,8 +3006,7 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
     /* Allocate the bridgeLib struct, and populate with the bridgeImpl and
      * library handle.
      */
-    middlewareLib = malloc (sizeof (mamaMiddlewareLib));
-
+    middlewareLib = calloc (1, sizeof (mamaMiddlewareLib));
     if (!middlewareLib)
     {
         mama_log (MAMA_LOG_LEVEL_ERROR,
@@ -2891,6 +3030,10 @@ mama_loadBridgeWithPathInternal (mamaBridge* impl,
 
     middlewareLib->bridge        = *(mamaBridge*)impl;
     middlewareLib->library       = middlewareLibHandle;
+
+    // Initializing mutex and conditional for start / stopping this lock
+    wthread_mutex_init (&middlewareLib->mMamaStartLock, NULL);
+    wthread_cond_init  (&middlewareLib->mMamaStartCond, NULL);
 
     status = wtable_insert (gImpl.middlewares.table,
                             middlewareName,
@@ -3543,4 +3686,185 @@ autoloadPayloadPropertiesCb (const char* name, const char* value, void* closure)
             }
         }
     }
+}
+
+MAMAExpDLL
+extern long int
+mamaImpl_getParameterAsLong (
+    long defaultVal,
+    long minimum,
+    long maximum,
+    const char* format, ...)
+{
+    const char* returnVal     = NULL;
+    long        returnLong    = 0;
+    char        paramDefault[PROPERTY_NAME_MAX_LENGTH];
+    char        paramName[PROPERTY_NAME_MAX_LENGTH];
+
+    /* Create list for storing the parameters passed in */
+    va_list arguments;
+
+    /* Populate list with arguments passed in */
+    va_start(arguments, format);
+
+    snprintf (paramDefault, PROPERTY_NAME_MAX_LENGTH, "%ld", defaultVal);
+
+    returnVal = properties_GetPropertyValueUsingVaList(
+        mamaInternal_getProperties(),
+        paramDefault,
+        paramName,
+        format,
+        arguments);
+
+    /* Translate the returned string to a long */
+    returnLong = atol (returnVal);
+
+    if (returnLong < minimum)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "Value for %s too small (%ld) - reverting to: [%ld]",
+                  paramName,
+                  returnLong,
+                  minimum);
+        returnLong = minimum;
+    }
+    else if (returnLong > maximum)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "Value for %s too large (%ld) - reverting to: [%ld]",
+                  paramName,
+                  returnLong,
+                  maximum);
+        returnLong = maximum;
+    }
+    /* These will be equal if unchanged */
+    else if (returnVal == paramDefault)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "parameter [%s]: [%ld] (Default)",
+                  paramName, returnLong);
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
+                  "parameter [%s]: [%ld] (User Defined)",
+                  paramName, returnLong);
+    }
+
+    return returnLong;
+}
+
+MAMAExpDLL
+extern const char*
+mamaImpl_getParameter (
+    const char* defaultVal,
+    const char* format, ...)
+{
+    char        paramName[PROPERTY_NAME_MAX_LENGTH];
+    const char* returnVal = NULL;
+    /* Create list for storing the parameters passed in */
+    va_list     arguments;
+
+    /* Populate list with arguments passed in */
+    va_start (arguments, format);
+
+    returnVal = properties_GetPropertyValueUsingVaList (
+        mamaInternal_getProperties(),
+        (char*)defaultVal,
+        paramName,
+        format,
+        arguments);
+
+    /* These will be equal if unchanged */
+    if (returnVal == defaultVal)
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameter: "
+                  "parameter [%s]: [%s] (Default)",
+                  paramName,
+                  returnVal);
+    }
+    else
+    {
+        mama_log (MAMA_LOG_LEVEL_FINER,
+                  "qpidBridgeMamaTransportImpl_getParameter: "
+                  "parameter [%s]: [%s] (User Defined)",
+                  paramName,
+                  returnVal);
+    }
+
+    /* Clean up the list */
+    va_end(arguments);
+
+    return returnVal;
+}
+
+struct findTransportContainer {
+    char *mTransports;
+    size_t mCapacity;
+    size_t mMatchCount;
+    wtable_t mMatches;
+};
+
+static void mamaImpl_findTransportNameByPrefix (const char* name,
+                                                const char* value,
+                                                void* closure)
+{
+    struct findTransportContainer* container = (struct findTransportContainer*) closure;
+    char mutableProperty[PROPERTY_NAME_MAX_LENGTH];
+    char *curPos = NULL;
+    char *tokens = mutableProperty;
+    char components[4][PROPERTY_NAME_MAX_LENGTH];
+    size_t componentIdx = 0;
+    strncpy (mutableProperty, name, PROPERTY_NAME_MAX_LENGTH);
+    // We need 4 tokens here to determine a transport name
+    while (componentIdx < 4 && (curPos = wstrsep (&tokens, "."))) {
+        strncpy (components[componentIdx++], curPos, PROPERTY_NAME_MAX_LENGTH);
+    }
+    if (componentIdx == 4
+        // String is mama.<bridge>.transport.<transportname>.<more fields>
+        && 0 == strcmp (components[0], "mama")
+        && 0 == strcmp (components[2], "transport")
+        && 0 != strlenEx(tokens)) {
+        uint32_t updatedCount = wtable_get_count (container->mMatches);
+        if (NULL == wtable_lookup (container->mMatches, components[3])
+            && updatedCount != container->mCapacity
+            && WTABLE_INSERT_SUCCESS == wtable_insert (container->mMatches, components[3], NULL)) {
+            strncpy (&container->mTransports[(container->mMatchCount) * MAMA_MAX_TRANSPORT_LEN],
+                     components[3],
+                     MAMA_MAX_TRANSPORT_LEN);
+            container->mMatchCount = updatedCount + 1;
+        }
+    }
+
+}
+
+MAMAExpDLL
+extern mama_status
+mama_getAvailableTransportNames (char transports[][MAMA_MAX_TRANSPORT_LEN],
+                                 size_t maxCount,
+                                 size_t* count)
+{
+    size_t found;
+    wtable_t table = wtable_create("tport_names", 10);
+    struct findTransportContainer container;
+    if (NULL == table) {
+        return MAMA_STATUS_NOMEM;
+    }
+
+    container.mCapacity = maxCount;
+    container.mMatches = table;
+    container.mTransports = (char*)transports;
+    container.mMatchCount = 0;
+    properties_ForEach (
+        mamaInternal_getProperties(),
+        mamaImpl_findTransportNameByPrefix,
+        &container);
+
+    *count = wtable_get_count (table);
+    return MAMA_STATUS_OK;
 }

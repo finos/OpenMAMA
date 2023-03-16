@@ -43,20 +43,19 @@
 #include <mama/mamacpp.h>
 #include <mama/MamaMsg.h>
 
+#include "common/MainUnitTest.h"
 #include "common/MamdaUnitTestUtils.h"
-#include "common/CpuTestGenerator.h"
-#include "common/MemoryTestGenerator.h"
 
 using std::string;
 
 using namespace std;
 using namespace Wombat;
 
-class QuoteTickerCB : public MamdaQuoteHandler                  
+class QuoteFieldTestHandlerCB : public MamdaQuoteHandler                  
 {
 public:
-    QuoteTickerCB () {}
-    virtual ~QuoteTickerCB () {}
+    QuoteFieldTestHandlerCB () {}
+    virtual ~QuoteFieldTestHandlerCB () {}
 
     void callMamdaOnMsg (MamdaSubscription* sub, MamaMsg& msg)
     {   
@@ -185,7 +184,6 @@ public:
         mQuoteTestCache.myTempShortSaleBidTickFieldState  = quote.getShortSaleBidTickFieldState();           
         //myTempAskUpdateCountFieldState                    = quote.getAskUpdateCountFieldState();
         //myTempBidUpdateCountFieldState                    = quote.getBidUpdateCountFieldState();
-
     }
 
     void onQuoteGap (
@@ -201,9 +199,49 @@ public:
         MamdaSubscription*        subscription,
         MamdaQuoteListener&       listener,
         const MamaMsg&            msg,
-        const MamdaQuoteClosing&  event,
+        const MamdaQuoteClosing&  quote,
         const MamdaQuoteRecap&    recap)
-    {  
+    {
+        mQuoteTestCache.myTempSymbol            = quote.getSymbol();
+        mQuoteTestCache.myTempSrcTime           = quote.getSrcTime().getAsString();
+        mQuoteTestCache.myTempActTime           = quote.getActivityTime().getAsString();
+        mQuoteTestCache.myTempLineTime          = quote.getLineTime().getAsString();
+        mQuoteTestCache.myTempPubId             = listener.getPubId();
+        mQuoteTestCache.myTempBidClosePrice     = listener.getBidClosePrice().getValue();
+        mQuoteTestCache.myTempBidCloseDate      = listener.getBidCloseDate().getAsString();
+        mQuoteTestCache.myTempBidPrevClosePrice = listener.getBidPrevClosePrice().getValue();
+        mQuoteTestCache.myTempBidPrevCloseDate  = listener.getBidPrevCloseDate().getAsString();
+        mQuoteTestCache.myTempBidHigh           = listener.getBidHigh().getValue();
+        mQuoteTestCache.myTempBidLow            = listener.getBidLow().getValue();
+        mQuoteTestCache.myTempAskClosePrice     = listener.getAskClosePrice().getValue();
+        mQuoteTestCache.myTempAskCloseDate      = listener.getAskCloseDate().getAsString();
+        mQuoteTestCache.myTempAskPrevClosePrice = listener.getAskPrevClosePrice().getValue();
+        mQuoteTestCache.myTempAskPrevCloseDate  = listener.getAskPrevCloseDate().getAsString();
+        mQuoteTestCache.myTempAskHigh           = listener.getAskHigh().getValue();
+        mQuoteTestCache.myTempAskLow            = listener.getAskLow().getValue();
+        mQuoteTestCache.myTempEventSeqNum       = quote.getEventSeqNum();
+        mQuoteTestCache.myTempEventTime         = quote.getEventTime().getAsString();
+        mQuoteTestCache.myTempSymbolFieldState            = quote.getSymbolFieldState();
+        mQuoteTestCache.myTempPartIdFieldState            = quote.getPartIdFieldState();
+        mQuoteTestCache.myTempSrcTimeFieldState           = quote.getSrcTimeFieldState();
+        mQuoteTestCache.myTempActTimeFieldState           = quote.getActivityTimeFieldState();
+        mQuoteTestCache.myTempLineTimeFieldState          = quote.getLineTimeFieldState();
+        mQuoteTestCache.myTempSendTimeFieldState          = quote.getSendTimeFieldState();
+        mQuoteTestCache.myTempPubIdFieldState             = listener.getPubIdFieldState();
+        mQuoteTestCache.myTempBidClosePriceFieldState     = listener.getBidClosePriceFieldState();
+        mQuoteTestCache.myTempBidCloseDateFieldState      = listener.getBidCloseDateFieldState();
+        mQuoteTestCache.myTempBidPrevClosePriceFieldState = listener.getBidPrevClosePriceFieldState();
+        mQuoteTestCache.myTempBidPrevCloseDateFieldState  = listener.getBidPrevCloseDateFieldState();
+        mQuoteTestCache.myTempBidHighFieldState           = listener.getBidHighFieldState();
+        mQuoteTestCache.myTempBidLowFieldState            = listener.getBidLowFieldState();
+        mQuoteTestCache.myTempAskClosePriceFieldState     = listener.getAskClosePriceFieldState();
+        mQuoteTestCache.myTempAskCloseDateFieldState      = listener.getAskCloseDateFieldState();
+        mQuoteTestCache.myTempAskPrevClosePriceFieldState = listener.getAskPrevClosePriceFieldState();
+        mQuoteTestCache.myTempAskPrevCloseDateFieldState  = listener.getAskPrevCloseDateFieldState();
+        mQuoteTestCache.myTempAskHighFieldState           = listener.getAskHighFieldState();
+        mQuoteTestCache.myTempAskLowFieldState            = listener.getAskLowFieldState();
+        mQuoteTestCache.myTempEventSeqNumFieldState       = quote.getEventSeqNumFieldState();
+        mQuoteTestCache.myTempEventTimeFieldState         = quote.getEventTimeFieldState();
     }
 
     void onQuoteOutOfSequence (
@@ -253,7 +291,7 @@ protected:
         try
         {
             mamaBridge bridge;
-            bridge = Mama::loadBridge("wmw");
+            bridge = Mama::loadBridge(getMiddleware());
             Mama::open();
             //mama_enableLogging (stderr, MAMA_LOG_LEVEL_FINEST);
             mDictionary = new MamaDictionary;
@@ -263,7 +301,7 @@ protected:
                 return;
             }
             
-            mDictionary->populateFromFile("dictionary.txt");
+            mDictionary->populateFromFile(getDictionary());
             MamdaCommonFields::setDictionary (*mDictionary);
             MamdaQuoteFields::reset();
             MamdaQuoteFields::setDictionary (*mDictionary);
@@ -318,7 +356,7 @@ protected:
 
 TEST_F (MamdaQuoteFieldTests,QuoteFieldTests)
 {  
-    QuoteTickerCB* ticker = new QuoteTickerCB;
+    QuoteFieldTestHandlerCB* ticker = new QuoteFieldTestHandlerCB;
     initializeQuoteControlCache (ticker->mQuoteControlCache);      
     mQuoteListener->addHandler (ticker);   
 
@@ -388,7 +426,7 @@ TEST_F (MamdaQuoteFieldTests,QuoteFieldTests)
 
 TEST_F (MamdaQuoteFieldTests,QuoteFieldStateTests)
 {  
-    QuoteTickerCB* ticker = new QuoteTickerCB;
+    QuoteFieldTestHandlerCB* ticker = new QuoteFieldTestHandlerCB;
     initializeQuoteControlCache (ticker->mQuoteControlCache);      
     mQuoteListener->addHandler (ticker);   
 
@@ -397,55 +435,27 @@ TEST_F (MamdaQuoteFieldTests,QuoteFieldStateTests)
     newMessage->create();       
    
     MamaDateTime* DateTime = NULL;
-    DateTime = new MamaDateTime ("2010/02/02", NULL);   
+    DateTime = new MamaDateTime ("2010/02/02", NULL);
 
     SetQuoteClosingFields  (*newMessage,*DateTime);          
     ticker->callMamdaOnMsg (mSubscription, *newMessage);
-     
-    EXPECT_EQ (ticker->mQuoteControlCache.mySymbolFieldState,           ticker->mQuoteTestCache.myTempSymbolFieldState);
-    //EXPECT_EQ (ticker->mQuoteControlCache.mPartIdFieldState,            ticker->mQuoteTestCache.myTempPartIdFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.mySrcTimeFieldState,          ticker->mQuoteTestCache.myTempSrcTimeFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myActTimeFieldState,          ticker->mQuoteTestCache.myTempActTimeFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myLineTimeFieldState,         ticker->mQuoteTestCache.myTempLineTimeFieldState);
-    //EXPECT_EQ (ticker->mQuoteControlCache.mSendTimeFieldState,          ticker->mQuoteTestCache.myTempSendTimeFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myPubIdFieldState,            ticker->mQuoteTestCache.myTempPubIdFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidPriceFieldState,         ticker->mQuoteTestCache.myTempBidPriceFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidSizeFieldState,          ticker->mQuoteTestCache.myTempBidSizeFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidDepthFieldState,         ticker->mQuoteTestCache.myTempBidDepthFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidPartIdFieldState,        ticker->mQuoteTestCache.myTempBidPartIdFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidClosePriceFieldState,    ticker->mQuoteTestCache.myTempBidClosePriceFieldState);
+
+    EXPECT_STREQ (ticker->mQuoteControlCache.mySymbol,           ticker->mQuoteTestCache.myTempSymbol);
+    EXPECT_EQ (ticker->mQuoteControlCache.myAskClosePrice,     ticker->mQuoteTestCache.myTempAskClosePrice);
+    EXPECT_EQ (ticker->mQuoteControlCache.myAskPrevClosePrice,     ticker->mQuoteTestCache.myTempAskPrevClosePrice);
+    EXPECT_EQ (ticker->mQuoteControlCache.mySymbolFieldState,     ticker->mQuoteTestCache.myTempSymbolFieldState);
+    EXPECT_EQ (ticker->mQuoteControlCache.mySrcTimeFieldState,     ticker->mQuoteTestCache.myTempSrcTimeFieldState);
+    EXPECT_EQ (ticker->mQuoteControlCache.myActTimeFieldState,     ticker->mQuoteTestCache.myTempActTimeFieldState);
+    EXPECT_EQ (ticker->mQuoteControlCache.myLineTimeFieldState,     ticker->mQuoteTestCache.myTempLineTimeFieldState);
+    EXPECT_EQ (ticker->mQuoteControlCache.myPubIdFieldState,     ticker->mQuoteTestCache.myTempPubIdFieldState);
+    EXPECT_EQ (ticker->mQuoteControlCache.myBidClosePriceFieldState,     ticker->mQuoteTestCache.myTempBidClosePriceFieldState);
     EXPECT_EQ (ticker->mQuoteControlCache.myBidCloseDateFieldState,     ticker->mQuoteTestCache.myTempBidCloseDateFieldState);
-    //EXPECT_EQ (ticker->mQuoteControlCache.myBidPrevClosePriceFieldState,ticker->mQuoteTestCache.myTempBidPrevClosePriceFieldState);
-    //EXPECT_EQ (ticker->mQuoteControlCache.myBidPrevCloseDateFieldState, ticker->mQuoteTestCache.myTempBidPrevCloseDateFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidHighFieldState,          ticker->mQuoteTestCache.myTempBidHighFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidLowFieldState,           ticker->mQuoteTestCache.myTempBidLowFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskPriceFieldState,         ticker->mQuoteTestCache.myTempAskPriceFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskSizeFieldState,          ticker->mQuoteTestCache.myTempAskSizeFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskDepthFieldState,         ticker->mQuoteTestCache.myTempAskDepthFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskPartIdFieldState,        ticker->mQuoteTestCache.myTempAskPartIdFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskClosePriceFieldState,    ticker->mQuoteTestCache.myTempAskClosePriceFieldState);
+    EXPECT_EQ (ticker->mQuoteControlCache.myBidPrevCloseDateFieldState,     ticker->mQuoteTestCache.myTempBidPrevCloseDateFieldState);
+    EXPECT_EQ (ticker->mQuoteControlCache.myAskClosePriceFieldState,     ticker->mQuoteTestCache.myTempAskClosePriceFieldState);
     EXPECT_EQ (ticker->mQuoteControlCache.myAskCloseDateFieldState,     ticker->mQuoteTestCache.myTempAskCloseDateFieldState);
-    //EXPECT_EQ (ticker->mQuoteControlCache.myAskPrevClosePriceFieldState,ticker->mQuoteTestCache.myTempAskPrevClosePriceFieldState);
-    //EXPECT_EQ (ticker->mQuoteControlCache.myAskPrevCloseDateFieldState, ticker->mQuoteTestCache.myTempAskPrevCloseDateFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskHighFieldState,          ticker->mQuoteTestCache.myTempAskHighFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskLowFieldState,           ticker->mQuoteTestCache.myTempAskLowFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myEventSeqNumFieldState,      ticker->mQuoteTestCache.myTempEventSeqNumFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myEventTimeFieldState,        ticker->mQuoteTestCache.myTempEventTimeFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myQuoteDateFieldState,        ticker->mQuoteTestCache.myTempQuoteDateFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myQuoteQualStrFieldState,     ticker->mQuoteTestCache.myTempQuoteQualStrFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myQuoteQualNativeFieldState,  ticker->mQuoteTestCache.myTempQuoteQualNativeFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskTimeFieldState,          ticker->mQuoteTestCache.myTempAskTimeFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidTimeFieldState,          ticker->mQuoteTestCache.myTempBidTimeFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskIndicatorFieldState,     ticker->mQuoteTestCache.myTempAskIndicatorFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidIndicatorFieldState,     ticker->mQuoteTestCache.myTempBidIndicatorFieldState);
-    //EXPECT_EQ (ticker->mQuoteControlCache.myAskUpdateCountFieldState,   ticker->mQuoteTestCache.myTempAskUpdateCountFieldState);
-    //EXPECT_EQ (ticker->mQuoteControlCache.myBidUpdateCountFieldState,   ticker->mQuoteTestCache.myTempBidUpdateCountFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskYieldFieldState,         ticker->mQuoteTestCache.myTempAskYieldFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidYieldFieldState,         ticker->mQuoteTestCache.myTempBidYieldFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myBidSizesListFieldState,     ticker->mQuoteTestCache.myTempBidSizesListFieldState);
-    EXPECT_EQ (ticker->mQuoteControlCache.myAskSizesListFieldState,     ticker->mQuoteTestCache.myTempAskSizesListFieldState);
-    //EXPECT_EQ (ticker->mQuoteControlCache.myShortSaleBidTickFieldState, ticker->mQuoteTestCache.myTempShortSaleBidTickFieldState);
-   
+    EXPECT_EQ (ticker->mQuoteControlCache.myAskPrevClosePriceFieldState,     ticker->mQuoteTestCache.myTempAskPrevClosePriceFieldState);
+    EXPECT_EQ (ticker->mQuoteControlCache.myAskPrevCloseDateFieldState,     ticker->mQuoteTestCache.myTempAskPrevCloseDateFieldState);
+
     delete DateTime;
     DateTime = NULL;
 

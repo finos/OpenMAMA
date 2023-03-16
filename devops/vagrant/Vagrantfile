@@ -12,13 +12,12 @@ Vagrant.configure("2") do |config|
   end
 
   config.vm.provider "docker" do |docker|
+    # Demo docker image is already provisioned, but re-provisioning is idempotent so continue
+    docker.image = "openmama/openmama-demo:latest"
     # Password here just for bootstrapping and installing public key
-    # config.ssh.password = 'vagrant'
+    config.ssh.password = 'vagrant'
     # Let vagrant know this image will be running an ssh server
     docker.has_ssh = true
-    # We need our own dockerfile to bootstrap vagrant user etc
-    docker.build_dir = "."
-    docker.dockerfile = "Dockerfile.vagrant"
   end
 
   # This is how we get hold of the ansible playbook - via git

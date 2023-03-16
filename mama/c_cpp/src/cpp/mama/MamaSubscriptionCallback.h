@@ -22,11 +22,13 @@
 #ifndef MAMA_SUBSCRIPTION_CALLBACK_CPP_H__
 #define MAMA_SUBSCRIPTION_CALLBACK_CPP_H__
 
+#include "mama/MamaStatus.h"
 #include "mama/mamacpp.h"
 
 namespace Wombat 
 {
     class MamaSubscription;
+    class MamaBasicSubscription;
     /**
      * The message callback interface. Callers provide an object implementing this 
      * interface on creating a <code>MamaSubscription</code>.
@@ -51,7 +53,8 @@ namespace Wombat
          *
          * @param subscription The subscription.
          */
-        virtual void onCreate (MamaSubscription*  subscription) = 0;
+        virtual void onCreate (MamaSubscription*  subscription)
+        {};
 
         /**
          * Invoked if an error occurs during prior to subscription
@@ -69,7 +72,13 @@ namespace Wombat
          */
         virtual void onError (MamaSubscription*  subscription,
                               const MamaStatus&  status,
-                              const char*        symbol) = 0;
+                              const char*        symbol)
+        {
+            mama_log (MAMA_LOG_LEVEL_ERROR,
+                      "Found error %s while trying to subscribe to '%s'",
+                      status.toString(),
+                      symbol != nullptr ? symbol : "(null)");
+        };
 
         /**
          * Method invoked when a sequence number gap is detected. At this
@@ -130,7 +139,8 @@ namespace Wombat
                                 mamaQuality        quality,
                                 const char*        symbol,
                                 short              cause,
-                                const void*        platformInfo) = 0;
+                                const void*        platformInfo)
+        {};
        
         /* By default forward to MamaSubscription callback */
         virtual void onCreate (MamaBasicSubscription*  subscription)

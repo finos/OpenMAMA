@@ -1,32 +1,19 @@
-/* $Id$
- *
- * OpenMAMA: The open middleware agnostic messaging API
- * Copyright (C) 2011 NYSE Technologies, Inc.
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA
- * 02110-1301 USA
- */
+package com.wombat.mama.junittests.fieldcache;
 
-import junit.framework.*;
+import com.wombat.mama.junittests.MamaTestBaseTestCase;
 import com.wombat.mama.*;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  *
  * This class will test MamaFieldCacheFloat64's functions
  */
-public class MamaFieldCacheFloat64Test extends TestCase
+public class MamaFieldCacheFloat64Test extends MamaTestBaseTestCase
 {
     /* ****************************************************** */
     /* Protected Member Variables. */
@@ -35,26 +22,33 @@ public class MamaFieldCacheFloat64Test extends TestCase
     protected MamaMsg mMsg;
     protected MamaFieldCacheFloat64 mFieldCacheFloat64;
 
+    protected Double mDelta = 0.00000001;
+
     /* ****************************************************** */
     /* Protected Functions. */
     /* ****************************************************** */
 
-    @Override
-    protected void setUp()
+    @Before
+    public void setUp()
     {
+        super.setUp();
+
         mFieldCacheFloat64 = new MamaFieldCacheFloat64(101, "example", true);
         mMsg = new MamaMsg();   
     }
 
-    @Override
-    protected void tearDown()
+    @After
+    public void tearDown()
     {
+        mMsg.destroy();
+        super.tearDown();
     }
 
     /* ****************************************************** */
     /* Test Functions. */
     /* ****************************************************** */
 
+    @Test
     public void testAddToMessage()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -62,9 +56,10 @@ public class MamaFieldCacheFloat64Test extends TestCase
         //add it to the message
         mFieldCacheFloat64.addToMessage(false, mMsg);
         //check we can get the value of true returned to us when searching for the field
-        assertEquals(mMsg.getF64("example", 101), 1.0);
+        assertEquals(mMsg.getF64("example", 101), 1.0, mDelta);
     }
 
+    @Test
     public void testAddToMessagefieldName()
     {
         //set the value of the field to true (the default, otherwise, is false
@@ -72,92 +67,101 @@ public class MamaFieldCacheFloat64Test extends TestCase
         //add it to the message
         mFieldCacheFloat64.addToMessage(true, mMsg);
         //check we can get the value of true returned to us when searching for the field
-        assertEquals(mMsg.getF64("example", 101), 1.0);
+        assertEquals(mMsg.getF64("example", 101), 1.0, mDelta);
     }
 
+    @Test
     public void testCopy()
     {
         MamaFieldCacheField copyCache =  mFieldCacheFloat64.copy();
         assertEquals(mFieldCacheFloat64.getAsString(), copyCache.getAsString());
     }
 
+    @Test
     public void testApplyMsgField()
     {
         MamaFieldCacheFloat64 testCacheFloat64 = new MamaFieldCacheFloat64(102, "example2", true);
         mFieldCacheFloat64.set(2);
         testCacheFloat64.set(1.0);
-        assertEquals(testCacheFloat64.get(), 1.0);
-        assertEquals(mFieldCacheFloat64.get(), 2.0);
+        assertEquals(testCacheFloat64.get(), 1.0, mDelta);
+        assertEquals(mFieldCacheFloat64.get(), 2.0, mDelta);
         mFieldCacheFloat64.apply(testCacheFloat64);
-        assertEquals(mFieldCacheFloat64.get(), 1.0);
+        assertEquals(mFieldCacheFloat64.get(), 1.0, mDelta);
     }
 
+    @Test
     public void testApplyFieldCache()
     {
        MamaFieldCacheFloat64 testField  = new MamaFieldCacheFloat64(102, "example2", true);
        testField.set(1.0);
        mFieldCacheFloat64.apply(testField);
-       assertEquals(mFieldCacheFloat64.get(), 1.0);
+       assertEquals(mFieldCacheFloat64.get(), 1.0, mDelta);
     }
 
 
+    @Test
     public void testSet()
     {
         MamaFieldCacheFloat64 testCacheFloat64 = new MamaFieldCacheFloat64(102, "example2", false);
 
-        assertEquals(testCacheFloat64.get(), 0.0);
+        assertEquals(testCacheFloat64.get(), 0.0, mDelta);
         testCacheFloat64.set(1.0);
         //set without track state
-        assertEquals(testCacheFloat64.get(), 1.0);
+        assertEquals(testCacheFloat64.get(), 1.0, mDelta);
 
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, testCacheFloat64.getModState());
 
     }
 
+    @Test
     public void testSetTrackState()
     {
-        assertEquals(mFieldCacheFloat64.get(), 0.0);
+        assertEquals(mFieldCacheFloat64.get(), 0.0, mDelta);
         mFieldCacheFloat64.set(1.0);
         //set with track state
-        assertEquals(mFieldCacheFloat64.get(), 1.0);
+        assertEquals(mFieldCacheFloat64.get(), 1.0, mDelta);
         assertEquals(MamaFieldCacheField.MOD_STATE_MODIFIED, mFieldCacheFloat64.getModState());
     }
 
+    @Test
     public void testSetTrackStateTouched()
     {
     
-        assertEquals(mFieldCacheFloat64.get(), 0.0);
+        assertEquals(mFieldCacheFloat64.get(), 0.0, mDelta);
         mFieldCacheFloat64.set(1.0);
         mFieldCacheFloat64.set(1.0);
         //set with track state
-        assertEquals(mFieldCacheFloat64.get(), 1.0);
+        assertEquals(mFieldCacheFloat64.get(), 1.0, mDelta);
         assertEquals(MamaFieldCacheField.MOD_STATE_TOUCHED, mFieldCacheFloat64.getModState());
 
     }
 
+    @Test
     public void testIsEqual()
     {   
         MamaFieldCacheFloat64 testCacheFloat64 = new MamaFieldCacheFloat64(102, "example2", true);
         testCacheFloat64.set(1.0);
         mFieldCacheFloat64.set(1.0);
-        assertEquals(testCacheFloat64.get(), 1.0);
-        assertEquals(mFieldCacheFloat64.get(), 1.0);
+        assertEquals(testCacheFloat64.get(), 1.0, mDelta);
+        assertEquals(mFieldCacheFloat64.get(), 1.0, mDelta);
         assertTrue(testCacheFloat64.isEqual(mFieldCacheFloat64.get()));
     }
 
+    @Test
     public void testGet()
     {
-        assertEquals(mFieldCacheFloat64.get(), 0.0);
+        assertEquals(mFieldCacheFloat64.get(), 0.0, mDelta);
         mFieldCacheFloat64.set(1.0);
-        assertEquals(mFieldCacheFloat64.get(), 1.0);
+        assertEquals(mFieldCacheFloat64.get(), 1.0, mDelta);
     }
 
+    @Test
     public void testGetAsString()
     {
-        assertEquals(mFieldCacheFloat64.get(), 0.0);
+        assertEquals(mFieldCacheFloat64.get(), 0.0, mDelta);
         assertEquals("0.0", mFieldCacheFloat64.getAsString());
         mFieldCacheFloat64.set(1.0);
-        assertEquals(mFieldCacheFloat64.get(), 1.0);
+        assertEquals(mFieldCacheFloat64.get(), 1.0, mDelta);
         assertEquals("1.0", mFieldCacheFloat64.getAsString());
     }
 }

@@ -69,6 +69,8 @@ extern "C"
 #define MAMA_MAX_ROOT_LEN          5 // e.g. _MDDD
 #define MAMA_MAX_SOURCE_LEN        64
 #define MAMA_MAX_TRANSPORT_LEN     64
+#define MAMA_MAX_BRIDGE_NAME_LEN   64
+#define MAMA_MAX_RESOURCE_POOL_LEN 128
 // This is source + symbol + root + 2 delimiting periods
 #define MAMA_MAX_TOTAL_SYMBOL_LEN  (MAMA_MAX_SYMBOL_LEN + MAMA_MAX_SOURCE_LEN + \
                                     MAMA_MAX_ROOT_LEN + 2)
@@ -347,6 +349,27 @@ extern "C"
     mama_getProperty (const char* name);
 
     /**
+     * Load in default mama.properties from the default WOMBAT_PATH directory.
+     */
+    MAMAExpDLL
+    extern void
+    mama_loadDefaultProperties (void);
+
+    /**
+     * Build a string containing all configuration properties in the format:
+     *     key1=value
+     *     key2=value
+     *     key3=value
+     *
+     * NB The caller is responsible for destroying memory allocated by this
+     *    function
+     *
+     * @return String representing all the properties
+     */
+    MAMAExpDLL
+    extern const char * mama_getPropertiesAsString (void);
+
+    /**
      * Close MAMA and free all associated resources if no more references exist
      * (e.g.if open has been called 3 times then it will require 3 calls to 
      * close in order for all resources to be freed).
@@ -394,6 +417,20 @@ extern "C"
     MAMAExpDLL
     extern mama_status
     mama_start (mamaBridge bridgeImpl);
+
+    /**
+     * Start processing messages on the internal queue for all currently loaded
+     * MAMA bridges. This starts Mama's internal throttle, refresh logic, and
+     * other internal Mama processes as well as dispatching messages from the
+     * internal queue.
+     * <p>
+     * mama_startAll( ) blocks until all currently outstandin
+     *
+     * @param bridgeImpl The bridge specific structure.
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_startAll (mama_bool_t isBlocking);
 
     /**
      * The callback invoked if an error occurs calling mama_startBackground() or
@@ -693,6 +730,19 @@ extern "C"
     extern mama_status
     mama_getPayloadBridge (mamaPayloadBridge *payloadBridge,
                            const char        *payloadName);
+
+    /**
+     *
+     * @param transports
+     * @param count
+     * @param maxCount
+     * @return
+     */
+    MAMAExpDLL
+    extern mama_status
+    mama_getAvailableTransportNames (char transports[][MAMA_MAX_TRANSPORT_LEN],
+                                     size_t maxCount,
+                                     size_t* count);
 
 #if defined(__cplusplus)
 }

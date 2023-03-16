@@ -26,7 +26,7 @@
 
 #include <stdint.h>
 #include <wombat/port.h>
-#include <property.h>
+#include <wombat/property.h>
 #include <mama/mama.h>
 #include <queueimpl.h>
 #include <msgimpl.h>
@@ -35,7 +35,7 @@
 #include <msgimpl.h>
 #include <subscriptionimpl.h>
 #include <transportimpl.h>
-#include <timers.h>
+#include <wombat/timers.h>
 #include <stdio.h>
 #include <errno.h>
 #include <wombat/queue.h>
@@ -47,6 +47,7 @@
 #include "qpiddefs.h"
 #include "qpidcommon.h"
 #include "codec.h"
+#include "mama/integration/mama.h"
 #include "mama/integration/endpointpool.h"
 
 /*=========================================================================
@@ -84,7 +85,6 @@
 #define     MAX_RECV_BLOCK_SIZE             100L
 #define     CONFIG_VALUE_TPORT_TYPE_BROKER  "broker"
 #define     CONFIG_VALUE_TPORT_TYPE_P2P     "p2p"
-#define     UUID_STRING_BUF_SIZE            37
 #define     KNOWN_SOURCES_WTABLE_SIZE       10
 
 
@@ -129,74 +129,6 @@ qpidBridgeMamaTransportImpl_stop (qpidTransportBridge* impl);
  */
 static void MAMACALLTYPE
 qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure);
-
-/**
- * This is a local function for parsing long configuration parameters from the
- * MAMA properties object, and supports minimum and maximum limits as well
- * as default values to reduce the amount of code duplicated throughout.
- *
- * @param defaultVal This is the default value to use if the parameter does not
- *                   exist in the configuration file
- * @param minimum    If the parameter obtained from the configuration file is
- *                   less than this value, this value will be used.
- * @param maximum    If the parameter obtained from the configuration file is
- *                   greater than this value, this value will be used.
- * @param format     This is the format string which is used to build the
- *                   name of the configuration parameter which is to be parsed.
- * @param ...        This is the variable list of arguments to be used along
- *                   with the format string.
- *
- * @return long int containing the paramter value, default, minimum or maximum.
- */
-static long int
-qpidBridgeMamaTransportImpl_getParameterAsLong (long        defaultVal,
-                                                long        minimum,
-                                                long        maximum,
-                                                const char* format,
-                                                ...);
-
-/**
- * This is a local function for parsing string configuration parameters from the
- * MAMA properties object, and supports default values. This function should
- * be used where the configuration parameter itself can be variable.
- *
- * @param defaultVal This is the default value to use if the parameter does not
- *                   exist in the configuration file
- * @param paramName  The format and variable list combine to form the real
- *                   configuration parameter used. This configuration parameter
- *                   will be stored at this location so the calling function
- *                   can log this.
- * @param format     This is the format string which is used to build the
- *                   name of the configuration parameter which is to be parsed.
- * @param ...        This is the variable list of arguments to be used along
- *                   with the format string.
- *
- * @return const char* containing the parameter value or the default.
- */
-static const char*
-qpidBridgeMamaTransportImpl_getParameterWithVaList (char*       defaultVal,
-                                                    char*       paramName,
-                                                    const char* format,
-                                                    va_list     arguments);
-
-/**
- * This is a local function for parsing string configuration parameters from the
- * MAMA properties object, and supports default values. This function should
- * be used where the configuration parameter itself can be variable.
- *
- * @param defaultVal This is the default value to use if the parameter does not
- *                   exist in the configuration file
- * @param format     This is the format string which is used to build the
- *                   name of the configuration parameter which is to be parsed.
- * @param ...        This is the variable list of arguments to be used along
- *                   with the format string.
- *
- * @return const char* containing the parameter value or the default.
- */
-static const char*
-qpidBridgeMamaTransportImpl_getParameter (const char* defaultVal,
-                                          const char* format,
-                                          ...);
 
 /**
  * This function is called on its own thread to run the main recv dispatch
@@ -352,7 +284,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
 
     /* Set the transport type */
     tportType =
-        qpidBridgeMamaTransportImpl_getParameter (
+        mamaImpl_getParameter (
             DEFAULT_TPORT_TYPE,
             "%s.%s.%s",
             TPORT_PARAM_PREFIX,
@@ -382,7 +314,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
     }
 
     /* Set the incoming address */
-    impl->mIncomingAddress = qpidBridgeMamaTransportImpl_getParameter (
+    impl->mIncomingAddress = mamaImpl_getParameter (
             DEFAULT_INCOMING_URL,
             "%s.%s.%s",
             TPORT_PARAM_PREFIX,
@@ -391,7 +323,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
 
     /* Set the outgoing address */
     impl->mOutgoingAddress =
-        qpidBridgeMamaTransportImpl_getParameter (
+        mamaImpl_getParameter (
             defOutUrl,
             "%s.%s.%s",
             TPORT_PARAM_PREFIX,
@@ -400,7 +332,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
 
     /* Set the reply address */
     tmpReply =
-        qpidBridgeMamaTransportImpl_getParameter (
+        mamaImpl_getParameter (
             DEFAULT_REPLY_URL,
             "%s.%s.%s",
             TPORT_PARAM_PREFIX,
@@ -419,7 +351,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
 
     /* Set the message pool size for pool initialization later */
     poolSize =
-        (int) qpidBridgeMamaTransportImpl_getParameterAsLong (
+        (int) mamaImpl_getParameterAsLong (
             DEFAULT_SUB_POOL_SIZE,
             MIN_SUB_POOL_SIZE,
             MAX_SUB_POOL_SIZE,
@@ -429,7 +361,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
 
     /* Get the size which the pool is to increment by when full */
     impl->mQpidMsgPoolIncSize =
-        (unsigned int) qpidBridgeMamaTransportImpl_getParameterAsLong (
+        (unsigned int) mamaImpl_getParameterAsLong (
             DEFAULT_SUB_POOL_INC_SIZE,
             MIN_SUB_POOL_INC_SIZE,
             MAX_SUB_POOL_INC_SIZE,
@@ -439,7 +371,7 @@ qpidBridgeMamaTransport_create (transportBridge*    result,
 
     /* Get the receive window size */
     impl->mQpidRecvBlockSize =
-        (int) qpidBridgeMamaTransportImpl_getParameterAsLong (
+        (int) mamaImpl_getParameterAsLong (
             DEFAULT_RECV_BLOCK_SIZE,
             MIN_RECV_BLOCK_SIZE,
             MAX_RECV_BLOCK_SIZE,
@@ -597,7 +529,7 @@ qpidBridgeMamaTransportImpl_getUuid (transportBridge transport)
     if (NULL == impl->mUuid)
     {
         wUuid                tempUuid;
-        char                 uuidStringBuffer[UUID_STRING_BUF_SIZE];
+        char                 uuidStringBuffer[WUUID_UNPARSE_OUTPUT_LENGTH];
 
         wUuid_clear          (tempUuid);
         wUuid_generate_time  (tempUuid);
@@ -902,139 +834,6 @@ qpidBridgeMamaTransportImpl_queueCallback (mamaQueue queue, void* closure)
     return;
 }
 
-long int qpidBridgeMamaTransportImpl_getParameterAsLong (
-                                                long defaultVal,
-                                                long minimum,
-                                                long maximum,
-                                                const char* format, ...)
-{
-    const char* returnVal     = NULL;
-    long        returnLong    = 0;
-    char        paramDefault[PARAM_NAME_MAX_LENGTH];
-    char        paramName[PARAM_NAME_MAX_LENGTH];
-
-    /* Create list for storing the parameters passed in */
-    va_list arguments;
-
-    /* Populate list with arguments passed in */
-    va_start(arguments, format);
-
-    snprintf (paramDefault, PARAM_NAME_MAX_LENGTH, "%ld", defaultVal);
-
-    returnVal = qpidBridgeMamaTransportImpl_getParameterWithVaList (paramDefault,
-                                                                    paramName,
-                                                                    format,
-                                                                    arguments);
-
-    /* Translate the returned string to a long */
-    returnLong = atol (returnVal);
-
-    if (returnLong < minimum)
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                "qpidBridgeMamaTransportImpl_getParameterAsLong: "
-                "Value for %s too small (%ld) - reverting to: [%ld]",
-                paramName,
-                returnLong,
-                minimum);
-        returnLong = minimum;
-    }
-    else if (returnLong > maximum)
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                "qpidBridgeMamaTransportImpl_getParameterAsLong: "
-                "Value for %s too large (%ld) - reverting to: [%ld]",
-                paramName,
-                returnLong,
-                maximum);
-        returnLong = maximum;
-    }
-    /* These will be equal if unchanged */
-    else if (returnVal == paramDefault)
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
-                  "parameter [%s]: [%ld] (Default)",
-                  paramName, returnLong);
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameterAsLong: "
-                  "parameter [%s]: [%ld] (User Defined)",
-                  paramName, returnLong);
-    }
-
-    return returnLong;
-}
-
-const char* qpidBridgeMamaTransportImpl_getParameterWithVaList (
-                                            char* defaultVal,
-                                            char* paramName,
-                                            const char* format,
-                                            va_list arguments)
-{
-    const char* property = NULL;
-
-    /* Create the complete transport property string */
-    vsnprintf (paramName, PARAM_NAME_MAX_LENGTH,
-               format, arguments);
-
-    /* Get the property out for analysis */
-    property = properties_Get (mamaInternal_getProperties (),
-                               paramName);
-
-    /* Properties will return NULL if parameter is not specified in configs */
-    if (property == NULL)
-    {
-        property = defaultVal;
-    }
-
-    return property;
-}
-
-const char* qpidBridgeMamaTransportImpl_getParameter (
-                                            const char* defaultVal,
-                                            const char* format, ...)
-{
-    char        paramName[PARAM_NAME_MAX_LENGTH];
-    const char* returnVal = NULL;
-    /* Create list for storing the parameters passed in */
-    va_list     arguments;
-
-    /* Populate list with arguments passed in */
-    va_start (arguments, format);
-
-    returnVal = qpidBridgeMamaTransportImpl_getParameterWithVaList (
-                        (char*)defaultVal,
-                        paramName,
-                        format,
-                        arguments);
-
-    /* These will be equal if unchanged */
-    if (returnVal == defaultVal)
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameter: "
-                  "parameter [%s]: [%s] (Default)",
-                  paramName,
-                  returnVal);
-    }
-    else
-    {
-        mama_log (MAMA_LOG_LEVEL_FINER,
-                  "qpidBridgeMamaTransportImpl_getParameter: "
-                  "parameter [%s]: [%s] (User Defined)",
-                  paramName,
-                  returnVal);
-    }
-
-    /* Clean up the list */
-    va_end(arguments);
-
-    return returnVal;
-}
-
 void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 {
     qpidTransportBridge*    impl          = (qpidTransportBridge*)closure;
@@ -1090,7 +889,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 
         while (pn_messenger_incoming (impl->mIncoming) > 0)
         {
-
+            int found = 0;
             node = memoryPool_getNode (impl->mQpidMsgPool,
                                        sizeof(qpidMsgNode));
             if (NULL == node)
@@ -1127,7 +926,6 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
             pn_data_get_map  (properties);
             pn_data_enter    (properties); /* Enter into meta map */
 
-            int found = 0;
             found = pn_data_lookup(properties,QPID_KEY_MSGTYPE);
             if (found)
             {
@@ -1273,7 +1071,7 @@ void* qpidBridgeMamaTransportImpl_dispatchThread (void* closure)
 
                 if (1 == subscription->mIsTportDisconnected)
                 {
-                	subscription->mIsTportDisconnected = 0;
+                    subscription->mIsTportDisconnected = 0;
                 }
 
                 if (1 != subscription->mIsNotMuted)

@@ -38,7 +38,7 @@ using std::endl;
 class MsgGeneralTestsC : public ::testing::Test
 {
 protected:
-    MsgGeneralTestsC(void) 
+    MsgGeneralTestsC(void)
         : mMsg           (NULL)
         , mPayloadBridge (NULL)
         , mStatus        (MAMA_STATUS_OK)
@@ -53,18 +53,18 @@ protected:
 
     };
 
-    virtual void SetUp(void) 
+    virtual void SetUp(void)
     {
         mama_open();
         mamaMsg_create (&mMsg);
     };
 
-    virtual void TearDown(void) 
+    virtual void TearDown(void)
     {
         mamaMsg_destroy(mMsg);
         mama_close();
     };
-    
+
     mamaMsg            mMsg;
     mamaPayloadBridge  mPayloadBridge;
     mamaBridge         mMiddlewareBridge;
@@ -121,7 +121,7 @@ TEST_F (MsgGeneralTestsC, msgCreateForPayloadBridgeInValid)
 
 TEST_F (MsgGeneralTestsC, msgClearValid)
 {
-    //Create & add fields 
+    //Create & add fields
     mamaMsg_addString (mMsg, "name0", 100, "test");
     mamaMsg_addBool (mMsg, "name1", 101, true);
     mamaMsg_addChar (mMsg, "name2", 102, 'A');
@@ -131,7 +131,7 @@ TEST_F (MsgGeneralTestsC, msgClearValid)
 
 TEST_F (MsgGeneralTestsC, msgClearInValid)
 {
-    //Create & add fields 
+    //Create & add fields
     mamaMsg_addString (mMsg, "name0", 100, "test");
     mamaMsg_addBool (mMsg, "name1", 101, true);
     mamaMsg_addChar (mMsg, "name2", 102, 'A');
@@ -141,7 +141,7 @@ TEST_F (MsgGeneralTestsC, msgClearInValid)
 
 TEST_F (MsgGeneralTestsC, msgDetachValid)
 {
-    mamaQueue      queue    = NULL; 
+    mamaQueue      queue    = NULL;
 
     //Create & add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test");
@@ -168,12 +168,12 @@ TEST_F (MsgGeneralTestsC, msgGetByteBufferValid)
     const void*    buffer       = NULL;
     mama_size_t    bufferLength = 0;
 
-    //Create & add fields to msg 
+    //Create & add fields to msg
     mamaMsg_addString (mMsg, "name0", 100, "test");
     mamaMsg_addBool (mMsg, "name1", 101, true);
     mamaMsg_addChar (mMsg, "name2", 102, 'A');
-   
-    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, &bufferLength), MAMA_STATUS_OK); 
+
+    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, &bufferLength), MAMA_STATUS_OK);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetByteBufferInValidMsg)
@@ -181,12 +181,12 @@ TEST_F (MsgGeneralTestsC, msgGetByteBufferInValidMsg)
     const void*    buffer       = NULL;
     mama_size_t    bufferLength = 0;
 
-    //Create & add fields to msg 
+    //Create & add fields to msg
     mamaMsg_addString (mMsg, "name0", 100, "test");
     mamaMsg_addBool (mMsg, "name1", 101, true);
     mamaMsg_addChar (mMsg, "name2", 102, 'A');
-   
-    ASSERT_EQ (mamaMsg_getByteBuffer (NULL, &buffer, &bufferLength), MAMA_STATUS_NULL_ARG); 
+
+    ASSERT_EQ (mamaMsg_getByteBuffer (NULL, &buffer, &bufferLength), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetByteBufferInValidBuffer)
@@ -197,20 +197,20 @@ TEST_F (MsgGeneralTestsC, msgGetByteBufferInValidBuffer)
     mamaMsg_addString (mMsg, "name0", 100, "test");
     mamaMsg_addBool (mMsg, "name1", 101, true);
     mamaMsg_addChar (mMsg, "name2", 102, 'A');
-   
-    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, NULL, &bufferLength), MAMA_STATUS_NULL_ARG); 
+
+    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, NULL, &bufferLength), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetByteBufferInValidBufferLength)
 {
     const void*    buffer       = NULL;
 
-    //Create and add fields to msg 
+    //Create and add fields to msg
     mamaMsg_addString (mMsg, "name0", 100, "test");
     mamaMsg_addBool (mMsg, "name1", 101, true);
     mamaMsg_addChar (mMsg, "name2", 102, 'A');
 
-    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, NULL), MAMA_STATUS_NULL_ARG); 
+    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, NULL), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgCreateFromByteBufferValid)
@@ -219,13 +219,13 @@ TEST_F (MsgGeneralTestsC, msgCreateFromByteBufferValid)
     mama_size_t   bufferLength = 0;
     mamaMsg       newMsg       = NULL;
 
-    //add fields to msg 
+    //add fields to msg
     mamaMsg_addString (mMsg, "name0", 100, "test");
     mamaMsg_addBool (mMsg, "name1", 101, true);
     mamaMsg_addChar (mMsg, "name2", 102, 'A');
 
-    // Get the byteBuffer from msg 
-    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, &bufferLength), MAMA_STATUS_OK); 
+    // Get the byteBuffer from msg
+    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, &bufferLength), MAMA_STATUS_OK);
 
     //create mamaMsg using byteBuffer
     ASSERT_EQ (mamaMsg_createFromByteBuffer(&newMsg, buffer, bufferLength), MAMA_STATUS_OK);
@@ -237,13 +237,13 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgCreateFromByteBufferInValidMsg)
     const void*   buffer       = NULL;
     mama_size_t   bufferLength = 0;
 
-    //add fields to msg 
+    //add fields to msg
     mamaMsg_addString (mMsg, "name0", 100, "test");
     mamaMsg_addBool (mMsg, "name1", 101, true);
     mamaMsg_addChar (mMsg, "name2", 102, 'A');
 
-    // Get the byteBuffer from msg 
-    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, &bufferLength), MAMA_STATUS_OK); 
+    // Get the byteBuffer from msg
+    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, &bufferLength), MAMA_STATUS_OK);
 
     //create mamaMsg using byteBuffer
     ASSERT_EQ (mamaMsg_createFromByteBuffer(NULL, buffer, bufferLength), MAMA_STATUS_NULL_ARG);
@@ -264,13 +264,13 @@ TEST_F (MsgGeneralTestsC, msgCreateFromByteBufferInValidBufferLength)
     mama_size_t   bufferLength = 0;
     mamaMsg       newMsg       = NULL;
 
-    //add fields to msg 
+    //add fields to msg
     mamaMsg_addString (mMsg, "name0", 100, "test");
     mamaMsg_addBool (mMsg, "name1", 101, true);
     mamaMsg_addChar (mMsg, "name2", 102, 'A');
 
-    // Get the byteBuffer from msg 
-    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, &bufferLength), MAMA_STATUS_OK); 
+    // Get the byteBuffer from msg
+    ASSERT_EQ (mamaMsg_getByteBuffer (mMsg, &buffer, &bufferLength), MAMA_STATUS_OK);
 
     //create mamaMsg using byteBuffer
     ASSERT_EQ (mamaMsg_createFromByteBuffer (&newMsg, buffer, 0), MAMA_STATUS_NULL_ARG);
@@ -287,7 +287,7 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsValid)
     mamaMsg_addString (mMsg, "name0", 101, testString);
     mamaMsg_addString (mMsg, "name1", 102, "test2");
     mamaMsg_addI8 (mMsg, "name2", 103, 8);
-   
+
     ASSERT_EQ (mamaMsg_getNumFields(mMsg, &numFields), MAMA_STATUS_OK);
 }
 
@@ -300,7 +300,7 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsInValidMsg)
     mamaMsg_addString (mMsg, "name0", 101, testString);
     mamaMsg_addString (mMsg, "name1", 102, "test2");
     mamaMsg_addI8 (mMsg, "name2", 103, 8);
-   
+
     ASSERT_EQ (mamaMsg_getNumFields(NULL, &numFields), MAMA_STATUS_NULL_ARG);
 }
 
@@ -312,7 +312,7 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsInValidNumFields)
     mamaMsg_addString (mMsg, "name0", 101, testString);
     mamaMsg_addString (mMsg, "name1", 102, "test2");
     mamaMsg_addI8 (mMsg, "name2", 103, 8);
-   
+
     ASSERT_EQ (mamaMsg_getNumFields(mMsg, NULL), MAMA_STATUS_INVALID_ARG);
 }
 
@@ -346,7 +346,7 @@ TEST_F (MsgGeneralTestsC, msgGetNumFieldsSubMessage)
 TEST_F (MsgGeneralTestsC, msgGetPayloadTypeValid)
 {
     char  payloadType = MAMA_PAYLOAD_ID_UNKNOWN;
-    
+
     ASSERT_EQ (mamaMsgImpl_getPayloadId(mMsg, &payloadType), MAMA_STATUS_OK);
 }
 
@@ -359,7 +359,7 @@ TEST_F (MsgGeneralTestsC, msgGetPayloadTypeInValidMsg)
 
 TEST_F (MsgGeneralTestsC, msgImplSetMessageOwnerValid)
 {
-    const char*  testString = "test"; 
+    const char*  testString = "test";
     short        owner      = 1;
 
     //add fields to msg
@@ -371,7 +371,7 @@ TEST_F (MsgGeneralTestsC, msgImplSetMessageOwnerValid)
 
 TEST_F (MsgGeneralTestsC, DISABLED_msgImplSetMessageOwnerInValidMsg)
 {
-    const char*  testString = "test"; 
+    const char*  testString = "test";
     short        owner      = (short) NULL;
 
     //add fields to msg
@@ -397,7 +397,7 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgIterateFieldsValid)
     mamaMsgIteratorCb    callback = NULL;
     const mamaDictionary dict     = NULL;
     void*                closure  = 0;
-    
+
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
@@ -453,17 +453,17 @@ TEST_F (MsgGeneralTestsC, msgIterateFieldsInValidClosure)
 
     ASSERT_EQ (mamaMsg_iterateFields (mMsg, callback, dict, 0), MAMA_STATUS_NULL_ARG);
 }
- 
+
 TEST_F (MsgGeneralTestsC, msgImplSetQueueValid)
 {
     mamaQueue       queue     = NULL;
 
     mama_getDefaultEventQueue(mMiddlewareBridge, &queue);
-    
+
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsgImpl_setQueue(mMsg, queue), MAMA_STATUS_OK);
 }
 
@@ -474,7 +474,7 @@ TEST_F (MsgGeneralTestsC, msgImplSetQueueInValidMsg)
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsgImpl_setQueue(NULL, mQueue), MAMA_STATUS_NULL_ARG);
 }
 
@@ -483,7 +483,7 @@ TEST_F (MsgGeneralTestsC, msgImplSetQueueInValidQueue)
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsgImpl_setQueue(mMsg, NULL), MAMA_STATUS_INVALID_QUEUE);
 }
 
@@ -498,7 +498,7 @@ TEST_F (MsgGeneralTestsC, msgImplSetDqStrategyContextValid)
     mamaMsg_create (&mMsg);
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsgImpl_setDqStrategyContext(mMsg, &dqStrategyContext), MAMA_STATUS_OK);
 }
 
@@ -512,7 +512,7 @@ TEST_F (MsgGeneralTestsC, msgImplSetDqStrategyContextInValidMsg)
     mamaMsg_create (&mMsg);
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsgImpl_setDqStrategyContext(NULL, &dqStrategyContext), MAMA_STATUS_NULL_ARG);
 }
 
@@ -526,7 +526,7 @@ TEST_F (MsgGeneralTestsC, msgImplSetDqStrategyContextInValidDq)
     mamaMsg_create (&mMsg);
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsgImpl_setDqStrategyContext(mMsg, NULL), MAMA_STATUS_INVALID_ARG);
 }
 */
@@ -535,7 +535,7 @@ TEST_F (MsgGeneralTestsC, msgGetSendSubjectValid)
     const char*       subjectIn  = "subject";
     const char*       subjectOut = NULL;
     mama_status       status;
-   
+
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
@@ -553,11 +553,11 @@ TEST_F (MsgGeneralTestsC, msgGetSendSubjectValid)
 TEST_F (MsgGeneralTestsC, msgGetSendSubjectInValidMsg)
 {
     const char*       subject    = "";
-   
+
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsg_getSendSubject(NULL, &subject), MAMA_STATUS_NULL_ARG);
 }
 
@@ -566,29 +566,29 @@ TEST_F (MsgGeneralTestsC, msgGetSendSubjectInValidSubject)
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsg_getSendSubject(mMsg, NULL), MAMA_STATUS_INVALID_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgImplGetSubjectValid)
 {
     const char*       result    = "";
-   
+
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsgImpl_getSubject(mMsg, &result), MAMA_STATUS_OK);
 }
 
 TEST_F (MsgGeneralTestsC, msgImplGetSubjectInValidMsg)
 {
     const char*       result    = "";
-   
+
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsgImpl_getSubject(NULL, &result), MAMA_STATUS_NULL_ARG);
 }
 
@@ -597,7 +597,7 @@ TEST_F (MsgGeneralTestsC, msgImplGetSubjectInValidResult)
     //add fields to msg
     mamaMsg_addString (mMsg, "name0", 101, "test0");
     mamaMsg_addString (mMsg, "name1", 102, "test1");
-    
+
     ASSERT_EQ (mamaMsgImpl_getSubject(mMsg, NULL), MAMA_STATUS_INVALID_ARG);
 }
 
@@ -638,7 +638,7 @@ TEST_F (MsgGeneralTestsC, msgImplGetStatusFromMsgValid)
 {
     mama_i32_t    result       = 0;
     mamaMsgStatus status       = MAMA_MSG_STATUS_UNKNOWN;
-   
+
     //add fields to msg
     mamaMsg_addI32 (mMsg, "name0", 101, 8);
     mamaMsg_getI32 (mMsg, "Name", 100, &result);
@@ -695,7 +695,7 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgGetDateTimeMSecInValidMsg)
     mamaMsg_addDateTime(mMsg, NULL, 102, dateTime);
     mamaMsg_getDateTime(mMsg, NULL, 102, m_out);
 
-    ASSERT_EQ (mamaMsg_getDateTimeMSec(NULL, name, fid, milliseconds), MAMA_STATUS_NULL_ARG); 
+    ASSERT_EQ (mamaMsg_getDateTimeMSec(NULL, name, fid, milliseconds), MAMA_STATUS_NULL_ARG);
 
     mamaDateTime_destroy(dateTime);
     mamaDateTime_destroy(m_out);
@@ -712,7 +712,7 @@ TEST_F (MsgGeneralTestsC, msgGetDateTimeMSecInValidName)
     mamaDateTime_create(&dateTime);
     mamaDateTime_create(&m_out);
     mamaDateTime_setToNow(dateTime);
-    
+
     mamaMsg_addDateTime(mMsg, NULL, fid, dateTime);
     mamaMsg_getDateTime(mMsg, NULL, fid, m_out);
 
@@ -800,10 +800,10 @@ TEST_F (MsgGeneralTestsC, msgGetFieldAsStringValid)
     mama_fid_t           fid          = 101;
     char                 buffer[100];
     mama_size_t          bufferLength = 100;
-   
+
     //add fields to msg
     mamaMsg_addBool (mMsg, fieldName, fid, true);
-  
+
     ASSERT_EQ (mamaMsg_getFieldAsString(mMsg, fieldName, fid, buffer, bufferLength), MAMA_STATUS_OK);
 }
 
@@ -813,10 +813,10 @@ TEST_F (MsgGeneralTestsC, msgGetFieldAsStringInValidMsg)
     mama_fid_t           fid          = 0;
     char*                buffer       = NULL;
     mama_size_t          bufferLength = 0;
-   
+
     //add fields to msg
     mamaMsg_addBool (mMsg, "name1", 101, true);
-  
+
     ASSERT_EQ (mamaMsg_getFieldAsString(NULL, fieldName, fid, buffer, bufferLength), MAMA_STATUS_NULL_ARG);
 }
 
@@ -825,10 +825,10 @@ TEST_F (MsgGeneralTestsC, msgGetFieldAsStringInValidFieldName)
     mama_fid_t           fid          = 0;
     char*                buffer       = NULL;
     mama_size_t          bufferLength = 0;
-   
+
     //add fields to msg
     mamaMsg_addBool (mMsg, "name1", 101, true);
-  
+
     ASSERT_EQ (mamaMsg_getFieldAsString(mMsg, NULL, fid, buffer, bufferLength), MAMA_STATUS_NULL_ARG);
 }
 
@@ -838,34 +838,34 @@ TEST_F (MsgGeneralTestsC, msgGetFieldAsStringInValidFid)
     const char*          fieldName    = "";
     char*                buffer       = NULL;
     mama_size_t          bufferLength = 0;
-   
+
     //add fields to msg
     mamaMsg_addBool (mMsg, "name1", 101, true);
-  
+
     ASSERT_EQ (mamaMsg_getFieldAsString(mMsg, fieldName, 0, buffer, bufferLength), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetFieldAsStringInValidBuffer)
 {
-    const char*          fieldName    = "";
+    const char*          fieldName    = "name1";
     mama_fid_t           fid          = 0;
     mama_size_t          bufferLength = 0;
-   
+
     //add fields to msg
-    mamaMsg_addBool (mMsg, "name1", 101, true);
-  
+    mamaMsg_addBool (mMsg, fieldName, 101, true);
+
     ASSERT_EQ (mamaMsg_getFieldAsString(mMsg, fieldName, fid, NULL, bufferLength), MAMA_STATUS_NULL_ARG);
 }
 
 TEST_F (MsgGeneralTestsC, msgGetFieldAsStringInValidBufferLength)
 {
-    const char*          fieldName    = "";
+    const char*          fieldName    = "name1";
     mama_fid_t           fid          = 0;
     char*                buffer       = NULL;
-   
+
     //add fields to msg
-    mamaMsg_addBool (mMsg, "name1", 101, true);
-  
+    mamaMsg_addBool (mMsg, fieldName, 101, true);
+
     ASSERT_EQ (mamaMsg_getFieldAsString(mMsg, fieldName, fid, buffer, 0), MAMA_STATUS_NULL_ARG);
 }
 
@@ -938,12 +938,12 @@ TEST_F (MsgGeneralTestsC, msgSetNewBufferValid)
 {
     const void*          buffer       = NULL;
     mama_size_t          size         = 0;
-   
+
     //add fields to msg
     mamaMsg_addBool (mMsg, "name1", 101, true);
 
     mamaMsg_getByteBuffer (mMsg, &buffer, &size);
- 
+
     ASSERT_EQ (mamaMsg_setNewBuffer(mMsg, (void*)buffer, size), MAMA_STATUS_OK);
 }
 
@@ -951,12 +951,12 @@ TEST_F (MsgGeneralTestsC, msgSetNewBufferInValidMsg)
 {
     const void*          buffer       = NULL;
     mama_size_t          size         = 0;
-   
+
     //add fields to msg
     mamaMsg_addBool (mMsg, "name1", 101, true);
 
     mamaMsg_getByteBuffer (mMsg, &buffer, &size);
- 
+
     ASSERT_EQ (mamaMsg_setNewBuffer(NULL, &buffer, size), MAMA_STATUS_NULL_ARG);
 }
 
@@ -965,12 +965,12 @@ TEST_F (MsgGeneralTestsC, msgSetNewBufferInValidBuffer)
     mamaMsg              mMsg         = NULL;
     const void*          buffer       = NULL;
     mama_size_t          size         = 0;
-   
+
     //add fields to msg
     mamaMsg_addBool (mMsg, "name1", 101, true);
 
     mamaMsg_getByteBuffer (mMsg, &buffer, &size);
- 
+
     ASSERT_EQ (mamaMsg_setNewBuffer(mMsg, 0, size), MAMA_STATUS_NULL_ARG);
 }
 
@@ -978,12 +978,12 @@ TEST_F (MsgGeneralTestsC, DISABLED_msgSetNewBufferInValidSize)
 {
     const void*          buffer       = NULL;
     mama_size_t          size         = 0;
-   
+
     //add fields to msg
     mamaMsg_addBool (mMsg, "name1", 101, true);
 
     mamaMsg_getByteBuffer (mMsg, &buffer, &size);
- 
+
     ASSERT_EQ (mamaMsg_setNewBuffer(mMsg, &buffer, 0), MAMA_STATUS_NULL_ARG);
 }
 

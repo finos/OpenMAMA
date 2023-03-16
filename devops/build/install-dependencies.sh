@@ -1,0 +1,197 @@
+#!/bin/bash
+
+# Make all unhandled erroneous return codes fatal
+set -e
+
+# Globals
+export SDKMAN_DIR=${SDKMAN_DIR:-/usr/local/sdkman}
+VERSION_GTEST=${VERSION_GTEST:-1.8.0}
+VERSION_APR=${VERSION_APR:-1.6.3}
+VERSION_QPID=${VERSION_QPID:-0.37.0}
+DEPS_DIR=${DEPS_DIR:-/app/deps}
+
+# Constants
+CENTOS=CentOS
+RHEL=RHEL
+UBUNTU=Ubuntu
+
+# Initial setup
+test -d "$DEPS_DIR" || mkdir -p "$DEPS_DIR"
+
+if [[ -z "$IS_DOCKER_BUILD" ]]
+then
+    echo
+    echo "------------------------------- DRAGON ALERT --------------------------------"
+    echo "IS_DOCKER_BUILD environment not set. This should be set before launching this"
+    echo "script as the root user IN AN ISOLATED DOCKER ENVIRONMENT. It is highly "
+    echo "recommended not to run this script in any other environment. Obviously we"
+    echo "cannot stop you... but if you try it, you're on your own..."
+    echo
+    echo "However if you really *really* *REALLY* know what you're doing, you can also"
+    echo "set IS_NATIVE_BUILD to attempt to run this script on a host device"
+    echo "-----------------------------------------------------------------------------"
+    echo
+    test -z "$IS_NATIVE_BUILD" && exit $LINENO
+fi
+
+if [[ -f /etc/redhat-release ]]
+then
+    DISTRIB_RELEASE=$(tr " " "\n" < /etc/redhat-release | grep -E "^[0-9]")
+    if [[ -f /etc/fedora-release ]]
+    then
+        echo "Fedora builds no longer supported: $(cat /etc/*-release)" && exit $LINENO
+    else
+        if grep -q "Red Hat" /etc/redhat-release
+        then
+            DISTRIB_ID=$RHEL
+            # Install full fat dnf
+            if [[ -f /bin/microdnf ]]
+            then
+                microdnf install -y dnf
+            fi
+
+            # Install other dependencies for script
+            dnf install -y yum subscription-manager findutils
+
+            # If this is not a docker build, assume system is already registered
+            if [[ ( -n "$IS_DOCKER_BUILD") ]]
+            then
+                # RHEL 8 though does not seem to recognize SMDEV_CONTAINER_OFF=1 at this point so (cringe)...
+                sed -i 's/\(def in_container():\)/\1\n    return False/g' /usr/lib64/python*/*-packages/rhsm/config.py
+                subscription-manager register --auto-attach --username "$RHN_USER" --password "$RHN_PASS" --name openmama-docker-build-rhel-${DISTRIB_RELEASE:0:1}
+            fi
+            dnf config-manager --set-enabled codeready-builder-for-rhel-${DISTRIB_RELEASE:0:1}-$(arch)-rpms
+        else
+            DISTRIB_ID=$CENTOS
+        fi
+    fi
+fi
+
+if [[ -f /etc/lsb-release ]]
+then
+    # Will set DISTRIB_ID and DISTRIB_RELEASE
+    source /etc/lsb-release
+fi
+
+if [[ -z "$DISTRIB_RELEASE" ]]
+then
+    echo "Unsupported distro found: $(cat /etc/*-release)" && exit $LINENO
+fi
+
+if [[ ( "$DISTRIB_ID" = "$RHEL" || "$DISTRIB_ID" = "$CENTOS" ) ]]
+then
+    echo "Installing CentOS / RHEL specific dependencies"
+    if [[ ( "$DISTRIB_ID" = "$CENTOS" ) ]]
+    then
+        yum install -y epel-release
+    fi
+
+    yum install -y gcc make rpm-build which wget cmake libicu
+
+    if [[ "${DISTRIB_RELEASE:0:1}" = "7" ]]
+    then
+        # CentOS 7 cmake version is too old - upgrade it
+        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
+    fi
+
+    if [[ ( "${DISTRIB_RELEASE:0:1}" = "8" && "$DISTRIB_ID" = "$CENTOS" ) ]]
+    then
+        # CentOS 8 has funnies around where to find doxygen
+        yum install -y dnf-plugins-core
+        dnf config-manager --set-enabled powertools
+
+    fi
+
+    if [[ "${DISTRIB_RELEASE:0:1}" = "9" ]]
+    then
+        # We want "full" curl not minimal curl and rexml required to work around:
+        #     https://github.com/jordansissel/fpm/issues/1784
+        dnf install -y --allowerasing curl rubygem-rexml
+    fi
+
+    yum install -y python3 zlib-devel openssl-devel zip unzip make \
+        java-11-openjdk-devel libuuid-devel \
+        libevent-devel ncurses-devel python3-pip \
+        apr-devel wget curl gcc-c++ libuuid \
+        libevent ncurses apr apr-util-devel which git \
+        ruby-devel rubygems flex doxygen
+fi
+
+# General ubuntu packages
+if [[ "$DISTRIB_ID" = "$UBUNTU" ]]
+then
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get update
+    apt-get install -y ruby ruby-dev build-essential \
+	    zip unzip curl git flex uuid-dev libevent-dev \
+	    cmake git libzmq3-dev ncurses-dev python3-pip \
+	    unzip libapr1-dev python3 libz-dev wget \
+	    apt-transport-https ca-certificates libaprutil1-dev
+    apt-get install -y rubygems openjdk-11-jdk
+    echo "export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64" > /etc/profile.d/profile.jni.sh
+    if [[ "${DISTRIB_RELEASE:0:2}" -le "18" ]]
+    then
+        apt-get install -y libssl-ocaml-dev
+        # Ubuntu 18 cmake version is too old - upgrade it
+        (cd /usr && wget -c https://github.com/Kitware/CMake/releases/download/v3.19.4/cmake-3.19.4-Linux-x86_64.tar.gz -O - | tar -xz  --strip-components 1)
+    fi
+fi
+
+# RHEL 7 + 8 ruby is too old - need a more recent version for FPM to work later
+if [[ ("$DISTRIB_ID" = "$UBUNTU" && "${DISTRIB_RELEASE:0:2}" -le "18") || ( ("$DISTRIB_ID" = "$RHEL" || "$DISTRIB_ID" = "$CENTOS") && "${DISTRIB_RELEASE:0:1}" -le "8") ]]
+then
+    cd "$DEPS_DIR"
+    curl -sL "https://cache.ruby-lang.org/pub/ruby/2.6/ruby-2.6.1.tar.gz" | tar xz
+    cd ruby-2.6.1
+    ./configure --prefix=/usr
+    make
+    make install && gem update --system
+fi
+
+# Install gradle
+cd "$DEPS_DIR"
+curl -s "https://get.sdkman.io" | bash
+source "$SDKMAN_DIR/bin/sdkman-init.sh"
+# Stick to gradle 6.9 - 7.x seems to have moved maven libraries around
+sdk install gradle 6.9
+
+# Install FPM for packaging up
+gem install -N fpm -v 1.12.0
+
+# Gtest is best always getting built
+cd "$DEPS_DIR"
+curl -sL "http://github.com/google/googletest/archive/release-$VERSION_GTEST.tar.gz" | tar xz
+cd "googletest-release-$VERSION_GTEST"
+mkdir bld
+cd bld
+cmake -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j
+make install
+
+# Best installing qpid proton known version too
+cd "$DEPS_DIR"
+curl -sL "https://github.com/apache/qpid-proton/archive/refs/tags/$VERSION_QPID.tar.gz" | tar xz
+cd "qpid-proton-$VERSION_QPID"
+mkdir bld
+cd bld
+cmake -DSSL_IMPL=none -DCMAKE_INSTALL_PREFIX=/usr/local ..
+make -j
+make install
+
+# Install dotnet
+wget --no-check-certificate -q -O /tmp/dotnet-install.sh https://dot.net/v1/dotnet-install.sh
+chmod a+x /tmp/dotnet-install.sh
+/tmp/dotnet-install.sh -i /usr/local/bin
+/tmp/dotnet-install.sh -i /usr/local/bin -c 3.1
+
+# Install cloudsmith CLI
+python3 -m pip install --upgrade cloudsmith-cli
+
+# Clean up dependency directory to keep size down
+test -d "$DEPS_DIR" && rm -rf "${DEPS_DIR:?}/"*
+
+# Clean up RHN registration
+if [[ ( "$DISTRIB_ID" = "$RHEL" && -n "$IS_DOCKER_BUILD" && "${DISTRIB_RELEASE:0:1}" -lt 9) ]]
+then
+    subscription-manager unregister
+fi

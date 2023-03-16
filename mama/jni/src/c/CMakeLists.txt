@@ -1,13 +1,8 @@
-cmake_minimum_required (VERSION 2.8)
 project (mamajnic)
 
 get_target_property(MAMA_INCLUDES mama INCLUDE_DIRECTORIES)
 
 configure_file(version.c.in "${CMAKE_CURRENT_BINARY_DIR}/version.c" @ONLY)
-
-find_package(JNI)
-
-get_target_property(MAMA_JAVAH_INCLUDES mamajnijava JAVAH_INCLUDES)
 
 if (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU")
 	add_definitions(-Wno-deprecated-declarations -Wno-pointer-sign)
@@ -17,7 +12,7 @@ include_directories(
 	${CMAKE_CURRENT_SOURCE_DIR}
 	${JNI_INCLUDE_DIRS}
 	${MAMA_INCLUDES}
-	${MAMA_JAVAH_INCLUDES}
+	${CMAKE_BINARY_DIR}/OpenMAMA-java
 )
 
 set(sources 
@@ -50,7 +45,7 @@ set(sources
 
 add_library(mamajni SHARED ${sources})
 target_link_libraries(mamajni mama)
-add_dependencies(mamajni mamajnijava)
+add_dependencies(mamajni OpenMAMA-java)
 
 set_target_properties(mamajni PROPERTIES OUTPUT_NAME "mamajni${OPENMAMA_MAMAJNI_TARGET_SUFFIX}")
 

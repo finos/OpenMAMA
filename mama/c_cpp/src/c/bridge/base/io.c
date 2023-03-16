@@ -24,6 +24,15 @@ typedef struct baseIoEventImpl
     struct event        mEvent;
 } baseIoEventImpl;
 
+typedef struct baseBridgeIoImpl
+{
+    struct event_base*  mEventBase;
+    wthread_t           mDispatchThread;
+    uint8_t             mActive;
+    uint8_t             mEventsRegistered;
+    wsem_t              mResumeDispatching;
+} baseBridgeIoImpl;
+
 #ifndef evutil_socket_t
 #define evutil_socket_t int
 #endif
@@ -40,7 +49,7 @@ void
 baseBridgeMamaIoImpl_libeventIoCallback (evutil_socket_t fd, short type, void* closure);
 
 baseBridgeClosure*
-baseBridgeMamaIoImpl_getQpidBridgeClosure (baseIoEventImpl* impl);
+baseBridgeMamaIoImpl_getBridgeClosure (baseIoEventImpl* impl);
 
 
 /*=========================================================================
@@ -59,6 +68,7 @@ baseBridgeMamaIo_create         (ioBridge*   result,
     baseIoEventImpl*    impl            = NULL;
     short               evtType         = 0;
     baseBridgeClosure*  bridgeClosure   = NULL;
+    baseBridgeIoImpl*   ioState         = NULL;
 
     if (NULL == result)
     {
@@ -108,16 +118,16 @@ baseBridgeMamaIo_create         (ioBridge*   result,
 
     event_add (&impl->mEvent, NULL);
 
-    bridgeClosure = baseBridgeMamaIoImpl_getQpidBridgeClosure(impl);
-
-    event_base_set (bridgeClosure->mIoState.mEventBase, &impl->mEvent);
+    bridgeClosure = baseBridgeMamaIoImpl_getBridgeClosure(impl);
+    ioState = bridgeClosure->mIoState;
+    event_base_set (ioState->mEventBase, &impl->mEvent);
 
     /* If this is the first event since base was emptied or created */
-    if (0 == bridgeClosure->mIoState.mEventsRegistered)
+    if (0 == ioState->mEventsRegistered)
     {
-        wsem_post (&bridgeClosure->mIoState.mResumeDispatching);
+        wsem_post (&ioState->mResumeDispatching);
     }
-    bridgeClosure->mIoState.mEventsRegistered++;
+    ioState->mEventsRegistered++;
 
     *result = (ioBridge)impl;
 
@@ -129,15 +139,17 @@ baseBridgeMamaIo_destroy        (ioBridge io)
 {
     baseIoEventImpl*    impl            = (baseIoEventImpl*) io;
     baseBridgeClosure*  bridgeClosure   = NULL;
+    baseBridgeIoImpl*   ioState         = NULL;
     if (NULL == io)
     {
         return MAMA_STATUS_NULL_ARG;
     }
-    bridgeClosure = baseBridgeMamaIoImpl_getQpidBridgeClosure(impl);
+    bridgeClosure = baseBridgeMamaIoImpl_getBridgeClosure(impl);
+    ioState = (baseBridgeIoImpl*) bridgeClosure->mIoState;
     event_del (&impl->mEvent);
 
     free (impl);
-    bridgeClosure->mIoState.mEventsRegistered--;
+    ioState->mEventsRegistered--;
 
     return MAMA_STATUS_OK;
 }
@@ -162,47 +174,49 @@ baseBridgeMamaIo_getDescriptor  (ioBridge    io,
   =========================================================================*/
 
 mama_status
-baseBridgeMamaIoImpl_start (void* closure)
+baseBridgeMamaIoImpl_start (void** closure)
 {
-    int threadResult                        = 0;
-    baseBridgeClosure* bridgeClosure        = (baseBridgeClosure*) closure;
+    int threadResult          = 0;
+    baseBridgeIoImpl* ioState = calloc (1, sizeof (baseBridgeIoImpl));
+    ioState->mEventsRegistered   = 0;
+    ioState->mActive             = 1;
+    ioState->mEventBase          = event_init ();
 
-    bridgeClosure->mIoState.mEventsRegistered   = 0;
-    bridgeClosure->mIoState.mActive             = 1;
-    bridgeClosure->mIoState.mEventBase          = event_init ();
-
-    wsem_init (&bridgeClosure->mIoState.mResumeDispatching, 0, 0);
-    threadResult = wthread_create (&bridgeClosure->mIoState.mDispatchThread,
+    wsem_init (&ioState->mResumeDispatching, 0, 0);
+    threadResult = wthread_create (&ioState->mDispatchThread,
                                    NULL,
                                    baseBridgeMamaIoImpl_dispatchThread,
-                                   bridgeClosure);
+                                   (void*)ioState);
     if (0 != threadResult)
     {
-        mama_log (MAMA_LOG_LEVEL_ERROR, "baseBridgeMamaIoImpl_initialize(): "
+        mama_log (MAMA_LOG_LEVEL_ERROR, "baseBridgeMamaIoImpl_start(): "
                   "wthread_create returned %d", threadResult);
         return MAMA_STATUS_PLATFORM;
     }
+
+    *closure = (void*)ioState;
+
     return MAMA_STATUS_OK;
 }
 
 mama_status
 baseBridgeMamaIoImpl_stop (void* closure)
 {
-    baseBridgeClosure* bridgeClosure        = (baseBridgeClosure*) closure;
-    bridgeClosure->mIoState.mActive = 0;
+    baseBridgeIoImpl* ioState = (baseBridgeIoImpl*) closure;
+    ioState->mActive = 0;
 
     /* Alert the semaphore so the dispatch loop can exit */
-    wsem_post (&bridgeClosure->mIoState.mResumeDispatching);
+    wsem_post (&ioState->mResumeDispatching);
 
     /* Flush until event base is empty */
-    while (0 == event_base_loop(bridgeClosure->mIoState.mEventBase, EVLOOP_ONCE));
+    while (0 == event_base_loop(ioState->mEventBase, EVLOOP_ONCE));
 
     /* Join with the dispatch thread - it should exit shortly */
-    wthread_join (bridgeClosure->mIoState.mDispatchThread, NULL);
-    wsem_destroy (&bridgeClosure->mIoState.mResumeDispatching);
+    wthread_join (ioState->mDispatchThread, NULL);
+    wsem_destroy (&ioState->mResumeDispatching);
 
     /* Free the main event base */
-    event_base_free (bridgeClosure->mIoState.mEventBase);
+    event_base_free (ioState->mEventBase);
 
     return MAMA_STATUS_OK;
 }
@@ -217,22 +231,22 @@ void*
 baseBridgeMamaIoImpl_dispatchThread (void* closure)
 {
     int                 dispatchResult  = 0;
-    baseBridgeClosure*  bridgeClosure   = (baseBridgeClosure*) closure;
+    baseBridgeIoImpl*   ioState         = (baseBridgeIoImpl*) closure;
 
     /* Wait on the first event to register before starting dispatching */
-    wsem_wait (&bridgeClosure->mIoState.mResumeDispatching);
+    wsem_wait (&ioState->mResumeDispatching);
 
-    while (0 != bridgeClosure->mIoState.mActive)
+    while (0 != ioState->mActive)
     {
-        dispatchResult = event_base_loop (bridgeClosure->mIoState.mEventBase,
+        dispatchResult = event_base_loop (ioState->mEventBase,
                                           EVLOOP_NONBLOCK | EVLOOP_ONCE);
 
         /* If no events are currently registered */
         if (1 == dispatchResult)
         {
             /* Wait until they are */
-            bridgeClosure->mIoState.mEventsRegistered = 0;
-            wsem_wait (&bridgeClosure->mIoState.mResumeDispatching);
+            ioState->mEventsRegistered = 0;
+            wsem_wait (&ioState->mResumeDispatching);
         }
     }
     return NULL;
@@ -269,7 +283,7 @@ baseBridgeMamaIoImpl_libeventIoCallback (evutil_socket_t fd, short type, void* c
 }
 
 baseBridgeClosure*
-baseBridgeMamaIoImpl_getQpidBridgeClosure(baseIoEventImpl* impl)
+baseBridgeMamaIoImpl_getBridgeClosure(baseIoEventImpl* impl)
 {
     mamaBridge          mamaBridgeImpl  = NULL;
     baseBridgeClosure*  bridgeClosure   = NULL;

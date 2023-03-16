@@ -28,7 +28,6 @@ Makefile.in
 *.dmg
 *.gz
 *.iso
-*.jar
 *.rar
 *.tar
 *.zip
@@ -90,7 +89,6 @@ mamda/dotnet/src/cs/mamda.xml
 objdir/*
 .sconf_temp/*
 .sconsign.dblite/*
-omama.conf
 .sconsign.dblite
 openmama_install*
 
@@ -108,5 +106,6 @@ Release/
 *.suo
 packages.config
 .idea/
-build/
+/build/
 cmake-build-debug/
+latex/

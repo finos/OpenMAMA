@@ -22,7 +22,7 @@
 #ifndef RegisterFunctionsH__
 #define RegisterFunctionsH__
 
-#include <platform.h>
+#include <wombat/platform.h>
 
 
 mama_status

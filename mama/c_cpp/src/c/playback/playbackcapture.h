@@ -24,7 +24,7 @@
 
 
 #include <mama/mama.h>
-#include <wlock.h>
+#include <wombat/wlock.h>
 #include <stdlib.h>
 
 #if defined(__cplusplus)
