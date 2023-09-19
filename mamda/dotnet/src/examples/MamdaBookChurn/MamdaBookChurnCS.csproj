@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdabookchurncs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaBookChurnCS C#</Title>
         <Description>OpenMAMA MamdaBookChurnCS C#</Description>
         <Configuration>OpenMAMA MamdaBookChurnCS C#</Configuration>

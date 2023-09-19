@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamainboxcs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>net7.0</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamaInboxCS C#</Title>
         <Description>OpenMAMA MamaInboxCS C#</Description>
         <Configuration>OpenMAMA MamaInboxCS C#</Configuration>
