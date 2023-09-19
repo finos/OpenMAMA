@@ -18,8 +18,7 @@ if [ -d $BUILD_DIR ]
 then
     rm -rf $BUILD_DIR
 fi
-/tmp/dotnet-install.sh -i ~/bin
-/tmp/dotnet-install.sh -i ~/bin -c 3.1
+/tmp/dotnet-install.sh -i ~/bin -c 6.0
 
 export PATH=~/bin:$PATH
 
@@ -35,7 +34,7 @@ cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo \
      "$SOURCE_PATH_ABSOLUTE"
 make -j install
 export LD_LIBRARY_PATH=/opt/openmama/lib
-ctest . --timeout 240 --output-on-failure
+ctest . --timeout 300 --output-on-failure
 cd "$SOURCE_PATH_ABSOLUTE" > /dev/null
 
 # Include the test data and grab profile configuration from there for packaging

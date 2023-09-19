@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdaoptionchainviewexamplecs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaOptionChainViewExampleCS C#</Title>
         <Description>OpenMAMA MamdaOptionChainViewExampleCS C#</Description>
         <Configuration>OpenMAMA MamdaOptionChainViewExampleCS C#</Configuration>

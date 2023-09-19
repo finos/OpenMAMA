@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdafundamentaltickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaFundamentalTickerCS C#</Title>
         <Description>OpenMAMA MamdaFundamentalTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaFundamentalTickerCS C#</Configuration>

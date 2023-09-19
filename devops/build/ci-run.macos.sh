@@ -12,8 +12,7 @@ unset PREFIX
 # Install dotnet
 wget --no-check-certificate -q -O /tmp/dotnet-install.sh https://dot.net/v1/dotnet-install.sh
 chmod a+x /tmp/dotnet-install.sh
-/tmp/dotnet-install.sh -i ~/bin -c 3.1
-/tmp/dotnet-install.sh -i ~/bin
+/tmp/dotnet-install.sh -i ~/bin -c 6.0
 
 brew install googletest apr apr-util ossp-uuid qpid-proton
 

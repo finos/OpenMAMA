@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdacombotickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaComboTickerCS C#</Title>
         <Description>OpenMAMA MamdaComboTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaComboTickerCS C#</Configuration>

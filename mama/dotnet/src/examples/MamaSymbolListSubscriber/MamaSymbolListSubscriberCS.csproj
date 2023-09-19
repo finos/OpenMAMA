@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamasymbollistsubscribercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamaSymbolListSubscriberCS C#</Title>
         <Description>OpenMAMA MamaSymbolListSubscriberCS C#</Description>
         <Configuration>OpenMAMA MamaSymbolListSubscriberCS C#</Configuration>

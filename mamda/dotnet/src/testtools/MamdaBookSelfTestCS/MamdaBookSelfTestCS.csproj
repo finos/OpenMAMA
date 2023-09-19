@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdabookselftestcs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMDA MamdaBookSelfTestCS C#</Title>
         <Description>OpenMAMDA MamdaBookSelfTestCS C#</Description>
         <Configuration>OpenMAMDA MamdaBookSelfTestCS C#</Configuration>

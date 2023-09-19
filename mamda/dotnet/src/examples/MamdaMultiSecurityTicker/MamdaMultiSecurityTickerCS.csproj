@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdamultisecuritytickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaMultiSecurityTickerCS C#</Title>
         <Description>OpenMAMA MamdaMultiSecurityTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaMultiSecurityTickerCS C#</Configuration>

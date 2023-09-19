@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamachurncs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamaChurnCS C#</Title>
         <Description>OpenMAMA MamaChurnCS C#</Description>
         <Configuration>OpenMAMA MamaChurnCS C#</Configuration>

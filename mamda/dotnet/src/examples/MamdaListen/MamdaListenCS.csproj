@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdalistencs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaListenCS C#</Title>
         <Description>OpenMAMA MamdaListenCS C#</Description>
         <Configuration>OpenMAMA MamdaListenCS C#</Configuration>

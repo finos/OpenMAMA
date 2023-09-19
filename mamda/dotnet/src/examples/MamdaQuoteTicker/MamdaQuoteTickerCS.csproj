@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdaquotetickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaQuoteTickerCS C#</Title>
         <Description>OpenMAMA MamdaQuoteTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaQuoteTickerCS C#</Configuration>

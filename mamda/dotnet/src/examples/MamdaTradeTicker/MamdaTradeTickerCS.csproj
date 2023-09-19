@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdatradetickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaTradeTickerCS C#</Title>
         <Description>OpenMAMA MamdaTradeTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaTradeTickerCS C#</Configuration>

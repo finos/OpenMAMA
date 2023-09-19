@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdamultiparttickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaMultiPartTickerCS C#</Title>
         <Description>OpenMAMA MamdaMultiPartTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaMultiPartTickerCS C#</Configuration>

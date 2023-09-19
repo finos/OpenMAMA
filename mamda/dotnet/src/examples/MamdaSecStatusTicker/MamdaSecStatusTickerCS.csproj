@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamdasecstatustickercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamdaSecStatusTickerCS C#</Title>
         <Description>OpenMAMA MamdaSecStatusTickerCS C#</Description>
         <Configuration>OpenMAMA MamdaSecStatusTickerCS C#</Configuration>

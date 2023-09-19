@@ -2,7 +2,7 @@
   <PropertyGroup>
     <OPENMAMA_ROOT Condition="$(OPENMAMA_ROOT) == ''">/opt/openmama</OPENMAMA_ROOT>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>_02_resourcepool</RootNamespace>
   </PropertyGroup>
 

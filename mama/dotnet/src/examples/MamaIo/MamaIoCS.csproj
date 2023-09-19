@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamaiocs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamaIoCS C#</Title>
         <Description>OpenMAMA MamaIoCS C#</Description>
         <Configuration>OpenMAMA MamaIoCS C#</Configuration>

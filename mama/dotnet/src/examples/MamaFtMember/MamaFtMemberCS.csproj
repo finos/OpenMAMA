@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamaftmembercs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net6.0</TargetFramework>
         <Title>OpenMAMA MamaFtMemberCS C#</Title>
         <Description>OpenMAMA MamaFtMemberCS C#</Description>
         <Configuration>OpenMAMA MamaFtMemberCS C#</Configuration>
