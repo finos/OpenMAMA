@@ -2,7 +2,7 @@
     <PropertyGroup>
         <AssemblyName>mamaunittestscs</AssemblyName>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
+        <TargetFramework>net7.0</TargetFramework>
         <Title>OpenMAMA</Title>
         <Description>OpenMAMA API C# Unit Tests</Description>
         <Configuration>OpenMAMA API C# Unit Tests</Configuration>

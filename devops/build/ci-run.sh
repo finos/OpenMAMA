@@ -18,8 +18,7 @@ if [ -d $BUILD_DIR ]
 then
     rm -rf $BUILD_DIR
 fi
-/tmp/dotnet-install.sh -i ~/bin
-/tmp/dotnet-install.sh -i ~/bin -c 3.1
+/tmp/dotnet-install.sh -i ~/bin -c 7.0
 
 export PATH=~/bin:$PATH
 
