@@ -31,7 +31,7 @@ jobs:
             package_upload_enabled: true
     steps:
     - name: Check out the code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Run Linux build
@@ -95,7 +95,7 @@ jobs:
             package_upload_enabled: true
     steps:
     - name: Check out the code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Run Linux build
@@ -145,7 +145,7 @@ jobs:
             name: MSVC 2022 x64
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: Vcpkg Dependencies
@@ -177,7 +177,7 @@ jobs:
     timeout-minutes: 60
     continue-on-error: true
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         fetch-depth: 0
     - name: MacOS Build
