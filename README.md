@@ -1,12 +1,12 @@
-![Build CI](https://github.com/finos/OpenMAMA/workflows/Build%20and%20Deploy/badge.svg)
+[![Build CI](https://img.shields.io/github/actions/workflow/status/finos/OpenMAMA/main.yml?label=Build%20CI)](https://github.com/finos/openmama/actions/workflows/main.yml)
 [![FINOS - Active](https://cdn.jsdelivr.net/gh/finos/contrib-toolbox@master/images/badge-active.svg)](https://finosfoundation.atlassian.net/wiki/display/FINOS/Active)
 [![License](https://img.shields.io/badge/License-LGPLv2.1-blue.svg)](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/6741/badge)](https://bestpractices.coreinfrastructure.org/projects/6741) 
 [![Join the chat at https://gitter.im/OpenMAMA/OpenMAMA](https://badges.gitter.im/OpenMAMA/OpenMAMA.svg)](https://gitter.im/OpenMAMA/OpenMAMA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![.NET security](https://img.shields.io/github/workflow/status/finos/OpenMAMA/CVE%20Scanning%20for%20.NET?label=.NET%20Security)](https://github.com/finos/openmama/actions/workflows/cve-scanning-dotnet.yml)
-[![Java Security](https://img.shields.io/github/workflow/status/finos/OpenMAMA/CVE%20Scanning%20for%20Gradle?label=Java%20Security)](https://github.com/finos/openmama/actions/workflows/cve-scanning-gradle.yml)
-[![Docker Security](https://img.shields.io/github/workflow/status/finos/OpenMAMA/CVE%20Scanning%20for%20Docker?label=Docker%20Security)](https://github.com/finos/openmama/actions/workflows/cve-scanning-docker.yml)
-[![Static Code Analysis](https://img.shields.io/github/workflow/status/finos/OpenMAMA/Static%20code%20analysis?label=Static%20Code%20Analysis)](https://github.com/finos/openmama/actions/workflows/semgrep.yml)
+[![.NET security](https://img.shields.io/github/actions/workflow/status/finos/OpenMAMA/cve-scanning-dotnet.yml?label=.NET%20Security)](https://github.com/finos/openmama/actions/workflows/cve-scanning-dotnet.yml)
+[![Java Security](https://img.shields.io/github/actions/workflow/status/finos/OpenMAMA/cve-scanning-gradle.yml?label=Java%20Security)](https://github.com/finos/openmama/actions/workflows/cve-scanning-gradle.yml)
+[![Docker Security](https://img.shields.io/github/actions/workflow/status/finos/OpenMAMA/cve-scanning-docker.yml?label=Docker%20Security)](https://github.com/finos/openmama/actions/workflows/cve-scanning-docker.yml)
+[![Static Code Analysis](https://img.shields.io/github/actions/workflow/status/finos/OpenMAMA/semgrep.yml?label=Static%20Code%20Analysis)](https://github.com/finos/openmama/actions/workflows/semgrep.yml)
 
 The Open Middleware Agnostic Messaging API
 ================================================================================

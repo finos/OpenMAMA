@@ -1,9 +1,34 @@
 @PACKAGE_INIT@
 
-include("${CMAKE_CURRENT_LIST_DIR}/OpenMAMA-targets.cmake")
+if ("${CMAKE_PROJECT_NAME}" STREQUAL "OpenMAMA")
+    string(TOLOWER ${CMAKE_SYSTEM_NAME} system)
+    # If we are building OpenMAMA from within our own source tree
+    set (OpenMAMA_INCLUDE_DIRS
+            ${CMAKE_SOURCE_DIR}/common/c_cpp/src/c
+            ${CMAKE_SOURCE_DIR}/common/c_cpp/src/c/${system}
+            ${CMAKE_SOURCE_DIR}/mama/c_cpp/src/c
+            ${CMAKE_SOURCE_DIR}/mama/c_cpp/src/cpp
+            ${CMAKE_SOURCE_DIR}/mamda/c_cpp/src/cpp)
+    include_directories(${OpenMAMA_INCLUDE_DIRS})
 
-set (OpenMAMA_INCLUDE_DIRS ${PACKAGE_PREFIX_DIR}/include)
-set (OpenMAMA_LIBRARIES OpenMAMA::mama OpenMAMA::wombatcommon)
-set (OpenMAMA_FOUND True)
+    # Add some target based aliases to make this behave like an externally linked target
+    add_library (OpenMAMA::wombatcommon ALIAS wombatcommon)
+    add_library (OpenMAMA::mama ALIAS mama)
+    if (WITH_CPP)
+        add_library (OpenMAMA::wombatcommoncpp ALIAS wombatcommoncpp)
+        add_library (OpenMAMA::mamacpp ALIAS mamacpp)
+    endif ()
+    if (WITH_MAMDA)
+        add_library (OpenMAMA::mamda ALIAS mamda)
+    endif ()
+    set (OpenMAMA_FOUND True)
+elseif (EXISTS "${CMAKE_CURRENT_LIST_DIR}/OpenMAMA-targets.cmake")
+    include("${CMAKE_CURRENT_LIST_DIR}/OpenMAMA-targets.cmake")
+    set (OpenMAMA_INCLUDE_DIRS ${PACKAGE_PREFIX_DIR}/include)
+    set (OpenMAMA_LIBRARIES OpenMAMA::mama OpenMAMA::wombatcommon)
+    set (OpenMAMA_FOUND True)
+else ()
+    set (OpenMAMA_FOUND False)
+endif ()
 
 check_required_components(OpenMAMA)

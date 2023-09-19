@@ -68,7 +68,7 @@ echo "CURRENT_BRANCH='${CURRENT_BRANCH}'"
 if echo "$VERSION" | grep -E "^[0-9.]*$" > /dev/null
 then
     CLOUDSMITH_REPOSITORY=openmama
-elif echo "$VERSION" | grep -E "^[0-9.]*-rc[0-9]*" > /dev/null
+elif echo "$VERSION" | grep -E "^[0-9.]*-rc[0-9]*$" > /dev/null
 then
     CLOUDSMITH_REPOSITORY=openmama-rc
 elif [ "$CURRENT_BRANCH" = "next" ]

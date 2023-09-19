@@ -711,45 +711,68 @@ mamaTransport_create (mamaTransport transport,
         double interval = strtod (throttleInt, NULL);
         if (interval > 0)
         {
-            mama_log (MAMA_LOG_LEVEL_FINER,
-                      "Setting mama transport throttle interval for %s to %f seconds", name, interval);
-            wombatThrottle_setInterval (self->mThrottle, interval);
+            mama_log (MAMA_LOG_LEVEL_FINE,
+                      "Setting mama transport throttle interval (time between throttle timer fires) for %s to %f seconds",
+                      name, interval);
+            wombatThrottle_setInterval(self->mThrottle, interval);
+            wombatThrottle_setInterval(self->mRecapThrottle, interval);
+        }
+        else
+        {
+            mama_log (MAMA_LOG_LEVEL_WARN,
+                      "Cannot set mama transport throttle interval (time between throttle timer fires) for %s to %f seconds - negative number",
+                      name, interval);
         }
     }
 
     defaultThrottleRate = mamaImpl_getParameter (
-            mamaImpl_getParameter (NULL, "mama.transport.%s.default_throttle_rate", name),
-            "mama.%s.transport.%s.default_throttle_rate",
-            middleware,
-            name);
+        mamaImpl_getParameter (
+            mamaImpl_getParameter (NULL, "mama.throttle.default_throttle_rate"),
+            "mama.transport.%s.default_throttle_rate",
+            name),
+        "mama.%s.transport.%s.default_throttle_rate",
+        middleware,
+        name);
     if (defaultThrottleRate != NULL)
     {
         double throttleRate = strtod (defaultThrottleRate, NULL);
         if (throttleRate > 0)
         {
-            // Figure out the interval from the events per second
-            double interval = 1.0 / throttleRate;
             mama_log (MAMA_LOG_LEVEL_FINER,
-                    "Setting mama transport default throttle rate for %s to %f evt/s", name, interval);
-            wombatThrottle_setInterval (self->mThrottle, interval);
+                    "Setting mama transport default throttle rate for %s to %f evt/s", name, throttleRate);
+            wombatThrottle_setRate (self->mThrottle, throttleRate);
+        }
+        else
+        {
+            mama_log (MAMA_LOG_LEVEL_WARN,
+                      "Cannot set mama transport default throttle rate (throttle evt/s) for %s to %f seconds - negative number",
+                      name, throttleRate);
         }
     }
 
     recapThrottleRate = mamaImpl_getParameter (
-            mamaImpl_getParameter (NULL, "mama.transport.%s.recap_throttle_rate", name),
-            "mama.%s.transport.%s.recap_throttle_rate",
-            middleware,
-            name);
+        mamaImpl_getParameter (
+            mamaImpl_getParameter (NULL, "mama.throttle.recap_throttle_rate"),
+            "mama.transport.%s.recap_throttle_rate",
+            name),
+        "mama.%s.transport.%s.recap_throttle_rate",
+        middleware,
+        name);
     if (recapThrottleRate != NULL)
     {
         double throttleRate = strtod (recapThrottleRate, NULL);
         if (throttleRate > 0)
         {
             // Figure out the interval from the events per second
-            double interval = 1.0 / throttleRate;
             mama_log (MAMA_LOG_LEVEL_FINER,
-                      "Setting mama transport recap throttle rate for %s to %f evt/s", name, interval);
-            wombatThrottle_setInterval (self->mRecapThrottle, interval);
+                      "Setting mama transport recap throttle rate for %s to %f evt/s", name, throttleRate);
+            wombatThrottle_setRate (self->mRecapThrottle, throttleRate);
+        }
+        else
+        {
+            mama_log (MAMA_LOG_LEVEL_WARN,
+                      "Cannot set mama transport recap throttle rate (throttle evt/s) for %s to %f seconds - negative number",
+                      name, throttleRate);
         }
     }
 

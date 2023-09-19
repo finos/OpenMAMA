@@ -514,7 +514,7 @@ public:
                 mrpTransportImpl->mTransport,
                 queue,
                 callbacks,
-                topicName,
+                sourceName,
                 closure
             );
         }
