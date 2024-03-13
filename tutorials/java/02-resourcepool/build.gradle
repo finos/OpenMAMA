@@ -22,7 +22,7 @@ repositories {
 
 dependencies {
     // This dependency is used by the application.
-    implementation 'com.google.guava:guava:32.1.3-jre'
+    implementation 'com.google.guava:guava:33.1.0-jre'
     // implementation 'org.openmama:openmama:6.3.3'
     implementation files('/home/fquinn/SourceExternal/finos/OpenMAMA/mama/jni/build/libs/openmama-6.3.0-1.jar')
 
