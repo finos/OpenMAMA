@@ -1,5 +1,5 @@
 [![Build CI](https://img.shields.io/github/actions/workflow/status/finos/OpenMAMA/main.yml?label=Build%20CI)](https://github.com/finos/openmama/actions/workflows/main.yml)
-[![FINOS - Active](https://cdn.jsdelivr.net/gh/finos/contrib-toolbox@master/images/badge-active.svg)](https://finosfoundation.atlassian.net/wiki/display/FINOS/Active)
+[![FINOS - Graduated](https://cdn.jsdelivr.net/gh/finos/contrib-toolbox@master/images/badge-graduated.svg)](https://community.finos.org/docs/governance/lifecycle-stages/graduated)
 [![License](https://img.shields.io/badge/License-LGPLv2.1-blue.svg)](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.en.html)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/6741/badge)](https://bestpractices.coreinfrastructure.org/projects/6741) 
 [![Join the chat at https://gitter.im/OpenMAMA/OpenMAMA](https://badges.gitter.im/OpenMAMA/OpenMAMA.svg)](https://gitter.im/OpenMAMA/OpenMAMA?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -58,4 +58,3 @@ depends on several third party libraries, the licenses for which are listed in t
 Contributing
 --------------------------------------------------------------------------------
 Information on contributing on the project can be found [here](https://openmama.finos.org/openmama_submission_process.html).
-
