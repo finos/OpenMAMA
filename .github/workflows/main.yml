@@ -6,7 +6,7 @@ jobs:
   linux-build-finos:  
     if: github.repository_owner == 'finos' && github.event_name != 'pull_request'
     name: Linux ${{ matrix.name }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     continue-on-error: true
     container:
@@ -49,7 +49,7 @@ jobs:
 
   linux-build:
     name: Linux ${{ matrix.name }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     continue-on-error: true
     container:
