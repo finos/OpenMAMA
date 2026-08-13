@@ -4,9 +4,9 @@ This file lists the maintainers of this repository.
 
 ## Current maintainers
 
-| GitHub Username | Name | Organization | Email |
-|----------------|------|--------------|-------|
-| @fquinner | *please add name* | *please add organization* | *please add email* |
+| GitHub Username | Name | Organization | Email (optional) |
+|----------------|------|--------------|------------------|
+| @fquinner | *please add name* | *please add organization* |  |
 
 For information about maintainer responsibilities and resources, see the [FINOS Maintainers Cheatsheet](https://community.finos.org/docs/finos-maintainers-cheatsheet).
 
